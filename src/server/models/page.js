@@ -14,7 +14,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
-const { isTopPage } = require('@commons/util/path-utils');
+const { isTopPage, isTrashPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -66,6 +66,8 @@ const pageSchema = new mongoose.Schema({
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  deleteUser: { type: ObjectId, ref: 'User' },
+  deletedAt: { type: Date },
 }, {
   toJSON: { getters: true },
   toObject: { getters: true },
@@ -107,6 +109,7 @@ const populateDataToShowRevision = (page, userPublicFields) => {
     .populate([
       { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
       { path: 'creator', model: 'User', select: userPublicFields },
+      { path: 'deleteUser', model: 'User', select: userPublicFields },
       { path: 'grantedGroup', model: 'UserGroup' },
       { path: 'revision', model: 'Revision', populate: {
         path: 'author', model: 'User', select: userPublicFields,
@@ -303,7 +306,7 @@ module.exports = function(crowi) {
   }
 
   pageSchema.methods.isDeleted = function() {
-    return (this.status === STATUS_DELETED) || checkIfTrashed(this.path);
+    return (this.status === STATUS_DELETED) || isTrashPage(this.path);
   };
 
   pageSchema.methods.isPublic = function() {
@@ -1103,46 +1106,6 @@ module.exports = function(crowi) {
     }
   };
 
-  pageSchema.statics.deletePage = async function(pageData, user, options = {}) {
-    const newPath = this.getDeletedPageName(pageData.path);
-    const isTrashed = checkIfTrashed(pageData.path);
-
-    if (isTrashed) {
-      throw new Error('This method does NOT support deleting trashed pages.');
-    }
-
-    const socketClientId = options.socketClientId || null;
-    if (this.isDeletableName(pageData.path)) {
-
-      pageData.status = STATUS_DELETED;
-      const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
-
-      return updatedPageData;
-    }
-
-    return Promise.reject(new Error('Page is not deletable.'));
-  };
-
-  const checkIfTrashed = (path) => {
-    return (path.search(/^\/trash/) !== -1);
-  };
-
-  pageSchema.statics.deletePageRecursively = async function(targetPage, user, options = {}) {
-    const isTrashed = checkIfTrashed(targetPage.path);
-    const newPath = this.getDeletedPageName(targetPage.path);
-    if (isTrashed) {
-      throw new Error('This method does NOT supports deleting trashed pages.');
-    }
-
-    if (!this.isDeletableName(targetPage.path)) {
-      throw new Error('Page is not deletable');
-    }
-    const socketClientId = options.socketClientId || null;
-    targetPage.status = STATUS_DELETED;
-    return await this.renameRecursively(targetPage, newPath, user, { socketClientId, createRedirectPage: true });
-  };
-
-
   pageSchema.statics.removeByPath = function(path) {
     if (path == null) {
       throw new Error('path is required');
@@ -1171,103 +1134,6 @@ module.exports = function(crowi) {
     await this.findByIdAndRemove(redirectPage.id);
     // remove recursive
     await this.removeRedirectOriginPageByPath(redirectPage.path);
-  };
-
-  pageSchema.statics.rename = async function(pageData, newPagePath, user, options) {
-    validateCrowi();
-
-    const Page = this;
-    const Revision = crowi.model('Revision');
-    const path = pageData.path;
-    const createRedirectPage = options.createRedirectPage || false;
-    const updateMetadata = options.updateMetadata || false;
-    const socketClientId = options.socketClientId || null;
-
-    // sanitize path
-    newPagePath = crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
-
-    // update Page
-    pageData.path = newPagePath;
-    if (updateMetadata) {
-      pageData.lastUpdateUser = user;
-      pageData.updatedAt = Date.now();
-    }
-    const updatedPageData = await pageData.save();
-
-    // update Rivisions
-    await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
-
-    if (createRedirectPage) {
-      const body = `redirect ${newPagePath}`;
-      await Page.create(path, body, user, { redirectTo: newPagePath });
-    }
-
-    pageEvent.emit('delete', pageData, user, socketClientId);
-    pageEvent.emit('create', updatedPageData, user, socketClientId);
-
-    return updatedPageData;
-  };
-
-  pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
-    validateCrowi();
-
-    const pageCollection = mongoose.connection.collection('pages');
-    const revisionCollection = mongoose.connection.collection('revisions');
-
-    const path = targetPage.path;
-    const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
-    const { updateMetadata, createRedirectPage } = options;
-
-    // sanitize path
-    newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
-
-    // find manageable descendants
-    const pages = await this.findManageableListWithDescendants(targetPage, user, options);
-
-    const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
-    const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
-
-    pages.forEach((page) => {
-      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      if (updateMetadata) {
-        unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: Date.now() } } }]);
-      }
-      else {
-        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
-      }
-      if (createRedirectPage) {
-        createRediectPageBulkOp.insert({
-          path: page.path, body: `redirect ${newPagePath}`, creator: user, lastUpdateUser: user, status: STATUS_PUBLISHED, redirectTo: newPagePath,
-        });
-      }
-      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
-    });
-
-    try {
-      await unorderedBulkOp.execute();
-      await revisionUnorderedBulkOp.execute();
-    }
-    catch (err) {
-      if (err.code !== 11000) {
-        throw new Error('Failed to rename pages: ', err);
-      }
-    }
-
-    const newParentPath = path.replace(pathRegExp, newPagePathPrefix);
-    const newParentPage = await this.findByPath(newParentPath);
-    const renamedPages = await this.findManageableListWithDescendants(newParentPage, user, options);
-
-    pageEvent.emit('createMany', renamedPages, user, newParentPage);
-
-    // Execute after unorderedBulkOp to prevent duplication
-    if (createRedirectPage) {
-      await createRediectPageBulkOp.execute();
-    }
-
-    targetPage.path = newPagePathPrefix;
-    return targetPage;
-
   };
 
   pageSchema.statics.findListByPathsArray = async function(paths) {
@@ -1345,6 +1211,8 @@ module.exports = function(crowi) {
 
   };
 
+  pageSchema.statics.STATUS_PUBLISHED = STATUS_PUBLISHED;
+  pageSchema.statics.STATUS_DELETED = STATUS_DELETED;
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
   pageSchema.statics.GRANT_RESTRICTED = GRANT_RESTRICTED;
   pageSchema.statics.GRANT_SPECIFIED = GRANT_SPECIFIED;

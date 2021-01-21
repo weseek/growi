@@ -238,6 +238,9 @@ module.exports = function(crowi, app) {
     if (page.revision.author != null) {
       renderVars.revision.author = renderVars.revision.author.toObject();
     }
+    if (page.deleteUser != null) {
+      renderVars.page.deleteUser = renderVars.page.deleteUser.toObject();
+    }
   }
 
   function addRenderVarsForPresentation(renderVars, page) {
@@ -1194,12 +1197,7 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
-        if (isRecursively) {
-          await Page.deletePageRecursively(page, req.user, options);
-        }
-        else {
-          await Page.deletePage(page, req.user, options);
-        }
+        await crowi.pageService.deletePage(page, req.user, options, isRecursively);
       }
     }
     catch (err) {
@@ -1348,12 +1346,7 @@ module.exports = function(crowi, app) {
         return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
       }
 
-      if (isRecursively) {
-        page = await Page.renameRecursively(page, newPagePath, req.user, options);
-      }
-      else {
-        page = await Page.rename(page, newPagePath, req.user, options);
-      }
+      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);
     }
     catch (err) {
       logger.error(err);

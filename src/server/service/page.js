@@ -4,16 +4,179 @@ const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('@server/util/batch-stream');
+const { isTrashPage } = require('@commons/util/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
-const STATUS_PUBLISHED = 'published';
 const BULK_REINDEX_SIZE = 100;
 
 class PageService {
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.pageEvent = crowi.event('page');
+
+    // init
+    this.pageEvent.on('create', this.pageEvent.onCreate);
+    this.pageEvent.on('update', this.pageEvent.onUpdate);
+    this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
   }
+
+  /**
+   * go back by using redirectTo and return the paths
+   *  ex: when
+   *    '/page1' redirects to '/page2' and
+   *    '/page2' redirects to '/page3'
+   *    and given '/page3',
+   *    '/page1' and '/page2' will be return
+   *
+   * @param {string} redirectTo
+   * @param {object} redirectToPagePathMapping
+   * @param {array} pagePaths
+   */
+  prepareShoudDeletePagesByRedirectTo(redirectTo, redirectToPagePathMapping, pagePaths = []) {
+    const pagePath = redirectToPagePathMapping[redirectTo];
+
+    if (pagePath == null) {
+      return pagePaths;
+    }
+
+    pagePaths.push(pagePath);
+    return this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping, pagePaths);
+  }
+
+
+  async renamePage(page, newPagePath, user, options, isRecursively = false) {
+
+    const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+    const path = page.path;
+    const createRedirectPage = options.createRedirectPage || false;
+    const updateMetadata = options.updateMetadata || false;
+    const socketClientId = options.socketClientId || null;
+
+    // sanitize path
+    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
+    const update = {};
+    // update Page
+    update.path = newPagePath;
+    if (updateMetadata) {
+      update.lastUpdateUser = user;
+      update.updatedAt = Date.now();
+    }
+    const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
+
+    // update Rivisions
+    await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
+
+    if (createRedirectPage) {
+      const body = `redirect ${newPagePath}`;
+      await Page.create(path, body, user, { redirectTo: newPagePath });
+    }
+
+    if (isRecursively) {
+      this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
+
+    this.pageEvent.emit('delete', page, user, socketClientId);
+    this.pageEvent.emit('create', renamedPage, user, socketClientId);
+
+    return renamedPage;
+  }
+
+
+  async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
+    const Page = this.crowi.model('Page');
+
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
+    const { updateMetadata, createRedirectPage } = options;
+
+    const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
+
+    pages.forEach((page) => {
+      const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
+      if (updateMetadata) {
+        unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: Date.now() } } }]);
+      }
+      else {
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
+      }
+      if (createRedirectPage) {
+        createRediectPageBulkOp.insert({
+          path: page.path, body: `redirect ${newPagePath}`, creator: user._id, lastUpdateUser: user._id, status: Page.STATUS_PUBLISHED, redirectTo: newPagePath,
+        });
+      }
+      revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
+    });
+
+    try {
+      await unorderedBulkOp.execute();
+      await revisionUnorderedBulkOp.execute();
+      // Execute after unorderedBulkOp to prevent duplication
+      if (createRedirectPage) {
+        await createRediectPageBulkOp.execute();
+      }
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to rename pages: ', err);
+      }
+    }
+
+    this.pageEvent.emit('updateMany', pages, user);
+  }
+
+  /**
+   * Create rename stream
+   */
+  async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const newPagePathPrefix = newPagePath;
+    const { PageQueryBuilder } = Page;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
+
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(targetPage.path)
+      .addConditionToFilteringByViewer(user)
+      .query
+      .lean()
+      .cursor();
+
+    const renameDescendants = this.renameDescendants.bind(this);
+    const pageEvent = this.pageEvent;
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
+          logger.debug(`Reverting pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('revertPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+        // update  path
+        targetPage.path = newPagePath;
+        pageEvent.emit('syncDescendants', targetPage, user);
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+  }
+
 
   async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
@@ -28,14 +191,24 @@ class PageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
+    const pages = await Page.find({ redirectTo: { $ne: null } });
+    const redirectToPagePathMapping = {};
+    pages.forEach((page) => {
+      redirectToPagePathMapping[page.redirectTo] = page.path;
+    });
+
+    const redirectedFromPagePaths = [];
+    pagePaths.forEach((pagePath) => {
+      redirectedFromPagePaths.push(...this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping));
+    });
+
     return Promise.all([
-      Bookmark.find({ page: { $in: pageIds } }).remove({}),
-      Comment.find({ page: { $in: pageIds } }).remove({}),
-      PageTagRelation.find({ relatedPage: { $in: pageIds } }).remove({}),
-      ShareLink.find({ relatedPage: { $in: pageIds } }).remove({}),
-      Revision.find({ path: { $in: pagePaths } }).remove({}),
-      Page.find({ _id: { $in: pageIds } }).remove({}),
-      Page.find({ path: { $in: pagePaths } }).remove({}),
+      Bookmark.deleteMany({ page: { $in: pageIds } }),
+      Comment.deleteMany({ page: { $in: pageIds } }),
+      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
+      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
+      Revision.deleteMany({ path: { $in: pagePaths } }),
+      Page.deleteMany({ $or: [{ path: { $in: pagePaths } }, { path: { $in: redirectedFromPagePaths } }, { _id: { $in: pageIds } }] }),
       attachmentService.removeAllAttachments(attachments),
     ]);
   }
@@ -111,9 +284,18 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, pathRevisionMapping) {
+  async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
+
+    const paths = pages.map(page => (page.path));
+    const revisions = await Revision.find({ path: { $in: paths } });
+
+    // Mapping to set to the body of the new revision
+    const pathRevisionMapping = {};
+    revisions.forEach((revision) => {
+      pathRevisionMapping[revision.path] = revision;
+    });
 
     // key: oldPageId, value: newPageId
     const pageIdMapping = {};
@@ -151,10 +333,8 @@ class PageService {
 
   async duplicateDescendantsWithStream(page, newPagePath, user) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-    const revisions = await Revision.find({ path: pathRegExp });
 
     const { PageQueryBuilder } = Page;
 
@@ -166,20 +346,15 @@ class PageService {
       .lean()
       .cursor();
 
-    // Mapping to set to the body of the new revision
-    const pathRevisionMapping = {};
-    revisions.forEach((revision) => {
-      pathRevisionMapping[revision.path] = revision;
-    });
-
     const duplicateDescendants = this.duplicateDescendants.bind(this);
+    const pageEvent = this.pageEvent;
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, pathRevisionMapping);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -190,7 +365,9 @@ class PageService {
       },
       final(callback) {
         logger.debug(`Adding pages has completed: (totalCount=${count})`);
-
+        // update  path
+        page.path = newPagePath;
+        pageEvent.emit('syncDescendants', page, user);
         callback();
       },
     });
@@ -201,17 +378,134 @@ class PageService {
 
   }
 
-  // delete multiple pages
-  async deleteMultipleCompletely(pages, user, options = {}) {
-    this.validateCrowi();
-    let pageEvent;
-    // init event
-    if (this.crowi != null) {
-      pageEvent = this.crowi.event('page');
-      pageEvent.on('create', pageEvent.onCreate);
-      pageEvent.on('update', pageEvent.onUpdate);
+
+  async deletePage(page, user, options = {}, isRecursively = false) {
+    const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+
+    const newPath = Page.getDeletedPageName(page.path);
+    const isTrashed = isTrashPage(page.path);
+
+    if (isTrashed) {
+      throw new Error('This method does NOT support deleting trashed pages.');
     }
 
+    const socketClientId = options.socketClientId || null;
+    if (!Page.isDeletableName(page.path)) {
+      throw new Error('Page is not deletable.');
+    }
+
+    if (isRecursively) {
+      this.deleteDescendantsWithStream(page, user, options);
+    }
+
+    // update Rivisions
+    await Revision.updateRevisionListByPath(page.path, { path: newPath }, {});
+    const deletedPage = await Page.findByIdAndUpdate(page._id, {
+      $set: {
+        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: new Date(),
+      },
+    }, { new: true });
+    const body = `redirect ${newPath}`;
+    await Page.create(page.path, body, user, { redirectTo: newPath });
+
+    this.pageEvent.emit('delete', page, user, socketClientId);
+    this.pageEvent.emit('create', deletedPage, user, socketClientId);
+
+    return deletedPage;
+  }
+
+  async deleteDescendants(pages, user) {
+    const Page = this.crowi.model('Page');
+
+    const pageCollection = mongoose.connection.collection('pages');
+    const revisionCollection = mongoose.connection.collection('revisions');
+
+    const deletePageBulkOp = pageCollection.initializeUnorderedBulkOp();
+    const updateRevisionListOp = revisionCollection.initializeUnorderedBulkOp();
+    const newPagesForRedirect = [];
+
+    pages.forEach((page) => {
+      const newPath = Page.getDeletedPageName(page.path);
+      const body = `redirect ${newPath}`;
+
+      deletePageBulkOp.find({ _id: page._id }).update({
+        $set: {
+          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: new Date(),
+        },
+      });
+      updateRevisionListOp.find({ path: page.path }).update({ $set: { path: newPath } });
+
+      newPagesForRedirect.push({
+        path: page.path,
+        body,
+        creator: user._id,
+        grant: page.grant,
+        grantedGroup: page.grantedGroup,
+        grantedUsers: page.grantedUsers,
+        lastUpdateUser: user._id,
+        redirectTo: newPath,
+        revision: null,
+      });
+    });
+
+    try {
+      await deletePageBulkOp.execute();
+      await updateRevisionListOp.execute();
+      await Page.insertMany(newPagesForRedirect, { ordered: false });
+    }
+    catch (err) {
+      if (err.code !== 11000) {
+        throw new Error('Failed to revert pages: ', err);
+      }
+    }
+  }
+
+  /**
+   * Create delete stream
+   */
+  async deleteDescendantsWithStream(targetPage, user, options = {}) {
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(targetPage.path)
+      .addConditionToFilteringByViewer(user)
+      .query
+      .lean()
+      .cursor();
+
+    const deleteDescendants = this.deleteDescendants.bind(this);
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          deleteDescendants(batch, user);
+          logger.debug(`Reverting pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('revertPages error on add anyway: ', err);
+        }
+
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+
+        callback();
+      },
+    });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+  }
+
+  // delete multiple pages
+  async deleteMultipleCompletely(pages, user, options = {}) {
     const ids = pages.map(page => (page._id));
     const paths = pages.map(page => (page.path));
     const socketClientId = options.socketClientId || null;
@@ -221,21 +515,12 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (socketClientId != null) {
-      pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
+      this.pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
     }
     return;
   }
 
   async deleteCompletely(page, user, options = {}, isRecursively = false) {
-    this.validateCrowi();
-    let pageEvent;
-    // init event
-    if (this.crowi != null) {
-      pageEvent = this.crowi.event('page');
-      pageEvent.on('create', pageEvent.onCreate);
-      pageEvent.on('update', pageEvent.onUpdate);
-    }
-
     const ids = [page._id];
     const paths = [page.path];
     const socketClientId = options.socketClientId || null;
@@ -245,19 +530,19 @@ class PageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
-      this.deleteDescendantsWithStream(page, user, options);
+      this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
     if (socketClientId != null) {
-      pageEvent.emit('delete', page, user, socketClientId); // update as renamed page
+      this.pageEvent.emit('delete', page, user, socketClientId); // update as renamed page
     }
     return;
   }
 
   /**
-   * Create delete stream
+   * Create delete completely stream
    */
-  async deleteDescendantsWithStream(targetPage, user, options = {}) {
+  async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
     const { PageQueryBuilder } = Page;
 
@@ -327,7 +612,11 @@ class PageService {
           removePageBulkOp.find({ path: toPath }).remove();
         }
       }
-      revertPageBulkOp.find({ _id: page._id }).update({ $set: { path: toPath, status: STATUS_PUBLISHED, lastUpdateUser: user._id } });
+      revertPageBulkOp.find({ _id: page._id }).update({
+        $set: {
+          path: toPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+        },
+      });
       revertRevisionBulkOp.find({ path: page.path }).update({ $set: { path: toPath } }, { multi: true });
     });
 
@@ -345,6 +634,8 @@ class PageService {
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
+    const Revision = this.crowi.model('Revision');
+
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
     if (originPage != null) {
@@ -361,10 +652,16 @@ class PageService {
       this.revertDeletedDescendantsWithStream(page, user, options);
     }
 
-    page.status = STATUS_PUBLISHED;
+    page.status = Page.STATUS_PUBLISHED;
     page.lastUpdateUser = user;
     debug('Revert deleted the page', page, newPath);
-    const updatedPage = await Page.rename(page, newPath, user, {});
+    const updatedPage = await Page.findByIdAndUpdate(page._id, {
+      $set: {
+        path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
+      },
+    }, { new: true });
+    await Revision.updateMany({ path: page.path }, { $set: { path: newPath } });
+
     return updatedPage;
   }
 
