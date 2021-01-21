@@ -8,7 +8,11 @@ let testUser2;
 let parentTag;
 let childTag;
 
-let parentForRename;
+let parentForRename1;
+let parentForRename2;
+let parentForRename3;
+let parentForRename4;
+
 let parentForDuplicate;
 let parentForDelete;
 let parentForDeleteCompletely;
@@ -24,6 +28,7 @@ describe('PageService', () => {
 
   let crowi;
   let Page;
+  let Revision;
   let User;
   let Tag;
   let PageTagRelation;
@@ -33,6 +38,7 @@ describe('PageService', () => {
 
     User = mongoose.model('User');
     Page = mongoose.model('Page');
+    Revision = mongoose.model('Revision');
     Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
 
@@ -46,13 +52,31 @@ describe('PageService', () => {
 
     await Page.insertMany([
       {
-        path: '/parentForRename',
+        path: '/parentForRename1',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
       },
       {
-        path: '/parentForRename/child',
+        path: '/parentForRename2',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename3',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename4',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename1/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
@@ -107,13 +131,16 @@ describe('PageService', () => {
       },
     ]);
 
-    parentForRename = await Page.findOne({ path: '/parentForRename' });
+    parentForRename1 = await Page.findOne({ path: '/parentForRename1' });
+    parentForRename2 = await Page.findOne({ path: '/parentForRename2' });
+    parentForRename3 = await Page.findOne({ path: '/parentForRename3' });
+    parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
     parentForDelete = await Page.findOne({ path: '/parentForDelete' });
     parentForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely' });
     parentForRevert = await Page.findOne({ path: '/parentForRevert' });
 
-    childForRename = await Page.findOne({ path: '/parentForRename/child' });
+    childForRename = await Page.findOne({ path: '/parentForRename1/child' });
     childForDuplicate = await Page.findOne({ path: '/parentForDuplicate/child' });
     childForDelete = await Page.findOne({ path: '/parentForDelete/child' });
     childForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely/child' });
@@ -139,27 +166,63 @@ describe('PageService', () => {
   describe('rename page', () => {
     describe('renamePage()', () => {
       test('rename page without options', async() => {
-        parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename2', testUser2, {});
+        const resultPage = await crowi.pageService.renamePage(parentForRename1, '/renamed1', testUser2, {});
+        const redirectedFromPage = await Page.findOne({ path: '/parentForRename1' });
+        const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename1' });
 
-        console.log(parentForRename);
+        expect(resultPage.path).toBe('/renamed1');
+        expect(resultPage.grant).toBe(1);
+        expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
+        expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-        expect(parentForRename.path).toBe('/parentForRename2');
-        expect(parentForRename.grant).toBe(1);
-        expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
-        expect(parentForRename.lastUpdateUser).toEqual(testUser1._id);
+        expect(redirectedFromPage).toBeNull();
+        expect(redirectedFromPageRevision).toBeNull();
       });
 
-      test('rename page with updateMetadata option', async() => {
-        parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename3', testUser2, { updateMetadata: true });
+      // test('rename page with updateMetadata option', async() => {
+      //   parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename3', testUser2, { updateMetadata: true });
+      //   const redirectedFromPage = await Page.findOne({ path: '/parentForRename2' });
+      //   const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename2' });
 
-        console.log(parentForRename);
-        console.log(testUser1._id);
+      //   expect(parentForRename.path).toBe('/parentForRename3');
+      //   expect(parentForRename.grant).toBe(1);
+      //   expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
+      //   expect(parentForRename.lastUpdateUser).toEqual(testUser2._id);
 
-        expect(parentForRename.path).toBe('/parentForRename3');
-        expect(parentForRename.grant).toBe(1);
-        expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
-        expect(parentForRename.lastUpdateUser).toEqual(testUser2._id);
-      });
+      //   expect(redirectedFromPage).toBeNull();
+      //   expect(redirectedFromPageRevision).toBeNull();
+      // });
+
+      // test('rename page with createRedirectPage option', async() => {
+      //   parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename4', testUser2, { createRedirectPage: true });
+      //   const redirectedFromPage = await Page.findOne({ path: '/parentForRename3' });
+      //   const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename3' });
+
+      //   expect(parentForRename.path).toBe('/parentForRename4');
+      //   expect(parentForRename.grant).toBe(1);
+      //   expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
+      //   expect(parentForRename.lastUpdateUser).toEqual(testUser2._id);
+
+
+      //   expect(redirectedFromPage).not.toBeNull();
+      //   expect(redirectedFromPage.redirectTo).toBe('/parentForRename4');
+      //   expect(redirectedFromPageRevision).not.toBeNull();
+      //   expect(redirectedFromPageRevision.body).toBe('redirect /parentForRename4');
+      // });
+
+      // test('rename page with isRecursively', async() => {
+      //   parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename5', testUser2, { }, true);
+      //   const redirectedFromPage = await Page.findOne({ path: '/parentForRename4' });
+      //   const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename4' });
+
+      //   expect(parentForRename.path).toBe('/parentForRename5');
+      //   expect(parentForRename.grant).toBe(1);
+      //   expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
+      //   expect(parentForRename.lastUpdateUser).toEqual(testUser2._id);
+
+      //   expect(redirectedFromPage).toBeNull();
+      //   expect(redirectedFromPageRevision).toBeNull();
+      // });
     });
 
     test('renameDescendants()', () => {
