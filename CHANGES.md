@@ -4,6 +4,18 @@
 
 * Fix: Failed to save temporaryUrlCached with using gcs
     * Introduced by v4.2.3
+* Feature: Add a button to jump to Comments section
+* Feature: Paste Bootstrap4 Grid HTML with GUI
+* Feature: Disable auto formating table option
+* Improvement: Layout of Edit Link Modal
+* Improvement: Focus to the first input when modal is opened
+* Improvement: Preview layout in edit mode
+* Fix: Upgrading to v4.x failed when the user uses Kibela Layout
+    * Introduced by v4.2.0
+* Fix: Navbar is not rendered on old iOS
+* Support: Expose metrics with Promster
+* Support: Upgrade libs
+    * axios
 
 ## v4.2.5-RC
 
