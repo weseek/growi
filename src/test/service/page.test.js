@@ -37,12 +37,12 @@ describe('PageService', () => {
     PageTagRelation = mongoose.model('PageTagRelation');
 
     await User.insertMany([
-      { name: 'Anon', username: 'anonymous1', email: 'anonymous1@example.com' },
-      { name: 'Anon2', username: 'anonymous2', email: 'anonymous2@example.com' },
+      { name: 'someone1', username: 'someone1', email: 'someone1@example.com' },
+      { name: 'someone2', username: 'someone2', email: 'someone2@example.com' },
     ]);
 
-    testUser1 = await User.findOne({ username: 'anonymous1' });
-    testUser2 = await User.findOne({ username: 'anonymous2' });
+    testUser1 = await User.findOne({ username: 'someone1' });
+    testUser2 = await User.findOne({ username: 'someone2' });
 
     await Page.insertMany([
       {
