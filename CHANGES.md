@@ -1,6 +1,11 @@
 # CHANGES
 
-## v4.2.6-RC
+
+## v.4.2.7
+
+* 
+
+## v4.2.6
 
 * Feature: Add a button to jump to Comments section
 * Feature: Paste Bootstrap4 Grid HTML with GUI
@@ -18,7 +23,7 @@
 * Support: Upgrade libs
     * axios
 
-## v4.2.5-RC
+## v4.2.5
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
 * Fix: MathJax rendering does not work
