@@ -11,6 +11,7 @@ import MarkdownTable from '../models/MarkdownTable';
 
 import LinkEditModal from './PageEditor/LinkEditModal';
 import RevisionRenderer from './Page/RevisionRenderer';
+import GridEditModal from './PageEditor/GridEditModal';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
@@ -30,6 +31,7 @@ class Page extends React.Component {
 
     this.growiRenderer = this.props.appContainer.getRenderer('page');
 
+    this.gridEditModal = React.createRef();
     this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
@@ -139,6 +141,7 @@ class Page extends React.Component {
 
         { isLoggedIn && (
           <>
+            <GridEditModal ref={this.gridEditModal} />
             <LinkEditModal ref={this.LinkEditModal} />
             <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
             <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />

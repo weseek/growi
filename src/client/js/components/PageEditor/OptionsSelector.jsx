@@ -49,6 +49,7 @@ class OptionsSelector extends React.Component {
     this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
+    this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
   }
 
@@ -92,6 +93,17 @@ class OptionsSelector extends React.Component {
     const newValue = !editorContainer.state.previewOptions.renderMathJaxInRealtime;
     const newOpts = Object.assign(editorContainer.state.previewOptions, { renderMathJaxInRealtime: newValue });
     editorContainer.setState({ previewOptions: newOpts });
+
+    // save to localStorage
+    editorContainer.saveOptsToLocalStorage();
+  }
+
+  onClickMarkdownTableAutoFormatting(event) {
+    const { editorContainer } = this.props;
+
+    const newValue = !editorContainer.state.editorOptions.ignoreMarkdownTableAutoFormatting;
+    const newOpts = Object.assign(editorContainer.state.editorOptions, { ignoreMarkdownTableAutoFormatting: newValue });
+    editorContainer.setState({ editorOptions: newOpts });
 
     // save to localStorage
     editorContainer.saveOptsToLocalStorage();
@@ -187,6 +199,7 @@ class OptionsSelector extends React.Component {
           <DropdownMenu>
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
+            {this.renderMarkdownTableAutoFormattingMenuItem()}
             {/* <DropdownItem divider /> */}
           </DropdownMenu>
 
@@ -238,6 +251,28 @@ class OptionsSelector extends React.Component {
         <div className="d-flex justify-content-between">
           <span className="icon-container"><img src="/images/icons/fx.svg" width="14px" alt="fx"></img></span>
           <span className="menuitem-label">MathJax Rendering</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
+      </DropdownItem>
+    );
+  }
+
+  renderMarkdownTableAutoFormattingMenuItem() {
+    const { t, editorContainer } = this.props;
+    // Auto-formatting was enabled before optionalizing, so we made it a disabled option(ignoreMarkdownTableAutoFormatting).
+    const isActive = !editorContainer.state.editorOptions.ignoreMarkdownTableAutoFormatting;
+
+    const iconClasses = ['text-info'];
+    if (isActive) {
+      iconClasses.push('ti-check');
+    }
+    const iconClassName = iconClasses.join(' ');
+
+    return (
+      <DropdownItem toggle={false} onClick={this.onClickMarkdownTableAutoFormatting}>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"></span>
+          <span className="menuitem-label">{ t('page_edit.auto_format_table') }</span>
           <span className="icon-container"><i className={iconClassName}></i></span>
         </div>
       </DropdownItem>
