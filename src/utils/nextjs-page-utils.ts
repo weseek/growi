@@ -8,6 +8,7 @@ export type CommonProps = {
   currentPagePath: string,
   appTitle: string,
   customTitleTemplate: string,
+  growiVersion: string,
 }
 
 // eslint-disable-next-line max-len
@@ -27,6 +28,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     currentPagePath,
     appTitle: appService.getAppTitle(),
     customTitleTemplate: customizeService.customTitleTemplate,
+    growiVersion: crowi.version,
   };
 
   return { props };

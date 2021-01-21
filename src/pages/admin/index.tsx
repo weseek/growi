@@ -51,7 +51,7 @@ const AdminHomePage: NextPage<Props> = (props: Props) => {
 
   return (
     <>
-      <BasicLayout title="GROWI">
+      <BasicLayout title="GROWI" growiVersion={props.growiVersion}>
         <header className="py-0">
           <h1 className="title">{title}</h1>
         </header>
