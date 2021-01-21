@@ -106,3 +106,7 @@ export const useDescendentsCount = <Data, Error>(pagePath?: string, initialData?
     },
   );
 };
+
+export const useIsShortcutsModalOpen = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isShortcutsModalOpen', initialData);
+};
