@@ -1,9 +1,8 @@
 import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
-import dynamic from 'next/dynamic';
 
-import BasicLayout from '../../components/BasicLayout';
+import AdminLayout from '~/components/AdminLayout';
 
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -12,15 +11,12 @@ import MarkDownSettingContents from '~/client/js/components/Admin/MarkdownSettin
 
 import {
   useCurrentUser,
-  useAppTitle, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../../stores/context';
 
 type Props = CommonProps & {
   currentUser: any,
 
-  appTitle: string,
-  confidential: string,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
 };
@@ -28,34 +24,17 @@ type Props = CommonProps & {
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
   const title = t('Markdown Settings');
-  const AdminNavigation = dynamic(() => import('~/client/js/components/Admin/Common/AdminNavigation'), { ssr: false });
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
-  useAppTitle(props.appTitle);
-  useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
 
   return (
     <>
-      <BasicLayout title="GROWI">
-        <header className="py-0">
-          <h1 className="title">{title}</h1>
-        </header>
-        <div id="main" className="main">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-lg-3">
-                <AdminNavigation />
-              </div>
-              <div className="col-lg-9">
-                <MarkDownSettingContents />
-              </div>
-            </div>
-          </div>
-        </div>
-      </BasicLayout>
+      <AdminLayout title={title}>
+        <MarkDownSettingContents />
+      </AdminLayout>
     </>
   );
 };
@@ -64,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService,
+    searchService,
   } = crowi;
 
   const { user } = req;
@@ -75,7 +54,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user.toObject());
   }
 
-  props.confidential = appService.getAppConfidential();
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
 

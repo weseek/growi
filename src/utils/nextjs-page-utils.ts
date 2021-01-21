@@ -7,6 +7,7 @@ export type CommonProps = {
   namespacesRequired: string[], // i18next
   currentPagePath: string,
   appTitle: string,
+  confidential: string,
   customTitleTemplate: string,
 }
 
@@ -26,6 +27,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     namespacesRequired: ['translation'],
     currentPagePath,
     appTitle: appService.getAppTitle(),
+    confidential: appService.getAppConfidential(),
     customTitleTemplate: customizeService.customTitleTemplate,
   };
 
