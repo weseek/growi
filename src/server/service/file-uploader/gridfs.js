@@ -47,13 +47,13 @@ module.exports = function(crowi) {
     const filenameValues = attachments.map((attachment) => {
       return attachment.fileName;
     });
-    const idsRelatedFiles = await AttachmentFile.find({ filename: { $in: filenameValues } }, { _id: 1 }).map((fileIdObjects) => {
-      return fileIdObjects.map((obj) => { return obj._id });
-    });
+    const fileIdObjects = await AttachmentFile.find({ filename: { $in: filenameValues } }, { _id: 1 });
+    const idsRelatedFiles = fileIdObjects.map((obj) => { return obj._id });
 
-    await AttachmentFile.deleteMany({ filename: { $in: filenameValues } });
-    await chunkCollection.deleteMany({ files_id: { $in: idsRelatedFiles } });
-    return;
+    return Promise.all([
+      AttachmentFile.deleteMany({ filename: { $in: filenameValues } }),
+      chunkCollection.deleteMany({ files_id: { $in: idsRelatedFiles } }),
+    ]);
   };
 
   /**
