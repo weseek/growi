@@ -49,51 +49,61 @@ describe('PageService', () => {
         path: '/parentForRename',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForRename/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForDuplicate',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForDuplicate/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForDelete',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForDelete/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForDeleteCompletely',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForDeleteCompletely/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForRevert',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
       {
         path: '/parentForRevert/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
       },
     ]);
 
@@ -127,8 +137,29 @@ describe('PageService', () => {
   });
 
   describe('rename page', () => {
-    test('renamePage()', () => {
-      expect(3).toBe(3);
+    describe('renamePage()', () => {
+      test('rename page without options', async() => {
+        parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename2', testUser2, {});
+
+        console.log(parentForRename);
+
+        expect(parentForRename.path).toBe('/parentForRename2');
+        expect(parentForRename.grant).toBe(1);
+        expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
+        expect(parentForRename.lastUpdateUser).toEqual(testUser1._id);
+      });
+
+      test('rename page with updateMetadata option', async() => {
+        parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename3', testUser2, { updateMetadata: true });
+
+        console.log(parentForRename);
+        console.log(testUser1._id);
+
+        expect(parentForRename.path).toBe('/parentForRename3');
+        expect(parentForRename.grant).toBe(1);
+        expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
+        expect(parentForRename.lastUpdateUser).toEqual(testUser2._id);
+      });
     });
 
     test('renameDescendants()', () => {
