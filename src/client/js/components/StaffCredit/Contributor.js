@@ -102,6 +102,7 @@ const contributors = [
           { name: 'Kanta Nishitani' },
           { position: 'The University of Tokyo', name: 'Takashi Yoneuchi' },
           { position: 'DeCurret', name: 'Yusuke Tanomogi' },
+          { position: 'Flatt Security', name: 'stypr' },
         ],
       },
     ],
