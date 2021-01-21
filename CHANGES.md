@@ -8,8 +8,11 @@
 * Improvement: Layout of Edit Link Modal
 * Improvement: Focus to the first input when modal is opened
 * Improvement: Preview layout in edit mode
+* Improvement: Install process under redundant environment
+* Improvement: Add contributors
 * Fix: Upgrading to v4.x failed when the user uses Kibela Layout
     * Introduced by v4.2.0
+* Fix: diagrams.net (draw.io) errors
 * Fix: Navbar is not rendered on old iOS
 * Support: Expose metrics with Promster
 * Support: Upgrade libs
