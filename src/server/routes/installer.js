@@ -85,7 +85,7 @@ module.exports = function(crowi) {
     // create initial pages
     await createInitialPages(adminUser, language);
 
-    crowi.setupAfterInstall();
+    appService.setupAfterInstall();
     appService.publishPostInstallationMessage();
 
     // login with passport

@@ -13,9 +13,12 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
+      isSubmitButtonDisabled: false,
       selectedLang: {},
     };
     // this.checkUserName = this.checkUserName.bind(this);
+
+    this.clickHandler = this.clickHandler.bind(this);
   }
 
   componentWillMount() {
@@ -37,6 +40,13 @@ class InstallerForm extends React.Component {
   changeLanguage(meta) {
     i18next.changeLanguage(meta.id);
     this.setState({ selectedLang: meta });
+  }
+
+  clickHandler() {
+    this.setState({ isSubmitButtonDisabled: true });
+    setTimeout(() => {
+      this.setState({ isSubmitButtonDisabled: false });
+    }, 3000);
   }
 
   render() {
@@ -149,7 +159,13 @@ class InstallerForm extends React.Component {
             <input type="hidden" name="_csrf" value={this.props.csrf} />
 
             <div className="input-group mt-4 mb-3 d-flex justify-content-center">
-              <button type="submit" className="btn-fill btn btn-register" id="register">
+              <button
+                type="submit"
+                className="btn-fill btn btn-register"
+                id="register"
+                disabled={this.state.isSubmitButtonDisabled}
+                onClick={this.clickHandler}
+              >
                 <div className="eff"></div>
                 <span className="btn-label"><i className="icon-user-follow" /></span>
                 <span className="btn-label-text">{ this.props.t('Create') }</span>
