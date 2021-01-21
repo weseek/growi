@@ -9,7 +9,7 @@ type Props = {
   growiVersion: string,
 };
 
-const ShortcutsModal = (props: Props): JSX.Element => {
+const SystemVersion = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -173,4 +173,4 @@ const ShortcutsModal = (props: Props): JSX.Element => {
   );
 };
 
-export default ShortcutsModal;
+export default SystemVersion;

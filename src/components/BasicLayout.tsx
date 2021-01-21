@@ -18,7 +18,7 @@ const BasicLayout = ({ children, title, growiVersion }: Props): JSX.Element => {
   const Sidebar = dynamic(() => import('../client/js/components/Sidebar'), { ssr: false });
   const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
   const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
-  const ShortcutsModal = dynamic(() => import('./SystemVersion'), { ssr: false });
+  const SystemVersion = dynamic(() => import('./SystemVersion'), { ssr: false });
 
   return (
     <>
@@ -40,7 +40,7 @@ const BasicLayout = ({ children, title, growiVersion }: Props): JSX.Element => {
 
       <PageCreateModal />
       <HotkeysManager />
-      <ShortcutsModal growiVersion={growiVersion} />
+      <SystemVersion growiVersion={growiVersion} />
     </>
   );
 };
