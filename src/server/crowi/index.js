@@ -154,6 +154,7 @@ Crowi.prototype.initForTest = async function() {
     // this.setupUserGroup(),
     // this.setupExport(),
     // this.setupImport(),
+    this.setupPageService(),
   ]);
 
   // globalNotification depends on slack and mailer
