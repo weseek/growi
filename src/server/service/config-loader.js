@@ -392,6 +392,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: 7788,
   },
+  GROWI_CLOUD_URL: {
+    ns:      'crowi',
+    key:     'growiCloud:growiCloudUrl',
+    type:    TYPES.STRING,
+    default: null,
+  },
 };
 
 class ConfigLoader {
