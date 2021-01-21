@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const mongoose = require('mongoose');
 
 const { getInstance } = require('../setup-crowi');
@@ -20,7 +21,7 @@ let childForDeleteCompletely;
 let childForRevert;
 
 describe('PageService', () => {
-  // eslint-disable-next-line no-unused-vars
+
   let crowi;
   let Page;
   let User;
@@ -125,10 +126,60 @@ describe('PageService', () => {
     done();
   });
 
-  describe('verifySAMLResponseByABLCRule()', () => {
-    test('should return true', () => {
+  describe('rename page', () => {
+    test('renamePage()', () => {
+      expect(3).toBe(3);
+    });
+
+    test('renameDescendants()', () => {
       expect(3).toBe(3);
     });
   });
+
+
+  describe('duplicate page', () => {
+    test('duplicate()', () => {
+      expect(3).toBe(3);
+    });
+
+    test('duplicateDescendants()', () => {
+      expect(3).toBe(3);
+    });
+
+    test('duplicateTags()', () => {
+      expect(3).toBe(3);
+    });
+  });
+
+  describe('delete page', () => {
+    test('deletePage()', () => {
+      expect(3).toBe(3);
+    });
+
+    test('deleteDescendants()', () => {
+      expect(3).toBe(3);
+    });
+  });
+
+  describe('delete page completely', () => {
+    test('deleteCompletely()', () => {
+      expect(3).toBe(3);
+    });
+
+    test('deleteMultipleCompletely()', () => {
+      expect(3).toBe(3);
+    });
+  });
+
+  describe('revert page', () => {
+    test('revertDeletedPage()', () => {
+      expect(3).toBe(3);
+    });
+
+    test('revertDeletedPages()', () => {
+      expect(3).toBe(3);
+    });
+  });
+
 
 });
