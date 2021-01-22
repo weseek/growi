@@ -24,8 +24,11 @@ const TagLabels = (props: Props): JSX.Element => {
 
   // TODO: impl by https://youtrack.weseek.co.jp/issue/GW-4959
   const openEditorModal = useCallback(() => {
+    setIsTagEditModalShown(true);
   }, []);
+
   const closeEditorModal = useCallback(() => {
+    setIsTagEditModalShown(false);
   }, []);
   // TODO: impl by https://youtrack.weseek.co.jp/issue/GW-4960
   const tagsUpdatedHandler = useCallback(() => {
