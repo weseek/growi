@@ -1,18 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import ShortcutsModal from '~/components/ShortcutsModal';
 
 const ShowShortcutsModal = (props) => {
 
-  // setup effect
-  useEffect(() => {
-    // show modal to create a page
-    $('#shortcuts-modal').modal('toggle');
+  return <ShortcutsModal onClosed={() => props.onDeleteRender(this)} />;
 
-    // remove this
-    props.onDeleteRender(this);
-  }, [props]);
-
-  return <></>;
 };
 
 ShowShortcutsModal.propTypes = {
