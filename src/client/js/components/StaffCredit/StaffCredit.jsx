@@ -5,6 +5,7 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 import contributors from './Contributor';
+import cloudContributors from './gcContributors';
 
 /**
  * Page staff credit component
@@ -57,6 +58,7 @@ export default class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
+      contributors.push(cloudContributors.getContributors());
       const credit = contributors.map((contributor) => {
         // construct members elements
         const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
