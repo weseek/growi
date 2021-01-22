@@ -168,6 +168,7 @@ describe('PageService', () => {
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
     const dateToUse = new Date('2000-01-01');
+    const socketClientId = null;
 
     beforeEach(async(done) => {
       jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
@@ -181,7 +182,6 @@ describe('PageService', () => {
 
       test('rename page without options', async() => {
 
-        const socketClientId = null;
         const resultPage = await crowi.pageService.renamePage(parentForRename1, '/renamed1', testUser2, {});
         const redirectedFromPage = await Page.findOne({ path: '/parentForRename1' });
         const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename1' });
@@ -206,6 +206,11 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true });
         const redirectedFromPage = await Page.findOne({ path: '/parentForRename2' });
         const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename2' });
+
+        expect(xssSpy).toHaveBeenCalled();
+        expect(renameDescendantsWithStreamSpy).toHaveBeenCalledTimes(0);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename2, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
 
         expect(resultPage.path).toBe('/renamed2');
         expect(resultPage.grant).toBe(1);
