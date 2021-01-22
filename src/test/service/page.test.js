@@ -12,13 +12,13 @@ let parentForRename1;
 let parentForRename2;
 let parentForRename3;
 let parentForRename4;
+let childForRename;
 
 let parentForDuplicate;
 let parentForDelete;
 let parentForDeleteCompletely;
 let parentForRevert;
 
-let childForRename;
 let childForDuplicate;
 let childForDelete;
 let childForDeleteCompletely;
@@ -263,8 +263,17 @@ describe('PageService', () => {
 
     });
 
-    test('renameDescendants()', () => {
-      expect(3).toBe(3);
+    test('renameDescendants()', async() => {
+      const oldPagePathPrefix = new RegExp('^/parentForRename1', 'i');
+      const newPagePathPrefix = '/renamed1';
+
+      await crowi.pageService.renameDescendants([childForRename], testUser2, {}, oldPagePathPrefix, newPagePathPrefix);
+      const resultPage = await Page.find({ path: '/renamed1/child' });
+      console.log(resultPage);
+
+      expect(resultPage).not.toBeNull();
+
+      expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename], testUser2);
     });
   });
 
