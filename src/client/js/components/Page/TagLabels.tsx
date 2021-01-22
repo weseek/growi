@@ -78,12 +78,12 @@ class DeprecatedTagLabels extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isTagEditModalShown: false,
-    };
+    // this.state = {
+    //   isTagEditModalShown: false,
+    // };
 
-    this.openEditorModal = this.openEditorModal.bind(this);
-    this.closeEditorModal = this.closeEditorModal.bind(this);
+    // this.openEditorModal = this.openEditorModal.bind(this);
+    // this.closeEditorModal = this.closeEditorModal.bind(this);
     this.tagsUpdatedHandler = this.tagsUpdatedHandler.bind(this);
   }
 
@@ -98,13 +98,13 @@ class DeprecatedTagLabels extends React.Component {
     return [];
   }
 
-  openEditorModal() {
-    this.setState({ isTagEditModalShown: true });
-  }
+  // openEditorModal() {
+  //   this.setState({ isTagEditModalShown: true });
+  // }
 
-  closeEditorModal() {
-    this.setState({ isTagEditModalShown: false });
-  }
+  // closeEditorModal() {
+  //   this.setState({ isTagEditModalShown: false });
+  // }
 
   async tagsUpdatedHandler(newTags) {
     const {
