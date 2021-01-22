@@ -1,16 +1,20 @@
-import dynamic from 'next/dynamic';
 import React, { ReactNode } from 'react';
 
 import BasicLayout from './BasicLayout';
+import AdminNavigation from '~/client/js/components/Admin/Common/AdminNavigation';
 
 type Props = {
   title: string
+  /**
+   * Set the current option of AdminNavigation
+   * Expected it is in ["home", "app", "security", "markdown", "customize", "importer", "export",
+   * "notification", 'global-notification', "users", "user-groups", "search"]
+   */
   selectedNavOpt: string
   children?: ReactNode
 }
 
 const AdminLayout = ({ children, title, selectedNavOpt }: Props): JSX.Element => {
-  const AdminNavigation = dynamic(() => import('~/client/js/components/Admin/Common/AdminNavigation'), { ssr: false });
 
   return (
     <BasicLayout title={title}>
