@@ -43,7 +43,7 @@ const AdminHomePage: NextPage<Props> = (props: Props) => {
   useSearchServiceReachable(props.isSearchServiceReachable);
 
   return (
-    <AdminLayout title={title}>
+    <AdminLayout title={title} selectedNavOpt="home">
       <AdminHome
         growiVersion={props.growiVersion}
         nodeVersion={props.nodeVersion}

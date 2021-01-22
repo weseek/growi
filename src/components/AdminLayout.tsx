@@ -5,10 +5,11 @@ import BasicLayout from './BasicLayout';
 
 type Props = {
   title: string
+  selectedNavOpt: string
   children?: ReactNode
 }
 
-const AdminLayout = ({ children, title }: Props): JSX.Element => {
+const AdminLayout = ({ children, title, selectedNavOpt }: Props): JSX.Element => {
   const AdminNavigation = dynamic(() => import('~/client/js/components/Admin/Common/AdminNavigation'), { ssr: false });
 
   return (
@@ -20,7 +21,7 @@ const AdminLayout = ({ children, title }: Props): JSX.Element => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-lg-3">
-              <AdminNavigation />
+              <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
               {children}

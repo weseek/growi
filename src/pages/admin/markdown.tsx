@@ -32,7 +32,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <>
-      <AdminLayout title={title}>
+      <AdminLayout title={title} selectedNavOpt="markdown">
         <MarkDownSettingContents />
       </AdminLayout>
     </>
