@@ -470,11 +470,6 @@ Crowi.prototype.setupRoutesAtLast = function() {
   require('../routes')(this, this.express);
 };
 
-Crowi.prototype.setupAfterInstall = function() {
-  this.pluginService.autoDetectAndLoadPlugins();
-  this.setupRoutesAtLast();
-};
-
 /**
  * require API for plugins
  *
