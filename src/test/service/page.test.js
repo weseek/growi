@@ -222,36 +222,32 @@ describe('PageService', () => {
         expect(redirectedFromPageRevision).toBeNull();
       });
 
-      // test('rename page with createRedirectPage option', async() => {
-      //   parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename4', testUser2, { createRedirectPage: true });
-      //   const redirectedFromPage = await Page.findOne({ path: '/parentForRename3' });
-      //   const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename3' });
+      test('rename page with createRedirectPage option', async() => {
 
-      //   expect(parentForRename.path).toBe('/parentForRename4');
-      //   expect(parentForRename.grant).toBe(1);
-      //   expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
-      //   expect(parentForRename.lastUpdateUser).toEqual(testUser2._id);
+        const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true });
+        const redirectedFromPage = await Page.findOne({ path: '/parentForRename3' });
+        const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename3' });
 
+        expect(xssSpy).toHaveBeenCalled();
+        expect(renameDescendantsWithStreamSpy).toHaveBeenCalledTimes(0);
+        expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForRename3, testUser2, socketClientId);
+        expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
 
-      //   expect(redirectedFromPage).not.toBeNull();
-      //   expect(redirectedFromPage.redirectTo).toBe('/parentForRename4');
-      //   expect(redirectedFromPageRevision).not.toBeNull();
-      //   expect(redirectedFromPageRevision.body).toBe('redirect /parentForRename4');
-      // });
+        expect(resultPage.path).toBe('/renamed3');
+        expect(resultPage.grant).toBe(1);
+        expect(resultPage.updatedAt).not.toEqual(dateToUse);
+        expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
+        expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      // test('rename page with isRecursively', async() => {
-      //   parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename5', testUser2, { }, true);
-      //   const redirectedFromPage = await Page.findOne({ path: '/parentForRename4' });
-      //   const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename4' });
+        expect(redirectedFromPage).not.toBeNull();
+        expect(redirectedFromPage.path).toBe('/parentForRename3');
+        expect(redirectedFromPage.redirectTo).toBe('/renamed3');
 
-      //   expect(parentForRename.path).toBe('/parentForRename5');
-      //   expect(parentForRename.grant).toBe(1);
-      //   expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
-      //   expect(parentForRename.lastUpdateUser).toEqual(testUser2._id);
+        expect(redirectedFromPageRevision).not.toBeNull();
+        expect(redirectedFromPageRevision.path).toBe('/parentForRename3');
+        expect(redirectedFromPageRevision.body).toBe('redirect /renamed3');
+      });
 
-      //   expect(redirectedFromPage).toBeNull();
-      //   expect(redirectedFromPageRevision).toBeNull();
-      // });
     });
 
     test('renameDescendants()', () => {
