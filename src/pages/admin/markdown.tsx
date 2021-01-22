@@ -17,6 +17,7 @@ import {
 type Props = CommonProps & {
   currentUser: any,
 
+  growiVersion: string,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
 };
@@ -32,7 +33,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <>
-      <AdminLayout title={title} selectedNavOpt="markdown">
+      <AdminLayout title={title} selectedNavOpt="markdown" growiVersion={props.growiVersion}>
         <MarkDownSettingContents />
       </AdminLayout>
     </>
@@ -54,6 +55,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user.toObject());
   }
 
+  props.growiVersion = crowi.version;
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
 
