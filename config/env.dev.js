@@ -22,4 +22,5 @@ module.exports = {
   // DEV_HTTPS: true,
   // FORCE_WIKI_MODE: 'private', // 'public', 'private', undefined
   // PROMSTER_ENABLED: true,
+  // GROWI_CLOUD_URL: 'https://growi.cloud',
 };
