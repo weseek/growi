@@ -22,7 +22,6 @@ const TagLabels = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { data: tags, error } = useCurrentPageTagsSWR();
 
-  // TODO: impl by https://youtrack.weseek.co.jp/issue/GW-4959
   const openEditorModal = useCallback(() => {
     setIsTagEditModalShown(true);
   }, []);
