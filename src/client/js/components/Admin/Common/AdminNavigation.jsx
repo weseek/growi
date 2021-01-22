@@ -8,8 +8,7 @@ import urljoin from 'url-join';
 
 
 const AdminNavigation = (props) => {
-  const { t } = props;
-  const pathname = window.location.pathname;
+  const { t, selected } = props;
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
@@ -46,24 +45,20 @@ const AdminNavigation = (props) => {
     );
   };
 
-  const isActiveMenu = (path) => {
-    return (pathname.startsWith(urljoin('/admin', path)));
-  };
-
   const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
     return (
       <>
-        <MenuLink menu="home"         isListGroupItems isActive={pathname === '/admin'} isRoot />
-        <MenuLink menu="app"          isListGroupItems isActive={isActiveMenu('/app')} />
-        <MenuLink menu="security"     isListGroupItems isActive={isActiveMenu('/security')} />
-        <MenuLink menu="markdown"     isListGroupItems isActive={isActiveMenu('/markdown')} />
-        <MenuLink menu="customize"    isListGroupItems isActive={isActiveMenu('/customize')} />
-        <MenuLink menu="importer"     isListGroupItems isActive={isActiveMenu('/importer')} />
-        <MenuLink menu="export"       isListGroupItems isActive={isActiveMenu('/export')} />
-        <MenuLink menu="notification" isListGroupItems isActive={isActiveMenu('/notification') || isActiveMenu('/global-notification')} />
-        <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
-        <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
-        <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
+        <MenuLink menu="home"         isListGroupItems={isListGroupItems} isActive={selected === 'home'} isRoot />
+        <MenuLink menu="app"          isListGroupItems={isListGroupItems} isActive={selected === 'app'} />
+        <MenuLink menu="security"     isListGroupItems={isListGroupItems} isActive={selected === 'security'} />
+        <MenuLink menu="markdown"     isListGroupItems={isListGroupItems} isActive={selected === 'markdown'} />
+        <MenuLink menu="customize"    isListGroupItems={isListGroupItems} isActive={selected === 'customize'} />
+        <MenuLink menu="importer"     isListGroupItems={isListGroupItems} isActive={selected === 'importer'} />
+        <MenuLink menu="export"       isListGroupItems={isListGroupItems} isActive={selected === 'export'} />
+        <MenuLink menu="notification" isListGroupItems={isListGroupItems} isActive={selected === 'notification' || selected === 'global-notification'} />
+        <MenuLink menu="users"        isListGroupItems={isListGroupItems} isActive={selected === 'users'} />
+        <MenuLink menu="user-groups"  isListGroupItems={isListGroupItems} isActive={selected === 'user-groups'} />
+        <MenuLink menu="search"       isListGroupItems={isListGroupItems} isActive={selected === 'search'} />
       </>
     );
   };
@@ -87,17 +82,17 @@ const AdminNavigation = (props) => {
           aria-expanded="false"
         >
           <span className="float-left">
-            {pathname === '/admin' &&         <MenuLabel menu="home" />}
-            {isActiveMenu('/app') &&          <MenuLabel menu="app" />}
-            {isActiveMenu('/security') &&     <MenuLabel menu="security" />}
-            {isActiveMenu('/markdown') &&     <MenuLabel menu="markdown" />}
-            {isActiveMenu('/customize') &&    <MenuLabel menu="customize" />}
-            {isActiveMenu('/importer') &&     <MenuLabel menu="importer" />}
-            {isActiveMenu('/export') &&       <MenuLabel menu="export" />}
-            {(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && <MenuLabel menu="notification" />}
-            {isActiveMenu('/users') &&        <MenuLabel menu="users" />}
-            {isActiveMenu('/user-groups') &&  <MenuLabel menu="user-groups" />}
-            {isActiveMenu('/search') &&       <MenuLabel menu="search" />}
+            {selected === 'home' &&        <MenuLabel menu="home" />}
+            {selected === 'app' &&          <MenuLabel menu="app" />}
+            {selected === 'security' &&     <MenuLabel menu="security" />}
+            {selected === 'markdown' &&     <MenuLabel menu="markdown" />}
+            {selected === 'customize' &&    <MenuLabel menu="customize" />}
+            {selected === 'importer' &&     <MenuLabel menu="importer" />}
+            {selected === 'export' &&       <MenuLabel menu="export" />}
+            {(selected === 'notification' || selected === 'global-notification') && <MenuLabel menu="notification" />}
+            {selected === 'users' &&        <MenuLabel menu="users" />}
+            {selected === 'user-groups' &&  <MenuLabel menu="user-groups" />}
+            {selected === 'search' &&       <MenuLabel menu="search" />}
           </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdown-admin-navigation">
@@ -112,7 +107,7 @@ const AdminNavigation = (props) => {
 
 AdminNavigation.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
+  selected: PropTypes.string,
 };
 
 export default withTranslation()(AdminNavigation);
