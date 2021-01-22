@@ -13,12 +13,12 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
-      isSubmitButtonDisabled: false,
+      isSubmittingDisabled: false,
       selectedLang: {},
     };
     // this.checkUserName = this.checkUserName.bind(this);
 
-    this.clickHandler = this.clickHandler.bind(this);
+    this.submitHandler = this.submitHandler.bind(this);
   }
 
   componentWillMount() {
@@ -42,11 +42,17 @@ class InstallerForm extends React.Component {
     this.setState({ selectedLang: meta });
   }
 
-  clickHandler() {
-    this.setState({ isSubmitButtonDisabled: true });
+  submitHandler() {
+    if (this.state.isSubmittingDisabled) {
+      return;
+    }
+
+    this.setState({ isSubmittingDisabled: true });
     setTimeout(() => {
-      this.setState({ isSubmitButtonDisabled: false });
+      this.setState({ isSubmittingDisabled: false });
     }, 3000);
+
+    document['register-form'].submit();
   }
 
   render() {
@@ -66,7 +72,7 @@ class InstallerForm extends React.Component {
           </div>
         </div>
         <div className="row">
-          <form role="form" action="/installer" method="post" id="register-form" className="col-md-12">
+          <form role="form" action="/installer" method="post" id="register-form" className="col-md-12" onSubmit={this.submitHandler}>
             <div className="dropdown mb-3">
               <div className="d-flex dropdown-with-icon">
                 <i className="icon-bubbles border-0 rounded-0" />
@@ -163,8 +169,7 @@ class InstallerForm extends React.Component {
                 type="submit"
                 className="btn-fill btn btn-register"
                 id="register"
-                disabled={this.state.isSubmitButtonDisabled}
-                onClick={this.clickHandler}
+                disabled={this.state.isSubmittingDisabled}
               >
                 <div className="eff"></div>
                 <span className="btn-label"><i className="icon-user-follow" /></span>
