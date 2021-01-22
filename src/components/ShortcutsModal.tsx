@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { useTranslation } from '~/i18n';
@@ -12,18 +12,10 @@ type Props = {
 const ShortcutsModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const [isOpen, setIsOpen] = useState(true);
   // add classes to cmd-key by OS
   const platform = window.navigator.platform.toLowerCase();
   const isMac = (platform.indexOf('mac') > -1);
   const additionalClassByOs = isMac ? 'mac' : 'key-longer win';
-
-  // to delete the staffCredit and to inform that to Hotkeys.jsx
-  function deleteModal() {
-    if (isOpen) {
-      setIsOpen(false);
-    }
-  }
 
   return (
     <>
