@@ -167,10 +167,10 @@ describe('PageService', () => {
     let xssSpy;
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
-    const updatedAt = 1482363367071;
-    Date.now = jest.fn(() => updatedAt);
+    const dateToUse = new Date('2000-01-01');
 
     beforeEach(async(done) => {
+      jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
       xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
       renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
@@ -193,7 +193,7 @@ describe('PageService', () => {
 
         expect(resultPage.path).toBe('/renamed1');
         expect(resultPage.grant).toBe(1);
-        expect(resultPage.updatedAt).not.toBe(updatedAt);
+        expect(resultPage.updatedAt).not.toEqual(dateToUse);
         expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
@@ -201,19 +201,21 @@ describe('PageService', () => {
         expect(redirectedFromPageRevision).toBeNull();
       });
 
-      // test('rename page with updateMetadata option', async() => {
-      //   parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename3', testUser2, { updateMetadata: true });
-      //   const redirectedFromPage = await Page.findOne({ path: '/parentForRename2' });
-      //   const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename2' });
+      test('rename page with updateMetadata option', async() => {
 
-      //   expect(parentForRename.path).toBe('/parentForRename3');
-      //   expect(parentForRename.grant).toBe(1);
-      //   expect(parentForRename.status).toBe(Page.STATUS_PUBLISHED);
-      //   expect(parentForRename.lastUpdateUser).toEqual(testUser2._id);
+        const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true });
+        const redirectedFromPage = await Page.findOne({ path: '/parentForRename2' });
+        const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename2' });
 
-      //   expect(redirectedFromPage).toBeNull();
-      //   expect(redirectedFromPageRevision).toBeNull();
-      // });
+        expect(resultPage.path).toBe('/renamed2');
+        expect(resultPage.grant).toBe(1);
+        expect(resultPage.updatedAt).toEqual(dateToUse);
+        expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
+        expect(resultPage.lastUpdateUser).toEqual(testUser2._id);
+
+        expect(redirectedFromPage).toBeNull();
+        expect(redirectedFromPageRevision).toBeNull();
+      });
 
       // test('rename page with createRedirectPage option', async() => {
       //   parentForRename = await crowi.pageService.renamePage(parentForRename, '/parentForRename4', testUser2, { createRedirectPage: true });
