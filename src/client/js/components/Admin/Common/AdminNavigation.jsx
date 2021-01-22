@@ -9,7 +9,6 @@ import urljoin from 'url-join';
 
 const AdminNavigation = (props) => {
   const { t, selected } = props;
-  // const pathname = window.location.pathname;
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
