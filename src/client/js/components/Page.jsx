@@ -164,7 +164,7 @@ const Page = (props) => {
 
   return (
     <div className={`${isMobile && 'page-mobile'}`}>
-      {/* <RevisionRenderer growiRenderer={growiRenderer} markdown={currentPage.revision.markdown} /> */}
+      <RevisionRenderer markdown={currentPage.revision.body} />
     </div>
   );
 };
