@@ -1,17 +1,22 @@
 import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 
+import MarkdownRenderer from '~/service/renderer/markdown-renderer';
+
 type Props = {
-  // markdownRenderer: MarkdownRenderer.isRequired,
+  renderer: MarkdownRenderer,
   markdown: string,
   highlightKeywords?: string,
 }
 
 const RevisionRenderer: FC<Props> = (props: Props) => {
 
+  const { renderer, markdown } = props;
+  const { processor } = renderer;
+
   return (
     <>
-      {props.markdown}
+      {processor.processSync(markdown).result}
     </>
   );
 
