@@ -4,16 +4,16 @@ import { isUserPage, isSharedPage, isCreatablePage } from '~/utils/path-utils';
 import {
   useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser, useForbidden,
 } from './context';
-import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
+import { useCurrentPageDeleted, useDescendantsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
 import { Page } from '~/interfaces/page';
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: descendentsCount } = useDescendentsCount(currentPagePath);
+  const { data: descendantsCount } = useDescendantsCount(currentPagePath);
 
-  const hasChildren = (descendentsCount || 0) > 0;
+  const hasChildren = (descendantsCount || 0) > 0;
   const isAbleToShowEmptyTrashButton = currentUser != null && currentUser.admin && currentPagePath === '/trash' && hasChildren;
 
   return useStaticSWR('isAbleToShowEmptyTrashButton', isAbleToShowEmptyTrashButton);

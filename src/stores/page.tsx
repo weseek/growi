@@ -95,9 +95,9 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
   );
 };
 
-export const useDescendentsCount = <Data, Error>(pagePath?: string, initialData?: number): responseInterface<Data, Error> => {
+export const useDescendantsCount = <Data, Error>(pagePath?: string, initialData?: number): responseInterface<Data, Error> => {
   return useSWR(
-    '/pages/descendents-count',
+    '/pages/descendants-count',
     endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data),
     {
       initialData: initialData || 0,
