@@ -17,6 +17,7 @@ module.exports = function(crowi, app) {
   // const swig = require('swig-templates');
   // const webpackAssets = require('express-webpack-assets');
 
+  const promster = require('../middlewares/promster')(crowi, app);
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
 
@@ -83,6 +84,7 @@ module.exports = function(crowi, app) {
 
   app.use(flash());
 
+  app.use(promster);
   app.use(safeRedirectMiddleware.use);
   app.use(injectCurrentuserToLocalvars);
   app.use(autoReconnectToS2sMsgServer);

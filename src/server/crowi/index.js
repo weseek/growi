@@ -414,7 +414,7 @@ Crowi.prototype.start = async function() {
   await this.init();
   await this.buildServer();
 
-  const { express } = this;
+  const { express, configManager } = this;
 
   // setup plugins
   this.pluginService = new PluginService(this, express);
@@ -429,6 +429,15 @@ Crowi.prototype.start = async function() {
       this.crowiDev.setupExpressAfterListening(express);
     }
   });
+  // listen for promster
+  if (configManager.getConfig('crowi', 'promster:isEnabled')) {
+    const { createServer } = require('@promster/server');
+    const promsterPort = configManager.getConfig('crowi', 'promster:port');
+
+    createServer({ port: promsterPort }).then(() => {
+      logger.info(`[${this.node_env}] Promster server is listening on port ${promsterPort}`);
+    });
+  }
 
   this.socketIoService.attachServer(serverListening);
 
@@ -468,11 +477,6 @@ Crowi.prototype.buildServer = async function() {
  */
 Crowi.prototype.setupRoutesAtLast = function() {
   require('../routes')(this, this.express);
-};
-
-Crowi.prototype.setupAfterInstall = function() {
-  this.pluginService.autoDetectAndLoadPlugins();
-  this.setupRoutesAtLast();
 };
 
 /**
