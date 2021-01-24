@@ -100,7 +100,7 @@ export const useDescendantsCount = (pagePath?: string): responseInterface<number
   const key = pagePath != null ? endpoint : null;
   return useSWR(
     key,
-    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data),
+    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
