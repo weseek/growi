@@ -27,12 +27,14 @@ describe('PageService', () => {
   let User;
   let Tag;
   let PageTagRelation;
+  let Revision;
 
   beforeAll(async(done) => {
     crowi = await getInstance();
 
     User = mongoose.model('User');
     Page = mongoose.model('Page');
+    Revision = mongoose.model('Revision');
     Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
 
@@ -59,6 +61,8 @@ describe('PageService', () => {
         path: '/parentForDuplicate',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
+        lastUpdateUser: testUser1,
+        // revision: '600d395667536503354cbe91',
       },
       {
         path: '/parentForDuplicate/child',
@@ -138,7 +142,16 @@ describe('PageService', () => {
 
 
   describe('duplicate page', () => {
-    test('duplicate()', () => {
+
+    test('duplicate()', async() => {
+      // isRecursively false
+      const duplicatedPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
+      const pageRevisionOfDuplicatedPage = await　Revision.findOne({ path: 'parent' });
+      // expect(parentForDuplicate.path).toBe('/parentForDuplicate');
+
+
+      // expect(duplicatedPage.path).toBe('/newParent');
+
       expect(3).toBe(3);
     });
 
