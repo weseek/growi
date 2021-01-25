@@ -86,7 +86,7 @@ describe('PageService', () => {
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
-        // revision: '600d395667536503354cbe91',
+        revision: '600d395667536503354cbe91',
       },
       {
         path: '/parentForDuplicate/child',
@@ -159,6 +159,14 @@ describe('PageService', () => {
     await PageTagRelation.insertMany([
       { relatedPage: parentForDuplicate, relatedTag: parentTag },
       { relatedPage: childForDuplicate, relatedTag: childTag },
+    ]);
+
+    await Revision.insertMany([
+      {
+        _id: '600d395667536503354cbe91',
+        path: parentForDuplicate,
+        body: 'duplicateBody',
+      },
     ]);
 
     done();
@@ -274,8 +282,7 @@ describe('PageService', () => {
 
     test('duplicate()', async() => {
       // isRecursively false
-      const duplicatedPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
-      const pageRevisionOfDuplicatedPage = await Revision.findOne({ path: 'parent' });
+      const duplicatedPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, {});
       // expect(parentForDuplicate.path).toBe('/parentForDuplicate');
       // expect(duplicatedPage.path).toBe('/newParent');
 
