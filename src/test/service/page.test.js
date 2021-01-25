@@ -282,10 +282,14 @@ describe('PageService', () => {
 
     test('duplicate()', async() => {
       // isRecursively: false
+      const originTags = await parentForDuplicate.findRelatedTagsById();
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
+
       expect(resultPage.path).toBe('/newParent');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser1._id);
-
+      expect(resultPage.grant).toEqual(parentForDuplicate.grant);
+      expect(resultPage.grantedGropu).toEqual(parentForDuplicate.grantedGropu);
+      expect(resultPage.tags).toEqual(originTags);
     });
 
     test('duplicateDescendants()', () => {
