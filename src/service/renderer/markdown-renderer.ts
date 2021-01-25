@@ -21,7 +21,8 @@
 
 import React from 'react';
 import unified from 'unified';
-import markdown from 'remark-parse';
+import parse from 'remark-parse';
+import gfm from 'remark-gfm';
 import remark2rehype from 'remark-rehype';
 import rehype2react from 'rehype-react';
 
@@ -31,10 +32,11 @@ const logger = loggerFactory('growi:service:MarkdownRenderer');
 
 export default class MarkdownRenderer {
 
-  processor = unified()
-    .use(markdown)
-    .use(remark2rehype)
-    .use(rehype2react, { createElement: React.createElement })
+  attachers: unified.Attacher[] = [
+    gfm,
+  ];
+
+  processor?: unified.Processor;
 
   constructor() {
     // this.appContainer = appContainer;
@@ -53,6 +55,17 @@ export default class MarkdownRenderer {
     //   this.postProcessors = [
     //   ];
     // }
+  }
+
+  init() {
+    let parser = unified().use(parse);
+    this.attachers.forEach((attcher) => {
+      parser = parser.use(attcher);
+    });
+
+    this.processor = parser
+      .use(remark2rehype)
+      .use(rehype2react, { createElement: React.createElement });
   }
 
   // initMarkdownItConfigurers(mode) {
