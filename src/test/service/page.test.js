@@ -285,8 +285,7 @@ describe('PageService', () => {
       done();
     });
 
-    test('duplicate()', async() => {
-      // isRecursively: false
+    test('duplicate page (isRecursively: false)', async() => {
       const originTags = await parentForDuplicate.findRelatedTagsById();
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
 
