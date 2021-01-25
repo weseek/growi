@@ -150,6 +150,8 @@
     "reconnecting-websocket": "^4.4.0",
     "redis": "^3.0.2",
     "rehype-react": "^6.2.0",
+    "remark-footnotes": "^3.0.0",
+    "remark-gfm": "^1.0.0",
     "remark-parse": "^9.0.0",
     "remark-rehype": "^8.0.0",
     "rimraf": "^3.0.0",
