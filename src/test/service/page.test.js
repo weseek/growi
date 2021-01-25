@@ -294,7 +294,6 @@ describe('PageService', () => {
       expect(resultPage.lastUpdateUser._id).toEqual(testUser1._id);
       expect(resultPage.revision).not.toEqual(parentForDuplicate.revision);
       expect(resultPage.grant).toEqual(parentForDuplicate.grant);
-      expect(resultPage.grantedGropu).toEqual(parentForDuplicate.grantedGropu);
       expect(resultPage.tags).toEqual(originTags);
     });
 
