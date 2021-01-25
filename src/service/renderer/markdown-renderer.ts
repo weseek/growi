@@ -26,9 +26,11 @@ import gfm from 'remark-gfm';
 import remark2rehype from 'remark-rehype';
 import rehype2react from 'rehype-react';
 
+import NextLink from '~/components/rehype2react/NextLink';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:MarkdownRenderer');
+
 
 export default class MarkdownRenderer {
 
@@ -65,7 +67,12 @@ export default class MarkdownRenderer {
 
     this.processor = parser
       .use(remark2rehype)
-      .use(rehype2react, { createElement: React.createElement });
+      .use(rehype2react, {
+        createElement: React.createElement,
+        components: {
+          a: NextLink,
+        },
+      });
   }
 
   // initMarkdownItConfigurers(mode) {
