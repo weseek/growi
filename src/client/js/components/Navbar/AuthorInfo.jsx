@@ -14,8 +14,8 @@ const AuthorInfo = (props) => {
     ? 'Created by'
     : 'Updated by';
   const infoLabelForFooter = mode === 'create'
-    ? 'Last revision posted at'
-    : 'Created at';
+    ? 'Created at'
+    : 'Last revision posted at';
   const userLabel = user != null
     ? <a href={userPageRoot(user)}>{user.name}</a>
     : <i>Unknown</i>;
