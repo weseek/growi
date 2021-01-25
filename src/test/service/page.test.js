@@ -192,7 +192,7 @@ describe('PageService', () => {
         expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
 
         expect(resultPage.path).toBe('/renamed1');
-        expect(resultPage.updatedAt).not.toEqual(dateToUse);
+        expect(resultPage.updatedAt).toEqual(parentForRename1.updatedAt);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
         expect(redirectedFromPage).toBeNull();
@@ -230,7 +230,7 @@ describe('PageService', () => {
         expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
 
         expect(resultPage.path).toBe('/renamed3');
-        expect(resultPage.updatedAt).not.toEqual(dateToUse);
+        expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
         expect(redirectedFromPage).not.toBeNull();
@@ -254,7 +254,7 @@ describe('PageService', () => {
         expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
 
         expect(resultPage.path).toBe('/renamed4');
-        expect(resultPage.updatedAt).not.toEqual(dateToUse);
+        expect(resultPage.updatedAt).toEqual(parentForRename4.updatedAt);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
         expect(redirectedFromPage).toBeNull();
