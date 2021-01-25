@@ -192,7 +192,7 @@ describe('PageService', () => {
         expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
 
         expect(resultPage.path).toBe('/renamed1');
-        expect(resultPage.updatedAt).not.toEqual(dateToUse);
+        expect(resultPage.updatedAt).toEqual(parentForRename1.updatedAt);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
         expect(redirectedFromPage).toBeNull();
@@ -230,7 +230,7 @@ describe('PageService', () => {
         expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
 
         expect(resultPage.path).toBe('/renamed3');
-        expect(resultPage.updatedAt).not.toEqual(dateToUse);
+        expect(resultPage.updatedAt).toEqual(parentForRename3.updatedAt);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
         expect(redirectedFromPage).not.toBeNull();
@@ -254,7 +254,7 @@ describe('PageService', () => {
         expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
 
         expect(resultPage.path).toBe('/renamed4');
-        expect(resultPage.updatedAt).not.toEqual(dateToUse);
+        expect(resultPage.updatedAt).toEqual(parentForRename4.updatedAt);
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
         expect(redirectedFromPage).toBeNull();
@@ -268,10 +268,14 @@ describe('PageService', () => {
       const newPagePathPrefix = '/renamed1';
 
       await crowi.pageService.renameDescendants([childForRename], testUser2, {}, oldPagePathPrefix, newPagePathPrefix);
-      const resultPage = await Page.find({ path: '/renamed1/child' });
+      const resultPage = await Page.findOne({ path: '/renamed1/child' });
       console.log(resultPage);
 
       expect(resultPage).not.toBeNull();
+
+      expect(resultPage.path).toBe('/renamed1/child');
+      expect(resultPage.updatedAt).not.toEqual(dateToUse);
+      expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
       expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename], testUser2);
     });
