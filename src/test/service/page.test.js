@@ -281,12 +281,11 @@ describe('PageService', () => {
   describe('duplicate page', () => {
 
     test('duplicate()', async() => {
-      // isRecursively false
-      const duplicatedPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, {});
-      // expect(parentForDuplicate.path).toBe('/parentForDuplicate');
-      // expect(duplicatedPage.path).toBe('/newParent');
+      // isRecursively: false
+      const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
+      expect(resultPage.path).toBe('/newParent');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser1._id);
 
-      expect(3).toBe(3);
     });
 
     test('duplicateDescendants()', () => {
