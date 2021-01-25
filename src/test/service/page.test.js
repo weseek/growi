@@ -279,12 +279,18 @@ describe('PageService', () => {
 
 
   describe('duplicate page', () => {
+    let xssSpy;
+    beforeEach(async(done) => {
+      xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+      done();
+    });
 
     test('duplicate()', async() => {
       // isRecursively: false
       const originTags = await parentForDuplicate.findRelatedTagsById();
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
 
+      expect(xssSpy).toHaveBeenCalled();
       expect(resultPage.path).toBe('/newParent');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser1._id);
       expect(resultPage.grant).toEqual(parentForDuplicate.grant);
