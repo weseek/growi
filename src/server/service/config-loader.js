@@ -394,7 +394,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   GROWI_CLOUD_URL: {
     ns:      'crowi',
-    key:     'growiCloud:growiCloudUrl',
+    key:     'app:growiCloudUri',
     type:    TYPES.STRING,
     default: null,
   },
