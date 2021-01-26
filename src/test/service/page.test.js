@@ -263,21 +263,24 @@ describe('PageService', () => {
 
     });
 
-    test('renameDescendants()', async() => {
+    test('renameDescendants without options', async() => {
       const oldPagePathPrefix = new RegExp('^/parentForRename1', 'i');
       const newPagePathPrefix = '/renamed1';
 
       await crowi.pageService.renameDescendants([childForRename], testUser2, {}, oldPagePathPrefix, newPagePathPrefix);
       const resultPage = await Page.findOne({ path: '/renamed1/child' });
-      console.log(resultPage);
+      const redirectedFromPage = await Page.findOne({ path: '/parentForRename1/child' });
+      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename1/child' });
 
       expect(resultPage).not.toBeNull();
+      expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename], testUser2);
 
       expect(resultPage.path).toBe('/renamed1/child');
       expect(resultPage.updatedAt).not.toEqual(dateToUse);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
 
-      expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename], testUser2);
+      expect(redirectedFromPage).toBeNull();
+      expect(redirectedFromPageRevision).toBeNull();
     });
   });
 
