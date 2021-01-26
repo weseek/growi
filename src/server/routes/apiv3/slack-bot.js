@@ -24,7 +24,6 @@ module.exports = (crowi) => {
         }
       }
 
-
       init(app) {
         this.bolt = app;
       }
