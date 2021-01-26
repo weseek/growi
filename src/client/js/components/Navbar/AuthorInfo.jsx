@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { userPageRoot } from '@commons/util/path-utils';
-import { formatDateToDisplay } from '../../../../lib/util/date-utils';
+import { format } from 'date-fns';
 
 import UserPicture from '../User/UserPicture';
 
+const formatType = 'yyyy/MM/dd HH:mm';
 const AuthorInfo = (props) => {
   const {
     mode, user, date, locate,
@@ -21,7 +22,7 @@ const AuthorInfo = (props) => {
     : <i>Unknown</i>;
 
   if (locate === 'footer') {
-    return <p>{infoLabelForFooter} {formatDateToDisplay(date)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
+    return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
   }
 
   return (
@@ -31,7 +32,7 @@ const AuthorInfo = (props) => {
       </div>
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>
-        <div className="text-muted text-date">{formatDateToDisplay(date)}</div>
+        <div className="text-muted text-date">{format(new Date(date), formatType)}</div>
       </div>
     </div>
   );
