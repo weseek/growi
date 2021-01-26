@@ -5,10 +5,10 @@ const router = express.Router();
 
 
 module.exports = (crowi) => {
-  const { BoltService } = crowi;
+  const { boltService } = crowi;
 
   router.get('/', async(req, res) => {
-    const app = BoltService.getBoltAppInstance();
+    const app = boltService.getBoltAppInstance();
 
     // TODO: improve event method
     app.event('message', async({ event, client }) => {
