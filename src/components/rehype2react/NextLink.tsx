@@ -1,3 +1,4 @@
+import { resolveHref } from 'next/dist/next-server/lib/router/router';
 import Link from 'next/link';
 
 type Props = any & {
@@ -6,11 +7,16 @@ type Props = any & {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const NextLink = (props: Props) => {
+const NextLink = ({ href, children }: Props) => {
+  const anchor = <a href={href}>{children}</a>;
+
+  // when href is an anchor link
+  if (href.length > 0 && href[0] === '#') {
+    return anchor;
+  }
+
   return (
-    <Link href={props.href}>
-      <a href={props.href}>{props.children}</a>
-    </Link>
+    <Link href={href}>{anchor}</Link>
   );
 };
 
