@@ -101,6 +101,7 @@ class StaffCredit extends React.Component {
       });
     }, 10);
 
+    // TODO: check front to see either it can use configmanager or not.
     this.props.appContainer.apiv3Get('/growi-cloud/staff-credit').then((res) => {
     });
 
