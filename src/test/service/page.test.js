@@ -18,7 +18,10 @@ let childForRename2;
 let childForRename3;
 
 let parentForDuplicate;
-let parentForDelete;
+
+let parentForDelete1;
+let parentForDelete2;
+
 let parentForDeleteCompletely;
 let parentForRevert;
 
@@ -109,7 +112,13 @@ describe('PageService', () => {
         lastUpdateUser: testUser1,
       },
       {
-        path: '/parentForDelete',
+        path: '/parentForDelete1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForDelete2',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
@@ -152,7 +161,10 @@ describe('PageService', () => {
     parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
 
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
-    parentForDelete = await Page.findOne({ path: '/parentForDelete' });
+
+    parentForDelete1 = await Page.findOne({ path: '/parentForDelete1' });
+    parentForDelete2 = await Page.findOne({ path: '/parentForDelete2' });
+
     parentForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely' });
     parentForRevert = await Page.findOne({ path: '/parentForRevert' });
 
@@ -364,9 +376,76 @@ describe('PageService', () => {
   });
 
   describe('delete page', () => {
-    test('deletePage()', () => {
-      expect(3).toBe(3);
+    let getDeletedPageNameSpy;
+    let pageEventSpy;
+    let deleteDescendantsWithStreamSpy;
+    const dateToUse = new Date('2000-01-01');
+    const socketClientId = null;
+
+    beforeEach(async(done) => {
+      jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
+      getDeletedPageNameSpy = jest.spyOn(Page, 'getDeletedPageName');
+      pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
+      deleteDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteDescendantsWithStream').mockImplementation();
+      done();
     });
+
+    test('delete page without options', async() => {
+      const resultPage = await crowi.pageService.deletePage(parentForDelete1, testUser2, { });
+      const redirectedFromPage = await Page.findOne({ path: '/parentForDelete1' });
+      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete1' });
+
+      expect(getDeletedPageNameSpy).toHaveBeenCalled();
+      expect(deleteDescendantsWithStreamSpy).not.toHaveBeenCalled();
+
+      expect(resultPage.status).toBe(Page.STATUS_DELETED);
+      expect(resultPage.path).toBe('/trash/parentForDelete1');
+      expect(resultPage.deleteUser).toEqual(testUser2._id);
+      expect(resultPage.deletedAt).toEqual(dateToUse);
+      expect(resultPage.updatedAt).toEqual(parentForDelete1.updatedAt);
+      expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
+
+      expect(redirectedFromPage).not.toBeNull();
+      expect(redirectedFromPage.path).toBe('/parentForDelete1');
+      expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete1');
+
+      expect(redirectedFromPageRevision).not.toBeNull();
+      expect(redirectedFromPageRevision.path).toBe('/parentForDelete1');
+      expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete1');
+
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+
+    });
+
+    test('delete page with isRecursively', async() => {
+      const resultPage = await crowi.pageService.deletePage(parentForDelete2, testUser2, { }, true);
+      const redirectedFromPage = await Page.findOne({ path: '/parentForDelete2' });
+      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete2' });
+
+      expect(getDeletedPageNameSpy).toHaveBeenCalled();
+      expect(deleteDescendantsWithStreamSpy).toHaveBeenCalled();
+
+      expect(resultPage.status).toBe(Page.STATUS_DELETED);
+      expect(resultPage.path).toBe('/trash/parentForDelete2');
+      expect(resultPage.deleteUser).toEqual(testUser2._id);
+      expect(resultPage.deletedAt).toEqual(dateToUse);
+      expect(resultPage.updatedAt).toEqual(parentForDelete2.updatedAt);
+      expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
+
+      expect(redirectedFromPage).not.toBeNull();
+      expect(redirectedFromPage.path).toBe('/parentForDelete2');
+      expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete2');
+
+      expect(redirectedFromPageRevision).not.toBeNull();
+      expect(redirectedFromPageRevision.path).toBe('/parentForDelete2');
+      expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete2');
+
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, testUser2, socketClientId);
+      expect(pageEventSpy).toHaveBeenCalledWith('create', resultPage, testUser2, socketClientId);
+
+    });
+
 
     test('deleteDescendants()', () => {
       expect(3).toBe(3);
