@@ -101,10 +101,8 @@ class StaffCredit extends React.Component {
       });
     }, 10);
 
-    this.props.appContainer.apiv3Get('/_api/growi-cloud/contributors').then((res) => {
-      console.log('-----------');
-      console.log(res);
-      console.log('-----------');
+    this.props.appContainer.apiv3Get('/growi-cloud').then((res) => {
+
     });
 
   }
