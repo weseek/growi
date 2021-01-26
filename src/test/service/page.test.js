@@ -286,15 +286,18 @@ describe('PageService', () => {
     });
 
     test('duplicate page (isRecursively: false)', async() => {
-      const originTags = await parentForDuplicate.findRelatedTagsById();
+
+      const originTagsMock = jest.fn().mockReturnValue([parentTag.name]);
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
+      const resultAnotherPage = await crowi.pageService.duplicate(parentForDuplicate, '/newAnotherParent', testUser2, false);
 
       expect(xssSpy).toHaveBeenCalled();
       expect(resultPage.path).toBe('/newParent');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser1._id);
+      expect(resultAnotherPage.lastUpdateUser._id).toEqual(testUser2._id);
       expect(resultPage.revision).not.toEqual(parentForDuplicate.revision);
       expect(resultPage.grant).toEqual(parentForDuplicate.grant);
-      expect(resultPage.tags).toEqual(originTags);
+      expect(resultPage.tags).toEqual(originTagsMock());
     });
 
     test('duplicateDescendants()', () => {
