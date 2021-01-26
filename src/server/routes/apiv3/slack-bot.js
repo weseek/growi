@@ -99,7 +99,13 @@ module.exports = (crowi) => {
       // Do some slack-specific stuff here
       await client.chat.postMessage('hogehoge');
     });
+
+    (async() => {
+      await app.start(8080);
+      console.log('app is running');
+    })();
   });
+
 
   return router;
 };
