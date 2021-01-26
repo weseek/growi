@@ -1,6 +1,9 @@
 import { keyInterface, responseInterface } from 'swr';
 
+import { HtmlElementNode } from 'rehype-toc';
+
 import { RendererSettings } from '~/interfaces/renderer';
+
 import MarkdownRenderer, { generateViewRenderer } from '~/service/renderer/markdown-renderer';
 
 import { useStaticSWR } from './use-static-swr';
@@ -10,12 +13,16 @@ export const useRendererSettings = (initialData?: RendererSettings): responseInt
   return useStaticSWR('rendererSettings', initialData);
 };
 
+export const useCurrentPageTocNode = (): responseInterface<HtmlElementNode, any> => {
+  return useStaticSWR('currentPageTocNode');
+};
+
 export const useViewRenderer = (): responseInterface<MarkdownRenderer, any> => {
   let key: keyInterface = 'viewRenderer';
-  let initialData: MarkdownRenderer | undefined;
 
-  const { data: renderer } = useStaticSWR(key);
+  const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
+  const { mutate: mutateTocNode } = useCurrentPageTocNode();
 
   // return null key
   if (rendererSettings == null) {
@@ -23,8 +30,9 @@ export const useViewRenderer = (): responseInterface<MarkdownRenderer, any> => {
   }
   // initialize renderer
   else if (renderer == null) {
-    initialData = generateViewRenderer(rendererSettings);
+    const generated = generateViewRenderer(rendererSettings, toc => mutateTocNode(toc));
+    mutateRenderer(generated);
   }
 
-  return useStaticSWR(key, initialData);
+  return useStaticSWR(key);
 };

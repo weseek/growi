@@ -1,4 +1,4 @@
 export type RendererSettings = {
-  isEnabledLinebreaks: boolean
-  isEnabledLinebreaksInComments: boolean
+  isEnabledLinebreaks: boolean,
+  isEnabledLinebreaksInComments: boolean,
 };

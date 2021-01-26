@@ -27,7 +27,7 @@ import footnotes from 'remark-footnotes';
 import breaks from 'remark-breaks';
 import remark2rehype from 'remark-rehype';
 import slug from 'rehype-slug';
-import toc from 'rehype-toc';
+import toc, { HtmlElementNode } from 'rehype-toc';
 import autoLinkHeadings from 'rehype-autolink-headings';
 import rehype2react from 'rehype-react';
 
@@ -246,7 +246,7 @@ export default class MarkdownRenderer {
 
 }
 
-export const generateViewRenderer = (rendererSettings: RendererSettings): MarkdownRenderer => {
+export const generateViewRenderer = (rendererSettings: RendererSettings, storeTocNode: (toc: HtmlElementNode) => void): MarkdownRenderer => {
   const renderer = new MarkdownRenderer();
   // add remark plugins
   renderer.remarkPlugins.push(footnotes);
@@ -254,7 +254,10 @@ export const generateViewRenderer = (rendererSettings: RendererSettings): Markdo
     renderer.remarkPlugins.push(breaks);
   }
   // add rehypePlugins
-  renderer.rehypePlugins.push(toc);
+  renderer.rehypePlugins.push([toc, {
+    headings: ['h1', 'h2', 'h3'],
+    customizeTOC: storeTocNode,
+  }]);
   renderer.rehypePlugins.push([autoLinkHeadings, {
     behavior: 'append',
   }]);
