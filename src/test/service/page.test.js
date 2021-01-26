@@ -300,13 +300,14 @@ describe('PageService', () => {
       jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
 
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicate', testUser2, false);
+      const duplicatedToPageRevision = await Revision.findOne({ path: '/newParentDuplicate' });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
       expect(serializePageSecurely).toHaveBeenCalled();
       expect(resultPage.path).toBe('/newParentDuplicate');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
-      expect(resultPage.revision).not.toEqual(parentForDuplicate.revision);
+      expect(duplicatedToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
       expect(resultPage.grant).toEqual(parentForDuplicate.grant);
       expect(resultPage.tags).toEqual([originTagsMock().name]);
 
