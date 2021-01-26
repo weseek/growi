@@ -58,7 +58,7 @@ export default class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      contributors.push(cloudContributors.getContributors());
+      contributors.splice(1, 0, cloudContributors.getContributors());
       const credit = contributors.map((contributor) => {
         // construct members elements
         const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
