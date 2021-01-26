@@ -280,24 +280,36 @@ describe('PageService', () => {
 
   describe('duplicate page', () => {
     let xssSpy;
+    let duplicateDescendantsWithStreamSpy;
+    const serializePageSecurely = require('../../server/models/serializers/page-serializer');
+
     beforeEach(async(done) => {
       xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+      duplicateDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'duplicateDescendantsWithStream').mockImplementation();
       done();
     });
 
     test('duplicate page (isRecursively: false)', async() => {
+      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
+      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
+      crowi.models.serializers.Page.serializePageSecurely = jest.fn().mockImplementation();
 
-      const originTagsMock = jest.fn().mockReturnValue([parentTag.name]);
+      const serializeSpy = jest.spyOn(serializePageSecurely, 'serializePageSecurely').mockImplementation();
+
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
       const resultAnotherPage = await crowi.pageService.duplicate(parentForDuplicate, '/newAnotherParent', testUser2, false);
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [resultPage._id, originTagsMock().name] });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag].map((tag) => { return tag.name }) });
 
       expect(xssSpy).toHaveBeenCalled();
+      expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
       expect(resultPage.path).toBe('/newParent');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser1._id);
       expect(resultAnotherPage.lastUpdateUser._id).toEqual(testUser2._id);
       expect(resultPage.revision).not.toEqual(parentForDuplicate.revision);
       expect(resultPage.grant).toEqual(parentForDuplicate.grant);
-      expect(resultPage.tags).toEqual(originTagsMock());
+      expect(resultPage.tags).toEqual([originTagsMock().name]);
+      expect(serializeSpy).toHaveBeenCalled();
     });
 
     test('duplicateDescendants()', () => {
