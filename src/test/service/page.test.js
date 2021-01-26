@@ -296,19 +296,18 @@ describe('PageService', () => {
       const dummyId = '600d395667536503354c9999';
       crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
       const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
-      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, originTagsMock().name] });
-      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag].map((tag) => { return tag.name }) });
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, parentTag.name] });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
 
-      const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
-      const resultAnotherPage = await crowi.pageService.duplicate(parentForDuplicate, '/newAnotherParent', testUser2, false);
+      const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicate', testUser2, false);
+      const duplicatedToPageRevision = await Revision.findOne({ path: '/newParentDuplicate' });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
       expect(serializePageSecurely).toHaveBeenCalled();
-      expect(resultPage.path).toBe('/newParent');
-      expect(resultPage.lastUpdateUser._id).toEqual(testUser1._id);
-      expect(resultAnotherPage.lastUpdateUser._id).toEqual(testUser2._id);
-      expect(resultPage.revision).not.toEqual(parentForDuplicate.revision);
+      expect(resultPage.path).toBe('/newParentDuplicate');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(duplicatedToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
       expect(resultPage.grant).toEqual(parentForDuplicate.grant);
       expect(resultPage.tags).toEqual([originTagsMock().name]);
     });
