@@ -39,6 +39,9 @@ describe('PageService', () => {
   let User;
   let Tag;
   let PageTagRelation;
+  let Bookmark;
+  let Comment;
+  let ShareLink;
 
   beforeAll(async(done) => {
     crowi = await getInstance();
@@ -48,6 +51,9 @@ describe('PageService', () => {
     Revision = mongoose.model('Revision');
     Tag = mongoose.model('Tag');
     PageTagRelation = mongoose.model('PageTagRelation');
+    Bookmark = mongoose.model('Bookmark');
+    Comment = mongoose.model('Comment');
+    ShareLink = mongoose.model('ShareLink');
 
     await User.insertMany([
       { name: 'someone1', username: 'someone1', email: 'someone1@example.com' },
@@ -472,8 +478,38 @@ describe('PageService', () => {
   });
 
   describe('delete page completely', () => {
-    test('deleteCompletely()', () => {
-      expect(3).toBe(3);
+    let deleteManyBookmarkSpy;
+    let deleteManyCommentSpy;
+    let deleteManyPageTagRelationSpy;
+    let deleteManyShareLinkSpy;
+    let deleteManyRevisionSpy;
+    let deleteManyPageSpy;
+    let removeAllAttachmentsSpy;
+
+    beforeEach(async(done) => {
+      deleteManyBookmarkSpy = jest.spyOn(Bookmark, 'deleteMany').mockImplementation();
+      deleteManyCommentSpy = jest.spyOn(Comment, 'deleteMany').mockImplementation();
+      deleteManyPageTagRelationSpy = jest.spyOn(PageTagRelation, 'deleteMany').mockImplementation();
+      deleteManyShareLinkSpy = jest.spyOn(ShareLink, 'deleteMany').mockImplementation();
+      deleteManyRevisionSpy = jest.spyOn(Revision, 'deleteMany').mockImplementation();
+      deleteManyPageSpy = jest.spyOn(Page, 'deleteMany').mockImplementation();
+      removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
+      done();
+    });
+    test('deleteCompletelyOperation', async() => {
+      await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
+
+      expect(deleteManyBookmarkSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
+      expect(deleteManyCommentSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
+      expect(deleteManyPageTagRelationSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
+      expect(deleteManyShareLinkSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
+      expect(deleteManyRevisionSpy).toHaveBeenCalledWith({ path: { $in: [parentForDeleteCompletely.path] } });
+      expect(deleteManyPageSpy).toHaveBeenCalledWith({
+        $or: [{ path: { $in: [parentForDeleteCompletely.path] } },
+              { path: { $in: [] } },
+              { _id: { $in: [parentForDeleteCompletely._id] } }],
+      });
+      expect(removeAllAttachmentsSpy).toHaveBeenCalled();
     });
 
     test('deleteMultipleCompletely()', () => {
