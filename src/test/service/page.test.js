@@ -292,8 +292,6 @@ describe('PageService', () => {
     test('duplicate page (isRecursively: false)', async() => {
       crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
       const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
-      crowi.models.serializers.Page.serializePageSecurely = jest.fn().mockImplementation();
-
       const serializeSpy = jest.spyOn(serializePageSecurely, 'serializePageSecurely').mockImplementation();
 
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
