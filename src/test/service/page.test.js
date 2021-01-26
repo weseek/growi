@@ -12,7 +12,10 @@ let parentForRename1;
 let parentForRename2;
 let parentForRename3;
 let parentForRename4;
-let childForRename;
+
+let childForRename1;
+let childForRename2;
+let childForRename3;
 
 let parentForDuplicate;
 let parentForDelete;
@@ -82,6 +85,18 @@ describe('PageService', () => {
         lastUpdateUser: testUser1,
       },
       {
+        path: '/parentForRename2/child',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename3/child',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
         path: '/parentForDuplicate',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
@@ -135,12 +150,16 @@ describe('PageService', () => {
     parentForRename2 = await Page.findOne({ path: '/parentForRename2' });
     parentForRename3 = await Page.findOne({ path: '/parentForRename3' });
     parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
+
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
     parentForDelete = await Page.findOne({ path: '/parentForDelete' });
     parentForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely' });
     parentForRevert = await Page.findOne({ path: '/parentForRevert' });
 
-    childForRename = await Page.findOne({ path: '/parentForRename1/child' });
+    childForRename1 = await Page.findOne({ path: '/parentForRename1/child' });
+    childForRename2 = await Page.findOne({ path: '/parentForRename2/child' });
+    childForRename3 = await Page.findOne({ path: '/parentForRename3/child' });
+
     childForDuplicate = await Page.findOne({ path: '/parentForDuplicate/child' });
     childForDelete = await Page.findOne({ path: '/parentForDelete/child' });
     childForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely/child' });
@@ -267,17 +286,37 @@ describe('PageService', () => {
       const oldPagePathPrefix = new RegExp('^/parentForRename1', 'i');
       const newPagePathPrefix = '/renamed1';
 
-      await crowi.pageService.renameDescendants([childForRename], testUser2, {}, oldPagePathPrefix, newPagePathPrefix);
+      await crowi.pageService.renameDescendants([childForRename1], testUser2, {}, oldPagePathPrefix, newPagePathPrefix);
       const resultPage = await Page.findOne({ path: '/renamed1/child' });
       const redirectedFromPage = await Page.findOne({ path: '/parentForRename1/child' });
       const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename1/child' });
 
       expect(resultPage).not.toBeNull();
-      expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename], testUser2);
+      expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename1], testUser2);
 
       expect(resultPage.path).toBe('/renamed1/child');
-      expect(resultPage.updatedAt).not.toEqual(dateToUse);
+      expect(resultPage.updatedAt).toEqual(childForRename1.updatedAt);
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
+
+      expect(redirectedFromPage).toBeNull();
+      expect(redirectedFromPageRevision).toBeNull();
+    });
+
+    test('renameDescendants with updateMetadata option', async() => {
+      const oldPagePathPrefix = new RegExp('^/parentForRename2', 'i');
+      const newPagePathPrefix = '/renamed2';
+
+      await crowi.pageService.renameDescendants([childForRename2], testUser2, { updateMetadata: true }, oldPagePathPrefix, newPagePathPrefix);
+      const resultPage = await Page.findOne({ path: '/renamed2/child' });
+      const redirectedFromPage = await Page.findOne({ path: '/parentForRename2/child' });
+      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForRename2/child' });
+
+      expect(resultPage).not.toBeNull();
+      expect(pageEventSpy).toHaveBeenCalledWith('updateMany', [childForRename2], testUser2);
+
+      expect(resultPage.path).toBe('/renamed2/child');
+      expect(resultPage.updatedAt).toEqual(dateToUse);
+      expect(resultPage.lastUpdateUser).toEqual(testUser2._id);
 
       expect(redirectedFromPage).toBeNull();
       expect(redirectedFromPageRevision).toBeNull();
