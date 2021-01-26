@@ -128,3 +128,4 @@ export default class StaffCredit extends React.Component {
 StaffCredit.propTypes = {
   onClosed: PropTypes.func,
 };
+
