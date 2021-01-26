@@ -32,6 +32,7 @@ describe('PageService', () => {
   let User;
   let Tag;
   let PageTagRelation;
+  let xssSpy;
 
   beforeAll(async(done) => {
     crowi = await getInstance();
@@ -169,11 +170,13 @@ describe('PageService', () => {
       },
     ]);
 
+    xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+
+
     done();
   });
 
   describe('rename page', () => {
-    let xssSpy;
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
     const dateToUse = new Date('2000-01-01');
@@ -181,7 +184,6 @@ describe('PageService', () => {
 
     beforeEach(async(done) => {
       jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
-      xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
       renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
       done();
@@ -279,7 +281,6 @@ describe('PageService', () => {
 
 
   describe('duplicate page', () => {
-    let xssSpy;
     let duplicateDescendantsWithStreamSpy;
 
     jest.mock('../../server/models/serializers/page-serializer');
@@ -287,7 +288,6 @@ describe('PageService', () => {
     serializePageSecurely.mockImplementation(page => page);
 
     beforeEach(async(done) => {
-      xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
       duplicateDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'duplicateDescendantsWithStream').mockImplementation();
       done();
     });
