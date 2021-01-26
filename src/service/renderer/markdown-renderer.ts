@@ -20,7 +20,7 @@
 // import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
 import React from 'react';
-import unified, { Processor } from 'unified';
+import unified, { Plugin, PluginTuple, Processor } from 'unified';
 import parse from 'remark-parse';
 import gfm from 'remark-gfm';
 import footnotes from 'remark-footnotes';
@@ -32,24 +32,33 @@ import autoLinkHeadings from 'rehype-autolink-headings';
 import rehype2react from 'rehype-react';
 
 import NextLink from '~/components/rehype2react/NextLink';
-import { RendererSettings, UnifiedConfigurer } from '~/interfaces/renderer';
+import { RendererSettings } from '~/interfaces/renderer';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:MarkdownRenderer');
 
 
+function applyPlugin(processor: Processor, plugin: Plugin | PluginTuple): Processor {
+  if (Array.isArray(plugin)) {
+    return processor.use(...plugin);
+  }
+
+  return processor.use(plugin);
+}
+
 export default class MarkdownRenderer {
 
-  remarkConfigurers: UnifiedConfigurer[] = [];
+  remarkPlugins: (Plugin | PluginTuple)[] = [
+    gfm,
+  ];
 
-  rehypeConfigurers: UnifiedConfigurer[] = [];
+  rehypePlugins: (Plugin | PluginTuple)[] = [
+    slug,
+  ];
 
   processor?: Processor;
 
   constructor() {
-    this.remarkConfigurers.push(u => u.use(gfm));
-    this.rehypeConfigurers.push(u => u.use(slug));
-
     // this.appContainer = appContainer;
 
     // if (originRenderer != null) {
@@ -70,13 +79,13 @@ export default class MarkdownRenderer {
 
   init() {
     let parser = unified().use(parse);
-    this.remarkConfigurers.forEach((configurer) => {
-      parser = configurer(parser);
+    this.remarkPlugins.forEach((item) => {
+      parser = applyPlugin(parser, item);
     });
 
     let rehype = parser.use(remark2rehype);
-    this.rehypeConfigurers.forEach((configurer) => {
-      rehype = configurer(rehype);
+    this.rehypePlugins.forEach((item) => {
+      rehype = applyPlugin(rehype, item);
     });
 
     this.processor = rehype.use(rehype2react, {
@@ -239,14 +248,16 @@ export default class MarkdownRenderer {
 
 export const generateViewRenderer = (rendererSettings: RendererSettings): MarkdownRenderer => {
   const renderer = new MarkdownRenderer();
-  renderer.remarkConfigurers.push(u => u.use(footnotes));
+  // add remark plugins
+  renderer.remarkPlugins.push(footnotes);
   if (rendererSettings.isEnabledLinebreaks) {
-    renderer.remarkConfigurers.push(u => u.use(breaks));
+    renderer.remarkPlugins.push(breaks);
   }
-  renderer.rehypeConfigurers.push(u => u.use(toc));
-  renderer.rehypeConfigurers.push(u => u.use(autoLinkHeadings, {
+  // add rehypePlugins
+  renderer.rehypePlugins.push(toc);
+  renderer.rehypePlugins.push([autoLinkHeadings, {
     behavior: 'append',
-  }));
+  }]);
   renderer.init();
 
   return renderer;
