@@ -280,6 +280,15 @@ describe('PageService', () => {
 
   describe('duplicate page', () => {
     let xssSpy;
+
+    jest.mock('../../server/models/serializers/page-serializer');
+    const { serializePageSecurely } = require('../../server/models/serializers/page-serializer');
+    serializePageSecurely.mockImplementation(() => {
+      return {
+        tags: [],
+      };
+    });
+
     beforeEach(async(done) => {
       xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
       done();
@@ -290,6 +299,7 @@ describe('PageService', () => {
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
 
       expect(xssSpy).toHaveBeenCalled();
+      expect(serializePageSecurely).toHaveBeenCalled();
       expect(resultPage.path).toBe('/newParent');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser1._id);
       expect(resultPage.revision).not.toEqual(parentForDuplicate.revision);
