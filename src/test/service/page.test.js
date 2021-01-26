@@ -293,13 +293,14 @@ describe('PageService', () => {
     });
 
     test('duplicate page (isRecursively: false)', async() => {
+      const dummyId = '600d395667536503354c9999';
       crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
       const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, originTagsMock().name] });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag].map((tag) => { return tag.name }) });
 
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, false);
       const resultAnotherPage = await crowi.pageService.duplicate(parentForDuplicate, '/newAnotherParent', testUser2, false);
-      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [resultPage._id, originTagsMock().name] });
-      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag].map((tag) => { return tag.name }) });
 
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
