@@ -478,6 +478,11 @@ describe('PageService', () => {
   });
 
   describe('delete page completely', () => {
+    let pageEventSpy;
+    let deleteCompletelyOperationSpy;
+    let deleteCompletelyDescendantsWithStreamSpy;
+    const socketClientId = null;
+
     let deleteManyBookmarkSpy;
     let deleteManyCommentSpy;
     let deleteManyPageTagRelationSpy;
@@ -487,6 +492,10 @@ describe('PageService', () => {
     let removeAllAttachmentsSpy;
 
     beforeEach(async(done) => {
+      pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
+      deleteCompletelyOperationSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyOperation');
+      deleteCompletelyDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyDescendantsWithStream').mockImplementation();
+
       deleteManyBookmarkSpy = jest.spyOn(Bookmark, 'deleteMany').mockImplementation();
       deleteManyCommentSpy = jest.spyOn(Comment, 'deleteMany').mockImplementation();
       deleteManyPageTagRelationSpy = jest.spyOn(PageTagRelation, 'deleteMany').mockImplementation();
@@ -512,8 +521,23 @@ describe('PageService', () => {
       expect(removeAllAttachmentsSpy).toHaveBeenCalled();
     });
 
-    test('deleteMultipleCompletely()', () => {
-      expect(3).toBe(3);
+    test('delete completely without options', async() => {
+      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { });
+
+      expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
+      expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
+
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2, socketClientId);
+    });
+
+
+    test('delete completely with isRecursively', async() => {
+      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, true);
+
+      expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
+      expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
+
+      expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDeleteCompletely, testUser2, socketClientId);
     });
   });
 

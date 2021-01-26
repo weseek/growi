@@ -526,9 +526,8 @@ class PageService {
 
     await this.deleteCompletelyOperation(ids, paths);
 
-    if (socketClientId != null) {
-      this.pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
-    }
+    this.pageEvent.emit('deleteCompletely', pages, user, socketClientId); // update as renamed page
+
     return;
   }
 
@@ -545,9 +544,8 @@ class PageService {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
     }
 
-    if (socketClientId != null) {
-      this.pageEvent.emit('delete', page, user, socketClientId); // update as renamed page
-    }
+    this.pageEvent.emit('delete', page, user, socketClientId); // update as renamed page
+
     return;
   }
 
