@@ -311,7 +311,25 @@ describe('PageService', () => {
       expect(resultPage.revision).not.toEqual(parentForDuplicate.revision);
       expect(resultPage.grant).toEqual(parentForDuplicate.grant);
       expect(resultPage.tags).toEqual([originTagsMock().name]);
+    });
 
+    test('duplicate page (isRecursively: true)', async() => {
+      const dummyId = '600d395667536503354c9999';
+      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
+      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, originTagsMock().name] });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag].map((tag) => { return tag.name }) });
+
+      const resultPageRecursivly = await crowi.pageService.duplicate(parentForDuplicate, '/newParent', testUser1, true);
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicateDescendantsWithStreamSpy).toHaveBeenCalled();
+      expect(serializePageSecurely).toHaveBeenCalled();
+      expect(resultPageRecursivly.path).toBe('/newParent');
+      expect(resultPageRecursivly.lastUpdateUser._id).toEqual(testUser1._id);
+      expect(resultPageRecursivly.revision).not.toEqual(parentForDuplicate.revision);
+      expect(resultPageRecursivly.grant).toEqual(parentForDuplicate.grant);
+      expect(resultPageRecursivly.tags).toEqual([originTagsMock().name]);
     });
 
     test('duplicateDescendants()', () => {
