@@ -24,6 +24,7 @@ import unified, { Processor } from 'unified';
 import parse from 'remark-parse';
 import gfm from 'remark-gfm';
 import footnotes from 'remark-footnotes';
+import breaks from 'remark-breaks';
 import remark2rehype from 'remark-rehype';
 import slug from 'rehype-slug';
 import toc from 'rehype-toc';
@@ -31,14 +32,11 @@ import autoLinkHeadings from 'rehype-autolink-headings';
 import rehype2react from 'rehype-react';
 
 import NextLink from '~/components/rehype2react/NextLink';
+import { RendererSettings, UnifiedConfigurer } from '~/interfaces/renderer';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:MarkdownRenderer');
 
-
-interface UnifiedConfigurer {
-  (unified: Processor): Processor;
-}
 
 export default class MarkdownRenderer {
 
@@ -239,9 +237,12 @@ export default class MarkdownRenderer {
 
 }
 
-export const generateViewRenderer = (): MarkdownRenderer => {
+export const generateViewRenderer = (rendererSettings: RendererSettings): MarkdownRenderer => {
   const renderer = new MarkdownRenderer();
   renderer.remarkConfigurers.push(u => u.use(footnotes));
+  if (rendererSettings.isEnabledLinebreaks) {
+    renderer.remarkConfigurers.push(u => u.use(breaks));
+  }
   renderer.rehypeConfigurers.push(u => u.use(toc));
   renderer.rehypeConfigurers.push(u => u.use(autoLinkHeadings, {
     behavior: 'append',
