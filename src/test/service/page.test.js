@@ -35,6 +35,7 @@ describe('PageService', () => {
   let User;
   let Tag;
   let PageTagRelation;
+  let xssSpy;
 
   beforeAll(async(done) => {
     crowi = await getInstance();
@@ -101,6 +102,7 @@ describe('PageService', () => {
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
+        revision: '600d395667536503354cbe91',
       },
       {
         path: '/parentForDuplicate/child',
@@ -179,11 +181,21 @@ describe('PageService', () => {
       { relatedPage: childForDuplicate, relatedTag: childTag },
     ]);
 
+    await Revision.insertMany([
+      {
+        _id: '600d395667536503354cbe91',
+        path: parentForDuplicate,
+        body: 'duplicateBody',
+      },
+    ]);
+
+    xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+
+
     done();
   });
 
   describe('rename page', () => {
-    let xssSpy;
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
     const dateToUse = new Date('2000-01-01');
@@ -191,7 +203,6 @@ describe('PageService', () => {
 
     beforeEach(async(done) => {
       jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
-      xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
       renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
       done();
@@ -350,8 +361,36 @@ describe('PageService', () => {
 
 
   describe('duplicate page', () => {
-    test('duplicate()', () => {
-      expect(3).toBe(3);
+    let duplicateDescendantsWithStreamSpy;
+
+    jest.mock('../../server/models/serializers/page-serializer');
+    const { serializePageSecurely } = require('../../server/models/serializers/page-serializer');
+    serializePageSecurely.mockImplementation(page => page);
+
+    beforeEach(async(done) => {
+      duplicateDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'duplicateDescendantsWithStream').mockImplementation();
+      done();
+    });
+
+    test('duplicate page (isRecursively: false)', async() => {
+      const dummyId = '600d395667536503354c9999';
+      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
+      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, parentTag.name] });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
+
+      const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicate', testUser2, false);
+      const duplicatedToPageRevision = await Revision.findOne({ path: '/newParentDuplicate' });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
+      expect(serializePageSecurely).toHaveBeenCalled();
+      expect(resultPage.path).toBe('/newParentDuplicate');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(duplicatedToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
+      expect(resultPage.grant).toEqual(parentForDuplicate.grant);
+      expect(resultPage.tags).toEqual([originTagsMock().name]);
+
     });
 
     test('duplicateDescendants()', () => {

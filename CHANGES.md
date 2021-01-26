@@ -1,9 +1,12 @@
 # CHANGES
 
-
-## v.4.2.7
+## v4.2.8-RC
 
 * 
+
+## v4.2.7
+
+* Fix: Installer doesn't work on Chrome
 
 ## v4.2.6
 
