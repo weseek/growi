@@ -322,7 +322,6 @@ describe('PageService', () => {
       const resultPageRecursivly = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicateRecursively', testUser2, true);
       const duplicatedRecursivelyToPageRevision = await Revision.findOne({ path: '/newParentDuplicateRecursively' });
 
-
       expect(xssSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).toHaveBeenCalled();
       expect(serializePageSecurely).toHaveBeenCalled();
