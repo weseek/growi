@@ -26,6 +26,7 @@ class StaffCredit extends React.Component {
     super(props);
     this.state = {
       isShown: true,
+      gcContributors: {},
     };
     this.deleteCredit = this.deleteCredit.bind(this);
   }
@@ -102,6 +103,7 @@ class StaffCredit extends React.Component {
     }, 10);
 
     this.props.appContainer.apiv3Get('/growi-cloud/staff-credit').then((res) => {
+      this.setState({ gcContributors: res.data });
     });
 
   }
