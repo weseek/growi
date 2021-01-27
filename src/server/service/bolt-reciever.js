@@ -8,31 +8,31 @@ const { EventEmitter } = require('events');
  */
 class BoltRecieverService extends EventEmitter {
 
-  constructor(signingSecret, endpoints) {
-    super();
-    // this.app = express();
-    // this.server = createServer(this.app);
+  // constructor(signingSecret, endpoints) {
+  //   super();
+  // this.app = express();
+  // this.server = createServer(this.app);
 
-    // for (const endpoint of endpoints) {
-    //   this.app.post(endpoint, this.requestHandler.bind(this));
-    // }
-  }
+  // for (const endpoint of endpoints) {
+  //   this.app.post(endpoint, this.requestHandler.bind(this));
+  // }
+  // }
 
   init(app) {
     this.bolt = app;
   }
 
-  stop() {
-    return new Promise((resolve, reject) => {
-      this.server.close((error) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve();
-      });
-    });
-  }
+  // stop() {
+  //   return new Promise((resolve, reject) => {
+  //     this.server.close((error) => {
+  //       if (error) {
+  //         reject(error);
+  //         return;
+  //       }
+  //       resolve();
+  //     });
+  //   });
+  // }
 
   // This is a very simple implementation. Look at the ExpressReceiver source for more detail
   async requestHandler(req, res) {

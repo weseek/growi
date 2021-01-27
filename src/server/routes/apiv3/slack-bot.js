@@ -9,8 +9,8 @@ module.exports = (crowi) => {
 
   router.get('/:endpoints', async(req, res) => {
 
+
     const expressApp = express;
-    // this.server = createServer(this.app);
     const { endpoints } = req.params;
 
     for (const endpoint of endpoints) {
