@@ -1,7 +1,7 @@
 const { EventEmitter } = require('events');
-const { createServer } = require('http');
+// const { createServer } = require('http');
 
-const express = require('express');
+// const express = require('express');
 
 /**
  * the service class of SlackNotificationService
@@ -10,29 +10,16 @@ class BoltRecieverService extends EventEmitter {
 
   constructor(signingSecret, endpoints) {
     super();
-    this.app = express();
-    this.server = createServer(this.app);
+    // this.app = express();
+    // this.server = createServer(this.app);
 
-    for (const endpoint of endpoints) {
-      this.app.post(endpoint, this.requestHandler.bind(this));
-    }
+    // for (const endpoint of endpoints) {
+    //   this.app.post(endpoint, this.requestHandler.bind(this));
+    // }
   }
 
   init(app) {
     this.bolt = app;
-  }
-
-  start(port) {
-    return new Promise((resolve, reject) => {
-      try {
-        this.server.listen(port, () => {
-          resolve(this.server);
-        });
-      }
-      catch (error) {
-        reject(error);
-      }
-    });
   }
 
   stop() {
