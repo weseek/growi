@@ -25,7 +25,6 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
 
-  growiVersion: string,
   nodeVersion: string,
   npmVersion: string,
   yarnVersion: string,
@@ -43,9 +42,8 @@ const AdminHomePage: NextPage<Props> = (props: Props) => {
   useSearchServiceReachable(props.isSearchServiceReachable);
 
   return (
-    <AdminLayout title={title} selectedNavOpt="home" growiVersion={props.growiVersion}>
+    <AdminLayout title={title} selectedNavOpt="home">
       <AdminHome
-        growiVersion={props.growiVersion}
         nodeVersion={props.nodeVersion}
         npmVersion={props.npmVersion}
         yarnVersion={props.yarnVersion}
@@ -74,7 +72,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
 
-  props.growiVersion = crowi.version;
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-';
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-';
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-';
