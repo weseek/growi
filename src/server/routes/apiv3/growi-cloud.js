@@ -1,4 +1,3 @@
-// TODO: check front to see either it can use configmanager or not.
 const express = require('express');
 
 const axios = require('axios');
