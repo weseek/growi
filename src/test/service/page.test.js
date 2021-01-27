@@ -117,27 +117,27 @@ describe('PageService', () => {
       },
       {
         path: '/parentForDeleteCompletely/child',
-        status: Page.STATUS_PUBLISHED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
       },
       {
         path: '/trash/parentForRevert1',
-        status: Page.STATUS_PUBLISHED,
+        status: Page.STATUS_DELETED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
       },
       {
         path: '/trash/parentForRevert2',
-        status: Page.STATUS_PUBLISHED,
+        status: Page.STATUS_DELETED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
       },
       {
         path: '/trash/parentForRevert/child',
+        status: Page.STATUS_DELETED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
@@ -405,6 +405,7 @@ describe('PageService', () => {
       expect(resultPage.deleteUser).toBeNull();
       expect(resultPage.deletedAt).toBeNull();
     });
+
     test('revert deleted page when the redirect from page does not exist', async() => {
 
       findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
