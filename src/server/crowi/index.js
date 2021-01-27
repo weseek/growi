@@ -58,6 +58,7 @@ function Crowi(rootdir) {
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.boltService = null;
+  this.boltRecieverService = null;
   this.xss = new Xss();
 
   this.tokens = null;
@@ -118,6 +119,7 @@ Crowi.prototype.init = async function() {
     this.setupPageService(),
     this.setupSyncPageStatusService(),
     this.setupBoltService(),
+    this.setupBoltRecieverService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -655,6 +657,13 @@ Crowi.prototype.setupBoltService = async function() {
   const BoltService = require('../service/bolt');
   if (this.boltService == null) {
     this.boltService = new BoltService(this);
+  }
+};
+
+Crowi.prototype.setupBoltRecieverService = async function() {
+  const BoltRecieverService = require('../service/bolt-reciever');
+  if (this.boltRecieverService == null) {
+    this.boltRecieverService = new BoltRecieverService(process.env.SLACK_SIGNING_SECRET, '/');
   }
 };
 
