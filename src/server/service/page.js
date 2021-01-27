@@ -412,7 +412,7 @@ class PageService {
     await Revision.updateRevisionListByPath(page.path, { path: newPath }, {});
     const deletedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
-        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: new Date(),
+        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
       },
     }, { new: true });
     const body = `redirect ${newPath}`;
