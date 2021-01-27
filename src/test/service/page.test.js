@@ -338,8 +338,7 @@ describe('PageService', () => {
 
     test('duplicateTags()', async() => {
 
-      const newPageDummy = [];
-      newPageDummy.push({
+      const newPageDummy = [{
         _id: '60110bdd85339d7dc732dddd',
         path: '/newPageDummyPath',
         creator: parentForDuplicate._id,
@@ -349,12 +348,13 @@ describe('PageService', () => {
         lastUpdateUser: parentForDuplicate._id,
         redirectTo: null,
         revision: parentForDuplicate.revisionId,
-      });
+      }];
 
-      const pageIdMapping = {};
-      pageIdMapping[parentForDuplicate._id] = newPageDummy[0]._id;
+      const pageIdMapping = {
+        [parentForDuplicate._id]: '60110bdd85339d7dc732dddd',
+      };
 
-      await crowi.pageService.duplicateTags(pageIdMapping);
+      const duplicateTagsReturn = await crowi.pageService.duplicateTags(pageIdMapping);
       const parentoForDuplicateTags = await PageTagRelation.find({ relatedPage: parentForDuplicate });
       const pageTagRelationAfterDuplicated = await PageTagRelation.find({ relatedPage: newPageDummy });
 
