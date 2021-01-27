@@ -2,18 +2,31 @@ import React from 'react';
 import { Card, CardBody } from 'reactstrap';
 
 import { useTranslation } from '~/i18n';
-
+import { useMarkdownSettingsSWR } from '~/stores/admin';
+import { apiv3Get } from '~/client/js/util/apiv3-client';
 import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 
 type Props = {
-  markdownSettingParams: any,
+  // markdownSettingParams: any,
 };
 
 const MarkDownSettingContents = (props: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { data: markdownSettingParams, error, isValidating } = useMarkdownSettingsSWR();
 
+  if (error) {
+    return <></>;
+  }
+
+  if (isValidating) {
+    return (
+      <div className="my-5 text-center">
+        <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
+      </div>
+    );
+  }
   return (
     <React.Fragment>
       {/* Line Break Setting */}
@@ -29,8 +42,8 @@ const MarkDownSettingContents = (props: Props): JSX.Element => {
         <CardBody className="px-0 py-2">{ t('admin:markdown_setting.presentation_desc') }</CardBody>
       </Card>
       <PresentationForm
-        pageBreakSeparator={props.markdownSettingParams.pageBreakSeparator}
-        pageBreakCustomSeparator={props.markdownSettingParams.pageBreakCustomSeparator}
+        pageBreakSeparator={markdownSettingParams?.pageBreakSeparator}
+        pageBreakCustomSeparator={markdownSettingParams?.pageBreakCustomSeparator}
       />
 
       {/* XSS Setting */}

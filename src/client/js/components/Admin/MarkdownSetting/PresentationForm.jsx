@@ -16,21 +16,23 @@ const logger = loggerFactory('growi:markdown:presentation');
 const PresentationForm = (props) => {
   const { t } = useTranslation();
   const { data: csrfToken } = useCsrfToken();
-  const { data: markdownSettingParams, error, isValidating } = useMarkdownSettingsSWR();
+  const [pageBreakSeparator, setPageBreakSeparator] = useState(props.pageBreakSeparator);
+  const [pageBreakCustomSeparator, setPageBreakCustomSeparator] = useState(props.pageBreakCustomSeparator);
+  // const { data: markdownSettingParams, error, isValidating } = useMarkdownSettingsSWR();
 
-  const { pageBreakSeparator, pageBreakCustomSeparator } = markdownSettingParams;
+  // const { pageBreakSeparator, pageBreakCustomSeparator } = markdownSettingParams;
 
-  if (error) {
-    return <></>;
-  }
+  // if (error) {
+  //   return <></>;
+  // }
 
-  if (isValidating) {
-    return (
-      <div className="my-5 text-center">
-        <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
-      </div>
-    );
-  }
+  // if (isValidating) {
+  //   return (
+  //     <div className="my-5 text-center">
+  //       <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
+  //     </div>
+  //   );
+  // }
 
   async function onClickSubmit() {
     try {
@@ -59,8 +61,8 @@ const PresentationForm = (props) => {
                 className="custom-control-input"
                 id="pageBreakOption1"
                 name="presentation"
-                checked={props.pageBreakSeparator === 1}
-                // onChange={() => { onClickSubmit() }}
+                checked={pageBreakSeparator === 1}
+                onChange={() => { setPageBreakSeparator(1) }}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption1">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
@@ -84,9 +86,8 @@ const PresentationForm = (props) => {
                 className="custom-control-input"
                 id="pageBreakOption2"
                 name="presentation"
-                checked={props.pageBreakSeparator === 2}
-                // onChange={() => { markdownSettingParams.pageBreakSeparator = 2 }}
-                // onChange={() => adminMarkDownContainer.switchPageBreakSeparator(2)}
+                checked={pageBreakSeparator === 2}
+                onChange={() => { setPageBreakSeparator(2) }}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption2">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_two_separator') }</p>
@@ -109,9 +110,8 @@ const PresentationForm = (props) => {
                 id="pageBreakOption3"
                 className="custom-control-input"
                 name="presentation"
-                checked={props.pageBreakSeparator === 3}
-                onChange={() => { markdownSettingParams.pageBreakSeparator = 3 }}
-                // onChange={() => adminMarkDownContainer.switchPageBreakSeparator(3)}
+                checked={pageBreakSeparator === 3}
+                onChange={() => { setPageBreakSeparator(3) }}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption3">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.custom_separator') }</p>
@@ -119,8 +119,8 @@ const PresentationForm = (props) => {
                   { t('admin:markdown_setting.presentation_options.custom_separator_desc') }
                   <input
                     className="form-control"
-                    defaultValue={props.pageBreakCustomSeparator}
-                    // onChange={(e) => { adminMarkDownContainer.setPageBreakCustomSeparator(e.target.value) }}
+                    defaultValue={pageBreakCustomSeparator}
+                    onChange={(e) => { setPageBreakCustomSeparator(e.target.value) }}
                   />
                 </div>
               </label>
