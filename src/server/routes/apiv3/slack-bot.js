@@ -20,11 +20,11 @@ module.exports = (crowi) => {
     const boltApp = boltService.getBoltAppInstance(crowi);
 
     // TODO: improve event method
-    // boltApp.event('message', async({ event, client }) => {
+    boltApp.event('message', async({ event, client }) => {
     // Do some slack-specific stuff here
-    // await client.chat.postMessage('hogehoge');
-    res.send('iii');
-    // });
+      await client.chat.postMessage('hogehoge');
+      res.send('iii');
+    });
   });
 
 

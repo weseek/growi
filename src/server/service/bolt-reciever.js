@@ -1,7 +1,4 @@
 const { EventEmitter } = require('events');
-// const { createServer } = require('http');
-
-// const express = require('express');
 
 /**
  * the service class of SlackNotificationService
