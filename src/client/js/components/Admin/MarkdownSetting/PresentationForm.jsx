@@ -7,13 +7,13 @@ import { useTranslation } from '~/i18n';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-import { usePageBreakSeparator } from '~/stores/context';
+import { useMarkdownSettingsSWR } from '~/stores/admin';
 
 const logger = loggerFactory('growi:markdown:presentation');
 
 const PresentationForm = (props) => {
   const { t } = useTranslation();
-  const { data: pageBreakSeparator } = usePageBreakSeparator();
+  const { data, error, isValidating } = useMarkdownSettingsSWR();
 
   function onClickSubmit() {
   //   try {
@@ -25,8 +25,17 @@ const PresentationForm = (props) => {
   //     logger.error(err);
   //   }
   }
-
-  // const { pageBreakSeparator, pageBreakCustomSeparator } = adminMarkDownContainer.state;
+  if (isValidating) {
+    return (
+      <div className="my-5 text-center">
+        <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
+      </div>
+    );
+  }
+  console.log(isValidating);
+  console.log(typeof data);
+  // console.log(markdownSettingParams.pageBreakSeparator);
+  // const { pageBreakSeparator } = markdownSettingParams;
 
   return (
     <fieldset className="form-group col-12 my-2">
@@ -43,7 +52,7 @@ const PresentationForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="pageBreakOption1"
-                checked={pageBreakSeparator === 1}
+                // checked={markdownSettingParams.pageBreakSeparator === 1}
                 // onChange={() => adminMarkDownContainer.switchPageBreakSeparator(1)}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption1">
@@ -67,7 +76,7 @@ const PresentationForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="pageBreakOption2"
-                checked={pageBreakSeparator === 2}
+                // checked={pageBreakSeparator === 2}
                 // onChange={() => adminMarkDownContainer.switchPageBreakSeparator(2)}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption2">
@@ -90,7 +99,7 @@ const PresentationForm = (props) => {
                 type="radio"
                 id="pageBreakOption3"
                 className="custom-control-input"
-                checked={pageBreakSeparator === 3}
+                // checked={pageBreakSeparator === 3}
                 // onChange={() => adminMarkDownContainer.switchPageBreakSeparator(3)}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption3">
@@ -109,7 +118,7 @@ const PresentationForm = (props) => {
         </div>
       </div>
 
-      <AdminUpdateButtonRow onClick={onClickSubmit} />
+      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={false} />
       {/* <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} /> */}
     </fieldset>
   );
