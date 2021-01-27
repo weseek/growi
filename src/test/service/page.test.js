@@ -151,7 +151,6 @@ describe('PageService', () => {
 
     await Tag.insertMany([
       { name: 'Parent' },
-      { name: 'Parent2' },
       { name: 'Child' },
     ]);
 
