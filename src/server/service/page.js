@@ -95,9 +95,12 @@ class PageService {
     const unorderedBulkOp = pageCollection.initializeUnorderedBulkOp();
     const createRediectPageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const revisionUnorderedBulkOp = revisionCollection.initializeUnorderedBulkOp();
+    const createRediectRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
 
     pages.forEach((page) => {
       const newPagePath = page.path.replace(oldPagePathPrefix, newPagePathPrefix);
+      const revisionId = new mongoose.Types.ObjectId();
+
       if (updateMetadata) {
         unorderedBulkOp.find({ _id: page._id }).update([{ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $toDate: Date.now() } } }]);
       }
@@ -106,7 +109,10 @@ class PageService {
       }
       if (createRedirectPage) {
         createRediectPageBulkOp.insert({
-          path: page.path, body: `redirect ${newPagePath}`, creator: user._id, lastUpdateUser: user._id, status: Page.STATUS_PUBLISHED, redirectTo: newPagePath,
+          path: page.path, revision: revisionId, creator: user._id, lastUpdateUser: user._id, status: Page.STATUS_PUBLISHED, redirectTo: newPagePath,
+        });
+        createRediectRevisionBulkOp.insert({
+          _id: revisionId, path: page.path, body: `redirect ${newPagePath}`, author: user._id, format: 'markdown',
         });
       }
       revisionUnorderedBulkOp.find({ path: page.path }).update({ $set: { path: newPagePath } }, { multi: true });
@@ -118,6 +124,7 @@ class PageService {
       // Execute after unorderedBulkOp to prevent duplication
       if (createRedirectPage) {
         await createRediectPageBulkOp.execute();
+        await createRediectRevisionBulkOp.execute();
       }
     }
     catch (err) {
