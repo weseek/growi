@@ -16,7 +16,9 @@ let parentForRename4;
 let parentForDuplicate;
 let parentForDelete;
 let parentForDeleteCompletely;
-let parentForRevert;
+
+let parentForRevert1;
+let parentForRevert2;
 
 let childForRename;
 let childForDuplicate;
@@ -121,7 +123,14 @@ describe('PageService', () => {
         lastUpdateUser: testUser1,
       },
       {
-        path: '/trash/parentForRevert',
+        path: '/trash/parentForRevert1',
+        status: Page.STATUS_PUBLISHED,
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/trash/parentForRevert2',
         status: Page.STATUS_PUBLISHED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
@@ -142,7 +151,8 @@ describe('PageService', () => {
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
     parentForDelete = await Page.findOne({ path: '/parentForDelete' });
     parentForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely' });
-    parentForRevert = await Page.findOne({ path: '/trash/parentForRevert' });
+    parentForRevert1 = await Page.findOne({ path: '/trash/parentForRevert1' });
+    parentForRevert2 = await Page.findOne({ path: '/trash/parentForRevert2' });
 
     childForRename = await Page.findOne({ path: '/parentForRename1/child' });
     childForDuplicate = await Page.findOne({ path: '/parentForDuplicate/child' });
@@ -377,16 +387,34 @@ describe('PageService', () => {
     test('revert deleted page when the redirect from page exists', async() => {
 
       findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
-        return { redirectTo: '/trash/parentForRevert' };
+        return { redirectTo: '/trash/parentForRevert1' };
       });
 
-      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert, testUser2);
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2);
 
-      expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert.path);
-      expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert');
+      expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert1.path);
+      expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert1');
       expect(deleteCompletelySpy).toHaveBeenCalled();
 
-      expect(resultPage.path).toBe('/parentForRevert');
+      expect(resultPage.path).toBe('/parentForRevert1');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
+      expect(resultPage.deleteUser).toBeNull();
+      expect(resultPage.deletedAt).toBeNull();
+    });
+    test('revert deleted page when the redirect from page does not exist', async() => {
+
+      findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
+        return null;
+      });
+
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert2, testUser2);
+
+      expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert2.path);
+      expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert2');
+      expect(deleteCompletelySpy).not.toHaveBeenCalled();
+
+      expect(resultPage.path).toBe('/parentForRevert2');
       expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
       expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(resultPage.deleteUser).toBeNull();
