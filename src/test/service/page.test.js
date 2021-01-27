@@ -358,6 +358,7 @@ describe('PageService', () => {
       const parentoForDuplicateTags = await PageTagRelation.find({ relatedPage: parentForDuplicate });
       const pageTagRelationAfterDuplicated = await PageTagRelation.find({ relatedPage: newPageDummy });
 
+      expect(duplicateTagsReturn).toHaveLength(1);
       expect(pageTagRelationAfterDuplicated.relatedTag).toEqual(parentoForDuplicateTags.relatedTag);
     });
   });
