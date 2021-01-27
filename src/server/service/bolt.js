@@ -7,23 +7,17 @@ const { App } = require('@slack/bolt');
  */
 class BoltService extends EventEmitter {
 
-  constructor(crowi) {
-    super();
-    this.boltRecieverService = crowi.boltRecieverService;
-  }
-
-
-  getBoltAppInstance() {
-    const { boltRecieverService } = this;
+  getBoltAppInstance(crowi) {
+    const { boltRecieverService } = crowi;
 
     const receiver = boltRecieverService;
 
-    const appInstance = new App({
+    const boltAppInstance = new App({
       token: process.env.SLACK_BOT_TOKEN,
       receiver,
     });
 
-    return appInstance;
+    return boltAppInstance;
   }
 
 }

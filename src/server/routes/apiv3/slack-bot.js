@@ -17,13 +17,14 @@ module.exports = (crowi) => {
       expressApp.post(endpoint, boltRecieverService.requestHandler.bind(this));
     }
 
-    const boltApp = boltService.getBoltAppInstance();
+    const boltApp = boltService.getBoltAppInstance(crowi);
 
     // TODO: improve event method
-    boltApp.event('message', async({ event, client }) => {
-      // Do some slack-specific stuff here
-      await client.chat.postMessage('hogehoge');
-    });
+    // boltApp.event('message', async({ event, client }) => {
+    // Do some slack-specific stuff here
+    // await client.chat.postMessage('hogehoge');
+    res.send('iii');
+    // });
   });
 
 
