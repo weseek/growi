@@ -6,15 +6,5 @@ export const useMarkdownSettingsSWR = (path, initialData?: any): responseInterfa
   return useSWR(
     '/markdown-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.markdownParams),
-    {
-      isEnabledLinebreaks: false,
-      isEnabledLinebreaksInComments: false,
-      pageBreakSeparator: 1,
-      pageBreakCustomSeparator: '',
-      isEnabledXss: false,
-      xssOption: null,
-      tagWhiteList: null,
-      attrWhiteList: null,
-    },
   );
 };
