@@ -30,6 +30,7 @@ let parentForRevert2;
 let childForDuplicate;
 let childForDelete;
 let childForDeleteCompletely;
+
 let childForRevert;
 
 describe('PageService', () => {
@@ -535,6 +536,7 @@ describe('PageService', () => {
   describe('revert page', () => {
     let getRevertDeletedPageNameSpy;
     let findByPathSpy;
+    let findSpy;
     let deleteCompletelySpy;
     let revertDeletedDescendantsWithStreamSpy;
 
@@ -585,8 +587,28 @@ describe('PageService', () => {
       expect(resultPage.deletedAt).toBeNull();
     });
 
-    test('revertDeletedPages()', () => {
-      expect(3).toBe(3);
+    test('revert deleted descendants', async() => {
+
+      findSpy = jest.spyOn(Page, 'find').mockImplementation(() => {
+        return [{ path: '/parentForRevert/child', redirectTo: '/trash/parentForRevert/child' }];
+      });
+
+      await crowi.pageService.revertDeletedDescendants([childForRevert], testUser2);
+      const resultPage = await Page.findOne({ path: '/parentForRevert/child' });
+      const revrtedFromPage = await Page.findOne({ path: '/trash/parentForRevert/child' });
+      const revrtedFromPageRevision = await Revision.findOne({ path: '/trash/parentForRevert/child' });
+
+      expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(childForRevert.path);
+      expect(findSpy).toHaveBeenCalledWith({ path: { $in: ['/parentForRevert/child'] } });
+
+      expect(resultPage.path).toBe('/parentForRevert/child');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
+      expect(resultPage.deleteUser).toBeNull();
+      expect(resultPage.deletedAt).toBeNull();
+
+      expect(revrtedFromPage).toBeNull();
+      expect(revrtedFromPageRevision).toBeNull();
     });
   });
 
