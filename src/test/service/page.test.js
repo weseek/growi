@@ -115,18 +115,20 @@ describe('PageService', () => {
       },
       {
         path: '/parentForDeleteCompletely/child',
+        status: Page.STATUS_PUBLISHED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
       },
       {
-        path: '/parentForRevert',
+        path: '/trash/parentForRevert',
+        status: Page.STATUS_PUBLISHED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
       },
       {
-        path: '/parentForRevert/child',
+        path: '/trash/parentForRevert/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
@@ -140,13 +142,13 @@ describe('PageService', () => {
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
     parentForDelete = await Page.findOne({ path: '/parentForDelete' });
     parentForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely' });
-    parentForRevert = await Page.findOne({ path: '/parentForRevert' });
+    parentForRevert = await Page.findOne({ path: '/trash/parentForRevert' });
 
     childForRename = await Page.findOne({ path: '/parentForRename1/child' });
     childForDuplicate = await Page.findOne({ path: '/parentForDuplicate/child' });
     childForDelete = await Page.findOne({ path: '/parentForDelete/child' });
     childForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely/child' });
-    childForRevert = await Page.findOne({ path: '/parentForRevert/child' });
+    childForRevert = await Page.findOne({ path: '/trash/parentForRevert/child' });
 
 
     await Tag.insertMany([
@@ -362,8 +364,33 @@ describe('PageService', () => {
   });
 
   describe('revert page', () => {
-    test('revertDeletedPage()', () => {
-      expect(3).toBe(3);
+    let getRevertDeletedPageNameSpy;
+    let findByPathSpy;
+    let deleteCompletelySpy;
+
+    beforeEach(async(done) => {
+      getRevertDeletedPageNameSpy = jest.spyOn(Page, 'getRevertDeletedPageName');
+      deleteCompletelySpy = jest.spyOn(crowi.pageService, 'deleteCompletely').mockImplementation();
+      done();
+    });
+
+    test('revert deleted page when the redirect from page exists', async() => {
+
+      findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
+        return { redirectTo: '/trash/parentForRevert' };
+      });
+
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert, testUser2);
+
+      expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert.path);
+      expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert');
+      expect(deleteCompletelySpy).toHaveBeenCalled();
+
+      expect(resultPage.path).toBe('/parentForRevert');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
+      expect(resultPage.deleteUser).toBeNull();
+      expect(resultPage.deletedAt).toBeNull();
     });
 
     test('revertDeletedPages()', () => {
