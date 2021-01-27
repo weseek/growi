@@ -8,6 +8,7 @@ import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 
 type Props = {
+  markdownSettingParams: any,
 };
 
 const MarkDownSettingContents = (props: Props): JSX.Element => {
@@ -27,7 +28,10 @@ const MarkDownSettingContents = (props: Props): JSX.Element => {
       <Card className="card well my-3">
         <CardBody className="px-0 py-2">{ t('admin:markdown_setting.presentation_desc') }</CardBody>
       </Card>
-      <PresentationForm />
+      <PresentationForm
+        pageBreakSeparator={props.markdownSettingParams.pageBreakSeparator}
+        pageBreakCustomSeparator={props.markdownSettingParams.pageBreakCustomSeparator}
+      />
 
       {/* XSS Setting */}
       <h2 className="admin-setting-header">{ t('admin:markdown_setting.xss_header') }</h2>

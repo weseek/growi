@@ -8,7 +8,7 @@ import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
 import MarkDownSettingContents from '~/client/js/components/Admin/MarkdownSetting/MarkDownSettingContents';
-
+import { apiv3Get } from '~/utils/apiv3-client';
 import {
   useCurrentUser,
   useSearchServiceConfigured, useSearchServiceReachable,
@@ -20,6 +20,8 @@ type Props = CommonProps & {
   growiVersion: string,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+
+  markdownSettingParams: any,
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
@@ -34,7 +36,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   return (
     <>
       <AdminLayout title={title} selectedNavOpt="markdown" growiVersion={props.growiVersion}>
-        <MarkDownSettingContents />
+        <MarkDownSettingContents markdownSettingParams={props.markdownSettingParams} />
       </AdminLayout>
     </>
   );
@@ -59,6 +61,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
 
+  props.markdownSettingParams = await apiv3Get('/markdown-setting');
+  console.log(props.markdownSettingParams);
   return {
     props,
   };
