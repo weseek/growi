@@ -359,8 +359,9 @@ describe('PageService', () => {
       pageIdMapping[parentForDuplicate._id] = newPageDummy[0]._id;
 
       await crowi.pageService.duplicateTags(pageIdMapping);
-      const pageTagRelationAfterDuplicated = await PageTagRelation.find({ relatedPage: newPageDummy });
       const parentoForDuplicateTags = await PageTagRelation.find({ relatedPage: parentForDuplicate });
+
+      const pageTagRelationAfterDuplicated = await PageTagRelation.find({ relatedPage: newPageDummy });
 
       expect(pageTagRelationAfterDuplicated[0].relatedTag).toEqual(parentoForDuplicateTags[0].relatedTag);
       expect(pageTagRelationAfterDuplicated[1].relatedTag).toEqual(parentoForDuplicateTags[1].relatedTag);
