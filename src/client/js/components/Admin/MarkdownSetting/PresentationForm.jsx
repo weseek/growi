@@ -7,36 +7,18 @@ import { useTranslation } from '~/i18n';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-import { useMarkdownSettingsSWR } from '~/stores/admin';
 import { apiv3Put } from '../../../util/apiv3-client';
-import { useCsrfToken } from '~/stores/context';
 
 const logger = loggerFactory('growi:markdown:presentation');
 
 const PresentationForm = (props) => {
   const { t } = useTranslation();
-  const { data: csrfToken } = useCsrfToken();
   const [pageBreakSeparator, setPageBreakSeparator] = useState(props.pageBreakSeparator);
   const [pageBreakCustomSeparator, setPageBreakCustomSeparator] = useState(props.pageBreakCustomSeparator);
-  // const { data: markdownSettingParams, error, isValidating } = useMarkdownSettingsSWR();
-
-  // const { pageBreakSeparator, pageBreakCustomSeparator } = markdownSettingParams;
-
-  // if (error) {
-  //   return <></>;
-  // }
-
-  // if (isValidating) {
-  //   return (
-  //     <div className="my-5 text-center">
-  //       <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
-  //     </div>
-  //   );
-  // }
 
   async function onClickSubmit() {
     try {
-      await apiv3Put('/markdown-setting/presentation', { pageBreakSeparator: 1, pageBreakCustomSeparator: null, _csrf: csrfToken });
+      await apiv3Put('/markdown-setting/presentation', { pageBreakSeparator, pageBreakCustomSeparator });
       toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.presentation_header') }));
     }
     catch (err) {
@@ -129,8 +111,7 @@ const PresentationForm = (props) => {
         </div>
       </div>
 
-      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={false} />
-      {/* <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} /> */}
+      <AdminUpdateButtonRow onClick={onClickSubmit} />
     </fieldset>
   );
 
