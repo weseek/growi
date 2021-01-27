@@ -6,7 +6,6 @@ const { getInstance } = require('../setup-crowi');
 let testUser1;
 let testUser2;
 let parentTag;
-let parentTag2;
 let childTag;
 
 let parentForRename1;
@@ -157,12 +156,10 @@ describe('PageService', () => {
     ]);
 
     parentTag = await Tag.findOne({ name: 'Parent' });
-    parentTag2 = await Tag.findOne({ name: 'Parent2' });
     childTag = await Tag.findOne({ name: 'Child' });
 
     await PageTagRelation.insertMany([
       { relatedPage: parentForDuplicate, relatedTag: parentTag },
-      { relatedPage: parentForDuplicate, relatedTag: parentTag2 },
       { relatedPage: childForDuplicate, relatedTag: childTag },
     ]);
 
@@ -362,8 +359,7 @@ describe('PageService', () => {
       const parentoForDuplicateTags = await PageTagRelation.find({ relatedPage: parentForDuplicate });
       const pageTagRelationAfterDuplicated = await PageTagRelation.find({ relatedPage: newPageDummy });
 
-      expect(pageTagRelationAfterDuplicated[0].relatedTag).toEqual(parentoForDuplicateTags[0].relatedTag);
-      expect(pageTagRelationAfterDuplicated[1].relatedTag).toEqual(parentoForDuplicateTags[1].relatedTag);
+      expect(pageTagRelationAfterDuplicated.relatedTag).toEqual(parentoForDuplicateTags.relatedTag);
     });
   });
 
