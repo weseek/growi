@@ -5,17 +5,9 @@ const router = express.Router();
 
 
 module.exports = (crowi) => {
-  const { boltService, boltRecieverService, express } = crowi;
+  const { boltService, boltRecieverService } = crowi;
 
-  router.get('/:endpoints', async(req, res) => {
-
-
-    const expressApp = express;
-    const { endpoints } = req.params;
-
-    for (const endpoint of endpoints) {
-      expressApp.post(endpoint, boltRecieverService.requestHandler.bind(this));
-    }
+  router.post('/hoge', boltRecieverService.requestHandler.bind(this), async(req, res) => {
 
     const boltApp = boltService.getBoltAppInstance(crowi);
 
