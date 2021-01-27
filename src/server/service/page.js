@@ -591,7 +591,7 @@ class PageService {
       .pipe(writeStream);
   }
 
-  async revertDeletedPages(pages, user) {
+  async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
     const pageCollection = mongoose.connection.collection('pages');
     const revisionCollection = mongoose.connection.collection('revisions');
@@ -689,14 +689,14 @@ class PageService {
       .lean()
       .cursor();
 
-    const revertDeletedPages = this.revertDeletedPages.bind(this);
+    const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          revertDeletedPages(batch, user);
+          revertDeletedDescendants(batch, user);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
