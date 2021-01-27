@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { apiGet } from '~/client/js/util/apiv1-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -44,7 +45,7 @@ class TagsInput extends React.Component {
 
   async handleSearch(query) {
     this.setState({ isLoading: true });
-    const res = await this.props.appContainer.apiGet('/tags.search', { q: query });
+    const res = await apiGet('/tags.search', { q: query });
     res.tags.unshift(query); // selectable new tag whose name equals query
     this.setState({
       resultTags: Array.from(new Set(res.tags)), // use Set for de-duplication

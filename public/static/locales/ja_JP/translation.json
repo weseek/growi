@@ -314,6 +314,7 @@
   },
   "page_edit": {
     "Show active line": "アクティブ行をハイライト",
+    "auto_format_table": "表の自動整形",
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",
     "notice": {
       "conflict": "すでに他の人がこのページを編集していたため保存できませんでした。ページを再読み込み後、自分の編集箇所のみ再度編集してください。"

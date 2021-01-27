@@ -403,6 +403,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 120,
   },
+  PROMSTER_ENABLED: {
+    ns:      'crowi',
+    key:     'promster:isEnabled',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  PROMSTER_PORT: {
+    ns:      'crowi',
+    key:     'promster:port',
+    type:    ValueType.NUMBER,
+    default: 7788,
+  },
 };
 
 export interface ConfigObject extends Record<string, any> {

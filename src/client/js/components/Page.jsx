@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
@@ -11,6 +11,7 @@ import AppContainer from '../services/AppContainer';
 import RevisionRenderer from './Page/RevisionRenderer';
 import { useCurrentUser } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
+import MarkdownRenderer from '~/service/renderer/markdown-renderer';
 // import GridEditModal from './PageEditor/GridEditModal';
 // import HandsontableModal from './PageEditor/HandsontableModal';
 // import DrawioModal from './PageEditor/DrawioModal';
@@ -160,11 +161,13 @@ const Page = (props) => {
   const { appContainer } = props;
   const { isMobile } = appContainer;
 
-  // const growiRenderer = appContainer.getRenderer('page');
+  const renderer = useMemo(() => {
+    return new MarkdownRenderer();
+  }, []);
 
   return (
     <div className={`${isMobile && 'page-mobile'}`}>
-      {/* <RevisionRenderer growiRenderer={growiRenderer} markdown={currentPage.revision.markdown} /> */}
+      <RevisionRenderer renderer={renderer} markdown={currentPage.revision.body} />
     </div>
   );
 };

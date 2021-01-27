@@ -290,6 +290,7 @@
 	},
 	"page_edit": {
 		"Show active line": "显示活动行",
+		"auto_format_table": "自动格式化表格",
 		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
 		"notice": {
 			"conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"

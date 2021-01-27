@@ -95,12 +95,13 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
   );
 };
 
-export const useDescendentsCount = <Data, Error>(pagePath?: string, initialData?: number): responseInterface<Data, Error> => {
+export const useDescendantsCount = (pagePath?: string): responseInterface<number, Error> => {
+  const endpoint = '/pages/descendents-count';
+  const key = pagePath != null ? endpoint : null;
   return useSWR(
-    '/pages/descendents-count',
-    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data),
+    key,
+    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
     {
-      initialData: initialData || 0,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
     },

@@ -634,18 +634,18 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    descendentsCount:
+   *                    descendantsCount:
    *                      type: integer
    *                      description: descendants pages count
    *          500:
    *            description: Internal server error.
    */
-  router.get('/descendents-count', accessTokenParser, loginRequired, validator.descendantsCount, async(req, res) => {
+  router.get('/descendants-count', accessTokenParser, loginRequired, validator.descendantsCount, async(req, res) => {
     const { path } = req.query;
 
     try {
-      const descendentsCount = await Page.countManageableListWithDescendants(path, req.user);
-      return res.apiv3({ descendentsCount });
+      const descendantsCount = await Page.countManageableListWithDescendants(path, req.user);
+      return res.apiv3({ descendantsCount });
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3('Failed to get descendants pages count.', err), 500);
