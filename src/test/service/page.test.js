@@ -336,8 +336,29 @@ describe('PageService', () => {
       expect(3).toBe(3);
     });
 
-    test('duplicateTags()', () => {
-      expect(3).toBe(3);
+    test('duplicateTags()', async() => {
+
+      const newPageDummy = [];
+      newPageDummy.push({
+        _id: '60110bdd85339d7dc732dddd',
+        path: '/newPageDummyPath',
+        creator: parentForDuplicate._id,
+        grant: parentForDuplicate.grant,
+        grantedGroup: parentForDuplicate.grantedGroup,
+        grantedUsers: parentForDuplicate.grantedUsers,
+        lastUpdateUser: parentForDuplicate._id,
+        redirectTo: null,
+        revision: parentForDuplicate.revisionId,
+      });
+
+      const pageIdMapping = {};
+      pageIdMapping[parentForDuplicate._id] = newPageDummy[0]._id;
+
+      await crowi.pageService.duplicateTags(pageIdMapping);
+      const pageTagRelationAfterDuplicateTags = await PageTagRelation.find({ relatedPage: newPageDummy });
+      const parentoForDuplicateTags = await PageTagRelation.find({ relatedPage: parentForDuplicate });
+
+      expect(pageTagRelationAfterDuplicateTags.relatedTag).toEqual(parentoForDuplicateTags.relatedTag);
     });
   });
 
