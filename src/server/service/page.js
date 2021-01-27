@@ -232,6 +232,8 @@ class PageService {
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
 
+    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
     const createdPage = await Page.create(
       newPagePath, page.revision.body, user, options,
     );

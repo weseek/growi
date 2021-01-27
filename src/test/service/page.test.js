@@ -23,7 +23,9 @@ let parentForDelete1;
 let parentForDelete2;
 
 let parentForDeleteCompletely;
-let parentForRevert;
+
+let parentForRevert1;
+let parentForRevert2;
 
 let childForDuplicate;
 let childForDelete;
@@ -38,6 +40,7 @@ describe('PageService', () => {
   let User;
   let Tag;
   let PageTagRelation;
+  let xssSpy;
 
   beforeAll(async(done) => {
     crowi = await getInstance();
@@ -104,6 +107,7 @@ describe('PageService', () => {
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
+        revision: '600d395667536503354cbe91',
       },
       {
         path: '/parentForDuplicate/child',
@@ -142,13 +146,22 @@ describe('PageService', () => {
         lastUpdateUser: testUser1,
       },
       {
-        path: '/parentForRevert',
+        path: '/trash/parentForRevert1',
+        status: Page.STATUS_DELETED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
       },
       {
-        path: '/parentForRevert/child',
+        path: '/trash/parentForRevert2',
+        status: Page.STATUS_DELETED,
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/trash/parentForRevert/child',
+        status: Page.STATUS_DELETED,
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
@@ -166,7 +179,8 @@ describe('PageService', () => {
     parentForDelete2 = await Page.findOne({ path: '/parentForDelete2' });
 
     parentForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely' });
-    parentForRevert = await Page.findOne({ path: '/parentForRevert' });
+    parentForRevert1 = await Page.findOne({ path: '/trash/parentForRevert1' });
+    parentForRevert2 = await Page.findOne({ path: '/trash/parentForRevert2' });
 
     childForRename1 = await Page.findOne({ path: '/parentForRename1/child' });
     childForRename2 = await Page.findOne({ path: '/parentForRename2/child' });
@@ -175,7 +189,7 @@ describe('PageService', () => {
     childForDuplicate = await Page.findOne({ path: '/parentForDuplicate/child' });
     childForDelete = await Page.findOne({ path: '/parentForDelete/child' });
     childForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely/child' });
-    childForRevert = await Page.findOne({ path: '/parentForRevert/child' });
+    childForRevert = await Page.findOne({ path: '/trash/parentForRevert/child' });
 
 
     await Tag.insertMany([
@@ -191,11 +205,21 @@ describe('PageService', () => {
       { relatedPage: childForDuplicate, relatedTag: childTag },
     ]);
 
+    await Revision.insertMany([
+      {
+        _id: '600d395667536503354cbe91',
+        path: parentForDuplicate,
+        body: 'duplicateBody',
+      },
+    ]);
+
+    xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+
+
     done();
   });
 
   describe('rename page', () => {
-    let xssSpy;
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
     const dateToUse = new Date('2000-01-01');
@@ -203,7 +227,6 @@ describe('PageService', () => {
 
     beforeEach(async(done) => {
       jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
-      xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
       renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
       done();
@@ -362,8 +385,55 @@ describe('PageService', () => {
 
 
   describe('duplicate page', () => {
-    test('duplicate()', () => {
-      expect(3).toBe(3);
+    let duplicateDescendantsWithStreamSpy;
+
+    jest.mock('../../server/models/serializers/page-serializer');
+    const { serializePageSecurely } = require('../../server/models/serializers/page-serializer');
+    serializePageSecurely.mockImplementation(page => page);
+
+    beforeEach(async(done) => {
+      duplicateDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'duplicateDescendantsWithStream').mockImplementation();
+      done();
+    });
+
+    test('duplicate page (isRecursively: false)', async() => {
+      const dummyId = '600d395667536503354c9999';
+      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
+      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, parentTag.name] });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
+
+      const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicate', testUser2, false);
+      const duplicatedToPageRevision = await Revision.findOne({ path: '/newParentDuplicate' });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
+      expect(serializePageSecurely).toHaveBeenCalled();
+      expect(resultPage.path).toBe('/newParentDuplicate');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(duplicatedToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
+      expect(resultPage.grant).toEqual(parentForDuplicate.grant);
+      expect(resultPage.tags).toEqual([originTagsMock().name]);
+    });
+
+    test('duplicate page (isRecursively: true)', async() => {
+      const dummyId = '600d395667536503354c9999';
+      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
+      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, parentTag.name] });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
+
+      const resultPageRecursivly = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicateRecursively', testUser2, true);
+      const duplicatedRecursivelyToPageRevision = await Revision.findOne({ path: '/newParentDuplicateRecursively' });
+
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicateDescendantsWithStreamSpy).toHaveBeenCalled();
+      expect(serializePageSecurely).toHaveBeenCalled();
+      expect(resultPageRecursivly.path).toBe('/newParentDuplicateRecursively');
+      expect(resultPageRecursivly.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(duplicatedRecursivelyToPageRevision._id).not.toEqual(parentForDuplicate.revision._id);
+      expect(resultPageRecursivly.grant).toEqual(parentForDuplicate.grant);
+      expect(resultPageRecursivly.tags).toEqual([originTagsMock().name]);
     });
 
     test('duplicateDescendants()', () => {
@@ -463,8 +533,56 @@ describe('PageService', () => {
   });
 
   describe('revert page', () => {
-    test('revertDeletedPage()', () => {
-      expect(3).toBe(3);
+    let getRevertDeletedPageNameSpy;
+    let findByPathSpy;
+    let deleteCompletelySpy;
+    let revertDeletedDescendantsWithStreamSpy;
+
+    beforeEach(async(done) => {
+      getRevertDeletedPageNameSpy = jest.spyOn(Page, 'getRevertDeletedPageName');
+      deleteCompletelySpy = jest.spyOn(crowi.pageService, 'deleteCompletely').mockImplementation();
+      revertDeletedDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'revertDeletedDescendantsWithStream').mockImplementation();
+      done();
+    });
+
+    test('revert deleted page when the redirect from page exists', async() => {
+
+      findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
+        return { redirectTo: '/trash/parentForRevert1' };
+      });
+
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2);
+
+      expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert1.path);
+      expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert1');
+      expect(deleteCompletelySpy).toHaveBeenCalled();
+      expect(revertDeletedDescendantsWithStreamSpy).not.toHaveBeenCalled();
+
+      expect(resultPage.path).toBe('/parentForRevert1');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
+      expect(resultPage.deleteUser).toBeNull();
+      expect(resultPage.deletedAt).toBeNull();
+    });
+
+    test('revert deleted page when the redirect from page does not exist', async() => {
+
+      findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
+        return null;
+      });
+
+      const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert2, testUser2, {}, true);
+
+      expect(getRevertDeletedPageNameSpy).toHaveBeenCalledWith(parentForRevert2.path);
+      expect(findByPathSpy).toHaveBeenCalledWith('/parentForRevert2');
+      expect(deleteCompletelySpy).not.toHaveBeenCalled();
+      expect(revertDeletedDescendantsWithStreamSpy).toHaveBeenCalled();
+
+      expect(resultPage.path).toBe('/parentForRevert2');
+      expect(resultPage.lastUpdateUser._id).toEqual(testUser2._id);
+      expect(resultPage.status).toBe(Page.STATUS_PUBLISHED);
+      expect(resultPage.deleteUser).toBeNull();
+      expect(resultPage.deletedAt).toBeNull();
     });
 
     test('revertDeletedPages()', () => {
