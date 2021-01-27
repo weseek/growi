@@ -1,6 +1,6 @@
-import useSWR, { mutate, responseInterface } from 'swr';
+import useSWR, { keyInterface, mutate, responseInterface } from 'swr';
 
-export const useStaticSWR = <Data, Error>(key: string, initialData?: Data): responseInterface<Data, Error> => {
+export const useStaticSWR = <Data, Error>(key: keyInterface, initialData?: Data): responseInterface<Data, Error> => {
   if (initialData != null) {
     mutate(key, initialData);
   }

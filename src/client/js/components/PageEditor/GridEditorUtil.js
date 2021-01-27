@@ -31,6 +31,9 @@ class GridEditorUtil {
   isInGridBlock(editor) {
     const bog = this.getBog(editor);
     const eog = this.getEog(editor);
+    if (bog === null || eog === null) {
+      return false;
+    }
     return (JSON.stringify(bog) !== JSON.stringify(eog));
   }
 
@@ -80,7 +83,7 @@ class GridEditorUtil {
     }
 
     if (!isFound) {
-      return { line: curPos.line, ch: curPos.ch };
+      return null;
     }
 
     const bodLine = Math.max(firstLine, line);
@@ -114,7 +117,7 @@ class GridEditorUtil {
     }
 
     if (!isFound) {
-      return { line: curPos.line, ch: curPos.ch };
+      return null;
     }
 
     const eodLine = Math.min(line, lastLine);
@@ -124,7 +127,15 @@ class GridEditorUtil {
 
   replaceGridWithHtmlWithEditor(editor, grid) {
     const curPos = editor.getCursor();
-    editor.getDoc().replaceRange(grid.toString(), this.getBog(editor), this.getEog(editor));
+    let bog = this.getBog(editor);
+    let eog = this.getEog(editor);
+
+    if (bog === null || eog === null) {
+      bog = curPos;
+      eog = curPos;
+    }
+
+    editor.getDoc().replaceRange(grid.toString(), bog, eog);
     editor.getDoc().setCursor(curPos.line + 1, 2);
   }
 

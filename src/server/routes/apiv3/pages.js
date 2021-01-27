@@ -149,6 +149,10 @@ module.exports = (crowi) => {
       body('pageNameInput').trim().isLength({ min: 1 }).withMessage('pageNameInput is required'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
     ],
+
+    descendantsCount: [
+      body('path').isLength({ min: 1 }).withMessage('path is required'),
+    ],
   };
 
   async function createPageAction({
@@ -607,5 +611,47 @@ module.exports = (crowi) => {
     }
 
   });
+
+  /**
+   * @swagger
+   *
+   *
+   *    /pages/descendants-count:
+   *      get:
+   *        tags: [Pages]
+   *        operationId: descendantsCount
+   *        description: Get descendants pages count
+   *        parameters:
+   *          - name: path
+   *            in: query
+   *            description: Parent path of search
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to retrieve pages count.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    descendantsCount:
+   *                      type: integer
+   *                      description: descendants pages count
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/descendants-count', accessTokenParser, loginRequired, validator.descendantsCount, async(req, res) => {
+    const { path } = req.query;
+
+    try {
+      const descendantsCount = await Page.countManageableListWithDescendants(path, req.user);
+      return res.apiv3({ descendantsCount });
+    }
+    catch (err) {
+      return res.apiv3Err(new ErrorV3('Failed to get descendants pages count.', err), 500);
+    }
+
+  });
+
   return router;
 };

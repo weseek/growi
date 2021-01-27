@@ -15,9 +15,9 @@ import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 import BasicLayout from '../components/BasicLayout';
 
-import { GrowiSubNavigation } from '~/components/Organisms/GrowiSubNavigation';
+import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
-// import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
+import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
 import {
@@ -94,7 +94,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
-      <BasicLayout title="GROWI">
+      <BasicLayout title="GROWI" growiVersion={props.growiVersion}>
         <header className="py-0">
           <GrowiSubNavigation />
         </header>
@@ -110,7 +110,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div className="row">
             <div className="col grw-page-content-container">
               <div id="content-main" className="content-main container">
-                {/* <DisplaySwitcher /> */}
+                <DisplaySwitcher />
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                 {/* <PageStatusAlert /> */}
               </div>
@@ -133,18 +133,18 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 async function injectPageInformation(context: GetServerSidePropsContext, props: Props, specifiedPagePath?: string): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const PageModel = crowi.model('Page');
   const { pageService } = crowi;
 
   const { user } = req;
 
   const pagePath = specifiedPagePath || props.currentPagePath;
-  const page = await PageModel.findByPathAndViewer(pagePath, user);
+  const result = await pageService.findPageAndMetaDataByViewer({ path: pagePath, user });
+  const page = result.page;
 
   if (page == null) {
     // check the page is forbidden or just does not exist.
-    props.isForbidden = await PageModel.count({ path: pagePath }) > 0;
-    props.isNotFound = !props.isForbidden;
+    props.isForbidden = result.isForbidden;
+    props.isNotFound = result.isNotFound;
     logger.warn(`Page is ${props.isForbidden ? 'forbidden' : 'not found'}`, pagePath);
     return;
   }

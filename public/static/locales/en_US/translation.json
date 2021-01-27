@@ -312,6 +312,7 @@
   },
   "page_edit": {
     "Show active line": "Show active line",
+    "auto_format_table": "Auto format table",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
     "notice": {
       "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."

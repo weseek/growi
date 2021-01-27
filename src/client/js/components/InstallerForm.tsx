@@ -34,6 +34,7 @@ const InstallerForm = (): JSX.Element => {
   const { handleSubmit, register } = useForm({ mode: 'onBlur' });
 
   const [isMounted, setIsMounted] = useState(false);
+  const [isSubmittingDisabled, setIsSubmittingDisabled] = useState(false);
   const [isValidUserName, setIsValidUserName] = useState(true);
   const [serverErrors, setServerErrors] = useState<ErrorV3[]>([]);
 
@@ -62,6 +63,8 @@ const InstallerForm = (): JSX.Element => {
     const postData = { ...formValues, language };
 
     try {
+      setIsSubmittingDisabled(true);
+
       const { data } = await apiv3Post('/install', postData);
 
       const { isLoggedIn } = data;
@@ -75,6 +78,9 @@ const InstallerForm = (): JSX.Element => {
     }
     catch (errors) {
       setServerErrors(errors);
+    }
+    finally {
+      setIsSubmittingDisabled(false);
     }
   };
 
@@ -184,7 +190,7 @@ const InstallerForm = (): JSX.Element => {
           </div>
 
           <div className="input-group mt-4 mb-3 d-flex justify-content-center">
-            <button type="submit" className="btn-fill btn btn-register">
+            <button type="submit" className="btn-fill btn btn-register" disabled={isSubmittingDisabled}>
               <div className="eff"></div>
               <span className="btn-label"><i className="icon-user-follow" /></span>
               <span className="btn-label-text">{ t('Create') }</span>

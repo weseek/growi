@@ -39,32 +39,29 @@ module.exports = function(crowi, app) {
   app.use('/api-docs', require('./apiv3/docs')(crowi));
   app.use('/_api/v3', require('./apiv3')(crowi));
 
-  app.get('/_next/*'                      , next.delegateToNext);
+  app.get('/_next/*'                  , next.delegateToNext);
+
+  app.get('/'                         , applicationInstalled, loginRequired , autoReconnectToSearch, next.delegateToNext);
+
+  // app.get('/login/error/:reason'      , applicationInstalled, login.error);
+  app.get('/login'                    , applicationInstalled, csrfProtection, login.preLogin, next.delegateToNext);
+  // app.get('/login/invited'            , applicationInstalled, login.invited);
+  // app.post('/login/activateInvited'   , applicationInstalled, form.invited                         , csrf, login.invited);
+  app.post('/login'                   , applicationInstalled, csrfProtection, form.login, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
+
+  // app.post('/register'                , applicationInstalled, form.register                        , csrf, login.register);
+  // app.get('/register'                 , applicationInstalled, login.preLogin, login.register);
+  app.get('/logout'                   , applicationInstalled, logout.logout);
+
+  app.get('/admin'                    , applicationInstalled, loginRequiredStrictly, adminRequired, next.delegateToNext);
+  // app.get('/admin/app'                , applicationInstalled, loginRequiredStrictly , adminRequired , admin.app.index);
 
   // installer
   if (!isInstalled) {
     app.use('/_api/v3/install', require('./apiv3/install')(crowi));
-    app.get('/'                           , applicationInstalled, next.delegateToNext);
-    app.get('/installer'                  , applicationNotInstalled, next.delegateToNext);
+    app.get('/installer'              , applicationNotInstalled , next.delegateToNext);
     return;
   }
-
-  // app.get('/login/error/:reason'     , login.error);
-  app.get('/login'                        , applicationInstalled, csrfProtection, login.preLogin, next.delegateToNext);
-  // app.get('/login/invited'           , login.invited);
-  // app.post('/login/activateInvited'  , form.invited                         , csrf, login.invited);
-  app.post('/login'                       , csrfProtection, form.login, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
-  // app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
-
-  // app.post('/register'               , form.register                        , csrf, login.register);
-  // app.get('/register'                , applicationInstalled     , login.preLogin, login.register);
-  app.get('/logout'                       , logout.logout);
-
-  // app.get('/admin'                          , loginRequiredStrictly , adminRequired , admin.index);
-  // app.get('/admin/app'                      , loginRequiredStrictly , adminRequired , admin.app.index);
-
-  // security admin
-  // app.get('/admin/security'                     , loginRequiredStrictly , adminRequired , admin.security.index);
 
   // OAuth
   app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailure);
@@ -78,6 +75,11 @@ module.exports = function(crowi, app) {
   app.get('/passport/twitter/callback'            , loginPassport.loginPassportTwitterCallback  , loginPassport.loginFailure);
   app.get('/passport/oidc/callback'               , loginPassport.loginPassportOidcCallback     , loginPassport.loginFailure);
   app.post('/passport/saml/callback'              , loginPassport.loginPassportSamlCallback     , loginPassport.loginFailure);
+
+  // app.post('/_api/login/testLdap'    , loginRequiredStrictly , form.login , loginPassport.testLdapCredentials);
+
+  // security admin
+  // app.get('/admin/security'          , loginRequiredStrictly , adminRequired , admin.security.index);
 
   // markdown admin
   // app.get('/admin/markdown'                   , loginRequiredStrictly , adminRequired , admin.markdown.index);
@@ -141,7 +143,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/pages.list'          , accessTokenParser , loginRequired , page.api.list);
   app.post('/_api/pages.create'       , accessTokenParser , loginRequiredStrictly , page.api.create);
   app.post('/_api/pages.update'       , accessTokenParser , loginRequiredStrictly , page.api.update);
-  app.get('/_api/pages.get'           , accessTokenParser , loginRequired , page.api.get);
   app.get('/_api/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   app.get('/_api/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);

@@ -1,19 +1,18 @@
-import { responseInterface } from 'swr';
+import { mutate, responseInterface } from 'swr';
 
-import { isUserPage, isSharedPage } from '~/utils/path-utils';
+import { isUserPage, isSharedPage, isCreatablePage } from '~/utils/path-utils';
 import {
-  useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser,
+  useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser, useForbidden,
 } from './context';
-import { useCurrentPageDeleted, useDescendentsCount, useCurrentPageSWR } from './page';
+import { useCurrentPageDeleted, useDescendantsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
-import { Page } from '~/interfaces/page';
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: descendentsCount } = useDescendentsCount(currentPagePath);
+  const { data: descendantsCount } = useDescendantsCount(currentPagePath);
 
-  const hasChildren = (descendentsCount || 0) > 0;
+  const hasChildren = (descendantsCount || 0) > 0;
   const isAbleToShowEmptyTrashButton = currentUser != null && currentUser.admin && currentPagePath === '/trash' && hasChildren;
 
   return useStaticSWR('isAbleToShowEmptyTrashButton', isAbleToShowEmptyTrashButton);
@@ -35,32 +34,51 @@ export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean,
 };
 
 export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => {
+  const key = 'isAbleToShowLikeButton';
   const { data: isSharedUser } = useIsSharedUser();
   const { data: page } = useCurrentPageSWR();
 
   if (page == null) {
-    throw new Error('page must not be null');
+    mutate(key, false);
   }
-  return useStaticSWR('isAbleToShowLikeButton', !isUserPage(page.path) && !isSharedUser);
+  else {
+    mutate(key, !isUserPage(page.path) && !isSharedUser);
+  }
+
+  return useStaticSWR(key);
 };
 
 export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
+  const key = 'isAbleToShowTagLabel';
   const { data: page } = useCurrentPageSWR();
-  const { path } = page as Page;
+  const { data: isNotFoundPage } = useNotFound();
+  // [TODO: getting if the current mode is 'view' or 'edit']
+  const editorMode = 'view';
 
-  // [TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881]
-  // isAbleToShowTagLabel = (!isCompactMode && !isUserPage && !isSharedPage && !(editorMode === 'view' && !isPageExist));
-  return useStaticSWR('isAbleToShowTagLabel', !isUserPage(path) && !isSharedPage(path));
+  if (page == null) {
+    mutate(key, false);
+  }
+  else {
+    // Tags cannot be edited while the new page and editorMode is 'view'
+    mutate(key, !isUserPage(page.path) && !isSharedPage(page.path) && !(editorMode === 'view' && isNotFoundPage));
+  }
+
+  return useStaticSWR(key);
 };
 
 export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> => {
+  const key = 'isAbleToShowPageAuthors';
   const { data: page } = useCurrentPageSWR();
   const { data: isNotFoundPage } = useNotFound();
 
   if (page == null) {
-    throw new Error('page must not be null');
+    mutate(key, false);
   }
-  return useStaticSWR('isAbleToShowPageAuthors', !isNotFoundPage && !isUserPage(page.path));
+  else {
+    mutate(key, !isNotFoundPage && !isUserPage(page.path));
+  }
+
+  return useStaticSWR(key);
 };
 
 export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any> => {
@@ -69,4 +87,22 @@ export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any>
   const { data: isSharedUser } = useIsSharedUser();
 
   return useStaticSWR('isAbleToShowPageManagement', !isNotFoundPage && !isTrashPage && !isSharedUser);
+};
+
+export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolean, any> | false => {
+  const key = 'isAbleToShowPageEditorModeManager';
+
+  const { data: isForbidden } = useForbidden();
+  const { data: isTrashPage } = useTrash();
+  const { data: isSharedUser } = useIsSharedUser();
+  const { data: page } = useCurrentPageSWR();
+
+  if (page == null) {
+    mutate(key, false);
+  }
+  else {
+    mutate(key, isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
+  }
+
+  return useStaticSWR(key);
 };

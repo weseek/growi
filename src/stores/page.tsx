@@ -2,7 +2,7 @@ import useSWR, { mutate, responseInterface } from 'swr';
 import { ConfigInterface } from 'swr/dist/types';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
-import { Page } from '~/interfaces/page';
+import { Page, Tag } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
 
@@ -12,8 +12,8 @@ import { useStaticSWR } from './use-static-swr';
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const usePageSWR = (path, initialData?: any): responseInterface<Page, Error> => {
   return useSWR(
-    ['/pages.get', path],
-    (endpoint, path) => apiGet(endpoint, { path }).then(result => result.page),
+    ['/page', path],
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
     {
       initialData,
       revalidateOnFocus: false,
@@ -27,10 +27,23 @@ export const useCurrentPageSWR = (initialData?: any): responseInterface<Page, Er
   const { data: currentPagePath } = useCurrentPagePath();
 
   if (initialData != null) {
-    mutate(['/pages.get', currentPagePath], initialData, false);
+    mutate(['/page', currentPagePath], initialData, false);
   }
 
   return usePageSWR(currentPagePath);
+};
+
+export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    ['/pages.getPageTag', currentPage],
+    (endpoint, page) => apiGet(endpoint, { pageId: page.id }).then(response => response.tags),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -82,11 +95,15 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
   );
 };
 
-export const useDescendentsCount = (pagePath?: string): responseInterface<number, Error> => {
-  if (pagePath == null) {
-    throw new Error('pagePath should not be null.');
-  }
-
-  // TODO: implement by https://youtrack.weseek.co.jp/issue/GW-4871
-  return useStaticSWR('descendentsCount', 10);
+export const useDescendantsCount = (pagePath?: string): responseInterface<number, Error> => {
+  const endpoint = '/pages/descendents-count';
+  const key = pagePath != null ? endpoint : null;
+  return useSWR(
+    key,
+    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 };

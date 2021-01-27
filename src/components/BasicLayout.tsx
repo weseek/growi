@@ -9,13 +9,15 @@ import RawLayout from './RawLayout';
 type Props = {
   title: string
   children?: ReactNode
+  growiVersion: string
 }
 
-const BasicLayout = ({ children, title }: Props): JSX.Element => {
+const BasicLayout = ({ children, title, growiVersion }: Props): JSX.Element => {
 
   const Sidebar = dynamic(() => import('../client/js/components/Sidebar'), { ssr: false });
   const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
   const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
+  const SystemVersion = dynamic(() => import('./SystemVersion'), { ssr: false });
 
   return (
     <>
@@ -37,6 +39,7 @@ const BasicLayout = ({ children, title }: Props): JSX.Element => {
 
       <PageCreateModal />
       <HotkeysManager />
+      <SystemVersion growiVersion={growiVersion} />
     </>
   );
 };

@@ -13,7 +13,7 @@ import { useCurrentPageSWR } from '~/stores/page';
 import {
   useCurrentUser, useForbidden, useOwnerOfCurrentPage,
 } from '~/stores/context';
-import { useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors } from '~/stores/ui';
+import { useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
@@ -21,8 +21,7 @@ import NavigationContainer from '../../services/NavigationContainer';
 
 // import LikeButton from '../LikeButton';
 // import BookmarkButton from '../BookmarkButton';
-import CopyDropdown from '../Page/CopyDropdown';
-import TagLabels from '../Page/TagLabels';
+// import TagLabels from '../Page/TagLabels';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -31,6 +30,8 @@ const PagePathNav = ({
   // eslint-disable-next-line react/prop-types
   pageId, pagePath, isEditorMode, isCompactMode,
 }) => {
+
+  const CopyDropdown = dynamic(() => import('~/client/js/components/Page/CopyDropdown'), { ssr: false });
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -73,6 +74,15 @@ const PagePathNav = ({
   );
 };
 
+// eslint-disable-next-line react/prop-types
+const GrowiSubNavigationContainer = ({ isCompactMode, children }) => {
+  return (
+    <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
+      {children}
+    </div>
+  );
+};
+
 const GrowiSubNavigation = (props) => {
 
   const { data: currentUser } = useCurrentUser();
@@ -81,15 +91,22 @@ const GrowiSubNavigation = (props) => {
   const { data: isForbidden } = useForbidden();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
+  const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+
+  if (page == null) {
+    return <GrowiSubNavigationContainer isCompactMode={props.isCompactMode}></GrowiSubNavigationContainer>;
+  }
 
   // dynamic import to skip rendering at SSR
-  const SubnavButtons = dynamic(() => import('../Page/SubnavButtons'), { ssr: false });
+  const SubnavButtons = dynamic(() => import('~/components/Organisms/GrowiSubnavButtons'), { ssr: false });
   const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false });
+  const TagLabels = dynamic(() => import('~/client/js/components/Page/TagLabels'), { ssr: false });
 
   const {
     appContainer, navigationContainer, isCompactMode,
   } = props;
   const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+
   const {
     _id: pageId, path, creator, createdAt, updatedAt, revision,
   } = page;
@@ -101,8 +118,6 @@ const GrowiSubNavigation = (props) => {
 
   const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
-  // Tags cannot be edited while the new page and editorMode is view
-  const isTagLabelHidden = (editorMode !== 'edit' && isPageNotFound);
   // TODO: activate with GW-4402
   // const isSharedPage = shareLinkId != null;
   const isSharedPage = false;
@@ -112,7 +127,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   return (
-    <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
+    <GrowiSubNavigationContainer isCompactMode={props.isCompactMode}>
 
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
@@ -123,8 +138,7 @@ const GrowiSubNavigation = (props) => {
         ) }
 
         <div className="grw-path-nav-container">
-          {/* TODO: add other two judgements and expand isAbleToShowTagLabel by GW-4881 */}
-          { isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+          { isAbleToShowTagLabel && !isCompactMode && (
             <div className="grw-taglabels-container">
               <TagLabels editorMode={editorMode} />
             </div>
@@ -138,10 +152,10 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            <SubnavButtons isCompactMode={isCompactMode} />
+            {/* <SubnavButtons isCompactMode={isCompactMode} /> */}
           </div>
           <div className="mt-2">
-            {pageContainer.isAbleToShowPageEditorModeManager && (
+            {isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
@@ -165,7 +179,7 @@ const GrowiSubNavigation = (props) => {
         ) }
       </div>
 
-    </div>
+    </GrowiSubNavigationContainer>
   );
 
 };

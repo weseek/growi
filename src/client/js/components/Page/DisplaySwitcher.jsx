@@ -6,19 +6,18 @@ import propTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import Page from '../Page';
-import PageContainer from '../../services/PageContainer';
-import UserInfo from '../User/UserInfo';
-import TableOfContents from '../TableOfContents';
-import UserContentsLinks from '../UserContentsLinks';
-import PageAccessories from '../PageAccessories';
+// import UserInfo from '../User/UserInfo';
+// import TableOfContents from '../TableOfContents';
+// import ContentLinkButtons from '../ContentLinkButtons';
+// import PageAccessories from '../PageAccessories';
 
 
 const DisplaySwitcher = (props) => {
   const {
-    navigationContainer, pageContainer,
+    navigationContainer,
   } = props;
   const { editorMode } = navigationContainer.state;
-  const { pageUser } = pageContainer.state;
+  // const { pageUser } = pageContainer.state;
 
   // dynamic import to skip rendering at SSR
   // const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
@@ -34,20 +33,20 @@ const DisplaySwitcher = (props) => {
             <div className="grw-side-contents-container">
               <div className="grw-side-contents-sticky-container">
                 <div className="border-bottom pb-1">
-                  <PageAccessories />
+                  {/* <PageAccessories /> */}
                 </div>
 
                 <div className="d-none d-lg-block">
                   <div id="revision-toc" className="revision-toc">
-                    <TableOfContents />
+                    {/* <TableOfContents /> */}
                   </div>
-                  {pageUser && <UserContentsLinks />}
+                  {/* <ContentLinkButtons /> */}
                 </div>
               </div>
             </div>
 
             <div className="flex-grow-1 flex-basis-0 mw-0">
-              {pageUser && <UserInfo pageUser={pageUser} />}
+              {/* {pageUser && <UserInfo pageUser={pageUser} />} */}
               <Page />
             </div>
 
@@ -71,8 +70,7 @@ const DisplaySwitcher = (props) => {
 
 DisplaySwitcher.propTypes = {
   navigationContainer: propTypes.instanceOf(NavigationContainer).isRequired,
-  pageContainer: propTypes.instanceOf(PageContainer).isRequired,
 };
 
 
-export default withUnstatedContainers(DisplaySwitcher, [NavigationContainer, PageContainer]);
+export default withUnstatedContainers(DisplaySwitcher, [NavigationContainer]);
