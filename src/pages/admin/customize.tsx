@@ -3,6 +3,7 @@ import {
 } from 'next';
 
 import AdminLayout from '~/components/AdminLayout';
+import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
@@ -32,7 +33,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <AdminLayout title={title} selectedNavOpt="customize" growiVersion={props.growiVersion}>
-      customize
+      <CustomizeSettingContents />
     </AdminLayout>
   );
 };
