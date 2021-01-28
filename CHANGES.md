@@ -2,7 +2,11 @@
 
 ## v4.2.8-RC
 
-* Fix: Fixed the display of updtedAt and createdAt being reversed 
+* Fix: Fixed the display of updtedAt and createdAt being reversed
+* Improvement: Improved page control performance with stream and bulk
+    * rename, duplicate, delete, deleteCompletely, revrtDeleted
+* Fix: Failed to save temporaryUrlCached with using gcs
+    * Introduced by v4.2.3
 
 ## v4.2.7
 
@@ -10,8 +14,6 @@
 
 ## v4.2.6
 
-* Fix: Failed to save temporaryUrlCached with using gcs
-    * Introduced by v4.2.3
 * Feature: Add a button to jump to Comments section
 * Feature: Paste Bootstrap4 Grid HTML with GUI
 * Feature: Disable auto formating table option
