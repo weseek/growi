@@ -122,6 +122,7 @@ describe('PageService', () => {
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
+        revision: '600d395667536503354cbe92',
       },
       {
         path: '/parentForDelete1',
@@ -216,8 +217,13 @@ describe('PageService', () => {
     await Revision.insertMany([
       {
         _id: '600d395667536503354cbe91',
-        path: parentForDuplicate,
+        path: parentForDuplicate.path,
         body: 'duplicateBody',
+      },
+      {
+        _id: '600d395667536503354cbe92',
+        path: childForDuplicate.path,
+        body: 'duplicateChildBody',
       },
     ]);
 
@@ -444,8 +450,24 @@ describe('PageService', () => {
       expect(resultPageRecursivly.tags).toEqual([originTagsMock().name]);
     });
 
-    test('duplicateDescendants()', () => {
-      expect(3).toBe(3);
+    test('duplicateDescendants()', async() => {
+      const duplicateTagsMock = await jest.spyOn(crowi.pageService, 'duplicateTags').mockImplementation();
+      await crowi.pageService.duplicateDescendants([childForDuplicate], testUser2, parentForDuplicate.path, '/newPathPrefix');
+
+      const childForDuplicateRevision = await Revision.findOne({ path: childForDuplicate.path });
+      const insertedPage = await Page.findOne({ path: '/newPathPrefix/child' });
+      const insertedRevision = await Revision.findOne({ path: '/newPathPrefix/child' });
+
+      expect(insertedPage).not.toBeNull();
+      expect(insertedPage.path).toEqual('/newPathPrefix/child');
+      expect(insertedPage.lastUpdateUser).toEqual(testUser2._id);
+
+      expect([insertedRevision]).not.toBeNull();
+      expect(insertedRevision.path).toEqual('/newPathPrefix/child');
+      expect(insertedRevision._id).not.toEqual(childForDuplicateRevision._id);
+      expect(insertedRevision.body).toEqual(childForDuplicateRevision.body);
+
+      expect(duplicateTagsMock).toHaveBeenCalled();
     });
 
     test('duplicateTags()', async() => {
