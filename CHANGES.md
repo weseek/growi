@@ -1,9 +1,12 @@
 # CHANGES
 
+## v4.2.8-RC
 
-## v.4.2.7
+* Fix: Fixed the display of updtedAt and createdAt being reversed 
 
-* 
+## v4.2.7
+
+* Fix: Installer doesn't work on Chrome
 
 ## v4.2.6
 
