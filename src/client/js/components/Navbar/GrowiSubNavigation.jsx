@@ -87,7 +87,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   // dynamic import to skip rendering at SSR
-  const SubnavButtons = dynamic(() => import('~/components/Organisms/GrowiSubnavButtons'), { ssr: false });
+  const GrowiSubnavButtons = dynamic(() => import('~/components/Organisms/GrowiSubnavButtons').then(mod => mod.GrowiSubnavButtons), { ssr: false });
   const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false });
   const TagLabels = dynamic(() => import('~/client/js/components/Page/TagLabels'), { ssr: false });
 
@@ -132,9 +132,11 @@ const GrowiSubNavigation = (props) => {
       <div className="d-flex">
 
         <div className="d-flex flex-column align-items-end">
-          <div className="d-flex">
-            <SubnavButtons isCompactMode={isCompactMode} />
-          </div>
+          {(!isEditorMode) && (
+            <div className="d-flex">
+              <GrowiSubnavButtons isCompactMode={isCompactMode} />
+            </div>
+          )}
           <div className="mt-2">
             {isAbleToShowPageEditorModeManager && (
               <PageEditorModeManager
