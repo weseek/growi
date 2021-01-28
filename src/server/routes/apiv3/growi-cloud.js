@@ -16,7 +16,7 @@ module.exports = (crowi) => {
       const gcContributorsRes = await axios.get(url.toString());
       return res.apiv3(gcContributorsRes.data);
     }
-    catch(err) {
+    catch (err) {
       return res.apiv3Err(err, 500);
     }
   });
