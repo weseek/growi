@@ -448,8 +448,10 @@ describe('PageService', () => {
       await crowi.pageService.duplicateDescendants([parentForDuplicate], testUser1, parentForDuplicate.path, '/newPathPrefix');
 
       const insertedPage = await Page.findOne({ path: '/newPathPrefix' });
+      const insertedRevision = await Page.findOne({ path: '/newPathPrefix' });
 
       expect([insertedPage]).toHaveLength(1);
+      expect([insertedRevision]).toHaveLength(1);
     });
 
 
