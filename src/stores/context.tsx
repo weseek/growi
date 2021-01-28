@@ -35,6 +35,10 @@ export const useShared = (initialData?: boolean): responseInterface<boolean, any
   return useStaticSWR('isShared', initialData);
 };
 
+export const useShareLinkId = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('shareLinkId', initialData);
+};
+
 export const useIsSharedUser = (initialData?: boolean): responseInterface<boolean, any> => {
   return useStaticSWR('isSharedUser', initialData);
 };
