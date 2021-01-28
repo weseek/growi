@@ -451,7 +451,7 @@ describe('PageService', () => {
     });
 
     test('duplicateDescendants()', async() => {
-      const duplicateTagsMock = await jest.spyOn(crowi.pageService, 'duplicateTags').mockImplementation();
+      const duplicateTagsMock = await jest.spyOn(crowi.pageService, 'duplicateTags').mockImplementationOnce();
       await crowi.pageService.duplicateDescendants([childForDuplicate], testUser2, parentForDuplicate.path, '/newPathPrefix');
 
       const childForDuplicateRevision = await Revision.findOne({ path: childForDuplicate.path });
@@ -470,17 +470,15 @@ describe('PageService', () => {
       expect(duplicateTagsMock).toHaveBeenCalled();
     });
 
-    // test('duplicateTags()', async() => {
-    //   console.log(parentForDuplicate);
-    //   const pageIdMapping = {
-    //     [parentForDuplicate._id]: '60110bdd85339d7dc732dddd',
-    //   };
-    //   const duplicateTagsReturn = await crowi.pageService.duplicateTags(pageIdMapping);
-    //   const parentoForDuplicateTag = await PageTagRelation.findOne({ relatedPage: parentForDuplicate._id });
-    //   console.log(duplicateTagsReturn);
-    //   expect(duplicateTagsReturn).toHaveLength(1);
-    //   expect(duplicateTagsReturn[0].relatedTag).toEqual(parentoForDuplicateTag.relatedTag);
-    // });
+    test('duplicateTags()', async() => {
+      const pageIdMapping = {
+        [parentForDuplicate._id]: '60110bdd85339d7dc732dddd',
+      };
+      const duplicateTagsReturn = await crowi.pageService.duplicateTags(pageIdMapping);
+      const parentoForDuplicateTag = await PageTagRelation.findOne({ relatedPage: parentForDuplicate._id });
+      expect(duplicateTagsReturn).toHaveLength(1);
+      expect(duplicateTagsReturn[0].relatedTag).toEqual(parentoForDuplicateTag.relatedTag);
+    });
   });
 
   describe('delete page', () => {
