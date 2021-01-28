@@ -60,10 +60,8 @@ class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      contributors.splice(1, 0, cloudContributors.getContributors());
-      if (this.state.gcContributors !== {}) {
-        // TODO: merge gcContributors to Contributors
-        // refs: https://youtrack.weseek.co.jp/issue/GW-4573
+      if (this.state.gcContributors !== {} ) {
+        contributors.splice(1, 0, this.state.gcContributors);
       }
       const credit = contributors.map((contributor) => {
         // construct members elements
