@@ -250,6 +250,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  GROWI_CLOUD_URI: {
+    ns:      'crowi',
+    key:     'app:growiCloudUri',
+    type:    ValueType.STRING,
+    default: null,
+  },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',

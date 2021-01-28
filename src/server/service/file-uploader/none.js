@@ -16,6 +16,11 @@ module.exports = function(crowi) {
     throw new Error('not implemented');
   };
 
+  lib.deleteFiles = function(filePath) {
+    debug(`File deletion: ${filePath}`);
+    throw new Error('not implemented');
+  };
+
   lib.uploadFile = function(filePath, contentType, fileStream, options) {
     logger.debug(`File uploading: ${filePath}`);
     throw new Error('not implemented');
