@@ -137,16 +137,16 @@ const GrowiSubNavigation = (props) => {
               <GrowiSubnavButtons isCompactMode={isCompactMode} />
             </div>
           )}
-          <div className="mt-2">
-            {isAbleToShowPageEditorModeManager && (
+          {isAbleToShowPageEditorModeManager && (
+            <div className="mt-2">
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
                 isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
+            </div>
             )}
-          </div>
         </div>
 
         {/* Page Authors */}
