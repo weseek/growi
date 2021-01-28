@@ -462,7 +462,7 @@ describe('PageService', () => {
       expect(insertedPage.path).toEqual('/newPathPrefix/child');
       expect(insertedPage.lastUpdateUser).toEqual(testUser2._id);
 
-      expect([insertedRevision]).toHaveLength(1);
+      expect([insertedRevision]).not.toBeNull();
       expect(insertedRevision.path).toEqual('/newPathPrefix/child');
       expect(insertedRevision._id).not.toEqual(childForDuplicate._id);
       expect(insertedRevision.body).toEqual(childForDuplicateRevision.body);
