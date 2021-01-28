@@ -22,7 +22,7 @@ import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useNotFound, useTrash, useShared, useIsSharedUser, useIsAbleToDeleteCompletely,
+  useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
@@ -41,6 +41,8 @@ type Props = CommonProps & {
   pageUser?: any,
   redirectTo?: string;
   redirectFrom?: string;
+
+  shareLinkId?: string;
 
   appTitle: string,
   siteUrl: string,
@@ -65,6 +67,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useNotFound(props.isNotFound);
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
+  useShareLinkId(props.shareLinkId);
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
 
