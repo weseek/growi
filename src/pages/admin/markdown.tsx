@@ -7,7 +7,7 @@ import AdminLayout from '~/components/AdminLayout';
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
-import MarkDownSettingContents from '~/client/js/components/Admin/MarkdownSetting/MarkDownSettingContents';
+import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 
 import {
   useCurrentUser,
