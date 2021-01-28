@@ -464,7 +464,7 @@ describe('PageService', () => {
 
       expect([insertedRevision]).not.toBeNull();
       expect(insertedRevision.path).toEqual('/newPathPrefix/child');
-      expect(insertedRevision._id).not.toEqual(childForDuplicate._id);
+      expect(insertedRevision._id).not.toEqual(childForDuplicateRevision._id);
       expect(insertedRevision.body).toEqual(childForDuplicateRevision.body);
 
       expect(duplicateTagsMock).toHaveBeenCalled();
