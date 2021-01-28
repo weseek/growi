@@ -7,14 +7,13 @@ const router = express.Router();
 module.exports = (crowi) => {
 
   router.get('/staff-credit', async(req, res) => {
-    const growiCloudUrlBase = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
-    if (growiCloudUrlBase == null) {
+    const growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
+    if (growiCloudUri == null) {
       return res.json({});
     }
-    const url = new URL('_api/staffCredit', growiCloudUrlBase);
-    const gcRes = await axios.get(url.toString());
-    const growiCloudContributors = gcRes.data;
-    return res.apiv3(growiCloudContributors);
+    const url = new URL('_api/staffCredit', growiCloudUri);
+    const gcContributorsRes = await axios.get(url.toString());
+    return res.apiv3(gcContributorsRes.data);
   });
 
   return router;
