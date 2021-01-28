@@ -458,13 +458,12 @@ describe('PageService', () => {
       const insertedPage = await Page.findOne({ path: '/newPathPrefix/child' });
       const insertedRevision = await Revision.findOne({ path: '/newPathPrefix/child' });
 
-      expect([insertedPage]).toHaveLength(1);
+      expect(insertedPage).not.toBeNull();
       expect(insertedPage.path).toEqual('/newPathPrefix/child');
-      expect(insertedPage.path).not.toEqual(childForDuplicate.path);
       expect(insertedPage.lastUpdateUser).toEqual(testUser2._id);
 
       expect([insertedRevision]).toHaveLength(1);
-      expect(insertedRevision.path).not.toEqual(childForDuplicate.path);
+      expect(insertedRevision.path).toEqual('/newPathPrefix/child');
       expect(insertedRevision._id).not.toEqual(childForDuplicate._id);
       expect(insertedRevision.body).toEqual(childForDuplicateRevision.body);
 
