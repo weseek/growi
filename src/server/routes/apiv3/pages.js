@@ -4,7 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
 
-const { body } = require('express-validator/check');
+const { body } = require('express-validator');
 const { query } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -395,13 +395,7 @@ module.exports = (crowi) => {
       if (!page.isUpdatable(revisionId)) {
         return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'notfound_or_forbidden'), 409);
       }
-
-      if (isRecursively) {
-        page = await Page.renameRecursively(page, newPagePath, req.user, options);
-      }
-      else {
-        page = await Page.rename(page, newPagePath, req.user, options);
-      }
+      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);
     }
     catch (err) {
       logger.error(err);
@@ -423,7 +417,9 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-
+  validator.emptyTrash = [
+    query('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
+  ];
   /**
    * @swagger
    *
@@ -435,9 +431,12 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to remove all trash pages
    */
-  router.delete('/empty-trash', loginRequired, adminRequired, csrf, async(req, res) => {
+  router.delete('/empty-trash', accessTokenParser, loginRequired, adminRequired, csrf, validator.emptyTrash, apiV3FormValidator, async(req, res) => {
+    const socketClientId = parseInt(req.query.socketClientId);
+    const options = { socketClientId };
+
     try {
-      const pages = await Page.completelyDeletePageRecursively({ path: '/trash' }, req.user);
+      const pages = await crowi.pageService.deletePageRecursivelyCompletely({ path: '/trash' }, req.user, options);
       return res.apiv3({ pages });
     }
     catch (err) {
@@ -537,15 +536,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Not Founded the page', 'notfound_or_forbidden'), 404);
     }
 
-    let newParentPage;
-
-    if (isRecursively) {
-      newParentPage = await crowi.pageService.duplicateRecursively(page, newPagePath, req.user);
-    }
-    else {
-      newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user);
-    }
-
+    const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
     const result = { page: serializePageSecurely(newParentPage) };
 
     page.path = newPagePath;

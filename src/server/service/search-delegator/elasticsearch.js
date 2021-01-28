@@ -352,6 +352,14 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPages(() => Page.findById(pageId));
   }
 
+  updateOrInsertDescendantsPagesById(page, user) {
+    const Page = mongoose.model('Page');
+    const { PageQueryBuilder } = Page;
+    const builder = new PageQueryBuilder(Page.find());
+    builder.addConditionToListWithDescendants(page.path);
+    return this.updateOrInsertPages(() => builder.query);
+  }
+
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
@@ -503,11 +511,7 @@ class ElasticsearchDelegator {
   deletePages(pages) {
     const self = this;
     const body = [];
-
-    pages.map((page) => {
-      self.prepareBodyForDelete(body, page);
-      return;
-    });
+    pages.forEach(page => self.prepareBodyForDelete(body, page));
 
     logger.debug('deletePages(): Sending Request to ES', body);
     return this.client.bulk({
@@ -961,6 +965,44 @@ class ElasticsearchDelegator {
     }
 
     return this.updateOrInsertPageById(page._id);
+  }
+
+  // remove pages whitch should nod Indexed
+  async syncPagesUpdated(pages, user) {
+    const shoudDeletePages = [];
+    pages.forEach((page) => {
+      logger.debug('SearchClient.syncPageUpdated', page.path);
+      if (!this.shouldIndexed(page)) {
+        shoudDeletePages.append(page);
+      }
+    });
+
+    // delete if page should not indexed
+    try {
+      if (shoudDeletePages.length !== 0) {
+        await this.deletePages(shoudDeletePages);
+      }
+    }
+    catch (err) {
+      logger.error('deletePages:ES Error', err);
+    }
+  }
+
+  async syncDescendantsPagesUpdated(parentPage, user) {
+    return this.updateOrInsertDescendantsPagesById(parentPage, user);
+  }
+
+  async syncPagesDeletedCompletely(pages, user) {
+    for (let i = 0; i < pages.length; i++) {
+      logger.debug('SearchClient.syncPageDeleted', pages[i].path);
+    }
+
+    try {
+      return await this.deletePages(pages);
+    }
+    catch (err) {
+      logger.error('deletePages:ES Error', err);
+    }
   }
 
   async syncPageDeleted(page, user) {

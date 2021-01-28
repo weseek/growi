@@ -15,7 +15,7 @@ import PageDeleteModal from '../PageDeleteModal';
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
   const {
-    path, isDeleted, lastUpdateUsername, updatedAt, isAbleToDeleteCompletely,
+    path, isDeleted, lastUpdateUsername, updatedAt, deletedUserName, deletedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
@@ -110,7 +110,15 @@ const TrashPageAlert = (props) => {
       <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
-          {isDeleted && <span><br /><UserPicture user={{ username: lastUpdateUsername }} /> Deleted by {lastUpdateUsername} at {updatedAt}</span>}
+          {isDeleted && (
+            <>
+              <br />
+              <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />
+              <span className="ml-2">
+                Deleted by {deletedUserName || lastUpdateUsername} at {deletedAt || updatedAt}
+              </span>
+            </>
+          )}
         </div>
         <div className="pt-1 d-flex align-items-end align-items-lg-center">
           <span>{ pageContainer.isAbleToShowEmptyTrashButton && renderEmptyButton()}</span>

@@ -6,7 +6,7 @@ module.exports = function(crowi) {
   const Uploader = require('./uploader');
   const lib = new Uploader(crowi);
   const COLLECTION_NAME = 'attachmentFiles';
-  // const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
+  const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
   // instantiate mongoose-gridfs
   const { createModel } = require('mongoose-gridfs');
@@ -15,8 +15,9 @@ module.exports = function(crowi) {
     bucketName: COLLECTION_NAME,
     connection: mongoose.connection,
   });
+
   // get Collection instance of chunk
-  // const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
+  const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
 
   // create promisified method
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
@@ -39,8 +40,20 @@ module.exports = function(crowi) {
       logger.warn(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in GridFS`);
       return;
     }
-
     return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
+  };
+
+  lib.deleteFiles = async function(attachments) {
+    const filenameValues = attachments.map((attachment) => {
+      return attachment.fileName;
+    });
+    const fileIdObjects = await AttachmentFile.find({ filename: { $in: filenameValues } }, { _id: 1 });
+    const idsRelatedFiles = fileIdObjects.map((obj) => { return obj._id });
+
+    return Promise.all([
+      AttachmentFile.deleteMany({ filename: { $in: filenameValues } }),
+      chunkCollection.deleteMany({ files_id: { $in: idsRelatedFiles } }),
+    ]);
   };
 
   /**

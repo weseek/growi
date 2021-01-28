@@ -1,5 +1,5 @@
 const logger = require('@alias/logger')('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars
-
+const mongoose = require('mongoose');
 const fs = require('fs');
 
 
@@ -43,14 +43,34 @@ class AttachmentService {
     return attachment;
   }
 
+  async removeAllAttachments(attachments) {
+    const { fileUploadService } = this.crowi;
+    const attachmentsCollection = mongoose.connection.collection('attachments');
+    const unorderAttachmentsBulkOp = attachmentsCollection.initializeUnorderedBulkOp();
+
+    if (attachments.length === 0) {
+      return;
+    }
+
+    attachments.forEach((attachment) => {
+      unorderAttachmentsBulkOp.find({ _id: attachment._id }).remove();
+    });
+    await unorderAttachmentsBulkOp.execute();
+
+    await fileUploadService.deleteFiles(attachments);
+
+    return;
+  }
+
   async removeAttachment(attachmentId) {
     const Attachment = this.crowi.model('Attachment');
     const { fileUploadService } = this.crowi;
-
     const attachment = await Attachment.findById(attachmentId);
-    await fileUploadService.deleteFile(attachment);
 
-    return attachment.remove();
+    await fileUploadService.deleteFile(attachment);
+    await attachment.remove();
+
+    return;
   }
 
 }
