@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { isTopPage } from '@commons/util/path-utils';
+import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 import PageContainer from '../services/PageContainer';
-import AppContainer from '../services/AppContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -18,7 +18,7 @@ const WIKI_HEADER_LINK = 120;
  */
 const ContentLinkButtons = (props) => {
 
-  const { navigationContainer, pageContainer, appContainer } = props;
+  const { appContainer, navigationContainer, pageContainer } = props;
   const { pageUser } = pageContainer.state;
   const { isPageExist } = pageContainer.state;
   const { isSharedUser } = appContainer;
@@ -85,9 +85,9 @@ const ContentLinkButtons = (props) => {
 };
 
 ContentLinkButtons.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
 export default withUnstatedContainers(ContentLinkButtons, [AppContainer, NavigationContainer, PageContainer]);
