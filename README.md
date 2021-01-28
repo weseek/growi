@@ -11,9 +11,6 @@
 <p align="center">
   <a href="https://docs.growi.org">Documentation</a> / <a href="https://demo.growi.org">Demo</a>
 </p>
-<p align="center">
-  <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
-</p>
 
 
 GROWI
@@ -33,8 +30,8 @@ Table Of Contents
 
 - [Features](#features)
 - [Quick Start for Production](#quick-start-for-production)
-    - [Heroku](#heroku)
     - [docker-compose](#docker-compose)
+    - [Helm (Experimental)](#helm)
     - [On-premise](#on-premise)
 - [Environment Variables](#environment-variables)
 - [Documentation](#documentation)
@@ -61,13 +58,14 @@ Features
 Quick Start for Production
 ===========================
 
-### Heroku
-
-- [GROWI Docs: Launch on Heroku](https://docs.growi.org/en/admin-guide/getting-started/heroku.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/heroku.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/heroku.html))
 
 ### docker-compose
 
 - [GROWI Docs: Launch with docker-compose](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html))
+
+### Helm (Experimental)
+
+- [GROWI Helm Chart](https://github.com/weseek/helm-charts/tree/master/charts/growi)
 
 ### On-premise
 
