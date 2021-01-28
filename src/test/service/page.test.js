@@ -22,13 +22,14 @@ let parentForDuplicate;
 let parentForDelete1;
 let parentForDelete2;
 
+let childForDelete;
+
 let parentForDeleteCompletely;
 
 let parentForRevert1;
 let parentForRevert2;
 
 let childForDuplicate;
-let childForDelete;
 let childForDeleteCompletely;
 
 let childForRevert;
@@ -518,8 +519,26 @@ describe('PageService', () => {
     });
 
 
-    test('deleteDescendants()', () => {
-      expect(3).toBe(3);
+    test('deleteDescendants', async() => {
+      await crowi.pageService.deleteDescendants([childForDelete], testUser2);
+      const resultPage = await Page.findOne({ path: '/trash/parentForDelete/child' });
+      const redirectedFromPage = await Page.findOne({ path: '/parentForDelete/child' });
+      const redirectedFromPageRevision = await Revision.findOne({ path: '/parentForDelete/child' });
+
+      expect(resultPage.status).toBe(Page.STATUS_DELETED);
+      expect(resultPage.path).toBe('/trash/parentForDelete/child');
+      expect(resultPage.deleteUser).toEqual(testUser2._id);
+      expect(resultPage.deletedAt).toEqual(dateToUse);
+      expect(resultPage.updatedAt).toEqual(childForDelete.updatedAt);
+      expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
+
+      expect(redirectedFromPage).not.toBeNull();
+      expect(redirectedFromPage.path).toBe('/parentForDelete/child');
+      expect(redirectedFromPage.redirectTo).toBe('/trash/parentForDelete/child');
+
+      expect(redirectedFromPageRevision).not.toBeNull();
+      expect(redirectedFromPageRevision.path).toBe('/parentForDelete/child');
+      expect(redirectedFromPageRevision.body).toBe('redirect /trash/parentForDelete/child');
     });
   });
 

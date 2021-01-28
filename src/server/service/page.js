@@ -432,35 +432,40 @@ class PageService {
 
     const deletePageBulkOp = pageCollection.initializeUnorderedBulkOp();
     const updateRevisionListOp = revisionCollection.initializeUnorderedBulkOp();
+    const createRediectRevisionBulkOp = revisionCollection.initializeUnorderedBulkOp();
     const newPagesForRedirect = [];
 
     pages.forEach((page) => {
       const newPath = Page.getDeletedPageName(page.path);
+      const revisionId = new mongoose.Types.ObjectId();
       const body = `redirect ${newPath}`;
 
       deletePageBulkOp.find({ _id: page._id }).update({
         $set: {
-          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: new Date(),
+          path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(),
         },
       });
       updateRevisionListOp.find({ path: page.path }).update({ $set: { path: newPath } });
+      createRediectRevisionBulkOp.insert({
+        _id: revisionId, path: page.path, body, author: user._id, format: 'markdown',
+      });
 
       newPagesForRedirect.push({
         path: page.path,
-        body,
         creator: user._id,
         grant: page.grant,
         grantedGroup: page.grantedGroup,
         grantedUsers: page.grantedUsers,
         lastUpdateUser: user._id,
         redirectTo: newPath,
-        revision: null,
+        revision: revisionId,
       });
     });
 
     try {
       await deletePageBulkOp.execute();
       await updateRevisionListOp.execute();
+      await createRediectRevisionBulkOp.execute();
       await Page.insertMany(newPagesForRedirect, { ordered: false });
     }
     catch (err) {
