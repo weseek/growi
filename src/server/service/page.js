@@ -232,6 +232,8 @@ class PageService {
     options.grantUserGroupId = page.grantedGroup;
     options.grantedUsers = page.grantedUsers;
 
+    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
     const createdPage = await Page.create(
       newPagePath, page.revision.body, user, options,
     );
@@ -594,7 +596,7 @@ class PageService {
       .pipe(writeStream);
   }
 
-  async revertDeletedPages(pages, user) {
+  async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
     const pageCollection = mongoose.connection.collection('pages');
     const revisionCollection = mongoose.connection.collection('revisions');
@@ -692,14 +694,14 @@ class PageService {
       .lean()
       .cursor();
 
-    const revertDeletedPages = this.revertDeletedPages.bind(this);
+    const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          revertDeletedPages(batch, user);
+          revertDeletedDescendants(batch, user);
           logger.debug(`Reverting pages progressing: (count=${count})`);
         }
         catch (err) {
