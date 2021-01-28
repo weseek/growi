@@ -448,8 +448,15 @@ describe('PageService', () => {
       expect(3).toBe(3);
     });
 
-    test('duplicateTags()', () => {
-      expect(3).toBe(3);
+    test('duplicateTags()', async() => {
+      const pageIdMapping = {
+        [parentForDuplicate._id]: '60110bdd85339d7dc732dddd',
+      };
+      const duplicateTagsReturn = await crowi.pageService.duplicateTags(pageIdMapping);
+      const parentoForDuplicateTag = await PageTagRelation.findOne({ relatedPage: parentForDuplicate });
+
+      expect(duplicateTagsReturn).toHaveLength(1);
+      expect(duplicateTagsReturn[0].relatedTag).toEqual(parentoForDuplicateTag.relatedTag);
     });
   });
 
