@@ -19,9 +19,11 @@ const WIKI_HEADER_LINK = 120;
 const ContentLinkButtons = (props) => {
 
   const { appContainer, navigationContainer, pageContainer } = props;
-  const { pageUser } = pageContainer.state;
+  const { pageUser, path } = pageContainer.state;
   const { isPageExist } = pageContainer.state;
   const { isSharedUser } = appContainer;
+
+  const isTopPagePath = isTopPage(path);
 
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
@@ -74,7 +76,7 @@ const ContentLinkButtons = (props) => {
 
   return (
     <>
-      {isPageExist && !isSharedUser && !isTopPage && <CommentLinkButton />}
+      {isPageExist && !isSharedUser && !isTopPagePath && <CommentLinkButton />}
 
       <div className="mt-3 d-flex justify-content-between">
         {pageUser && <><BookMarkLinkButton /><RecentlyCreatedLinkButton /></>}
