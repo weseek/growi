@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -8,20 +8,12 @@ import { withTranslation } from 'react-i18next';
 import DevidedPagePath from '~/models/devided-page-path';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { isCreatablePage, isTrashPage, isUserPage } from '~/utils/path-utils';
 import { useCurrentPageSWR } from '~/stores/page';
-import {
-  useCurrentUser, useForbidden, useOwnerOfCurrentPage, useShared,
-} from '~/stores/context';
 import { useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
-
-// import LikeButton from '../LikeButton';
-// import BookmarkButton from '../BookmarkButton';
-// import TagLabels from '../Page/TagLabels';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -141,7 +133,7 @@ const GrowiSubNavigation = (props) => {
 
         <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            {/* <SubnavButtons isCompactMode={isCompactMode} /> */}
+            <SubnavButtons isCompactMode={isCompactMode} />
           </div>
           <div className="mt-2">
             {isAbleToShowPageEditorModeManager && (
