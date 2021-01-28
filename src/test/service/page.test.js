@@ -165,7 +165,7 @@ describe('PageService', () => {
     await Revision.insertMany([
       {
         _id: '600d395667536503354cbe91',
-        path: parentForDuplicate,
+        path: parentForDuplicate.path,
         body: 'duplicateBody',
       },
     ]);
@@ -332,8 +332,12 @@ describe('PageService', () => {
       expect(resultPageRecursivly.tags).toEqual([originTagsMock().name]);
     });
 
-    test('duplicateDescendants()', () => {
-      expect(3).toBe(3);
+    test('duplicateDescendants()', async() => {
+      await crowi.pageService.duplicateDescendants([parentForDuplicate], testUser1, parentForDuplicate.path, '/newPathPrefix');
+
+      const insertedPage = await Page.findOne({ path: '/newPathPrefix' });
+
+      expect([insertedPage]).toHaveLength(1);
     });
 
     test('duplicateTags()', async() => {
