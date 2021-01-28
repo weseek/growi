@@ -509,9 +509,8 @@ class ElasticsearchDelegator {
   }
 
   deletePages(pages) {
-    const self = this;
     const body = [];
-    pages.forEach(page => self.prepareBodyForDelete(body, page));
+    pages.forEach(page => this.prepareBodyForDelete(body, page));
 
     logger.debug('deletePages(): Sending Request to ES', body);
     return this.client.bulk({
