@@ -122,6 +122,7 @@ describe('PageService', () => {
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
+        revision: '600d395667536503354cbe92',
       },
       {
         path: '/parentForDelete1',
@@ -218,6 +219,11 @@ describe('PageService', () => {
         _id: '600d395667536503354cbe91',
         path: parentForDuplicate.path,
         body: 'duplicateBody',
+      },
+      {
+        _id: '600d395667536503354cbe92',
+        path: childForDuplicate.path,
+        body: 'duplicateChildBody',
       },
     ]);
 
@@ -445,13 +451,24 @@ describe('PageService', () => {
     });
 
     test('duplicateDescendants()', async() => {
-      await crowi.pageService.duplicateDescendants([parentForDuplicate], testUser1, parentForDuplicate.path, '/newPathPrefix');
+      const duplicateTagsMock = await jest.spyOn(crowi.pageService, 'duplicateTags').mockImplementation();
+      await crowi.pageService.duplicateDescendants([childForDuplicate], testUser2, parentForDuplicate.path, '/newPathPrefix');
 
-      const insertedPage = await Page.findOne({ path: '/newPathPrefix' });
-      const insertedRevision = await Page.findOne({ path: '/newPathPrefix' });
+      const childForDuplicateRevision = await Revision.findOne({ path: childForDuplicate.path });
+      const insertedPage = await Page.findOne({ path: '/newPathPrefix/child' });
+      const insertedRevision = await Revision.findOne({ path: '/newPathPrefix/child' });
 
       expect([insertedPage]).toHaveLength(1);
+      expect(insertedPage.path).toEqual('/newPathPrefix/child');
+      expect(insertedPage.path).not.toEqual(childForDuplicate.path);
+      expect(insertedPage.lastUpdateUser).toEqual(testUser2._id);
+
       expect([insertedRevision]).toHaveLength(1);
+      expect(insertedRevision.path).not.toEqual(childForDuplicate.path);
+      expect(insertedRevision._id).not.toEqual(childForDuplicate._id);
+      expect(insertedRevision.body).toEqual(childForDuplicateRevision.body);
+
+      expect(duplicateTagsMock).toHaveBeenCalled();
     });
 
 
