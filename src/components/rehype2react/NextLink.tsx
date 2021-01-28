@@ -1,4 +1,3 @@
-import { resolveHref } from 'next/dist/next-server/lib/router/router';
 import Link from 'next/link';
 
 type Props = any & {
