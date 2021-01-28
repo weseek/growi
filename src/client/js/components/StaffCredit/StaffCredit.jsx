@@ -26,7 +26,7 @@ class StaffCredit extends React.Component {
     super(props);
     this.state = {
       isShown: true,
-      gcContributors: {},
+      gcContributors: null,
     };
     this.deleteCredit = this.deleteCredit.bind(this);
   }
@@ -60,7 +60,7 @@ class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      if (this.state.gcContributors !== {}) {
+      if (this.state.gcContributors != null && contributors[1].sectionName !== 'GROWI-cloud') {
         contributors.splice(1, 0, this.state.gcContributors);
       }
       const credit = contributors.map((contributor) => {
