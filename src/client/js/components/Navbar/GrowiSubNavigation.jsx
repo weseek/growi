@@ -11,7 +11,7 @@ import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import { isCreatablePage, isTrashPage, isUserPage } from '~/utils/path-utils';
 import { useCurrentPageSWR } from '~/stores/page';
 import {
-  useCurrentUser, useForbidden, useOwnerOfCurrentPage,
+  useCurrentUser, useForbidden, useOwnerOfCurrentPage, useShared,
 } from '~/stores/context';
 import { useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager } from '~/stores/ui';
 
@@ -85,10 +85,7 @@ const GrowiSubNavigationContainer = ({ isCompactMode, children }) => {
 
 const GrowiSubNavigation = (props) => {
 
-  const { data: currentUser } = useCurrentUser();
   const { data: page } = useCurrentPageSWR();
-  const { data: pageOwner } = useOwnerOfCurrentPage();
-  const { data: isForbidden } = useForbidden();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
@@ -111,16 +108,8 @@ const GrowiSubNavigation = (props) => {
     _id: pageId, path, creator, createdAt, updatedAt, revision,
   } = page;
 
-  const isPageNotFound = page == null;
-  const isPageInTrash = isTrashPage(path);
-  const isPageUsersHome = isUserPage(path);
-  const isCreatable = isCreatablePage(path);
-
   const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
-  // TODO: activate with GW-4402
-  // const isSharedPage = shareLinkId != null;
-  const isSharedPage = false;
 
   function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
