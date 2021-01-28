@@ -2,7 +2,7 @@
 
 ## v4.2.8-RC
 
-* 
+* Fix: Fixed the display of updtedAt and createdAt being reversed 
 
 ## v4.2.7
 
