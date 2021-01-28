@@ -60,7 +60,7 @@ class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      if (this.state.gcContributors !== {} ) {
+      if (this.state.gcContributors !== {}) {
         contributors.splice(1, 0, this.state.gcContributors);
       }
       const credit = contributors.map((contributor) => {
