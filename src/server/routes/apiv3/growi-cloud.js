@@ -12,8 +12,13 @@ module.exports = (crowi) => {
       return res.json({});
     }
     const url = new URL('_api/staffCredit', growiCloudUri);
-    const gcContributorsRes = await axios.get(url.toString());
-    return res.apiv3(gcContributorsRes.data);
+    try {
+      const gcContributorsRes = await axios.get(url.toString());
+      return res.apiv3(gcContributorsRes.data);
+    }
+    catch(err) {
+      return res.apiv3Err(err, 500);
+    }
   });
 
   return router;
