@@ -186,9 +186,10 @@ jobs:
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
-        mongoDBVersion: 3.6
+        mongoDBVersion: 4.4
     - name: yarn dev:ci
       run: |
+        cp config/ci/.env.development.local.for-ci .env.development.local
         yarn dev:ci
       env:
         MONGO_URI: mongodb://localhost:27017/growi
