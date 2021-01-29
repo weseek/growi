@@ -27,15 +27,15 @@ const CustomizeSettingContents = (): JSX.Element => {
       <div className="mb-5">
         <CustomizeTitle />
       </div>
-      {/* <div className="mb-5">
+      <div className="mb-5">
         <CustomizeHeaderSetting />
-      </div> */}
-      {/* <div className="mb-5">
+      </div>
+      <div className="mb-5">
         <CustomizeCssSetting />
-      </div> */}
-      {/* <div className="mb-5">
+      </div>
+      <div className="mb-5">
         <CustomizeScriptSetting />
-      </div> */}
+      </div>
     </React.Fragment>
   );
 };

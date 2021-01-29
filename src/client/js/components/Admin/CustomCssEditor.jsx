@@ -35,11 +35,11 @@ export default class CustomCssEditor extends React.Component {
         }}
         editorDidMount={(editor, next) => {
           // resizable with jquery.ui
-          $(editor.getWrapperElement()).resizable({
-            resize() {
-              editor.setSize($(this).width(), $(this).height());
-            },
-          });
+          // $(editor.getWrapperElement()).resizable({
+          //   resize() {
+          //     editor.setSize($(this).width(), $(this).height());
+          //   },
+          // });
         }}
         onChange={(editor, data, value) => {
           this.props.onChange(value);
