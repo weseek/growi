@@ -33,6 +33,7 @@ export default class CustomHeaderEditor extends React.Component {
         }}
         editorDidMount={(editor, next) => {
           // resizable with jquery.ui
+          // TODO GW-5043 enable codeMirror https://youtrack.weseek.co.jp/issue/GW-5043
           // $(editor.getWrapperElement()).resizable({
           //   resize() {
           //     editor.setSize($(this).width(), $(this).height());
