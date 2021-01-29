@@ -34,12 +34,13 @@ export default class CustomCssEditor extends React.Component {
           extraKeys: { 'Ctrl-Space': 'autocomplete' },
         }}
         editorDidMount={(editor, next) => {
+          // TODO GW-5043 enable codeMirror https://youtrack.weseek.co.jp/issue/GW-5043
           // resizable with jquery.ui
-          $(editor.getWrapperElement()).resizable({
-            resize() {
-              editor.setSize($(this).width(), $(this).height());
-            },
-          });
+          // $(editor.getWrapperElement()).resizable({
+          //   resize() {
+          //     editor.setSize($(this).width(), $(this).height());
+          //   },
+          // });
         }}
         onChange={(editor, data, value) => {
           this.props.onChange(value);
