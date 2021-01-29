@@ -189,7 +189,7 @@ jobs:
         mongoDBVersion: 4.4
     - name: yarn dev:ci
       run: |
-        cp config/ci/.env.development.local.for-ci .env.development.local
+        cp config/ci/.env.local.for-ci .env.local
         yarn dev:ci
       env:
         MONGO_URI: mongodb://localhost:27017/growi
