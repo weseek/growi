@@ -1,111 +1,96 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
+
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { apiGet } from '~/client/js/util/apiv1-client';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
+import { Tag } from '~/interfaces/page';
 
-/**
- *
- * @author Yuki Takei <yuki@weseek.co.jp>
- *
- * @export
- * @class TagsInput
- * @extends {React.Component}
- */
-
-class TagsInput extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      resultTags: [],
-      isLoading: false,
-      selected: this.props.tags,
-      defaultPageTags: this.props.tags,
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
-  }
-
-  componentDidMount() {
-    this.typeahead.getInstance().focus();
-  }
-
-  handleChange(selected) {
-    // send tags to TagLabel Component when user add tag to form everytime
-    this.setState({ selected }, () => {
-      this.props.onTagsUpdated(this.state.selected);
-    });
-  }
-
-  async handleSearch(query) {
-    this.setState({ isLoading: true });
-    const res = await apiGet('/tags.search', { q: query });
-    res.tags.unshift(query); // selectable new tag whose name equals query
-    this.setState({
-      resultTags: Array.from(new Set(res.tags)), // use Set for de-duplication
-      isLoading: false,
-    });
-  }
-
-  handleSelect(e) {
-    if (e.keyCode === 32) { // '32' means ASCII code of 'space'
-      e.preventDefault();
-      const instance = this.typeahead.getInstance();
-      const { initialItem } = instance.state;
-
-      if (initialItem) {
-        instance._handleMenuItemSelect(initialItem, e);
-      }
-    }
-  }
-
-  render() {
-    return (
-      <div className="tag-typeahead">
-        <AsyncTypeahead
-          id="tag-typeahead-asynctypeahead"
-          ref={(typeahead) => { this.typeahead = typeahead }}
-          caseSensitive={false}
-          defaultSelected={this.state.defaultPageTags}
-          isLoading={this.state.isLoading}
-          minLength={1}
-          multiple
-          newSelectionPrefix=""
-          onChange={this.handleChange}
-          onSearch={this.handleSearch}
-          onKeyDown={this.handleSelect}
-          options={this.state.resultTags} // Search result (Some tag names)
-          placeholder="tag name"
-          selectHintOnEnter
-          autoFocus={this.props.autoFocus}
-        />
-      </div>
-    );
-  }
-
+type Props = {
+  tags: Tag[],
+  onTagsUpdated: <T extends Tag[]>(T) => void,
+  autoFocus: boolean,
 }
 
-/**
- * Wrapper component for using unstated
- */
-const TagsInputWrapper = withUnstatedContainers(TagsInput, [AppContainer]);
+const TagsInput : FC<Props> = (props: Props) => {
 
-TagsInput.propTypes = {
-  appContainer:  PropTypes.instanceOf(AppContainer).isRequired,
+  return <></>;
 
-  tags:          PropTypes.array.isRequired,
-  onTagsUpdated: PropTypes.func.isRequired,
-  autoFocus:     PropTypes.bool,
 };
 
-TagsInput.defaultProps = {
-  autoFocus:     false,
-};
+// class DeprecatedTagsInput extends React.Component {
 
-export default TagsInputWrapper;
+//   constructor(props) {
+//     super(props);
+
+//     this.state = {
+//       resultTags: [],
+//       isLoading: false,
+//       selected: this.props.tags,
+//       defaultPageTags: this.props.tags,
+//     };
+
+//     this.handleChange = this.handleChange.bind(this);
+//     this.handleSearch = this.handleSearch.bind(this);
+//     this.handleSelect = this.handleSelect.bind(this);
+//   }
+
+//   componentDidMount() {
+//     this.typeahead.getInstance().focus();
+//   }
+
+//   handleChange(selected) {
+//     // send tags to TagLabel Component when user add tag to form everytime
+//     this.setState({ selected }, () => {
+//       this.props.onTagsUpdated(this.state.selected);
+//     });
+//   }
+
+//   async handleSearch(query) {
+//     this.setState({ isLoading: true });
+//     const res = await apiGet('/tags.search', { q: query });
+//     res.tags.unshift(query); // selectable new tag whose name equals query
+//     this.setState({
+//       resultTags: Array.from(new Set(res.tags)), // use Set for de-duplication
+//       isLoading: false,
+//     });
+//   }
+
+//   handleSelect(e) {
+//     if (e.keyCode === 32) { // '32' means ASCII code of 'space'
+//       e.preventDefault();
+//       const instance = this.typeahead.getInstance();
+//       const { initialItem } = instance.state;
+
+//       if (initialItem) {
+//         instance._handleMenuItemSelect(initialItem, e);
+//       }
+//     }
+//   }
+
+//   render() {
+//     return (
+//       <div className="tag-typeahead">
+//         <AsyncTypeahead
+//           id="tag-typeahead-asynctypeahead"
+//           ref={(typeahead) => { this.typeahead = typeahead }}
+//           caseSensitive={false}
+//           defaultSelected={this.state.defaultPageTags}
+//           isLoading={this.state.isLoading}
+//           minLength={1}
+//           multiple
+//           newSelectionPrefix=""
+//           onChange={this.handleChange}
+//           onSearch={this.handleSearch}
+//           onKeyDown={this.handleSelect}
+//           options={this.state.resultTags} // Search result (Some tag names)
+//           placeholder="tag name"
+//           selectHintOnEnter
+//           autoFocus={this.props.autoFocus}
+//         />
+//       </div>
+//     );
+//   }
+
+// }
+
+export default TagsInput;
