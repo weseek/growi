@@ -8,12 +8,14 @@ import AppContainer from '../../services/AppContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
-import { useCurrentPageTagsSWR } from '~/stores/page';
+import { useCurrentPageSWR, useCurrentPageTagsSWR } from '~/stores/page';
 import { useCurrentUser } from '~/stores/context';
+import { apiPost } from '~/client/js/util/apiv1-client';
 
 type Props = {
   appContainer: AppContainer,
   editorMode: string,
+  // editorContainer: EditorContainer,
 }
 
 const TagLabels = (props: Props): JSX.Element => {
@@ -21,6 +23,7 @@ const TagLabels = (props: Props): JSX.Element => {
 
   const { data: currentUser } = useCurrentUser();
   const { data: tags, error } = useCurrentPageTagsSWR();
+  const { data: currentPage } = useCurrentPageSWR();
 
   const openEditorModal = useCallback(() => {
     setIsTagEditModalShown(true);
@@ -29,8 +32,31 @@ const TagLabels = (props: Props): JSX.Element => {
   const closeEditorModal = useCallback(() => {
     setIsTagEditModalShown(false);
   }, []);
-  // TODO: impl by https://youtrack.weseek.co.jp/issue/GW-4960
-  const tagsUpdatedHandler = useCallback(() => {
+  const tagsUpdatedHandler = useCallback(async() => {
+
+    const pageId = currentPage.id;
+    // TODO impl this after editorMode becomes available.
+    // It will not be reflected in the DB until the page is refreshed
+    // if (props.editorMode === 'edit') {
+    //   return props.editorContainer.setState({ tags: 'jou' });
+    // }
+
+    try {
+      await apiPost('/tags.update', { pageId, tags: 'joou' });
+
+      // update pageContainer.state
+      // pageContainer.setState({ tags });
+
+      // TODO impl this after editorMode becomes available.
+      // update editorContainer.state
+      // props.editorContainer.setState({ tags });
+      toastSuccess('updated tags successfully');
+    }
+    catch (err) {
+      toastError(err, 'fail to update tags');
+    }
+    console.log('hoge');
+
   }, []);
 
   const isLoading = !error && !tags;
