@@ -36,11 +36,15 @@ type Props = {
 // TODO-5055 impl modal
 export const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
-  const { isDeleteCompletely = false } = props;
+  const { isDeleteCompletely = false, path } = props;
   const [errs, setErrs] = useState([]);
+  const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
 
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
+  const changeIsDeleteRecursivelyHandler = () => {
+    setIsDeleteRecursively(!isDeleteRecursively);
+  };
 
   const deletePage = async() => {
     setErrs([]);
@@ -61,12 +65,32 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
         { t('modal_delete.delete_page') }
       </ModalHeader>
       <ModalBody>
+        <div className="form-group">
+          <label>{ t('modal_delete.deleting_page') }:</label><br />
+          <code>{ path }</code>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          <input
+            className="custom-control-input"
+            id="deleteRecursively"
+            type="checkbox"
+            checked={isDeleteRecursively}
+            onChange={changeIsDeleteRecursivelyHandler}
+          />
+          <label className="custom-control-label" htmlFor="deleteRecursively">
+            { t('modal_delete.delete_recursively') }
+            <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
+          </label>
+        </div>
+        {/* {!isDeleteCompletelyModal && renderDeleteCompletelyForm()} */}
+      </ModalBody>
+      <ModalFooter>
         <ApiErrorMessageList errs={errs} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deletePage}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
-      </ModalBody>
+      </ModalFooter>
     </Modal>
   );
 };
