@@ -10,14 +10,14 @@ import {
 import { debounce } from 'throttle-debounce';
 import { useTranslation } from '~/i18n';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
+// import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
+// import { toastError } from '../../client/js/util/apiNotification';
 
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-import ComparePathsTable from './ComparePathsTable';
-import DuplicatedPathsTable from './DuplicatedPathsTable';
+// import AppContainer from '../../client/js/services/AppContainer';
+// import PageContainer from '../../client/js/services/PageContainer';
+// import ApiErrorMessageList from '../../client/js/components/PageManagement/ApiErrorMessageList';
+// import ComparePathsTable from '../../client/js/components/ComparePathsTable';
+// import DuplicatedPathsTable from '../../client/js/components/DuplicatedPathsTable';
 
 type Props = {
   isOpen: boolean,

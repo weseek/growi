@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import urljoin from 'url-join';
@@ -8,24 +8,26 @@ import { isTopPage, isDeletablePage } from '~/utils/path-utils';
 import { useCurrentPagePath, useCurrentUser, useIsAbleToDeleteCompletely } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
 
-import PageDeleteModal from '../PageDeleteModal';
-import { PageRenameModal } from '../PageRenameModal';
-import PageDuplicateModal from '../PageDuplicateModal';
-import CreateTemplateModal from '../CreateTemplateModal';
-import PagePresentationModal from '../PagePresentationModal';
-import PresentationIcon from '../Icons/PresentationIcon';
+// import PageDeleteModal from '~/client/js/components/PageDeleteModal';
+import { PageRenameModal } from '~/components/PageManagement/PageRenameModal';
+// import PageDuplicateModal from '../../client/js/components/PageDuplicateModal';
+// import CreateTemplateModal from '../../client/js/components/CreateTemplateModal';
+// import PagePresentationModal from '../../client/js/components/PagePresentationModal';
+import PresentationIcon from '~/client/js/components/Icons/PresentationIcon';
+
+type Props = {
+  isCompactMode: boolean,
+}
 
 
-const PageManagement = (props) => {
+export const PageManagement:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const { data: path } = useCurrentPagePath();
   const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
   const { data: currentPage } = useCurrentPageSWR();
 
-  const {
-    isCompactMode,
-  } = props;
+  const { isCompactMode } = props;
 
   const isTopPagePath = isTopPage(path);
   const isDeletable = isDeletablePage(path);
@@ -239,9 +241,3 @@ const PageManagement = (props) => {
     </>
   );
 };
-
-PageManagement.propTypes = {
-  isCompactMode: PropTypes.bool.isRequired,
-};
-
-export default PageManagement;
