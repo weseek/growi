@@ -9,7 +9,7 @@ import { useTranslation } from '~/i18n';
 // import { withUnstatedContainers } from './UnstatedUtils';
 // import PageContainer from '../services/PageContainer';
 
-// import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
 type Props = {
   isOpen: boolean;
@@ -54,7 +54,7 @@ const DeprecatedPageDeleteModal = (props) => {
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
   const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
 
-  const [errs, setErrs] = useState(null);
+  const [errs, setErrs] = useState([]);
 
   function changeIsDeleteRecursivelyHandler() {
     setIsDeleteRecursively(!isDeleteRecursively);
@@ -68,7 +68,7 @@ const DeprecatedPageDeleteModal = (props) => {
   }
 
   async function deletePage() {
-    setErrs(null);
+    setErrs([]);
 
     try {
       const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
