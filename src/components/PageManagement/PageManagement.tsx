@@ -10,7 +10,7 @@ import { useCurrentPageSWR } from '~/stores/page';
 
 // import PageDeleteModal from '~/client/js/components/PageDeleteModal';
 import { PageRenameModal } from '~/components/PageManagement/PageRenameModal';
-// import PageDuplicateModal from '../../client/js/components/PageDuplicateModal';
+import { PageDuplicateModal } from '~/components/PageManagement/PageDuplicateModal';
 // import CreateTemplateModal from '../../client/js/components/CreateTemplateModal';
 // import PagePresentationModal from '../../client/js/components/PagePresentationModal';
 import PresentationIcon from '~/client/js/components/Icons/PresentationIcon';
@@ -172,10 +172,10 @@ export const PageManagement:FC<Props> = (props:Props) => {
           onClose={closePageRenameModalHandler}
           path={path}
         />
-        {/* <PageDuplicateModal
+        <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
-        /> */}
+        />
         {/* <CreateTemplateModal
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}

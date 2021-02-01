@@ -1,25 +1,50 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useEffect, useCallback, FC,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
-import { debounce } from 'throttle-debounce';
-import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
+import { useTranslation } from '~/i18n';
 
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
-import PagePathAutoComplete from './PagePathAutoComplete';
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-import ComparePathsTable from './ComparePathsTable';
-import DuplicatePathsTable from './DuplicatedPathsTable';
+// import { debounce } from 'throttle-debounce';
+// import { withUnstatedContainers } from './UnstatedUtils';
+// import { toastError } from '../util/apiNotification';
+
+// import AppContainer from '../services/AppContainer';
+// import PageContainer from '../services/PageContainer';
+// import PagePathAutoComplete from './PagePathAutoComplete';
+// import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+// import ComparePathsTable from './ComparePathsTable';
+// import DuplicatePathsTable from './DuplicatedPathsTable';
 
 const LIMIT_FOR_LIST = 10;
 
-const PageDuplicateModal = (props) => {
+type Props = {
+  isOpen: boolean;
+  onClose:() => void,
+}
+
+export const PageDuplicateModal:FC<Props> = (props:Props) => {
+  const { t } = useTranslation();
+
+  return (
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
+        { t('modal_duplicate.label.Duplicate page') }
+      </ModalHeader>
+      <ModalBody>
+      </ModalBody>
+      <ModalFooter>
+      </ModalFooter>
+    </Modal>
+  );
+};
+
+
+const DeprecatedPageDuplicateModal = (props) => {
   const { t, appContainer, pageContainer } = props;
 
   const config = appContainer.getConfig();
@@ -213,16 +238,16 @@ const PageDuplicateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer, PageContainer]);
+// const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer, PageContainer]);
 
 
-PageDuplicateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+// PageDuplicateModal.propTypes = {
+//   t: PropTypes.func.isRequired, //  i18next
+//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
+//   isOpen: PropTypes.bool.isRequired,
+//   onClose: PropTypes.func.isRequired,
+// };
 
-export default withTranslation()(PageDuplicateModallWrapper);
+// export default withTranslation()(PageDuplicateModallWrapper);
