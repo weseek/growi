@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React, { FC, useCallback } from 'react';
 import { useCurrentUser, useIsSharedUser } from '~/stores/context';
 
@@ -50,9 +51,11 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
   const { iconName, href, isBlank } = props;
 
   return (
-    <a href={href} className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
-      <i className="material-icons">{iconName}</i>
-    </a>
+    <Link href={href}>
+      <a href={href} className="d-block btn btn-primary" target={`${isBlank ? '_blank' : ''}`}>
+        <i className="material-icons">{iconName}</i>
+      </a>
+    </Link>
   );
 };
 
