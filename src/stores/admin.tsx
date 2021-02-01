@@ -6,5 +6,6 @@ export const useCustomizeSettingsSWR = (): responseInterface<ICustomizeParams, E
   return useSWR(
     '/customize-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.customizeParams),
+    { revalidateOnFocus: false },
   );
 };
