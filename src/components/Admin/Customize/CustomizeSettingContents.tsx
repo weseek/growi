@@ -11,7 +11,12 @@ import CustomizeCssSetting from '~/client/js/components/Admin/Customize/Customiz
 import CustomizeScriptSetting from '~/client/js/components/Admin/Customize/CustomizeScriptSetting';
 
 const CustomizeSettingContents = (): JSX.Element => {
-  const { data } = useCustomizeSettingsSWR();
+  const { error, data } = useCustomizeSettingsSWR();
+
+  // TODO impl alert for display error message
+  if (error != null) {
+    return <></>;
+  }
 
   if (data == null) {
     return (

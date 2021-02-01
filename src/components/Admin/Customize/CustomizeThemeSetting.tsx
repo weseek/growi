@@ -11,7 +11,7 @@ import { AdminUpdateButtonRow } from '~/components/Admin/Common/AdminUpdateButto
 
 export const CustomizeThemeSetting:FC = () => {
   const { t } = useTranslation();
-  const { data, error, mutate } = useCustomizeSettingsSWR();
+  const { data, mutate } = useCustomizeSettingsSWR();
   const [themeType, setThemeType] = useState('');
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export const CustomizeThemeSetting:FC = () => {
           </div>
         )}
         <CustomizeThemeOptions currentTheme={data?.themeType} onSelected={e => setThemeType(e)} />
-        <AdminUpdateButtonRow onClick={onClickSubmit} disabled={error != null} />
+        <AdminUpdateButtonRow onClick={onClickSubmit} />
       </div>
     </div>
   );

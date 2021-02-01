@@ -3,7 +3,7 @@ import { useTranslation } from '~/i18n';
 
 type Props = {
   onClick?: ()=>void;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export const AdminUpdateButtonRow:FC<Props> = (props:Props) => {
@@ -18,7 +18,7 @@ export const AdminUpdateButtonRow:FC<Props> = (props:Props) => {
   return (
     <div className="row my-3">
       <div className="mx-auto">
-        <button type="button" className="btn btn-primary" onClick={handleUpdateButton} disabled={props.disabled}>{ t('Update') }</button>
+        <button type="button" className="btn btn-primary" onClick={handleUpdateButton} disabled={props.disabled || false}>{ t('Update') }</button>
       </div>
     </div>
   );
