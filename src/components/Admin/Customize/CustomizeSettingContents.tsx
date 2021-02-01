@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useCustomizeSettingsSWR } from '~/stores/admin';
+
 import CustomizeThemeSetting from '~/client/js/components/Admin/Customize/CustomizeThemeSetting';
 import CustomizeFunctionSetting from '~/client/js/components/Admin/Customize/CustomizeFunctionSetting';
 import CustomizeHighlightSetting from '~/client/js/components/Admin/Customize/CustomizeHighlightSetting';
@@ -12,6 +14,9 @@ import { useTranslation } from '~/i18n';
 
 const CustomizeSettingContents = (): JSX.Element => {
   const { t } = useTranslation();
+
+  const { data } = useCustomizeSettingsSWR();
+  console.log(data);
 
   return (
     <React.Fragment>
