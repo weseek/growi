@@ -34,11 +34,13 @@ class SearchService {
   }
 
   get isSearchboxEnabled() {
-    return this.configManager.getConfig('crowi', 'app:searchboxSslUrl') != null;
+    const url = this.configManager.getConfig('crowi', 'app:searchboxSslUrl');
+    return url != null && url.length > 0;
   }
 
   get isElasticsearchEnabled() {
-    return this.configManager.getConfig('crowi', 'app:elasticsearchUri') != null;
+    const url = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
+    return url != null && url.length > 0;
   }
 
   generateDelegator() {

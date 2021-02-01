@@ -1,15 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { toastSuccess, toastError } from '../../util/apiNotification';
-import AppContainer from '../../services/AppContainer';
 
-import RenderTagLabels from './RenderTagLabels';
-import TagEditModal from './TagEditModal';
 import { useCurrentPageSWR, useCurrentPageTagsSWR } from '~/stores/page';
 import { useCurrentUser } from '~/stores/context';
 import { apiPost } from '~/client/js/util/apiv1-client';
 
+import { toastSuccess, toastError } from '../../util/apiNotification';
+
+import RenderTagLabels from './RenderTagLabels';
+import TagEditModal from './TagEditModal';
+
 type Props = {
-  appContainer: AppContainer,
   editorMode: string,
 }
 
@@ -63,7 +63,6 @@ const TagLabels = (props: Props): JSX.Element => {
     );
   }
 
-  const { appContainer } = props;
   const isGuestUser = currentUser == null;
 
   return (
@@ -81,7 +80,6 @@ const TagLabels = (props: Props): JSX.Element => {
         tags={tags}
         isOpen={isTagEditModalShown}
         onClose={closeEditorModal}
-        appContainer={appContainer}
         onTagsUpdated={tagsUpdatedHandler}
       />
     </>

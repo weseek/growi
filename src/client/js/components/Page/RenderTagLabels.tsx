@@ -1,12 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-
+import { FC } from 'react';
 import { UncontrolledTooltip } from 'reactstrap';
 
-const RenderTagLabels = React.memo((props) => {
+import { useTranslation } from '~/i18n';
+import { Tag } from '~/interfaces/page';
+
+type Props = {
+  tags?: Tag[],
+  isGuestUser: boolean,
+  openEditorModal?: () => void,
+}
+
+const RenderTagLabels: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
+
   const {
-    t, tags, isGuestUser,
+    tags, isGuestUser,
   } = props;
 
   function openEditorHandler() {
@@ -25,7 +33,7 @@ const RenderTagLabels = React.memo((props) => {
 
   const tagElements = tags.map((tag) => {
     return (
-      <a key={tag} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
+      <a key={tag.name} href={`/_search?q=tag:${tag}`} className="grw-tag-label badge badge-secondary mr-2">
         {tag}
       </a>
     );
@@ -52,14 +60,6 @@ const RenderTagLabels = React.memo((props) => {
     </>
   );
 
-});
-
-RenderTagLabels.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  tags: PropTypes.array,
-  openEditorModal: PropTypes.func,
-  isGuestUser: PropTypes.bool.isRequired,
 };
 
-export default withTranslation()(RenderTagLabels);
+export default RenderTagLabels;
