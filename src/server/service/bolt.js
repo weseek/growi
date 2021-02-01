@@ -11,7 +11,6 @@ class BoltReciever extends EventEmitter {
     this.bolt = app;
   }
 
-
   async requestHandler(req, res) {
     let ackCalled = false;
     // 着信リクエストをパースするparseBody 関数があると仮定
@@ -54,6 +53,7 @@ class BoltService {
     // App をこのレシーバーを指定して生成
     this.bolt = new App({
       token: process.env.SLACK_BOT_TOKEN,
+      signingSecret: process.env.SLACK_SIGNING_SECRET,
       receiver: this.receiver,
     });
     // Slack とのやりとりは App のメソッドで定義
