@@ -67,6 +67,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 className="form-control"
                 type="text"
                 name="esaTeamName"
+                // TODO: enable esaTeamName and handleInputValue without adminImportContainer by GW-5077
                 // value={adminImportContainer.state.esaTeamName}
                 // onChange={adminImportContainer.handleInputValue}
               />
@@ -83,6 +84,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 className="form-control"
                 type="password"
                 name="esaAccessToken"
+                // TODO: enable esaAccessToken and handleInputValue without adminImportContainer by GW-5077
                 // value={adminImportContainer.state.esaAccessToken}
                 // onChange={adminImportContainer.handleInputValue}
               />
@@ -96,8 +98,9 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 type="button"
                 className="btn btn-primary btn-esa"
                 name="Esa"
+                // TODO: enable esaHandleSubmit without adminImportContainer by GW-5077
                 // onClick={adminImportContainer.esaHandleSubmit}
-                // value={t('admin:importer_management.import')}
+                value={t('admin:importer_management.import')}
               />
               <input type="button" className="btn btn-secondary" /* value={t('Update')} */ />
               <span className="offset-0 offset-sm-1">
@@ -106,6 +109,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                   type="button"
                   name="Esa"
                   className="btn btn-secondary btn-esa"
+                  // TODO: enable qiitaTeamName and esaHandleSubmitTest without adminImportContainer by GW-5077
                   // onClick={adminImportContainer.esaHandleSubmitTest}
                   data-value={t('admin:importer_management.esa_settings.test_connection')}
                 />
@@ -172,6 +176,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 className="form-control"
                 type="text"
                 name="qiitaTeamName"
+                // TODO: enable qiitaTeamName and handleInputValue  without adminImportContainer by GW-5077
                 // value={adminImportContainer.state.qiitaTeamName}
                 // onChange={adminImportContainer.handleInputValue}
               />
@@ -187,6 +192,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 className="form-control"
                 type="password"
                 name="qiitaAccessToken"
+                // TODO: enable qiitaAccessToken and handleInputValue  without adminImportContainer by GW-5077
                 // value={adminImportContainer.state.qiitaAccessToken}
                 // onChange={adminImportContainer.handleInputValue}
               />
@@ -204,6 +210,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 // onClick={adminImportContainer.qiitaHandleSubmit}
                 value={t('admin:importer_management.import')}
               />
+              {/* TODO: enable qiitaHandleSubmitUpdate without adminImportContainer by GW-5077 */}
               {/* <input type="button" className="btn btn-secondary" onClick={adminImportContainer.qiitaHandleSubmitUpdate} value={t('Update')} /> */}
               <span className="offset-0 offset-sm-1">
                 <input
@@ -211,6 +218,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                   type="button"
                   id="importFromQiita"
                   className="btn btn-secondary btn-qiita"
+                  // TODO: enable qiitaHandleSubmitTest without adminImportContainer by GW-5077
                   // onClick={adminImportContainer.qiitaHandleSubmitTest}
                   value={t('admin:importer_management.qiita_settings.test_connection')}
                 />
