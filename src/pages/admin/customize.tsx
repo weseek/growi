@@ -3,11 +3,11 @@ import {
 } from 'next';
 
 import AdminLayout from '~/components/AdminLayout';
+import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
-import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 
 import {
   useCurrentUser,
@@ -24,7 +24,7 @@ type Props = CommonProps & {
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const title = t('Markdown Settings');
+  const title = t('Customize Settings');
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
@@ -32,11 +32,9 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   useSearchServiceReachable(props.isSearchServiceReachable);
 
   return (
-    <>
-      <AdminLayout title={title} selectedNavOpt="markdown" growiVersion={props.growiVersion}>
-        <MarkDownSettingContents />
-      </AdminLayout>
-    </>
+    <AdminLayout title={title} selectedNavOpt="customize" growiVersion={props.growiVersion}>
+      <CustomizeSettingContents />
+    </AdminLayout>
   );
 };
 
@@ -50,13 +48,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
-
-  // check for presence
-  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
-  if (!('props' in result)) {
-    throw new Error('invalid getSSP result');
-  }
-
   const props: Props = result.props as Props;
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());

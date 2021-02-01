@@ -1,15 +1,18 @@
-const { getInstance } = require('../setup-crowi');
+
 import { getServerSideCommonProps, useCustomTitle, useCustomTitleForPage } from '~/utils/nextjs-page-utils';
+
 import DevidedPagePath from '~/models/devided-page-path';
+
+const { getInstance } = require('../setup-crowi');
 
 jest.mock('~/models/devided-page-path');
 
 describe('.getServerSideCommonProps', () => {
-  let crowi
+  let crowi;
   beforeEach(async() => {
-    crowi = await getInstance()
-    crowi.customizeService = { customTitleTemplate: 'customTitleTemplate' }
-  })
+    crowi = await getInstance();
+    crowi.customizeService = { customTitleTemplate: 'customTitleTemplate' };
+  });
   test('should be return replaced text', async() => {
     const result = await getServerSideCommonProps(
       {

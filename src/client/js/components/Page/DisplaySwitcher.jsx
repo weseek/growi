@@ -7,7 +7,6 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import Page from '../Page';
 // import UserInfo from '../User/UserInfo';
-// import TableOfContents from '../TableOfContents';
 // import ContentLinkButtons from '../ContentLinkButtons';
 // import PageAccessories from '../PageAccessories';
 
@@ -20,6 +19,7 @@ const DisplaySwitcher = (props) => {
   // const { pageUser } = pageContainer.state;
 
   // dynamic import to skip rendering at SSR
+  const TableOfContents = dynamic(() => import('../TableOfContents'), { ssr: false });
   // const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
   // const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd'), { ssr: false });
   // const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
@@ -38,7 +38,7 @@ const DisplaySwitcher = (props) => {
 
                 <div className="d-none d-lg-block">
                   <div id="revision-toc" className="revision-toc">
-                    {/* <TableOfContents /> */}
+                    <TableOfContents />
                   </div>
                   {/* <ContentLinkButtons /> */}
                 </div>
