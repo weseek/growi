@@ -1,11 +1,7 @@
-import React, { Fragment } from 'react';
-// import PropTypes from 'prop-types';
+import React from 'react';
 import { useTranslation } from '~/i18n';
-import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 
 import GrowiArchiveSection from '~/client/js/components/Admin/ImportData/GrowiArchiveSection';
-
-import AdminImportContainer from '~/client/js/services/AdminImportContainer';
 
 
 type Props = {
@@ -14,12 +10,8 @@ type Props = {
 const DataImportPageContents = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  // render() {
-  // const { t, adminImportContainer } = this.props;
-  // const { adminImportContainer } = props;
-
   return (
-    <Fragment>
+    <>
       <GrowiArchiveSection />
 
       <form
@@ -227,25 +219,13 @@ const DataImportPageContents = (props: Props): JSX.Element => {
             </div>
           </div>
 
-
         </fieldset>
-
-
       </form>
-    </Fragment>
+
+    </>
   );
   // }
 
 };
 
-// ImportDataPageContents.propTypes = {
-//   t: PropTypes.func.isRequired, // i18next
-//   adminImportContainer: PropTypes.instanceOf(AdminImportContainer).isRequired,
-// };
-
-/**
- * Wrapper component for using unstated
- */
-const ImportDataPageContentsWrapper = withUnstatedContainers(DataImportPageContents, [AdminImportContainer]);
-
-export default ImportDataPageContentsWrapper;
+export default DataImportPageContents;
