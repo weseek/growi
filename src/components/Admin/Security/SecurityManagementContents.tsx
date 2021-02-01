@@ -1,8 +1,7 @@
 import React, { Fragment, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-
+// import PropTypes from 'prop-types';
 import { TabContent, TabPane } from 'reactstrap';
+import { useTranslation } from '~/i18n';
 
 import LdapSecuritySetting from '~/client/js/components/Admin/Security/LdapSecuritySetting';
 import LocalSecuritySetting from '~/client/js/components/Admin/Security/LocalSecuritySetting';
@@ -18,8 +17,12 @@ import ShareLinkSetting from '~/client/js/components/Admin/Security/ShareLinkSet
 
 import CustomNav from '~/client/js/components/CustomNavigation/CustomNav';
 
-function SecurityManagementContents(props) {
-  const { t } = props;
+type Props = {
+};
+
+// const SecurityManagementContents(props) {
+const SecurityManagementContents = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('passport_local');
   const [activeComponents, setActiveComponents] = useState(new Set(['passport_local']));
@@ -144,10 +147,10 @@ function SecurityManagementContents(props) {
     </Fragment>
   );
 
-}
-
-SecurityManagementContents.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(SecurityManagementContents);
+// SecurityManagementContents.propTypes = {
+//   t: PropTypes.func.isRequired, // i18next
+// };
+
+export default SecurityManagementContents;
