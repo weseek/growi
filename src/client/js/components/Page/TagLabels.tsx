@@ -34,7 +34,7 @@ const TagLabels = (props: Props): JSX.Element => {
     // TODO impl this after editorMode becomes available.
     // It will not be reflected in the DB until the page is refreshed
     // if (props.editorMode === 'edit') {
-    //   return props.editorContainer.setState({ tags: tags });
+    //   return props.editorContainer.setState({ tags: newTags });
     // }
 
     try {
