@@ -284,8 +284,8 @@ module.exports = (crowi) => {
    */
   router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
-      'app:title': req.body.title,
-      'app:confidential': req.body.confidential,
+      'app:title': crowi.xss.process(req.body.title),
+      'app:confidential': crowi.xss.process(req.body.confidential),
       'app:globalLang': req.body.globalLang,
       'app:fileUpload': req.body.fileUpload,
     };
