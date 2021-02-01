@@ -26,7 +26,7 @@ const CustomizeSettingContents = (): JSX.Element => {
       <div className="mb-5">
         <CustomizeThemeSetting />
       </div>
-      <div className="mb-5">
+      {/* <div className="mb-5">
         <CustomizeFunctionSetting />
       </div>
       <div className="mb-5">
@@ -43,7 +43,7 @@ const CustomizeSettingContents = (): JSX.Element => {
       </div>
       <div className="mb-5">
         <CustomizeScriptSetting />
-      </div>
+      </div> */}
     </React.Fragment>
   );
 };

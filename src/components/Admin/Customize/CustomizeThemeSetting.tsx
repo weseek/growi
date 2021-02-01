@@ -9,12 +9,12 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
 // import CustomizeThemeOptions from './CustomizeThemeOptions';
 // import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-import AdminUpdateButtonRow from '~/client/js/components/Admin/Common/AdminUpdateButtonRow';
+import { AdminUpdateButtonRow } from '~/components/Admin/Common/AdminUpdateButtonRow';
 
 
 export const CustomizeThemeSetting:FC = () => {
   const { t } = useTranslation();
-  const { error, isValidating } = useCustomizeSettingsSWR();
+  const { data, error } = useCustomizeSettingsSWR();
 
   const onClickSubmit = async() => {
 
