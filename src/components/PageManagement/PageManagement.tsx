@@ -8,11 +8,10 @@ import { isTopPage, isDeletablePage } from '~/utils/path-utils';
 import { useCurrentPagePath, useCurrentUser, useIsAbleToDeleteCompletely } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
 
-// import PageDeleteModal from '~/client/js/components/PageDeleteModal';
 import { PageRenameModal } from '~/components/PageManagement/PageRenameModal';
 import { PageDuplicateModal } from '~/components/PageManagement/PageDuplicateModal';
 import { CreateTemplateModal } from '~/components/PageManagement/CreateTemplateModal';
-// import PagePresentationModal from '../../client/js/components/PagePresentationModal';
+import { PageDeleteModal } from '~/components/PageManagement/PageDeleteModal';
 import PresentationIcon from '~/client/js/components/Icons/PresentationIcon';
 
 type Props = {
@@ -180,12 +179,12 @@ export const PageManagement:FC<Props> = (props:Props) => {
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
         />
-        {/* <PageDeleteModal
+        <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
           path={path}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-        /> */}
+        />
         {/* <PagePresentationModal
           isOpen={isPagePresentationModalShown}
           onClose={closePagePresentationModalHandler}
