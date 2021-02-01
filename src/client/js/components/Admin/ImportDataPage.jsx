@@ -9,7 +9,7 @@ import { withLoadingSppiner } from '../SuspenseUtils';
 import AdminImportContainer from '../../services/AdminImportContainer';
 import { toastError } from '../../util/apiNotification';
 
-import DataImportPageContents from '~/components/Admin/DataImport/ImportDataPageContents';
+import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 
 const logger = loggerFactory('growi:importer');
 
