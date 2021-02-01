@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
-import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { pathUtils } from 'growi-commons';
 import { useTranslation } from '~/i18n';
 
 // import { withTranslation } from 'react-i18next';
-// import { pathUtils } from 'growi-commons';
 // import urljoin from 'url-join';
 // import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -14,11 +13,13 @@ import { useTranslation } from '~/i18n';
 type Props = {
   isOpen: boolean;
   onClose:() => void;
+  path: string;
 }
 
 // TODO-5054 impl modal
 export const CreateTemplateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
+  const parentPath = pathUtils.addTrailingSlash(props.path);
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -26,6 +27,16 @@ export const CreateTemplateModal:FC<Props> = (props:Props) => {
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
       <ModalBody>
+        <div className="form-group">
+          <label className="mb-4">
+            <code>{parentPath}</code><br />
+            { t('template.modal_label.Create template under') }
+          </label>
+          <div className="card-deck">
+            {/* {renderTemplateCard('children', '_template')}
+            {renderTemplateCard('decendants', '__template')} */}
+          </div>
+        </div>
       </ModalBody>
     </Modal>
   );
