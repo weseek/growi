@@ -80,7 +80,7 @@ const LineBreakForm = (props) => {
         {renderLineBreakOption()}
         {renderLineBreakInCommentOption()}
       </fieldset>
-      <AdminUpdateButtonRow onClick={onClickSubmit} />
+      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={false} />
     </React.Fragment>
   );
 

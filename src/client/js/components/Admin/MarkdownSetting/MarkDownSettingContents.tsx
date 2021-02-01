@@ -3,16 +3,12 @@ import { Card, CardBody } from 'reactstrap';
 
 import { useTranslation } from '~/i18n';
 import { useMarkdownSettingsSWR } from '~/stores/admin';
-import { apiv3Get } from '~/client/js/util/apiv3-client';
 import LineBreakForm from './LineBreakForm';
 import PresentationForm from './PresentationForm';
 import XssForm from './XssForm';
 
-type Props = {
-  // markdownSettingParams: any,
-};
 
-const MarkDownSettingContents = (props: Props): JSX.Element => {
+const MarkDownSettingContents = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: markdownSettingParams, error, isValidating } = useMarkdownSettingsSWR();
 

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
-import { stringify } from 'querystring';
 import { useTranslation } from '~/i18n';
 
 import { tags, attrs } from '~/service/xss/recommended-whitelist';
@@ -164,8 +163,7 @@ const XssForm = (props) => {
           {isEnabledXss && xssOptions()}
         </div>
       </fieldset>
-      <AdminUpdateButtonRow onClick={onClickSubmit} />
-      {/* <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} /> */}
+      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={false} />
     </React.Fragment>
   );
 
@@ -174,8 +172,8 @@ const XssForm = (props) => {
 XssForm.propTypes = {
   isEnabledXss: PropTypes.bool,
   xssOption: PropTypes.number,
-  tagWhiteList: PropTypes.string,
-  attrWhiteList: PropTypes.string,
+  tagWhiteList: PropTypes.array,
+  attrWhiteList: PropTypes.array,
 };
 
 export default XssForm;

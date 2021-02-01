@@ -111,7 +111,7 @@ const PresentationForm = (props) => {
         </div>
       </div>
 
-      <AdminUpdateButtonRow onClick={onClickSubmit} />
+      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={false} />
     </fieldset>
   );
 
