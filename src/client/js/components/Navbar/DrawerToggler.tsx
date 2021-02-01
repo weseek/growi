@@ -1,16 +1,14 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
+import React, { FC, useCallback } from 'react';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import NavigationContainer from '../../services/NavigationContainer';
+type Props = {
+  iconClass: string,
+}
 
-const DrawerToggler = (props) => {
-
-  const { navigationContainer } = props;
+const DrawerToggler: FC<Props> = (props: Props) => {
 
   const clickHandler = useCallback(() => {
-    navigationContainer.toggleDrawer();
-  }, [navigationContainer]);
+    // navigationContainer.toggleDrawer();
+  }, []);
 
   const iconClass = props.iconClass || 'icon-menu';
 
@@ -28,16 +26,4 @@ const DrawerToggler = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const DrawerTogglerWrapper = withUnstatedContainers(DrawerToggler, [NavigationContainer]);
-
-
-DrawerToggler.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-
-  iconClass: PropTypes.string,
-};
-
-export default DrawerTogglerWrapper;
+export default DrawerToggler;
