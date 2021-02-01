@@ -23,7 +23,7 @@ type Props = CommonProps & {
 
 const AdminSecuritySettingsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const title = t('Customize Settings');
+  const title = t('Security settings');
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
@@ -31,7 +31,7 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props: Props) => {
   useSearchServiceReachable(props.isSearchServiceReachable);
 
   return (
-    <AdminLayout title={title} selectedNavOpt="customize" growiVersion={props.growiVersion}>
+    <AdminLayout title={title} selectedNavOpt="security" growiVersion={props.growiVersion}>
       security
     </AdminLayout>
   );
