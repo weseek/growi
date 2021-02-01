@@ -20,7 +20,7 @@ module.exports = (crowi) => {
       if (contributors[1].sectionName !== 'GROWI-cloud') {
         contributors.splice(1, 0, gcContributorsRes.data);
       }
-      return res.apiv3({contributors});
+      return res.apiv3({ contributors });
     }
     catch (err) {
       return res.apiv3Err(err, 500);
