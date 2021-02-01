@@ -1,34 +1,27 @@
-/* eslint-disable react/no-danger */
-import React from 'react';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { useTranslation } from '~/i18n';
 
-
-import AppContainer from '../../../services/AppContainer';
-import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+
+import { apiv3Put } from '../../../util/apiv3-client';
 
 const logger = loggerFactory('growi:importer');
 
-class LineBreakForm extends React.Component {
+const LineBreakForm = (props) => {
+  const { t } = useTranslation();
 
-  constructor(props) {
-    super(props);
+  const [isEnabledLinebreaks, setIsEnabledLinebreaks] = useState(props.isEnabledLinebreaks);
+  const [isEnabledLinebreaksInComments, setIsEnabledLinebreaksInComments] = useState(props.isEnabledLinebreaksInComments);
 
-    this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-
-  async onClickSubmit() {
-    const { t } = this.props;
-
+  async function onClickSubmit() {
     try {
-      await this.props.adminMarkDownContainer.updateLineBreakSetting();
+      await apiv3Put('/markdown-setting/lineBreak', { isEnabledLinebreaks, isEnabledLinebreaksInComments });
       toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.lineBreak_header') }));
     }
     catch (err) {
@@ -37,10 +30,7 @@ class LineBreakForm extends React.Component {
     }
   }
 
-  renderLineBreakOption() {
-    const { t, adminMarkDownContainer } = this.props;
-    const { isEnabledLinebreaks } = adminMarkDownContainer.state;
-
+  function renderLineBreakOption() {
     const helpLineBreak = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') };
 
     return (
@@ -51,7 +41,7 @@ class LineBreakForm extends React.Component {
             className="custom-control-input"
             id="isEnabledLinebreaks"
             checked={isEnabledLinebreaks}
-            onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
+            onChange={() => { setIsEnabledLinebreaks(!isEnabledLinebreaks) }}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
             {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
@@ -62,10 +52,7 @@ class LineBreakForm extends React.Component {
     );
   }
 
-  renderLineBreakInCommentOption() {
-    const { t, adminMarkDownContainer } = this.props;
-    const { isEnabledLinebreaksInComments } = adminMarkDownContainer.state;
-
+  function renderLineBreakInCommentOption() {
     const helpLineBreakInComment = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment_desc') };
 
     return (
@@ -76,7 +63,7 @@ class LineBreakForm extends React.Component {
             className="custom-control-input"
             id="isEnabledLinebreaksInComments"
             checked={isEnabledLinebreaksInComments}
-            onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
+            onChange={() => { setIsEnabledLinebreaksInComments(!isEnabledLinebreaksInComments) }}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
             {t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment') }
@@ -87,31 +74,21 @@ class LineBreakForm extends React.Component {
     );
   }
 
-  render() {
-    const { adminMarkDownContainer } = this.props;
+  return (
+    <React.Fragment>
+      <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
+        {renderLineBreakOption()}
+        {renderLineBreakInCommentOption()}
+      </fieldset>
+      <AdminUpdateButtonRow onClick={onClickSubmit} />
+    </React.Fragment>
+  );
 
-    return (
-      <React.Fragment>
-        <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
-          {this.renderLineBreakOption()}
-          {this.renderLineBreakInCommentOption()}
-        </fieldset>
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} />
-      </React.Fragment>
-    );
-  }
-
-}
-
-/**
- * Wrapper component for using unstated
- */
-const LineBreakFormWrapper = withUnstatedContainers(LineBreakForm, [AppContainer, AdminMarkDownContainer]);
-
-LineBreakForm.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
-export default withTranslation()(LineBreakFormWrapper);
+LineBreakForm.propTypes = {
+  isEnabledLinebreaks: PropTypes.bool,
+  isEnabledLinebreaksInComments: PropTypes.bool,
+};
+
+export default LineBreakForm;

@@ -34,7 +34,10 @@ const MarkDownSettingContents = (props: Props): JSX.Element => {
       <Card className="card well my-3">
         <CardBody className="px-0 py-2">{ t('admin:markdown_setting.lineBreak_desc') }</CardBody>
       </Card>
-      <LineBreakForm />
+      <LineBreakForm
+        isEnabledLinebreaks={markdownSettingParams?.isEnabledLinebreaks}
+        isEnabledLinebreaksInComments={markdownSettingParams?.isEnabledLinebreaksInComments}
+      />
 
       {/* Presentation Setting */}
       <h2 className="admin-setting-header">{ t('admin:markdown_setting.presentation_header') }</h2>
