@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 
-import GrowiArchiveSection from './GrowiArchiveSection';
+import GrowiArchiveSection from '~/client/js/components/Admin/ImportData/GrowiArchiveSection';
 
-import AdminImportContainer from '../../../services/AdminImportContainer';
+import AdminImportContainer from '~/client/js/services/AdminImportContainer';
 
 class ImportDataPageContents extends React.Component {
 
