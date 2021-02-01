@@ -32,8 +32,7 @@ const TagLabels = (props: Props): JSX.Element => {
   const closeEditorModal = useCallback(() => {
     setIsTagEditModalShown(false);
   }, []);
-  const tagsUpdatedHandler = useCallback(async() => {
-
+  const tagsUpdatedHandler = useCallback(async(newTags) => {
     const pageId = currentPage.id;
     // TODO impl this after editorMode becomes available.
     // It will not be reflected in the DB until the page is refreshed
@@ -42,7 +41,7 @@ const TagLabels = (props: Props): JSX.Element => {
     // }
 
     try {
-      await apiPost('/tags.update', { pageId, tags: 'joou' });
+      await apiPost('/tags.update', { pageId, tags: newTags });
 
       // update pageContainer.state
       // pageContainer.setState({ tags });
@@ -55,8 +54,6 @@ const TagLabels = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err, 'fail to update tags');
     }
-    console.log('hoge');
-
   }, []);
 
   const isLoading = !error && !tags;
