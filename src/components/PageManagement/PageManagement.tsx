@@ -11,6 +11,7 @@ import { PageRenameModal } from '~/components/PageManagement/PageRenameModal';
 import { PageDuplicateModal } from '~/components/PageManagement/PageDuplicateModal';
 import { CreateTemplateModal } from '~/components/PageManagement/CreateTemplateModal';
 import { PageDeleteModal } from '~/components/PageManagement/PageDeleteModal';
+import { PagePresentationModal } from '~/components/PageManagement/PagePresentationModal';
 import PresentationIcon from '~/client/js/components/Icons/PresentationIcon';
 
 type Props = {
@@ -184,11 +185,11 @@ export const PageManagement:FC<Props> = (props:Props) => {
           path={path}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
-        {/* <PagePresentationModal
+        <PagePresentationModal
           isOpen={isPagePresentationModalShown}
           onClose={closePagePresentationModalHandler}
           href="?presentation=1"
-        /> */}
+        />
       </>
     );
   }
