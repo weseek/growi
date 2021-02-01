@@ -1,21 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { FC, useState, useEffect } from 'react';
 
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import TagsInput from './TagsInput';
+import { Tag } from '~/interfaces/page';
 
-function TagEditModal(props) {
-  const [tags, setTags] = useState([]);
+type Props = {
+  tags?: Tag[],
+  isOpen: boolean,
+  onClose: () => void,
+  onTagsUpdated: <T extends Tag[]>(tags: T) => void,
+}
+
+const TagEditModal: FC<Props> = (props: Props) => {
+  const [tags, setTags] = useState<Tag[]>([]);
 
   function onTagsUpdatedByTagsInput(tags) {
     setTags(tags);
   }
 
   useEffect(() => {
-    setTags(props.tags);
+    if (props.tags != null) {
+      setTags(props.tags);
+    }
   }, [props.tags]);
 
   function closeModalHandler() {
@@ -50,13 +59,6 @@ function TagEditModal(props) {
     </Modal>
   );
 
-}
-
-TagEditModal.propTypes = {
-  tags: PropTypes.array,
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
-  onTagsUpdated: PropTypes.func,
 };
 
 export default TagEditModal;

@@ -1,17 +1,17 @@
 import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
+
+import { useCurrentPageSWR, useCurrentPageTagsSWR } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
+import { apiPost } from '~/client/js/util/apiv1-client';
+
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
-import { useCurrentPageSWR, useCurrentPageTagsSWR } from '~/stores/page';
-import { useCurrentUser } from '~/stores/context';
-import { apiPost } from '~/client/js/util/apiv1-client';
 
 type Props = {
-  appContainer: AppContainer,
   editorMode: string,
 }
 
@@ -65,7 +65,6 @@ const TagLabels = (props: Props): JSX.Element => {
     );
   }
 
-  const { appContainer } = props;
   const isGuestUser = currentUser == null;
 
   return (
@@ -83,7 +82,6 @@ const TagLabels = (props: Props): JSX.Element => {
         tags={tags}
         isOpen={isTagEditModalShown}
         onClose={closeEditorModal}
-        appContainer={appContainer}
         onTagsUpdated={tagsUpdatedHandler}
       />
     </>
@@ -127,9 +125,9 @@ class DeprecatedTagLabels extends React.Component {
   // }
 
   async tagsUpdatedHandler(newTags) {
-    const {
-      appContainer, editorMode,
-    } = this.props;
+    // const {
+    //   appContainer, editorMode,
+    // } = this.props;
 
     // const { pageId } = pageContainer.state;
 
@@ -164,15 +162,5 @@ class DeprecatedTagLabels extends React.Component {
  * Wrapper component for using unstated
  */
 const TagLabelsWrapper = withUnstatedContainers(DeprecatedTagLabels, [AppContainer]);
-
-DeprecatedTagLabels.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  // editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  editorMode: PropTypes.string.isRequired,
-};
 
 // export default withTranslation()(TagLabelsWrapper);
