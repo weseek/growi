@@ -9,10 +9,8 @@ import AdminImportContainer from '~/client/js/services/AdminImportContainer';
 
 
 type Props = {
-  width: string;
 };
 
-// class ImportDataPageContents extends React.Component {
 const DataImportPageContents = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
