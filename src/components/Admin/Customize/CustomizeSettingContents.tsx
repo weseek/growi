@@ -11,9 +11,9 @@ import CustomizeCssSetting from '~/client/js/components/Admin/Customize/Customiz
 import CustomizeScriptSetting from '~/client/js/components/Admin/Customize/CustomizeScriptSetting';
 
 const CustomizeSettingContents = (): JSX.Element => {
-  const { isValidating } = useCustomizeSettingsSWR();
+  const { data } = useCustomizeSettingsSWR();
 
-  if (isValidating) {
+  if (data == null) {
     return (
       <div className="my-5 text-center">
         <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted" />

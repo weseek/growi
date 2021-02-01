@@ -3,6 +3,7 @@ import { useState, useEffect, FC } from 'react';
 import { useTranslation } from '~/i18n';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 import { CustomizeThemeOptions } from '~/components/Admin/Customize/CustomizeThemeOptions';
 import { AdminUpdateButtonRow } from '~/components/Admin/Common/AdminUpdateButtonRow';
@@ -10,7 +11,7 @@ import { AdminUpdateButtonRow } from '~/components/Admin/Common/AdminUpdateButto
 
 export const CustomizeThemeSetting:FC = () => {
   const { t } = useTranslation();
-  const { data, error } = useCustomizeSettingsSWR();
+  const { data, error, mutate } = useCustomizeSettingsSWR();
   const [themeType, setThemeType] = useState('');
 
   useEffect(() => {
@@ -22,7 +23,8 @@ export const CustomizeThemeSetting:FC = () => {
   const onClickSubmit = async() => {
 
     try {
-      // await adminCustomizeContainer.updateCustomizeTheme();
+      await apiv3Put('/customize-setting/theme', { themeType });
+      mutate();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
     }
     catch (err) {
