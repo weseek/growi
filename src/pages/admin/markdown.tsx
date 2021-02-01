@@ -8,6 +8,7 @@ import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
 import MarkDownSettingContents from '~/client/js/components/Admin/MarkdownSetting/MarkDownSettingContents';
+
 import {
   useCurrentUser,
   useSearchServiceConfigured, useSearchServiceReachable,
@@ -19,7 +20,6 @@ type Props = CommonProps & {
   growiVersion: string,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
-
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
