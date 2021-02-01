@@ -9,7 +9,7 @@ import { useCurrentPagePath, useCurrentUser, useIsAbleToDeleteCompletely } from 
 import { useCurrentPageSWR } from '~/stores/page';
 
 import PageDeleteModal from '../PageDeleteModal';
-import PageRenameModal from '../PageRenameModal';
+import { PageRenameModal } from '../PageRenameModal';
 import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
 import PagePresentationModal from '../PagePresentationModal';
@@ -165,11 +165,11 @@ const PageManagement = (props) => {
 
     return (
       <>
-        {/* <PageRenameModal
+        <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={closePageRenameModalHandler}
           path={path}
-        /> */}
+        />
         {/* <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
