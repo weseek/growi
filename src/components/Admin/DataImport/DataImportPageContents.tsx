@@ -32,8 +32,8 @@ const DataImportPageContents = (props: Props): JSX.Element => {
           <table className="table table-bordered table-mapping">
             <thead>
               <tr>
-                {/* <th width="45%">esa.io</th>
-                <th width="10%"></th> */}
+                <th data-width="45%">esa.io</th>
+                <th data-width="10%"></th>
                 <th>GROWI</th>
               </tr>
             </thead>
@@ -115,7 +115,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                   name="Esa"
                   className="btn btn-secondary btn-esa"
                   // onClick={adminImportContainer.esaHandleSubmitTest}
-                  // value={t('admin:importer_management.esa_settings.test_connection')}
+                  data-value={t('admin:importer_management.esa_settings.test_connection')}
                 />
               </span>
 
@@ -134,8 +134,8 @@ const DataImportPageContents = (props: Props): JSX.Element => {
           <table className="table table-bordered table-mapping">
             <thead>
               <tr>
-                {/* <th width="45%">Qiita:Team</th>
-                <th width="10%"></th> */}
+                <th data-width="45%">Qiita:Team</th>
+                <th data-width="10%"></th>
                 <th>GROWI</th>
               </tr>
             </thead>
@@ -210,7 +210,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 className="btn btn-primary btn-qiita"
                 name="Qiita"
                 // onClick={adminImportContainer.qiitaHandleSubmit}
-                // value={t('admin:importer_management.import')}
+                value={t('admin:importer_management.import')}
               />
               {/* <input type="button" className="btn btn-secondary" onClick={adminImportContainer.qiitaHandleSubmitUpdate} value={t('Update')} /> */}
               <span className="offset-0 offset-sm-1">
@@ -220,7 +220,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                   id="importFromQiita"
                   className="btn btn-secondary btn-qiita"
                   // onClick={adminImportContainer.qiitaHandleSubmitTest}
-                  // value={t('admin:importer_management.qiita_settings.test_connection')}
+                  value={t('admin:importer_management.qiita_settings.test_connection')}
                 />
               </span>
 
