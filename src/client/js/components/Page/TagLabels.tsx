@@ -113,8 +113,8 @@ class DeprecatedTagLabels extends React.Component {
    *   2. editorContainer.state.tags if editorMode is edit
    */
   getTagData() {
-  // const { editorContainer, editorMode } = this.props;
-  // return (editorMode === 'edit') ? editorContainer.state.tags : pageContainer.state.tags;
+    // const { editorContainer, editorMode } = this.props;
+    // return (editorMode === 'edit') ? editorContainer.state.tags : pageContainer.state.tags;
     return [];
   }
 
