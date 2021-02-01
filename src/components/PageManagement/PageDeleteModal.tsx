@@ -1,13 +1,9 @@
 import React, { useState, FC } from 'react';
-import PropTypes from 'prop-types';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useTranslation } from '~/i18n';
-
-// import { withUnstatedContainers } from './UnstatedUtils';
-// import PageContainer from '../services/PageContainer';
 
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
@@ -33,7 +29,6 @@ type Props = {
   onClose:() => void;
 }
 
-// TODO-5055 impl modal
 export const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const { isAbleToDeleteCompletely = false, path, isDeleteCompletelyModal } = props;
@@ -60,6 +55,13 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
     }
   };
 
+  function changeIsDeleteCompletelyHandler() {
+    if (!isAbleToDeleteCompletely) {
+      return;
+    }
+    setIsDeleteCompletely(!isDeleteCompletely);
+  }
+
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
       <ModalHeader tag="h4" toggle={props.onClose} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
@@ -84,7 +86,28 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
             <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
           </label>
         </div>
-        {/* {!isDeleteCompletelyModal && renderDeleteCompletelyForm()} */}
+        {!isDeleteCompletelyModal && (
+          <div className="custom-control custom-checkbox custom-checkbox-danger">
+            <input
+              className="custom-control-input"
+              name="completely"
+              id="deleteCompletely"
+              type="checkbox"
+              disabled={!isAbleToDeleteCompletely}
+              checked={isDeleteCompletely}
+              onChange={changeIsDeleteCompletelyHandler}
+            />
+            <label className="custom-control-label text-danger" htmlFor="deleteCompletely">
+              { t('modal_delete.delete_completely') }
+              <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
+            </label>
+            {!isAbleToDeleteCompletely && (
+            <p className="alert alert-warning p-2 my-0">
+              <i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }
+            </p>
+            )}
+          </div>
+        )}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
@@ -94,61 +117,5 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
         </button>
       </ModalFooter>
     </Modal>
-  );
-};
-
-
-const DeprecatedPageDeleteModal = (props) => {
-  const {
-    t, pageContainer, isOpen, onClose, isDeleteCompletelyModal, path, isAbleToDeleteCompletely,
-  } = props;
-  const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
-
-  function changeIsDeleteCompletelyHandler() {
-    if (!isAbleToDeleteCompletely) {
-      return;
-    }
-    setIsDeleteCompletely(!isDeleteCompletely);
-  }
-
-
-  function renderDeleteCompletelyForm() {
-    return (
-      <div className="custom-control custom-checkbox custom-checkbox-danger">
-        <input
-          className="custom-control-input"
-          name="completely"
-          id="deleteCompletely"
-          type="checkbox"
-          disabled={!isAbleToDeleteCompletely}
-          checked={isDeleteCompletely}
-          onChange={changeIsDeleteCompletelyHandler}
-        />
-        <label className="custom-control-label text-danger" htmlFor="deleteCompletely">
-          { t('modal_delete.delete_completely') }
-          <p className="form-text text-muted mt-0"> { t('modal_delete.completely') }</p>
-        </label>
-        {!isAbleToDeleteCompletely
-        && (
-        <p className="alert alert-warning p-2 my-0">
-          <i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }
-        </p>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <Modal size="lg" isOpen={isOpen} toggle={onClose} className="grw-create-page">
-      <ModalBody>
-        <div className="form-group">
-          <label>{ t('modal_delete.deleting_page') }:</label><br />
-          <code>{ path }</code>
-        </div>
-        {renderDeleteRecursivelyForm()}
-        {!isDeleteCompletelyModal && renderDeleteCompletelyForm()}
-      </ModalBody>
-    </Modal>
-
   );
 };
