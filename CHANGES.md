@@ -2,12 +2,12 @@
 
 ## v4.2.8-RC
 
+* Fix: Pass app settings values through the XSS filter
 * Fix: Fixed the display of updtedAt and createdAt being reversed
 * Improvement: Improved page control performance with stream and bulk
     * rename, duplicate, delete, deleteCompletely, revrtDeleted
 * Fix: Failed to save temporaryUrlCached with using gcs
     * Introduced by v4.2.3
-
 ## v4.2.7
 
 * Fix: Installer doesn't work on Chrome
