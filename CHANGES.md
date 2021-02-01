@@ -2,6 +2,8 @@
 
 ## v4.2.8-RC
 
+* Fix: Fixed not being able to update ses settings
+    * Introduced by v4.2.0
 * Fix: Fixed the display of updtedAt and createdAt being reversed
 * Improvement: Improved page control performance with stream and bulk
     * rename, duplicate, delete, deleteCompletely, revrtDeleted
