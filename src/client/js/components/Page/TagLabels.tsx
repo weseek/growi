@@ -5,8 +5,6 @@ import { useCurrentUser } from '~/stores/context';
 import { apiPost } from '~/client/js/util/apiv1-client';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
@@ -36,7 +34,7 @@ const TagLabels = (props: Props): JSX.Element => {
     // TODO impl this after editorMode becomes available.
     // It will not be reflected in the DB until the page is refreshed
     // if (props.editorMode === 'edit') {
-    //   return props.editorContainer.setState({ tags: 'jou' });
+    //   return props.editorContainer.setState({ tags: newTags });
     // }
 
     try {
@@ -89,78 +87,3 @@ const TagLabels = (props: Props): JSX.Element => {
 };
 
 export default TagLabels;
-
-// TODO: remove old code (https://youtrack.weseek.co.jp/issue/GW-4961)
-class DeprecatedTagLabels extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    // this.state = {
-    //   isTagEditModalShown: false,
-    // };
-
-    // this.openEditorModal = this.openEditorModal.bind(this);
-    // this.closeEditorModal = this.closeEditorModal.bind(this);
-    this.tagsUpdatedHandler = this.tagsUpdatedHandler.bind(this);
-  }
-
-  /**
-   * @return tags data
-   *   1. pageContainer.state.tags if editorMode is view
-   *   2. editorContainer.state.tags if editorMode is edit
-   */
-  getTagData() {
-    // const { editorContainer, editorMode } = this.props;
-    // return (editorMode === 'edit') ? editorContainer.state.tags : pageContainer.state.tags;
-    return [];
-  }
-
-  // openEditorModal() {
-  //   this.setState({ isTagEditModalShown: true });
-  // }
-
-  // closeEditorModal() {
-  //   this.setState({ isTagEditModalShown: false });
-  // }
-
-  async tagsUpdatedHandler(newTags) {
-    // const {
-    //   appContainer, editorMode,
-    // } = this.props;
-
-    // const { pageId } = pageContainer.state;
-
-    // // It will not be reflected in the DB until the page is refreshed
-    // if (editorMode === 'edit') {
-    //   return editorContainer.setState({ tags: newTags });
-    // }
-
-    // try {
-    //   const { tags } = await appContainer.apiPost('/tags.update', { pageId, tags: newTags });
-
-    //   // update pageContainer.state
-    //   pageContainer.setState({ tags });
-    //   // update editorContainer.state
-    //   editorContainer.setState({ tags });
-
-    //   toastSuccess('updated tags successfully');
-    // }
-    // catch (err) {
-    //   toastError(err, 'fail to update tags');
-    // }
-  }
-
-
-  render() {
-    return null;
-  }
-
-}
-
-/**
- * Wrapper component for using unstated
- */
-const TagLabelsWrapper = withUnstatedContainers(DeprecatedTagLabels, [AppContainer]);
-
-// export default withTranslation()(TagLabelsWrapper);
