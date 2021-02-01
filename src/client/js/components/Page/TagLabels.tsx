@@ -146,11 +146,11 @@ class DeprecatedTagLabels extends React.Component {
     //   // update editorContainer.state
     //   editorContainer.setState({ tags });
 
-  //   toastSuccess('updated tags successfully');
-  // }
-  // catch (err) {
-  //   toastError(err, 'fail to update tags');
-  // }
+    //   toastSuccess('updated tags successfully');
+    // }
+    // catch (err) {
+    //   toastError(err, 'fail to update tags');
+    // }
   }
 
 
@@ -169,8 +169,8 @@ DeprecatedTagLabels.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  // editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
   editorMode: PropTypes.string.isRequired,
 };
