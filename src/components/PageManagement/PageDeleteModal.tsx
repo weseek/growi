@@ -11,28 +11,6 @@ import { useTranslation } from '~/i18n';
 
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
-type Props = {
-  isOpen: boolean;
-  path?: string;
-  isAbleToDeleteCompletely?: boolean;
-  onClose:() => void;
-}
-
-// TODO-5055 impl modal
-export const PageDeleteModal:FC<Props> = (props:Props) => {
-  const { t } = useTranslation();
-
-  return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
-        { t('modal_delete.delete_page') }
-      </ModalHeader>
-      <ModalBody>
-      </ModalBody>
-    </Modal>
-  );
-};
-
 const deleteIconAndKey = {
   completely: {
     color: 'danger',
@@ -45,6 +23,54 @@ const deleteIconAndKey = {
     translationKey: 'page',
   },
 };
+
+
+type Props = {
+  isOpen: boolean;
+  path?: string;
+  isAbleToDeleteCompletely?: boolean;
+  isDeleteCompletely?: boolean;
+  onClose:() => void;
+}
+
+// TODO-5055 impl modal
+export const PageDeleteModal:FC<Props> = (props:Props) => {
+  const { t } = useTranslation();
+  const { isDeleteCompletely = false } = props;
+  const [errs, setErrs] = useState([]);
+
+  const deleteMode = isDeleteCompletely ? 'completely' : 'temporary';
+
+
+  const deletePage = async() => {
+    setErrs([]);
+
+    try {
+      // const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
+      // const trashPagePath = response.page.path;
+      // window.location.href = encodeURI(trashPagePath);
+    }
+    catch (err) {
+      setErrs(err);
+    }
+  };
+
+  return (
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
+        { t('modal_delete.delete_page') }
+      </ModalHeader>
+      <ModalBody>
+        <ApiErrorMessageList errs={errs} />
+        <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deletePage}>
+          <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
+        </button>
+      </ModalBody>
+    </Modal>
+  );
+};
+
 
 const DeprecatedPageDeleteModal = (props) => {
   const {
@@ -67,22 +93,6 @@ const DeprecatedPageDeleteModal = (props) => {
     setIsDeleteCompletely(!isDeleteCompletely);
   }
 
-  async function deletePage() {
-    setErrs([]);
-
-    try {
-      const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
-      const trashPagePath = response.page.path;
-      window.location.href = encodeURI(trashPagePath);
-    }
-    catch (err) {
-      setErrs(err);
-    }
-  }
-
-  async function deleteButtonHandler() {
-    deletePage();
-  }
 
   function renderDeleteRecursivelyForm() {
     return (
@@ -153,26 +163,3 @@ const DeprecatedPageDeleteModal = (props) => {
 
   );
 };
-
-/**
- * Wrapper component for using unstated
- */
-// const PageDeleteModalWrapper = withUnstatedContainers(PageDeleteModal, [PageContainer]);
-
-// PageDeleteModal.propTypes = {
-//   t: PropTypes.func.isRequired, //  i18next
-//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-//   isOpen: PropTypes.bool.isRequired,
-//   onClose: PropTypes.func.isRequired,
-
-//   path: PropTypes.string.isRequired,
-//   isDeleteCompletelyModal: PropTypes.bool,
-//   isAbleToDeleteCompletely: PropTypes.bool,
-// };
-
-// PageDeleteModal.defaultProps = {
-//   isDeleteCompletelyModal: false,
-// };
-
-// export default withTranslation()(PageDeleteModalWrapper);
