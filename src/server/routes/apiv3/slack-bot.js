@@ -5,19 +5,24 @@ const router = express.Router();
 
 
 module.exports = (crowi) => {
-  const { boltService, boltRecieverService } = crowi;
+  this.app = crowi.express;
+  const { boltService } = crowi;
+  const endpoints = ['/hogehoge'];
+  for (const endpoint of endpoints) {
+    this.app.post(endpoint, boltService.receiver.requestHandler.bind(this));
+  }
+  // boltService.receiver.addRoutes(['/hoge']);
+  // router.post('/', async(req, res) => {
 
-  router.post('/hoge', boltRecieverService.requestHandler.bind(this), async(req, res) => {
+  // // const boltApp = boltService.getBoltAppInstance(crowi);
 
-    const boltApp = boltService.getBoltAppInstance(crowi);
-
-    // TODO: improve event method
-    boltApp.event('message', async({ event, client }) => {
-    // Do some slack-specific stuff here
-      await client.chat.postMessage('hogehoge');
-      res.send('iii');
-    });
-  });
+  // // // TODO: improve event method
+  // // boltApp.event('message', async({ event, client }) => {
+  // // // Do some slack-specific stuff here
+  // //   await client.chat.postMessage('hogehoge');
+  // //   res.send('iii');
+  // // });
+  // });
 
 
   return router;
