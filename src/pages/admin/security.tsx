@@ -7,6 +7,7 @@ import AdminLayout from '~/components/AdminLayout';
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
 
 import {
   useCurrentUser,
@@ -33,6 +34,7 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props: Props) => {
   return (
     <AdminLayout title={title} selectedNavOpt="security" growiVersion={props.growiVersion}>
       security
+      <SecurityManagementContents />
     </AdminLayout>
   );
 };
