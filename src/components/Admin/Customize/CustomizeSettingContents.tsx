@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 
-import CustomizeThemeSetting from '~/client/js/components/Admin/Customize/CustomizeThemeSetting';
+import { CustomizeThemeSetting } from '~/components/Admin/Customize/CustomizeThemeSetting';
 import CustomizeFunctionSetting from '~/client/js/components/Admin/Customize/CustomizeFunctionSetting';
 import CustomizeHighlightSetting from '~/client/js/components/Admin/Customize/CustomizeHighlightSetting';
 import CustomizeTitle from '~/client/js/components/Admin/Customize/CustomizeTitle';
