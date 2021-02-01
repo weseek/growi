@@ -1,19 +1,31 @@
 import { FC } from 'react';
 
 import { useTranslation } from '~/i18n';
+import { useCustomizeSettingsSWR } from '~/stores/admin';
 // import { withUnstatedContainers } from '../../UnstatedUtils';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
 // import AppContainer from '../../../services/AppContainer';
 
 // import CustomizeThemeOptions from './CustomizeThemeOptions';
 // import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-// import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AdminUpdateButtonRow from '~/client/js/components/Admin/Common/AdminUpdateButtonRow';
 
 
 export const CustomizeThemeSetting:FC = () => {
   const { t } = useTranslation();
+  const { error, isValidating } = useCustomizeSettingsSWR();
 
+  const onClickSubmit = async() => {
+
+    try {
+      // await adminCustomizeContainer.updateCustomizeTheme();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
   return (
     <div className="row">
       <div className="col-12">
@@ -24,7 +36,7 @@ export const CustomizeThemeSetting:FC = () => {
           </div>
         )}
         {/* <CustomizeThemeOptions /> */}
-        {/* <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} /> */}
+        <AdminUpdateButtonRow onClick={onClickSubmit} disabled={error != null} />
       </div>
     </div>
   );
