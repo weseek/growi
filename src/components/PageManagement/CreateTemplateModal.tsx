@@ -47,7 +47,7 @@ export const CreateTemplateModal:FC<Props> = (props:Props) => {
   const parentPath = pathUtils.addTrailingSlash(props.path);
 
   return (
-    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
+    <Modal isOpen={props.isOpen} toggle={props.onClose}>
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
