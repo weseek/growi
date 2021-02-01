@@ -1,5 +1,4 @@
 import React, { useState, FC } from 'react';
-import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 import urljoin from 'url-join';
 

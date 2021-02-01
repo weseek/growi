@@ -13,8 +13,8 @@ import { useTranslation } from '~/i18n';
 
 type Props = {
   isOpen: boolean;
-  path: string;
-  isAbleToDeleteCompletely: boolean;
+  path?: string;
+  isAbleToDeleteCompletely?: boolean;
   onClose:() => void;
 }
 
