@@ -18,7 +18,11 @@ export const CustomizeThemeSetting:FC = () => {
     <div className="row">
       <div className="col-12">
         <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
-        {/* {renderDevAlert()} */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="alert alert-warning">
+            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+          </div>
+        )}
         {/* <CustomizeThemeOptions /> */}
         {/* <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} /> */}
       </div>
@@ -45,17 +49,6 @@ export const CustomizeThemeSetting:FC = () => {
 //       toastError(err);
 //     }
 //   }
-
-//   renderDevAlert() {
-//     if (process.env.NODE_ENV === 'development') {
-//       return (
-//         <div className="alert alert-warning">
-//           <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
-//         </div>
-//       );
-//     }
-//   }
-
 
 //   render() {
 //     const { t, adminCustomizeContainer } = this.props;
