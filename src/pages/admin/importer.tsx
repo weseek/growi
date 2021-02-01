@@ -7,6 +7,7 @@ import AdminLayout from '~/components/AdminLayout';
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 
 import {
   useCurrentUser,
@@ -32,7 +33,7 @@ const AdminImportSettingsPage: NextPage<Props> = (props: Props) => {
 
   return (
     <AdminLayout title={title} selectedNavOpt="import" growiVersion={props.growiVersion}>
-      import
+      <DataImportPageContents />
     </AdminLayout>
   );
 };
