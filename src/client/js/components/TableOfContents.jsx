@@ -4,7 +4,9 @@ import loggerFactory from '@alias/logger';
 
 import { withTranslation } from 'react-i18next';
 
-import PageContainer from '../services/PageContainer';
+import { useTranslation } from '~/i18n';
+import { useCurrentPageTocNode } from '~/stores/renderer';
+
 import NavigationContainer from '../services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -19,39 +21,53 @@ const logger = loggerFactory('growi:TableOfContents');
  *
  */
 const TableOfContents = (props) => {
+  const { t } = useTranslation();
+  const { data: tocNode } = useCurrentPageTocNode();
 
-  const { t, pageContainer, navigationContainer } = props;
-  const { pageUser } = pageContainer.state;
-  const isUserPage = pageUser != null;
+  if (tocNode == null) {
+    return <></>;
+  }
+
+  const { navigationContainer } = props;
+  // const { pageUser } = pageContainer.state;
+  // const isUserPage = pageUser != null;
 
   const calcViewHeight = useCallback(() => {
-    // calculate absolute top of '#revision-toc' element
-    const parentElem = document.querySelector('.grw-side-contents-container');
-    const parentBottom = parentElem.getBoundingClientRect().bottom;
-    const containerElem = document.querySelector('#revision-toc');
-    const containerTop = containerElem.getBoundingClientRect().top;
-    const containerComputedStyle = getComputedStyle(containerElem);
-    const containerPaddingTop = parseFloat(containerComputedStyle['padding-top']);
+  //   // calculate absolute top of '#revision-toc' element
+  //   const parentElem = document.querySelector('.grw-side-contents-container');
+  //   const parentBottom = parentElem.getBoundingClientRect().bottom;
+  //   const containerElem = document.querySelector('#revision-toc');
+  //   const containerTop = containerElem.getBoundingClientRect().top;
+  //   const containerComputedStyle = getComputedStyle(containerElem);
+  //   const containerPaddingTop = parseFloat(containerComputedStyle['padding-top']);
 
-    // get smaller bottom line of window height - .system-version height) and containerTop
-    let bottom = Math.min(window.innerHeight - 20, parentBottom);
+    //   // get smaller bottom line of window height - .system-version height) and containerTop
+    //   let bottom = Math.min(window.innerHeight - 20, parentBottom);
 
-    if (isUserPage) {
-      // raise the bottom line by the height and margin-top of UserContentLinks
-      bottom -= 45;
-    }
-    // bottom - revisionToc top
-    return bottom - (containerTop + containerPaddingTop);
-  }, [isUserPage]);
-
-  const { tocHtml } = pageContainer.state;
+  //   if (isUserPage) {
+  //     // raise the bottom line by the height and margin-top of UserContentLinks
+  //     bottom -= 45;
+  //   }
+  //   // bottom - revisionToc top
+  //   return bottom - (containerTop + containerPaddingTop);
+  // }, [isUserPage]);
+  }, []);
 
   // execute after generation toc html
-  useEffect(() => {
-    const tocDom = document.getElementById('revision-toc-content');
-    const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
-    navigationContainer.addSmoothScrollEvent(anchorsInToc);
-  }, [tocHtml, navigationContainer]);
+  // useEffect(() => {
+  //   const tocDom = document.getElementById('revision-toc-content');
+  //   const anchorsInToc = Array.from(tocDom.getElementsByTagName('a'));
+  //   navigationContainer.addSmoothScrollEvent(anchorsInToc);
+  // }, [tocHtml, navigationContainer]);
+
+  // TODO: render tocNode
+  logger.info('TODO: render tocNode', tocNode);
+
+  return (
+    <div>
+      TODO: render tocNode
+    </div>
+  );
 
   return (
     <StickyStretchableScroller
@@ -59,14 +75,16 @@ const TableOfContents = (props) => {
       stickyElemSelector=".grw-side-contents-sticky-container"
       calcViewHeightFunc={calcViewHeight}
     >
-      { tocHtml !== ''
+      { tocNode !== ''
       ? (
         <div
           id="revision-toc-content"
           className="revision-toc-content mb-3"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: tocHtml }}
-        />
+          // dangerouslySetInnerHTML={{ __html: tocHtml }}
+        >
+          {processor.runSync(tocNode).result}
+        </div>
       )
       : (
         <div
@@ -85,12 +103,9 @@ const TableOfContents = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [PageContainer, NavigationContainer]);
+const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [NavigationContainer]);
 
 TableOfContents.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 

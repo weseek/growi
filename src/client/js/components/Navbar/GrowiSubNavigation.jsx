@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
@@ -8,20 +8,12 @@ import { withTranslation } from 'react-i18next';
 import DevidedPagePath from '~/models/devided-page-path';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import { isCreatablePage, isTrashPage, isUserPage } from '~/utils/path-utils';
 import { useCurrentPageSWR } from '~/stores/page';
-import {
-  useCurrentUser, useForbidden, useOwnerOfCurrentPage,
-} from '~/stores/context';
 import { useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
-
-// import LikeButton from '../LikeButton';
-// import BookmarkButton from '../BookmarkButton';
-// import TagLabels from '../Page/TagLabels';
 
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
@@ -85,10 +77,7 @@ const GrowiSubNavigationContainer = ({ isCompactMode, children }) => {
 
 const GrowiSubNavigation = (props) => {
 
-  const { data: currentUser } = useCurrentUser();
   const { data: page } = useCurrentPageSWR();
-  const { data: pageOwner } = useOwnerOfCurrentPage();
-  const { data: isForbidden } = useForbidden();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
@@ -98,7 +87,7 @@ const GrowiSubNavigation = (props) => {
   }
 
   // dynamic import to skip rendering at SSR
-  const SubnavButtons = dynamic(() => import('~/components/Organisms/GrowiSubnavButtons'), { ssr: false });
+  const GrowiSubnavButtons = dynamic(() => import('~/components/Organisms/GrowiSubnavButtons').then(mod => mod.GrowiSubnavButtons), { ssr: false });
   const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false });
   const TagLabels = dynamic(() => import('~/client/js/components/Page/TagLabels'), { ssr: false });
 
@@ -111,16 +100,8 @@ const GrowiSubNavigation = (props) => {
     _id: pageId, path, creator, createdAt, updatedAt, revision,
   } = page;
 
-  const isPageNotFound = page == null;
-  const isPageInTrash = isTrashPage(path);
-  const isPageUsersHome = isUserPage(path);
-  const isCreatable = isCreatablePage(path);
-
   const { isGuestUser } = appContainer;
   const isEditorMode = editorMode !== 'view';
-  // TODO: activate with GW-4402
-  // const isSharedPage = shareLinkId != null;
-  const isSharedPage = false;
 
   function onPageEditorModeButtonClicked(viewType) {
     navigationContainer.setEditorMode(viewType);
@@ -151,19 +132,21 @@ const GrowiSubNavigation = (props) => {
       <div className="d-flex">
 
         <div className="d-flex flex-column align-items-end">
-          <div className="d-flex">
-            {/* <SubnavButtons isCompactMode={isCompactMode} /> */}
-          </div>
-          <div className="mt-2">
-            {isAbleToShowPageEditorModeManager && (
+          {(!isEditorMode) && (
+            <div className="d-flex">
+              <GrowiSubnavButtons isCompactMode={isCompactMode} />
+            </div>
+          )}
+          {isAbleToShowPageEditorModeManager && (
+            <div className="mt-2">
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
                 editorMode={editorMode}
                 isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
+            </div>
             )}
-          </div>
         </div>
 
         {/* Page Authors */}

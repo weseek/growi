@@ -12,6 +12,7 @@ import RevisionRenderer from './Page/RevisionRenderer';
 import { useCurrentUser } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
 import MarkdownRenderer from '~/service/renderer/markdown-renderer';
+import { useViewRenderer } from '~/stores/renderer';
 // import GridEditModal from './PageEditor/GridEditModal';
 // import HandsontableModal from './PageEditor/HandsontableModal';
 // import DrawioModal from './PageEditor/DrawioModal';
@@ -157,17 +158,14 @@ const logger = loggerFactory('growi:Page');
 const Page = (props) => {
 
   const { data: currentPage } = useCurrentPageSWR();
+  const { data: viewRenderer } = useViewRenderer();
 
   const { appContainer } = props;
   const { isMobile } = appContainer;
 
-  const renderer = useMemo(() => {
-    return new MarkdownRenderer();
-  }, []);
-
   return (
     <div className={`${isMobile && 'page-mobile'}`}>
-      <RevisionRenderer renderer={renderer} markdown={currentPage.revision.body} />
+      <RevisionRenderer renderer={viewRenderer} markdown={currentPage.revision.body} />
     </div>
   );
 };

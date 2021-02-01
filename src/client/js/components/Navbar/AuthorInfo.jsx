@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 
 import { userPageRoot } from '~/utils/path-utils';
 
 import UserPicture from '../User/UserPicture';
 
+const formatType = 'yyyy/MM/dd HH:mm';
 const AuthorInfo = (props) => {
   const {
     mode, user, date, locate,
@@ -14,14 +16,14 @@ const AuthorInfo = (props) => {
     ? 'Created by'
     : 'Updated by';
   const infoLabelForFooter = mode === 'create'
-    ? 'Last revision posted at'
-    : 'Created at';
+    ? 'Created at'
+    : 'Last revision posted at';
   const userLabel = user != null
     ? <a href={userPageRoot(user)}>{user.name}</a>
     : <i>Unknown</i>;
 
   if (locate === 'footer') {
-    return <p>{infoLabelForFooter} {date} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
+    return <p>{infoLabelForFooter} {format(new Date(date), formatType)} by <UserPicture user={user} size="sm" /> {userLabel}</p>;
   }
 
   return (
@@ -31,7 +33,7 @@ const AuthorInfo = (props) => {
       </div>
       <div>
         <div>{infoLabelForSubNav} {userLabel}</div>
-        <div className="text-muted text-date">{date}</div>
+        <div className="text-muted text-date">{format(new Date(date), formatType)}</div>
       </div>
     </div>
   );
