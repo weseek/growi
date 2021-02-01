@@ -12,7 +12,7 @@ import { PageDuplicateModal } from '~/components/PageManagement/PageDuplicateMod
 import { CreateTemplateModal } from '~/components/PageManagement/CreateTemplateModal';
 import { PageDeleteModal } from '~/components/PageManagement/PageDeleteModal';
 import { PagePresentationModal } from '~/components/PageManagement/PagePresentationModal';
-import PresentationIcon from '~/client/js/components/Icons/PresentationIcon';
+import { PresentationIcon } from '~/components/Icons/PresentationIcon';
 
 type Props = {
   isCompactMode: boolean,
