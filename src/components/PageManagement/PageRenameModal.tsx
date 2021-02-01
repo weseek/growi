@@ -265,17 +265,17 @@ const DeprecatedPageRenameModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer, PageContainer]);
+// const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer, PageContainer]);
 
 
-PageRenameModal.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+// PageRenameModal.propTypes = {
+//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+//   isOpen: PropTypes.bool.isRequired,
+//   onClose: PropTypes.func.isRequired,
 
-  path: PropTypes.string.isRequired,
-};
+//   path: PropTypes.string.isRequired,
+// };
 
-export default (PageRenameModalWrapper);
+// export default (PageRenameModalWrapper);
