@@ -35,7 +35,7 @@ const TagLabels = (props: Props): JSX.Element => {
   }, []);
   const tagsUpdatedHandler = useCallback(async(newTags) => {
     const pageId = currentPage.id;
-    // TODO impr this after editorMode becomes available.
+    // TODO impl this after editorMode becomes available.
     // It will not be reflected in the DB until the page is refreshed
     // if (props.editorMode === 'edit') {
     //   return props.editorContainer.setState({ tags: 'jou' });
@@ -45,7 +45,7 @@ const TagLabels = (props: Props): JSX.Element => {
       await apiPost('/tags.update', { pageId, tags: newTags });
       currentPageTagsMutate();
 
-      // TODO impr this after editorMode becomes available.
+      // TODO impl this after editorMode becomes available.
       // update editorContainer.state
       // props.editorContainer.setState({ tags });
       toastSuccess('updated tags successfully');
