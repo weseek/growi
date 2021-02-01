@@ -21,6 +21,7 @@ import { useTranslation } from '~/i18n';
 
 type Props = {
   isOpen: boolean,
+  path?: string,
   onClose:() => void,
 }
 
