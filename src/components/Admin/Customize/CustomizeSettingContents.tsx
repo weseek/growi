@@ -10,13 +10,16 @@ import CustomizeHeaderSetting from '~/client/js/components/Admin/Customize/Custo
 import CustomizeCssSetting from '~/client/js/components/Admin/Customize/CustomizeCssSetting';
 import CustomizeScriptSetting from '~/client/js/components/Admin/Customize/CustomizeScriptSetting';
 
-import { useTranslation } from '~/i18n';
-
 const CustomizeSettingContents = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { isValidating } = useCustomizeSettingsSWR();
 
-  const { data } = useCustomizeSettingsSWR();
-  console.log(data);
+  if (isValidating) {
+    return (
+      <div className="my-5 text-center">
+        <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted" />
+      </div>
+    );
+  }
 
   return (
     <React.Fragment>
