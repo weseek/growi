@@ -11,15 +11,8 @@ class BoltReciever extends EventEmitter {
     this.bolt = app;
   }
 
-  static addRoutes(endpoints) {
-    console.log(this.app);
-    for (const endpoint of endpoints) {
-      this.app.post(endpoint, this.requestHandler.bind(this));
-    }
-  }
 
   async requestHandler(req, res) {
-    console.log('ffffffffffffffff');
     let ackCalled = false;
     // 着信リクエストをパースするparseBody 関数があると仮定
     const parsedReq = 'parseBody(req)';
