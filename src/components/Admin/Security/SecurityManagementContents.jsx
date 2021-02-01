@@ -4,19 +4,19 @@ import { withTranslation } from 'react-i18next';
 
 import { TabContent, TabPane } from 'reactstrap';
 
-import LdapSecuritySetting from './LdapSecuritySetting';
-import LocalSecuritySetting from './LocalSecuritySetting';
-import SamlSecuritySetting from './SamlSecuritySetting';
-import OidcSecuritySetting from './OidcSecuritySetting';
-import SecuritySetting from './SecuritySetting';
-import BasicSecuritySetting from './BasicSecuritySetting';
-import GoogleSecuritySetting from './GoogleSecuritySetting';
-import GitHubSecuritySetting from './GitHubSecuritySetting';
-import TwitterSecuritySetting from './TwitterSecuritySetting';
-import FacebookSecuritySetting from './FacebookSecuritySetting';
-import ShareLinkSetting from './ShareLinkSetting';
+import LdapSecuritySetting from '~/client/js/components/Admin/Security/LdapSecuritySetting';
+import LocalSecuritySetting from '~/client/js/components/Admin/Security/LocalSecuritySetting';
+import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
+import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
+import SecuritySetting from '~/client/js/components/Admin/Security/SecuritySetting';
+import BasicSecuritySetting from '~/client/js/components/Admin/Security/BasicSecuritySetting';
+import GoogleSecuritySetting from '~/client/js/components/Admin/Security/GoogleSecuritySetting';
+import GitHubSecuritySetting from '~/client/js/components/Admin/Security/GitHubSecuritySetting';
+import TwitterSecuritySetting from '~/client/js/components/Admin/Security/TwitterSecuritySetting';
+import FacebookSecuritySetting from '~/client/js/components/Admin/Security/FacebookSecuritySetting';
+import ShareLinkSetting from '~/client/js/components/Admin/Security/ShareLinkSetting';
 
-import CustomNav from '../../CustomNavigation/CustomNav';
+import CustomNav from '~/client/js/components/CustomNavigation/CustomNav';
 
 function SecurityManagementContents(props) {
   const { t } = props;
