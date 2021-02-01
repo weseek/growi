@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from 'react';
 // import PropTypes from 'prop-types';
-
 import { toastSuccess, toastError } from '../../util/apiNotification';
-
 // import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
@@ -15,7 +13,6 @@ import { apiPost } from '~/client/js/util/apiv1-client';
 type Props = {
   appContainer: AppContainer,
   editorMode: string,
-  // editorContainer: EditorContainer,
 }
 
 const TagLabels = (props: Props): JSX.Element => {
@@ -24,7 +21,6 @@ const TagLabels = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { data: tags, error, mutate: currentPageTagsMutate } = useCurrentPageTagsSWR();
   const { data: currentPage } = useCurrentPageSWR();
-  // console.log(tags);
 
   const openEditorModal = useCallback(() => {
     setIsTagEditModalShown(true);
@@ -34,7 +30,9 @@ const TagLabels = (props: Props): JSX.Element => {
     setIsTagEditModalShown(false);
   }, []);
   const tagsUpdatedHandler = useCallback(async(newTags) => {
-    const pageId = currentPage.id;
+
+    const pageId = (currentPage != null && currentPage.id);
+
     // TODO impl this after editorMode becomes available.
     // It will not be reflected in the DB until the page is refreshed
     // if (props.editorMode === 'edit') {
@@ -53,7 +51,7 @@ const TagLabels = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err, 'fail to update tags');
     }
-  }, [currentPageTagsMutate, currentPage.id]);
+  }, [currentPageTagsMutate, currentPage]);
 
   const isLoading = !error && !tags;
 
