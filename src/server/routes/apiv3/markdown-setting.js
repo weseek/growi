@@ -240,7 +240,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/XssParams'
    */
-  router.put('/xss', loginRequiredStrictly, adminRequired, csrf, validator.xssSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/xss', loginRequiredStrictly, adminRequired, validator.xssSetting, apiV3FormValidator, async(req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }

@@ -54,7 +54,12 @@ const MarkDownSettingContents = (props: Props): JSX.Element => {
       <Card className="card well my-3">
         <CardBody className="px-0 py-2">{ t('admin:markdown_setting.xss_desc') }</CardBody>
       </Card>
-      <XssForm />
+      <XssForm
+        isEnabledXss={markdownSettingParams?.isEnabledXss}
+        xssOption={markdownSettingParams?.xssOption}
+        tagWhiteList={markdownSettingParams?.tagWhiteList}
+        attrWhiteList={markdownSettingParams?.attrWhiteList}
+      />
     </React.Fragment>
   );
 };

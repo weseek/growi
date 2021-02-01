@@ -23,16 +23,16 @@ class WhiteListInput extends React.Component {
 
   onClickRecommendTagButton() {
     this.tagWhiteList.current.value = tags;
-    this.props.adminMarkDownContainer.setState({ tagWhiteList: tags });
+    this.props.onTagWhiteListChange(tags);
   }
 
   onClickRecommendAttrButton() {
     this.attrWhiteList.current.value = attrs;
-    this.props.adminMarkDownContainer.setState({ attrWhiteList: attrs });
+    this.props.onAttrWhiteListChange(attrs);
   }
 
   render() {
-    const { t, adminMarkDownContainer } = this.props;
+    const { t } = this.props;
 
     return (
       <>
@@ -49,8 +49,8 @@ class WhiteListInput extends React.Component {
             rows="6"
             cols="40"
             ref={this.tagWhiteList}
-            defaultValue={adminMarkDownContainer.state.tagWhiteList}
-            onChange={(e) => { adminMarkDownContainer.setState({ tagWhiteList: e.target.value }) }}
+            defaultValue={this.props.tagWhiteList}
+            onChange={(e) => { this.props.onTagWhiteListChange(e.target.value) }}
           />
         </div>
         <div className="mt-4">
@@ -66,8 +66,8 @@ class WhiteListInput extends React.Component {
             rows="6"
             cols="40"
             ref={this.attrWhiteList}
-            defaultValue={adminMarkDownContainer.state.attrWhiteList}
-            onChange={(e) => { adminMarkDownContainer.setState({ attrWhiteList: e.target.value }) }}
+            defaultValue={this.props.attrWhiteList}
+            onChange={(e) => { this.props.onAttrWhiteListChange(e.target.value) }}
           />
         </div>
       </>
@@ -76,13 +76,18 @@ class WhiteListInput extends React.Component {
 
 }
 
-const WhiteListWrapper = withUnstatedContainers(WhiteListInput, [AppContainer, AdminMarkDownContainer]);
-
 WhiteListInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
-
+  tagWhiteList: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+  ]),
+  attrWhiteList: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+  ]),
+  onTagWhiteListChange: PropTypes.func,
+  onAttrWhiteListChange: PropTypes.func,
 };
 
-export default withTranslation()(WhiteListWrapper);
+export default withTranslation()(WhiteListInput);
