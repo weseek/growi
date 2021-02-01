@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useCallback,
+  useState, useEffect, useCallback, FC,
 } from 'react';
 import PropTypes from 'prop-types';
 
@@ -7,20 +7,43 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
-
 import { debounce } from 'throttle-debounce';
-import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
+import { useTranslation } from '~/i18n';
 
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-import ComparePathsTable from './ComparePathsTable';
-import DuplicatedPathsTable from './DuplicatedPathsTable';
+// import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
+// import { toastError } from '../../client/js/util/apiNotification';
+
+// import AppContainer from '../../client/js/services/AppContainer';
+// import PageContainer from '../../client/js/services/PageContainer';
+// import ApiErrorMessageList from '../../client/js/components/PageManagement/ApiErrorMessageList';
+// import ComparePathsTable from '../../client/js/components/ComparePathsTable';
+// import DuplicatedPathsTable from '../../client/js/components/DuplicatedPathsTable';
+
+type Props = {
+  isOpen: boolean,
+  path?: string,
+  onClose:() => void,
+}
+
+// TODO-5052 impl modal
+export const PageRenameModal:FC<Props> = (props:Props) => {
+  const { t } = useTranslation();
+
+  return (
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
+        { t('modal_rename.label.Move/Rename page') }
+      </ModalHeader>
+      <ModalBody>
+      </ModalBody>
+      <ModalFooter>
+      </ModalFooter>
+    </Modal>
+  );
+};
 
 
-const PageRenameModal = (props) => {
+const DeprecatedPageRenameModal = (props) => {
   const {
     t, appContainer, pageContainer,
   } = props;
@@ -244,18 +267,17 @@ const PageRenameModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer, PageContainer]);
+// const PageRenameModalWrapper = withUnstatedContainers(PageRenameModal, [AppContainer, PageContainer]);
 
 
-PageRenameModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+// PageRenameModal.propTypes = {
+//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+//   isOpen: PropTypes.bool.isRequired,
+//   onClose: PropTypes.func.isRequired,
 
-  path: PropTypes.string.isRequired,
-};
+//   path: PropTypes.string.isRequired,
+// };
 
-export default withTranslation()(PageRenameModalWrapper);
+// export default (PageRenameModalWrapper);

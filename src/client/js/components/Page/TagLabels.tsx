@@ -1,18 +1,17 @@
 import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
+
+import { useCurrentPageSWR, useCurrentPageTagsSWR } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
+import { apiPost } from '~/client/js/util/apiv1-client';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
-import { useCurrentPageTagsSWR } from '~/stores/page';
-import { useCurrentUser } from '~/stores/context';
 
 type Props = {
-  appContainer: AppContainer,
   editorMode: string,
 }
 
@@ -20,7 +19,8 @@ const TagLabels = (props: Props): JSX.Element => {
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
   const { data: currentUser } = useCurrentUser();
-  const { data: tags, error } = useCurrentPageTagsSWR();
+  const { data: tags, error, mutate: currentPageTagsMutate } = useCurrentPageTagsSWR();
+  const { data: currentPage } = useCurrentPageSWR();
 
   const openEditorModal = useCallback(() => {
     setIsTagEditModalShown(true);
@@ -29,9 +29,29 @@ const TagLabels = (props: Props): JSX.Element => {
   const closeEditorModal = useCallback(() => {
     setIsTagEditModalShown(false);
   }, []);
-  // TODO: impl by https://youtrack.weseek.co.jp/issue/GW-4960
-  const tagsUpdatedHandler = useCallback(() => {
-  }, []);
+  const tagsUpdatedHandler = useCallback(async(newTags) => {
+
+    const pageId = (currentPage != null && currentPage.id);
+
+    // TODO impl this after editorMode becomes available.
+    // It will not be reflected in the DB until the page is refreshed
+    // if (props.editorMode === 'edit') {
+    //   return props.editorContainer.setState({ tags: 'jou' });
+    // }
+
+    try {
+      await apiPost('/tags.update', { pageId, tags: newTags });
+      currentPageTagsMutate();
+
+      // TODO impl this after editorMode becomes available.
+      // update editorContainer.state
+      // props.editorContainer.setState({ tags });
+      toastSuccess('updated tags successfully');
+    }
+    catch (err) {
+      toastError(err, 'fail to update tags');
+    }
+  }, [currentPageTagsMutate, currentPage]);
 
   const isLoading = !error && !tags;
 
@@ -45,7 +65,6 @@ const TagLabels = (props: Props): JSX.Element => {
     );
   }
 
-  const { appContainer } = props;
   const isGuestUser = currentUser == null;
 
   return (
@@ -63,7 +82,6 @@ const TagLabels = (props: Props): JSX.Element => {
         tags={tags}
         isOpen={isTagEditModalShown}
         onClose={closeEditorModal}
-        appContainer={appContainer}
         onTagsUpdated={tagsUpdatedHandler}
       />
     </>
@@ -107,9 +125,9 @@ class DeprecatedTagLabels extends React.Component {
   // }
 
   async tagsUpdatedHandler(newTags) {
-    const {
-      appContainer, editorMode,
-    } = this.props;
+    // const {
+    //   appContainer, editorMode,
+    // } = this.props;
 
     // const { pageId } = pageContainer.state;
 
@@ -144,15 +162,5 @@ class DeprecatedTagLabels extends React.Component {
  * Wrapper component for using unstated
  */
 const TagLabelsWrapper = withUnstatedContainers(DeprecatedTagLabels, [AppContainer]);
-
-DeprecatedTagLabels.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  // editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-
-  editorMode: PropTypes.string.isRequired,
-};
 
 // export default withTranslation()(TagLabelsWrapper);

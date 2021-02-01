@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, FC } from 'react';
 import { UncontrolledTooltip } from 'reactstrap';
 import urljoin from 'url-join';
 
@@ -8,24 +7,26 @@ import { isTopPage, isDeletablePage } from '~/utils/path-utils';
 import { useCurrentPagePath, useCurrentUser, useIsAbleToDeleteCompletely } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
 
-import PageDeleteModal from '../PageDeleteModal';
-import PageRenameModal from '../PageRenameModal';
-import PageDuplicateModal from '../PageDuplicateModal';
-import CreateTemplateModal from '../CreateTemplateModal';
-import PagePresentationModal from '../PagePresentationModal';
-import PresentationIcon from '../Icons/PresentationIcon';
+import { PageRenameModal } from '~/components/PageManagement/PageRenameModal';
+import { PageDuplicateModal } from '~/components/PageManagement/PageDuplicateModal';
+import { CreateTemplateModal } from '~/components/PageManagement/CreateTemplateModal';
+import { PageDeleteModal } from '~/components/PageManagement/PageDeleteModal';
+import { PagePresentationModal } from '~/components/PageManagement/PagePresentationModal';
+import { PresentationIcon } from '~/components/Icons/PresentationIcon';
+
+type Props = {
+  isCompactMode: boolean,
+}
 
 
-const PageManagement = (props) => {
+export const PageManagement:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const { data: path } = useCurrentPagePath();
   const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
   const { data: currentPage } = useCurrentPageSWR();
 
-  const {
-    isCompactMode,
-  } = props;
+  const { isCompactMode } = props;
 
   const isTopPagePath = isTopPage(path);
   const isDeletable = isDeletablePage(path);
@@ -165,30 +166,30 @@ const PageManagement = (props) => {
 
     return (
       <>
-        {/* <PageRenameModal
+        <PageRenameModal
           isOpen={isPageRenameModalShown}
           onClose={closePageRenameModalHandler}
           path={path}
-        /> */}
-        {/* <PageDuplicateModal
+        />
+        <PageDuplicateModal
           isOpen={isPageDuplicateModalShown}
           onClose={closePageDuplicateModalHandler}
-        /> */}
-        {/* <CreateTemplateModal
+        />
+        <CreateTemplateModal
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
-        /> */}
-        {/* <PageDeleteModal
+        />
+        <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
           path={path}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
-        /> */}
-        {/* <PagePresentationModal
+        />
+        <PagePresentationModal
           isOpen={isPagePresentationModalShown}
           onClose={closePagePresentationModalHandler}
           href="?presentation=1"
-        /> */}
+        />
       </>
     );
   }
@@ -198,7 +199,7 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className={`btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management ${isCompactMode && 'py-0'}`}
+          className={`btn-link nav-link dropdown-toggle dropdown-toggle-no-caret border-0 rounded grw-btn-page-management ${isCompactMode ? 'py-0' : ''}`}
           data-toggle="dropdown"
         >
           <i className="icon-options"></i>
@@ -212,7 +213,7 @@ const PageManagement = (props) => {
       <>
         <button
           type="button"
-          className={`btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled ${isCompactMode && 'py-0'}`}
+          className={`btn nav-link bg-transparent dropdown-toggle dropdown-toggle-no-caret disabled ${isCompactMode ? 'py-0' : ''}`}
           id="icon-options-guest-tltips"
         >
           <i className="icon-options"></i>
@@ -239,9 +240,3 @@ const PageManagement = (props) => {
     </>
   );
 };
-
-PageManagement.propTypes = {
-  isCompactMode: PropTypes.bool.isRequired,
-};
-
-export default PageManagement;
