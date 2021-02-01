@@ -8,7 +8,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AdminAppContainer from '../../../services/AdminAppContainer';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import { AdminUpdateButtonRow } from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:appSettings');
 

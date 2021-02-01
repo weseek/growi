@@ -1,20 +1,23 @@
-import { FC } from 'react';
+import { useState, useEffect, FC } from 'react';
 
 import { useTranslation } from '~/i18n';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
-// import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
-// import AppContainer from '../../../services/AppContainer';
-
-// import CustomizeThemeOptions from './CustomizeThemeOptions';
-// import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import { CustomizeThemeOptions } from '~/components/Admin/Customize/CustomizeThemeOptions';
 import { AdminUpdateButtonRow } from '~/components/Admin/Common/AdminUpdateButtonRow';
 
 
 export const CustomizeThemeSetting:FC = () => {
   const { t } = useTranslation();
   const { data, error } = useCustomizeSettingsSWR();
+  const [themeType, setThemeType] = useState('');
+
+  useEffect(() => {
+    if (data?.themeType != null) {
+      setThemeType(data.themeType);
+    }
+  }, [data?.themeType]);
 
   const onClickSubmit = async() => {
 
@@ -35,7 +38,7 @@ export const CustomizeThemeSetting:FC = () => {
             <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
           </div>
         )}
-        {/* <CustomizeThemeOptions /> */}
+        <CustomizeThemeOptions currentTheme={data?.themeType} onSelected={e => setThemeType(e)} />
         <AdminUpdateButtonRow onClick={onClickSubmit} disabled={error != null} />
       </div>
     </div>
