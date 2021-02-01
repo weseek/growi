@@ -18,6 +18,7 @@ type Props = {
   onClose:() => void;
 }
 
+// TODO-5055 impl modal
 export const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 

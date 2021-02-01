@@ -27,6 +27,7 @@ type Props = {
   onClose:() => void,
 }
 
+// TODO-5053 impl modal
 export const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
