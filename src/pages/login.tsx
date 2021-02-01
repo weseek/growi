@@ -132,6 +132,13 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   } = crowi;
 
   const result = await getServerSideCommonProps(context);
+
+  // check for presence
+  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
+  if (!('props' in result)) {
+    throw new Error('invalid getSSP result');
+  }
+
   const props: Props = result.props as Props;
 
   // inject csrf token
