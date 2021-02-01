@@ -23,7 +23,7 @@ type Props = CommonProps & {
 
 const AdminImportSettingsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const title = t('admin:importer_management.import');
+  const title = t('Import Data');
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
