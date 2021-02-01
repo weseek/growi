@@ -39,7 +39,7 @@ const TemplateCard = ({ target, label, parentPath }) => {
 type Props = {
   isOpen: boolean;
   onClose:() => void;
-  path: string;
+  path?: string;
 }
 
 export const CreateTemplateModal:FC<Props> = (props:Props) => {
