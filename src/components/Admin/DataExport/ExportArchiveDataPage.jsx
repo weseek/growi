@@ -4,16 +4,16 @@ import { withTranslation } from 'react-i18next';
 import * as toastr from 'toastr';
 
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
+// import { toastSuccess, toastError } from '~/util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
-import AdminSocketIoContainer from '../../services/AdminSocketIoContainer';
+import AppContainer from '~/client/js/services/AppContainer';
+import AdminSocketIoContainer from '~/client/js/services/AdminSocketIoContainer';
 
-import LabeledProgressBar from './Common/LabeledProgressBar';
+import LabeledProgressBar from '~/client/js/components/Admin/Common/LabeledProgressBar';
 
-import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
-import ArchiveFilesTable from './ExportArchiveData/ArchiveFilesTable';
+import SelectCollectionsModal from '~/client/js/components/Admin/ExportArchiveData/SelectCollectionsModal';
+import ArchiveFilesTable from '~/client/js/components/Admin/ExportArchiveData/ArchiveFilesTable';
 
 const IGNORED_COLLECTION_NAMES = [
   'sessions',
