@@ -28,7 +28,6 @@ type Props = {
   onClose:() => void,
 }
 
-// TODO-5052 impl modal
 export const PageRenameModal:FC<Props> = (props:Props) => {
   const { register, handleSubmit } = useForm();
   const { data: currentPagePath } = useCurrentPagePath();
