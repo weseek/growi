@@ -3,7 +3,6 @@ const express = require('express');
 
 const router = express.Router();
 
-
 module.exports = (crowi) => {
   this.app = crowi.express;
   const { boltService } = crowi;
