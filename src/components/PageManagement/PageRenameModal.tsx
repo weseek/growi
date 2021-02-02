@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useCallback, FC,
 } from 'react';
 import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -27,6 +28,7 @@ type Props = {
 
 // TODO-5052 impl modal
 export const PageRenameModal:FC<Props> = (props:Props) => {
+  const { register, handleSubmit } = useForm();
   const { t } = useTranslation();
 
   return (
