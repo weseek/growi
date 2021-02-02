@@ -1,6 +1,9 @@
 import { FC } from 'react';
-import { Card, CardBody } from 'reactstrap';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import {
+  Card, CardBody,
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 
 import { useTranslation } from '~/i18n';
 
@@ -9,27 +12,36 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 // import AppContainer from '../../../services/AppContainer';
 
+
 // import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 // import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 // import CustomizeFunctionOption from './CustomizeFunctionOption';
 // import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
+
 type FormValues = {
   themeType: string,
 }
 
 const isSavedStatesOfTabChangesInputName = 'isSavedStatesOfTab';
 const isEnabledAttachTitleHeaderInputName = 'isEnabledAttachTitleHeader';
+const pageLimitationSInputName = 'pageLimitationS';
 
 export const CustomizeFunctionSetting:FC = () => {
   const { t } = useTranslation();
   const { data, mutate } = useCustomizeSettingsSWR();
 
-  const { register, handleSubmit } = useForm({
+  const {
+    register, handleSubmit, control, watch,
+  } = useForm({
     defaultValues: {
-      [isSavedStatesOfTabChangesInputName]: data?.isSavedStatesOfTabChanges,
-      [isEnabledAttachTitleHeaderInputName]: data?.isSavedStatesOfTabChanges,
+      [isSavedStatesOfTabChangesInputName]: data?.[isSavedStatesOfTabChangesInputName],
+      [isEnabledAttachTitleHeaderInputName]: data?.[isEnabledAttachTitleHeaderInputName],
+      [pageLimitationSInputName]: data?.[pageLimitationSInputName],
     },
   });
+
+  const selectedPageLimitationS = watch(pageLimitationSInputName);
+
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
     console.log(formValues);
@@ -94,6 +106,40 @@ export const CustomizeFunctionSetting:FC = () => {
             </div>
           </div>
         </div>
+
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="my-0 w-100">
+              <label>{t('admin:customize_setting.function_options.list_num_s')}</label>
+            </div>
+            <Controller
+              name={pageLimitationSInputName}
+              control={control}
+              render={({ onChange }) => {
+                return (
+                  <UncontrolledDropdown>
+                    <DropdownToggle className="text-right col-6" caret>
+                      <span className="float-left">{selectedPageLimitationS || 20}</span>
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-menu" role="menu">
+                      {[10, 20, 50, 100].map((num) => {
+                        return (
+                          <DropdownItem key={num} role="presentation" onClick={() => onChange(num)}>
+                            <a role="menuitem">{num}</a>
+                          </DropdownItem>
+                        );
+                      })}
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                );
+              }}
+            />
+            <p className="form-text text-muted">
+              {t('admin:customize_setting.function_options.list_num_desc_s')}
+            </p>
+          </div>
+        </div>
+
         <div className="row my-3">
           <div className="mx-auto">
             <button type="submit" className="btn btn-primary">{ t('Update') }</button>
@@ -133,20 +179,7 @@ export const CustomizeFunctionSetting:FC = () => {
 //       <React.Fragment>
 //         <div className="row">
 //           <div className="col-12">
-//             <div className="form-group row">
-//               <div className="offset-md-3 col-md-6 text-left">
-//                 <CustomizeFunctionOption
-//                   optionId="isEnabledAttachTitleHeader"
-//                   label={t('admin:customize_setting.function_options.attach_title_header')}
-//                   isChecked={adminCustomizeContainer.state.isEnabledAttachTitleHeader}
-//                   onChecked={() => { adminCustomizeContainer.switchEnabledAttachTitleHeader() }}
-//                 >
-//                   <p className="form-text text-muted">
-//                     {t('admin:customize_setting.function_options.attach_title_header_desc')}
-//                   </p>
-//                 </CustomizeFunctionOption>
-//               </div>
-//             </div>
+
 
 //             <PagingSizeUncontrolledDropdown
 //               label={t('admin:customize_setting.function_options.list_num_s')}
