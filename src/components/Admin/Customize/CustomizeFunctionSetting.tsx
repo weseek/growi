@@ -7,16 +7,8 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 
 import { useTranslation } from '~/i18n';
 
-// import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
-// import AppContainer from '../../../services/AppContainer';
-
-
-// import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-// import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-// import CustomizeFunctionOption from './CustomizeFunctionOption';
-// import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
 type FormValues = {
   themeType: string,
