@@ -1,9 +1,11 @@
 import { FC } from 'react';
 import { Card, CardBody } from 'reactstrap';
+import { useForm, SubmitHandler } from 'react-hook-form';
+
 import { useTranslation } from '~/i18n';
 
 // import { withUnstatedContainers } from '../../UnstatedUtils';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
 // import AppContainer from '../../../services/AppContainer';
 
@@ -11,20 +13,66 @@ import { useTranslation } from '~/i18n';
 // import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 // import CustomizeFunctionOption from './CustomizeFunctionOption';
 // import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
+type FormValues = {
+  themeType: string,
+}
+
+const isSavedStatesOfTabChangesInputName = 'isSavedStatesOfTab';
 
 export const CustomizeFunctionSetting:FC = () => {
   const { t } = useTranslation();
+  const { register, handleSubmit } = useForm();
+
+  const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
+    console.log(formValues);
+    // const themeType = formValues[themeTypeInputName];
+
+    try {
+      // await apiv3Put('/customize-setting/theme', { themeType });
+      // mutate();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.function') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
 
   return (
     <div className="row">
-      <div className="col-12">
+      <form role="form" className="col-md-12" onSubmit={handleSubmit(submitHandler)}>
         <h2 className="admin-setting-header">{t('admin:customize_setting.function')}</h2>
         <Card className="card well my-3">
           <CardBody className="px-0 py-2">
             {t('admin:customize_setting.function_desc')}
           </CardBody>
         </Card>
-      </div>
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
+              <input
+                name={isSavedStatesOfTabChangesInputName}
+                className="custom-control-input"
+                type="checkbox"
+                id="isSavedStatesOfTabChanges"
+                ref={register}
+              />
+              <label className="custom-control-label" htmlFor="isSavedStatesOfTabChanges">
+                <strong>{t('admin:customize_setting.function_options.tab_switch')}</strong>
+              </label>
+              <p className="form-text text-muted">
+                {t('admin:customize_setting.function_options.tab_switch_desc1')}
+                <br />
+                {t('admin:customize_setting.function_options.tab_switch_desc2')}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="row my-3">
+          <div className="mx-auto">
+            <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+          </div>
+        </div>
+      </form>
     </div>
   );
 };
@@ -58,29 +106,6 @@ export const CustomizeFunctionSetting:FC = () => {
 //       <React.Fragment>
 //         <div className="row">
 //           <div className="col-12">
-//             <h2 className="admin-setting-header">{t('admin:customize_setting.function')}</h2>
-//             <Card className="card well my-3">
-//               <CardBody className="px-0 py-2">
-//                 {t('admin:customize_setting.function_desc')}
-//               </CardBody>
-//             </Card>
-
-
-//             <div className="form-group row">
-//               <div className="offset-md-3 col-md-6 text-left">
-//                 <CustomizeFunctionOption
-//                   optionId="isSavedStatesOfTabChanges"
-//                   label={t('admin:customize_setting.function_options.tab_switch')}
-//                   isChecked={adminCustomizeContainer.state.isSavedStatesOfTabChanges}
-//                   onChecked={() => { adminCustomizeContainer.switchSavedStatesOfTabChanges() }}
-//                 >
-//                   <p className="form-text text-muted">
-//                     {t('admin:customize_setting.function_options.tab_switch_desc1')}<br />
-//                     {t('admin:customize_setting.function_options.tab_switch_desc2')}
-//                   </p>
-//                 </CustomizeFunctionOption>
-//               </div>
-//             </div>
 //             <div className="form-group row">
 //               <div className="offset-md-3 col-md-6 text-left">
 //                 <CustomizeFunctionOption
