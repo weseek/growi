@@ -17,6 +17,9 @@ type FormValues = {
 const isSavedStatesOfTabChangesInputName = 'isSavedStatesOfTab';
 const isEnabledAttachTitleHeaderInputName = 'isEnabledAttachTitleHeader';
 const pageLimitationSInputName = 'pageLimitationS';
+const pageLimitationMInputName = 'pageLimitationM';
+const pageLimitationLInputName = 'pageLimitationL';
+const pageLimitationXLInputName = 'pageLimitationXL';
 
 export const CustomizeFunctionSetting:FC = () => {
   const { t } = useTranslation();
@@ -29,10 +32,16 @@ export const CustomizeFunctionSetting:FC = () => {
       [isSavedStatesOfTabChangesInputName]: data?.[isSavedStatesOfTabChangesInputName],
       [isEnabledAttachTitleHeaderInputName]: data?.[isEnabledAttachTitleHeaderInputName],
       [pageLimitationSInputName]: data?.[pageLimitationSInputName],
+      [pageLimitationMInputName]: data?.[pageLimitationMInputName],
+      [pageLimitationLInputName]: data?.[pageLimitationLInputName],
+      [pageLimitationXLInputName]: data?.[pageLimitationXLInputName],
     },
   });
 
   const selectedPageLimitationS = watch(pageLimitationSInputName);
+  const selectedPageLimitationM = watch(pageLimitationMInputName);
+  const selectedPageLimitationL = watch(pageLimitationLInputName);
+  const selectedPageLimitationXL = watch(pageLimitationXLInputName);
 
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
@@ -132,6 +141,105 @@ export const CustomizeFunctionSetting:FC = () => {
           </div>
         </div>
 
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="my-0 w-100">
+              <label>{t('admin:customize_setting.function_options.list_num_m')}</label>
+            </div>
+            <Controller
+              name={pageLimitationMInputName}
+              control={control}
+              render={({ onChange }) => {
+                return (
+                  <UncontrolledDropdown>
+                    <DropdownToggle className="text-right col-6" caret>
+                      <span className="float-left">{selectedPageLimitationM || 10}</span>
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-menu" role="menu">
+                      {[5, 10, 20, 50, 100].map((num) => {
+                        return (
+                          <DropdownItem key={num} role="presentation" onClick={() => onChange(num)}>
+                            <a role="menuitem">{num}</a>
+                          </DropdownItem>
+                        );
+                      })}
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                );
+              }}
+            />
+            <p className="form-text text-muted">
+              {t('admin:customize_setting.function_options.list_num_desc_m')}
+            </p>
+          </div>
+        </div>
+
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="my-0 w-100">
+              <label>{t('admin:customize_setting.function_options.list_num_l')}</label>
+            </div>
+            <Controller
+              name={pageLimitationLInputName}
+              control={control}
+              render={({ onChange }) => {
+                return (
+                  <UncontrolledDropdown>
+                    <DropdownToggle className="text-right col-6" caret>
+                      <span className="float-left">{selectedPageLimitationL || 50}</span>
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-menu" role="menu">
+                      {[20, 50, 100, 200].map((num) => {
+                        return (
+                          <DropdownItem key={num} role="presentation" onClick={() => onChange(num)}>
+                            <a role="menuitem">{num}</a>
+                          </DropdownItem>
+                        );
+                      })}
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                );
+              }}
+            />
+            <p className="form-text text-muted">
+              {t('admin:customize_setting.function_options.list_num_desc_l')}
+            </p>
+          </div>
+        </div>
+
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="my-0 w-100">
+              <label>{t('admin:customize_setting.function_options.list_num_xl')}</label>
+            </div>
+            <Controller
+              name={pageLimitationXLInputName}
+              control={control}
+              render={({ onChange }) => {
+                return (
+                  <UncontrolledDropdown>
+                    <DropdownToggle className="text-right col-6" caret>
+                      <span className="float-left">{selectedPageLimitationXL || 20}</span>
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-menu" role="menu">
+                      {[5, 10, 20, 50, 100].map((num) => {
+                        return (
+                          <DropdownItem key={num} role="presentation" onClick={() => onChange(num)}>
+                            <a role="menuitem">{num}</a>
+                          </DropdownItem>
+                        );
+                      })}
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                );
+              }}
+            />
+            <p className="form-text text-muted">
+              {t('admin:customize_setting.function_options.list_num_desc_xl')}
+            </p>
+          </div>
+        </div>
+
         <div className="row my-3">
           <div className="mx-auto">
             <button type="submit" className="btn btn-primary">{ t('Update') }</button>
@@ -171,36 +279,6 @@ export const CustomizeFunctionSetting:FC = () => {
 //       <React.Fragment>
 //         <div className="row">
 //           <div className="col-12">
-
-
-//             <PagingSizeUncontrolledDropdown
-//               label={t('admin:customize_setting.function_options.list_num_s')}
-//               desc={t('admin:customize_setting.function_options.list_num_desc_s')}
-//               toggleLabel={adminCustomizeContainer.state.pageLimitationS || 20}
-//               dropdownItemSize={[10, 20, 50, 100]}
-//               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationS}
-//             />
-//             <PagingSizeUncontrolledDropdown
-//               label={t('admin:customize_setting.function_options.list_num_m')}
-//               desc={t('admin:customize_setting.function_options.list_num_desc_m')}
-//               toggleLabel={adminCustomizeContainer.state.pageLimitationM || 10}
-//               dropdownItemSize={[5, 10, 20, 50, 100]}
-//               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationM}
-//             />
-//             <PagingSizeUncontrolledDropdown
-//               label={t('admin:customize_setting.function_options.list_num_l')}
-//               desc={t('admin:customize_setting.function_options.list_num_desc_l')}
-//               toggleLabel={adminCustomizeContainer.state.pageLimitationL || 50}
-//               dropdownItemSize={[20, 50, 100, 200]}
-//               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationL}
-//             />
-//             <PagingSizeUncontrolledDropdown
-//               label={t('admin:customize_setting.function_options.list_num_xl')}
-//               desc={t('admin:customize_setting.function_options.list_num_desc_xl')}
-//               toggleLabel={adminCustomizeContainer.state.pageLimitationXL || 20}
-//               dropdownItemSize={[5, 10, 20, 50, 100]}
-//               onChangeDropdownItem={adminCustomizeContainer.switchPageListLimitationXL}
-//             />
 
 //             <div className="form-group row">
 //               <div className="offset-md-3 col-md-6 text-left">
