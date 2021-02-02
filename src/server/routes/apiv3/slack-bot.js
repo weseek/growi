@@ -1,15 +1,13 @@
+
 const express = require('express');
 
 const router = express.Router();
 
 module.exports = (crowi) => {
-  router.get('/', async(req, res) => {
+  this.app = crowi.express;
+  const { boltService } = crowi;
 
-    // TODO: use res.apiv3
-    return res.json({
-      ok: true,
-    });
-  });
+  router.post('/', boltService.receiver.requestHandler.bind(boltService.receiver));
 
   return router;
 };
