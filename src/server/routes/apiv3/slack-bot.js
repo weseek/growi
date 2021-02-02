@@ -8,7 +8,7 @@ module.exports = (crowi) => {
   this.app = crowi.express;
   const { boltService } = crowi;
 
-  router.post('/', boltService.receiver.requestHandler.bind(this));
+  router.post('/', boltService.receiver.requestHandler.bind(boltService.receiver));
 
   return router;
 };
