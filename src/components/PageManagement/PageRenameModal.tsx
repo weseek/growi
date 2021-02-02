@@ -11,6 +11,8 @@ import {
 import { debounce } from 'throttle-debounce';
 import { useTranslation } from '~/i18n';
 
+import { useCurrentPagePath } from '~/stores/context';
+
 // import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
 // import { toastError } from '../../client/js/util/apiNotification';
 
@@ -29,6 +31,7 @@ type Props = {
 // TODO-5052 impl modal
 export const PageRenameModal:FC<Props> = (props:Props) => {
   const { register, handleSubmit } = useForm();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
 
   return (
@@ -39,7 +42,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
       <ModalBody>
         <div className="form-group">
           <label>{ t('modal_rename.label.Current page name') }</label><br />
-          {/* <code>{ path }</code> */}
+          <code>{ currentPagePath }</code>
         </div>
         <div className="form-group">
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
