@@ -9,19 +9,20 @@ import { useTranslation } from '~/i18n';
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 type FormValues = {
   themeType: string,
 }
 
-const isSavedStatesOfTabChangesInputName = 'isSavedStatesOfTab';
+const isSavedStatesOfTabChangesInputName = 'isSavedStatesOfTabChanges';
 const isEnabledAttachTitleHeaderInputName = 'isEnabledAttachTitleHeader';
 const pageLimitationSInputName = 'pageLimitationS';
 const pageLimitationMInputName = 'pageLimitationM';
 const pageLimitationLInputName = 'pageLimitationL';
 const pageLimitationXLInputName = 'pageLimitationXL';
 const isEnabledStaleNotificationInputName = 'isEnabledStaleNotification';
-const isAllReplyShownInputName = 'isAllReplyShownInputName';
+const isAllReplyShownInputName = 'isAllReplyShown';
 
 export const CustomizeFunctionSetting:FC = () => {
   const { t } = useTranslation();
@@ -48,14 +49,22 @@ export const CustomizeFunctionSetting:FC = () => {
   const selectedPageLimitationL = watch(pageLimitationLInputName);
   const selectedPageLimitationXL = watch(pageLimitationXLInputName);
 
-
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
-    console.log(formValues);
-    // const themeType = formValues[themeTypeInputName];
 
     try {
-      // await apiv3Put('/customize-setting/theme', { themeType });
-      // mutate();
+      await apiv3Put('/customize-setting/function', {
+        [isSavedStatesOfTabChangesInputName]: formValues[isSavedStatesOfTabChangesInputName],
+        [isEnabledAttachTitleHeaderInputName]: formValues[isEnabledAttachTitleHeaderInputName],
+        [pageLimitationSInputName]: formValues[pageLimitationSInputName],
+        [pageLimitationMInputName]: formValues[pageLimitationMInputName],
+        [pageLimitationLInputName]: formValues[pageLimitationLInputName],
+        [pageLimitationXLInputName]: formValues[pageLimitationXLInputName],
+        [isEnabledStaleNotificationInputName]: formValues[isEnabledStaleNotificationInputName],
+        [isAllReplyShownInputName]: formValues[isAllReplyShownInputName],
+      });
+
+      mutate();
+
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.function') }));
     }
     catch (err) {
