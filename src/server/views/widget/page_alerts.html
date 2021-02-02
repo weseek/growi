@@ -50,11 +50,7 @@
     {% endif %}
 
     {% if req.query.duplicated and not page.isDeleted() %}
-    <div class="alert alert-success py-3 px-4">
-      <span>
-        <strong>{{ t('Duplicated') }}: </strong> <span content= "{{ t('page_page.notice.duplicated', req.query.duplicated | preventXss) }}" >
-      </span>
-    </div>
+    <div id="duplicated-alert"></div>
     {% endif %}
 
     {% if req.query.unlinked %}
