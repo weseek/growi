@@ -6,7 +6,7 @@ import { useTranslation } from '~/i18n';
 
 // import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
-
+import { useCustomizeSettingsSWR } from '~/stores/admin';
 // import AppContainer from '../../../services/AppContainer';
 
 // import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
@@ -18,10 +18,18 @@ type FormValues = {
 }
 
 const isSavedStatesOfTabChangesInputName = 'isSavedStatesOfTab';
+const isEnabledAttachTitleHeaderInputName = 'isEnabledAttachTitleHeader';
 
 export const CustomizeFunctionSetting:FC = () => {
   const { t } = useTranslation();
-  const { register, handleSubmit } = useForm();
+  const { data, mutate } = useCustomizeSettingsSWR();
+
+  const { register, handleSubmit } = useForm({
+    defaultValues: {
+      [isSavedStatesOfTabChangesInputName]: data?.isSavedStatesOfTabChanges,
+      [isEnabledAttachTitleHeaderInputName]: data?.isSavedStatesOfTabChanges,
+    },
+  });
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
     console.log(formValues);
@@ -63,6 +71,25 @@ export const CustomizeFunctionSetting:FC = () => {
                 {t('admin:customize_setting.function_options.tab_switch_desc1')}
                 <br />
                 {t('admin:customize_setting.function_options.tab_switch_desc2')}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
+              <input
+                name={isEnabledAttachTitleHeaderInputName}
+                className="custom-control-input"
+                type="checkbox"
+                id="isEnabledAttachTitleHeader"
+                ref={register}
+              />
+              <label className="custom-control-label" htmlFor="isEnabledAttachTitleHeader">
+                <strong>{t('admin:customize_setting.function_options.attach_title_header')}</strong>
+              </label>
+              <p className="form-text text-muted">
+                {t('admin:customize_setting.function_options.attach_title_header_desc')}
               </p>
             </div>
           </div>
