@@ -7,7 +7,7 @@ import AdminLayout from '~/components/AdminLayout';
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
-// import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
+import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';
 
 import {
   useCurrentUser,
@@ -35,7 +35,7 @@ const AdminDataArchiveSettingsPage: NextPage<Props> = (props: Props) => {
     <>
       <AdminLayout title={title} selectedNavOpt="export" growiVersion={props.growiVersion}>
         export
-        {/* <MarkDownSettingContents /> */}
+        <ExportArchiveDataPage />
       </AdminLayout>
     </>
   );
