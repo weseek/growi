@@ -1,22 +1,18 @@
 import { FC } from 'react';
+import { useFormContext, Controller } from 'react-hook-form';
 import { useTranslation } from '~/i18n';
 
 import { ThemeColorBox } from './ThemeColorBox';
 
 type Props = {
+  themeTypeInputName: string,
   currentTheme?: string,
-  onSelected?: (string)=>void,
 }
 
 export const CustomizeThemeOptions:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
-  const { currentTheme } = props;
-
-  const handleThemeColorBox = (themeName:string):void => {
-    if (props.onSelected != null) {
-      props.onSelected(themeName);
-    }
-  };
+  const { themeTypeInputName, currentTheme } = props;
+  const { control } = useFormContext();
 
   /* eslint-disable no-multi-spaces */
   const lightNDarkTheme = [{
@@ -47,40 +43,48 @@ export const CustomizeThemeOptions:FC<Props> = (props:Props) => {
   /* eslint-enable no-multi-spaces */
 
   return (
-    <div id="themeOptions">
-      {/* Light and Dark Themes */}
-      <div>
-        <h3>{t('admin:customize_setting.theme_desc.light_and_dark')}</h3>
-        <div className="d-flex flex-wrap">
-          {lightNDarkTheme.map((theme) => {
+    <Controller
+      name={themeTypeInputName}
+      control={control}
+      render={({ onChange }) => {
+      return (
+        <div id="themeOptions">
+          {/* Light and Dark Themes */}
+          <div>
+            <h3>{t('admin:customize_setting.theme_desc.light_and_dark')}</h3>
+            <div className="d-flex flex-wrap">
+              {lightNDarkTheme.map((theme) => {
               return (
                 <ThemeColorBox
                   key={theme.name}
                   isSelected={currentTheme === theme.name}
-                  onSelected={() => handleThemeColorBox(theme.name)}
+                  onSelected={() => onChange(theme.name)}
                   {...theme}
                 />
               );
             })}
-        </div>
-      </div>
-      {/* Unique Theme */}
-      <div className="mt-3">
-        <h3>{t('admin:customize_setting.theme_desc.unique')}</h3>
-        <div className="d-flex flex-wrap">
-          {uniqueTheme.map((theme) => {
+            </div>
+          </div>
+          {/* Unique Theme */}
+          <div className="mt-3">
+            <h3>{t('admin:customize_setting.theme_desc.unique')}</h3>
+            <div className="d-flex flex-wrap">
+              {uniqueTheme.map((theme) => {
               return (
                 <ThemeColorBox
                   key={theme.name}
                   isSelected={currentTheme === theme.name}
-                  onSelected={() => handleThemeColorBox(theme.name)}
+                  onSelected={() => onChange(theme.name)}
                   {...theme}
                 />
               );
             })}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      );
+      }}
+    />
   );
 
 };

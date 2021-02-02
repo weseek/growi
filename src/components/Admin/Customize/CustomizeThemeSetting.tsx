@@ -1,4 +1,7 @@
 import { useState, useEffect, FC } from 'react';
+import {
+  useForm, SubmitHandler, Validate, FormProvider,
+} from 'react-hook-form';
 
 import { useTranslation } from '~/i18n';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
@@ -6,43 +9,49 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { apiv3Put } from '~/utils/apiv3-client';
 
 import { CustomizeThemeOptions } from '~/components/Admin/Customize/CustomizeThemeOptions';
-import { AdminUpdateButtonRow } from '~/components/Admin/Common/AdminUpdateButtonRow';
+
+type FormValues = {
+  themeType: string,
+}
+
+const themeTypeInputName = 'themeType';
 
 
 export const CustomizeThemeSetting:FC = () => {
   const { t } = useTranslation();
-  const { data, mutate } = useCustomizeSettingsSWR();
-  const [themeType, setThemeType] = useState('');
+  const { data } = useCustomizeSettingsSWR();
+  const methods = useForm();
 
-  useEffect(() => {
-    if (data?.themeType != null) {
-      setThemeType(data.themeType);
-    }
-  }, [data?.themeType]);
-
-  const onClickSubmit = async() => {
+  const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
+    const themeType = formValues[themeTypeInputName];
 
     try {
       await apiv3Put('/customize-setting/theme', { themeType });
-      mutate();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
     }
     catch (err) {
       toastError(err);
     }
   };
+
   return (
     <div className="row">
-      <div className="col-12">
-        <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
-        {process.env.NODE_ENV === 'development' && (
+      <FormProvider {...methods}>
+        <form role="form" className="col-md-12" onSubmit={methods.handleSubmit(submitHandler)}>
+          <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
+          {process.env.NODE_ENV === 'development' && (
           <div className="alert alert-warning">
             <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
           </div>
         )}
-        <CustomizeThemeOptions currentTheme={data?.themeType} onSelected={e => setThemeType(e)} />
-        <AdminUpdateButtonRow onClick={onClickSubmit} />
-      </div>
+          <CustomizeThemeOptions currentTheme={data?.themeType} themeTypeInputName={themeTypeInputName} />
+          <div className="row my-3">
+            <div className="mx-auto">
+              <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+            </div>
+          </div>
+        </form>
+      </FormProvider>
     </div>
   );
 };
