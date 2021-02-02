@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 
 import { useTranslation } from '~/i18n';
@@ -17,7 +17,7 @@ const themeTypeInputName = 'themeType';
 
 export const CustomizeThemeSetting:FC = () => {
   const { t } = useTranslation();
-  const { data } = useCustomizeSettingsSWR();
+  const { data, mutate } = useCustomizeSettingsSWR();
 
   const themeTypeMethods = useForm({
     defaultValues: {
@@ -30,12 +30,18 @@ export const CustomizeThemeSetting:FC = () => {
 
     try {
       await apiv3Put('/customize-setting/theme', { themeType });
+      mutate();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.theme') }));
     }
     catch (err) {
       toastError(err);
     }
   };
+
+  useEffect(() => {
+    themeTypeMethods.setValue(themeTypeInputName, data?.themeType);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.themeType]);
 
   return (
     <div className="row">
