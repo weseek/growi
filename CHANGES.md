@@ -1,10 +1,39 @@
 # CHANGES
 
-## v4.2.6-RC
+## v4.2.8-RC
 
-* 
+* Fix: Pass app title value through the XSS filter
+* Fix: Fixed not being able to update ses settings
+    * Introduced by v4.2.0
+* Fix: Fixed the display of updtedAt and createdAt being reversed
+* Improvement: Improved page control performance with stream and bulk
+    * rename, duplicate, delete, deleteCompletely, revrtDeleted
+* Fix: Failed to save temporaryUrlCached with using gcs
+    * Introduced by v4.2.3
 
-## v4.2.5-RC
+## v4.2.7
+
+* Fix: Installer doesn't work on Chrome
+
+## v4.2.6
+
+* Feature: Add a button to jump to Comments section
+* Feature: Paste Bootstrap4 Grid HTML with GUI
+* Feature: Disable auto formating table option
+* Improvement: Layout of Edit Link Modal
+* Improvement: Focus to the first input when modal is opened
+* Improvement: Preview layout in edit mode
+* Improvement: Install process under redundant environment
+* Improvement: Add contributors
+* Fix: Upgrading to v4.x failed when the user uses Kibela Layout
+    * Introduced by v4.2.0
+* Fix: diagrams.net (draw.io) errors
+* Fix: Navbar is not rendered on old iOS
+* Support: Expose metrics with Promster
+* Support: Upgrade libs
+    * axios
+
+## v4.2.5
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
 * Fix: MathJax rendering does not work

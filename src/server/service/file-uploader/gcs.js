@@ -71,7 +71,7 @@ module.exports = function(crowi) {
 
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
-    const signedUrl = await file.getSignedUrl({
+    const [signedUrl] = await file.getSignedUrl({
       action: 'read',
       expires: Date.now() + lifetimeSecForTemporaryUrl * 1000,
     });
@@ -87,28 +87,33 @@ module.exports = function(crowi) {
 
   };
 
-  lib.deleteFile = async function(attachment) {
+  lib.deleteFile = function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
-    return lib.deleteFileByFilePath(filePath);
+    return lib.deleteFilesByFilePaths([filePath]);
   };
 
-  lib.deleteFileByFilePath = async function(filePath) {
+  lib.deleteFiles = function(attachments) {
+    const filePaths = attachments.map((attachment) => {
+      return getFilePathOnStorage(attachment);
+    });
+    return lib.deleteFilesByFilePaths(filePaths);
+  };
+
+  lib.deleteFilesByFilePaths = function(filePaths) {
     if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
 
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
-    const file = myBucket.file(filePath);
 
-    // check file exists
-    const isExists = await isFileExists(file);
-    if (!isExists) {
-      logger.warn(`Any object that relate to the Attachment (${filePath}) does not exist in GCS`);
-      return;
-    }
+    const files = filePaths.map((filePath) => {
+      return myBucket.file(filePath);
+    });
 
-    return file.delete();
+    files.forEach((file) => {
+      file.delete({ ignoreNotFound: true });
+    });
   };
 
   lib.uploadFile = function(fileStream, attachment) {
