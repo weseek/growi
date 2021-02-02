@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
+import { isTopPage } from '~/utils/path-utils';
+
+import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 import PageContainer from '../services/PageContainer';
 
@@ -16,9 +19,12 @@ const WIKI_HEADER_LINK = 120;
  */
 const ContentLinkButtons = (props) => {
 
-  const { navigationContainer, pageContainer } = props;
-  const { pageUser } = pageContainer.state;
+  const { appContainer, navigationContainer, pageContainer } = props;
+  const { pageUser, path } = pageContainer.state;
   const { isPageExist } = pageContainer.state;
+  const { isSharedUser } = appContainer;
+
+  const isTopPagePath = isTopPage(path);
 
   // get element for smoothScroll
   const getCommentListDom = useMemo(() => { return document.getElementById('page-comments-list') }, []);
@@ -71,7 +77,7 @@ const ContentLinkButtons = (props) => {
 
   return (
     <>
-      {isPageExist && <CommentLinkButton />}
+      {isPageExist && !isSharedUser && !isTopPagePath && <CommentLinkButton />}
 
       <div className="mt-3 d-flex justify-content-between">
         {pageUser && <><BookMarkLinkButton /><RecentlyCreatedLinkButton /></>}
@@ -82,8 +88,9 @@ const ContentLinkButtons = (props) => {
 };
 
 ContentLinkButtons.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withUnstatedContainers(ContentLinkButtons, [NavigationContainer, PageContainer]);
+export default withUnstatedContainers(ContentLinkButtons, [AppContainer, NavigationContainer, PageContainer]);

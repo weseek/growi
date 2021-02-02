@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import MarkdownRenderer from '~/service/renderer/markdown-renderer';
@@ -14,9 +14,13 @@ const RevisionRenderer: FC<Props> = (props: Props) => {
   const { renderer, markdown } = props;
   const { processor } = renderer;
 
+  const html = useMemo(() => {
+    return processor?.processSync(markdown).result;
+  }, [processor, markdown]);
+
   return (
     <>
-      {processor.processSync(markdown).result}
+      {html}
     </>
   );
 

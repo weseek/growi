@@ -22,13 +22,14 @@ import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
-  useForbidden, useNotFound, useTrash, useShared, useIsSharedUser, useIsAbleToDeleteCompletely,
+  useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
 import {
   useCurrentPageSWR,
 } from '../stores/page';
+import { useRendererSettings } from '~/stores/renderer';
 
 
 const logger = loggerFactory('growi:pages:all');
@@ -41,6 +42,8 @@ type Props = CommonProps & {
   redirectTo?: string;
   redirectFrom?: string;
 
+  shareLinkId?: string;
+
   appTitle: string,
   siteUrl: string,
   confidential: string,
@@ -50,6 +53,8 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   highlightJsStyle: string,
+  isEnabledLinebreaks: boolean,
+  isEnabledLinebreaksInComments: boolean,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -62,6 +67,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useNotFound(props.isNotFound);
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
+  useShareLinkId(props.shareLinkId);
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
 
@@ -70,6 +76,11 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
+
+  useRendererSettings({
+    isEnabledLinebreaks: props.isEnabledLinebreaks,
+    isEnabledLinebreaksInComments: props.isEnabledLinebreaksInComments,
+  });
 
   let page;
   if (props.page != null) {
@@ -186,6 +197,13 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
+
+  // check for presence
+  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
+  if (!('props' in result)) {
+    throw new Error('invalid getSSP result');
+  }
+
   const props: Props = result.props as Props;
   await injectPageInformation(context, props);
   await injectPageUserInformation(context, props);
@@ -200,6 +218,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
+  props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
+  props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
 
   return {
     props,

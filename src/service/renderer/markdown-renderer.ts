@@ -20,21 +20,43 @@
 // import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
 import React from 'react';
-import unified from 'unified';
-import markdown from 'remark-parse';
+import unified, { Plugin, PluginTuple, Processor } from 'unified';
+import parse from 'remark-parse';
+import gfm from 'remark-gfm';
+import footnotes from 'remark-footnotes';
+import breaks from 'remark-breaks';
 import remark2rehype from 'remark-rehype';
+import slug from 'rehype-slug';
+import toc, { HtmlElementNode } from 'rehype-toc';
+import autoLinkHeadings from 'rehype-autolink-headings';
 import rehype2react from 'rehype-react';
 
+import NextLink from '~/components/rehype2react/NextLink';
+import { RendererSettings } from '~/interfaces/renderer';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:MarkdownRenderer');
 
+
+function applyPlugin(processor: Processor, plugin: Plugin | PluginTuple): Processor {
+  if (Array.isArray(plugin)) {
+    return processor.use(...plugin);
+  }
+
+  return processor.use(plugin);
+}
+
 export default class MarkdownRenderer {
 
-  processor = unified()
-    .use(markdown)
-    .use(remark2rehype)
-    .use(rehype2react, { createElement: React.createElement })
+  remarkPlugins: (Plugin | PluginTuple)[] = [
+    gfm,
+  ];
+
+  rehypePlugins: (Plugin | PluginTuple)[] = [
+    slug,
+  ];
+
+  processor?: Processor;
 
   constructor() {
     // this.appContainer = appContainer;
@@ -53,6 +75,25 @@ export default class MarkdownRenderer {
     //   this.postProcessors = [
     //   ];
     // }
+  }
+
+  init() {
+    let parser = unified().use(parse);
+    this.remarkPlugins.forEach((item) => {
+      parser = applyPlugin(parser, item);
+    });
+
+    let rehype = parser.use(remark2rehype);
+    this.rehypePlugins.forEach((item) => {
+      rehype = applyPlugin(rehype, item);
+    });
+
+    this.processor = rehype.use(rehype2react, {
+      createElement: React.createElement,
+      components: {
+        a: NextLink,
+      },
+    });
   }
 
   // initMarkdownItConfigurers(mode) {
@@ -204,3 +245,37 @@ export default class MarkdownRenderer {
   // }
 
 }
+
+export const generateViewRenderer = (rendererSettings: RendererSettings, storeTocNode: (toc: HtmlElementNode) => void): MarkdownRenderer => {
+  const renderer = new MarkdownRenderer();
+  // add remark plugins
+  renderer.remarkPlugins.push(footnotes);
+  if (rendererSettings.isEnabledLinebreaks) {
+    renderer.remarkPlugins.push(breaks);
+  }
+  // add rehypePlugins
+  renderer.rehypePlugins.push([toc, {
+    headings: ['h1', 'h2', 'h3'],
+    customizeTOC: storeTocNode,
+  }]);
+  renderer.rehypePlugins.push([autoLinkHeadings, {
+    behavior: 'append',
+  }]);
+  renderer.init();
+
+  return renderer;
+};
+
+export const generatePreviewRenderer = (): MarkdownRenderer => {
+  const renderer = new MarkdownRenderer();
+  renderer.init();
+
+  return renderer;
+};
+
+export const generateCommentPreviewRenderer = (): MarkdownRenderer => {
+  const renderer = new MarkdownRenderer();
+  renderer.init();
+
+  return renderer;
+};

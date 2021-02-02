@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -10,7 +11,9 @@ import AppContainer from '../../../services/AppContainer';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import CustomCssEditor from '../CustomCssEditor';
+
+// dynamic import to skip rendering at SSR
+const CustomCssEditor = dynamic(() => import('../CustomCssEditor'), { ssr: false });
 
 class CustomizeCssSetting extends React.Component {
 

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-const PresentationIcon = () => (
+export const PresentationIcon:FC = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="14"
@@ -18,5 +18,3 @@ const PresentationIcon = () => (
     />
   </svg>
 );
-
-export default PresentationIcon;

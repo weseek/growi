@@ -28,6 +28,10 @@ class Uploader {
     return !!this.configManager.getConfig('crowi', 'app:fileUpload');
   }
 
+  deleteFiles() {
+    throw new Error('Implemnt this');
+  }
+
   /**
    * Check files size limits for all uploaders
    *

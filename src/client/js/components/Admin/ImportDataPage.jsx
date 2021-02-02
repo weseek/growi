@@ -9,7 +9,7 @@ import { withLoadingSppiner } from '../SuspenseUtils';
 import AdminImportContainer from '../../services/AdminImportContainer';
 import { toastError } from '../../util/apiNotification';
 
-import ImportDataPageContents from './ImportData/ImportDataPageContents';
+import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 
 const logger = loggerFactory('growi:importer');
 
@@ -36,7 +36,7 @@ function ImportDataPage(props) {
     throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
-  return <ImportDataPageContents />;
+  return <DataImportPageContents />;
 }
 
 ImportDataPage.propTypes = {

@@ -34,11 +34,13 @@ class SearchService {
   }
 
   get isSearchboxEnabled() {
-    return this.configManager.getConfig('crowi', 'app:searchboxSslUrl') != null;
+    const url = this.configManager.getConfig('crowi', 'app:searchboxSslUrl');
+    return url != null && url.length > 0;
   }
 
   get isElasticsearchEnabled() {
-    return this.configManager.getConfig('crowi', 'app:elasticsearchUri') != null;
+    const url = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
+    return url != null && url.length > 0;
   }
 
   generateDelegator() {
@@ -60,7 +62,10 @@ class SearchService {
     const pageEvent = this.crowi.event('page');
     pageEvent.on('create', this.delegator.syncPageUpdated.bind(this.delegator));
     pageEvent.on('update', this.delegator.syncPageUpdated.bind(this.delegator));
+    pageEvent.on('deleteCompletely', this.delegator.syncPagesDeletedCompletely.bind(this.delegator));
     pageEvent.on('delete', this.delegator.syncPageDeleted.bind(this.delegator));
+    pageEvent.on('updateMany', this.delegator.syncPagesUpdated.bind(this.delegator));
+    pageEvent.on('syncDescendants', this.delegator.syncDescendantsPagesUpdated.bind(this.delegator));
 
     const bookmarkEvent = this.crowi.event('bookmark');
     bookmarkEvent.on('create', this.delegator.syncBookmarkChanged.bind(this.delegator));
