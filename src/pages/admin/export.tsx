@@ -34,7 +34,6 @@ const AdminDataArchiveSettingsPage: NextPage<Props> = (props: Props) => {
   return (
     <>
       <AdminLayout title={title} selectedNavOpt="export" growiVersion={props.growiVersion}>
-        export
         <ExportArchiveDataPage />
       </AdminLayout>
     </>

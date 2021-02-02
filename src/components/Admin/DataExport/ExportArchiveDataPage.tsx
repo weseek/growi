@@ -18,15 +18,17 @@ import React from 'react';
 
 import { useTranslation } from '~/i18n';
 
-type Props = {
-};
-
 const IGNORED_COLLECTION_NAMES = [
   'sessions',
 ];
 
+type Props = {
+};
+
 const ExportArchiveDataPage = (): JSX.Element => {
   const { t } = useTranslation();
+
+  // TODO: make class component to functional one by GW5080
 
   // constructor(props) {
   //   super(props);
@@ -231,17 +233,17 @@ const ExportArchiveDataPage = (): JSX.Element => {
         { this.renderProgressBarsForCollections() }
         { this.renderProgressBarForZipping() }
       </div>
-      ) }
+      ) } */}
 
       <div className="mt-5">
         <h3>{t('admin:export_management.exported_data_list')}</h3>
-        <ArchiveFilesTable
+        {/* <ArchiveFilesTable
           zipFileStats={this.state.zipFileStats}
           onZipFileStatRemove={this.onZipFileStatRemove}
-        />
+        /> */}
       </div>
 
-      <SelectCollectionsModal
+      {/* <SelectCollectionsModal
         isOpen={this.state.isExportModalOpen}
         onExportingRequested={this.exportingRequestedHandler}
         onClose={this.closeExportModal}
