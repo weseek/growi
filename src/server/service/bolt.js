@@ -1,11 +1,5 @@
-const { EventEmitter } = require('events');
 
-class BoltReciever extends EventEmitter {
-
-  constructor(signingSecret, crowi) {
-    super();
-    this.app = crowi.express;
-  }
+class BoltReciever {
 
   init(app) {
     this.bolt = app;
@@ -13,12 +7,8 @@ class BoltReciever extends EventEmitter {
 
   async requestHandler(req, res) {
     let ackCalled = false;
-    // 着信リクエストをパースするparseBody 関数があると仮定
-    const parsedReq = 'parseBody(req)';
-    // const parsedReq = parseBody(req);
     const event = {
-      body: parsedReq.body,
-      // レシーバーが確認作業に重要
+      body: req.body,
       ack: (response) => {
         if (ackCalled) {
           return;
@@ -37,7 +27,11 @@ class BoltReciever extends EventEmitter {
         ackCalled = true;
       },
     };
+
     await this.bolt.processEvent(event);
+
+    // for verification request URL on Event Subscriptions
+    res.send(req.body);
   }
 
 }
@@ -48,18 +42,18 @@ class BoltService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    // Bolt の Receiver を明に生成
-    this.receiver = new BoltReciever(process.env.SLACK_SIGNING_SECRET, crowi);
-    // App をこのレシーバーを指定して生成
+    this.receiver = new BoltReciever();
     this.bolt = new App({
       token: process.env.SLACK_BOT_TOKEN,
       signingSecret: process.env.SLACK_SIGNING_SECRET,
       receiver: this.receiver,
     });
-    // Slack とのやりとりは App のメソッドで定義
-    this.bolt.event('message', async({ event, client }) => {
-      // Do some slack-specific stuff here
-      // await client.chat.postMessage(...);
+
+    // Example of listening for event
+    // See. https://github.com/slackapi/bolt-js#listening-for-events
+    // or https://slack.dev/bolt-js/concepts#basic
+    this.bolt.command('/hoge', async({ command, ack, say }) => { // demo
+      await say('fuga');
     });
   }
 
