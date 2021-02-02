@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 
-const DuplicatedAlert = (props) => {
+const RenamedAlert = (props) => {
   const { t } = props;
 
   return (
@@ -13,8 +13,8 @@ const DuplicatedAlert = (props) => {
   );
 };
 
-DuplicatedAlert.propTypes = {
+RenamedAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 };
 
-export default withTranslation()(DuplicatedAlert);
+export default withTranslation()(RenamedAlert);
