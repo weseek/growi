@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import {
   Card, CardBody,
   UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -29,7 +29,7 @@ export const CustomizeFunctionSetting:FC = () => {
   const { data, mutate } = useCustomizeSettingsSWR();
 
   const {
-    register, handleSubmit, control, watch,
+    register, handleSubmit, control, watch, setValue,
   } = useForm({
     defaultValues: {
       [isSavedStatesOfTabChangesInputName]: data?.[isSavedStatesOfTabChangesInputName],
@@ -71,6 +71,19 @@ export const CustomizeFunctionSetting:FC = () => {
       toastError(err);
     }
   };
+
+  useEffect(() => {
+    setValue(isSavedStatesOfTabChangesInputName, data?.[isSavedStatesOfTabChangesInputName]);
+    setValue(isEnabledAttachTitleHeaderInputName, data?.[isEnabledAttachTitleHeaderInputName]);
+    setValue(pageLimitationSInputName, data?.[pageLimitationSInputName]);
+    setValue(pageLimitationMInputName, data?.[pageLimitationMInputName]);
+    setValue(pageLimitationLInputName, data?.[pageLimitationLInputName]);
+    setValue(pageLimitationXLInputName, data?.[pageLimitationXLInputName]);
+    setValue(isEnabledStaleNotificationInputName, data?.[isEnabledStaleNotificationInputName]);
+    setValue(isAllReplyShownInputName, data?.[isAllReplyShownInputName]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.themeType]);
+
 
   return (
     <div className="row">
