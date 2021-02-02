@@ -24,7 +24,7 @@ type Props = CommonProps & {
 
 const AdminDataArchiveSettingsPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const title = t('Markdown Settings');
+  const title = t('Export Archive Data');
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
