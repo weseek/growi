@@ -20,7 +20,12 @@ const themeTypeInputName = 'themeType';
 export const CustomizeThemeSetting:FC = () => {
   const { t } = useTranslation();
   const { data } = useCustomizeSettingsSWR();
-  const methods = useForm();
+
+  const themeTypeMethods = useForm({
+    defaultValues: {
+      [themeTypeInputName]: data?.themeType,
+    },
+  });
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
     const themeType = formValues[themeTypeInputName];
@@ -36,15 +41,15 @@ export const CustomizeThemeSetting:FC = () => {
 
   return (
     <div className="row">
-      <FormProvider {...methods}>
-        <form role="form" className="col-md-12" onSubmit={methods.handleSubmit(submitHandler)}>
+      <FormProvider {...themeTypeMethods}>
+        <form role="form" className="col-md-12" onSubmit={themeTypeMethods.handleSubmit(submitHandler)}>
           <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
           {process.env.NODE_ENV === 'development' && (
           <div className="alert alert-warning">
             <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
           </div>
         )}
-          <CustomizeThemeOptions currentTheme={data?.themeType} themeTypeInputName={themeTypeInputName} />
+          <CustomizeThemeOptions themeTypeInputName={themeTypeInputName} />
           <div className="row my-3">
             <div className="mx-auto">
               <button type="submit" className="btn btn-primary">{ t('Update') }</button>

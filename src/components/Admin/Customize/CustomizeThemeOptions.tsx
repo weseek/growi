@@ -6,13 +6,13 @@ import { ThemeColorBox } from './ThemeColorBox';
 
 type Props = {
   themeTypeInputName: string,
-  currentTheme?: string,
 }
 
 export const CustomizeThemeOptions:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
-  const { themeTypeInputName, currentTheme } = props;
-  const { control } = useFormContext();
+  const { themeTypeInputName } = props;
+  const { control, watch } = useFormContext();
+  const selectedThemeType = watch(themeTypeInputName);
 
   /* eslint-disable no-multi-spaces */
   const lightNDarkTheme = [{
@@ -57,7 +57,7 @@ export const CustomizeThemeOptions:FC<Props> = (props:Props) => {
               return (
                 <ThemeColorBox
                   key={theme.name}
-                  isSelected={currentTheme === theme.name}
+                  isSelected={selectedThemeType === theme.name}
                   onSelected={() => onChange(theme.name)}
                   {...theme}
                 />
@@ -73,7 +73,7 @@ export const CustomizeThemeOptions:FC<Props> = (props:Props) => {
               return (
                 <ThemeColorBox
                   key={theme.name}
-                  isSelected={currentTheme === theme.name}
+                  isSelected={selectedThemeType === theme.name}
                   onSelected={() => onChange(theme.name)}
                   {...theme}
                 />
