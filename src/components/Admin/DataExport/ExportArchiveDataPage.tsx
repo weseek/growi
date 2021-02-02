@@ -5,6 +5,7 @@ import * as toastr from 'toastr';
 
 
 import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
+
 // import { toastSuccess, toastError } from '~/util/apiNotification';
 
 import AppContainer from '~/client/js/services/AppContainer';
@@ -15,11 +16,14 @@ import LabeledProgressBar from '~/client/js/components/Admin/Common/LabeledProgr
 import SelectCollectionsModal from '~/client/js/components/Admin/ExportArchiveData/SelectCollectionsModal';
 import ArchiveFilesTable from '~/client/js/components/Admin/ExportArchiveData/ArchiveFilesTable';
 
+import { useTranslation } from '~/i18n';
+
 const IGNORED_COLLECTION_NAMES = [
   'sessions',
 ];
 
-class ExportArchiveDataPage extends React.Component {
+const ExportArchiveDataPage = (): JSX.Element => {
+  const { t } = useTranslation();
 
   constructor(props) {
     super(props);
@@ -204,11 +208,11 @@ class ExportArchiveDataPage extends React.Component {
     );
   }
 
-  render() {
-    const { t } = this.props;
-    const { isExporting, isExported, progressList } = this.state;
+  // render() {
+  //   const { t } = this.props;
+  //   const { isExporting, isExported, progressList } = this.state;
 
-    const showExportingData = (isExported || isExporting) && (progressList != null);
+  //   const showExportingData = (isExported || isExporting) && (progressList != null);
 
     return (
       <Fragment>
@@ -242,7 +246,7 @@ class ExportArchiveDataPage extends React.Component {
         />
       </Fragment>
     );
-  }
+  // }
 
 }
 
