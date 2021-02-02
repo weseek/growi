@@ -11,10 +11,6 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 import { apiv3Put } from '~/utils/apiv3-client';
 
-type FormValues = {
-  themeType: string,
-}
-
 const isSavedStatesOfTabChangesInputName = 'isSavedStatesOfTabChanges';
 const isEnabledAttachTitleHeaderInputName = 'isEnabledAttachTitleHeader';
 const pageLimitationSInputName = 'pageLimitationS';
@@ -23,6 +19,17 @@ const pageLimitationLInputName = 'pageLimitationL';
 const pageLimitationXLInputName = 'pageLimitationXL';
 const isEnabledStaleNotificationInputName = 'isEnabledStaleNotification';
 const isAllReplyShownInputName = 'isAllReplyShown';
+
+type FormValues = {
+  [isSavedStatesOfTabChangesInputName]: boolean,
+  [isEnabledAttachTitleHeaderInputName]: boolean,
+  [pageLimitationSInputName]: number,
+  [pageLimitationMInputName]: number,
+  [pageLimitationLInputName]: number,
+  [pageLimitationXLInputName]: number,
+  [isEnabledStaleNotificationInputName]: boolean,
+  [isAllReplyShownInputName]: boolean,
+}
 
 export const CustomizeFunctionSetting:FC = () => {
   const { t } = useTranslation();
