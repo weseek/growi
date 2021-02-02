@@ -34,6 +34,11 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
 
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
       <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
@@ -48,29 +53,32 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
           <div className="input-group">
             <div className="input-group-prepend">
-              {/* <span className="input-group-text">{crowi.url}</span> */}
+              {/* <span className="input-group-text">{crowi.url} </span> */}
             </div>
-            {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
+            {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
+            <form className="flex-fill" onSubmit={handleSubmit(onSubmit)}>
               <input
                 type="text"
-                value={pageNameInput}
+                // value={pageNameInput}
                 className="form-control"
-                onChange={e => inputChangeHandler(e.target.value)}
+                // onChange={e => inputChangeHandler(e.target.value)}
                 required
                 autoFocus
+                ref={register}
               />
-            </form> */}
+            </form>
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
-          {/* <input
+          <input
             className="custom-control-input"
             name="recursively"
             id="cbRenameRecursively"
             type="checkbox"
-            checked={isRenameRecursively}
-            onChange={changeIsRenameRecursivelyHandler}
-          /> */}
+            // checked={isRenameRecursively}
+            // onChange={changeIsRenameRecursivelyHandler}
+            ref={register}
+          />
           <label className="custom-control-label" htmlFor="cbRenameRecursively">
             { t('modal_rename.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
@@ -98,14 +106,15 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
-          {/* <input
+          <input
             className="custom-control-input"
             name="create_redirect"
             id="cbRenameRedirect"
             type="checkbox"
-            checked={isRenameRedirect}
-            onChange={changeIsRenameRedirectHandler}
-          /> */}
+            // checked={isRenameRedirect}
+            // onChange={changeIsRenameRedirectHandler}
+            ref={register}
+          />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect') }</p>
@@ -113,14 +122,15 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-primary">
-          {/* <input
+          <input
             className="custom-control-input"
             name="remain_metadata"
             id="cbRenameMetadata"
             type="checkbox"
-            checked={isRenameMetadata}
-            onChange={changeIsRenameMetadataHandler}
-          /> */}
+            // checked={isRenameMetadata}
+            // onChange={changeIsRenameMetadataHandler}
+            ref={register}
+          />
           <label className="custom-control-label" htmlFor="cbRenameMetadata">
             { t('modal_rename.label.Do not update metadata') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
