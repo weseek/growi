@@ -20,6 +20,8 @@ const pageLimitationSInputName = 'pageLimitationS';
 const pageLimitationMInputName = 'pageLimitationM';
 const pageLimitationLInputName = 'pageLimitationL';
 const pageLimitationXLInputName = 'pageLimitationXL';
+const isEnabledStaleNotificationInputName = 'isEnabledStaleNotification';
+const isAllReplyShownInputName = 'isAllReplyShownInputName';
 
 export const CustomizeFunctionSetting:FC = () => {
   const { t } = useTranslation();
@@ -35,9 +37,12 @@ export const CustomizeFunctionSetting:FC = () => {
       [pageLimitationMInputName]: data?.[pageLimitationMInputName],
       [pageLimitationLInputName]: data?.[pageLimitationLInputName],
       [pageLimitationXLInputName]: data?.[pageLimitationXLInputName],
+      [isEnabledStaleNotificationInputName]: data?.[isEnabledStaleNotificationInputName],
+      [isAllReplyShownInputName]: data?.[isAllReplyShownInputName],
     },
   });
 
+  // watch for display dropdown label
   const selectedPageLimitationS = watch(pageLimitationSInputName);
   const selectedPageLimitationM = watch(pageLimitationMInputName);
   const selectedPageLimitationL = watch(pageLimitationLInputName);
@@ -67,6 +72,7 @@ export const CustomizeFunctionSetting:FC = () => {
             {t('admin:customize_setting.function_desc')}
           </CardBody>
         </Card>
+
         <div className="form-group row">
           <div className="offset-md-3 col-md-6 text-left">
             <div className="custom-control custom-checkbox custom-checkbox-success">
@@ -88,6 +94,7 @@ export const CustomizeFunctionSetting:FC = () => {
             </div>
           </div>
         </div>
+
         <div className="form-group row">
           <div className="offset-md-3 col-md-6 text-left">
             <div className="custom-control custom-checkbox custom-checkbox-success">
@@ -237,6 +244,46 @@ export const CustomizeFunctionSetting:FC = () => {
             <p className="form-text text-muted">
               {t('admin:customize_setting.function_options.list_num_desc_xl')}
             </p>
+          </div>
+        </div>
+
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
+              <input
+                name={isEnabledStaleNotificationInputName}
+                className="custom-control-input"
+                type="checkbox"
+                id="isEnabledStaleNotification"
+                ref={register}
+              />
+              <label className="custom-control-label" htmlFor="isEnabledStaleNotification">
+                <strong>{t('admin:customize_setting.function_options.stale_notification')}</strong>
+              </label>
+              <p className="form-text text-muted">
+                {t('admin:customize_setting.function_options.stale_notification_desc')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="custom-control custom-checkbox custom-checkbox-success">
+              <input
+                name={isAllReplyShownInputName}
+                className="custom-control-input"
+                type="checkbox"
+                id="isAllReplyShown"
+                ref={register}
+              />
+              <label className="custom-control-label" htmlFor="isAllReplyShown">
+                <strong>{t('admin:customize_setting.function_options.show_all_reply_comments')}</strong>
+              </label>
+              <p className="form-text text-muted">
+                {t('admin:customize_setting.function_options.show_all_reply_comments_desc')}
+              </p>
+            </div>
           </div>
         </div>
 
