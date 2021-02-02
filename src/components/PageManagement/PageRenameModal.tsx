@@ -34,9 +34,9 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
 
-
+  // TODO enable to react-hook-form by GW 5088
   const onSubmit = (data) => {
-    console.log(data);
+    alert(JSON.stringify(data));
   };
 
   return (
@@ -62,7 +62,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
                 // value={pageNameInput}
                 className="form-control"
                 // onChange={e => inputChangeHandler(e.target.value)}
-                required
+                // required
                 autoFocus
                 ref={register}
               />
@@ -77,31 +77,30 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             type="checkbox"
             // checked={isRenameRecursively}
             // onChange={changeIsRenameRecursivelyHandler}
-            ref={register}
+            // ref={register}
           />
           <label className="custom-control-label" htmlFor="cbRenameRecursively">
             { t('modal_rename.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
+
           {/* {existingPaths.length !== 0 && (
-            <div
-              className="custom-control custom-checkbox custom-checkbox-warning"
-              style={{ display: isRenameRecursively ? '' : 'none' }}
-            >
-              <input
-                className="custom-control-input"
-                name="withoutExistRecursively"
-                id="cbRenamewithoutExistRecursively"
-                type="checkbox"
-                checked={isRenameRecursivelyWithoutExistPath}
-                onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
-              />
-              <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
-                { t('modal_rename.label.Rename without exist path') }
-              </label>
-            </div>
-            )}
-            {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          <div
+            className="custom-control custom-checkbox custom-checkbox-warning"
+          >
+            <input
+              className="custom-control-input"
+              name="withoutExistRecursively"
+              id="cbRenamewithoutExistRecursively"
+              type="checkbox"
+              // ref={register}
+            />
+            <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
+              { t('modal_rename.label.Rename without exist path') }
+            </label>
+          </div>
+          )}
+          {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
             {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />} */}
         </div>
 
@@ -113,7 +112,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             type="checkbox"
             // checked={isRenameRedirect}
             // onChange={changeIsRenameRedirectHandler}
-            ref={register}
+            // ref={register}
           />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
@@ -129,7 +128,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             type="checkbox"
             // checked={isRenameMetadata}
             // onChange={changeIsRenameMetadataHandler}
-            ref={register}
+            // ref={register}
           />
           <label className="custom-control-label" htmlFor="cbRenameMetadata">
             { t('modal_rename.label.Do not update metadata') }
