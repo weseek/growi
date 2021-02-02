@@ -70,7 +70,7 @@ const SidebarNav: FC<Props> = (props: Props) => {
   const { data: isSharedUser } = useIsSharedUser();
   const { data: currentUser } = useCurrentUser();
 
-  const isAdmin = currentUser.admin;
+  const isAdmin = currentUser?.admin;
   const isLoggedIn = currentUser != null;
 
   const { onItemSelected } = props;
