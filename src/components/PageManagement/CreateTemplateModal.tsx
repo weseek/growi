@@ -1,16 +1,37 @@
-import React from 'react';
+import React, { FC } from 'react';
 import PropTypes from 'prop-types';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import { useTranslation } from '~/i18n';
 
-import { withTranslation } from 'react-i18next';
-import { pathUtils } from 'growi-commons';
-import urljoin from 'url-join';
-import { withUnstatedContainers } from './UnstatedUtils';
+// import { withTranslation } from 'react-i18next';
+// import { pathUtils } from 'growi-commons';
+// import urljoin from 'url-join';
+// import { withUnstatedContainers } from './UnstatedUtils';
 
-import PageContainer from '../services/PageContainer';
+// import PageContainer from '../services/PageContainer';
 
-const CreateTemplateModal = (props) => {
+type Props = {
+  isOpen: boolean;
+  onClose:() => void;
+}
+
+// TODO-5054 impl modal
+export const CreateTemplateModal:FC<Props> = (props:Props) => {
+  const { t } = useTranslation();
+
+  return (
+    <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
+      <ModalHeader tag="h4" toggle={props.onClose} className="bg-primary text-light">
+        {t('template.modal_label.Create/Edit Template Page')}
+      </ModalHeader>
+      <ModalBody>
+      </ModalBody>
+    </Modal>
+  );
+};
+
+const DeprecatedCreateTemplateModal = (props) => {
   const { t, pageContainer } = props;
 
   const { path } = pageContainer.state;
@@ -70,15 +91,15 @@ const CreateTemplateModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const CreateTemplateModalWrapper = withUnstatedContainers(CreateTemplateModal, [PageContainer]);
+// const CreateTemplateModalWrapper = withUnstatedContainers(CreateTemplateModal, [PageContainer]);
 
 
-CreateTemplateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+// CreateTemplateModal.propTypes = {
+//   t: PropTypes.func.isRequired, //  i18next
+//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
+//   isOpen: PropTypes.bool.isRequired,
+//   onClose: PropTypes.func.isRequired,
+// };
 
-export default withTranslation()(CreateTemplateModalWrapper);
+// export default withTranslation()(CreateTemplateModalWrapper);
