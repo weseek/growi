@@ -2,6 +2,7 @@
 
 ## v4.2.8-RC
 
+* Fix: Pass app title value through the XSS filter
 * Fix: Fixed not being able to update ses settings
     * Introduced by v4.2.0
 * Fix: Fixed the display of updtedAt and createdAt being reversed
