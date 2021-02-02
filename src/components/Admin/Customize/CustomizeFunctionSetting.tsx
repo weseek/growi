@@ -1,19 +1,21 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+// import { withUnstatedContainers } from '../../UnstatedUtils';
+// import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
+// import AppContainer from '../../../services/AppContainer';
 
-import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import CustomizeFunctionOption from './CustomizeFunctionOption';
-import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
+// import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+// import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+// import CustomizeFunctionOption from './CustomizeFunctionOption';
+// import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
-class CustomizeFunctionSetting extends React.Component {
+export const CustomizeFunctionSetting = () => {
+  return <p>hoge</p>;
+};
+
+class DeprecateCustomizeFunctionSetting extends React.Component {
 
   constructor(props) {
     super(props);
@@ -148,12 +150,12 @@ class CustomizeFunctionSetting extends React.Component {
 
 }
 
-const CustomizeFunctionSettingWrapper = withUnstatedContainers(CustomizeFunctionSetting, [AppContainer, AdminCustomizeContainer]);
+// const CustomizeFunctionSettingWrapper = withUnstatedContainers(CustomizeFunctionSetting, [AppContainer, AdminCustomizeContainer]);
 
-CustomizeFunctionSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
-};
+// CustomizeFunctionSetting.propTypes = {
+//   t: PropTypes.func.isRequired, // i18next
+//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+//   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
+// };
 
-export default withTranslation()(CustomizeFunctionSettingWrapper);
+// export default withTranslation()(CustomizeFunctionSettingWrapper);
