@@ -1,7 +1,5 @@
-import { useState, useEffect, FC } from 'react';
-import {
-  useForm, SubmitHandler, Validate, FormProvider,
-} from 'react-hook-form';
+import { FC } from 'react';
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 
 import { useTranslation } from '~/i18n';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
