@@ -1,8 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
-// import { withTranslation } from 'react-i18next';
 // import * as toastr from 'toastr';
-
 
 // import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 
@@ -256,7 +253,6 @@ const ExportArchiveDataPage = (): JSX.Element => {
 };
 
 // ExportArchiveDataPage.propTypes = {
-//   t: PropTypes.func.isRequired, // i18next
 //   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 //   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 // };
