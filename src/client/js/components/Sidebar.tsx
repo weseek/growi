@@ -25,10 +25,6 @@ type GlobalNavigationProps = {
 
 const GlobalNavigation = withUnstatedContainers(withNavigationUIController((props: GlobalNavigationProps): JSX.Element => {
 
-  if (!process.browser) {
-    return <SidebarNav />;
-  }
-
   const itemSelectedHandler = (contentsId) => {
     const { navigationContainer, navigationUIController } = props;
     const { sidebarContentsId } = navigationContainer.state;

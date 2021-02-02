@@ -230,7 +230,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeTheme'
    */
-  router.put('/theme', loginRequiredStrictly, adminRequired, csrf, validator.theme, apiV3FormValidator, async(req, res) => {
+  router.put('/theme', loginRequiredStrictly, adminRequired, validator.theme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:theme': req.body.themeType,
     };
