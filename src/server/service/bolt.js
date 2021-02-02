@@ -1,3 +1,4 @@
+const logger = require('@alias/logger')('growi:service:BoltService');
 
 class BoltReciever {
 
@@ -48,6 +49,7 @@ class BoltService {
     const signingSecret = process.env.SLACK_SIGNING_SECRET;
 
     if (token != null || signingSecret != null) {
+      logger.debug('TwitterStrategy: setup is done');
       this.bolt = new App({
         token,
         signingSecret,
@@ -61,8 +63,8 @@ class BoltService {
     // Example of listening for event
     // See. https://github.com/slackapi/bolt-js#listening-for-events
     // or https://slack.dev/bolt-js/concepts#basic
-    this.bolt.command('/hoge', async({ command, ack, say }) => { // demo
-      await say('fuga');
+    this.bolt.command('/growi-bot', async({ command, ack, say }) => { // demo
+      await say('Hello');
     });
   }
 
