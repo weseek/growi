@@ -137,6 +137,14 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
         {/* <div> {subordinatedError} </div> */}
       </ModalBody>
       <ModalFooter>
+        {/* <ApiErrorMessageList errs={errs} targetPath={pageNameInput} /> */}
+        <button
+          type="button"
+          className="btn btn-primary"
+          // onClick={rename}
+          // disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+        >Rename
+        </button>
       </ModalFooter>
     </Modal>
   );
