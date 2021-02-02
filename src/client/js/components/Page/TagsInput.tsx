@@ -1,4 +1,4 @@
-import React, { FC, useState/* , useEffect */ } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { apiGet } from '~/client/js/util/apiv1-client';
@@ -8,7 +8,6 @@ import { Tag } from '~/interfaces/page';
 type Props = {
   tags: Tag[],
   onTagsUpdated: <T extends Tag[]>(T) => void,
-  typeahead: string,
   autoFocus: boolean,
 }
 
@@ -19,7 +18,7 @@ const TagsInput : FC<Props> = (props: Props) => {
   const [defaultPageTags, setDefaultPageTags] = useState(props.tags);
 
   // useEffect(() => {
-  //   // this.typeahead.getInstance().focus();
+  //   this.typeahead.getInstance().focus();
   // });
 
   function handleChange(selected) {
@@ -36,24 +35,24 @@ const TagsInput : FC<Props> = (props: Props) => {
     setIsLoading(false);
   }
 
-  function handleSelect(e) {
-    if (e.keyCode === 32) { // '32' means ASCII code of 'space'
-      e.preventDefault();
-      const instance = props.typeahead.getInstance();
-      const { initialItem } = instance.state;
+  // function handleSelect(e) {
+  //   if (e.keyCode === 32) { // '32' means ASCII code of 'space'
+  //     e.preventDefault();
+  //     const instance = this.typeahead.getInstance();
+  //     const { initialItem } = instance.state;
 
-      if (initialItem) {
-        instance._handleMenuItemSelect(initialItem, e);
-      }
-    }
-  }
+  //     if (initialItem) {
+  //       instance._handleMenuItemSelect(initialItem, e);
+  //     }
+  //   }
+  // }
 
 
   return (
     <div className="tag-typeahead">
       <AsyncTypeahead
         id="tag-typeahead-asynctypeahead"
-        // ref={(typeahead) => { props.typeahead = typeahead }}
+        // ref={(typeahead) => { this.typeahead = typeahead }}
         caseSensitive={false}
         defaultSelected={defaultPageTags}
         isLoading={isLoading}
@@ -62,7 +61,7 @@ const TagsInput : FC<Props> = (props: Props) => {
         newSelectionPrefix=""
         onChange={handleChange}
         onSearch={handleSearch}
-        onKeyDown={handleSelect}
+        // onKeyDown={handleSelect}
         options={resultTags} // Search result (Some tag names)
         placeholder="tag name"
         selectHintOnEnter
