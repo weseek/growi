@@ -43,12 +43,21 @@ class BoltService {
   constructor(crowi) {
     this.crowi = crowi;
     this.receiver = new BoltReciever();
-    this.bolt = new App({
-      token: process.env.SLACK_BOT_TOKEN,
-      signingSecret: process.env.SLACK_SIGNING_SECRET,
-      receiver: this.receiver,
-    });
 
+    const token = process.env.SLACK_BOT_TOKEN;
+    const signingSecret = process.env.SLACK_SIGNING_SECRET;
+
+    if (token != null || signingSecret != null) {
+      this.bolt = new App({
+        token,
+        signingSecret,
+        receiver: this.receiver,
+      });
+      this.init();
+    }
+  }
+
+  init() {
     // Example of listening for event
     // See. https://github.com/slackapi/bolt-js#listening-for-events
     // or https://slack.dev/bolt-js/concepts#basic
