@@ -34,7 +34,7 @@
     <div class="col-md-12">
       <div class="login-header mx-auto">
         <div class="logo mb-3">{% include 'widget/logo.html' %}</div>
-        <h1>{{ appService.getAppTitle() }}</h1>
+        <h1>{{ appService.getAppTitle() | preventXss }}</h1>
 
           <div class="login-form-errors px-3">
             {% if isLdapSetupFailed() %}
