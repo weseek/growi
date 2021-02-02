@@ -35,6 +35,93 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>
+        <div className="form-group">
+          <label>{ t('modal_rename.label.Current page name') }</label><br />
+          {/* <code>{ path }</code> */}
+        </div>
+        <div className="form-group">
+          <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
+          <div className="input-group">
+            <div className="input-group-prepend">
+              {/* <span className="input-group-text">{crowi.url}</span> */}
+            </div>
+            {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}>
+              <input
+                type="text"
+                value={pageNameInput}
+                className="form-control"
+                onChange={e => inputChangeHandler(e.target.value)}
+                required
+                autoFocus
+              />
+            </form> */}
+          </div>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          {/* <input
+            className="custom-control-input"
+            name="recursively"
+            id="cbRenameRecursively"
+            type="checkbox"
+            checked={isRenameRecursively}
+            onChange={changeIsRenameRecursivelyHandler}
+          /> */}
+          <label className="custom-control-label" htmlFor="cbRenameRecursively">
+            { t('modal_rename.label.Recursively') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
+          </label>
+          {/* {existingPaths.length !== 0 && (
+            <div
+              className="custom-control custom-checkbox custom-checkbox-warning"
+              style={{ display: isRenameRecursively ? '' : 'none' }}
+            >
+              <input
+                className="custom-control-input"
+                name="withoutExistRecursively"
+                id="cbRenamewithoutExistRecursively"
+                type="checkbox"
+                checked={isRenameRecursivelyWithoutExistPath}
+                onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
+              />
+              <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
+                { t('modal_rename.label.Rename without exist path') }
+              </label>
+            </div>
+            )}
+            {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+            {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />} */}
+        </div>
+
+        <div className="custom-control custom-checkbox custom-checkbox-success">
+          {/* <input
+            className="custom-control-input"
+            name="create_redirect"
+            id="cbRenameRedirect"
+            type="checkbox"
+            checked={isRenameRedirect}
+            onChange={changeIsRenameRedirectHandler}
+          /> */}
+          <label className="custom-control-label" htmlFor="cbRenameRedirect">
+            { t('modal_rename.label.Redirect') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect') }</p>
+          </label>
+        </div>
+
+        <div className="custom-control custom-checkbox custom-checkbox-primary">
+          {/* <input
+            className="custom-control-input"
+            name="remain_metadata"
+            id="cbRenameMetadata"
+            type="checkbox"
+            checked={isRenameMetadata}
+            onChange={changeIsRenameMetadataHandler}
+          /> */}
+          <label className="custom-control-label" htmlFor="cbRenameMetadata">
+            { t('modal_rename.label.Do not update metadata') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
+          </label>
+        </div>
+        {/* <div> {subordinatedError} </div> */}
       </ModalBody>
       <ModalFooter>
       </ModalFooter>
