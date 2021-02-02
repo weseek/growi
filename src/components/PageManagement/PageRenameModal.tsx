@@ -33,7 +33,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
 
-  // TODO enable to react-hook-form by GW 5088
+  // TODO enable react-hook-form by GW 5088
   const onSubmit = (data) => {
     alert(JSON.stringify(data));
   };
