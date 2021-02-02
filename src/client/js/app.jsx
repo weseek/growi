@@ -18,6 +18,7 @@ import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLaz
 import PageManagement from './components/Page/PageManagement';
 import ShareLinkAlert from './components/Page/ShareLinkAlert';
 import DuplicatedAlert from './components/Page/DuplicatedAlert';
+import RenamedAlert from './components/Page/RenamedAlert';
 import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
 import NotFoundPage from './components/NotFoundPage';
@@ -102,6 +103,7 @@ Object.assign(componentMappings, {
 
   'share-link-alert': <ShareLinkAlert />,
   'duplicated-alert': <DuplicatedAlert />,
+  'renamed-alert': <RenamedAlert />,
 });
 
 // additional definitions if data exists

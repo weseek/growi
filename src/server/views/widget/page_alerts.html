@@ -36,7 +36,7 @@
           <strong>{{ t('Redirected') }}:</strong><span content="{{ t('page_page.notice.redirected', fromPath | preventXss) }}">
         {% endif %}
         {% if req.query.renamedFrom %}
-          <strong>{{ t('Moved') }}:</strong><span content="{{ t('page_page.notice.moved', fromPath | preventXss)" }} >
+        <div id="renamed-alert"></div>
         {% endif %}
       </span>
       {% set hasRedirectLink = redirectFrom or req.query.redirectFrom or req.query.withRedirect %}
