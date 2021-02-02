@@ -12,15 +12,14 @@ type Props = {
    */
   selectedNavOpt: string
   children?: ReactNode
-  growiVersion: string
 }
 
 const AdminLayout = ({
-  children, title, selectedNavOpt, growiVersion,
+  children, title, selectedNavOpt,
 }: Props): JSX.Element => {
 
   return (
-    <BasicLayout title={title} growiVersion={growiVersion}>
+    <BasicLayout title={title}>
       <header className="py-0">
         <h1 className="title">{title}</h1>
       </header>
