@@ -11,6 +11,7 @@ import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils
 
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
+import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';
 
 import {
   useCurrentUser,
@@ -56,8 +57,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <DataImportPageContents />,
     },
     export: {
-      title: '',
-      component: <></>,
+      title: t('Export Archive Data'),
+      component: <ExportArchiveDataPage />,
     },
     notification: {
       title: '',
