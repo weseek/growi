@@ -4,6 +4,7 @@
 
 * Fix: Preview scrollbar doesn't sync to editor
     * Introduced by v4.2.6
+* Improvement: Add contributors
 * Fix: Pass app title value through the XSS filter
 * Fix: Fixed not being able to update ses settings
     * Introduced by v4.2.0
