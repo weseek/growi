@@ -1,16 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import { withLoadingSppiner } from '../SuspenseUtils';
-
 import UserDate from '../User/UserDate';
 import Username from '../User/Username';
 import UserPicture from '../User/UserPicture';
 
-import RevisionCompareContainer from '../../services/RevisionCompareContainer';
-
-class Revision extends React.Component {
+export default class Revision extends React.Component {
 
   constructor(props) {
     super(props);
@@ -53,7 +48,7 @@ class Revision extends React.Component {
   }
 
   renderFull(revision) {
-    const { t, revisionCompareContainer } = this.props;
+    const { t } = this.props;
 
     const author = revision.author;
 
@@ -63,7 +58,7 @@ class Revision extends React.Component {
     }
 
     const iconClass = this.props.revisionDiffOpened ? 'fa fa-caret-down caret caret-opened' : 'fa fa-caret-down caret';
-    const latestRevision = revisionCompareContainer.state.latestRevision;
+
     return (
       <div className="revision-history-main d-flex mt-3">
         <div className="mt-2">
@@ -114,11 +109,8 @@ class Revision extends React.Component {
 
 }
 
-const RevisionWrapper = withUnstatedContainers(withLoadingSppiner(Revision), [RevisionCompareContainer]);
-
 Revision.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
@@ -126,5 +118,3 @@ Revision.propTypes = {
   isCompactNodiffRevisions: PropTypes.bool.isRequired,
   onDiffOpenClicked: PropTypes.func.isRequired,
 };
-
-export default RevisionWrapper;
