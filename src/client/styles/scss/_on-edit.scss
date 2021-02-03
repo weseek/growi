@@ -235,10 +235,13 @@ body.on-edit {
     }
 
     .page-editor-preview-body {
-      max-width: 980px;
       padding: 18px 15px 0;
-      margin: 0 auto;
       overflow-y: scroll;
+    }
+
+    .wiki {
+      max-width: 980px;
+      margin: 0 auto;
     }
 
     .grw-editor-configuration-dropdown {
