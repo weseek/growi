@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import PropTypes from 'prop-types';
 
 import { useTranslation } from '~/i18n';
 
@@ -9,18 +8,12 @@ import { tags, attrs } from '~/service/xss/recommended-whitelist';
 const WhiteListInput = (props) => {
   const { t } = useTranslation();
   const xssFormMethods = useFormContext();
-  // const tagWhiteList = React.createRef();
-  // const attrWhiteList = React.createRef();
 
   const onClickRecommendTagButton = () => {
-    // tagWhiteList.current.value = tags;
-    // props.onTagWhiteListChange(tags);
     xssFormMethods.setValue('tagWhiteList', tags);
   };
 
   const onClickRecommendAttrButton = () => {
-    // attrWhiteList.current.value = attrs;
-    // props.onAttrWhiteListChange(attrs);
     xssFormMethods.setValue('attrWhiteList', attrs);
   };
 
@@ -60,19 +53,6 @@ const WhiteListInput = (props) => {
     </>
   );
 
-};
-
-WhiteListInput.propTypes = {
-  // tagWhiteList: PropTypes.oneOfType([
-  //   PropTypes.string,
-  //   PropTypes.array,
-  // ]),
-  // attrWhiteList: PropTypes.oneOfType([
-  //   PropTypes.string,
-  //   PropTypes.array,
-  // ]),
-  // onTagWhiteListChange: PropTypes.func,
-  // onAttrWhiteListChange: PropTypes.func,
 };
 
 export default WhiteListInput;

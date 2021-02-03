@@ -23,15 +23,19 @@ const XssForm = (props) => {
       isEnabledXss: data?.isEnabledXss,
       // Cast to a string value because radio not work with int value with react-hook-form
       xssOption: String(data?.xssOption),
-      tagWhiteList: data?.tagWhiteList,
-      attrWhiteList: data?.attrWhiteList,
+      tagWhiteList: data?.tagWhiteList || '',
+      attrWhiteList: data?.attrWhiteList || '',
     },
   });
-  console.log(xssFormMethods.getValues());
-  // const formattedTagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
-  // const formattedAttrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
+
+  const watchIsEnabledXss = xssFormMethods.watch('isEnabledXss');
 
   const submitHandler = async(formValues) => {
+    if (watchIsEnabledXss) {
+      const { tagWhiteList, attrWhiteList } = formValues;
+      formValues.tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
+      formValues.attrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
+    }
     try {
       await apiv3Put('/markdown-setting/xss', formValues);
       mutate();
@@ -55,24 +59,14 @@ const XssForm = (props) => {
   }, [data?.xssOption]);
 
   useEffect(() => {
-    xssFormMethods.setValue('tagWhiteList', data?.tagWhiteList);
+    xssFormMethods.setValue('tagWhiteList', data?.tagWhiteList || '');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.tagWhiteList]);
 
   useEffect(() => {
-    xssFormMethods.setValue('tagWhiteList', data?.attrWhiteList);
+    xssFormMethods.setValue('tagWhiteList', data?.attrWhiteList || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.attrWhiteList]);
-
-  // function onTagWhiteListChange(tags) {
-  //   setTagWhiteList(tags);
-  // }
-
-  // function onAttrWhiteListChange(attrs) {
-  //   setAttrWhiteList(attrs);
-  // }
-
-  const watchIsEnabledXss = xssFormMethods.watch('isEnabledXss');
 
   function xssOptions() {
     return (
@@ -151,13 +145,7 @@ const XssForm = (props) => {
               />
               <label className="custom-control-label w-100" htmlFor="xssOption3">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist')}</p>
-                <WhiteListInput
-                  customizable
-                  // tagWhiteList={tagWhiteList}
-                  // attrWhiteList={attrWhiteList}
-                  // onTagWhiteListChange={onTagWhiteListChange}
-                  // onAttrWhiteListChange={onAttrWhiteListChange}
-                />
+                <WhiteListInput customizable />
               </label>
             </div>
           </div>
