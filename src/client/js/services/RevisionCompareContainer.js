@@ -47,8 +47,9 @@ export default class RevisionCompareContainer extends Container {
     const [fromRevisionId, toRevisionId] = this.revisionIDsToCompareAsParam;
     const fromRevision = fromRevisionId ? await this.fetchRevision(fromRevisionId) : latestRevision;
     const toRevision = toRevisionId ? await this.fetchRevision(toRevisionId) : latestRevision;
+    const compareWithLatest = toRevisionId ? false : this.state.compareWithLatest;
 
-    this.setState({ fromRevision, toRevision, latestRevision });
+    this.setState({ fromRevision, toRevision, latestRevision, compareWithLatest });
   }
 
   /**
