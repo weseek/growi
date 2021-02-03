@@ -126,7 +126,7 @@ class PageRevisionList extends React.Component {
         </div>
         <hr />
         <div className={classNames.join(' ')}>
-          <div class="d-flex">
+          <div className="d-flex">
             <div className="mr-auto">バージョン</div>
             <div>ソース<span className="ml-2 mr-2">/</span>ターゲット</div>
           </div>

@@ -8,7 +8,7 @@ import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
 const RevisionCompareTargetSelector = (props) => {
 
-  const { t, revision, hasDiff, revisionCompareContainer } = props;
+  const { revision, hasDiff, revisionCompareContainer } = props;
   const { fromRevision, toRevision } = revisionCompareContainer.state;
 
   if (!hasDiff) {
@@ -50,7 +50,6 @@ const RevisionCompareTargetSelector = (props) => {
 const RevisionCompareTargetSelectorWrapper = withUnstatedContainers(withLoadingSppiner(RevisionCompareTargetSelector), [RevisionCompareContainer]);
 
 RevisionCompareTargetSelector.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 
   revision: PropTypes.object,
