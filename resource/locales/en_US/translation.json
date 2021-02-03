@@ -323,13 +323,12 @@
     "user_not_admin": "Only admin user can delete completely"
   },
   "page_history": {
-    "comparing_versions": "Comparing versions",
-    "comparing_with_latest": "Comparing with latest",
-    "select_as_a_comparing_source": "Comparing source",
-    "select_as_a_comparing_target": "Comparing target",
-    "comparing_source": "Comparing source",
-    "comparing_target": "Comparing target",
-    "latest_revision": "Latest revision"
+    "revision_list": "Revision list",
+    "revision": "version",
+    "comparing_source": "Source",
+    "comparing_target": "Target",
+    "comparing_revisions": "Comparing versions",
+    "comparing_with_latest": "Always compare with the latest version"
   },
   "modal_rename": {
     "label": {

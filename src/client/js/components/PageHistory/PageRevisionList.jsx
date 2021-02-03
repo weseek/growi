@@ -127,8 +127,8 @@ class PageRevisionList extends React.Component {
         <hr />
         <div className={classNames.join(' ')}>
           <div className="d-flex">
-            <div className="mr-auto">バージョン</div>
-            <div>ソース<span className="ml-2 mr-2">/</span>ターゲット</div>
+            <div className="mr-auto">{ t('page_history.revision') }</div>
+            <div>{ t('page_history.comparing_source') }<span className="ml-2 mr-2">/</span>{ t('page_history.comparing_target') }</div>
           </div>
           <div className="revision-history-list-body">
             {revisionList}

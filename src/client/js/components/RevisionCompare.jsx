@@ -56,7 +56,7 @@ const RevisionCompare = (props) => {
   return (
     <div className="revision-compare">
       <div className="d-flex">
-        <h3 className="align-self-center mb-0">{t('page_history.comparing_versions')}</h3>
+        <h3 className="align-self-center mb-0">{ t('page_history.comparing_revisions') }</h3>
         <div className="align-self-center ml-3">
           <div className="custom-control custom-switch">
             <input
@@ -67,7 +67,7 @@ const RevisionCompare = (props) => {
               onChange={() => revisionCompareContainer.toggleCompareWithLatest()}
             />
             <label className="custom-control-label" htmlFor="comparingWithLatest">
-              {t('page_history.comparing_with_latest')}
+              { t('page_history.comparing_with_latest') }
             </label>
           </div>
         </div>

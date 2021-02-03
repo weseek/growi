@@ -326,13 +326,11 @@
   },
   "page_history": {
     "revision_list": "更新履歴",
-    "comparing_versions": "比較",
-    "comparing_with_latest": "常に最新バージョンと比較する",
-    "select_as_a_comparing_source": "このバージョンを比較ソースにする",
-    "select_as_a_comparing_target": "このバージョンを比較ターゲットにする",
-    "comparing_source": "比較ソース",
-    "comparing_target": "比較ターゲット",
-    "latest_revision": "最新バージョン"
+    "revision": "バージョン",
+    "comparing_source": "ソース",
+    "comparing_target": "ターゲット",
+    "comparing_revisions": "比較",
+    "comparing_with_latest": "常に最新バージョンと比較する"
   },
   "modal_rename": {
     "label": {
