@@ -2,17 +2,16 @@
 
 ## v4.2.8-RC
 
+* Improvement: Improved page control performance with stream and bulk
+    * rename, duplicate, delete, deleteCompletely, revrtDeleted
 * Fix: Preview scrollbar doesn't sync to editor
     * Introduced by v4.2.6
-* Improvement: Add contributors
-* Fix: Pass app title value through the XSS filter
+* Fix: Failed to save temporaryUrlCached with using gcs
+    * Introduced by v4.2.3
 * Fix: Fixed not being able to update ses settings
     * Introduced by v4.2.0
 * Fix: Fixed the display of updtedAt and createdAt being reversed
-* Improvement: Improved page control performance with stream and bulk
-    * rename, duplicate, delete, deleteCompletely, revrtDeleted
-* Fix: Failed to save temporaryUrlCached with using gcs
-    * Introduced by v4.2.3
+* Fix: Pass app title value through the XSS filter
 
 ## v4.2.7
 
