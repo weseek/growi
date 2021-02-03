@@ -38,7 +38,7 @@ import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSw
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
 import PageHistoryContainer from './services/PageHistoryContainer';
-import RevisionCompareContainer from './services/RevisionCompareContainer';
+import RevisionComparerContainer from './services/RevisionComparerContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
@@ -58,14 +58,14 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
 const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
-const revisionCompareContainer = new RevisionCompareContainer(appContainer, pageContainer);
+const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const pageAccessoriesContainer = new PageAccessoriesContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionCompareContainer,
+  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
   commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
 ];
 
@@ -123,7 +123,7 @@ if (pageContainer.state.pageId != null) {
   });
 
   // show the Page accessory modal when query of "compare" is requested
-  if (revisionCompareContainer.revisionIDsToCompareAsParam.length > 0) {
+  if (revisionComparerContainer.revisionIDsToCompareAsParam.length > 0) {
     pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
   }
 }

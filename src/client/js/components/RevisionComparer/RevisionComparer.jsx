@@ -8,7 +8,7 @@ import {
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import RevisionCompareContainer from '../../services/RevisionCompareContainer';
+import RevisionComparerContainer from '../../services/RevisionComparerContainer';
 
 import RevisionDiff from '../PageHistory/RevisionDiff';
 
@@ -34,7 +34,7 @@ const RevisionComparer = (props) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const { t, revisionCompareContainer } = props;
+  const { t, revisionComparerContainer } = props;
 
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
@@ -42,14 +42,14 @@ const RevisionComparer = (props) => {
 
   const pagePathUrl = () => {
     const { origin } = window.location;
-    const { path } = revisionCompareContainer.pageContainer.state;
-    const { sourceRevision, targetRevision } = revisionCompareContainer.state;
+    const { path } = revisionComparerContainer.pageContainer.state;
+    const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
     const urlParams = (sourceRevision && targetRevision ? `?compare=${sourceRevision._id}...${targetRevision._id}` : '');
     return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
   };
 
-  const { sourceRevision, targetRevision } = revisionCompareContainer.state;
+  const { sourceRevision, targetRevision } = revisionComparerContainer.state;
   const showDiff = (sourceRevision && targetRevision);
 
   return (
@@ -62,8 +62,8 @@ const RevisionComparer = (props) => {
               type="checkbox"
               className="custom-control-input"
               id="comparingWithLatest"
-              checked={revisionCompareContainer.state.compareWithLatest}
-              onChange={() => revisionCompareContainer.toggleCompareWithLatest()}
+              checked={revisionComparerContainer.state.compareWithLatest}
+              onChange={() => revisionComparerContainer.toggleCompareWithLatest()}
             />
             <label className="custom-control-label" htmlFor="comparingWithLatest">
               { t('page_history.comparing_with_latest') }
@@ -111,11 +111,11 @@ const RevisionComparer = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const RevisionComparerWrapper = withUnstatedContainers(RevisionComparer, [RevisionCompareContainer]);
+const RevisionComparerWrapper = withUnstatedContainers(RevisionComparer, [RevisionComparerContainer]);
 
 RevisionComparer.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
+  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 
   revisions: PropTypes.array,
 };

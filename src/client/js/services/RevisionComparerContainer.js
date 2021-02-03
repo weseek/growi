@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:PageHistoryContainer');
  * Service container for personal settings page (RevisionCompare.jsx)
  * @extends {Container} unstated Container
  */
-export default class RevisionCompareContainer extends Container {
+export default class RevisionComparerContainer extends Container {
 
   constructor(appContainer, pageContainer) {
     super();
@@ -35,7 +35,7 @@ export default class RevisionCompareContainer extends Container {
    * Workaround for the mangling in production build to break constructor.name
    */
   static getClassName() {
-    return 'RevisionCompareContainer';
+    return 'RevisionComparerContainer';
   }
 
   /**

@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { withLoadingSppiner } from '../SuspenseUtils';
 
-import RevisionCompareContainer from '../../services/RevisionCompareContainer';
+import RevisionComparerContainer from '../../services/RevisionComparerContainer';
 
 const RevisionSelector = (props) => {
 
-  const { revision, hasDiff, revisionCompareContainer } = props;
-  const { sourceRevision, targetRevision } = revisionCompareContainer.state;
+  const { revision, hasDiff, revisionComparerContainer } = props;
+  const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
   if (!hasDiff) {
     return <></>;
@@ -25,7 +25,7 @@ const RevisionSelector = (props) => {
           name="compareSource"
           value={revision._id}
           checked={revision._id === sourceRevision?._id}
-          onChange={() => revisionCompareContainer.setState({sourceRevision: revision})}
+          onChange={() => revisionComparerContainer.setState({sourceRevision: revision})}
         />
         <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
       </div>
@@ -37,8 +37,8 @@ const RevisionSelector = (props) => {
           name="compareTarget"
           value={revision._id}
           checked={revision._id === targetRevision?._id}
-          onChange={() => revisionCompareContainer.setState({targetRevision: revision})}
-          disabled={revisionCompareContainer.state.compareWithLatest}
+          onChange={() => revisionComparerContainer.setState({targetRevision: revision})}
+          disabled={revisionComparerContainer.state.compareWithLatest}
         />
         <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
       </div>
@@ -47,10 +47,10 @@ const RevisionSelector = (props) => {
 
 }
 
-const RevisionSelectorWrapper = withUnstatedContainers(withLoadingSppiner(RevisionSelector), [RevisionCompareContainer]);
+const RevisionSelectorWrapper = withUnstatedContainers(withLoadingSppiner(RevisionSelector), [RevisionComparerContainer]);
 
 RevisionSelector.propTypes = {
-  revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
+  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 
   revision: PropTypes.object,
   hasDiff: PropTypes.bool.isRequired,
