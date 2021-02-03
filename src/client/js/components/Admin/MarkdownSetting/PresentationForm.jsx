@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { useTranslation } from '~/i18n';
-
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import { useMarkdownSettingsSWR } from '~/stores/admin';
 
 import { apiv3Put } from '../../../util/apiv3-client';
 
@@ -13,22 +13,40 @@ const logger = loggerFactory('growi:markdown:presentation');
 
 const PresentationForm = (props) => {
   const { t } = useTranslation();
-  const [pageBreakSeparator, setPageBreakSeparator] = useState(props.pageBreakSeparator);
-  const [pageBreakCustomSeparator, setPageBreakCustomSeparator] = useState(props.pageBreakCustomSeparator);
+  const { data, mutate } = useMarkdownSettingsSWR();
+  const presentationMethods = useForm({
+    defaultValues: {
+      // Cast to a string value because radio not work with int value with react-hook-form
+      pageBreakSeparator: String(data?.pageBreakSeparator),
+      pageBreakCustomSeparator: data?.pageBreakCustomSeparator,
+    },
+  });
 
-  async function onClickSubmit() {
+  const submitHandler = async(formValues) => {
     try {
-      await apiv3Put('/markdown-setting/presentation', { pageBreakSeparator, pageBreakCustomSeparator });
+      await apiv3Put('/markdown-setting/presentation', formValues);
+      mutate();
       toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.presentation_header') }));
     }
     catch (err) {
       toastError(err);
       logger.error(err);
     }
-  }
+  };
+
+  useEffect(() => {
+    // Cast to a string value because radio not work with int value with react-hook-form
+    presentationMethods.setValue('pageBreakSeparator', String(data?.pageBreakSeparator));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.pageBreakSeparator]);
+
+  useEffect(() => {
+    presentationMethods.setValue('pageBreakCustomSeparator', data?.pageBreakCustomSeparator);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.pageBreakCustomSeparator]);
 
   return (
-    <fieldset className="form-group col-12 my-2">
+    <form className="form-group col-12 my-2" onSubmit={presentationMethods.handleSubmit(submitHandler)}>
 
       <label className="col-8 offset-4 col-form-label font-weight-bold text-left mt-3">
         {t('admin:markdown_setting.presentation_options.page_break_setting')}
@@ -42,9 +60,9 @@ const PresentationForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="pageBreakOption1"
-                name="presentation"
-                checked={pageBreakSeparator === 1}
-                onChange={() => { setPageBreakSeparator(1) }}
+                name="pageBreakSeparator"
+                value="1"
+                ref={presentationMethods.register}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption1">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
@@ -67,9 +85,9 @@ const PresentationForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="pageBreakOption2"
-                name="presentation"
-                checked={pageBreakSeparator === 2}
-                onChange={() => { setPageBreakSeparator(2) }}
+                name="pageBreakSeparator"
+                value="2"
+                ref={presentationMethods.register}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption2">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_two_separator') }</p>
@@ -91,9 +109,9 @@ const PresentationForm = (props) => {
                 type="radio"
                 id="pageBreakOption3"
                 className="custom-control-input"
-                name="presentation"
-                checked={pageBreakSeparator === 3}
-                onChange={() => { setPageBreakSeparator(3) }}
+                name="pageBreakSeparator"
+                value="3"
+                ref={presentationMethods.register}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption3">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.custom_separator') }</p>
@@ -101,8 +119,8 @@ const PresentationForm = (props) => {
                   { t('admin:markdown_setting.presentation_options.custom_separator_desc') }
                   <input
                     className="form-control"
-                    defaultValue={pageBreakCustomSeparator}
-                    onChange={(e) => { setPageBreakCustomSeparator(e.target.value) }}
+                    name="pageBreakCustomSeparator"
+                    ref={presentationMethods.register}
                   />
                 </div>
               </label>
@@ -110,9 +128,10 @@ const PresentationForm = (props) => {
           </div>
         </div>
       </div>
-
-      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={false} />
-    </fieldset>
+      <div className="d-flex justify-content-center">
+        <input type="submit" value={t('Update')} className="btn btn-primary" />
+      </div>
+    </form>
   );
 
 };
