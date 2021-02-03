@@ -43,15 +43,15 @@ const RevisionComparer = (props) => {
   const pagePathUrl = () => {
     const { origin } = window.location;
     const { path } = revisionCompareContainer.pageContainer.state;
-    const { fromRevision, toRevision } = revisionCompareContainer.state;
+    const { sourceRevision, targetRevision } = revisionCompareContainer.state;
 
-    const urlParams = (fromRevision && toRevision ? `?compare=${fromRevision._id}...${toRevision._id}` : '');
+    const urlParams = (sourceRevision && targetRevision ? `?compare=${sourceRevision._id}...${targetRevision._id}` : '');
     return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
   };
 
-  const fromRev = revisionCompareContainer.state.fromRevision;
-  const toRev = revisionCompareContainer.state.toRevision;
-  const showDiff = (fromRev && toRev);
+  const sourceRevision = revisionCompareContainer.state.sourceRevision;
+  const targetRevision = revisionCompareContainer.state.targetRevision;
+  const showDiff = (sourceRevision && targetRevision);
 
   return (
     <div className="revision-compare">
@@ -100,8 +100,8 @@ const RevisionComparer = (props) => {
         { showDiff && (
           <RevisionDiff
             revisionDiffOpened
-            previousRevision={fromRev}
-            currentRevision={toRev}
+            previousRevision={sourceRevision}
+            currentRevision={targetRevision}
           />
         )}
       </div>

@@ -21,8 +21,8 @@ export default class RevisionCompareContainer extends Container {
     this.state = {
       errMessage: null,
 
-      fromRevision: null,
-      toRevision: null,
+      sourceRevision: null,
+      targetRevision: null,
       latestRevision: null,
       compareWithLatest: true,
     };
@@ -44,12 +44,12 @@ export default class RevisionCompareContainer extends Container {
   async initRevisions() {
     const latestRevision = await this.fetchLatestRevision();
 
-    const [fromRevisionId, toRevisionId] = this.revisionIDsToCompareAsParam;
-    const fromRevision = fromRevisionId ? await this.fetchRevision(fromRevisionId) : latestRevision;
-    const toRevision = toRevisionId ? await this.fetchRevision(toRevisionId) : latestRevision;
-    const compareWithLatest = toRevisionId ? false : this.state.compareWithLatest;
+    const [sourceRevisionId, targetRevisionId] = this.revisionIDsToCompareAsParam;
+    const sourceRevision = sourceRevisionId ? await this.fetchRevision(sourceRevisionId) : latestRevision;
+    const targetRevision = targetRevisionId ? await this.fetchRevision(targetRevisionId) : latestRevision;
+    const compareWithLatest = targetRevisionId ? false : this.state.compareWithLatest;
 
-    this.setState({ fromRevision, toRevision, latestRevision, compareWithLatest });
+    this.setState({ sourceRevision, targetRevision, latestRevision, compareWithLatest });
   }
 
   /**
@@ -109,7 +109,7 @@ export default class RevisionCompareContainer extends Container {
   }
 
   /**
-   * toggle state "compareWithLatest", and if true, set "fromRevision" to the latest revision
+   * toggle state "compareWithLatest", and if true, set "targetRevision" to the latest revision
    */
   toggleCompareWithLatest() {
     const { compareWithLatest } = this.state;
@@ -118,7 +118,7 @@ export default class RevisionCompareContainer extends Container {
     this.setState(
       Object.assign(
         { compareWithLatest: newCompareWithLatest },
-        (newCompareWithLatest === true ? { toRevision: this.state.latestRevision } : {})
+        (newCompareWithLatest === true ? { targetRevision: this.state.latestRevision } : {})
       )
     );
   }

@@ -9,7 +9,7 @@ import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 const RevisionSelector = (props) => {
 
   const { revision, hasDiff, revisionCompareContainer } = props;
-  const { fromRevision, toRevision } = revisionCompareContainer.state;
+  const { sourceRevision, targetRevision } = revisionCompareContainer.state;
 
   if (!hasDiff) {
     return <></>;
@@ -24,8 +24,8 @@ const RevisionSelector = (props) => {
           id={`compareSource-${revision._id}`}
           name="compareSource"
           value={revision._id}
-          checked={revision._id === fromRevision?._id}
-          onChange={() => revisionCompareContainer.setState({fromRevision: revision})}
+          checked={revision._id === sourceRevision?._id}
+          onChange={() => revisionCompareContainer.setState({sourceRevision: revision})}
         />
         <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
       </div>
@@ -36,8 +36,8 @@ const RevisionSelector = (props) => {
           id={`compareTarget-${revision._id}`}
           name="compareTarget"
           value={revision._id}
-          checked={revision._id === toRevision?._id}
-          onChange={() => revisionCompareContainer.setState({toRevision: revision})}
+          checked={revision._id === targetRevision?._id}
+          onChange={() => revisionCompareContainer.setState({targetRevision: revision})}
           disabled={revisionCompareContainer.state.compareWithLatest}
         />
         <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
