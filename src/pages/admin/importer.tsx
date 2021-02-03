@@ -17,7 +17,6 @@ import {
 type Props = CommonProps & {
   currentUser: any,
 
-  growiVersion: string,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
 };
@@ -32,7 +31,7 @@ const AdminImportSettingsPage: NextPage<Props> = (props: Props) => {
   useSearchServiceReachable(props.isSearchServiceReachable);
 
   return (
-    <AdminLayout title={title} selectedNavOpt="import" growiVersion={props.growiVersion}>
+    <AdminLayout title={title} selectedNavOpt="import">
       <DataImportPageContents />
     </AdminLayout>
   );
@@ -59,7 +58,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user.toObject());
   }
 
-  props.growiVersion = crowi.version;
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
 
