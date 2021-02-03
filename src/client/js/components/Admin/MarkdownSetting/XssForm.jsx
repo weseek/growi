@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 
-import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 import { useTranslation } from '~/i18n';
 
 import { tags, attrs } from '~/service/xss/recommended-whitelist';
 
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { useMarkdownSettingsSWR } from '~/stores/admin';
 
 import WhiteListInput from './WhiteListInput';
 import { apiv3Put } from '../../../util/apiv3-client';
@@ -16,35 +16,63 @@ const logger = loggerFactory('growi:importer');
 
 const XssForm = (props) => {
   const { t } = useTranslation();
+  const { data, mutate } = useMarkdownSettingsSWR();
 
-  const [isEnabledXss, setIsEnabledXss] = useState(props.isEnabledXss);
-  const [xssOption, setXssOption] = useState(props.xssOption);
-  const [tagWhiteList, setTagWhiteList] = useState(props.tagWhiteList || []);
-  const [attrWhiteList, setAttrWhiteList] = useState(props.attrWhiteList || []);
+  const xssFormMethods = useForm({
+    defaultValues: {
+      isEnabledXss: data?.isEnabledXss,
+      // Cast to a string value because radio not work with int value with react-hook-form
+      xssOption: String(data?.xssOption),
+      tagWhiteList: data?.tagWhiteList,
+      attrWhiteList: data?.attrWhiteList,
+    },
+  });
+  console.log(xssFormMethods.getValues());
+  // const formattedTagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
+  // const formattedAttrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
 
-  async function onClickSubmit() {
-    const formattedTagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
-    const formattedAttrWhiteList = Array.isArray(attrWhiteList) ? attrWhiteList : attrWhiteList.split(',');
-
+  const submitHandler = async(formValues) => {
     try {
-      await apiv3Put('/markdown-setting/xss', {
-        xssOption, isEnabledXss, tagWhiteList: formattedTagWhiteList, attrWhiteList: formattedAttrWhiteList,
-      });
+      await apiv3Put('/markdown-setting/xss', formValues);
+      mutate();
       toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.xss_header') }));
     }
     catch (err) {
       toastError(err);
       logger.error(err);
     }
-  }
+  };
 
-  function onTagWhiteListChange(tags) {
-    setTagWhiteList(tags);
-  }
+  useEffect(() => {
+    xssFormMethods.setValue('isEnabledXss', data?.isEnabledXss);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.isEnabledXss]);
 
-  function onAttrWhiteListChange(attrs) {
-    setAttrWhiteList(attrs);
-  }
+  useEffect(() => {
+    // Cast to a string value because radio not work with int value with react-hook-form
+    xssFormMethods.setValue('xssOption', String(data?.xssOption));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.xssOption]);
+
+  useEffect(() => {
+    xssFormMethods.setValue('tagWhiteList', data?.tagWhiteList);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.tagWhiteList]);
+
+  useEffect(() => {
+    xssFormMethods.setValue('tagWhiteList', data?.attrWhiteList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.attrWhiteList]);
+
+  // function onTagWhiteListChange(tags) {
+  //   setTagWhiteList(tags);
+  // }
+
+  // function onAttrWhiteListChange(attrs) {
+  //   setAttrWhiteList(attrs);
+  // }
+
+  const watchIsEnabledXss = xssFormMethods.watch('isEnabledXss');
 
   function xssOptions() {
     return (
@@ -56,9 +84,9 @@ const XssForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="xssOption1"
-                name="XssOption"
-                checked={xssOption === 1}
-                onChange={() => { setXssOption(1) }}
+                name="xssOption"
+                value="1"
+                ref={xssFormMethods.register}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption1">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.remove_all_tags')}</p>
@@ -75,9 +103,9 @@ const XssForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="xssOption2"
-                name="XssOption"
-                checked={xssOption === 2}
-                onChange={() => { setXssOption(2) }}
+                name="xssOption"
+                value="2"
+                ref={xssFormMethods.register}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption2">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.recommended_setting')}</p>
@@ -117,18 +145,18 @@ const XssForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="xssOption3"
-                name="XssOption"
-                checked={xssOption === 3}
-                onChange={() => { setXssOption(3) }}
+                name="xssOption"
+                value="3"
+                ref={xssFormMethods.register}
               />
               <label className="custom-control-label w-100" htmlFor="xssOption3">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist')}</p>
                 <WhiteListInput
                   customizable
-                  tagWhiteList={tagWhiteList}
-                  attrWhiteList={attrWhiteList}
-                  onTagWhiteListChange={onTagWhiteListChange}
-                  onAttrWhiteListChange={onAttrWhiteListChange}
+                  // tagWhiteList={tagWhiteList}
+                  // attrWhiteList={attrWhiteList}
+                  // onTagWhiteListChange={onTagWhiteListChange}
+                  // onAttrWhiteListChange={onAttrWhiteListChange}
                 />
               </label>
             </div>
@@ -138,9 +166,10 @@ const XssForm = (props) => {
     );
   }
 
+
   return (
-    <React.Fragment>
-      <fieldset className="col-12">
+    <FormProvider {...xssFormMethods}>
+      <form className="form-group col-12 my-2" onSubmit={xssFormMethods.handleSubmit(submitHandler)}>
         <div className="form-group">
           <div className="col-8 offset-4 my-3">
             <div className="custom-control custom-switch custom-checkbox-success">
@@ -149,8 +178,7 @@ const XssForm = (props) => {
                 className="custom-control-input"
                 id="XssEnable"
                 name="isEnabledXss"
-                checked={isEnabledXss}
-                onChange={() => { setIsEnabledXss(!isEnabledXss) }}
+                ref={xssFormMethods.register}
               />
               <label className="custom-control-label w-100" htmlFor="XssEnable">
                 {t('admin:markdown_setting.xss_options.enable_xss_prevention')}
@@ -160,20 +188,15 @@ const XssForm = (props) => {
         </div>
 
         <div className="col-12">
-          {isEnabledXss && xssOptions()}
+          {watchIsEnabledXss && xssOptions()}
         </div>
-      </fieldset>
-      <AdminUpdateButtonRow onClick={onClickSubmit} disabled={false} />
-    </React.Fragment>
+        <div className="d-flex justify-content-center">
+          <input type="submit" value={t('Update')} className="btn btn-primary" />
+        </div>
+      </form>
+    </FormProvider>
   );
 
-};
-
-XssForm.propTypes = {
-  isEnabledXss: PropTypes.bool,
-  xssOption: PropTypes.number,
-  tagWhiteList: PropTypes.array,
-  attrWhiteList: PropTypes.array,
 };
 
 export default XssForm;

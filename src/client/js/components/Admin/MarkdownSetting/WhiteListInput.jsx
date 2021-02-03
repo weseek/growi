@@ -1,88 +1,78 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useFormContext } from 'react-hook-form';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+
+import { useTranslation } from '~/i18n';
 
 import { tags, attrs } from '~/service/xss/recommended-whitelist';
 
-class WhiteListInput extends React.Component {
+const WhiteListInput = (props) => {
+  const { t } = useTranslation();
+  const xssFormMethods = useFormContext();
+  // const tagWhiteList = React.createRef();
+  // const attrWhiteList = React.createRef();
 
-  constructor(props) {
-    super(props);
+  const onClickRecommendTagButton = () => {
+    // tagWhiteList.current.value = tags;
+    // props.onTagWhiteListChange(tags);
+    xssFormMethods.setValue('tagWhiteList', tags);
+  };
 
-    this.tagWhiteList = React.createRef();
-    this.attrWhiteList = React.createRef();
+  const onClickRecommendAttrButton = () => {
+    // attrWhiteList.current.value = attrs;
+    // props.onAttrWhiteListChange(attrs);
+    xssFormMethods.setValue('attrWhiteList', attrs);
+  };
 
-    this.onClickRecommendTagButton = this.onClickRecommendTagButton.bind(this);
-    this.onClickRecommendAttrButton = this.onClickRecommendAttrButton.bind(this);
-  }
 
-  onClickRecommendTagButton() {
-    this.tagWhiteList.current.value = tags;
-    this.props.onTagWhiteListChange(tags);
-  }
-
-  onClickRecommendAttrButton() {
-    this.attrWhiteList.current.value = attrs;
-    this.props.onAttrWhiteListChange(attrs);
-  }
-
-  render() {
-    const { t } = this.props;
-
-    return (
-      <>
-        <div className="mt-4">
-          <div className="d-flex justify-content-between">
-            {t('admin:markdown_setting.xss_options.tag_names')}
-            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendTagButton}>
-              {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Tags' })}
-            </p>
-          </div>
-          <textarea
-            className="form-control xss-list"
-            name="recommendedTags"
-            rows="6"
-            cols="40"
-            ref={this.tagWhiteList}
-            defaultValue={this.props.tagWhiteList}
-            onChange={(e) => { this.props.onTagWhiteListChange(e.target.value) }}
-          />
+  return (
+    <>
+      <div className="mt-4">
+        <div className="d-flex justify-content-between">
+          {t('admin:markdown_setting.xss_options.tag_names')}
+          <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={onClickRecommendTagButton}>
+            {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Tags' })}
+          </p>
         </div>
-        <div className="mt-4">
-          <div className="d-flex justify-content-between">
-            {t('admin:markdown_setting.xss_options.tag_attributes')}
-            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendAttrButton}>
-              {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Attrs' })}
-            </p>
-          </div>
-          <textarea
-            className="form-control xss-list"
-            name="recommendedAttrs"
-            rows="6"
-            cols="40"
-            ref={this.attrWhiteList}
-            defaultValue={this.props.attrWhiteList}
-            onChange={(e) => { this.props.onAttrWhiteListChange(e.target.value) }}
-          />
+        <textarea
+          className="form-control xss-list"
+          name="tagWhiteList"
+          rows="6"
+          cols="40"
+          ref={xssFormMethods.register}
+        />
+      </div>
+      <div className="mt-4">
+        <div className="d-flex justify-content-between">
+          {t('admin:markdown_setting.xss_options.tag_attributes')}
+          <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={onClickRecommendAttrButton}>
+            {t('admin:markdown_setting.xss_options.import_recommended', { target: 'Attrs' })}
+          </p>
         </div>
-      </>
-    );
-  }
+        <textarea
+          className="form-control xss-list"
+          name="attrWhiteList"
+          rows="6"
+          cols="40"
+          ref={xssFormMethods.register}
+        />
+      </div>
+    </>
+  );
 
-}
-
-WhiteListInput.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  tagWhiteList: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-  ]),
-  attrWhiteList: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array,
-  ]),
-  onTagWhiteListChange: PropTypes.func,
-  onAttrWhiteListChange: PropTypes.func,
 };
 
-export default withTranslation()(WhiteListInput);
+WhiteListInput.propTypes = {
+  // tagWhiteList: PropTypes.oneOfType([
+  //   PropTypes.string,
+  //   PropTypes.array,
+  // ]),
+  // attrWhiteList: PropTypes.oneOfType([
+  //   PropTypes.string,
+  //   PropTypes.array,
+  // ]),
+  // onTagWhiteListChange: PropTypes.func,
+  // onAttrWhiteListChange: PropTypes.func,
+};
+
+export default WhiteListInput;
