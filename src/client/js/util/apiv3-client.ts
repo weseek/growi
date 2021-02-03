@@ -7,13 +7,7 @@ const apiv3Root = '/_api/v3';
 
 export async function apiv3Request(method: string, path: string, params: any): Promise<any> {
   try {
-    const opts = {
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'Content-Type': 'application/json',
-      },
-    };
-    const res = await axios[method](urljoin(apiv3Root, path), params, opts);
+    const res = await axios[method](urljoin(apiv3Root, path), params);
     return res.data;
   }
   catch (err) {
