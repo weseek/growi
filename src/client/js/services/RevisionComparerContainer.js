@@ -49,7 +49,9 @@ export default class RevisionComparerContainer extends Container {
     const targetRevision = targetRevisionId ? await this.fetchRevision(targetRevisionId) : latestRevision;
     const compareWithLatest = targetRevisionId ? false : this.state.compareWithLatest;
 
-    this.setState({ sourceRevision, targetRevision, latestRevision, compareWithLatest });
+    this.setState({
+      sourceRevision, targetRevision, latestRevision, compareWithLatest
+    });
   }
 
   /**
@@ -119,8 +121,9 @@ export default class RevisionComparerContainer extends Container {
     this.setState(
       Object.assign(
         { compareWithLatest: newCompareWithLatest },
-        (newCompareWithLatest === true ? { targetRevision: this.state.latestRevision } : {})
-      )
+        (newCompareWithLatest === true ? { targetRevision: this.state.latestRevision } : {}),
+      ),
     );
   }
+
 }

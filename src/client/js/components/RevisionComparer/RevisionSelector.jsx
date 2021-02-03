@@ -25,7 +25,7 @@ const RevisionSelector = (props) => {
           name="compareSource"
           value={revision._id}
           checked={revision._id === sourceRevision?._id}
-          onChange={() => revisionComparerContainer.setState({sourceRevision: revision})}
+          onChange={() => revisionComparerContainer.setState({ sourceRevision: revision })}
         />
         <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
       </div>
@@ -37,7 +37,7 @@ const RevisionSelector = (props) => {
           name="compareTarget"
           value={revision._id}
           checked={revision._id === targetRevision?._id}
-          onChange={() => revisionComparerContainer.setState({targetRevision: revision})}
+          onChange={() => revisionComparerContainer.setState({ targetRevision: revision })}
           disabled={revisionComparerContainer.state.compareWithLatest}
         />
         <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
@@ -45,7 +45,7 @@ const RevisionSelector = (props) => {
     </React.Fragment>
   );
 
-}
+};
 
 const RevisionSelectorWrapper = withUnstatedContainers(withLoadingSppiner(RevisionSelector), [RevisionComparerContainer]);
 
