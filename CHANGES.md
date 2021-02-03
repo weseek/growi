@@ -2,8 +2,7 @@
 
 ## v4.2.8-RC
 
-* Improvement: Improved page control performance with stream and bulk
-    * rename, duplicate, delete, deleteCompletely, revrtDeleted
+* Improvement: Performance for pages to rename/duplicate/delete/revert pages
 * Fix: Preview scrollbar doesn't sync to editor
     * Introduced by v4.2.6
 * Fix: Failed to save temporaryUrlCached with using gcs
