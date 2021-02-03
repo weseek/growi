@@ -1,12 +1,12 @@
-import React from 'react';
-import { useForm, SubmitHandler, Validate } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { useTranslation } from '~/i18n';
+import { useMarkdownSettingsSWR } from '~/stores/admin';
 
 import { apiv3Put } from '../../../util/apiv3-client';
 
@@ -14,21 +14,35 @@ const logger = loggerFactory('growi:importer');
 
 const LineBreakForm = (props) => {
   const { t } = useTranslation();
-  const {
-    register, handleSubmit, watch, errors,
-  } = useForm();
+  const { data, mutate } = useMarkdownSettingsSWR();
+  const lineBreakMethods = useForm({
+    defaultValues: {
+      isEnabledLinebreaks: data?.isEnabledLinebreaks,
+      isEnabledLinebreaksInComments: data?.isEnabledLinebreaksInComments,
+    },
+  });
 
-  const onSubmit = (data) => {
-    console.log(data, 'onsubmit');
-    // try {
-    //   await apiv3Put('/markdown-setting/lineBreak', { isEnabledLinebreaks, isEnabledLinebreaksInComments });
-    //   toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.lineBreak_header') }));
-    // }
-    // catch (err) {
-    //   toastError(err);
-    //   logger.error(err);
-    // }
+  const submitHandler = async(formValues) => {
+    try {
+      await apiv3Put('/markdown-setting/lineBreak', formValues);
+      mutate();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.lineBreak_header') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   };
+
+  useEffect(() => {
+    lineBreakMethods.setValue('isEnabledLinebreaks', data?.isEnabledLinebreaks);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.isEnabledLinebreaks]);
+
+  useEffect(() => {
+    lineBreakMethods.setValue('isEnabledLinebreaksInComments', data?.isEnabledLinebreaksInComments);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.isEnabledLinebreaksInComments]);
 
   function renderLineBreakOption() {
     const helpLineBreak = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') };
@@ -41,12 +55,13 @@ const LineBreakForm = (props) => {
             id="isEnabledLinebreaks"
             className="custom-control-input"
             name="isEnabledLinebreaks"
-            ref={register}
+            ref={lineBreakMethods.register}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
             {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
           </label>
         </div>
+        {/* eslint-disable-next-line react/no-danger */}
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreak} />
       </div>
     );
@@ -63,12 +78,13 @@ const LineBreakForm = (props) => {
             id="isEnabledLinebreaksInComments"
             className="custom-control-input"
             name="isEnabledLinebreaksInComments"
-            ref={register}
+            ref={lineBreakMethods.register}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
             {t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment') }
           </label>
         </div>
+        {/* eslint-disable-next-line react/no-danger */}
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreakInComment} />
       </div>
     );
@@ -77,7 +93,7 @@ const LineBreakForm = (props) => {
 
   return (
     <React.Fragment>
-      <form className="form-group" onSubmit={handleSubmit(onSubmit)}>
+      <form className="form-group" onSubmit={lineBreakMethods.handleSubmit(submitHandler)}>
         <div className="row row-cols-1 row-cols-md-2 mx-3">
           {renderLineBreakOption()}
           {renderLineBreakInCommentOption()}
