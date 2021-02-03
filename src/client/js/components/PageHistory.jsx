@@ -10,7 +10,7 @@ import PageRevisionList from './PageHistory/PageRevisionList';
 
 import PageHistroyContainer from '../services/PageHistoryContainer';
 import PaginationWrapper from './PaginationWrapper';
-import RevisionCompare from './RevisionCompare';
+import RevisionComparer from './RevisionComparer/RevisionComparer';
 import RevisionCompareContainer from '../services/RevisionCompareContainer';
 
 const logger = loggerFactory('growi:PageHistory');
@@ -77,7 +77,7 @@ function PageHistory(props) {
         onDiffOpenClicked={onDiffOpenClicked}
       />
       {pager()}
-      <RevisionCompare />
+      <RevisionComparer />
     </div>
   );
 

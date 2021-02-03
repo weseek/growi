@@ -6,7 +6,7 @@ import { withLoadingSppiner } from '../SuspenseUtils';
 
 import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
-const RevisionCompareTargetSelector = (props) => {
+const RevisionSelector = (props) => {
 
   const { revision, hasDiff, revisionCompareContainer } = props;
   const { fromRevision, toRevision } = revisionCompareContainer.state;
@@ -47,13 +47,13 @@ const RevisionCompareTargetSelector = (props) => {
 
 }
 
-const RevisionCompareTargetSelectorWrapper = withUnstatedContainers(withLoadingSppiner(RevisionCompareTargetSelector), [RevisionCompareContainer]);
+const RevisionSelectorWrapper = withUnstatedContainers(withLoadingSppiner(RevisionSelector), [RevisionCompareContainer]);
 
-RevisionCompareTargetSelector.propTypes = {
+RevisionSelector.propTypes = {
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 
   revision: PropTypes.object,
   hasDiff: PropTypes.bool.isRequired,
 };
 
-export default RevisionCompareTargetSelectorWrapper;
+export default RevisionSelectorWrapper;

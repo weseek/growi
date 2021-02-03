@@ -6,11 +6,11 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from './UnstatedUtils';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
-import RevisionCompareContainer from '../services/RevisionCompareContainer';
+import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
-import RevisionDiff from './PageHistory/RevisionDiff';
+import RevisionDiff from '../PageHistory/RevisionDiff';
 
 /* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (
@@ -30,7 +30,7 @@ function encodeSpaces(str) {
   return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
 }
 
-const RevisionCompare = (props) => {
+const RevisionComparer = (props) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -112,13 +112,13 @@ const RevisionCompare = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const RevisionCompareWrapper = withUnstatedContainers(RevisionCompare, [RevisionCompareContainer]);
+const RevisionComparerWrapper = withUnstatedContainers(RevisionComparer, [RevisionCompareContainer]);
 
-RevisionCompare.propTypes = {
+RevisionComparer.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 
   revisions: PropTypes.array,
 };
 
-export default withTranslation()(RevisionCompareWrapper);
+export default withTranslation()(RevisionComparerWrapper);

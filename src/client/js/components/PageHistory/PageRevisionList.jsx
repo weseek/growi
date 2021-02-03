@@ -6,7 +6,7 @@ import PageHistroyContainer from '../../services/PageHistoryContainer';
 
 import Revision from './Revision';
 import RevisionDiff from './RevisionDiff';
-import RevisionCompareTargetSelector from './RevisionCompareTargetSelector';
+import RevisionSelector from '../RevisionComparer/RevisionSelector';
 
 class PageRevisionList extends React.Component {
 
@@ -53,7 +53,7 @@ class PageRevisionList extends React.Component {
             key={`revision-history-rev-${revisionId}`}
           />
           <div className="align-self-center ml-auto">
-            <RevisionCompareTargetSelector
+            <RevisionSelector
               revision={revision}
               hasDiff={hasDiff}
               key={`revision-compare-target-selector-${revisionId}`}
