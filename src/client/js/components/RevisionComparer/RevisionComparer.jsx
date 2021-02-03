@@ -49,8 +49,7 @@ const RevisionComparer = (props) => {
     return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
   };
 
-  const sourceRevision = revisionCompareContainer.state.sourceRevision;
-  const targetRevision = revisionCompareContainer.state.targetRevision;
+  const { sourceRevision, targetRevision } = revisionCompareContainer.state;
   const showDiff = (sourceRevision && targetRevision);
 
   return (
