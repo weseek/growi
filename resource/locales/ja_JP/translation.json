@@ -325,6 +325,7 @@
     "user_not_admin": "権限のあるユーザーのみが完全削除できます"
   },
   "page_history": {
+    "revision_list": "更新履歴",
     "comparing_versions": "比較",
     "comparing_with_latest": "常に最新バージョンと比較する",
     "select_as_a_comparing_source": "このバージョンを比較ソースにする",

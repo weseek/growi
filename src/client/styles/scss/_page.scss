@@ -3,6 +3,12 @@
 
 .revision-history {
   .revision-history-list {
+    .revision-history-list-body {
+      min-height: 200px;
+      max-height: calc(100vh - 100px - 550px);
+      overflow: auto;
+    }
+
     .revision-history-outer {
       // add border-top except of first element
       &:not(:first-of-type) {
@@ -66,6 +72,14 @@
 
   .d2h-diff-tbody {
     background-color: white;
+  }
+
+  .revision-compare {
+    .revision-compare-outer {
+      min-height: 100px;
+      max-height: 250px;
+      overflow: auto;
+    }
   }
 }
 

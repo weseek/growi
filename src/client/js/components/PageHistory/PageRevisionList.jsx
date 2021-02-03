@@ -42,7 +42,7 @@ class PageRevisionList extends React.Component {
 
     return (
       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-        <div className="d-flex justify-content-between" key={`revision-history-top-${revisionId}`}>
+        <div className="d-flex" key={`revision-history-top-${revisionId}`}>
           <Revision
             t={this.props.t}
             revision={revision}
@@ -52,9 +52,10 @@ class PageRevisionList extends React.Component {
             onDiffOpenClicked={this.props.onDiffOpenClicked}
             key={`revision-history-rev-${revisionId}`}
           />
-          <div className="d-flex form-group align-items-center ml-auto">
+          <div className="align-self-center ml-auto">
             <RevisionCompareTargetSelector
               revision={revision}
+              hasDiff={hasDiff}
               key={`revision-compare-target-selector-${revisionId}`}
             />
           </div>
@@ -100,13 +101,7 @@ class PageRevisionList extends React.Component {
 
       hasDiffPrev = hasDiff;
 
-      const row = this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
-      return (
-        <React.Fragment>
-          {row}
-          <hr />
-        </React.Fragment>
-      );
+      return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
     });
 
     const classNames = ['revision-history-list'];
@@ -116,19 +111,28 @@ class PageRevisionList extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="custom-control custom-checkbox custom-checkbox-info float-right">
-          <input
-            type="checkbox"
-            id="cbCompactize"
-            className="custom-control-input"
-            checked={this.state.isCompactNodiffRevisions}
-            onChange={this.cbCompactizeChangeHandler}
-          />
-          <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
+        <div className="d-flex">
+          <h3>{t('page_history.revision_list')}</h3>
+          <div className="custom-control custom-checkbox custom-checkbox-info ml-auto">
+            <input
+              type="checkbox"
+              id="cbCompactize"
+              className="custom-control-input"
+              checked={this.state.isCompactNodiffRevisions}
+              onChange={this.cbCompactizeChangeHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
+          </div>
         </div>
-        <div className="clearfix"></div>
+        <hr />
         <div className={classNames.join(' ')}>
-          {revisionList}
+          <div class="d-flex">
+            <div className="mr-auto">バージョン</div>
+            <div>ソース<span className="ml-2 mr-2">/</span>ターゲット</div>
+          </div>
+          <div className="revision-history-list-body">
+            {revisionList}
+          </div>
         </div>
       </React.Fragment>
     );

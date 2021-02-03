@@ -68,7 +68,7 @@ function PageHistory(props) {
   }
 
   return (
-    <div>
+    <div className="revision-history">
       <PageRevisionList
         pageHistoryContainer={pageHistoryContainer}
         revisions={revisions}
@@ -77,7 +77,6 @@ function PageHistory(props) {
         onDiffOpenClicked={onDiffOpenClicked}
       />
       {pager()}
-
       <RevisionCompare />
     </div>
   );

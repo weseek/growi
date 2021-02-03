@@ -54,7 +54,7 @@ const RevisionCompare = (props) => {
   const showDiff = (fromRev && toRev);
 
   return (
-    <React.Fragment>
+    <div className="revision-compare">
       <div className="d-flex">
         <h3 className="align-self-center mb-0">{t('page_history.comparing_versions')}</h3>
         <div className="align-self-center ml-3">
@@ -94,16 +94,18 @@ const RevisionCompare = (props) => {
         </Dropdown>
       </div>
 
-      <div className="clearfix"></div>
+      <hr />
 
-      { showDiff && (
-        <RevisionDiff
-          revisionDiffOpened
-          previousRevision={fromRev}
-          currentRevision={toRev}
-        />
-      )}
-    </React.Fragment>
+      <div className="revision-compare-outer">
+        { showDiff && (
+          <RevisionDiff
+            revisionDiffOpened
+            previousRevision={fromRev}
+            currentRevision={toRev}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

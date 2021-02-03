@@ -8,8 +8,12 @@ import RevisionCompareContainer from '../../services/RevisionCompareContainer';
 
 const RevisionCompareTargetSelector = (props) => {
 
-  const { t, revision, revisionCompareContainer } = props;
+  const { t, revision, hasDiff, revisionCompareContainer } = props;
   const { fromRevision, toRevision } = revisionCompareContainer.state;
+
+  if (!hasDiff) {
+    return <></>;
+  }
 
   return (
     <React.Fragment>
@@ -50,6 +54,7 @@ RevisionCompareTargetSelector.propTypes = {
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 
   revision: PropTypes.object,
+  hasDiff: PropTypes.bool.isRequired,
 };
 
 export default RevisionCompareTargetSelectorWrapper;
