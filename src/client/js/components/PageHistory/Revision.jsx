@@ -58,7 +58,6 @@ export default class Revision extends React.Component {
     }
 
     const iconClass = this.props.revisionDiffOpened ? 'fa fa-caret-down caret caret-opened' : 'fa fa-caret-down caret';
-
     return (
       <div className="revision-history-main d-flex mt-3">
         <div className="mt-2">
@@ -86,7 +85,7 @@ export default class Revision extends React.Component {
                   )
                 }
               </span>
-              <a href={`?revision=${revision._id}`} className="ml-2 d-inline-block">
+              <a href={`?revision=${revision._id}`} className="ml-2">
                 <i className="icon-login"></i> { t('Go to this version') }
               </a>
             </p>
@@ -111,7 +110,6 @@ export default class Revision extends React.Component {
 
 Revision.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
   revision: PropTypes.object,
   revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
