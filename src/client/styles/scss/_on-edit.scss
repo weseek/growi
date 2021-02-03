@@ -232,13 +232,13 @@ body.on-edit {
     }
 
     .page-editor-preview-container {
-      overflow-y: scroll;
     }
 
     .page-editor-preview-body {
       max-width: 980px;
       padding: 18px 15px 0;
       margin: 0 auto;
+      overflow-y: scroll;
     }
 
     .grw-editor-configuration-dropdown {
