@@ -90,6 +90,7 @@ export default class RevisionComparerContainer extends Container {
 
   /**
    * Fetch the revision of the specified ID
+   * @param {string} revision ID
    */
   async fetchRevision(revisionId) {
     const { pageId, shareLinkId } = this.pageContainer.state;
