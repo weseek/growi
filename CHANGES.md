@@ -1,5 +1,16 @@
 # CHANGES
 
+## v4.2.8-RC
+
+* Improvement: Performance for pages to rename/duplicate/delete/revert pages
+* Fix: Preview scrollbar doesn't sync to editor
+    * Introduced by v4.2.6
+* Fix: Failed to save temporaryUrlCached with using gcs
+    * Introduced by v4.2.3
+* Fix: Fixed not being able to update ses settings
+    * Introduced by v4.2.0
+* Fix: Fixed the display of updtedAt and createdAt being reversed
+* Fix: Pass app title value through the XSS filter
 
 ## v4.2.7
 

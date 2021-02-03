@@ -35,6 +35,12 @@ module.exports = function(crowi) {
     return lib.deleteFileByFilePath(filePath);
   };
 
+  lib.deleteFiles = async function(attachments) {
+    attachments.map((attachment) => {
+      return this.deleteFile(attachment);
+    });
+  };
+
   lib.deleteFileByFilePath = async function(filePath) {
     // check file exists
     try {

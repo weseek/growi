@@ -115,11 +115,28 @@ module.exports = function(crowi) {
     return lib.deleteFileByFilePath(filePath);
   };
 
+  lib.deleteFiles = async function(attachments) {
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+
+    const filePaths = attachments.map((attachment) => {
+      return { Key: getFilePathOnStorage(attachment) };
+    });
+
+    const totalParams = {
+      Bucket: awsConfig.bucket,
+      Delete: { Objects: filePaths },
+    };
+    return s3.deleteObjects(totalParams).promise();
+  };
+
   lib.deleteFileByFilePath = async function(filePath) {
     if (!this.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
-
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
