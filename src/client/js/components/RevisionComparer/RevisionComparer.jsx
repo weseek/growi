@@ -74,6 +74,7 @@ const RevisionComparer = (props) => {
           className="grw-copy-dropdown align-self-center ml-auto"
           isOpen={dropdownOpen}
           toggle={() => toggleDropdown()}
+          direction="left"
         >
           <DropdownToggle
             caret
