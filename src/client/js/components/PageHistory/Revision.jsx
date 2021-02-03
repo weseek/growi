@@ -94,42 +94,6 @@ class Revision extends React.Component {
               <a href={`?revision=${revision._id}`} className="ml-2 d-inline-block">
                 <i className="icon-login"></i> { t('Go to this version') }
               </a>
-              <span className="ml-2 btn-group d-inline-block">
-                <button
-                  type="button"
-                  className="btn btn-light"
-                  onClick={() => revisionCompareContainer.setState({ fromRevision: revision, toRevision: latestRevision })}
-                >
-                  {t('page_history.comparing_with_latest')}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-light dropdown-toggle dropdown-toggle-split"
-                  id="bgCompareRevision"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                  data-reference="parent"
-                >
-                  <span className="sr-only">{t('page_history.comparing_versions')}</span>
-                </button>
-                <span className="dropdown-menu" aria-labelledby="bgCompareRevision">
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={() => revisionCompareContainer.setState({ fromRevision: revision })}
-                  >
-                    {t('page_history.select_as_a_comparing_source')}
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={() => revisionCompareContainer.setState({ toRevision: revision })}
-                  >
-                    {t('page_history.select_as_a_comparing_target')}
-                  </a>
-                </span>
-              </span>
             </p>
           </div>
         </div>

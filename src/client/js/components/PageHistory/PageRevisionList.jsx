@@ -6,6 +6,7 @@ import PageHistroyContainer from '../../services/PageHistoryContainer';
 
 import Revision from './Revision';
 import RevisionDiff from './RevisionDiff';
+import RevisionCompareTargetSelector from './RevisionCompareTargetSelector';
 
 class PageRevisionList extends React.Component {
 
@@ -41,15 +42,22 @@ class PageRevisionList extends React.Component {
 
     return (
       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-        <Revision
-          t={this.props.t}
-          revision={revision}
-          revisionDiffOpened={revisionDiffOpened}
-          hasDiff={hasDiff}
-          isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
-          onDiffOpenClicked={this.props.onDiffOpenClicked}
-          key={`revision-history-rev-${revisionId}`}
-        />
+        <div className="revision-history-main d-flex justify-content-between mt-3">
+          <Revision
+            t={this.props.t}
+            revision={revision}
+            revisionDiffOpened={revisionDiffOpened}
+            hasDiff={hasDiff}
+            isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
+            onDiffOpenClicked={this.props.onDiffOpenClicked}
+            key={`revision-history-rev-${revisionId}`}
+          />
+          <div className="d-flex form-group align-items-center ml-auto">
+            <RevisionCompareTargetSelector
+              revision={revision}
+            />
+          </div>
+        </div>
         { hasDiff
           && (
           <RevisionDiff
@@ -91,7 +99,13 @@ class PageRevisionList extends React.Component {
 
       hasDiffPrev = hasDiff;
 
-      return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
+      const row = this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
+      return (
+        <React.Fragment>
+          {row}
+          <hr />
+        </React.Fragment>
+      );
     });
 
     const classNames = ['revision-history-list'];
