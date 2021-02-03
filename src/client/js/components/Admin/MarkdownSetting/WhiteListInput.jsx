@@ -4,11 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { tags, attrs } from '~/service/xss/recommended-whitelist';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-
-import AppContainer from '../../../services/AppContainer';
-import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
-
 class WhiteListInput extends React.Component {
 
   constructor(props) {
