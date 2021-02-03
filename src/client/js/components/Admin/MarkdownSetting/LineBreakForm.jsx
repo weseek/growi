@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
-import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -15,7 +14,7 @@ const logger = loggerFactory('growi:importer');
 const LineBreakForm = (props) => {
   const { t } = useTranslation();
   const { data, mutate } = useMarkdownSettingsSWR();
-  const lineBreakMethods = useForm({
+  const lineBreakFormMethods = useForm({
     defaultValues: {
       isEnabledLinebreaks: data?.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: data?.isEnabledLinebreaksInComments,
@@ -35,12 +34,12 @@ const LineBreakForm = (props) => {
   };
 
   useEffect(() => {
-    lineBreakMethods.setValue('isEnabledLinebreaks', data?.isEnabledLinebreaks);
+    lineBreakFormMethods.setValue('isEnabledLinebreaks', data?.isEnabledLinebreaks);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.isEnabledLinebreaks]);
 
   useEffect(() => {
-    lineBreakMethods.setValue('isEnabledLinebreaksInComments', data?.isEnabledLinebreaksInComments);
+    lineBreakFormMethods.setValue('isEnabledLinebreaksInComments', data?.isEnabledLinebreaksInComments);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.isEnabledLinebreaksInComments]);
 
@@ -55,7 +54,7 @@ const LineBreakForm = (props) => {
             id="isEnabledLinebreaks"
             className="custom-control-input"
             name="isEnabledLinebreaks"
-            ref={lineBreakMethods.register}
+            ref={lineBreakFormMethods.register}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
             {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
@@ -78,7 +77,7 @@ const LineBreakForm = (props) => {
             id="isEnabledLinebreaksInComments"
             className="custom-control-input"
             name="isEnabledLinebreaksInComments"
-            ref={lineBreakMethods.register}
+            ref={lineBreakFormMethods.register}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
             {t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment') }
@@ -93,7 +92,7 @@ const LineBreakForm = (props) => {
 
   return (
     <React.Fragment>
-      <form className="form-group" onSubmit={lineBreakMethods.handleSubmit(submitHandler)}>
+      <form className="form-group" onSubmit={lineBreakFormMethods.handleSubmit(submitHandler)}>
         <div className="row row-cols-1 row-cols-md-2 mx-3">
           {renderLineBreakOption()}
           {renderLineBreakInCommentOption()}
@@ -105,11 +104,6 @@ const LineBreakForm = (props) => {
     </React.Fragment>
   );
 
-};
-
-LineBreakForm.propTypes = {
-  isEnabledLinebreaks: PropTypes.bool,
-  isEnabledLinebreaksInComments: PropTypes.bool,
 };
 
 export default LineBreakForm;
