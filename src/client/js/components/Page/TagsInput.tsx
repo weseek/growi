@@ -1,4 +1,6 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, {
+  FC, useState, useCallback, useEffect,
+} from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { apiGet } from '~/client/js/util/apiv1-client';
@@ -21,21 +23,21 @@ const TagsInput : FC<Props> = (props: Props) => {
     AsyncTypeahead.typeahead.getInstance().focus();
   });
 
-  function handleChange(selected) {
+  const handleChange = useCallback((selected) => {
     setSelected(selected);
     props.onTagsUpdated(selected);
-  }
+  }, [props]);
 
-  async function handleSearch(query) {
+  const handleSearch = useCallback(async(query) => {
     setIsLoading(true);
     const res = await apiGet('/tags.search', { q: query });
     res.tags.unshift(query); // selectable new tag whose name equals query
 
     setResultTags(Array.from(new Set(res.tags))); // use Set for de-duplication
     setIsLoading(false);
-  }
+  }, []);
 
-  function handleSelect(e) {
+  const handleSelect = useCallback((e) => {
     if (e.keyCode === 32) { // '32' means ASCII code of 'space'
       e.preventDefault();
       const instance = AsyncTypeahead.typeahead.getInstance();
@@ -45,7 +47,7 @@ const TagsInput : FC<Props> = (props: Props) => {
         instance._handleMenuItemSelect(initialItem, e);
       }
     }
-  }
+  }, []);
 
 
   return (
