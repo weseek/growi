@@ -31,7 +31,7 @@ function encodeSpaces(str) {
   return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
 }
 
-const PageCompare = (props) => {
+const RevisionCompare = (props) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -99,13 +99,13 @@ const PageCompare = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageCompareWrapper = withUnstatedContainers(PageCompare, [RevisionCompareContainer]);
+const RevisionCompareWrapper = withUnstatedContainers(RevisionCompare, [RevisionCompareContainer]);
 
-PageCompare.propTypes = {
+RevisionCompare.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   revisionCompareContainer: PropTypes.instanceOf(RevisionCompareContainer).isRequired,
 
   revisions: PropTypes.array,
 };
 
-export default withTranslation()(PageCompareWrapper);
+export default withTranslation()(RevisionCompareWrapper);
