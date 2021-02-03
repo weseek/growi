@@ -50,7 +50,7 @@ export default class RevisionComparerContainer extends Container {
     const compareWithLatest = targetRevisionId ? false : this.state.compareWithLatest;
 
     this.setState({
-      sourceRevision, targetRevision, latestRevision, compareWithLatest
+      sourceRevision, targetRevision, latestRevision, compareWithLatest,
     });
   }
 
