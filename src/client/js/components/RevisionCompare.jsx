@@ -11,7 +11,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import RevisionCompareContainer from '../services/RevisionCompareContainer';
 
 import RevisionDiff from './PageHistory/RevisionDiff';
-import RevisionIdForm from './RevisionCompare/RevisionIdForm';
 
 /* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (
@@ -56,10 +55,24 @@ const RevisionCompare = (props) => {
 
   return (
     <React.Fragment>
-      <div className="float-left">{t('page_history.comparing_versions')}</div>
-      <div className="mb-3">
+      <div className="d-flex">
+        <h3 className="align-self-center mb-0">{t('page_history.comparing_versions')}</h3>
+        <div className="align-self-center ml-3">
+          <div className="custom-control custom-switch">
+            <input
+              type="checkbox"
+              className="custom-control-input"
+              id="comparingWithLatest"
+              checked={revisionCompareContainer.state.compareWithLatest}
+              onChange={() => revisionCompareContainer.toggleCompareWithLatest()}
+            />
+            <label className="custom-control-label" htmlFor="comparingWithLatest">
+              {t('page_history.comparing_with_latest')}
+            </label>
+          </div>
+        </div>
         <Dropdown
-          className="grw-copy-dropdown"
+          className="grw-copy-dropdown align-self-center ml-auto"
           isOpen={dropdownOpen}
           toggle={() => toggleDropdown()}
         >
@@ -82,8 +95,6 @@ const RevisionCompare = (props) => {
       </div>
 
       <div className="clearfix"></div>
-
-      <RevisionIdForm />
 
       { showDiff && (
         <RevisionDiff

@@ -24,9 +24,11 @@ export default class RevisionCompareContainer extends Container {
       fromRevision: null,
       toRevision: null,
       latestRevision: null,
+      compareWithLatest: true,
     };
 
     this.initRevisions = this.initRevisions.bind(this);
+    this.toggleCompareWithLatest = this.toggleCompareWithLatest.bind(this);
   }
 
   /**
@@ -105,4 +107,18 @@ export default class RevisionCompareContainer extends Container {
     return null;
   }
 
+  /**
+   * toggle state "compareWithLatest", and if true, set "fromRevision" to the latest revision
+   */
+  toggleCompareWithLatest() {
+    const { compareWithLatest } = this.state;
+    const newCompareWithLatest = !compareWithLatest;
+
+    this.setState(
+      Object.assign(
+        { compareWithLatest: newCompareWithLatest },
+        (newCompareWithLatest === true ? { toRevision: this.state.latestRevision } : {})
+      )
+    );
+  }
 }

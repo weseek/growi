@@ -42,7 +42,7 @@ class PageRevisionList extends React.Component {
 
     return (
       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-        <div className="revision-history-main d-flex justify-content-between mt-3">
+        <div className="d-flex justify-content-between" key={`revision-history-top-${revisionId}`}>
           <Revision
             t={this.props.t}
             revision={revision}
@@ -55,6 +55,7 @@ class PageRevisionList extends React.Component {
           <div className="d-flex form-group align-items-center ml-auto">
             <RevisionCompareTargetSelector
               revision={revision}
+              key={`revision-compare-target-selector-${revisionId}`}
             />
           </div>
         </div>
