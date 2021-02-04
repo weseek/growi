@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useTranslation } from '~/i18n';
+import { useTranslation, config as nextI18NextConfig } from '~/i18n';
 
 
 import loggerFactory from '~/utils/logger';
@@ -10,6 +10,13 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { apiv3Put } from '~/utils/apiv3-client';
 
 const logger = loggerFactory('growi:appSettings');
+
+type FormValues = {
+  title: string,
+  confidential: string,
+  globalLang: string,
+  fileUpload: string,
+}
 
 const AppSetting = ():JSX.Element => {
   const { t } = useTranslation();
@@ -21,16 +28,13 @@ const AppSetting = ():JSX.Element => {
       confidential: data?.confidential,
       globalLang: data?.globalLang,
       fileUpload: data?.fileUpload,
-      siteUrl: data?.envSiteUrl,
-      envSiteUrl: data?.envSiteUrl,
-      isMailerSetup: data?.isMailerSetup,
-      fromAddress: data?.fromAddress,
     },
   });
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
     try {
-      await apiv3Put('/app-setting/app', formValues);
+      console.log(formValues);
+      await apiv3Put('/app-settings/app-setting', formValues);
       mutate();
       toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
     }
@@ -41,16 +45,20 @@ const AppSetting = ():JSX.Element => {
   };
 
   useEffect(() => {
+    console.log(data?.title);
+    console.log(data?.confidential);
     appSettingMethods.setValue('title', data?.title);
     appSettingMethods.setValue('confidential', data?.confidential);
     appSettingMethods.setValue('globalLang', data?.globalLang);
     appSettingMethods.setValue('fileUpload', data?.fileUpload);
-    appSettingMethods.setValue('siteUrl', data?.siteUrl);
-    appSettingMethods.setValue('isMailerSetup', data?.isMailerSetup);
-    appSettingMethods.setValue('fromAddress', data?.fromAddress);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.themeType]);
-
+  }, [
+    data?.title,
+    data?.confidential,
+    data?.globalLang,
+    data?.fileUpload,
+  ]);
+  console.log(appSettingMethods.getValues());
   return (
     <form role="form" onSubmit={appSettingMethods.handleSubmit(submitHandler)}>
       <div className="form-group row">
@@ -58,12 +66,10 @@ const AppSetting = ():JSX.Element => {
         <div className="col-md-6">
           <input
             className="form-control"
+            name="title"
             type="text"
-            defaultValue={adminAppContainer.state.title || ''}
-            onChange={(e) => {
-                adminAppContainer.changeTitle(e.target.value);
-              }}
             placeholder="GROWI"
+            ref={appSettingMethods.register}
           />
           <p className="form-text text-muted">{t('admin:app_setting.sitename_change')}</p>
         </div>
@@ -78,12 +84,10 @@ const AppSetting = ():JSX.Element => {
         <div className="col-md-6">
           <input
             className="form-control"
+            name="confidential"
             type="text"
-            defaultValue={adminAppContainer.state.confidential || ''}
-            onChange={(e) => {
-                adminAppContainer.changeConfidential(e.target.value);
-              }}
             placeholder={t('admin:app_setting.confidential_example')}
+            ref={appSettingMethods.register}
           />
           <p className="form-text text-muted">{t('admin:app_setting.header_content')}</p>
         </div>
@@ -105,10 +109,7 @@ const AppSetting = ():JSX.Element => {
                     className="custom-control-input"
                     name="globalLang"
                     value={lang}
-                    checked={adminAppContainer.state.globalLang === lang}
-                    onChange={(e) => {
-                      adminAppContainer.changeGlobalLang(e.target.value);
-                    }}
+                    ref={appSettingMethods.register}
                   />
                   <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{t('meta.display_name')}</label>
                 </div>
@@ -130,10 +131,7 @@ const AppSetting = ():JSX.Element => {
               id="cbFileUpload"
               className="custom-control-input"
               name="fileUpload"
-              checked={adminAppContainer.state.fileUpload != null}
-              onChange={(e) => {
-                  adminAppContainer.changeFileUpload(e.target.checked);
-                }}
+              ref={appSettingMethods.register}
             />
             <label
               className="custom-control-label"
