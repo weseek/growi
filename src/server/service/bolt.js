@@ -63,6 +63,14 @@ class BoltService {
     this.bolt.command('/growi-bot', async({ command, ack, say }) => { // demo
       await say('Hello');
     });
+
+    // The echo command simply echoes on command
+    this.bolt.command('/echo', async({ command, ack, say }) => {
+      // Acknowledge command request
+      await ack();
+
+      await say(`${command.text}`);
+    });
   }
 
 }
