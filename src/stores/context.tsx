@@ -66,3 +66,7 @@ export const useSearchServiceConfigured = (initialData?: boolean): responseInter
 export const useSearchServiceReachable = (initialData?: boolean): responseInterface<boolean, any> => {
   return useStaticSWR('searchServiceReachable', initialData);
 };
+
+export const useGrowiVersion = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('growiVersion', initialData);
+};

@@ -7,7 +7,6 @@ export type customizeParams = {
   isAllReplyShown: boolean,
   isEnabledAttachTitleHeader: boolean,
   isEnabledStaleNotification: boolean,
-  isEnabledTimeline: boolean,
   isSavedStatesOfTabChanges: boolean,
   layoutType?: string,
   pageLimitationL: number,
