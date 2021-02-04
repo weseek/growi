@@ -59,7 +59,7 @@ class BoltService {
     }
   }
 
-  async init() {
+  init() {
     // Example of listening for event
     // See. https://github.com/slackapi/bolt-js#listening-for-events
     // or https://slack.dev/bolt-js/concepts#basic
