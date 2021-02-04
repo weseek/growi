@@ -8,6 +8,7 @@ import { useTranslation } from '~/i18n';
 
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 /* eslint-disable quote-props, no-multi-spaces */
 const highlightJsCssSelectorOptions = {
@@ -74,8 +75,10 @@ export const CustomizeHighlightSetting:FC = () => {
   const submitHandler: SubmitHandler<FormValues> = async(formValues:FormValues) => {
 
     try {
-      console.log(formValues);
-      // await apiv3Put('/customize-setting/function', {  });
+      await apiv3Put('/customize-setting/highlight', {
+        [styleNameInputName]: formValues[styleNameInputName],
+        [styleBorderInputName]: formValues[styleBorderInputName],
+      });
       mutate();
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.code_highlight') }));
