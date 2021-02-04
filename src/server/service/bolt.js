@@ -66,6 +66,7 @@ class BoltService {
       await say('Hello');
       const { searchService } = this.crowi;
       const results = await searchService.searchKeyword(command.text, null, {}, {});
+      // get 10 result from slack input
       console.log(results.data.slice(0, 10));
     });
 
