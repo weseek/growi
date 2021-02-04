@@ -3,9 +3,11 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
+
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { useCurrentPagePath } from '~/stores/context';
 
 import { useTranslation } from '~/i18n';
 
@@ -29,6 +31,7 @@ type Props = {
 
 export const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -37,7 +40,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
       </ModalHeader>
       <ModalBody>
         <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
-          {/* <code>{path}</code> */}
+          <code>{currentPagePath}</code>
         </div>
         <div className="form-group">
           <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
