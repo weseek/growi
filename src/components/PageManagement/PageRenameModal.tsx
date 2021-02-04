@@ -34,7 +34,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
   // TODO enable react-hook-form by GW 5088
-  const onSubmit = (data) => {
+  const submitHandler = (data) => {
     alert(JSON.stringify(data));
   };
 
@@ -55,13 +55,14 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
               {/* <span className="input-group-text">{crowi.url} </span> */}
             </div>
             {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
-            <form className="flex-fill" onSubmit={handleSubmit(onSubmit)}>
+            <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}>
               <input
+                name="pagename"
                 type="text"
-                // value={pageNameInput}
                 className="form-control"
+                // value={pageNameInput}
                 // onChange={e => inputChangeHandler(e.target.value)}
-                // required
+                required
                 autoFocus
                 ref={register}
               />
@@ -76,7 +77,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             type="checkbox"
             // checked={isRenameRecursively}
             // onChange={changeIsRenameRecursivelyHandler}
-            // ref={register}
+            ref={register}
           />
           <label className="custom-control-label" htmlFor="cbRenameRecursively">
             { t('modal_rename.label.Recursively') }
@@ -111,7 +112,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             type="checkbox"
             // checked={isRenameRedirect}
             // onChange={changeIsRenameRedirectHandler}
-            // ref={register}
+            ref={register}
           />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
@@ -127,7 +128,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             type="checkbox"
             // checked={isRenameMetadata}
             // onChange={changeIsRenameMetadataHandler}
-            // ref={register}
+            ref={register}
           />
           <label className="custom-control-label" htmlFor="cbRenameMetadata">
             { t('modal_rename.label.Do not update metadata') }
