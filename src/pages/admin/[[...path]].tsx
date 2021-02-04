@@ -9,6 +9,7 @@ import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
 
+import AdminHome from '~/components/Admin/Home/AdminHome';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';
@@ -34,7 +35,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const adminPagesMap = {
     home: {
       title: t('Wiki Management Home Page'),
-      component: <></>,
+      component: <AdminHome />,
     },
     app: {
       title: '',

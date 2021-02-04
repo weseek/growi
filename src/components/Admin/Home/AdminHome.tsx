@@ -1,24 +1,29 @@
 import React, { Fragment } from 'react';
 
 import { useTranslation } from '~/i18n';
+import { useAdminHomeSWR } from '~/stores/admin';
 
-import SystemInfomationTable from './SystemInfomationTable';
-import InstalledPluginTable from './InstalledPluginTable';
-import EnvVarsTable from './EnvVarsTable';
+import SystemInfomationTable from '../../../client/js/components/Admin/AdminHome/SystemInfomationTable';
+import InstalledPluginTable from '../../../client/js/components/Admin/AdminHome/InstalledPluginTable';
+import EnvVarsTable from '../../../client/js/components/Admin/AdminHome/EnvVarsTable';
 
-type Props = {
+export type adminHomeParams = {
+  growiVersion: string,
   nodeVersion: string,
   npmVersion: string,
   yarnVersion: string,
-
-  installedPlugins: any,
-
-  envVars: any,
-};
-
-const AdminHome = (props: Props): JSX.Element => {
+  installedPlugins: string,
+  envVars: string,
+}
+const AdminHome = (): JSX.Element => {
   const { t } = useTranslation();
+  const { data, isValidating } = useAdminHomeSWR();
 
+  if (isValidating) {
+    return <></>;
+  }
+
+  console.log(data);
   return (
     <Fragment>
       <p>
@@ -31,9 +36,9 @@ const AdminHome = (props: Props): JSX.Element => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:admin_top.system_information')}</h2>
           <SystemInfomationTable
-            nodeVersion={props.nodeVersion}
-            npmVersion={props.npmVersion}
-            yarnVersion={props.yarnVersion}
+            nodeVersion={data?.nodeVersion}
+            npmVersion={data?.npmVersion}
+            yarnVersion={data?.yarnVersion}
           />
         </div>
       </div>
@@ -41,7 +46,7 @@ const AdminHome = (props: Props): JSX.Element => {
       <div className="row mb-5">
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:admin_top.list_of_installed_plugins')}</h2>
-          <InstalledPluginTable installedPlugins={props.installedPlugins} />
+          <InstalledPluginTable installedPlugins={data?.installedPlugins} />
         </div>
       </div>
 
@@ -51,7 +56,7 @@ const AdminHome = (props: Props): JSX.Element => {
           <p>{t('admin:admin_top.env_var_priority')}</p>
           {/* eslint-disable-next-line react/no-danger */}
           <p dangerouslySetInnerHTML={{ __html: t('admin:admin_top.about_security') }} />
-          {props.envVars && <EnvVarsTable envVars={props.envVars} />}
+          {data?.envVars && <EnvVarsTable envVars={data?.envVars} />}
         </div>
       </div>
     </Fragment>
