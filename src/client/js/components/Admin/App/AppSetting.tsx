@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useTranslation, config as nextI18NextConfig } from '~/i18n';
+import { i18n, useTranslation, config } from '~/i18n';
 
 
 import loggerFactory from '~/utils/logger';
@@ -33,7 +33,6 @@ const AppSetting = ():JSX.Element => {
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
     try {
-      console.log(formValues);
       await apiv3Put('/app-settings/app-setting', formValues);
       mutate();
       toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
@@ -45,8 +44,6 @@ const AppSetting = ():JSX.Element => {
   };
 
   useEffect(() => {
-    console.log(data?.title);
-    console.log(data?.confidential);
     appSettingMethods.setValue('title', data?.title);
     appSettingMethods.setValue('confidential', data?.confidential);
     appSettingMethods.setValue('globalLang', data?.globalLang);
@@ -58,7 +55,7 @@ const AppSetting = ():JSX.Element => {
     data?.globalLang,
     data?.fileUpload,
   ]);
-  console.log(appSettingMethods.getValues());
+
   return (
     <form role="form" onSubmit={appSettingMethods.handleSubmit(submitHandler)}>
       <div className="form-group row">
@@ -100,21 +97,22 @@ const AppSetting = ():JSX.Element => {
           {t('admin:app_setting.default_language')}
         </label>
         <div className="col-md-6 py-2">
-          {
-              nextI18NextConfig.allLanguages.map(lang => (
-                <div key={lang} className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    id={`radioLang${lang}`}
-                    className="custom-control-input"
-                    name="globalLang"
-                    value={lang}
-                    ref={appSettingMethods.register}
-                  />
-                  <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{t('meta.display_name')}</label>
-                </div>
-              ))
-            }
+          {config.allLanguages.map((lang) => {
+            const fixedT = i18n.getFixedT(lang);
+            return (
+              <div key={lang} className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  id={`radioLang${lang}`}
+                  className="custom-control-input"
+                  name="globalLang"
+                  value={lang}
+                  ref={appSettingMethods.register}
+                />
+                <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{fixedT('meta.display_name')}</label>
+              </div>
+            );
+          })}
         </div>
       </div>
 
