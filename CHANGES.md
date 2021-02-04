@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.2.8-RC
+## v4.2.9-RC
+
+* 
+
+## v4.2.8
 
 * Improvement: Performance for pages to rename/duplicate/delete/revert pages
 * Fix: Preview scrollbar doesn't sync to editor
