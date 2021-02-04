@@ -60,14 +60,11 @@ class BoltService {
   }
 
   async init() {
+    // Example of listening for event
     // See. https://github.com/slackapi/bolt-js#listening-for-events
     // or https://slack.dev/bolt-js/concepts#basic
     this.bolt.command('/growi-bot', async({ command, ack, say }) => { // demo
       await say('Hello');
-      const { searchService } = this.crowi;
-      const results = await searchService.searchKeyword(command.text, null, {}, {});
-      // get 10 result from slack input
-      console.log(results.data.slice(0, 10));
     });
 
     // The echo command simply echoes on command
@@ -76,6 +73,13 @@ class BoltService {
       await ack();
 
       await say(`${command.text}`);
+    });
+
+    this.bolt.command('/growi-search', async({ command, ack, say }) => {
+      const { searchService } = this.crowi;
+      const results = await searchService.searchKeyword(command.text, null, {}, {});
+      // get 10 result from slack input
+      console.log(results.data.slice(0, 10));
     });
   }
 
