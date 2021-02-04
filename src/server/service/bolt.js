@@ -68,6 +68,14 @@ class BoltService {
       const results = await searchService.searchKeyword(command.text, null, {}, {});
       console.log(results.data.slice(0, 10));
     });
+
+    // The echo command simply echoes on command
+    this.bolt.command('/echo', async({ command, ack, say }) => {
+      // Acknowledge command request
+      await ack();
+
+      await say(`${command.text}`);
+    });
   }
 
 }
