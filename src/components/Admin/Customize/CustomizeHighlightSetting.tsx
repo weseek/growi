@@ -75,6 +75,24 @@ export const CustomizeHighlightSetting:FC = () => {
             </p>
           </div>
         </div>
+
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="custom-control custom-switch custom-checkbox-success">
+              <input
+                name=""
+                type="checkbox"
+                className="custom-control-input"
+                id="highlightBorder"
+                ref={register}
+              />
+              <label className="custom-control-label" htmlFor="highlightBorder">
+                <strong>Border</strong>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <div className="row my-3">
           <div className="mx-auto">
             <button type="submit" className="btn btn-primary">{ t('Update') }</button>
@@ -162,24 +180,6 @@ export const CustomizeHighlightSetting:FC = () => {
 //         <div className="row">
 //           <div className="col-12">
 //             <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
-
-
-//             <div className="form-group row">
-//               <div className="offset-md-3 col-md-6 text-left">
-//                 <div className="custom-control custom-switch custom-checkbox-success">
-//                   <input
-//                     type="checkbox"
-//                     className="custom-control-input"
-//                     id="highlightBorder"
-//                     checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-//                     onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
-//                   />
-//                   <label className="custom-control-label" htmlFor="highlightBorder">
-//                     <strong>Border</strong>
-//                   </label>
-//                 </div>
-//               </div>
-//             </div>
 
 //             <div className="form-text text-muted">
 //               <label>Examples:</label>
