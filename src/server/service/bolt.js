@@ -75,11 +75,12 @@ class BoltService {
       await say(`${command.text}`);
     });
 
-    this.bolt.command('/growi-search', async({ command, ack, say }) => {
+    this.bolt.command('/growi', async({ command, ack, say }) => {
       const { searchService } = this.crowi;
-      const results = await searchService.searchKeyword(command.text, null, {}, {});
+      const option = { limit: 10 };
+      const results = await searchService.searchKeyword(command.text, null, {}, option);
       // get 10 result from slack input
-      console.log(results.data.slice(0, 10));
+      console.log(results.data);
     });
   }
 
