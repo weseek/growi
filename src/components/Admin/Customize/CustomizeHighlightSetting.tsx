@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import {
   UncontrolledDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -12,6 +12,28 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 type FormValues ={
 
 }
+
+const HljsDemo = memo((props:{isHighlightJsStyleBorderEnabled:boolean}) => {
+
+  /* eslint-disable max-len */
+  const html = `
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length == <span class="hljs-number">0</span>) {
+      seed = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();
+    }
+
+    <span class="hljs-keyword">this</span>._mt = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">624</span>);
+    <span class="hljs-keyword">this</span>.setSeed(seed);
+    }</span>`;
+  /* eslint-enable max-len */
+
+  return (
+    <pre className={`hljs ${!props.isHighlightJsStyleBorderEnabled ? 'hljs-no-border' : ''}`}>
+      {/* eslint-disable-next-line react/no-danger */}
+      <code dangerouslySetInnerHTML={{ __html: html }}></code>
+    </pre>
+  );
+});
 
 export const CustomizeHighlightSetting:FC = () => {
   const { t } = useTranslation();
@@ -93,6 +115,13 @@ export const CustomizeHighlightSetting:FC = () => {
           </div>
         </div>
 
+        <div className="form-text text-muted">
+          <label>Examples:</label>
+          <div className="wiki">
+            <HljsDemo isHighlightJsStyleBorderEnabled />
+          </div>
+        </div>
+
         <div className="row my-3">
           <div className="mx-auto">
             <button type="submit" className="btn btn-primary">{ t('Update') }</button>
@@ -132,27 +161,6 @@ export const CustomizeHighlightSetting:FC = () => {
 //     }
 //   }
 
-//   renderHljsDemo() {
-//     const { adminCustomizeContainer } = this.props;
-
-//     /* eslint-disable max-len */
-//     const html = `<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MersenneTwister</span>(<span class="hljs-params">seed</span>) </span>{
-//   <span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length == <span class="hljs-number">0</span>) {
-//     seed = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getTime();
-//   }
-
-//   <span class="hljs-keyword">this</span>._mt = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Array</span>(<span class="hljs-number">624</span>);
-//   <span class="hljs-keyword">this</span>.setSeed(seed);
-// }</span>`;
-//     /* eslint-enable max-len */
-
-//     return (
-//       <pre className={`hljs ${!adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled && 'hljs-no-border'}`}>
-//         {/* eslint-disable-next-line react/no-danger */}
-//         <code dangerouslySetInnerHTML={{ __html: html }}></code>
-//       </pre>
-//     );
-//   }
 
 //   render() {
 //     const { t, adminCustomizeContainer } = this.props;
@@ -181,12 +189,6 @@ export const CustomizeHighlightSetting:FC = () => {
 //           <div className="col-12">
 //             <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
 
-//             <div className="form-text text-muted">
-//               <label>Examples:</label>
-//               <div className="wiki">
-//                 {this.renderHljsDemo()}
-//               </div>
-//             </div>
 
 //             <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
 //           </div>
