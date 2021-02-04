@@ -55,11 +55,11 @@ class BoltService {
         signingSecret,
         receiver: this.receiver,
       });
-      this.searchResult();
+      this.init();
     }
   }
 
-  async searchResult() {
+  async init() {
     // See. https://github.com/slackapi/bolt-js#listening-for-events
     // or https://slack.dev/bolt-js/concepts#basic
     this.bolt.command('/growi-bot', async({ command, ack, say }) => { // demo
