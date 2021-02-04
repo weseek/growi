@@ -30,9 +30,6 @@ class BoltReciever {
     };
 
     await this.bolt.processEvent(event);
-
-    // for verification request URL on Event Subscriptions
-    res.send(req.body);
   }
 
 }
