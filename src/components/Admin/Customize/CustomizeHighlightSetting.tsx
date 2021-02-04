@@ -1,18 +1,54 @@
-/* eslint-disable no-useless-escape */
-import React from 'react';
-// import PropTypes from 'prop-types';
-// import { withTranslation } from 'react-i18next';
-// import {
-//   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-// } from 'reactstrap';
+import { FC } from 'react';
+import {
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+
+import { useTranslation } from '~/i18n';
 
 // import { withUnstatedContainers } from '../../UnstatedUtils';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
-// import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+type FormValues ={
 
-export const CustomizeHighlightSetting = () => {
-  return <p>huga</p>;
+}
+
+export const CustomizeHighlightSetting:FC = () => {
+  const { t } = useTranslation();
+
+  const {
+    register, handleSubmit, control, watch, setValue,
+  } = useForm({
+    defaultValues: {
+      hoge: 'huga',
+    },
+  });
+
+  const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
+
+    try {
+      // await apiv3Put('/customize-setting/function', {  });
+      // mutate();
+
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.code_highlight') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
+  return (
+    <div className="row">
+      <form role="form" className="col-md-12" onSubmit={handleSubmit(submitHandler)}>
+        <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
+        <div className="row my-3">
+          <div className="mx-auto">
+            <button type="submit" className="btn btn-primary">{ t('Update') }</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 // class DepricateCustomizeHighlightSetting extends React.Component {
