@@ -25,13 +25,13 @@ const highlightJsCssSelectorOptions = {
 };
 /* eslint-enable quote-props, no-multi-spaces */
 
-const styleNameInputName = 'styleName';
-const styleBorderInputName = 'styleBorder';
+const highlightJsStyleInputName = 'highlightJsStyle';
+const highlightJsStyleBorderInputName = 'highlightJsStyleBorder';
 
 
 type FormValues = {
-  [styleNameInputName]: string;
-  [styleBorderInputName]: boolean;
+  [highlightJsStyleInputName]: string;
+  [highlightJsStyleBorderInputName]: boolean;
 }
 
 const HljsDemo = memo((props:{isEnabledStyleBorder:boolean}) => {
@@ -63,21 +63,21 @@ export const CustomizeHighlightSetting:FC = () => {
     register, handleSubmit, control, watch, setValue,
   } = useForm({
     defaultValues: {
-      [styleNameInputName]: data?.[styleNameInputName],
-      [styleBorderInputName]: data?.[styleBorderInputName],
+      [highlightJsStyleInputName]: data?.[highlightJsStyleInputName],
+      [highlightJsStyleBorderInputName]: data?.[highlightJsStyleBorderInputName],
     },
   });
 
   // watch for display dropdown label
-  const styleName = watch(styleNameInputName);
-  const isEnabledStyleBorder = watch(styleBorderInputName);
+  const highlightJsStyle = watch(highlightJsStyleInputName);
+  const isEnabledStyleBorder = watch(highlightJsStyleBorderInputName);
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues:FormValues) => {
 
     try {
       await apiv3Put('/customize-setting/highlight', {
-        [styleNameInputName]: formValues[styleNameInputName],
-        [styleBorderInputName]: formValues[styleBorderInputName],
+        [highlightJsStyleInputName]: formValues[highlightJsStyleInputName],
+        [highlightJsStyleBorderInputName]: formValues[highlightJsStyleBorderInputName],
       });
       mutate();
 
@@ -90,9 +90,9 @@ export const CustomizeHighlightSetting:FC = () => {
 
   // change isEnableStyleBorder to recommended settings
   useEffect(() => {
-    setValue(styleBorderInputName, highlightJsCssSelectorOptions[styleName]?.border);
+    setValue(highlightJsStyleBorderInputName, highlightJsCssSelectorOptions[highlightJsStyle]?.border);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [styleName]);
+  }, [highlightJsStyle]);
 
 
   return (
@@ -106,13 +106,13 @@ export const CustomizeHighlightSetting:FC = () => {
               <label>{t('admin:customize_setting.theme')}</label>
             </div>
             <Controller
-              name={styleNameInputName}
+              name={highlightJsStyleInputName}
               control={control}
               render={({ onChange }) => {
                 return (
                   <UncontrolledDropdown>
                     <DropdownToggle className="text-right col-6" caret>
-                      <span className="float-left">{highlightJsCssSelectorOptions[styleName]?.name}</span>
+                      <span className="float-left">{highlightJsCssSelectorOptions[highlightJsStyle]?.name}</span>
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu" role="menu">
                       {Object.keys(highlightJsCssSelectorOptions).map((themeName) => {
@@ -138,7 +138,7 @@ export const CustomizeHighlightSetting:FC = () => {
           <div className="offset-md-3 col-md-6 text-left">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
-                name={styleBorderInputName}
+                name={highlightJsStyleBorderInputName}
                 type="checkbox"
                 className="custom-control-input"
                 id="highlightBorder"
