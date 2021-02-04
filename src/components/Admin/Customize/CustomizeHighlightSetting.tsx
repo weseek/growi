@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  UncontrolledDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 
@@ -41,6 +41,40 @@ export const CustomizeHighlightSetting:FC = () => {
     <div className="row">
       <form role="form" className="col-md-12" onSubmit={handleSubmit(submitHandler)}>
         <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
+
+        <div className="form-group row">
+          <div className="offset-md-3 col-md-6 text-left">
+            <div className="my-0 w-100">
+              <label>{t('admin:customize_setting.theme')}</label>
+            </div>
+            <Controller
+              name=""
+              control={control}
+              render={({ onChange }) => {
+                return (
+                  <UncontrolledDropdown>
+                    <DropdownToggle className="text-right col-6" caret>
+                      <span className="float-left">{ 10}</span>
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-menu" role="menu">
+                      {[5, 10, 20, 50, 100].map((num) => {
+                        return (
+                          <DropdownItem key={num} role="presentation" onClick={() => onChange(num)}>
+                            <a role="menuitem">{num}</a>
+                          </DropdownItem>
+                        );
+                      })}
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                );
+              }}
+            />
+            <p className="form-text text-warning">
+              {/* eslint-disable-next-line react/no-danger */}
+              <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} />
+            </p>
+          </div>
+        </div>
         <div className="row my-3">
           <div className="mx-auto">
             <button type="submit" className="btn btn-primary">{ t('Update') }</button>
@@ -129,25 +163,6 @@ export const CustomizeHighlightSetting:FC = () => {
 //           <div className="col-12">
 //             <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
 
-//             <div className="form-group row">
-//               <div className="offset-md-3 col-md-6 text-left">
-//                 <div className="my-0">
-//                   <label>{t('admin:customize_setting.theme')}</label>
-//                 </div>
-//                 <Dropdown isOpen={this.state.isDropdownOpen} toggle={this.onToggleDropdown}>
-//                   <DropdownToggle className="text-right col-6" caret>
-//                     <span className="float-left">{adminCustomizeContainer.state.currentHighlightJsStyleName}</span>
-//                   </DropdownToggle>
-//                   <DropdownMenu className="dropdown-menu" role="menu">
-//                     {menuItem}
-//                   </DropdownMenu>
-//                 </Dropdown>
-//                 <p className="form-text text-warning">
-//                   {/* eslint-disable-next-line react/no-danger */}
-//                   <span dangerouslySetInnerHTML={{ __html: t('admin:customize_setting.nocdn_desc') }} />
-//                 </p>
-//               </div>
-//             </div>
 
 //             <div className="form-group row">
 //               <div className="offset-md-3 col-md-6 text-left">
