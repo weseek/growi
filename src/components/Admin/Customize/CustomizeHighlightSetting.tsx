@@ -58,8 +58,6 @@ export const CustomizeHighlightSetting:FC = () => {
   const { t } = useTranslation();
   const { data, mutate } = useCustomizeSettingsSWR();
 
-  console.log(data);
-  console.log(data);
   const {
     register, handleSubmit, control, watch, setValue,
   } = useForm({
@@ -71,7 +69,7 @@ export const CustomizeHighlightSetting:FC = () => {
 
   // watch for display dropdown label
   const styleName = watch(styleNameInputName);
-  const styleBorder = watch(styleBorderInputName);
+  const isEnabledStyleBorder = watch(styleBorderInputName);
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues:FormValues) => {
 
@@ -87,6 +85,7 @@ export const CustomizeHighlightSetting:FC = () => {
     }
   };
 
+  // change isEnableStyleBorder to recommended settings
   useEffect(() => {
     setValue(styleBorderInputName, highlightJsCssSelectorOptions[styleName]?.border);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,7 +151,7 @@ export const CustomizeHighlightSetting:FC = () => {
         <div className="form-text text-muted">
           <label>Examples:</label>
           <div className="wiki">
-            <HljsDemo isEnabledStyleBorder={styleBorder} />
+            <HljsDemo isEnabledStyleBorder={isEnabledStyleBorder} />
           </div>
         </div>
 
