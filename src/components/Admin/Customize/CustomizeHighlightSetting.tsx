@@ -1,4 +1,4 @@
-import { FC, memo } from 'react';
+import { FC, memo, useEffect } from 'react';
 import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -24,16 +24,16 @@ const highlightJsCssSelectorOptions = {
 };
 /* eslint-enable quote-props, no-multi-spaces */
 
-const highlightJsThemeInputName = 'highlightJsTheme';
-const isEnabledHighlightJsStyleBorderInputName = 'isEnabledHighlightJsStyleBorder';
+const styleNameInputName = 'styleName';
+const styleBorderInputName = 'styleBorder';
 
 
 type FormValues = {
-  [highlightJsThemeInputName]: string;
-  [isEnabledHighlightJsStyleBorderInputName]: boolean;
+  [styleNameInputName]: string;
+  [styleBorderInputName]: boolean;
 }
 
-const HljsDemo = memo((props:{isHighlightJsStyleBorderEnabled:boolean}) => {
+const HljsDemo = memo((props:{isEnabledStyleBorder:boolean}) => {
 
   /* eslint-disable max-len */
   const html = `
@@ -48,29 +48,30 @@ const HljsDemo = memo((props:{isHighlightJsStyleBorderEnabled:boolean}) => {
   /* eslint-enable max-len */
 
   return (
-    <pre className={`hljs ${!props.isHighlightJsStyleBorderEnabled ? 'hljs-no-border' : ''}`}>
+    <pre className={`hljs ${!props.isEnabledStyleBorder ? 'hljs-no-border' : ''}`}>
       {/* eslint-disable-next-line react/no-danger */}
       <code dangerouslySetInnerHTML={{ __html: html }}></code>
     </pre>
   );
 });
-
 export const CustomizeHighlightSetting:FC = () => {
   const { t } = useTranslation();
   const { data, mutate } = useCustomizeSettingsSWR();
 
+  console.log(data);
+  console.log(data);
   const {
     register, handleSubmit, control, watch, setValue,
   } = useForm({
     defaultValues: {
-      [highlightJsThemeInputName]: data?.[highlightJsThemeInputName],
-      [isEnabledHighlightJsStyleBorderInputName]: data?.[isEnabledHighlightJsStyleBorderInputName],
+      [styleNameInputName]: data?.[styleNameInputName],
+      [styleBorderInputName]: data?.[styleBorderInputName],
     },
   });
 
   // watch for display dropdown label
-  const highlightJsTheme = watch(highlightJsThemeInputName);
-  const isEnabledHighlightJsStyleBorder = watch(isEnabledHighlightJsStyleBorderInputName);
+  const styleName = watch(styleNameInputName);
+  const styleBorder = watch(styleBorderInputName);
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues:FormValues) => {
 
@@ -86,6 +87,11 @@ export const CustomizeHighlightSetting:FC = () => {
     }
   };
 
+  useEffect(() => {
+    setValue(styleBorderInputName, highlightJsCssSelectorOptions[styleName]?.border);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [styleName]);
+
 
   return (
     <div className="row">
@@ -98,13 +104,13 @@ export const CustomizeHighlightSetting:FC = () => {
               <label>{t('admin:customize_setting.theme')}</label>
             </div>
             <Controller
-              name={highlightJsThemeInputName}
+              name={styleNameInputName}
               control={control}
               render={({ onChange }) => {
                 return (
                   <UncontrolledDropdown>
                     <DropdownToggle className="text-right col-6" caret>
-                      <span className="float-left">{highlightJsCssSelectorOptions[highlightJsTheme].name}</span>
+                      <span className="float-left">{highlightJsCssSelectorOptions[styleName]?.name}</span>
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu" role="menu">
                       {Object.keys(highlightJsCssSelectorOptions).map((themeName) => {
@@ -130,7 +136,7 @@ export const CustomizeHighlightSetting:FC = () => {
           <div className="offset-md-3 col-md-6 text-left">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
-                name={isEnabledHighlightJsStyleBorderInputName}
+                name={styleBorderInputName}
                 type="checkbox"
                 className="custom-control-input"
                 id="highlightBorder"
@@ -146,7 +152,7 @@ export const CustomizeHighlightSetting:FC = () => {
         <div className="form-text text-muted">
           <label>Examples:</label>
           <div className="wiki">
-            <HljsDemo isHighlightJsStyleBorderEnabled={isEnabledHighlightJsStyleBorder} />
+            <HljsDemo isEnabledStyleBorder={styleBorder} />
           </div>
         </div>
 
