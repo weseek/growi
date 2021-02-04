@@ -66,9 +66,7 @@ class BoltService {
       await say('Hello');
       const { searchService } = this.crowi;
       const results = await searchService.searchKeyword(command.text, null, {}, {});
-      results.data.forEach((result) => {
-        console.log(result);
-      });
+      console.log(results.data.slice(0, 10));
     });
   }
 
