@@ -9,8 +9,28 @@ import { useTranslation } from '~/i18n';
 // import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
-type FormValues ={
+/* eslint-disable quote-props, no-multi-spaces */
+const highlightJsCssSelectorOptions = {
+  'github':           { name: '[Light] GitHub',         border: false },
+  'github-gist':      { name: '[Light] GitHub Gist',    border: true },
+  'atom-one-light':   { name: '[Light] Atom One Light', border: true },
+  'xcode':            { name: '[Light] Xcode',          border: true },
+  'vs':               { name: '[Light] Vs',             border: true },
+  'atom-one-dark':    { name: '[Dark] Atom One Dark',   border: false },
+  'hybrid':           { name: '[Dark] Hybrid',          border: false },
+  'monokai':          { name: '[Dark] Monokai',         border: false },
+  'tomorrow-night':   { name: '[Dark] Tomorrow Night',  border: false },
+  'vs2015':           { name: '[Dark] Vs 2015',         border: false },
+};
+/* eslint-enable quote-props, no-multi-spaces */
 
+const highlightJsThemeInputName = 'highlightJsTheme';
+const isEnabledHighlightJsStyleBorderInputName = 'isEnabledHighlightJsStyleBorder';
+
+
+type FormValues = {
+  [highlightJsThemeInputName]: string;
+  [isEnabledHighlightJsStyleBorderInputName]: boolean;
 }
 
 const HljsDemo = memo((props:{isHighlightJsStyleBorderEnabled:boolean}) => {
@@ -42,13 +62,19 @@ export const CustomizeHighlightSetting:FC = () => {
     register, handleSubmit, control, watch, setValue,
   } = useForm({
     defaultValues: {
-      hoge: 'huga',
+      [highlightJsThemeInputName]: 'github',
+      [isEnabledHighlightJsStyleBorderInputName]: true,
     },
   });
 
-  const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
+  // watch for display dropdown label
+  const highlightJsTheme = watch(highlightJsThemeInputName);
+  const isEnabledHighlightJsStyleBorder = watch(isEnabledHighlightJsStyleBorderInputName);
+
+  const submitHandler: SubmitHandler<FormValues> = async(formValues:FormValues) => {
 
     try {
+      console.log(formValues);
       // await apiv3Put('/customize-setting/function', {  });
       // mutate();
 
@@ -58,6 +84,7 @@ export const CustomizeHighlightSetting:FC = () => {
       toastError(err);
     }
   };
+
 
   return (
     <div className="row">
@@ -70,19 +97,19 @@ export const CustomizeHighlightSetting:FC = () => {
               <label>{t('admin:customize_setting.theme')}</label>
             </div>
             <Controller
-              name=""
+              name={highlightJsThemeInputName}
               control={control}
               render={({ onChange }) => {
                 return (
                   <UncontrolledDropdown>
                     <DropdownToggle className="text-right col-6" caret>
-                      <span className="float-left">{ 10}</span>
+                      <span className="float-left">{highlightJsCssSelectorOptions[highlightJsTheme].name}</span>
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu" role="menu">
-                      {[5, 10, 20, 50, 100].map((num) => {
+                      {Object.keys(highlightJsCssSelectorOptions).map((themeName) => {
                         return (
-                          <DropdownItem key={num} role="presentation" onClick={() => onChange(num)}>
-                            <a role="menuitem">{num}</a>
+                          <DropdownItem key={themeName} role="presentation" onClick={() => onChange(themeName)}>
+                            <a role="menuitem">{themeName}</a>
                           </DropdownItem>
                         );
                       })}
@@ -102,7 +129,7 @@ export const CustomizeHighlightSetting:FC = () => {
           <div className="offset-md-3 col-md-6 text-left">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
-                name=""
+                name={isEnabledHighlightJsStyleBorderInputName}
                 type="checkbox"
                 className="custom-control-input"
                 id="highlightBorder"
@@ -118,7 +145,7 @@ export const CustomizeHighlightSetting:FC = () => {
         <div className="form-text text-muted">
           <label>Examples:</label>
           <div className="wiki">
-            <HljsDemo isHighlightJsStyleBorderEnabled />
+            <HljsDemo isHighlightJsStyleBorderEnabled={isEnabledHighlightJsStyleBorder} />
           </div>
         </div>
 
@@ -131,70 +158,3 @@ export const CustomizeHighlightSetting:FC = () => {
     </div>
   );
 };
-
-// class DepricateCustomizeHighlightSetting extends React.Component {
-
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       isDropdownOpen: false,
-//     };
-
-//     this.onToggleDropdown = this.onToggleDropdown.bind(this);
-//     this.onClickSubmit = this.onClickSubmit.bind(this);
-//   }
-
-//   onToggleDropdown() {
-//     this.setState({ isDropdownOpen: !this.state.isDropdownOpen });
-//   }
-
-//   async onClickSubmit() {
-//     const { t, adminCustomizeContainer } = this.props;
-
-//     try {
-//       await adminCustomizeContainer.updateHighlightJsStyle();
-//       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.code_highlight') }));
-//     }
-//     catch (err) {
-//       toastError(err);
-//     }
-//   }
-
-
-//   render() {
-//     const { t, adminCustomizeContainer } = this.props;
-//     const options = adminCustomizeContainer.state.highlightJsCssSelectorOptions;
-//     const menuItem = [];
-
-//     Object.entries(options).forEach((option) => {
-//       const styleId = option[0];
-//       const styleName = option[1].name;
-//       const isBorderEnable = option[1].border;
-
-//       menuItem.push(
-//         <DropdownItem
-//           key={styleId}
-//           role="presentation"
-//           onClick={() => adminCustomizeContainer.switchHighlightJsStyle(styleId, styleName, isBorderEnable)}
-//         >
-//           <a role="menuitem">{styleName}</a>
-//         </DropdownItem>,
-//       );
-//     });
-
-//     return (
-//       <React.Fragment>
-//         <div className="row">
-//           <div className="col-12">
-//             <h2 className="admin-setting-header">{t('admin:customize_setting.code_highlight')}</h2>
-
-
-//             <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
-//           </div>
-//         </div>
-//       </React.Fragment>
-//     );
-//   }
-
-// }
