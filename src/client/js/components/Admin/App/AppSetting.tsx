@@ -8,7 +8,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AdminAppContainer from '../../../services/AdminAppContainer';
-import { AdminUpdateButtonRow } from '~/components/Admin/Common/AdminUpdateButtonRow';
+// import { AdminUpdateButtonRow } from '~/components/Admin/Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:appSettings');
 
@@ -138,7 +138,7 @@ class AppSetting extends React.Component<Props> {
           </div>
         </div>
 
-        <AdminUpdateButtonRow onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
+        {/* <AdminUpdateButtonRow onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null} /> */}
       </React.Fragment>
     );
   }
