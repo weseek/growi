@@ -1,12 +1,12 @@
 import { FC, memo } from 'react';
 import {
-  UncontrolledDropdown, Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 
 import { useTranslation } from '~/i18n';
 
-// import { withUnstatedContainers } from '../../UnstatedUtils';
+import { useCustomizeSettingsSWR } from '~/stores/admin';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
 /* eslint-disable quote-props, no-multi-spaces */
@@ -57,13 +57,14 @@ const HljsDemo = memo((props:{isHighlightJsStyleBorderEnabled:boolean}) => {
 
 export const CustomizeHighlightSetting:FC = () => {
   const { t } = useTranslation();
+  const { data, mutate } = useCustomizeSettingsSWR();
 
   const {
     register, handleSubmit, control, watch, setValue,
   } = useForm({
     defaultValues: {
-      [highlightJsThemeInputName]: 'github',
-      [isEnabledHighlightJsStyleBorderInputName]: true,
+      [highlightJsThemeInputName]: data?.[highlightJsThemeInputName],
+      [isEnabledHighlightJsStyleBorderInputName]: data?.[isEnabledHighlightJsStyleBorderInputName],
     },
   });
 
@@ -76,7 +77,7 @@ export const CustomizeHighlightSetting:FC = () => {
     try {
       console.log(formValues);
       // await apiv3Put('/customize-setting/function', {  });
-      // mutate();
+      mutate();
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.code_highlight') }));
     }
