@@ -33,7 +33,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
 
-  // TODO enable react-hook-form by GW 5088
+  // TODO imprv submitHandler by GW 5088
   const submitHandler = (data) => {
     alert(JSON.stringify(data));
   };
@@ -54,6 +54,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             <div className="input-group-prepend">
               {/* <span className="input-group-text">{crowi.url} </span> */}
             </div>
+            {/* TODO imprv submitHandler by GW 5088 */}
             {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
             <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}>
               <input
@@ -142,6 +143,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
         <button
           type="button"
           className="btn btn-primary"
+          //  TODO enable rename by GW 5088
           // onClick={rename}
           // disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
         >Rename
