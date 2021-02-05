@@ -76,11 +76,18 @@ class BoltService {
     });
 
     this.bolt.command('/growi', async({ command, ack, say }) => {
-      const { searchService } = this.crowi;
-      const option = { limit: 10 };
-      const results = await searchService.searchKeyword(command.text, null, {}, option);
-      // get 10 result from slack input
-      console.log(results.data);
+      const inputSlack = command.text.split(' ');
+      const firstArg = inputSlack[0];
+      const secondArg = inputSlack[1];
+
+      if (firstArg === 'search') {
+        const { searchService } = this.crowi;
+        const option = { limit: 10 };
+        const results = await searchService.searchKeyword(secondArg, null, {}, option);
+        // get 10 result from slack input
+        console.log(results.data);
+      }
+      return;
     });
   }
 
