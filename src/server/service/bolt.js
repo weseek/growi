@@ -74,6 +74,22 @@ class BoltService {
 
       await say(`${command.text}`);
     });
+
+    // TODO check if firstArg is the supported command(like "search")
+    this.bolt.command('/growi', async({ command, ack, say }) => {
+      const inputSlack = command.text.split(' ');
+      const firstArg = inputSlack[0];
+      const secondArg = inputSlack[1];
+
+      if (firstArg === 'search') {
+        const { searchService } = this.crowi;
+        const option = { limit: 10 };
+        const results = await searchService.searchKeyword(secondArg, null, {}, option);
+        // get 10 result from slack input
+        console.log(results.data);
+      }
+      return;
+    });
   }
 
 }
