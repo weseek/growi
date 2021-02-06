@@ -47,7 +47,7 @@ class PageRevisionList extends React.Component {
           <Revision
             t={this.props.t}
             revision={revision}
-            isLatestRevision={revision == latestRevision}
+            isLatestRevision={revision === latestRevision}
             revisionDiffOpened={revisionDiffOpened}
             hasDiff={hasDiff}
             isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}

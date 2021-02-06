@@ -66,8 +66,10 @@ export default class Revision extends React.Component {
         <div className="ml-2">
           <div className="revision-history-author">
             <strong><Username user={author}></Username></strong>
-            { this.props.isLatestRevision &&
+            { this.props.isLatestRevision
+              && (
               <span className="badge badge-info ml-2">Latest</span>
+              )
             }
           </div>
           <div className="revision-history-meta">
