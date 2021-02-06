@@ -57,7 +57,7 @@ export default class RevisionComparerContainer extends Container {
   /**
    * Get the IDs of the comparison source and target from "window.location" as an array
    */
-  get revisionIDsToCompareAsParam() {
+  getRevisionIDsToCompareAsParam() {
     const searchParams = {};
     for (const param of window.location.search?.substr(1)?.split('&')) {
       const [k, v] = param.split('=');

@@ -123,7 +123,7 @@ if (pageContainer.state.pageId != null) {
   });
 
   // show the Page accessory modal when query of "compare" is requested
-  if (revisionComparerContainer.revisionIDsToCompareAsParam.length > 0) {
+  if (revisionComparerContainer.getRevisionIDsToCompareAsParam.length > 0) {
     pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
   }
 }
