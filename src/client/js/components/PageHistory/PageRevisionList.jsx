@@ -32,6 +32,7 @@ class PageRevisionList extends React.Component {
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
   renderRow(revision, previousRevision, hasDiff, isContiguousNodiff) {
+    const { latestRevision } = this.props.pageHistoryContainer.state;
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
 
@@ -46,6 +47,7 @@ class PageRevisionList extends React.Component {
           <Revision
             t={this.props.t}
             revision={revision}
+            isLatestRevision={revision == latestRevision}
             revisionDiffOpened={revisionDiffOpened}
             hasDiff={hasDiff}
             isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
