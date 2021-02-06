@@ -17,30 +17,32 @@ const RevisionSelector = (props) => {
 
   return (
     <React.Fragment>
-      <div className="custom-control custom-radio custom-control-inline">
-        <input
-          type="radio"
-          className="custom-control-input"
-          id={`compareSource-${revision._id}`}
-          name="compareSource"
-          value={revision._id}
-          checked={revision._id === sourceRevision?._id}
-          onChange={() => revisionComparerContainer.setState({ sourceRevision: revision })}
-        />
-        <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
-      </div>
-      <div className="custom-control custom-radio custom-control-inline">
-        <input
-          type="radio"
-          className="custom-control-input"
-          id={`compareTarget-${revision._id}`}
-          name="compareTarget"
-          value={revision._id}
-          checked={revision._id === targetRevision?._id}
-          onChange={() => revisionComparerContainer.setState({ targetRevision: revision })}
-          disabled={revisionComparerContainer.state.compareWithLatest}
-        />
-        <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
+      <div className="d-flex">
+        <div className="custom-control custom-radio custom-control-inline">
+          <input
+            type="radio"
+            className="custom-control-input"
+            id={`compareSource-${revision._id}`}
+            name="compareSource"
+            value={revision._id}
+            checked={revision._id === sourceRevision?._id}
+            onChange={() => revisionComparerContainer.setState({ sourceRevision: revision })}
+          />
+          <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
+        </div>
+        <div className="custom-control custom-radio custom-control-inline">
+          <input
+            type="radio"
+            className="custom-control-input"
+            id={`compareTarget-${revision._id}`}
+            name="compareTarget"
+            value={revision._id}
+            checked={revision._id === targetRevision?._id}
+            onChange={() => revisionComparerContainer.setState({ targetRevision: revision })}
+            disabled={revisionComparerContainer.state.compareWithLatest}
+          />
+          <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
+        </div>
       </div>
     </React.Fragment>
   );
