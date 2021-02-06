@@ -44,7 +44,7 @@ export default class RevisionComparerContainer extends Container {
   async initRevisions() {
     const latestRevision = await this.fetchLatestRevision();
 
-    const [sourceRevisionId, targetRevisionId] = this.getRevisionIDsToCompareAsParam;
+    const [sourceRevisionId, targetRevisionId] = this.getRevisionIDsToCompareAsParam();
     const sourceRevision = sourceRevisionId ? await this.fetchRevision(sourceRevisionId) : latestRevision;
     const targetRevision = targetRevisionId ? await this.fetchRevision(targetRevisionId) : latestRevision;
     const compareWithLatest = targetRevisionId ? false : this.state.compareWithLatest;
