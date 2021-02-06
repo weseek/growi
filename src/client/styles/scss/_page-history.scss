@@ -61,16 +61,6 @@
     }
   }
 
-  // adjust
-  // this is for diff2html. hide page name from diff view
-  .d2h-file-header {
-    display: none;
-  }
-
-  .d2h-diff-tbody {
-    background-color: white;
-  }
-
   .revision-compare {
     .revision-compare-outer {
       min-height: 100px;
