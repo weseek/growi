@@ -137,7 +137,7 @@ class PageRevisionList extends React.Component {
               </div>
             </div>
             <div className="revision-history-list-content-body">
-            {revisionList}
+              {revisionList}
             </div>
           </div>
         </div>
