@@ -36,14 +36,14 @@ class PageRevisionList extends React.Component {
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
 
-    const classNames = ['revision-history-outer'];
+    const classNames = ['revision-history-outer', 'row', 'no-gutters'];
     if (isContiguousNodiff) {
       classNames.push('revision-history-outer-contiguous-nodiff');
     }
 
     return (
       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-        <div className="d-flex" key={`revision-history-top-${revisionId}`}>
+        <div className="col-8" key={`revision-history-top-${revisionId}`}>
           <Revision
             t={this.props.t}
             revision={revision}
@@ -54,13 +54,13 @@ class PageRevisionList extends React.Component {
             onDiffOpenClicked={this.props.onDiffOpenClicked}
             key={`revision-history-rev-${revisionId}`}
           />
-          <div className="align-self-center ml-auto">
-            <RevisionSelector
-              revision={revision}
-              hasDiff={hasDiff}
-              key={`revision-compare-target-selector-${revisionId}`}
-            />
-          </div>
+        </div>
+        <div className="col-4 align-self-center">
+          <RevisionSelector
+            revision={revision}
+            hasDiff={hasDiff}
+            key={`revision-compare-target-selector-${revisionId}`}
+          />
         </div>
         { hasDiff
           && (
@@ -128,15 +128,17 @@ class PageRevisionList extends React.Component {
         </div>
         <hr />
         <div className={classNames.join(' ')}>
-          <div className="d-flex">
-            <div className="mr-auto">{ t('page_history.revision') }</div>
-            <div className="d-flex row">
-              <div>{ t('page_history.comparing_source') }</div>
-              <div className="ml-2">{ t('page_history.comparing_target') }</div>
+          <div className="revision-history-list-container">
+            <div className="revision-history-list-content-header sticky-top bg-white">
+              <div className="row no-gutters">
+                <div className="col-8">{ t('page_history.revision') }</div>
+                <div className="col-2 text-center">{ t('page_history.comparing_source') }</div>
+                <div className="col-2 text-center">{ t('page_history.comparing_target') }</div>
+              </div>
             </div>
-          </div>
-          <div className="revision-history-list-body">
+            <div className="revision-history-list-content-body">
             {revisionList}
+            </div>
           </div>
         </div>
       </React.Fragment>
