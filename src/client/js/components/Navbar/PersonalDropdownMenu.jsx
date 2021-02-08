@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip, DropdownMenu, DropdownItem } from 'reactstrap';
 
@@ -14,10 +13,6 @@ import {
   updateUserPreference,
   updateUserPreferenceWithOsSettings,
 } from '../../util/color-scheme';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import NavigationContainer from '../../services/NavigationContainer';
 
 import UserPicture from '../User/UserPicture';
 
@@ -228,10 +223,4 @@ const PersonalDropdownMenu = (props) => {
 
 };
 
-PersonalDropdownMenu.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-
-export default withUnstatedContainers(PersonalDropdownMenu, [AppContainer, NavigationContainer]);
+export default PersonalDropdownMenu;

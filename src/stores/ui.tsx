@@ -1,11 +1,16 @@
 import { mutate, responseInterface } from 'swr';
 
+import loggerFactory from '~/utils/logger';
+
 import { isUserPage, isSharedPage, isCreatablePage } from '~/utils/path-utils';
 import {
   useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser, useForbidden,
 } from './context';
 import { useCurrentPageDeleted, useDescendantsCount, useCurrentPageSWR } from './page';
 import { useStaticSWR } from './use-static-swr';
+
+const logger = loggerFactory('growi:stores:ui');
+
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
@@ -102,6 +107,16 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
   }
   else {
     mutate(key, isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
+  }
+
+  return useStaticSWR(key);
+};
+
+export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
+  const key = 'isPageCreateModalOpened';
+
+  if (isOpened != null) {
+    mutate(key, isOpened);
   }
 
   return useStaticSWR(key);
