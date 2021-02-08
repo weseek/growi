@@ -3,6 +3,7 @@ export type Page = {
   id: string,
   path: string,
   status: string,
+  revisionId: string,
 }
 
 export type BookmarkInfo = {

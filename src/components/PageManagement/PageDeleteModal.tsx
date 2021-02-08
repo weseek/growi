@@ -5,6 +5,8 @@ import {
 } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 
+import { Page as IPage } from '~/interfaces/page';
+import { apiPost } from '~/client/js/util/apiv1-client';
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
 const deleteIconAndKey = {
@@ -23,7 +25,7 @@ const deleteIconAndKey = {
 
 type Props = {
   isOpen: boolean;
-  path?: string;
+  currentPage: IPage;
   isAbleToDeleteCompletely?: boolean;
   isDeleteCompletelyModal?: boolean;
   onClose:() => void;
@@ -31,7 +33,8 @@ type Props = {
 
 export const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
-  const { isAbleToDeleteCompletely = false, path, isDeleteCompletelyModal } = props;
+
+  const { isAbleToDeleteCompletely = false, currentPage, isDeleteCompletelyModal } = props;
   const [errs, setErrs] = useState([]);
   const [isDeleteRecursively, setIsDeleteRecursively] = useState(true);
   const [isDeleteCompletely, setIsDeleteCompletely] = useState(isDeleteCompletelyModal && isAbleToDeleteCompletely);
@@ -46,9 +49,18 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
     setErrs([]);
 
     try {
-      // const response = await pageContainer.deletePage(isDeleteRecursively, isDeleteCompletely);
-      // const trashPagePath = response.page.path;
-      // window.location.href = encodeURI(trashPagePath);
+      const response = await apiPost('/pages.remove', {
+        recursively: isDeleteRecursively ? true : null,
+        completely: isDeleteCompletely ? true : null,
+        page_id: currentPage.id,
+        revision_id: currentPage.revisionId,
+        // socketClientId: SocketIoContainer.getSocketClientId(),
+      });
+
+      console.log(response);
+
+      const trashPagePath = response.page.path;
+      window.location.href = encodeURI(trashPagePath);
     }
     catch (err) {
       setErrs(err);
@@ -71,7 +83,7 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
       <ModalBody>
         <div className="form-group">
           <label>{ t('modal_delete.deleting_page') }:</label><br />
-          <code>{ path }</code>
+          <code>{ currentPage.path }</code>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
@@ -83,7 +95,7 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
           />
           <label className="custom-control-label" htmlFor="deleteRecursively">
             { t('modal_delete.delete_recursively') }
-            <p className="form-text text-muted mt-0"><code>{path}</code> { t('modal_delete.recursively') }</p>
+            <p className="form-text text-muted mt-0"><code>{currentPage.path}</code> { t('modal_delete.recursively') }</p>
           </label>
         </div>
         {!isDeleteCompletelyModal && (
