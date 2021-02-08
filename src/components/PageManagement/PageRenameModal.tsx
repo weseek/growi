@@ -57,19 +57,30 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             </div>
             {/* TODO imprv submitHandler by GW 5088 */}
             {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
-            <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}>
-              <input
+            {/* <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}> */}
+            {/* <input
                 name="pagename"
                 type="text"
                 className="form-control"
-                // value={pageNameInput}
-                // onChange={e => inputChangeHandler(e.target.value)}
+                value={pageNameInput}
+                onChange={e => inputChangeHandler(e.target.value)}
                 required
                 autoFocus
                 ref={register}
-              />
-              <SearchTypeahead />
-            </form>
+              /> */}
+            {/* </form> */}
+            <SearchTypeahead
+              onSubmit={handleSubmit(submitHandler)}
+                // onChange={inputChangeHandler}
+                // onInputChange={props.onInputChange}
+              inputName="new_path"
+              emptyLabelExceptError={null}
+              placeholder="Input page path"
+                // keywordOnInit={getKeywordOnInit(initializedPath)}
+              name="pagename"
+              required
+              autoFocus
+            />
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
