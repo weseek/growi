@@ -17,7 +17,7 @@ import { useTranslation } from '~/i18n';
 
 // import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
-// import PagePathAutoComplete from './PagePathAutoComplete';
+// import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
 // import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 // import ComparePathsTable from './ComparePathsTable';
 // import DuplicatePathsTable from './DuplicatedPathsTable';
