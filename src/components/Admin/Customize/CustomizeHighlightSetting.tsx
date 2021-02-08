@@ -55,6 +55,7 @@ const HljsDemo = memo((props:{isEnabledStyleBorder:boolean}) => {
     </pre>
   );
 });
+
 export const CustomizeHighlightSetting:FC = () => {
   const { t } = useTranslation();
   const { data, mutate } = useCustomizeSettingsSWR();
@@ -94,6 +95,11 @@ export const CustomizeHighlightSetting:FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [highlightJsStyle]);
 
+  useEffect(() => {
+    setValue(highlightJsStyleInputName, data?.[highlightJsStyleInputName]);
+    setValue(highlightJsStyleBorderInputName, data?.[highlightJsStyleBorderInputName]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.[highlightJsStyleInputName], data?.[highlightJsStyleBorderInputName]]);
 
   return (
     <div className="row">
