@@ -49,7 +49,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
               {/* <span className="input-group-text">{crowi.url}</span> */}
             </div>
             <div className="flex-fill">
-              {/* TODO enable isReachable */}
+              {/* TODO enable isReachable and use react-hook-form by GW5116 */}
               {/* {isReachable
               ? (
                 <PagePathAutoComplete
