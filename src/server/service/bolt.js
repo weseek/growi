@@ -80,13 +80,16 @@ class BoltService {
       const inputSlack = command.text.split(' ');
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
+      await ack();
 
       if (firstArg === 'search') {
         const { searchService } = this.crowi;
         const option = { limit: 10 };
         const results = await searchService.searchKeyword(secondArg, null, {}, option);
         // get 10 result from slack input
-        console.log(results.data);
+        // console.log(results.data[0]);
+
+        await say(`${results.data[0]._id}`);
       }
       return;
     });
