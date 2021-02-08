@@ -11,7 +11,7 @@ const RenamedAlert = (props) => {
 
   return (
     <>
-      <strong>{ t('Moved') }: <code>{beforePathRenamed}</code> </strong>{t('page_page.notice.moved')}
+      <strong>{ t('Moved') }:</strong> {t('page_page.notice.moved')} <code>{beforePathRenamed}</code>
     </>
   );
 };
