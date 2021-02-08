@@ -60,7 +60,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
                 />
               )
               : (
-                {/* TODO enable SearchTypeahead by GW5115 */}
+                TODO enable SearchTypeahead by GW5116
                 <input
                   type="text"
                   value={pageNameInput}
