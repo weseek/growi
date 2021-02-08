@@ -16,5 +16,5 @@ export type LikeInfo = {
 }
 
 export type Tag = {
-
+  name: string,
 }

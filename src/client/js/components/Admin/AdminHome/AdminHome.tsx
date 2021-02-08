@@ -7,7 +7,6 @@ import InstalledPluginTable from './InstalledPluginTable';
 import EnvVarsTable from './EnvVarsTable';
 
 type Props = {
-  growiVersion: string,
   nodeVersion: string,
   npmVersion: string,
   yarnVersion: string,
@@ -32,7 +31,6 @@ const AdminHome = (props: Props): JSX.Element => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:admin_top.system_information')}</h2>
           <SystemInfomationTable
-            growiVersion={props.growiVersion}
             nodeVersion={props.nodeVersion}
             npmVersion={props.npmVersion}
             yarnVersion={props.yarnVersion}
