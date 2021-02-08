@@ -294,11 +294,10 @@
   },
   "page_page": {
     "notice": {
-      "this_page":"このページは",
       "version": "これは現在の版ではありません。",
-      "moved": "から移動しました。",
+      "moved": "移動元 >>",
       "redirected": "リダイレクト元 >>",
-      "duplicated": "から複製されました。",
+      "duplicated": "複製元 >>",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",

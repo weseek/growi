@@ -274,9 +274,9 @@
 	"page_page": {
 		"notice": {
 			"version": "这不是当前版本。",
-			"moved": "此页已从<code>%s</code>",
-			"redirected": "您将从<code>%s</code>",
-			"duplicated": "此页来自<code>%s</code>",
+			"moved": "此页已从",
+			"redirected": "您将从",
+			"duplicated": "此页来自",
 			"unlinked": "将网页重定向到此网页已被删除。",
 			"restricted": "访问此页受到限制",
 			"stale": "自上次更新以来，已超过{{count}年。",
