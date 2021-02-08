@@ -60,6 +60,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
                 />
               )
               : (
+                {/* TODO enable SearchTypeahead by GW5115 */}
                 <input
                   type="text"
                   value={pageNameInput}
@@ -86,6 +87,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
           </label>
 
           <div>
+            {/* TODO: enable isDuplicateRecursively by GW-5117 */}
             {/* {isDuplicateRecursively && existingPaths.length !== 0 && (
             <div className="custom-control custom-checkbox custom-checkbox-warning">
               <input
