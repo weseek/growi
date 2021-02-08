@@ -105,7 +105,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
-      <BasicLayout title="GROWI" growiVersion={props.growiVersion}>
+      <BasicLayout title="GROWI">
         <header className="py-0">
           <GrowiSubNavigation />
         </header>

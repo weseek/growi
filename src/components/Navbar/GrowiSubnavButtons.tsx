@@ -5,8 +5,8 @@ import { useCurrentPageSWR, useBookmarkInfoSWR, useLikeInfoSWR } from '~/stores/
 import { useIsAbleToShowPageReactionButtons, useIsAbleToShowLikeButton } from '~/stores/ui';
 import { Page as IPage, BookmarkInfo as IBookmarkInfo, LikeInfo as ILikeInfo } from '~/interfaces/page';
 import { apiv3Put } from '~/utils/apiv3-client';
-/* TODO  move PageManagement from old directory by GW-4402 */
-import PageManagement from '~/client/js/components/Page/PageManagement';
+
+import { PageManagement } from '~/components/PageManagement/PageManagement';
 
 
 export const PageReactionButtons:FC = () => {

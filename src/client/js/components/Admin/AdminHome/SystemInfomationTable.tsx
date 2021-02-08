@@ -1,18 +1,19 @@
+import { useGrowiVersion } from '~/stores/context';
+
 type Props = {
-  growiVersion: string,
   nodeVersion: string,
   npmVersion: string,
   yarnVersion: string,
 };
 
 const SystemInformationTable = (props: Props): JSX.Element => {
-
+  const { data: growiVersion } = useGrowiVersion();
   return (
     <table className="table table-bordered">
       <tbody>
         <tr>
           <th>GROWI</th>
-          <td>{ props.growiVersion }</td>
+          <td>{ growiVersion }</td>
         </tr>
         <tr>
           <th>node.js</th>

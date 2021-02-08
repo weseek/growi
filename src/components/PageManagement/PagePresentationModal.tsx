@@ -1,10 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  Modal, ModalBody,
-} from 'reactstrap';
+import React, { FC } from 'react';
+import { Modal, ModalBody } from 'reactstrap';
 
-const PagePresentationModal = (props) => {
+type Props = {
+  isOpen: boolean;
+  onClose: () => void;
+  href: string,
+}
+
+export const PagePresentationModal:FC<Props> = (props:Props) => {
 
   function closeModalHandler() {
     if (props.onClose === null) {
@@ -21,11 +24,3 @@ const PagePresentationModal = (props) => {
     </Modal>
   );
 };
-PagePresentationModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
-  href: PropTypes.string.isRequired,
-};
-
-
-export default PagePresentationModal;

@@ -1,17 +1,30 @@
 import React from 'react';
 
-import CustomizeThemeSetting from '~/client/js/components/Admin/Customize/CustomizeThemeSetting';
-import CustomizeFunctionSetting from '~/client/js/components/Admin/Customize/CustomizeFunctionSetting';
+import { useCustomizeSettingsSWR } from '~/stores/admin';
+
+import { CustomizeThemeSetting } from '~/components/Admin/Customize/CustomizeThemeSetting';
+import {CustomizeFunctionSetting} from '~/components/Admin/Customize/CustomizeFunctionSetting';
 import CustomizeHighlightSetting from '~/client/js/components/Admin/Customize/CustomizeHighlightSetting';
 import CustomizeTitle from '~/client/js/components/Admin/Customize/CustomizeTitle';
 import CustomizeHeaderSetting from '~/client/js/components/Admin/Customize/CustomizeHeaderSetting';
 import CustomizeCssSetting from '~/client/js/components/Admin/Customize/CustomizeCssSetting';
 import CustomizeScriptSetting from '~/client/js/components/Admin/Customize/CustomizeScriptSetting';
 
-import { useTranslation } from '~/i18n';
-
 const CustomizeSettingContents = (): JSX.Element => {
-  const { t } = useTranslation();
+  const { error, data } = useCustomizeSettingsSWR();
+
+  // TODO impl alert for display error message
+  if (error != null) {
+    return <></>;
+  }
+
+  if (data == null) {
+    return (
+      <div className="my-5 text-center">
+        <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted" />
+      </div>
+    );
+  }
 
   return (
     <React.Fragment>
@@ -21,7 +34,7 @@ const CustomizeSettingContents = (): JSX.Element => {
       <div className="mb-5">
         <CustomizeFunctionSetting />
       </div>
-      <div className="mb-5">
+      {/*  <div className="mb-5">
         <CustomizeHighlightSetting />
       </div>
       <div className="mb-5">
@@ -35,7 +48,7 @@ const CustomizeSettingContents = (): JSX.Element => {
       </div>
       <div className="mb-5">
         <CustomizeScriptSetting />
-      </div>
+      </div> */}
     </React.Fragment>
   );
 };
