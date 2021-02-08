@@ -31,8 +31,6 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *        description: CustomizeFunction
  *        type: object
  *        properties:
- *          isEnabledTimeline:
- *            type: boolean
  *          isSavedStatesOfTabChanges:
  *            type: boolean
  *          isEnabledAttachTitleHeader:
@@ -94,7 +92,6 @@ module.exports = (crowi) => {
       body('themeType').isString(),
     ],
     function: [
-      body('isEnabledTimeline').isBoolean(),
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
       body('pageLimitationS').isInt().isInt({ min: 1, max: 1000 }),
@@ -149,7 +146,6 @@ module.exports = (crowi) => {
     const customizeParams = {
       layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
-      isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
       pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
@@ -272,9 +268,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeFunction'
    */
-  router.put('/function', loginRequiredStrictly, adminRequired, csrf, validator.function, apiV3FormValidator, async(req, res) => {
+  router.put('/function', loginRequiredStrictly, adminRequired, validator.function, apiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:isEnabledTimeline': req.body.isEnabledTimeline,
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
       'customize:showPageLimitationS': req.body.pageLimitationS,
@@ -288,7 +283,6 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
         isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
         pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
