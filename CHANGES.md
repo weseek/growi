@@ -2,7 +2,7 @@
 
 ## v4.2.9-RC
 
-* 
+* Improvement: Add batchSize option for flow rate limit about stream 
 
 ## v4.2.8
 
