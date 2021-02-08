@@ -7,8 +7,9 @@ import { useForm } from 'react-hook-form';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
 import { debounce } from 'throttle-debounce';
+import SearchTypeahead from '~/client/js/components/SearchTypeahead';
+
 import { useTranslation } from '~/i18n';
 
 import { useCurrentPagePath } from '~/stores/context';
@@ -67,6 +68,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
                 autoFocus
                 ref={register}
               />
+              <SearchTypeahead />
             </form>
           </div>
         </div>
