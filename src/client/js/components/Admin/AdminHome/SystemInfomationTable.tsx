@@ -17,15 +17,15 @@ const SystemInformationTable = (props: Props): JSX.Element => {
         </tr>
         <tr>
           <th>node.js</th>
-          <td>{ props.nodeVersion }</td>
+          <td>{ props.nodeVersion || '-' }</td>
         </tr>
         <tr>
           <th>npm</th>
-          <td>{ props.npmVersion }</td>
+          <td>{ props.npmVersion || '-' }</td>
         </tr>
         <tr>
           <th>yarn</th>
-          <td>{ props.yarnVersion }</td>
+          <td>{ props.yarnVersion || '-' }</td>
         </tr>
       </tbody>
     </table>
