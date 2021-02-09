@@ -1,7 +1,6 @@
 import React, {
   FC, Fragment, useMemo, useState,
 } from 'react';
-// import PropTypes from 'prop-types';
 import { TabContent, TabPane } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 
