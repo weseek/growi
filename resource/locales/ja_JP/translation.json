@@ -325,6 +325,14 @@
     "outdated": "ページが他のユーザーによって更新されました。",
     "user_not_admin": "権限のあるユーザーのみが完全削除できます"
   },
+  "page_history": {
+    "revision_list": "更新履歴",
+    "revision": "バージョン",
+    "comparing_source": "ソース",
+    "comparing_target": "ターゲット",
+    "comparing_revisions": "比較",
+    "comparing_with_latest": "常に最新バージョンと比較する"
+  },
   "modal_rename": {
     "label": {
       "Move/Rename page": "ページを移動/名前変更する",

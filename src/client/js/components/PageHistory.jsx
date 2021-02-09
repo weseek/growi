@@ -10,7 +10,8 @@ import PageRevisionList from './PageHistory/PageRevisionList';
 
 import PageHistroyContainer from '../services/PageHistoryContainer';
 import PaginationWrapper from './PaginationWrapper';
-
+import RevisionComparer from './RevisionComparer/RevisionComparer';
+import RevisionComparerContainer from '../services/RevisionComparerContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 
@@ -44,6 +45,7 @@ function PageHistory(props) {
     throw new Promise(async() => {
       try {
         await props.pageHistoryContainer.retrieveRevisions(1);
+        await props.revisionComparerContainer.initRevisions();
       }
       catch (err) {
         toastError(err);
@@ -66,7 +68,7 @@ function PageHistory(props) {
   }
 
   return (
-    <div>
+    <div className="revision-history">
       <PageRevisionList
         pageHistoryContainer={pageHistoryContainer}
         revisions={revisions}
@@ -75,15 +77,17 @@ function PageHistory(props) {
         onDiffOpenClicked={onDiffOpenClicked}
       />
       {pager()}
+      <RevisionComparer />
     </div>
   );
 
 }
 
-const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer]);
+const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer, RevisionComparerContainer]);
 
 PageHistory.propTypes = {
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
+  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 };
 
 export default RenderPageHistoryWrapper;
