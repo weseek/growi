@@ -1,12 +1,3 @@
-export type adminHomeParams = {
-  growiVersion: string,
-  nodeVersion: string,
-  npmVersion: string,
-  yarnVersion: string,
-  installedPlugins: string[],
-  envVars: string[],
-}
-
 
 export type customizeParams = {
   customizeCss?: string,
