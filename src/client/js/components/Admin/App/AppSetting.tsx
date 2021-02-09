@@ -1,7 +1,7 @@
 import React from 'react';
 import { WithTranslation } from 'next-i18next';
 
-import { config as nextI18NextConfig, withTranslation } from '~/i18n';
+import { i18n, config as nextI18NextConfig, withTranslation } from '~/i18n';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -36,6 +36,31 @@ class AppSetting extends React.Component<Props> {
       logger.error(err);
     }
   }
+
+  renderRadioButtonForDefaultLanguage = (): JSX.Element => {
+    const elements: JSX.Element[] = nextI18NextConfig.allLanguages.map((lang) => {
+      const { adminAppContainer } = this.props;
+      const fixedT = i18n.getFixedT(lang);
+      return (
+        <div key={lang} className="custom-control custom-radio custom-control-inline">
+          <input
+            type="radio"
+            id={`radioLang${lang}`}
+            className="custom-control-input"
+            name="globalLang"
+            value={lang}
+            checked={adminAppContainer.state.globalLang === lang}
+            onChange={(e) => {
+              adminAppContainer.changeGlobalLang(e.target.value);
+            }}
+          />
+          <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{fixedT('meta.display_name')}</label>
+        </div>
+      );
+    });
+
+    return <>{elements}</>;
+  };
 
   render() {
     const { t, adminAppContainer } = this.props;
@@ -85,7 +110,7 @@ class AppSetting extends React.Component<Props> {
             {t('admin:app_setting.default_language')}
           </label>
           <div className="col-md-6 py-2">
-            {
+            {/* {
               nextI18NextConfig.allLanguages.map(lang => (
                 <div key={lang} className="custom-control custom-radio custom-control-inline">
                   <input
@@ -102,7 +127,8 @@ class AppSetting extends React.Component<Props> {
                   <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{t(`admin:app_setting.${lang}`)}</label>
                 </div>
               ))
-            }
+            } */}
+            {this.renderRadioButtonForDefaultLanguage()}
           </div>
         </div>
 
