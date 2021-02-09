@@ -16,7 +16,7 @@ const ShowStaffCredit = (props) => {
     getContributors();
   }, [props.appContainer]);
 
-  // 初回のrender時は StaffCredit を render しないようにする
+  // do not render staffCredit if first render
   if (contributors.length === 0) {
     return <></>;
   }
