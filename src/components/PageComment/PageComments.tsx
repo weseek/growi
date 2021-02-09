@@ -1,18 +1,10 @@
 import { FC, memo } from 'react';
-// import PropTypes from 'prop-types';
 import { useCurrentPageCommentsSWR } from '~/stores/page';
 import { Comment } from '~/interfaces/page';
-// import {
-//   Button,
-// } from 'reactstrap';
-
-// import { withTranslation } from 'react-i18next';
 
 // import AppContainer from '../services/AppContainer';
 // import CommentContainer from '../services/CommentContainer';
 // import PageContainer from '../services/PageContainer';
-
-// import { withUnstatedContainers } from './UnstatedUtils';
 
 // import CommentEditor from './PageComment/CommentEditor';
 // import Comment from './PageComment/Comment';
