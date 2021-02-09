@@ -12,6 +12,7 @@ import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
 import { AdminHome } from '~/components/Admin/Home/AdminHome';
+import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';
@@ -54,8 +55,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       />,
     },
     app: {
-      title: '',
-      component: <></>,
+      title: t('App Settings'),
+      component: <AppSettingsPageContents />,
     },
     security: {
       title: '',

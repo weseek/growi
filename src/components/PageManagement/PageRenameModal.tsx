@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useCallback, FC,
 } from 'react';
 import PropTypes from 'prop-types';
+import { useForm } from 'react-hook-form';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -9,6 +10,8 @@ import {
 
 import { debounce } from 'throttle-debounce';
 import { useTranslation } from '~/i18n';
+
+import { useCurrentPagePath } from '~/stores/context';
 
 // import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
 // import { toastError } from '../../client/js/util/apiNotification';
@@ -25,9 +28,15 @@ type Props = {
   onClose:() => void,
 }
 
-// TODO-5052 impl modal
 export const PageRenameModal:FC<Props> = (props:Props) => {
+  const { register, handleSubmit } = useForm();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
+
+  // TODO imprv submitHandler by GW 5088
+  const submitHandler = (data) => {
+    alert(JSON.stringify(data));
+  };
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -35,8 +44,110 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>
+        <div className="form-group">
+          <label>{ t('modal_rename.label.Current page name') }</label><br />
+          <code>{ currentPagePath }</code>
+        </div>
+        <div className="form-group">
+          <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
+          <div className="input-group">
+            <div className="input-group-prepend">
+              {/* <span className="input-group-text">{crowi.url} </span> */}
+            </div>
+            {/* TODO imprv submitHandler by GW 5088 */}
+            {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
+            <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}>
+              <input
+                name="pagename"
+                type="text"
+                className="form-control"
+                // value={pageNameInput}
+                // onChange={e => inputChangeHandler(e.target.value)}
+                required
+                autoFocus
+                ref={register}
+              />
+            </form>
+          </div>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning">
+          <input
+            className="custom-control-input"
+            name="recursively"
+            id="cbRenameRecursively"
+            type="checkbox"
+            // checked={isRenameRecursively}
+            // onChange={changeIsRenameRecursivelyHandler}
+            ref={register}
+          />
+          <label className="custom-control-label" htmlFor="cbRenameRecursively">
+            { t('modal_rename.label.Recursively') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
+          </label>
+
+          {/* {existingPaths.length !== 0 && (
+          <div
+            className="custom-control custom-checkbox custom-checkbox-warning"
+          >
+            <input
+              className="custom-control-input"
+              name="withoutExistRecursively"
+              id="cbRenamewithoutExistRecursively"
+              type="checkbox"
+              // ref={register}
+            />
+            <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
+              { t('modal_rename.label.Rename without exist path') }
+            </label>
+          </div>
+          )}
+          {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+            {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />} */}
+        </div>
+
+        <div className="custom-control custom-checkbox custom-checkbox-success">
+          <input
+            className="custom-control-input"
+            name="create_redirect"
+            id="cbRenameRedirect"
+            type="checkbox"
+            // checked={isRenameRedirect}
+            // onChange={changeIsRenameRedirectHandler}
+            ref={register}
+          />
+          <label className="custom-control-label" htmlFor="cbRenameRedirect">
+            { t('modal_rename.label.Redirect') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.redirect') }</p>
+          </label>
+        </div>
+
+        <div className="custom-control custom-checkbox custom-checkbox-primary">
+          <input
+            className="custom-control-input"
+            name="remain_metadata"
+            id="cbRenameMetadata"
+            type="checkbox"
+            // checked={isRenameMetadata}
+            // onChange={changeIsRenameMetadataHandler}
+            ref={register}
+          />
+          <label className="custom-control-label" htmlFor="cbRenameMetadata">
+            { t('modal_rename.label.Do not update metadata') }
+            <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
+          </label>
+        </div>
+        {/* <div> {subordinatedError} </div> */}
       </ModalBody>
       <ModalFooter>
+        {/* <ApiErrorMessageList errs={errs} targetPath={pageNameInput} /> */}
+        <button
+          type="button"
+          className="btn btn-primary"
+          //  TODO enable rename by GW 5088
+          // onClick={rename}
+          // disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+        >Rename
+        </button>
       </ModalFooter>
     </Modal>
   );

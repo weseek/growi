@@ -8,7 +8,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+// import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:app:pluginSetting');
@@ -58,7 +58,7 @@ class PluginSetting extends React.Component {
           </div>
         </div>
 
-        <AdminUpdateButtonRow onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
+        {/* <AdminUpdateButtonRow onClick={this.submitHandler} disabled={adminAppContainer.state.retrieveError != null} /> */}
       </React.Fragment>
     );
   }
