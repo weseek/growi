@@ -125,22 +125,6 @@ export const AppSetting:FC = () => {
           {t('admin:app_setting.default_language')}
         </label>
         <div className="col-md-6 py-2">
-          {/* {config.allLanguages.map((lang) => {
-            const fixedT = i18n.getFixedT(lang);
-            return (
-              <div key={lang} className="custom-control custom-radio custom-control-inline">
-                <input
-                  type="radio"
-                  id={`radioLang${lang}`}
-                  className="custom-control-input"
-                  name={globalLangInputName}
-                  value={lang}
-                  ref={register}
-                />
-                <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{fixedT('meta.display_name')}</label>
-              </div>
-            );
-          })} */}
           { renderRadioButtonsForDefaultLanguage() }
         </div>
       </div>
