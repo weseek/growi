@@ -3,8 +3,8 @@ import React from 'react';
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 
 import { CustomizeThemeSetting } from '~/components/Admin/Customize/CustomizeThemeSetting';
-import {CustomizeFunctionSetting} from '~/components/Admin/Customize/CustomizeFunctionSetting';
-import CustomizeHighlightSetting from '~/client/js/components/Admin/Customize/CustomizeHighlightSetting';
+import { CustomizeFunctionSetting } from '~/components/Admin/Customize/CustomizeFunctionSetting';
+import { CustomizeHighlightSetting } from '~/components/Admin/Customize/CustomizeHighlightSetting';
 import CustomizeTitle from '~/client/js/components/Admin/Customize/CustomizeTitle';
 import CustomizeHeaderSetting from '~/client/js/components/Admin/Customize/CustomizeHeaderSetting';
 import CustomizeCssSetting from '~/client/js/components/Admin/Customize/CustomizeCssSetting';
@@ -34,10 +34,10 @@ const CustomizeSettingContents = (): JSX.Element => {
       <div className="mb-5">
         <CustomizeFunctionSetting />
       </div>
-      {/*  <div className="mb-5">
+      <div className="mb-5">
         <CustomizeHighlightSetting />
       </div>
-      <div className="mb-5">
+      {/*      <div className="mb-5">
         <CustomizeTitle />
       </div>
       <div className="mb-5">
