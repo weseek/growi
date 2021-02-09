@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { FC, Fragment } from 'react';
 
 import { useTranslation } from '~/i18n';
 
@@ -16,7 +16,7 @@ type Props = {
   envVars: any,
 };
 
-export const AdminHome = (props: Props): JSX.Element => {
+export const AdminHome:FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   return (

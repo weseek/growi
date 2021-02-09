@@ -130,9 +130,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user.toObject());
   }
 
-  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-';
-  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-';
-  props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-';
+  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
+  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
+  props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
   props.installedPlugins = pluginUtils.listPlugins();
   props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
 
