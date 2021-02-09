@@ -10,7 +10,7 @@ const RedirectedAlert = (props) => {
 
   return (
     <>
-      <strong>{ t('Redirected') }:</strong>{ t('page_page.notice.redirected')} <code>{fromPath}</code> {t('page_page.notice.redirected_period')}
+      <strong>{ t('Redirected') }:</strong> { t('page_page.notice.redirected')} <code>{fromPath}</code> {t('page_page.notice.redirected_period')}
     </>
   );
 };
