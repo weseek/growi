@@ -1,29 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { withUnstatedContainers } from '../UnstatedUtils';
-import PageContainer from '../../services/PageContainer';
 
 
 const DuplicatedAlert = (props) => {
-  const { t, pageContainer } = props;
-  const { beforePathDuplicated } = pageContainer.state;
+  const { t } = props;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPath = urlParams.get('duplicated');
 
   return (
     <div className="alert alert-success py-3 px-4">
       <strong>
-        { t('Duplicated') }: {t('page_page.notice.duplicated')} <code>{beforePathDuplicated}</code>
+        { t('Duplicated') }:{t('page_page.notice.duplicated')} <code>{fromPath}</code>{t('page_page.notice.duplicated_period')}
       </strong>
     </div>
   );
 };
 
-const DuplicatedAlertlWrapper = withUnstatedContainers(DuplicatedAlert, [PageContainer]);
-
 
 DuplicatedAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default withTranslation()(DuplicatedAlertlWrapper);
+export default withTranslation()(DuplicatedAlert);

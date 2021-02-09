@@ -1,28 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { withUnstatedContainers } from '../UnstatedUtils';
-import PageContainer from '../../services/PageContainer';
 
 
 const RenamedAlert = (props) => {
-  const { t, pageContainer } = props;
-  const { beforePathRenamed } = pageContainer.state;
+  const { t } = props;
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPath = urlParams.get('renamedFrom');
 
   return (
     <>
-      <strong>{ t('Moved') }:</strong> {t('page_page.notice.moved')} <code>{beforePathRenamed}</code>
+      <strong>{ t('Moved') }:</strong>{t('page_page.notice.moved')} <code>{fromPath}</code> {t('page_page.notice.moved_period')}
     </>
   );
 };
 
-const RenamedAlertlWrapper = withUnstatedContainers(RenamedAlert, [PageContainer]);
-
 
 RenamedAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
 };
 
-export default withTranslation()(RenamedAlertlWrapper);
+export default withTranslation()(RenamedAlert);

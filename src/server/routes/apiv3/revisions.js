@@ -91,7 +91,17 @@ module.exports = (crowi) => {
    *            name: pageId
    *            schema:
    *              type: string
-   *              description:  page id
+   *              description: page id
+   *          - in: query
+   *            name: page
+   *            description: selected page number
+   *            schema:
+   *              type: number
+   *          - in: query
+   *            name: limit
+   *            description: page item limit
+   *            schema:
+   *              type: number
    *        responses:
    *          200:
    *            description: Return revisions belong to page

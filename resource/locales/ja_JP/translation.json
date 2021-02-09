@@ -295,9 +295,12 @@
   "page_page": {
     "notice": {
       "version": "これは現在の版ではありません。",
-      "moved": "移動元 >>",
+      "moved": "このページは",
+      "moved_period":"から移動しました。",
       "redirected": "リダイレクト元 >>",
-      "duplicated": "複製元 >>",
+      "redirected_period":"",
+      "duplicated": "このページは",
+      "duplicated_period": "から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
@@ -324,6 +327,14 @@
     "already_exists": "新しいページが既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
     "user_not_admin": "権限のあるユーザーのみが完全削除できます"
+  },
+  "page_history": {
+    "revision_list": "更新履歴",
+    "revision": "バージョン",
+    "comparing_source": "ソース",
+    "comparing_target": "ターゲット",
+    "comparing_revisions": "比較",
+    "comparing_with_latest": "常に最新バージョンと比較する"
   },
   "modal_rename": {
     "label": {

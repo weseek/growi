@@ -293,8 +293,12 @@
     "notice": {
       "version": "This is not the current version.",
       "moved": "This page was moved from",
+      "moved_period": ".",
       "redirected": "You are redirected from",
+      "redirected_period": ".",
+      "redirect_period": ".",
       "duplicated": "This page was duplicated from",
+      "duplicated_period": ".",
       "unlinked": "Redirect pages to this page have been deleted.",
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
@@ -322,6 +326,14 @@
     "already_exists": "New page is already exists.",
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete completely"
+  },
+  "page_history": {
+    "revision_list": "Revision list",
+    "revision": "version",
+    "comparing_source": "Source",
+    "comparing_target": "Target",
+    "comparing_revisions": "Comparing versions",
+    "comparing_with_latest": "Always compare with the latest version"
   },
   "modal_rename": {
     "label": {

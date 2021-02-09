@@ -1,27 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { withUnstatedContainers } from '../UnstatedUtils';
-import PageContainer from '../../services/PageContainer';
+
 
 const RedirectedAlert = (props) => {
-  const { t, pageContainer } = props;
-  const { beforePathRedirected } = pageContainer.state;
-
+  const { t } = props;
+  const urlParams = new URLSearchParams(window.location.search);
+  const fromPath = urlParams.get('redirectFrom');
   return (
     <>
-      <strong>{ t('Redirected') }:</strong>{ t('page_page.notice.redirected')} <code>{beforePathRedirected}</code>
+      <strong>{ t('Redirected') }:</strong>{ t('page_page.notice.redirected')} <code>{fromPath}</code> {t('page_page.notice.redirected_period')}
     </>
   );
 };
 
-const RedirectedAlertlWrapper = withUnstatedContainers(RedirectedAlert, [PageContainer]);
-
 
 RedirectedAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
 };
 
-export default withTranslation()(RedirectedAlertlWrapper);
+export default withTranslation()(RedirectedAlert);
