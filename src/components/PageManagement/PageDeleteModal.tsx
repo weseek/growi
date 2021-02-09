@@ -49,15 +49,15 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
     setErrs([]);
 
     try {
+      // TODO GW-5132 use apiV3 after implement
       const response = await apiPost('/pages.remove', {
         recursively: isDeleteRecursively ? true : null,
         completely: isDeleteCompletely ? true : null,
         page_id: currentPage.id,
         revision_id: currentPage.revision,
+        // TODO GW-5134 use SocketIoContainer after implement
         // socketClientId: SocketIoContainer.getSocketClientId(),
       });
-
-      console.log(response);
 
       const trashPagePath = response.page.path;
       window.location.href = encodeURI(trashPagePath);
