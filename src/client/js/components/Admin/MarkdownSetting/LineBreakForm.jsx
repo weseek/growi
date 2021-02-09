@@ -11,13 +11,18 @@ import { apiv3Put } from '../../../util/apiv3-client';
 
 const logger = loggerFactory('growi:importer');
 
-const LineBreakForm = (props) => {
+const isEnabledLinebreaksInputName = 'isEnabledLinebreaks';
+const isEnabledLinebreaksInCommentsInputName = 'isEnabledLinebreaksInComments';
+
+export const LineBreakForm = (props) => {
   const { t } = useTranslation();
   const { data, mutate } = useMarkdownSettingsSWR();
-  const lineBreakFormMethods = useForm({
+  const {
+    register, setValue, handleSubmit, getValues,
+  } = useForm({
     defaultValues: {
-      isEnabledLinebreaks: data?.isEnabledLinebreaks,
-      isEnabledLinebreaksInComments: data?.isEnabledLinebreaksInComments,
+      [isEnabledLinebreaksInputName]: data?.[isEnabledLinebreaksInputName],
+      [isEnabledLinebreaksInCommentsInputName]: data?.[isEnabledLinebreaksInCommentsInputName],
     },
   });
 
@@ -34,14 +39,14 @@ const LineBreakForm = (props) => {
   };
 
   useEffect(() => {
-    lineBreakFormMethods.setValue('isEnabledLinebreaks', data?.isEnabledLinebreaks);
+    setValue(isEnabledLinebreaksInputName, data?.[isEnabledLinebreaksInputName]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.isEnabledLinebreaks]);
+  }, [data?.[isEnabledLinebreaksInputName]]);
 
   useEffect(() => {
-    lineBreakFormMethods.setValue('isEnabledLinebreaksInComments', data?.isEnabledLinebreaksInComments);
+    setValue(isEnabledLinebreaksInCommentsInputName, data?.[isEnabledLinebreaksInCommentsInputName]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.isEnabledLinebreaksInComments]);
+  }, [data?.[isEnabledLinebreaksInCommentsInputName]]);
 
   function renderLineBreakOption() {
     const helpLineBreak = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') };
@@ -53,8 +58,8 @@ const LineBreakForm = (props) => {
             type="checkbox"
             id="isEnabledLinebreaks"
             className="custom-control-input"
-            name="isEnabledLinebreaks"
-            ref={lineBreakFormMethods.register}
+            name={isEnabledLinebreaksInputName}
+            ref={register}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
             {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
@@ -76,8 +81,8 @@ const LineBreakForm = (props) => {
             type="checkbox"
             id="isEnabledLinebreaksInComments"
             className="custom-control-input"
-            name="isEnabledLinebreaksInComments"
-            ref={lineBreakFormMethods.register}
+            name={isEnabledLinebreaksInCommentsInputName}
+            ref={register}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
             {t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment') }
@@ -92,7 +97,7 @@ const LineBreakForm = (props) => {
 
   return (
     <React.Fragment>
-      <form className="form-group" onSubmit={lineBreakFormMethods.handleSubmit(submitHandler)}>
+      <form className="form-group" onSubmit={handleSubmit(submitHandler)}>
         <div className="row row-cols-1 row-cols-md-2 mx-3">
           {renderLineBreakOption()}
           {renderLineBreakInCommentOption()}
@@ -105,5 +110,3 @@ const LineBreakForm = (props) => {
   );
 
 };
-
-export default LineBreakForm;

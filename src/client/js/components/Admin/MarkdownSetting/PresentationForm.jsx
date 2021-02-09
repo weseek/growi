@@ -10,14 +10,16 @@ import { apiv3Put } from '../../../util/apiv3-client';
 
 const logger = loggerFactory('growi:markdown:presentation');
 
-const PresentationForm = (props) => {
+const pageBreakSeparatorInputName = 'pageBreakSeparator';
+const pageBreakCustomSeparatorInputName = 'pageBreakCustomSeparator';
+export const PresentationForm = (props) => {
   const { t } = useTranslation();
   const { data, mutate } = useMarkdownSettingsSWR();
-  const PresentationFormMethods = useForm({
+  const { register, setValue, handleSubmit } = useForm({
     defaultValues: {
       // Cast to a string value because radio not work with int value with react-hook-form
-      pageBreakSeparator: String(data?.pageBreakSeparator),
-      pageBreakCustomSeparator: data?.pageBreakCustomSeparator,
+      [pageBreakSeparatorInputName]: String(data?.[pageBreakSeparatorInputName]),
+      [pageBreakCustomSeparatorInputName]: data?.[pageBreakCustomSeparatorInputName],
     },
   });
 
@@ -35,17 +37,17 @@ const PresentationForm = (props) => {
 
   useEffect(() => {
     // Cast to a string value because radio not work with int value with react-hook-form
-    PresentationFormMethods.setValue('pageBreakSeparator', String(data?.pageBreakSeparator));
+    setValue(pageBreakSeparatorInputName, String(data?.[pageBreakSeparatorInputName]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.pageBreakSeparator]);
+  }, [data?.[pageBreakSeparatorInputName]]);
 
   useEffect(() => {
-    PresentationFormMethods.setValue('pageBreakCustomSeparator', data?.pageBreakCustomSeparator);
+    setValue(pageBreakCustomSeparatorInputName, data?.[pageBreakCustomSeparatorInputName]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.pageBreakCustomSeparator]);
+  }, [data?.[pageBreakCustomSeparatorInputName]]);
 
   return (
-    <form className="form-group col-12 my-2" onSubmit={PresentationFormMethods.handleSubmit(submitHandler)}>
+    <form className="form-group col-12 my-2" onSubmit={handleSubmit(submitHandler)}>
 
       <label className="col-8 offset-4 col-form-label font-weight-bold text-left mt-3">
         {t('admin:markdown_setting.presentation_options.page_break_setting')}
@@ -59,9 +61,9 @@ const PresentationForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="pageBreakOption1"
-                name="pageBreakSeparator"
+                name={pageBreakSeparatorInputName}
                 value="1"
-                ref={PresentationFormMethods.register}
+                ref={register}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption1">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_one_separator') }</p>
@@ -84,9 +86,9 @@ const PresentationForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="pageBreakOption2"
-                name="pageBreakSeparator"
+                name={pageBreakSeparatorInputName}
                 value="2"
-                ref={PresentationFormMethods.register}
+                ref={register}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption2">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.preset_two_separator') }</p>
@@ -108,9 +110,9 @@ const PresentationForm = (props) => {
                 type="radio"
                 id="pageBreakOption3"
                 className="custom-control-input"
-                name="pageBreakSeparator"
+                name={pageBreakSeparatorInputName}
                 value="3"
-                ref={PresentationFormMethods.register}
+                ref={register}
               />
               <label className="custom-control-label w-100" htmlFor="pageBreakOption3">
                 <p className="font-weight-bold">{ t('admin:markdown_setting.presentation_options.custom_separator') }</p>
@@ -118,8 +120,8 @@ const PresentationForm = (props) => {
                   { t('admin:markdown_setting.presentation_options.custom_separator_desc') }
                   <input
                     className="form-control"
-                    name="pageBreakCustomSeparator"
-                    ref={PresentationFormMethods.register}
+                    name={pageBreakCustomSeparatorInputName}
+                    ref={register}
                   />
                 </div>
               </label>
@@ -134,5 +136,3 @@ const PresentationForm = (props) => {
   );
 
 };
-
-export default PresentationForm;

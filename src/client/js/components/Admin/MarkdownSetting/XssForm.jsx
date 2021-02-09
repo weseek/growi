@@ -9,26 +9,31 @@ import { tags, attrs } from '~/service/xss/recommended-whitelist';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { useMarkdownSettingsSWR } from '~/stores/admin';
 
-import WhiteListInput from './WhiteListInput';
+import { WhiteListInput } from './WhiteListInput';
 import { apiv3Put } from '../../../util/apiv3-client';
 
 const logger = loggerFactory('growi:importer');
 
-const XssForm = (props) => {
+const isEnabledXssInputName = 'isEnabledXss';
+const xssOptionInputName = 'xssOption';
+const tagWhiteListInputName = 'tagWhiteList';
+const attrWhiteListInputName = 'attrWhiteList';
+
+export const XssForm = (props) => {
   const { t } = useTranslation();
   const { data, mutate } = useMarkdownSettingsSWR();
 
   const xssFormMethods = useForm({
     defaultValues: {
-      isEnabledXss: data?.isEnabledXss,
+      [isEnabledXssInputName]: data?.[isEnabledXssInputName],
       // Cast to a string value because radio not work with int value with react-hook-form
-      xssOption: String(data?.xssOption),
-      tagWhiteList: data?.tagWhiteList || '',
-      attrWhiteList: data?.attrWhiteList || '',
+      [xssOptionInputName]: String(data?.[xssOptionInputName]),
+      [tagWhiteListInputName]: data?.[tagWhiteListInputName] || '',
+      [attrWhiteListInputName]: data?.[attrWhiteListInputName] || '',
     },
   });
 
-  const watchIsEnabledXss = xssFormMethods.watch('isEnabledXss');
+  const watchIsEnabledXss = xssFormMethods.watch(isEnabledXssInputName);
 
   const submitHandler = async(formValues) => {
     if (watchIsEnabledXss) {
@@ -48,25 +53,25 @@ const XssForm = (props) => {
   };
 
   useEffect(() => {
-    xssFormMethods.setValue('isEnabledXss', data?.isEnabledXss);
+    xssFormMethods.setValue(isEnabledXssInputName, data?.[isEnabledXssInputName]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.isEnabledXss]);
+  }, [data?.[isEnabledXssInputName]]);
 
   useEffect(() => {
     // Cast to a string value because radio not work with int value with react-hook-form
-    xssFormMethods.setValue('xssOption', String(data?.xssOption));
+    xssFormMethods.setValue(xssOptionInputName, String(data?.[xssOptionInputName]));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.xssOption]);
+  }, [data?.[xssOptionInputName]]);
 
   useEffect(() => {
-    xssFormMethods.setValue('tagWhiteList', data?.tagWhiteList || '');
+    xssFormMethods.setValue(tagWhiteListInputName, data?.[tagWhiteListInputName] || '');
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.tagWhiteList]);
+  }, [data?.[tagWhiteListInputName]]);
 
   useEffect(() => {
-    xssFormMethods.setValue('tagWhiteList', data?.attrWhiteList || '');
+    xssFormMethods.setValue(attrWhiteListInputName, data?.[attrWhiteListInputName] || '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.attrWhiteList]);
+  }, [data?.[attrWhiteListInputName]]);
 
   function xssOptions() {
     return (
@@ -78,7 +83,7 @@ const XssForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="xssOption1"
-                name="xssOption"
+                name={xssOptionInputName}
                 value="1"
                 ref={xssFormMethods.register}
               />
@@ -97,7 +102,7 @@ const XssForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="xssOption2"
-                name="xssOption"
+                name={xssOptionInputName}
                 value="2"
                 ref={xssFormMethods.register}
               />
@@ -139,7 +144,7 @@ const XssForm = (props) => {
                 type="radio"
                 className="custom-control-input"
                 id="xssOption3"
-                name="xssOption"
+                name={xssOptionInputName}
                 value="3"
                 ref={xssFormMethods.register}
               />
@@ -165,7 +170,7 @@ const XssForm = (props) => {
                 type="checkbox"
                 className="custom-control-input"
                 id="XssEnable"
-                name="isEnabledXss"
+                name={isEnabledXssInputName}
                 ref={xssFormMethods.register}
               />
               <label className="custom-control-label w-100" htmlFor="XssEnable">
@@ -186,5 +191,3 @@ const XssForm = (props) => {
   );
 
 };
-
-export default XssForm;

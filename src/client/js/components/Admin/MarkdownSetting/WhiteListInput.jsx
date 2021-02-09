@@ -5,16 +5,19 @@ import { useTranslation } from '~/i18n';
 
 import { tags, attrs } from '~/service/xss/recommended-whitelist';
 
-const WhiteListInput = (props) => {
+const tagWhiteListInputName = 'tagWhiteList';
+const attrWhiteListInputName = 'attrWhiteList';
+
+export const WhiteListInput = (props) => {
   const { t } = useTranslation();
-  const xssFormMethods = useFormContext();
+  const { register, setValue } = useFormContext();
 
   const onClickRecommendTagButton = () => {
-    xssFormMethods.setValue('tagWhiteList', tags);
+    setValue([tagWhiteListInputName], tags);
   };
 
   const onClickRecommendAttrButton = () => {
-    xssFormMethods.setValue('attrWhiteList', attrs);
+    setValue([attrWhiteListInputName], attrs);
   };
 
 
@@ -29,10 +32,10 @@ const WhiteListInput = (props) => {
         </div>
         <textarea
           className="form-control xss-list"
-          name="tagWhiteList"
+          name={tagWhiteListInputName}
           rows="6"
           cols="40"
-          ref={xssFormMethods.register}
+          ref={register}
         />
       </div>
       <div className="mt-4">
@@ -44,15 +47,13 @@ const WhiteListInput = (props) => {
         </div>
         <textarea
           className="form-control xss-list"
-          name="attrWhiteList"
+          name={attrWhiteListInputName}
           rows="6"
           cols="40"
-          ref={xssFormMethods.register}
+          ref={register}
         />
       </div>
     </>
   );
 
 };
-
-export default WhiteListInput;

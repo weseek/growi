@@ -2,9 +2,9 @@ import React from 'react';
 import { Card, CardBody } from 'reactstrap';
 
 import { useTranslation } from '~/i18n';
-import LineBreakForm from '~/client/js/components/Admin/MarkdownSetting/LineBreakForm';
-import PresentationForm from '~/client/js/components/Admin/MarkdownSetting/PresentationForm';
-import XssForm from '~/client/js/components/Admin/MarkdownSetting/XssForm';
+import { LineBreakForm } from '~/client/js/components/Admin/MarkdownSetting/LineBreakForm';
+import { PresentationForm } from '~/client/js/components/Admin/MarkdownSetting/PresentationForm';
+import { XssForm } from '~/client/js/components/Admin/MarkdownSetting/XssForm';
 
 
 const MarkDownSettingContents = (): JSX.Element => {
