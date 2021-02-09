@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { i18n, useTranslation, config } from '~/i18n';
 
@@ -6,7 +6,7 @@ import { i18n, useTranslation, config } from '~/i18n';
 import loggerFactory from '~/utils/logger';
 import { useAppSettingsSWR } from '~/stores/admin';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { apiv3Put } from '~/utils/apiv3-client';
 
 const logger = loggerFactory('growi:appSettings');
@@ -23,7 +23,7 @@ type FormValues = {
   [fileUploadInputName]: string,
 }
 
-export const AppSetting = ():JSX.Element => {
+export const AppSetting:FC = () => {
   const { t } = useTranslation();
   const { data, mutate } = useAppSettingsSWR();
 
@@ -36,7 +36,7 @@ export const AppSetting = ():JSX.Element => {
     },
   });
 
-  const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
+  const submitHandler: SubmitHandler<FormValues> = async(formValues:FormValues) => {
     try {
       await apiv3Put('/app-settings/app-setting', formValues);
       mutate();
@@ -133,7 +133,7 @@ export const AppSetting = ():JSX.Element => {
               type="checkbox"
               id="cbFileUpload"
               className="custom-control-input"
-              name="fileUpload"
+              name={fileUploadInputName}
               ref={register}
             />
             <label
@@ -150,7 +150,7 @@ export const AppSetting = ():JSX.Element => {
         </div>
       </div>
       <div className="d-flex justify-content-center">
-        <input type="submit" value={t('Update')} className="btn btn-primary" />
+        <button type="submit" className="btn btn-primary">{ t('Update') }</button>
       </div>
     </form>
   );

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 
 import { useTranslation } from '~/i18n';
 
-import { AppSetting } from '~/client/js/components/Admin/App/AppSetting';
+import { AppSetting } from '~/components/Admin/App/AppSetting';
 import SiteUrlSetting from '~/client/js/components/Admin/App//SiteUrlSetting';
 import MailSetting from '~/client/js/components/Admin/App//MailSetting';
 import PluginSetting from '~/client/js/components/Admin/App//PluginSetting';
