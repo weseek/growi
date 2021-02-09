@@ -11,23 +11,27 @@ import { apiv3Put } from '~/utils/apiv3-client';
 
 const logger = loggerFactory('growi:appSettings');
 
+const titleInputName = 'title';
+const confidentialInputName = 'confidential';
+const globalLangInputName = 'globalLang';
+const fileUploadInputName = 'fileUpload';
 type FormValues = {
-  title: string,
-  confidential: string,
-  globalLang: string,
-  fileUpload: string,
+  [titleInputName]: string,
+  [confidentialInputName]: string,
+  [globalLangInputName]: string,
+  [fileUploadInputName]: string,
 }
 
-const AppSetting = ():JSX.Element => {
+export const AppSetting = ():JSX.Element => {
   const { t } = useTranslation();
   const { data, mutate } = useAppSettingsSWR();
 
-  const appSettingMethods = useForm({
+  const { register, setValue, handleSubmit } = useForm({
     defaultValues: {
-      title: data?.title,
-      confidential: data?.confidential,
-      globalLang: data?.globalLang,
-      fileUpload: data?.fileUpload,
+      [titleInputName]: data?.[titleInputName],
+      [confidentialInputName]: data?.[confidentialInputName],
+      [globalLangInputName]: data?.[globalLangInputName],
+      [fileUploadInputName]: data?.[fileUploadInputName],
     },
   });
 
@@ -44,29 +48,29 @@ const AppSetting = ():JSX.Element => {
   };
 
   useEffect(() => {
-    appSettingMethods.setValue('title', data?.title);
-    appSettingMethods.setValue('confidential', data?.confidential);
-    appSettingMethods.setValue('globalLang', data?.globalLang);
-    appSettingMethods.setValue('fileUpload', data?.fileUpload);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setValue(titleInputName, data?.[titleInputName]);
+    setValue(confidentialInputName, data?.[confidentialInputName]);
+    setValue(globalLangInputName, data?.[globalLangInputName]);
+    setValue(fileUploadInputName, data?.[fileUploadInputName]);
+    /* eslint-disable react-hooks/exhaustive-deps */
   }, [
-    data?.title,
-    data?.confidential,
-    data?.globalLang,
-    data?.fileUpload,
+    data?.[titleInputName],
+    data?.[confidentialInputName],
+    data?.[globalLangInputName],
+    data?.[fileUploadInputName],
   ]);
 
   return (
-    <form role="form" onSubmit={appSettingMethods.handleSubmit(submitHandler)}>
+    <form role="form" onSubmit={handleSubmit(submitHandler)}>
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
-            name="title"
+            name={titleInputName}
             type="text"
             placeholder="GROWI"
-            ref={appSettingMethods.register}
+            ref={register}
           />
           <p className="form-text text-muted">{t('admin:app_setting.sitename_change')}</p>
         </div>
@@ -81,10 +85,10 @@ const AppSetting = ():JSX.Element => {
         <div className="col-md-6">
           <input
             className="form-control"
-            name="confidential"
+            name={confidentialInputName}
             type="text"
             placeholder={t('admin:app_setting.confidential_example')}
-            ref={appSettingMethods.register}
+            ref={register}
           />
           <p className="form-text text-muted">{t('admin:app_setting.header_content')}</p>
         </div>
@@ -105,9 +109,9 @@ const AppSetting = ():JSX.Element => {
                   type="radio"
                   id={`radioLang${lang}`}
                   className="custom-control-input"
-                  name="globalLang"
+                  name={globalLangInputName}
                   value={lang}
-                  ref={appSettingMethods.register}
+                  ref={register}
                 />
                 <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{fixedT('meta.display_name')}</label>
               </div>
@@ -129,7 +133,7 @@ const AppSetting = ():JSX.Element => {
               id="cbFileUpload"
               className="custom-control-input"
               name="fileUpload"
-              ref={appSettingMethods.register}
+              ref={register}
             />
             <label
               className="custom-control-label"
@@ -151,5 +155,3 @@ const AppSetting = ():JSX.Element => {
   );
 
 };
-
-export default AppSetting;
