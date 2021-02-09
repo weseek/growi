@@ -16,8 +16,7 @@ interface Props extends WithTranslation {
   adminAppContainer: AdminAppContainer,
 }
 
-type MyState = { isMounted: boolean };
-class AppSetting extends React.Component<Props, MyState> {
+class AppSetting extends React.Component<Props, { isMounted: boolean }> {
 
   constructor(props) {
     super(props);
@@ -27,7 +26,6 @@ class AppSetting extends React.Component<Props, MyState> {
     };
 
     this.submitHandler = this.submitHandler.bind(this);
-    this.renderRadioButtonsForDefaultLanguage = this.renderRadioButtonsForDefaultLanguage.bind(this);
   }
 
   componentDidMount() {
