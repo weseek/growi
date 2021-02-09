@@ -1,24 +1,29 @@
-import React, { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { FC, useEffect } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
 
 import loggerFactory from '@alias/logger';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
 import { useMarkdownSettingsSWR } from '~/stores/admin';
 
-import { apiv3Put } from '../../../util/apiv3-client';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 const logger = loggerFactory('growi:importer');
 
 const isEnabledLinebreaksInputName = 'isEnabledLinebreaks';
 const isEnabledLinebreaksInCommentsInputName = 'isEnabledLinebreaksInComments';
 
-export const LineBreakForm = (props) => {
+type FormValues = {
+  [isEnabledLinebreaksInputName]: boolean,
+  [isEnabledLinebreaksInCommentsInputName]: boolean,
+};
+
+export const LineBreakForm:FC = () => {
   const { t } = useTranslation();
   const { data, mutate } = useMarkdownSettingsSWR();
   const {
-    register, setValue, handleSubmit, getValues,
+    register, setValue, handleSubmit,
   } = useForm({
     defaultValues: {
       [isEnabledLinebreaksInputName]: data?.[isEnabledLinebreaksInputName],
@@ -26,7 +31,7 @@ export const LineBreakForm = (props) => {
     },
   });
 
-  const submitHandler = async(formValues) => {
+  const submitHandler:SubmitHandler<FormValues> = async(formValues:FormValues) => {
     try {
       await apiv3Put('/markdown-setting/lineBreak', formValues);
       mutate();
@@ -103,7 +108,7 @@ export const LineBreakForm = (props) => {
           {renderLineBreakInCommentOption()}
         </div>
         <div className="d-flex justify-content-center">
-          <input type="submit" value={t('Update')} className="btn btn-primary" />
+          <button type="submit" className="btn btn-primary">{ t('Update') }</button>
         </div>
       </form>
     </React.Fragment>

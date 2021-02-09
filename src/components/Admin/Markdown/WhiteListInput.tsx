@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { useTranslation } from '~/i18n';
@@ -8,16 +8,16 @@ import { tags, attrs } from '~/service/xss/recommended-whitelist';
 const tagWhiteListInputName = 'tagWhiteList';
 const attrWhiteListInputName = 'attrWhiteList';
 
-export const WhiteListInput = (props) => {
+export const WhiteListInput:FC = () => {
   const { t } = useTranslation();
   const { register, setValue } = useFormContext();
 
   const onClickRecommendTagButton = () => {
-    setValue([tagWhiteListInputName], tags);
+    setValue(tagWhiteListInputName, tags);
   };
 
   const onClickRecommendAttrButton = () => {
-    setValue([attrWhiteListInputName], attrs);
+    setValue(attrWhiteListInputName, attrs);
   };
 
 

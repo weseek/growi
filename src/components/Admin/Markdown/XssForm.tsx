@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import React, { FC, useEffect } from 'react';
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 
 import loggerFactory from '@alias/logger';
 import { useTranslation } from '~/i18n';
 
 import { tags, attrs } from '~/service/xss/recommended-whitelist';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useMarkdownSettingsSWR } from '~/stores/admin';
 
 import { WhiteListInput } from './WhiteListInput';
-import { apiv3Put } from '../../../util/apiv3-client';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 const logger = loggerFactory('growi:importer');
 
@@ -19,7 +19,15 @@ const xssOptionInputName = 'xssOption';
 const tagWhiteListInputName = 'tagWhiteList';
 const attrWhiteListInputName = 'attrWhiteList';
 
-export const XssForm = (props) => {
+type FormValues = {
+  [isEnabledXssInputName]: boolean,
+  // Cast to a string value because radio not work with int value with react-hook-form
+  [xssOptionInputName]: string,
+  [tagWhiteListInputName]: any,
+  [attrWhiteListInputName]: any
+}
+
+export const XssForm:FC = () => {
   const { t } = useTranslation();
   const { data, mutate } = useMarkdownSettingsSWR();
 
@@ -35,7 +43,7 @@ export const XssForm = (props) => {
 
   const watchIsEnabledXss = xssFormMethods.watch(isEnabledXssInputName);
 
-  const submitHandler = async(formValues) => {
+  const submitHandler:SubmitHandler<FormValues> = async(formValues:FormValues) => {
     if (watchIsEnabledXss) {
       const { tagWhiteList, attrWhiteList } = formValues;
       formValues.tagWhiteList = Array.isArray(tagWhiteList) ? tagWhiteList : tagWhiteList.split(',');
@@ -184,7 +192,7 @@ export const XssForm = (props) => {
           {watchIsEnabledXss && xssOptions()}
         </div>
         <div className="d-flex justify-content-center">
-          <input type="submit" value={t('Update')} className="btn btn-primary" />
+          <button type="submit" className="btn btn-primary">{ t('Update') }</button>
         </div>
       </form>
     </FormProvider>
