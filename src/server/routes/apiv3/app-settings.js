@@ -6,6 +6,7 @@ const debug = require('debug')('growi:routes:admin');
 
 const express = require('express');
 
+const { pathUtils } = require('growi-commons');
 const { listLocaleIds } = require('@commons/util/locale-utils');
 
 const router = express.Router();
@@ -335,7 +336,7 @@ module.exports = (crowi) => {
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
     const requestSiteUrlSettingParams = {
-      'app:siteUrl': req.body.siteUrl,
+      'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),
     };
 
     try {
