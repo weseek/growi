@@ -25,15 +25,6 @@ export const PageComments:FC = () => {
   return <p>huga</p>;
 };
 
-/**
- * Load data of comments and render the list of <Comment />
- *
- * @author Yuki Takei <yuki@weseek.co.jp>
- *
- * @export
- * @class PageComments
- * @extends {React.Component}
- */
 // class DeprecatePageComments extends React.Component {
 
 //   constructor(props) {
@@ -50,27 +41,6 @@ export const PageComments:FC = () => {
 
 //     this.growiRenderer = this.props.appContainer.getRenderer('comment');
 
-//     this.init = this.init.bind(this);
-//     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
-//     this.deleteComment = this.deleteComment.bind(this);
-//     this.showDeleteConfirmModal = this.showDeleteConfirmModal.bind(this);
-//     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
-//     this.replyButtonClickedHandler = this.replyButtonClickedHandler.bind(this);
-//     this.editorCancelHandler = this.editorCancelHandler.bind(this);
-//     this.editorCommentHandler = this.editorCommentHandler.bind(this);
-//     this.resetEditor = this.resetEditor.bind(this);
-//   }
-
-//   componentWillMount() {
-//     this.init();
-//   }
-
-//   init() {
-//     if (!this.props.pageContainer.state.pageId) {
-//       return;
-//     }
-
-//     this.props.commentContainer.retrieveComments();
 //   }
 
 //   confirmToDeleteComment(comment) {
@@ -232,16 +202,3 @@ export const PageComments:FC = () => {
 //   }
 
 // }
-
-/**
- * Wrapper component for using unstated
- */
-// const PageCommentsWrapper = withUnstatedContainers(PageComments, [AppContainer, PageContainer, CommentContainer]);
-
-// PageComments.propTypes = {
-//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-//   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
-// };
-
-// export default withTranslation()(PageCommentsWrapper);
