@@ -14,10 +14,8 @@ const RedirectedAlert = (props) => {
   );
 };
 
-
 RedirectedAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
 };
 
 export default withTranslation()(RedirectedAlert);

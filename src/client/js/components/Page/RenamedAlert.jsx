@@ -15,10 +15,8 @@ const RenamedAlert = (props) => {
   );
 };
 
-
 RenamedAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
 };
 
 export default withTranslation()(RenamedAlert);

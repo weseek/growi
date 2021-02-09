@@ -18,7 +18,6 @@ const DuplicatedAlert = (props) => {
   );
 };
 
-
 DuplicatedAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 };
