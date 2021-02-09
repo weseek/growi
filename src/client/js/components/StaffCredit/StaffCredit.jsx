@@ -4,7 +4,6 @@ import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
-import contributors from './Contributor';
 import AppContainer from '../../services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -26,7 +25,6 @@ class StaffCredit extends React.Component {
     super(props);
     this.state = {
       isShown: true,
-      gcContributors: null,
     };
     this.deleteCredit = this.deleteCredit.bind(this);
   }
@@ -60,10 +58,7 @@ class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      if (this.state.gcContributors != null && contributors[1].sectionName !== 'GROWI-cloud') {
-        contributors.splice(1, 0, this.state.gcContributors);
-      }
-      const credit = contributors.map((contributor) => {
+      const credit = this.props.contributors.map((contributor) => {
         // construct members elements
         const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
           return this.renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
@@ -105,9 +100,6 @@ class StaffCredit extends React.Component {
       });
     }, 10);
 
-    this.props.appContainer.apiv3Get('/staffs').then((res) => {
-      this.setState({ gcContributors: res.data });
-    });
 
   }
 
@@ -139,6 +131,7 @@ const StaffCreditWrapper = withUnstatedContainers(StaffCredit, [AppContainer]);
 
 StaffCredit.propTypes = {
   onClosed: PropTypes.func,
+  contributors: PropTypes.array.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
