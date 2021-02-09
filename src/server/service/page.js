@@ -404,7 +404,7 @@ class PageService {
     }
 
     const socketClientId = options.socketClientId || null;
-    if (!Page.isDeletableName(page.path)) {
+    if (!isDeletablePage(page.path)) {
       throw new Error('Page is not deletable.');
     }
 

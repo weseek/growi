@@ -183,7 +183,7 @@ export const PageManagement:FC<Props> = (props:Props) => {
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}
           onClose={closePageDeleteModalHandler}
-          path={path}
+          currentPage={currentPage}
           isAbleToDeleteCompletely={isAbleToDeleteCompletely}
         />
         <PagePresentationModal
