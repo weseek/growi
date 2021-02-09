@@ -14,9 +14,10 @@ const logger = loggerFactory('growi:appSettings');
 
 interface Props extends WithTranslation {
   adminAppContainer: AdminAppContainer,
-  isMounted: boolean,
 }
-class AppSetting extends React.Component<Props> {
+
+type MyState = { isMounted: boolean };
+class AppSetting extends React.Component<Props, MyState> {
 
   constructor(props) {
     super(props);
