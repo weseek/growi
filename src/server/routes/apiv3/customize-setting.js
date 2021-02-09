@@ -154,8 +154,8 @@ module.exports = (crowi) => {
       pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
-      styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
-      styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+      highlightJsStyle: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
+      highlightJsStyleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
       customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
       customizeHeader: await crowi.configManager.getConfig('crowi', 'customize:header'),
       customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
@@ -324,7 +324,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeHighlight'
    */
-  router.put('/highlight', loginRequiredStrictly, adminRequired, csrf, validator.highlight, apiV3FormValidator, async(req, res) => {
+  router.put('/highlight', loginRequiredStrictly, adminRequired, validator.highlight, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:highlightJsStyle': req.body.highlightJsStyle,
       'customize:highlightJsStyleBorder': req.body.highlightJsStyleBorder,

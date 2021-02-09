@@ -8,8 +8,12 @@ import AdminLayout from '~/components/AdminLayout';
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import PluginUtils from '~/server/plugins/plugin-utils';
+import ConfigLoader from '~/server/service/config-loader';
 
+import { AdminHome } from '~/components/Admin/Home/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';
@@ -19,8 +23,16 @@ import {
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../../stores/context';
 
+const pluginUtils = new PluginUtils();
+
 type Props = CommonProps & {
   currentUser: any,
+
+  nodeVersion: string,
+  npmVersion: string,
+  yarnVersion: string,
+  installedPlugins: any,
+  envVars: any,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -35,7 +47,13 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const adminPagesMap = {
     home: {
       title: t('Wiki Management Home Page'),
-      component: <></>,
+      component: <AdminHome
+        nodeVersion={props.nodeVersion}
+        npmVersion={props.npmVersion}
+        yarnVersion={props.yarnVersion}
+        installedPlugins={props.installedPlugins}
+        envVars={props.envVars}
+      />,
     },
     app: {
       title: t('App Settings'),
@@ -47,7 +65,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     markdown: {
       title: t('Markdown Settings'),
-      component: <></>,
+      component: <MarkDownSettingContents />,
     },
     customize: {
       title: t('Customize Settings'),
@@ -112,6 +130,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
   }
+
+  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
+  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
+  props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
+  props.installedPlugins = pluginUtils.listPlugins();
+  props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
