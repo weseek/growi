@@ -86,6 +86,7 @@ const SecurityManagementContents = (props: Props): JSX.Element => {
   return (
     <Fragment>
       <div className="mb-5">
+        {/* TODO: show dropdown text byGW-5142 */}
         <SecuritySetting />
       </div>
 
@@ -114,33 +115,34 @@ const SecurityManagementContents = (props: Props): JSX.Element => {
           hideBorderBottom
           breakpointToSwitchDropdownDown="md"
         />
+        {/* TODO: show tab contents by GW-5141 */}
         <TabContent activeTab={activeTab} className="p-5">
           <TabPane tabId="passport_local">
-            {activeComponents.has('passport_local') && <LocalSecuritySetting />}
+            {/* {activeComponents.has('passport_local') && <LocalSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_ldap">
-            {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
+            {/* {activeComponents.has('passport_ldap') && <LdapSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_saml">
-            {activeComponents.has('passport_saml') && <SamlSecuritySetting />}
+            {/* {activeComponents.has('passport_saml') && <SamlSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_oidc">
-            {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
+            {/* {activeComponents.has('passport_oidc') && <OidcSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_basic">
-            {activeComponents.has('passport_basic') && <BasicSecuritySetting />}
+            {/* {activeComponents.has('passport_basic') && <BasicSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_google">
-            {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
+            {/* {activeComponents.has('passport_google') && <GoogleSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_github">
-            {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
+            {/* {activeComponents.has('passport_github') && <GitHubSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_twitter">
-            {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />}
+            {/* {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_facebook">
-            {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
+            {/* {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />} */}
           </TabPane>
         </TabContent>
       </div>
