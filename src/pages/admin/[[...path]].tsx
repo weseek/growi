@@ -8,6 +8,8 @@ import AdminLayout from '~/components/AdminLayout';
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import PluginUtils from '~/server/plugins/plugin-utils';
+import ConfigLoader from '~/server/service/config-loader';
 
 import AdminHome from '~/components/Admin/Home/AdminHome';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
@@ -19,8 +21,16 @@ import {
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../../stores/context';
 
+const pluginUtils = new PluginUtils();
+
 type Props = CommonProps & {
   currentUser: any,
+
+  nodeVersion: string,
+  npmVersion: string,
+  yarnVersion: string,
+  installedPlugins: any,
+  envVars: any,
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
@@ -35,7 +45,13 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const adminPagesMap = {
     home: {
       title: t('Wiki Management Home Page'),
-      component: <AdminHome />,
+      component: <AdminHome
+        nodeVersion={props.nodeVersion}
+        npmVersion={props.npmVersion}
+        yarnVersion={props.yarnVersion}
+        installedPlugins={props.installedPlugins}
+        envVars={props.envVars}
+      />,
     },
     app: {
       title: '',
@@ -112,6 +128,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
   }
+
+  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-';
+  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-';
+  props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-';
+  props.installedPlugins = pluginUtils.listPlugins();
+  props.envVars = await ConfigLoader.getEnvVarsForDisplay(true);
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;

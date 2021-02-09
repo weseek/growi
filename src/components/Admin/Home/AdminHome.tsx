@@ -1,29 +1,24 @@
 import React, { Fragment } from 'react';
 
 import { useTranslation } from '~/i18n';
-import { useAdminHomeSWR } from '~/stores/admin';
 
 import SystemInfomationTable from '../../../client/js/components/Admin/AdminHome/SystemInfomationTable';
 import InstalledPluginTable from '../../../client/js/components/Admin/AdminHome/InstalledPluginTable';
 import EnvVarsTable from '../../../client/js/components/Admin/AdminHome/EnvVarsTable';
 
-export type adminHomeParams = {
-  growiVersion: string,
+export type Props = {
   nodeVersion: string,
   npmVersion: string,
   yarnVersion: string,
-  installedPlugins: string,
-  envVars: string,
+
+  installedPlugins: any,
+
+  envVars: any,
 }
-const AdminHome = (): JSX.Element => {
+
+const AdminHome = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { data, isValidating } = useAdminHomeSWR();
 
-  if (isValidating) {
-    return <></>;
-  }
-
-  console.log(data);
   return (
     <Fragment>
       <p>
@@ -36,9 +31,9 @@ const AdminHome = (): JSX.Element => {
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:admin_top.system_information')}</h2>
           <SystemInfomationTable
-            nodeVersion={data?.nodeVersion}
-            npmVersion={data?.npmVersion}
-            yarnVersion={data?.yarnVersion}
+            nodeVersion={props.nodeVersion}
+            npmVersion={props.npmVersion}
+            yarnVersion={props.yarnVersion}
           />
         </div>
       </div>
@@ -46,7 +41,7 @@ const AdminHome = (): JSX.Element => {
       <div className="row mb-5">
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:admin_top.list_of_installed_plugins')}</h2>
-          <InstalledPluginTable installedPlugins={data?.installedPlugins} />
+          <InstalledPluginTable installedPlugins={props.installedPlugins} />
         </div>
       </div>
 
@@ -56,7 +51,7 @@ const AdminHome = (): JSX.Element => {
           <p>{t('admin:admin_top.env_var_priority')}</p>
           {/* eslint-disable-next-line react/no-danger */}
           <p dangerouslySetInnerHTML={{ __html: t('admin:admin_top.about_security') }} />
-          {data?.envVars && <EnvVarsTable envVars={data?.envVars} />}
+          {props.envVars && <EnvVarsTable envVars={props.envVars} />}
         </div>
       </div>
     </Fragment>
