@@ -12,6 +12,7 @@ const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) =>
   const { errorCode, errorMessage, targetPath } = props;
   const { t } = useTranslation();
 
+  // TODO GW-5153 Consider whether to remove reload processing
   function reload() {
     window.location.reload();
   }
