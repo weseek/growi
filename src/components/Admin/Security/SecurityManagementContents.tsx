@@ -151,8 +151,4 @@ const SecurityManagementContents = (props: Props): JSX.Element => {
 
 };
 
-// SecurityManagementContents.propTypes = {
-//   t: PropTypes.func.isRequired, // i18next
-// };
-
 export default SecurityManagementContents;
