@@ -1,3 +1,4 @@
+import { User } from '~/interfaces/user';
 
 export type Page = {
   id: string,
@@ -24,4 +25,5 @@ export type Comment = {
   page: Page,
   comment: string,
   replyTo?: string,
+  creator: User,
 }

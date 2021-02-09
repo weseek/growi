@@ -51,6 +51,7 @@ export const useCurrentPageCommentsSWR = (): responseInterface<Comment[], Error>
 
   return useSWR(
     ['/comments.get', currentPage],
+    // TODO GW-5149 implement apiv3
     (endpoint, page) => apiGet(endpoint, { page_id: page.id }).then(response => response.comments),
     {
       revalidateOnFocus: false,

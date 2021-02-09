@@ -1,6 +1,11 @@
-import { FC, memo } from 'react';
+import { FC, memo, useEffect } from 'react';
+import loggerFactory from '@alias/logger';
 import { useCurrentPageCommentsSWR } from '~/stores/page';
 import { Comment } from '~/interfaces/page';
+
+import { apiv3Put } from '~/utils/apiv3-client';
+
+const logger = loggerFactory('growi:components:PageComment:PageComments');
 
 // import AppContainer from '../services/AppContainer';
 // import CommentContainer from '../services/CommentContainer';
@@ -28,18 +33,21 @@ const CommentThread:FC<Props> = memo(({ comment, replies }:Props) => {
   return (
     <div key={commentId} className={rootClassNames.join(' ')}>
       {comment.comment}
+      {/* TODO GW-5146 display comment */}
       {/* <Comment
         comment={comment}
         deleteBtnClicked={this.confirmToDeleteComment}
         growiRenderer={this.growiRenderer}
-      /> */}
-      {/* {replies.length !== 0 && (
-      <ReplayComments
-        replyList={replies}
-        deleteBtnClicked={this.confirmToDeleteComment}
-        growiRenderer={this.growiRenderer}
       />
-      )}
+      {replies.length !== 0 && (
+        <ReplayComments
+          replyList={replies}
+          deleteBtnClicked={this.confirmToDeleteComment}
+          growiRenderer={this.growiRenderer}
+        />
+      )} */}
+      {/* TODO GW-5147 display comment editor */}
+      {/*
       { !showEditor && isLoggedIn && (
         <div className="text-right">
           <Button
@@ -71,6 +79,30 @@ const CommentThread:FC<Props> = memo(({ comment, replies }:Props) => {
 export const PageComments:FC = () => {
   const { data: comments } = useCurrentPageCommentsSWR();
 
+  useEffect(() => {
+    if (comments == null) {
+      return;
+    }
+    const noImageCacheUserIds = comments.filter((comment) => {
+      const { creator } = comment;
+      return creator != null && creator.imageUrlCached == null;
+    }).map((comment) => {
+      return comment.creator._id;
+    });
+
+    if (noImageCacheUserIds.length === 0) {
+      return;
+    }
+
+    try {
+      apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
+    }
+    catch (err) {
+      // Error alert doesn't apear, because user don't need to notice this error.
+      logger.error(err);
+    }
+  }, [comments]);
+
   if (comments == null) {
     return null;
   }
@@ -98,6 +130,7 @@ export const PageComments:FC = () => {
         return <CommentThread comment={topLevelComment} replies={replies} />;
       }) }
 
+      {/* TODO GW-5148 implement dlete comment */}
       {/* <DeleteCommentModal
         isShown={this.state.isDeleteConfirmModalShown}
         comment={this.state.commentToDelete}
