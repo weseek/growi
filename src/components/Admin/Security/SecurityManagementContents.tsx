@@ -20,7 +20,6 @@ import CustomNav from '~/client/js/components/CustomNavigation/CustomNav';
 type Props = {
 };
 
-// const SecurityManagementContents(props) {
 const SecurityManagementContents = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
