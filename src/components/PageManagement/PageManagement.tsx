@@ -178,6 +178,7 @@ export const PageManagement:FC<Props> = (props:Props) => {
         <CreateTemplateModal
           isOpen={isPageTemplateModalShown}
           onClose={closePageTemplateModalHandler}
+          path={path}
         />
         <PageDeleteModal
           isOpen={isPageDeleteModalShown}

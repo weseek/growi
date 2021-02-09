@@ -7,7 +7,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+// import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import AwsSetting from './AwsSetting';
 import GcsSettings from './GcsSettings';
@@ -78,7 +78,7 @@ function FileUploadSetting(props) {
       {fileUploadType === 'aws' && <AwsSetting />}
       {fileUploadType === 'gcs' && <GcsSettings />}
 
-      <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
+      {/* <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} /> */}
 
     </React.Fragment>
   );

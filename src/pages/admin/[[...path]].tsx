@@ -9,6 +9,7 @@ import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
 
+import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
@@ -38,8 +39,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <></>,
     },
     app: {
-      title: '',
-      component: <></>,
+      title: t('App Settings'),
+      component: <AppSettingsPageContents />,
     },
     security: {
       title: '',
