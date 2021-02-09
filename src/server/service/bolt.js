@@ -91,12 +91,12 @@ class BoltService {
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
 
-      let paths;
+      let resultPaths;
       if (firstArg === 'search') {
         const { searchService } = this.crowi;
         const option = { limit: 10 };
         const searchResults = await searchService.searchKeyword(secondArg, null, {}, option);
-        paths = searchResults.data.map((data) => {
+        resultPaths = searchResults.data.map((data) => {
           return data._source.path;
         });
       }
@@ -110,7 +110,7 @@ class BoltService {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `${paths.join('\n')}`,
+              text: `${resultPaths.join('\n')}`,
             },
           }],
         });
