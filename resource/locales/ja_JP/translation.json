@@ -297,7 +297,7 @@
       "version": "これは現在の版ではありません。",
       "moved": "このページは <code>%s</code> から移動しました。",
       "redirected": "リダイレクト元 >> <code>%s</code>",
-      "duplicated": "このページは <code>%s</code> から複製されました。",
+      "duplicated": "このページは {{fromPath}} から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
