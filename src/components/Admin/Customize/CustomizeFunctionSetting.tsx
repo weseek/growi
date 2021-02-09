@@ -88,9 +88,18 @@ export const CustomizeFunctionSetting:FC = () => {
     setValue(pageLimitationXLInputName, data?.[pageLimitationXLInputName]);
     setValue(isEnabledStaleNotificationInputName, data?.[isEnabledStaleNotificationInputName]);
     setValue(isAllReplyShownInputName, data?.[isAllReplyShownInputName]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.themeType]);
-
+  /* eslint-disable react-hooks/exhaustive-deps */
+  }, [
+    data?.[isSavedStatesOfTabChangesInputName],
+    data?.[isEnabledAttachTitleHeaderInputName],
+    data?.[pageLimitationSInputName],
+    data?.[pageLimitationMInputName],
+    data?.[pageLimitationLInputName],
+    data?.[pageLimitationXLInputName],
+    data?.[isEnabledStaleNotificationInputName],
+    data?.[isAllReplyShownInputName],
+  ]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <div className="row">
