@@ -11,7 +11,7 @@ import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
-import AdminHome from '~/components/Admin/Home/AdminHome';
+import { AdminHome } from '~/components/Admin/Home/AdminHome';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';

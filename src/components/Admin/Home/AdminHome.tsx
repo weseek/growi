@@ -6,7 +6,7 @@ import SystemInfomationTable from '../../../client/js/components/Admin/AdminHome
 import InstalledPluginTable from '../../../client/js/components/Admin/AdminHome/InstalledPluginTable';
 import EnvVarsTable from '../../../client/js/components/Admin/AdminHome/EnvVarsTable';
 
-export type Props = {
+type Props = {
   nodeVersion: string,
   npmVersion: string,
   yarnVersion: string,
@@ -16,7 +16,7 @@ export type Props = {
   envVars: any,
 }
 
-const AdminHome = (props: Props): JSX.Element => {
+export const AdminHome = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -57,5 +57,3 @@ const AdminHome = (props: Props): JSX.Element => {
     </Fragment>
   );
 };
-
-export default AdminHome;
