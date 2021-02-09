@@ -28,15 +28,14 @@ const CommentThread:FC<Props> = memo(({ comment, replies }:Props) => {
   const commentId = comment._id;
   // const showEditor = this.state.showEditorIds.has(commentId);
   // const isLoggedIn = this.props.appContainer.currentUser != null;
-
-  const rootClassNames = 'page-comment-thread';
-  // if (replies.length === 0) {
-  //   rootClassNames += ' page-comment-thread-no-replies';
-  // }
+  const rootClassNames = ['page-comment-thread'];
+  if (replies.length === 0) {
+    rootClassNames.push('page-comment-thread-no-replies');
+  }
 
   return (
-    <div key={commentId} className={rootClassNames}>
-      hoge
+    <div key={commentId} className={rootClassNames.join(' ')}>
+      {comment.comment}
       {/* <Comment
         comment={comment}
         deleteBtnClicked={this.confirmToDeleteComment}
@@ -97,8 +96,6 @@ export const PageComments:FC = () => {
       replyComments.push(comment);
     }
   });
-
-  console.log(topLevelComments, replyComments);
 
   return (
     <>
