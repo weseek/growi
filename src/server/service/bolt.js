@@ -48,6 +48,16 @@ class BoltService {
     const token = process.env.SLACK_BOT_TOKEN;
     const signingSecret = process.env.SLACK_SIGNING_SECRET;
 
+
+    const { WebClient, LogLevel } = require('@slack/web-api');
+    const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
+    const channelId = 'C01JZJP1J58';
+    const userId = 'U015018DXL3';
+
+    this.client = client;
+    this.channelId = channelId;
+    this.userId = userId;
+
     if (token != null || signingSecret != null) {
       logger.debug('TwitterStrategy: setup is done');
       this.bolt = new App({
@@ -75,22 +85,35 @@ class BoltService {
       await say(`${command.text}`);
     });
 
+
     // TODO check if firstArg is the supported command(like "search")
-    this.bolt.command('/growi', async({ command, ack, say }) => {
+    this.bolt.command('/growi', async({ command }) => {
       const inputSlack = command.text.split(' ');
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
 
+      let searchResults;
       if (firstArg === 'search') {
         const { searchService } = this.crowi;
         const option = { limit: 10 };
-        const results = await searchService.searchKeyword(secondArg, null, {}, option);
-        // get 10 result from slack input
-        console.log(results.data);
+        searchResults = await searchService.searchKeyword(secondArg, null, {}, option);
       }
-      return;
+
+      // TODO impl try-catch
+      try {
+        const result = await this.client.chat.postEphemeral({
+          channel: this.channelId,
+          user: this.userId,
+          text: searchResults,
+        });
+        console.log(result);
+      }
+      catch {
+        console.log('errorだよ');
+      }
     });
   }
+
 
 }
 
