@@ -1,9 +1,8 @@
 import React, {
   useState, useEffect, useCallback, FC,
 } from 'react';
-import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
-
+import { pathUtils } from 'growi-commons';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -27,6 +26,9 @@ type Props = {
   isOpen: boolean,
   path?: string,
   onClose:() => void,
+  onInputChange: (p: string) => void,
+  initializedPath: string,
+  addTrailingSlash: boolean,
 }
 
 export const PageRenameModal:FC<Props> = (props:Props) => {
@@ -34,10 +36,31 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
 
+  const {
+    addTrailingSlash, onSubmit, onInputChange, initializedPath,
+  } = props;
+
   // TODO imprv submitHandler by GW 5088
   const submitHandler = (data) => {
     alert(JSON.stringify(data));
   };
+
+  function inputChangeHandler(pages) {
+    if (onInputChange == null) {
+      return;
+    }
+    const page = pages[0]; // should be single page selected
+
+    if (page != null) {
+      onInputChange(page.path);
+    }
+  }
+
+  function getKeywordOnInit(path) {
+    return addTrailingSlash
+      ? pathUtils.addTrailingSlash(path)
+      : pathUtils.removeTrailingSlash(path);
+  }
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -71,12 +94,12 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             {/* </form> */}
             <SearchTypeahead
               onSubmit={handleSubmit(submitHandler)}
-                // onChange={inputChangeHandler}
-                // onInputChange={props.onInputChange}
+              onChange={inputChangeHandler}
+              onInputChange={props.onInputChange}
               inputName="new_path"
               emptyLabelExceptError={null}
               placeholder="Input page path"
-                // keywordOnInit={getKeywordOnInit(initializedPath)}
+              // keywordOnInit={getKeywordOnInit(initializedPath)}
               name="pagename"
               required
               autoFocus
