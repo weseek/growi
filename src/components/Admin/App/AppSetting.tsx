@@ -61,6 +61,29 @@ export const AppSetting:FC = () => {
     data?.[fileUploadInputName],
   ]);
 
+  const renderRadioButtonsForDefaultLanguage = () => {
+    const elements: JSX.Element[] = config.allLanguages.map((lang) => {
+      const fixedT = i18n.getFixedT(lang);
+      i18n.loadLanguages(config.allLanguages);
+      return (
+        <div key={lang} className="custom-control custom-radio custom-control-inline">
+          <input
+            type="radio"
+            id={`radioLang${lang}`}
+            className="custom-control-input"
+            name={globalLangInputName}
+            value={lang}
+            ref={register}
+          />
+          <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{fixedT('meta.display_name')}</label>
+        </div>
+      );
+    });
+
+    return <>{elements}</>;
+  };
+
+
   return (
     <form role="form" onSubmit={handleSubmit(submitHandler)}>
       <div className="form-group row">
@@ -102,7 +125,7 @@ export const AppSetting:FC = () => {
           {t('admin:app_setting.default_language')}
         </label>
         <div className="col-md-6 py-2">
-          {config.allLanguages.map((lang) => {
+          {/* {config.allLanguages.map((lang) => {
             const fixedT = i18n.getFixedT(lang);
             return (
               <div key={lang} className="custom-control custom-radio custom-control-inline">
@@ -117,7 +140,8 @@ export const AppSetting:FC = () => {
                 <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{fixedT('meta.display_name')}</label>
               </div>
             );
-          })}
+          })} */}
+          { renderRadioButtonsForDefaultLanguage() }
         </div>
       </div>
 
