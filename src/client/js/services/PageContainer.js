@@ -54,10 +54,6 @@ export default class PageContainer extends Container {
       seenUsers: [],
       seenUserIds: mainContent.getAttribute('data-page-ids-of-seen-users'),
       countOfSeenUsers: mainContent.getAttribute('data-page-count-of-seen-users'),
-      beforePathRenamed: mainContent.getAttribute('data-page-path-before-renamed'),
-      beforePathDuplicated: mainContent.getAttribute('data-page-path-before-duplicated'),
-      beforePathRedirected: mainContent.getAttribute('data-page-path-before-redirected'),
-
 
       likerUsers: [],
       sumOfLikers: 0,
