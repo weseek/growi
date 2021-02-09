@@ -14,7 +14,7 @@ type Props = {
   installedPlugins: any,
 
   envVars: any,
-}
+};
 
 export const AdminHome = (props: Props): JSX.Element => {
   const { t } = useTranslation();
