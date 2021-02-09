@@ -3,9 +3,11 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 
+
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { useCurrentPagePath } from '~/stores/context';
 
 import { useTranslation } from '~/i18n';
 
@@ -15,7 +17,7 @@ import { useTranslation } from '~/i18n';
 
 // import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
-// import PagePathAutoComplete from './PagePathAutoComplete';
+// import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
 // import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 // import ComparePathsTable from './ComparePathsTable';
 // import DuplicatePathsTable from './DuplicatedPathsTable';
@@ -27,9 +29,9 @@ type Props = {
   onClose:() => void,
 }
 
-// TODO-5053 impl modal
 export const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
+  const { data: currentPagePath } = useCurrentPagePath();
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -37,8 +39,87 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
         { t('modal_duplicate.label.Duplicate page') }
       </ModalHeader>
       <ModalBody>
+        <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
+          <code>{currentPagePath}</code>
+        </div>
+        <div className="form-group">
+          <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
+          <div className="input-group">
+            <div className="input-group-prepend">
+              {/* <span className="input-group-text">{crowi.url}</span> */}
+            </div>
+            <div className="flex-fill">
+              {/* TODO enable isReachable and use react-hook-form by GW5116 */}
+              {/* {isReachable
+              ? (
+                <PagePathAutoComplete
+                  initializedPath={path}
+                  onSubmit={ppacSubmitHandler}
+                  onInputChange={ppacInputChangeHandler}
+                  autoFocus
+                />
+              )
+              : (
+                TODO enable SearchTypeahead by GW5116
+                <input
+                  type="text"
+                  value={pageNameInput}
+                  className="form-control"
+                  onChange={e => inputChangeHandler(e.target.value)}
+                  required
+                />
+              )} */}
+            </div>
+          </div>
+        </div>
+        <div className="custom-control custom-checkbox custom-checkbox-warning mb-3">
+          <input
+            className="custom-control-input"
+            name="recursively"
+            id="cbDuplicateRecursively"
+            type="checkbox"
+            // checked={isDuplicateRecursively}
+            // onChange={changeIsDuplicateRecursivelyHandler}
+          />
+          <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+            { t('modal_duplicate.label.Recursively') }
+            <p className="form-text text-muted mt-0">{ t('modal_duplicate.help.recursive') }</p>
+          </label>
+
+          <div>
+            {/* TODO: enable isDuplicateRecursively by GW-5117 */}
+            {/* {isDuplicateRecursively && existingPaths.length !== 0 && (
+            <div className="custom-control custom-checkbox custom-checkbox-warning">
+              <input
+                className="custom-control-input"
+                name="withoutExistRecursively"
+                id="cbDuplicatewithoutExistRecursively"
+                type="checkbox"
+                checked={isDuplicateRecursivelyWithoutExistPath}
+                onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+              />
+              <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+                { t('modal_duplicate.label.Duplicate without exist path') }
+              </label>
+            </div>
+            )} */}
+          </div>
+          <div>
+            {/* {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+            {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />} */}
+          </div>
+        </div>
       </ModalBody>
       <ModalFooter>
+        {/* <ApiErrorMessageList errs={errs} targetPath={pageNameInput} /> */}
+        <button
+          type="button"
+          className="btn btn-primary"
+          // onClick={duplicate}
+          // disabled={(isDuplicateRecursively && !isDuplicateRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+        >
+          { t('modal_duplicate.label.Duplicate page') }
+        </button>
       </ModalFooter>
     </Modal>
   );
