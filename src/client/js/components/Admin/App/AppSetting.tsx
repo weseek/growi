@@ -16,12 +16,24 @@ interface Props extends WithTranslation {
   adminAppContainer: AdminAppContainer,
 }
 
-class AppSetting extends React.Component<Props> {
+type MyState = { isMounted: boolean };
+class AppSetting extends React.Component<Props, MyState> {
 
   constructor(props) {
     super(props);
 
+    this.state = {
+      isMounted: false,
+    };
+
     this.submitHandler = this.submitHandler.bind(this);
+    this.renderRadioButtonForDefaultLanguage = this.renderRadioButtonForDefaultLanguage.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({
+      isMounted: true,
+    });
   }
 
   async submitHandler() {
@@ -56,6 +68,19 @@ class AppSetting extends React.Component<Props> {
           />
           <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{fixedT('meta.display_name')}</label>
         </div>
+      );
+    });
+
+    return <>{elements}</>;
+  };
+
+  languageDropdownMenu = (): JSX.Element => {
+    const elements: JSX.Element[] = nextI18NextConfig.allLanguages.map((lang) => {
+      const fixedT = i18n.getFixedT(lang);
+      return (
+        <button key={lang} className="dropdown-item" type="button" onClick={() => { i18n.changeLanguage(lang) }}>
+          {fixedT('meta.display_name')}
+        </button>
       );
     });
 
@@ -128,7 +153,7 @@ class AppSetting extends React.Component<Props> {
                 </div>
               ))
             } */}
-            {this.renderRadioButtonForDefaultLanguage()}
+            {this.state.isMounted && this.renderRadioButtonForDefaultLanguage()}
           </div>
         </div>
 
