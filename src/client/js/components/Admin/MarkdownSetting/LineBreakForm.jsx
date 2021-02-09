@@ -39,11 +39,14 @@ export const LineBreakForm = (props) => {
   };
 
   useEffect(() => {
-    Object.keys(getValues()).forEach((key) => {
-      setValue(key, data?.[key]);
-    });
+    setValue(isEnabledLinebreaksInputName, data?.[isEnabledLinebreaksInputName]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data?.[isEnabledLinebreaksInputName]]);
+
+  useEffect(() => {
+    setValue(isEnabledLinebreaksInCommentsInputName, data?.[isEnabledLinebreaksInCommentsInputName]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.[isEnabledLinebreaksInCommentsInputName]]);
 
   function renderLineBreakOption() {
     const helpLineBreak = { __html: t('admin:markdown_setting.lineBreak_options.enable_lineBreak_desc') };
