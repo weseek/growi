@@ -108,7 +108,7 @@ class BoltService {
         console.log(result);
       }
       catch {
-        console.log('errorだよ');
+        console.log('This is error');
       }
     });
   }
