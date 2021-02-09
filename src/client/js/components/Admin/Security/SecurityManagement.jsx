@@ -7,7 +7,7 @@ import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
-import SecurityManagementContents from './SecurityManagementContents';
+import SecurityManagementContents from '~/components/Admin/Security/SecurityManagementContents';
 
 let retrieveErrors = null;
 function SecurityManagement(props) {

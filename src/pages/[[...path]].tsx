@@ -20,6 +20,8 @@ import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigatio
 import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
+import { PageComments } from '~/components/PageComment/PageComments';
+
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
@@ -135,6 +137,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
 
         </div>
+        <footer>
+          <PageComments />
+        </footer>
 
       </BasicLayout>
     </>
