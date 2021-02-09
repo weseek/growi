@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 // import PropTypes from 'prop-types';
 import { useCurrentPageCommentsSWR } from '~/stores/page';
 import { Comment } from '~/interfaces/page';
@@ -20,10 +20,11 @@ import { Comment } from '~/interfaces/page';
 // import ReplayComments from './PageComment/ReplayComments';
 
 type Props = {
-  comment: Comment
+  comment: Comment;
+  replies: Comment[];
 }
 
-const CommentThread:FC<Props> = ({ comment, replies }:Props) => {
+const CommentThread:FC<Props> = memo(({ comment, replies }:Props) => {
   const commentId = comment._id;
   // const showEditor = this.state.showEditorIds.has(commentId);
   // const isLoggedIn = this.props.appContainer.currentUser != null;
@@ -73,12 +74,11 @@ const CommentThread:FC<Props> = ({ comment, replies }:Props) => {
       )} */}
     </div>
   );
-};
+});
 
 
 export const PageComments:FC = () => {
   const { data: comments } = useCurrentPageCommentsSWR();
-  console.log(comments);
 
   if (comments == null) {
     return null;
@@ -86,7 +86,6 @@ export const PageComments:FC = () => {
 
   const topLevelComments = [] as Comment[];
   const replyComments = [] as Comment[];
-  // const comments2 = comments.slice().reverse(); // create shallow copy and reverse
 
   comments.forEach((comment) => {
     if (comment.replyTo == null) {
@@ -105,11 +104,18 @@ export const PageComments:FC = () => {
     <>
       { topLevelComments.map((topLevelComment) => {
         // get related replies
-        const replyList = replyComments.filter(reply => reply.replyTo === topLevelComment._id);
-        console.log(replyList);
-        return <CommentThread comment={topLevelComment} />;
-        // return this.renderThread(topLevelComment, replies);
+        const replies = replyComments.filter(reply => reply.replyTo === topLevelComment._id);
+
+        return <CommentThread comment={topLevelComment} replies={replies} />;
       }) }
+
+      {/* <DeleteCommentModal
+        isShown={this.state.isDeleteConfirmModalShown}
+        comment={this.state.commentToDelete}
+        errorMessage={this.state.errorMessageForDeleting}
+        cancel={this.closeDeleteConfirmModal}
+        confirmedToDelete={this.deleteComment}
+      /> */}
     </>
   );
 };
@@ -181,113 +187,6 @@ export const PageComments:FC = () => {
 //         showEditorIds: prevState.showEditorIds,
 //       };
 //     });
-//   }
-
-//   // get replies to specific comment object
-//   getRepliesFor(comment, allReplies) {
-//     const replyList = [];
-//     allReplies.forEach((reply) => {
-//       if (reply.replyTo === comment._id) {
-//         replyList.push(reply);
-//       }
-//     });
-//     return replyList;
-//   }
-
-//   /**
-//    * render Elements of Comment Thread
-//    *
-//    * @param {any} comment Comment Model Obj
-//    * @param {any} replies List of Reply Comment Model Obj
-//    *
-//    * @memberOf PageComments
-//    */
-// renderThread(comment, replies) {
-//   const commentId = comment._id;
-//   const showEditor = this.state.showEditorIds.has(commentId);
-//   const isLoggedIn = this.props.appContainer.currentUser != null;
-
-//   let rootClassNames = 'page-comment-thread';
-//   if (replies.length === 0) {
-//     rootClassNames += ' page-comment-thread-no-replies';
-//   }
-
-//   return (
-//     <div key={commentId} className={rootClassNames}>
-//       <Comment
-//         comment={comment}
-//         deleteBtnClicked={this.confirmToDeleteComment}
-//         growiRenderer={this.growiRenderer}
-//       />
-//       {replies.length !== 0 && (
-//       <ReplayComments
-//         replyList={replies}
-//         deleteBtnClicked={this.confirmToDeleteComment}
-//         growiRenderer={this.growiRenderer}
-//       />
-//       )}
-//       { !showEditor && isLoggedIn && (
-//         <div className="text-right">
-//           <Button
-//             outline
-//             color="secondary"
-//             size="sm"
-//             className="btn-comment-reply"
-//             onClick={() => { return this.replyButtonClickedHandler(commentId) }}
-//           >
-//             <i className="icon-fw icon-action-undo"></i> Reply
-//           </Button>
-//         </div>
-//       )}
-//       { showEditor && (
-//         <div className="page-comment-reply-form ml-4 ml-sm-5 mr-3">
-//           <CommentEditor
-//             growiRenderer={this.growiRenderer}
-//             replyTo={commentId}
-//             onCancelButtonClicked={this.editorCancelHandler}
-//             onCommentButtonClicked={this.editorCommentHandler}
-//           />
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-//   render() {
-//     const topLevelComments = [];
-//     const allReplies = [];
-//     const comments = this.props.commentContainer.state.comments
-//       .slice().reverse(); // create shallow copy and reverse
-
-// comments.forEach((comment) => {
-//   if (comment.replyTo === undefined) {
-//     // comment is not a reply
-//     topLevelComments.push(comment);
-//   }
-//   else {
-//     // comment is a reply
-//     allReplies.push(comment);
-//   }
-// });
-
-//     return (
-//       <div>
-//         { topLevelComments.map((topLevelComment) => {
-//           // get related replies
-//           const replies = this.getRepliesFor(topLevelComment, allReplies);
-
-//           return this.renderThread(topLevelComment, replies);
-//         }) }
-
-//         <DeleteCommentModal
-//           isShown={this.state.isDeleteConfirmModalShown}
-//           comment={this.state.commentToDelete}
-//           errorMessage={this.state.errorMessageForDeleting}
-//           cancel={this.closeDeleteConfirmModal}
-//           confirmedToDelete={this.deleteComment}
-//         />
-//       </div>
-//     );
 //   }
 
 // }
