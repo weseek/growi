@@ -1,4 +1,4 @@
-import { mutate, responseInterface } from 'swr';
+import { mutate, responseInterface, cache } from 'swr';
 
 import loggerFactory from '~/utils/logger';
 
@@ -44,7 +44,7 @@ export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => 
   const { data: page } = useCurrentPageSWR();
 
   if (page == null) {
-    mutate(key, false);
+    mutate(key, false, false);
   }
   else {
     mutate(key, !isUserPage(page.path) && !isSharedUser);
@@ -61,7 +61,7 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   const editorMode = 'view';
 
   if (page == null) {
-    mutate(key, false);
+    mutate(key, false, false);
   }
   else {
     // Tags cannot be edited while the new page and editorMode is 'view'
@@ -77,7 +77,7 @@ export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> =>
   const { data: isNotFoundPage } = useNotFound();
 
   if (page == null) {
-    mutate(key, false);
+    mutate(key, false, false);
   }
   else {
     mutate(key, !isNotFoundPage && !isUserPage(page.path));
@@ -103,7 +103,7 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
   const { data: page } = useCurrentPageSWR();
 
   if (page == null) {
-    mutate(key, false);
+    mutate(key, false, false);
   }
   else {
     mutate(key, isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
@@ -115,7 +115,12 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
 export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
   const key = 'isPageCreateModalOpened';
 
-  if (isOpened != null) {
+  if (isOpened == null) {
+    if (!cache.has(key)) {
+      mutate(key, false, false);
+    }
+  }
+  else {
     mutate(key, isOpened);
   }
 
@@ -125,7 +130,12 @@ export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<
 export const useDrawerOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
   const key = 'isDrawerOpened';
 
-  if (isOpened != null) {
+  if (isOpened == null) {
+    if (!cache.has(key)) {
+      mutate(key, false, false);
+    }
+  }
+  else {
     mutate(key, isOpened);
   }
 
