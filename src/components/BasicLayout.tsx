@@ -36,7 +36,7 @@ const BasicLayout = ({ children, title }: Props): JSX.Element => {
         {/* <GrowiNavbarBottom /> */}
       </RawLayout>
 
-      {/* <PageCreateModal /> */}
+      <PageCreateModal />
       <HotkeysManager />
       <SystemVersion />
     </>
