@@ -27,7 +27,7 @@ class AppSetting extends React.Component<Props, MyState> {
     };
 
     this.submitHandler = this.submitHandler.bind(this);
-    this.renderRadioButtonForDefaultLanguage = this.renderRadioButtonForDefaultLanguage.bind(this);
+    this.renderRadioButtonsForDefaultLanguage = this.renderRadioButtonsForDefaultLanguage.bind(this);
   }
 
   componentDidMount() {
@@ -49,7 +49,7 @@ class AppSetting extends React.Component<Props, MyState> {
     }
   }
 
-  renderRadioButtonForDefaultLanguage = (): JSX.Element => {
+  renderRadioButtonsForDefaultLanguage = (): JSX.Element => {
     const elements: JSX.Element[] = nextI18NextConfig.allLanguages.map((lang) => {
       const { adminAppContainer } = this.props;
       const fixedT = i18n.getFixedT(lang);
@@ -68,19 +68,6 @@ class AppSetting extends React.Component<Props, MyState> {
           />
           <label className="custom-control-label" htmlFor={`radioLang${lang}`}>{fixedT('meta.display_name')}</label>
         </div>
-      );
-    });
-
-    return <>{elements}</>;
-  };
-
-  languageDropdownMenu = (): JSX.Element => {
-    const elements: JSX.Element[] = nextI18NextConfig.allLanguages.map((lang) => {
-      const fixedT = i18n.getFixedT(lang);
-      return (
-        <button key={lang} className="dropdown-item" type="button" onClick={() => { i18n.changeLanguage(lang) }}>
-          {fixedT('meta.display_name')}
-        </button>
       );
     });
 
@@ -153,7 +140,7 @@ class AppSetting extends React.Component<Props, MyState> {
                 </div>
               ))
             } */}
-            {this.state.isMounted && this.renderRadioButtonForDefaultLanguage()}
+            {this.state.isMounted && this.renderRadioButtonsForDefaultLanguage()}
           </div>
         </div>
 
