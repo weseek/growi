@@ -1,4 +1,15 @@
 
+export type markdownParams = {
+  isEnabledLinebreaks: boolean,
+  isEnabledLinebreaksInComments: boolean,
+  pageBreakSeparator: number,
+  pageBreakCustomSeparator: string,
+  isEnabledXss: boolean,
+  xssOption: number,
+  tagWhiteList: string[],
+  attrWhiteList: string[],
+}
+
 export type customizeParams = {
   customizeCss?: string,
   customizeHeader?: string,

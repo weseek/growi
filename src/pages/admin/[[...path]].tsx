@@ -10,6 +10,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
 
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';
@@ -47,7 +48,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     markdown: {
       title: t('Markdown Settings'),
-      component: <></>,
+      component: <MarkDownSettingContents />,
     },
     customize: {
       title: t('Customize Settings'),
