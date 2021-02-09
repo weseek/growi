@@ -26,7 +26,7 @@ class StaffCredit extends React.Component {
     super(props);
     this.state = {
       isShown: true,
-      gcContributors: null,
+      contributors: null,
     };
     this.deleteCredit = this.deleteCredit.bind(this);
   }
@@ -60,7 +60,7 @@ class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      if (this.state.gcContributors != null) {
+      if (this.state.contributors != null) {
         // TODO: merge gcContributors to Contributors
         // refs: https://youtrack.weseek.co.jp/issue/GW-4573
       }
@@ -107,7 +107,7 @@ class StaffCredit extends React.Component {
     }, 10);
 
     this.props.appContainer.apiv3Get('/staffs').then((res) => {
-      this.setState({ gcContributors: res.data });
+      this.setState({ contributors: res.data });
     });
 
   }
