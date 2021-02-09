@@ -91,21 +91,30 @@ class BoltService {
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
 
-      let searchResults;
+      let data;
+      let paths;
       if (firstArg === 'search') {
         const { searchService } = this.crowi;
         const option = { limit: 10 };
-        searchResults = await searchService.searchKeyword(secondArg, null, {}, option);
+        const searchResults = await searchService.searchKeyword(secondArg, null, {}, option);
+        data = searchResults.data;
+        paths = data.forEach((d) => { console.log(d._source) });
       }
 
+      console.log(paths);
       // TODO impl try-catch
       try {
         const result = await this.client.chat.postEphemeral({
           channel: this.channelId,
           user: this.userId,
-          text: searchResults,
+          blocks: [{
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `${paths}`,
+            },
+          }],
         });
-        console.log(result);
       }
       catch {
         console.log('This is error');
