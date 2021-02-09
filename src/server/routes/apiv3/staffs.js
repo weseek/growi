@@ -1,11 +1,15 @@
+const loggerFactory = require('@alias/logger');
+
+const logger = loggerFactory('growi:routes:apiv3:staffs'); // eslint-disable-line no-unused-vars
+
 const express = require('express');
 
 const axios = require('axios');
 
 const router = express.Router();
-const { isAfter, addMonths } = require('date-fns');
+const { isAfter, addHours } = require('date-fns');
 
-const contributors = require('../../../client/js/components/StaffCredit/Contributor');
+const contributors = require('../../../../resource/Contributor');
 
 let expiredAt;
 
@@ -13,12 +17,9 @@ module.exports = (crowi) => {
 
   router.get('/', async(req, res) => {
     const now = new Date();
-
     const growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
-    if (growiCloudUri == null) {
-      return res.apiv3({ contributors });
-    }
-    if (expiredAt == null || isAfter(now, expiredAt)) {
+
+    if (expiredAt == null || isAfter(now, expiredAt) || growiCloudUri != null) {
       const url = new URL('_api/staffCredit', growiCloudUri);
       try {
         const gcContributorsRes = await axios.get(url.toString());
@@ -29,11 +30,12 @@ module.exports = (crowi) => {
         else {
           contributors.splice(1, 1, gcContributorsRes.data);
         }
-        // caching 'expiredAt' for 1 month
-        expiredAt = addMonths(now, 1);
+        // caching 'expiredAt' for 1 hour
+        expiredAt = addHours(now, 1);
       }
       catch (err) {
-        return res.apiv3Err(err, 500);
+        logger.warn('cannot display GROWI.cloud staffcredit');
+        return res.apiv3();
       }
     }
     return res.apiv3({ contributors });
