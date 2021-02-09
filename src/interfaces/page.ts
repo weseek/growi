@@ -1,3 +1,4 @@
+import { User } from '~/interfaces/user';
 
 export type Page = {
   id: string,
@@ -18,6 +19,14 @@ export type LikeInfo = {
 
 export type Tag = {
   name: string,
+}
+
+export type Comment = {
+  _id: string,
+  page: Page,
+  comment: string,
+  replyTo?: string,
+  creator: User,
 }
 
 export type Revision = {
