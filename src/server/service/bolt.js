@@ -50,8 +50,8 @@ class BoltService {
     const signingSecret = process.env.SLACK_SIGNING_SECRET;
 
     const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
-    const channelId = 'C01JZJP1J58';
-    const userId = 'U015018DXL3';
+    const channelId = process.env.SLACK_CHANNEL_ID;
+    const userId = process.env.SLACK_USER_ID;
 
     this.client = client;
     this.channelId = channelId;
