@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 
 const DuplicatedAlert = (props) => {
   const { t } = props;
-
   const urlParams = new URLSearchParams(window.location.search);
   const fromPath = urlParams.get('duplicated');
 
