@@ -22,4 +22,5 @@ export type Tag = {
 export type Comment = {
   page: Page,
   comment: string,
+  replyTo?: string,
 }

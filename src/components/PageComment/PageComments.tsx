@@ -1,6 +1,7 @@
 import { FC } from 'react';
 // import PropTypes from 'prop-types';
 import { useCurrentPageCommentsSWR } from '~/stores/page';
+import { Comment } from '~/interfaces/page';
 // import {
 //   Button,
 // } from 'reactstrap';
@@ -21,6 +22,27 @@ import { useCurrentPageCommentsSWR } from '~/stores/page';
 export const PageComments:FC = () => {
   const { data: comments } = useCurrentPageCommentsSWR();
   console.log(comments);
+
+  if (comments == null) {
+    return null;
+  }
+
+  const topLevelComments = [] as Comment[];
+  const replyComments = [] as Comment[];
+  // const comments2 = comments.slice().reverse(); // create shallow copy and reverse
+
+  comments.forEach((comment) => {
+    if (comment.replyTo == null) {
+      // comment is not a reply
+      topLevelComments.push(comment);
+    }
+    else {
+      // comment is a reply
+      replyComments.push(comment);
+    }
+  });
+
+  console.log(topLevelComments, replyComments);
 
   return <p>huga</p>;
 };
@@ -170,16 +192,16 @@ export const PageComments:FC = () => {
 //     const comments = this.props.commentContainer.state.comments
 //       .slice().reverse(); // create shallow copy and reverse
 
-//     comments.forEach((comment) => {
-//       if (comment.replyTo === undefined) {
-//         // comment is not a reply
-//         topLevelComments.push(comment);
-//       }
-//       else {
-//         // comment is a reply
-//         allReplies.push(comment);
-//       }
-//     });
+// comments.forEach((comment) => {
+//   if (comment.replyTo === undefined) {
+//     // comment is not a reply
+//     topLevelComments.push(comment);
+//   }
+//   else {
+//     // comment is a reply
+//     allReplies.push(comment);
+//   }
+// });
 
 //     return (
 //       <div>
