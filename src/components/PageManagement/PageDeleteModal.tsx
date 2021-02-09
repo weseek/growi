@@ -54,7 +54,7 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
         recursively: isDeleteRecursively ? true : null,
         completely: isDeleteCompletely ? true : null,
         page_id: currentPage.id,
-        revision_id: currentPage.revision,
+        revision_id: currentPage.revision._id,
         // TODO GW-5134 use SocketIoContainer after implement
         // socketClientId: SocketIoContainer.getSocketClientId(),
       });
