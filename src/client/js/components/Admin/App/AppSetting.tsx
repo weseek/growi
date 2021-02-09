@@ -15,6 +15,7 @@ const titleInputName = 'title';
 const confidentialInputName = 'confidential';
 const globalLangInputName = 'globalLang';
 const fileUploadInputName = 'fileUpload';
+
 type FormValues = {
   [titleInputName]: string,
   [confidentialInputName]: string,
