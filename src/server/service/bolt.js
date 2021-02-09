@@ -38,6 +38,7 @@ class BoltReciever {
 }
 
 const { App } = require('@slack/bolt');
+const { WebClient, LogLevel } = require('@slack/web-api');
 
 class BoltService {
 
@@ -48,8 +49,6 @@ class BoltService {
     const token = process.env.SLACK_BOT_TOKEN;
     const signingSecret = process.env.SLACK_SIGNING_SECRET;
 
-
-    const { WebClient, LogLevel } = require('@slack/web-api');
     const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
     const channelId = 'C01JZJP1J58';
     const userId = 'U015018DXL3';
