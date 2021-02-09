@@ -61,43 +61,6 @@ export default class CommentContainer extends Container {
   }
 
   /**
-   * Load data of comments and store them in state
-   */
-  async retrieveComments() {
-    const { pageId } = this.getPageContainer().state;
-
-    // get data (desc order array)
-    const res = await this.appContainer.apiGet('/comments.get', { page_id: pageId });
-    if (res.ok) {
-      const comments = res.comments;
-      this.setState({ comments });
-
-      this.checkAndUpdateImageOfCommentAuthers(comments);
-    }
-  }
-
-  async checkAndUpdateImageOfCommentAuthers(comments) {
-    const noImageCacheUserIds = comments.filter((comment) => {
-      const { creator } = comment;
-      return creator != null && creator.imageUrlCached == null;
-    }).map((comment) => {
-      return comment.creator._id;
-    });
-
-    if (noImageCacheUserIds.length === 0) {
-      return;
-    }
-
-    try {
-      await this.appContainer.apiv3Put('/users/update.imageUrlCache', { userIds: noImageCacheUserIds });
-    }
-    catch (err) {
-      // Error alert doesn't apear, because user don't need to notice this error.
-      logger.error(err);
-    }
-  }
-
-  /**
    * Load data of comments and rerender <PageComments />
    */
   postComment(comment, isMarkdown, replyTo, isSlackEnabled, slackChannels) {

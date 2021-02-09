@@ -2,17 +2,13 @@ import React from 'react';
 import { Card, CardBody } from 'reactstrap';
 
 import { useTranslation } from '~/i18n';
+import { LineBreakForm } from '~/components/Admin/Markdown/LineBreakForm';
+import { PresentationForm } from '~/components/Admin/Markdown/PresentationForm';
+import { XssForm } from '~/components/Admin/Markdown/XssForm';
 
-import LineBreakForm from '~/client/js/components/Admin/MarkdownSetting/LineBreakForm';
-import PresentationForm from '~/client/js/components/Admin/MarkdownSetting/PresentationForm';
-import XssForm from '~/client/js/components/Admin/MarkdownSetting/XssForm';
 
-type Props = {
-};
-
-const MarkDownSettingContents = (props: Props): JSX.Element => {
+const MarkDownSettingContents = (): JSX.Element => {
   const { t } = useTranslation();
-
   return (
     <React.Fragment>
       {/* Line Break Setting */}
