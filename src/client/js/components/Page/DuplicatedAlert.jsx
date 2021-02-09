@@ -12,7 +12,7 @@ const DuplicatedAlert = (props) => {
   return (
     <div className="alert alert-success py-3 px-4">
       <strong>
-        { t('Duplicated') }:{t('page_page.notice.duplicated', { fromPath })}
+        { t('Duplicated') }:{t('page_page.notice.duplicated')} <code>{fromPath}</code>{t('page_page.notice.duplicated_period')}
       </strong>
     </div>
   );
