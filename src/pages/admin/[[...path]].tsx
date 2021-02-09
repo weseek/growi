@@ -13,6 +13,7 @@ import ConfigLoader from '~/server/service/config-loader';
 
 import { AdminHome } from '~/components/Admin/Home/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
+import { SecurityManagementContents } from '~/components/Admin/Security/SecurityManagementContents';
 import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
@@ -60,8 +61,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <AppSettingsPageContents />,
     },
     security: {
-      title: '',
-      component: <></>,
+      title: t('Security settings'),
+      component: <SecurityManagementContents />,
     },
     markdown: {
       title: t('Markdown Settings'),
@@ -126,6 +127,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
+
+  // check for presence
+  // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
+  if (!('props' in result)) {
+    throw new Error('invalid getSSP result');
+  }
   const props: Props = result.props as Props;
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
