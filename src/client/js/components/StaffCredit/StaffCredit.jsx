@@ -4,7 +4,7 @@ import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
-import contributors from './Contributor';
+import contributors from '../../../../../resource/Contributor';
 import AppContainer from '../../services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
