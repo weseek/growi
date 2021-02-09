@@ -4,6 +4,7 @@ export type Page = {
   id: string,
   path: string,
   status: string,
+  revision: Revision,
 }
 
 export type BookmarkInfo = {
@@ -26,4 +27,8 @@ export type Comment = {
   comment: string,
   replyTo?: string,
   creator: User,
+}
+
+export type Revision = {
+  _id: string;
 }
