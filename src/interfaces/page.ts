@@ -20,6 +20,7 @@ export type Tag = {
 }
 
 export type Comment = {
+  _id: string,
   page: Page,
   comment: string,
   replyTo?: string,

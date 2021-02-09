@@ -19,6 +19,63 @@ import { Comment } from '~/interfaces/page';
 // import DeleteCommentModal from './PageComment/DeleteCommentModal';
 // import ReplayComments from './PageComment/ReplayComments';
 
+type Props = {
+  comment: Comment
+}
+
+const CommentThread:FC<Props> = ({ comment, replies }:Props) => {
+  const commentId = comment._id;
+  // const showEditor = this.state.showEditorIds.has(commentId);
+  // const isLoggedIn = this.props.appContainer.currentUser != null;
+
+  const rootClassNames = 'page-comment-thread';
+  // if (replies.length === 0) {
+  //   rootClassNames += ' page-comment-thread-no-replies';
+  // }
+
+  return (
+    <div key={commentId} className={rootClassNames}>
+      hoge
+      {/* <Comment
+        comment={comment}
+        deleteBtnClicked={this.confirmToDeleteComment}
+        growiRenderer={this.growiRenderer}
+      /> */}
+      {/* {replies.length !== 0 && (
+      <ReplayComments
+        replyList={replies}
+        deleteBtnClicked={this.confirmToDeleteComment}
+        growiRenderer={this.growiRenderer}
+      />
+      )}
+      { !showEditor && isLoggedIn && (
+        <div className="text-right">
+          <Button
+            outline
+            color="secondary"
+            size="sm"
+            className="btn-comment-reply"
+            onClick={() => { return this.replyButtonClickedHandler(commentId) }}
+          >
+            <i className="icon-fw icon-action-undo"></i> Reply
+          </Button>
+        </div>
+      )}
+      { showEditor && (
+        <div className="page-comment-reply-form ml-4 ml-sm-5 mr-3">
+          <CommentEditor
+            growiRenderer={this.growiRenderer}
+            replyTo={commentId}
+            onCancelButtonClicked={this.editorCancelHandler}
+            onCommentButtonClicked={this.editorCommentHandler}
+          />
+        </div>
+      )} */}
+    </div>
+  );
+};
+
+
 export const PageComments:FC = () => {
   const { data: comments } = useCurrentPageCommentsSWR();
   console.log(comments);
@@ -44,7 +101,17 @@ export const PageComments:FC = () => {
 
   console.log(topLevelComments, replyComments);
 
-  return <p>huga</p>;
+  return (
+    <>
+      { topLevelComments.map((topLevelComment) => {
+        // get related replies
+        const replyList = replyComments.filter(reply => reply.replyTo === topLevelComment._id);
+        console.log(replyList);
+        return <CommentThread comment={topLevelComment} />;
+        // return this.renderThread(topLevelComment, replies);
+      }) }
+    </>
+  );
 };
 
 // class DeprecatePageComments extends React.Component {
@@ -135,56 +202,56 @@ export const PageComments:FC = () => {
 //    *
 //    * @memberOf PageComments
 //    */
-//   renderThread(comment, replies) {
-//     const commentId = comment._id;
-//     const showEditor = this.state.showEditorIds.has(commentId);
-//     const isLoggedIn = this.props.appContainer.currentUser != null;
+// renderThread(comment, replies) {
+//   const commentId = comment._id;
+//   const showEditor = this.state.showEditorIds.has(commentId);
+//   const isLoggedIn = this.props.appContainer.currentUser != null;
 
-//     let rootClassNames = 'page-comment-thread';
-//     if (replies.length === 0) {
-//       rootClassNames += ' page-comment-thread-no-replies';
-//     }
-
-//     return (
-//       <div key={commentId} className={rootClassNames}>
-//         <Comment
-//           comment={comment}
-//           deleteBtnClicked={this.confirmToDeleteComment}
-//           growiRenderer={this.growiRenderer}
-//         />
-//         {replies.length !== 0 && (
-//         <ReplayComments
-//           replyList={replies}
-//           deleteBtnClicked={this.confirmToDeleteComment}
-//           growiRenderer={this.growiRenderer}
-//         />
-//         )}
-//         { !showEditor && isLoggedIn && (
-//           <div className="text-right">
-//             <Button
-//               outline
-//               color="secondary"
-//               size="sm"
-//               className="btn-comment-reply"
-//               onClick={() => { return this.replyButtonClickedHandler(commentId) }}
-//             >
-//               <i className="icon-fw icon-action-undo"></i> Reply
-//             </Button>
-//           </div>
-//         )}
-//         { showEditor && (
-//           <div className="page-comment-reply-form ml-4 ml-sm-5 mr-3">
-//             <CommentEditor
-//               growiRenderer={this.growiRenderer}
-//               replyTo={commentId}
-//               onCancelButtonClicked={this.editorCancelHandler}
-//               onCommentButtonClicked={this.editorCommentHandler}
-//             />
-//           </div>
-//         )}
-//       </div>
-//     );
+//   let rootClassNames = 'page-comment-thread';
+//   if (replies.length === 0) {
+//     rootClassNames += ' page-comment-thread-no-replies';
 //   }
+
+//   return (
+//     <div key={commentId} className={rootClassNames}>
+//       <Comment
+//         comment={comment}
+//         deleteBtnClicked={this.confirmToDeleteComment}
+//         growiRenderer={this.growiRenderer}
+//       />
+//       {replies.length !== 0 && (
+//       <ReplayComments
+//         replyList={replies}
+//         deleteBtnClicked={this.confirmToDeleteComment}
+//         growiRenderer={this.growiRenderer}
+//       />
+//       )}
+//       { !showEditor && isLoggedIn && (
+//         <div className="text-right">
+//           <Button
+//             outline
+//             color="secondary"
+//             size="sm"
+//             className="btn-comment-reply"
+//             onClick={() => { return this.replyButtonClickedHandler(commentId) }}
+//           >
+//             <i className="icon-fw icon-action-undo"></i> Reply
+//           </Button>
+//         </div>
+//       )}
+//       { showEditor && (
+//         <div className="page-comment-reply-form ml-4 ml-sm-5 mr-3">
+//           <CommentEditor
+//             growiRenderer={this.growiRenderer}
+//             replyTo={commentId}
+//             onCancelButtonClicked={this.editorCancelHandler}
+//             onCommentButtonClicked={this.editorCommentHandler}
+//           />
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
 
 //   render() {
 //     const topLevelComments = [];
