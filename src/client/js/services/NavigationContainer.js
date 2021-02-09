@@ -98,17 +98,17 @@ export default class NavigationContainer extends Container {
   }
 
   setEditorMode(editorMode) {
-    const { isNotCreatable } = this.getPageContainer().state;
+    // const { isNotCreatable } = this.getPageContainer().state;
 
     if (this.appContainer.currentUser == null) {
       logger.warn('Please login or signup to edit the page or use hackmd.');
       return;
     }
 
-    if (isNotCreatable) {
-      logger.warn('This page could not edit.');
-      return;
-    }
+    // if (isNotCreatable) {
+    //   logger.warn('This page could not edit.');
+    //   return;
+    // }
 
     this.setState({ editorMode });
     if (editorMode === 'view') {
