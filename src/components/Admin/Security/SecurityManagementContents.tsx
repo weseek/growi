@@ -1,4 +1,6 @@
-import React, { Fragment, useMemo, useState } from 'react';
+import React, {
+  FC, Fragment, useMemo, useState,
+} from 'react';
 // import PropTypes from 'prop-types';
 import { TabContent, TabPane } from 'reactstrap';
 import { useTranslation } from '~/i18n';
@@ -20,7 +22,7 @@ import CustomNav from '~/client/js/components/CustomNavigation/CustomNav';
 type Props = {
 };
 
-const SecurityManagementContents = (props: Props): JSX.Element => {
+export const SecurityManagementContents: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('passport_local');
@@ -149,5 +151,3 @@ const SecurityManagementContents = (props: Props): JSX.Element => {
   );
 
 };
-
-export default SecurityManagementContents;
