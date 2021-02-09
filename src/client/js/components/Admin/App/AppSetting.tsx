@@ -53,6 +53,8 @@ class AppSetting extends React.Component<Props, MyState> {
     const elements: JSX.Element[] = nextI18NextConfig.allLanguages.map((lang) => {
       const { adminAppContainer } = this.props;
       const fixedT = i18n.getFixedT(lang);
+      i18n.loadLanguages(nextI18NextConfig.allLanguages);
+
       return (
         <div key={lang} className="custom-control custom-radio custom-control-inline">
           <input
