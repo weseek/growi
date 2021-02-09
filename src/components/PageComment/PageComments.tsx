@@ -1,6 +1,6 @@
 import { FC } from 'react';
 // import PropTypes from 'prop-types';
-
+import { useCurrentPageCommentsSWR } from '~/stores/page';
 // import {
 //   Button,
 // } from 'reactstrap';
@@ -19,6 +19,9 @@ import { FC } from 'react';
 // import ReplayComments from './PageComment/ReplayComments';
 
 export const PageComments:FC = () => {
+  const { data: comments } = useCurrentPageCommentsSWR();
+  console.log(comments);
+
   return <p>huga</p>;
 };
 
