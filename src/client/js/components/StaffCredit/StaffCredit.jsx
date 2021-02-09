@@ -4,7 +4,9 @@ import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
-import contributors from './Contributor';
+import contributors from '../../../../../resource/Contributor';
+import AppContainer from '../../services/AppContainer';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 /**
  * Page staff credit component
@@ -17,13 +19,14 @@ import contributors from './Contributor';
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:cli:StaffCredit');
 
-export default class StaffCredit extends React.Component {
+class StaffCredit extends React.Component {
 
   constructor(props) {
 
     super(props);
     this.state = {
       isShown: true,
+      contributors: null,
     };
     this.deleteCredit = this.deleteCredit.bind(this);
   }
@@ -57,6 +60,10 @@ export default class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
+      if (this.state.contributors != null) {
+        // TODO: merge gcContributors to Contributors
+        // refs: https://youtrack.weseek.co.jp/issue/GW-4573
+      }
       const credit = contributors.map((contributor) => {
         // construct members elements
         const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
@@ -98,6 +105,11 @@ export default class StaffCredit extends React.Component {
         color: '#FFFFFF',
       });
     }, 10);
+
+    this.props.appContainer.apiv3Get('/staffs').then((res) => {
+      this.setState({ contributors: res.data });
+    });
+
   }
 
   render() {
@@ -123,6 +135,12 @@ export default class StaffCredit extends React.Component {
   }
 
 }
+
+const StaffCreditWrapper = withUnstatedContainers(StaffCredit, [AppContainer]);
+
 StaffCredit.propTypes = {
   onClosed: PropTypes.func,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
+
+export default StaffCreditWrapper;
