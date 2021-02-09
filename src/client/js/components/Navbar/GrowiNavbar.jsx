@@ -99,7 +99,7 @@ const GrowiNavbar = () => {
 
       { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
         <div className="grw-global-search grw-global-search-top position-absolute">
-          {/* <GlobalSearch /> */}
+          <GlobalSearch />
         </div>
       ) }
     </nav>

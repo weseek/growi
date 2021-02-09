@@ -33,7 +33,7 @@ const BasicLayout = ({ children, title }: Props): JSX.Element => {
           </div>
         </div>
 
-        {/* <GrowiNavbarBottom /> */}
+        <GrowiNavbarBottom />
       </RawLayout>
 
       <PageCreateModal />

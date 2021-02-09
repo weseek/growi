@@ -1,19 +1,23 @@
 import dynamic from 'next/dynamic';
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback } from 'react';
+import { usePageCreateModalOpened, useDrawerOpened } from '~/stores/ui';
 
-import NavigationContainer from '../../services/NavigationContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 const GrowiNavbarBottom = (props) => {
+
+  const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
+  const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
 
   // dynamic import to skip rendering at SSR
   const GlobalSearch = dynamic(() => import('./GlobalSearch'), { ssr: false });
 
-  const {
-    navigationContainer,
-  } = props;
-  const { isDrawerOpened, isDeviceSmallerThanMd } = navigationContainer.state;
+  const openPageCreateModal = useCallback(() => mutatePageCreateModalOpened(true), [mutatePageCreateModalOpened]);
+
+  const toggleDrawer = useCallback(() => mutateDrawerOpened(!isDrawerOpened), [isDrawerOpened, mutateDrawerOpened]);
+
+  // const { isDeviceSmallerThanMd } = navigationContainer.state;
+  // TODO: impl by GW-5128
+  const isDeviceSmallerThanMd = true;
 
   const additionalClasses = ['grw-navbar-bottom'];
   if (isDrawerOpened) {
@@ -38,7 +42,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => navigationContainer.toggleDrawer()}
+              onClick={toggleDrawer}
             >
               <i className="icon-menu"></i>
             </a>
@@ -57,7 +61,7 @@ const GrowiNavbarBottom = (props) => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => navigationContainer.openPageCreateModal()}
+              onClick={openPageCreateModal}
             >
               <i className="icon-pencil"></i>
             </a>
@@ -69,8 +73,5 @@ const GrowiNavbarBottom = (props) => {
   );
 };
 
-GrowiNavbarBottom.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
 
-export default withUnstatedContainers(GrowiNavbarBottom, [NavigationContainer]);
+export default GrowiNavbarBottom;

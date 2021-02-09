@@ -121,3 +121,13 @@ export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<
 
   return useStaticSWR(key);
 };
+
+export const useDrawerOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
+  const key = 'isDrawerOpened';
+
+  if (isOpened != null) {
+    mutate(key, isOpened);
+  }
+
+  return useStaticSWR(key);
+};
