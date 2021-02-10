@@ -103,7 +103,7 @@ class BoltService {
 
       // TODO impl try-catch
       try {
-        const result = await this.client.chat.postEphemeral({
+        await this.client.chat.postEphemeral({
           channel: this.channelId,
           user: this.userId,
           blocks: [{
@@ -114,7 +114,6 @@ class BoltService {
             },
           }],
         });
-        console.log(result);
       }
       catch {
         console.log('This is error');
