@@ -107,13 +107,22 @@ class BoltService {
         await this.client.chat.postEphemeral({
           channel: this.channelId,
           user: this.userId,
-          blocks: [{
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `${resultPaths.join('\n')}`,
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: '*検索結果 10 件',
+              },
             },
-          }],
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `${resultPaths.join('\n')}`,
+              },
+            },
+          ],
         });
       }
       catch {
