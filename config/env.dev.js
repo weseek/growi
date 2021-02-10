@@ -22,8 +22,8 @@ module.exports = {
   // DEV_HTTPS: true,
   // FORCE_WIKI_MODE: 'private', // 'public', 'private', undefined
   // PROMSTER_ENABLED: true,
-  SLACK_SIGNING_SECRET: '90388b8786db74bcbd2a77d18e4e0202',
-  SLACK_BOT_TOKEN: 'xoxb-165254347429-1645771202130-e707MjB9fsdpJgrZv9zJEuxX',
-  SLACK_USER_ID: 'U015018DXL3',
-  SLACK_CHANNEL_ID: 'C01JZJP1J58',
+  // SLACK_SIGNING_SECRET: '',
+  // SLACK_BOT_TOKEN: '',
+  // SLACK_USER_ID: '',
+  // SLACK_CHANNEL_ID: '',
 };
