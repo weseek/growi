@@ -84,7 +84,6 @@ class BoltService {
       await say(`${command.text}`);
     });
 
-
     // TODO check if firstArg is the supported command(like "search")
     this.bolt.command('/growi', async({ command, ack }) => {
       await ack();
@@ -112,7 +111,7 @@ class BoltService {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: '*検索結果 10 件',
+                text: '*検索結果 10 件*',
               },
             },
             {
