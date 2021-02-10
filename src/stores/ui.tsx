@@ -12,6 +12,17 @@ import { useStaticSWR } from './use-static-swr';
 const logger = loggerFactory('growi:stores:ui');
 
 
+/** **********************************************************
+ *                          Unions
+ *********************************************************** */
+export const EditorMode = {
+  View: 'view',
+  Editor: 'editor',
+  HackMD: 'hackmd',
+} as const;
+export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
+
+
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -94,7 +105,7 @@ export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any>
   return useStaticSWR('isAbleToShowPageManagement', !isNotFoundPage && !isTrashPage && !isSharedUser);
 };
 
-export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolean, any> | false => {
+export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolean, any> => {
   const key = 'isAbleToShowPageEditorModeManager';
 
   const { data: isForbidden } = useForbidden();
@@ -107,6 +118,21 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
   }
   else {
     mutate(key, isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
+  }
+
+  return useStaticSWR(key);
+};
+
+export const useEditorMode = (editorMode?: EditorMode): responseInterface<EditorMode, any> => {
+  const key = 'editorMode';
+
+  if (editorMode == null) {
+    if (!cache.has(key)) {
+      mutate(key, EditorMode.View, false);
+    }
+  }
+  else {
+    mutate(key, editorMode);
   }
 
   return useStaticSWR(key);

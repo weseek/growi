@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 
 type Props = {
-  iconClass: string,
+  iconClass?: string,
 }
 
 const DrawerToggler: FC<Props> = (props: Props) => {
