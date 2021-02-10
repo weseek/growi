@@ -4,8 +4,6 @@ import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
-import AppContainer from '../../services/AppContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 /**
  * Page staff credit component
@@ -127,12 +125,9 @@ class StaffCredit extends React.Component {
 
 }
 
-const StaffCreditWrapper = withUnstatedContainers(StaffCredit, [AppContainer]);
-
 StaffCredit.propTypes = {
   onClosed: PropTypes.func,
   contributors: PropTypes.array.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default StaffCreditWrapper;
+export default StaffCredit;
