@@ -102,7 +102,9 @@ const GrowiSubNavigationContents: FC<Props> = (props: Props) => {
 
   const isGuestUser = currentUser == null;
   const isEditorMode = editorMode !== EditorMode.View;
-  // const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+
+  // TODO: GW-5128
+  // const { isDrawerMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const isDrawerMode = true;
   const isDeviceSmallerThanMd = false;
 
