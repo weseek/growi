@@ -23,6 +23,10 @@ export const EditorMode = {
 export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
 
+/** **********************************************************
+ *                          SWR Hooks
+ *********************************************************** */
+
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
