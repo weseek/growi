@@ -20,11 +20,11 @@ export default class NavigationContainer extends Container {
     this.appContainer.registerContainer(this);
 
     this.state = {
-      editorMode: 'view',
+      // editorMode: 'view',
 
-      isDeviceSmallerThanMd: null,
+      // isDeviceSmallerThanMd: null,
       isDrawerMode: null,
-      isDrawerOpened: false,
+      // isDrawerOpened: false,
 
       sidebarContentsId: 'recent',
 
@@ -62,25 +62,25 @@ export default class NavigationContainer extends Container {
     return this.appContainer.getContainer('PageContainer');
   }
 
-  initDeviceSize() {
-    const mdOrAvobeHandler = async(mql) => {
-      let isDeviceSmallerThanMd;
+  // initDeviceSize() {
+  //   const mdOrAvobeHandler = async(mql) => {
+  //     let isDeviceSmallerThanMd;
 
-      // sm -> md
-      if (mql.matches) {
-        isDeviceSmallerThanMd = false;
-      }
-      // md -> sm
-      else {
-        isDeviceSmallerThanMd = true;
-      }
+  //     // sm -> md
+  //     if (mql.matches) {
+  //       isDeviceSmallerThanMd = false;
+  //     }
+  //     // md -> sm
+  //     else {
+  //       isDeviceSmallerThanMd = true;
+  //     }
 
-      this.setState({ isDeviceSmallerThanMd });
-      this.updateDrawerMode({ ...this.state, isDeviceSmallerThanMd }); // generate newest state object
-    };
+  //     this.setState({ isDeviceSmallerThanMd });
+  //     this.updateDrawerMode({ ...this.state, isDeviceSmallerThanMd }); // generate newest state object
+  //   };
 
-    this.appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
-  }
+  //   this.appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
+  // }
 
   initScrollEvent() {
     window.addEventListener('scroll', () => {
@@ -136,10 +136,10 @@ export default class NavigationContainer extends Container {
     this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
   }
 
-  toggleDrawer() {
-    const { isDrawerOpened } = this.state;
-    this.setState({ isDrawerOpened: !isDrawerOpened });
-  }
+  // toggleDrawer() {
+  //   const { isDrawerOpened } = this.state;
+  //   this.setState({ isDrawerOpened: !isDrawerOpened });
+  // }
 
   /**
    * Set Sidebar mode preference by user
@@ -191,17 +191,17 @@ export default class NavigationContainer extends Container {
     this.setState({ isDrawerMode, isDrawerOpened });
   }
 
-  openPageCreateModal() {
-    if (this.appContainer.currentUser == null) {
-      logger.warn('Please login or signup to create a new page.');
-      return;
-    }
-    this.setState({ isPageCreateModalShown: true });
-  }
+  // openPageCreateModal() {
+  //   if (this.appContainer.currentUser == null) {
+  //     logger.warn('Please login or signup to create a new page.');
+  //     return;
+  //   }
+  //   this.setState({ isPageCreateModalShown: true });
+  // }
 
-  closePageCreateModal() {
-    this.setState({ isPageCreateModalShown: false });
-  }
+  // closePageCreateModal() {
+  //   this.setState({ isPageCreateModalShown: false });
+  // }
 
   /**
    * Function that implements the click event for realizing smooth scroll
