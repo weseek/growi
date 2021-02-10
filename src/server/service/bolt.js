@@ -130,7 +130,6 @@ class BoltService {
     });
   }
 
-
 }
 
 module.exports = BoltService;
