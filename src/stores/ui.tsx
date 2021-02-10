@@ -137,12 +137,13 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
  *********************************************************** */
 
 export const useIsDeviceSmallerThanMd = (): responseInterface<boolean, any> => {
-  const key = 'isDeviceSmallerThanMd';
+  const isServer = typeof window === 'undefined';
+  const key = isServer ? null : 'isDeviceSmallerThanMd';
 
-  if (!cache.has(key)) {
+  if (!isServer && !cache.has(key)) {
     const mdOrAvobeHandler = function(this: MediaQueryList): any {
-      // sm -> md: matches is true
-      // md -> sm: matches is false
+      // sm -> md: matches will be true
+      // md -> sm: matches will be false
       mutate(key, !this.matches);
     };
     addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler, true);
