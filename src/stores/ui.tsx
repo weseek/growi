@@ -1,4 +1,6 @@
 import { mutate, responseInterface, cache } from 'swr';
+import { Breakpoint } from '~/interfaces/breakpoints';
+import { addBreakpointListener } from '~/utils/browser-utils';
 
 import loggerFactory from '~/utils/logger';
 
@@ -25,6 +27,7 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
 /** **********************************************************
  *                          SWR Hooks
+ *                Determined value by context
  *********************************************************** */
 
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
@@ -122,6 +125,27 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
   }
   else {
     mutate(key, isCreatablePage(page.path) && !isForbidden && !isTrashPage && !isSharedUser);
+  }
+
+  return useStaticSWR(key);
+};
+
+
+/** **********************************************************
+ *                          SWR Hooks
+ *                      for switching UI
+ *********************************************************** */
+
+export const useIsDeviceSmallerThanMd = (): responseInterface<boolean, any> => {
+  const key = 'isDeviceSmallerThanMd';
+
+  if (!cache.has(key)) {
+    const mdOrAvobeHandler = function(this: MediaQueryList): any {
+      // sm -> md: matches is true
+      // md -> sm: matches is false
+      mutate(key, !this.matches);
+    };
+    addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler, true);
   }
 
   return useStaticSWR(key);
