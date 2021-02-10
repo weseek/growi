@@ -1,11 +1,12 @@
 import dynamic from 'next/dynamic';
 import React, { useCallback } from 'react';
-import { usePageCreateModalOpened, useDrawerOpened } from '~/stores/ui';
+import { usePageCreateModalOpened, useDrawerOpened, useIsDeviceSmallerThanMd } from '~/stores/ui';
 
 
-const GrowiNavbarBottom = (props) => {
+const GrowiNavbarBottom = () => {
 
   const { mutate: mutatePageCreateModalOpened } = usePageCreateModalOpened();
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
 
   // dynamic import to skip rendering at SSR
@@ -14,10 +15,6 @@ const GrowiNavbarBottom = (props) => {
   const openPageCreateModal = useCallback(() => mutatePageCreateModalOpened(true), [mutatePageCreateModalOpened]);
 
   const toggleDrawer = useCallback(() => mutateDrawerOpened(!isDrawerOpened), [isDrawerOpened, mutateDrawerOpened]);
-
-  // const { isDeviceSmallerThanMd } = navigationContainer.state;
-  // TODO: impl by GW-5128
-  const isDeviceSmallerThanMd = true;
 
   const additionalClasses = ['grw-navbar-bottom'];
   if (isDrawerOpened) {

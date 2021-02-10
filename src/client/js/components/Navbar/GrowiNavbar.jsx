@@ -5,7 +5,7 @@ import { useTranslation } from '~/i18n';
 import {
   useAppTitle, useConfidential, useCurrentUser, useSearchServiceConfigured,
 } from '~/stores/context';
-import { usePageCreateModalOpened } from '~/stores/ui';
+import { useIsDeviceSmallerThanMd, usePageCreateModalOpened } from '~/stores/ui';
 
 
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -67,10 +67,7 @@ const GrowiNavbar = () => {
   // const { navigationContainer } = props;
 
   const { data: isSearchServiceConfigured } = useSearchServiceConfigured();
-  // const { isDeviceSmallerThanMd } = navigationContainer.state;
-
-  // TODO: impl by GW-5128
-  const isDeviceSmallerThanMd = null;
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   // dynamic import to skip rendering at SSR
   const GlobalSearch = dynamic(() => import('./GlobalSearch'), { ssr: false });
