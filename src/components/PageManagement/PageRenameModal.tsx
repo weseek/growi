@@ -29,6 +29,7 @@ type Props = {
   onInputChange: (p: string) => void,
   initializedPath: string,
   addTrailingSlash: boolean,
+  onSubmit: () => void,
 }
 
 export const PageRenameModal:FC<Props> = (props:Props) => {
@@ -41,9 +42,17 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
   } = props;
 
   // TODO imprv submitHandler by GW 5088
-  const submitHandler = (data) => {
-    alert(JSON.stringify(data));
-  };
+  // const submitHandler = (data) => {
+  //   alert(JSON.stringify(data));
+  // };
+
+  function submitHandler() {
+    if (onSubmit == null) {
+      return;
+    }
+    onSubmit();
+  }
+
 
   function inputChangeHandler(pages) {
     if (onInputChange == null) {
@@ -93,7 +102,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
               /> */}
             {/* </form> */}
             <SearchTypeahead
-              onSubmit={handleSubmit(submitHandler)}
+              onSubmit={submitHandler}
               onChange={inputChangeHandler}
               onInputChange={props.onInputChange}
               inputName="new_path"
