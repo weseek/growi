@@ -26,10 +26,11 @@ type Props = {
   isOpen: boolean,
   path?: string,
   onClose:() => void,
-  onInputChange: (p: string) => void,
+  onInputChange: (string) => void,
   initializedPath: string,
   addTrailingSlash: boolean,
   onSubmit: () => void,
+  keyword?: string,
 }
 
 export const PageRenameModal:FC<Props> = (props:Props) => {
@@ -106,9 +107,10 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
               onChange={inputChangeHandler}
               onInputChange={props.onInputChange}
               inputName="new_path"
-              emptyLabelExceptError={null}
+              // emptyLabel={emptyLabel}
               placeholder="Input page path"
               // keywordOnInit={getKeywordOnInit(initializedPath)}
+              keywordOnInit={props.keyword}
               name="pagename"
               required
               autoFocus
