@@ -78,7 +78,7 @@ class SearchTypeahead extends React.Component {
 
     this.setState({ isLoading: true });
 
-    /* this.props.appContainer. */ apiGet('/search', { q: keyword })
+    apiGet('/search', { q: keyword })
       .then((res) => { this.onSearchSuccess(res) })
       .catch((err) => { this.onSearchError(err) });
   }
