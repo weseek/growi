@@ -8,7 +8,6 @@ import { apiGet } from '~/client/js/util/apiv1-client';
 import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
 import PagePathLabel from './PageList/PagePathLabel';
-// import AppContainer from '../services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 class SearchTypeahead extends React.Component {
@@ -229,15 +228,9 @@ class SearchTypeahead extends React.Component {
 }
 
 /**
- * Wrapper component for using unstated
- */
-// const SearchTypeaheadWrapper = withUnstatedContainers(SearchTypeahead, [AppContainer]);
-
-/**
  * Properties
  */
 SearchTypeahead.propTypes = {
-  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
@@ -270,5 +263,4 @@ SearchTypeahead.defaultProps = {
   onInputChange: () => {},
 };
 
-// export default SearchTypeaheadWrapper;
 export default SearchTypeahead;
