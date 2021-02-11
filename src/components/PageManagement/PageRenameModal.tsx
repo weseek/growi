@@ -37,6 +37,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
   const { register, handleSubmit } = useForm();
   const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
+  const [searchError, setSearchError] = useState(null);
 
   const {
     addTrailingSlash, onSubmit, onInputChange, initializedPath,
@@ -71,6 +72,9 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
       ? pathUtils.addTrailingSlash(path)
       : pathUtils.removeTrailingSlash(path);
   }
+  const emptyLabel = (searchError !== null)
+    ? 'Error on searching.'
+    : t('search.search page bodies');
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -104,12 +108,11 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             {/* </form> */}
             <SearchTypeahead
               onSubmit={submitHandler}
+              onSearchError={setSearchError}
               onChange={inputChangeHandler}
               onInputChange={props.onInputChange}
               inputName="new_path"
-              // emptyLabel={emptyLabel}
               placeholder="Input page path"
-              // keywordOnInit={getKeywordOnInit(initializedPath)}
               keywordOnInit={props.keyword}
               name="pagename"
               required
