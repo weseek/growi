@@ -11,7 +11,7 @@ const ShowStaffCredit = (props) => {
   useEffect(() => {
     const getContributors = async() => {
       const res = await props.appContainer.apiv3Get('/staffs');
-      setContributors(res.data.contributors);
+      setContributors(res.data.contributorsCache);
     };
     getContributors();
   }, [props.appContainer]);

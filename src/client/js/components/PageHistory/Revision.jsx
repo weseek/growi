@@ -66,6 +66,11 @@ export default class Revision extends React.Component {
         <div className="ml-2">
           <div className="revision-history-author">
             <strong><Username user={author}></Username></strong>
+            { this.props.isLatestRevision
+              && (
+              <span className="badge badge-info ml-2">Latest</span>
+              )
+            }
           </div>
           <div className="revision-history-meta">
             <p>
@@ -111,6 +116,7 @@ export default class Revision extends React.Component {
 Revision.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   revision: PropTypes.object,
+  isLatestRevision: PropTypes.bool.isRequired,
   revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
   isCompactNodiffRevisions: PropTypes.bool.isRequired,

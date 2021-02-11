@@ -6,6 +6,7 @@ import PageHistroyContainer from '../../services/PageHistoryContainer';
 
 import Revision from './Revision';
 import RevisionDiff from './RevisionDiff';
+import RevisionSelector from '../RevisionComparer/RevisionSelector';
 
 class PageRevisionList extends React.Component {
 
@@ -31,25 +32,36 @@ class PageRevisionList extends React.Component {
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
   renderRow(revision, previousRevision, hasDiff, isContiguousNodiff) {
+    const { latestRevision } = this.props.pageHistoryContainer.state;
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
 
-    const classNames = ['revision-history-outer'];
+    const classNames = ['revision-history-outer', 'row', 'no-gutters'];
     if (isContiguousNodiff) {
       classNames.push('revision-history-outer-contiguous-nodiff');
     }
 
     return (
       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-        <Revision
-          t={this.props.t}
-          revision={revision}
-          revisionDiffOpened={revisionDiffOpened}
-          hasDiff={hasDiff}
-          isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
-          onDiffOpenClicked={this.props.onDiffOpenClicked}
-          key={`revision-history-rev-${revisionId}`}
-        />
+        <div className="col-8" key={`revision-history-top-${revisionId}`}>
+          <Revision
+            t={this.props.t}
+            revision={revision}
+            isLatestRevision={revision === latestRevision}
+            revisionDiffOpened={revisionDiffOpened}
+            hasDiff={hasDiff}
+            isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
+            onDiffOpenClicked={this.props.onDiffOpenClicked}
+            key={`revision-history-rev-${revisionId}`}
+          />
+        </div>
+        <div className="col-4 align-self-center">
+          <RevisionSelector
+            revision={revision}
+            hasDiff={hasDiff}
+            key={`revision-compare-target-selector-${revisionId}`}
+          />
+        </div>
         { hasDiff
           && (
           <RevisionDiff
@@ -101,19 +113,33 @@ class PageRevisionList extends React.Component {
 
     return (
       <React.Fragment>
-        <div className="custom-control custom-checkbox custom-checkbox-info float-right">
-          <input
-            type="checkbox"
-            id="cbCompactize"
-            className="custom-control-input"
-            checked={this.state.isCompactNodiffRevisions}
-            onChange={this.cbCompactizeChangeHandler}
-          />
-          <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
+        <div className="d-flex">
+          <h3>{t('page_history.revision_list')}</h3>
+          <div className="custom-control custom-checkbox custom-checkbox-info ml-auto">
+            <input
+              type="checkbox"
+              id="cbCompactize"
+              className="custom-control-input"
+              checked={this.state.isCompactNodiffRevisions}
+              onChange={this.cbCompactizeChangeHandler}
+            />
+            <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
+          </div>
         </div>
-        <div className="clearfix"></div>
+        <hr />
         <div className={classNames.join(' ')}>
-          {revisionList}
+          <div className="revision-history-list-container">
+            <div className="revision-history-list-content-header sticky-top bg-white">
+              <div className="row no-gutters">
+                <div className="col-8">{ t('page_history.revision') }</div>
+                <div className="col-2 text-center">{ t('page_history.comparing_source') }</div>
+                <div className="col-2 text-center">{ t('page_history.comparing_target') }</div>
+              </div>
+            </div>
+            <div className="revision-history-list-content-body">
+              {revisionList}
+            </div>
+          </div>
         </div>
       </React.Fragment>
     );
