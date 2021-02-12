@@ -46,8 +46,8 @@ class BoltService {
     this.crowi = crowi;
     this.receiver = new BoltReciever();
 
-    const token = process.env.SLACK_BOT_TOKEN;
-    const signingSecret = process.env.SLACK_SIGNING_SECRET;
+    const signingSecret = crowi.configManager.getConfig('crowi', 'slack:signingSecret');
+    const token = crowi.configManager.getConfig('crowi', 'slack:botToken');
 
     const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
     this.client = client;
@@ -82,7 +82,6 @@ class BoltService {
     // TODO check if firstArg is the supported command(like "search")
     this.bolt.command('/growi', async({ command, ack }) => {
       await ack();
-      console.log(command);
       const inputSlack = command.text.split(' ');
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
