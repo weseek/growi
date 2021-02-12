@@ -9,7 +9,7 @@ import { useCurrentPageHistorySWR } from '~/stores/page';
 
 export const PageHistory:FC = () => {
   const [activePage, setActivePage] = useState(1);
-  const [totalItemsCount, setTotalItemsCount] = useState(100);
+  const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [limit, setLimit] = useState(10);
 
   const { data: paginationResult, error } = useCurrentPageHistorySWR(activePage, limit);
@@ -45,6 +45,7 @@ export const PageHistory:FC = () => {
 
   return (
     <>
+      {/* TODO GW-5168 display PageRevisionList */}
       {/* <PageRevisionList
         pageHistoryContainer={pageHistoryContainer}
         revisions={revisions}
