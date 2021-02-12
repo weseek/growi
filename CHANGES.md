@@ -2,8 +2,9 @@
 
 ## v4.2.9-RC
 
-* Improvement: Add batchSize option for flow rate limit about stream 
-* Improvement: Even if slash is at the end, siteUrl is saved with it removed.
+* Feature: Comparing revisions
+* Improvement: Memory consumption when re-indexing for full text searching
+* Improvement: Site URL settings valildation
 
 ## v4.2.8
 
