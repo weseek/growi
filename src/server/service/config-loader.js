@@ -400,13 +400,13 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   SLACK_SIGNING_SECRET: {
     ns:      'crowi',
-    key:     'slack:signingSecret',
+    key:     'slackbot:signingSecret',
     type:    TYPES.STRING,
     default: null,
   },
   SLACK_BOT_TOKEN: {
     ns:      'crowi',
-    key:     'slack:botToken',
+    key:     'slackbot:token',
     type:    TYPES.STRING,
     default: null,
   },
