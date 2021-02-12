@@ -24,7 +24,7 @@ module.exports = (crowi) => {
 
     if (expiredAt == null || isAfter(now, expiredAt) || growiCloudUri != null) {
       const url = new URL('_api/staffCredit', growiCloudUri);
-
+      // Sorting contributors by this method
       const compareFunction = function(a, b) {
         const aOrder = a.order;
         const bOrder = b.order;
