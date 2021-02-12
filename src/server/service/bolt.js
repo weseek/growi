@@ -87,16 +87,33 @@ class BoltService {
       const secondArg = inputSlack[1];
 
       let resultPaths;
-      if (firstArg === 'search') {
+
+      if (firstArg === 'search' && secondArg != null) {
         const { searchService } = this.crowi;
         const option = { limit: 10 };
         const searchResults = await searchService.searchKeyword(secondArg, null, {}, option);
+
+        if (searchResults.data.length === 0) {
+          return this.client.chat.postEphemeral({
+            channel: command.channel_id,
+            user: command.user_id,
+            blocks: [
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: '*キーワードに該当するページは存在しません。*',
+                },
+              },
+            ],
+          });
+        }
+
         resultPaths = searchResults.data.map((data) => {
           return data._source.path;
         });
       }
 
-      // TODO impl try-catch
       try {
         await this.client.chat.postEphemeral({
           channel: command.channel_id,
@@ -120,7 +137,27 @@ class BoltService {
         });
       }
       catch {
-        console.log('This is error');
+        logger.error('Failed to get search results.');
+        await this.client.chat.postEphemeral({
+          channel: command.channel_id,
+          user: command.user_id,
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: '*検索に失敗しました。*',
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: 'Hint\n /growi search [keyword]',
+              },
+            },
+          ],
+        });
       }
     });
   }
