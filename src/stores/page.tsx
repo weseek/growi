@@ -52,8 +52,8 @@ export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): r
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/revisions/list', currentPage],
-    (endpoint, page) => apiv3Get(endpoint, { pageId: page.id, page: selectedPage, limit }).then(response => response.data),
+    ['/revisions/list', currentPage, selectedPage, limit],
+    (endpoint, page, selectedPage, limit) => apiv3Get(endpoint, { pageId: page.id, page: selectedPage, limit }).then(response => response.data),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

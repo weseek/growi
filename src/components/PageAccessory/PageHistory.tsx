@@ -1,13 +1,13 @@
-import React, { useState, FC, useEffect } from 'react';
+import React, {
+  useCallback, useState, FC, useEffect,
+} from 'react';
 import loggerFactory from '@alias/logger';
 
-// import { withUnstatedContainers } from './UnstatedUtils';
 // import { toastError } from '../util/apiNotification';
 
 // import { withLoadingSppiner } from './SuspenseUtils';
 // import PageRevisionList from './PageHistory/PageRevisionList';
 
-// import PageHistroyContainer from '../services/PageHistoryContainer';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
 import { useCurrentPageHistorySWR } from '~/stores/page';
@@ -20,6 +20,10 @@ export const PageHistory:FC = () => {
   const [limit, setLimit] = useState(10);
 
   const { data: paginationResult } = useCurrentPageHistorySWR(activePage, limit);
+
+  const handlePage = useCallback(async(selectedPage) => {
+    setActivePage(selectedPage);
+  }, []);
 
   useEffect(() => {
     if (paginationResult == null) {
@@ -34,7 +38,7 @@ export const PageHistory:FC = () => {
     <>
       <PaginationWrapper
         activePage={activePage}
-        changePage={() => console.log('hoge')}
+        changePage={handlePage}
         totalItemsCount={totalItemsCount}
         pagingLimit={limit}
         align="center"
