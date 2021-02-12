@@ -2,7 +2,9 @@ import useSWR, { mutate, responseInterface } from 'swr';
 import { ConfigInterface } from 'swr/dist/types';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
-import { Page, Tag, Comment } from '~/interfaces/page';
+import {
+  Page, Tag, Comment, Revision,
+} from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
 
@@ -39,6 +41,19 @@ export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
   return useSWR(
     ['/pages.getPageTag', currentPage],
     (endpoint, page) => apiGet(endpoint, { pageId: page.id }).then(response => response.tags),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageHistorySWR = <Data, Error>(selectedPage?:number, limit?:number): responseInterface<Revision[], Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    ['/revisions/list', currentPage],
+    (endpoint, page) => apiv3Get(endpoint, { pageId: page.id, page: selectedPage, limit }).then(response => response.data.docs),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

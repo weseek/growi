@@ -1,20 +1,22 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback, FC } from 'react';
 import loggerFactory from '@alias/logger';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
+// import { withUnstatedContainers } from './UnstatedUtils';
+// import { toastError } from '../util/apiNotification';
 
-import { withLoadingSppiner } from './SuspenseUtils';
-import PageRevisionList from './PageHistory/PageRevisionList';
+// import { withLoadingSppiner } from './SuspenseUtils';
+// import PageRevisionList from './PageHistory/PageRevisionList';
 
-import PageHistroyContainer from '../services/PageHistoryContainer';
-import PaginationWrapper from './PaginationWrapper';
+// import PageHistroyContainer from '../services/PageHistoryContainer';
+// import PaginationWrapper from './PaginationWrapper';
 
+import { useCurrentPageHistorySWR } from '~/stores/page';
 
 const logger = loggerFactory('growi:PageHistory');
 
-export const PageHistory = () => {
+export const PageHistory:FC = () => {
+  const { data } = useCurrentPageHistorySWR(1, 100);
+  console.log(data);
   return <p>hoge</p>;
 };
 
