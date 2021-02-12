@@ -8,6 +8,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { useCurrentPagePath, useSearchServiceReachable } from '~/stores/context';
+import { apiv3Post } from '~/client/js/util/apiv3-client';
 
 import { useTranslation } from '~/i18n';
 
@@ -18,7 +19,7 @@ import { useTranslation } from '~/i18n';
 // import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
 import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
-// import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 // import ComparePathsTable from './ComparePathsTable';
 // import DuplicatePathsTable from './DuplicatedPathsTable';
 
@@ -33,6 +34,31 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
+
+  const [errs, setErrs] = useState(null);
+  const [pageNameInput, setPageNameInput] = useState(currentPagePath);
+
+  // useEffect(() => {
+  //   if (pageNameInput !== path) {
+  //     checkExistPathsDebounce(pageNameInput, subordinatedPages);
+  //   }
+  // }, [pageNameInput, subordinatedPages, path,  checkExistPathsDebounce ]);
+
+  async function duplicate() {
+    setErrs(null);
+
+    try {
+      await apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
+      window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
+    }
+    catch (err) {
+      setErrs(err);
+    }
+  }
+
+  function ppacSubmitHandler() {
+    duplicate();
+  }
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -55,7 +81,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
               ? (
                 <PagePathAutoComplete
                   initializedPath={currentPagePath}
-                  // onSubmit={ppacSubmitHandler}
+                  onSubmit={ppacSubmitHandler}
                   // onInputChange={ppacInputChangeHandler}
                   autoFocus
                 />
@@ -113,7 +139,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        {/* <ApiErrorMessageList errs={errs} targetPath={pageNameInput} /> */}
+        <ApiErrorMessageList errs={errs} targetPath={pageNameInput} />
         <button
           type="button"
           className="btn btn-primary"
