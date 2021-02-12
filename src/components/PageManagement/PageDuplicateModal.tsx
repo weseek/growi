@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPagePath, useSearchServiceReachable } from '~/stores/context';
 
 import { useTranslation } from '~/i18n';
 
@@ -17,7 +17,7 @@ import { useTranslation } from '~/i18n';
 
 // import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
-// import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
+import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
 // import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 // import ComparePathsTable from './ComparePathsTable';
 // import DuplicatePathsTable from './DuplicatedPathsTable';
@@ -32,6 +32,7 @@ type Props = {
 export const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isReachable } = useSearchServiceReachable();
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -50,25 +51,26 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
             </div>
             <div className="flex-fill">
               {/* TODO enable isReachable and use react-hook-form by GW5116 */}
-              {/* {isReachable
+              {isReachable
               ? (
                 <PagePathAutoComplete
-                  initializedPath={path}
-                  onSubmit={ppacSubmitHandler}
-                  onInputChange={ppacInputChangeHandler}
+                  initializedPath={currentPagePath}
+                  // onSubmit={ppacSubmitHandler}
+                  // onInputChange={ppacInputChangeHandler}
                   autoFocus
                 />
               )
               : (
-                TODO enable SearchTypeahead by GW5116
-                <input
-                  type="text"
-                  value={pageNameInput}
-                  className="form-control"
-                  onChange={e => inputChangeHandler(e.target.value)}
-                  required
-                />
-              )} */}
+                // TODO enable SearchTypeahead by GW5116
+                // <input
+                //   type="text"
+                //   value={pageNameInput}
+                //   className="form-control"
+                //   onChange={e => inputChangeHandler(e.target.value)}
+                //   required
+                // />
+                <></>
+              )}
             </div>
           </div>
         </div>
