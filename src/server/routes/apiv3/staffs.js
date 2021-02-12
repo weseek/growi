@@ -12,7 +12,7 @@ const { isAfter, addHours } = require('date-fns');
 const contributors = require('../../../../resource/Contributor');
 
 let expiredAt;
-let contributorsCache = contributors;
+const contributorsCache = contributors;
 let gcContributors;
 
 
@@ -25,17 +25,17 @@ module.exports = (crowi) => {
     if (expiredAt == null || isAfter(now, expiredAt) || growiCloudUri != null) {
       const url = new URL('_api/staffCredit', growiCloudUri);
 
-      const compareFunction = function (a, b) {
-        const aOrder = a["order"];
-        const bOrder = b["order"];
+      const compareFunction = function(a, b) {
+        const aOrder = a.order;
+        const bOrder = b.order;
         if (aOrder < bOrder) {
           return -1;
         }
-        if(aOrder > bOrder) {
-          return 1
+        if (aOrder > bOrder) {
+          return 1;
         }
         return 0;
-      }
+      };
       try {
         const gcContributorsRes = await axios.get(url.toString());
         if (gcContributors == null) {
