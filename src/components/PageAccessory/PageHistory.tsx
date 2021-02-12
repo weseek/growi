@@ -1,4 +1,4 @@
-import React, { useCallback, FC } from 'react';
+import React, { useState, FC } from 'react';
 import loggerFactory from '@alias/logger';
 
 // import { withUnstatedContainers } from './UnstatedUtils';
@@ -8,16 +8,30 @@ import loggerFactory from '@alias/logger';
 // import PageRevisionList from './PageHistory/PageRevisionList';
 
 // import PageHistroyContainer from '../services/PageHistoryContainer';
-// import PaginationWrapper from './PaginationWrapper';
+import {PaginationWrapper} from '~/components/PaginationWrapper';
 
 import { useCurrentPageHistorySWR } from '~/stores/page';
 
 const logger = loggerFactory('growi:PageHistory');
 
 export const PageHistory:FC = () => {
-  const { data } = useCurrentPageHistorySWR(1, 100);
+  const [activePage,setActivePage]= useState(1)
+  const [limit,setLimit]= useState(10)
+
+  const { data } = useCurrentPageHistorySWR(activePage, limit);
   console.log(data);
-  return <p>hoge</p>;
+
+  return  (
+    <>
+      <PaginationWrapper
+          activePage={activePage}
+          changePage={()=>console.log('hoge')}
+          totalItemsCount={10}
+          pagingLimit={limit}
+          align="center"
+        />
+    </>
+  );
 };
 
 // function DeprecatePageHistory(props) {
