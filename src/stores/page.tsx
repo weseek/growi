@@ -3,7 +3,7 @@ import { ConfigInterface } from 'swr/dist/types';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
-  Page, Tag, Comment, Revision,
+  Page, Tag, Comment, PaginationResult, Revision,
 } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
@@ -48,12 +48,12 @@ export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
   );
 };
 
-export const useCurrentPageHistorySWR = <Data, Error>(selectedPage?:number, limit?:number): responseInterface<Revision[], Error> => {
+export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): responseInterface<PaginationResult<Revision>, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
     ['/revisions/list', currentPage],
-    (endpoint, page) => apiv3Get(endpoint, { pageId: page.id, page: selectedPage, limit }).then(response => response.data.docs),
+    (endpoint, page) => apiv3Get(endpoint, { pageId: page.id, page: selectedPage, limit }).then(response => response.data),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
