@@ -1,7 +1,9 @@
+import { useCallback } from 'react';
 import useSWR, {
   keyInterface, responseInterface, mutate, cache,
 } from 'swr';
-import { fetcherFn } from 'swr/dist/types';
+import { ConfigInterface, fetcherFn, mutateCallback } from 'swr/dist/types';
+
 
 export const useStaticSWR = <Data, Error>(
   key: keyInterface,
@@ -24,48 +26,72 @@ export const useStaticSWR = <Data, Error>(
   });
 };
 
+type serializeInterface<Data> = {
+  serialize?: (value: unknown) => string,
+  deserialize?: (value: string | null) => any,
+}
+
 const generateKeyInStorage = (key: string): string => {
   return `swr-${key}`;
 };
 
-export const useLocalStorageSyncedSWR = (key: string | null, updateData?: string | null): responseInterface<string | null, Error> => {
-  return useStaticSWR(
+export const useStorageSyncedSWR = <Data, Error>(
+  storage: Storage,
+  key: keyInterface,
+  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
+): responseInterface<Data, Error> => {
+
+  const serialize = config?.serialize;
+  const deserialize = config?.deserialize;
+
+  // define fetcher
+  const fetcher = useCallback((key) => {
+    const keyInStorage = generateKeyInStorage(key as string);
+    const value = storage.getItem(keyInStorage);
+    return deserialize ? deserialize(value) : value;
+  }, [storage, deserialize]);
+
+  const res = useSWR(
     key,
-    // update func
-    () => {
-      if (key == null || updateData == null) {
-        return null;
-      }
-      localStorage.setItem(generateKeyInStorage(key), updateData);
-      return updateData;
-    },
-    // initialize func
-    () => {
-      if (key == null) {
-        return null;
-      }
-      return localStorage.getItem(generateKeyInStorage(key));
+    fetcher,
+    {
+      ...config,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      initialData: fetcher(key), // set initial data
     },
   );
+
+  // replace mutate method
+  const originalMutate = res.mutate;
+  res.mutate = (data?: Data | Promise<Data> | mutateCallback<Data>) :Promise<Data | undefined> => {
+    if (key != null) {
+      const keyInStorage = generateKeyInStorage(key as string);
+
+      if (data == null) {
+        storage.removeItem(keyInStorage);
+      }
+      else {
+        const value = serialize ? serialize(data) : data as unknown;
+        storage.setItem(keyInStorage, value as string);
+      }
+    }
+    return originalMutate(data);
+  };
+
+  return res;
 };
 
-export const useSessionStorageSyncedSWR = (key: string | null, updateData?: string | null): responseInterface<string | null, Error> => {
-  return useStaticSWR(
-    key,
-    // update func
-    () => {
-      if (key == null || updateData == null) {
-        return null;
-      }
-      sessionStorage.setItem(generateKeyInStorage(key), updateData);
-      return updateData;
-    },
-    // initialize func
-    () => {
-      if (key == null) {
-        return null;
-      }
-      return sessionStorage.getItem(generateKeyInStorage(key));
-    },
-  );
+export const useLocalStorageSyncedSWR = <Data, Error>(
+  key: keyInterface,
+  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
+): responseInterface<Data, Error> => {
+  return useStorageSyncedSWR(localStorage, key, config);
+};
+
+export const useSessionStorageSyncedSWR = <Data, Error>(
+  key: keyInterface,
+  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
+): responseInterface<Data, Error> => {
+  return useStorageSyncedSWR(sessionStorage, key, config);
 };
