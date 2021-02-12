@@ -4,7 +4,6 @@ import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
-import contributors from '../../../../../resource/Contributor';
 import AppContainer from '../../services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -60,11 +59,7 @@ class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      if (this.state.contributors != null) {
-        // TODO: merge gcContributors to Contributors
-        // refs: https://youtrack.weseek.co.jp/issue/GW-4573
-      }
-      const credit = contributors.map((contributor) => {
+      const credit = this.state.contributors.map((contributor) => {
         // construct members elements
         const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
           return this.renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
@@ -90,7 +85,11 @@ class StaffCredit extends React.Component {
     return null;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const res = await this.props.appContainer.apiv3Get('/staffs');
+    const contributors = res.data.contributorsCache;
+    this.setState({ contributors });
+
     setTimeout(() => {
       // px / sec
       const scrollSpeed = 200;
@@ -105,15 +104,14 @@ class StaffCredit extends React.Component {
         color: '#FFFFFF',
       });
     }, 10);
-
-    this.props.appContainer.apiv3Get('/staffs').then((res) => {
-      this.setState({ contributors: res.data });
-    });
-
   }
 
   render() {
     const { onClosed } = this.props;
+
+    if (this.state.contributors === null) {
+      return <></>;
+    }
 
     return (
       <Modal
