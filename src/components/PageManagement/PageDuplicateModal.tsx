@@ -44,6 +44,16 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
   //   }
   // }, [pageNameInput, subordinatedPages, path,  checkExistPathsDebounce ]);
 
+  function inputChangeHandler(value) {
+    setErrs(null);
+    setPageNameInput(value);
+  }
+
+  function ppacInputChangeHandler(value) {
+    setErrs(null);
+    setPageNameInput(value);
+  }
+
   async function duplicate() {
     setErrs(null);
 
@@ -76,26 +86,23 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
               {/* <span className="input-group-text">{crowi.url}</span> */}
             </div>
             <div className="flex-fill">
-              {/* TODO enable isReachable and use react-hook-form by GW5116 */}
               {isReachable
               ? (
                 <PagePathAutoComplete
                   initializedPath={currentPagePath}
                   onSubmit={ppacSubmitHandler}
-                  // onInputChange={ppacInputChangeHandler}
+                  onInputChange={ppacInputChangeHandler}
                   autoFocus
                 />
               )
               : (
-                // TODO enable SearchTypeahead by GW5116
-                // <input
-                //   type="text"
-                //   value={pageNameInput}
-                //   className="form-control"
-                //   onChange={e => inputChangeHandler(e.target.value)}
-                //   required
-                // />
-                <></>
+                <input
+                  type="text"
+                  value={pageNameInput}
+                  className="form-control"
+                  onChange={e => inputChangeHandler(e.target.value)}
+                  required
+                />
               )}
             </div>
           </div>
