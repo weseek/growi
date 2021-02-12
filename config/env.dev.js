@@ -24,6 +24,4 @@ module.exports = {
   // PROMSTER_ENABLED: true,
   // SLACK_SIGNING_SECRET: '',
   // SLACK_BOT_TOKEN: '',
-  // SLACK_USER_ID: '',
-  // SLACK_CHANNEL_ID: '',
 };
