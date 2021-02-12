@@ -33,8 +33,8 @@ export type Revision = {
   _id: string;
 }
 
-export type PaginationResult = {
-  docs: Revision[],
+export type PaginationResult<T> = {
+  docs: T[],
   page: number,
   totalDocs: number,
   limit: number,
