@@ -46,8 +46,8 @@ class BoltService {
     this.crowi = crowi;
     this.receiver = new BoltReciever();
 
-    const signingSecret = crowi.configManager.getConfig('crowi', 'slack:signingSecret');
-    const token = crowi.configManager.getConfig('crowi', 'slack:botToken');
+    const signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+    const token = crowi.configManager.getConfig('crowi', 'slackbot:token');
 
     const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
     this.client = client;
