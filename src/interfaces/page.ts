@@ -32,3 +32,10 @@ export type Comment = {
 export type Revision = {
   _id: string;
 }
+
+export type PaginationResult<T> = {
+  docs: T[],
+  page: number,
+  totalDocs: number,
+  limit: number,
+}
