@@ -7,25 +7,30 @@ class BoltReciever {
   }
 
   async requestHandler(req, res) {
+    if (this.bolt === undefined) {
+      throw new Error('Slack bot is not setup');
+    }
+
     let ackCalled = false;
     const event = {
       body: req.body,
       ack: (response) => {
         if (ackCalled) {
-          return;
-        }
-
-        if (response instanceof Error) {
-          res.status(500).send();
-        }
-        else if (!response) {
-          res.send('');
-        }
-        else {
-          res.send(response);
+          return null;
         }
 
         ackCalled = true;
+
+        if (response instanceof Error) {
+          throw new Error();
+        }
+        else if (!response) {
+          return;
+        }
+        else {
+          return response;
+        }
+
       },
     };
 
