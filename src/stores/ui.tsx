@@ -9,7 +9,7 @@ import {
   useTrash, useNotFound, useCurrentPagePath, useCurrentUser, useIsSharedUser, useForbidden,
 } from './context';
 import { useCurrentPageDeleted, useDescendantsCount, useCurrentPageSWR } from './page';
-import { useStaticSWR } from './use-static-swr';
+import { useLocalStorageSyncedSWR, useStaticSWR } from './use-static-swr';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -155,6 +155,25 @@ export const useIsDeviceSmallerThanMd = (): responseInterface<boolean, any> => {
   }
 
   return useStaticSWR(key);
+};
+
+export const usePreferDrawerModeByUser = (isPrefered?: boolean): responseInterface<boolean, any> => {
+  const isServer = typeof window === 'undefined';
+  const key = isServer ? null : 'preferDrawerModeByUser';
+
+  const res = useLocalStorageSyncedSWR<boolean, any>(
+    key,
+    {
+      serialize: value => (value as boolean ? 'true' : 'false'),
+      deserialize: value => value === 'true',
+    },
+  );
+
+  if (!isServer && isPrefered != null) {
+    res.mutate(isPrefered);
+  }
+
+  return res;
 };
 
 export const useEditorMode = (editorMode?: EditorMode): responseInterface<EditorMode, any> => {

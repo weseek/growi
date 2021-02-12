@@ -25,7 +25,7 @@ const BasicLayout = ({ children, title }: Props): JSX.Element => {
 
         <div className="page-wrapper d-flex d-print-block">
           <div className="grw-sidebar-wrapper">
-            {/* <Sidebar /> */}
+            <Sidebar />
           </div>
 
           <div className="flex-fill mw-0">

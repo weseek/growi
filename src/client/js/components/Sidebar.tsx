@@ -8,7 +8,7 @@ import {
   ThemeProvider,
 } from '@atlaskit/navigation-next';
 
-import { useCurrentSidebarContents, useDrawerOpened } from '~/stores/ui';
+import { useCurrentSidebarContents, useDrawerOpened, usePreferDrawerModeByUser } from '~/stores/ui';
 
 import SidebarNav from './Sidebar/SidebarNav';
 
@@ -70,11 +70,11 @@ const SidebarContents = () => {
             isSharedUser={this.props.appContainer.isSharedUser}
           />
           */}
-          <SidebarContents />
+          {/* <SidebarContents /> */}
         </div>
       </div>
 
-      <DrawerToggler iconClass="icon-arrow-left" />
+      {/* <DrawerToggler iconClass="icon-arrow-left" /> */}
     </>
   );
 };
@@ -82,14 +82,14 @@ const SidebarContents = () => {
 
 type Props = {
   navigationUIController: any,
-  isDrawerModeOnInit?: boolean,
 }
 
 const Sidebar = (props: Props) => {
 
+  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
   const { data: isDrawerOpened } = useDrawerOpened();
 
-  const { navigationUIController, isDrawerModeOnInit } = props;
+  const { navigationUIController } = props;
 
   // componentWillMount() {
   //   this.hackUIController();
@@ -119,12 +119,8 @@ const Sidebar = (props: Props) => {
    * return whether drawer mode or not
    */
   const isDrawerMode = useCallback(() => {
-    let isDrawerMode: boolean | null | undefined = navigationContainer.state.isDrawerMode;
-    if (isDrawerMode == null) {
-      isDrawerMode = isDrawerModeOnInit;
-    }
-    return isDrawerMode;
-  }, [navigationContainer, isDrawerModeOnInit]);
+    return preferDrawerModeByUser;
+  }, [preferDrawerModeByUser]);
 
   const toggleDrawerMode = useCallback((bool) => {
     const isStateModified = navigationUIController.state.isResizeDisabled !== bool;
@@ -219,9 +215,10 @@ const SidebarWithNavigationUIController = withNavigationUIController(Sidebar);
  */
 
 const SidebarWithNavigation = (props) => {
-  const { preferDrawerModeByUser: isDrawerModeOnInit } = props.navigationContainer.state;
+  // const { preferDrawerModeByUser: isDrawerModeOnInit } = props.navigationContainer.state;
+  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
 
-  const initUICForDrawerMode = isDrawerModeOnInit
+  const initUICForDrawerMode = preferDrawerModeByUser
     // generate initialUIController for Drawer mode
     ? {
       isCollapsed: false,
@@ -233,7 +230,7 @@ const SidebarWithNavigation = (props) => {
 
   return (
     <NavigationProvider initialUIController={initUICForDrawerMode}>
-      <SidebarWithNavigationUIController {...props} isDrawerModeOnInit={isDrawerModeOnInit} />
+      <SidebarWithNavigationUIController {...props} />
     </NavigationProvider>
   );
 };
