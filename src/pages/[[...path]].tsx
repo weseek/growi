@@ -21,7 +21,6 @@ import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
 import { PageComments } from '~/components/PageComment/PageComments';
-import { PageHistory } from '~/components/PageAccessory/PageHistory';
 
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
@@ -119,7 +118,6 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         <div id="grw-subnav-sticky-trigger" className="sticky-top"></div>
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
-        <PageHistory />
         <div id="main" className={`main ${isUserPage(props.currentPagePath) && 'user-page'}`}>
 
           <div className="row">
