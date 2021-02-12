@@ -38,6 +38,7 @@ class BoltReciever {
 }
 
 const { App } = require('@slack/bolt');
+const { WebClient, LogLevel } = require('@slack/web-api');
 
 class BoltService {
 
@@ -45,8 +46,11 @@ class BoltService {
     this.crowi = crowi;
     this.receiver = new BoltReciever();
 
-    const token = process.env.SLACK_BOT_TOKEN;
-    const signingSecret = process.env.SLACK_SIGNING_SECRET;
+    const signingSecret = crowi.configManager.getConfig('crowi', 'slack:signingSecret');
+    const token = crowi.configManager.getConfig('crowi', 'slack:botToken');
+
+    const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
+    this.client = client;
 
     if (token != null || signingSecret != null) {
       logger.debug('TwitterStrategy: setup is done');
@@ -76,19 +80,48 @@ class BoltService {
     });
 
     // TODO check if firstArg is the supported command(like "search")
-    this.bolt.command('/growi', async({ command, ack, say }) => {
+    this.bolt.command('/growi', async({ command, ack }) => {
+      await ack();
       const inputSlack = command.text.split(' ');
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
 
+      let resultPaths;
       if (firstArg === 'search') {
         const { searchService } = this.crowi;
         const option = { limit: 10 };
-        const results = await searchService.searchKeyword(secondArg, null, {}, option);
-        // get 10 result from slack input
-        console.log(results.data);
+        const searchResults = await searchService.searchKeyword(secondArg, null, {}, option);
+        resultPaths = searchResults.data.map((data) => {
+          return data._source.path;
+        });
       }
-      return;
+
+      // TODO impl try-catch
+      try {
+        await this.client.chat.postEphemeral({
+          channel: command.channel_id,
+          user: command.user_id,
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: '*検索結果 10 件*',
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `${resultPaths.join('\n')}`,
+              },
+            },
+          ],
+        });
+      }
+      catch {
+        console.log('This is error');
+      }
     });
   }
 
