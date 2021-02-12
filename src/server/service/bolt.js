@@ -88,11 +88,28 @@ class BoltService {
 
       let resultPaths;
 
+      if (firstArg === 'search' && secondArg == null) {
+        return this.client.chat.postEphemeral({
+          channel: command.channel_id,
+          user: command.user_id,
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: '*キーワードを入力してください。*\n Hint\n `/growi search [keyword]`',
+              },
+            },
+          ],
+        });
+      }
+
       if (firstArg === 'search' && secondArg != null) {
         const { searchService } = this.crowi;
         const option = { limit: 10 };
         const searchResults = await searchService.searchKeyword(secondArg, null, {}, option);
 
+        // no search results
         if (searchResults.data.length === 0) {
           return this.client.chat.postEphemeral({
             channel: command.channel_id,
@@ -146,14 +163,7 @@ class BoltService {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: '*検索に失敗しました。*',
-              },
-            },
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: 'Hint\n /growi search [keyword]',
+                text: '*検索に失敗しました。*\n Hint\n `/growi search [keyword]`',
               },
             },
           ],
