@@ -7,7 +7,7 @@ const { body } = require('express-validator');
 
 const router = express.Router();
 
-const helmet = require('helmet');
+const noCache = require('nocache');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -41,7 +41,7 @@ module.exports = (crowi) => {
    *                  info:
    *                    type: object
    */
-  router.get('/indices', helmet.noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/indices', noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
