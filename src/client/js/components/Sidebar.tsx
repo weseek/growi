@@ -1,6 +1,5 @@
 import dynamic from 'next/dynamic';
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
 
 import {
   withNavigationUIController,
@@ -9,9 +8,7 @@ import {
   ThemeProvider,
 } from '@atlaskit/navigation-next';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
-import NavigationContainer from '../services/NavigationContainer';
+import { useCurrentSidebarContents, useDrawerOpened } from '~/stores/ui';
 
 import SidebarNav from './Sidebar/SidebarNav';
 
@@ -19,28 +16,28 @@ const sidebarDefaultWidth = 320;
 
 
 type GlobalNavigationProps = {
-  navigationContainer: NavigationContainer,
   navigationUIController: any, // UIController from @atlaskit/navigation-next
 }
 
-const GlobalNavigation = withUnstatedContainers(withNavigationUIController((props: GlobalNavigationProps): JSX.Element => {
+const GlobalNavigation = withNavigationUIController((props: GlobalNavigationProps): JSX.Element => {
+  const { data: currentContents } = useCurrentSidebarContents();
 
-  const itemSelectedHandler = (contentsId) => {
-    const { navigationContainer, navigationUIController } = props;
-    const { sidebarContentsId } = navigationContainer.state;
+  const { navigationUIController } = props;
+
+  const itemSelectedHandler = useCallback((selectedContents) => {
 
     // already selected
-    if (sidebarContentsId === contentsId) {
+    if (currentContents === selectedContents) {
       navigationUIController.toggleCollapse();
     }
     // switch and expand
     else {
       navigationUIController.expand();
     }
-  };
+  }, [currentContents, navigationUIController]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
-}), [NavigationContainer]);
+});
 
 
 const SidebarContents = () => {
@@ -84,15 +81,15 @@ const SidebarContents = () => {
 
 
 type Props = {
-  appContainer: AppContainer,
-  navigationContainer: NavigationContainer,
   navigationUIController: any,
   isDrawerModeOnInit?: boolean,
 }
 
 const Sidebar = (props: Props) => {
 
-  const { navigationContainer, navigationUIController, isDrawerModeOnInit } = props;
+  const { data: isDrawerOpened } = useDrawerOpened();
+
+  const { navigationUIController, isDrawerModeOnInit } = props;
 
   // componentWillMount() {
   //   this.hackUIController();
@@ -182,8 +179,6 @@ const Sidebar = (props: Props) => {
   //   navigationContainer.toggleDrawer();
   // }
 
-  const { isDrawerOpened } = navigationContainer.state;
-
   return (
     <>
       <div className={`grw-sidebar d-print-none ${isDrawerMode() ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
@@ -243,9 +238,4 @@ const SidebarWithNavigation = (props) => {
   );
 };
 
-SidebarWithNavigation.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-export default withUnstatedContainers(SidebarWithNavigation, [AppContainer, NavigationContainer]);
+export default SidebarWithNavigation;

@@ -24,6 +24,11 @@ export const EditorMode = {
 } as const;
 export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
+export const SidebarContents = {
+  CUSTOM: 'custom',
+  RECENT: 'recent',
+} as const;
+export type SidebarContents = typeof SidebarContents[keyof typeof SidebarContents];
 
 /** **********************************************************
  *                          SWR Hooks
@@ -192,6 +197,21 @@ export const useDrawerOpened = (isOpened?: boolean): responseInterface<boolean, 
   }
   else {
     mutate(key, isOpened);
+  }
+
+  return useStaticSWR(key);
+};
+
+export const useCurrentSidebarContents = (sidebarContents?: SidebarContents): responseInterface<SidebarContents, any> => {
+  const key = 'sidebarContents';
+
+  if (sidebarContents == null) {
+    if (!cache.has(key)) {
+      mutate(key, SidebarContents.RECENT, false);
+    }
+  }
+  else {
+    mutate(key, sidebarContents);
   }
 
   return useStaticSWR(key);
