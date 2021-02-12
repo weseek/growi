@@ -50,12 +50,7 @@ class BoltService {
     const signingSecret = process.env.SLACK_SIGNING_SECRET;
 
     const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
-    const channelId = process.env.SLACK_CHANNEL_ID;
-    const userId = process.env.SLACK_USER_ID;
-
     this.client = client;
-    this.channelId = channelId;
-    this.userId = userId;
 
     if (token != null || signingSecret != null) {
       logger.debug('TwitterStrategy: setup is done');
@@ -87,6 +82,7 @@ class BoltService {
     // TODO check if firstArg is the supported command(like "search")
     this.bolt.command('/growi', async({ command, ack }) => {
       await ack();
+      console.log(command);
       const inputSlack = command.text.split(' ');
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
@@ -104,8 +100,8 @@ class BoltService {
       // TODO impl try-catch
       try {
         await this.client.chat.postEphemeral({
-          channel: this.channelId,
-          user: this.userId,
+          channel: command.channel_id,
+          user: command.user_id,
           blocks: [
             {
               type: 'section',
