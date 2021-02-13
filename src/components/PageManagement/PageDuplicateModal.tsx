@@ -35,7 +35,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
 
-  const [errs, setErrs] = useState(null);
+  const [errs, setErrs] = useState([]);
   const [pageNameInput, setPageNameInput] = useState(currentPagePath);
 
   // useEffect(() => {
@@ -45,19 +45,20 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
   // }, [pageNameInput, subordinatedPages, path,  checkExistPathsDebounce ]);
 
   function inputChangeHandler(value) {
-    setErrs(null);
+    setErrs([]);
     setPageNameInput(value);
   }
 
   function ppacInputChangeHandler(value) {
-    setErrs(null);
+    setErrs([]);
     setPageNameInput(value);
   }
 
   async function duplicate() {
-    setErrs(null);
+    setErrs([]);
 
     try {
+      // TODO: enable isDuplicateRecursively by GW-5117
       await apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
       window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
     }
