@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { pathUtils } from 'growi-commons';
 
+import { useTranslation } from '~/i18n';
 import SearchTypeahead from './SearchTypeahead';
 
 const PagePathAutoComplete = (props) => {
+  const [searchError, setSearchError] = useState(null);
+  const { t } = useTranslation();
 
   const {
     addTrailingSlash, onSubmit, onInputChange, initializedPath,
@@ -35,13 +38,18 @@ const PagePathAutoComplete = (props) => {
       : pathUtils.removeTrailingSlash(path);
   }
 
+  const emptyLabel = (searchError !== null)
+    ? 'Error on searching.'
+    : t('search.search page bodies');
+
   return (
     <SearchTypeahead
       onSubmit={submitHandler}
       onChange={inputChangeHandler}
       onInputChange={props.onInputChange}
       inputName="new_path"
-      emptyLabelExceptError={null}
+      onSearchError={setSearchError}
+      emptyLabel={emptyLabel}
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
       autoFocus={props.autoFocus}
