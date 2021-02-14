@@ -7,7 +7,7 @@ import React, { FC } from 'react';
 
 import AdminLocalSecurityContainer from '~/client/js/services/AdminLocalSecurityContainer';
 
-import LocalSecuritySettingContents from '~/client/js/components/Admin/Security/LocalSecuritySettingContents';
+import LocalSecuritySettingContents from '~/components/Admin/Security/LocalSecuritySettingContents';
 
 type Props = {
   adminLocalSecurityContainer: AdminLocalSecurityContainer,
