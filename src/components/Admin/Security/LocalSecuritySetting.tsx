@@ -1,19 +1,20 @@
 /* eslint-disable react/no-danger */
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
 
-import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
-import { toastError } from '~/client/js/util/apiNotification';
-import { toArrayIfNot } from '~/utils/array-utils';
+// import { toastError } from '~/client/js/util/apiNotification';
+// import { toArrayIfNot } from '~/utils/array-utils';
 // import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import AdminLocalSecurityContainer from '~/client/js/services/AdminLocalSecurityContainer';
 
 import LocalSecuritySettingContents from '~/client/js/components/Admin/Security/LocalSecuritySettingContents';
 
+type Props = {
+  adminLocalSecurityContainer: AdminLocalSecurityContainer,
+}
+
 const retrieveErrors = null;
-const LocalSecuritySetting = (props) => {
-  const { adminLocalSecurityContainer } = props;
+export const LocalSecuritySetting: FC<Props> = (props: Props) => {
   // if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationMode) {
   //   throw (async() => {
   //     try {
@@ -34,16 +35,6 @@ const LocalSecuritySetting = (props) => {
 
   return <LocalSecuritySettingContents />;
 };
-
-
-LocalSecuritySetting.propTypes = {
-  adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
-};
-
-const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(LocalSecuritySetting, [AdminLocalSecurityContainer,
-]);
-
-export default LocalSecuritySettingWithUnstatedContainer;
 
 /*
   Original codes
