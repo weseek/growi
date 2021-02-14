@@ -7,14 +7,14 @@ import PropTypes from 'prop-types';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { debounce } from 'throttle-debounce';
 import { useCurrentPagePath, useSearchServiceReachable } from '~/stores/context';
-import { apiv3Post } from '~/client/js/util/apiv3-client';
+import { apiv3Get, apiv3Post } from '~/client/js/util/apiv3-client';
 
 import { useTranslation } from '~/i18n';
 
-// import { debounce } from 'throttle-debounce';
 // import { withUnstatedContainers } from './UnstatedUtils';
-// import { toastError } from '../util/apiNotification';
+import { toastError } from '~/client/js/util/apiNotification';
 
 // import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
@@ -37,12 +37,31 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
 
   const [errs, setErrs] = useState([]);
   const [pageNameInput, setPageNameInput] = useState(currentPagePath);
+  const [subordinatedPages, setSubordinatedPages] = useState([]);
 
-  // useEffect(() => {
-  //   if (pageNameInput !== path) {
-  //     checkExistPathsDebounce(pageNameInput, subordinatedPages);
-  //   }
-  // }, [pageNameInput, subordinatedPages, path,  checkExistPathsDebounce ]);
+  const checkExistPaths = async(newParentPath) => {
+    try {
+      const res = await apiv3Get('/page/exist-paths', { fromPath: currentPagePath, toPath: newParentPath });
+      const { existPaths } = res.data;
+      setExistingPaths(existPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_rename.label.Fail to get exist path'));
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkExistPathsDebounce = useCallback(
+    debounce(1000, checkExistPaths), [],
+  );
+
+
+  useEffect(() => {
+    if (pageNameInput !== currentPagePath) {
+      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+    }
+  }, [pageNameInput, subordinatedPages, currentPagePath, checkExistPathsDebounce]);
 
   function inputChangeHandler(value) {
     setErrs([]);

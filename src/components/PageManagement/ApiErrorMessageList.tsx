@@ -78,6 +78,7 @@ const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) =>
 
 type Props ={
   errs?: any[];
+  targetPath: string
 }
 
 export const ApiErrorMessageList: FC<Props> = (props:Props) => {
