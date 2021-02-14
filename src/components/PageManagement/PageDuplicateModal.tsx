@@ -36,6 +36,7 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { data: isReachable } = useSearchServiceReachable();
 
   const [errs, setErrs] = useState([]);
+  const [existingPaths, setExistingPaths] = useState([]);
   const [pageNameInput, setPageNameInput] = useState(currentPagePath);
   const [subordinatedPages, setSubordinatedPages] = useState([]);
 
@@ -78,8 +79,8 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
 
     try {
       // TODO: enable isDuplicateRecursively by GW-5117
-      await apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
-      window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
+      // await apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
+      // window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
     }
     catch (err) {
       setErrs(err);
