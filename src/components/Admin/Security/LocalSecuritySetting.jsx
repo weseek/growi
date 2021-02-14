@@ -2,14 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
+import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
+import { toastError } from '~/client/js/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
 // import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminLocalSecurityContainer from '../../../services/AdminLocalSecurityContainer';
+import AdminLocalSecurityContainer from '~/client/js/services/AdminLocalSecurityContainer';
 
-import LocalSecuritySettingContents from './LocalSecuritySettingContents';
+import LocalSecuritySettingContents from '~/client/js/components/Admin/Security/LocalSecuritySettingContents';
 
 const retrieveErrors = null;
 const LocalSecuritySetting = (props) => {
