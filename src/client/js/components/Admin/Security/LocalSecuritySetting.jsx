@@ -32,8 +32,7 @@ export const LocalSecuritySetting = (props) => {
   //   throw new Error(`${retrieveErrors.length} errors occured`);
   // }
 
-  // return <LocalSecuritySettingContents />;
-  return 'aa';
+  return <LocalSecuritySettingContents />;
 };
 
 
