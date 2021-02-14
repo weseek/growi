@@ -12,8 +12,8 @@ import AdminLocalSecurityContainer from '../../../services/AdminLocalSecurityCon
 import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 
 const retrieveErrors = null;
-export const LocalSecuritySetting = (props) => {
-  // const { adminLocalSecurityContainer } = props;
+const LocalSecuritySetting = (props) => {
+  const { adminLocalSecurityContainer } = props;
   // if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationMode) {
   //   throw (async() => {
   //     try {
@@ -36,15 +36,14 @@ export const LocalSecuritySetting = (props) => {
 };
 
 
-// LocalSecuritySetting.propTypes = {
-//   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
-// };
+LocalSecuritySetting.propTypes = {
+  adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
+};
 
-const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(LocalSecuritySetting, [
-  AdminLocalSecurityContainer,
+const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(LocalSecuritySetting, [AdminLocalSecurityContainer,
 ]);
 
-// export default LocalSecuritySettingWithUnstatedContainer;
+export default LocalSecuritySettingWithUnstatedContainer;
 
 
 /* eslint-disable react/no-danger */
