@@ -15,6 +15,9 @@ type Props = {
 
 const retrieveErrors = null;
 export const LocalSecuritySetting: FC<Props> = (props: Props) => {
+
+  // TODO: improve following error handling by GW 5182
+
   // if (adminLocalSecurityContainer.state.registrationMode === adminLocalSecurityContainer.dummyRegistrationMode) {
   //   throw (async() => {
   //     try {
