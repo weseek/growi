@@ -5,7 +5,7 @@ import { TabContent, TabPane } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 
 import LdapSecuritySetting from '~/client/js/components/Admin/Security/LdapSecuritySetting';
-import LocalSecuritySetting from '~/client/js/components/Admin/Security/LocalSecuritySetting';
+import { LocalSecuritySetting } from '~/client/js/components/Admin/Security/LocalSecuritySetting';
 import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
 import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
 import SecuritySetting from '~/client/js/components/Admin/Security/SecuritySetting';
@@ -118,7 +118,7 @@ export const SecurityManagementContents: FC<Props> = (props: Props) => {
         {/* TODO: show tab contents by GW-5141 */}
         <TabContent activeTab={activeTab} className="p-5">
           <TabPane tabId="passport_local">
-            {/* {activeComponents.has('passport_local') && <LocalSecuritySetting />} */}
+            {activeComponents.has('passport_local') && <LocalSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_ldap">
             {/* {activeComponents.has('passport_ldap') && <LdapSecuritySetting />} */}
