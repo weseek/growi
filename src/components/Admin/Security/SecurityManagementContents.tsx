@@ -5,7 +5,7 @@ import { TabContent, TabPane } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 
 import LdapSecuritySetting from '~/client/js/components/Admin/Security/LdapSecuritySetting';
-import LocalSecuritySetting from '~/client/js/components/Admin/Security/LocalSecuritySetting';
+import LocalSecuritySetting from '~/components/Admin/Security/LocalSecuritySetting';
 import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
 import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
 import SecuritySetting from '~/client/js/components/Admin/Security/SecuritySetting';
