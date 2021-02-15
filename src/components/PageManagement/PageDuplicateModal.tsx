@@ -37,8 +37,12 @@ export const PageDuplicateModal:FC<Props> = (props:Props) => {
 
   const [errs, setErrs] = useState([]);
   const [existingPaths, setExistingPaths] = useState([]);
-  const [pageNameInput, setPageNameInput] = useState(currentPagePath);
   const [subordinatedPages, setSubordinatedPages] = useState([]);
+
+  if (currentPagePath == null) {
+    throw new Error('currentPagePath should not be null.');
+  }
+  const [pageNameInput, setPageNameInput] = useState(currentPagePath);
 
   const checkExistPaths = async(newParentPath) => {
     try {
