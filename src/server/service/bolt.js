@@ -82,7 +82,9 @@ class BoltService {
       await say(`${command.text}`);
     });
 
-    this.bolt.command('/growi', async({ command, ack }) => {
+    this.bolt.command('/growi', async({
+      command, client, body, ack,
+    }) => {
       await ack();
       const inputSlack = command.text.split(' ');
       const firstArg = inputSlack[0];
@@ -90,6 +92,10 @@ class BoltService {
 
       if (firstArg === 'search') {
         return this.searchResults(command, secondArg);
+      }
+
+      if (firstArg === 'create') {
+        return this.createModal(command, client, body);
       }
 
       return this.notCommand(command);
@@ -195,6 +201,82 @@ class BoltService {
         ],
       });
     }
+  }
+
+  async createModal(command, client, body) {
+
+    try {
+      await client.views.open({
+        trigger_id: body.trigger_id,
+
+        view: {
+          type: 'modal',
+          callback_id: 'createPage',
+          title: {
+            type: 'plain_text',
+            text: 'Create Page',
+          },
+          submit: {
+            type: 'plain_text',
+            text: 'Submit',
+          },
+          close: {
+            type: 'plain_text',
+            text: 'Cancel',
+          },
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: 'ページを作成します',
+              },
+            },
+            {
+              type: 'input',
+              label: {
+                type: 'plain_text',
+                text: 'Path',
+              },
+              element: {
+                type: 'plain_text_input',
+                action_id: 'plain_text_input-action',
+              },
+            },
+            {
+              type: 'input',
+              block_id: 'contents',
+              label: {
+                type: 'plain_text',
+                text: 'Contents',
+              },
+              element: {
+                type: 'plain_text_input',
+                action_id: 'contents_input',
+                multiline: true,
+              },
+            },
+          ],
+        },
+      });
+    }
+    catch {
+      logger.error('Failed to create page.');
+      await this.client.chat.postEphemeral({
+        channel: command.channel_id,
+        user: command.user_id,
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '*ページ作成に失敗しました。*\n Hint\n `/growi create`',
+            },
+          },
+        ],
+      });
+    }
+
   }
 
 }
