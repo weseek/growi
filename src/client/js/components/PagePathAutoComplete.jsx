@@ -38,7 +38,7 @@ const PagePathAutoComplete = (props) => {
       : pathUtils.removeTrailingSlash(path);
   }
 
-  const emptyLabel = (searchError !== null)
+  const emptyLabel = (searchError != null)
     ? 'Error on searching.'
     : t('search.search page bodies');
 

@@ -72,7 +72,7 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
       ? pathUtils.addTrailingSlash(path)
       : pathUtils.removeTrailingSlash(path);
   }
-  const emptyLabel = (searchError !== null)
+  const emptyLabel = (searchError != null)
     ? 'Error on searching.'
     : t('search.search page bodies');
 
