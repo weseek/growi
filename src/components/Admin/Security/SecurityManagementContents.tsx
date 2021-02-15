@@ -121,7 +121,7 @@ export const SecurityManagementContents: FC<Props> = (props: Props) => {
             {activeComponents.has('passport_local') && <LocalSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_ldap">
-            {/* {activeComponents.has('passport_ldap') && <LdapSecuritySetting />} */}
+            {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_saml">
             {/* {activeComponents.has('passport_saml') && <SamlSecuritySetting />} */}
