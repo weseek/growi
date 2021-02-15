@@ -9,7 +9,7 @@ module.exports = {
   UserGroup: require('./user-group'),
   UserGroupRelation: require('./user-group-relation'),
   Revision: require('./revision'),
-  Tag: require('./tag'),
+  // Tag: require('./tag'),
   Bookmark: require('./bookmark'),
   Comment: require('./comment'),
   Attachment: require('./attachment'),
