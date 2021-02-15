@@ -4,16 +4,16 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
-import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
+import PageAccessoriesContainer from '../../client/js/services/PageAccessoriesContainer';
 
-import PageListIcon from './Icons/PageListIcon';
-import TimeLineIcon from './Icons/TimeLineIcon';
-import HistoryIcon from './Icons/HistoryIcon';
-import AttachmentIcon from './Icons/AttachmentIcon';
-import ShareLinkIcon from './Icons/ShareLinkIcon';
-import SeenUserInfo from './User/SeenUserInfo';
+import PageListIcon from '../../client/js/components/Icons/PageListIcon';
+import TimeLineIcon from '../../client/js/components/Icons/TimeLineIcon';
+import HistoryIcon from '../../client/js/components/Icons/HistoryIcon';
+import AttachmentIcon from '../../client/js/components/Icons/AttachmentIcon';
+import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
+import SeenUserInfo from '../../client/js/components/User/SeenUserInfo';
 
-import { withUnstatedContainers } from './UnstatedUtils';
+import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
 
 const PageAccessoriesModalControl = (props) => {
   const {
