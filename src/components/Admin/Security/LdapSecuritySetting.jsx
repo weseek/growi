@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
+import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
+import { toastError } from '~/client/js/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
-import { withLoadingSppiner } from '../../SuspenseUtils';
+import { withLoadingSppiner } from '~/client/js/components/SuspenseUtils';
 
-import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
+import AdminLdapSecurityContainer from '~/client/js/services/AdminLdapSecurityContainer';
 
-import LdapSecuritySettingContents from './LdapSecuritySettingContents';
+import LdapSecuritySettingContents from '~/client/js/components/Admin/Security/LdapSecuritySettingContents';
 
 const retrieveErrors = null;
 function LdapSecuritySetting(props) {
