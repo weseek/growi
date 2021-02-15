@@ -12,8 +12,13 @@ const { isAfter, addHours } = require('date-fns');
 const contributors = require('../../../../resource/Contributor');
 
 let expiredAt;
-let contributorsCache = contributors;
+const contributorsCache = contributors;
+let gcContributors;
 
+// Sorting contributors by this method
+const compareFunction = function(a, b) {
+  return a.order - b.order;
+};
 
 module.exports = (crowi) => {
 
@@ -23,15 +28,17 @@ module.exports = (crowi) => {
 
     if (expiredAt == null || isAfter(now, expiredAt) || growiCloudUri != null) {
       const url = new URL('_api/staffCredit', growiCloudUri);
-      const growiContributors = contributors.slice(0, 1);
-      const otherContributors = contributors.slice(1);
       try {
         const gcContributorsRes = await axios.get(url.toString());
-        const gcContributors = gcContributorsRes.data;
+        if (gcContributors == null) {
+          gcContributors = gcContributorsRes.data;
+          // merging contributors
+          contributorsCache.push(gcContributors);
+        }
+        // Change the order of section
+        contributorsCache.sort(compareFunction);
         // caching 'expiredAt' for 1 hour
         expiredAt = addHours(now, 1);
-        // caching merged contributors
-        contributorsCache = growiContributors.concat(gcContributors, otherContributors);
       }
       catch (err) {
         logger.warn('Getting GROWI.cloud staffcredit is failed');
