@@ -2,15 +2,19 @@ import React, {
   useCallback, useState, FC, useEffect,
 } from 'react';
 
-// import PageRevisionList from './PageHistory/PageRevisionList';
+import { PageRevisionList } from '~/components/PageAccessory/PageRevisionList';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
+import { Revision } from '~/interfaces/page';
 
 import { useCurrentPageHistorySWR } from '~/stores/page';
 
 export const PageHistory:FC = () => {
+  const [revisions, setRevisions] = useState([] as Revision[]);
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [limit, setLimit] = useState(10);
+
+  const [diffOpened, setDiffOpened] = useState({} as { [id:string]: boolean });
 
   const { data: paginationResult, error } = useCurrentPageHistorySWR(activePage, limit);
 
@@ -22,6 +26,7 @@ export const PageHistory:FC = () => {
     if (paginationResult == null) {
       return;
     }
+    setRevisions(paginationResult.docs);
     setActivePage(paginationResult.page);
     setTotalItemsCount(paginationResult.totalDocs);
     setLimit(paginationResult.limit);
@@ -45,14 +50,11 @@ export const PageHistory:FC = () => {
 
   return (
     <>
-      {/* TODO GW-5168 display PageRevisionList */}
-      {/* <PageRevisionList
-        pageHistoryContainer={pageHistoryContainer}
+      <PageRevisionList
         revisions={revisions}
+        pagingLimit={limit}
         diffOpened={diffOpened}
-        getPreviousRevision={getPreviousRevision}
-        onDiffOpenClicked={onDiffOpenClicked}
-      /> */}
+      />
       <PaginationWrapper
         activePage={activePage}
         changePage={handlePage}
