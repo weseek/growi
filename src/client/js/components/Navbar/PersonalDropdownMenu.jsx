@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { UncontrolledTooltip, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { useTranslation } from '~/i18n';
 import { useCurrentUser } from '~/stores/context';
+import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
+import { useInterceptorManager } from '~/stores/interceptor';
 
 import {
   isUserPreferenceExists,
@@ -20,7 +22,6 @@ import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
 import SidebarDockIcon from '../Icons/SidebarDockIcon';
 import MoonIcon from '../Icons/MoonIcon';
 import SunIcon from '../Icons/SunIcon';
-import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 
 
 /* eslint-disable react/prop-types */
@@ -38,6 +39,7 @@ const IconWithTooltip = ({
 const PersonalDropdownMenu = (props) => {
 
   const { t } = useTranslation();
+  const { data: interceptorManager } = useInterceptorManager();
   const { data: user } = useCurrentUser();
 
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
@@ -48,17 +50,15 @@ const PersonalDropdownMenu = (props) => {
   const { data: preferDrawerModeByUser, mutate: mutatePreferDrawerModeByUser } = usePreferDrawerModeByUser();
   const { data: preferDrawerModeOnEditByUser, mutate: mutatePreferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
 
-  const logoutHandler = () => {
-    // const { interceptorManager } = appContainer;
+  const logoutHandler = useCallback(() => {
+    const context = {
+      user,
+      currentPagePath: decodeURIComponent(window.location.pathname),
+    };
+    interceptorManager.process('logout', context);
 
-    // const context = {
-    //   user,
-    //   currentPagePath: decodeURIComponent(window.location.pathname),
-    // };
-    // interceptorManager.process('logout', context);
-
-    // window.location.href = '/logout';
-  };
+    window.location.href = '/logout';
+  }, [user, interceptorManager]);
 
   const preferDrawerModeSwitchModifiedHandler = (bool) => {
     mutatePreferDrawerModeByUser(bool);
