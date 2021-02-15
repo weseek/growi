@@ -15,6 +15,10 @@ let expiredAt;
 const contributorsCache = contributors;
 let gcContributors;
 
+// Sorting contributors by this method
+const compareFunction = function(a, b) {
+  return a.order - b.order;
+};
 
 module.exports = (crowi) => {
 
@@ -24,18 +28,6 @@ module.exports = (crowi) => {
 
     if (expiredAt == null || isAfter(now, expiredAt) || growiCloudUri != null) {
       const url = new URL('_api/staffCredit', growiCloudUri);
-      // Sorting contributors by this method
-      const compareFunction = function(a, b) {
-        const aOrder = a.order;
-        const bOrder = b.order;
-        if (aOrder < bOrder) {
-          return -1;
-        }
-        if (aOrder > bOrder) {
-          return 1;
-        }
-        return 0;
-      };
       try {
         const gcContributorsRes = await axios.get(url.toString());
         if (gcContributors == null) {
