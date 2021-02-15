@@ -15,7 +15,7 @@ type Props = {
 const retrieveErrors = null;
 export const LdapSecuritySetting: FC<Props> = (props: Props) => {
 
-  // TODO: improve following error handling by GW 5182
+  // TODO: improve following error handling by GW 5196
 
   // const { adminLdapSecurityContainer } = props;
   // if (adminLdapSecurityContainer.state.serverUrl === adminLdapSecurityContainer.dummyServerUrl) {
