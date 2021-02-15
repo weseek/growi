@@ -32,7 +32,9 @@ class BoltReciever {
     await this.bolt.processEvent(event);
 
     // for verification request URL on Event Subscriptions
-    res.send(req.body);
+    if (req.body.challenge && req.body.type) {
+      res.send(req.body);
+    }
   }
 
 }
