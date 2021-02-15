@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 // import * as toastr from 'toastr';
 
 // import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
@@ -24,14 +24,19 @@ type Props = {
 
 const ExportArchiveDataPage = (): JSX.Element => {
   const { t } = useTranslation();
+  const [isExporting, setisExporting] = useState(false);
+
+  const openExportModal = () => {
+    // this.setState({ isExportModalOpen: true });
+  };
 
   return (
     <>
       <h2>{t('Export Archive Data')}</h2>
 
-      {/* <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={this.openExportModal}>
+      <button type="button" className="btn btn-outline-secondary" disabled={isExporting} onClick={openExportModal}>
         {t('admin:export_management.create_new_archive_data')}
-      </button> */}
+      </button>
 
       {/* { showExportingData && (
       <div className="mt-5">
