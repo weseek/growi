@@ -11,6 +11,7 @@ type RevisionRowProps = {
   revision: Revision;
   previousRevision: Revision;
   isContiguousNodiff: boolean;
+  hasDiff: boolean;
   revisionDiffOpened: boolean;
 }
 
@@ -19,7 +20,7 @@ type RevisionRowProps = {
  * render a row (Revision component and RevisionDiff component)
  */
 const RevisionRow:FC<RevisionRowProps> = (props:RevisionRowProps) => {
-  const { revision, isContiguousNodiff } = props;
+  const { revision, isContiguousNodiff, hasDiff } = props;
 
   const classNames = ['revision-history-outer'];
   if (isContiguousNodiff) {
@@ -54,12 +55,15 @@ const RevisionRow:FC<RevisionRowProps> = (props:RevisionRowProps) => {
 type PageRevisionListProps = {
   revisions: Revision[];
   pagingLimit: number;
+  diffOpened: { [id: string]: boolean };
+  onDiffOpenClicked?: ()=>void;
 }
 
 export const PageRevisionList :FC<PageRevisionListProps> = (props:PageRevisionListProps) => {
-  const { revisions, pagingLimit } = props;
+  const {
+    revisions, pagingLimit, diffOpened, onDiffOpenClicked,
+  } = props;
   const revisionCount = revisions.length;
-  const [diffOpened, setDiffOpened] = useState({});
 
   const { t } = useTranslation();
   const [isCompactNodiffRevisions, setIsCompactNodiffRevisions] = useState(false);
@@ -99,6 +103,7 @@ export const PageRevisionList :FC<PageRevisionListProps> = (props:PageRevisionLi
         revision={revision}
         previousRevision={previousRevision}
         isContiguousNodiff={isContiguousNodiff}
+        hasDiff={hasDiffPrev}
         revisionDiffOpened={diffOpened[revision._id] || false}
       />
     );
@@ -127,7 +132,6 @@ export const PageRevisionList :FC<PageRevisionListProps> = (props:PageRevisionLi
 // PageRevisionList.propTypes = {
 //   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
 
-//   revisions: PropTypes.array,
 //   diffOpened: PropTypes.object,
 //   onDiffOpenClicked: PropTypes.func.isRequired,
 // };

@@ -14,6 +14,8 @@ export const PageHistory:FC = () => {
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [limit, setLimit] = useState(10);
 
+  const [diffOpened, setDiffOpened] = useState({} as { [id:string]: boolean });
+
   const { data: paginationResult, error } = useCurrentPageHistorySWR(activePage, limit);
 
   const handlePage = useCallback(async(selectedPage) => {
@@ -51,6 +53,7 @@ export const PageHistory:FC = () => {
       <PageRevisionList
         revisions={revisions}
         pagingLimit={limit}
+        diffOpened={diffOpened}
       />
       <PaginationWrapper
         activePage={activePage}
