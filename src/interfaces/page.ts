@@ -35,4 +35,12 @@ export type Comment = {
 export type Revision = {
   _id: string,
   author: User,
+  hasDiffToPrev: boolean;
+}
+
+export type PaginationResult<T> = {
+  docs: T[],
+  page: number,
+  totalDocs: number,
+  limit: number,
 }
