@@ -1,39 +1,40 @@
 import Link from 'next/link';
 import React, { FC, useCallback } from 'react';
 import { useCurrentUser, useIsSharedUser } from '~/stores/context';
+import { SidebarContents, useCurrentSidebarContents } from '~/stores/ui';
 
 
 type PrimaryItemProps = {
-  id: string,
+  contents: SidebarContents,
   label: string,
   iconName: string,
-  onItemSelected: (contentsId: string) => void,
+  onItemSelected: (contents: SidebarContents) => void,
 }
 
 const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   const {
-    id, iconName, onItemSelected,
+    contents, iconName, onItemSelected,
   } = props;
 
   // TODO: migrate from NavigationContainer
-  // const sidebarContentsId = useCurrentSidebarContentsId();
-  const sidebarContentsId = '';
-  const isSelected = sidebarContentsId === id;
+  const { data: currentContents, mutate } = useCurrentSidebarContents();
 
-  const itemSelectedHandler = useCallback((contentsId: string): void => {
+  const isSelected = contents === currentContents;
+
+  const itemSelectedHandler = useCallback(() => {
     // const { navigationContainer, onItemSelected } = this.props;
     if (onItemSelected != null) {
-      onItemSelected(contentsId);
+      onItemSelected(contents);
     }
 
-    // navigationContainer.setState({ sidebarContentsId: contentsId });
-  }, [onItemSelected]);
+    mutate(contents);
+  }, [contents, mutate, onItemSelected]);
 
   return (
     <button
       type="button"
       className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
-      onClick={() => itemSelectedHandler(id)}
+      onClick={itemSelectedHandler}
     >
       <i className="material-icons">{iconName}</i>
     </button>
@@ -61,9 +62,8 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
 
 
 type Props = {
-  onItemSelected: (contentsId: string) => void,
+  onItemSelected: (contents: SidebarContents) => void,
 }
-
 
 const SidebarNav: FC<Props> = (props: Props) => {
 
@@ -78,8 +78,8 @@ const SidebarNav: FC<Props> = (props: Props) => {
   return (
     <div className="grw-sidebar-nav">
       <div className="grw-sidebar-nav-primary-container">
-        {!isSharedUser && <PrimaryItem id="custom" label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />}
-        {!isSharedUser && <PrimaryItem id="recent" label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />}
+        {!isSharedUser && <PrimaryItem contents={SidebarContents.CUSTOM} label="Custom Sidebar" iconName="code" onItemSelected={onItemSelected} />}
+        {!isSharedUser && <PrimaryItem contents={SidebarContents.RECENT} label="Recent Changes" iconName="update" onItemSelected={onItemSelected} />}
         {/* <PrimaryItem id="tag" label="Tags" iconName="icon-tag" /> */}
         {/* <PrimaryItem id="favorite" label="Favorite" iconName="icon-star" /> */}
       </div>

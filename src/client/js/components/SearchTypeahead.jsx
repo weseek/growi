@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 import { noop } from 'lodash/noop';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { apiGet } from '~/client/js/util/apiv1-client';
+
+import { apiGet } from '../util/apiv1-client';
 
 import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
 import PagePathLabel from './PageList/PagePathLabel';
-import { withUnstatedContainers } from './UnstatedUtils';
 
 class SearchTypeahead extends React.Component {
 
@@ -231,7 +231,6 @@ class SearchTypeahead extends React.Component {
  * Properties
  */
 SearchTypeahead.propTypes = {
-
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,

@@ -1,27 +1,26 @@
 
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import urljoin from 'url-join';
 
 import { pathUtils } from 'growi-commons';
-import { useCurrentUser, useSearchServiceReachable } from '~/stores/context';
-import { userPageRoot } from '~/utils/path-utils';
 
-import NavigationContainer from '../services/NavigationContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
+import { useTranslation } from '~/i18n';
+import { useCurrentUser, useSearchServiceReachable } from '~/stores/context';
+import { usePageCreateModalOpened } from '~/stores/ui';
+import { userPageRoot } from '~/utils/path-utils';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
-const PageCreateModal = (props) => {
-  const { t, navigationContainer } = props;
+const PageCreateModal = () => {
+  const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
   const { data: isReachable } = useSearchServiceReachable();
+  const { data: isModalOpened, mutate: mutateModal } = usePageCreateModalOpened();
 
   const pathname = decodeURI(window.location.pathname);
   const userPageRootPath = userPageRoot(currentUser);
@@ -32,6 +31,8 @@ const PageCreateModal = (props) => {
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(parentPath);
   const [template, setTemplate] = useState(null);
+
+  const closeModal = useCallback(() => mutateModal(false), [mutateModal]);
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
@@ -247,12 +248,12 @@ const PageCreateModal = (props) => {
   return (
     <Modal
       size="lg"
-      isOpen={navigationContainer.state.isPageCreateModalShown}
-      toggle={navigationContainer.closePageCreateModal}
+      isOpen={isModalOpened}
+      toggle={closeModal}
       className="grw-create-page"
       autoFocus={false}
     >
-      <ModalHeader tag="h4" toggle={navigationContainer.closePageCreateModal} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={closeModal} className="bg-primary text-light">
         { t('New Page') }
       </ModalHeader>
       <ModalBody>
@@ -266,15 +267,4 @@ const PageCreateModal = (props) => {
 };
 
 
-/**
- * Wrapper component for using unstated
- */
-const ModalControlWrapper = withUnstatedContainers(PageCreateModal, [NavigationContainer]);
-
-
-PageCreateModal.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-export default withTranslation()(ModalControlWrapper);
+export default PageCreateModal;

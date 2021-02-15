@@ -15,7 +15,7 @@ import { PagePresentationModal } from '~/components/PageManagement/PagePresentat
 import { PresentationIcon } from '~/components/Icons/PresentationIcon';
 
 type Props = {
-  isCompactMode: boolean,
+  isCompactMode?: boolean,
 }
 
 
