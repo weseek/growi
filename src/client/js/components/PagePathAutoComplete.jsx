@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { pathUtils } from 'growi-commons';
 
 import { TypeaheadMenu } from 'react-bootstrap-typeahead';
-import { useTranslation } from '~/i18n';
 import SearchTypeahead from './SearchTypeahead';
 
 const PagePathAutoComplete = (props) => {
-  const { t } = useTranslation();
 
   const {
     addTrailingSlash, onSubmit, onInputChange, initializedPath,
