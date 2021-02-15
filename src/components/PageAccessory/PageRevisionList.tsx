@@ -4,11 +4,17 @@ import { useTranslation } from '~/i18n';
 // import Revision from './Revision';
 // import RevisionDiff from './RevisionDiff';
 
+import { Revision } from '~/interfaces/page';
+
+type Props = {
+  revisions: Revision[];
+}
+
 const RevisionList:FC = () => {
   return <p>hoge</p>;
 };
 
-export const PageRevisionList :FC = () => {
+export const PageRevisionList :FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const [isCompactNodiffRevisions, setIsCompactNodiffRevisions] = useState(false);
 
@@ -20,6 +26,31 @@ export const PageRevisionList :FC = () => {
   const cbCompactizeChangeHandler = () => {
     setIsCompactNodiffRevisions(!isCompactNodiffRevisions);
   };
+
+  const revisionList = props.revisions.map((revision, idx) => {
+
+    console.log(revision);
+    return <p>hoge</p>;
+    // Returns null because the last revision is for the bottom diff display
+    // if (idx === pageHistoryContainer.state.pagingLimit) {
+    //   return null;
+    // }
+
+    // let previousRevision;
+    // if (idx + 1 < revisionCount) {
+    //   previousRevision = revisions[idx + 1];
+    // }
+    // else {
+    //   previousRevision = revision; // if it is the first revision, show full text as diff text
+    // }
+
+    // const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
+    // const isContiguousNodiff = !hasDiff && !hasDiffPrev;
+
+    // hasDiffPrev = hasDiff;
+
+    // return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
+  });
 
   return (
     <>
@@ -35,7 +66,7 @@ export const PageRevisionList :FC = () => {
       </div>
       <div className="clearfix"></div>
       <div className={classNames.join(' ')}>
-        <RevisionList />
+        {revisionList}
       </div>
     </>
   );
@@ -106,47 +137,15 @@ export const PageRevisionList :FC = () => {
 
 //     let hasDiffPrev;
 
-//     const revisionList = this.props.revisions.map((revision, idx) => {
-//       // Returns null because the last revision is for the bottom diff display
-//       if (idx === pageHistoryContainer.state.pagingLimit) {
-//         return null;
-//       }
 
-//       let previousRevision;
-//       if (idx + 1 < revisionCount) {
-//         previousRevision = revisions[idx + 1];
-//       }
-//       else {
-//         previousRevision = revision; // if it is the first revision, show full text as diff text
-//       }
-
-//       const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
-//       const isContiguousNodiff = !hasDiff && !hasDiffPrev;
-
-//       hasDiffPrev = hasDiff;
-
-//       return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
-//     });
-
-
-//     return (
-//   <React.Fragment>
-//     <div className={classNames.join(' ')}>
-//       {revisionList}
-//     </div>
-//   </React.Fragment>
-// );
 //   }
 
 // }
 
 // PageRevisionList.propTypes = {
-//   t: PropTypes.func.isRequired, // i18next
 //   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
 
 //   revisions: PropTypes.array,
 //   diffOpened: PropTypes.object,
 //   onDiffOpenClicked: PropTypes.func.isRequired,
 // };
-
-// export default withTranslation()(PageRevisionList);
