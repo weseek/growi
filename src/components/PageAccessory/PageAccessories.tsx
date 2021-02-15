@@ -40,7 +40,6 @@ export const PageAccessories:FC = () => {
         onClose={closePageAccessoriesModal}
         activeTab={activeTab}
         activeComponents={activeComponents}
-        switchActiveTab={switchActiveTab}
       />
     </>
   );

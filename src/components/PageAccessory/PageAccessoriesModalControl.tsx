@@ -87,6 +87,7 @@ export const PageAccessoriesModalControl:FC<Props> = (props:Props) => {
     })}
       <div className="d-flex align-items-center">
         <span className="border-left grw-border-vr">&nbsp;</span>
+        {/* TODO GW-5193 display SeenUserInfo */}
         {/* <SeenUserInfo disabled={isSharedUser} /> */}
       </div>
     </div>

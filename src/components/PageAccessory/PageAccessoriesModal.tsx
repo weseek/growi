@@ -30,7 +30,7 @@ type Props = {
   onClose?: ()=>void;
   activeTab:string;
   activeComponents: Set<string>;
-  switchActiveTab: ()=> void;
+  switchActiveTab?: ()=> void;
 }
 
 export const PageAccessoriesModal:FC<Props> = (props:Props) => {
