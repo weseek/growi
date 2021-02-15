@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { pathUtils } from 'growi-commons';
 
+import { TypeaheadMenu } from 'react-bootstrap-typeahead';
 import { useTranslation } from '~/i18n';
 import SearchTypeahead from './SearchTypeahead';
 
@@ -38,9 +39,13 @@ const PagePathAutoComplete = (props) => {
       : pathUtils.removeTrailingSlash(path);
   }
 
-  const emptyLabel = (searchError != null)
-    ? 'Error on searching.'
-    : t('search.search page bodies');
+  const renderMenu = (results, menuProps) => {
+    // Hide the menu when there are no results.
+    if (results.length != null) {
+      return null;
+    }
+    return <TypeaheadMenu {...menuProps} options={results} />;
+  };
 
   return (
     <SearchTypeahead
@@ -49,7 +54,7 @@ const PagePathAutoComplete = (props) => {
       onInputChange={props.onInputChange}
       inputName="new_path"
       onSearchError={setSearchError}
-      emptyLabel={emptyLabel}
+      renderMenu={renderMenu}
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
       autoFocus={props.autoFocus}
