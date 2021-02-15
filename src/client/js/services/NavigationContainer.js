@@ -145,27 +145,27 @@ export default class NavigationContainer extends Container {
    * Set Sidebar mode preference by user
    * @param {boolean} preferDockMode
    */
-  async setDrawerModePreference(bool) {
-    this.setState({ preferDrawerModeByUser: bool });
-    this.updateDrawerMode({ ...this.state, preferDrawerModeByUser: bool }); // generate newest state object
+  // async setDrawerModePreference(bool) {
+  //   this.setState({ preferDrawerModeByUser: bool });
+  //   this.updateDrawerMode({ ...this.state, preferDrawerModeByUser: bool }); // generate newest state object
 
-    // store settings to localStorage
-    const { localStorage } = window;
-    localStorage.preferDrawerModeByUser = bool;
-  }
+  //   // store settings to localStorage
+  //   const { localStorage } = window;
+  //   localStorage.preferDrawerModeByUser = bool;
+  // }
 
   /**
    * Set Sidebar mode preference by user
    * @param {boolean} preferDockMode
    */
-  async setDrawerModePreferenceOnEdit(bool) {
-    this.setState({ preferDrawerModeOnEditByUser: bool });
-    this.updateDrawerMode({ ...this.state, preferDrawerModeOnEditByUser: bool }); // generate newest state object
+  // async setDrawerModePreferenceOnEdit(bool) {
+  //   this.setState({ preferDrawerModeOnEditByUser: bool });
+  //   this.updateDrawerMode({ ...this.state, preferDrawerModeOnEditByUser: bool }); // generate newest state object
 
-    // store settings to localStorage
-    const { localStorage } = window;
-    localStorage.preferDrawerModeOnEditByUser = bool;
-  }
+  //   // store settings to localStorage
+  //   const { localStorage } = window;
+  //   localStorage.preferDrawerModeOnEditByUser = bool;
+  // }
 
   /**
    * Update drawer related state by specified 'newState' object
@@ -177,19 +177,19 @@ export default class NavigationContainer extends Container {
    *
    * because updating state of unstated container will be delayed unless you use await
    */
-  updateDrawerMode(newState) {
-    const {
-      editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-    } = newState;
+  // updateDrawerMode(newState) {
+  //   const {
+  //     editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
+  //   } = newState;
 
-    // get preference on view or edit
-    const preferDrawerMode = editorMode !== 'view' ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+  //   // get preference on view or edit
+  //   const preferDrawerMode = editorMode !== 'view' ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
-    const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
-    const isDrawerOpened = false; // close Drawer anyway
+  //   const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
+  //   const isDrawerOpened = false; // close Drawer anyway
 
-    this.setState({ isDrawerMode, isDrawerOpened });
-  }
+  //   this.setState({ isDrawerMode, isDrawerOpened });
+  // }
 
   // openPageCreateModal() {
   //   if (this.appContainer.currentUser == null) {

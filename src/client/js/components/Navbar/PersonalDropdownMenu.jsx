@@ -20,6 +20,7 @@ import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
 import SidebarDockIcon from '../Icons/SidebarDockIcon';
 import MoonIcon from '../Icons/MoonIcon';
 import SunIcon from '../Icons/SunIcon';
+import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 
 
 /* eslint-disable react/prop-types */
@@ -44,26 +45,27 @@ const PersonalDropdownMenu = (props) => {
   // const [useOsSettings, setOsSettings] = useState(isUserPreferenceExists != null ? !isUserPreferenceExists() : true);
   // const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil != null ? isDarkModeByUtil() : false);
 
-  const { appContainer, navigationContainer } = props;
+  const { data: preferDrawerModeByUser, mutate: mutatePreferDrawerModeByUser } = usePreferDrawerModeByUser();
+  const { data: preferDrawerModeOnEditByUser, mutate: mutatePreferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
 
   const logoutHandler = () => {
-    const { interceptorManager } = appContainer;
+    // const { interceptorManager } = appContainer;
 
-    const context = {
-      user,
-      currentPagePath: decodeURIComponent(window.location.pathname),
-    };
-    interceptorManager.process('logout', context);
+    // const context = {
+    //   user,
+    //   currentPagePath: decodeURIComponent(window.location.pathname),
+    // };
+    // interceptorManager.process('logout', context);
 
-    window.location.href = '/logout';
+    // window.location.href = '/logout';
   };
 
   const preferDrawerModeSwitchModifiedHandler = (bool) => {
-    navigationContainer.setDrawerModePreference(bool);
+    mutatePreferDrawerModeByUser(bool);
   };
 
   const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
-    navigationContainer.setDrawerModePreferenceOnEdit(bool);
+    mutatePreferDrawerModeOnEditByUser(bool);
   };
 
   const followOsCheckboxModifiedHandler = (bool) => {
@@ -87,14 +89,6 @@ const PersonalDropdownMenu = (props) => {
     // update state
     setIsDarkMode(isDarkModeByUtil());
   };
-
-
-  /*
-   * render
-   */
-  const {
-    preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-  } = navigationContainer.state;
 
   return (
     <DropdownMenu right>

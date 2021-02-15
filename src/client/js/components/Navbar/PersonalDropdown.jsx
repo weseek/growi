@@ -29,7 +29,7 @@ const PersonalDropdown = () => {
   return (
     <UncontrolledDropdown>
       <PersonalDropdownButton />
-      {/* <PersonalDropdownMenu /> */}
+      <PersonalDropdownMenu />
     </UncontrolledDropdown>
   );
 };
