@@ -98,7 +98,7 @@ class BoltService {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: '*コマンドを入力してください。*\n Hint\n `/growi search [keyword]`',
+                text: '*コマンドを入力してください。*\n Hint\n `/growi [command] [keyword]`',
               },
             },
           ],
