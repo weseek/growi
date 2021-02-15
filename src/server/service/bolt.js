@@ -82,7 +82,6 @@ class BoltService {
       await say(`${command.text}`);
     });
 
-    // TODO check if firstArg is the supported command(like "search")
     this.bolt.command('/growi', async({ command, ack }) => {
       await ack();
       const inputSlack = command.text.split(' ');
