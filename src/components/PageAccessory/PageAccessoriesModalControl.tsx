@@ -1,4 +1,6 @@
-import { FC, Fragment, useMemo } from 'react';
+import {
+  FC, Fragment, useMemo, useCallback,
+} from 'react';
 import { UncontrolledTooltip } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 
@@ -12,13 +14,21 @@ import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 type Props = {
   isGuestUser: boolean;
   isSharedUser: boolean;
+  onOpen?: (string)=>void;
 }
 type AccessoriesBtnListType = { name: string; Icon: JSX.Element; disabled: boolean; i18n: string; }
 
 
 export const PageAccessoriesModalControl:FC<Props> = (props:Props) => {
-  const { isGuestUser, isSharedUser } = props;
+  const { isGuestUser, isSharedUser, onOpen } = props;
   const { t } = useTranslation();
+
+  const openModalHandler = useCallback((accessoryName:string):void => {
+    if (onOpen == null) {
+      return;
+    }
+    onOpen(accessoryName);
+  }, [onOpen]);
 
   const accessoriesBtnList:AccessoriesBtnListType[] = useMemo(() => {
     return [
@@ -64,7 +74,7 @@ export const PageAccessoriesModalControl:FC<Props> = (props:Props) => {
             <button
               type="button"
               className={`btn btn-link grw-btn-page-accessories ${accessory.disabled ? 'disabled' : ''}`}
-              // onClick={() => pageAccessoriesContainer.openPageAccessoriesModal(accessory.name)}
+              onClick={() => openModalHandler(accessory.name)}
             >
               {accessory.Icon}
             </button>
