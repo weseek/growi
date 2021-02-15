@@ -115,7 +115,7 @@ class BoltService {
 
   async searchResults(command, secondArg) {
 
-    if (secondArg == null) {
+    if (!secondArg) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
