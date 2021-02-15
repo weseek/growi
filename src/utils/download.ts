@@ -1,9 +1,9 @@
-import axios from 'axios';
 import path from 'path';
 import fs from 'graceful-fs';
 import mkdirp from 'mkdirp';
 import streamToPromise from 'stream-to-promise';
 import { Readable, Writable, Transform } from 'stream';
+import axios from '~/utils/axios';
 
 export async function downloadTo(url: string, outDir: string, fileName: string, transform: Transform|null = null): Promise<void> {
   // get

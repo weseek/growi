@@ -22,6 +22,10 @@ module.exports = {
   ],
   rules: {
     'import/prefer-default-export': 'off',
+    'no-restricted-imports': ['error', {
+      name: 'axios',
+      message: 'Please use src/utils/axios instead.',
+    }],
     '@typescript-eslint/no-explicit-any': 'off',
     indent: [
       'error',
