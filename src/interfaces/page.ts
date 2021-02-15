@@ -31,6 +31,7 @@ export type Comment = {
 
 export type Revision = {
   _id: string;
+  hasDiffToPrev: boolean;
 }
 
 export type PaginationResult<T> = {
