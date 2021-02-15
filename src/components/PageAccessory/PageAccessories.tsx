@@ -1,20 +1,22 @@
 import React, { FC } from 'react';
 import { useIsSharedUser, useCurrentUser } from '~/stores/context';
+import { PageAccessoriesModalControl } from '~/components/PageAccessory/PageAccessoriesModalControl';
 
 export const PageAccessories:FC = () => {
   const { data: currentUser } = useCurrentUser();
   const { data: isSharedUser } = useIsSharedUser();
 
-  return <p>hoge</p>;
+  return (
+    <PageAccessoriesModalControl
+      isGuestUser={currentUser == null}
+      isSharedUser={isSharedUser}
+    />
+  );
 };
 
 // const DeprecatePageAccessories = (props) => {
 //   return (
 //     <>
-//       <PageAccessoriesModalControl
-//         isGuestUser={isGuestUser}
-//         isSharedUser={isSharedUser}
-//       />
 //       <PageAccessoriesModal
 //         isGuestUser={isGuestUser}
 //         isSharedUser={isSharedUser}
