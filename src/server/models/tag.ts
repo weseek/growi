@@ -1,6 +1,4 @@
-import {
-  Schema, Types, Model,
-} from 'mongoose';
+import { Schema, Types, Model } from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
