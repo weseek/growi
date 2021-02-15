@@ -72,7 +72,7 @@ const SidebarContents = () => {
             isSharedUser={this.props.appContainer.isSharedUser}
           />
           */}
-          {/* <SidebarContents /> */}
+          <SidebarContents />
         </div>
       </div>
 
