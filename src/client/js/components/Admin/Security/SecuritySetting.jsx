@@ -105,6 +105,7 @@ class SecuritySetting extends React.Component {
           </div>
           <div className="col-md-9">
             <div className="dropdown">
+              {/* TODO: show dropdown text byGW-5142 */}
               <button
                 className={`btn btn-outline-secondary dropdown-toggle text-right col-12
                             col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}

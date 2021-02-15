@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React, { FC, Fragment } from 'react';
 
 import { useTranslation } from '~/i18n';
 
-import SystemInfomationTable from './SystemInfomationTable';
-import InstalledPluginTable from './InstalledPluginTable';
-import EnvVarsTable from './EnvVarsTable';
+import SystemInfomationTable from '../../../client/js/components/Admin/AdminHome/SystemInfomationTable';
+import InstalledPluginTable from '../../../client/js/components/Admin/AdminHome/InstalledPluginTable';
+import EnvVarsTable from '../../../client/js/components/Admin/AdminHome/EnvVarsTable';
 
 type Props = {
   nodeVersion: string,
@@ -16,7 +16,7 @@ type Props = {
   envVars: any,
 };
 
-const AdminHome = (props: Props): JSX.Element => {
+export const AdminHome:FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -57,5 +57,3 @@ const AdminHome = (props: Props): JSX.Element => {
     </Fragment>
   );
 };
-
-export default AdminHome;

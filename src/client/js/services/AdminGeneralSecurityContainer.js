@@ -24,7 +24,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageCompleteDeletionAuthority: 'adminOnly',
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
-      appSiteUrl: appContainer.config.crowi.url || '',
+      appSiteUrl: /* appContainer.config.crowi.url || */ '',
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,

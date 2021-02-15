@@ -1,14 +1,14 @@
 import React, {
   useState, useEffect, useCallback, FC,
 } from 'react';
-import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
-
+import { pathUtils } from 'growi-commons';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
 import { debounce } from 'throttle-debounce';
+import SearchTypeahead from '~/client/js/components/SearchTypeahead';
+
 import { useTranslation } from '~/i18n';
 
 import { useCurrentPagePath } from '~/stores/context';
@@ -26,17 +26,55 @@ type Props = {
   isOpen: boolean,
   path?: string,
   onClose:() => void,
+  onInputChange: (string) => void,
+  initializedPath: string,
+  addTrailingSlash: boolean,
+  onSubmit: () => void,
+  keyword?: string,
 }
 
 export const PageRenameModal:FC<Props> = (props:Props) => {
   const { register, handleSubmit } = useForm();
   const { data: currentPagePath } = useCurrentPagePath();
   const { t } = useTranslation();
+  const [searchError, setSearchError] = useState(null);
+
+  const {
+    addTrailingSlash, onSubmit, onInputChange, initializedPath,
+  } = props;
 
   // TODO imprv submitHandler by GW 5088
-  const submitHandler = (data) => {
-    alert(JSON.stringify(data));
-  };
+  // const submitHandler = (data) => {
+  //   alert(JSON.stringify(data));
+  // };
+
+  function submitHandler() {
+    if (onSubmit == null) {
+      return;
+    }
+    onSubmit();
+  }
+
+
+  function inputChangeHandler(pages) {
+    if (onInputChange == null) {
+      return;
+    }
+    const page = pages[0]; // should be single page selected
+
+    if (page != null) {
+      onInputChange(page.path);
+    }
+  }
+
+  function getKeywordOnInit(path) {
+    return addTrailingSlash
+      ? pathUtils.addTrailingSlash(path)
+      : pathUtils.removeTrailingSlash(path);
+  }
+  const emptyLabel = (searchError !== null)
+    ? 'Error on searching.'
+    : t('search.search page bodies');
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -56,18 +94,20 @@ export const PageRenameModal:FC<Props> = (props:Props) => {
             </div>
             {/* TODO imprv submitHandler by GW 5088 */}
             {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
-            <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}>
-              <input
-                name="pagename"
-                type="text"
-                className="form-control"
-                // value={pageNameInput}
-                // onChange={e => inputChangeHandler(e.target.value)}
-                required
-                autoFocus
-                ref={register}
-              />
-            </form>
+            {/* <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}> */}
+            <SearchTypeahead
+              onSubmit={submitHandler}
+              onSearchError={setSearchError}
+              onChange={inputChangeHandler}
+              onInputChange={props.onInputChange}
+              inputName="new_path"
+              placeholder="Input page path"
+              keywordOnInit={props.keyword}
+              name="pagename"
+              required
+              autoFocus
+            />
+            {/* </form> */}
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">

@@ -1,25 +1,28 @@
-import React, { Fragment, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-
+import React, {
+  FC, Fragment, useMemo, useState,
+} from 'react';
 import { TabContent, TabPane } from 'reactstrap';
+import { useTranslation } from '~/i18n';
 
-import LdapSecuritySetting from './LdapSecuritySetting';
-import LocalSecuritySetting from './LocalSecuritySetting';
-import SamlSecuritySetting from './SamlSecuritySetting';
-import OidcSecuritySetting from './OidcSecuritySetting';
-import SecuritySetting from './SecuritySetting';
-import BasicSecuritySetting from './BasicSecuritySetting';
-import GoogleSecuritySetting from './GoogleSecuritySetting';
-import GitHubSecuritySetting from './GitHubSecuritySetting';
-import TwitterSecuritySetting from './TwitterSecuritySetting';
-import FacebookSecuritySetting from './FacebookSecuritySetting';
-import ShareLinkSetting from './ShareLinkSetting';
+import LdapSecuritySetting from '~/client/js/components/Admin/Security/LdapSecuritySetting';
+import { LocalSecuritySetting } from '~/components/Admin/Security/LocalSecuritySetting';
+import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
+import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
+import SecuritySetting from '~/client/js/components/Admin/Security/SecuritySetting';
+import BasicSecuritySetting from '~/client/js/components/Admin/Security/BasicSecuritySetting';
+import GoogleSecuritySetting from '~/client/js/components/Admin/Security/GoogleSecuritySetting';
+import GitHubSecuritySetting from '~/client/js/components/Admin/Security/GitHubSecuritySetting';
+import TwitterSecuritySetting from '~/client/js/components/Admin/Security/TwitterSecuritySetting';
+import FacebookSecuritySetting from '~/client/js/components/Admin/Security/FacebookSecuritySetting';
+import ShareLinkSetting from '~/client/js/components/Admin/Security/ShareLinkSetting';
 
-import CustomNav from '../../CustomNavigation/CustomNav';
+import CustomNav from '~/client/js/components/CustomNavigation/CustomNav';
 
-function SecurityManagementContents(props) {
-  const { t } = props;
+type Props = {
+};
+
+export const SecurityManagementContents: FC<Props> = (props: Props) => {
+  const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('passport_local');
   const [activeComponents, setActiveComponents] = useState(new Set(['passport_local']));
@@ -83,6 +86,7 @@ function SecurityManagementContents(props) {
   return (
     <Fragment>
       <div className="mb-5">
+        {/* TODO: show dropdown text byGW-5142 */}
         <SecuritySetting />
       </div>
 
@@ -111,43 +115,38 @@ function SecurityManagementContents(props) {
           hideBorderBottom
           breakpointToSwitchDropdownDown="md"
         />
+        {/* TODO: show tab contents by GW-5141 */}
         <TabContent activeTab={activeTab} className="p-5">
           <TabPane tabId="passport_local">
             {activeComponents.has('passport_local') && <LocalSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_ldap">
-            {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
+            {/* {activeComponents.has('passport_ldap') && <LdapSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_saml">
-            {activeComponents.has('passport_saml') && <SamlSecuritySetting />}
+            {/* {activeComponents.has('passport_saml') && <SamlSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_oidc">
-            {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
+            {/* {activeComponents.has('passport_oidc') && <OidcSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_basic">
-            {activeComponents.has('passport_basic') && <BasicSecuritySetting />}
+            {/* {activeComponents.has('passport_basic') && <BasicSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_google">
-            {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
+            {/* {activeComponents.has('passport_google') && <GoogleSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_github">
-            {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
+            {/* {activeComponents.has('passport_github') && <GitHubSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_twitter">
-            {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />}
+            {/* {activeComponents.has('passport_twitter') && <TwitterSecuritySetting />} */}
           </TabPane>
           <TabPane tabId="passport_facebook">
-            {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />}
+            {/* {activeComponents.has('passport_facebook') && <FacebookSecuritySetting />} */}
           </TabPane>
         </TabContent>
       </div>
     </Fragment>
   );
 
-}
-
-SecurityManagementContents.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
 };
-
-export default withTranslation()(SecurityManagementContents);
