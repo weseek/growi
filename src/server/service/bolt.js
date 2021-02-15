@@ -89,7 +89,8 @@ class BoltService {
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
 
-      if (!firstArg) {
+      console.log(firstArg);
+      if (firstArg === '') {
         logger.error('Input first arguments');
         return this.client.chat.postEphemeral({
           channel: command.channel_id,
@@ -115,7 +116,7 @@ class BoltService {
 
   async searchResults(command, secondArg) {
 
-    if (!secondArg) {
+    if (secondArg == null) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
