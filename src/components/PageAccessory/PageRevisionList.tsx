@@ -6,26 +6,60 @@ import { useTranslation } from '~/i18n';
 
 import { Revision } from '~/interfaces/page';
 
-type Props = {
-  revisions: Revision[];
-  pagingLimit: number;
+
+type RevisionRowProps = {
+  revision: Revision;
+  previousRevision: Revision;
+  isContiguousNodiff: boolean;
+  revisionDiffOpened: boolean;
 }
 
 
 /**
  * render a row (Revision component and RevisionDiff component)
- * @param {Revison} revision
- * @param {Revision} previousRevision
- * @param {boolean} hasDiff whether revision has difference to previousRevision
- * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
  */
-const RevisionList:FC = () => {
-  return <p>hoge</p>;
+const RevisionRow:FC<RevisionRowProps> = (props:RevisionRowProps) => {
+  const { revision, isContiguousNodiff } = props;
+
+  const classNames = ['revision-history-outer'];
+  if (isContiguousNodiff) {
+    classNames.push('revision-history-outer-contiguous-nodiff');
+  }
+
+  return (
+    <div className={classNames.join(' ')} key={`revision-history-${revision._id}`}>
+      {/* <Revision
+        t={this.props.t}
+        revision={revision}
+        revisionDiffOpened={revisionDiffOpened}
+        hasDiff={hasDiff}
+        isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
+        onDiffOpenClicked={this.props.onDiffOpenClicked}
+        key={`revision-history-rev-${revisionId}`}
+      />
+      { hasDiff
+          && (
+          <RevisionDiff
+            revisionDiffOpened={revisionDiffOpened}
+            currentRevision={revision}
+            previousRevision={previousRevision}
+            key={`revision-deff-${revisionId}`}
+          />
+          )
+        } */}
+    </div>
+  );
 };
 
-export const PageRevisionList :FC<Props> = (props:Props) => {
+type PageRevisionListProps = {
+  revisions: Revision[];
+  pagingLimit: number;
+}
+
+export const PageRevisionList :FC<PageRevisionListProps> = (props:PageRevisionListProps) => {
   const { revisions, pagingLimit } = props;
   const revisionCount = revisions.length;
+  const [diffOpened, setDiffOpened] = useState({});
 
   const { t } = useTranslation();
   const [isCompactNodiffRevisions, setIsCompactNodiffRevisions] = useState(false);
@@ -60,7 +94,14 @@ export const PageRevisionList :FC<Props> = (props:Props) => {
 
     hasDiffPrev = hasDiff;
 
-    return <RevisionList revision={revision} previousRevision={previousRevision} hasDiff={hasDiff} isContiguousNodiff={isContiguousNodiff} />;
+    return (
+      <RevisionRow
+        revision={revision}
+        previousRevision={previousRevision}
+        isContiguousNodiff={isContiguousNodiff}
+        revisionDiffOpened={diffOpened[revision._id] || false}
+      />
+    );
   });
 
   return (
@@ -82,64 +123,6 @@ export const PageRevisionList :FC<Props> = (props:Props) => {
     </>
   );
 };
-
-// class DeprecatePageRevisionList extends React.Component {
-
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       isCompactNodiffRevisions: true,
-//     };
-
-//     this.cbCompactizeChangeHandler = this.cbCompactizeChangeHandler.bind(this);
-//   }
-
-//   cbCompactizeChangeHandler() {
-//     this.setState({ isCompactNodiffRevisions: !this.state.isCompactNodiffRevisions });
-//   }
-
-//   /**
-//    * render a row (Revision component and RevisionDiff component)
-//    * @param {Revison} revision
-//    * @param {Revision} previousRevision
-//    * @param {boolean} hasDiff whether revision has difference to previousRevision
-//    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
-//    */
-//   renderRow(revision, previousRevision, hasDiff, isContiguousNodiff) {
-//     const revisionId = revision._id;
-//     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
-
-//     const classNames = ['revision-history-outer'];
-//     if (isContiguousNodiff) {
-//       classNames.push('revision-history-outer-contiguous-nodiff');
-//     }
-
-//     return (
-//       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-//         <Revision
-//           t={this.props.t}
-//           revision={revision}
-//           revisionDiffOpened={revisionDiffOpened}
-//           hasDiff={hasDiff}
-//           isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
-//           onDiffOpenClicked={this.props.onDiffOpenClicked}
-//           key={`revision-history-rev-${revisionId}`}
-//         />
-//         { hasDiff
-//           && (
-//           <RevisionDiff
-//             revisionDiffOpened={revisionDiffOpened}
-//             currentRevision={revision}
-//             previousRevision={previousRevision}
-//             key={`revision-deff-${revisionId}`}
-//           />
-//           )
-//         }
-//       </div>
-//     );
-//   }
-
 
 // PageRevisionList.propTypes = {
 //   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
