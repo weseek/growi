@@ -1,4 +1,5 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
+import { useDrawerOpened } from '~/stores/ui';
 
 type Props = {
   iconClass?: string,
@@ -6,9 +7,7 @@ type Props = {
 
 const DrawerToggler: FC<Props> = (props: Props) => {
 
-  const clickHandler = useCallback(() => {
-    // navigationContainer.toggleDrawer();
-  }, []);
+  const { data: isOpened, mutate } = useDrawerOpened();
 
   const iconClass = props.iconClass || 'icon-menu';
 
@@ -18,7 +17,7 @@ const DrawerToggler: FC<Props> = (props: Props) => {
       type="button"
       aria-expanded="false"
       aria-label="Toggle navigation"
-      onClick={clickHandler}
+      onClick={() => mutate(!isOpened)}
     >
       <i className={iconClass}></i>
     </button>

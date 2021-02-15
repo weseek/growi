@@ -76,7 +76,7 @@ const SidebarContents = () => {
         </div>
       </div>
 
-      {/* <DrawerToggler iconClass="icon-arrow-left" /> */}
+      <DrawerToggler iconClass="icon-arrow-left" />
     </>
   );
 };
