@@ -128,10 +128,3 @@ export const PageRevisionList :FC<PageRevisionListProps> = (props:PageRevisionLi
     </>
   );
 };
-
-// PageRevisionList.propTypes = {
-//   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
-
-//   diffOpened: PropTypes.object,
-//   onDiffOpenClicked: PropTypes.func.isRequired,
-// };
