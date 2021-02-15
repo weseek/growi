@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import {
   withNavigationUIController,
@@ -8,7 +8,9 @@ import {
   ThemeProvider,
 } from '@atlaskit/navigation-next';
 
-import { useCurrentSidebarContents, useDrawerOpened, usePreferDrawerModeByUser } from '~/stores/ui';
+import {
+  useCurrentSidebarContents, useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
+} from '~/stores/ui';
 
 import SidebarNav from './Sidebar/SidebarNav';
 
@@ -86,18 +88,10 @@ type Props = {
 
 const Sidebar = (props: Props) => {
 
-  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
-  const { data: isDrawerOpened } = useDrawerOpened();
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
 
   const { navigationUIController } = props;
-
-  // componentWillMount() {
-  //   this.hackUIController();
-  // }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   this.toggleDrawerMode(this.isDrawerMode);
-  // }
 
   /**
    * hack and override UIController.storeState
@@ -114,13 +108,6 @@ const Sidebar = (props: Props) => {
   //     orgStoreState(state);
   //   };
   // }
-
-  /**
-   * return whether drawer mode or not
-   */
-  const isDrawerMode = useCallback(() => {
-    return preferDrawerModeByUser;
-  }, [preferDrawerModeByUser]);
 
   const toggleDrawerMode = useCallback((bool) => {
     const isStateModified = navigationUIController.state.isResizeDisabled !== bool;
@@ -170,14 +157,22 @@ const Sidebar = (props: Props) => {
   //   }, 300);
   // }
 
-  // backdropClickedHandler = () => {
-  //   const { navigationContainer } = this.props;
-  //   navigationContainer.toggleDrawer();
-  // }
+  const backdropClickedHandler = useCallback(() => {
+    mutateDrawerOpened(false);
+  }, [mutateDrawerOpened]);
+
+  useEffect(() => {
+    // this.hackUIController();
+  }, []);
+
+  useEffect(() => {
+    toggleDrawerMode(isDrawerMode);
+  }, [isDrawerMode, toggleDrawerMode]);
+
 
   return (
     <>
-      <div className={`grw-sidebar d-print-none ${isDrawerMode() ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
+      <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
         <ThemeProvider
           theme={theme => ({
             ...theme,
@@ -199,9 +194,9 @@ const Sidebar = (props: Props) => {
         </ThemeProvider>
       </div>
 
-      {/* { isDrawerOpened && (
-        <div className="grw-sidebar-backdrop modal-backdrop show" onClick={this.backdropClickedHandler}></div>
-      ) } */}
+      { isDrawerOpened && (
+        <div className="grw-sidebar-backdrop modal-backdrop show" onClick={backdropClickedHandler}></div>
+      ) }
     </>
   );
 

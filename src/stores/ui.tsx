@@ -141,6 +141,21 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
  *                      for switching UI
  *********************************************************** */
 
+export const useEditorMode = (editorMode?: EditorMode): responseInterface<EditorMode, any> => {
+  const key = 'editorMode';
+
+  if (editorMode == null) {
+    if (!cache.has(key)) {
+      mutate(key, EditorMode.View, false);
+    }
+  }
+  else {
+    mutate(key, editorMode);
+  }
+
+  return useStaticSWR(key);
+};
+
 export const useIsDeviceSmallerThanMd = (): responseInterface<boolean, any> => {
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'isDeviceSmallerThanMd';
@@ -176,23 +191,46 @@ export const usePreferDrawerModeByUser = (isPrefered?: boolean): responseInterfa
   return res;
 };
 
-export const useEditorMode = (editorMode?: EditorMode): responseInterface<EditorMode, any> => {
-  const key = 'editorMode';
+export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): responseInterface<boolean, any> => {
+  const isServer = typeof window === 'undefined';
+  const key = isServer ? null : 'preferDrawerModeOnEditByUser';
 
-  if (editorMode == null) {
-    if (!cache.has(key)) {
-      mutate(key, EditorMode.View, false);
-    }
+  const res = useLocalStorageSyncedSWR<boolean, any>(
+    key,
+    {
+      serialize: value => (value as boolean ? 'true' : 'false'),
+      deserialize: value => value == null || value === 'true', // default true
+    },
+  );
+
+  if (!isServer && isPrefered != null) {
+    res.mutate(isPrefered);
   }
-  else {
-    mutate(key, editorMode);
-  }
+
+  return res;
+};
+
+export const useDrawerMode = (): responseInterface<boolean, any> => {
+  const isServer = typeof window === 'undefined';
+  const key = isServer ? null : 'isDrawerMode';
+
+  const { data: editorMode } = useEditorMode();
+  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
+  const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+
+  // get preference on view or edit
+  const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+
+  const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
+
+  mutate(key, isDrawerMode);
 
   return useStaticSWR(key);
 };
 
-export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
-  const key = 'isPageCreateModalOpened';
+export const useDrawerOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
+  const key = 'isDrawerOpened';
 
   if (isOpened == null) {
     if (!cache.has(key)) {
@@ -206,8 +244,8 @@ export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<
   return useStaticSWR(key);
 };
 
-export const useDrawerOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
-  const key = 'isDrawerOpened';
+export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
+  const key = 'isPageCreateModalOpened';
 
   if (isOpened == null) {
     if (!cache.has(key)) {
