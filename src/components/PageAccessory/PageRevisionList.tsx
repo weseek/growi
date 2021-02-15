@@ -29,6 +29,7 @@ const RevisionRow:FC<RevisionRowProps> = (props:RevisionRowProps) => {
 
   return (
     <div className={classNames.join(' ')} key={`revision-history-${revision._id}`}>
+      {/* TODO GW-5183 implement Revision and RevisionDiff */}
       {/* <Revision
         t={this.props.t}
         revision={revision}
