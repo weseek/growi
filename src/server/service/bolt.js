@@ -89,7 +89,6 @@ class BoltService {
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
 
-      console.log(firstArg);
       if (firstArg === '') {
         logger.error('Input first arguments');
         return this.client.chat.postEphemeral({
