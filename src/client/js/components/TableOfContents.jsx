@@ -1,15 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
-
-import { withTranslation } from 'react-i18next';
 
 import { useTranslation } from '~/i18n';
 import { useCurrentPageTocNode } from '~/stores/renderer';
-
-import NavigationContainer from '../services/NavigationContainer';
-
-import { withUnstatedContainers } from './UnstatedUtils';
 
 import StickyStretchableScroller from './StickyStretchableScroller';
 
@@ -28,7 +21,6 @@ const TableOfContents = (props) => {
     return <></>;
   }
 
-  const { navigationContainer } = props;
   // const { pageUser } = pageContainer.state;
   // const isUserPage = pageUser != null;
 
@@ -100,13 +92,4 @@ const TableOfContents = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const TableOfContentsWrapper = withUnstatedContainers(TableOfContents, [NavigationContainer]);
-
-TableOfContents.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-export default withTranslation()(TableOfContentsWrapper);
+export default TableOfContents;

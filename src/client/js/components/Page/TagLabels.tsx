@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
 
+import { apiPost } from '~/client/js/util/apiv1-client';
 import { useCurrentPageSWR, useCurrentPageTagsSWR } from '~/stores/page';
 import { useCurrentUser } from '~/stores/context';
-import { apiPost } from '~/client/js/util/apiv1-client';
+import { EditorMode } from '~/stores/ui';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
@@ -10,7 +11,7 @@ import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';
 
 type Props = {
-  editorMode: string,
+  editorMode: EditorMode,
 }
 
 const TagLabels = (props: Props): JSX.Element => {
@@ -29,13 +30,13 @@ const TagLabels = (props: Props): JSX.Element => {
   }, []);
   const tagsUpdatedHandler = useCallback(async(newTags) => {
 
-    const pageId = (currentPage != null && currentPage.id);
+    const pageId = (currentPage != null && currentPage._id);
 
     // TODO impl this after editorMode becomes available.
     // It will not be reflected in the DB until the page is refreshed
-    // if (props.editorMode === 'edit') {
-    //   return props.editorContainer.setState({ tags: newTags });
-    // }
+    if (props.editorMode === EditorMode.Editor) {
+      // return props.editorContainer.setState({ tags: newTags });
+    }
 
     try {
       await apiPost('/tags.update', { pageId, tags: newTags });

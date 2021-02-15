@@ -1,10 +1,13 @@
 import { User } from '~/interfaces/user';
 
 export type Page = {
-  id: string,
+  _id: string,
   path: string,
   status: string,
   revision: Revision,
+  creator: User,
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export type BookmarkInfo = {
@@ -30,7 +33,8 @@ export type Comment = {
 }
 
 export type Revision = {
-  _id: string;
+  _id: string,
+  author: User,
   hasDiffToPrev: boolean;
 }
 

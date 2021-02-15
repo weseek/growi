@@ -11,25 +11,25 @@ import { PageManagement } from '~/components/PageManagement/PageManagement';
 
 export const PageReactionButtons:FC = () => {
   const { data: page } = useCurrentPageSWR();
-  const { id } = page as IPage;
+  const { _id } = page as IPage;
 
-  const { data: likeInfo, mutate: likeInfoMutate } = useLikeInfoSWR(id);
+  const { data: likeInfo, mutate: likeInfoMutate } = useLikeInfoSWR(_id);
   const { sumOfLikers, isLiked } = likeInfo as ILikeInfo;
 
-  const { data: bookmarkInfo, mutate: bookmarkInfoMutate } = useBookmarkInfoSWR(id);
+  const { data: bookmarkInfo, mutate: bookmarkInfoMutate } = useBookmarkInfoSWR(_id);
   const { sumOfBookmarks, isBookmarked } = bookmarkInfo as IBookmarkInfo;
 
   const { data: isAbleToShowLikeButton } = useIsAbleToShowLikeButton();
 
   const handleClickLikeButton = async() => {
     const bool = !isLiked;
-    await apiv3Put('/page/likes', { pageId: id, bool });
+    await apiv3Put('/page/likes', { pageId: _id, bool });
     likeInfoMutate();
   };
 
   const handleClickBookmarkButton = async() => {
     const bool = !isBookmarked;
-    await apiv3Put('/bookmarks', { pageId: id, bool });
+    await apiv3Put('/bookmarks', { pageId: _id, bool });
     bookmarkInfoMutate();
   };
 
@@ -48,10 +48,10 @@ export const PageReactionButtons:FC = () => {
 };
 
 type SubnavButtonsProps ={
-  isCompactMode: boolean;
+  isCompactMode?: boolean;
 }
 
-export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsProps) => {
+const GrowiSubnavButtons: FC<SubnavButtonsProps> = (props:SubnavButtonsProps) => {
   const { isCompactMode } = props;
 
   const { data: isAbleToShowPageReactionButtons } = useIsAbleToShowPageReactionButtons();
@@ -63,3 +63,5 @@ export const GrowiSubnavButtons:FC<SubnavButtonsProps> = (props:SubnavButtonsPro
     </>
   );
 };
+
+export default GrowiSubnavButtons;
