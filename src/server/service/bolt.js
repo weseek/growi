@@ -8,6 +8,12 @@ class BoltReciever {
 
   async requestHandler(req, res) {
     let ackCalled = false;
+
+    // for verification request URL on Event Subscriptions
+    if (req.body.challenge && req.body.type) {
+      return res.send(req.body);
+    }
+
     const event = {
       body: req.body,
       ack: (response) => {
@@ -31,10 +37,6 @@ class BoltReciever {
 
     await this.bolt.processEvent(event);
 
-    // for verification request URL on Event Subscriptions
-    if (req.body.challenge && req.body.type) {
-      res.send(req.body);
-    }
   }
 
 }
@@ -172,6 +174,8 @@ class BoltService {
         });
       }
     });
+
+
   }
 
 }
