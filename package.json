@@ -52,7 +52,7 @@
     "migrate": "npm run migrate:up",
     "migrate:create": "migrate-mongo create -f config/migrate.js -- ",
     "migrate:status": "migrate-mongo status -f config/migrate.js",
-    "migrate:up": "migrate-mongo up -f config/migrate.js",
+    "migrate:up": "ts-node --project tsconfig.server.json -r ts-node/register -r tsconfig-paths/register src/server/util/mongoose-utils.ts node_modules/.bin/migrate-mongo up -f config/migrate.ts",
     "migrate:down": "migrate-mongo down -f config/migrate.js",
     "prebuild:dev:watch": "npm run prebuild:dev",
     "prebuild:dev": "npm run clean:app && env-cmd -f config/env.dev.js npm run plugin:def && env-cmd -f config/env.dev.js npm run resource",
