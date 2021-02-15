@@ -8,7 +8,7 @@ import { useCurrentUser } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
 import {
   EditorMode,
-  useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager, useEditorMode, useIsDeviceSmallerThanMd,
+  useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager, useEditorMode,
 } from '~/stores/ui';
 
 import CopyDropdown from '../Page/CopyDropdown';
@@ -84,7 +84,6 @@ const GrowiSubNavigationContents: FC<Props> = (props: Props) => {
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
   const { data: editorMode } = useEditorMode();
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   if (page == null || editorMode == null) {
     return null;
@@ -107,10 +106,6 @@ const GrowiSubNavigationContents: FC<Props> = (props: Props) => {
   // TODO: GW-5128
   // const { isDrawerMode } = navigationContainer.state;
   const isDrawerMode = true;
-
-  function onPageEditorModeButtonClicked(viewType) {
-    // navigationContainer.setEditorMode(viewType);
-  }
 
   return (
     <>
@@ -145,10 +140,7 @@ const GrowiSubNavigationContents: FC<Props> = (props: Props) => {
           {isAbleToShowPageEditorModeManager && (
             <div className="mt-2">
               <PageEditorModeManager
-                onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
-                editorMode={editorMode}
-                isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
             </div>
           )}
