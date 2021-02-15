@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, memo } from 'react';
 import { useTranslation } from '~/i18n';
 
 // import Revision from './Revision';
@@ -19,7 +19,7 @@ type RevisionRowProps = {
 /**
  * render a row (Revision component and RevisionDiff component)
  */
-const RevisionRow:FC<RevisionRowProps> = (props:RevisionRowProps) => {
+const RevisionRow:FC<RevisionRowProps> = memo((props:RevisionRowProps) => {
   const { revision, isContiguousNodiff, hasDiff } = props;
 
   const classNames = ['revision-history-outer'];
@@ -51,7 +51,7 @@ const RevisionRow:FC<RevisionRowProps> = (props:RevisionRowProps) => {
         } */}
     </div>
   );
-};
+});
 
 type PageRevisionListProps = {
   revisions: Revision[];
@@ -60,7 +60,7 @@ type PageRevisionListProps = {
   onDiffOpenClicked?: ()=>void;
 }
 
-export const PageRevisionList :FC<PageRevisionListProps> = (props:PageRevisionListProps) => {
+export const PageRevisionList :FC<PageRevisionListProps> = memo((props:PageRevisionListProps) => {
   const {
     revisions, pagingLimit, diffOpened, onDiffOpenClicked,
   } = props;
@@ -128,4 +128,4 @@ export const PageRevisionList :FC<PageRevisionListProps> = (props:PageRevisionLi
       </div>
     </>
   );
-};
+});
