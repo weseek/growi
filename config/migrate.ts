@@ -5,16 +5,15 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
-const { URL } = require('url');
+import { URL } from 'url';
+import { getMongoUri } from '~/server/util/mongoose-utils';
 
-const { getMongoUri } = require('~/server/util/mongoose-utils');
-
-const mongoUri = getMongoUri();
+export const mongoUri = getMongoUri();
 
 // parse url
-const url = new URL(mongoUri);
+export const url = new URL(mongoUri);
 
-const mongodb = {
+export const mongodb = {
   url: mongoUri,
   databaseName: url.pathname.substring(1), // omit heading slash
   options: {
@@ -24,9 +23,6 @@ const mongodb = {
   },
 };
 
-module.exports = {
-  mongoUri,
-  mongodb,
-  migrationsDir: 'src/migrations/',
-  changelogCollectionName: 'migrations',
-};
+export const migrationsDir = 'src/migrations/';
+export const changelogCollectionName = 'migrations';
+export const migrationFileExtension = '.ts';
