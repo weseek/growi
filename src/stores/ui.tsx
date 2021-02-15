@@ -141,6 +141,18 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
  *                      for switching UI
  *********************************************************** */
 
+export const useIsMobile = (): responseInterface<boolean, any> => {
+  const isServer = typeof window === 'undefined';
+  const key = isServer ? null : 'isMobile';
+
+  if (!isServer && !cache.has(key)) {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    mutate(key, /iphone|ipad|android/.test(userAgent));
+  }
+
+  return useStaticSWR(key);
+};
+
 export const useEditorMode = (editorMode?: EditorMode): responseInterface<EditorMode, any> => {
   const key = 'editorMode';
 
