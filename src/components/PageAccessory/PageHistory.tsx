@@ -2,7 +2,7 @@ import React, {
   useCallback, useState, FC, useEffect,
 } from 'react';
 
-// import PageRevisionList from './PageHistory/PageRevisionList';
+import { PageRevisionList } from '~/components/PageAccessory/PageRevisionList';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
 import { useCurrentPageHistorySWR } from '~/stores/page';
@@ -45,14 +45,7 @@ export const PageHistory:FC = () => {
 
   return (
     <>
-      {/* TODO GW-5168 display PageRevisionList */}
-      {/* <PageRevisionList
-        pageHistoryContainer={pageHistoryContainer}
-        revisions={revisions}
-        diffOpened={diffOpened}
-        getPreviousRevision={getPreviousRevision}
-        onDiffOpenClicked={onDiffOpenClicked}
-      /> */}
+      <PageRevisionList />
       <PaginationWrapper
         activePage={activePage}
         changePage={handlePage}
