@@ -8,7 +8,6 @@ import { useTranslation } from '~/i18n';
 import SearchTypeahead from './SearchTypeahead';
 
 const PagePathAutoComplete = (props) => {
-  const [searchError, setSearchError] = useState(null);
   const { t } = useTranslation();
 
   const {
@@ -53,7 +52,6 @@ const PagePathAutoComplete = (props) => {
       onChange={inputChangeHandler}
       onInputChange={props.onInputChange}
       inputName="new_path"
-      onSearchError={setSearchError}
       renderMenu={renderMenu}
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
