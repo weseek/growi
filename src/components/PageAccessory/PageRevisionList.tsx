@@ -1,11 +1,35 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { useTranslation } from '~/i18n';
 
 // import Revision from './Revision';
 // import RevisionDiff from './RevisionDiff';
 
 export const PageRevisionList :FC = () => {
+  const { t } = useTranslation();
+  const [isCompactNodiffRevisions, setIsCompactNodiffRevisions] = useState(false);
+
+
+  const cbCompactizeChangeHandler = () => {
+    setIsCompactNodiffRevisions(!isCompactNodiffRevisions);
+  };
+
   return (
-    <p>hoge</p>
+    <>
+      <div className="custom-control custom-checkbox custom-checkbox-info float-right">
+        <input
+          type="checkbox"
+          id="cbCompactize"
+          className="custom-control-input"
+          checked={isCompactNodiffRevisions}
+          onChange={cbCompactizeChangeHandler}
+        />
+        <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
+      </div>
+      <div className="clearfix"></div>
+      {/* <div className={classNames.join(' ')}>
+        {revisionList}
+      </div> */}
+    </>
   );
 };
 
@@ -102,23 +126,23 @@ export const PageRevisionList :FC = () => {
 //     }
 
 //     return (
-//       <React.Fragment>
-//         <div className="custom-control custom-checkbox custom-checkbox-info float-right">
-//           <input
-//             type="checkbox"
-//             id="cbCompactize"
-//             className="custom-control-input"
-//             checked={this.state.isCompactNodiffRevisions}
-//             onChange={this.cbCompactizeChangeHandler}
-//           />
-//           <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
-//         </div>
-//         <div className="clearfix"></div>
-//         <div className={classNames.join(' ')}>
-//           {revisionList}
-//         </div>
-//       </React.Fragment>
-//     );
+//   <React.Fragment>
+//     <div className="custom-control custom-checkbox custom-checkbox-info float-right">
+//       <input
+//         type="checkbox"
+//         id="cbCompactize"
+//         className="custom-control-input"
+//         checked={this.state.isCompactNodiffRevisions}
+//         onChange={this.cbCompactizeChangeHandler}
+//       />
+//       <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
+//     </div>
+//     <div className="clearfix"></div>
+//     <div className={classNames.join(' ')}>
+//       {revisionList}
+//     </div>
+//   </React.Fragment>
+// );
 //   }
 
 // }
