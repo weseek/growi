@@ -8,7 +8,7 @@ import { useCurrentUser } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
 import {
   EditorMode,
-  useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager, useEditorMode,
+  useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager, useEditorMode, useDrawerMode,
 } from '~/stores/ui';
 
 import CopyDropdown from '../Page/CopyDropdown';
@@ -83,6 +83,7 @@ const GrowiSubNavigationContents: FC<Props> = (props: Props) => {
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+  const { data: isDrawerMode } = useDrawerMode();
   const { data: editorMode } = useEditorMode();
 
   if (page == null || editorMode == null) {
@@ -102,10 +103,6 @@ const GrowiSubNavigationContents: FC<Props> = (props: Props) => {
 
   const isGuestUser = currentUser == null;
   const isEditorMode = editorMode !== EditorMode.View;
-
-  // TODO: GW-5128
-  // const { isDrawerMode } = navigationContainer.state;
-  const isDrawerMode = true;
 
   return (
     <>
