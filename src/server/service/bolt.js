@@ -111,7 +111,6 @@ class BoltService {
       }
     });
 
-
   }
 
   async searchResults(command, secondArg) {
