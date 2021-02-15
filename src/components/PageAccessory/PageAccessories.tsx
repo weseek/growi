@@ -38,6 +38,9 @@ export const PageAccessories:FC = () => {
         isSharedUser={isSharedUser}
         isOpen={isOpenModal}
         onClose={closePageAccessoriesModal}
+        activeTab={activeTab}
+        activeComponents={activeComponents}
+        switchActiveTab={switchActiveTab}
       />
     </>
   );
