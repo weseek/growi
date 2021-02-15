@@ -88,26 +88,29 @@ class BoltService {
       const firstArg = inputSlack[0];
       const secondArg = inputSlack[1];
 
-      if (firstArg === '') {
-        logger.error('Input first arguments');
-        return this.client.chat.postEphemeral({
-          channel: command.channel_id,
-          user: command.user_id,
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: '*コマンドを入力してください。*\n Hint\n `/growi [command] [keyword]`',
-              },
-            },
-          ],
-        });
-      }
-
       if (firstArg === 'search') {
         return this.searchResults(command, secondArg);
       }
+
+      return this.notCommand(command);
+    });
+
+  }
+
+  notCommand(command) {
+    logger.error('Input first arguments');
+    return this.client.chat.postEphemeral({
+      channel: command.channel_id,
+      user: command.user_id,
+      blocks: [
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: '*コマンドが存在しません。*\n Hint\n `/growi [command] [keyword]`',
+          },
+        },
+      ],
     });
 
   }
