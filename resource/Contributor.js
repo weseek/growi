@@ -94,7 +94,7 @@ const contributors = [
     ],
   },
   {
-    order: 20,
+    order: 100,
     sectionName: 'VULNERABILITY HUNTER',
     additionalClass: '',
     memberGroups: [
@@ -114,7 +114,7 @@ const contributors = [
     ],
   },
   {
-    order: 30,
+    order: 200,
     sectionName: 'SPECIAL THANKS',
     additionalClass: '',
     memberGroups: [

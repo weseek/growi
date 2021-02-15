@@ -40,8 +40,6 @@ module.exports = (crowi) => {
         const gcContributorsRes = await axios.get(url.toString());
         if (gcContributors == null) {
           gcContributors = gcContributorsRes.data;
-          // Give order to gcContributors
-          gcContributors.order = 2;
           // merging contributors
           contributorsCache.push(gcContributors);
         }
