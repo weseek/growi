@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
 // import EditorContainer from '../services/EditorContainer';
 
@@ -13,6 +10,7 @@ import { useCurrentUser } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
 import MarkdownRenderer from '~/service/renderer/markdown-renderer';
 import { useViewRenderer } from '~/stores/renderer';
+import { useIsMobile } from '~/stores/ui';
 // import GridEditModal from './PageEditor/GridEditModal';
 // import HandsontableModal from './PageEditor/HandsontableModal';
 // import DrawioModal from './PageEditor/DrawioModal';
@@ -158,10 +156,8 @@ const logger = loggerFactory('growi:Page');
 const Page = (props) => {
 
   const { data: currentPage } = useCurrentPageSWR();
+  const { data: isMobile } = useIsMobile();
   const { data: viewRenderer } = useViewRenderer();
-
-  const { appContainer } = props;
-  const { isMobile } = appContainer;
 
   return (
     <div className={`${isMobile && 'page-mobile'}`}>
@@ -170,8 +166,4 @@ const Page = (props) => {
   );
 };
 
-Page.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default withUnstatedContainers(Page, [AppContainer]);
+export default Page;
