@@ -4,10 +4,18 @@ import { useTranslation } from '~/i18n';
 // import Revision from './Revision';
 // import RevisionDiff from './RevisionDiff';
 
+const RevisionList:FC = () => {
+  return <p>hoge</p>;
+};
+
 export const PageRevisionList :FC = () => {
   const { t } = useTranslation();
   const [isCompactNodiffRevisions, setIsCompactNodiffRevisions] = useState(false);
 
+  const classNames = ['revision-history-list'];
+  if (isCompactNodiffRevisions) {
+    classNames.push('revision-history-list-compact');
+  }
 
   const cbCompactizeChangeHandler = () => {
     setIsCompactNodiffRevisions(!isCompactNodiffRevisions);
@@ -26,9 +34,9 @@ export const PageRevisionList :FC = () => {
         <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
       </div>
       <div className="clearfix"></div>
-      {/* <div className={classNames.join(' ')}>
-        {revisionList}
-      </div> */}
+      <div className={classNames.join(' ')}>
+        <RevisionList />
+      </div>
     </>
   );
 };
@@ -120,24 +128,9 @@ export const PageRevisionList :FC = () => {
 //       return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
 //     });
 
-//     const classNames = ['revision-history-list'];
-//     if (this.state.isCompactNodiffRevisions) {
-//       classNames.push('revision-history-list-compact');
-//     }
 
 //     return (
 //   <React.Fragment>
-//     <div className="custom-control custom-checkbox custom-checkbox-info float-right">
-//       <input
-//         type="checkbox"
-//         id="cbCompactize"
-//         className="custom-control-input"
-//         checked={this.state.isCompactNodiffRevisions}
-//         onChange={this.cbCompactizeChangeHandler}
-//       />
-//       <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
-//     </div>
-//     <div className="clearfix"></div>
 //     <div className={classNames.join(' ')}>
 //       {revisionList}
 //     </div>
