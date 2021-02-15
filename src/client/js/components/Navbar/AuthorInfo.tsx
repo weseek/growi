@@ -1,13 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
 import { format } from 'date-fns';
 
+import { User } from '~/interfaces/user';
 import { userPageRoot } from '~/utils/path-utils';
 
 import UserPicture from '../User/UserPicture';
 
 const formatType = 'yyyy/MM/dd HH:mm';
-const AuthorInfo = (props) => {
+
+type Props = {
+  date: Date,
+  user?: User,
+  mode?: 'create' | 'update',
+  locate?: 'subnav' | 'footer',
+}
+
+const AuthorInfo: FC<Props> = (props: Props) => {
   const {
     mode, user, date, locate,
   } = props;
@@ -39,17 +47,9 @@ const AuthorInfo = (props) => {
   );
 };
 
-AuthorInfo.propTypes = {
-  date: PropTypes.string.isRequired,
-  user: PropTypes.object,
-  mode: PropTypes.oneOf(['create', 'update']),
-  locate: PropTypes.oneOf(['subnav', 'footer']),
-};
-
 AuthorInfo.defaultProps = {
   mode: 'create',
   locate: 'subnav',
 };
-
 
 export default AuthorInfo;

@@ -1,16 +1,11 @@
 import dynamic from 'next/dynamic';
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { UncontrolledTooltip } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 import {
   useAppTitle, useConfidential, useCurrentUser, useSearchServiceConfigured,
 } from '~/stores/context';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import NavigationContainer from '../../services/NavigationContainer';
-import AppContainer from '../../services/AppContainer';
+import { useIsDeviceSmallerThanMd, usePageCreateModalOpened } from '~/stores/ui';
 
 
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -40,10 +35,10 @@ const Confidential = () => {
   );
 };
 
-const NavbarRight = (props) => {
-  const { navigationContainer } = props;
+const NavbarRight = () => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
+  const { mutate: openPageCreateModal } = usePageCreateModalOpened();
 
   // render login button
   if (currentUser == null) {
@@ -53,7 +48,7 @@ const NavbarRight = (props) => {
   return (
     <>
       <li className="nav-item d-none d-md-block">
-        <button className="px-md-2 nav-link btn-create-page border-0 bg-transparent" type="button" onClick={navigationContainer.openPageCreateModal}>
+        <button className="px-md-2 nav-link btn-create-page border-0 bg-transparent" type="button" onClick={() => openPageCreateModal(true)}>
           <i className="icon-pencil mr-2"></i>
           <span className="d-none d-lg-block">{ t('New') }</span>
         </button>
@@ -65,16 +60,14 @@ const NavbarRight = (props) => {
     </>
   );
 };
-NavbarRight.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
 
 
-const GrowiNavbar = (props) => {
-  const { navigationContainer } = props;
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const GrowiNavbar = () => {
+  // const { navigationContainer } = props;
 
   const { data: isSearchServiceConfigured } = useSearchServiceConfigured();
-  const { isDeviceSmallerThanMd } = navigationContainer.state;
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   // dynamic import to skip rendering at SSR
   const GlobalSearch = dynamic(() => import('./GlobalSearch'), { ssr: false });
@@ -97,7 +90,7 @@ const GrowiNavbar = (props) => {
 
       {/* Navbar Right  */}
       <ul className="navbar-nav ml-auto">
-        <NavbarRight {...props} />
+        <NavbarRight />
         <Confidential />
       </ul>
 
@@ -111,9 +104,4 @@ const GrowiNavbar = (props) => {
 
 };
 
-GrowiNavbar.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-export default withUnstatedContainers(GrowiNavbar, [AppContainer, NavigationContainer]);
+export default GrowiNavbar;
