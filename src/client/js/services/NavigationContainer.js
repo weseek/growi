@@ -23,7 +23,7 @@ export default class NavigationContainer extends Container {
       // editorMode: 'view',
 
       // isDeviceSmallerThanMd: null,
-      isDrawerMode: null,
+      // isDrawerMode: null,
       // isDrawerOpened: false,
 
       // sidebarContentsId: 'recent',
@@ -97,44 +97,44 @@ export default class NavigationContainer extends Container {
     });
   }
 
-  setEditorMode(editorMode) {
-    const { isNotCreatable } = this.getPageContainer().state;
+  // setEditorMode(editorMode) {
+  //   const { isNotCreatable } = this.getPageContainer().state;
 
-    if (this.appContainer.currentUser == null) {
-      logger.warn('Please login or signup to edit the page or use hackmd.');
-      return;
-    }
+  //   if (this.appContainer.currentUser == null) {
+  //     logger.warn('Please login or signup to edit the page or use hackmd.');
+  //     return;
+  //   }
 
-    if (isNotCreatable) {
-      logger.warn('This page could not edit.');
-      return;
-    }
+  //   if (isNotCreatable) {
+  //     logger.warn('This page could not edit.');
+  //     return;
+  //   }
 
-    this.setState({ editorMode });
-    if (editorMode === 'view') {
-      $('body').removeClass('on-edit');
-      $('body').removeClass('builtin-editor');
-      $('body').removeClass('hackmd');
-      window.history.replaceState(null, '', window.location.pathname);
-    }
+  //   this.setState({ editorMode });
+  //   if (editorMode === 'view') {
+  //     $('body').removeClass('on-edit');
+  //     $('body').removeClass('builtin-editor');
+  //     $('body').removeClass('hackmd');
+  //     window.history.replaceState(null, '', window.location.pathname);
+  //   }
 
-    if (editorMode === 'edit') {
-      $('body').addClass('on-edit');
-      $('body').addClass('builtin-editor');
-      $('body').removeClass('hackmd');
-      window.location.hash = '#edit';
-    }
+  //   if (editorMode === 'edit') {
+  //     $('body').addClass('on-edit');
+  //     $('body').addClass('builtin-editor');
+  //     $('body').removeClass('hackmd');
+  //     window.location.hash = '#edit';
+  //   }
 
-    if (editorMode === 'hackmd') {
-      $('body').addClass('on-edit');
-      $('body').addClass('hackmd');
-      $('body').removeClass('builtin-editor');
-      window.location.hash = '#hackmd';
+  //   if (editorMode === 'hackmd') {
+  //     $('body').addClass('on-edit');
+  //     $('body').addClass('hackmd');
+  //     $('body').removeClass('builtin-editor');
+  //     window.location.hash = '#hackmd';
 
-    }
+  //   }
 
-    this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
-  }
+  //   this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
+  // }
 
   // toggleDrawer() {
   //   const { isDrawerOpened } = this.state;
