@@ -50,6 +50,7 @@ export const PageHistory:FC = () => {
     <>
       <PageRevisionList
         revisions={revisions}
+        pagingLimit={limit}
       />
       <PaginationWrapper
         activePage={activePage}

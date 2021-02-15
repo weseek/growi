@@ -8,17 +8,30 @@ import { Revision } from '~/interfaces/page';
 
 type Props = {
   revisions: Revision[];
+  pagingLimit: number;
 }
 
+
+/**
+ * render a row (Revision component and RevisionDiff component)
+ * @param {Revison} revision
+ * @param {Revision} previousRevision
+ * @param {boolean} hasDiff whether revision has difference to previousRevision
+ * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
+ */
 const RevisionList:FC = () => {
   return <p>hoge</p>;
 };
 
 export const PageRevisionList :FC<Props> = (props:Props) => {
+  const { revisions, pagingLimit } = props;
+  const revisionCount = revisions.length;
+
   const { t } = useTranslation();
   const [isCompactNodiffRevisions, setIsCompactNodiffRevisions] = useState(false);
+  let hasDiffPrev;
 
-  const classNames = ['revision-history-list'];
+  const classNames:string[] = ['revision-history-list'];
   if (isCompactNodiffRevisions) {
     classNames.push('revision-history-list-compact');
   }
@@ -27,29 +40,27 @@ export const PageRevisionList :FC<Props> = (props:Props) => {
     setIsCompactNodiffRevisions(!isCompactNodiffRevisions);
   };
 
-  const revisionList = props.revisions.map((revision, idx) => {
+  const revisionList = revisions.map((revision, idx) => {
 
-    console.log(revision);
-    return <p>hoge</p>;
     // Returns null because the last revision is for the bottom diff display
-    // if (idx === pageHistoryContainer.state.pagingLimit) {
-    //   return null;
-    // }
+    if (idx === pagingLimit) {
+      return null;
+    }
 
-    // let previousRevision;
-    // if (idx + 1 < revisionCount) {
-    //   previousRevision = revisions[idx + 1];
-    // }
-    // else {
-    //   previousRevision = revision; // if it is the first revision, show full text as diff text
-    // }
+    let previousRevision;
+    if (idx + 1 < revisionCount) {
+      previousRevision = revisions[idx + 1];
+    }
+    else {
+      previousRevision = revision; // if it is the first revision, show full text as diff text
+    }
 
-    // const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
-    // const isContiguousNodiff = !hasDiff && !hasDiffPrev;
+    const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
+    const isContiguousNodiff = !hasDiff && !hasDiffPrev;
 
-    // hasDiffPrev = hasDiff;
+    hasDiffPrev = hasDiff;
 
-    // return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
+    return <RevisionList revision={revision} previousRevision={previousRevision} hasDiff={hasDiff} isContiguousNodiff={isContiguousNodiff} />;
   });
 
   return (
@@ -129,18 +140,6 @@ export const PageRevisionList :FC<Props> = (props:Props) => {
 //     );
 //   }
 
-//   render() {
-//     const { t, pageHistoryContainer } = this.props;
-
-//     const revisions = this.props.revisions;
-//     const revisionCount = this.props.revisions.length;
-
-//     let hasDiffPrev;
-
-
-//   }
-
-// }
 
 // PageRevisionList.propTypes = {
 //   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
