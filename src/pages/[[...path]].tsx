@@ -68,8 +68,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(props.currentPagePath);
   useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useForbidden(props.isForbidden);
-  useCreatable(props.isCreatable);
   useNotFound(props.isNotFound);
+  useCreatable(props.isCreatable);
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
   useShareLinkId(props.shareLinkId);
