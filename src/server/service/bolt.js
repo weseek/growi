@@ -195,13 +195,7 @@ class BoltService {
             text: 'Cancel',
           },
           blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: 'ページを作成します',
-              },
-            },
+            this.generateMarkdownSectionBlock('ページを作成します'),
             {
               type: 'input',
               label: {
