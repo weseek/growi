@@ -7,8 +7,6 @@ import { Card, CardBody } from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -81,11 +79,10 @@ class CustomizeHeaderSetting extends React.Component {
 
 }
 
-const CustomizeHeaderSettingWrapper = withUnstatedContainers(CustomizeHeaderSetting, [AppContainer, AdminCustomizeContainer]);
+const CustomizeHeaderSettingWrapper = withUnstatedContainers(CustomizeHeaderSetting, [AdminCustomizeContainer]);
 
 CustomizeHeaderSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 

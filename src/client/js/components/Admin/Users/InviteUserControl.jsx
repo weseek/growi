@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import UserInviteModal from './UserInviteModal';
 
@@ -24,11 +23,10 @@ class InviteUserControl extends React.Component {
 
 }
 
-const InviteUserControlWrapper = withUnstatedContainers(InviteUserControl, [AppContainer, AdminUsersContainer]);
+const InviteUserControlWrapper = withUnstatedContainers(InviteUserControl, [AdminUsersContainer]);
 
 InviteUserControl.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 

@@ -5,9 +5,6 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-
 /**
  * Delete User Group Select component
  *
@@ -192,14 +189,8 @@ class UserGroupDeleteModal extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupDeleteModalWrapper = withUnstatedContainers(UserGroupDeleteModal, [AppContainer]);
-
 UserGroupDeleteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
   deleteUserGroup: PropTypes.object,
@@ -213,4 +204,4 @@ UserGroupDeleteModal.defaultProps = {
   deleteUserGroup: {},
 };
 
-export default withTranslation()(UserGroupDeleteModalWrapper);
+export default withTranslation()(UserGroupDeleteModal);

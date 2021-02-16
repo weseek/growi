@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
 
 import LabeledProgressBar from '../Common/LabeledProgressBar';
@@ -111,11 +110,10 @@ class RebuildIndexControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControls, [AppContainer, AdminSocketIoContainer]);
+const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControls, [AdminSocketIoContainer]);
 
 RebuildIndexControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   isRebuildingProcessing: PropTypes.bool.isRequired,

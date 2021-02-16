@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-
 class UserGroupTable extends React.Component {
 
   constructor(props) {
@@ -112,15 +109,8 @@ class UserGroupTable extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupTableWrapper = withUnstatedContainers(UserGroupTable, [AppContainer]);
-
-
 UserGroupTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
   userGroupRelations: PropTypes.object.isRequired,
@@ -128,4 +118,4 @@ UserGroupTable.propTypes = {
   onDelete: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(UserGroupTableWrapper);
+export default withTranslation()(UserGroupTable);
