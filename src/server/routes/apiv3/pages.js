@@ -433,8 +433,18 @@ module.exports = (crowi) => {
     const {
       pageId, revisionId, isRecursively, isCompletely,
     } = req.body;
-    console.log(pageId, revisionId, isRecursively, isCompletely);
-    const result = {};
+    const options = { socketClientId: req.body.socketClientId || undefined };
+    const page = await Page.findByIdAndViewer(pageId, req.user);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    logger.debug('Delete page', page._id, page.path);
+
+    // console.log(pageId, revisionId, isRecursively, isCompletely);
+    console.log(page);
+    const result = { page };
     return res.apiv3(result);
   });
 
