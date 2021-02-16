@@ -94,6 +94,10 @@ class BoltService {
           this.searchResults(command, args);
           break;
 
+        case 'create':
+          this.createModal(command, client, body);
+          break;
+
         default:
           this.notCommand(command);
           break;
