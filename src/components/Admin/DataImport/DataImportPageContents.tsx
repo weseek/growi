@@ -100,9 +100,9 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 name="Esa"
                 // TODO: enable esaHandleSubmit without adminImportContainer by GW-5077
                 // onClick={adminImportContainer.esaHandleSubmit}
-                value={t('admin:importer_management.import')}
+                value={t('admin:importer_management.import').toString()}
               />
-              <input type="button" className="btn btn-secondary" /* value={t('Update')} */ />
+              <input type="button" className="btn btn-secondary" value={t('Update').toString()} />
               <span className="offset-0 offset-sm-1">
                 <input
                   id="importFromEsa"
@@ -111,7 +111,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                   className="btn btn-secondary btn-esa"
                   // TODO: enable qiitaTeamName and esaHandleSubmitTest without adminImportContainer by GW-5077
                   // onClick={adminImportContainer.esaHandleSubmitTest}
-                  data-value={t('admin:importer_management.esa_settings.test_connection')}
+                  value={t('admin:importer_management.esa_settings.test_connection').toString()}
                 />
               </span>
 
@@ -208,7 +208,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                 className="btn btn-primary btn-qiita"
                 name="Qiita"
                 // onClick={adminImportContainer.qiitaHandleSubmit}
-                value={t('admin:importer_management.import')}
+                value={t('admin:importer_management.import').toString()}
               />
               {/* TODO: enable qiitaHandleSubmitUpdate without adminImportContainer by GW-5077 */}
               {/* <input type="button" className="btn btn-secondary" onClick={adminImportContainer.qiitaHandleSubmitUpdate} value={t('Update')} /> */}
@@ -220,7 +220,7 @@ const DataImportPageContents = (props: Props): JSX.Element => {
                   className="btn btn-secondary btn-qiita"
                   // TODO: enable qiitaHandleSubmitTest without adminImportContainer by GW-5077
                   // onClick={adminImportContainer.qiitaHandleSubmitTest}
-                  value={t('admin:importer_management.qiita_settings.test_connection')}
+                  value={t('admin:importer_management.qiita_settings.test_connection').toString()}
                 />
               </span>
 
