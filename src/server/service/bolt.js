@@ -123,11 +123,9 @@ class BoltService {
                   type: 'button',
                   text: {
                     type: 'plain_text',
-                    emoji: true,
                     text: '検索結果をこのチャンネルに共有する',
                   },
                   style: 'primary',
-                  value: 'click_me_123',
                 },
               ],
             },
