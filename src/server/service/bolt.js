@@ -115,7 +115,8 @@ class BoltService {
   async searchResults(command, inputSlack) {
     const keyword = inputSlack[1];
     // remove leading 'search'.
-    const replacedCommandText = command.text.replace(inputSlack[0], '');
+    inputSlack.shift();
+    const replacedCommandText = inputSlack.join(' ');
     if (keyword == null) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
