@@ -92,10 +92,6 @@ class BoltService {
           this.searchResults(command, inputSlack);
           break;
 
-        case 'create':
-          console.log('create');
-          break;
-
         default:
           this.notCommand(command);
           break;
