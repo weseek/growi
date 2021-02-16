@@ -9,6 +9,14 @@ class BoltReciever {
   async requestHandler(req, res) {
     let ackCalled = false;
 
+    const payload = JSON.parse(req.body.payload);
+    const { type } = payload;
+    console.log(type);
+
+    if (type === 'view_submission') {
+      console.log('hgoe');
+    }
+
     // for verification request URL on Event Subscriptions
     if (req.body.challenge && req.body.type) {
       return res.send(req.body);
