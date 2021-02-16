@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import * as toastr from 'toastr';
+import * as toastr from 'toastr';
 
 // import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 
@@ -11,7 +11,8 @@ import React, { useState } from 'react';
 import LabeledProgressBar from '~/client/js/components/Admin/Common/LabeledProgressBar';
 
 // import SelectCollectionsModal from '~/client/js/components/Admin/ExportArchiveData/SelectCollectionsModal';
-// import ArchiveFilesTable from '~/client/js/components/Admin/ExportArchiveData/ArchiveFilesTable';
+import ArchiveFilesTable from '~/client/js/components/Admin/ExportArchiveData/ArchiveFilesTable';
+import { apiDelete } from '~/client/js/util/apiv1-client';
 
 import { useTranslation } from '~/i18n';
 
@@ -93,10 +94,10 @@ const ExportArchiveDataPage = (): JSX.Element => {
 
       <div className="mt-5">
         <h3>{t('admin:export_management.exported_data_list')}</h3>
-        {/* <ArchiveFilesTable
-          zipFileStats={this.state.zipFileStats}
-          onZipFileStatRemove={this.onZipFileStatRemove}
-        /> */}
+        <ArchiveFilesTable
+          zipFileStats={zipFileStats}
+          onZipFileStatRemove={onZipFileStatRemove}
+        />
       </div>
 
       {/* <SelectCollectionsModal
