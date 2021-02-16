@@ -117,11 +117,10 @@ class BoltService {
   }
 
   async searchResults(command, inputSlack) {
-    console.log(inputSlack);
-    const growiCommand = inputSlack[0];
     const keyword = inputSlack[1];
-
-    if (growiCommand == null) {
+    // remove leading 'search'.
+    const replacedCommandText = command.text.replace(inputSlack[0], '');
+    if (keyword == null) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
@@ -133,7 +132,7 @@ class BoltService {
 
     const { searchService } = this.crowi;
     const option = { limit: 10 };
-    const results = await searchService.searchKeyword(keyword, null, {}, option);
+    const results = await searchService.searchKeyword(replacedCommandText, null, {}, option);
 
     // no search results
     if (results.data.length === 0) {
