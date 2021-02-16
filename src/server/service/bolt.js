@@ -86,13 +86,20 @@ class BoltService {
       await ack();
       const inputSlack = command.text.split(' ');
       const firstArg = inputSlack[0];
-      const secondArg = inputSlack[1];
 
-      if (firstArg === 'search') {
-        return this.searchResults(command, secondArg);
+      switch (firstArg) {
+        case 'search':
+          this.searchResults(command, inputSlack);
+          break;
+
+        case 'create':
+          console.log('create');
+          break;
+
+        default:
+          this.notCommand(command);
+          break;
       }
-
-      return this.notCommand(command);
     });
 
   }
@@ -109,9 +116,12 @@ class BoltService {
 
   }
 
-  async searchResults(command, secondArg) {
+  async searchResults(command, inputSlack) {
+    console.log(inputSlack);
+    const growiCommand = inputSlack[0];
+    const keyword = inputSlack[1];
 
-    if (secondArg == null) {
+    if (growiCommand == null) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
@@ -123,7 +133,8 @@ class BoltService {
 
     const { searchService } = this.crowi;
     const option = { limit: 10 };
-    const results = await searchService.searchKeyword(secondArg, null, {}, option);
+    const results = await searchService.searchKeyword(keyword, null, {}, option);
+
     // no search results
     if (results.data.length === 0) {
       return this.client.chat.postEphemeral({
