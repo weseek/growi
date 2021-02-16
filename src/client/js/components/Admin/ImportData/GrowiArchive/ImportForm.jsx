@@ -297,7 +297,7 @@ class ImportForm extends React.Component {
     });
 
     try {
-      // TODO: use appContainer.apiv3.post
+      // TODO: use apiv3-client
       await apiv3Post('/import', {
         fileName,
         collections: Array.from(selectedCollections),

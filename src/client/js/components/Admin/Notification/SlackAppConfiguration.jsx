@@ -7,7 +7,6 @@ import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -170,13 +169,11 @@ class SlackAppConfiguration extends React.Component {
 
 }
 
-const SlackAppConfigurationWrapper = withUnstatedContainers(SlackAppConfiguration, [AppContainer, AdminNotificationContainer]);
+const SlackAppConfigurationWrapper = withUnstatedContainers(SlackAppConfiguration, [AdminNotificationContainer]);
 
 SlackAppConfiguration.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
-
 };
 
 export default withTranslation()(SlackAppConfigurationWrapper);

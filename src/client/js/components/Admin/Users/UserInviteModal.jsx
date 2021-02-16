@@ -12,7 +12,6 @@ import {
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class UserInviteModal extends React.Component {
@@ -218,12 +217,11 @@ class UserInviteModal extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const UserInviteModalWrapper = withUnstatedContainers(UserInviteModal, [AppContainer, AdminUsersContainer]);
+const UserInviteModalWrapper = withUnstatedContainers(UserInviteModal, [AdminUsersContainer]);
 
 
 UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
