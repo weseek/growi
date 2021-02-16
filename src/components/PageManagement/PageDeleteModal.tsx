@@ -31,7 +31,7 @@ type Props = {
   onClose:() => void;
 }
 
-export const PageDeleteModal:FC<Props> = (props:Props) => {
+const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
   const { isAbleToDeleteCompletely = false, currentPage, isDeleteCompletelyModal } = props;
@@ -131,3 +131,5 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
     </Modal>
   );
 };
+
+export default PageDeleteModal;
