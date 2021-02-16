@@ -113,11 +113,8 @@ class BoltService {
   }
 
   async searchResults(command, args) {
-    const keyword = args[1];
-    // remove leading 'search'.
-    args.shift();
-    const replacedCommandText = args.join(' ');
-    if (keyword == null) {
+    const firstKeyword = args[1];
+    if (firstKeyword == null) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
@@ -127,9 +124,12 @@ class BoltService {
       });
     }
 
+    // remove leading 'search'.
+    args.shift();
+    const keywords = args.join(' ');
     const { searchService } = this.crowi;
     const option = { limit: 10 };
-    const results = await searchService.searchKeyword(replacedCommandText, null, {}, option);
+    const results = await searchService.searchKeyword(keywords, null, {}, option);
 
     // no search results
     if (results.data.length === 0) {
