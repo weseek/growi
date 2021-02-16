@@ -421,6 +421,12 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
+  router.put('/remove', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+    const result = {};
+
+    return res.apiv3(result);
+  });
+
   validator.emptyTrash = [
     query('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
   ];
