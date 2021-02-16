@@ -23,6 +23,10 @@ export const useForbidden = (initialData?: boolean): responseInterface<boolean, 
   return useStaticSWR('isForbidden', initialData);
 };
 
+export const useCreatable = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isCreatable', initialData);
+};
+
 export const useNotFound = (initialData?: boolean): responseInterface<boolean, any> => {
   return useStaticSWR('isNotFound', initialData);
 };

@@ -25,7 +25,7 @@ import { PageComments } from '~/components/PageComment/PageComments';
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential,
+  useAppTitle, useSiteUrl, useConfidential, useCreatable,
   useSearchServiceConfigured, useSearchServiceReachable,
 } from '../stores/context';
 import {
@@ -50,6 +50,7 @@ type Props = CommonProps & {
   siteUrl: string,
   confidential: string,
   isForbidden: boolean,
+  isCreatable: boolean,
   isNotFound: boolean,
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
@@ -66,6 +67,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useCurrentPagePath(props.currentPagePath);
   useOwnerOfCurrentPage(props.pageUser != null ? JSON.parse(props.pageUser) : null);
   useForbidden(props.isForbidden);
+  useCreatable(props.isCreatable);
   useNotFound(props.isNotFound);
   useTrash(isTrashPage(props.currentPagePath));
   useShared(isSharedPage(props.currentPagePath));
@@ -156,7 +158,7 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
   const pagePath = specifiedPagePath || props.currentPagePath;
   const result = await pageService.findPageAndMetaDataByViewer({ path: pagePath, user });
   const page = result.page;
-
+  props.isCreatable = result.isCreatable;
   if (page == null) {
     // check the page is forbidden or just does not exist.
     props.isForbidden = result.isForbidden;
