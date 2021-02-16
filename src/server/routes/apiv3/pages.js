@@ -134,6 +134,7 @@ module.exports = (crowi) => {
       body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
     ],
+
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('revisionId').isMongoId().withMessage('revisionId is required'),
@@ -142,6 +143,13 @@ module.exports = (crowi) => {
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
+    ],
+
+    removePage: [
+      body('pageId').isMongoId().withMessage('pageId is required'),
+      body('revisionId').isMongoId().withMessage('revisionId is required'),
+      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
+      body('isCompletely').if(value => value != null).isBoolean().withMessage('isCompletely must be boolean'),
     ],
 
     duplicatePage: [
@@ -421,9 +429,12 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
-  router.put('/remove', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/remove', accessTokenParser, loginRequiredStrictly, validator.removePage, apiV3FormValidator, async(req, res) => {
+    const {
+      pageId, revisionId, isRecursively, isCompletely,
+    } = req.body;
+    console.log(pageId, revisionId, isRecursively, isCompletely);
     const result = {};
-
     return res.apiv3(result);
   });
 
