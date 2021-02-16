@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 
 import { UncontrolledTooltip, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { useTranslation } from '~/i18n';
 import { useCurrentUser } from '~/stores/context';
+import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
+import { useInterceptorManager } from '~/stores/interceptor';
 
 import {
   isUserPreferenceExists,
@@ -14,10 +15,6 @@ import {
   updateUserPreference,
   updateUserPreferenceWithOsSettings,
 } from '../../util/color-scheme';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import NavigationContainer from '../../services/NavigationContainer';
 
 import UserPicture from '../User/UserPicture';
 
@@ -42,6 +39,7 @@ const IconWithTooltip = ({
 const PersonalDropdownMenu = (props) => {
 
   const { t } = useTranslation();
+  const { data: interceptorManager } = useInterceptorManager();
   const { data: user } = useCurrentUser();
 
   const [useOsSettings, setOsSettings] = useState(!isUserPreferenceExists());
@@ -49,11 +47,10 @@ const PersonalDropdownMenu = (props) => {
   // const [useOsSettings, setOsSettings] = useState(isUserPreferenceExists != null ? !isUserPreferenceExists() : true);
   // const [isDarkMode, setIsDarkMode] = useState(isDarkModeByUtil != null ? isDarkModeByUtil() : false);
 
-  const { appContainer, navigationContainer } = props;
+  const { data: preferDrawerModeByUser, mutate: mutatePreferDrawerModeByUser } = usePreferDrawerModeByUser();
+  const { data: preferDrawerModeOnEditByUser, mutate: mutatePreferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
 
-  const logoutHandler = () => {
-    const { interceptorManager } = appContainer;
-
+  const logoutHandler = useCallback(() => {
     const context = {
       user,
       currentPagePath: decodeURIComponent(window.location.pathname),
@@ -61,14 +58,14 @@ const PersonalDropdownMenu = (props) => {
     interceptorManager.process('logout', context);
 
     window.location.href = '/logout';
-  };
+  }, [user, interceptorManager]);
 
   const preferDrawerModeSwitchModifiedHandler = (bool) => {
-    navigationContainer.setDrawerModePreference(bool);
+    mutatePreferDrawerModeByUser(bool);
   };
 
   const preferDrawerModeOnEditSwitchModifiedHandler = (bool) => {
-    navigationContainer.setDrawerModePreferenceOnEdit(bool);
+    mutatePreferDrawerModeOnEditByUser(bool);
   };
 
   const followOsCheckboxModifiedHandler = (bool) => {
@@ -92,14 +89,6 @@ const PersonalDropdownMenu = (props) => {
     // update state
     setIsDarkMode(isDarkModeByUtil());
   };
-
-
-  /*
-   * render
-   */
-  const {
-    preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-  } = navigationContainer.state;
 
   return (
     <DropdownMenu right>
@@ -228,10 +217,4 @@ const PersonalDropdownMenu = (props) => {
 
 };
 
-PersonalDropdownMenu.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-
-export default withUnstatedContainers(PersonalDropdownMenu, [AppContainer, NavigationContainer]);
+export default PersonalDropdownMenu;

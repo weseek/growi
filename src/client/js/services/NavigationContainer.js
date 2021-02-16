@@ -20,13 +20,13 @@ export default class NavigationContainer extends Container {
     this.appContainer.registerContainer(this);
 
     this.state = {
-      editorMode: 'view',
+      // editorMode: 'view',
 
-      isDeviceSmallerThanMd: null,
-      isDrawerMode: null,
-      isDrawerOpened: false,
+      // isDeviceSmallerThanMd: null,
+      // isDrawerMode: null,
+      // isDrawerOpened: false,
 
-      sidebarContentsId: 'recent',
+      // sidebarContentsId: 'recent',
 
       isScrollTop: true,
 
@@ -62,25 +62,25 @@ export default class NavigationContainer extends Container {
     return this.appContainer.getContainer('PageContainer');
   }
 
-  initDeviceSize() {
-    const mdOrAvobeHandler = async(mql) => {
-      let isDeviceSmallerThanMd;
+  // initDeviceSize() {
+  //   const mdOrAvobeHandler = async(mql) => {
+  //     let isDeviceSmallerThanMd;
 
-      // sm -> md
-      if (mql.matches) {
-        isDeviceSmallerThanMd = false;
-      }
-      // md -> sm
-      else {
-        isDeviceSmallerThanMd = true;
-      }
+  //     // sm -> md
+  //     if (mql.matches) {
+  //       isDeviceSmallerThanMd = false;
+  //     }
+  //     // md -> sm
+  //     else {
+  //       isDeviceSmallerThanMd = true;
+  //     }
 
-      this.setState({ isDeviceSmallerThanMd });
-      this.updateDrawerMode({ ...this.state, isDeviceSmallerThanMd }); // generate newest state object
-    };
+  //     this.setState({ isDeviceSmallerThanMd });
+  //     this.updateDrawerMode({ ...this.state, isDeviceSmallerThanMd }); // generate newest state object
+  //   };
 
-    this.appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
-  }
+  //   this.appContainer.addBreakpointListener('md', mdOrAvobeHandler, true);
+  // }
 
   initScrollEvent() {
     window.addEventListener('scroll', () => {
@@ -97,75 +97,75 @@ export default class NavigationContainer extends Container {
     });
   }
 
-  setEditorMode(editorMode) {
-    const { isNotCreatable } = this.getPageContainer().state;
+  // setEditorMode(editorMode) {
+  //   const { isNotCreatable } = this.getPageContainer().state;
 
-    if (this.appContainer.currentUser == null) {
-      logger.warn('Please login or signup to edit the page or use hackmd.');
-      return;
-    }
+  //   if (this.appContainer.currentUser == null) {
+  //     logger.warn('Please login or signup to edit the page or use hackmd.');
+  //     return;
+  //   }
 
-    if (isNotCreatable) {
-      logger.warn('This page could not edit.');
-      return;
-    }
+  //   if (isNotCreatable) {
+  //     logger.warn('This page could not edit.');
+  //     return;
+  //   }
 
-    this.setState({ editorMode });
-    if (editorMode === 'view') {
-      $('body').removeClass('on-edit');
-      $('body').removeClass('builtin-editor');
-      $('body').removeClass('hackmd');
-      window.history.replaceState(null, '', window.location.pathname);
-    }
+  //   this.setState({ editorMode });
+  //   if (editorMode === 'view') {
+  //     $('body').removeClass('on-edit');
+  //     $('body').removeClass('builtin-editor');
+  //     $('body').removeClass('hackmd');
+  //     window.history.replaceState(null, '', window.location.pathname);
+  //   }
 
-    if (editorMode === 'edit') {
-      $('body').addClass('on-edit');
-      $('body').addClass('builtin-editor');
-      $('body').removeClass('hackmd');
-      window.location.hash = '#edit';
-    }
+  //   if (editorMode === 'edit') {
+  //     $('body').addClass('on-edit');
+  //     $('body').addClass('builtin-editor');
+  //     $('body').removeClass('hackmd');
+  //     window.location.hash = '#edit';
+  //   }
 
-    if (editorMode === 'hackmd') {
-      $('body').addClass('on-edit');
-      $('body').addClass('hackmd');
-      $('body').removeClass('builtin-editor');
-      window.location.hash = '#hackmd';
+  //   if (editorMode === 'hackmd') {
+  //     $('body').addClass('on-edit');
+  //     $('body').addClass('hackmd');
+  //     $('body').removeClass('builtin-editor');
+  //     window.location.hash = '#hackmd';
 
-    }
+  //   }
 
-    this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
-  }
+  //   this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
+  // }
 
-  toggleDrawer() {
-    const { isDrawerOpened } = this.state;
-    this.setState({ isDrawerOpened: !isDrawerOpened });
-  }
-
-  /**
-   * Set Sidebar mode preference by user
-   * @param {boolean} preferDockMode
-   */
-  async setDrawerModePreference(bool) {
-    this.setState({ preferDrawerModeByUser: bool });
-    this.updateDrawerMode({ ...this.state, preferDrawerModeByUser: bool }); // generate newest state object
-
-    // store settings to localStorage
-    const { localStorage } = window;
-    localStorage.preferDrawerModeByUser = bool;
-  }
+  // toggleDrawer() {
+  //   const { isDrawerOpened } = this.state;
+  //   this.setState({ isDrawerOpened: !isDrawerOpened });
+  // }
 
   /**
    * Set Sidebar mode preference by user
    * @param {boolean} preferDockMode
    */
-  async setDrawerModePreferenceOnEdit(bool) {
-    this.setState({ preferDrawerModeOnEditByUser: bool });
-    this.updateDrawerMode({ ...this.state, preferDrawerModeOnEditByUser: bool }); // generate newest state object
+  // async setDrawerModePreference(bool) {
+  //   this.setState({ preferDrawerModeByUser: bool });
+  //   this.updateDrawerMode({ ...this.state, preferDrawerModeByUser: bool }); // generate newest state object
 
-    // store settings to localStorage
-    const { localStorage } = window;
-    localStorage.preferDrawerModeOnEditByUser = bool;
-  }
+  //   // store settings to localStorage
+  //   const { localStorage } = window;
+  //   localStorage.preferDrawerModeByUser = bool;
+  // }
+
+  /**
+   * Set Sidebar mode preference by user
+   * @param {boolean} preferDockMode
+   */
+  // async setDrawerModePreferenceOnEdit(bool) {
+  //   this.setState({ preferDrawerModeOnEditByUser: bool });
+  //   this.updateDrawerMode({ ...this.state, preferDrawerModeOnEditByUser: bool }); // generate newest state object
+
+  //   // store settings to localStorage
+  //   const { localStorage } = window;
+  //   localStorage.preferDrawerModeOnEditByUser = bool;
+  // }
 
   /**
    * Update drawer related state by specified 'newState' object
@@ -177,31 +177,31 @@ export default class NavigationContainer extends Container {
    *
    * because updating state of unstated container will be delayed unless you use await
    */
-  updateDrawerMode(newState) {
-    const {
-      editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
-    } = newState;
+  // updateDrawerMode(newState) {
+  //   const {
+  //     editorMode, isDeviceSmallerThanMd, preferDrawerModeByUser, preferDrawerModeOnEditByUser,
+  //   } = newState;
 
-    // get preference on view or edit
-    const preferDrawerMode = editorMode !== 'view' ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+  //   // get preference on view or edit
+  //   const preferDrawerMode = editorMode !== 'view' ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
-    const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
-    const isDrawerOpened = false; // close Drawer anyway
+  //   const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
+  //   const isDrawerOpened = false; // close Drawer anyway
 
-    this.setState({ isDrawerMode, isDrawerOpened });
-  }
+  //   this.setState({ isDrawerMode, isDrawerOpened });
+  // }
 
-  openPageCreateModal() {
-    if (this.appContainer.currentUser == null) {
-      logger.warn('Please login or signup to create a new page.');
-      return;
-    }
-    this.setState({ isPageCreateModalShown: true });
-  }
+  // openPageCreateModal() {
+  //   if (this.appContainer.currentUser == null) {
+  //     logger.warn('Please login or signup to create a new page.');
+  //     return;
+  //   }
+  //   this.setState({ isPageCreateModalShown: true });
+  // }
 
-  closePageCreateModal() {
-    this.setState({ isPageCreateModalShown: false });
-  }
+  // closePageCreateModal() {
+  //   this.setState({ isPageCreateModalShown: false });
+  // }
 
   /**
    * Function that implements the click event for realizing smooth scroll

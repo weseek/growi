@@ -36,7 +36,8 @@ SUPPORTED_COMPONENTS.forEach((comp) => {
   });
 });
 
-const HotkeysManager = (props) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const HotkeysManager = () => {
   const [view, setView] = useState([]);
 
   /**

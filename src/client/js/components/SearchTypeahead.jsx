@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash/noop';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
+import { apiGet } from '../util/apiv1-client';
+
 import UserPicture from './User/UserPicture';
 import PageListMeta from './PageList/PageListMeta';
 import PagePathLabel from './PageList/PagePathLabel';
-import AppContainer from '../services/AppContainer';
-import { withUnstatedContainers } from './UnstatedUtils';
 
 class SearchTypeahead extends React.Component {
 
@@ -78,7 +78,7 @@ class SearchTypeahead extends React.Component {
 
     this.setState({ isLoading: true });
 
-    this.props.appContainer.apiGet('/search', { q: keyword })
+    apiGet('/search', { q: keyword })
       .then((res) => { this.onSearchSuccess(res) })
       .catch((err) => { this.onSearchError(err) });
   }
@@ -228,16 +228,9 @@ class SearchTypeahead extends React.Component {
 }
 
 /**
- * Wrapper component for using unstated
- */
-const SearchTypeaheadWrapper = withUnstatedContainers(SearchTypeahead, [AppContainer]);
-
-/**
  * Properties
  */
 SearchTypeahead.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
@@ -269,4 +262,4 @@ SearchTypeahead.defaultProps = {
   onInputChange: () => {},
 };
 
-export default SearchTypeaheadWrapper;
+export default SearchTypeahead;

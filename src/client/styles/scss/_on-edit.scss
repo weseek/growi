@@ -1,6 +1,6 @@
 @import 'editor-overlay';
 
-body:not(.on-edit) {
+.wrapper:not(.on-edit) {
   // hide .page-editor-footer
   .page-editor-footer {
     display: none !important;
@@ -8,7 +8,7 @@ body:not(.on-edit) {
   }
 }
 
-body.on-edit {
+.wrapper.on-edit {
   overflow-y: hidden !important;
 
   .container-fluid {
