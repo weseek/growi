@@ -159,6 +159,19 @@ class BoltService {
         blocks: [
           this.generateMarkdownSectionBlock('検索結果 10 件'),
           this.generateMarkdownSectionBlock(`${resultPaths.join('\n')}`),
+          {
+            type: 'actions',
+            elements: [
+              {
+                type: 'button',
+                text: {
+                  type: 'plain_text',
+                  text: '検索結果をこのチャンネルに共有する',
+                },
+                style: 'primary',
+              },
+            ],
+          },
         ],
       });
     }
