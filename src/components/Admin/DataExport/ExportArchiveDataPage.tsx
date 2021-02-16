@@ -10,7 +10,7 @@ import * as toastr from 'toastr';
 
 import LabeledProgressBar from '~/client/js/components/Admin/Common/LabeledProgressBar';
 
-// import SelectCollectionsModal from '~/client/js/components/Admin/ExportArchiveData/SelectCollectionsModal';
+import SelectCollectionsModal from '~/client/js/components/Admin/ExportArchiveData/SelectCollectionsModal';
 import ArchiveFilesTable from '~/client/js/components/Admin/ExportArchiveData/ArchiveFilesTable';
 import { apiDelete } from '~/client/js/util/apiv1-client';
 
@@ -68,6 +68,17 @@ const ExportArchiveDataPage = (): JSX.Element => {
 
   const openExportModal = () => {
     setIsExportModalOpen(true);
+  };
+
+  const closeExportModal = () => {
+    setIsExportModalOpen(false);
+  };
+
+  /**
+   * event handler invoked when export process was requested successfully
+   */
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const exportingRequestedHandler = () => {
   };
 
 
@@ -133,12 +144,12 @@ const ExportArchiveDataPage = (): JSX.Element => {
         />
       </div>
 
-      {/* <SelectCollectionsModal
-        isOpen={this.state.isExportModalOpen}
-        onExportingRequested={this.exportingRequestedHandler}
-        onClose={this.closeExportModal}
-        collections={this.state.collections}
-      /> */}
+      <SelectCollectionsModal
+        isOpen={isExportModalOpen}
+        onExportingRequested={exportingRequestedHandler}
+        onClose={closeExportModal}
+        collections={collections}
+      />
     </>
   );
 
