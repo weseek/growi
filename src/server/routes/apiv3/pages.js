@@ -442,9 +442,38 @@ module.exports = (crowi) => {
 
     logger.debug('Delete page', page._id, page.path);
 
-    // console.log(pageId, revisionId, isRecursively, isCompletely);
-    console.log(page);
-    const result = { page };
+    try {
+      if (isCompletely) {
+        if (!req.user.canDeleteCompletely(page.creator)) {
+          return res.apiv3Err(new ErrorV3('You can not delete completel.', 'user_not_admin'), 403);
+        }
+        await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
+      }
+      else {
+        if (!page.isUpdatable(revisionId)) {
+          return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'outdated'), 409);
+        }
+
+        await crowi.pageService.deletePage(page, req.user, options, isRecursively);
+      }
+    }
+    catch (err) {
+      logger.error('Error occured while get setting', err);
+      return res.apiv3Err(new ErrorV3('Failed to delete page.', 'unknown'), 500);
+    }
+
+    logger.debug('Page deleted', page.path);
+
+    const result = { page: serializePageSecurely(page) };
+
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page, req.user);
+    }
+    catch (err) {
+      logger.error('Delete notification failed', err);
+    }
+
     return res.apiv3(result);
   });
 
