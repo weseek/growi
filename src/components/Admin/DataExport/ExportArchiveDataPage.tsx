@@ -25,9 +25,10 @@ type Props = {
 const ExportArchiveDataPage = (): JSX.Element => {
   const { t } = useTranslation();
   const [isExporting, setisExporting] = useState(false);
+  const [isExportModalOpen, setisExportModalOpen] = useState(false);
 
   const openExportModal = () => {
-    // this.setState({ isExportModalOpen: true });
+    setisExportModalOpen(true);
   };
 
   return (
