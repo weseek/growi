@@ -103,13 +103,7 @@ class BoltService {
       channel: command.channel_id,
       user: command.user_id,
       blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: '*コマンドが存在しません。*\n Hint\n `/growi [command] [keyword]`',
-          },
-        },
+        this.generateMarkdownSectionBlock('*コマンドが存在しません。*\n Hint\n `/growi [command] [keyword]`'),
       ],
     });
 
@@ -122,13 +116,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*キーワードを入力してください。*\n Hint\n `/growi search [keyword]`',
-            },
-          },
+          this.generateMarkdownSectionBlock('*キーワードを入力してください。*\n Hint\n `/growi search [keyword]`'),
         ],
       });
     }
@@ -142,13 +130,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*キーワードに該当するページは存在しません。*',
-            },
-          },
+          this.generateMarkdownSectionBlock('*キーワードに該当するページは存在しません。*'),
         ],
       });
     }
@@ -162,20 +144,8 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*検索結果 10 件*',
-            },
-          },
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `${resultPaths.join('\n')}`,
-            },
-          },
+          this.generateMarkdownSectionBlock('検索結果 10 件'),
+          this.generateMarkdownSectionBlock(`${resultPaths.join('\n')}`),
         ],
       });
     }
@@ -185,16 +155,20 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*検索に失敗しました。*\n Hint\n `/growi search [keyword]`',
-            },
-          },
+          this.generateMarkdownSectionBlock('*検索に失敗しました。*\n Hint\n `/growi search [keyword]`'),
         ],
       });
     }
+  }
+
+  generateMarkdownSectionBlock(blocks) {
+    return {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: blocks,
+      },
+    };
   }
 
 }
