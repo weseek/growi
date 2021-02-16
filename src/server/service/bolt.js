@@ -82,7 +82,9 @@ class BoltService {
       await say(`${command.text}`);
     });
 
-    this.bolt.command('/growi', async({ command, ack }) => {
+    this.bolt.command('/growi', async({
+      command, client, body, ack,
+    }) => {
       await ack();
       const args = command.text.split(' ');
       const firstArg = args[0];
@@ -90,6 +92,10 @@ class BoltService {
       switch (firstArg) {
         case 'search':
           this.searchResults(command, args);
+          break;
+
+        case 'create':
+          this.createModal(command, client, body);
           break;
 
         default:
@@ -168,12 +174,72 @@ class BoltService {
     }
   }
 
+  async createModal(command, client, body) {
+    try {
+      await client.views.open({
+        trigger_id: body.trigger_id,
+
+        view: {
+          type: 'modal',
+          callback_id: 'createPage',
+          title: {
+            type: 'plain_text',
+            text: 'Create Page',
+          },
+          submit: {
+            type: 'plain_text',
+            text: 'Submit',
+          },
+          close: {
+            type: 'plain_text',
+            text: 'Cancel',
+          },
+          blocks: [
+            this.generateMarkdownSectionBlock('ページを作成します'),
+            this.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
+            this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
+          ],
+        },
+      });
+    }
+    catch {
+      logger.error('Failed to create page.');
+      await this.client.chat.postEphemeral({
+        channel: command.channel_id,
+        user: command.user_id,
+        blocks: [
+          this.generateMarkdownSectionBlock('*ページ作成に失敗しました。*\n Hint\n `/growi create`'),
+        ],
+      });
+    }
+  }
+
   generateMarkdownSectionBlock(blocks) {
     return {
       type: 'section',
       text: {
         type: 'mrkdwn',
         text: blocks,
+      },
+    };
+  }
+
+  generateInputSectionBlock(blockId, labelText, actionId, isMultiline, placeholder) {
+    return {
+      type: 'input',
+      block_id: blockId,
+      label: {
+        type: 'plain_text',
+        text: labelText,
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: actionId,
+        multiline: isMultiline,
+        placeholder: {
+          type: 'plain_text',
+          text: placeholder,
+        },
       },
     };
   }
