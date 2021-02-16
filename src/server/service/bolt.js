@@ -86,19 +86,18 @@ class BoltService {
       command, client, body, ack,
     }) => {
       await ack();
-      const inputSlack = command.text.split(' ');
-      const firstArg = inputSlack[0];
-      const secondArg = inputSlack[1];
+      const args = command.text.split(' ');
+      const firstArg = args[0];
 
-      if (firstArg === 'search') {
-        return this.searchResults(command, secondArg);
+      switch (firstArg) {
+        case 'search':
+          this.searchResults(command, args);
+          break;
+
+        default:
+          this.notCommand(command);
+          break;
       }
-
-      if (firstArg === 'create') {
-        return this.createModal(command, client, body);
-      }
-
-      return this.notCommand(command);
     });
 
   }
@@ -109,52 +108,38 @@ class BoltService {
       channel: command.channel_id,
       user: command.user_id,
       blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: '*コマンドが存在しません。*\n Hint\n `/growi [command] [keyword]`',
-          },
-        },
+        this.generateMarkdownSectionBlock('*コマンドが存在しません。*\n Hint\n `/growi [command] [keyword]`'),
       ],
     });
 
   }
 
-  async searchResults(command, secondArg) {
-
-    if (secondArg == null) {
+  async searchResults(command, args) {
+    const firstKeyword = args[1];
+    if (firstKeyword == null) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*キーワードを入力してください。*\n Hint\n `/growi search [keyword]`',
-            },
-          },
+          this.generateMarkdownSectionBlock('*キーワードを入力してください。*\n Hint\n `/growi search [keyword]`'),
         ],
       });
     }
 
+    // remove leading 'search'.
+    args.shift();
+    const keywords = args.join(' ');
     const { searchService } = this.crowi;
     const option = { limit: 10 };
-    const results = await searchService.searchKeyword(secondArg, null, {}, option);
+    const results = await searchService.searchKeyword(keywords, null, {}, option);
+
     // no search results
     if (results.data.length === 0) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*キーワードに該当するページは存在しません。*',
-            },
-          },
+          this.generateMarkdownSectionBlock('*キーワードに該当するページは存在しません。*'),
         ],
       });
     }
@@ -168,20 +153,8 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*検索結果 10 件*',
-            },
-          },
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `${resultPaths.join('\n')}`,
-            },
-          },
+          this.generateMarkdownSectionBlock('検索結果 10 件'),
+          this.generateMarkdownSectionBlock(`${resultPaths.join('\n')}`),
         ],
       });
     }
@@ -191,20 +164,13 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*検索に失敗しました。*\n Hint\n `/growi search [keyword]`',
-            },
-          },
+          this.generateMarkdownSectionBlock('*検索に失敗しました。*\n Hint\n `/growi search [keyword]`'),
         ],
       });
     }
   }
 
   async createModal(command, client, body) {
-
     try {
       await client.views.open({
         trigger_id: body.trigger_id,
@@ -276,7 +242,16 @@ class BoltService {
         ],
       });
     }
+  }
 
+  generateMarkdownSectionBlock(blocks) {
+    return {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: blocks,
+      },
+    };
   }
 
 }
