@@ -26,7 +26,7 @@ module.exports = (crowi) => {
     const now = new Date();
     const growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
 
-    if (expiredAt == null || isAfter(now, expiredAt) || growiCloudUri != null) {
+    if (growiCloudUri != null && (expiredAt == null || isAfter(now, expiredAt))) {
       const url = new URL('_api/staffCredit', growiCloudUri);
       try {
         const gcContributorsRes = await axios.get(url.toString());
@@ -44,7 +44,7 @@ module.exports = (crowi) => {
         logger.warn('Getting GROWI.cloud staffcredit is failed');
       }
     }
-    return res.apiv3({ contributorsCache });
+    return res.apiv3({ contributors: contributorsCache });
   });
 
   return router;

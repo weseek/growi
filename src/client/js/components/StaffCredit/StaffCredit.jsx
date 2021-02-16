@@ -87,7 +87,7 @@ class StaffCredit extends React.Component {
 
   async componentDidMount() {
     const res = await this.props.appContainer.apiv3Get('/staffs');
-    const contributors = res.data.contributorsCache;
+    const contributors = res.data.contributors;
     this.setState({ contributors });
 
     setTimeout(() => {
