@@ -16,7 +16,7 @@ export interface IShareLink {
 /*
  * define schema
  */
-const schema = new Schema({
+const schema = new Schema<IShareLink>({
   relatedPage: {
     type: Types.ObjectId,
     ref: 'Page',
