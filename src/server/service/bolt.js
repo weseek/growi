@@ -84,12 +84,12 @@ class BoltService {
 
     this.bolt.command('/growi', async({ command, ack }) => {
       await ack();
-      const inputSlack = command.text.split(' ');
-      const firstArg = inputSlack[0];
+      const args = command.text.split(' ');
+      const firstArg = args[0];
 
       switch (firstArg) {
         case 'search':
-          this.searchResults(command, inputSlack);
+          this.searchResults(command, args);
           break;
 
         default:
@@ -112,11 +112,11 @@ class BoltService {
 
   }
 
-  async searchResults(command, inputSlack) {
-    const keyword = inputSlack[1];
+  async searchResults(command, args) {
+    const keyword = args[1];
     // remove leading 'search'.
-    inputSlack.shift();
-    const replacedCommandText = inputSlack.join(' ');
+    args.shift();
+    const replacedCommandText = args.join(' ');
     if (keyword == null) {
       return this.client.chat.postEphemeral({
         channel: command.channel_id,
