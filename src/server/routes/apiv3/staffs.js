@@ -21,7 +21,7 @@ module.exports = (crowi) => {
     const now = new Date();
     const growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
 
-    if ((expiredAt == null || isAfter(now, expiredAt)) && growiCloudUri != null) {
+    if (growiCloudUri != null && (expiredAt == null || isAfter(now, expiredAt))) {
       const url = new URL('_api/staffCredit', growiCloudUri);
       const growiContributors = contributors.slice(0, 1);
       const otherContributors = contributors.slice(1);
