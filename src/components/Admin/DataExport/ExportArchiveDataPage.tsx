@@ -25,16 +25,49 @@ type Props = {
 
 const ExportArchiveDataPage = (): JSX.Element => {
   const { t } = useTranslation();
-  const [isExporting, setisExporting] = useState(false);
-  const [isExportModalOpen, setisExportModalOpen] = useState(false);
-  const [isExported, setisExported] = useState(false);
-  const [progressList, setprogressList] = useState([]);
-  const [isZipping, setisZipping] = useState(false);
+
+  const [collections, setcollections] = useState([]);
+  const [zipFileStats, setZipFileStats] = useState([]);
+  const [progressList, setProgressList] = useState([]);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isZipping, setIsZipping] = useState(false);
+  const [isExported, setIsExported] = useState(false);
 
   const showExportingData = (isExported || isExporting) && (progressList != null);
 
+  const onZipFileStatRemove = async(fileName) => {
+    try {
+      await apiDelete(`/v3/export/${fileName}`, {});
+
+      // setZipFileStats(zipFileStats.filter(stat => stat.fileName !== fileName));
+
+      // TODO: toastSuccess, toastError
+      toastr.success(undefined, `Deleted ${fileName}`, {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '1200',
+        extendedTimeOut: '150',
+      });
+    }
+    catch (err) {
+      // TODO: toastSuccess, toastError
+      toastr.error(err, 'Error', {
+        closeButton: true,
+        progressBar: true,
+        newestOnTop: false,
+        showDuration: '100',
+        hideDuration: '100',
+        timeOut: '3000',
+      });
+    }
+  };
+
   const openExportModal = () => {
-    setisExportModalOpen(true);
+    setIsExportModalOpen(true);
   };
 
 
