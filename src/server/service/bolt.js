@@ -196,30 +196,8 @@ class BoltService {
           },
           blocks: [
             this.generateMarkdownSectionBlock('ページを作成します'),
-            {
-              type: 'input',
-              label: {
-                type: 'plain_text',
-                text: 'Path',
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'plain_text_input-action',
-              },
-            },
-            {
-              type: 'input',
-              block_id: 'contents',
-              label: {
-                type: 'plain_text',
-                text: 'Contents',
-              },
-              element: {
-                type: 'plain_text_input',
-                action_id: 'contents_input',
-                multiline: true,
-              },
-            },
+            this.generateInputSectionBlock('path', 'Path', 'path_input', false),
+            this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true),
           ],
         },
       });
@@ -230,13 +208,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '*ページ作成に失敗しました。*\n Hint\n `/growi create`',
-            },
-          },
+          this.generateMarkdownSectionBlock('*ページ作成に失敗しました。*\n Hint\n `/growi create`'),
         ],
       });
     }
@@ -248,6 +220,22 @@ class BoltService {
       text: {
         type: 'mrkdwn',
         text: blocks,
+      },
+    };
+  }
+
+  generateInputSectionBlock(blockId, labelText, actionId, isMultiline) {
+    return {
+      type: 'input',
+      block_id: blockId,
+      label: {
+        type: 'plain_text',
+        text: labelText,
+      },
+      element: {
+        type: 'plain_text_input',
+        action_id: actionId,
+        multiline: isMultiline,
       },
     };
   }
