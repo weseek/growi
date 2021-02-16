@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { FC, useState } from 'react';
 
 import { useTranslation } from '~/i18n';
 import { useSearchServiceReachable } from '~/stores/context';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
 
 import SearchTypeahead from './SearchTypeahead';
 
@@ -69,8 +66,14 @@ const HelpElement = () => {
 };
 
 
-// SearchTypeahead wrapper
-const SearchForm = (props) => {
+type Props = {
+  dropup?: boolean,
+  keyword?: string,
+  onSubmit: () => void,
+  onInputChange?: (string) => void,
+}
+
+const SearchForm: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const [searchError, setSearchError] = useState(null);
@@ -86,14 +89,6 @@ const SearchForm = (props) => {
     if (page != null) {
       window.location = page.path;
     }
-  }
-
-  function onBlur() {
-    isShownHelp(false);
-  }
-
-  function onFocus() {
-    isShownHelp(true);
   }
 
   const placeholder = isReachable
@@ -114,28 +109,11 @@ const SearchForm = (props) => {
       placeholder={placeholder}
       helpElement={isShownHelp ? <HelpElement /> : <></>}
       keywordOnInit={props.keyword}
-      onBlur={onBlur}
-      onFocus={onFocus}
+      onBlur={() => setIsShownHelp(false)}
+      onFocus={() => setIsShownHelp(true)}
     />
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const SearchFormWrapper = withUnstatedContainers(SearchForm, [AppContainer]);
 
-SearchForm.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  dropup: PropTypes.bool,
-  keyword: PropTypes.string,
-  onSubmit: PropTypes.func.isRequired,
-  onInputChange: PropTypes.func,
-};
-
-SearchForm.defaultProps = {
-  onInputChange: () => {},
-};
-
-export default SearchFormWrapper;
+export default SearchForm;

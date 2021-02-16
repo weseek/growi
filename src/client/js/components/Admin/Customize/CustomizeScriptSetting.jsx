@@ -7,8 +7,6 @@ import { Card, CardBody } from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -112,11 +110,10 @@ class CustomizeScriptSetting extends React.Component {
 
 }
 
-const CustomizeScriptSettingWrapper = withUnstatedContainers(CustomizeScriptSetting, [AppContainer, AdminCustomizeContainer]);
+const CustomizeScriptSettingWrapper = withUnstatedContainers(CustomizeScriptSetting, [AdminCustomizeContainer]);
 
 CustomizeScriptSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 

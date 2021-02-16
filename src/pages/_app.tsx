@@ -1,27 +1,20 @@
 import { AppProps } from 'next/app';
-import { Provider } from 'unstated';
 
 import { appWithTranslation } from '~/i18n';
-import AppContainer from '~/client/js/services/AppContainer';
 
 import '../styles/styles.scss';
 import '~/client/styles/scss/theme/default.scss';
+import InterceptorManager from '~/service/interceptor-manager';
 
-import NavigationContainer from '~/client/js/services/NavigationContainer';
 import { useGrowiVersion } from '../stores/context';
+import { useInterceptorManager } from '~/stores/interceptor';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function GrowiApp({ Component, pageProps }: AppProps) {
-  const appContainer = new AppContainer();
-  appContainer.initApp();
+  useInterceptorManager(new InterceptorManager());
   useGrowiVersion(pageProps.growiVersion);
 
-  const navigationContainer = new NavigationContainer(appContainer);
-
   return (
-    <Provider inject={[appContainer, navigationContainer]}>
-      <Component {...pageProps} />
-    </Provider>
+    <Component {...pageProps} />
   );
 }
 

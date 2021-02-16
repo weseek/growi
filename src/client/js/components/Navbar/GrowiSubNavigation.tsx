@@ -1,20 +1,17 @@
 import dynamic from 'next/dynamic';
-import React from 'react';
-import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
+import React, { FC } from 'react';
 
 import DevidedPagePath from '~/models/devided-page-path';
 import LinkedPagePath from '~/models/linked-page-path';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import { useCurrentUser } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
-import { useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager } from '~/stores/ui';
+import {
+  EditorMode,
+  useIsAbleToShowTagLabel, useIsAbleToShowPageAuthors, useIsAbleToShowPageEditorModeManager, useEditorMode, useDrawerMode,
+} from '~/stores/ui';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import NavigationContainer from '../../services/NavigationContainer';
-
+import CopyDropdown from '../Page/CopyDropdown';
 import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
 
@@ -22,8 +19,6 @@ const PagePathNav = ({
   // eslint-disable-next-line react/prop-types
   pageId, pagePath, isEditorMode, isCompactMode,
 }) => {
-
-  const CopyDropdown = dynamic(() => import('~/client/js/components/Page/CopyDropdown'), { ssr: false });
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -66,8 +61,14 @@ const PagePathNav = ({
   );
 };
 
-// eslint-disable-next-line react/prop-types
-const GrowiSubNavigationContainer = ({ isCompactMode, children }) => {
+type Props = {
+  isCompactMode?: boolean;
+  children?: JSX.Element | JSX.Element[],
+}
+
+const GrowiSubNavigationContainer: FC<Props> = (props: Props) => {
+  const { isCompactMode, children } = props;
+
   return (
     <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
       {children}
@@ -75,40 +76,36 @@ const GrowiSubNavigationContainer = ({ isCompactMode, children }) => {
   );
 };
 
-const GrowiSubNavigation = (props) => {
+const GrowiSubNavigationContents: FC<Props> = (props: Props) => {
 
+  const { data: currentUser } = useCurrentUser();
   const { data: page } = useCurrentPageSWR();
   const { data: isAbleToShowTagLabel } = useIsAbleToShowTagLabel();
   const { data: isAbleToShowPageAuthors } = useIsAbleToShowPageAuthors();
   const { data: isAbleToShowPageEditorModeManager } = useIsAbleToShowPageEditorModeManager();
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: editorMode } = useEditorMode();
 
-  if (page == null) {
-    return <GrowiSubNavigationContainer isCompactMode={props.isCompactMode}></GrowiSubNavigationContainer>;
+  if (page == null || editorMode == null) {
+    return null;
   }
 
   // dynamic import to skip rendering at SSR
-  const GrowiSubnavButtons = dynamic(() => import('~/components/Navbar/GrowiSubnavButtons').then(mod => mod.GrowiSubnavButtons), { ssr: false });
+  const GrowiSubnavButtons = dynamic(() => import('~/components/Navbar/GrowiSubnavButtons'), { ssr: false });
   const PageEditorModeManager = dynamic(() => import('./PageEditorModeManager'), { ssr: false });
   const TagLabels = dynamic(() => import('~/client/js/components/Page/TagLabels'), { ssr: false });
 
-  const {
-    appContainer, navigationContainer, isCompactMode,
-  } = props;
-  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+  const { isCompactMode } = props;
 
   const {
     _id: pageId, path, creator, createdAt, updatedAt, revision,
   } = page;
 
-  const { isGuestUser } = appContainer;
-  const isEditorMode = editorMode !== 'view';
-
-  function onPageEditorModeButtonClicked(viewType) {
-    navigationContainer.setEditorMode(viewType);
-  }
+  const isGuestUser = currentUser == null;
+  const isEditorMode = editorMode !== EditorMode.View;
 
   return (
-    <GrowiSubNavigationContainer isCompactMode={props.isCompactMode}>
+    <>
 
       {/* Left side */}
       <div className="d-flex grw-subnav-left-side">
@@ -140,10 +137,7 @@ const GrowiSubNavigation = (props) => {
           {isAbleToShowPageEditorModeManager && (
             <div className="mt-2">
               <PageEditorModeManager
-                onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
-                editorMode={editorMode}
-                isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
             </div>
           )}
@@ -162,23 +156,20 @@ const GrowiSubNavigation = (props) => {
         ) }
       </div>
 
-    </GrowiSubNavigationContainer>
+    </>
   );
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const GrowiSubNavigationWrapper = withUnstatedContainers(GrowiSubNavigation, [AppContainer, NavigationContainer]);
+const GrowiSubNavigation: FC<Props> = (props: Props) => {
+  // skip rendering at SSR
+  const Contents = dynamic(() => Promise.resolve(GrowiSubNavigationContents), { ssr: false });
 
-
-GrowiSubNavigation.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-
-  isCompactMode: PropTypes.bool,
+  return (
+    <GrowiSubNavigationContainer isCompactMode={props.isCompactMode}>
+      <Contents isCompactMode={props.isCompactMode} />
+    </GrowiSubNavigationContainer>
+  );
 };
 
-export default withTranslation()(GrowiSubNavigationWrapper);
+export default GrowiSubNavigation;

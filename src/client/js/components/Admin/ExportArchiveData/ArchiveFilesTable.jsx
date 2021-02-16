@@ -3,9 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-
 import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
 
 class ArchiveFilesTable extends React.Component {
@@ -52,15 +49,9 @@ class ArchiveFilesTable extends React.Component {
 
 ArchiveFilesTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   zipFileStats: PropTypes.arrayOf(PropTypes.object).isRequired,
   onZipFileStatRemove: PropTypes.func.isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ArchiveFilesTableWrapper = withUnstatedContainers(ArchiveFilesTable, [AppContainer]);
-
-export default withTranslation()(ArchiveFilesTableWrapper);
+export default withTranslation()(ArchiveFilesTable);

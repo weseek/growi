@@ -4,16 +4,16 @@ import React, {
 import { TabContent, TabPane } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 
-import LdapSecuritySetting from '~/client/js/components/Admin/Security/LdapSecuritySetting';
+// import LdapSecuritySetting from '~/client/js/components/Admin/Security/LdapSecuritySetting';
 import { LocalSecuritySetting } from '~/components/Admin/Security/LocalSecuritySetting';
-import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
-import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
+// import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
+// import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
 import SecuritySetting from '~/client/js/components/Admin/Security/SecuritySetting';
-import BasicSecuritySetting from '~/client/js/components/Admin/Security/BasicSecuritySetting';
-import GoogleSecuritySetting from '~/client/js/components/Admin/Security/GoogleSecuritySetting';
-import GitHubSecuritySetting from '~/client/js/components/Admin/Security/GitHubSecuritySetting';
-import TwitterSecuritySetting from '~/client/js/components/Admin/Security/TwitterSecuritySetting';
-import FacebookSecuritySetting from '~/client/js/components/Admin/Security/FacebookSecuritySetting';
+// import BasicSecuritySetting from '~/client/js/components/Admin/Security/BasicSecuritySetting';
+// import GoogleSecuritySetting from '~/client/js/components/Admin/Security/GoogleSecuritySetting';
+// import GitHubSecuritySetting from '~/client/js/components/Admin/Security/GitHubSecuritySetting';
+// import TwitterSecuritySetting from '~/client/js/components/Admin/Security/TwitterSecuritySetting';
+// import FacebookSecuritySetting from '~/client/js/components/Admin/Security/FacebookSecuritySetting';
 import ShareLinkSetting from '~/client/js/components/Admin/Security/ShareLinkSetting';
 
 import CustomNav from '~/client/js/components/CustomNavigation/CustomNav';

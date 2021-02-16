@@ -12,7 +12,6 @@ import RemoveAdminButton from './RemoveAdminButton';
 import GiveAdminButton from './GiveAdminButton';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 class UserMenu extends React.Component {
@@ -99,11 +98,10 @@ class UserMenu extends React.Component {
 
 }
 
-const UserMenuWrapper = withUnstatedContainers(UserMenu, [AppContainer, AdminUsersContainer]);
+const UserMenuWrapper = withUnstatedContainers(UserMenu, [AdminUsersContainer]);
 
 UserMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,

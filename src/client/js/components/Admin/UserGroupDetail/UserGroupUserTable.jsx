@@ -5,7 +5,6 @@ import dateFnsFormat from 'date-fns/format';
 
 import UserPicture from '../../User/UserPicture';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -111,13 +110,12 @@ class UserGroupUserTable extends React.Component {
 
 UserGroupUserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTable, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserTableWrapper = withUnstatedContainers(UserGroupUserTable, [AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupUserTableWrapper);

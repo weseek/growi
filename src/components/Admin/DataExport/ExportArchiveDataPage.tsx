@@ -5,7 +5,6 @@ import React from 'react';
 
 // import { toastSuccess, toastError } from '~/util/apiNotification';
 
-// import AppContainer from '~/client/js/services/AppContainer';
 // import AdminSocketIoContainer from '~/client/js/services/AdminSocketIoContainer';
 
 // import LabeledProgressBar from '~/client/js/components/Admin/Common/LabeledProgressBar';
@@ -51,8 +50,8 @@ const ExportArchiveDataPage = (): JSX.Element => {
   //   // TODO:: use apiv3.get
   //   // eslint-disable-next-line no-unused-vars
   //   const [{ collections }, { status }] = await Promise.all([
-  //     // this.props.appContainer.apiGet('/v3/mongo/collections', {}),
-  //     // this.props.appContainer.apiGet('/v3/export/status', {}),
+  //     // apiGet('/v3/mongo/collections', {}),
+  //     // apiGet('/v3/export/status', {}),
   //   ]);
   // TODO: toastSuccess, toastError
 
@@ -124,7 +123,7 @@ const ExportArchiveDataPage = (): JSX.Element => {
 
   // async onZipFileStatRemove(fileName) {
   //   try {
-  //     await this.props.appContainer.apiDelete(`/v3/export/${fileName}`, {});
+  //     await apiDelete(`/v3/export/${fileName}`, {});
 
   //     this.setState((prevState) => {
   //       return {
@@ -253,13 +252,12 @@ const ExportArchiveDataPage = (): JSX.Element => {
 };
 
 // ExportArchiveDataPage.propTypes = {
-//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 //   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 // };
 
 /**
  * Wrapper component for using unstated
  */
-// const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, AdminSocketIoContainer]);
+// const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AdminSocketIoContainer]);
 
 export default ExportArchiveDataPage;
