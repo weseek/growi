@@ -429,6 +429,48 @@ module.exports = (crowi) => {
     return res.apiv3(result);
   });
 
+  /**
+   * @swagger
+   *
+   *    /pages/remove:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: removePage
+   *        description: Remove page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  revisionId:
+   *                    type: string
+   *                    description: revision ID
+   *                    example: 5e07345972560e001761fa63
+   *                  isRecursively:
+   *                    type: boolean
+   *                    description: whether remove page with descendants
+   *                  isCompletely:
+   *                    type: boolean
+   *                    description: whether delete page completely
+   *                required:
+   *                  - pageId
+   *                  - revisionId
+   *        responses:
+   *          200:
+   *            description: Succeeded to remove page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          401:
+   *            description: page id is invalid
+   *          409:
+   *            description: page has already been updated by someone else
+   */
   router.put('/remove', accessTokenParser, loginRequiredStrictly, validator.removePage, apiV3FormValidator, async(req, res) => {
     const {
       pageId, revisionId, isRecursively, isCompletely,
