@@ -196,8 +196,8 @@ class BoltService {
           },
           blocks: [
             this.generateMarkdownSectionBlock('ページを作成します'),
-            this.generateInputSectionBlock('path', 'Path', 'path_input', false),
-            this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true),
+            this.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
+            this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
           ],
         },
       });
@@ -224,7 +224,7 @@ class BoltService {
     };
   }
 
-  generateInputSectionBlock(blockId, labelText, actionId, isMultiline) {
+  generateInputSectionBlock(blockId, labelText, actionId, isMultiline, placeholder) {
     return {
       type: 'input',
       block_id: blockId,
@@ -236,6 +236,10 @@ class BoltService {
         type: 'plain_text_input',
         action_id: actionId,
         multiline: isMultiline,
+        placeholder: {
+          type: 'plain_text',
+          text: placeholder,
+        },
       },
     };
   }
