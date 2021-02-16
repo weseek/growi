@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 // import AppContainer from '~/client/js/services/AppContainer';
 // import AdminSocketIoContainer from '~/client/js/services/AdminSocketIoContainer';
 
-// import LabeledProgressBar from '~/client/js/components/Admin/Common/LabeledProgressBar';
+import LabeledProgressBar from '~/client/js/components/Admin/Common/LabeledProgressBar';
 
 // import SelectCollectionsModal from '~/client/js/components/Admin/ExportArchiveData/SelectCollectionsModal';
 // import ArchiveFilesTable from '~/client/js/components/Admin/ExportArchiveData/ArchiveFilesTable';
@@ -26,9 +26,53 @@ const ExportArchiveDataPage = (): JSX.Element => {
   const { t } = useTranslation();
   const [isExporting, setisExporting] = useState(false);
   const [isExportModalOpen, setisExportModalOpen] = useState(false);
+  const [isExported, setisExported] = useState(false);
+  const [progressList, setprogressList] = useState([]);
+  const [isZipping, setisZipping] = useState(false);
+
+  const showExportingData = (isExported || isExporting) && (progressList != null);
 
   const openExportModal = () => {
     setisExportModalOpen(true);
+  };
+
+
+  const renderProgressBarsForCollections = () => {
+    const cols = progressList.map((progressData) => {
+      const { collectionName, currentCount, totalCount } = progressData;
+      return (
+        <div className="col-md-6" key={collectionName}>
+          <LabeledProgressBar
+            header={collectionName}
+            currentCount={currentCount}
+            totalCount={totalCount}
+          />
+        </div>
+      );
+    });
+
+    return <div className="row px-3">{cols}</div>;
+  };
+
+  const renderProgressBarForZipping = () => {
+    const showZippingBar = isZipping || isExported;
+
+    if (!showZippingBar) {
+      return <></>;
+    }
+
+    return (
+      <div className="row px-3">
+        <div className="col-md-12" key="progressBarForZipping">
+          <LabeledProgressBar
+            header="Zip Files"
+            currentCount={1}
+            totalCount={1}
+            isInProgress={isZipping}
+          />
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -39,13 +83,13 @@ const ExportArchiveDataPage = (): JSX.Element => {
         {t('admin:export_management.create_new_archive_data')}
       </button>
 
-      {/* { showExportingData && (
+      { showExportingData && (
       <div className="mt-5">
         <h3>{t('admin:export_management.exporting_collection_list')}</h3>
-        { this.renderProgressBarsForCollections() }
-        { this.renderProgressBarForZipping() }
+        { renderProgressBarsForCollections() }
+        { renderProgressBarForZipping() }
       </div>
-      ) } */}
+      ) }
 
       <div className="mt-5">
         <h3>{t('admin:export_management.exported_data_list')}</h3>
