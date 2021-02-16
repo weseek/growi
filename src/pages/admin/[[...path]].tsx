@@ -60,46 +60,46 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: t('App Settings'),
       component: <AppSettingsPageContents />,
     },
-    // security: {
-    //   title: t('Security settings'),
-    //   component: <SecurityManagementContents />,
-    // },
-    // markdown: {
-    //   title: t('Markdown Settings'),
-    //   component: <MarkDownSettingContents />,
-    // },
-    // customize: {
-    //   title: t('Customize Settings'),
-    //   component: <CustomizeSettingContents />,
-    // },
-    // importer: {
-    //   title: t('Import Data'),
-    //   component: <DataImportPageContents />,
-    // },
-    // export: {
-    //   title: t('Export Archive Data'),
-    //   component: <ExportArchiveDataPage />,
-    // },
-    // notification: {
-    //   title: '',
-    //   component: <></>,
-    // },
-    // 'global-notification': {
-    //   title: '',
-    //   component: <></>,
-    // },
-    // users: {
-    //   title: '',
-    //   component: <></>,
-    // },
-    // 'user-groups': {
-    //   title: '',
-    //   component: <></>,
-    // },
-    // search: {
-    //   title: '',
-    //   component: <></>,
-    // },
+    security: {
+      title: t('Security settings'),
+      component: <SecurityManagementContents />,
+    },
+    markdown: {
+      title: t('Markdown Settings'),
+      component: <MarkDownSettingContents />,
+    },
+    customize: {
+      title: t('Customize Settings'),
+      component: <CustomizeSettingContents />,
+    },
+    importer: {
+      title: t('Import Data'),
+      component: <DataImportPageContents />,
+    },
+    export: {
+      title: t('Export Archive Data'),
+      component: <ExportArchiveDataPage />,
+    },
+    notification: {
+      title: '',
+      component: <></>,
+    },
+    'global-notification': {
+      title: '',
+      component: <></>,
+    },
+    users: {
+      title: '',
+      component: <></>,
+    },
+    'user-groups': {
+      title: '',
+      component: <></>,
+    },
+    search: {
+      title: '',
+      component: <></>,
+    },
   };
 
   const content = adminPagesMap[name];
