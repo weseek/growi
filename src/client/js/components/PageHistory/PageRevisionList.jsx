@@ -42,7 +42,7 @@ class PageRevisionList extends React.Component {
 
     return (
       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-        <div className="col-8" key={`revision-history-top-${revisionId}`}>
+        <div className="col-8 d-flex" key={`revision-history-top-${revisionId}`}>
           <Revision
             t={this.props.t}
             revision={revision}
@@ -52,6 +52,27 @@ class PageRevisionList extends React.Component {
             isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
             key={`revision-history-rev-${revisionId}`}
           />
+          {hasDiff && (
+            <div className="dropdown mt-auto mb-3 ml-5">
+              <button
+                className="btn btn-primary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="true"
+              >
+                <span className="float-left">
+                  hoge
+                </span>
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <button className="dropdown-item" type="button" onClick={() => { console.log('Readonly') }}>
+                  button
+                </button>
+              </div>
+            </div>
+          )}
         </div>
         <div className="col-4 align-self-center">
           <RevisionSelector
