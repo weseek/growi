@@ -19,10 +19,8 @@ const IGNORED_COLLECTION_NAMES = [
   'sessions',
 ];
 
-type Props = {
-};
 
-const ExportArchiveDataPage = (): JSX.Element => {
+export const ExportArchiveDataPage = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [collections, setcollections] = useState([]);
@@ -153,8 +151,6 @@ const ExportArchiveDataPage = (): JSX.Element => {
   );
 
 };
-
-export default ExportArchiveDataPage;
 
 /*
   Original codes
