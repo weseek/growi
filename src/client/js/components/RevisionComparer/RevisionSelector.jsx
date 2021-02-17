@@ -43,7 +43,6 @@ const RevisionSelector = (props) => {
                 value={revision._id}
                 checked={revision._id === targetRevision?._id}
                 onChange={() => revisionComparerContainer.setState({ targetRevision: revision })}
-                disabled={revisionComparerContainer.state.compareWithLatest}
               />
               <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
             </div>
