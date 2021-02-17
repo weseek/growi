@@ -1,8 +1,10 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import { createPatch } from 'diff';
 import { html } from 'diff2html';
+import UserDate from '../User/UserDate';
 
 export default class RevisionDiff extends React.Component {
 
@@ -39,7 +41,23 @@ export default class RevisionDiff extends React.Component {
 
     const diffView = { __html: diffViewHTML };
     // eslint-disable-next-line react/no-danger
-    return <div className="revision-history-diff" dangerouslySetInnerHTML={diffView} />;
+    return (
+      <>
+        <div className="comparison-header">
+          <span>ソース <UserDate dateTime={previousRevision.createdAt} />
+            <a href={`?revision=${previousRevision._id}`} className="ml-2">
+              <i className="icon-login"></i>
+            </a>
+          </span>
+          <span>ターゲット <UserDate dateTime={currentRevision.createdAt} />
+            <a href={`?revision=${currentRevision._id}`} className="ml-2">
+              <i className="icon-login"></i>
+            </a>
+          </span>
+        </div>
+        <div className="revision-history-diff" dangerouslySetInnerHTML={diffView} />
+      </>
+    );
   }
 
 }

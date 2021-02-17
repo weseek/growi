@@ -56,9 +56,9 @@ const RevisionComparer = (props) => {
     <div className="revision-compare">
       <div className="d-flex">
         <h3 className="align-self-center mb-0">{ t('page_history.comparing_revisions') }</h3>
-        <div className="align-self-center ml-3">
+        {/* <div className="align-self-center ml-3">
           <div className="custom-control custom-switch">
-            {/* <input
+            <input
               type="checkbox"
               className="custom-control-input"
               id="comparingWithLatest"
@@ -67,9 +67,9 @@ const RevisionComparer = (props) => {
             />
             <label className="custom-control-label" htmlFor="comparingWithLatest">
               { t('page_history.comparing_with_latest') }
-            </label> */}
+            </label>
           </div>
-        </div>
+        </div> */}
         <Dropdown
           className="grw-copy-dropdown align-self-center ml-auto"
           isOpen={dropdownOpen}
