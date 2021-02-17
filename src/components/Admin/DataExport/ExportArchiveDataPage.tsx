@@ -31,7 +31,7 @@ export const ExportArchiveDataPage = (): JSX.Element => {
   const [isZipping, setIsZipping] = useState(false);
   const [isExported, setIsExported] = useState(false);
 
-  // TODO: make the following original codes work by GW-5080
+  // TODO: make the following original codes functional component by GW-5080
   // async componentWillMount() {
   //   // TODO:: use apiv3.get
   //   // eslint-disable-next-line no-unused-vars
