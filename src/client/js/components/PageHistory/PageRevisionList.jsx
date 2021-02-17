@@ -28,7 +28,7 @@ class PageRevisionList extends React.Component {
 
     return (
       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-        <div className="col-8 d-flex" key={`revision-history-top-${revisionId}`}>
+        <div className="col-6 d-flex" key={`revision-history-top-${revisionId}`}>
           <Revision
             t={this.props.t}
             revision={revision}
@@ -59,7 +59,7 @@ class PageRevisionList extends React.Component {
             </div>
           )}
         </div>
-        <div className="col-4 align-self-center">
+        <div className="col-6 align-self-center">
           <RevisionSelector
             revision={revision}
             hasDiff={hasDiff}
@@ -105,11 +105,11 @@ class PageRevisionList extends React.Component {
         <h3>{t('page_history.revision_list')}</h3>
         <hr />
         <div className="revision-history-list">
-          <div className="revision-history-list-content-header bg-white mb-2">
+          <div className="revision-history-list-content-header bg-white mb-3 px-4">
             <div className="row no-gutters">
-              <div className="col-8">{ t('page_history.revision') }</div>
-              <div className="col-2 text-center">{ t('page_history.comparing_source') }</div>
-              <div className="col-2 text-center">{ t('page_history.comparing_target') }</div>
+              <div className="col-6">{ t('page_history.revision') }</div>
+              <div className="col-3 text-center">{ t('page_history.comparing_source') }</div>
+              <div className="col-3 text-center">{ t('page_history.comparing_target') }</div>
             </div>
           </div>
           <div className="revision-history-list-container border py-2 px-4 overflow-auto">
