@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 import PageHistroyContainer from '../../services/PageHistoryContainer';
+import RevisionComparerContainer from '../../services/RevisionComparerContainer';
 
 import Revision from './Revision';
 import RevisionSelector from '../RevisionComparer/RevisionSelector';
-import RevisionComparerContainer from '../RevisionComparer/RevisionComparer';
 
 class PageRevisionList extends React.Component {
 
