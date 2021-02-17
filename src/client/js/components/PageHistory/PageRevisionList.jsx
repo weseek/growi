@@ -50,7 +50,6 @@ class PageRevisionList extends React.Component {
             revisionDiffOpened={revisionDiffOpened}
             hasDiff={hasDiff}
             isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
-            onDiffOpenClicked={this.props.onDiffOpenClicked}
             key={`revision-history-rev-${revisionId}`}
           />
         </div>
@@ -142,7 +141,6 @@ PageRevisionList.propTypes = {
 
   revisions: PropTypes.array,
   diffOpened: PropTypes.object,
-  onDiffOpenClicked: PropTypes.func.isRequired,
 };
 
 export default withTranslation()(PageRevisionList);

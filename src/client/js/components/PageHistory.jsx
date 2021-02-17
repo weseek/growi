@@ -17,7 +17,7 @@ const logger = loggerFactory('growi:PageHistory');
 
 function PageHistory(props) {
   const { pageHistoryContainer } = props;
-  const { getPreviousRevision, onDiffOpenClicked } = pageHistoryContainer;
+  const { getPreviousRevision } = pageHistoryContainer;
   const {
     activePage, totalPages, pagingLimit, revisions, diffOpened,
   } = pageHistoryContainer.state;
@@ -74,7 +74,6 @@ function PageHistory(props) {
         revisions={revisions}
         diffOpened={diffOpened}
         getPreviousRevision={getPreviousRevision}
-        onDiffOpenClicked={onDiffOpenClicked}
       />
       {pager()}
       <RevisionComparer />
