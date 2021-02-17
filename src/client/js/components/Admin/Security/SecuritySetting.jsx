@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 class SecuritySetting extends React.Component {
@@ -205,11 +204,10 @@ class SecuritySetting extends React.Component {
 
 SecuritySetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   csrf: PropTypes.string,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const SecuritySettingWrapper = withUnstatedContainers(SecuritySetting, [AppContainer, AdminGeneralSecurityContainer]);
+const SecuritySettingWrapper = withUnstatedContainers(SecuritySetting, [AdminGeneralSecurityContainer]);
 
 export default withTranslation()(SecuritySettingWrapper);
