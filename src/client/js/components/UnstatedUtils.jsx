@@ -47,9 +47,9 @@ export function withUnstatedContainers(Component, containerClasses) {
     // wrap with <Subscribe></Subscribe>
     <Subscribe to={containerClasses}>
       { (...containers) => {
-          const propsForContainers = generateAutoNamedProps(containers);
-          return <Component {...props} {...propsForContainers} ref={ref} />;
-        }}
+        const propsForContainers = generateAutoNamedProps(containers);
+        return <Component {...props} {...propsForContainers} ref={ref} />;
+      }}
     </Subscribe>
   ));
 }
