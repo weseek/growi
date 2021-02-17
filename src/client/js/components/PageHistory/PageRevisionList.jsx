@@ -28,6 +28,11 @@ class PageRevisionList extends React.Component {
       classNames.push('revision-history-outer-contiguous-nodiff');
     }
 
+    const handleCompareLatestRevisionButton = () => {
+      revisionComparerContainer.setState({ sourceRevision: revision });
+      revisionComparerContainer.setState({ targetRevision: latestRevision });
+    };
+
     const handleComparePreviousRevisionButton = () => {
       revisionComparerContainer.setState({ sourceRevision: previousRevision });
       revisionComparerContainer.setState({ targetRevision: revision });
@@ -59,7 +64,7 @@ class PageRevisionList extends React.Component {
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button className="dropdown-item" type="button" onClick={() => { console.log('Readonly') }}>
+                <button className="dropdown-item" type="button" onClick={handleCompareLatestRevisionButton}>
                   最新と比較
                 </button>
                 <button className="dropdown-item" type="button" onClick={handleComparePreviousRevisionButton}>
