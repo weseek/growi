@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
 import React from 'react';
-import { Subscribe, Provider } from 'unstated';
+import { Subscribe } from 'unstated';
 
 /**
  * generate K/V object by specified instances
