@@ -31,6 +31,81 @@ export const ExportArchiveDataPage = (): JSX.Element => {
   const [isZipping, setIsZipping] = useState(false);
   const [isExported, setIsExported] = useState(false);
 
+  // async componentWillMount() {
+  //   // TODO:: use apiv3.get
+  //   // eslint-disable-next-line no-unused-vars
+  //   const [{ collections }, { status }] = await Promise.all([
+  //     // apiGet('/v3/mongo/collections', {}),
+  //     // apiGet('/v3/export/status', {}),
+  //   ]);
+  // TODO: toastSuccess, toastError
+
+  // filter only not ignored collection names
+  // const filteredCollections = collections.filter((collectionName) => {
+  //   return !IGNORED_COLLECTION_NAMES.includes(collectionName);
+  // });
+
+  // const { zipFileStats, isExporting, progressList } = status;
+  // this.setState({
+  //   collections: filteredCollections,
+  //   zipFileStats,
+  //   isExporting,
+  //   progressList,
+  // });
+
+  // this.setupWebsocketEventHandler();
+  // }
+
+  // setupWebsocketEventHandler() {
+  //   const socket = this.props.adminSocketIoContainer.getSocket();
+
+  //   // websocket event
+  //   socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
+  //     this.setState({
+  //       isExporting: true,
+  //       progressList,
+  //     });
+  //   });
+
+  //   // websocket event
+  //   socket.on('admin:onStartZippingForExport', () => {
+  //     this.setState({
+  //       isZipping: true,
+  //     });
+  //   });
+
+  //   // websocket event
+  //   socket.on('admin:onTerminateForExport', ({ addedZipFileStat }) => {
+  //     const zipFileStats = this.state.zipFileStats.concat([addedZipFileStat]);
+
+  //     this.setState({
+  //       isExporting: false,
+  //       isZipping: false,
+  //       isExported: true,
+  //       zipFileStats,
+  //     });
+
+  //     // TODO: toastSuccess, toastError
+  //     toastr.success(undefined, `New Archive Data '${addedZipFileStat.fileName}' is added`, {
+  //       closeButton: true,
+  //       progressBar: true,
+  //       newestOnTop: false,
+  //       showDuration: '100',
+  //       hideDuration: '100',
+  //       timeOut: '1200',
+  //       extendedTimeOut: '150',
+  //     });
+  //   });
+  // }
+
+  // onZipFileStatAdd(newStat) {
+  //   this.setState((prevState) => {
+  //     return {
+  //       zipFileStats: [...prevState.zipFileStats, newStat],
+  //     };
+  //   });
+  // }
+
   const showExportingData = (isExported || isExporting) && (progressList != null);
 
   const onZipFileStatRemove = async(fileName) => {
