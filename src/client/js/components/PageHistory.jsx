@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
+import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
@@ -16,7 +17,7 @@ import RevisionComparerContainer from '../services/RevisionComparerContainer';
 const logger = loggerFactory('growi:PageHistory');
 
 function PageHistory(props) {
-  const { pageHistoryContainer, revisionComparerContainer } = props;
+  const { pageHistoryContainer, revisionComparerContainer, t } = props;
   const { getPreviousRevision } = pageHistoryContainer;
   const {
     activePage, totalPages, pagingLimit, revisions, diffOpened,
@@ -69,6 +70,7 @@ function PageHistory(props) {
 
   return (
     <div className="revision-history">
+      <h3 className="grw-modal-head pb-2">{t('page_history.revision_list')}</h3>
       <PageRevisionList
         pageHistoryContainer={pageHistoryContainer}
         revisionComparerContainer={revisionComparerContainer}
@@ -88,8 +90,10 @@ function PageHistory(props) {
 const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer, RevisionComparerContainer]);
 
 PageHistory.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
   revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 };
 
-export default RenderPageHistoryWrapper;
+export default withTranslation()(RenderPageHistoryWrapper);

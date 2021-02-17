@@ -117,8 +117,6 @@ class PageRevisionList extends React.Component {
 
     return (
       <React.Fragment>
-        <h3>{t('page_history.revision_list')}</h3>
-        <hr />
         <div className="revision-history-list">
           <div className="revision-history-list-content-header bg-white mb-3 px-4">
             <div className="row no-gutters">
