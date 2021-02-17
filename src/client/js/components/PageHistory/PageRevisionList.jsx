@@ -9,20 +9,6 @@ import RevisionSelector from '../RevisionComparer/RevisionSelector';
 
 class PageRevisionList extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isCompactNodiffRevisions: true,
-    };
-
-    this.cbCompactizeChangeHandler = this.cbCompactizeChangeHandler.bind(this);
-  }
-
-  cbCompactizeChangeHandler() {
-    this.setState({ isCompactNodiffRevisions: !this.state.isCompactNodiffRevisions });
-  }
-
   /**
    * render a row (Revision component and RevisionDiff component)
    * @param {Revison} revision
@@ -49,7 +35,6 @@ class PageRevisionList extends React.Component {
             isLatestRevision={revision === latestRevision}
             revisionDiffOpened={revisionDiffOpened}
             hasDiff={hasDiff}
-            isCompactNodiffRevisions={this.state.isCompactNodiffRevisions}
             key={`revision-history-rev-${revisionId}`}
           />
           {hasDiff && (
@@ -63,7 +48,7 @@ class PageRevisionList extends React.Component {
                 aria-expanded="true"
               >
                 <span className="float-left">
-                  hoge
+                  最新と比較
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -115,28 +100,11 @@ class PageRevisionList extends React.Component {
       return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
     });
 
-    const classNames = ['revision-history-list'];
-    if (this.state.isCompactNodiffRevisions) {
-      classNames.push('revision-history-list-compact');
-    }
-
     return (
       <React.Fragment>
-        <div className="d-flex">
-          <h3>{t('page_history.revision_list')}</h3>
-          <div className="custom-control custom-checkbox custom-checkbox-info ml-auto">
-            <input
-              type="checkbox"
-              id="cbCompactize"
-              className="custom-control-input"
-              checked={this.state.isCompactNodiffRevisions}
-              onChange={this.cbCompactizeChangeHandler}
-            />
-            <label className="custom-control-label" htmlFor="cbCompactize">{ t('Shrink versions that have no diffs') }</label>
-          </div>
-        </div>
+        <h3>{t('page_history.revision_list')}</h3>
         <hr />
-        <div className={classNames.join(' ')}>
+        <div className="revision-history-list revision-history-list-compact">
           <div className="revision-history-list-container">
             <div className="revision-history-list-content-header sticky-top bg-white">
               <div className="row no-gutters">

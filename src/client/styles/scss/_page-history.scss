@@ -57,10 +57,8 @@
   }
 
   // compacted list
-  .revision-history-list-compact {
-    .revision-history-outer-contiguous-nodiff {
-      border-top: unset !important; // force unset border
-    }
+  .revision-history-outer-contiguous-nodiff {
+    border-top: unset !important; // force unset border
   }
 
   .revision-compare {
