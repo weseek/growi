@@ -106,8 +106,6 @@ export const ExportArchiveDataPage = (): JSX.Element => {
   //   });
   // }
 
-  const showExportingData = (isExported || isExporting) && (progressList != null);
-
   const onZipFileStatRemove = async(fileName) => {
     try {
       await apiDelete(`/v3/export/${fileName}`, {});
@@ -191,6 +189,8 @@ export const ExportArchiveDataPage = (): JSX.Element => {
       </div>
     );
   };
+
+  const showExportingData = (isExported || isExporting) && (progressList != null);
 
   return (
     <>
@@ -465,6 +465,6 @@ export const ExportArchiveDataPage = (): JSX.Element => {
 /**
  * Wrapper component for using unstated
  */
-// const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, AdminSocketIoContainer]);
+// const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AdminSocketIoContainer]);
 
 // export default ExportArchiveDataPage;
