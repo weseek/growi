@@ -67,20 +67,20 @@
     height: 34px;
     padding: 5px 0px;
     font-size: 14px;
-    background-color: white;
-    border: 1px solid #d8d8d8;
+    background-color: #ffffff;
+    border: 1px solid $gray-300;
     .comparison-source-wrapper {
       padding: 0px 14px;
-      border-right: 1px solid #d8d8d8;
+      border-right: 1px solid $gray-300;
       .comparison-source {
-        color: #8e9aa7;
+        color: $gray-500;
       }
     }
     .comparison-target-wrapper {
       padding: 0px 14px;
       margin: 1px 2px 0px 2px;
       .comparison-target {
-        color: #8e9aa7;
+        color: $gray-500;
       }
     }
   }
