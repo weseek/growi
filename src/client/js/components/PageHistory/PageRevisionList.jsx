@@ -116,22 +116,20 @@ class PageRevisionList extends React.Component {
     });
 
     return (
-      <React.Fragment>
-        <div className="revision-history-list">
-          <div className="revision-history-list-content-header bg-white mb-3 px-4">
-            <div className="row no-gutters">
-              <div className="col-6">{ t('page_history.revision') }</div>
-              <div className="col-3 text-center">{ t('page_history.comparing_source') }</div>
-              <div className="col-3 text-center">{ t('page_history.comparing_target') }</div>
-            </div>
-          </div>
-          <div className="revision-history-list-container border py-2 px-4 overflow-auto">
-            <div className="revision-history-list-content-body">
-              {revisionList}
-            </div>
+      <div className="revision-history-list">
+        <div className="revision-history-list-content-header bg-white mb-3 pr-4">
+          <div className="row no-gutters">
+            <div className="col-6">{ t('page_history.revision') }</div>
+            <div className="col-3 text-center">{ t('page_history.comparing_source') }</div>
+            <div className="col-3 text-center">{ t('page_history.comparing_target') }</div>
           </div>
         </div>
-      </React.Fragment>
+        <div className="revision-history-list-container border py-2 px-4 overflow-auto">
+          <div className="revision-history-list-content-body">
+            {revisionList}
+          </div>
+        </div>
+      </div>
     );
   }
 
