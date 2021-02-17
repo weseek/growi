@@ -26,11 +26,9 @@ export default class Revision extends React.Component {
           {pic}
         </div>
         <div className="ml-3">
-          <div className="revision-history-meta">
-            <span className="text-muted small">
-              <UserDate dateTime={revision.createdAt} /> ({ t('No diff') })
-            </span>
-          </div>
+          <span className="text-muted small">
+            <UserDate dateTime={revision.createdAt} /> ({ t('No diff') })
+          </span>
         </div>
       </div>
     );
@@ -47,24 +45,20 @@ export default class Revision extends React.Component {
     }
 
     return (
-      <div className="revision-history-main d-flex mt-3">
-        <div className="mt-2">
+      <div className="revision-history-main d-flex">
+        <div className="picture-container">
           {pic}
         </div>
         <div className="ml-2">
-          <div className="revision-history-author">
+          <div className="revision-history-author mb-1">
             <strong><Username user={author}></Username></strong>
             {this.props.isLatestRevision && <span className="badge badge-info ml-2">Latest</span>}
           </div>
-          <div className="revision-history-meta">
-            <p>
-              <UserDate dateTime={revision.createdAt} />
-            </p>
-            <p>
-              <a href={`?revision=${revision._id}`}>
-                <i className="icon-login"></i> { t('Go to this version') }
-              </a>
-            </p>
+          <div>
+            <UserDate dateTime={revision.createdAt} />
+            <a className="ml-3" href={`?revision=${revision._id}`}>
+              <i className="icon-login"></i> { t('Go to this version') }
+            </a>
           </div>
         </div>
       </div>

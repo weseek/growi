@@ -7,7 +7,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
 import { withLoadingSppiner } from './SuspenseUtils';
-import PageRevisionList from './PageHistory/PageRevisionList';
+import PageRevisionTable from './PageHistory/PageRevisionTable';
 
 import PageHistroyContainer from '../services/PageHistoryContainer';
 import PaginationWrapper from './PaginationWrapper';
@@ -70,8 +70,8 @@ function PageHistory(props) {
 
   return (
     <div className="revision-history">
-      <h3 className="grw-modal-head pb-2">{t('page_history.revision_list')}</h3>
-      <PageRevisionList
+      <h3 className="pb-3">{t('page_history.revision_list')}</h3>
+      <PageRevisionTable
         pageHistoryContainer={pageHistoryContainer}
         revisionComparerContainer={revisionComparerContainer}
         revisions={revisions}

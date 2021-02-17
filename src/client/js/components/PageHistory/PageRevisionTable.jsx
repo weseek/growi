@@ -6,9 +6,8 @@ import PageHistroyContainer from '../../services/PageHistoryContainer';
 import RevisionComparerContainer from '../../services/RevisionComparerContainer';
 
 import Revision from './Revision';
-import RevisionSelector from '../RevisionComparer/RevisionSelector';
 
-class PageRevisionList extends React.Component {
+class PageRevisionTable extends React.Component {
 
   /**
    * render a row (Revision component and RevisionDiff component)
@@ -22,25 +21,21 @@ class PageRevisionList extends React.Component {
     const { latestRevision } = this.props.pageHistoryContainer.state;
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
+    const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
-    const classNames = ['revision-history-outer', 'row', 'no-gutters'];
-    if (isContiguousNodiff) {
-      classNames.push('revision-history-outer-contiguous-nodiff');
-    }
+    // const handleCompareLatestRevisionButton = () => {
+    //   revisionComparerContainer.setState({ sourceRevision: revision });
+    //   revisionComparerContainer.setState({ targetRevision: latestRevision });
+    // };
 
-    const handleCompareLatestRevisionButton = () => {
-      revisionComparerContainer.setState({ sourceRevision: revision });
-      revisionComparerContainer.setState({ targetRevision: latestRevision });
-    };
-
-    const handleComparePreviousRevisionButton = () => {
-      revisionComparerContainer.setState({ sourceRevision: previousRevision });
-      revisionComparerContainer.setState({ targetRevision: revision });
-    };
+    // const handleComparePreviousRevisionButton = () => {
+    //   revisionComparerContainer.setState({ sourceRevision: previousRevision });
+    //   revisionComparerContainer.setState({ targetRevision: revision });
+    // };
 
     return (
-      <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
-        <div className="col-6 d-flex" key={`revision-history-top-${revisionId}`}>
+      <tr className="d-flex" key={`revision-history-${revisionId}`}>
+        <td className="col" key={`revision-history-top-${revisionId}`}>
           <Revision
             t={this.props.t}
             revision={revision}
@@ -49,7 +44,7 @@ class PageRevisionList extends React.Component {
             hasDiff={hasDiff}
             key={`revision-history-rev-${revisionId}`}
           />
-          {hasDiff && (
+          {/* {hasDiff && (
             <div className="dropdown mt-auto mb-3 ml-5">
               <button
                 className="btn btn-primary dropdown-toggle"
@@ -72,16 +67,41 @@ class PageRevisionList extends React.Component {
                 </button>
               </div>
             </div>
+          )} */}
+        </td>
+        <td className="col-1">
+          {(hasDiff) && (
+            <div className="custom-control custom-radio custom-control-inline mr-0">
+              <input
+                type="radio"
+                className="custom-control-input"
+                id={`compareSource-${revision._id}`}
+                name="compareSource"
+                value={revision._id}
+                checked={revision._id === sourceRevision?._id}
+                onChange={() => revisionComparerContainer.setState({ sourceRevision: revision })}
+              />
+              <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
+            </div>
           )}
-        </div>
-        <div className="col-6 align-self-center">
-          <RevisionSelector
-            revision={revision}
-            hasDiff={hasDiff}
-            key={`revision-compare-target-selector-${revisionId}`}
-          />
-        </div>
-      </div>
+        </td>
+        <td className="col-2">
+          {(hasDiff) && (
+            <div className="custom-control custom-radio custom-control-inline mr-0">
+              <input
+                type="radio"
+                className="custom-control-input"
+                id={`compareTarget-${revision._id}`}
+                name="compareTarget"
+                value={revision._id}
+                checked={revision._id === targetRevision?._id}
+                onChange={() => revisionComparerContainer.setState({ targetRevision: revision })}
+              />
+              <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
+            </div>
+          )}
+        </td>
+      </tr>
     );
   }
 
@@ -116,26 +136,24 @@ class PageRevisionList extends React.Component {
     });
 
     return (
-      <div className="revision-history-list">
-        <div className="revision-history-list-content-header bg-white mb-3 pr-4">
-          <div className="row no-gutters">
-            <div className="col-6">{ t('page_history.revision') }</div>
-            <div className="col-3 text-center">{ t('page_history.comparing_source') }</div>
-            <div className="col-3 text-center">{ t('page_history.comparing_target') }</div>
-          </div>
-        </div>
-        <div className="revision-history-list-container border py-2 px-4 overflow-auto">
-          <div className="revision-history-list-content-body">
-            {revisionList}
-          </div>
-        </div>
-      </div>
+      <table className="table revision-history-table">
+        <thead>
+          <tr className="d-flex">
+            <th className="col">{ t('page_history.revision') }</th>
+            <th className="col-1">{ t('page_history.comparing_source') }</th>
+            <th className="col-2">{ t('page_history.comparing_target') }</th>
+          </tr>
+        </thead>
+        <tbody className="overflow-auto d-block">
+          {revisionList}
+        </tbody>
+      </table>
     );
   }
 
 }
 
-PageRevisionList.propTypes = {
+PageRevisionTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
   revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
@@ -144,4 +162,4 @@ PageRevisionList.propTypes = {
   diffOpened: PropTypes.object,
 };
 
-export default withTranslation()(PageRevisionList);
+export default withTranslation()(PageRevisionTable);
