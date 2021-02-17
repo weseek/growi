@@ -75,7 +75,9 @@ function PageHistory(props) {
         diffOpened={diffOpened}
         getPreviousRevision={getPreviousRevision}
       />
-      {pager()}
+      <div className="my-3">
+        {pager()}
+      </div>
       <RevisionComparer />
     </div>
   );
