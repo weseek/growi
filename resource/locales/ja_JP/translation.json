@@ -333,7 +333,7 @@
     "revision": "バージョン",
     "comparing_source": "ソース",
     "comparing_target": "ターゲット",
-    "comparing_revisions": "比較",
+    "comparing_revisions": "差分を比較する",
     "comparing_with_latest": "常に最新バージョンと比較する"
   },
   "modal_rename": {
