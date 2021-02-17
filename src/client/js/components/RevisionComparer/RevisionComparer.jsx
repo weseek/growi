@@ -55,7 +55,7 @@ const RevisionComparer = (props) => {
   return (
     <div className="revision-compare">
       <div className="d-flex">
-        <h3 className="align-self-center mb-0">{ t('page_history.comparing_revisions') }</h3>
+        <h4 className="align-self-center">{ t('page_history.comparing_revisions') }</h4>
         {/* <div className="align-self-center ml-3">
           <div className="custom-control custom-switch">
             <input
