@@ -4,16 +4,12 @@ import React, { FC } from 'react';
 // import { toArrayIfNot } from '~/utils/array-utils';
 // import { withLoadingSppiner } from '~/client/js/components/SuspenseUtils';
 
-import AdminLdapSecurityContainer from '~/client/js/services/AdminLdapSecurityContainer';
+// import AdminLdapSecurityContainer from '~/client/js/services/AdminLdapSecurityContainer';
 
 import LdapSecuritySettingContents from '~/client/js/components/Admin/Security/LdapSecuritySettingContents';
 
-type Props = {
-  adminLdapSecurityContainer: AdminLdapSecurityContainer,
-}
-
 const retrieveErrors = null;
-export const LdapSecuritySetting: FC<Props> = (props: Props) => {
+export const LdapSecuritySetting: FC = () => {
 
   // TODO: improve following error handling by GW 5196
 
