@@ -44,16 +44,29 @@ export default class RevisionDiff extends React.Component {
     return (
       <>
         <div className="comparison-header">
-          <span>ソース <UserDate dateTime={previousRevision.createdAt} />
-            <a href={`?revision=${previousRevision._id}`} className="ml-2">
-              <i className="icon-login"></i>
-            </a>
-          </span>
-          <span>ターゲット <UserDate dateTime={currentRevision.createdAt} />
-            <a href={`?revision=${currentRevision._id}`} className="ml-2">
-              <i className="icon-login"></i>
-            </a>
-          </span>
+          <div className="container pr-0">
+            <div className="row">
+              <div className="col hoge pl-0 pr-0">
+                <span className="pr-3">ソース</span><UserDate dateTime={previousRevision.createdAt} />
+                <a href={`?revision=${previousRevision._id}`} className="ml-2">
+                  <i className="icon-login"></i>
+                </a>
+
+              </div>
+              <div className="col px-3">
+                <span className="pr-3">ターゲット</span><UserDate dateTime={currentRevision.createdAt} />
+                <a href={`?revision=${currentRevision._id}`} className="ml-2">
+                  <i className="icon-login"></i>
+                </a>
+
+
+              </div>
+            </div>
+
+
+          </div>
+
+
         </div>
         <div className="revision-history-diff" dangerouslySetInnerHTML={diffView} />
       </>

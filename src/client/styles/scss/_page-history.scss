@@ -64,11 +64,16 @@
   }
 
   .comparison-header {
-    height: 35px;
-    padding: 5px 10px;
+    height: 28px;
+    padding: 5px 0px 5px 0px;
+    // font-size: 14px;
     background-color: white;
     border: 1px solid #d8d8d8;
+    .hoge {
+      border-right: 1px solid #d8d8d8;
+    }
   }
+
   .revision-compare {
     .revision-compare-outer {
       min-height: 100px;
