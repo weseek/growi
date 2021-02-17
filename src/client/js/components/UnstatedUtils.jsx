@@ -45,13 +45,11 @@ function generateAutoNamedProps(instances) {
 export function withUnstatedContainers(Component, containerClasses) {
   return React.forwardRef((props, ref) => (
     // wrap with <Subscribe></Subscribe>
-    <Provider>
-      <Subscribe to={containerClasses}>
-        { (...containers) => {
+    <Subscribe to={containerClasses}>
+      { (...containers) => {
           const propsForContainers = generateAutoNamedProps(containers);
           return <Component {...props} {...propsForContainers} ref={ref} />;
         }}
-      </Subscribe>
-    </Provider>
+    </Subscribe>
   ));
 }
