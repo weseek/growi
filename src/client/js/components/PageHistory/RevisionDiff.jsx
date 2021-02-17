@@ -46,15 +46,15 @@ export default class RevisionDiff extends React.Component {
         <div className="comparison-header">
           <div className="container pr-0">
             <div className="row">
-              <div className="col comparison-source px-0">
-                <span className="pr-3">ソース</span><UserDate dateTime={previousRevision.createdAt} />
+              <div className="col comparison-source-wrapper px-0">
+                <span className="comparison-source pr-3">ソース</span><UserDate dateTime={previousRevision.createdAt} />
                 <a href={`?revision=${previousRevision._id}`} className="ml-3">
                   <i className="icon-login"></i>
                 </a>
 
               </div>
-              <div className="col comparison-target">
-                <span className="pr-3">ターゲット</span><UserDate dateTime={currentRevision.createdAt} />
+              <div className="col comparison-target-wrapper">
+                <span className="comparison-target pr-3">ターゲット</span><UserDate dateTime={currentRevision.createdAt} />
                 <a href={`?revision=${currentRevision._id}`} className="ml-3">
                   <i className="icon-login"></i>
                 </a>
