@@ -1,9 +1,8 @@
 .revision-history {
   .revision-history-list {
     .revision-history-list-container {
-      min-height: 200px;
+      min-height: 250px;
       max-height: calc(100vh - 100px - 550px);
-      overflow: auto;
     }
 
     .revision-history-list-content-body {

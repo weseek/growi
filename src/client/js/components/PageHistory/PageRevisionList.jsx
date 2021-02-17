@@ -105,14 +105,14 @@ class PageRevisionList extends React.Component {
         <h3>{t('page_history.revision_list')}</h3>
         <hr />
         <div className="revision-history-list">
-          <div className="revision-history-list-container">
-            <div className="revision-history-list-content-header sticky-top bg-white">
-              <div className="row no-gutters">
-                <div className="col-8">{ t('page_history.revision') }</div>
-                <div className="col-2 text-center">{ t('page_history.comparing_source') }</div>
-                <div className="col-2 text-center">{ t('page_history.comparing_target') }</div>
-              </div>
+          <div className="revision-history-list-content-header bg-white mb-2">
+            <div className="row no-gutters">
+              <div className="col-8">{ t('page_history.revision') }</div>
+              <div className="col-2 text-center">{ t('page_history.comparing_source') }</div>
+              <div className="col-2 text-center">{ t('page_history.comparing_target') }</div>
             </div>
+          </div>
+          <div className="revision-history-list-container border py-2 px-4 overflow-auto">
             <div className="revision-history-list-content-body">
               {revisionList}
             </div>
