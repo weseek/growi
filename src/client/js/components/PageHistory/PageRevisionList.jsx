@@ -6,6 +6,7 @@ import PageHistroyContainer from '../../services/PageHistoryContainer';
 
 import Revision from './Revision';
 import RevisionSelector from '../RevisionComparer/RevisionSelector';
+import RevisionComparerContainer from '../RevisionComparer/RevisionComparer';
 
 class PageRevisionList extends React.Component {
 
@@ -17,6 +18,7 @@ class PageRevisionList extends React.Component {
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
   renderRow(revision, previousRevision, hasDiff, isContiguousNodiff) {
+    const { revisionComparerContainer } = this.props;
     const { latestRevision } = this.props.pageHistoryContainer.state;
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
@@ -25,6 +27,11 @@ class PageRevisionList extends React.Component {
     if (isContiguousNodiff) {
       classNames.push('revision-history-outer-contiguous-nodiff');
     }
+
+    const handleComparePreviousRevisionButton = () => {
+      revisionComparerContainer.setState({ sourceRevision: previousRevision });
+      revisionComparerContainer.setState({ targetRevision: revision });
+    };
 
     return (
       <div className={classNames.join(' ')} key={`revision-history-${revisionId}`}>
@@ -53,7 +60,10 @@ class PageRevisionList extends React.Component {
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <button className="dropdown-item" type="button" onClick={() => { console.log('Readonly') }}>
-                  button
+                  最新と比較
+                </button>
+                <button className="dropdown-item" type="button" onClick={handleComparePreviousRevisionButton}>
+                  1つ前のバージョンと比較
                 </button>
               </div>
             </div>
@@ -127,6 +137,7 @@ class PageRevisionList extends React.Component {
 PageRevisionList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
+  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 
   revisions: PropTypes.array,
   diffOpened: PropTypes.object,

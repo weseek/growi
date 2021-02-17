@@ -16,7 +16,7 @@ import RevisionComparerContainer from '../services/RevisionComparerContainer';
 const logger = loggerFactory('growi:PageHistory');
 
 function PageHistory(props) {
-  const { pageHistoryContainer } = props;
+  const { pageHistoryContainer, revisionComparerContainer } = props;
   const { getPreviousRevision } = pageHistoryContainer;
   const {
     activePage, totalPages, pagingLimit, revisions, diffOpened,
@@ -71,6 +71,7 @@ function PageHistory(props) {
     <div className="revision-history">
       <PageRevisionList
         pageHistoryContainer={pageHistoryContainer}
+        revisionComparerContainer={revisionComparerContainer}
         revisions={revisions}
         diffOpened={diffOpened}
         getPreviousRevision={getPreviousRevision}
