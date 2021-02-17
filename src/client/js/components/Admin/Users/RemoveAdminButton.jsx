@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
@@ -66,11 +65,10 @@ class RemoveAdminButton extends React.Component {
 /**
 * Wrapper component for using unstated
 */
-const RemoveAdminButtonWrapper = withUnstatedContainers(RemoveAdminButton, [AppContainer, AdminUsersContainer]);
+const RemoveAdminButtonWrapper = withUnstatedContainers(RemoveAdminButton, [AdminUsersContainer]);
 
 RemoveAdminButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,

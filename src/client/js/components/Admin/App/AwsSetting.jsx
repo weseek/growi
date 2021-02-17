@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
 function AwsSetting(props) {
@@ -150,11 +149,10 @@ function AwsSetting(props) {
 /**
  * Wrapper component for using unstated
  */
-const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AppContainer, AdminAppContainer]);
+const AwsSettingWrapper = withUnstatedContainers(AwsSetting, [AdminAppContainer]);
 
 AwsSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 

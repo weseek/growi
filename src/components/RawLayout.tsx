@@ -2,11 +2,17 @@ import React, { ReactNode } from 'react';
 import Head from 'next/head';
 
 type Props = {
-  title: string
-  children?: ReactNode
+  title: string,
+  className?: string,
+  children?: ReactNode,
 }
 
-const RawLayout = ({ children, title }: Props): JSX.Element => {
+const RawLayout = ({ children, title, className }: Props): JSX.Element => {
+
+  const classNames: string[] = ['wrapper'];
+  if (className != null) {
+    classNames.push(className);
+  }
 
   return (
     <>
@@ -15,7 +21,7 @@ const RawLayout = ({ children, title }: Props): JSX.Element => {
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <div className="wrapper">
+      <div className={classNames.join(' ')}>
         {children}
       </div>
     </>

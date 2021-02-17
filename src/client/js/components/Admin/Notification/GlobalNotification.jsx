@@ -7,7 +7,6 @@ import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 import GlobalNotificationList from './GlobalNotificationList';
 
@@ -127,13 +126,11 @@ class GlobalNotification extends React.Component {
 
 }
 
-const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotification, [AppContainer, AdminNotificationContainer]);
+const GlobalNotificationWrapper = withUnstatedContainers(GlobalNotification, [AdminNotificationContainer]);
 
 GlobalNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
-
 };
 
 export default withTranslation()(GlobalNotificationWrapper);
