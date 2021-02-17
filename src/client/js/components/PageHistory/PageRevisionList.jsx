@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import PageHistroyContainer from '../../services/PageHistoryContainer';
 
 import Revision from './Revision';
-import RevisionDiff from './RevisionDiff';
 import RevisionSelector from '../RevisionComparer/RevisionSelector';
 
 class PageRevisionList extends React.Component {
@@ -62,16 +61,6 @@ class PageRevisionList extends React.Component {
             key={`revision-compare-target-selector-${revisionId}`}
           />
         </div>
-        { hasDiff
-          && (
-          <RevisionDiff
-            revisionDiffOpened={revisionDiffOpened}
-            currentRevision={revision}
-            previousRevision={previousRevision}
-            key={`revision-deff-${revisionId}`}
-          />
-          )
-        }
       </div>
     );
   }
