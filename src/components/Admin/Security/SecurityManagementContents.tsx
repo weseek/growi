@@ -4,7 +4,7 @@ import React, {
 import { TabContent, TabPane } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 
-// import LdapSecuritySetting from '~/client/js/components/Admin/Security/LdapSecuritySetting';
+import { LdapSecuritySetting } from '~/components/Admin/Security/LdapSecuritySetting';
 import { LocalSecuritySetting } from '~/components/Admin/Security/LocalSecuritySetting';
 // import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
 // import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
@@ -121,7 +121,7 @@ export const SecurityManagementContents: FC<Props> = (props: Props) => {
             {activeComponents.has('passport_local') && <LocalSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_ldap">
-            {/* {activeComponents.has('passport_ldap') && <LdapSecuritySetting />} */}
+            {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_saml">
             {/* {activeComponents.has('passport_saml') && <SamlSecuritySetting />} */}
