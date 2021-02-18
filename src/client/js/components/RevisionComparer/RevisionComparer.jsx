@@ -62,7 +62,6 @@ const RevisionComparer = (props) => {
               type="checkbox"
               className="custom-control-input"
               id="comparingWithLatest"
-              checked={revisionComparerContainer.state.compareWithLatest}
               onChange={() => revisionComparerContainer.toggleCompareWithLatest()}
             />
             <label className="custom-control-label" htmlFor="comparingWithLatest">

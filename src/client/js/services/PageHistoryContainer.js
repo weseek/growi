@@ -33,7 +33,6 @@ export default class PageHistoryContainer extends Container {
     };
 
     this.retrieveRevisions = this.retrieveRevisions.bind(this);
-    this.onDiffOpenClicked = this.onDiffOpenClicked.bind(this);
     this.getPreviousRevision = this.getPreviousRevision.bind(this);
     this.fetchPageRevisionBody = this.fetchPageRevisionBody.bind(this);
   }
@@ -113,17 +112,6 @@ export default class PageHistoryContainer extends Container {
     }
 
     return;
-  }
-
-  onDiffOpenClicked(revision) {
-    const { diffOpened } = this.state;
-    const revisionId = revision._id;
-
-    diffOpened[revisionId] = !(diffOpened[revisionId]);
-    this.setState(diffOpened);
-
-    this.fetchPageRevisionBody(revision);
-    this.fetchPageRevisionBody(this.getPreviousRevision(revision));
   }
 
   getPreviousRevision(currentRevision) {
