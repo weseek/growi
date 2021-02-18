@@ -1,3 +1,6 @@
+// @import '../scss/variables';
+// @import '../scss/override-bootstrap-variables';
+
 .revision-history-table {
   tbody {
     max-height: 250px;
@@ -25,21 +28,12 @@
 
 .comparison-header {
   height: 34px;
-  background-color: #ffffff;
-  border: 1px solid $gray-300;
   .comparison-source-wrapper {
     height: 26px;
     margin-right: 1px;
-    border-right: 1px solid $gray-300;
-    .comparison-source {
-      color: $gray-500;
-    }
   }
   .comparison-target-wrapper {
     height: 26px;
-    .comparison-target {
-      color: $gray-500;
-    }
   }
 }
 
