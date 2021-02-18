@@ -56,7 +56,8 @@ export default class Revision extends React.Component {
           </div>
           <div>
             <UserDate dateTime={revision.createdAt} />
-            <a className="ml-3" href={`?revision=${revision._id}`}>
+            <br className="d-lg-none d-block" />
+            <a className="ml-lg-3" href={`?revision=${revision._id}`}>
               <i className="icon-login"></i> { t('Go to this version') }
             </a>
           </div>
