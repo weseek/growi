@@ -1,38 +1,51 @@
-/* eslint-disable no-return-await */
+import { Schema, Types, Model } from 'mongoose';
 
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
+import { IUser, USER_PUBLIC_FIELDS } from '~/server/models/user';
 
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
-
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = Schema.Types.ObjectId;
 
 const logger = loggerFactory('growi:models:bookmark');
 
-module.exports = function(crowi) {
-  const bookmarkEvent = crowi.event('bookmark');
+// const bookmarkEvent = crowi.event('bookmark');
 
-  let bookmarkSchema = null;
+export interface IBookmark {
+  _id: Types.ObjectId;
+  page: Types.ObjectId;
+  user: IUser;
+  createdAt: Date;
+}
 
+type Option= {
+  limit:number,
+  offset: number,
+  requestUser: IUser,
+  populatePage: boolean,
+}
 
-  bookmarkSchema = new mongoose.Schema({
-    page: { type: ObjectId, ref: 'Page', index: true },
-    user: { type: ObjectId, ref: 'User', index: true },
-    createdAt: { type: Date, default: Date.now },
-  });
-  bookmarkSchema.index({ page: 1, user: 1 }, { unique: true });
-  bookmarkSchema.plugin(mongoosePaginate);
-  bookmarkSchema.plugin(uniqueValidator);
+const schema = new Schema({
+  page: { type: ObjectId, ref: 'Page', index: true },
+  user: { type: ObjectId, ref: 'User', index: true },
+  createdAt: { type: Date, default: Date.now },
+});
+schema.index({ page: 1, user: 1 }, { unique: true });
+schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
 
-  bookmarkSchema.statics.countByPageId = async function(pageId) {
-    return await this.count({ page: pageId });
-  };
+class Bookmark extends Model {
+
+  static countByPageId(pageId) {
+    return this.count({ page: pageId });
+  }
 
   /**
    * @return {object} key: page._id, value: bookmark count
    */
-  bookmarkSchema.statics.getPageIdToCountMap = async function(pageIds) {
+  static async getPageIdToCountMap(pageIds) {
     const results = await this.aggregate()
       .match({ page: { $in: pageIds } })
       .group({ _id: '$page', count: { $sum: 1 } });
@@ -44,21 +57,19 @@ module.exports = function(crowi) {
     });
 
     return idToCountMap;
-  };
+  }
 
-  bookmarkSchema.statics.populatePage = async function(bookmarks) {
-    const User = crowi.model('User');
-
+  static async populatePage(bookmarks) {
     return this.populate(bookmarks, {
       path: 'page',
       populate: {
-        path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS,
+        path: 'lastUpdateUser', model: 'User', select: USER_PUBLIC_FIELDS,
       },
     });
-  };
+  }
 
   // bookmark チェック用
-  bookmarkSchema.statics.findByPageIdAndUserId = function(pageId, userId) {
+  static async findByPageIdAndUserId(pageId, userId) {
     return new Promise(((resolve, reject) => {
       return this.findOne({ page: pageId, user: userId }, (err, doc) => {
         if (err) {
@@ -68,16 +79,9 @@ module.exports = function(crowi) {
         return resolve(doc);
       });
     }));
-  };
+  }
 
-  /**
-   * option = {
-   *  limit: Int
-   *  offset: Int
-   *  requestUser: User
-   * }
-   */
-  bookmarkSchema.statics.findByUser = function(user, option) {
+  static async findByUser(user:IUser, option:Option) {
     const requestUser = option.requestUser || null;
 
     logger.debug('Finding bookmark with requesting user:', requestUser);
@@ -100,17 +104,17 @@ module.exports = function(crowi) {
             return resolve(bookmarks);
           }
 
-          return this.populatePage(bookmarks, requestUser).then(resolve);
+          return this.populatePage(bookmarks).then(resolve);
         });
     }));
-  };
+  }
 
-  bookmarkSchema.statics.add = async function(page, user) {
+  static async add(page, user) {
     const newBookmark = new this({ page, user, createdAt: Date.now() });
 
     try {
       const bookmark = await newBookmark.save();
-      bookmarkEvent.emit('create', page._id);
+      // bookmarkEvent.emit('create', page._id);
       return bookmark;
     }
     catch (err) {
@@ -121,36 +125,38 @@ module.exports = function(crowi) {
       logger.debug('Bookmark.save failed', err);
       throw err;
     }
-  };
+  }
 
   /**
    * Remove bookmark
    * used only when removing the page
    * @param {string} pageId
    */
-  bookmarkSchema.statics.removeBookmarksByPageId = async function(pageId) {
+  static async removeBookmarksByPageId(pageId) {
     try {
       const data = await this.remove({ page: pageId });
-      bookmarkEvent.emit('delete', pageId);
+      // bookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {
       logger.debug('Bookmark.remove failed (removeBookmarkByPage)', err);
       throw err;
     }
-  };
+  }
 
-  bookmarkSchema.statics.removeBookmark = async function(pageId, user) {
+  static async removeBookmark(pageId, user) {
     try {
       const data = await this.findOneAndRemove({ page: pageId, user });
-      bookmarkEvent.emit('delete', pageId);
+      // bookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {
       logger.debug('Bookmark.findOneAndRemove failed', err);
       throw err;
     }
-  };
+  }
 
-  return mongoose.model('Bookmark', bookmarkSchema);
-};
+}
+
+schema.loadClass(Bookmark);
+export default getOrCreateModel<IBookmark>('Bookmark', schema);
