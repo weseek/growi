@@ -1,5 +1,4 @@
 const logger = require('@alias/logger')('growi:service:BoltService');
-const axios = require('axios');
 
 class BoltReciever {
 
@@ -35,7 +34,6 @@ class BoltReciever {
         ackCalled = true;
       },
     };
-
     await this.bolt.processEvent(event);
 
     // payload action. click "Submit" etc.
@@ -47,10 +45,12 @@ class BoltReciever {
     const { type } = payload;
 
     if (type === 'view_submission') {
-      return axios.post('http://localhost:3000/_api/v3/pages', {
-        access_token: 'vu5rtuYMSZsYUx4a2ow4xvssjj+uuh0RFYOi03Jhrm4=',
-        path: payload.view.state.values.path.path_input.value,
-        body: payload.view.state.values.contents.contents_input.value,
+      // avoid an error
+      res.send('');
+
+      this.bolt.view('view_1', async({ ack, view, say }) => {
+        await ack();
+        console.log('view');
       });
     }
   }
@@ -135,6 +135,13 @@ class BoltService {
 
   }
 
+  createPageInGrowi(payload) {
+    const Page = this.crowi.model('Page');
+    const path = payload.view.state.values.path.path_input.value;
+    const body = payload.view.state.values.contents.contents_input.value;
+    return Page.create(path, body, {}, {});
+  }
+
   async searchResults(command, args) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
@@ -211,7 +218,7 @@ class BoltService {
 
         view: {
           type: 'modal',
-          callback_id: 'createPage',
+          callback_id: 'view_1',
           title: {
             type: 'plain_text',
             text: 'Create Page',
