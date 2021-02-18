@@ -1,19 +1,19 @@
-import { getMongoUri } from '~/server/util/mongoose-utils';
-
 /**
  * Configuration file for migrate-mongo
  * @see https://github.com/seppevs/migrate-mongo
- * @see https://github.com/seppevs/migrate-mongo/issues/79 about workaround for worktypescript
+ *
+ * @author Yuki Takei <yuki@weseek.co.jp>
  */
+const { URL } = require('url');
+
+const { getMongoUri } = require('~/server/util/mongoose-utils');
 
 const mongoUri = getMongoUri();
+
 // parse url
 const url = new URL(mongoUri);
 
-export const migrationFileExtension = '.ts';
-export const changelogCollectionName = 'migrations';
-export const migrationsDir = 'src/migrations/';
-export const mongodb = {
+const mongodb = {
   url: mongoUri,
   databaseName: url.pathname.substring(1), // omit heading slash
   options: {
@@ -21,4 +21,11 @@ export const mongodb = {
     useUnifiedTopology: true,
     useFindAndModify: false,
   },
+};
+
+module.exports = {
+  mongoUri,
+  mongodb,
+  migrationsDir: 'src/migrations/',
+  changelogCollectionName: 'migrations',
 };
