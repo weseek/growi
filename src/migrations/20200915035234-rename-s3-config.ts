@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import { mongoUri, mongodb } from '../../config/migrate';
 import { getModelSafely } from '../server/util/mongoose-utils';
 import ConfigModel from '../server/models/config';
+import loggerFactory from '../utils/logger';
+
+const logger = loggerFactory('growi:stores:ui');
 
 const awsConfigs = [
   {
@@ -28,7 +31,7 @@ const awsConfigs = [
 
 export const up = async():Promise<void> => {
 
-  // logger.info('Apply migration');
+  logger.info('Apply migration');
   mongoose.connect(mongoUri, mongodb.options);
 
   const Config = getModelSafely('Config') || ConfigModel;
@@ -45,12 +48,12 @@ export const up = async():Promise<void> => {
 
   await Config.bulkWrite(request);
 
-  // logger.info('Migration has successfully applied');
+  logger.info('Migration has successfully applied');
 };
 
 export const down = async():Promise<void> => {
 
-  // logger.info('Rollback migration');
+  logger.info('Rollback migration');
 
   mongoose.connect(mongoUri, mongodb.options);
 
@@ -66,5 +69,5 @@ export const down = async():Promise<void> => {
   });
 
   await Config.bulkWrite(request);
-  // logger.info('Migration has been successfully rollbacked');
+  logger.info('Migration has been successfully rollbacked');
 };
