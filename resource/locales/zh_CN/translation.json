@@ -312,6 +312,8 @@
     "comparing_source": "源头",
     "comparing_target": "目标",
     "comparing_revisions": "比较版本",
+    "compare_latest":"比較最新版本",
+    "compare_previous":"比較以前的版本",
     "comparing_with_latest": "一定要与最新版本进行比较"
   },
 	"modal_rename": {

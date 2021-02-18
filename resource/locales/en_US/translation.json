@@ -331,6 +331,8 @@
     "comparing_source": "Source",
     "comparing_target": "Target",
     "comparing_revisions": "Comparing versions",
+    "compare_latest":"Compare latest revision",
+    "compare_previous":"Compare previous revision",
     "comparing_with_latest": "Always compare with the latest version"
   },
   "modal_rename": {

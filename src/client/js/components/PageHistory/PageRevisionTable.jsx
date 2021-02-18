@@ -17,7 +17,7 @@ class PageRevisionTable extends React.Component {
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
   renderRow(revision, previousRevision, hasDiff, isContiguousNodiff) {
-    const { revisionComparerContainer } = this.props;
+    const { revisionComparerContainer, t } = this.props;
     const { latestRevision } = this.props.pageHistoryContainer.state;
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
@@ -46,13 +46,13 @@ class PageRevisionTable extends React.Component {
               key={`revision-history-rev-${revisionId}`}
             />
             {hasDiff && (
-              <div className="ml-5 my-auto">
+              <div className="ml-2 mt-auto">
                 <div className="btn-group">
                   <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleCompareLatestRevisionButton}>
-                    最新と比較
+                    {t('page_history.compare_latest')}
                   </button>
                   <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleComparePreviousRevisionButton}>
-                    1つ前のバージョンと比較
+                    {t('page_history.compare_previous')}
                   </button>
                 </div>
               </div>
