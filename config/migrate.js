@@ -4,6 +4,7 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
+
 const { URL } = require('url');
 
 const { getMongoUri } = require('~/server/util/mongoose-utils');
