@@ -1,12 +1,12 @@
-import { getMongoUri } from '../src/server/util/mongoose-utils';
+import { getMongoUri } from '~/server/util/mongoose-utils';
+
 /**
  * Configuration file for migrate-mongo
  * @see https://github.com/seppevs/migrate-mongo
- *
- * @author Yuki Takei <yuki@weseek.co.jp>
+ * @see https://github.com/seppevs/migrate-mongo/issues/79 about workaround of worktypescript
  */
-export const mongoUri = getMongoUri();
 
+const mongoUri = getMongoUri();
 // parse url
 const url = new URL(mongoUri);
 
