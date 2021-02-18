@@ -24,7 +24,8 @@ module.exports = {
 
   },
 
-  down(db) {
+  down(db, next) {
     // do not rollback
+    next();
   },
 };
