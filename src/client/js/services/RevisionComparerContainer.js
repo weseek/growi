@@ -24,7 +24,6 @@ export default class RevisionComparerContainer extends Container {
       sourceRevision: null,
       targetRevision: null,
       latestRevision: null,
-      compareWithLatest: true,
     };
 
     this.initRevisions = this.initRevisions.bind(this);
