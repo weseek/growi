@@ -7,7 +7,9 @@ import {
 } from 'reactstrap';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
+
 import RevisionComparerContainer from '../../services/RevisionComparerContainer';
+
 import RevisionDiff from '../PageHistory/RevisionDiff';
 
 /* eslint-disable react/prop-types */
@@ -31,7 +33,9 @@ function encodeSpaces(str) {
 const RevisionComparer = (props) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const { t, revisionComparerContainer } = props;
+
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
   }
@@ -52,7 +56,7 @@ const RevisionComparer = (props) => {
     <div className="revision-compare">
       <div className="d-flex">
         <h4 className="align-self-center">{ t('page_history.comparing_revisions') }</h4>
-        {/* Page path URL */}
+
         <Dropdown
           className="grw-copy-dropdown align-self-center ml-auto"
           isOpen={dropdownOpen}

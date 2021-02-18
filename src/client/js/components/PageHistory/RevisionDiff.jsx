@@ -7,7 +7,6 @@ import { html } from 'diff2html';
 import { withTranslation } from 'react-i18next';
 import UserDate from '../User/UserDate';
 
-
 class RevisionDiff extends React.Component {
 
   render() {
@@ -60,15 +59,9 @@ class RevisionDiff extends React.Component {
                 <a href={`?revision=${currentRevision._id}`} className="ml-3">
                   <i className="icon-login"></i>
                 </a>
-
-
               </div>
             </div>
-
-
           </div>
-
-
         </div>
         <div className="revision-history-diff" dangerouslySetInnerHTML={diffView} />
       </>
