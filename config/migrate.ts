@@ -3,7 +3,7 @@ import { getMongoUri } from '~/server/util/mongoose-utils';
 /**
  * Configuration file for migrate-mongo
  * @see https://github.com/seppevs/migrate-mongo
- * @see https://github.com/seppevs/migrate-mongo/issues/79 about workaround of worktypescript
+ * @see https://github.com/seppevs/migrate-mongo/issues/79 about workaround for worktypescript
  */
 
 const mongoUri = getMongoUri();
