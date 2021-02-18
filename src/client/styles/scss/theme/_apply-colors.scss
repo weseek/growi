@@ -581,3 +581,20 @@ mark.rbt-highlight-text {
 .grw-btn-page-management:focus {
   background-color: rgba($color-link, 0.15);
 }
+
+// Revision comparison header
+.comparison-header {
+  background-color: #ffffff;
+  border: 1px solid $bordercolor-nav-tabs;
+  .comparison-source-wrapper {
+    border-right: 1px solid $bordercolor-nav-tabs;
+    .comparison-source {
+      color: $gray-500;
+    }
+  }
+  .comparison-target-wrapper {
+    .comparison-target {
+      color: $gray-500;
+    }
+  }
+}
