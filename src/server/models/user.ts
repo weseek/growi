@@ -32,7 +32,7 @@ export const PAGE_ITEMS = 50;
 //   userEvent.on('activated', userEvent.onActivated);
 // }
 
-export interface IUser {
+export interface IUser extends Document{
   _id: Types.ObjectId;
   userId: Types.ObjectId;
 }
