@@ -4,11 +4,14 @@ import PropTypes from 'prop-types';
 
 import { createPatch } from 'diff';
 import { html } from 'diff2html';
+import { withTranslation } from 'react-i18next';
 import UserDate from '../User/UserDate';
 
-export default class RevisionDiff extends React.Component {
+
+class RevisionDiff extends React.Component {
 
   render() {
+    const { t } = this.props;
     const currentRevision = this.props.currentRevision;
     const previousRevision = this.props.previousRevision;
     const revisionDiffOpened = this.props.revisionDiffOpened;
@@ -47,14 +50,14 @@ export default class RevisionDiff extends React.Component {
           <div className="container pt-1 pr-0">
             <div className="row">
               <div className="col comparison-source-wrapper pt-1 px-0">
-                <span className="comparison-source pr-3">ソース</span><UserDate dateTime={previousRevision.createdAt} />
+                <span className="comparison-source pr-3">{t('page_history.comparing_source')}</span><UserDate dateTime={previousRevision.createdAt} />
                 <a href={`?revision=${previousRevision._id}`} className="ml-3">
                   <i className="icon-login"></i>
                 </a>
 
               </div>
               <div className="col comparison-target-wrapper pt-1">
-                <span className="comparison-target pr-3">ターゲット</span><UserDate dateTime={currentRevision.createdAt} />
+                <span className="comparison-target pr-3">{t('page_history.comparing_target')}</span><UserDate dateTime={currentRevision.createdAt} />
                 <a href={`?revision=${currentRevision._id}`} className="ml-3">
                   <i className="icon-login"></i>
                 </a>
@@ -74,9 +77,14 @@ export default class RevisionDiff extends React.Component {
   }
 
 }
+// const RevisionDiffWrapper = withUnstatedContainers(RevisionDiff);
+
 
 RevisionDiff.propTypes = {
+  t: PropTypes.func.isRequired,
   currentRevision: PropTypes.object.isRequired,
   previousRevision: PropTypes.object.isRequired,
   revisionDiffOpened: PropTypes.bool.isRequired,
 };
+
+export default withTranslation()(RevisionDiff);
