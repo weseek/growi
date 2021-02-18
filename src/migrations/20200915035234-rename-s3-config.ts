@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import { mongoUri, mongodb } from '../../config/migrate';
-import { getModelSafely } from '../server/util/mongoose-utils';
-import ConfigModel from '../server/models/config';
-import loggerFactory from '../utils/logger';
+import { mongodb } from '^/config/migrate';
+import { getModelSafely } from '~/server/util/mongoose-utils';
+import ConfigModel from '~/server/models/config';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:stores:ui');
 
@@ -32,7 +32,7 @@ const awsConfigs = [
 export const up = async():Promise<void> => {
 
   logger.info('Apply migration');
-  mongoose.connect(mongoUri, mongodb.options);
+  mongoose.connect(mongodb.url, mongodb.options);
 
   const Config = getModelSafely('Config') || ConfigModel;
 
@@ -55,7 +55,7 @@ export const down = async():Promise<void> => {
 
   logger.info('Rollback migration');
 
-  mongoose.connect(mongoUri, mongodb.options);
+  mongoose.connect(mongodb.url, mongodb.options);
 
   const Config = getModelSafely('Config') || ConfigModel;
 
