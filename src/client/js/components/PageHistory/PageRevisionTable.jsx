@@ -60,7 +60,7 @@ class PageRevisionTable extends React.Component {
           </div>
         </td>
         <td className="col-1">
-          {(hasDiff) && (
+          {(hasDiff || revision._id === sourceRevision?._id) && (
             <div className="custom-control custom-radio custom-control-inline mr-0">
               <input
                 type="radio"
@@ -76,7 +76,7 @@ class PageRevisionTable extends React.Component {
           )}
         </td>
         <td className="col-2">
-          {(hasDiff) && (
+          {(hasDiff || revision._id === targetRevision?._id) && (
             <div className="custom-control custom-radio custom-control-inline mr-0">
               <input
                 type="radio"
