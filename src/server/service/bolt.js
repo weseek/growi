@@ -1,4 +1,5 @@
 const logger = require('@alias/logger')('growi:service:BoltService');
+const axios = require('axios');
 
 class BoltReciever {
 
@@ -8,14 +9,6 @@ class BoltReciever {
 
   async requestHandler(req, res) {
     let ackCalled = false;
-
-    const payload = JSON.parse(req.body.payload);
-    const { type } = payload;
-    console.log(type);
-
-    if (type === 'view_submission') {
-      console.log('hgoe');
-    }
 
     // for verification request URL on Event Subscriptions
     if (req.body.challenge && req.body.type) {
@@ -44,6 +37,22 @@ class BoltReciever {
     };
 
     await this.bolt.processEvent(event);
+
+    // payload action. click "Submit" etc.
+    if (req.body.payload == null) {
+      return;
+    }
+
+    const payload = JSON.parse(req.body.payload);
+    const { type } = payload;
+
+    if (type === 'view_submission') {
+      return axios.post('http://localhost:3000/_api/v3/pages', {
+        access_token: 'vu5rtuYMSZsYUx4a2ow4xvssjj+uuh0RFYOi03Jhrm4=',
+        path: payload.view.state.values.path.path_input.value,
+        body: payload.view.state.values.contents.contents_input.value,
+      });
+    }
   }
 
 }
