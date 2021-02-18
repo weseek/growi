@@ -54,10 +54,10 @@ export default class Revision extends React.Component {
             <strong><Username user={author}></Username></strong>
             {this.props.isLatestRevision && <span className="badge badge-info ml-2">Latest</span>}
           </div>
-          <div>
+          <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
-            <br className="d-lg-none d-block" />
-            <a className="ml-lg-3" href={`?revision=${revision._id}`}>
+            <br className="d-xl-none d-block" />
+            <a className="ml-xl-3" href={`?revision=${revision._id}`}>
               <i className="icon-login"></i> { t('Go to this version') }
             </a>
           </div>

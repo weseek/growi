@@ -46,7 +46,7 @@ class PageRevisionTable extends React.Component {
               key={`revision-history-rev-${revisionId}`}
             />
             {hasDiff && (
-              <div className="ml-2 mt-auto">
+              <div className="ml-md-3 mt-auto">
                 <div className="btn-group">
                   <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleCompareLatestRevisionButton}>
                     {t('page_history.compare_latest')}
