@@ -1,14 +1,19 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
+import { Schema, Types, Model } from 'mongoose';
 
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
+
+import { getOrCreateModel } from '../util/mongoose-utils';
+
+export interface ITag {
+  _id: Types.ObjectId;
+  name: string;
+}
 
 /*
  * define schema
  */
-const schema = new mongoose.Schema({
+const schema = new Schema<ITag>({
   name: {
     type: String,
     required: true,
@@ -23,7 +28,7 @@ schema.plugin(uniqueValidator);
  *
  * @class Tag
  */
-class Tag {
+class Tag extends Model {
 
   static async getIdToNameMap(tagIds) {
     const tags = await this.find({ _id: { $in: tagIds } });
@@ -61,9 +66,5 @@ class Tag {
 
 }
 
-module.exports = function(crowi) {
-  Tag.crowi = crowi;
-  schema.loadClass(Tag);
-  const model = mongoose.model('Tag', schema);
-  return model;
-};
+schema.loadClass(Tag);
+export default getOrCreateModel<ITag>('Tag', schema);
