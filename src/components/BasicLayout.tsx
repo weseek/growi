@@ -3,15 +3,18 @@ import React, { ReactNode } from 'react';
 
 import GrowiNavbar from '~/client/js/components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from '~/client/js/components/Navbar/GrowiNavbarBottom';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import RawLayout from './RawLayout';
 
+
 type Props = {
   title: string
+  className?: string,
   children?: ReactNode
 }
 
-const BasicLayout = ({ children, title }: Props): JSX.Element => {
+const BasicLayout = ({ children, title, className }: Props): JSX.Element => {
 
   const Sidebar = dynamic(() => import('../client/js/components/Sidebar'), { ssr: false });
   const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
@@ -20,7 +23,7 @@ const BasicLayout = ({ children, title }: Props): JSX.Element => {
 
   return (
     <>
-      <RawLayout title={title}>
+      <RawLayout title={title} className={className}>
         <GrowiNavbar />
 
         <div className="page-wrapper d-flex d-print-block">

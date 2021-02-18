@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -85,11 +84,10 @@ class CustomizeTitle extends React.Component {
 
 }
 
-const CustomizeTitleWrapper = withUnstatedContainers(CustomizeTitle, [AppContainer, AdminCustomizeContainer]);
+const CustomizeTitleWrapper = withUnstatedContainers(CustomizeTitle, [AdminCustomizeContainer]);
 
 CustomizeTitle.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 

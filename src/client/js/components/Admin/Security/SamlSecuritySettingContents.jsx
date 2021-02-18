@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityContainer';
 
@@ -502,13 +501,11 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
 SamlSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
 
 const SamlSecurityManagementContentsWrapper = withUnstatedContainers(SamlSecurityManagementContents, [
-  AppContainer,
   AdminGeneralSecurityContainer,
   AdminSamlSecurityContainer,
 ]);

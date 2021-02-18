@@ -31,7 +31,7 @@ type Props = {
   onClose:() => void;
 }
 
-export const PageDeleteModal:FC<Props> = (props:Props) => {
+const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
   const { isAbleToDeleteCompletely = false, currentPage, isDeleteCompletelyModal } = props;
@@ -53,7 +53,7 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
       const response = await apiPost('/pages.remove', {
         recursively: isDeleteRecursively ? true : null,
         completely: isDeleteCompletely ? true : null,
-        page_id: currentPage.id,
+        page_id: currentPage._id,
         revision_id: currentPage.revision._id,
         // TODO GW-5134 use SocketIoContainer after implement
         // socketClientId: SocketIoContainer.getSocketClientId(),
@@ -122,7 +122,7 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
         )}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} />
+        <ApiErrorMessageList errs={errs} targetPath={currentPage.path} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deletePage}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
@@ -131,3 +131,5 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
     </Modal>
   );
 };
+
+export default PageDeleteModal;

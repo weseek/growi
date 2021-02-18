@@ -6,8 +6,6 @@ import UserGroupEditForm from './UserGroupEditForm';
 import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 
 class UserGroupDetailPage extends React.Component {
 
@@ -38,12 +36,6 @@ class UserGroupDetailPage extends React.Component {
 
 UserGroupDetailPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupDetailPageWrapper = withUnstatedContainers(UserGroupDetailPage, [AppContainer]);
-
-export default withTranslation()(UserGroupDetailPageWrapper);
+export default withTranslation()(UserGroupDetailPage);

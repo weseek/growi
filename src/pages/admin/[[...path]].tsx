@@ -17,7 +17,7 @@ import { SecurityManagementContents } from '~/components/Admin/Security/Security
 import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
-import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';
+import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
 
 import {
   useCurrentUser,

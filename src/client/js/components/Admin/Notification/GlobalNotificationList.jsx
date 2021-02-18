@@ -7,7 +7,6 @@ import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
 import NotificationDeleteModal from './NotificationDeleteModal';
@@ -34,7 +33,7 @@ class GlobalNotificationList extends React.Component {
     const { t } = this.props;
     const isEnabled = !notification.isEnabled;
     try {
-      await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${notification._id}/enabled`, {
+      await apiv3.put(`/notification-setting/global-notification/${notification._id}/enabled`, {
         isEnabled,
       });
       toastSuccess(t('notification_setting.toggle_notification', { path: notification.triggerPath }));
@@ -171,11 +170,10 @@ class GlobalNotificationList extends React.Component {
 
 }
 
-const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationList, [AppContainer, AdminNotificationContainer]);
+const GlobalNotificationListWrapper = withUnstatedContainers(GlobalNotificationList, [AdminNotificationContainer]);
 
 GlobalNotificationList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
 };

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -66,10 +65,8 @@ class ElasticsearchManagement extends React.Component {
   }
 
   async retrieveIndicesStatus() {
-    const { appContainer } = this.props;
-
     try {
-      const { info } = await appContainer.apiv3Get('/search/indices');
+      const { info } = await apiv3Get('/search/indices');
 
       this.setState({
         isConnected: true,
@@ -98,12 +95,10 @@ class ElasticsearchManagement extends React.Component {
   }
 
   async reconnect() {
-    const { appContainer } = this.props;
-
     this.setState({ isReconnectingProcessing: true });
 
     try {
-      await appContainer.apiv3Post('/search/connection');
+      await apiv3Post('/search/connection');
     }
     catch (e) {
       toastError(e);
@@ -115,10 +110,8 @@ class ElasticsearchManagement extends React.Component {
   }
 
   async normalizeIndices() {
-    const { appContainer } = this.props;
-
     try {
-      await appContainer.apiv3Put('/search/indices', { operation: 'normalize' });
+      await apiv3Put('/search/indices', { operation: 'normalize' });
     }
     catch (e) {
       toastError(e);
@@ -130,12 +123,10 @@ class ElasticsearchManagement extends React.Component {
   }
 
   async rebuildIndices() {
-    const { appContainer } = this.props;
-
     this.setState({ isRebuildingProcessing: true });
 
     try {
-      await appContainer.apiv3Put('/search/indices', { operation: 'rebuild' });
+      await apiv3Put('/search/indices', { operation: 'rebuild' });
       toastSuccess('Rebuilding is requested');
     }
     catch (e) {
@@ -146,14 +137,15 @@ class ElasticsearchManagement extends React.Component {
   }
 
   render() {
-    const { t, appContainer } = this.props;
+    const { t } = this.props;
     const {
       isInitialized,
       isConnected, isConfigured, isReconnectingProcessing, isRebuildingProcessing, isRebuildingCompleted,
       isNormalized, indicesData, aliasesData,
     } = this.state;
 
-    const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
+    // TODO: retrieve from SWR
+    // const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
 
     const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
 
@@ -224,11 +216,10 @@ class ElasticsearchManagement extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AppContainer, AdminSocketIoContainer]);
+const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AdminSocketIoContainer]);
 
 ElasticsearchManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 

@@ -10,7 +10,6 @@ import {
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 import LdapAuthTest from './LdapAuthTest';
 
@@ -67,13 +66,12 @@ class LdapAuthTestModal extends React.Component {
 
 LdapAuthTestModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
-const LdapAuthTestModalWrapper = withUnstatedContainers(LdapAuthTestModal, [AppContainer, AdminLdapSecurityContainer]);
+const LdapAuthTestModalWrapper = withUnstatedContainers(LdapAuthTestModal, [AdminLdapSecurityContainer]);
 
 export default withTranslation()(LdapAuthTestModalWrapper);
