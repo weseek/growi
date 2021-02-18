@@ -43,7 +43,6 @@ class RevisionDiff extends React.Component {
     }
 
     const diffView = { __html: diffViewHTML };
-    // eslint-disable-next-line react/no-danger
     return (
       <>
         <div className="comparison-header">
@@ -77,8 +76,6 @@ class RevisionDiff extends React.Component {
   }
 
 }
-// const RevisionDiffWrapper = withUnstatedContainers(RevisionDiff);
-
 
 RevisionDiff.propTypes = {
   t: PropTypes.func.isRequired,
