@@ -23,51 +23,41 @@ class PageRevisionTable extends React.Component {
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
-    // const handleCompareLatestRevisionButton = () => {
-    //   revisionComparerContainer.setState({ sourceRevision: revision });
-    //   revisionComparerContainer.setState({ targetRevision: latestRevision });
-    // };
+    const handleCompareLatestRevisionButton = () => {
+      revisionComparerContainer.setState({ sourceRevision: revision });
+      revisionComparerContainer.setState({ targetRevision: latestRevision });
+    };
 
-    // const handleComparePreviousRevisionButton = () => {
-    //   revisionComparerContainer.setState({ sourceRevision: previousRevision });
-    //   revisionComparerContainer.setState({ targetRevision: revision });
-    // };
+    const handleComparePreviousRevisionButton = () => {
+      revisionComparerContainer.setState({ sourceRevision: previousRevision });
+      revisionComparerContainer.setState({ targetRevision: revision });
+    };
 
     return (
       <tr className="d-flex" key={`revision-history-${revisionId}`}>
         <td className="col" key={`revision-history-top-${revisionId}`}>
-          <Revision
-            t={this.props.t}
-            revision={revision}
-            isLatestRevision={revision === latestRevision}
-            revisionDiffOpened={revisionDiffOpened}
-            hasDiff={hasDiff}
-            key={`revision-history-rev-${revisionId}`}
-          />
-          {/* {hasDiff && (
-            <div className="dropdown mt-auto mb-3 ml-5">
-              <button
-                className="btn btn-primary dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="true"
-              >
-                <span className="float-left">
-                  最新と比較
-                </span>
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button className="dropdown-item" type="button" onClick={handleCompareLatestRevisionButton}>
-                  最新と比較
-                </button>
-                <button className="dropdown-item" type="button" onClick={handleComparePreviousRevisionButton}>
-                  1つ前のバージョンと比較
-                </button>
+          <div className="d-lg-flex">
+            <Revision
+              t={this.props.t}
+              revision={revision}
+              isLatestRevision={revision === latestRevision}
+              revisionDiffOpened={revisionDiffOpened}
+              hasDiff={hasDiff}
+              key={`revision-history-rev-${revisionId}`}
+            />
+            {hasDiff && (
+              <div className="ml-5 my-auto">
+                <div className="btn-group">
+                  <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleCompareLatestRevisionButton}>
+                    最新と比較
+                  </button>
+                  <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleComparePreviousRevisionButton}>
+                    1つ前のバージョンと比較
+                  </button>
+                </div>
               </div>
-            </div>
-          )} */}
+           )}
+          </div>
         </td>
         <td className="col-1">
           {(hasDiff) && (
