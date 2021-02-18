@@ -4,7 +4,7 @@ import { getModelSafely } from '~/server/util/mongoose-utils';
 import ConfigModel from '~/server/models/config';
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:stores:ui');
+const logger = loggerFactory('growi:migrate:rename-s3-config');
 
 const awsConfigs = [
   {
