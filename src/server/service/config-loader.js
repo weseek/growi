@@ -398,6 +398,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  SLACK_SIGNING_SECRET: {
+    ns:      'crowi',
+    key:     'slackbot:signingSecret',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  SLACK_BOT_TOKEN: {
+    ns:      'crowi',
+    key:     'slackbot:token',
+    type:    TYPES.STRING,
+    default: null,
+  },
 };
 
 class ConfigLoader {
