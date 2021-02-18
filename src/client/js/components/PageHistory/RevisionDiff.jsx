@@ -43,7 +43,7 @@ export default class RevisionDiff extends React.Component {
     // eslint-disable-next-line react/no-danger
     return (
       <>
-        <div className="comparison-header">
+        <div className="comparison-header py-2">
           <div className="container pr-0">
             <div className="row">
               <div className="col comparison-source-wrapper px-0">
