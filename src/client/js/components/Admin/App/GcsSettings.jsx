@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
 
@@ -152,11 +151,10 @@ function GcsSetting(props) {
 /**
  * Wrapper component for using unstated
  */
-const GcsSettingWrapper = withUnstatedContainers(GcsSetting, [AppContainer, AdminAppContainer]);
+const GcsSettingWrapper = withUnstatedContainers(GcsSetting, [AdminAppContainer]);
 
 GcsSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 

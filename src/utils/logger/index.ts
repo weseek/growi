@@ -1,4 +1,4 @@
-import bunyan, { createLogger as createLoggerForServer, LogLevel } from 'bunyan';
+import Logger, { createLogger as createLoggerForServer, LogLevel } from 'bunyan';
 import { createLogger as createLoggerForBrowser } from 'browser-bunyan';
 import minimatch from 'minimatch';
 
@@ -11,7 +11,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 // logger store
 interface BunyanStore {
-  [key: string] : bunyan;
+  [key: string] : Logger;
 }
 const loggers: BunyanStore = {};
 
@@ -61,7 +61,7 @@ export function determineLogLevel(name: string): LogLevel {
   return level;
 }
 
-const loggerFactory = function(name: string): bunyan {
+const loggerFactory = function(name: string): Logger {
   const createLogger = isBrowser
     ? createLoggerForBrowser
     : createLoggerForServer;
@@ -72,7 +72,7 @@ const loggerFactory = function(name: string): bunyan {
       name,
       stream,
       level: determineLogLevel(name),
-    });
+    }) as Logger;
   }
 
   return loggers[name];

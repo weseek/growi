@@ -7,7 +7,6 @@ import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 import UserNotificationRow from './UserNotificationRow';
 
@@ -145,13 +144,11 @@ class UserTriggerNotification extends React.Component {
 }
 
 
-const UserTriggerNotificationWrapper = withUnstatedContainers(UserTriggerNotification, [AppContainer, AdminNotificationContainer]);
+const UserTriggerNotificationWrapper = withUnstatedContainers(UserTriggerNotification, [AdminNotificationContainer]);
 
 UserTriggerNotification.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
-
 };
 
 export default withTranslation()(UserTriggerNotificationWrapper);

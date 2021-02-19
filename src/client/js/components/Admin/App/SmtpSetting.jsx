@@ -7,7 +7,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
 
-import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
 function SmtpSetting(props) {
@@ -78,11 +77,10 @@ function SmtpSetting(props) {
 /**
  * Wrapper component for using unstated
  */
-const SmtpSettingWrapper = withUnstatedContainers(withLoadingSppiner(SmtpSetting), [AppContainer, AdminAppContainer]);
+const SmtpSettingWrapper = withUnstatedContainers(withLoadingSppiner(SmtpSetting), [AdminAppContainer]);
 
 SmtpSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 

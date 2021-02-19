@@ -7,7 +7,7 @@ import { useEditorMode } from '~/stores/ui';
 import Page from '../Page';
 // import UserInfo from '../User/UserInfo';
 // import ContentLinkButtons from '../ContentLinkButtons';
-// import PageAccessories from '../PageAccessories';
+import { PageAccessories } from '~/components/PageAccessory/PageAccessories';
 
 
 const DisplaySwitcher = (props) => {
@@ -29,7 +29,7 @@ const DisplaySwitcher = (props) => {
             <div className="grw-side-contents-container">
               <div className="grw-side-contents-sticky-container">
                 <div className="border-bottom pb-1">
-                  {/* <PageAccessories /> */}
+                  <PageAccessories />
                 </div>
 
                 <div className="d-none d-lg-block">

@@ -31,7 +31,7 @@ type Props = {
   onClose:() => void;
 }
 
-export const PageDeleteModal:FC<Props> = (props:Props) => {
+const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
   const { isAbleToDeleteCompletely = false, currentPage, isDeleteCompletelyModal } = props;
@@ -120,7 +120,7 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
         )}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} />
+        <ApiErrorMessageList errs={errs} targetPath={currentPage.path} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deletePage}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
@@ -129,3 +129,5 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
     </Modal>
   );
 };
+
+export default PageDeleteModal;

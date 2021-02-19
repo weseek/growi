@@ -42,7 +42,7 @@ type Props = {
   path?: string;
 }
 
-export const CreateTemplateModal:FC<Props> = (props:Props) => {
+const CreateTemplateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const parentPath = pathUtils.addTrailingSlash(props.path);
 
@@ -66,3 +66,5 @@ export const CreateTemplateModal:FC<Props> = (props:Props) => {
     </Modal>
   );
 };
+
+export default CreateTemplateModal;
