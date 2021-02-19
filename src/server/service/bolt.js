@@ -282,7 +282,7 @@ class BoltService {
 
       // sanitize path
       path = this.crowi.xss.process(path);
-      path = pathUtils.addHeadingSlash(path);
+      path = pathUtils.normalizePath(path);
 
       const user = slackUser._id;
       return Page.create(path, body, user, {});
