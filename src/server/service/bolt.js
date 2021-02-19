@@ -273,7 +273,7 @@ class BoltService {
     const pathUtils = require('growi-commons').pathUtils;
 
     try {
-      // create user to create page in slack
+      // search "slackUser" to create page in slack
       const slackUser = await User.findUserByUsername('slackUser');
 
       let path = view.state.values.path.path_input.value;
