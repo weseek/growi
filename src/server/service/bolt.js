@@ -14,8 +14,18 @@ class BoltReciever {
       return res.send(req.body);
     }
 
+    const payload = req.body.payload;
+    let reqBody;
+
+    if (payload != null) {
+      reqBody = JSON.parse(payload);
+    }
+    else {
+      reqBody = req.body;
+    }
+
     const event = {
-      body: req.body,
+      body: reqBody,
       ack: (response) => {
         if (ackCalled) {
           return;
@@ -103,6 +113,7 @@ class BoltService {
           break;
       }
     });
+
 
     this.bolt.action('button_click', async({ body, ack, say }) => {
       // Acknowledge the action
