@@ -251,7 +251,7 @@ class BoltService {
           channel: command.channel_id,
           user: command.user_id,
           blocks: [
-            this.generateMarkdownSectionBlock('* slackUser が存在しません。*'),
+            this.generateMarkdownSectionBlock('*slackUser does not exist.*'),
           ],
         });
       }
