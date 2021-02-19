@@ -211,9 +211,9 @@ class BoltService {
     const User = this.crowi.model('User');
 
     try {
-      const slackUser = await User.findUserByUsername('slackeeeUser');
+      const slackUser = await User.findUserByUsername('slackUser');
 
-      // if slackUser null, don't show create Modal
+      // if "slackUser" is null, don't show create Modal
       if (slackUser == null) {
         throw new Error('userNull');
       }
