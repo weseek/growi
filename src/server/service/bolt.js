@@ -201,7 +201,14 @@ class BoltService {
   }
 
   async createModal(command, client, body) {
+    const User = this.crowi.model('User');
+
     try {
+      const slackUser = await User.findUserByUsername('slackeeeUser');
+      if (slackUser == null) {
+        throw new Error('userNull');
+      }
+
       await client.views.open({
         trigger_id: body.trigger_id,
 
@@ -228,7 +235,17 @@ class BoltService {
         },
       });
     }
-    catch {
+    catch (e) {
+      if (e instanceof Error) {
+        return this.client.chat.postEphemeral({
+          channel: command.channel_id,
+          user: command.user_id,
+          blocks: [
+            this.generateMarkdownSectionBlock('* slackUser が存在しません。*'),
+          ],
+        });
+      }
+
       logger.error('Failed to create page.');
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
