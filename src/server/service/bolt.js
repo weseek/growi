@@ -114,9 +114,7 @@ class BoltService {
       }
     });
 
-
     this.bolt.action('button_click', async({ body, ack, say }) => {
-      // Acknowledge the action
       await ack();
       await say('clicked the button');
     });
