@@ -44,6 +44,7 @@ class BoltReciever {
         ackCalled = true;
       },
     };
+
     await this.bolt.processEvent(event);
   }
 
