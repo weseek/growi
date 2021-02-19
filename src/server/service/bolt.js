@@ -114,7 +114,7 @@ class BoltService {
     });
 
     this.bolt.view('createPage', async({ ack, view }) => {
-      ack();
+      await ack();
       return this.createPageInGrowi(view);
     });
 
