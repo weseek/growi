@@ -14,8 +14,18 @@ class BoltReciever {
       return res.send(req.body);
     }
 
+    const payload = req.body.payload;
+    let reqBody;
+
+    if (payload != null) {
+      reqBody = JSON.parse(payload);
+    }
+    else {
+      reqBody = req.body;
+    }
+
     const event = {
-      body: req.body,
+      body: reqBody,
       ack: (response) => {
         if (ackCalled) {
           return;
@@ -35,24 +45,6 @@ class BoltReciever {
       },
     };
     await this.bolt.processEvent(event);
-
-    // payload action. click "Submit" etc.
-    if (req.body.payload == null) {
-      return;
-    }
-
-    const payload = JSON.parse(req.body.payload);
-    const { type } = payload;
-
-    if (type === 'view_submission') {
-      // avoid an error
-      res.send('');
-
-      this.bolt.view('view_1', async({ ack, view, say }) => {
-        await ack();
-        console.log('view');
-      });
-    }
   }
 
 }
@@ -121,6 +113,10 @@ class BoltService {
       }
     });
 
+    this.bolt.view('createPage', async({ ack, view }) => {
+      ack();
+      return this.createPageInGrowi(view);
+    });
   }
 
   notCommand(command) {
@@ -133,13 +129,6 @@ class BoltService {
       ],
     });
 
-  }
-
-  createPageInGrowi(payload) {
-    const Page = this.crowi.model('Page');
-    const path = payload.view.state.values.path.path_input.value;
-    const body = payload.view.state.values.contents.contents_input.value;
-    return Page.create(path, body, {}, {});
   }
 
   async searchResults(command, args) {
@@ -218,7 +207,7 @@ class BoltService {
 
         view: {
           type: 'modal',
-          callback_id: 'view_1',
+          callback_id: 'createPage',
           title: {
             type: 'plain_text',
             text: 'Create Page',
@@ -248,6 +237,30 @@ class BoltService {
           this.generateMarkdownSectionBlock('*ページ作成に失敗しました。*\n Hint\n `/growi create`'),
         ],
       });
+    }
+  }
+
+  async createPageInGrowi(view) {
+    const User = this.crowi.model('User');
+    const Page = this.crowi.model('Page');
+    const pathUtils = require('growi-commons').pathUtils;
+
+    try {
+      // create user to create page in slack
+      const slackUser = await User.findUserByUsername('slackUser');
+
+      let path = view.state.values.path.path_input.value;
+      const body = view.state.values.contents.contents_input.value;
+
+      // sanitize path
+      path = this.crowi.xss.process(path);
+      path = pathUtils.addHeadingSlash(path);
+
+      const user = slackUser._id;
+      return Page.create(path, body, user, {});
+    }
+    catch {
+      logger.error('Failed to create page in GROWI');
     }
   }
 
