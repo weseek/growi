@@ -177,7 +177,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('Search result 10'),
+          this.generateMarkdownSectionBlock('10 results.'),
           this.generateMarkdownSectionBlock(`${resultPaths.join('\n')}`),
           {
             type: 'actions',
