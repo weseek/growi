@@ -212,6 +212,8 @@ class BoltService {
 
     try {
       const slackUser = await User.findUserByUsername('slackeeeUser');
+
+      // if slackUser null, don't show create Modal
       if (slackUser == null) {
         throw new Error('userNull');
       }
