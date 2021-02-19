@@ -132,7 +132,7 @@ class BoltService {
       channel: command.channel_id,
       user: command.user_id,
       blocks: [
-        this.generateMarkdownSectionBlock('*コマンドが存在しません。*\n Hint\n `/growi [command] [keyword]`'),
+        this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
     });
 
@@ -145,7 +145,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('*キーワードを入力してください。*\n Hint\n `/growi search [keyword]`'),
+          this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
     }
@@ -163,7 +163,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('*キーワードに該当するページは存在しません。*'),
+          this.generateMarkdownSectionBlock('*No page that match your keywords.*'),
         ],
       });
     }
@@ -177,7 +177,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('検索結果 10 件'),
+          this.generateMarkdownSectionBlock('Search result 10'),
           this.generateMarkdownSectionBlock(`${resultPaths.join('\n')}`),
           {
             type: 'actions',
@@ -186,7 +186,7 @@ class BoltService {
                 type: 'button',
                 text: {
                   type: 'plain_text',
-                  text: '検索結果をこのチャンネルに共有する',
+                  text: 'Share the results in this channel.',
                 },
                 style: 'primary',
                 action_id: 'button_click',
@@ -202,7 +202,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('*検索に失敗しました。*\n Hint\n `/growi search [keyword]`'),
+          this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
     }
@@ -238,7 +238,7 @@ class BoltService {
             text: 'Cancel',
           },
           blocks: [
-            this.generateMarkdownSectionBlock('ページを作成します'),
+            this.generateMarkdownSectionBlock('Create new page.'),
             this.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
             this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
           ],
@@ -261,7 +261,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('*ページ作成に失敗しました。*\n Hint\n `/growi create`'),
+          this.generateMarkdownSectionBlock('*Failed to create new page.*\n Hint\n `/growi create`'),
         ],
       });
     }
@@ -288,7 +288,7 @@ class BoltService {
       return Page.create(path, body, user, {});
     }
     catch {
-      logger.error('Failed to create page in GROWI');
+      logger.error('Failed to create page in GROWI.');
     }
   }
 
