@@ -117,6 +117,12 @@ class BoltService {
       ack();
       return this.createPageInGrowi(view);
     });
+
+    this.bolt.action('button_click', async({ body, ack, say }) => {
+      await ack();
+      await say('clicked the button');
+    });
+
   }
 
   notCommand(command) {
@@ -182,6 +188,7 @@ class BoltService {
                   text: '検索結果をこのチャンネルに共有する',
                 },
                 style: 'primary',
+                action_id: 'button_click',
               },
             ],
           },
