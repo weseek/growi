@@ -266,6 +266,7 @@ class BoltService {
     }
   }
 
+  // Submit action in create Modal
   async createPageInGrowi(view) {
     const User = this.crowi.model('User');
     const Page = this.crowi.model('Page');
