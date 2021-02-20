@@ -114,9 +114,11 @@ class BoltService {
       }
     });
 
-    this.bolt.view('createPage', async({ ack, view }) => {
+    this.bolt.view('createPage', async({
+      ack, view, body, client,
+    }) => {
       await ack();
-      return this.createPageInGrowi(view);
+      return this.createPageInGrowi(view, body, client);
     });
 
     this.bolt.action('button_click', async({ body, ack, say }) => {
@@ -268,7 +270,7 @@ class BoltService {
   }
 
   // Submit action in create Modal
-  async createPageInGrowi(view) {
+  async createPageInGrowi(view, body, client) {
     const User = this.crowi.model('User');
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
@@ -285,10 +287,17 @@ class BoltService {
       path = pathUtils.normalizePath(path);
 
       const user = slackUser._id;
-      return Page.create(path, body, user, {});
+
+      await Page.create(path, body, user, {});
     }
-    catch {
-      logger.error('Failed to create page in GROWI.');
+    catch (e) {
+      if (e instanceof Error) {
+        logger.error('Failed to create page in GROWI.');
+        client.chat.postMessage({
+          channel: body.user.id,
+          text: `*Cannot create new page to existed path*\n contents\n ${view.state.values.contents.contents_input.value}`,
+        });
+      }
     }
   }
 
