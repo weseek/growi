@@ -295,7 +295,10 @@ class BoltService {
         logger.error('Failed to create page in GROWI.');
         client.chat.postMessage({
           channel: body.user.id,
-          text: `*Cannot create new page to existed path*\n contents\n ${view.state.values.contents.contents_input.value}`,
+          blocks: [
+            this.generateMarkdownSectionBlock('*Cannot create new page to existed path*\n contents'),
+            this.generateMarkdownSectionBlock(view.state.values.contents.contents_input.value),
+          ],
         });
       }
     }
