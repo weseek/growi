@@ -275,12 +275,13 @@ class BoltService {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
 
+    const contentsBody = view.state.values.contents.contents_input.value;
+
     try {
       // search "slackUser" to create page in slack
       const slackUser = await User.findUserByUsername('slackUser');
 
       let path = view.state.values.path.path_input.value;
-      const body = view.state.values.contents.contents_input.value;
 
       // sanitize path
       path = this.crowi.xss.process(path);
@@ -288,7 +289,7 @@ class BoltService {
 
       const user = slackUser._id;
 
-      await Page.create(path, body, user, {});
+      await Page.create(path, contentsBody, user, {});
     }
     catch (e) {
       if (e instanceof Error) {
@@ -296,8 +297,7 @@ class BoltService {
         client.chat.postMessage({
           channel: body.user.id,
           blocks: [
-            this.generateMarkdownSectionBlock('*Cannot create new page to existed path*\n contents'),
-            this.generateMarkdownSectionBlock(view.state.values.contents.contents_input.value),
+            this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`),
           ],
         });
       }
