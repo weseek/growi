@@ -204,7 +204,7 @@ class BoltService {
                 },
                 style: 'primary',
                 action_id: 'button_click',
-                value: 'aaaa',
+                value: `${resultPaths.join('\n')}`,
               },
             ],
           },
