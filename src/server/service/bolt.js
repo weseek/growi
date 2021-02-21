@@ -121,10 +121,15 @@ class BoltService {
 
     this.bolt.action('button_click', async({ body, ack, say }) => {
       await ack();
-      await say('clicked the button');
+      this.shareSeachResults(say);
     });
 
   }
+
+  async shareSeachResults(say) {
+    await say('clicked the button');
+  }
+
 
   notCommand(command) {
     logger.error('Input first arguments');
@@ -186,7 +191,7 @@ class BoltService {
                 type: 'button',
                 text: {
                   type: 'plain_text',
-                  text: 'Share the results in this channel.',
+                  text: 'Share the results.',
                 },
                 style: 'primary',
                 action_id: 'button_click',
