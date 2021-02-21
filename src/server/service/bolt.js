@@ -121,15 +121,10 @@ class BoltService {
     });
 
     this.bolt.action('button_click', async({
-      body, ack, say, respond, action,
+      body, ack, say, action,
     }) => {
       await ack();
-      // await say('clicked the button');
-      console.log('action', action);
-      await respond({
-        response_type: 'in_channel',
-        text: action.value,
-      });
+      await say(action.value);
     });
 
   }
