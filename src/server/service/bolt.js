@@ -119,7 +119,7 @@ class BoltService {
       return this.createPageInGrowi(view);
     });
 
-    this.bolt.action('button_click', async({
+    this.bolt.action('shareSearchResults', async({
       body, ack, say, action,
     }) => {
       await ack();
@@ -197,7 +197,7 @@ class BoltService {
                   text: 'Share the results.',
                 },
                 style: 'primary',
-                action_id: 'button_click',
+                action_id: 'shareSearchResults',
                 value: `${resultPaths.join('\n')}`,
               },
             ],
