@@ -9,7 +9,7 @@ import { useCustomizeSettingsSWR } from '~/stores/admin';
 import { apiv3Put } from '~/utils/apiv3-client';
 
 
-const currentCustomizeTitle = 'currentCustomizeTitle';
+const currentCustomizeTitle = 'customizeTitle';
 
 type FormValues ={
   [currentCustomizeTitle]: string,
@@ -86,7 +86,7 @@ export const CustomizeTitle:FC = () => {
           <input
             name={currentCustomizeTitle}
             className="form-control"
-            id="currentCustomizeTitle"
+            id="customizeTitle"
             ref={register}
           />
         </div>
