@@ -45,6 +45,7 @@ class BoltReciever {
       },
     };
 
+    console.log(event);
     await this.bolt.processEvent(event);
   }
 
@@ -119,17 +120,19 @@ class BoltService {
       return this.createPageInGrowi(view);
     });
 
-    this.bolt.action('button_click', async({ body, ack, say }) => {
+    this.bolt.action('button_click', async({
+      body, ack, say, respond, action,
+    }) => {
       await ack();
-      this.shareSeachResults(say);
+      // await say('clicked the button');
+      console.log('action', action);
+      await respond({
+        response_type: 'in_channel',
+        text: action.value,
+      });
     });
 
   }
-
-  async shareSeachResults(say) {
-    await say('clicked the button');
-  }
-
 
   notCommand(command) {
     logger.error('Input first arguments');
@@ -143,7 +146,7 @@ class BoltService {
 
   }
 
-  async searchResults(command, args) {
+  async getSearchResultPaths(command, args) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
       return this.client.chat.postEphemeral({
@@ -177,6 +180,12 @@ class BoltService {
       return data._source.path;
     });
 
+    return resultPaths;
+  }
+
+  async searchResults(command, args) {
+    const resultPaths = await this.getSearchResultPaths(command, args);
+
     try {
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
@@ -195,6 +204,7 @@ class BoltService {
                 },
                 style: 'primary',
                 action_id: 'button_click',
+                value: 'aaaa',
               },
             ],
           },
