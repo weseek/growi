@@ -5,7 +5,7 @@ import { useCustomizeSettingsSWR } from '~/stores/admin';
 import { CustomizeThemeSetting } from '~/components/Admin/Customize/CustomizeThemeSetting';
 import { CustomizeFunctionSetting } from '~/components/Admin/Customize/CustomizeFunctionSetting';
 import { CustomizeHighlightSetting } from '~/components/Admin/Customize/CustomizeHighlightSetting';
-import CustomizeTitle from '~/client/js/components/Admin/Customize/CustomizeTitle';
+import { CustomizeTitle } from '~/components/Admin/Customize/CustomizeTitle';
 import CustomizeHeaderSetting from '~/client/js/components/Admin/Customize/CustomizeHeaderSetting';
 import CustomizeCssSetting from '~/client/js/components/Admin/Customize/CustomizeCssSetting';
 import CustomizeScriptSetting from '~/client/js/components/Admin/Customize/CustomizeScriptSetting';
@@ -37,10 +37,10 @@ const CustomizeSettingContents = (): JSX.Element => {
       <div className="mb-5">
         <CustomizeHighlightSetting />
       </div>
-      {/*      <div className="mb-5">
+      <div className="mb-5">
         <CustomizeTitle />
       </div>
-      <div className="mb-5">
+      {/* <div className="mb-5">
         <CustomizeHeaderSetting />
       </div>
       <div className="mb-5">
