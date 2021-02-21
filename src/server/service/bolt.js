@@ -45,7 +45,6 @@ class BoltReciever {
       },
     };
 
-    console.log(event);
     await this.bolt.processEvent(event);
   }
 
