@@ -7,10 +7,11 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 module.exports = (crowi) => {
   this.app = crowi.express;
   const { boltService } = crowi;
+  const requestHandler = boltService.receiver.requestHandler.bind(boltService.receiver);
 
   router.post('/', async(req, res) => {
     try {
-      const response = await boltService.receiver.requestHandler.bind(boltService.receiver)(req, res) || null;
+      const response = await requestHandler(req.body) || null;
       res.send(response);
     }
     catch (err) {
