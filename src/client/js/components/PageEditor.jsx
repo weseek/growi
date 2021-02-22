@@ -10,7 +10,7 @@ import { envUtils } from 'growi-commons';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
-import Preview from './PageEditor/Preview';
+// import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 // import EditorContainer from '../services/EditorContainer';
 
@@ -293,11 +293,11 @@ class PageEditor extends React.Component {
     return (
       <div className="d-flex flex-wrap">
         <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
-          {/* <Editor
+          <Editor
             ref={(c) => { this.editor = c }}
             value={this.state.markdown}
             // noCdn={noCdn}
-            isMobile={this.props.appContainer.isMobile}
+            // isMobile={this.props.appContainer.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
             // emojiStrategy={emojiStrategy}
@@ -306,7 +306,7 @@ class PageEditor extends React.Component {
             onChange={this.onMarkdownChanged}
             onUpload={this.onUpload}
             onSave={this.onSaveWithShortcut}
-          /> */}
+          />
         </div>
         <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
           {/* <Preview
@@ -327,13 +327,14 @@ class PageEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer]);
+// const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer]);
 // const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
 
 PageEditor.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   // editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default PageEditorWrapper;
+export default PageEditor;
+// export default PageEditorWrapper;
