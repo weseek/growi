@@ -27,7 +27,7 @@ export const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled 
 
 export const PAGE_ITEMS = 50;
 
-// let userEvent;
+let userEvent;
 
 // // init event
 // if (crowi != null) {
@@ -40,6 +40,18 @@ type CreateUserByEmail = {
   password?:string,
   user?:User
 }
+
+
+class UserUpperLimitException {
+
+  name: string;
+
+  constructor() {
+    this.name = this.constructor.name;
+  }
+
+}
+
 
 export interface IUser extends Document{
   _id: Types.ObjectId;
@@ -119,30 +131,30 @@ function decideUserStatusOnRegistration():number {
 }
 
 
-// function generateRandomTempPassword() {
-//   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!=-_';
-//   let password = '';
-//   const len = 12;
+function generateRandomTempPassword():string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!=-_';
+  let password = '';
+  const len = 12;
 
-//   for (let i = 0; i < len; i++) {
-//     const randomPoz = Math.floor(Math.random() * chars.length);
-//     password += chars.substring(randomPoz, randomPoz + 1);
-//   }
+  for (let i = 0; i < len; i++) {
+    const randomPoz = Math.floor(Math.random() * chars.length);
+    password += chars.substring(randomPoz, randomPoz + 1);
+  }
 
-//   return password;
-// }
+  return password;
+}
 
-// function generateRandomEmail() {
-//   const randomstr = generateRandomTempPassword();
-//   return `change-it-${randomstr}@example.com`;
-// }
+function generateRandomEmail():string {
+  const randomstr = generateRandomTempPassword();
+  return `change-it-${randomstr}@example.com`;
+}
 
-function generatePassword(password) {
+function generatePassword(password:string):string {
 
-  // const hasher = crypto.createHash('sha256');
-  // hasher.update(crowi.env.PASSWORD_SEED + password);
+  const hasher = crypto.createHash('sha256');
+  hasher.update(process.env.PASSWORD_SEED + password);
 
-  // return hasher.digest('hex');
+  return hasher.digest('hex');
 }
 
 function generateApiToken(user) {
@@ -459,17 +471,17 @@ class User extends Model {
     });
   }
 
-  static async isUserCountExceedsUpperLimit() {
-    // const { configManager } = crowi;
+  static async isUserCountExceedsUpperLimit():boolean {
+    const configManager = new ConfigManager();
 
-    // const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
 
-    // const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
-    // if (userUpperLimit <= activeUsers) {
-    //   return true;
-    // }
+    const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
+    if (userUpperLimit <= activeUsers) {
+      return true;
+    }
 
-    // return false;
+    return false;
   }
 
   static async countListByStatus(status) {
@@ -515,17 +527,17 @@ class User extends Model {
   }
 
   static async resetPasswordByRandomString(id) {
-    // const user = await this.findById(id);
+    const user = await this.findById(id);
 
-    // if (!user) {
-    //   throw new Error('User not found');
-    // }
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-    // const newPassword = generateRandomTempPassword();
-    // user.setPassword(newPassword);
-    // await user.save();
+    const newPassword = generateRandomTempPassword();
+    user.setPassword(newPassword);
+    await user.save();
 
-    // return newPassword;
+    return newPassword;
   }
 
   static async createUserByEmail(email):Promise<CreateUserByEmail> {
@@ -623,53 +635,54 @@ class User extends Model {
     return afterWorkEmailList;
   }
 
-  static async createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, callback) {
-    // const newUser = new this();
+  static async createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, callback):Promise<void> {
+    const configManager = new ConfigManager();
+    const newUser = new this();
 
-    // // check user upper limit
-    // const isUserCountExceedsUpperLimit = await this.isUserCountExceedsUpperLimit();
-    // if (isUserCountExceedsUpperLimit) {
-    //   const err = new UserUpperLimitException();
-    //   return callback(err);
-    // }
+    // check user upper limit
+    const isUserCountExceedsUpperLimit = await this.isUserCountExceedsUpperLimit();
+    if (isUserCountExceedsUpperLimit) {
+      const err = new UserUpperLimitException();
+      return callback(err);
+    }
 
-    // // check email duplication because email must be unique
-    // const count = await this.count({ email });
-    // if (count > 0) {
-    // // eslint-disable-next-line no-param-reassign
-    //   email = generateRandomEmail();
-    // }
+    // check email duplication because email must be unique
+    const count = await this.count({ email });
+    if (count > 0) {
+    // eslint-disable-next-line no-param-reassign
+      email = generateRandomEmail();
+    }
 
-    // newUser.name = name;
-    // newUser.username = username;
-    // newUser.email = email;
-    // if (password != null) {
-    //   newUser.setPassword(password);
-    // }
+    newUser.name = name;
+    newUser.username = username;
+    newUser.email = email;
+    if (password != null) {
+      newUser.setPassword(password);
+    }
 
-    // const configManager = crowi.configManager;
-    // const globalLang = configManager.getConfig('crowi', 'app:globalLang');
-    // if (globalLang != null) {
-    //   newUser.lang = globalLang;
-    // }
 
-    // if (lang != null) {
-    //   newUser.lang = lang;
-    // }
-    // newUser.createdAt = Date.now();
-    // newUser.status = status || decideUserStatusOnRegistration();
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    if (globalLang != null) {
+      newUser.lang = globalLang;
+    }
 
-    // newUser.save((err, userData) => {
-    //   if (err) {
-    //     logger.error('createUserByEmailAndPasswordAndStatus failed: ', err);
-    //     return callback(err);
-    //   }
+    if (lang != null) {
+      newUser.lang = lang;
+    }
+    newUser.createdAt = Date.now();
+    newUser.status = status || decideUserStatusOnRegistration();
 
-    //   if (userData.status === STATUS_ACTIVE) {
-    //     userEvent.emit('activated', userData);
-    //   }
-    //   return callback(err, userData);
-    // });
+    newUser.save((err, userData) => {
+      if (err) {
+        logger.error('createUserByEmailAndPasswordAndStatus failed: ', err);
+        return callback(err);
+      }
+
+      if (userData.status === STATUS_ACTIVE) {
+        userEvent.emit('activated', userData);
+      }
+      return callback(err, userData);
+    });
   }
 
   /**
@@ -707,16 +720,6 @@ class User extends Model {
     }
 
     return username;
-  }
-
-}
-
-class UserUpperLimitException {
-
-  name: string;
-
-  constructor() {
-    this.name = this.constructor.name;
   }
 
 }
