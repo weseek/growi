@@ -58,6 +58,15 @@ const PageAccessoriesModalControl = (props) => {
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
       {accessoriesBtnList.map((accessory) => {
+
+        let tooltipMessage;
+        if (accessory.disabled) {
+          tooltipMessage = isPageExist ? t('Not available for guest') : t('not_found_page.page_not_exist');
+        }
+        else {
+          tooltipMessage = accessory.i18n;
+        }
+
         return (
           <Fragment key={accessory.name}>
             <div id={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`}>
@@ -70,7 +79,7 @@ const PageAccessoriesModalControl = (props) => {
               </button>
             </div>
             <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
-              {accessory.disabled ? t('Not available for guest') : accessory.i18n}
+              {tooltipMessage}
             </UncontrolledTooltip>
           </Fragment>
         );
