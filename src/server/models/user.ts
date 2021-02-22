@@ -590,6 +590,7 @@ class User extends Model {
   }
 
   static async sendEmailbyUserList(userList) {
+    // TODO enable appService and mailService
     // const { appService, mailService } = crowi;
     // const appTitle = appService.getAppTitle();
 
