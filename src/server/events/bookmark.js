@@ -2,7 +2,7 @@
 const util = require('util');
 const events = require('events');
 
-export default function BookmarkEvent(crowi) {
+function BookmarkEvent(crowi) {
   this.crowi = crowi;
 
   events.EventEmitter.call(this);
@@ -11,3 +11,5 @@ util.inherits(BookmarkEvent, events.EventEmitter);
 
 BookmarkEvent.prototype.onCreate = function(bookmark) { return };
 BookmarkEvent.prototype.onDelete = function(bookmark) { return };
+
+module.exports = BookmarkEvent;

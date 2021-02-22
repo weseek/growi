@@ -6,7 +6,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 import { IUser, USER_PUBLIC_FIELDS } from '~/server/models/user';
-import BookmarkEvent from '~/server/events/bookmark';
+// import BookmarkEvent from '~/server/events/bookmark';
 
 const ObjectId = Schema.Types.ObjectId;
 
@@ -118,7 +118,7 @@ class Bookmark extends Model {
 
     try {
       const bookmark = await this.create({ page, user });
-      this.bookmarkEvent.emit('create', page._id);
+      // BookmarkEvent.emit('create', page._id);
       return bookmark;
     }
     catch (err) {
@@ -135,7 +135,7 @@ class Bookmark extends Model {
   static async removeBookmarksByPageId(pageId) {
     try {
       const data = await this.remove({ page: pageId });
-      // bookmarkEvent.emit('delete', pageId);
+      // this.bookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {
@@ -147,7 +147,7 @@ class Bookmark extends Model {
   static async removeBookmark(pageId, user) {
     try {
       const data = await this.findOneAndRemove({ page: pageId, user });
-      // bookmarkEvent.emit('delete', pageId);
+      // BookmarkEvent.emit('delete', pageId);
       return data;
     }
     catch (err) {
