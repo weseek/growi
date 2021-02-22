@@ -46,7 +46,6 @@ const RevisionComparer = (props) => {
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
     const urlParams = (sourceRevision && targetRevision ? `${sourceRevision._id}...${targetRevision._id}` : '');
-
     const url = new URL(path, origin);
     url.searchParams.set('compare', urlParams);
 
