@@ -1,8 +1,8 @@
 import { Schema, Types, Model } from 'mongoose';
 
-// import mongoosePaginate from 'mongoose-paginate-v2';
+import mongoosePaginate from 'mongoose-paginate-v2';
 // import path from 'path';
-// import uniqueValidator from 'mongoose-unique-validator';
+import uniqueValidator from 'mongoose-unique-validator';
 import md5 from 'md5';
 import crypto from 'crypto';
 // import { migrateDeprecatedLocaleId } from '~/utils/locale-utils';
@@ -101,8 +101,8 @@ const schema = new Schema({
 // schema.pre('validate', function() {
 //   this.lang = migrateDeprecatedLocaleId(this.lang);
 // });
-// schema.plugin(mongoosePaginate);
-// schema.plugin(uniqueValidator);
+schema.plugin(mongoosePaginate);
+schema.plugin(uniqueValidator);
 
 // function validateCrowi() {
 //   if (crowi == null) {
