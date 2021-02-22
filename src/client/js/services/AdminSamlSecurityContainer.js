@@ -1,9 +1,9 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '~/utils/logger';
 
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
+import loggerFactory from '~/utils/logger';
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
 const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');

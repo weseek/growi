@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '~/utils/logger';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
+import loggerFactory from '~/utils/logger';
 import contributors from './Contributor';
 
 /**
