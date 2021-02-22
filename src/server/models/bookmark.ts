@@ -36,13 +36,6 @@ schema.plugin(uniqueValidator);
 
 class Bookmark extends Model {
 
-  static bookmarkEvent: any;
-
-  constructor() {
-    super();
-    this.bookmarkEvent = new BookmarkEvent();
-  }
-
   static countByPageId(pageId) {
     return this.count({ page: pageId });
   }
