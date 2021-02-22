@@ -16,6 +16,7 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import ConfigManager from '../service/config-manager';
 import AclService from '../service/acl';
 import AttachmentService from '../service/attachment';
+import BookmarkEvent from '~/server/events/bookmark';
 
 const logger = loggerFactory('growi:crowi');
 
@@ -79,7 +80,7 @@ function Crowi() {
   this.events = {
     user: new (require(`${this.eventsDir}user`))(this),
     page: new (require(`${this.eventsDir}page`))(this),
-    bookmark: new (require(`${this.eventsDir}bookmark`))(this),
+    bookmark: new BookmarkEvent(this),
     tag: new (require(`${this.eventsDir}tag`))(this),
     admin: new (require(`${this.eventsDir}admin`))(this),
   };

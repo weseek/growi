@@ -6,13 +6,11 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 import { IUser, USER_PUBLIC_FIELDS } from '~/server/models/user';
+import BookmarkEvent from '~/server/events/bookmark';
 
 const ObjectId = Schema.Types.ObjectId;
 
 const logger = loggerFactory('growi:models:bookmark');
-
-// const bookmarkEvent = crowi.event('bookmark');
-
 export interface IBookmark {
   _id: Types.ObjectId;
   page: Types.ObjectId;
@@ -37,6 +35,13 @@ schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
 class Bookmark extends Model {
+
+  static bookmarkEvent: any;
+
+  constructor() {
+    super();
+    this.bookmarkEvent = new BookmarkEvent();
+  }
 
   static countByPageId(pageId) {
     return this.count({ page: pageId });
@@ -110,18 +115,13 @@ class Bookmark extends Model {
   }
 
   static async add(page, user) {
-    const newBookmark = new this({ page, user, createdAt: Date.now() });
 
     try {
-      const bookmark = await newBookmark.save();
-      // bookmarkEvent.emit('create', page._id);
+      const bookmark = await this.create({ page, user });
+      this.bookmarkEvent.emit('create', page._id);
       return bookmark;
     }
     catch (err) {
-      if (err.code === 11000) {
-        // duplicate key (dummy response of new object)
-        return newBookmark;
-      }
       logger.debug('Bookmark.save failed', err);
       throw err;
     }
