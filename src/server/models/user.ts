@@ -610,17 +610,17 @@ class User extends Model {
 
   static async createUsersByInvitation(emailList, toSendEmail) {
 
-    // if (!Array.isArray(emailList)) {
-    //   logger.debug('emailList is not array');
-    // }
+    if (!Array.isArray(emailList)) {
+      logger.debug('emailList is not array');
+    }
 
-    // const afterWorkEmailList = await this.createUsersByEmailList(emailList);
+    const afterWorkEmailList = await this.createUsersByEmailList(emailList);
 
-    // if (toSendEmail) {
-    //   await this.sendEmailbyUserList(afterWorkEmailList.createdUserList);
-    // }
+    if (toSendEmail) {
+      await this.sendEmailbyUserList(afterWorkEmailList.createdUserList);
+    }
 
-    // return afterWorkEmailList;
+    return afterWorkEmailList;
   }
 
   static async createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, callback) {
