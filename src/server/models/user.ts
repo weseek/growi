@@ -15,6 +15,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 import Attachment from '~/server/models/attachment';
 import ConfigManager from '~/server/service/config-manager';
 import AclService from '~/server/service/acl';
+import AttachmentService from '~/server/service/attachment';
 
 const logger = loggerFactory('growi:models:user');
 
@@ -109,64 +110,20 @@ const schema = new Schema({
 //   }
 // }
 
-function decideUserStatusOnRegistration():number {
-  const configManager = new ConfigManager();
-  const aclService = new AclService(configManager);
-
-  const isInstalled = configManager.getConfig('crowi', 'app:installed');
-  if (!isInstalled) {
-    return STATUS_ACTIVE; // is this ok?
-  }
-
-  // status decided depends on registrationMode
-  const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
-  switch (registrationMode) {
-    case aclService.labels.SECURITY_REGISTRATION_MODE_OPEN:
-      return STATUS_ACTIVE;
-    case aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED:
-    case aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
-      return STATUS_REGISTERED;
-    default:
-      return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
-  }
-}
-
-
-function generateRandomTempPassword():string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!=-_';
-  let password = '';
-  const len = 12;
-
-  for (let i = 0; i < len; i++) {
-    const randomPoz = Math.floor(Math.random() * chars.length);
-    password += chars.substring(randomPoz, randomPoz + 1);
-  }
-
-  return password;
-}
-
-function generateRandomEmail():string {
-  const randomstr = generateRandomTempPassword();
-  return `change-it-${randomstr}@example.com`;
-}
-
-function generatePassword(password:string):string {
-
-  const hasher = crypto.createHash('sha256');
-  hasher.update(process.env.PASSWORD_SEED + password);
-
-  return hasher.digest('hex');
-}
-
-function generateApiToken(user) {
-  const hasher = crypto.createHash('sha256');
-  hasher.update((new Date()).getTime() + user._id);
-
-  return hasher.digest('base64');
-}
-
-
 class User extends Model {
+
+  static configManager: ConfigManager;
+
+  static attachmentService: AttachmentService;
+
+  static aclService: AclService;
+
+  constructor() {
+    super();
+    this.configManager = new ConfigManager();
+    this.attachmentService = new AttachmentService(this.configManager);
+    this.aclService = new AclService(this.configManager);
+  }
 
   isPasswordSet() {
     if (this.password) {
@@ -176,11 +133,11 @@ class User extends Model {
   }
 
   isPasswordValid(password) {
-    return this.password === generatePassword(password);
+    return this.password === this.generatePassword(password);
   }
 
   setPassword(password) {
-    this.password = generatePassword(password);
+    this.password = this.generatePassword(password);
     return this;
   }
 
@@ -239,19 +196,16 @@ class User extends Model {
   }
 
   async deleteImage() {
-    // validateCrowi();
+    // the 'image' field became DEPRECATED in v3.3.8
+    this.image = undefined;
 
-    // // the 'image' field became DEPRECATED in v3.3.8
-    // this.image = undefined;
+    if (this.imageAttachment != null) {
+      this.attachmentService.removeAttachment(this.imageAttachment._id);
+    }
 
-    // if (this.imageAttachment != null) {
-    //   const { attachmentService } = crowi;
-    //   attachmentService.removeAttachment(this.imageAttachment._id);
-    // }
-
-    // this.imageAttachment = undefined;
-    // this.updateImageUrlCached();
-    // return this.save();
+    this.imageAttachment = undefined;
+    this.updateImageUrlCached();
+    return this.save();
   }
 
   async updateImageUrlCached() {
@@ -369,10 +323,63 @@ class User extends Model {
     return userStatus;
   }
 
-  static isEmailValid(email, callback):boolean {
-    const configManager = new ConfigManager();
+  static decideUserStatusOnRegistration():number {
 
-    const whitelist = configManager.getConfig('crowi', 'security:registrationWhiteList');
+    const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
+    if (!isInstalled) {
+      return STATUS_ACTIVE; // is this ok?
+    }
+
+    // status decided depends on registrationMode
+    const registrationMode = this.configManager.getConfig('crowi', 'security:registrationMode');
+    switch (registrationMode) {
+      case this.aclService.labels.SECURITY_REGISTRATION_MODE_OPEN:
+        return STATUS_ACTIVE;
+      case this.aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED:
+      case this.aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
+        return STATUS_REGISTERED;
+      default:
+        return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
+    }
+  }
+
+
+  static generateRandomTempPassword():string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!=-_';
+    let password = '';
+    const len = 12;
+
+    for (let i = 0; i < len; i++) {
+      const randomPoz = Math.floor(Math.random() * chars.length);
+      password += chars.substring(randomPoz, randomPoz + 1);
+    }
+
+    return password;
+  }
+
+  static generateRandomEmail():string {
+    const randomstr = this.generateRandomTempPassword();
+    return `change-it-${randomstr}@example.com`;
+  }
+
+  static generatePassword(password:string):string {
+
+    const hasher = crypto.createHash('sha256');
+    hasher.update(process.env.PASSWORD_SEED + password);
+
+    return hasher.digest('hex');
+  }
+
+  generateApiToken(user) {
+    const hasher = crypto.createHash('sha256');
+    hasher.update((new Date()).getTime() + user._id);
+
+    return hasher.digest('base64');
+  }
+
+
+  static isEmailValid(email, callback):boolean {
+    const whitelist = this.configManager.getConfig('crowi', 'security:registrationWhiteList');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
       return whitelist.some((allowedEmail) => {
@@ -397,7 +404,7 @@ class User extends Model {
   }
 
   static findAllUsers(option) {
-  // eslint-disable-next-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign
     option = option || {};
 
     const sort = option.sort || { createdAt: -1 };
@@ -415,7 +422,7 @@ class User extends Model {
   }
 
   static findUsersByIds(ids, option) {
-  // eslint-disable-next-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign
     option = option || {};
 
     const sort = option.sort || { createdAt: -1 };
@@ -466,16 +473,14 @@ class User extends Model {
   }
 
   static findUserByEmailAndPassword(email, password, callback) {
-    const hashedPassword = generatePassword(password);
+    const hashedPassword = this.generatePassword(password);
     this.findOne({ email, password: hashedPassword }, (err, userData) => {
       callback(err, userData);
     });
   }
 
   static async isUserCountExceedsUpperLimit():Promise<boolean> {
-    const configManager = new ConfigManager();
-
-    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+    const userUpperLimit = this.configManager.getConfig('crowi', 'security:userUpperLimit');
 
     const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
     if (userUpperLimit <= activeUsers) {
@@ -534,7 +539,7 @@ class User extends Model {
       throw new Error('User not found');
     }
 
-    const newPassword = generateRandomTempPassword();
+    const newPassword = this.generateRandomTempPassword();
     user.setPassword(newPassword);
     await user.save();
 
@@ -542,8 +547,6 @@ class User extends Model {
   }
 
   static async createUserByEmail(email):Promise<CreateUserByEmail> {
-    const configManager = new ConfigManager();
-
     const newUser = new this();
 
     /* eslint-disable newline-per-chained-call */
@@ -557,7 +560,7 @@ class User extends Model {
     newUser.createdAt = Date.now();
     newUser.status = STATUS_INVITED;
 
-    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const globalLang = this.configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }
@@ -578,7 +581,7 @@ class User extends Model {
   }
 
   static async createUsersByEmailList(emailList:string[]):Promise<{existingEmailList:string[], createdUserList:CreateUserByEmail[]}> {
-  // check exists and get list of try to create
+    // check exists and get list of try to create
     const existingUserList = await this.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
     const existingEmailList = existingUserList.map((user) => { return user.email });
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
@@ -637,7 +640,6 @@ class User extends Model {
   }
 
   static async createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, callback):Promise<void> {
-    const configManager = new ConfigManager();
     const newUser = new this();
 
     // check user upper limit
@@ -650,8 +652,8 @@ class User extends Model {
     // check email duplication because email must be unique
     const count = await this.count({ email });
     if (count > 0) {
-    // eslint-disable-next-line no-param-reassign
-      email = generateRandomEmail();
+      // eslint-disable-next-line no-param-reassign
+      email = this.generateRandomEmail();
     }
 
     newUser.name = name;
@@ -662,7 +664,7 @@ class User extends Model {
     }
 
 
-    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const globalLang = this.configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }
@@ -671,7 +673,7 @@ class User extends Model {
       newUser.lang = lang;
     }
     newUser.createdAt = Date.now();
-    newUser.status = status || decideUserStatusOnRegistration();
+    newUser.status = status || this.decideUserStatusOnRegistration();
 
     newUser.save((err, userData) => {
       if (err) {
@@ -700,7 +702,7 @@ class User extends Model {
    * @return {Promise<User>}
    */
   static createUser(name, username, email, password, lang, status) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const User = this;
 
     return new Promise((resolve, reject) => {
