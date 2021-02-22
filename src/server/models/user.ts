@@ -523,39 +523,39 @@ class User extends Model {
   }
 
   static async createUserByEmail(email) {
-    // const configManager = crowi.configManager;
+    const configManager = new ConfigManager();
 
-    // const newUser = new this();
+    const newUser = new this();
 
-    // /* eslint-disable newline-per-chained-call */
-    // const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
-    // const password = Math.random().toString(36).slice(-16);
-    // /* eslint-enable newline-per-chained-call */
+    /* eslint-disable newline-per-chained-call */
+    const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
+    const password = Math.random().toString(36).slice(-16);
+    /* eslint-enable newline-per-chained-call */
 
-    // newUser.username = tmpUsername;
-    // newUser.email = email;
-    // newUser.setPassword(password);
-    // newUser.createdAt = Date.now();
-    // newUser.status = STATUS_INVITED;
+    newUser.username = tmpUsername;
+    newUser.email = email;
+    newUser.setPassword(password);
+    newUser.createdAt = Date.now();
+    newUser.status = STATUS_INVITED;
 
-    // const globalLang = configManager.getConfig('crowi', 'app:globalLang');
-    // if (globalLang != null) {
-    //   newUser.lang = globalLang;
-    // }
+    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    if (globalLang != null) {
+      newUser.lang = globalLang;
+    }
 
-    // try {
-    //   const newUserData = await newUser.save();
-    //   return {
-    //     email,
-    //     password,
-    //     user: newUserData,
-    //   };
-    // }
-    // catch (err) {
-    //   return {
-    //     email,
-    //   };
-    // }
+    try {
+      const newUserData = await newUser.save();
+      return {
+        email,
+        password,
+        user: newUserData,
+      };
+    }
+    catch (err) {
+      return {
+        email,
+      };
+    }
   }
 
   static async createUsersByEmailList(emailList) {
