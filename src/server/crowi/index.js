@@ -14,6 +14,8 @@ import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import ConfigManager from '../service/config-manager';
+import AclService from '../service/acl';
+import AttachmentService from '../service/attachment';
 
 const logger = loggerFactory('growi:crowi');
 
@@ -536,7 +538,6 @@ Crowi.prototype.setUpXss = async function() {
  * setup AclService
  */
 Crowi.prototype.setUpAcl = async function() {
-  const AclService = require('../service/acl');
   if (this.aclService == null) {
     this.aclService = new AclService(this.configManager);
   }
@@ -600,7 +601,6 @@ Crowi.prototype.setUpFileUploaderSwitchService = async function() {
  * setup AttachmentService
  */
 Crowi.prototype.setupAttachmentService = async function() {
-  const AttachmentService = require('../service/attachment');
   if (this.attachmentService == null) {
     this.attachmentService = new AttachmentService(this);
   }
