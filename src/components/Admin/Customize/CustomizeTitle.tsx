@@ -17,14 +17,13 @@ type FormValues ={
 
 export const CustomizeTitle:FC = () => {
   const { t } = useTranslation();
-  const { data, mutate } = useCustomizeSettingsSWR();
+  const { data } = useCustomizeSettingsSWR();
   const {
     register, handleSubmit, setValue,
   } = useForm({
     defaultValues: {
       [currentCustomizeTitle]: data?.[currentCustomizeTitle],
     },
-    // reValidateMode: 'onChange',
   });
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
@@ -33,8 +32,6 @@ export const CustomizeTitle:FC = () => {
       await apiv3Put('/customize-setting/customize-title', {
         [currentCustomizeTitle]: formValues[currentCustomizeTitle],
       });
-
-      mutate();
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.custom_title') }));
     }
