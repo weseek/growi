@@ -1,13 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { FC } from 'react';
+import { toArrayIfNot } from '~/utils/array-utils';
+import { useTranslation } from '~/i18n';
 
-import { withTranslation } from 'react-i18next';
+type ApiErrorMessageProps = {
+  errorCode?: string;
+  errorMessage?: string;
+  targetPath: string;
+}
 
-const ApiErrorMessage = (props) => {
-  const {
-    t, errorCode, errorMessage, targetPath,
-  } = props;
+const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) => {
+  const { errorCode, errorMessage, targetPath } = props;
+  const { t } = useTranslation();
 
+  // TODO GW-5153 Consider whether to remove reload processing
   function reload() {
     window.location.reload();
   }
@@ -70,12 +75,19 @@ const ApiErrorMessage = (props) => {
 
 };
 
-ApiErrorMessage.propTypes = {
-  t:            PropTypes.func.isRequired, //  i18next
 
-  errorCode:    PropTypes.string,
-  errorMessage: PropTypes.string,
-  targetPath:   PropTypes.string,
+type Props ={
+  targetPath: string;
+  errs?: any[];
+}
+
+export const ApiErrorMessageList: FC<Props> = (props:Props) => {
+  const errs = toArrayIfNot(props.errs);
+
+  return (
+    <>
+      {errs.map(err => <ApiErrorMessage key={err.code} errorCode={err.code} errorMessage={err.message} targetPath={props.targetPath} />)}
+    </>
+  );
+
 };
-
-export default withTranslation()(ApiErrorMessage);

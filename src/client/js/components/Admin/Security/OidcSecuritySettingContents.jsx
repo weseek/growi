@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminOidcSecurityContainer from '../../../services/AdminOidcSecurityContainer';
 
@@ -462,13 +461,11 @@ class OidcSecurityManagementContents extends React.Component {
 
 OidcSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminOidcSecurityContainer: PropTypes.instanceOf(AdminOidcSecurityContainer).isRequired,
 };
 
 const OidcSecurityManagementContentsWrapper = withUnstatedContainers(OidcSecurityManagementContents, [
-  AppContainer,
   AdminGeneralSecurityContainer,
   AdminOidcSecurityContainer,
 ]);

@@ -1,21 +1,17 @@
 import dynamic from 'next/dynamic';
 import React from 'react';
 import { TabContent, TabPane } from 'reactstrap';
-import propTypes from 'prop-types';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import NavigationContainer from '../../services/NavigationContainer';
+import { useEditorMode } from '~/stores/ui';
+
 import Page from '../Page';
 // import UserInfo from '../User/UserInfo';
 // import ContentLinkButtons from '../ContentLinkButtons';
-// import PageAccessories from '../PageAccessories';
+import { PageAccessories } from '~/components/PageAccessory/PageAccessories';
 
 
 const DisplaySwitcher = (props) => {
-  const {
-    navigationContainer,
-  } = props;
-  const { editorMode } = navigationContainer.state;
+  const { data: editorMode } = useEditorMode();
   // const { pageUser } = pageContainer.state;
 
   // dynamic import to skip rendering at SSR
@@ -33,7 +29,7 @@ const DisplaySwitcher = (props) => {
             <div className="grw-side-contents-container">
               <div className="grw-side-contents-sticky-container">
                 <div className="border-bottom pb-1">
-                  {/* <PageAccessories /> */}
+                  <PageAccessories />
                 </div>
 
                 <div className="d-none d-lg-block">
@@ -68,9 +64,4 @@ const DisplaySwitcher = (props) => {
   );
 };
 
-DisplaySwitcher.propTypes = {
-  navigationContainer: propTypes.instanceOf(NavigationContainer).isRequired,
-};
-
-
-export default withUnstatedContainers(DisplaySwitcher, [NavigationContainer]);
+export default DisplaySwitcher;

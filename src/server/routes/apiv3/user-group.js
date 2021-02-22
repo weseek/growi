@@ -7,7 +7,6 @@ const express = require('express');
 const router = express.Router();
 
 const { body, param, query } = require('express-validator');
-const { sanitizeQuery } = require('express-validator');
 
 const mongoose = require('mongoose');
 
@@ -539,8 +538,8 @@ module.exports = (crowi) => {
 
   validator.pages.get = [
     param('id').trim().exists({ checkFalsy: true }),
-    sanitizeQuery('limit').customSanitizer(toPagingLimit),
-    sanitizeQuery('offset').customSanitizer(toPagingOffset),
+    query('limit').customSanitizer(toPagingLimit),
+    query('offset').customSanitizer(toPagingOffset),
   ];
 
   /**

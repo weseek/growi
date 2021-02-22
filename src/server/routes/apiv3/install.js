@@ -4,7 +4,7 @@ import { config as nextI18NextConfig } from '~/i18n';
 const path = require('path');
 const fs = require('graceful-fs');
 
-const helmet = require('helmet');
+const noCache = require('nocache');
 const express = require('express');
 const { body } = require('express-validator');
 
@@ -71,7 +71,7 @@ module.exports = function(crowi) {
     body('lang').if(value => value != null).isIn(nextI18NextConfig.allLanguages),
   ];
 
-  router.post('/', helmet.noCache(), validators, apiV3FormValidator, async(req, res) => {
+  router.post('/', noCache(), validators, apiV3FormValidator, async(req, res) => {
 
     const {
       username, name, email, password,

@@ -20,6 +20,8 @@ import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigatio
 import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
+import { PageComments } from '~/components/PageComment/PageComments';
+
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
@@ -30,6 +32,7 @@ import {
   useCurrentPageSWR,
 } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 
 const logger = loggerFactory('growi:pages:all');
@@ -82,11 +85,23 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     isEnabledLinebreaksInComments: props.isEnabledLinebreaksInComments,
   });
 
+  const { data: editorMode } = useEditorMode();
+
   let page;
   if (props.page != null) {
     page = JSON.parse(props.page);
   }
   useCurrentPageSWR(page);
+
+  let className = '';
+  switch (editorMode) {
+    case EditorMode.Editor:
+      className = 'on-edit builtin-editor';
+      break;
+    case EditorMode.HackMD:
+      className = 'on-edit hackmd';
+      break;
+  }
 
   // Rewrite browser url by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -105,7 +120,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
-      <BasicLayout title="GROWI">
+      <BasicLayout title="GROWI" className={className}>
         <header className="py-0">
           <GrowiSubNavigation />
         </header>
@@ -135,6 +150,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           </div>
 
         </div>
+        <footer>
+          <PageComments />
+        </footer>
 
       </BasicLayout>
     </>

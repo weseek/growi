@@ -1,8 +1,11 @@
-const mongoose = require('mongoose');
+import loggerFactory from '~/utils/logger';
 
-const logger = require('~/utils/logger')('growi:migrate:rename-s3-config');
+import Config from '~/server/models/config';
+
+const logger = loggerFactory('growi:migrate:remove-timeline-type');
+
+const mongoose = require('mongoose');
 const config = require('^/config/migrate');
-const { getModelSafely } = require('~/server/util/mongoose-utils');
 
 const awsConfigs = [
   {
@@ -32,8 +35,6 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
-
     const request = awsConfigs.map((awsConfig) => {
       return {
         updateOne: {
@@ -52,8 +53,6 @@ module.exports = {
     logger.info('Rollback migration');
 
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     const request = awsConfigs.map((awsConfig) => {
       return {

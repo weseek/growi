@@ -5,9 +5,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-
-import AppContainer from '../../services/AppContainer';
 import CopyDropdown from '../Page/CopyDropdown';
 
 const ShareLinkList = (props) => {
@@ -72,18 +69,12 @@ const ShareLinkList = (props) => {
   );
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ShareLinkListWrapper = withUnstatedContainers(ShareLinkList, [AppContainer]);
-
 ShareLinkList.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   shareLinks: PropTypes.array.isRequired,
   onClickDeleteButton: PropTypes.func,
   isAdmin: PropTypes.bool,
 };
 
-export default withTranslation()(ShareLinkListWrapper);
+export default withTranslation()(ShareLinkList);

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
+import Config from '~/server/models/config';
 import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 
 const logger = loggerFactory('growi:migrate:update-mail-transmission');
 
@@ -10,8 +10,6 @@ module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     const sesExist = await Config.findOne({
       ns: 'crowi',
@@ -36,8 +34,6 @@ module.exports = {
   async down(db, client) {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     // remote 'mail:transmissionMethod'
     await Config.findOneAndDelete({

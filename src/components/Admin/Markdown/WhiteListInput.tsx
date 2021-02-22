@@ -33,8 +33,8 @@ export const WhiteListInput:FC = () => {
         <textarea
           className="form-control xss-list"
           name={tagWhiteListInputName}
-          rows="6"
-          cols="40"
+          rows={6}
+          cols={40}
           ref={register}
         />
       </div>
@@ -48,8 +48,8 @@ export const WhiteListInput:FC = () => {
         <textarea
           className="form-control xss-list"
           name={attrWhiteListInputName}
-          rows="6"
-          cols="40"
+          rows={6}
+          cols={40}
           ref={register}
         />
       </div>
