@@ -1,14 +1,20 @@
 import loggerFactory from '~/utils/logger';
+import ConfigManager from '~/server/service/config-manager';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:AclService');
 
+type Labels = { [key: string]: string }
 /**
  * the service class of AclService
  */
-class AclService {
+export default class AclService {
 
-  constructor(configManager) {
+  configManager: ConfigManager;
+
+  labels: Labels;
+
+  constructor(configManager:ConfigManager) {
     this.configManager = configManager;
     this.labels = {
       SECURITY_RESTRICT_GUEST_MODE_DENY: 'Deny',
@@ -22,7 +28,7 @@ class AclService {
   /**
    * @returns Whether Access Control is enabled or not
    */
-  isAclEnabled() {
+  isAclEnabled():boolean {
     const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
     return wikiMode !== 'public';
   }
@@ -30,7 +36,7 @@ class AclService {
   /**
    * @returns Whether wiki mode is set
    */
-  isWikiModeForced() {
+  isWikiModeForced():boolean {
     const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
     const isPrivateOrPublic = wikiMode === 'private' || wikiMode === 'public';
 
@@ -40,7 +46,7 @@ class AclService {
   /**
    * @returns Whether guest users are allowed to read public pages
    */
-  isGuestAllowedToRead() {
+  isGuestAllowedToRead():boolean {
     const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
 
     // return false if private wiki mode
@@ -59,13 +65,13 @@ class AclService {
     return guestMode === this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY;
   }
 
-  getGuestModeValue() {
+  getGuestModeValue():string {
     return this.isGuestAllowedToRead()
       ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
       : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
   }
 
-  getRestrictGuestModeLabels() {
+  getRestrictGuestModeLabels():Labels {
     const labels = {};
     labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY] = 'security_setting.guest_mode.deny';
     labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY] = 'security_setting.guest_mode.readonly';
@@ -73,7 +79,7 @@ class AclService {
     return labels;
   }
 
-  getRegistrationModeLabels() {
+  getRegistrationModeLabels():Labels {
     const labels = {};
     labels[this.labels.SECURITY_REGISTRATION_MODE_OPEN] = 'security_setting.registration_mode.open';
     labels[this.labels.SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_setting.registration_mode.restricted';
@@ -83,5 +89,3 @@ class AclService {
   }
 
 }
-
-module.exports = AclService;
