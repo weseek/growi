@@ -12,6 +12,9 @@ import { config as i18nConfig } from '~/i18n';
 import { omitInsecureAttributes } from './serializers/user-serializer';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
+import ConfigManager from '~/server/service/config-manager';
+import AclService from '~/server/service/acl';
+
 const logger = loggerFactory('growi:models:user');
 
 export const STATUS_REGISTERED = 1;
@@ -87,26 +90,27 @@ const schema = new Schema({
 //   }
 // }
 
-// function decideUserStatusOnRegistration() {
-//   const { configManager, aclService } = crowi;
+function decideUserStatusOnRegistration():number {
+  const configManager = new ConfigManager();
+  const aclService = new AclService(configManager);
 
-//   const isInstalled = configManager.getConfig('crowi', 'app:installed');
-//   if (!isInstalled) {
-//     return STATUS_ACTIVE; // is this ok?
-//   }
+  const isInstalled = configManager.getConfig('crowi', 'app:installed');
+  if (!isInstalled) {
+    return STATUS_ACTIVE; // is this ok?
+  }
 
-//   // status decided depends on registrationMode
-//   const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
-//   switch (registrationMode) {
-//     case aclService.labels.SECURITY_REGISTRATION_MODE_OPEN:
-//       return STATUS_ACTIVE;
-//     case aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED:
-//     case aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
-//       return STATUS_REGISTERED;
-//     default:
-//       return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
-//   }
-// }
+  // status decided depends on registrationMode
+  const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+  switch (registrationMode) {
+    case aclService.labels.SECURITY_REGISTRATION_MODE_OPEN:
+      return STATUS_ACTIVE;
+    case aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED:
+    case aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
+      return STATUS_REGISTERED;
+    default:
+      return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
+  }
+}
 
 
 // function generateRandomTempPassword() {

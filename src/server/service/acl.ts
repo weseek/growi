@@ -4,15 +4,17 @@ import ConfigManager from '~/server/service/config-manager';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:AclService');
 
-type Labels = { [key: string]: string }
+export type AclLabelsValue = 'Deny'| 'Readonly' | 'Open' | 'Restricted' | 'Closed'
+type AclLabels = { [key:string]: AclLabelsValue }
+
 /**
  * the service class of AclService
  */
 export default class AclService {
 
-  configManager: ConfigManager;
+  private configManager: ConfigManager;
 
-  labels: Labels;
+  labels: AclLabels;
 
   constructor(configManager:ConfigManager) {
     this.configManager = configManager;
@@ -71,7 +73,7 @@ export default class AclService {
       : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
   }
 
-  getRestrictGuestModeLabels():Labels {
+  getRestrictGuestModeLabels():AclLabels {
     const labels = {};
     labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY] = 'security_setting.guest_mode.deny';
     labels[this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY] = 'security_setting.guest_mode.readonly';
@@ -79,7 +81,7 @@ export default class AclService {
     return labels;
   }
 
-  getRegistrationModeLabels():Labels {
+  getRegistrationModeLabels():AclLabels {
     const labels = {};
     labels[this.labels.SECURITY_REGISTRATION_MODE_OPEN] = 'security_setting.registration_mode.open';
     labels[this.labels.SECURITY_REGISTRATION_MODE_RESTRICTED] = 'security_setting.registration_mode.restricted';
