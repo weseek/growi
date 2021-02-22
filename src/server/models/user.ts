@@ -35,6 +35,12 @@ export const PAGE_ITEMS = 50;
 //   userEvent.on('activated', userEvent.onActivated);
 // }
 
+type CreateUserByEmail = {
+  email:string,
+  password?:string,
+  user?:User
+}
+
 export interface IUser extends Document{
   _id: Types.ObjectId;
   userId: Types.ObjectId;
@@ -522,7 +528,7 @@ class User extends Model {
     // return newPassword;
   }
 
-  static async createUserByEmail(email) {
+  static async createUserByEmail(email):Promise<CreateUserByEmail> {
     const configManager = new ConfigManager();
 
     const newUser = new this();
@@ -558,19 +564,19 @@ class User extends Model {
     }
   }
 
-  static async createUsersByEmailList(emailList) {
+  static async createUsersByEmailList(emailList:string[]):Promise<{existingEmailList:string[], createdUserList:CreateUserByEmail[]}> {
   // check exists and get list of try to create
-    // const existingUserList = await this.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
-    // const existingEmailList = existingUserList.map((user) => { return user.email });
-    // const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
+    const existingUserList = await this.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
+    const existingEmailList = existingUserList.map((user) => { return user.email });
+    const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
-    // const createdUserList = [];
-    // await Promise.all(creationEmailList.map(async(email) => {
-    //   const createdEmail = await this.createUserByEmail(email);
-    //   createdUserList.push(createdEmail);
-    // }));
+    const createdUserList:CreateUserByEmail[] = [];
+    await Promise.all(creationEmailList.map(async(email) => {
+      const createdEmail = await this.createUserByEmail(email);
+      createdUserList.push(createdEmail);
+    }));
 
-    // return { existingEmailList, createdUserList };
+    return { existingEmailList, createdUserList };
   }
 
   static async sendEmailbyUserList(userList) {
