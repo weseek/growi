@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
+import Config from '~/server/models/config';
 import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 
 const logger = loggerFactory('growi:migrate:remove-layout-setting');
 
@@ -10,8 +10,6 @@ module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     const [accessKeyId, secretAccessKey] = await Promise.all([
       Config.findOne({ key: 'aws:accessKeyId' }),
@@ -58,8 +56,6 @@ module.exports = {
   async down(db, client) {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     await Config.deleteMany({ key: { $in: ['mail:sesAccessKeyId', 'mail:sesSecretAccessKey'] } });
 

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import Config from '~/server/models/config';
 import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
 import { getModelSafely } from '~/server/util/mongoose-utils';
@@ -20,7 +21,6 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
     const User = getModelSafely('User') || require('~/server/models/user')();
 
     // find 'app:siteUrl'
@@ -50,8 +50,6 @@ module.exports = {
   async down(db) {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({
