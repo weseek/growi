@@ -98,7 +98,7 @@ class BoltService {
       await say(`${command.text}`);
     });
 
-    this.bolt.command('/hoge', async({
+    this.bolt.command('/growi', async({
       command, client, body, ack,
     }) => {
       await ack();
@@ -150,7 +150,9 @@ class BoltService {
       this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
-        blocks: [this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`')],
+        blocks: [
+          this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
+        ],
       });
       throw new Error('/growi command:search: Invalid keyword');
     }
