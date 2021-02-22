@@ -10,18 +10,12 @@ module.exports = (crowi) => {
 
   router.post('/', async(req, res) => {
     try {
-      const response = await boltService.receiver.requestHandler.bind(boltService.receiver)(req, res);
-      if (response !== null) {
-        res.send(response);
-      }
+      const response = await boltService.receiver.requestHandler.bind(boltService.receiver)(req, res) || null;
+      res.send(response);
     }
     catch (err) {
-      console.log('catch');
-      console.log(err);
       return res.apiv3Err(new ErrorV3(`Error:Slack-Bot:${err}`), 500);
     }
-    // for verification request URL on Event Subscriptions
-    res.send(req.body);
   });
 
   return router;
