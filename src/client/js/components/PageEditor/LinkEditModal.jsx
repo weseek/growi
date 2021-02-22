@@ -16,7 +16,7 @@ import { withTranslation } from 'react-i18next';
 import PreviewWithSuspense from './PreviewWithSuspense';
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
 
-import AppContainer from '../../services/AppContainer';
+// import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
 import SearchTypeahead from '../SearchTypeahead';

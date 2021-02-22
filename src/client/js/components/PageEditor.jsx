@@ -5,7 +5,7 @@ import loggerFactory from '@alias/logger';
 import { throttle, debounce } from 'throttle-debounce';
 import { envUtils } from 'growi-commons';
 
-import AppContainer from '../services/AppContainer';
+// import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';

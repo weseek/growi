@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionBody from '../Page/RevisionBody';
 
-import AppContainer from '../../services/AppContainer';
+// import AppContainer from '../../services/AppContainer';
 import EditorContainer from '../../services/EditorContainer';
 
 /**
