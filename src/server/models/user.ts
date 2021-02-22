@@ -163,16 +163,16 @@ class User extends Model {
   }
 
   canDeleteCompletely(creatorId) {
-    // const pageCompleteDeletionAuthority = crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    // if (this.admin) {
-    //   return true;
-    // }
-    // if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
-    //   return true;
-    // }
-    // if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
-    //   return (this._id.equals(creatorId));
-    // }
+    const pageCompleteDeletionAuthority = this.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
+    if (this.admin) {
+      return true;
+    }
+    if (pageCompleteDeletionAuthority === 'anyOne' || pageCompleteDeletionAuthority == null) {
+      return true;
+    }
+    if (pageCompleteDeletionAuthority === 'adminAndAuthor') {
+      return (this._id.equals(creatorId));
+    }
 
     return false;
   }
