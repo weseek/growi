@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
-
 import StickyEvents from 'sticky-events';
+import loggerFactory from '~/utils/logger';
+
 
 import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';

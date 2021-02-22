@@ -455,7 +455,7 @@ Crowi.prototype.buildServer = async function() {
   // use bunyan
   if (env === 'production') {
     const expressBunyanLogger = require('express-bunyan-logger');
-    const logger = require('~/utils/logger')('express');
+    const logger = loggerFactory('express');
     express.use(expressBunyanLogger({
       logger,
       excludes: ['*'],

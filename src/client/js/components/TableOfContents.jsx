@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import { useTranslation } from '~/i18n';
 import { useCurrentPageTocNode } from '~/stores/renderer';

@@ -26,7 +26,6 @@
     "paths": {
       "~/*": ["src/*"],
       "^/*": ["./*"],
-      "@alias/logger": ["src/utils/logger"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

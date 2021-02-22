@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
