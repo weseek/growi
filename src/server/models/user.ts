@@ -37,7 +37,7 @@ export interface IUser extends Document{
   userId: Types.ObjectId;
 }
 
-const userSchema = new Schema({
+const schema = new Schema({
   userId: String,
   image: String,
   imageAttachment: { type: Types.ObjectId, ref: 'Attachment' },
@@ -75,11 +75,11 @@ const userSchema = new Schema({
   },
 });
   // eslint-disable-next-line prefer-arrow-callback
-// userSchema.pre('validate', function() {
+// schema.pre('validate', function() {
 //   this.lang = migrateDeprecatedLocaleId(this.lang);
 // });
-// userSchema.plugin(mongoosePaginate);
-// userSchema.plugin(uniqueValidator);
+// schema.plugin(mongoosePaginate);
+// schema.plugin(uniqueValidator);
 
 // function validateCrowi() {
 //   if (crowi == null) {
@@ -712,5 +712,5 @@ class UserUpperLimitException {
 }
 
 
-userSchema.loadClass(User);
-export default getOrCreateModel<IUser>('User', userSchema);
+schema.loadClass(User);
+export default getOrCreateModel<IUser>('User', schema);
