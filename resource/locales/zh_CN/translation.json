@@ -166,6 +166,7 @@
   },
   "not_found_page": {
     "Create Page": "创建页面",
+    "page_not_exist": "该页面不存在",
     "page_not_exist_alert": "该页面不存在，请创建一个新页面"
   },
   "custom_navigation": {
@@ -311,10 +312,9 @@
     "revision": "版本",
     "comparing_source": "源头",
     "comparing_target": "目标",
-    "comparing_revisions": "比较版本",
+    "comparing_revisions": "比较两者的区别",
     "compare_latest":"比較最新版本",
-    "compare_previous":"比較以前的版本",
-    "comparing_with_latest": "一定要与最新版本进行比较"
+    "compare_previous":"比較以前的版本"
   },
 	"modal_rename": {
 		"label": {
