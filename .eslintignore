@@ -1,5 +1,6 @@
 /.github/**
 /.vscode/**
+/dist/**
 /node_modules/**
 /public/**
 /src/client/js/legacy/thirdparty-js/**
