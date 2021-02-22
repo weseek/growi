@@ -24,7 +24,7 @@ import ExpandOrContractButton from './ExpandOrContractButton';
 
 const PageAccessoriesModal = (props) => {
   const {
-    t, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser,
+    t, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser, isPageExist,
   } = props;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab, activeComponents } = pageAccessoriesContainer.state;
@@ -48,18 +48,19 @@ const PageAccessoriesModal = (props) => {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser && isPageExist,
       },
       attachment: {
         Icon: AttachmentIcon,
         i18n: t('attachment_data'),
         index: 3,
+        isLinkEnabled: v => isPageExist,
       },
       shareLink: {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser && isPageExist,
       },
     };
   }, [t, isGuestUser, isSharedUser]);
@@ -149,6 +150,7 @@ PageAccessoriesModal.propTypes = {
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
+  isPageExist: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
 };

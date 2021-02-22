@@ -17,7 +17,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const PageAccessoriesModalControl = (props) => {
   const {
-    t, pageAccessoriesContainer, isGuestUser, isSharedUser,
+    t, pageAccessoriesContainer, isGuestUser, isSharedUser, isPageExist,
   } = props;
 
   const accessoriesBtnList = useMemo(() => {
@@ -37,23 +37,23 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
-        disabled: isGuestUser || isSharedUser,
+        disabled: isGuestUser || isSharedUser || !isPageExist,
         i18n: t('History'),
       },
       {
         name: 'attachment',
         Icon: <AttachmentIcon />,
-        disabled: false,
+        disabled: !isPageExist,
         i18n: t('attachment_data'),
       },
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUser || isSharedUser,
+        disabled: isGuestUser || isSharedUser || !isPageExist,
         i18n: t('share_links.share_link_management'),
       },
     ];
-  }, [t, isGuestUser, isSharedUser]);
+  }, [t, isGuestUser, isSharedUser, isPageExist]);
 
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
@@ -94,6 +94,7 @@ PageAccessoriesModalControl.propTypes = {
 
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
+  isPageExist: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalControlWrapper);
