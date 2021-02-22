@@ -104,12 +104,6 @@ const schema = new Schema({
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
-// function validateCrowi() {
-//   if (crowi == null) {
-//     throw new Error('"crowi" is null. Init User model with "crowi" argument first.');
-//   }
-// }
-
 class User extends Model {
 
   static configManager: ConfigManager;
