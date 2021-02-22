@@ -9,7 +9,7 @@ import AppContainer from '../services/AppContainer';
 import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
 
 const PageAccessories = (props) => {
-  const { appContainer, pageAccessoriesContainer, isPageExist } = props;
+  const { appContainer, pageAccessoriesContainer, isNotFoundPage } = props;
   const { isGuestUser, isSharedUser } = appContainer;
 
   return (
@@ -17,12 +17,12 @@ const PageAccessories = (props) => {
       <PageAccessoriesModalControl
         isGuestUser={isGuestUser}
         isSharedUser={isSharedUser}
-        isPageExist={isPageExist}
+        isNotFoundPage={isNotFoundPage}
       />
       <PageAccessoriesModal
         isGuestUser={isGuestUser}
         isSharedUser={isSharedUser}
-        isPageExist={isPageExist}
+        isNotFoundPage={isNotFoundPage}
         isOpen={pageAccessoriesContainer.state.isPageAccessoriesModalShown}
         onClose={pageAccessoriesContainer.closePageAccessoriesModal}
       />
@@ -38,7 +38,7 @@ PageAccessories.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageAccessoriesContainer: PropTypes.instanceOf(PageAccessoriesContainer).isRequired,
 
-  isPageExist: PropTypes.bool.isRequired,
+  isNotFoundPage: PropTypes.bool.isRequired,
 };
 
 export default PageAccessoriesWrapper;

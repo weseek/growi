@@ -17,7 +17,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const PageAccessoriesModalControl = (props) => {
   const {
-    t, pageAccessoriesContainer, isGuestUser, isSharedUser, isPageExist,
+    t, pageAccessoriesContainer, isGuestUser, isSharedUser, isNotFoundPage,
   } = props;
 
   const accessoriesBtnList = useMemo(() => {
@@ -37,23 +37,23 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
-        disabled: isGuestUser || isSharedUser || !isPageExist,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage,
         i18n: t('History'),
       },
       {
         name: 'attachment',
         Icon: <AttachmentIcon />,
-        disabled: !isPageExist,
+        disabled: isNotFoundPage,
         i18n: t('attachment_data'),
       },
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUser || isSharedUser || !isPageExist,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage,
         i18n: t('share_links.share_link_management'),
       },
     ];
-  }, [t, isGuestUser, isSharedUser, isPageExist]);
+  }, [t, isGuestUser, isSharedUser, isNotFoundPage]);
 
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
@@ -61,7 +61,7 @@ const PageAccessoriesModalControl = (props) => {
 
         let tooltipMessage;
         if (accessory.disabled) {
-          tooltipMessage = isPageExist ? t('Not available for guest') : t('not_found_page.page_not_exist');
+          tooltipMessage = isNotFoundPage ? t('not_found_page.page_not_exist') : t('Not available for guest');
         }
         else {
           tooltipMessage = accessory.i18n;
@@ -103,7 +103,7 @@ PageAccessoriesModalControl.propTypes = {
 
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
-  isPageExist: PropTypes.bool.isRequired,
+  isNotFoundPage: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalControlWrapper);

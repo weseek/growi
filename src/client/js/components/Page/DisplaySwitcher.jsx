@@ -30,7 +30,7 @@ const DisplaySwitcher = (props) => {
             <div className="grw-side-contents-container">
               <div className="grw-side-contents-sticky-container">
                 <div className="border-bottom pb-1">
-                  <PageAccessories isPageExist={isPageExist} />
+                  <PageAccessories isNotFoundPage={!isPageExist} />
                 </div>
 
                 <div className="d-none d-lg-block">
