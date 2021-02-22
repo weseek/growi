@@ -124,7 +124,7 @@ class BoltService {
       ack, view, body, client,
     }) => {
       await ack();
-      await this.createPageInGrowi(view);
+      await this.createPageInGrowi(view, body);
     });
 
     this.bolt.action('button_click', async({ body, ack, say }) => {
@@ -274,7 +274,7 @@ class BoltService {
   }
 
   // Submit action in create Modal
-  async createPageInGrowi(view, client, body) {
+  async createPageInGrowi(view, body) {
     const User = this.crowi.model('User');
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
@@ -286,8 +286,6 @@ class BoltService {
       const slackUser = await User.findUserByUsername('slackUser');
 
       let path = view.state.values.path.path_input.value;
-
-
       // sanitize path
       path = this.crowi.xss.process(path);
       path = pathUtils.normalizePath(path);
@@ -296,7 +294,7 @@ class BoltService {
       await Page.create(path, contentsBody, user, {});
     }
     catch (err) {
-      client.chat.postMessage({
+      this.client.chat.postMessage({
         channel: body.user.id,
         blocks: [
           this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
