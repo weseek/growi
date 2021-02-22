@@ -664,4 +664,4 @@ Crowi.prototype.setupSyncPageStatusService = async function() {
   }
 };
 
-module.exports = Crowi;
+export default Crowi;
