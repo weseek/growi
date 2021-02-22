@@ -12,6 +12,7 @@ import { config as i18nConfig } from '~/i18n';
 import { omitInsecureAttributes } from './serializers/user-serializer';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
+import Attachment from '~/server/models/attachment';
 import ConfigManager from '~/server/service/config-manager';
 import AclService from '~/server/service/acl';
 
@@ -231,14 +232,12 @@ class User extends Model {
     return userData;
   }
 
-  // TODO: create UserService and transplant this method because image uploading depends on AttachmentService
   async updateImage(attachment) {
     this.imageAttachment = attachment;
     await this.updateImageUrlCached();
     return this.save();
   }
 
-  // TODO: create UserService and transplant this method because image deletion depends on AttachmentService
   async deleteImage() {
     // validateCrowi();
 
@@ -259,7 +258,7 @@ class User extends Model {
     this.imageUrlCached = await this.generateImageUrlCached();
   }
 
-  async generateImageUrlCached() {
+  async generateImageUrlCached(): Promise<string> {
     if (this.isGravatarEnabled) {
       const email = this.email || '';
       const hash = md5(email.trim().toLowerCase());
@@ -269,9 +268,10 @@ class User extends Model {
       return this.image;
     }
     if (this.imageAttachment != null && this.imageAttachment._id != null) {
-      // const Attachment = crowi.model('Attachment');
-      // const imageAttachment = await Attachment.findById(this.imageAttachment);
-      // return imageAttachment.filePathProxied;
+      const imageAttachment = await Attachment.findById(this.imageAttachment);
+      if (imageAttachment != null) {
+        return imageAttachment.filePathProxied;
+      }
     }
     return '/images/icons/user.svg';
   }
@@ -294,11 +294,11 @@ class User extends Model {
     this.status = STATUS_ACTIVE;
 
     this.save((err, userData) => {
-      // userEvent.emit('activated', userData);
-      // if (err) {
-      //   throw new Error(err);
-      // }
-      // return userData;
+      userEvent.emit('activated', userData);
+      if (err) {
+        throw new Error(err);
+      }
+      return userData;
     });
   }
 
@@ -320,10 +320,10 @@ class User extends Model {
   }
 
   async statusActivate() {
-    // logger.debug('Activate User', this);
-    // this.status = STATUS_ACTIVE;
-    // const userData = await this.save();
-    // return userEvent.emit('activated', userData);
+    logger.debug('Activate User', this);
+    this.status = STATUS_ACTIVE;
+    const userData = await this.save();
+    return userEvent.emit('activated', userData);
   }
 
   async statusSuspend() {
@@ -369,16 +369,17 @@ class User extends Model {
     return userStatus;
   }
 
-  static isEmailValid(email, callback) {
-    // TODO implement
-    // const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhiteList');
+  static isEmailValid(email, callback):boolean {
+    const configManager = new ConfigManager();
 
-    // if (Array.isArray(whitelist) && whitelist.length > 0) {
-    //   return whitelist.some((allowedEmail) => {
-    //     const re = new RegExp(`${allowedEmail}$`);
-    //     return re.test(email);
-    //   });
-    // }
+    const whitelist = configManager.getConfig('crowi', 'security:registrationWhiteList');
+
+    if (Array.isArray(whitelist) && whitelist.length > 0) {
+      return whitelist.some((allowedEmail) => {
+        const re = new RegExp(`${allowedEmail}$`);
+        return re.test(email);
+      });
+    }
 
     return true;
   }
@@ -471,7 +472,7 @@ class User extends Model {
     });
   }
 
-  static async isUserCountExceedsUpperLimit():boolean {
+  static async isUserCountExceedsUpperLimit():Promise<boolean> {
     const configManager = new ConfigManager();
 
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');

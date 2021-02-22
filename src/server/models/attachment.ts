@@ -34,6 +34,7 @@ export interface IAttachment extends Document{
   createdAt: Date;
   temporaryUrlCached: string;
   temporaryUrlExpiredAt: Date;
+  filePathProxied: string;
 }
 
 const schema:Schema<IAttachment> = new Schema<IAttachment>({
