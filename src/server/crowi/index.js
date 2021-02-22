@@ -31,11 +31,7 @@ function Crowi() {
   this.version = pkg.version;
   this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-  this.pluginDir = path.join(projectRoot, 'node_modules') + sep;
   this.publicDir = path.join(projectRoot, 'public') + sep;
-  this.libDir = path.join(projectRoot, 'src/server') + sep;
-  this.eventsDir = path.join(this.libDir, 'events') + sep;
-  this.viewsDir = path.join(this.libDir, 'views') + sep;
   this.resourceDir = path.join(projectRoot, 'resource') + sep;
   this.localeDir = path.join(this.resourceDir, 'locales') + sep;
   this.tmpDir = path.join(projectRoot, 'tmp') + sep;
@@ -77,11 +73,11 @@ function Crowi() {
   this.port = this.env.PORT || 3000;
 
   this.events = {
-    user: new (require(`${this.eventsDir}user`))(this),
-    page: new (require(`${this.eventsDir}page`))(this),
-    bookmark: new (require(`${this.eventsDir}bookmark`))(this),
-    tag: new (require(`${this.eventsDir}tag`))(this),
-    admin: new (require(`${this.eventsDir}admin`))(this),
+    user: new (require('../events/user'))(this),
+    page: new (require('../events/page'))(this),
+    bookmark: new (require('../events/bookmark'))(this),
+    tag: new (require('../events/tag'))(this),
+    admin: new (require('../events/admin'))(this),
   };
 }
 
