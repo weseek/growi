@@ -184,7 +184,7 @@ class User extends Model {
   }
 
   async updateApiToken() {
-    this.apiToken = generateApiToken(this);
+    this.apiToken = this.generateApiToken(this);
     const userData = await this.save();
     return userData;
   }
