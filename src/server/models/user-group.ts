@@ -1,19 +1,49 @@
-const debug = require('debug')('growi:models:userGroup');
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
+import { Schema, Types, Model } from 'mongoose';
 
+
+import mongoosePaginate from 'mongoose-paginate-v2';
+import Debug from 'debug';
+import { getOrCreateModel } from '../util/mongoose-utils';
+import UserGroupRelation from '~/server/models/user-group-relation';
+
+import ConfigManager from '~/server/service/config-manager';
+import PageServise from '~/server/service/page';
+
+const debug = Debug('growi:models:userGroup');
+
+export interface IUserGroup{
+  _id: Types.ObjectId;
+  userGroupId:string;
+  name: string;
+  createdAt: Date;
+}
 
 /*
  * define schema
  */
-const schema = new mongoose.Schema({
+const schema = new Schema<IUserGroup>({
   userGroupId: String,
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
 });
 schema.plugin(mongoosePaginate);
 
-class UserGroup {
+/**
+ * UserGroup Class
+ *
+ * @class UserGroup
+ */
+class UserGroup extends Model {
+
+  static pageService: PageServise;
+
+  static paginate: (query, options)=>Promise<IUserGroup[]>;
+
+  constructor() {
+    super();
+    this.configManager = new ConfigManager();
+    this.pageService = new PageServise(this.configManager);
+  }
 
   /**
    * public fields for UserGroup model
@@ -49,7 +79,7 @@ class UserGroup {
   }
 
   // すべてのグループを取得（オプション指定可）
-  static findAllGroups(option) {
+  static findAllGroups(_option) {
     return this.find().exec();
   }
 
@@ -91,17 +121,15 @@ class UserGroup {
 
   // グループの完全削除
   static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
-    const UserGroupRelation = mongoose.model('UserGroupRelation');
-
     const groupToDelete = await this.findById(deleteGroupId);
     if (groupToDelete == null) {
-      throw new Error('UserGroup data is not exists. id:', deleteGroupId);
+      throw new Error(`UserGroup data is not exists. id: ${deleteGroupId}`);
     }
     const deletedGroup = await groupToDelete.remove();
 
     await Promise.all([
       UserGroupRelation.removeAllByUserGroup(deletedGroup),
-      UserGroup.crowi.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
+      this.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
     ]);
 
     return deletedGroup;
@@ -126,8 +154,5 @@ class UserGroup {
 }
 
 
-module.exports = function(crowi) {
-  UserGroup.crowi = crowi;
-  schema.loadClass(UserGroup);
-  return mongoose.model('UserGroup', schema);
-};
+schema.loadClass(UserGroup);
+export default getOrCreateModel<IUserGroup>('UserGroup', schema);
