@@ -151,7 +151,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
@@ -353,7 +353,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
     const pageEvent = this.pageEvent;
@@ -488,7 +488,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
@@ -564,7 +564,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     let count = 0;
@@ -690,7 +690,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;

@@ -6,42 +6,48 @@ class BoltReciever {
     this.bolt = app;
   }
 
-  async requestHandler(req, res) {
+  async requestHandler(body) {
+    if (this.bolt === undefined) {
+      throw new Error('Slack Bot service is not setup');
+    }
+
     let ackCalled = false;
 
     // for verification request URL on Event Subscriptions
-    if (req.body.challenge && req.body.type) {
-      return res.send(req.body);
+    if (body.type === 'url_verification') {
+      return body;
     }
 
-    const payload = req.body.payload;
+    const payload = body.payload;
     let reqBody;
 
     if (payload != null) {
       reqBody = JSON.parse(payload);
     }
     else {
-      reqBody = req.body;
+      reqBody = body;
     }
 
     const event = {
       body: reqBody,
       ack: (response) => {
         if (ackCalled) {
-          return;
-        }
-
-        if (response instanceof Error) {
-          res.status(500).send();
-        }
-        else if (!response) {
-          res.send('');
-        }
-        else {
-          res.send(response);
+          return null;
         }
 
         ackCalled = true;
+
+        if (response instanceof Error) {
+          const message = response.message || 'Error occurred';
+          throw new Error(message);
+        }
+        else if (!response) {
+          return null;
+        }
+        else {
+          return response;
+        }
+
       },
     };
 
@@ -66,7 +72,7 @@ class BoltService {
     this.client = client;
 
     if (token != null || signingSecret != null) {
-      logger.debug('TwitterStrategy: setup is done');
+      logger.debug('SlackBot: setup is done');
       this.bolt = new App({
         token,
         signingSecret,
@@ -101,11 +107,11 @@ class BoltService {
 
       switch (firstArg) {
         case 'search':
-          this.searchResults(command, args);
+          await this.searchResults(command, args);
           break;
 
         case 'create':
-          this.createModal(command, client, body);
+          await this.createModal(command, client, body);
           break;
 
         default:
@@ -118,7 +124,7 @@ class BoltService {
       ack, view, body, client,
     }) => {
       await ack();
-      return this.createPageInGrowi(view, body, client);
+      await this.createPageInGrowi(view);
     });
 
     this.bolt.action('button_click', async({ body, ack, say }) => {
@@ -129,27 +135,28 @@ class BoltService {
   }
 
   notCommand(command) {
-    logger.error('Input first arguments');
-    return this.client.chat.postEphemeral({
+    logger.error('Invalid first argument');
+    this.client.chat.postEphemeral({
       channel: command.channel_id,
       user: command.user_id,
       blocks: [
         this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
     });
-
+    throw new Error('/growi command: Invalid first argument');
   }
 
   async searchResults(command, args) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
-      return this.client.chat.postEphemeral({
+      this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
           this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
+      throw new Error('/growi command:search: Invalid keyword');
     }
 
     // remove leading 'search'.
@@ -161,13 +168,13 @@ class BoltService {
 
     // no search results
     if (results.data.length === 0) {
-      return this.client.chat.postEphemeral({
+      logger.info(`No page found with "${keywords}"`);
+      this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
-        blocks: [
-          this.generateMarkdownSectionBlock('*No page that match your keywords.*'),
-        ],
+        blocks: [this.generateMarkdownSectionBlock('*No page that match your keywords.*')],
       });
+      return;
     }
 
     const resultPaths = results.data.map((data) => {
@@ -207,20 +214,26 @@ class BoltService {
           this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
+      throw new Error('/growi command:search: Failed to search');
     }
   }
 
   async createModal(command, client, body) {
     const User = this.crowi.model('User');
+    const slackUser = await User.findUserByUsername('slackUser');
+
+    // if "slackUser" is null, don't show create Modal
+    if (slackUser == null) {
+      logger.error('Failed to create a page because slackUser is not found.');
+      this.client.chat.postEphemeral({
+        channel: command.channel_id,
+        user: command.user_id,
+        blocks: [this.generateMarkdownSectionBlock('*slackUser does not exist.*')],
+      });
+      throw new Error('/growi command:create: slackUser is not found');
+    }
 
     try {
-      const slackUser = await User.findUserByUsername('slackUser');
-
-      // if "slackUser" is null, don't show create Modal
-      if (slackUser == null) {
-        throw new Error('userNull');
-      }
-
       await client.views.open({
         trigger_id: body.trigger_id,
 
@@ -247,18 +260,8 @@ class BoltService {
         },
       });
     }
-    catch (e) {
-      if (e instanceof Error) {
-        return this.client.chat.postEphemeral({
-          channel: command.channel_id,
-          user: command.user_id,
-          blocks: [
-            this.generateMarkdownSectionBlock('*slackUser does not exist.*'),
-          ],
-        });
-      }
-
-      logger.error('Failed to create page.');
+    catch (err) {
+      logger.error('Failed to create a page.');
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
@@ -266,41 +269,35 @@ class BoltService {
           this.generateMarkdownSectionBlock('*Failed to create new page.*\n Hint\n `/growi create`'),
         ],
       });
+      throw err;
     }
   }
 
   // Submit action in create Modal
-  async createPageInGrowi(view, body, client) {
+  async createPageInGrowi(view) {
     const User = this.crowi.model('User');
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
 
-    const contentsBody = view.state.values.contents.contents_input.value;
 
     try {
       // search "slackUser" to create page in slack
       const slackUser = await User.findUserByUsername('slackUser');
 
       let path = view.state.values.path.path_input.value;
+      const body = view.state.values.contents.contents_input.value;
+
 
       // sanitize path
       path = this.crowi.xss.process(path);
       path = pathUtils.normalizePath(path);
 
       const user = slackUser._id;
-
-      await Page.create(path, contentsBody, user, {});
+      await Page.create(path, body, user, {});
     }
-    catch (e) {
-      if (e instanceof Error) {
-        logger.error('Failed to create page in GROWI.');
-        client.chat.postMessage({
-          channel: body.user.id,
-          blocks: [
-            this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`),
-          ],
-        });
-      }
+    catch (err) {
+      logger.error('Failed to create page in GROWI.');
+      throw err;
     }
   }
 
