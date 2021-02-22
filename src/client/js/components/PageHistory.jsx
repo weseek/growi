@@ -2,21 +2,23 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
+import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 import { toastError } from '../util/apiNotification';
 
 import { withLoadingSppiner } from './SuspenseUtils';
-import PageRevisionList from './PageHistory/PageRevisionList';
+import PageRevisionTable from './PageHistory/PageRevisionTable';
 
 import PageHistroyContainer from '../services/PageHistoryContainer';
 import PaginationWrapper from './PaginationWrapper';
-
+import RevisionComparer from './RevisionComparer/RevisionComparer';
+import RevisionComparerContainer from '../services/RevisionComparerContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 
 function PageHistory(props) {
-  const { pageHistoryContainer } = props;
-  const { getPreviousRevision, onDiffOpenClicked } = pageHistoryContainer;
+  const { pageHistoryContainer, revisionComparerContainer, t } = props;
+  const { getPreviousRevision } = pageHistoryContainer;
   const {
     activePage, totalPages, pagingLimit, revisions, diffOpened,
   } = pageHistoryContainer.state;
@@ -44,6 +46,7 @@ function PageHistory(props) {
     throw new Promise(async() => {
       try {
         await props.pageHistoryContainer.retrieveRevisions(1);
+        await props.revisionComparerContainer.initRevisions();
       }
       catch (err) {
         toastError(err);
@@ -66,24 +69,31 @@ function PageHistory(props) {
   }
 
   return (
-    <div>
-      <PageRevisionList
+    <div className="revision-history">
+      <h3 className="pb-3">{t('page_history.revision_list')}</h3>
+      <PageRevisionTable
         pageHistoryContainer={pageHistoryContainer}
+        revisionComparerContainer={revisionComparerContainer}
         revisions={revisions}
         diffOpened={diffOpened}
         getPreviousRevision={getPreviousRevision}
-        onDiffOpenClicked={onDiffOpenClicked}
       />
-      {pager()}
+      <div className="my-3">
+        {pager()}
+      </div>
+      <RevisionComparer />
     </div>
   );
 
 }
 
-const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer]);
+const RenderPageHistoryWrapper = withUnstatedContainers(withLoadingSppiner(PageHistory), [PageHistroyContainer, RevisionComparerContainer]);
 
 PageHistory.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+
   pageHistoryContainer: PropTypes.instanceOf(PageHistroyContainer).isRequired,
+  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
 };
 
-export default RenderPageHistoryWrapper;
+export default withTranslation()(RenderPageHistoryWrapper);
