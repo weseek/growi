@@ -1,7 +1,5 @@
 const path = require('path');
 
-const WebpackAssetsManifest = require('webpack-assets-manifest');
-
 // define additional entries
 const additionalWebpackEntries = {
   boot: './src/client/js/boot',
@@ -48,6 +46,7 @@ module.exports = {
     };
 
     // configure plugins
+    const WebpackAssetsManifest = require('webpack-assets-manifest');
     config.plugins.push(
       new WebpackAssetsManifest({
         publicPath: true,
