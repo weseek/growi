@@ -61,7 +61,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <AppSettingsPageContents />,
     },
     security: {
-      title: useCustomTitle(props, t('App Settings')),
+      title: useCustomTitle(props, t('security_settings')),
 
       component: <SecurityManagementContents />,
     },
@@ -82,23 +82,23 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <ExportArchiveDataPage />,
     },
     notification: {
-      title: useCustomTitle(props, t('')),
+      title: useCustomTitle(props, t('Notification Settings')),
       component: <></>,
     },
     'global-notification': {
-      title: useCustomTitle(props, t('')),
+      title: '',
       component: <></>,
     },
     users: {
-      title: useCustomTitle(props, t('')),
+      title: useCustomTitle(props, t('User_Management')),
       component: <></>,
     },
     'user-groups': {
-      title: useCustomTitle(props, t('')),
+      title: useCustomTitle(props, t('UserGroup Management')),
       component: <></>,
     },
     search: {
-      title: useCustomTitle(props, t('')),
+      title: useCustomTitle(props, t('Text Search Management')),
       component: <></>,
     },
   };
