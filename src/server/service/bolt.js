@@ -107,7 +107,7 @@ class BoltService {
 
       switch (firstArg) {
         case 'search':
-          await this.searchResults(command, args);
+          await this.showEphemeralSearchResults(command, args);
           break;
 
         case 'create':
@@ -127,9 +127,11 @@ class BoltService {
       await this.createPageInGrowi(view, body);
     });
 
-    this.bolt.action('button_click', async({ body, ack, say }) => {
+    this.bolt.action('shareSearchResults', async({
+      body, ack, say, action,
+    }) => {
       await ack();
-      await say('clicked the button');
+      await say(action.value);
     });
 
   }
@@ -146,7 +148,7 @@ class BoltService {
     throw new Error('/growi command: Invalid first argument');
   }
 
-  async searchResults(command, args) {
+  async getSearchResultPaths(command, args) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
       this.client.chat.postEphemeral({
@@ -181,6 +183,12 @@ class BoltService {
       return data._source.path;
     });
 
+    return resultPaths;
+  }
+
+  async showEphemeralSearchResults(command, args) {
+    const resultPaths = await this.getSearchResultPaths(command, args);
+
     try {
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
@@ -195,10 +203,11 @@ class BoltService {
                 type: 'button',
                 text: {
                   type: 'plain_text',
-                  text: 'Share the results in this channel.',
+                  text: 'Share',
                 },
                 style: 'primary',
-                action_id: 'button_click',
+                action_id: 'shareSearchResults',
+                value: `${resultPaths.join('\n')}`,
               },
             ],
           },
