@@ -47,7 +47,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   const adminPagesMap = {
     home: {
-      title: t('Wiki Management Home Page'),
+      title: useCustomTitle(props, t('Wiki Management Home Page')),
       component: <AdminHome
         nodeVersion={props.nodeVersion}
         npmVersion={props.npmVersion}
