@@ -10,6 +10,7 @@ import { addSeconds } from 'date-fns';
 import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
+import { IUser } from './user';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:models:attachment');
@@ -24,7 +25,7 @@ function generateFileHash(fileName:string) {
 
 export interface IAttachment extends Document{
   _id: Types.ObjectId;
-  creator: Types.ObjectId;
+  creator: IUser;
   filePath: string;
   fileName: string;
   originalName: string;
@@ -33,6 +34,7 @@ export interface IAttachment extends Document{
   createdAt: Date;
   temporaryUrlCached: string;
   temporaryUrlExpiredAt: Date;
+  filePathProxied: string;
 }
 
 const schema:Schema<IAttachment> = new Schema<IAttachment>({

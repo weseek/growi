@@ -1,5 +1,5 @@
 import { FC, memo, useEffect } from 'react';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 import { useCurrentPageCommentsSWR } from '~/stores/page';
 import { Comment } from '~/interfaces/page';
 

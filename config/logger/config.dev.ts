@@ -1,4 +1,6 @@
-module.exports = {
+import { UniversalBunyanConfig } from 'universal-bunyan';
+
+const config: UniversalBunyanConfig = {
   default: 'info',
 
   // 'express-session': 'debug',
@@ -37,3 +39,5 @@ module.exports = {
   // 'growi:cli:StickyStretchableScroller': 'debug',
 
 };
+
+export default config;

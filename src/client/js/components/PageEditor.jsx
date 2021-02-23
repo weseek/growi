@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
 
 import { throttle, debounce } from 'throttle-debounce';
 import { envUtils } from 'growi-commons';
+import loggerFactory from '~/utils/logger';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';

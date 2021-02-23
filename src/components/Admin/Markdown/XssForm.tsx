@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 import { useTranslation } from '~/i18n';
 
 import { tags, attrs } from '~/service/xss/recommended-whitelist';

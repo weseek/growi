@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
-
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '~/utils/logger';
+
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
