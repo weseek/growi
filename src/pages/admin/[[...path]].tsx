@@ -98,7 +98,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <></>,
     },
     search: {
-      title: useCustomTitle(props, t('Text Search Management')),
+      title: useCustomTitle(props, t('Full Text Search Management')),
       component: <></>,
     },
   };
