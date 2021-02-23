@@ -107,7 +107,7 @@ class BoltService {
 
       switch (firstArg) {
         case 'search':
-          await this.searchResults(command, args);
+          await this.showEphemeralSearchResults(command, args);
           break;
 
         case 'create':
@@ -186,7 +186,7 @@ class BoltService {
     return resultPaths;
   }
 
-  async searchResults(command, args) {
+  async showEphemeralSearchResults(command, args) {
     const resultPaths = await this.getSearchResultPaths(command, args);
 
     try {
@@ -203,7 +203,7 @@ class BoltService {
                 type: 'button',
                 text: {
                   type: 'plain_text',
-                  text: 'Share the results.',
+                  text: 'Share',
                 },
                 style: 'primary',
                 action_id: 'shareSearchResults',
