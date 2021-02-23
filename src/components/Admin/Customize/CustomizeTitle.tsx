@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { Card, CardBody } from 'reactstrap';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useTranslation } from '~/i18n';
@@ -19,7 +19,7 @@ export const CustomizeTitle:FC = () => {
   const { t } = useTranslation();
   const { data } = useCustomizeSettingsSWR();
   const {
-    register, handleSubmit, setValue,
+    register, handleSubmit,
   } = useForm({
     defaultValues: {
       [currentCustomizeTitle]: data?.[currentCustomizeTitle],
@@ -39,11 +39,6 @@ export const CustomizeTitle:FC = () => {
       toastError(err);
     }
   };
-
-  useEffect(() => {
-    setValue(currentCustomizeTitle, data?.[currentCustomizeTitle]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.[currentCustomizeTitle]]);
 
   return (
     <div className="row">
