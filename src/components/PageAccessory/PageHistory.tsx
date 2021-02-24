@@ -2,6 +2,7 @@ import React, {
   useCallback, useState, FC, useEffect,
 } from 'react';
 
+import { useTranslation } from '~/i18n';
 import { PageRevisionList } from '~/components/PageAccessory/PageRevisionList';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 import { Revision } from '~/interfaces/page';
@@ -9,6 +10,8 @@ import { Revision } from '~/interfaces/page';
 import { useCurrentPageHistorySWR } from '~/stores/page';
 
 export const PageHistory:FC = () => {
+  const { t } = useTranslation();
+
   const [revisions, setRevisions] = useState([] as Revision[]);
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
