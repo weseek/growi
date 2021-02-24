@@ -1,5 +1,7 @@
 import fs from 'fs';
 
+import mongoose from 'mongoose';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars

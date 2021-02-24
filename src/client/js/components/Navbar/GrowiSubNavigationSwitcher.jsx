@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 // import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
 
 import StickyEvents from 'sticky-events';
 import { debounce } from 'throttle-debounce';
+import loggerFactory from '~/utils/logger';
 
 import GrowiSubNavigation from './GrowiSubNavigation';
 
