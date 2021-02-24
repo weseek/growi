@@ -8,6 +8,48 @@ const router = express.Router();
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
+/**
+ * @swagger
+ *  tags:
+ *    name: Comments
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Comment:
+ *        description: Comment
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: revision ID
+ *            example: 5e079a0a0afa6700170a75fb
+ *          __v:
+ *            type: number
+ *            description: DB record version
+ *            example: 0
+ *          page:
+ *            $ref: '#/components/schemas/Page/properties/_id'
+ *          creator:
+ *            $ref: '#/components/schemas/User/properties/_id'
+ *          revision:
+ *            $ref: '#/components/schemas/Revision/properties/_id'
+ *          comment:
+ *            type: string
+ *            description: comment
+ *            example: good
+ *          commentPosition:
+ *            type: number
+ *            description: comment position
+ *            example: 0
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
+ */
 
 module.exports = (crowi) => {
   const User = crowi.model('User');
