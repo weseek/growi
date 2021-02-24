@@ -12,7 +12,7 @@ class UserNotificationService {
   }
 
   /**
-   * fire user notification
+   * fire user notification for page
    *
    * @memberof UserNotificationService
    *
@@ -22,7 +22,7 @@ class UserNotificationService {
    * @param {string} updateOrCreate 'create' or 'update'
    * @param {string} previousRevision
    */
-  async fire(page, user, slackChannelsStr, updateOrCreate, previousRevision = '') {
+  async fireForPage(page, user, slackChannelsStr, updateOrCreate, previousRevision = '') {
     const { slackNotificationService, slack } = this.crowi;
 
     await page.updateSlackChannels(slackChannelsStr);

@@ -252,7 +252,7 @@ module.exports = (crowi) => {
     // user notification
     if (isSlackEnabled) {
       try {
-        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+        const results = await userNotificationService.fireForPage(createdPage, req.user, slackChannels, 'create', false);
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
