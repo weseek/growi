@@ -399,7 +399,7 @@ module.exports = function(crowi, app) {
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
     renderVars.sharelinksNumber = sharelinksNumber;
-    console.log(renderVars);
+
     if (isUserPage(page.path)) {
       // change template
       view = 'layout-growi/user_page';
