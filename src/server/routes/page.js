@@ -194,37 +194,6 @@ module.exports = function(crowi, app) {
     };
   }
 
-  // user notification
-  // TODO create '/service/user-notification' module
-  /**
-   *
-   * @param {Page} page
-   * @param {User} user
-   * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
-   * @param {boolean} updateOrCreate
-   * @param {string} previousRevision
-   */
-  async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
-    await page.updateSlackChannels(slackChannelsStr)
-      .catch((err) => {
-        logger.error('Error occured in updating slack channels: ', err);
-      });
-
-
-    if (slackNotificationService.hasSlackConfig()) {
-      const slackChannels = slackChannelsStr != null ? slackChannelsStr.split(',') : [null];
-
-      const promises = slackChannels.map((chan) => {
-        return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
-      });
-
-      Promise.all(promises)
-        .catch((err) => {
-          logger.error('Error occured in sending slack notification: ', err);
-        });
-    }
-  }
-
   function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
     renderVars.revision = page.revision;
@@ -754,7 +723,7 @@ module.exports = function(crowi, app) {
     // user notification
     if (isSlackEnabled) {
       try {
-        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create');
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
@@ -898,7 +867,17 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled) {
-      await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
+      try {
+        const results = await userNotificationService.fire(page, req.user, slackChannels, 'update', previousRevision);
+        results.forEach((result) => {
+          if (result.status === 'rejected') {
+            logger.error('Create user notification failed', result.reason);
+          }
+        });
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
   };
 
