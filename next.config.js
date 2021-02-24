@@ -1,4 +1,6 @@
 const path = require('path');
+const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
+
 
 // define additional entries
 const additionalWebpackEntries = {
@@ -56,4 +58,9 @@ module.exports = {
 
     return config;
   },
+  plugins: [
+    new I18NextHMRPlugin({
+      localesDir: path.resolve(__dirname, 'static/locales'),
+    }),
+  ],
 };
