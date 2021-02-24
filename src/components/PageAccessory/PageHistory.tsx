@@ -48,20 +48,42 @@ export const PageHistory:FC = () => {
     );
   }
 
+  // TODO: activate with GW-5253
+  // if (pageHistoryContainer.state.revisions === pageHistoryContainer.dummyRevisions) {
+  //   throw new Promise(async() => {
+  //     try {
+  //       await props.pageHistoryContainer.retrieveRevisions(1);
+  //       await props.revisionComparerContainer.initRevisions();
+  //     }
+  //     catch (err) {
+  //       toastError(err);
+  //       pageHistoryContainer.setState({ errorMessage: err.message });
+  //       logger.error(err);
+  //     }
+  //   });
+  // }
+
   return (
-    <>
-      <PageRevisionList
+    <div className="revision-history">
+      <h3 className="pb-3">{t('page_history.revision_list')}</h3>
+      {/* // TODO: activate with GW-5253 */}
+      {/* <PageRevisionTable
+        pageHistoryContainer={pageHistoryContainer}
+        revisionComparerContainer={revisionComparerContainer}
         revisions={revisions}
-        pagingLimit={limit}
         diffOpened={diffOpened}
-      />
-      <PaginationWrapper
-        activePage={activePage}
-        changePage={handlePage}
-        totalItemsCount={totalItemsCount}
-        pagingLimit={limit}
-        align="center"
-      />
-    </>
+        getPreviousRevision={getPreviousRevision}
+      /> */}
+      <div className="my-3">
+        <PaginationWrapper
+          activePage={activePage}
+          changePage={handlePage}
+          totalItemsCount={totalItemsCount}
+          pagingLimit={limit}
+          align="center"
+        />
+      </div>
+      {/* <RevisionComparer /> */}
+    </div>
   );
 };
