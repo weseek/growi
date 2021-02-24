@@ -52,6 +52,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            example: 2010-01-01T00:00:00.000Z
  */
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+
   const User = crowi.model('User');
   const Page = crowi.model('Page');
 
@@ -76,11 +79,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /comments.get:
+   *    /comments/get:
    *      get:
    *        tags: [Comments, CrowiCompatibles]
    *        operationId: getComments
-   *        summary: /comments.get
+   *        summary: /comments/get
    *        description: Get comments of the page of the revision
    *        parameters:
    *          - in: query
@@ -109,7 +112,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.get('/', validator.getComment, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.getComment, async(req, res) => {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
 
