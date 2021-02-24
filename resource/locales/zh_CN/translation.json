@@ -314,9 +314,7 @@
     "comparing_target": "目标",
     "comparing_revisions": "比较两者的区别",
     "compare_latest":"比較最新版本",
-    "compare_previous":"比較以前的版本",
-    "no_diff":"没有区别"
-
+    "compare_previous":"比較以前的版本"
   },
 	"modal_rename": {
 		"label": {

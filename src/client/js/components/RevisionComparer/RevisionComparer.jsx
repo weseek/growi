@@ -85,7 +85,7 @@ const RevisionComparer = (props) => {
       </div>
 
       <div className="revision-compare-outer">
-        {sourceRevision === targetRevision ? t('page_history.no_diff') : (
+        {sourceRevision === targetRevision ? t('No diff') : (
           <RevisionDiff
             revisionDiffOpened
             previousRevision={sourceRevision}
