@@ -6,7 +6,30 @@ const express = require('express');
 
 const router = express.Router();
 
+const { body } = require('express-validator');
+
+const mongoose = require('mongoose');
+
+const ObjectId = mongoose.Types.ObjectId;
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
+const validator = {
+  getComment: [
+    body('commentForm.page_id').exists(),
+    body('commentForm.revision_id').exists(),
+    body('commentForm.comment').exists(),
+    body('commentForm.comment_position').isInt(),
+    body('commentForm.is_markdown').isBoolean(),
+    body('commentForm.replyTo').exists().custom((value) => {
+      if (value === '') {
+        return undefined;
+      }
+      return ObjectId(value);
+    }),
+
+    body('slackNotificationForm.isSlackEnabled').isBoolean().exists(),
+  ],
+};
 
 /**
  * @swagger
@@ -55,7 +78,8 @@ module.exports = (crowi) => {
   const User = crowi.model('User');
   const Page = crowi.model('Page');
 
-  router.get('/', async(req, res) => {
+
+  router.get('/', validator.getComment, async(req, res) => {
     // api.get = async function(req, res) {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
