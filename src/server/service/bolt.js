@@ -188,6 +188,12 @@ class BoltService {
 
   async showEphemeralSearchResults(command, args) {
     const resultPaths = await this.getSearchResultPaths(command, args);
+    const base = this.crowi.appService.getSiteUrl();
+
+    const urls = resultPaths.map((path) => {
+      const url = new URL(path, base);
+      return `<${decodeURI(url.href)} | ${decodeURI(url.pathname)}>`;
+    });
 
     try {
       await this.client.chat.postEphemeral({
@@ -195,7 +201,7 @@ class BoltService {
         user: command.user_id,
         blocks: [
           this.generateMarkdownSectionBlock('10 results.'),
-          this.generateMarkdownSectionBlock(`${resultPaths.join('\n')}`),
+          this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
           {
             type: 'actions',
             elements: [
@@ -207,7 +213,7 @@ class BoltService {
                 },
                 style: 'primary',
                 action_id: 'shareSearchResults',
-                value: `${resultPaths.join('\n')}`,
+                value: `${urls.join('\n')}`,
               },
             ],
           },
