@@ -206,7 +206,7 @@ module.exports = function(crowi, app) {
    * @param {string} previousRevision
    */
   async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
-    await page.updateSlackChannel(slackChannelsStr)
+    await page.updateSlackChannels(slackChannelsStr)
       .catch((err) => {
         logger.error('Error occured in updating slack channels: ', err);
       });
@@ -267,10 +267,6 @@ module.exports = function(crowi, app) {
     renderVars.grant = page.grant;
     renderVars.grantedGroupId = page.grantedGroup ? page.grantedGroup.id : null;
     renderVars.grantedGroupName = page.grantedGroup ? page.grantedGroup.name : null;
-  }
-
-  function addRenderVarsForSlack(renderVars, page) {
-    renderVars.slack = page.slackChannels;
   }
 
   async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
@@ -350,7 +346,6 @@ module.exports = function(crowi, app) {
     portalPage = await portalPage.populateDataToShowRevision();
 
     addRenderVarsForPage(renderVars, portalPage);
-    addRenderVarsForSlack(renderVars, portalPage);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
     renderVars.sharelinksNumber = sharelinksNumber;
@@ -399,13 +394,12 @@ module.exports = function(crowi, app) {
     page = await page.populateDataToShowRevision();
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
-    addRenderVarsForSlack(renderVars, page);
 
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
     renderVars.sharelinksNumber = sharelinksNumber;
-
+    console.log(renderVars);
     if (isUserPage(page.path)) {
       // change template
       view = 'layout-growi/user_page';
