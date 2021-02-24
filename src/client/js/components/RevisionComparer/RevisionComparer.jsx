@@ -56,7 +56,7 @@ const RevisionComparer = (props) => {
   };
 
   const { sourceRevision, targetRevision } = revisionComparerContainer.state;
-  const showDiff = (sourceRevision && targetRevision);
+  // const showDiff = (sourceRevision && targetRevision);
 
   return (
     <div className="revision-compare">
@@ -86,13 +86,16 @@ const RevisionComparer = (props) => {
       </div>
 
       <div className="revision-compare-outer">
-        { showDiff && (
+        {sourceRevision === targetRevision ? 'no diff' : (
           <RevisionDiff
             revisionDiffOpened
             previousRevision={sourceRevision}
             currentRevision={targetRevision}
           />
-        )}
+)}
+        {/* { showDiff && (
+
+        )} */}
       </div>
     </div>
   );
