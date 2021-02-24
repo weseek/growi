@@ -269,8 +269,8 @@ module.exports = function(crowi, app) {
     renderVars.grantedGroupName = page.grantedGroup ? page.grantedGroup.name : null;
   }
 
-  async function addRenderVarsForSlack(renderVars, page) {
-    renderVars.slack = await getSlackChannels(page);
+  function addRenderVarsForSlack(renderVars, page) {
+    renderVars.slack = page.slackChannels;
   }
 
   async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
@@ -415,16 +415,6 @@ module.exports = function(crowi, app) {
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
-
-  const getSlackChannels = async(page) => {
-    if (page.extended.slack) {
-      return page.extended.slack;
-    }
-
-    const data = await UpdatePost.findSettingsByPath(page.path);
-    const channels = data.map((e) => { return e.channel }).join(', ');
-    return channels;
-  };
 
   actions.showTopPage = function(req, res) {
     return showTopPage(req, res);
