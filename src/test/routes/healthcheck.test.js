@@ -63,25 +63,27 @@ describe('healthcheck', () => {
       expect(response.body.errors[0].code).toBe('healthcheck-mongodb-unhealthy');
     });
 
-    // test('add healthcheck-search-unhealthy to errors when unhealthy search', async() => {
-    //   crowi.searchService = { isConfigured: true, getInfoForHealth: () => { throw Error('unhealthy search') } };
-    //   crowi.models.Config = { findOne: () => {} };
+    test('add healthcheck-search-unhealthy to errors when unhealthy search', async() => {
+      crowi.models.Config = { findOne: () => {} };
 
-    //   const response = await request(app).get('/').query({ connectToMiddlewares: true });
+      crowi.searchService = { isConfigured: true, getInfoForHealth: () => { throw Error('unhealthy search') } };
 
-    //   expect(response.statusCode).toBe(200);
-    //   expect(response.body.errors[0].message).toBe('The Search Service is not connectable - unhealthy search');
-    //   expect(response.body.errors[0].code).toBe('healthcheck-search-unhealthy');
-    // });
+      const response = await request(app).get('/').query({ checkServices: ['mongo', 'search'] });
 
-    // test('http status is 503 when checkMiddlewaresStrictly is true', async() => {
-    //   crowi.searchService = { isConfigured: true, getInfoForHealth: () => { throw Error('unhealthy search') } };
-    //   crowi.models.Config = { findOne: () => { throw Error('connection error') } };
+      expect(response.statusCode).toBe(200);
+      expect(response.body.info.mongo).toBe('OK');
+      expect(response.body.errors[0].message).toBe('The Search Service is not connectable - unhealthy search');
+      expect(response.body.errors[0].code).toBe('healthcheck-search-unhealthy');
+    });
 
-    //   const response = await request(app).get('/').query({ checkMiddlewaresStrictly: true });
+    test('http status is 503 when strictly is set', async() => {
+      crowi.searchService = { isConfigured: true, getInfoForHealth: () => { throw Error('unhealthy search') } };
+      crowi.models.Config = { findOne: () => { throw Error('connection error') } };
 
-    //   expect(response.statusCode).toBe(503);
-    //   expect(response.body.errors.length).toBeGreaterThan(0);
-    // });
+      const response = await request(app).get('/').query({ checkServices: ['mongo', 'search'], strictly: true });
+
+      expect(response.statusCode).toBe(503);
+      expect(response.body.errors.length).toBeGreaterThan(0);
+    });
   });
 });
