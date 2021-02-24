@@ -46,21 +46,7 @@ const pageSchema = new mongoose.Schema({
   liker: [{ type: ObjectId, ref: 'User' }],
   seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
-  extended: {
-    type: String,
-    default: '{}',
-    get(data) {
-      try {
-        return JSON.parse(data);
-      }
-      catch (e) {
-        return data;
-      }
-    },
-    set(data) {
-      return JSON.stringify(data);
-    },
-  },
+  slackChannel: { type: String },
   pageIdOnHackmd: String,
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
@@ -427,32 +413,15 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.getSlackChannel = function() {
-    const extended = this.get('extended');
-    if (!extended) {
-      return '';
-    }
+    const slackChannel = this.get('slackChannel');
 
-    return extended.slack || '';
+    return slackChannel || '';
   };
 
   pageSchema.methods.updateSlackChannel = function(slackChannel) {
-    const extended = this.extended;
-    extended.slack = slackChannel;
+    this.slackChannel = slackChannel;
 
-    return this.updateExtended(extended);
-  };
-
-  pageSchema.methods.updateExtended = function(extended) {
-    const page = this;
-    page.extended = extended;
-    return new Promise(((resolve, reject) => {
-      return page.save((err, doc) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(doc);
-      });
-    }));
+    return this.save();
   };
 
   pageSchema.methods.initLatestRevisionField = async function(revisionId) {
