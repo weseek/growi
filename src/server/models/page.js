@@ -412,12 +412,6 @@ module.exports = function(crowi) {
     return saved;
   };
 
-  pageSchema.methods.getSlackChannel = function() {
-    const slackChannel = this.get('slackChannel');
-
-    return slackChannel || '';
-  };
-
   pageSchema.methods.updateSlackChannel = function(slackChannel) {
     this.slackChannel = slackChannel;
 
