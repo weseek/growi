@@ -10,6 +10,8 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
 module.exports = (crowi) => {
+  const User = crowi.model('User');
+  const Page = crowi.model('Page');
 
   router.get('/', async(req, res) => {
     // api.get = async function(req, res) {
