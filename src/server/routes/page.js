@@ -146,6 +146,7 @@ module.exports = function(crowi, app) {
   const { slackNotificationService, configManager, xssService } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const userNotificationService = crowi.getUserNotificationService();
 
   const XssOption = require('../../lib/service/xss/xssOption');
   const Xss = require('../../lib/service/xss/index');
@@ -769,7 +770,17 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled) {
-      await notifyToSlackByUser(createdPage, req.user, slackChannels, 'create', false);
+      try {
+        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+        results.forEach((result) => {
+          if (result.status === 'rejected') {
+            logger.error('Create user notification failed', result.reason);
+          }
+        });
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
   };
 
