@@ -6,6 +6,11 @@ describe('healthcheck', () => {
   let crowi;
   let app;
 
+  const getInfoForHealthMock = jest.fn(() => {
+    return 'OK';
+  });
+  const resetErrorStatusMock = jest.fn();
+
   beforeAll(async() => {
     crowi = await getInstance();
     // get injected manual mocks express
@@ -22,22 +27,21 @@ describe('healthcheck', () => {
       expect(response.statusCode).toBe(200);
       expect(response.body.status).toBe('OK');
       expect(response.body.info).toBeUndefined();
+      expect(resetErrorStatusMock).not.toHaveBeenCalled();
     });
 
     describe.each`
-      checkServices          | expectedMongo | expectedSearchInfo
-      ${['mongo']}           | ${'OK'}       | ${undefined}
-      ${['search']}          | ${undefined}  | ${'OK'}
-      ${['mongo', 'search']} | ${'OK'}       | ${'OK'}
-    `('returns', ({ checkServices, expectedMongo, expectedSearchInfo }) => {
-      test(`respond 200 when checkServices is "${checkServices}"`, async() => {
-        const getInfoForHealthMock = jest.fn(() => {
-          return 'OK';
-        });
-        const resetErrorStatusMock = jest.fn();
+      checkServices          | expectedMongo | expectedSearchInfo   | resetErrorStatusCalledTimes
+      ${['mongo']}           | ${'OK'}       | ${undefined}         | ${0}
+      ${['search']}          | ${undefined}  | ${'OK'}              | ${1}
+      ${['mongo', 'search']} | ${'OK'}       | ${'OK'}              | ${1}
+    `('respond 200', ({
+      checkServices, expectedMongo, expectedSearchInfo, resetErrorStatusCalledTimes,
+    }) => {
+      test(`when checkServices is "${checkServices}"`, async() => {
+        crowi.models.Config = { findOne: () => {} };
 
         crowi.searchService = { isConfigured: true, getInfoForHealth: getInfoForHealthMock, resetErrorStatus: resetErrorStatusMock };
-        crowi.models.Config = { findOne: () => {} };
 
         const response = await request(app).get('/').query({ checkServices });
 
@@ -45,19 +49,19 @@ describe('healthcheck', () => {
         expect(response.statusCode).toBe(200);
         expect(response.body.info.mongo).toBe(expectedMongo);
         expect(response.body.info.searchInfo).toBe(expectedSearchInfo);
+        expect(resetErrorStatusMock).toHaveBeenCalledTimes(resetErrorStatusCalledTimes);
       });
     });
 
-    // test('add healthcheck-mongodb-unhealthy to errors when can not connnect to MongoDB', async() => {
-    //   crowi.searchService = { isConfigured: false };
-    //   crowi.models.Config = { findOne: () => { throw Error('connection error') } };
+    test('add healthcheck-mongodb-unhealthy to errors when can not connnect to MongoDB', async() => {
+      crowi.models.Config = { findOne: () => { throw Error('connection error') } };
 
-    //   const response = await request(app).get('/').query({ connectToMiddlewares: true });
+      const response = await request(app).get('/').query({ checkServices: ['mongo'] });
 
-    //   expect(response.statusCode).toBe(200);
-    //   expect(response.body.errors[0].message).toBe('MongoDB is not connectable - connection error');
-    //   expect(response.body.errors[0].code).toBe('healthcheck-mongodb-unhealthy');
-    // });
+      expect(response.statusCode).toBe(200);
+      expect(response.body.errors[0].message).toBe('MongoDB is not connectable - connection error');
+      expect(response.body.errors[0].code).toBe('healthcheck-mongodb-unhealthy');
+    });
 
     // test('add healthcheck-search-unhealthy to errors when unhealthy search', async() => {
     //   crowi.searchService = { isConfigured: true, getInfoForHealth: () => { throw Error('unhealthy search') } };
