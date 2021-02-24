@@ -91,7 +91,7 @@ const RevisionComparer = (props) => {
             previousRevision={sourceRevision}
             currentRevision={targetRevision}
           />
-       )}
+        )}
       </div>
     </div>
   );
