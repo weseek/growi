@@ -350,7 +350,7 @@ module.exports = function(crowi, app) {
     portalPage = await portalPage.populateDataToShowRevision();
 
     addRenderVarsForPage(renderVars, portalPage);
-    await addRenderVarsForSlack(renderVars, portalPage);
+    addRenderVarsForSlack(renderVars, portalPage);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
     renderVars.sharelinksNumber = sharelinksNumber;
@@ -399,8 +399,8 @@ module.exports = function(crowi, app) {
     page = await page.populateDataToShowRevision();
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
+    addRenderVarsForSlack(renderVars, page);
 
-    await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
