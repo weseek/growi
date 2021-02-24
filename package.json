@@ -22,7 +22,7 @@
   "scripts": {
     "dev:ci": "yarn dev -- --ci",
     "dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --ignore-watch .next src/server/app.ts",
-    "build": "yarn next build && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
+    "build": "yarn next build && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json && yarn resource",
     "console": "env-cmd -f config/env.dev.js cross-env TS_NODE_PROJECT=tsconfig.server.json node --experimental-repl-await -r ts-node/register -r tsconfig-paths/register src/server/console.js",
     "lint:js": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "lint:styles": "stylelint src/clilent/styles/**/*.scss src/styles/**/*.scss",
