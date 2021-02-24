@@ -333,7 +333,9 @@
     "comparing_target": "Target",
     "comparing_revisions": "Comparing the difference",
     "compare_latest":"Compare latest revision",
-    "compare_previous":"Compare previous revision"
+    "compare_previous":"Compare previous revision",
+    "no_diff":"No diff"
+
   },
   "modal_rename": {
     "label": {
