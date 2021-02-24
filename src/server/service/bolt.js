@@ -6,7 +6,7 @@ class BoltReciever {
     this.bolt = app;
   }
 
-  async requestHandler(body) {
+  async requestHandler(req, res) {
     if (this.bolt === undefined) {
       throw new Error('Slack Bot service is not setup');
     }
@@ -14,18 +14,18 @@ class BoltReciever {
     let ackCalled = false;
 
     // for verification request URL on Event Subscriptions
-    if (body.type === 'url_verification') {
-      return body;
+    if (req.body.type === 'url_verification') {
+      return req.body;
     }
 
-    const payload = body.payload;
+    const payload = req.body.payload;
     let reqBody;
 
     if (payload != null) {
       reqBody = JSON.parse(payload);
     }
     else {
-      reqBody = body;
+      reqBody = req.body;
     }
 
     const event = {
@@ -42,10 +42,10 @@ class BoltReciever {
           throw new Error(message);
         }
         else if (!response) {
-          return null;
+          res.send('');
         }
         else {
-          return response;
+          res.send(response);
         }
 
       },
