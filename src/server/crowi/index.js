@@ -16,6 +16,8 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import ConfigManager from '../service/config-manager';
 import AclService from '../service/acl';
 import AttachmentService from '../service/attachment';
+import PageEventService from '../service/page';
+import RestQiitaAPIService from '../service/rest-qiita-API';
 
 const logger = loggerFactory('growi:crowi');
 
@@ -610,7 +612,6 @@ Crowi.prototype.setupAttachmentService = async function() {
  * setup RestQiitaAPIService
  */
 Crowi.prototype.setUpRestQiitaAPI = async function() {
-  const RestQiitaAPIService = require('../service/rest-qiita-API');
   if (this.restQiitaAPIService == null) {
     this.restQiitaAPIService = new RestQiitaAPIService(this);
   }
@@ -646,7 +647,6 @@ Crowi.prototype.setupImport = async function() {
 };
 
 Crowi.prototype.setupPageService = async function() {
-  const PageEventService = require('../service/page');
   if (this.pageService == null) {
     this.pageService = new PageEventService(this);
   }
