@@ -56,7 +56,6 @@ const RevisionComparer = (props) => {
   };
 
   const { sourceRevision, targetRevision } = revisionComparerContainer.state;
-  // const showDiff = (sourceRevision && targetRevision);
 
   return (
     <div className="revision-compare">
@@ -93,9 +92,6 @@ const RevisionComparer = (props) => {
             currentRevision={targetRevision}
           />
 )}
-        {/* { showDiff && (
-
-        )} */}
       </div>
     </div>
   );
