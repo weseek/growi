@@ -271,7 +271,7 @@ module.exports = function(crowi, app) {
       const user = await User.findUserByUsername(req.user.username);
       const channelsStr = slackNotificationForm.slackChannels || null;
 
-      page.updateSlackChannel(channelsStr).catch((err) => {
+      page.updateSlackChannels(channelsStr).catch((err) => {
         logger.error('Error occured in updating slack channels: ', err);
       });
 
