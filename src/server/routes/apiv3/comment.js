@@ -84,7 +84,6 @@ module.exports = (crowi) => {
       { path: 'creator', select: User.USER_PUBLIC_FIELDS },
     );
 
-    // res.json(ApiResponse.success({ comments }));
     res.apiv3({ comments });
     // };
 
