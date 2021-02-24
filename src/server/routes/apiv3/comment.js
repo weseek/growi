@@ -76,7 +76,6 @@ module.exports = (crowi) => {
 
 
   router.get('/', validator.getComment, async(req, res) => {
-    // api.get = async function(req, res) {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
 
@@ -105,26 +104,6 @@ module.exports = (crowi) => {
     );
 
     res.apiv3({ comments });
-    // };
-
-    // api.validators.add = function() {
-    //   const validator = [
-    //     body('commentForm.page_id').exists(),
-    //     body('commentForm.revision_id').exists(),
-    //     body('commentForm.comment').exists(),
-    //     body('commentForm.comment_position').isInt(),
-    //     body('commentForm.is_markdown').isBoolean(),
-    //     body('commentForm.replyTo').exists().custom((value) => {
-    //       if (value === '') {
-    //         return undefined;
-    //       }
-    //       return ObjectId(value);
-    //     }),
-
-    //     body('slackNotificationForm.isSlackEnabled').isBoolean().exists(),
-    //   ];
-    //   return validator;
-    // };
 
   });
 
