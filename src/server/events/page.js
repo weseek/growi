@@ -19,7 +19,7 @@ PageEvent.prototype.onUpdate = function(page, user) {
   logger.debug('onUpdate event fired');
 };
 PageEvent.prototype.onCreateMany = function(pages, user) {
-  debug('onCreateMany event fired');
+  logger.debug('onCreateMany event fired');
 };
 
 module.exports = PageEvent;

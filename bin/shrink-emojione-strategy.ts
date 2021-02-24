@@ -3,6 +3,7 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
+// eslint-disable-next-line no-restricted-imports
 import axios, { AxiosResponse } from 'axios';
 import fs from 'graceful-fs';
 import markdownItEmojiFull from 'markdown-it-emoji/lib/data/full.json';
