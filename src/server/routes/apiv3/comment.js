@@ -9,24 +9,6 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-const validator = {
-  getComment: [
-    body('commentForm.page_id').exists(),
-    body('commentForm.revision_id').exists(),
-    body('commentForm.comment').exists(),
-    body('commentForm.comment_position').isInt(),
-    body('commentForm.is_markdown').isBoolean(),
-    body('commentForm.replyTo').exists().custom((value) => {
-      if (value === '') {
-        return undefined;
-      }
-      return ObjectId(value);
-    }),
-
-    body('slackNotificationForm.isSlackEnabled').isBoolean().exists(),
-  ],
-};
-
 /**
  * @swagger
  *  tags:
@@ -69,12 +51,64 @@ const validator = {
  *            description: date created at
  *            example: 2010-01-01T00:00:00.000Z
  */
-
 module.exports = (crowi) => {
   const User = crowi.model('User');
   const Page = crowi.model('Page');
 
+  const validator = {
+    getComment: [
+      body('commentForm.page_id').exists(),
+      body('commentForm.revision_id').exists(),
+      body('commentForm.comment').exists(),
+      body('commentForm.comment_position').isInt(),
+      body('commentForm.is_markdown').isBoolean(),
+      body('commentForm.replyTo').exists().custom((value) => {
+        if (value === '') {
+          return undefined;
+        }
+        return ObjectId(value);
+      }),
 
+      body('slackNotificationForm.isSlackEnabled').isBoolean().exists(),
+    ],
+  };
+
+  /**
+   * @swagger
+   *
+   *    /comments.get:
+   *      get:
+   *        tags: [Comments, CrowiCompatibles]
+   *        operationId: getComments
+   *        summary: /comments.get
+   *        description: Get comments of the page of the revision
+   *        parameters:
+   *          - in: query
+   *            name: page_id
+   *            schema:
+   *              $ref: '#/components/schemas/Page/properties/_id'
+   *          - in: query
+   *            name: revision_id
+   *            schema:
+   *              $ref: '#/components/schemas/Revision/properties/_id'
+   *        responses:
+   *          200:
+   *            description: Succeeded to get comments of the page of the revision.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    comments:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/Comment'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
   router.get('/', validator.getComment, async(req, res) => {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
@@ -103,7 +137,7 @@ module.exports = (crowi) => {
       { path: 'creator', select: User.USER_PUBLIC_FIELDS },
     );
 
-    res.apiv3({ comments });
+    return res.apiv3({ comments });
 
   });
 
