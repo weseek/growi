@@ -9,7 +9,6 @@ module.exports = (crowi) => {
   const { boltService } = crowi;
   const requestHandler = boltService.receiver.requestHandler.bind(boltService.receiver);
 
-  // router.post('/', requestHandler);
   router.post('/', async(req, res) => {
     if (req.body.type === 'url_verification') {
       res.send(req.body);
