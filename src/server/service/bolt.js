@@ -189,8 +189,11 @@ class BoltService {
       const url = new URL(path, base);
       return `<${decodeURI(url.href)} | ${decodeURI(url.pathname)}>`;
     });
-    // TODO: This search results numbers will be improved by GW-5258
-    const keywords = `keyword(s) : "${args}" \n 10 results.`;
+
+    const searchResultsNum = resultPaths.length;
+    const searchResultsDescription = searchResultsNum > 10 ? 'more than 10 pages are found' : `${searchResultsNum} pages are found`;
+
+    const keywords = `keyword(s) : "${args}" \n ${searchResultsDescription}.`;
 
     try {
       await this.client.chat.postEphemeral({
