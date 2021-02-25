@@ -195,7 +195,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('10 results.'),
+          this.generateMarkdownSectionBlock(`keyword: "${args}" 10 results.`),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
           {
             type: 'actions',
