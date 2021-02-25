@@ -1,6 +1,4 @@
 const path = require('path');
-const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
-
 
 // define additional entries
 const additionalWebpackEntries = {
@@ -19,7 +17,7 @@ module.exports = {
     // Will be available on both server and client
   },
 
-  webpack(config) {
+  webpack(config, options) {
 
     // See: https://webpack.js.org/configuration/node/
     // This allows code originally written for the Node.js environment to run in other environments like the browser.
@@ -56,11 +54,15 @@ module.exports = {
       }),
     );
 
+    if (!options.isServer && config.mode === 'development') {
+      const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
+      config.plugins.push(
+        new I18NextHMRPlugin({
+          localesDir: path.resolve(__dirname, 'public/static/locales'),
+        }),
+      );
+    }
+
     return config;
   },
-  plugins: [
-    new I18NextHMRPlugin({
-      localesDir: path.resolve(__dirname, 'static/locales'),
-    }),
-  ],
 };
