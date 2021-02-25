@@ -8,7 +8,7 @@ type Props = {
 }
 
 export const EnvVarsTable:FC<Props> = (props: Props) => {
-  const envVarRows:any = [];
+  const envVarRows:JSX.Element[] = [];
 
   for (const [key, value] of Object.entries(props.envVars)) {
     if (value != null) {
