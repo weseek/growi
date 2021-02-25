@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
@@ -17,14 +16,12 @@ type Props = {
 const TagsInput : FC<Props> = (props: Props) => {
   const [resultTags, setResultTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selected, setSelected] = useState(props.tags);
 
   useEffect(() => {
     AsyncTypeahead.typeahead.getInstance().focus();
   });
 
   const handleChange = useCallback((selected) => {
-    setSelected(selected);
     props.onTagsUpdated(selected);
   }, [props]);
 
