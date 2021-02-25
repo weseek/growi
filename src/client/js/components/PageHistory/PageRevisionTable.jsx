@@ -16,9 +16,9 @@ class PageRevisionTable extends React.Component {
    * @param {boolean} hasDiff whether revision has difference to previousRevision
    * @param {boolean} isContiguousNodiff true if the current 'hasDiff' and one of previous row is both false
    */
-  renderRow(revision, previousRevision, isOldestRevision, hasDiff, isContiguousNodiff) {
+  renderRow(revision, previousRevision, hasDiff, isContiguousNodiff) {
     const { revisionComparerContainer, t } = this.props;
-    const { latestRevision } = this.props.pageHistoryContainer.state;
+    const { latestRevision, oldestRevision } = this.props.pageHistoryContainer.state;
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
@@ -59,7 +59,7 @@ class PageRevisionTable extends React.Component {
                     type="button"
                     className="btn btn-outline-secondary btn-sm"
                     onClick={handleComparePreviousRevisionButton}
-                    disabled={isOldestRevision}
+                    disabled={revision === oldestRevision}
                   >
                     {t('page_history.compare_previous')}
                   </button>
@@ -126,17 +126,17 @@ class PageRevisionTable extends React.Component {
         previousRevision = revision; // if it is the first revision, show full text as diff text
       }
 
-      let isOldestRevision;
-      if (revision === revisions[revisionCount - 1]) {
-        isOldestRevision = true;
-      }
+      // let isOldestRevision;
+      // if (revision === revisionCount - 1) {
+      //   isOldestRevision = true;
+      // }
 
       const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
       const isContiguousNodiff = !hasDiff && !hasDiffPrev;
 
       hasDiffPrev = hasDiff;
 
-      return this.renderRow(revision, previousRevision, isOldestRevision, hasDiff, isContiguousNodiff);
+      return this.renderRow(revision, previousRevision, hasDiff, isContiguousNodiff);
     });
 
     return (

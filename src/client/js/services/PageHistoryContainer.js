@@ -25,6 +25,7 @@ export default class PageHistoryContainer extends Container {
       // set dummy rivisions for using suspense
       revisions: this.dummyRevisions,
       latestRevision: this.dummyRevisions,
+      oldestRevision: this.dummyRevisions,
       diffOpened: {},
 
       totalPages: 0,
@@ -98,6 +99,10 @@ export default class PageHistoryContainer extends Container {
 
     if (selectedPage === 1) {
       this.setState({ latestRevision: rev[0] });
+    }
+
+    if (selectedPage === res.data.totalPages) {
+      this.setState({ oldestRevision: rev[lastId] });
     }
 
     // load 0, and last default
