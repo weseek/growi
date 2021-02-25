@@ -169,7 +169,7 @@ class BoltService {
       this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
-        blocks: [this.generateMarkdownSectionBlock(`*No page that matches your keyword "${args}".*`)],
+        blocks: [this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`)],
       });
       return;
     }
@@ -190,14 +190,14 @@ class BoltService {
       return `<${decodeURI(url.href)} | ${decodeURI(url.pathname)}>`;
     });
     // TODO: This search results numbers will be improved by GW-5258
-    const keyword = `keyword: "${args}" \n 10 results.`;
+    const keywords = `keyword(s) : "${args}" \n 10 results.`;
 
     try {
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock(keyword),
+          this.generateMarkdownSectionBlock(keywords),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
           {
             type: 'actions',
@@ -210,7 +210,7 @@ class BoltService {
                 },
                 style: 'primary',
                 action_id: 'shareSearchResults',
-                value: `${keyword} \n\n ${urls.join('\n')}`,
+                value: `${keywords} \n\n ${urls.join('\n')}`,
               },
             ],
           },
