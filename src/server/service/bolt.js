@@ -169,7 +169,7 @@ class BoltService {
       this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
-        blocks: [this.generateMarkdownSectionBlock('*No page that match your keywords.*')],
+        blocks: [this.generateMarkdownSectionBlock(`*No page that matches your keyword "${args}".*`)],
       });
       return;
     }
