@@ -191,7 +191,9 @@ class BoltService {
     });
 
     const searchResultsNum = resultPaths.length;
-    const searchResultsDescription = searchResultsNum > 10 ? 'more than 10 pages are found' : `${searchResultsNum} pages are found`;
+    const searchResultsDescription = searchResultsNum === 10
+      ? 'Maximum number of results that can be displayed is 10'
+      : `${searchResultsNum} pages found`;
 
     const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDescription}.`;
 
