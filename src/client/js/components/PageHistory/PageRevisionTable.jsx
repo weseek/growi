@@ -126,10 +126,6 @@ class PageRevisionTable extends React.Component {
         previousRevision = revision; // if it is the first revision, show full text as diff text
       }
 
-      // let isOldestRevision;
-      // if (revision === revisionCount - 1) {
-      //   isOldestRevision = true;
-      // }
 
       const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
       const isContiguousNodiff = !hasDiff && !hasDiffPrev;
