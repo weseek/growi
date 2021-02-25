@@ -10,6 +10,11 @@ module.exports = (crowi) => {
   const requestHandler = boltService.receiver.requestHandler.bind(boltService.receiver);
 
   router.post('/', async(req, res) => {
+    // for verification request URL on Event Subscriptions
+    if (req.body.type === 'url_verification') {
+      res.send(req.body);
+      return;
+    }
     try {
       const response = await requestHandler(req.body) || null;
       res.send(response);

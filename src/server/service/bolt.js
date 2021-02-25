@@ -13,11 +13,6 @@ class BoltReciever {
 
     let ackCalled = false;
 
-    // for verification request URL on Event Subscriptions
-    if (body.type === 'url_verification') {
-      return body;
-    }
-
     const payload = body.payload;
     let reqBody;
 
