@@ -3,21 +3,21 @@
 
 /* eslint-disable no-use-before-define */
 
-import loggerFactory from '~/utils/logger';
-import templateChecker from '~/utils/template-checker';
+
+import nodePath from 'path';
+import urljoin from 'url-join';
+import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
+import differenceInYears from 'date-fns/differenceInYears';
+
+import { pathUtils } from 'growi-commons';
+import escapeStringRegexp from 'escape-string-regexp';
 import { isTopPage, isTrashPage } from '~/utils/path-utils';
+import templateChecker from '~/utils/template-checker';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:models:page');
-
-const nodePath = require('path');
-const urljoin = require('url-join');
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
-const differenceInYears = require('date-fns/differenceInYears');
-
-const { pathUtils } = require('growi-commons');
-const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
