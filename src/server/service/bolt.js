@@ -193,14 +193,14 @@ class BoltService {
     const searchResultsNum = resultPaths.length;
     const searchResultsDescription = searchResultsNum > 10 ? 'more than 10 pages are found' : `${searchResultsNum} pages are found`;
 
-    const keywords = `keyword(s) : "${args}" \n ${searchResultsDescription}.`;
+    const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDescription}.`;
 
     try {
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock(keywords),
+          this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
           {
             type: 'actions',
@@ -213,7 +213,7 @@ class BoltService {
                 },
                 style: 'primary',
                 action_id: 'shareSearchResults',
-                value: `${keywords} \n\n ${urls.join('\n')}`,
+                value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
               },
             ],
           },
