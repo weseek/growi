@@ -37,7 +37,7 @@ class BoltReciever {
           throw new Error(message);
         }
         else if (!response) {
-          return;
+          return null;
         }
         else {
           return response;
