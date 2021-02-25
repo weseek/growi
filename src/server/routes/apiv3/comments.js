@@ -54,6 +54,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const User = crowi.model('User');
   const Page = crowi.model('Page');
@@ -112,7 +113,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.get('/', accessTokenParser, loginRequired, validator.getComment, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.getComment, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
 
