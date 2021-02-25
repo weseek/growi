@@ -189,15 +189,32 @@ class BoltService {
       const url = new URL(path, base);
       return `<${decodeURI(url.href)} | ${decodeURI(url.pathname)}>`;
     });
-    // TODO: This search results numbers will be improved by GW-5258
-    const keywords = `keyword(s) : "${args}" \n 10 results.`;
+
+    const searchResultsNum = resultPaths.length;
+    let searchResultsDesc;
+
+    switch (searchResultsNum) {
+      case 10:
+        searchResultsDesc = 'Maximum number of results that can be displayed is 10';
+        break;
+
+      case 1:
+        searchResultsDesc = `${searchResultsNum} page is found`;
+        break;
+
+      default:
+        searchResultsDesc = `${searchResultsNum} pages are found`;
+        break;
+    }
+
+    const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDesc}.`;
 
     try {
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock(keywords),
+          this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
           {
             type: 'actions',
@@ -210,7 +227,7 @@ class BoltService {
                 },
                 style: 'primary',
                 action_id: 'shareSearchResults',
-                value: `${keywords} \n\n ${urls.join('\n')}`,
+                value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
               },
             ],
           },
