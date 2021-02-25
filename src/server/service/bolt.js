@@ -193,7 +193,6 @@ class BoltService {
     const searchResultsNum = resultPaths.length;
     let searchResultsDesc;
 
-
     switch (searchResultsNum) {
       case 10:
         searchResultsDesc = 'Maximum number of results that can be displayed is 10';
