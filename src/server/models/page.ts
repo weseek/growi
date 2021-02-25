@@ -6,7 +6,7 @@
 
 import nodePath from 'path';
 import urljoin from 'url-join';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 import differenceInYears from 'date-fns/differenceInYears';
@@ -17,9 +17,28 @@ import { isTopPage, isTrashPage } from '~/utils/path-utils';
 import templateChecker from '~/utils/template-checker';
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:models:page');
+import { IUser } from './user';
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const logger = loggerFactory('growi:models:page');
+export interface IPage {
+  _id: string;
+  path: string;
+  status: string;
+  // revision: Revision,
+  creator: IUser;
+  createdAt: Date;
+  updatedAt: Date;
+  relatedTag: any;
+}
+
+type PageOptions = {
+  format?:string,
+  redirectTo?:string,
+  grantUserGroupId?:string,
+  socketClientId?:string,
+  grant?:number,
+  isSyncRevisionToHackmd?:boolean
+}
 
 /*
  * define schema
@@ -37,16 +56,16 @@ const pageSchema = new mongoose.Schema({
   path: {
     type: String, required: true, index: true, unique: true,
   },
-  revision: { type: ObjectId, ref: 'Revision' },
+  revision: { type: Types.ObjectId, ref: 'Revision' },
   redirectTo: { type: String, index: true },
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
-  grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
-  creator: { type: ObjectId, ref: 'User', index: true },
-  lastUpdateUser: { type: ObjectId, ref: 'User' },
-  liker: [{ type: ObjectId, ref: 'User' }],
-  seenUsers: [{ type: ObjectId, ref: 'User' }],
+  grantedUsers: [{ type: Types.ObjectId, ref: 'User' }],
+  grantedGroup: { type: Types.ObjectId, ref: 'UserGroup', index: true },
+  creator: { type: Types.ObjectId, ref: 'User', index: true },
+  lastUpdateUser: { type: Types.ObjectId, ref: 'User' },
+  liker: [{ type: Types.ObjectId, ref: 'User' }],
+  seenUsers: [{ type: Types.ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   extended: {
     type: String,
@@ -64,11 +83,11 @@ const pageSchema = new mongoose.Schema({
     },
   },
   pageIdOnHackmd: String,
-  revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
+  revisionHackmdSynced: { type: Types.ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-  deleteUser: { type: ObjectId, ref: 'User' },
+  deleteUser: { type: Types.ObjectId, ref: 'User' },
   deletedAt: { type: Date },
 }, {
   toJSON: { getters: true },
@@ -89,7 +108,7 @@ pageSchema.plugin(uniqueValidator);
  * @return {string[]} ancestors paths
  */
 const extractToAncestorsPaths = (pagePath) => {
-  const ancestorsPaths = [];
+  const ancestorsPaths: string[] = [];
 
   let parentPath;
   while (parentPath !== '/') {
@@ -123,6 +142,8 @@ const populateDataToShowRevision = (page, userPublicFields) => {
 
 class PageQueryBuilder {
 
+  query: any;
+
   constructor(query) {
     this.query = query;
   }
@@ -148,7 +169,7 @@ class PageQueryBuilder {
    * generate the query to find the pages '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
    */
-  addConditionToListWithDescendants(path, option) {
+  addConditionToListWithDescendants(path) {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -215,7 +236,7 @@ class PageQueryBuilder {
   }
 
   addConditionToFilteringByViewer(user, userGroups, showAnyoneKnowsLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false) {
-    const grantConditions = [
+    const grantConditions:{[key:string]:any} = [
       { grant: null },
       { grant: GRANT_PUBLIC },
     ];
@@ -256,7 +277,7 @@ class PageQueryBuilder {
     return this;
   }
 
-  addConditionToPagenate(offset, limit, sortOpt) {
+  addConditionToPagenate(offset, limit, sortOpt?:any) {
     this.query = this.query
       .sort(sortOpt).skip(offset).limit(limit); // eslint-disable-line newline-per-chained-call
 
@@ -340,7 +361,7 @@ module.exports = function(crowi) {
 
   pageSchema.methods.findRelatedTagsById = async function() {
     const PageTagRelation = mongoose.model('PageTagRelation');
-    const relations = await PageTagRelation.find({ relatedPage: this._id }).populate('relatedTag');
+    const relations:any = await PageTagRelation.find({ relatedPage: this._id }).populate('relatedTag');
     return relations.map((relation) => { return relation.relatedTag.name });
   };
 
@@ -383,7 +404,7 @@ module.exports = function(crowi) {
     }));
   };
 
-  pageSchema.methods.unlike = function(userData, callback) {
+  pageSchema.methods.unlike = function(userData) {
     return new Promise((resolve, reject) => {
       const beforeCount = this.liker.length;
       this.liker.pull(userData._id);
@@ -676,7 +697,7 @@ module.exports = function(crowi) {
    */
   pageSchema.statics.findListWithDescendants = async function(path, user, option = {}) {
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListWithDescendants(path, option);
+    builder.addConditionToListWithDescendants(path);
 
     return await findListFromBuilderAndViewer(builder, user, false, option);
   };
@@ -690,7 +711,7 @@ module.exports = function(crowi) {
     }
 
     const builder = new PageQueryBuilder(this.find());
-    builder.addConditionToListWithDescendants(page.path, option);
+    builder.addConditionToListWithDescendants(page.path);
     builder.addConditionToExcludeRedirect();
 
     // add grant conditions
@@ -752,7 +773,7 @@ module.exports = function(crowi) {
   pageSchema.statics.findListByPageIds = async function(ids, option) {
     const User = crowi.model('User');
 
-    const opt = Object.assign({}, option);
+    const opt:any = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
     builder.addConditionToExcludeRedirect();
@@ -983,7 +1004,9 @@ module.exports = function(crowi) {
     }
   }
 
-  pageSchema.statics.create = async function(path, body, user, options = {}) {
+  pageSchema.statics.create = async function(
+      path, body, user, options:PageOptions = {},
+  ) {
     validateCrowi();
 
     const Revision = crowi.model('Revision');
@@ -1029,7 +1052,7 @@ module.exports = function(crowi) {
     return savedPage;
   };
 
-  pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
+  pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options:PageOptions = {}) {
     validateCrowi();
 
     const Revision = crowi.model('Revision');
@@ -1135,7 +1158,7 @@ module.exports = function(crowi) {
       await page.save();
     }
     else {
-      throw new Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroupId);
+      throw new Error(`Cannot find the group to which private pages belong to. _id: ${transferToUserGroupId}`);
     }
   };
 
