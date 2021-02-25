@@ -1,8 +1,8 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
-
 import { Input } from 'reactstrap';
+import loggerFactory from '~/utils/logger';
+
 import InterceptorManager from '~/service/interceptor-manager';
 
 

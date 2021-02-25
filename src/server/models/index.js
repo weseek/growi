@@ -4,7 +4,7 @@ module.exports = {
   // TODO GW-2746 bulk export pages
   // PageArchive: require('./page-archive'),
   PageTagRelation: require('./page-tag-relation'),
-  User: require('./user'),
+  User: require('./deprecateuser'),
   ExternalAccount: require('./external-account'),
   UserGroup: require('./user-group'),
   UserGroupRelation: require('./user-group-relation'),

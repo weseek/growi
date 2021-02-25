@@ -1,9 +1,9 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import loggerFactory from '~/utils/logger';
 import { isTrashPage } from '~/utils/path-utils';
 import { toastError } from '../util/apiNotification';
 

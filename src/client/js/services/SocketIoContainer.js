@@ -2,7 +2,7 @@ import { Container } from 'unstated';
 
 import io from 'socket.io-client';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:cli:SocketIoContainer');
 

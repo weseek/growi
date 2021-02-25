@@ -5,11 +5,12 @@ import Head from 'next/head';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useTranslation } from '~/i18n';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
-import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -61,6 +62,7 @@ type Props = CommonProps & {
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
@@ -120,7 +122,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
-      <BasicLayout title="GROWI" className={className}>
+      <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={className}>
         <header className="py-0">
           <GrowiSubNavigation />
         </header>

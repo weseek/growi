@@ -27,6 +27,7 @@ type Props = {
   isGuestUser: boolean;
   isSharedUser: boolean;
   isOpen: boolean;
+  isNotFoundPage: boolean;
   onClose?: ()=>void;
   activeTab:string;
   activeComponents: Set<string>;
@@ -35,7 +36,7 @@ type Props = {
 
 export const PageAccessoriesModal:FC<Props> = (props:Props) => {
   const {
-    isGuestUser, isSharedUser, isOpen, onClose, activeComponents, activeTab, switchActiveTab,
+    isGuestUser, isSharedUser, isOpen, isNotFoundPage, onClose, activeComponents, activeTab, switchActiveTab,
   } = props;
   const { t } = useTranslation();
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
@@ -86,21 +87,22 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
-        isLinkEnabled: () => !isGuestUser && !isSharedUser,
+        isLinkEnabled: () => !isGuestUser && !isSharedUser && !isNotFoundPage,
       },
       attachment: {
         Icon: AttachmentIcon,
         i18n: t('attachment_data'),
         index: 3,
+        isLinkEnabled: () => !isNotFoundPage,
       },
       shareLink: {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: () => !isGuestUser && !isSharedUser,
+        isLinkEnabled: () => !isGuestUser && !isSharedUser && !isNotFoundPage,
       },
     };
-  }, [t, isGuestUser, isSharedUser]);
+  }, [t, isGuestUser, isSharedUser, isNotFoundPage]);
 
   return (
     <Modal
@@ -118,10 +120,10 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
           hideBorderBottom
         />
       </ModalHeader>
-      <ModalBody className="overflow-auto grw-modal-body-style p-0">
+      <ModalBody className="overflow-auto grw-modal-body-style">
         {/* Do not use CustomTabContent because of performance problem:
               the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
-        <TabContent activeTab={activeTab} className="p-5">
+        <TabContent activeTab={activeTab}>
           <TabPane tabId="pagelist">
             {/* {activeComponents.has('pagelist') && <PageList />} */}
           </TabPane>

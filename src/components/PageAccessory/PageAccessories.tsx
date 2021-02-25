@@ -1,11 +1,13 @@
 import { FC, useState, useCallback } from 'react';
-import { useIsSharedUser, useCurrentUser } from '~/stores/context';
+import { useIsSharedUser, useCurrentUser, useNotFound } from '~/stores/context';
 import { PageAccessoriesModalControl } from '~/components/PageAccessory/PageAccessoriesModalControl';
 import { PageAccessoriesModal } from '~/components/PageAccessory/PageAccessoriesModal';
 
 export const PageAccessories:FC = () => {
   const { data: currentUser } = useCurrentUser();
   const { data: isSharedUser = false } = useIsSharedUser();
+  const { data: isNotFoundPage = false } = useNotFound();
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [activeTab, setActiveTab] = useState('');
   // Prevent unnecessary rendering
@@ -32,6 +34,7 @@ export const PageAccessories:FC = () => {
         isGuestUser={currentUser == null}
         isSharedUser={isSharedUser}
         onOpen={openPageAccessoriesModal}
+        isNotFoundPage={isNotFoundPage}
       />
       <PageAccessoriesModal
         isGuestUser={currentUser == null}
@@ -40,6 +43,7 @@ export const PageAccessories:FC = () => {
         onClose={closePageAccessoriesModal}
         activeTab={activeTab}
         activeComponents={activeComponents}
+        isNotFoundPage={isNotFoundPage}
       />
     </>
   );

@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:services:EditorContainer');
 
@@ -151,7 +151,10 @@ export default class EditorContainer extends Container {
     return opt;
   }
 
+  // See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#example
   showUnsavedWarning(e) {
+    // Cancel the event
+    e.preventDefault();
     // display browser default message
     e.returnValue = '';
     return '';
