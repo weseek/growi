@@ -191,11 +191,24 @@ class BoltService {
     });
 
     const searchResultsNum = resultPaths.length;
-    const searchResultsDescription = searchResultsNum === 10
-      ? 'Maximum number of results that can be displayed is 10'
-      : `${searchResultsNum} pages found`;
+    let searchResultsDesc;
 
-    const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDescription}.`;
+
+    switch (searchResultsNum) {
+      case 10:
+        searchResultsDesc = 'Maximum number of results that can be displayed is 10';
+        break;
+
+      case 1:
+        searchResultsDesc = `${searchResultsNum} page is found`;
+        break;
+
+      default:
+        searchResultsDesc = `${searchResultsNum} pages are found`;
+        break;
+    }
+
+    const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDesc}.`;
 
     try {
       await this.client.chat.postEphemeral({
