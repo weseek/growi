@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {
   FC, useState, useCallback, useEffect,
 } from 'react';
@@ -17,7 +18,6 @@ const TagsInput : FC<Props> = (props: Props) => {
   const [resultTags, setResultTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] = useState(props.tags);
-  const [defaultPageTags, setDefaultPageTags] = useState(props.tags);
 
   useEffect(() => {
     AsyncTypeahead.typeahead.getInstance().focus();
@@ -56,7 +56,7 @@ const TagsInput : FC<Props> = (props: Props) => {
         id="tag-typeahead-asynctypeahead"
         ref={(typeahead) => { AsyncTypeahead.typeahead = typeahead }}
         caseSensitive={false}
-        defaultSelected={defaultPageTags}
+        defaultSelected={props.tags}
         isLoading={isLoading}
         minLength={1}
         multiple
