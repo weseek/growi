@@ -1,6 +1,15 @@
 # CHANGES
 
-## v4.2.8-RC
+## v4.2.9-RC
+
+* Feature: Comparing revisions
+* Improvement: Memory consumption when re-indexing for full text searching
+* Improvement: Site URL settings valildation
+* Fix: Show comfirmation when transiting page without save
+* Fix: Save slack channels history when user trigger notification is invoked
+* Fix: The label of alerts for move/rename/delete are borken
+
+## v4.2.8
 
 * Improvement: Performance for pages to rename/duplicate/delete/revert pages
 * Fix: Preview scrollbar doesn't sync to editor
