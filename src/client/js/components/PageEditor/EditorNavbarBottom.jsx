@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 
 import { Collapse, Button } from 'reactstrap';
 
+import { useHasSlackConfig } from '~/stores/context';
+
 import NavigationContainer from '../../services/NavigationContainer';
 import EditorContainer from '../../services/EditorContainer';
-import AppContainer from '../../services/AppContainer';
 import SlackNotification from '../SlackNotification';
 import SlackLogo from '../SlackLogo';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -16,10 +17,11 @@ import OptionsSelector from './OptionsSelector';
 
 const EditorNavbarBottom = (props) => {
 
+  const { data: hasSlackConfig } = useHasSlackConfig();
+
   const [isExpanded, setExpanded] = useState(false);
 
   const [isSlackExpanded, setSlackExpanded] = useState(false);
-  const hasSlackConfig = props.appContainer.getConfig().hasSlackConfig;
 
   const {
     navigationContainer,
@@ -128,8 +130,7 @@ const EditorNavbarBottom = (props) => {
 
 EditorNavbarBottom.propTypes = {
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default withUnstatedContainers(EditorNavbarBottom, [NavigationContainer, EditorContainer, AppContainer]);
+export default withUnstatedContainers(EditorNavbarBottom, [NavigationContainer, EditorContainer]);
