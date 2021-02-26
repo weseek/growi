@@ -93,10 +93,9 @@ describe('Page', () => {
         creator: testUser0,
       },
       {
-        path: '/page/for/extended',
+        path: '/page/child/without/parents',
         grant: Page.GRANT_PUBLIC,
         creator: testUser0,
-        extended: { hoge: 1 },
       },
       {
         path: '/grant/groupacl',
@@ -266,24 +265,6 @@ describe('Page', () => {
     });
   });
 
-  describe('Extended field', () => {
-    describe('Slack Channel.', () => {
-      test('should be empty', async() => {
-        const page = await Page.findOne({ path: '/page/for/extended' });
-        expect(page.extended.hoge).toEqual(1);
-        expect(page.getSlackChannel()).toEqual('');
-      });
-
-      test('set slack channel and should get it and should keep hoge ', async() => {
-        let page = await Page.findOne({ path: '/page/for/extended' });
-        await page.updateSlackChannel('slack-channel1');
-        page = await Page.findOne({ path: '/page/for/extended' });
-        expect(page.extended.hoge).toEqual(1);
-        expect(page.getSlackChannel()).toEqual('slack-channel1');
-      });
-    });
-  });
-
   describe('.findPage', () => {
     describe('findByIdAndViewer', () => {
       test('should find page (public)', async() => {
@@ -341,7 +322,7 @@ describe('Page', () => {
       expect(result.length).toEqual(1);
       // assert paths
       const pagePaths = result.map((page) => { return page.path });
-      expect(pagePaths).toContainEqual('/page/for/extended');
+      expect(pagePaths).toContainEqual('/page/child/without/parents');
     });
 
     test('can retrieve descendants of /page1', async() => {
@@ -370,7 +351,7 @@ describe('Page', () => {
       expect(result.length).toEqual(1);
       // assert paths
       const pagePaths = result.map((page) => { return page.path });
-      expect(pagePaths).toContainEqual('/page/for/extended');
+      expect(pagePaths).toContainEqual('/page/child/without/parents');
     });
 
     test('can retrieve only descendants of /page1', async() => {
@@ -398,7 +379,7 @@ describe('Page', () => {
       expect(result.length).toEqual(4);
       // assert paths
       const pagePaths = result.map((page) => { return page.path });
-      expect(pagePaths).toContainEqual('/page/for/extended');
+      expect(pagePaths).toContainEqual('/page/child/without/parents');
       expect(pagePaths).toContainEqual('/page1');
       expect(pagePaths).toContainEqual('/page1/child1');
       expect(pagePaths).toContainEqual('/page2');
