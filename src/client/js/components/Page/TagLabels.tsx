@@ -50,7 +50,7 @@ const TagLabels = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err, 'fail to update tags');
     }
-  }, [currentPageTagsMutate, currentPage]);
+  }, [currentPageTagsMutate, currentPage, props.editorMode]);
 
   const isLoading = !error && !tags;
 

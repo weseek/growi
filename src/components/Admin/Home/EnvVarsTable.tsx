@@ -1,8 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC } from 'react';
 
-const EnvVarsTable = (props) => {
-  const envVarRows = [];
+type Props = {
+  envVars: {
+    key: string,
+    value: any,
+  },
+}
+
+export const EnvVarsTable:FC<Props> = (props: Props) => {
+  const envVarRows:JSX.Element[] = [];
 
   for (const [key, value] of Object.entries(props.envVars)) {
     if (value != null) {
@@ -24,9 +30,3 @@ const EnvVarsTable = (props) => {
   );
 
 };
-
-EnvVarsTable.propTypes = {
-  envVars: PropTypes.object.isRequired,
-};
-
-export default EnvVarsTable;
