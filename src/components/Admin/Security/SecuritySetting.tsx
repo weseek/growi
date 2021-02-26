@@ -1,5 +1,5 @@
 /* eslint-disable react/no-danger */
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useTranslation } from '~/i18n';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
@@ -25,7 +25,7 @@ type FormValues ={
 
 export const SecuritySetting: FC<FormValues> = () => {
   const { t } = useTranslation();
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, setValue } = useForm({
     defaultValues: {
       [currentRestrictGuestMode]: 'Deny',
       [currentPageCompleteDeletionAuthority]: 'adminOnly',
@@ -50,6 +50,10 @@ export const SecuritySetting: FC<FormValues> = () => {
       toastError(err);
     }
   };
+
+  const changeRestrictGuestMode = useCallback((arg) => {
+    setValue(currentRestrictGuestMode, arg);
+  }, [setValue]);
 
   return (
     <div className="row">
@@ -142,12 +146,14 @@ export const SecuritySetting: FC<FormValues> = () => {
                 <button
                   className="dropdown-item"
                   type="button"
+                  onClick={() => changeRestrictGuestMode('Deny')}
                 >
                   {t('security_setting.guest_mode.deny')}
                 </button>
                 <button
                   className="dropdown-item"
                   type="button"
+                  onClick={() => changeRestrictGuestMode('ReadOnly')}
                 >
                   {t('security_setting.guest_mode.readonly')}
                 </button>

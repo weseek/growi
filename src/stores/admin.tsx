@@ -4,6 +4,7 @@ import {
   appParams as IAppParams,
   markdownParams as IMarkdownParams,
   customizeParams as ICustomizeParams,
+  securityParams as ISecurityParams,
 } from '~/interfaces/admin';
 
 export const useAppSettingsSWR = (): responseInterface<IAppParams, Error> => {
@@ -26,6 +27,14 @@ export const useCustomizeSettingsSWR = (): responseInterface<ICustomizeParams, E
   return useSWR(
     '/customize-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.customizeParams),
+    { revalidateOnFocus: false },
+  );
+};
+
+export const useSecuritySettingSWR = (): responseInterface<ISecurityParams, Error> => {
+  return useSWR(
+    '/security-setting',
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.securityParams),
     { revalidateOnFocus: false },
   );
 };
