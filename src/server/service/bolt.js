@@ -171,7 +171,7 @@ class BoltService {
         user: command.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`),
-          this.generateMarkdownSectionBlock(':mag: *Searching Help*'),
+          this.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
           this.divider(),
           this.generateMarkdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
           this.divider(),
