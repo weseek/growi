@@ -70,7 +70,6 @@ function PageHistory(props) {
 
   return (
     <div className="revision-history">
-      <h3 className="pb-3">{t('page_history.revision_list')}</h3>
       <PageRevisionTable
         pageHistoryContainer={pageHistoryContainer}
         revisionComparerContainer={revisionComparerContainer}
