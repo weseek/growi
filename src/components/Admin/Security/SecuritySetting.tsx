@@ -12,6 +12,9 @@ const currentPageCompleteDeletionAuthority = 'security:pageCompleteDeletionAutho
 const isShowRestrictedByOwner = 'security:list-policy:hideRestrictedByOwner';
 const isShowRestrictedByGroup = 'security:list-policy:hideRestrictedByGroup';
 
+const isWikiModeForced = false;
+const wikiMode = 'private';
+
 type FormValues ={
 [currentRestrictGuestMode]: string,
 [currentPageCompleteDeletionAuthority]: string,
@@ -122,8 +125,8 @@ export const SecuritySetting: FC<FormValues> = () => {
             <div className="dropdown">
               {/* TODO: show dropdown text byGW-5142 */}
               <button
-              // className={`btn btn-outline-secondary dropdown-toggle text-right col-12
-              //             col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                className={`btn btn-outline-secondary dropdown-toggle text-right col-12
+                          col-md-auto ${isWikiModeForced && 'disabled'}`}
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
@@ -131,8 +134,8 @@ export const SecuritySetting: FC<FormValues> = () => {
                 aria-expanded="true"
               >
                 <span className="float-left">
-                  {/* {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
-                {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')} */}
+                  {`${currentRestrictGuestMode} === 'Deny'` && t('security_setting.guest_mode.deny')}
+                  {`${currentRestrictGuestMode} === 'Readonly'` && t('security_setting.guest_mode.readonly')}
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -150,18 +153,18 @@ export const SecuritySetting: FC<FormValues> = () => {
                 </button>
               </div>
             </div>
-            {/* {adminGeneralSecurityContainer.isWikiModeForced && (
+            {isWikiModeForced && (
             <p className="alert alert-warning mt-2 text-left offset-3 col-6">
               <i className="icon-exclamation icon-fw">
               </i><b>FIXED</b><br />
               <b
                 dangerouslySetInnerHTML={{
                   __html: t('security_setting.Fixed by env var',
-                    { forcewikimode: 'FORCE_WIKI_MODE', wikimode: adminGeneralSecurityContainer.state.wikiMode }),
+                    { forcewikimode: 'FORCE_WIKI_MODE', wikimode: wikiMode }),
                 }}
               />
             </p>
-          )} */}
+          )}
           </div>
         </div>
 
@@ -179,12 +182,12 @@ export const SecuritySetting: FC<FormValues> = () => {
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                {/* <span className="float-left">
-                {currentPageCompleteDeletionAuthority === 'anyOne' && t('security_setting.anyone')}
-                {currentPageCompleteDeletionAuthority === 'adminOnly' && t('security_setting.admin_only')}
-                {(currentPageCompleteDeletionAuthority === 'adminAndAuthor' || currentPageCompleteDeletionAuthority == null)
+                <span className="float-left">
+                  {`${currentPageCompleteDeletionAuthority} === 'anyOne'` && t('security_setting.anyone')}
+                  {`${currentPageCompleteDeletionAuthority} === 'adminOnly'` && t('security_setting.admin_only')}
+                  {(`${currentPageCompleteDeletionAuthority} === 'adminAndAuthor'` || `${currentPageCompleteDeletionAuthority} == null`)
                     && t('security_setting.admin_and_author')}
-              </span> */}
+                </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <button
