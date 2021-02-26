@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.2.9-RC
+## v4.2.10-RC
+
+*
+
+## v4.2.9
 
 * Feature: Comparing revisions
 * Improvement: Memory consumption when re-indexing for full text searching
