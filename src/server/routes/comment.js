@@ -271,7 +271,7 @@ module.exports = function(crowi, app) {
       const { slackChannels } = slackNotificationForm;
 
       try {
-        const results = await userNotificationService.fireForComment(createdComment, req.user, slackChannels, page);
+        const results = await userNotificationService.fire(page, req.user, slackChannels, 'comment', {}, createdComment);
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
