@@ -169,23 +169,24 @@ class BoltService {
       this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
-        // blocks: [this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`), searchingHelp()],
         blocks: [
           this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`),
           this.generateMarkdownSectionBlock(':mag: *Searching Help*'),
-          {
-            type: 'divider',
-          },
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: '`word1` `word2` \n Search pages that include both {{word1}}, {{word2}} in the title or body',
-            },
-          },
-          {
-            type: 'divider',
-          }],
+          this.divider(),
+          this.generateMarkdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
+          this.divider(),
+          this.generateMarkdownSectionBlock('`"This is GROWI"` (surround with double quotes) \n Search pages that include the phrase "This is GROWI"'),
+          this.divider(),
+          this.generateMarkdownSectionBlock('`-keyword` \n Exclude pages that include keyword in the title or body'),
+          this.divider(),
+          this.generateMarkdownSectionBlock('`prefix:/user/` \n Search only the pages that the title start with /user/'),
+          this.divider(),
+          this.generateMarkdownSectionBlock('`-prefix:/user/` \nExclude the pages that the title start with /user/'),
+          this.divider(),
+          this.generateMarkdownSectionBlock('`tag:wiki` \n Search for pages with wiki tag'),
+          this.divider(),
+          this.generateMarkdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
+        ],
       });
       return;
     }
@@ -356,6 +357,12 @@ class BoltService {
         type: 'mrkdwn',
         text: blocks,
       },
+    };
+  }
+
+  divider() {
+    return {
+      type: 'divider',
     };
   }
 
