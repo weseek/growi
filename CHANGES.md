@@ -6,6 +6,8 @@
 * Improvement: Memory consumption when re-indexing for full text searching
 * Improvement: Site URL settings valildation
 * Fix: Screen transition without displaying notice on browsers except Chrome
+* Fix: Save slack channels to page by user trigger notification
+
 ## v4.2.8
 
 * Improvement: Performance for pages to rename/duplicate/delete/revert pages
