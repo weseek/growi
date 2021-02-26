@@ -2,13 +2,13 @@ import React, { useEffect, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import Page from './PageList/Page';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-
-import PaginationWrapper from './PaginationWrapper';
 
 
 const PageList = (props) => {

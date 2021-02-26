@@ -2,8 +2,9 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import Page from '../../PageList/Page';
-import PaginationWrapper from '../../PaginationWrapper';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastError } from '../../../util/apiNotification';

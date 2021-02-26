@@ -3,9 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
-import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';

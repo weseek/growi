@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 
 import Page from '../PageList/Page';
-import PaginationWrapper from '../PaginationWrapper';
 
 class RecentCreated extends React.Component {
 

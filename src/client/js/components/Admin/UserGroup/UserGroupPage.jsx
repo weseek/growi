@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 
-import PaginationWrapper from '../../PaginationWrapper';
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';

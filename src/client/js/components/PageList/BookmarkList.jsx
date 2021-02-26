@@ -1,14 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+
 import loggerFactory from '~/utils/logger';
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
-
-
 import AppContainer from '../../services/AppContainer';
 import { toastError } from '../../util/apiNotification';
-
-import PaginationWrapper from '../PaginationWrapper';
 
 import Page from './Page';
 
