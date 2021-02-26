@@ -7,7 +7,7 @@ import AdminLayout from '~/components/AdminLayout';
 
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
@@ -47,7 +47,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   const adminPagesMap = {
     home: {
-      title: t('Wiki Management Home Page'),
+      title: useCustomTitle(props, t('Wiki Management Home Page')),
       component: <AdminHome
         nodeVersion={props.nodeVersion}
         npmVersion={props.npmVersion}
@@ -57,31 +57,32 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       />,
     },
     app: {
-      title: t('App Settings'),
+      title: useCustomTitle(props, t('App Settings')),
       component: <AppSettingsPageContents />,
     },
     security: {
-      title: t('Security settings'),
+      title: useCustomTitle(props, t('security_settings')),
+
       component: <SecurityManagementContents />,
     },
     markdown: {
-      title: t('Markdown Settings'),
+      title: useCustomTitle(props, t('Markdown Settings')),
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: t('Customize Settings'),
+      title: useCustomTitle(props, t('Customize Settings')),
       component: <CustomizeSettingContents />,
     },
     importer: {
-      title: t('Import Data'),
+      title: useCustomTitle(props, t('Import Data')),
       component: <DataImportPageContents />,
     },
     export: {
-      title: t('Export Archive Data'),
+      title: useCustomTitle(props, t('Export Archive Data')),
       component: <ExportArchiveDataPage />,
     },
     notification: {
-      title: '',
+      title: useCustomTitle(props, t('Notification Settings')),
       component: <></>,
     },
     'global-notification': {
@@ -89,15 +90,15 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <></>,
     },
     users: {
-      title: '',
+      title: useCustomTitle(props, t('User_Management')),
       component: <></>,
     },
     'user-groups': {
-      title: '',
+      title: useCustomTitle(props, t('UserGroup Management')),
       component: <></>,
     },
     search: {
-      title: '',
+      title: useCustomTitle(props, t('Full Text Search Management')),
       component: <></>,
     },
   };

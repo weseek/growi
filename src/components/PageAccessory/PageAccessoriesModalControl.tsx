@@ -14,13 +14,16 @@ import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 type Props = {
   isGuestUser: boolean;
   isSharedUser: boolean;
+  isNotFoundPage: boolean;
   onOpen?: (string)=>void;
 }
 type AccessoriesBtnListType = { name: string; Icon: JSX.Element; disabled: boolean; i18n: string; }
 
 
 export const PageAccessoriesModalControl:FC<Props> = (props:Props) => {
-  const { isGuestUser, isSharedUser, onOpen } = props;
+  const {
+    isGuestUser, isSharedUser, isNotFoundPage, onOpen,
+  } = props;
   const { t } = useTranslation();
 
   const openModalHandler = useCallback((accessoryName:string):void => {
@@ -47,44 +50,53 @@ export const PageAccessoriesModalControl:FC<Props> = (props:Props) => {
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
-        disabled: isGuestUser || isSharedUser,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage,
         i18n: t('History'),
       },
       {
         name: 'attachment',
         Icon: <AttachmentIcon />,
-        disabled: false,
+        disabled: isNotFoundPage,
         i18n: t('attachment_data'),
       },
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUser || isSharedUser,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage,
         i18n: t('share_links.share_link_management'),
       },
     ];
-  }, [t, isGuestUser, isSharedUser]);
+  }, [t, isGuestUser, isSharedUser, isNotFoundPage]);
 
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
       {accessoriesBtnList.map((accessory) => {
-      return (
-        <Fragment key={accessory.name}>
-          <div id={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`}>
-            <button
-              type="button"
-              className={`btn btn-link grw-btn-page-accessories ${accessory.disabled ? 'disabled' : ''}`}
-              onClick={() => openModalHandler(accessory.name)}
-            >
-              {accessory.Icon}
-            </button>
-          </div>
-          <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
-            {accessory.disabled ? t('Not available for guest') : accessory.i18n}
-          </UncontrolledTooltip>
-        </Fragment>
-      );
-    })}
+
+        let tooltipMessage;
+        if (accessory.disabled) {
+          tooltipMessage = isNotFoundPage ? t('not_found_page.page_not_exist') : t('Not available for guest');
+        }
+        else {
+          tooltipMessage = accessory.i18n;
+        }
+        return (
+          <Fragment key={accessory.name}>
+            <div id={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`}>
+              <button
+                type="button"
+                className={`btn btn-link grw-btn-page-accessories ${accessory.disabled ? 'disabled' : ''}`}
+                onClick={() => openModalHandler(accessory.name)}
+              >
+                {accessory.Icon}
+              </button>
+            </div>
+            <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
+              {tooltipMessage}
+            </UncontrolledTooltip>
+          </Fragment>
+        );
+      })}
+
       <div className="d-flex align-items-center">
         <span className="border-left grw-border-vr">&nbsp;</span>
         {/* TODO GW-5193 display SeenUserInfo */}

@@ -12,7 +12,7 @@ import { config as i18nConfig } from '~/i18n';
 import { omitInsecureAttributes } from './serializers/user-serializer';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-import Attachment from '~/server/models/attachment';
+import Attachment from '~/server/models/new-attachment';
 import ConfigManager from '~/server/service/config-manager';
 import AclService from '~/server/service/acl';
 import AttachmentService from '~/server/service/attachment';
