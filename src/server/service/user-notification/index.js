@@ -12,7 +12,7 @@ class UserNotificationService {
   }
 
   /**
-   * fire user notification for page
+   * fire user notification
    *
    * @memberof UserNotificationService
    *
