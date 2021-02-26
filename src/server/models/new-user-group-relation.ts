@@ -7,7 +7,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import Debug from 'debug';
 import { getOrCreateModel } from '../util/mongoose-utils';
-import User, { IUser, USER_PUBLIC_FIELDS, STATUS_ACTIVE } from '~/server/models/user';
+import User, { IUser, USER_PUBLIC_FIELDS, STATUS_ACTIVE } from '~/server/models/new-user';
 
 const debug = Debug('growi:models:userGroupRelation');
 
