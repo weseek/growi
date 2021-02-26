@@ -5,6 +5,7 @@ export type Page = {
   path: string,
   status: string,
   revision: Revision,
+  tags: Tag[],
   creator: User,
   createdAt: Date,
   updatedAt: Date,

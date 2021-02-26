@@ -246,7 +246,7 @@ export default class MarkdownRenderer {
 
 }
 
-export const generateViewRenderer = (rendererSettings: RendererSettings, storeTocNode: (toc: HtmlElementNode) => void): MarkdownRenderer => {
+export const generateViewRenderer = (rendererSettings: RendererSettings, storeTocNode?: (toc: HtmlElementNode) => void): MarkdownRenderer => {
   const renderer = new MarkdownRenderer();
   // add remark plugins
   renderer.remarkPlugins.push(footnotes);
