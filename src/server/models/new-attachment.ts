@@ -10,7 +10,7 @@ import { addSeconds } from 'date-fns';
 import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
-import { IUser } from './user';
+import { IUser } from './new-user';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:models:attachment');

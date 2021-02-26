@@ -4,10 +4,10 @@ import { Schema, Types, Model } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import Debug from 'debug';
 import { getOrCreateModel } from '../util/mongoose-utils';
-import UserGroupRelation from '~/server/models/user-group-relation';
+import UserGroupRelation from '~/server/models/new-user-group-relation';
 
 import ConfigManager from '~/server/service/config-manager';
-import PageServise from '~/server/service/page';
+// import { PageServise } from '~/server/service/page';
 
 const debug = Debug('growi:models:userGroup');
 
@@ -35,14 +35,14 @@ schema.plugin(mongoosePaginate);
  */
 class UserGroup extends Model {
 
-  static pageService: PageServise;
+  // static pageService: PageServise;
 
   static paginate: (query, options)=>Promise<IUserGroup[]>;
 
   constructor() {
     super();
     this.configManager = new ConfigManager();
-    this.pageService = new PageServise(this.configManager);
+    // this.pageService = new PageServise(this.configManager);
   }
 
   /**
@@ -128,8 +128,9 @@ class UserGroup extends Model {
     const deletedGroup = await groupToDelete.remove();
 
     await Promise.all([
-      UserGroupRelation.removeAllByUserGroup(deletedGroup),
-      this.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
+      // TODO fix
+      // UserGroupRelation.removeAllByUserGroup(deletedGroup),
+      // this.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
     ]);
 
     return deletedGroup;
