@@ -169,7 +169,23 @@ class BoltService {
       this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
-        blocks: [this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`)],
+        // blocks: [this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`), searchingHelp()],
+        blocks: [
+          this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`),
+          this.generateMarkdownSectionBlock(':mag: *Searching Help*'),
+          {
+            type: 'divider',
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '`word1` `word2` \n Search pages that include both {{word1}}, {{word2}} in the title or body',
+            },
+          },
+          {
+            type: 'divider',
+          }],
       });
       return;
     }
