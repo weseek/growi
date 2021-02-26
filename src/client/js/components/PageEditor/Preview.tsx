@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import { usePreviewRenderer } from '~/stores/renderer';
 
@@ -7,19 +7,17 @@ import RevisionRenderer from '../Page/RevisionRenderer';
 
 type Props = {
   markdown?: string,
-  inputRef?: (ref: string | ((instance: HTMLDivElement | null) => void) | React.RefObject<HTMLDivElement>) => void,
+  inputRef?: (instance: HTMLDivElement | null) => void,
   onScroll?: (offset: number) => void,
 }
 
-const Preview = (props) => {
+const Preview: FC<Props> = ({ markdown, inputRef, onScroll }: Props) => {
 
   const { data: renderer } = usePreviewRenderer();
 
   if (renderer == null) {
     return <></>;
   }
-
-  const { markdown, inputRef, onScroll } = props;
 
   return (
     // eslint-disable-next-line arrow-body-style
@@ -36,12 +34,14 @@ const Preview = (props) => {
         }
       }}
     >
-      <RevisionRenderer
-        renderer={renderer}
-        markdown={markdown}
-      />
+      { markdown != null && (
+        <RevisionRenderer
+          renderer={renderer}
+          markdown={markdown}
+        />
+      )}
     </div>
-  )}
+  );
 };
 
 // class DeprecatedPreview extends React.PureComponent {
