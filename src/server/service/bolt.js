@@ -181,7 +181,7 @@ class BoltService {
           this.divider(),
           this.generateMarkdownSectionBlock('`prefix:/user/` \n Search only the pages that the title start with /user/'),
           this.divider(),
-          this.generateMarkdownSectionBlock('`-prefix:/user/` \nExclude the pages that the title start with /user/'),
+          this.generateMarkdownSectionBlock('`-prefix:/user/` \n Exclude the pages that the title start with /user/'),
           this.divider(),
           this.generateMarkdownSectionBlock('`tag:wiki` \n Search for pages with wiki tag'),
           this.divider(),
