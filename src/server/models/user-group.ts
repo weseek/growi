@@ -128,7 +128,8 @@ class UserGroup extends Model {
     const deletedGroup = await groupToDelete.remove();
 
     await Promise.all([
-      UserGroupRelation.removeAllByUserGroup(deletedGroup),
+      // TODO fix
+      // UserGroupRelation.removeAllByUserGroup(deletedGroup),
       this.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
     ]);
 
