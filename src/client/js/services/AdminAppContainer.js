@@ -202,6 +202,20 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change sesAccessKeyId
+   */
+  changeSesAccessKeyId(sesAccessKeyId) {
+    this.setState({ sesAccessKeyId });
+  }
+
+  /**
+   * Change sesSecretAccessKey
+   */
+  changeSesSecretAccessKey(sesSecretAccessKey) {
+    this.setState({ sesSecretAccessKey });
+  }
+
+  /**
    * Change s3Region
    */
   changeS3Region(s3Region) {

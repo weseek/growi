@@ -16,15 +16,12 @@ type Props = {
 const TagsInput : FC<Props> = (props: Props) => {
   const [resultTags, setResultTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selected, setSelected] = useState(props.tags);
-  const [defaultPageTags, setDefaultPageTags] = useState(props.tags);
 
   useEffect(() => {
     AsyncTypeahead.typeahead.getInstance().focus();
   });
 
   const handleChange = useCallback((selected) => {
-    setSelected(selected);
     props.onTagsUpdated(selected);
   }, [props]);
 
@@ -56,7 +53,7 @@ const TagsInput : FC<Props> = (props: Props) => {
         id="tag-typeahead-asynctypeahead"
         ref={(typeahead) => { AsyncTypeahead.typeahead = typeahead }}
         caseSensitive={false}
-        defaultSelected={defaultPageTags}
+        defaultSelected={props.tags}
         isLoading={isLoading}
         minLength={1}
         multiple

@@ -40,5 +40,5 @@
     "emitDecoratorMetadata": true
   },
   "exclude": ["dist", ".next", "out", "next.config.js"],
-  "include": ["next-env.d.ts", "bin", "src/**/*", "src/**/*"]
+  "include": ["next-env.d.ts", "src/**/*", "src/**/*"]
 }

@@ -8,7 +8,7 @@ type Props = {
   installedPlugins: any,
 };
 
-const InstalledPluginTable = (props: Props): JSX.Element => {
+export const InstalledPluginTable = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -34,5 +34,3 @@ const InstalledPluginTable = (props: Props): JSX.Element => {
     </table>
   );
 };
-
-export default InstalledPluginTable;
