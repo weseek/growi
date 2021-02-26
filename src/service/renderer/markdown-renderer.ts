@@ -58,24 +58,24 @@ export default class MarkdownRenderer {
 
   processor?: Processor;
 
-  constructor() {
-    // this.appContainer = appContainer;
+  // constructor() {
+  //   this.appContainer = appContainer;
 
-    // if (originRenderer != null) {
-    //   this.preProcessors = originRenderer.preProcessors;
-    //   this.postProcessors = originRenderer.postProcessors;
-    // }
-    // else {
-    //   this.preProcessors = [
-    //     new EasyGrid(appContainer),
-    //     new Linker(appContainer),
-    //     new CsvToTable(appContainer),
-    //     new XssFilter(appContainer),
-    //   ];
-    //   this.postProcessors = [
-    //   ];
-    // }
-  }
+  //   if (originRenderer != null) {
+  //     this.preProcessors = originRenderer.preProcessors;
+  //     this.postProcessors = originRenderer.postProcessors;
+  //   }
+  //   else {
+  //     this.preProcessors = [
+  //       new EasyGrid(appContainer),
+  //       new Linker(appContainer),
+  //       new CsvToTable(appContainer),
+  //       new XssFilter(appContainer),
+  //     ];
+  //     this.postProcessors = [
+  //     ];
+  //   }
+  // }
 
   init() {
     let parser = unified().use(parse);
