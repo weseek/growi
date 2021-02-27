@@ -287,7 +287,7 @@ class OptionsSelector extends React.Component {
   }
 
   renderIndentSizeSelector() {
-    const { editorContainer } = this.props;
+    const { appContainer, editorContainer } = this.props;
     const menuItems = this.typicalIndentSizes.map((indent) => {
       return <button key={indent} className="dropdown-item" type="button" onClick={() => this.onChangeIndentSize(indent)}>{indent}</button>;
     });
@@ -304,6 +304,7 @@ class OptionsSelector extends React.Component {
             aria-haspopup="true"
             aria-expanded="false"
             aria-describedby="igt-indent"
+            disabled={appContainer.config.isIndentSizeForced}
           >
             {editorContainer.state.indentSize}
           </button>

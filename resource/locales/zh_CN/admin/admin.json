@@ -77,7 +77,15 @@
 			"enable_lineBreak_for_comment": "注释中启用换行符",
 			"enable_lineBreak_for_comment_desc": "HTML中将注释中的换行符转换为<code>&lt;br&gt;</code>"
 		},
-		"presentation_header": "演示文稿设置",
+    "indent_header": "缩进设置",
+    "indent_desc": "您可以更改缩进设置。",
+    "indent_options": {
+      "indentSize": "默认的缩进值",
+      "indentSize_desc": "您可以更改Markdown编辑器的默认的缩进值。",
+      "disallow_indent_change": "不允许用户更改缩进值",
+      "disallow_indent_change_desc": "您可以不允许用户更改缩进值。"
+    },
+    "presentation_header": "演示文稿设置",
 		"presentation_desc": "您可以更改演示文稿设置。",
 		"presentation_options": {
 			"page_break_setting": "分页设置",
