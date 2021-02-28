@@ -223,6 +223,14 @@ class BoltService {
                 type: 'button',
                 text: {
                   type: 'plain_text',
+                  text: 'Next',
+                },
+                action_id: 'showNextResults',
+              },
+              {
+                type: 'button',
+                text: {
+                  type: 'plain_text',
                   text: 'Share',
                 },
                 style: 'primary',
