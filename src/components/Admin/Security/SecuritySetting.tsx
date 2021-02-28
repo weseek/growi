@@ -1,16 +1,20 @@
 /* eslint-disable react/no-danger */
 import React, { FC, useCallback } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import {
+  DropdownMenu, DropdownItem, DropdownToggle, UncontrolledDropdown,
+} from 'reactstrap';
 import { useTranslation } from '~/i18n';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
+import { useCustomizeSettingsSWR } from '~/stores/admin';
 import { apiv3Put } from '~/utils/apiv3-client';
 
 
 // const retrieveError = null
 const currentRestrictGuestMode = 'security:restrictGuestMode';
 const currentPageCompleteDeletionAuthority = 'security:pageCompleteDeletionAuthority';
-const isShowRestrictedByOwner = 'security:list-policy:hideRestrictedByOwner';
-const isShowRestrictedByGroup = 'security:list-policy:hideRestrictedByGroup';
+const hideRestrictedByOwner = 'security:list-policy:hideRestrictedByOwner';
+const hideRestrictedByGroup = 'security:list-policy:hideRestrictedByGroup';
 
 const isWikiModeForced = false;
 const wikiMode = 'private';
@@ -18,19 +22,22 @@ const wikiMode = 'private';
 type FormValues ={
 [currentRestrictGuestMode]: string,
 [currentPageCompleteDeletionAuthority]: string,
-[isShowRestrictedByOwner]: boolean,
-[isShowRestrictedByGroup]:boolean,
+[hideRestrictedByOwner]: boolean,
+[hideRestrictedByGroup]:boolean,
 // [wikiMode]: string,
 };
 
 export const SecuritySetting: FC<FormValues> = () => {
   const { t } = useTranslation();
-  const { register, handleSubmit, setValue } = useForm({
+  const { data } = useCustomizeSettingsSWR();
+  const {
+    register, control, handleSubmit, setValue,
+  } = useForm({
     defaultValues: {
-      [currentRestrictGuestMode]: 'Deny',
-      [currentPageCompleteDeletionAuthority]: 'adminOnly',
-      [isShowRestrictedByOwner]: false,
-      [isShowRestrictedByGroup]: false,
+      [currentRestrictGuestMode]: data?.[currentRestrictGuestMode],
+      [currentPageCompleteDeletionAuthority]: data?.[currentPageCompleteDeletionAuthority],
+      [hideRestrictedByOwner]: data?.[hideRestrictedByOwner],
+      [hideRestrictedByGroup]: data?.[hideRestrictedByGroup],
       // [wikiMode]: 'bar',
     },
   });
@@ -40,8 +47,8 @@ export const SecuritySetting: FC<FormValues> = () => {
       await apiv3Put('/security-setting/general-setting', {
         [currentRestrictGuestMode]: formValues[currentRestrictGuestMode],
         [currentPageCompleteDeletionAuthority]: formValues[currentPageCompleteDeletionAuthority],
-        [isShowRestrictedByOwner]: formValues[isShowRestrictedByOwner],
-        [isShowRestrictedByGroup]: formValues[isShowRestrictedByGroup],
+        [hideRestrictedByOwner]: formValues[hideRestrictedByOwner],
+        [hideRestrictedByGroup]: formValues[hideRestrictedByGroup],
 
       });
       toastSuccess(t('security_setting.updated_general_security_setting'));
@@ -126,6 +133,34 @@ export const SecuritySetting: FC<FormValues> = () => {
             <strong>{t('security_setting.Guest Users Access')}</strong>
           </div>
           <div className="col-md-9">
+            <div>
+              <Controller
+                name="dropdownMenuButton"
+                control={control}
+                render={({ onChange }) => {
+                return (
+                  <UncontrolledDropdown>
+                    <DropdownToggle className="text-right col-6" caret>
+                      <span className="float-left">
+                        {`${currentRestrictGuestMode} === 'Deny'` && t('security_setting.guest_mode.deny')}
+                        {`${currentRestrictGuestMode} === 'Readonly'` && t('security_setting.guest_mode.readonly')}
+                      </span>
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-menu" role="menu">
+                      {[t('security_setting.guest_mode.deny'), t('security_setting.guest_mode.readonly')].map((word) => {
+                        return (
+                          <DropdownItem key={word} role="presentation" onClick={() => onChange(word)}>
+                            <a role="menuitem">{word}</a>
+                          </DropdownItem>
+                        );
+                      })}
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+
+                 );
+               }}
+              />
+            </div>
             <div className="dropdown">
               {/* TODO: show dropdown text byGW-5142 */}
               <button
@@ -395,7 +430,8 @@ export default SecuritySetting;
 //               </span>
 //             </button>
 //             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-//               <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}>
+//               <button
+//                 className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changePageCompleteDeletionAuthority('anyOne') }}>
 //                 {t('security_setting.anyone')}
 //               </button>
 //               <button
