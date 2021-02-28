@@ -5,7 +5,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 /* eslint-disable react/prop-types */
 const PageEditorModeButtonWrapper = React.memo(({
-  editorMode, isBtnDisabled, onClick, targetMode, icon, label,
+  editorMode, isBtnDisabled, onClick, targetMode, icon, label, id
 }) => {
   const classNames = [`btn btn-outline-primary ${targetMode}-button px-1`];
   if (editorMode === targetMode) {
@@ -20,6 +20,7 @@ const PageEditorModeButtonWrapper = React.memo(({
       type="button"
       className={classNames.join(' ')}
       onClick={() => { onClick(targetMode) }}
+      id={id}
     >
       <span className="d-flex flex-column flex-md-row justify-content-center">
         <span className="grw-page-editor-mode-manager-icon mr-md-1">{icon}</span>
@@ -32,12 +33,12 @@ const PageEditorModeButtonWrapper = React.memo(({
 
 function PageEditorModeManager(props) {
   const {
-    t, editorMode, onPageEditorModeButtonClicked, isBtnDisabled, isDeviceSmallerThanMd,
+    t, editorMode, onPageEditorModeButtonClicked, isBtnDisabled, isHackMDBtnDisabled, isDeviceSmallerThanMd,
   } = props;
 
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
-    if (isBtnDisabled) {
+    if (isBtnDisabled || isHackMDBtnDisabled && viewType === "hackmd") {
       return;
     }
     if (onPageEditorModeButtonClicked != null) {
@@ -76,11 +77,12 @@ function PageEditorModeManager(props) {
         {(!isDeviceSmallerThanMd || editorMode === 'view') && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
-            isBtnDisabled={isBtnDisabled}
+            isBtnDisabled={isBtnDisabled || isHackMDBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
             targetMode="hackmd"
             icon={<i className="fa fa-file-text-o" />}
             label={t('hackmd.hack_md')}
+            id="grw-page-editor-mode-manager-hackmd-button"
           />
         )}
       </div>
@@ -88,6 +90,11 @@ function PageEditorModeManager(props) {
         <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager" fade={false}>
           {t('Not available for guest')}
         </UncontrolledTooltip>
+      )}
+      {!isBtnDisabled && isHackMDBtnDisabled && (
+                <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager-hackmd-button" fade={false}>
+                {t('HackMD editor is not available')}
+              </UncontrolledTooltip>
       )}
     </>
   );
@@ -98,12 +105,14 @@ PageEditorModeManager.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   onPageEditorModeButtonClicked: PropTypes.func,
   isBtnDisabled: PropTypes.bool,
+  isHackMDBtnDisabled: PropTypes.bool,
   editorMode: PropTypes.string,
   isDeviceSmallerThanMd: PropTypes.bool,
 };
 
 PageEditorModeManager.defaultProps = {
   isBtnDisabled: false,
+  isHackMDBtnDisabled: false,
   isDeviceSmallerThanMd: false,
 };
 
