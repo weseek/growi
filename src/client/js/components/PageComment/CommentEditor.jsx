@@ -22,6 +22,8 @@ import SlackNotification from '../SlackNotification';
 import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
+import OptionsSelector from '../PageEditor/OptionsSelector';
+
 
 const navTabMapping = {
   comment_editor: {
@@ -314,6 +316,7 @@ class CommentEditor extends React.Component {
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}
               />
+              <OptionsSelector />
             </TabPane>
             <TabPane tabId="comment_preview">
               <div className="comment-form-preview">
