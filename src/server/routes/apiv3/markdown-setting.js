@@ -16,7 +16,7 @@ const validator = {
     body('isEnabledLinebreaksInComments').isBoolean(),
   ],
   indent: [
-    body('adminPreferredIndentSize').isInt({ max: 4, min: 2 }),
+    body('adminPreferredIndentSize').isIn([2, 4]),
     body('isIndentSizeForced').isBoolean(),
   ],
   presentationSetting: [
