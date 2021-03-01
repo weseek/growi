@@ -9,7 +9,7 @@ import swig from 'swig-templates';
 
 import PluginUtils from '~/server/plugins/plugin-utils';
 import loggerFactory from '~/utils/logger';
-import { resolveFromRoot } from '~/utils/project-dir-utils';
+import { resolveFromRoot } from '../src/utils/project-dir-utils';
 
 const logger = loggerFactory('growi:bin:generate-plugin-definitions-source');
 
