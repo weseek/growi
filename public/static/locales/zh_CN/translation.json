@@ -43,6 +43,7 @@
 	"status": "状态",
 	"account_id": "用户Id",
 	"Initialize": "初始化",
+  "retrieve_again": "取回",
   "Update": "更新",
 	"Update Page": "更新本页",
 	"Warning": "警告",

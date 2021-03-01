@@ -1,31 +1,34 @@
-import React, {
-  useState, useEffect, useCallback, FC,
-} from 'react';
+import { useState, FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { pathUtils } from 'growi-commons';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { debounce } from 'throttle-debounce';
 import SearchTypeahead from '~/client/js/components/SearchTypeahead';
 
+import { toastSuccess } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
 
-import { useCurrentPagePath } from '~/stores/context';
+import { useCurrentPageSWR } from '~/stores/page';
+
+import { Page as IPage } from '~/interfaces/page';
+
+import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
+
 
 // import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
 // import { toastError } from '../../client/js/util/apiNotification';
 
-// import AppContainer from '../../client/js/services/AppContainer';
 // import PageContainer from '../../client/js/services/PageContainer';
-// import ApiErrorMessageList from '../../client/js/components/PageManagement/ApiErrorMessageList';
 // import ComparePathsTable from '../../client/js/components/ComparePathsTable';
 // import DuplicatedPathsTable from '../../client/js/components/DuplicatedPathsTable';
 
 type Props = {
+  currentPage: IPage;
   isOpen: boolean,
   path?: string,
   onClose:() => void,
+  onMutateCurrentPage?:()=>void;
   onInputChange?: (string) => void,
   initializedPath?: string,
   addTrailingSlash?: boolean,
@@ -35,12 +38,15 @@ type Props = {
 
 const PageRenameModal:FC<Props> = (props:Props) => {
   const { register, handleSubmit } = useForm();
-  const { data: currentPagePath } = useCurrentPagePath();
+
   const { t } = useTranslation();
+  const { mutate: mutateCurrentPage } = useCurrentPageSWR();
+
+  const [errs, setErrs] = useState([]);
   const [searchError, setSearchError] = useState(null);
 
   const {
-    addTrailingSlash, onSubmit, onInputChange, initializedPath,
+    addTrailingSlash, onSubmit, onInputChange, currentPage,
   } = props;
 
   // TODO imprv submitHandler by GW 5088
@@ -67,6 +73,12 @@ const PageRenameModal:FC<Props> = (props:Props) => {
     }
   }
 
+  function loadLatestRevision() {
+    props.onClose();
+    mutateCurrentPage();
+    toastSuccess(t('retrieve_again'));
+  }
+
   function getKeywordOnInit(path) {
     return addTrailingSlash
       ? pathUtils.addTrailingSlash(path)
@@ -84,7 +96,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
       <ModalBody>
         <div className="form-group">
           <label>{ t('modal_rename.label.Current page name') }</label><br />
-          <code>{ currentPagePath }</code>
+          <code>{ currentPage.path }</code>
         </div>
         <div className="form-group">
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
@@ -179,7 +191,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
         {/* <div> {subordinatedError} </div> */}
       </ModalBody>
       <ModalFooter>
-        {/* <ApiErrorMessageList errs={errs} targetPath={pageNameInput} /> */}
+        <ApiErrorMessageList errs={errs} targetPath={currentPage.path} onLoadLatestRevision={loadLatestRevision} />
         <button
           type="button"
           className="btn btn-primary"

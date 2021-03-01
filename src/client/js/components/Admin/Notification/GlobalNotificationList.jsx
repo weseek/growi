@@ -6,6 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
@@ -33,7 +34,7 @@ class GlobalNotificationList extends React.Component {
     const { t } = this.props;
     const isEnabled = !notification.isEnabled;
     try {
-      await apiv3.put(`/notification-setting/global-notification/${notification._id}/enabled`, {
+      await apiv3Put(`/notification-setting/global-notification/${notification._id}/enabled`, {
         isEnabled,
       });
       toastSuccess(t('notification_setting.toggle_notification', { path: notification.triggerPath }));
