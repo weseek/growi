@@ -81,6 +81,7 @@ const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) =>
 type Props ={
   targetPath: string;
   errs?: any[];
+  onLoadLatestRevision?:()=> void;
 }
 
 export const ApiErrorMessageList: FC<Props> = (props:Props) => {
@@ -88,7 +89,15 @@ export const ApiErrorMessageList: FC<Props> = (props:Props) => {
 
   return (
     <>
-      {errs.map(err => <ApiErrorMessage key={err.code} errorCode={err.code} errorMessage={err.message} targetPath={props.targetPath} />)}
+      {errs.map(err => (
+        <ApiErrorMessage
+          key={err.code}
+          errorCode={err.code}
+          errorMessage={err.message}
+          targetPath={props.targetPath}
+          onLoadLatestRevision={props.onLoadLatestRevision}
+        />
+      ))}
     </>
   );
 
