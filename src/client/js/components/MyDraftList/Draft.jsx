@@ -197,6 +197,7 @@ class Draft extends React.Component {
  */
 const DraftWrapper = withUnstatedContainers(Draft, [AppContainer]);
 
+
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
