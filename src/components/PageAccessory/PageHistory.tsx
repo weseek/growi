@@ -22,7 +22,6 @@ const PageHistory:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
   const [revisions, setRevisions] = useState<Revision[]>([]);
-  const [latestRevision, setLatestRevision] = useState<Revision>();
   const [diffOpened, setDiffOpened] = useState<{[key:string]:boolean}>({});
 
   const [activePage, setActivePage] = useState(1);
@@ -70,9 +69,7 @@ const PageHistory:FC<Props> = (props:Props) => {
     setRevisions(revisions);
     setDiffOpened(diffOpened);
 
-    if (activePage === 1) {
-      setLatestRevision(revisions[0]);
-    }
+    revisionComparerContainer.initRevisions();
 
     // load 0, and last default
     // if (rev[0]) {
@@ -84,7 +81,7 @@ const PageHistory:FC<Props> = (props:Props) => {
     // if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
     //   this.fetchPageRevisionBody(rev[lastId]);
     // }
-  }, [activePage, limit, paginationResult]);
+  }, [activePage, limit, paginationResult, revisionComparerContainer]);
 
 
   if (paginationResult == null) {
@@ -102,21 +99,6 @@ const PageHistory:FC<Props> = (props:Props) => {
       </div>
     );
   }
-
-  // TODO: activate with GW-5253
-  // if (pageHistoryContainer.state.revisions === pageHistoryContainer.dummyRevisions) {
-  //   throw new Promise(async() => {
-  //     try {
-  //       await props.pageHistoryContainer.retrieveRevisions(1);
-  //       await props.revisionComparerContainer.initRevisions();
-  //     }
-  //     catch (err) {
-  //       toastError(err);
-  //       pageHistoryContainer.setState({ errorMessage: err.message });
-  //       logger.error(err);
-  //     }
-  //   });
-  // }
 
   return (
     <div className="revision-history">

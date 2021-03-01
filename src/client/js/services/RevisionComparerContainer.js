@@ -42,10 +42,9 @@ export default class RevisionComparerContainer extends Container {
     const [sourceRevisionId, targetRevisionId] = this.getRevisionIDsToCompareAsParam();
     const sourceRevision = sourceRevisionId ? await this.fetchRevision(sourceRevisionId) : latestRevision;
     const targetRevision = targetRevisionId ? await this.fetchRevision(targetRevisionId) : latestRevision;
-    const compareWithLatest = targetRevisionId ? false : this.state.compareWithLatest;
 
     this.setState({
-      sourceRevision, targetRevision, latestRevision, compareWithLatest,
+      sourceRevision, targetRevision, latestRevision,
     });
   }
 
@@ -69,20 +68,23 @@ export default class RevisionComparerContainer extends Container {
    * Fetch the latest revision
    */
   async fetchLatestRevision() {
-    const { pageId, shareLinkId } = this.pageContainer.state;
-
-    try {
-      const res = await this.appContainer.apiv3Get('/revisions/list', {
-        pageId, shareLinkId, page: 1, limit: 1,
-      });
-      return res.data.docs[0];
-    }
-    catch (err) {
-      toastError(err);
-      this.setState({ errorMessage: err.message });
-      logger.error(err);
-    }
     return null;
+    // TODO implement
+
+    // const { pageId, shareLinkId } = this.pageContainer.state;
+
+    // try {
+    //   const res = await this.appContainer.apiv3Get('/revisions/list', {
+    //     pageId, shareLinkId, page: 1, limit: 1,
+    //   });
+    //   return res.data.docs[0];
+    // }
+    // catch (err) {
+    //   toastError(err);
+    //   this.setState({ errorMessage: err.message });
+    //   logger.error(err);
+    // }
+    // return null;
   }
 
   /**
@@ -90,20 +92,21 @@ export default class RevisionComparerContainer extends Container {
    * @param {string} revision ID
    */
   async fetchRevision(revisionId) {
-    const { pageId, shareLinkId } = this.pageContainer.state;
+    // TODO implement
+    // const { pageId, shareLinkId } = this.pageContainer.state;
 
-    try {
-      const res = await this.appContainer.apiv3Get(`/revisions/${revisionId}`, {
-        pageId, shareLinkId,
-      });
-      return res.data.revision;
-    }
-    catch (err) {
-      toastError(err);
-      this.setState({ errorMessage: err.message });
-      logger.error(err);
-    }
-    return null;
+    // try {
+    //   const res = await this.appContainer.apiv3Get(`/revisions/${revisionId}`, {
+    //     pageId, shareLinkId,
+    //   });
+    //   return res.data.revision;
+    // }
+    // catch (err) {
+    //   toastError(err);
+    //   this.setState({ errorMessage: err.message });
+    //   logger.error(err);
+    // }
+    // return null;
   }
 
 }
