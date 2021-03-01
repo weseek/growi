@@ -236,8 +236,24 @@ class BoltService {
           {
             type: 'actions',
             elements: [
-              this.generateButtonBlock('Next', 'showNextResults'),
-              this.generateButtonBlock('Share', 'shareSearchResults', 'primary', `${keywordsAndDesc} \n\n ${urls.join('\n')}`),
+              {
+                type: 'button',
+                text: {
+                  type: 'plain_text',
+                  text: 'Next',
+                },
+                action_id: 'showNextResults',
+              },
+              {
+                type: 'button',
+                text: {
+                  type: 'plain_text',
+                  text: 'Share',
+                },
+                style: 'primary',
+                action_id: 'shareSearchResults',
+                value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+              },
             ],
           },
         ],
@@ -340,19 +356,6 @@ class BoltService {
       logger.error('Failed to create page in GROWI.');
       throw err;
     }
-  }
-
-  generateButtonBlock(text, actionId, style, value) {
-    return {
-      type: 'button',
-      text: {
-        type: 'plain_text',
-        text,
-      },
-      style,
-      action_id: actionId,
-      value,
-    };
   }
 
   generateMarkdownSectionBlock(blocks) {
