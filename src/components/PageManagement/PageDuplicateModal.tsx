@@ -3,7 +3,10 @@ import { useState, FC } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import { toastSuccess } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
+
+import { useCurrentPageSWR } from '~/stores/page';
 
 import { Page as IPage } from '~/interfaces/page';
 
@@ -30,15 +33,16 @@ type Props = {
 
 const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
+  const { mutate: mutateCurrentPage } = useCurrentPageSWR();
+
   const { currentPage } = props;
 
   const [errs, setErrs] = useState([]);
 
   const loadLatestRevision = () => {
     props.onClose();
-    if (props.onMutateCurrentPage != null) {
-      props.onMutateCurrentPage();
-    }
+    mutateCurrentPage();
+    toastSuccess(t('retrieve_again'));
   };
 
   return (

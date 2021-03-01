@@ -150,7 +150,7 @@ export const PageManagement:FC<Props> = (props:Props) => {
 
   const { data: path } = useCurrentPagePath();
   const { data: isAbleToDeleteCompletely } = useIsAbleToDeleteCompletely();
-  const { data: currentPage, mutate: mutateCurrentPage } = useCurrentPageSWR();
+  const { data: currentPage } = useCurrentPageSWR();
 
   const DynamicPageManagementDropdownMenu = dynamic(() => Promise.resolve(PageManagementDropdownMenu), { ssr: false });
   const PageRenameModal = dynamic(() => import('./PageRenameModal'), { ssr: false });
@@ -220,14 +220,12 @@ export const PageManagement:FC<Props> = (props:Props) => {
         currentPage={currentPage}
         isOpen={isPageRenameModalShown}
         onClose={() => setIsPageRenameModalShown(false)}
-        onMutateCurrentPage={mutateCurrentPage}
         path={path}
       />
       <PageDuplicateModal
         currentPage={currentPage}
         isOpen={isPageDuplicateModalShown}
         onClose={() => setIsPageDuplicateModalShown(false)}
-        onMutateCurrentPage={mutateCurrentPage}
       />
       <CreateTemplateModal
         isOpen={isPageTemplateModalShown}
@@ -238,7 +236,6 @@ export const PageManagement:FC<Props> = (props:Props) => {
         currentPage={currentPage}
         isOpen={isPageDeleteModalShown}
         onClose={() => setIsPageDeleteModalShown(false)}
-        onMutateCurrentPage={mutateCurrentPage}
         isAbleToDeleteCompletely={isAbleToDeleteCompletely}
       />
       <PagePresentationModal

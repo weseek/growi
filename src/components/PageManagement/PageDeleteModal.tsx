@@ -6,7 +6,11 @@ import {
 import { useTranslation } from '~/i18n';
 
 import { Page as IPage } from '~/interfaces/page';
+import { toastSuccess } from '~/client/js/util/apiNotification';
 import { apiv3Put } from '~/utils/apiv3-client';
+
+import { useCurrentPageSWR } from '~/stores/page';
+
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
 const deleteIconAndKey = {
@@ -29,11 +33,11 @@ type Props = {
   isAbleToDeleteCompletely?: boolean;
   isDeleteCompletelyModal?: boolean;
   onClose:() => void;
-  onMutateCurrentPage?:()=>void;
 }
 
 const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
+  const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
   const { isAbleToDeleteCompletely = false, currentPage, isDeleteCompletelyModal } = props;
   const [errs, setErrs] = useState([]);
@@ -50,6 +54,7 @@ const PageDeleteModal:FC<Props> = (props:Props) => {
     setErrs([]);
 
     try {
+      s;
       const response = await apiv3Put('/pages/remove', {
         isRecursively: isDeleteRecursively,
         isCompletely: isDeleteCompletely,
@@ -68,9 +73,8 @@ const PageDeleteModal:FC<Props> = (props:Props) => {
 
   const loadLatestRevision = () => {
     props.onClose();
-    if (props.onMutateCurrentPage != null) {
-      props.onMutateCurrentPage();
-    }
+    mutateCurrentPage();
+    toastSuccess(t('retrieve_again'));
   };
 
   function changeIsDeleteCompletelyHandler() {

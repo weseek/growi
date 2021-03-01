@@ -6,7 +6,10 @@ import {
 } from 'reactstrap';
 import SearchTypeahead from '~/client/js/components/SearchTypeahead';
 
+import { toastSuccess } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
+
+import { useCurrentPageSWR } from '~/stores/page';
 
 import { Page as IPage } from '~/interfaces/page';
 
@@ -37,6 +40,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const { register, handleSubmit } = useForm();
 
   const { t } = useTranslation();
+  const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
   const [errs, setErrs] = useState([]);
   const [searchError, setSearchError] = useState(null);
@@ -71,9 +75,8 @@ const PageRenameModal:FC<Props> = (props:Props) => {
 
   function loadLatestRevision() {
     props.onClose();
-    if (props.onMutateCurrentPage != null) {
-      props.onMutateCurrentPage();
-    }
+    mutateCurrentPage();
+    toastSuccess(t('retrieve_again'));
   }
 
   function getKeywordOnInit(path) {
