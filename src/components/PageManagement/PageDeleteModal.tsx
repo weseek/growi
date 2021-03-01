@@ -29,6 +29,7 @@ type Props = {
   isAbleToDeleteCompletely?: boolean;
   isDeleteCompletelyModal?: boolean;
   onClose:() => void;
+  onMutateCurrentPage?:()=>void;
 }
 
 const PageDeleteModal:FC<Props> = (props:Props) => {
@@ -62,6 +63,13 @@ const PageDeleteModal:FC<Props> = (props:Props) => {
     }
     catch (err) {
       setErrs(err);
+    }
+  };
+
+  const loadLatestRevision = () => {
+    props.onClose();
+    if (props.onMutateCurrentPage != null) {
+      props.onMutateCurrentPage();
     }
   };
 
@@ -120,7 +128,7 @@ const PageDeleteModal:FC<Props> = (props:Props) => {
         )}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} targetPath={currentPage.path} />
+        <ApiErrorMessageList errs={errs} targetPath={currentPage.path} onLoadLatestRevision={loadLatestRevision} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deletePage}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
