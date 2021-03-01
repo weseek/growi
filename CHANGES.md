@@ -4,6 +4,7 @@
 
 * Feature: Staff Credits for apps on GROWI.cloud 
 * Improvement: Hackmd button behavior when disabled
+* Improvement: Layout of comparing revisions
 * Fix: Empty trash is not working
 
 ## v4.2.9
