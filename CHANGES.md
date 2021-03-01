@@ -2,7 +2,7 @@
 
 ## v4.2.10-RC
 
-*
+* Fix: Empty trash is not working.
 
 ## v4.2.9
 
