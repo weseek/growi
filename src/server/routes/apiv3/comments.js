@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const mongoose = require('mongoose');
 
@@ -61,8 +61,8 @@ module.exports = (crowi) => {
 
   const validator = {
     getComment: [
-      body('commentForm.page_id').exists(),
-      body('commentForm.revision_id').exists(),
+      body('commentForm.pageId').exists(),
+      body('commentForm.revisionId').exists(),
       body('commentForm.comment').exists(),
       body('commentForm.comment_position').isInt(),
       body('commentForm.is_markdown').isBoolean(),
@@ -88,11 +88,11 @@ module.exports = (crowi) => {
    *        description: Get comments of the page of the revision
    *        parameters:
    *          - in: query
-   *            name: page_id
+   *            name: pageId
    *            schema:
    *              $ref: '#/components/schemas/Page/properties/_id'
    *          - in: query
-   *            name: revision_id
+   *            name: revisionId
    *            schema:
    *              $ref: '#/components/schemas/Revision/properties/_id'
    *        responses:
@@ -114,8 +114,8 @@ module.exports = (crowi) => {
    *            $ref: '#/components/responses/500'
    */
   router.get('/', accessTokenParser, loginRequired, validator.getComment, apiV3FormValidator, async(req, res) => {
-    const pageId = req.query.page_id;
-    const revisionId = req.query.revision_id;
+    const pageId = req.query.pageId;
+    const revisionId = req.query.revisionId;
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
