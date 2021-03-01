@@ -12,7 +12,6 @@ import {
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 
 class DisassociateModal extends React.Component {
@@ -71,11 +70,10 @@ class DisassociateModal extends React.Component {
 
 }
 
-const DisassociateModalWrapper = withUnstatedContainers(DisassociateModal, [AppContainer, PersonalContainer]);
+const DisassociateModalWrapper = withUnstatedContainers(DisassociateModal, [PersonalContainer]);
 
 DisassociateModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,

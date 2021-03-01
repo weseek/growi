@@ -8,7 +8,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AdminUpdateButtonRow from '~/components/Admin/Common/AdminUpdateButtonRow';
 
 // dynamic import to skip rendering at SSR
 const CustomScriptEditor = dynamic(() => import('../CustomScriptEditor'), { ssr: false });
