@@ -8,15 +8,16 @@ import Revision from '~/client/js/components/PageHistory/Revision';
 type PgaeRevisionRowProps ={
   revision: IRevision,
   previousRevision: IRevision,
+  latestRevision: IRevision,
   hasDiff: boolean,
 }
 
 const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
-  const { revision, previousRevision, hasDiff } = props;
+  const {
+    revision, previousRevision, hasDiff, latestRevision,
+  } = props;
   const { t } = useTranslation();
 
-  // const { revisionComparerContainer, t } = props;
-  // const { latestRevision } = this.props.pageHistoryContainer.state;
   const revisionId = revision._id;
   // const revisionDiffOpened = diffOpened[revisionId] || false;
   const revisionDiffOpened = false;
@@ -39,8 +40,7 @@ const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
           <Revision
             t={t}
             revision={revision}
-            // isLatestRevision={revision === latestRevision}
-            isLatestRevision={false}
+            isLatestRevision={revision === latestRevision}
             revisionDiffOpened={revisionDiffOpened}
             hasDiff={hasDiff}
             key={`revision-history-rev-${revisionId}`}
@@ -97,14 +97,15 @@ const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
 };
 
 type Props = {
-  revisions:IRevision[],
-  pagingLimit:number,
+  revisions: IRevision[],
+  latestRevision: IRevision,
+  pagingLimit: number,
 }
 
 export const PageRevisionTable:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
-  const { revisions, pagingLimit } = props;
+  const { revisions, latestRevision, pagingLimit } = props;
   const revisionCount = revisions.length;
 
   let hasDiffPrev;
@@ -128,7 +129,7 @@ export const PageRevisionTable:FC<Props> = (props:Props) => {
 
     hasDiffPrev = hasDiff;
 
-    return <PgaeRevisionRow revision={revision} previousRevision={previousRevision} hasDiff={hasDiff} />;
+    return <PgaeRevisionRow revision={revision} previousRevision={previousRevision} hasDiff={hasDiff} latestRevision={latestRevision} />;
   });
 
   return (

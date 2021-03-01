@@ -78,7 +78,7 @@ export const PageHistory:FC = () => {
     // }
   }, [activePage, limit, paginationResult]);
 
-  if (paginationResult == null) {
+  if (paginationResult == null || latestRevision == null) {
     return (
       <div className="my-5 text-center">
         <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted" />
@@ -115,6 +115,7 @@ export const PageHistory:FC = () => {
       <PageRevisionTable
         revisions={revisions}
         pagingLimit={limit}
+        latestRevision={latestRevision}
       />
       <div className="my-3">
         <PaginationWrapper
