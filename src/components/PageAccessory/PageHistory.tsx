@@ -3,7 +3,8 @@ import React, {
 } from 'react';
 
 import { useTranslation } from '~/i18n';
-import { PageRevisionList } from '~/components/PageAccessory/PageRevisionList';
+// import { PageRevisionList } from '~/components/PageAccessory/PageRevisionList';
+import { PageRevisionTable } from '~/components/PageAccessory/PageRevisionTable';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 import { Revision } from '~/interfaces/page';
 
@@ -16,8 +17,6 @@ export const PageHistory:FC = () => {
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [limit, setLimit] = useState(10);
-
-  const [diffOpened, setDiffOpened] = useState({} as { [id:string]: boolean });
 
   const { data: paginationResult, error } = useCurrentPageHistorySWR(activePage, limit);
 
@@ -69,14 +68,10 @@ export const PageHistory:FC = () => {
   return (
     <div className="revision-history">
       <h3 className="pb-3">{t('page_history.revision_list')}</h3>
-      {/* // TODO: activate with GW-5253 */}
-      {/* <PageRevisionTable
-        pageHistoryContainer={pageHistoryContainer}
-        revisionComparerContainer={revisionComparerContainer}
+      <PageRevisionTable
         revisions={revisions}
-        diffOpened={diffOpened}
-        getPreviousRevision={getPreviousRevision}
-      /> */}
+        pagingLimit={limit}
+      />
       <div className="my-3">
         <PaginationWrapper
           activePage={activePage}
