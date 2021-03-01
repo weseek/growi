@@ -86,7 +86,6 @@ export const SecurityManagementContents: FC<Props> = (props: Props) => {
   return (
     <Fragment>
       <div className="mb-5">
-        {/* TODO: show dropdown text byGW-5142 */}
         <SecuritySetting />
       </div>
 
