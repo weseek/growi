@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 
 import { toastError } from '../../../util/apiNotification';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 class PasswordResetModal extends React.Component {
 
