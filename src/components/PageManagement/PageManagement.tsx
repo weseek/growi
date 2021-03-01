@@ -219,11 +219,13 @@ export const PageManagement:FC<Props> = (props:Props) => {
       <PageRenameModal
         isOpen={isPageRenameModalShown}
         onClose={() => setIsPageRenameModalShown(false)}
+        onMutateCurrentPage={mutateCurrentPage}
         path={path}
       />
       <PageDuplicateModal
         isOpen={isPageDuplicateModalShown}
         onClose={() => setIsPageDuplicateModalShown(false)}
+        onMutateCurrentPage={mutateCurrentPage}
       />
       <CreateTemplateModal
         isOpen={isPageTemplateModalShown}

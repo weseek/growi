@@ -26,6 +26,7 @@ type Props = {
   isOpen: boolean,
   path?: string,
   onClose:() => void,
+  onMutateCurrentPage?:()=>void;
   onInputChange?: (string) => void,
   initializedPath?: string,
   addTrailingSlash?: boolean,
@@ -66,6 +67,13 @@ const PageRenameModal:FC<Props> = (props:Props) => {
       onInputChange(page.path);
     }
   }
+
+  // function loadLatestRevision() {
+  //   props.onClose();
+  //   if (props.onMutateCurrentPage != null) {
+  //     props.onMutateCurrentPage();
+  //   }
+  // }
 
   function getKeywordOnInit(path) {
     return addTrailingSlash
@@ -179,7 +187,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
         {/* <div> {subordinatedError} </div> */}
       </ModalBody>
       <ModalFooter>
-        {/* <ApiErrorMessageList errs={errs} targetPath={pageNameInput} /> */}
+        {/* <ApiErrorMessageList errs={errs} targetPath={pageNameInput} onLoadLatestRevision={loadLatestRevision} /> */}
         <button
           type="button"
           className="btn btn-primary"
