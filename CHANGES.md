@@ -2,7 +2,9 @@
 
 ## v4.2.10-RC
 
-* Fix: Empty trash is not working.
+* Feature: Staff Credits for apps on GROWI.cloud 
+* Improvement: Hackmd button behavior when disabled
+* Fix: Empty trash is not working
 
 ## v4.2.9
 
