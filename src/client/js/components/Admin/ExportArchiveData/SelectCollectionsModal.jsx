@@ -5,6 +5,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import * as toastr from 'toastr';
+import { apiv3Post } from '~/utils/apiv3-client';
 
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -65,8 +66,7 @@ class SelectCollectionsModal extends React.Component {
     e.preventDefault();
 
     try {
-      // TODO: use apiv3-client
-      const result = await apiPost('/v3/export', { collections: Array.from(this.state.selectedCollections) });
+      const result = await apiv3Post('/v3/export', { collections: Array.from(this.state.selectedCollections) });
       // TODO: toastSuccess, toastError
 
       if (!result.ok) {

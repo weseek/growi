@@ -49,7 +49,7 @@ class StatusSuspendedButton extends React.Component {
 
   render() {
     const { user } = this.props;
-    // TODO: retrieve from SWR
+    // TODO: GW-5303 retrieve from SWR
     // const { currentUsername } = this.props.appContainer;
     const currentUsername = '';
 

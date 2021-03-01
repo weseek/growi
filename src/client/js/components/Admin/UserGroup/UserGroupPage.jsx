@@ -137,8 +137,9 @@ class UserGroupPage extends React.Component {
   }
 
   render() {
-    // TODO retrieve isAclEnabled from SWR or getServerSideProps
+    // TODO GW-5305 retrieve isAclEnabled from SWR or getServerSideProps
     // const { isAclEnabled } = this.props.appContainer.config;
+    const isAclEnabled = false;
 
     return (
       <Fragment>
@@ -176,8 +177,5 @@ class UserGroupPage extends React.Component {
   }
 
 }
-
-UserGroupPage.propTypes = {
-};
 
 export default UserGroupPage;
