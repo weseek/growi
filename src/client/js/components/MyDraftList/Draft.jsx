@@ -9,9 +9,6 @@ import {
   UncontrolledTooltip,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-
 import RevisionBody from '../Page/RevisionBody';
 
 class Draft extends React.Component {
@@ -26,7 +23,7 @@ class Draft extends React.Component {
       showCopiedMessage: false,
     };
 
-    this.growiRenderer = this.props.appContainer.getRenderer('draft');
+    // this.growiRenderer = this.props.appContainer.getRenderer('draft');
 
     this.changeToolTipLabel = this.changeToolTipLabel.bind(this);
     this.expandPanelHandler = this.expandPanelHandler.bind(this);
@@ -60,24 +57,24 @@ class Draft extends React.Component {
     };
 
     const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
-    await interceptorManager.process('prePreProcess', context)
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => {
-        this.setState({ html: context.parsedHTML, isRendered: true });
-      });
+    // const interceptorManager = this.props.appContainer.interceptorManager;
+    // await interceptorManager.process('prePreProcess', context)
+    //   .then(() => {
+    //     context.markdown = growiRenderer.preProcess(context.markdown);
+    //   })
+    //   .then(() => { return interceptorManager.process('postPreProcess', context) })
+    //   .then(() => {
+    //     const parsedHTML = growiRenderer.process(context.markdown);
+    //     context.parsedHTML = parsedHTML;
+    //   })
+    //   .then(() => { return interceptorManager.process('prePostProcess', context) })
+    //   .then(() => {
+    //     context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+    //   })
+    //   .then(() => { return interceptorManager.process('postPostProcess', context) })
+    //   .then(() => {
+    //     this.setState({ html: context.parsedHTML, isRendered: true });
+    //   });
   }
 
   renderAccordionTitle(isExist) {
@@ -192,15 +189,8 @@ class Draft extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const DraftWrapper = withUnstatedContainers(Draft, [AppContainer]);
-
-
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   index: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
@@ -209,4 +199,4 @@ Draft.propTypes = {
   clearDraft: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(DraftWrapper);
+export default withTranslation()(Draft);
