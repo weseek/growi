@@ -4,7 +4,8 @@ import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
-import contributors from './Contributor';
+import AppContainer from '../../services/AppContainer';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 /**
  * Page staff credit component
@@ -17,13 +18,14 @@ import contributors from './Contributor';
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:cli:StaffCredit');
 
-export default class StaffCredit extends React.Component {
+class StaffCredit extends React.Component {
 
   constructor(props) {
 
     super(props);
     this.state = {
       isShown: true,
+      contributors: null,
     };
     this.deleteCredit = this.deleteCredit.bind(this);
   }
@@ -57,7 +59,7 @@ export default class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      const credit = contributors.map((contributor) => {
+      const credit = this.state.contributors.map((contributor) => {
         // construct members elements
         const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
           return this.renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
@@ -83,7 +85,11 @@ export default class StaffCredit extends React.Component {
     return null;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const res = await this.props.appContainer.apiv3Get('/staffs');
+    const contributors = res.data.contributors;
+    this.setState({ contributors });
+
     setTimeout(() => {
       // px / sec
       const scrollSpeed = 200;
@@ -102,6 +108,10 @@ export default class StaffCredit extends React.Component {
 
   render() {
     const { onClosed } = this.props;
+
+    if (this.state.contributors === null) {
+      return <></>;
+    }
 
     return (
       <Modal
@@ -123,6 +133,12 @@ export default class StaffCredit extends React.Component {
   }
 
 }
+
+const StaffCreditWrapper = withUnstatedContainers(StaffCredit, [AppContainer]);
+
 StaffCredit.propTypes = {
   onClosed: PropTypes.func,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
+
+export default StaffCreditWrapper;
