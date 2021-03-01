@@ -117,6 +117,7 @@ const GrowiSubNavigation = (props) => {
               <PageEditorModeManager
                 onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
                 isBtnDisabled={isGuestUser}
+                isHackMDBtnDisabled={!appContainer.isAdmin && appContainer.config.env.HACKMD_URI == null}
                 editorMode={editorMode}
                 isDeviceSmallerThanMd={isDeviceSmallerThanMd}
               />
