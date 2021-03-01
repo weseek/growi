@@ -11,21 +11,20 @@ import { useSecuritySettingGeneralSWR } from '~/stores/admin';
 import { apiv3Put } from '~/utils/apiv3-client';
 
 
-// const retrieveError = null
+const retrieveError = null;
 const restrictGuestMode = 'restrictGuestMode';
 const pageCompleteDeletionAuthority = 'pageCompleteDeletionAuthority';
 const hideRestrictedByOwner = 'hideRestrictedByOwner';
 const hideRestrictedByGroup = 'hideRestrictedByGroup';
-
-const isWikiModeForced = false;
-const wikiMode = 'private';
+const wikiMode = '';
+const isWikiModeForced = true;
 
 type FormValues ={
 [restrictGuestMode]: string,
 [pageCompleteDeletionAuthority]: string,
 [hideRestrictedByOwner]: string,
 [hideRestrictedByGroup]: string,
-// [wikiMode]: string,
+[wikiMode]: string,
 };
 
 export const SecuritySetting: FC<FormValues> = () => {
@@ -39,7 +38,7 @@ export const SecuritySetting: FC<FormValues> = () => {
       [pageCompleteDeletionAuthority]: data?.[pageCompleteDeletionAuthority],
       [hideRestrictedByOwner]: data?.[hideRestrictedByOwner],
       [hideRestrictedByGroup]: data?.[hideRestrictedByGroup],
-      // [wikiMode]: 'bar',
+      [wikiMode]: data?.[wikiMode],
     },
   });
   const selectedCurrentRestrictGuestMode = watch(restrictGuestMode);
@@ -52,7 +51,7 @@ export const SecuritySetting: FC<FormValues> = () => {
         [pageCompleteDeletionAuthority]: formValues[pageCompleteDeletionAuthority],
         [hideRestrictedByOwner]: formValues[hideRestrictedByOwner],
         [hideRestrictedByGroup]: formValues[hideRestrictedByGroup],
-
+        [wikiMode]: formValues[wikiMode],
       });
       toastSuccess(t('security_setting.updated_general_security_setting'));
     }
@@ -66,11 +65,13 @@ export const SecuritySetting: FC<FormValues> = () => {
     setValue(pageCompleteDeletionAuthority, data?.[pageCompleteDeletionAuthority]);
     setValue(hideRestrictedByOwner, data?.[hideRestrictedByOwner]);
     setValue(hideRestrictedByGroup, data?.[hideRestrictedByGroup]);
+    setValue(wikiMode, data?.[wikiMode]);
   }, [
     data?.[restrictGuestMode],
     data?.[pageCompleteDeletionAuthority],
     data?.[hideRestrictedByOwner],
     data?.[hideRestrictedByGroup],
+    data?.[wikiMode],
   ]);
 
   return (
@@ -79,11 +80,12 @@ export const SecuritySetting: FC<FormValues> = () => {
         <h2 className="alert-anchor border-bottom">
           {t('security_settings')}
         </h2>
-        {/* {adminGeneralSecurityContainer.retrieveError != null && (
+        {/* temporarily set null */}
+        {retrieveError != null && (
         <div className="alert alert-danger">
-        <p>{t('Error occurred')} : {adminGeneralSecurityContainer.retrieveError}</p>
+          <p>{t('Error occurred')} : {retrieveError}</p>
         </div>
-        )} */}
+        )}
 
         <h4 className="mt-4">
           { t('page_list_and_search_results') }
@@ -150,7 +152,11 @@ export const SecuritySetting: FC<FormValues> = () => {
               render={({ onChange }) => {
                 return (
                   <UncontrolledDropdown>
-                    <DropdownToggle className="text-right btn-outline-secondary col-12 col-md-auto" color="transparent" caret>
+                    <DropdownToggle
+                      className={`text-right btn-outline-secondary col-12 col-md-auto ${isWikiModeForced} && 'disabled`}
+                      color="transparent"
+                      caret
+                    >
                       <span className="float-left text-muted">
                         { selectedCurrentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny') }
                         { selectedCurrentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly') }
