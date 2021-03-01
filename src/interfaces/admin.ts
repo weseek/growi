@@ -70,7 +70,7 @@ export type customizeParams = {
   themeType: string,
 }
 
-export type securityParams = {
+export type securityParamsGeneralSetting = {
     restrictGuestMode: string,
     pageCompleteDeletionAuthority: string,
     hideRestrictedByOwner: string,

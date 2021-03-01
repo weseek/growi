@@ -4,7 +4,7 @@ import {
   appParams as IAppParams,
   markdownParams as IMarkdownParams,
   customizeParams as ICustomizeParams,
-  securityParams as ISecurityParams,
+  securityParamsGeneralSetting as ISecurityParamsGeneralSetting,
 } from '~/interfaces/admin';
 
 export const useAppSettingsSWR = (): responseInterface<IAppParams, Error> => {
@@ -31,7 +31,7 @@ export const useCustomizeSettingsSWR = (): responseInterface<ICustomizeParams, E
   );
 };
 
-export const useSecuritySettingGeneralSWR = (): responseInterface<ISecurityParams, Error> => {
+export const useSecuritySettingGeneralSWR = (): responseInterface<ISecurityParamsGeneralSetting, Error> => {
   return useSWR(
     '/security-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.securityParams.generalSetting),
