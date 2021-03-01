@@ -8,6 +8,7 @@ import Page from '../../PageList/Page';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastError } from '../../../util/apiNotification';
+import { apiv3Get } from '~/utils/apiv3-client';
 
 class UserGroupPageList extends React.Component {
 
@@ -33,7 +34,7 @@ class UserGroupPageList extends React.Component {
     const offset = (pageNum - 1) * limit;
 
     try {
-      const res = await apiv3.get(`/user-groups/${this.props.adminUserGroupDetailContainer.state.userGroup._id}/pages`, {
+      const res = await apiv3Get(`/user-groups/${this.props.adminUserGroupDetailContainer.state.userGroup._id}/pages`, {
         limit,
         offset,
       });

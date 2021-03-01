@@ -9,12 +9,13 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import SocketIoContainer from '../services/SocketIoContainer';
-import AppContainer from '../services/AppContainer';
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
+
+import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
+import { apiv3Delete } from '~/utils/apiv3-client';
 
 const EmptyTrashModal = (props) => {
   const {
-    t, isOpen, onClose, appContainer, socketIoContainer,
+    t, isOpen, onClose, socketIoContainer,
   } = props;
 
   const [errs, setErrs] = useState(null);
@@ -23,7 +24,7 @@ const EmptyTrashModal = (props) => {
     setErrs(null);
 
     try {
-      await appContainer.apiv3Delete('/pages/empty-trash', { socketClientId: socketIoContainer.getSocketClientId() });
+      await apiv3Delete('/pages/empty-trash', { socketClientId: socketIoContainer.getSocketClientId() });
       window.location.reload();
     }
     catch (err) {
@@ -56,12 +57,11 @@ const EmptyTrashModal = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const EmptyTrashModalWrapper = withUnstatedContainers(EmptyTrashModal, [AppContainer, SocketIoContainer]);
+const EmptyTrashModalWrapper = withUnstatedContainers(EmptyTrashModal, [SocketIoContainer]);
 
 
 EmptyTrashModal.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   socketIoContainer: PropTypes.instanceOf(SocketIoContainer),
 
   isOpen: PropTypes.bool.isRequired,
