@@ -12,11 +12,8 @@ const logger = loggerFactory('growi:PageHistoryContainer');
  */
 export default class RevisionComparerContainer extends Container {
 
-  constructor(appContainer, pageContainer) {
+  constructor() {
     super();
-
-    this.appContainer = appContainer;
-    this.pageContainer = pageContainer;
 
     this.state = {
       errMessage: null,

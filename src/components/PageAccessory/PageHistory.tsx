@@ -2,20 +2,27 @@ import React, {
   useCallback, useState, FC, useEffect,
 } from 'react';
 
+import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 import { useTranslation } from '~/i18n';
 // import { PageRevisionList } from '~/components/PageAccessory/PageRevisionList';
 import { PageRevisionTable } from '~/components/PageAccessory/PageRevisionTable';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
+
+import RevisionComparerContainer from '~/client/js/services/RevisionComparerContainer';
 import { Revision } from '~/interfaces/page';
 
 import { useCurrentPageHistorySWR } from '~/stores/page';
 
-export const PageHistory:FC = () => {
+type Props={
+  revisionComparerContainer:RevisionComparerContainer;
+}
+
+const PageHistory:FC<Props> = (props:Props) => {
+  const { revisionComparerContainer } = props;
   const { t } = useTranslation();
 
   const [revisions, setRevisions] = useState<Revision[]>([]);
   const [latestRevision, setLatestRevision] = useState<Revision>();
-  const [diffOpened, setDiffOpened] = useState<{[key:string]:boolean}>({});
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
@@ -35,50 +42,9 @@ export const PageHistory:FC = () => {
     setTotalItemsCount(paginationResult.totalDocs);
     setLimit(paginationResult.limit);
 
-    const diffOpened = {};
+  }, [paginationResult]);
 
-    const revisions = paginationResult.docs;
-    let lastId = revisions.length - 1;
-
-    // If the number of rev count is the same, the last rev is for diff display, so exclude it.
-    if (revisions.length > limit) {
-      lastId = revisions.length - 2;
-    }
-
-    revisions.forEach((revision, i) => {
-      const user = revision.author;
-      if (user) {
-        revisions[i].author = user;
-      }
-
-      if (i === 0 || i === lastId) {
-        diffOpened[revision._id] = true;
-      }
-      else {
-        diffOpened[revision._id] = false;
-      }
-    });
-
-    setRevisions(revisions);
-    setDiffOpened(diffOpened);
-
-    if (activePage === 1) {
-      setLatestRevision(revisions[0]);
-    }
-
-    // load 0, and last default
-    // if (rev[0]) {
-    //   this.fetchPageRevisionBody(rev[0]);
-    // }
-    // if (rev[1]) {
-    //   this.fetchPageRevisionBody(rev[1]);
-    // }
-    // if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
-    //   this.fetchPageRevisionBody(rev[lastId]);
-    // }
-  }, [activePage, limit, paginationResult]);
-
-  if (paginationResult == null || latestRevision == null) {
+  if (paginationResult == null) {
     return (
       <div className="my-5 text-center">
         <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted" />
@@ -115,7 +81,6 @@ export const PageHistory:FC = () => {
       <PageRevisionTable
         revisions={revisions}
         pagingLimit={limit}
-        latestRevision={latestRevision}
       />
       <div className="my-3">
         <PaginationWrapper
@@ -130,3 +95,8 @@ export const PageHistory:FC = () => {
     </div>
   );
 };
+
+/**
+ * Wrapper component for using unstated
+ */
+export const PageHistoryWrapper = withUnstatedContainers(PageHistory, [RevisionComparerContainer]);

@@ -1,6 +1,7 @@
 import React, {
   FC, useCallback, useMemo, useState,
 } from 'react';
+import { Provider } from 'unstated';
 
 import {
   Modal, ModalBody, ModalHeader, TabContent, TabPane,
@@ -16,7 +17,7 @@ import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 // import PageAttachment from '../../client/js/components/PageAttachment';
 // import PageTimeline from '../../client/js/components/PageTimeline';
 // import PageList from '../../client/js/components/PageList';
-import { PageHistory } from '~/components/PageAccessory/PageHistory';
+import { PageHistoryWrapper } from '~/components/PageAccessory/PageHistory';
 // import ShareLink from '../../client/js/components/ShareLink/ShareLink';
 
 import ExpandOrContractButton from '../../client/js/components/ExpandOrContractButton';
@@ -132,7 +133,7 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
           </TabPane>
           {!isGuestUser && (
             <TabPane tabId="pageHistory">
-              {activeComponents.has('pageHistory') && <PageHistory /> }
+              {activeComponents.has('pageHistory') && <Provider><PageHistoryWrapper /></Provider> }
             </TabPane>
           )}
           <TabPane tabId="attachment">

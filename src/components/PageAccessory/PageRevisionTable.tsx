@@ -9,6 +9,8 @@ type PgaeRevisionRowProps ={
   revision: IRevision,
   previousRevision: IRevision,
   latestRevision: IRevision,
+  sourceRevision: IRevision,
+  targetRevision: IRevision,
   hasDiff: boolean,
 }
 
@@ -23,15 +25,15 @@ const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
   const revisionDiffOpened = false;
   // const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
-  // const handleCompareLatestRevisionButton = () => {
-  //   revisionComparerContainer.setState({ sourceRevision: revision });
-  //   revisionComparerContainer.setState({ targetRevision: latestRevision });
-  // };
+  const handleCompareLatestRevisionButton = () => {
+    // revisionComparerContainer.setState({ sourceRevision: revision });
+    // revisionComparerContainer.setState({ targetRevision: latestRevision });
+  };
 
-  // const handleComparePreviousRevisionButton = () => {
-  //   revisionComparerContainer.setState({ sourceRevision: previousRevision });
-  //   revisionComparerContainer.setState({ targetRevision: revision });
-  // };
+  const handleComparePreviousRevisionButton = () => {
+    // revisionComparerContainer.setState({ sourceRevision: previousRevision });
+    // revisionComparerContainer.setState({ targetRevision: revision });
+  };
 
   return (
     <tr className="d-flex" key={`revision-history-${revisionId}`}>
@@ -45,18 +47,18 @@ const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
             hasDiff={hasDiff}
             key={`revision-history-rev-${revisionId}`}
           />
-          {/* {hasDiff && (
-          <div className="ml-md-3 mt-auto">
-            <div className="btn-group">
-              <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleCompareLatestRevisionButton}>
-                {t('page_history.compare_latest')}
-              </button>
-              <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleComparePreviousRevisionButton}>
-                {t('page_history.compare_previous')}
-              </button>
+          {hasDiff && (
+            <div className="ml-md-3 mt-auto">
+              <div className="btn-group">
+                <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleCompareLatestRevisionButton}>
+                  {t('page_history.compare_latest')}
+                </button>
+                <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleComparePreviousRevisionButton}>
+                  {t('page_history.compare_previous')}
+                </button>
+              </div>
             </div>
-          </div>
-           )} */}
+           )}
         </div>
       </td>
       <td className="col-1">
@@ -99,13 +101,17 @@ const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
 type Props = {
   revisions: IRevision[],
   latestRevision: IRevision,
+  sourceRevision: IRevision,
+  targetRevision: IRevision,
   pagingLimit: number,
 }
 
 export const PageRevisionTable:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
-  const { revisions, latestRevision, pagingLimit } = props;
+  const {
+    revisions, latestRevision, pagingLimit, sourceRevision, targetRevision,
+  } = props;
   const revisionCount = revisions.length;
 
   let hasDiffPrev;
@@ -129,7 +135,16 @@ export const PageRevisionTable:FC<Props> = (props:Props) => {
 
     hasDiffPrev = hasDiff;
 
-    return <PgaeRevisionRow revision={revision} previousRevision={previousRevision} hasDiff={hasDiff} latestRevision={latestRevision} />;
+    return (
+      <PgaeRevisionRow
+        revision={revision}
+        previousRevision={previousRevision}
+        hasDiff={hasDiff}
+        latestRevision={latestRevision}
+        sourceRevision={sourceRevision}
+        targetRevision={targetRevision}
+      />
+    );
   });
 
   return (
