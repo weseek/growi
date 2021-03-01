@@ -12,6 +12,7 @@ import { apiv3Put } from '~/utils/apiv3-client';
 
 // temporarily set null
 const retrieveError = null;
+
 const restrictGuestMode = 'restrictGuestMode';
 const pageCompleteDeletionAuthority = 'pageCompleteDeletionAuthority';
 const hideRestrictedByOwner = 'hideRestrictedByOwner';
@@ -156,7 +157,7 @@ export const SecuritySetting: FC<FormValues> = () => {
                     <DropdownToggle
                       className="text-right btn-outline-secondary col-12 col-md-auto"
                       color="transparent"
-                      disabled={`${wikiMode}==='private' || 'public'`}
+                      disabled={data?.wikiMode === 'private' || 'public'}
                       caret
                     >
                       <span className="float-left text-muted">
@@ -183,7 +184,7 @@ export const SecuritySetting: FC<FormValues> = () => {
                  );
                }}
             />
-            {`${wikiMode} === 'private' || 'public'` && (
+            {data?.wikiMode === ('private' || 'public') && (
             <p className="alert alert-warning mt-2 text-left offset-3 col-6">
               <i className="icon-exclamation icon-fw">
               </i><b>FIXED</b><br />
