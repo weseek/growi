@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import AuthorInfo from './Navbar/AuthorInfo';
 
-import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -28,11 +27,10 @@ const PageContentFooter = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const PageContentFooterWrapper = withUnstatedContainers(PageContentFooter, [AppContainer, PageContainer]);
+const PageContentFooterWrapper = withUnstatedContainers(PageContentFooter, [PageContainer]);
 
 
 PageContentFooter.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 

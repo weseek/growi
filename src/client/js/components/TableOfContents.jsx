@@ -17,10 +17,6 @@ const TableOfContents = (props) => {
   const { t } = useTranslation();
   const { data: tocNode } = useCurrentPageTocNode();
 
-  if (tocNode == null) {
-    return <></>;
-  }
-
   // const { pageUser } = pageContainer.state;
   // const isUserPage = pageUser != null;
 
@@ -45,6 +41,10 @@ const TableOfContents = (props) => {
   // }, [isUserPage]);
   }, []);
 
+  if (tocNode == null) {
+    return <></>;
+  }
+
   // execute after generation toc html
   // useEffect(() => {
   //   const tocDom = document.getElementById('revision-toc-content');
@@ -61,34 +61,34 @@ const TableOfContents = (props) => {
     </div>
   );
 
-  return (
-    <StickyStretchableScroller
-      contentsElemSelector=".revision-toc .markdownIt-TOC"
-      stickyElemSelector=".grw-side-contents-sticky-container"
-      calcViewHeightFunc={calcViewHeight}
-    >
-      { tocNode !== ''
-      ? (
-        <div
-          id="revision-toc-content"
-          className="revision-toc-content mb-3"
-          // eslint-disable-next-line react/no-danger
-          // dangerouslySetInnerHTML={{ __html: tocHtml }}
-        >
-          {processor.runSync(tocNode).result}
-        </div>
-      )
-      : (
-        <div
-          id="revision-toc-content"
-          className="revision-toc-content mb-2"
-        >
-          <span className="text-muted">({t('page_table_of_contents.empty')})</span>
-        </div>
-      ) }
+  // return (
+  //   <StickyStretchableScroller
+  //     contentsElemSelector=".revision-toc .markdownIt-TOC"
+  //     stickyElemSelector=".grw-side-contents-sticky-container"
+  //     calcViewHeightFunc={calcViewHeight}
+  //   >
+  //     { tocNode !== ''
+  //     ? (
+  //       <div
+  //         id="revision-toc-content"
+  //         className="revision-toc-content mb-3"
+  //         // eslint-disable-next-line react/no-danger
+  //         // dangerouslySetInnerHTML={{ __html: tocHtml }}
+  //       >
+  //         {processor.runSync(tocNode).result}
+  //       </div>
+  //     )
+  //     : (
+  //       <div
+  //         id="revision-toc-content"
+  //         className="revision-toc-content mb-2"
+  //       >
+  //         <span className="text-muted">({t('page_table_of_contents.empty')})</span>
+  //       </div>
+  //     ) }
 
-    </StickyStretchableScroller>
-  );
+  //   </StickyStretchableScroller>
+  // );
 
 };
 

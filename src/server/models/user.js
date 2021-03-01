@@ -15,6 +15,15 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const { omitInsecureAttributes } = require('./serializers/user-serializer');
 
+
+class UserUpperLimitException {
+
+  constructor() {
+    this.name = this.constructor.name;
+  }
+
+}
+
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
@@ -107,11 +116,6 @@ module.exports = function(crowi) {
     }
   }
 
-  function generateRandomEmail() {
-    const randomstr = generateRandomTempPassword();
-    return `change-it-${randomstr}@example.com`;
-  }
-
   function generateRandomTempPassword() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!=-_';
     let password = '';
@@ -123,6 +127,11 @@ module.exports = function(crowi) {
     }
 
     return password;
+  }
+
+  function generateRandomEmail() {
+    const randomstr = generateRandomTempPassword();
+    return `change-it-${randomstr}@example.com`;
   }
 
   function generatePassword(password) {
@@ -703,14 +712,6 @@ module.exports = function(crowi) {
 
     return username;
   };
-
-  class UserUpperLimitException {
-
-    constructor() {
-      this.name = this.constructor.name;
-    }
-
-  }
 
   userSchema.statics.STATUS_REGISTERED = STATUS_REGISTERED;
   userSchema.statics.STATUS_ACTIVE = STATUS_ACTIVE;
