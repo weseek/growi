@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-danger */
 import React, { FC, useEffect } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
@@ -41,8 +42,8 @@ export const SecuritySetting: FC<FormValues> = () => {
       // [wikiMode]: 'bar',
     },
   });
-  console.log(data);
   const selectedCurrentRestrictGuestMode = watch(restrictGuestMode);
+  const selectedPageCompleteDeletionAuthority = watch(pageCompleteDeletionAuthority);
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
     try {
@@ -62,8 +63,15 @@ export const SecuritySetting: FC<FormValues> = () => {
 
   useEffect(() => {
     setValue(restrictGuestMode, data?.[restrictGuestMode]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.[restrictGuestMode]]);
+    setValue(pageCompleteDeletionAuthority, data?.[pageCompleteDeletionAuthority]);
+    setValue(hideRestrictedByOwner, data?.[hideRestrictedByOwner]);
+    setValue(hideRestrictedByGroup, data?.[hideRestrictedByGroup]);
+  }, [
+    data?.[restrictGuestMode],
+    data?.[pageCompleteDeletionAuthority],
+    data?.[hideRestrictedByOwner],
+    data?.[hideRestrictedByGroup],
+  ]);
 
   return (
     <div className="row">
@@ -142,16 +150,23 @@ export const SecuritySetting: FC<FormValues> = () => {
               render={({ onChange }) => {
                 return (
                   <UncontrolledDropdown>
-                    <DropdownToggle className="text-right btn-outline-secondary col-12 col-md-auto " color="transparent" caret>
+                    <DropdownToggle className="text-right btn-outline-secondary col-12 col-md-auto" color="transparent" caret>
                       <span className="float-left text-muted">
-                        { selectedCurrentRestrictGuestMode || t('security_setting.guest_mode.deny') }
+                        { selectedCurrentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny') }
+                        { selectedCurrentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly') }
                       </span>
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu" role="menu">
                       {['Deny', 'Readonly'].map((word) => {
                         return (
-                          <DropdownItem key={word} role="presentation" onClick={() => onChange(word)}>
-                            <a role="menuitem">{word}</a>
+                          <DropdownItem
+                            key={word}
+                            role="presentation"
+                            onClick={() => onChange(word)}
+                          >
+                            <a role="menuitem">
+                              {word === 'Deny' ? t('security_setting.guest_mode.deny') : t('security_setting.guest_mode.readonly')}
+                            </a>
                           </DropdownItem>
                         );
                       })}
@@ -160,39 +175,6 @@ export const SecuritySetting: FC<FormValues> = () => {
                  );
                }}
             />
-            {/* <div className="dropdown"> */}
-            {/* TODO: show dropdown text byGW-5142 */}
-            {/* <button
-                className={`btn btn-outline-secondary dropdown-toggle text-right col-12
-                          col-md-auto ${isWikiModeForced && 'disabled'}`}
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="true"
-              >
-                 <span className="float-left">
-                  {`${currentRestrictGuestMode} === 'Deny'` && t('security_setting.guest_mode.deny')}
-                  {`${currentRestrictGuestMode} === 'Readonly'` && t('security_setting.guest_mode.readonly')}
-                </span>
-              </button> */}
-            {/* <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  // onClick={() => changeRestrictGuestMode('Deny')}
-                >
-                  {t('security_setting.guest_mode.deny')}
-                </button>
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  // onClick={() => changeRestrictGuestMode('ReadOnly')}
-                >
-                  {t('security_setting.guest_mode.readonly')}
-                </button>
-              </div> */}
-            {/* </div> */}
             {isWikiModeForced && (
             <p className="alert alert-warning mt-2 text-left offset-3 col-6">
               <i className="icon-exclamation icon-fw">
@@ -208,50 +190,48 @@ export const SecuritySetting: FC<FormValues> = () => {
           </div>
         </div>
 
+
         <div className="row mb-4">
           <div className="col-md-3 text-md-right mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
           </div>
           <div className="col-md-6">
-            <div className="dropdown">
-              <button
-                className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="true"
-              >
-                <span className="float-left">
-                  {`${pageCompleteDeletionAuthority} === 'anyOne'` && t('security_setting.anyone')}
-                  {`${pageCompleteDeletionAuthority} === 'adminOnly'` && t('security_setting.admin_only')}
-                  {(`${pageCompleteDeletionAuthority} === 'adminAndAuthor'` || `${pageCompleteDeletionAuthority} == null`)
-                    && t('security_setting.admin_and_author')}
-                </span>
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button
-                  className="dropdown-item"
-                  type="button"
-                >
-                  {t('security_setting.anyone')}
-                </button>
-                <button
-                  className="dropdown-item"
-                  type="button"
-                >
-                  {t('security_setting.admin_only')}
-                </button>
-                <button
-                  className="dropdown-item"
-                  type="button"
-                >
-                  {t('security_setting.admin_and_author')}
-                </button>
-              </div>
-              <p className="form-text text-muted small">
-                {t('security_setting.complete_deletion_explain')}
-              </p>
+            <Controller
+              name={pageCompleteDeletionAuthority}
+              control={control}
+              render={({ onChange }) => {
+            return (
+              <UncontrolledDropdown>
+                <DropdownToggle className="text-right btn-outline-secondary col-12 col-md-auto" color="transparent" caret>
+                  <span className="float-left text-muted">
+                    { selectedPageCompleteDeletionAuthority === 'anyOne' && t('security_setting.anyone')}
+                    { selectedPageCompleteDeletionAuthority === 'adminOnly' && t('security_setting.admin_only')}
+                    { selectedPageCompleteDeletionAuthority === 'adminAndAuthor' && t('security_setting.admin_and_author')}
+                  </span>
+                </DropdownToggle>
+                <DropdownMenu className="dropdown-menu" role="menu">
+                  {['anyOne', 'adminOnly', 'adminAndAuthor'].map((word) => {
+                    return (
+                      <DropdownItem
+                        key={word}
+                        role="presentation"
+                        onClick={() => onChange(word)}
+                      >
+                        <a role="menuitem">
+                          {word === 'anyOne' && t('security_setting.anyone')}
+                          {word === 'adminOnly' && t('security_setting.admin_only')}
+                          {word === 'adminAndAuthor' && t('security_setting.admin_and_author')}
+                        </a>
+                      </DropdownItem>
+                    );
+                  })}
+                </DropdownMenu>
+              </UncontrolledDropdown>
+             );
+           }}
+            />
+            <div className="form-text text-muted small">
+              {t('security_setting.complete_deletion_explain')}
             </div>
           </div>
         </div>
