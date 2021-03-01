@@ -31,10 +31,10 @@ export const useCustomizeSettingsSWR = (): responseInterface<ICustomizeParams, E
   );
 };
 
-export const useSecuritySettingSWR = (): responseInterface<ISecurityParams, Error> => {
+export const useSecuritySettingGeneralSWR = (): responseInterface<ISecurityParams, Error> => {
   return useSWR(
     '/security-setting',
-    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.securityParams),
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.securityParams.generalSetting),
     { revalidateOnFocus: false },
   );
 };

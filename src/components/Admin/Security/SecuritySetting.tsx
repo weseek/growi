@@ -1,52 +1,54 @@
 /* eslint-disable react/no-danger */
-import React, { FC, useCallback } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import {
   DropdownMenu, DropdownItem, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
 import { useTranslation } from '~/i18n';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
-import { useCustomizeSettingsSWR } from '~/stores/admin';
+import { useSecuritySettingGeneralSWR } from '~/stores/admin';
 import { apiv3Put } from '~/utils/apiv3-client';
 
 
 // const retrieveError = null
-const currentRestrictGuestMode = 'security:restrictGuestMode';
-const currentPageCompleteDeletionAuthority = 'security:pageCompleteDeletionAuthority';
-const hideRestrictedByOwner = 'security:list-policy:hideRestrictedByOwner';
-const hideRestrictedByGroup = 'security:list-policy:hideRestrictedByGroup';
+const restrictGuestMode = 'restrictGuestMode';
+const pageCompleteDeletionAuthority = 'pageCompleteDeletionAuthority';
+const hideRestrictedByOwner = 'hideRestrictedByOwner';
+const hideRestrictedByGroup = 'hideRestrictedByGroup';
 
 const isWikiModeForced = false;
 const wikiMode = 'private';
 
 type FormValues ={
-[currentRestrictGuestMode]: string,
-[currentPageCompleteDeletionAuthority]: string,
-[hideRestrictedByOwner]: boolean,
-[hideRestrictedByGroup]:boolean,
+[restrictGuestMode]: string,
+[pageCompleteDeletionAuthority]: string,
+[hideRestrictedByOwner]: string,
+[hideRestrictedByGroup]: string,
 // [wikiMode]: string,
 };
 
 export const SecuritySetting: FC<FormValues> = () => {
   const { t } = useTranslation();
-  const { data } = useCustomizeSettingsSWR();
+  const { data } = useSecuritySettingGeneralSWR();
   const {
-    register, control, handleSubmit, setValue,
+    register, control, handleSubmit, setValue, watch,
   } = useForm({
     defaultValues: {
-      [currentRestrictGuestMode]: data?.[currentRestrictGuestMode],
-      [currentPageCompleteDeletionAuthority]: data?.[currentPageCompleteDeletionAuthority],
+      [restrictGuestMode]: data?.[restrictGuestMode],
+      [pageCompleteDeletionAuthority]: data?.[pageCompleteDeletionAuthority],
       [hideRestrictedByOwner]: data?.[hideRestrictedByOwner],
       [hideRestrictedByGroup]: data?.[hideRestrictedByGroup],
       // [wikiMode]: 'bar',
     },
   });
+  console.log(data);
+  const selectedCurrentRestrictGuestMode = watch(restrictGuestMode);
 
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
     try {
       await apiv3Put('/security-setting/general-setting', {
-        [currentRestrictGuestMode]: formValues[currentRestrictGuestMode],
-        [currentPageCompleteDeletionAuthority]: formValues[currentPageCompleteDeletionAuthority],
+        [restrictGuestMode]: formValues[restrictGuestMode],
+        [pageCompleteDeletionAuthority]: formValues[pageCompleteDeletionAuthority],
         [hideRestrictedByOwner]: formValues[hideRestrictedByOwner],
         [hideRestrictedByGroup]: formValues[hideRestrictedByGroup],
 
@@ -58,9 +60,10 @@ export const SecuritySetting: FC<FormValues> = () => {
     }
   };
 
-  const changeRestrictGuestMode = useCallback((arg) => {
-    setValue(currentRestrictGuestMode, arg);
-  }, [setValue]);
+  useEffect(() => {
+    setValue(restrictGuestMode, data?.[restrictGuestMode]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.[restrictGuestMode]]);
 
   return (
     <div className="row">
@@ -69,9 +72,9 @@ export const SecuritySetting: FC<FormValues> = () => {
           {t('security_settings')}
         </h2>
         {/* {adminGeneralSecurityContainer.retrieveError != null && (
-      <div className="alert alert-danger">
+        <div className="alert alert-danger">
         <p>{t('Error occurred')} : {adminGeneralSecurityContainer.retrieveError}</p>
-      </div>
+        </div>
         )} */}
 
         <h4 className="mt-4">
@@ -133,21 +136,19 @@ export const SecuritySetting: FC<FormValues> = () => {
             <strong>{t('security_setting.Guest Users Access')}</strong>
           </div>
           <div className="col-md-9">
-            <div>
-              <Controller
-                name="dropdownMenuButton"
-                control={control}
-                render={({ onChange }) => {
+            <Controller
+              name={restrictGuestMode}
+              control={control}
+              render={({ onChange }) => {
                 return (
                   <UncontrolledDropdown>
-                    <DropdownToggle className="text-right col-6" caret>
-                      <span className="float-left">
-                        {`${currentRestrictGuestMode} === 'Deny'` && t('security_setting.guest_mode.deny')}
-                        {`${currentRestrictGuestMode} === 'Readonly'` && t('security_setting.guest_mode.readonly')}
+                    <DropdownToggle className="text-right btn-outline-secondary col-12 col-md-auto " color="transparent" caret>
+                      <span className="float-left text-muted">
+                        { selectedCurrentRestrictGuestMode || t('security_setting.guest_mode.deny') }
                       </span>
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu" role="menu">
-                      {[t('security_setting.guest_mode.deny'), t('security_setting.guest_mode.readonly')].map((word) => {
+                      {['Deny', 'Readonly'].map((word) => {
                         return (
                           <DropdownItem key={word} role="presentation" onClick={() => onChange(word)}>
                             <a role="menuitem">{word}</a>
@@ -156,14 +157,12 @@ export const SecuritySetting: FC<FormValues> = () => {
                       })}
                     </DropdownMenu>
                   </UncontrolledDropdown>
-
                  );
                }}
-              />
-            </div>
-            <div className="dropdown">
-              {/* TODO: show dropdown text byGW-5142 */}
-              <button
+            />
+            {/* <div className="dropdown"> */}
+            {/* TODO: show dropdown text byGW-5142 */}
+            {/* <button
                 className={`btn btn-outline-secondary dropdown-toggle text-right col-12
                           col-md-auto ${isWikiModeForced && 'disabled'}`}
                 type="button"
@@ -172,28 +171,28 @@ export const SecuritySetting: FC<FormValues> = () => {
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                <span className="float-left">
+                 <span className="float-left">
                   {`${currentRestrictGuestMode} === 'Deny'` && t('security_setting.guest_mode.deny')}
                   {`${currentRestrictGuestMode} === 'Readonly'` && t('security_setting.guest_mode.readonly')}
                 </span>
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              </button> */}
+            {/* <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <button
                   className="dropdown-item"
                   type="button"
-                  onClick={() => changeRestrictGuestMode('Deny')}
+                  // onClick={() => changeRestrictGuestMode('Deny')}
                 >
                   {t('security_setting.guest_mode.deny')}
                 </button>
                 <button
                   className="dropdown-item"
                   type="button"
-                  onClick={() => changeRestrictGuestMode('ReadOnly')}
+                  // onClick={() => changeRestrictGuestMode('ReadOnly')}
                 >
                   {t('security_setting.guest_mode.readonly')}
                 </button>
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
             {isWikiModeForced && (
             <p className="alert alert-warning mt-2 text-left offset-3 col-6">
               <i className="icon-exclamation icon-fw">
@@ -224,9 +223,9 @@ export const SecuritySetting: FC<FormValues> = () => {
                 aria-expanded="true"
               >
                 <span className="float-left">
-                  {`${currentPageCompleteDeletionAuthority} === 'anyOne'` && t('security_setting.anyone')}
-                  {`${currentPageCompleteDeletionAuthority} === 'adminOnly'` && t('security_setting.admin_only')}
-                  {(`${currentPageCompleteDeletionAuthority} === 'adminAndAuthor'` || `${currentPageCompleteDeletionAuthority} == null`)
+                  {`${pageCompleteDeletionAuthority} === 'anyOne'` && t('security_setting.anyone')}
+                  {`${pageCompleteDeletionAuthority} === 'adminOnly'` && t('security_setting.admin_only')}
+                  {(`${pageCompleteDeletionAuthority} === 'adminAndAuthor'` || `${pageCompleteDeletionAuthority} == null`)
                     && t('security_setting.admin_and_author')}
                 </span>
               </button>
@@ -265,7 +264,6 @@ export const SecuritySetting: FC<FormValues> = () => {
             </div>
           </div>
         </div>
-
       </form>
     </div>
   );
