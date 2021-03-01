@@ -1,15 +1,13 @@
-import React, {
-  useState, useEffect, useCallback, FC,
-} from 'react';
-import PropTypes from 'prop-types';
-
+import { useState, FC } from 'react';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { useCurrentPagePath } from '~/stores/context';
-
 import { useTranslation } from '~/i18n';
+
+import { Page as IPage } from '~/interfaces/page';
+
+import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
 // import { debounce } from 'throttle-debounce';
 // import { withUnstatedContainers } from './UnstatedUtils';
@@ -18,20 +16,30 @@ import { useTranslation } from '~/i18n';
 // import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
 // import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
-// import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 // import ComparePathsTable from './ComparePathsTable';
 // import DuplicatePathsTable from './DuplicatedPathsTable';
 
 const LIMIT_FOR_LIST = 10;
 
 type Props = {
+  currentPage: IPage;
   isOpen: boolean;
-  onClose:() => void,
+  onClose: () => void;
+  onMutateCurrentPage?: () =>void;
 }
 
 const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
-  const { data: currentPagePath } = useCurrentPagePath();
+  const { currentPage } = props;
+
+  const [errs, setErrs] = useState([]);
+
+  const loadLatestRevision = () => {
+    props.onClose();
+    if (props.onMutateCurrentPage != null) {
+      props.onMutateCurrentPage();
+    }
+  };
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -40,7 +48,7 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
       </ModalHeader>
       <ModalBody>
         <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
-          <code>{currentPagePath}</code>
+          <code>{currentPage.path}</code>
         </div>
         <div className="form-group">
           <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
@@ -111,7 +119,7 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        {/* <ApiErrorMessageList errs={errs} targetPath={pageNameInput} /> */}
+        <ApiErrorMessageList errs={errs} targetPath={currentPage.path} onLoadLatestRevision={loadLatestRevision} />
         <button
           type="button"
           className="btn btn-primary"

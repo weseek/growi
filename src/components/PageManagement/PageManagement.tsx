@@ -223,6 +223,7 @@ export const PageManagement:FC<Props> = (props:Props) => {
         path={path}
       />
       <PageDuplicateModal
+        currentPage={currentPage}
         isOpen={isPageDuplicateModalShown}
         onClose={() => setIsPageDuplicateModalShown(false)}
         onMutateCurrentPage={mutateCurrentPage}
