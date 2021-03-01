@@ -436,7 +436,7 @@ module.exports = (crowi) => {
     const options = { socketClientId };
 
     try {
-      const pages = await crowi.pageService.deletePageRecursivelyCompletely({ path: '/trash' }, req.user, options);
+      const pages = await crowi.pageService.deleteCompletelyDescendantsWithStream({ path: '/trash' }, req.user, options);
       return res.apiv3({ pages });
     }
     catch (err) {
