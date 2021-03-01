@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
-
-
 import {
   UncontrolledDropdown,
   DropdownToggle, DropdownMenu, DropdownItem,
@@ -11,10 +8,10 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
+import { useTranslation } from '~/i18n';
+import { useCurrentUser } from '~/stores/context';
 
-import AppContainer from '../../services/AppContainer';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { apiGet } from '../../util/apiv1-client';
 
 /**
  * Page grant select component
@@ -69,7 +66,7 @@ class GrantSelector extends React.Component {
    * Retrieve user-group-relations data from backend
    */
   retrieveUserGroupRelations() {
-    this.props.appContainer.apiGet('/me/user-group-relations')
+    apiGet('/me/user-group-relations')
       .then((res) => {
         return res.userGroupRelations;
       })
@@ -189,7 +186,7 @@ class GrantSelector extends React.Component {
       ? (
         <div>
           <h4>There is no group to which you belong.</h4>
-          { this.props.appContainer.isAdmin
+          { this.props.isAdmin
             && <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i> Manage Groups</a></p>
           }
         </div>
@@ -228,14 +225,10 @@ class GrantSelector extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const GrantSelectorWrapper = withUnstatedContainers(GrantSelector, [AppContainer]);
-
 GrantSelector.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
+  isAdmin: PropTypes.bool.isRequired,
 
   disabled: PropTypes.bool,
   grant: PropTypes.number.isRequired,
@@ -245,4 +238,11 @@ GrantSelector.propTypes = {
   onUpdateGrant: PropTypes.func,
 };
 
-export default withTranslation()(GrantSelectorWrapper);
+const GrantSelectorWrapper = (props) => {
+  const { t } = useTranslation();
+  const { data: currentUser } = useCurrentUser();
+
+  return <GrantSelector {...props} t={t} isAdmin={currentUser?.isAdmin} />;
+};
+
+export default GrantSelectorWrapper;

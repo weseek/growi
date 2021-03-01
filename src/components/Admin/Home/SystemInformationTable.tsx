@@ -6,7 +6,7 @@ type Props = {
   yarnVersion: string,
 };
 
-const SystemInformationTable = (props: Props): JSX.Element => {
+export const SystemInformationTable = (props: Props): JSX.Element => {
   const { data: growiVersion } = useGrowiVersion();
   return (
     <table className="table table-bordered">
@@ -31,5 +31,3 @@ const SystemInformationTable = (props: Props): JSX.Element => {
     </table>
   );
 };
-
-export default SystemInformationTable;

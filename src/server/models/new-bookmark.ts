@@ -5,7 +5,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
-import { IUser, USER_PUBLIC_FIELDS } from '~/server/models/user';
+import { IUser, USER_PUBLIC_FIELDS } from '~/server/models/new-user';
 // import BookmarkEvent from '~/server/events/bookmark';
 
 const ObjectId = Schema.Types.ObjectId;

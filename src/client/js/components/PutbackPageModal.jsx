@@ -7,11 +7,11 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
+import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageContainer from '../services/PageContainer';
-
-import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const PutBackPageModal = (props) => {
   const {
