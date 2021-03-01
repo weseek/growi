@@ -9,7 +9,8 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import { toastSuccess, toastError } from '../../util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
+import { apiv3Post } from '../../util/apiv3-client';
+
 import PageContainer from '../../services/PageContainer';
 
 class ShareLinkForm extends React.Component {
@@ -110,7 +111,7 @@ class ShareLinkForm extends React.Component {
 
   async handleIssueShareLink() {
     const {
-      t, appContainer, pageContainer,
+      t, pageContainer,
     } = this.props;
     const { pageId } = pageContainer.state;
     const { description } = this.state;
@@ -125,7 +126,7 @@ class ShareLinkForm extends React.Component {
     }
 
     try {
-      await appContainer.apiv3Post('/share-links/', { relatedPage: pageId, expiredAt, description });
+      await apiv3Post('/share-links/', { relatedPage: pageId, expiredAt, description });
       this.closeForm();
       toastSuccess(t('toaster.issue_share_link'));
     }
@@ -261,11 +262,10 @@ class ShareLinkForm extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [AppContainer, PageContainer]);
+const ShareLinkFormWrapper = withUnstatedContainers(ShareLinkForm, [PageContainer]);
 
 ShareLinkForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onCloseForm: PropTypes.func,
 };

@@ -12,7 +12,6 @@ import {
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 
 import LdapAuthTest from '../Admin/Security/LdapAuthTest';
@@ -129,11 +128,10 @@ class AssociateModal extends React.Component {
 
 }
 
-const AssociateModalWrapper = withUnstatedContainers(AssociateModal, [AppContainer, PersonalContainer]);
+const AssociateModalWrapper = withUnstatedContainers(AssociateModal, [PersonalContainer]);
 
 AssociateModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,

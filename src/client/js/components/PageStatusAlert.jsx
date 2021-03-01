@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -130,12 +129,11 @@ class PageStatusAlert extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageStatusAlertWrapper = withUnstatedContainers(PageStatusAlert, [AppContainer, PageContainer]);
+const PageStatusAlertWrapper = withUnstatedContainers(PageStatusAlert, [PageContainer]);
 
 PageStatusAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 

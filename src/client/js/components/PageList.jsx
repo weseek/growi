@@ -2,17 +2,18 @@ import React, { useEffect, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
+import { apiv3Get } from '../util/apiv3-client';
+
 import Page from './PageList/Page';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
-
-import PaginationWrapper from './PaginationWrapper';
 
 
 const PageList = (props) => {
-  const { appContainer, pageContainer, t } = props;
+  const { pageContainer, t } = props;
   const { path } = pageContainer.state;
   const [pages, setPages] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,13 +28,13 @@ const PageList = (props) => {
 
   const updatePageList = useCallback(async() => {
     const page = activePage;
-    const res = await appContainer.apiv3Get('/pages/list', { path, page });
+    const res = await apiv3Get('/pages/list', { path, page });
 
     setPages(res.data.pages);
     setIsLoading(false);
     setTotalPages(res.data.totalCount);
     setLimit(res.data.limit);
-  }, [appContainer, path, activePage]);
+  }, [path, activePage]);
 
   useEffect(() => {
     updatePageList();
@@ -83,14 +84,13 @@ const PageList = (props) => {
 
 };
 
-const PageListWrapper = withUnstatedContainers(PageList, [AppContainer, PageContainer]);
+const PageListWrapper = withUnstatedContainers(PageList, [PageContainer]);
 
 const PageListTranslation = withTranslation()(PageListWrapper);
 
 
 PageList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer),
   pageContainer: PropTypes.instanceOf(PageContainer),
 
   liClasses: PropTypes.arrayOf(PropTypes.string),

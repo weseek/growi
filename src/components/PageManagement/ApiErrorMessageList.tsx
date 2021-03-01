@@ -6,15 +6,17 @@ type ApiErrorMessageProps = {
   errorCode?: string;
   errorMessage?: string;
   targetPath: string;
+  onLoadLatestRevision?:()=> void;
 }
 
 const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) => {
   const { errorCode, errorMessage, targetPath } = props;
   const { t } = useTranslation();
 
-  // TODO GW-5153 Consider whether to remove reload processing
-  function reload() {
-    window.location.reload();
+  function loadLatestRevision() {
+    if (props.onLoadLatestRevision != null) {
+      props.onLoadLatestRevision();
+    }
   }
 
   function renderMessageByErrorCode() {
@@ -38,7 +40,7 @@ const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) =>
         return (
           <>
             <strong><i className="icon-fw icon-bulb"></i> { t('page_api_error.outdated') }</strong>
-            <a className="btn-link" onClick={reload}>
+            <a className="btn-link" onClick={loadLatestRevision}>
               <i className="fa fa-angle-double-right"></i> { t('Load latest') }
             </a>
           </>
@@ -79,6 +81,7 @@ const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) =>
 type Props ={
   targetPath: string;
   errs?: any[];
+  onLoadLatestRevision?:()=> void;
 }
 
 export const ApiErrorMessageList: FC<Props> = (props:Props) => {
@@ -86,7 +89,15 @@ export const ApiErrorMessageList: FC<Props> = (props:Props) => {
 
   return (
     <>
-      {errs.map(err => <ApiErrorMessage key={err.code} errorCode={err.code} errorMessage={err.message} targetPath={props.targetPath} />)}
+      {errs.map(err => (
+        <ApiErrorMessage
+          key={err.code}
+          errorCode={err.code}
+          errorMessage={err.message}
+          targetPath={props.targetPath}
+          onLoadLatestRevision={props.onLoadLatestRevision}
+        />
+      ))}
     </>
   );
 

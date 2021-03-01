@@ -50,7 +50,9 @@ class RemoveAdminButton extends React.Component {
 
   render() {
     const { user } = this.props;
-    const { currentUsername } = this.props.appContainer;
+    // TODO use useCurrentUser at context.tsx
+    // const { currentUsername } = this.props.appContainer;
+    const currentUsername = '';
 
     return (
       <Fragment>
