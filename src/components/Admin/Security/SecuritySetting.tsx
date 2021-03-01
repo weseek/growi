@@ -16,8 +16,8 @@ const restrictGuestMode = 'restrictGuestMode';
 const pageCompleteDeletionAuthority = 'pageCompleteDeletionAuthority';
 const hideRestrictedByOwner = 'hideRestrictedByOwner';
 const hideRestrictedByGroup = 'hideRestrictedByGroup';
-const wikiMode = '';
-const isWikiModeForced = true;
+const wikiMode = 'wikiMode';
+const isWikiModeForced = false;
 
 type FormValues ={
 [restrictGuestMode]: string,
@@ -26,6 +26,8 @@ type FormValues ={
 [hideRestrictedByGroup]: string,
 [wikiMode]: string,
 };
+
+console.log('30', wikiMode);
 
 export const SecuritySetting: FC<FormValues> = () => {
   const { t } = useTranslation();
