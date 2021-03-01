@@ -125,6 +125,7 @@ const PageHistory:FC<Props> = (props:Props) => {
         revisionComparerContainer={revisionComparerContainer}
         revisions={revisions}
         pagingLimit={limit}
+        diffOpened={diffOpened}
       />
       <div className="my-3">
         <PaginationWrapper
