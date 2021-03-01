@@ -10,7 +10,7 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useSecuritySettingGeneralSWR } from '~/stores/admin';
 import { apiv3Put } from '~/utils/apiv3-client';
 
-// temporarily set null
+// Temporarily set null. This is null in AdminGeneralSecurityContainer.js
 const retrieveError = null;
 
 const restrictGuestMode = 'restrictGuestMode';
@@ -86,7 +86,6 @@ export const SecuritySetting: FC<FormValues> = () => {
           <p>{t('Error occurred')} : {retrieveError}</p>
         </div>
         )}
-
         <h4 className="mt-4">
           { t('page_list_and_search_results') }
         </h4>
