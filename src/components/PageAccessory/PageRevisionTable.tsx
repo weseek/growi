@@ -1,15 +1,25 @@
 import { FC } from 'react';
 
-import { Revision } from '~/interfaces/page';
+import { Revision as IRevision } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
 
+import Revision from '~/client/js/components/PageHistory/Revision';
 
-const PgaeRevisionRow = (props:{revision:Revision}) => {
-  const { revision } = props;
+type PgaeRevisionRowProps ={
+  revision: IRevision,
+  previousRevision: IRevision,
+  hasDiff: boolean,
+}
+
+const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
+  const { revision, previousRevision, hasDiff } = props;
+  const { t } = useTranslation();
+
   // const { revisionComparerContainer, t } = props;
   // const { latestRevision } = this.props.pageHistoryContainer.state;
   const revisionId = revision._id;
-  // const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
+  // const revisionDiffOpened = diffOpened[revisionId] || false;
+  const revisionDiffOpened = false;
   // const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
   // const handleCompareLatestRevisionButton = () => {
@@ -26,15 +36,16 @@ const PgaeRevisionRow = (props:{revision:Revision}) => {
     <tr className="d-flex" key={`revision-history-${revisionId}`}>
       <td className="col" key={`revision-history-top-${revisionId}`}>
         <div className="d-lg-flex">
-          {/* <Revision
-            t={this.props.t}
+          <Revision
+            t={t}
             revision={revision}
-            isLatestRevision={revision === latestRevision}
+            // isLatestRevision={revision === latestRevision}
+            isLatestRevision={false}
             revisionDiffOpened={revisionDiffOpened}
             hasDiff={hasDiff}
             key={`revision-history-rev-${revisionId}`}
           />
-          {hasDiff && (
+          {/* {hasDiff && (
           <div className="ml-md-3 mt-auto">
             <div className="btn-group">
               <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleCompareLatestRevisionButton}>
@@ -86,7 +97,7 @@ const PgaeRevisionRow = (props:{revision:Revision}) => {
 };
 
 type Props = {
-  revisions:Revision[],
+  revisions:IRevision[],
   pagingLimit:number,
 }
 
@@ -117,9 +128,7 @@ export const PageRevisionTable:FC<Props> = (props:Props) => {
 
     hasDiffPrev = hasDiff;
 
-    return <p>test</p>;
-
-    // return <PgaeRevisionRow revision={revision} previousRevision={previousRevision} hasDiff={hasDiff} isContiguousNodiff={isContiguousNodiff} />;
+    return <PgaeRevisionRow revision={revision} previousRevision={previousRevision} hasDiff={hasDiff} />;
   });
 
   return (
