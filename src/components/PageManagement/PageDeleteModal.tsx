@@ -54,7 +54,6 @@ const PageDeleteModal:FC<Props> = (props:Props) => {
     setErrs([]);
 
     try {
-      s;
       const response = await apiv3Put('/pages/remove', {
         isRecursively: isDeleteRecursively,
         isCompletely: isDeleteCompletely,
