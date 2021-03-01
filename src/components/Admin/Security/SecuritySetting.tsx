@@ -28,15 +28,15 @@ type FormValues ={
 };
 
 
-export const SecuritySetting: FC<FormValues> = () => {
+export const SecuritySetting: FC = () => {
   const { t } = useTranslation();
   const { data } = useSecuritySettingGeneralSWR();
   const {
     register, control, handleSubmit, setValue, watch,
   } = useForm({
     defaultValues: {
-      [restrictGuestMode]: data?.[restrictGuestMode],
-      [pageCompleteDeletionAuthority]: data?.[pageCompleteDeletionAuthority],
+      [restrictGuestMode]: data?.[restrictGuestMode] || null,
+      [pageCompleteDeletionAuthority]: data?.[pageCompleteDeletionAuthority] || null,
       [hideRestrictedByOwner]: data?.[hideRestrictedByOwner],
       [hideRestrictedByGroup]: data?.[hideRestrictedByGroup],
       [wikiMode]: data?.[wikiMode],
@@ -208,7 +208,11 @@ export const SecuritySetting: FC<FormValues> = () => {
               render={({ onChange }) => {
             return (
               <UncontrolledDropdown>
-                <DropdownToggle className="text-right btn-outline-secondary col-12 col-md-auto" color="transparent" caret>
+                <DropdownToggle
+                  className="text-right btn-outline-secondary col-12 col-md-auto"
+                  color="transparent"
+                  caret
+                >
                   <span className="float-left text-muted">
                     { selectedPageCompleteDeletionAuthority === 'anyOne' && t('security_setting.anyone')}
                     { selectedPageCompleteDeletionAuthority === 'adminOnly' && t('security_setting.admin_only')}
