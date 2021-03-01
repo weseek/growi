@@ -85,7 +85,7 @@ function PageEditorModeManager(props) {
         {(!isDeviceSmallerThanMd || editorMode === 'view') && showHackmdBtn && (
           <PageEditorModeButtonWrapper
             editorMode={editorMode}
-            isBtnDisabled={isBtnDisabled || !isHackmdEnabled}
+            isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
             targetMode="hackmd"
             icon={<i className="fa fa-file-text-o" />}
