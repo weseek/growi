@@ -80,7 +80,6 @@
 	"Go to this version": "查看此版本",
 	"View diff": "查看差异",
 	"No diff": "无差异",
-	"Shrink versions that have no diffs": "收缩没有差异的版本",
 	"User ID": "用户ID",
 	"Home": "首页",
 	"My Drafts": "My Drafts",
@@ -167,6 +166,7 @@
   },
   "not_found_page": {
     "Create Page": "创建页面",
+    "page_not_exist": "该页面不存在",
     "page_not_exist_alert": "该页面不存在，请创建一个新页面"
   },
   "custom_navigation": {
@@ -274,9 +274,12 @@
 	"page_page": {
 		"notice": {
 			"version": "这不是当前版本。",
-			"moved": "此页已从<code>%s</code>",
-			"redirected": "您将从<code>%s</code>",
-			"duplicated": "此页来自<code>%s</code>",
+			"moved": "此页已从",
+      "moved_period": "",
+			"redirected": "您将从",
+      "redirected_period": "",
+			"duplicated": "此页来自",
+      "duplicated_period": "",
 			"unlinked": "将网页重定向到此网页已被删除。",
 			"restricted": "访问此页受到限制",
 			"stale": "自上次更新以来，已超过{{count}年。",
@@ -309,8 +312,9 @@
     "revision": "版本",
     "comparing_source": "源头",
     "comparing_target": "目标",
-    "comparing_revisions": "比较版本",
-    "comparing_with_latest": "一定要与最新版本进行比较"
+    "comparing_revisions": "比较两者的区别",
+    "compare_latest":"比較最新版本",
+    "compare_previous":"比較以前的版本"
   },
 	"modal_rename": {
 		"label": {

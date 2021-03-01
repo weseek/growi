@@ -1,9 +1,17 @@
 # CHANGES
 
-## v4.2.9-RC
+## v4.2.10-RC
 
-* Improvement: Add batchSize option for flow rate limit about stream 
-* Improvement: Even if slash is at the end, siteUrl is saved with it removed.
+* Fix: Empty trash is not working.
+
+## v4.2.9
+
+* Feature: Comparing revisions
+* Improvement: Memory consumption when re-indexing for full text searching
+* Improvement: Site URL settings valildation
+* Fix: Show comfirmation when transiting page without save
+* Fix: Save slack channels history when user trigger notification is invoked
+* Fix: The label of alerts for move/rename/delete are borken
 
 ## v4.2.8
 
