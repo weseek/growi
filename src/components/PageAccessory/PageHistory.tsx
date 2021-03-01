@@ -13,8 +13,8 @@ import { Revision } from '~/interfaces/page';
 
 import { useCurrentPageHistorySWR } from '~/stores/page';
 
-type Props={
-  revisionComparerContainer:RevisionComparerContainer;
+type Props = {
+  revisionComparerContainer: RevisionComparerContainer;
 }
 
 const PageHistory:FC<Props> = (props:Props) => {
@@ -23,6 +23,7 @@ const PageHistory:FC<Props> = (props:Props) => {
 
   const [revisions, setRevisions] = useState<Revision[]>([]);
   const [latestRevision, setLatestRevision] = useState<Revision>();
+  const [diffOpened, setDiffOpened] = useState<{[key:string]:boolean}>({});
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
@@ -42,7 +43,49 @@ const PageHistory:FC<Props> = (props:Props) => {
     setTotalItemsCount(paginationResult.totalDocs);
     setLimit(paginationResult.limit);
 
-  }, [paginationResult]);
+    const diffOpened = {};
+
+    const revisions = paginationResult.docs;
+    let lastId = revisions.length - 1;
+
+    // If the number of rev count is the same, the last rev is for diff display, so exclude it.
+    if (revisions.length > limit) {
+      lastId = revisions.length - 2;
+    }
+
+    revisions.forEach((revision, i) => {
+      const user = revision.author;
+      if (user) {
+        revisions[i].author = user;
+      }
+
+      if (i === 0 || i === lastId) {
+        diffOpened[revision._id] = true;
+      }
+      else {
+        diffOpened[revision._id] = false;
+      }
+    });
+
+    setRevisions(revisions);
+    setDiffOpened(diffOpened);
+
+    if (activePage === 1) {
+      setLatestRevision(revisions[0]);
+    }
+
+    // load 0, and last default
+    // if (rev[0]) {
+    //   this.fetchPageRevisionBody(rev[0]);
+    // }
+    // if (rev[1]) {
+    //   this.fetchPageRevisionBody(rev[1]);
+    // }
+    // if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
+    //   this.fetchPageRevisionBody(rev[lastId]);
+    // }
+  }, [activePage, limit, paginationResult]);
+
 
   if (paginationResult == null) {
     return (
@@ -79,6 +122,7 @@ const PageHistory:FC<Props> = (props:Props) => {
     <div className="revision-history">
       <h3 className="pb-3">{t('page_history.revision_list')}</h3>
       <PageRevisionTable
+        revisionComparerContainer={revisionComparerContainer}
         revisions={revisions}
         pagingLimit={limit}
       />

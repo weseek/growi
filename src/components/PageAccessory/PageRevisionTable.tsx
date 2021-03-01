@@ -3,36 +3,36 @@ import { FC } from 'react';
 import { Revision as IRevision } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
 
+import RevisionComparerContainer from '~/client/js/services/RevisionComparerContainer';
+
 import Revision from '~/client/js/components/PageHistory/Revision';
 
 type PgaeRevisionRowProps ={
+  revisionComparerContainer: RevisionComparerContainer;
   revision: IRevision,
   previousRevision: IRevision,
-  latestRevision: IRevision,
-  sourceRevision: IRevision,
-  targetRevision: IRevision,
   hasDiff: boolean,
 }
 
 const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
   const {
-    revision, previousRevision, hasDiff, latestRevision,
+    revision, previousRevision, hasDiff, revisionComparerContainer,
   } = props;
   const { t } = useTranslation();
 
   const revisionId = revision._id;
   // const revisionDiffOpened = diffOpened[revisionId] || false;
   const revisionDiffOpened = false;
-  // const { sourceRevision, targetRevision } = revisionComparerContainer.state;
+  const { sourceRevision, targetRevision, latestRevision } = revisionComparerContainer.state;
 
   const handleCompareLatestRevisionButton = () => {
-    // revisionComparerContainer.setState({ sourceRevision: revision });
-    // revisionComparerContainer.setState({ targetRevision: latestRevision });
+    revisionComparerContainer.setState({ sourceRevision: revision });
+    revisionComparerContainer.setState({ targetRevision: latestRevision });
   };
 
   const handleComparePreviousRevisionButton = () => {
-    // revisionComparerContainer.setState({ sourceRevision: previousRevision });
-    // revisionComparerContainer.setState({ targetRevision: revision });
+    revisionComparerContainer.setState({ sourceRevision: previousRevision });
+    revisionComparerContainer.setState({ targetRevision: revision });
   };
 
   return (
@@ -62,23 +62,23 @@ const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
         </div>
       </td>
       <td className="col-1">
-        {/* {(hasDiff || revision._id === sourceRevision?._id) && (
-        <div className="custom-control custom-radio custom-control-inline mr-0">
-          <input
-            type="radio"
-            className="custom-control-input"
-            id={`compareSource-${revision._id}`}
-            name="compareSource"
-            value={revision._id}
-            checked={revision._id === sourceRevision?._id}
-            onChange={() => revisionComparerContainer.setState({ sourceRevision: revision })}
-          />
-          <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
-        </div>
-          )} */}
+        {(hasDiff || revision._id === sourceRevision?._id) && (
+          <div className="custom-control custom-radio custom-control-inline mr-0">
+            <input
+              type="radio"
+              className="custom-control-input"
+              id={`compareSource-${revision._id}`}
+              name="compareSource"
+              value={revision._id}
+              checked={revision._id === sourceRevision?._id}
+              onChange={() => revisionComparerContainer.setState({ sourceRevision: revision })}
+            />
+            <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
+          </div>
+        )}
       </td>
       <td className="col-2">
-        {/* {(hasDiff || revision._id === targetRevision?._id) && (
+        {(hasDiff || revision._id === targetRevision?._id) && (
         <div className="custom-control custom-radio custom-control-inline mr-0">
           <input
             type="radio"
@@ -91,7 +91,7 @@ const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
           />
           <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
         </div>
-          )} */}
+          )}
       </td>
     </tr>
 
@@ -99,10 +99,8 @@ const PgaeRevisionRow = (props:PgaeRevisionRowProps) => {
 };
 
 type Props = {
+  revisionComparerContainer: RevisionComparerContainer;
   revisions: IRevision[],
-  latestRevision: IRevision,
-  sourceRevision: IRevision,
-  targetRevision: IRevision,
   pagingLimit: number,
 }
 
@@ -110,7 +108,7 @@ export const PageRevisionTable:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
   const {
-    revisions, latestRevision, pagingLimit, sourceRevision, targetRevision,
+    revisions, pagingLimit, revisionComparerContainer,
   } = props;
   const revisionCount = revisions.length;
 
@@ -137,12 +135,10 @@ export const PageRevisionTable:FC<Props> = (props:Props) => {
 
     return (
       <PgaeRevisionRow
+        revisionComparerContainer={revisionComparerContainer}
         revision={revision}
         previousRevision={previousRevision}
         hasDiff={hasDiff}
-        latestRevision={latestRevision}
-        sourceRevision={sourceRevision}
-        targetRevision={targetRevision}
       />
     );
   });
