@@ -51,6 +51,7 @@ class StatusSuspendedButton extends React.Component {
     const { user } = this.props;
     // TODO: retrieve from SWR
     // const { currentUsername } = this.props.appContainer;
+    const currentUsername = '';
 
     return (
       <Fragment>
