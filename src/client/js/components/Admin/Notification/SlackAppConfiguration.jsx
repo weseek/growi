@@ -8,7 +8,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AdminUpdateButtonRow from '~/components/Admin/Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:slackAppConfiguration');
 
