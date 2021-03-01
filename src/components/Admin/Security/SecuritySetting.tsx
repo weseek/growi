@@ -156,7 +156,7 @@ export const SecuritySetting: FC<FormValues> = () => {
                     <DropdownToggle
                       className="text-right btn-outline-secondary col-12 col-md-auto"
                       color="transparent"
-                      disabled={data?.wikiMode === 'private' || 'public'}
+                      disabled={data?.wikiMode === ('private' || 'public')}
                       caret
                     >
                       <span className="float-left text-muted">
