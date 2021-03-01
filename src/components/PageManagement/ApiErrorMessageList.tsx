@@ -10,7 +10,7 @@ type ApiErrorMessageProps = {
 }
 
 const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) => {
-  const { errorMessage, targetPath } = props;
+  const { errorCode, errorMessage, targetPath } = props;
   const { t } = useTranslation();
 
   function loadLatestRevision() {
@@ -18,7 +18,7 @@ const ApiErrorMessage:FC<ApiErrorMessageProps> = (props:ApiErrorMessageProps) =>
       props.onLoadLatestRevision();
     }
   }
-  const errorCode = 'outdated';
+
   function renderMessageByErrorCode() {
     switch (errorCode) {
       case 'already_exists':
