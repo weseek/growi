@@ -36,6 +36,7 @@ class SamlSecurityManagementContents extends React.Component {
     } = this.props;
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
     const { isSamlEnabled } = adminGeneralSecurityContainer.state;
+
     return (
       <React.Fragment>
 
