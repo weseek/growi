@@ -2,23 +2,24 @@
 import React, { FC } from 'react';
 // import PropTypes from 'prop-types';
 
-import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
-import { toastError } from '~/client/js/util/apiNotification';
+// import { toastError } from '~/client/js/util/apiNotification';
 
 // import AdminSamlSecurityContainer from '~/client/js/services/AdminSamlSecurityContainer';
 // import { toArrayIfNot } from '~/utils/array-utils';
 // import { withLoadingSppiner } from '~/client/js/components/SuspenseUtils;
+import { useSiteUrl } from '../../../stores/context';
 
 import SamlSecuritySettingContents from '~/client/js/components/Admin/Security/SamlSecuritySettingContents';
 
-
 type Props = {
   // adminSamlSecurityContainer: AdminSamlSecurityContainer,
+  siteUrl: string,
 }
 
-// const retrieveErrors = null;
-export const SamlSecurityManagement: FC = () => {
-
+const retrieveErrors = null;
+export const SamlSecurityManagement: FC<Props> = (props: Props) => {
+  const { data } = useSiteUrl(props.siteUrl);
+  console.log(data);
   // const { adminSamlSecurityContainer } = props;
   // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
   //   throw (async() => {
@@ -38,8 +39,9 @@ export const SamlSecurityManagement: FC = () => {
   //   throw new Error(`${retrieveErrors.length} errors occured`);
   // }
 
-  return <SamlSecuritySettingContents />;
+  return <SamlSecuritySettingContents siteUrl={useSiteUrl(props.siteUrl)} />;
 };
+
 
 // SamlSecurityManagement.propTypes = {
 //   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
