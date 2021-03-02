@@ -98,12 +98,6 @@ module.exports = function(crowi, app) {
     return res.render('admin/app');
   };
 
-  // app.get('/admin/security'                  , admin.security.index);
-  actions.security = {};
-  actions.security.index = function(req, res) {
-    // const isWikiModeForced = aclService.isWikiModeForced();
-    const guestModeValue = aclService.getGuestModeValue();
-
     return res.render('admin/security', {
       // isWikiModeForced,
       guestModeValue,
