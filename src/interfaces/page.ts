@@ -32,6 +32,7 @@ export type Comment = {
   replyTo?: string,
   creator: User,
   createdAt: Date,
+  updatedAt: Date,
 }
 
 export type Revision = {

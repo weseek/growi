@@ -76,10 +76,10 @@ export const Comment:VFC<Props> = (props:Props) => {
                   <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
                 </a>
                 { isEdited && (
-                <>
-                  <span id={editedDateId}>&nbsp;(edited)</span>
-                  <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
-                </>
+                  <>
+                    <span id={editedDateId}>&nbsp;(edited)</span>
+                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
+                  </>
                 )}
                 {/* <span className="ml-2">
                   <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
