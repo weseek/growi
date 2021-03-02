@@ -16,7 +16,7 @@ type Props = {
   siteUrl: string,
 }
 
-const retrieveErrors = null;
+// const retrieveErrors = null;
 export const SamlSecurityManagement: FC<Props> = (props: Props) => {
   const { data } = useSiteUrl(props.siteUrl);
   // const { adminSamlSecurityContainer } = props;
