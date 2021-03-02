@@ -1,4 +1,4 @@
-import { useState, useCallback, VFC } from 'react';
+import { useState, useMemo, VFC } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -43,7 +43,7 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
     setDropdownOpen(!dropdownOpen);
   }
 
-  const pagePathUrl = useCallback(() => {
+  const pagePathUrl = useMemo(() => {
     const { path } = props;
     if (path == null) {
       return;
@@ -56,7 +56,7 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
       url.searchParams.set('compare', urlParams);
     }
 
-    return encodeSpaces(decodeURI(url.pathname));
+    return encodeSpaces(decodeURI(url.toString()));
   }, [props, sourceRevision, targetRevision]);
 
 
@@ -77,9 +77,9 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
           </DropdownToggle>
           <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
             {/* Page path URL */}
-            <CopyToClipboard text={pagePathUrl()}>
+            <CopyToClipboard text={pagePathUrl}>
               <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl()} />
+                <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
               </DropdownItem>
             </CopyToClipboard>
             <DropdownItem divider className="my-0"></DropdownItem>
