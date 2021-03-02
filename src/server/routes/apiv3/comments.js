@@ -2,11 +2,6 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body } = require('express-validator');
-
-const mongoose = require('mongoose');
-
-const ObjectId = mongoose.Types.ObjectId;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
