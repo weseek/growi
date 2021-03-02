@@ -7,7 +7,7 @@ import { Comment as IComment } from '~/interfaces/page';
 
 // import FormattedDistanceDate from '../FormattedDistanceDate';
 // import RevisionBody from '../Page/RevisionBody';
-// import UserPicture from '../User/UserPicture';
+import UserPicture from '~/client/js/components/User/UserPicture';
 // import Username from '../User/Username';
 // import CommentEditor from './CommentEditor';
 // import CommentControl from './CommentControl';
@@ -59,10 +59,10 @@ export const Comment:VFC<Props> = (props:Props) => {
         ) : (
           <div id={comment._id} className={rootClassName}>
             comment is here
-            {/* <div className="page-comment-writer">
-              <UserPicture user={creator} />
+            <div className="page-comment-writer">
+              <UserPicture user={comment.creator} />
             </div>
-            <div className="page-comment-main">
+            {/* <div className="page-comment-main">
               <div className="page-comment-creator">
                 <Username user={creator} />
               </div>
