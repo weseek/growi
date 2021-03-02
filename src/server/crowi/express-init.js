@@ -4,11 +4,6 @@ import nextI18next from '~/i18n';
 
 import safeRedirectMiddleware from '../middlewares/safe-redirect';
 
-if (process.env.NODE_ENV !== 'production') {
-  const { applyServerHMR } = require('i18next-hmr/server');
-  applyServerHMR(nextI18next.i18n);
-}
-
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
   // const path = require('path');
