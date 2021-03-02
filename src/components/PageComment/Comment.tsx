@@ -5,7 +5,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { Comment as IComment } from '~/interfaces/page';
 
-// import FormattedDistanceDate from '../FormattedDistanceDate';
+import FormattedDistanceDate from '~/client/js/components/FormattedDistanceDate';
 // import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '~/client/js/components/User/UserPicture';
 import Username from '~/client/js/components/User/Username';
@@ -20,6 +20,7 @@ type Props = {
 export const Comment:VFC<Props> = (props:Props) => {
   const [isReEdit, setIsReEdit] = useState(false);
   const { comment } = props;
+  // const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
 
   const rootClassName:string = useMemo(() => {
     const className = 'page-comment flex-column';
@@ -66,12 +67,12 @@ export const Comment:VFC<Props> = (props:Props) => {
               <div className="page-comment-creator">
                 <Username user={comment.creator} />
               </div>
-              {/* <div className="page-comment-body">{commentBody}</div>
+              {/* <div className="page-comment-body">{commentBody}</div> */}
               <div className="page-comment-meta">
-                <a href={`#${commentId}`}>
-                  <FormattedDistanceDate id={commentId} date={comment.createdAt} />
+                <a href={`#${comment._id}`}>
+                  <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
                 </a>
-                { isEdited && (
+                {/* { isEdited && (
                   <>
                     <span id={editedDateId}>&nbsp;(edited)</span>
                     <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
@@ -84,9 +85,9 @@ export const Comment:VFC<Props> = (props:Props) => {
                   <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
                     {t('page_comment.display_the_page_when_posting_this_comment')}
                   </UncontrolledTooltip>
-                </span>
+                </span> */}
               </div>
-              {this.checkPermissionToControlComment() && (
+              {/* {this.checkPermissionToControlComment() && (
                 <CommentControl
                   onClickDeleteBtn={this.deleteBtnClickedHandler}
                   onClickEditBtn={() => this.setState({ isReEdit: true })}
