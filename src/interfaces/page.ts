@@ -33,6 +33,7 @@ export type Comment = {
   creator: User,
   createdAt: Date,
   updatedAt: Date,
+  revision: Revision,
 }
 
 export type Revision = {

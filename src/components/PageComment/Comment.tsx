@@ -9,9 +9,10 @@ import FormattedDistanceDate from '~/client/js/components/FormattedDistanceDate'
 // import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '~/client/js/components/User/UserPicture';
 import Username from '~/client/js/components/User/Username';
+import { useTranslation } from '~/i18n';
 // import CommentEditor from './CommentEditor';
 // import CommentControl from './CommentControl';
-// import HistoryIcon from '../Icons/HistoryIcon';
+import HistoryIcon from '~/client/js/components/Icons/HistoryIcon';
 
 type Props = {
   comment: IComment,
@@ -19,11 +20,15 @@ type Props = {
 
 export const Comment:VFC<Props> = (props:Props) => {
   const [isReEdit, setIsReEdit] = useState(false);
+
   const { comment } = props;
+  const { t } = useTranslation();
+
   // const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
   const isEdited = comment.createdAt < comment.updatedAt;
   const editedDateId = `editedDate-${comment._id}`;
   const editedDateFormatted = isEdited ? format(comment.updatedAt, 'yyyy/MM/dd HH:mm') : null;
+  const revHref = `?revision=${comment.revision}`;
 
   const rootClassName:string = useMemo(() => {
     const className = 'page-comment flex-column';
@@ -81,14 +86,14 @@ export const Comment:VFC<Props> = (props:Props) => {
                     <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                   </>
                 )}
-                {/* <span className="ml-2">
-                  <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
+                <span className="ml-2">
+                  <a id={`page-comment-revision-${comment._id}`} className="page-comment-revision" href={revHref}>
                     <HistoryIcon />
                   </a>
-                  <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
+                  <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${comment._id}`}>
                     {t('page_comment.display_the_page_when_posting_this_comment')}
                   </UncontrolledTooltip>
-                </span> */}
+                </span>
               </div>
               {/* {this.checkPermissionToControlComment() && (
                 <CommentControl
