@@ -1,7 +1,5 @@
 import { Container } from 'unstated';
 
-import { pathUtils } from 'growi-commons';
-import urljoin from 'url-join';
 import loggerFactory from '~/utils/logger';
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 import { apiv3Get, apiv3Put } from '~/client/js/util/apiv3-client';
@@ -24,7 +22,6 @@ export default class AdminSamlSecurityContainer extends Container {
       retrieveError: null,
       // TODO GW-1324 ABLCRure DB value takes precedence
       useOnlyEnvVars: false,
-      // callbackUrl: urljoin(pathUtils.removeTrailingSlash(''), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
       // set dummy value tile for using suspense
       samlEntryPoint: this.dummySamlEntryPoint,
