@@ -10,9 +10,9 @@ import Revision from '~/client/js/components/PageHistory/Revision';
 type Props = {
   revisionComparerContainer: RevisionComparerContainer;
   revisions: IRevision[],
-  sourceRevision: IRevision,
-  targetRevision: IRevision,
-  latestRevision: IRevision,
+  sourceRevision?: IRevision,
+  targetRevision?: IRevision,
+  latestRevision?: IRevision,
   onClickCompareLatestRevisionButton: (revision:IRevision)=>void,
   onClickComparePreviousRevisionButton: (revision:IRevision, previousRevision:IRevision)=>void,
   pagingLimit: number,

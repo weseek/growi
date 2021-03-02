@@ -130,30 +130,7 @@ const PageHistory:FC<Props> = (props:Props) => {
     setTotalItemsCount(paginationResult.totalDocs);
     setLimit(paginationResult.limit);
 
-    const diffOpened = {};
-
-    const revisions = paginationResult.docs;
-    let lastId = revisions.length - 1;
-
-    // If the number of rev count is the same, the last rev is for diff display, so exclude it.
-    if (revisions.length > limit) {
-      lastId = revisions.length - 2;
-    }
-
-    revisions.forEach((revision, i) => {
-      const user = revision.author;
-      if (user) {
-        revisions[i].author = user;
-      }
-
-      if (i === 0 || i === lastId) {
-        diffOpened[revision._id] = true;
-      }
-      else {
-        diffOpened[revision._id] = false;
-      }
-    });
-
+    const { docs: revisions } = paginationResult;
     setRevisions(revisions);
 
     // load 0, and last default
@@ -166,7 +143,7 @@ const PageHistory:FC<Props> = (props:Props) => {
     // if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
     //   this.fetchPageRevisionBody(rev[lastId]);
     // }
-  }, [activePage, limit, paginationResult, revisionComparerContainer]);
+  }, [paginationResult]);
 
 
   if (paginationResult == null) {
