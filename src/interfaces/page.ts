@@ -41,6 +41,8 @@ export type Revision = {
   _id: string,
   author: User,
   hasDiffToPrev: boolean;
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export type PaginationResult<T> = {

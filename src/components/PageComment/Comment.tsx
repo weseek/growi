@@ -15,6 +15,8 @@ import { useTranslation } from '~/i18n';
 // import CommentEditor from './CommentEditor';
 // import CommentControl from './CommentControl';
 import HistoryIcon from '~/client/js/components/Icons/HistoryIcon';
+import { useCurrentUser } from '~/stores/context';
+import { useCurrentPageSWR } from '~/stores/page';
 
 type Props = {
   comment: IComment,
@@ -26,6 +28,9 @@ export const Comment:VFC<Props> = (props:Props) => {
 
   const { comment } = props;
   const { t } = useTranslation();
+  const { data: currentUser } = useCurrentUser();
+  const { data: currentPage } = useCurrentPageSWR();
+  const revision = currentPage?.revision;
 
   const renderRevisionBody = useCallback(() => {
     // TODO implement
@@ -52,26 +57,37 @@ export const Comment:VFC<Props> = (props:Props) => {
   const editedDateFormatted = isEdited ? format(comment.updatedAt, 'yyyy/MM/dd HH:mm') : null;
   const revHref = `?revision=${comment.revision}`;
 
+  const isCurrentUserEqualsToAuthor:boolean = useMemo(() => {
+    const { creator } = comment;
+    if (creator == null || currentUser == null) {
+      return false;
+    }
+    return creator.username === currentUser.username;
+  }, [comment, currentUser]);
+
   const rootClassName:string = useMemo(() => {
-    const className = 'page-comment flex-column';
+    const classNames:Array<string> = ['page-comment flex-column'];
 
-    // const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
-    // if (comment.revision === revisionId) {
-    //   className += ' page-comment-current';
-    // }
-    // else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-    //   className += ' page-comment-newer';
-    // }
-    // else {
-    //   className += ' page-comment-older';
-    // }
+    if (revision == null) {
+      return classNames.join(' ');
+    }
 
-    // if (this.isCurrentUserEqualsToAuthor()) {
-    //   className += ' page-comment-me';
-    // }
+    if (comment.revision._id === revision._id) {
+      classNames.push('page-comment-current');
+    }
+    else if (Date.parse(comment.createdAt.toString()) / 1000 > Date.parse(revision.createdAt.toString())) {
+      classNames.push('page-comment-newer');
+    }
+    else {
+      classNames.push('page-comment-older');
+    }
 
-    return className;
-  }, [comment]);
+    if (isCurrentUserEqualsToAuthor) {
+      classNames.push('page-comment-me');
+    }
+
+    return classNames.join(' ');
+  }, [revision, comment.revision._id, comment.createdAt, isCurrentUserEqualsToAuthor]);
 
   return (
     <React.Fragment>
@@ -130,126 +146,3 @@ export const Comment:VFC<Props> = (props:Props) => {
     </React.Fragment>
   );
 };
-
-//   constructor(props) {
-//     super(props);
-
-//     this.state = {
-//       html: '',
-//       isReEdit: false,
-//     };
-
-//     this.isCurrentUserIsAuthor = this.isCurrentUserEqualsToAuthor.bind(this);
-//     this.isCurrentRevision = this.isCurrentRevision.bind(this);
-//     this.getRootClassName = this.getRootClassName.bind(this);
-//     this.deleteBtnClickedHandler = this.deleteBtnClickedHandler.bind(this);
-//     this.renderText = this.renderText.bind(this);
-//     this.renderHtml = this.renderHtml.bind(this);
-//   }
-
-
-//   initCurrentRenderingContext() {
-//     this.currentRenderingContext = {
-//       markdown: this.props.comment.comment,
-//     };
-//   }
-
-//   componentDidMount() {
-//     this.initCurrentRenderingContext();
-//     this.renderHtml();
-//   }
-
-//   componentDidUpdate(prevProps) {
-//     const { comment: prevComment } = prevProps;
-//     const { comment } = this.props;
-
-//     // render only when props.markdown is updated
-//     if (comment !== prevComment) {
-//       this.initCurrentRenderingContext();
-//       this.renderHtml();
-//       return;
-//     }
-
-//     const { interceptorManager } = this.props.appContainer;
-
-//     interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
-//   }
-
-// checkPermissionToControlComment() {
-//   return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
-// }
-
-//   isCurrentUserEqualsToAuthor() {
-//     const { creator } = this.props.comment;
-//     if (creator == null) {
-//       return false;
-//     }
-//     return creator.username === this.props.appContainer.currentUsername;
-//   }
-
-//   isCurrentRevision() {
-//     return this.props.comment.revision === this.props.pageContainer.state.revisionId;
-//   }
-
-//   deleteBtnClickedHandler() {
-//     this.props.deleteBtnClicked(this.props.comment);
-//   }
-
-//   renderText(comment) {
-//     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
-//   }
-
-//   renderRevisionBody() {
-//     const config = this.props.appContainer.getConfig();
-//     const isMathJaxEnabled = !!config.env.MATHJAX;
-//     return (
-//       <RevisionBody
-//         html={this.state.html}
-//         isMathJaxEnabled={isMathJaxEnabled}
-//         renderMathJaxOnInit
-//         additionalClassName="comment"
-//       />
-//     );
-//   }
-
-//   async renderHtml() {
-
-//     const { growiRenderer, appContainer } = this.props;
-//     const { interceptorManager } = appContainer;
-//     const context = this.currentRenderingContext;
-
-//     await interceptorManager.process('preRenderComment', context);
-//     await interceptorManager.process('prePreProcess', context);
-//     context.markdown = await growiRenderer.preProcess(context.markdown);
-//     await interceptorManager.process('postPreProcess', context);
-//     context.parsedHTML = await growiRenderer.process(context.markdown);
-//     await interceptorManager.process('prePostProcess', context);
-//     context.parsedHTML = await growiRenderer.postProcess(context.parsedHTML);
-//     await interceptorManager.process('postPostProcess', context);
-//     await interceptorManager.process('preRenderCommentHtml', context);
-//     this.setState({ html: context.parsedHTML });
-//     await interceptorManager.process('postRenderCommentHtml', context);
-//   }
-
-//   render() {
-//     const { t } = this.props;
-//     const comment = this.props.comment;
-//     const commentId = comment._id;
-//     const creator = comment.creator;
-//     const isMarkdown = comment.isMarkdown;
-//     const createdAt = new Date(comment.createdAt);
-//     const updatedAt = new Date(comment.updatedAt);
-//     const isEdited = createdAt < updatedAt;
-
-//     const rootClassName = this.getRootClassName(comment);
-//     const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
-//     const revHref = `?revision=${comment.revision}`;
-
-//     const editedDateId = `editedDate-${comment._id}`;
-//     const editedDateFormatted = isEdited
-//       ? format(updatedAt, 'yyyy/MM/dd HH:mm')
-//       : null;
-
-//   }
-
-// }
