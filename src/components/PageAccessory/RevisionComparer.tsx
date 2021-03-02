@@ -37,7 +37,7 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { sourceRevision, targetRevision } = props;
   const { t } = useTranslation();
-  const showDiff = (sourceRevision && targetRevision);
+  const showDiff = (sourceRevision != null && targetRevision != null);
 
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
@@ -90,7 +90,6 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
       <div className="revision-compare-outer">
         { showDiff && (
           <RevisionDiff
-            revisionDiffOpened
             previousRevision={sourceRevision}
             currentRevision={targetRevision}
           />

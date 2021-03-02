@@ -1,7 +1,6 @@
 import React, {
   FC, useCallback, useMemo, useState,
 } from 'react';
-import { Provider } from 'unstated';
 
 import {
   Modal, ModalBody, ModalHeader, TabContent, TabPane,
