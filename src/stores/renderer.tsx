@@ -93,3 +93,22 @@ export const useTimelineRenderer = (): responseInterface<MarkdownRenderer, any> 
 
   return useStaticSWR(key);
 };
+
+export const useDraftRenderer = (): responseInterface<MarkdownRenderer, any> => {
+  let key: keyInterface = 'draftRenderer';
+
+  const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
+  const { data: rendererSettings } = useRendererSettings();
+
+  // return null key
+  if (rendererSettings == null) {
+    key = null;
+  }
+  // initialize renderer
+  else if (renderer == null) {
+    const generated = generateViewRenderer(rendererSettings);
+    mutateRenderer(generated);
+  }
+
+  return useStaticSWR(key);
+};

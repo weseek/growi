@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import {
@@ -9,10 +8,11 @@ import {
   UncontrolledTooltip,
 } from 'reactstrap';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
+import { useDraftRenderer } from '~/stores/renderer';
+import MarkdownRenderer from '~/service/renderer/markdown-renderer';
 
-import RevisionBody from '../Page/RevisionBody';
+import { useTranslation } from '~/i18n';
+import RevisionRenderer from '../Page/RevisionRenderer';
 
 class Draft extends React.Component {
 
@@ -20,13 +20,10 @@ class Draft extends React.Component {
     super(props);
 
     this.state = {
-      html: '',
-      isRendered: false,
+      isRendered: true,
       isPanelExpanded: false,
       showCopiedMessage: false,
     };
-
-    this.growiRenderer = this.props.appContainer.getRenderer('draft');
 
     this.changeToolTipLabel = this.changeToolTipLabel.bind(this);
     this.expandPanelHandler = this.expandPanelHandler.bind(this);
@@ -54,31 +51,31 @@ class Draft extends React.Component {
     this.setState({ isPanelExpanded: false });
   }
 
-  async renderHtml() {
-    const context = {
-      markdown: this.props.markdown,
-    };
+  // async renderHtml() {
+  //   const context = {
+  //     markdown: this.props.markdown,
+  //   };
 
-    const growiRenderer = this.growiRenderer;
-    const interceptorManager = this.props.appContainer.interceptorManager;
-    await interceptorManager.process('prePreProcess', context)
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => {
-        this.setState({ html: context.parsedHTML, isRendered: true });
-      });
-  }
+  //   const growiRenderer = this.growiRenderer;
+  //   const interceptorManager = this.props.appContainer.interceptorManager;
+  //   await interceptorManager.process('prePreProcess', context)
+  //     .then(() => {
+  //       context.markdown = growiRenderer.preProcess(context.markdown);
+  //     })
+  //     .then(() => { return interceptorManager.process('postPreProcess', context) })
+  //     .then(() => {
+  //       const parsedHTML = growiRenderer.process(context.markdown);
+  //       context.parsedHTML = parsedHTML;
+  //     })
+  //     .then(() => { return interceptorManager.process('prePostProcess', context) })
+  //     .then(() => {
+  //       context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
+  //     })
+  //     .then(() => { return interceptorManager.process('postPostProcess', context) })
+  //     .then(() => {
+  //       this.setState({ html: context.parsedHTML, isRendered: true });
+  //     });
+  // }
 
   renderAccordionTitle(isExist) {
     const { isPanelExpanded } = this.state;
@@ -172,15 +169,8 @@ class Draft extends React.Component {
 
           <Collapse isOpen={isPanelExpanded} onEntering={this.expandPanelHandler} onExiting={this.collapsePanelHandler}>
             <div className="card-body">
-              {/* loading spinner */}
-              { this.state.isPanelExpanded && !this.state.isRendered && (
-                <div className="text-center">
-                  <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
-                </div>
-              ) }
-              {/* contents */}
-              { this.state.isPanelExpanded && this.state.isRendered && (
-                <RevisionBody html={this.state.html} />
+              { this.state.isPanelExpanded && (
+                <RevisionRenderer renderer={this.props.renderer} markdown={this.props.markdown} />
               ) }
             </div>
           </Collapse>
@@ -192,15 +182,9 @@ class Draft extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const DraftWrapper = withUnstatedContainers(Draft, [AppContainer]);
-
-
 Draft.propTypes = {
   t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  renderer: PropTypes.instanceOf(MarkdownRenderer).isRequired,
 
   index: PropTypes.number.isRequired,
   path: PropTypes.string.isRequired,
@@ -209,4 +193,11 @@ Draft.propTypes = {
   clearDraft: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(DraftWrapper);
+const DraftWrapper = (props) => {
+  const { t } = useTranslation();
+  const { data: renderer } = useDraftRenderer();
+
+  return <Draft {...props} t={t} renderer={renderer} />;
+};
+
+export default DraftWrapper;
