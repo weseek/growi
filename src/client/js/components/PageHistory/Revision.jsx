@@ -83,6 +83,5 @@ Revision.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   revision: PropTypes.object,
   isLatestRevision: PropTypes.bool.isRequired,
-  revisionDiffOpened: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
 };
