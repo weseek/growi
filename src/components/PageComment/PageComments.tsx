@@ -32,8 +32,7 @@ const CommentThread:FC<Props> = memo(({ comment, replies }:Props) => {
 
   return (
     <div key={commentId} className={rootClassNames.join(' ')}>
-      {comment.comment}
-      <Comment />
+      <Comment comment={comment} />
       {/*  {replies.length !== 0 && (
         <ReplayComments
           replyList={replies}

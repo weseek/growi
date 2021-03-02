@@ -1,10 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-import { format } from 'date-fns';
+import React, { useMemo, useState, VFC } from 'react';
+// import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
+
+import { Comment as IComment } from '~/interfaces/page';
 
 // import FormattedDistanceDate from '../FormattedDistanceDate';
 // import RevisionBody from '../Page/RevisionBody';
@@ -14,16 +13,91 @@ import { UncontrolledTooltip } from 'reactstrap';
 // import CommentControl from './CommentControl';
 // import HistoryIcon from '../Icons/HistoryIcon';
 
-/**
- *
- * @author Yuki Takei <yuki@weseek.co.jp>
- *
- * @export
- * @class Comment
- * @extends {React.Component}
- */
-export const Comment = (props) => {
-  return <p>hoge</p>;
+type Props = {
+  comment: IComment,
+}
+
+export const Comment:VFC<Props> = (props:Props) => {
+  const [isReEdit, setIsReEdit] = useState(false);
+  const { comment } = props;
+
+  const rootClassName:string = useMemo(() => {
+    const className = 'page-comment flex-column';
+
+    // const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
+    // if (comment.revision === revisionId) {
+    //   className += ' page-comment-current';
+    // }
+    // else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
+    //   className += ' page-comment-newer';
+    // }
+    // else {
+    //   className += ' page-comment-older';
+    // }
+
+    // if (this.isCurrentUserEqualsToAuthor()) {
+    //   className += ' page-comment-me';
+    // }
+
+    return className;
+  }, [comment]);
+
+  return (
+    <React.Fragment>
+      {isReEdit ? (
+        <p>TBD</p>
+        // TODO GW-5147 implement comment editor
+        // <CommentEditor
+        //   growiRenderer={this.props.growiRenderer}
+        //   currentCommentId={commentId}
+        //   commentBody={comment.comment}
+        //   replyTo={undefined}
+        //   commentCreator={creator?.username}
+        //   onCancelButtonClicked={() => this.setState({ isReEdit: false })}
+        //   onCommentButtonClicked={() => this.setState({ isReEdit: false })}
+        // />
+        ) : (
+          <div id={comment._id} className={rootClassName}>
+            comment is here
+            {/* <div className="page-comment-writer">
+              <UserPicture user={creator} />
+            </div>
+            <div className="page-comment-main">
+              <div className="page-comment-creator">
+                <Username user={creator} />
+              </div>
+              <div className="page-comment-body">{commentBody}</div>
+              <div className="page-comment-meta">
+                <a href={`#${commentId}`}>
+                  <FormattedDistanceDate id={commentId} date={comment.createdAt} />
+                </a>
+                { isEdited && (
+                  <>
+                    <span id={editedDateId}>&nbsp;(edited)</span>
+                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
+                  </>
+                )}
+                <span className="ml-2">
+                  <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
+                    <HistoryIcon />
+                  </a>
+                  <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
+                    {t('page_comment.display_the_page_when_posting_this_comment')}
+                  </UncontrolledTooltip>
+                </span>
+              </div>
+              {this.checkPermissionToControlComment() && (
+                <CommentControl
+                  onClickDeleteBtn={this.deleteBtnClickedHandler}
+                  onClickEditBtn={() => this.setState({ isReEdit: true })}
+                />
+              ) }
+            </div> */}
+          </div>
+        )
+      }
+    </React.Fragment>
+  );
 };
 
 //   constructor(props) {
@@ -166,59 +240,6 @@ export const Comment = (props) => {
 //       ? format(updatedAt, 'yyyy/MM/dd HH:mm')
 //       : null;
 
-//     return (
-//       <React.Fragment>
-//         {this.state.isReEdit ? (
-//           <CommentEditor
-//             growiRenderer={this.props.growiRenderer}
-//             currentCommentId={commentId}
-//             commentBody={comment.comment}
-//             replyTo={undefined}
-//             commentCreator={creator?.username}
-//             onCancelButtonClicked={() => this.setState({ isReEdit: false })}
-//             onCommentButtonClicked={() => this.setState({ isReEdit: false })}
-//           />
-//         ) : (
-//           <div id={commentId} className={rootClassName}>
-//             <div className="page-comment-writer">
-//               <UserPicture user={creator} />
-//             </div>
-//             <div className="page-comment-main">
-//               <div className="page-comment-creator">
-//                 <Username user={creator} />
-//               </div>
-//               <div className="page-comment-body">{commentBody}</div>
-//               <div className="page-comment-meta">
-//                 <a href={`#${commentId}`}>
-//                   <FormattedDistanceDate id={commentId} date={comment.createdAt} />
-//                 </a>
-//                 { isEdited && (
-//                   <>
-//                     <span id={editedDateId}>&nbsp;(edited)</span>
-//                     <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
-//                   </>
-//                 )}
-//                 <span className="ml-2">
-//                   <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
-//                     <HistoryIcon />
-//                   </a>
-//                   <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
-//                     {t('page_comment.display_the_page_when_posting_this_comment')}
-//                   </UncontrolledTooltip>
-//                 </span>
-//               </div>
-//               {this.checkPermissionToControlComment() && (
-//                 <CommentControl
-//                   onClickDeleteBtn={this.deleteBtnClickedHandler}
-//                   onClickEditBtn={() => this.setState({ isReEdit: true })}
-//                 />
-//               ) }
-//             </div>
-//           </div>
-//         )
-//       }
-//       </React.Fragment>
-//     );
 //   }
 
 // }
