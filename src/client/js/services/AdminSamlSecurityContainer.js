@@ -24,7 +24,7 @@ export default class AdminSamlSecurityContainer extends Container {
       retrieveError: null,
       // TODO GW-1324 ABLCRure DB value takes precedence
       useOnlyEnvVars: false,
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(''), '/passport/saml/callback'),
+      // callbackUrl: urljoin(pathUtils.removeTrailingSlash(''), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
       // set dummy value tile for using suspense
       samlEntryPoint: this.dummySamlEntryPoint,
