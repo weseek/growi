@@ -80,7 +80,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /comments/get:
+   *    /comments:
    *      get:
    *        tags: [Comments, CrowiCompatibles]
    *        operationId: getComments
