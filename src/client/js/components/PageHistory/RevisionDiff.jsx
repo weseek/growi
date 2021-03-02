@@ -15,7 +15,7 @@ class RevisionDiff extends React.Component {
     const previousRevision = this.props.previousRevision;
 
     let diffViewHTML = '';
-    if (currentRevision.body && previousRevision.body) {
+    if (currentRevision.body != null && previousRevision.body != null) {
 
       let previousText = previousRevision.body;
       // comparing ObjectId
