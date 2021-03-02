@@ -1,16 +1,11 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useState, VFC } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-
-import RevisionComparerContainer from '../../services/RevisionComparerContainer';
-
-import RevisionDiff from '../PageHistory/RevisionDiff';
+import { useTranslation } from '~/i18n';
+import { Revision as IRevision } from '~/interfaces/page';
+import RevisionDiff from '~/client/js/components/PageHistory/RevisionDiff';
 
 /* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (
@@ -30,11 +25,18 @@ function encodeSpaces(str) {
   return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
 }
 
-const RevisionComparer = (props) => {
+type Props = {
+  path: string,
+  revisions: IRevision[],
+  sourceRevision?: IRevision,
+  targetRevision?: IRevision,
+}
+
+export const RevisionComparer:VFC<Props> = (props:Props) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const { t, revisionComparerContainer } = props;
+  const { sourceRevision, targetRevision } = props;
+  const { t } = useTranslation();
 
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
@@ -42,8 +44,7 @@ const RevisionComparer = (props) => {
 
   const pagePathUrl = () => {
     const { origin } = window.location;
-    const { path } = revisionComparerContainer.pageContainer.state;
-    const { sourceRevision, targetRevision } = revisionComparerContainer.state;
+    const { path } = props;
 
     const url = new URL(path, origin);
 
@@ -52,10 +53,9 @@ const RevisionComparer = (props) => {
       url.searchParams.set('compare', urlParams);
     }
 
-    return encodeSpaces(decodeURI(url));
+    return encodeSpaces(decodeURI(url.pathname));
   };
 
-  const { sourceRevision, targetRevision } = revisionComparerContainer.state;
   const showDiff = (sourceRevision && targetRevision);
 
   return (
@@ -97,17 +97,3 @@ const RevisionComparer = (props) => {
     </div>
   );
 };
-
-/**
- * Wrapper component for using unstated
- */
-const RevisionComparerWrapper = withUnstatedContainers(RevisionComparer, [RevisionComparerContainer]);
-
-RevisionComparer.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  revisionComparerContainer: PropTypes.instanceOf(RevisionComparerContainer).isRequired,
-
-  revisions: PropTypes.array,
-};
-
-export default withTranslation()(RevisionComparerWrapper);

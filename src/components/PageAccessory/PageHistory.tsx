@@ -7,9 +7,9 @@ import { useTranslation } from '~/i18n';
 import { toastError } from '~/client/js/util/apiNotification';
 import { apiv3Get } from '~/utils/apiv3-client';
 
-// import { PageRevisionList } from '~/components/PageAccessory/PageRevisionList';
 import { PageRevisionTable } from '~/components/PageAccessory/PageRevisionTable';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
+import { RevisionComparer } from '~/components/PageAccessory/RevisionComparer';
 
 import { Revision } from '~/interfaces/page';
 
@@ -178,7 +178,12 @@ export const PageHistory: VFC = () => {
           align="center"
         />
       </div>
-      {/* <RevisionComparer /> */}
+      <RevisionComparer
+        path={currentPage?.path}
+        revisions={revisions}
+        sourceRevision={sourceRevision}
+        targetRevision={targetRevision}
+      />
     </div>
   );
 };
