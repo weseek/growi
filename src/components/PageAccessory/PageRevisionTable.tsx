@@ -16,7 +16,6 @@ type Props = {
   onClickCompareLatestRevisionButton: (revision:IRevision)=>void,
   onClickComparePreviousRevisionButton: (revision:IRevision, previousRevision:IRevision)=>void,
   pagingLimit: number,
-  diffOpened: {[key:string]:boolean},
 }
 
 export const PageRevisionTable:FC<Props> = (props: Props) => {
@@ -29,7 +28,6 @@ export const PageRevisionTable:FC<Props> = (props: Props) => {
 
   const renderRow = (revision, previousRevision, hasDiff) => {
     const revisionId = revision._id;
-    const revisionDiffOpened = diffOpened[revisionId] || false;
 
     const handleCompareLatestRevisionButton = () => {
       if (props.onClickCompareLatestRevisionButton != null) {
@@ -51,7 +49,6 @@ export const PageRevisionTable:FC<Props> = (props: Props) => {
               t={t}
               revision={revision}
               isLatestRevision={revision === latestRevision}
-              revisionDiffOpened={revisionDiffOpened}
               hasDiff={hasDiff}
               key={`revision-history-rev-${revisionId}`}
             />
