@@ -22,6 +22,9 @@ const PageHistory:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
 
   const [revisions, setRevisions] = useState<Revision[]>([]);
+  const [sourceRevision, setSourceRevision] = useState<Revision>();
+  const [targetRevision, setTargetRevision] = useState<Revision>();
+  const [latestRevision, setLatestRevision] = useState<Revision>();
   const [diffOpened, setDiffOpened] = useState<{[key:string]:boolean}>({});
 
   const [activePage, setActivePage] = useState(1);
@@ -33,6 +36,17 @@ const PageHistory:FC<Props> = (props:Props) => {
   const handlePage = useCallback(async(selectedPage) => {
     setActivePage(selectedPage);
   }, []);
+
+  const compareLatestRevision = useCallback(async(revision) => {
+    setSourceRevision(revision);
+    setTargetRevision(latestRevision);
+  }, [latestRevision]);
+
+  const comparePreviousRevision = useCallback(async(revision, previousRevision) => {
+    setSourceRevision(previousRevision);
+    setTargetRevision(revision);
+  }, []);
+
 
   useEffect(() => {
     if (paginationResult == null) {
@@ -108,6 +122,11 @@ const PageHistory:FC<Props> = (props:Props) => {
         revisions={revisions}
         pagingLimit={limit}
         diffOpened={diffOpened}
+        sourceRevision={sourceRevision}
+        targetRevision={targetRevision}
+        latestRevision={latestRevision}
+        onClickCompareLatestRevisionButton={compareLatestRevision}
+        onClickComparePreviousRevisionButton={comparePreviousRevision}
       />
       <div className="my-3">
         <PaginationWrapper

@@ -10,6 +10,11 @@ import Revision from '~/client/js/components/PageHistory/Revision';
 type Props = {
   revisionComparerContainer: RevisionComparerContainer;
   revisions: IRevision[],
+  sourceRevision: IRevision,
+  targetRevision: IRevision,
+  latestRevision: IRevision,
+  onClickCompareLatestRevisionButton: (revision:IRevision)=>void,
+  onClickComparePreviousRevisionButton: (revision:IRevision, previousRevision:IRevision)=>void,
   pagingLimit: number,
   diffOpened: {[key:string]:boolean},
 }
@@ -18,23 +23,24 @@ export const PageRevisionTable:FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    revisions, pagingLimit, revisionComparerContainer, diffOpened,
+    revisions, sourceRevision, targetRevision, latestRevision, pagingLimit, revisionComparerContainer, diffOpened,
   } = props;
   const revisionCount = revisions.length;
 
   const renderRow = (revision, previousRevision, hasDiff) => {
     const revisionId = revision._id;
     const revisionDiffOpened = diffOpened[revisionId] || false;
-    const { sourceRevision, targetRevision, latestRevision } = revisionComparerContainer.state;
 
     const handleCompareLatestRevisionButton = () => {
-      revisionComparerContainer.setState({ sourceRevision: revision });
-      revisionComparerContainer.setState({ targetRevision: latestRevision });
+      if (props.onClickCompareLatestRevisionButton != null) {
+        props.onClickCompareLatestRevisionButton(revision);
+      }
     };
 
     const handleComparePreviousRevisionButton = () => {
-      revisionComparerContainer.setState({ sourceRevision: previousRevision });
-      revisionComparerContainer.setState({ targetRevision: revision });
+      if (props.onClickComparePreviousRevisionButton != null) {
+        props.onClickComparePreviousRevisionButton(revision, previousRevision);
+      }
     };
 
     return (
