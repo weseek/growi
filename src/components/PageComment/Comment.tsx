@@ -1,5 +1,5 @@
 import React, { useMemo, useState, VFC } from 'react';
-// import { format } from 'date-fns';
+import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -21,6 +21,9 @@ export const Comment:VFC<Props> = (props:Props) => {
   const [isReEdit, setIsReEdit] = useState(false);
   const { comment } = props;
   // const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
+  const isEdited = comment.createdAt < comment.updatedAt;
+  const editedDateId = `editedDate-${comment._id}`;
+  const editedDateFormatted = isEdited ? format(comment.updatedAt, 'yyyy/MM/dd HH:mm') : null;
 
   const rootClassName:string = useMemo(() => {
     const className = 'page-comment flex-column';
@@ -72,13 +75,13 @@ export const Comment:VFC<Props> = (props:Props) => {
                 <a href={`#${comment._id}`}>
                   <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
                 </a>
-                {/* { isEdited && (
-                  <>
-                    <span id={editedDateId}>&nbsp;(edited)</span>
-                    <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
-                  </>
+                { isEdited && (
+                <>
+                  <span id={editedDateId}>&nbsp;(edited)</span>
+                  <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
+                </>
                 )}
-                <span className="ml-2">
+                {/* <span className="ml-2">
                   <a id={`page-comment-revision-${commentId}`} className="page-comment-revision" href={revHref}>
                     <HistoryIcon />
                   </a>
