@@ -14,7 +14,7 @@ import templateChecker from '~/utils/template-checker';
 import loggerFactory from '~/utils/logger';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { IUser } from './user';
+import { IUser } from './new-user';
 
 const logger = loggerFactory('growi:models:page');
 export interface IPage {
