@@ -69,61 +69,61 @@ describe('AclService test', () => {
   });
 
 
-  // describe('isWikiModeForced()', () => {
+  describe('isWikiModeForced()', () => {
 
-  //   test('to be false when FORCE_WIKI_MODE is undefined', async() => {
-  //     delete process.env.FORCE_WIKI_MODE;
+    test('to be false when FORCE_WIKI_MODE is undefined', async() => {
+      delete process.env.FORCE_WIKI_MODE;
 
-  //     // reload
-  //     await crowi.configManager.loadConfigs();
+      // reload
+      await crowi.configManager.loadConfigs();
 
-  //     const result = crowi.aclService.isWikiModeForced();
+      const result = crowi.aclService.isWikiModeForced();
 
-  //     const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
-  //     expect(wikiMode).toBe(undefined);
-  //     expect(result).toBe(false);
-  //   });
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      expect(wikiMode).toBe(undefined);
+      expect(result).toBe(false);
+    });
 
-  //   test('to be false when FORCE_WIKI_MODE is dummy string', async() => {
-  //     process.env.FORCE_WIKI_MODE = 'dummy string';
+    test('to be false when FORCE_WIKI_MODE is dummy string', async() => {
+      process.env.FORCE_WIKI_MODE = 'dummy string';
 
-  //     // reload
-  //     await crowi.configManager.loadConfigs();
+      // reload
+      await crowi.configManager.loadConfigs();
 
-  //     const result = crowi.aclService.isWikiModeForced();
+      const result = crowi.aclService.isWikiModeForced();
 
-  //     const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
-  //     expect(wikiMode).toBe('dummy string');
-  //     expect(result).toBe(false);
-  //   });
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      expect(wikiMode).toBe('dummy string');
+      expect(result).toBe(false);
+    });
 
-  //   test('to be true when FORCE_WIKI_MODE=private', async() => {
-  //     process.env.FORCE_WIKI_MODE = 'private';
+    test('to be true when FORCE_WIKI_MODE=private', async() => {
+      process.env.FORCE_WIKI_MODE = 'private';
 
-  //     // reload
-  //     await crowi.configManager.loadConfigs();
+      // reload
+      await crowi.configManager.loadConfigs();
 
-  //     const result = crowi.aclService.isWikiModeForced();
+      const result = crowi.aclService.isWikiModeForced();
 
-  //     const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
-  //     expect(wikiMode).toBe('private');
-  //     expect(result).toBe(true);
-  //   });
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      expect(wikiMode).toBe('private');
+      expect(result).toBe(true);
+    });
 
-  //   test('to be false when FORCE_WIKI_MODE=public', async() => {
-  //     process.env.FORCE_WIKI_MODE = 'public';
+    test('to be false when FORCE_WIKI_MODE=public', async() => {
+      process.env.FORCE_WIKI_MODE = 'public';
 
-  //     // reload
-  //     await crowi.configManager.loadConfigs();
+      // reload
+      await crowi.configManager.loadConfigs();
 
-  //     const result = crowi.aclService.isWikiModeForced();
+      const result = crowi.aclService.isWikiModeForced();
 
-  //     const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
-  //     expect(wikiMode).toBe('public');
-  //     expect(result).toBe(true);
-  //   });
+      const wikiMode = crowi.configManager.getConfig('crowi', 'security:wikiMode');
+      expect(wikiMode).toBe('public');
+      expect(result).toBe(true);
+    });
 
-  // });
+  });
 
 
   describe('isGuestAllowedToRead()', () => {
