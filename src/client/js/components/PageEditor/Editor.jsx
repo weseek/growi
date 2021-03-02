@@ -292,7 +292,6 @@ export default class Editor extends AbstractEditor {
           onDragLeave={this.dragLeaveHandler}
           onDrop={this.dropHandler}
         >
-
           {({
             getRootProps,
             getInputProps,
