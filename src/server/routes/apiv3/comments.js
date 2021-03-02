@@ -59,8 +59,8 @@ module.exports = (crowi) => {
 
   const validator = {
     getComments: [
-      query('pageId').isMongoId().withMessage('Page Id is required'),
-      query('revisionId').if(value => value != null).isMongoId().withMessage('Revision Id must be MongoId'),
+      query('pageId').isMongoId().withMessage('pageId is required'),
+      query('revisionId').if(value => value != null).isMongoId().withMessage('revisionId must be MongoId'),
     ],
   };
 
@@ -84,7 +84,7 @@ module.exports = (crowi) => {
    *            schema:
    *              $ref: '#/components/schemas/Revision/properties/_id'
    *        required:
-   *          - commentForm
+   *          - pageId
    *        responses:
    *          200:
    *            description: Succeeded to get comments of the page of the revision.
