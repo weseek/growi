@@ -125,7 +125,8 @@ export const Comment:VFC<Props> = (props:Props) => {
                 )}
                 <span className="ml-2">
                   <a id={`page-comment-revision-${comment._id}`} className="page-comment-revision" href={revHref}>
-                    <HistoryIcon />
+                    {/* TODO fix icon size */}
+                    {/* <HistoryIcon /> */}
                   </a>
                   <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${comment._id}`}>
                     {t('page_comment.display_the_page_when_posting_this_comment')}
