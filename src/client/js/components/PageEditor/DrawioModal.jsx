@@ -8,7 +8,7 @@ import {
 } from 'reactstrap';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
+// import AppContainer from '../../services/AppContainer';
 import EditorContainer from '../../services/EditorContainer';
 
 class DrawioModal extends React.PureComponent {

@@ -2,49 +2,6 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:comment');
 
-/**
- * @swagger
- *  tags:
- *    name: Comments
- */
-
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Comment:
- *        description: Comment
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: revision ID
- *            example: 5e079a0a0afa6700170a75fb
- *          __v:
- *            type: number
- *            description: DB record version
- *            example: 0
- *          page:
- *            $ref: '#/components/schemas/Page/properties/_id'
- *          creator:
- *            $ref: '#/components/schemas/User/properties/_id'
- *          revision:
- *            $ref: '#/components/schemas/Revision/properties/_id'
- *          comment:
- *            type: string
- *            description: comment
- *            example: good
- *          commentPosition:
- *            type: number
- *            description: comment position
- *            example: 0
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- */
-
 module.exports = function(crowi, app) {
 
   const Comment = crowi.model('Comment');
@@ -62,81 +19,6 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
   api.validators = {};
-
-  /**
-   * @swagger
-   *
-   *    /comments.get:
-   *      get:
-   *        tags: [Comments, CrowiCompatibles]
-   *        operationId: getComments
-   *        summary: /comments.get
-   *        description: Get comments of the page of the revision
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *          - in: query
-   *            name: revision_id
-   *            schema:
-   *              $ref: '#/components/schemas/Revision/properties/_id'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get comments of the page of the revision.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    comments:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/Comment'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /comments.get Get comments of the page of the revision
-   * @apiName GetComments
-   * @apiGroup Comment
-   *
-   * @apiParam {String} page_id Page Id.
-   * @apiParam {String} revision_id Revision Id.
-   */
-  api.get = async function(req, res) {
-    const pageId = req.query.page_id;
-    const revisionId = req.query.revision_id;
-
-    // check whether accessible
-    const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
-    if (!isAccessible) {
-      return res.json(ApiResponse.error('Current user is not accessible to this page.'));
-    }
-
-    let fetcher = null;
-
-    try {
-      if (revisionId) {
-        fetcher = Comment.getCommentsByRevisionId(revisionId);
-      }
-      else {
-        fetcher = Comment.getCommentsByPageId(pageId);
-      }
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
-
-    const comments = await fetcher.populate(
-      { path: 'creator', select: User.USER_PUBLIC_FIELDS },
-    );
-
-    res.json(ApiResponse.success({ comments }));
-  };
 
   api.validators.add = function() {
     const validator = [
