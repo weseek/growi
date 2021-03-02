@@ -5,6 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { apiv3Post } from '~/utils/apiv3-client';
 
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 
@@ -40,7 +41,7 @@ class LdapAuthTest extends React.Component {
    */
   async testLdapCredentials() {
     try {
-      const response = await apiPost('/login/testLdap', {
+      const response = await apiv3Post('/login/testLdap', {
         loginForm: {
           username: this.props.username,
           password: this.props.password,

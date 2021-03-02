@@ -1,29 +1,17 @@
-import {
-  Schema, Types, Model, Document,
-} from 'mongoose';
+const debug = require('debug')('growi:models:userGroupRelation');
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const uniqueValidator = require('mongoose-unique-validator');
 
-import mongoosePaginate from 'mongoose-paginate-v2';
-import uniqueValidator from 'mongoose-unique-validator';
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
-import Debug from 'debug';
-import { getOrCreateModel } from '../util/mongoose-utils';
-import User, { IUser, USER_PUBLIC_FIELDS, STATUS_ACTIVE } from '~/server/models/user';
-
-const debug = Debug('growi:models:userGroupRelation');
-
-export interface IUserGroupRelation extends Document{
-  _id: Types.ObjectId;
-  relatedGroup: Types.ObjectId;
-  relatedUser: IUser;
-  createdAt: Date;
-}
 
 /*
  * define schema
  */
-const schema = new Schema<IUserGroupRelation>({
-  relatedGroup: { type: Types.ObjectId, ref: 'UserGroup', required: true },
-  relatedUser: { type: Types.ObjectId, ref: 'User', required: true },
+const schema = new mongoose.Schema({
+  relatedGroup: { type: ObjectId, ref: 'UserGroup', required: true },
+  relatedUser: { type: ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now, required: true },
 });
 schema.plugin(mongoosePaginate);
@@ -35,9 +23,7 @@ schema.plugin(uniqueValidator);
  *
  * @class UserGroupRelation
  */
-class UserGroupRelation extends Model {
-
-  static paginate: any;
+class UserGroupRelation {
 
   /**
    * limit items num for pagination
@@ -48,6 +34,14 @@ class UserGroupRelation extends Model {
    */
   static get PAGE_ITEMS() {
     return 50;
+  }
+
+  static set crowi(crowi) {
+    this._crowi = crowi;
+  }
+
+  static get crowi() {
+    return this._crowi;
   }
 
   /**
@@ -91,12 +85,13 @@ class UserGroupRelation extends Model {
    * @memberof UserGroupRelation
    */
   static findAllRelationForUserGroup(userGroup) {
+    const User = UserGroupRelation.crowi.model('User');
     debug('findAllRelationForUserGroup is called', userGroup);
     return this
       .find({ relatedGroup: userGroup })
       .populate({
         path: 'relatedUser',
-        select: USER_PUBLIC_FIELDS,
+        select: User.USER_PUBLIC_FIELDS,
       })
       .exec();
   }
@@ -204,6 +199,7 @@ class UserGroupRelation extends Model {
    * @memberof UserGroupRelation
    */
   static findUserByNotRelatedGroup(userGroup, queryOptions) {
+    const User = UserGroupRelation.crowi.model('User');
     let searchWord = new RegExp(`${queryOptions.searchWord}`);
     switch (queryOptions.searchType) {
       case 'forward':
@@ -213,7 +209,7 @@ class UserGroupRelation extends Model {
         searchWord = new RegExp(`${queryOptions.searchWord}$`);
         break;
     }
-    const searthField:Array<{[key:string]:RegExp}> = [
+    const searthField = [
       { username: searchWord },
     ];
     if (queryOptions.isAlsoMailSearched === 'true') { searthField.push({ email: searchWord }) }
@@ -226,7 +222,7 @@ class UserGroupRelation extends Model {
         });
         const query = {
           _id: { $nin: relatedUserIds },
-          status: STATUS_ACTIVE,
+          status: User.STATUS_ACTIVE,
           $or: searthField,
         };
 
@@ -299,7 +295,7 @@ class UserGroupRelation extends Model {
     return this.findById(id)
       .then((relationData) => {
         if (relationData == null) {
-          throw new Error(`UserGroupRelation data is not exists. id: ${id}`);
+          throw new Error('UserGroupRelation data is not exists. id:', id);
         }
         else {
           relationData.remove();
@@ -308,5 +304,10 @@ class UserGroupRelation extends Model {
   }
 
 }
-schema.loadClass(UserGroupRelation);
-export default getOrCreateModel<IUserGroupRelation>('UserGroupRelation', schema);
+
+module.exports = function(crowi) {
+  UserGroupRelation.crowi = crowi;
+  schema.loadClass(UserGroupRelation);
+  const model = mongoose.model('UserGroupRelation', schema);
+  return model;
+};

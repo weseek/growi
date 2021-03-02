@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { toastError } from '../../../../util/apiNotification';
+import { apiv3Post } from '~/utils/apiv3-client';
 
 class UploadForm extends React.Component {
 

@@ -5,10 +5,6 @@ import { debounce } from 'throttle-debounce';
 
 import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../services/AppContainer';
-
-import { withUnstatedContainers } from './UnstatedUtils';
-
 import NotAvailableForGuest from './NotAvailableForGuest';
 
 class Drawio extends React.Component {
@@ -34,9 +30,9 @@ class Drawio extends React.Component {
   }
 
   onEdit() {
-    const { appContainer, rangeLineNumberOfMarkdown } = this.props;
-    const { beginLineNumber, endLineNumber } = rangeLineNumberOfMarkdown;
-    appContainer.launchDrawioModal('page', beginLineNumber, endLineNumber);
+    // const { appContainer, rangeLineNumberOfMarkdown } = this.props;
+    // const { beginLineNumber, endLineNumber } = rangeLineNumberOfMarkdown;
+    // appContainer.launchDrawioModal('page', beginLineNumber, endLineNumber);
   }
 
   componentDidMount() {
@@ -98,11 +94,10 @@ class Drawio extends React.Component {
 
 Drawio.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.object.isRequired,
 
   drawioContent: PropTypes.any.isRequired,
   isPreview: PropTypes.bool,
   rangeLineNumberOfMarkdown: PropTypes.object.isRequired,
 };
 
-export default withTranslation()(withUnstatedContainers(Drawio, [AppContainer]));
+export default withTranslation()(Drawio);

@@ -4,11 +4,11 @@ import * as toastr from 'toastr';
 
 import { withTranslation } from 'react-i18next';
 
+import { apiPost } from '../../util/apiv1-client';
+
 import Page from '../PageList/Page';
 import SearchResultList from './SearchResultList';
 import DeletePageListModal from './DeletePageListModal';
-import AppContainer from '../../services/AppContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
 class SearchResult extends React.Component {
 
@@ -126,7 +126,7 @@ class SearchResult extends React.Component {
         const pageId = page._id;
         const revisionId = page.revision._id;
 
-        this.props.appContainer.apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: deleteCompletely })
+        apiPost('/pages.remove', { page_id: pageId, revision_id: revisionId, completely: deleteCompletely })
           .then((res) => {
             if (res.ok) {
               this.state.selectedPages.delete(page);
@@ -328,13 +328,7 @@ class SearchResult extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const SearchResultWrapper = withUnstatedContainers(SearchResult, [AppContainer]);
-
 SearchResult.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   t: PropTypes.func.isRequired, // i18next
 
   pages: PropTypes.array.isRequired,
@@ -347,4 +341,4 @@ SearchResult.defaultProps = {
   searchError: null,
 };
 
-export default withTranslation()(SearchResultWrapper);
+export default withTranslation()(SearchResult);

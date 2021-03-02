@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import PaginationWrapper from './PaginationWrapper';
+import { PaginationWrapper } from '~/components/PaginationWrapper';
 
 class TagsList extends React.Component {
 

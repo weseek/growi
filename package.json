@@ -196,7 +196,7 @@
     "@types/minimatch": "^3.0.3",
     "@types/mongoose": "^5.7.36",
     "@types/node": "^12.0.12",
-    "@types/react": "^16.8.17",
+    "@types/react": "^16.9.48",
     "@types/react-dom": "16.8.4",
     "@types/replacestream": "^4.0.0",
     "@types/stream-to-promise": "^2.2.1",

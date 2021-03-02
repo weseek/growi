@@ -8,7 +8,8 @@ import loggerFactory from '~/utils/logger';
 import { toastError } from '../../../util/apiNotification';
 
 import TriggerEventCheckBox from './TriggerEventCheckBox';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AdminUpdateButtonRow from '~/components/Admin/Common/AdminUpdateButtonRow';
+import { apiv3Post, apiv3Put } from '~/utils/apiv3-client';
 
 const logger = loggerFactory('growi:manageGlobalNotification');
 
@@ -79,10 +80,10 @@ class ManageGlobalNotification extends React.Component {
 
     try {
       if (this.state.globalNotificationId != null) {
-        await this.props.appContainer.apiv3.put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, requestParams);
+        await apiv3Put(`/notification-setting/global-notification/${this.state.globalNotificationId}`, requestParams);
       }
       else {
-        await this.props.appContainer.apiv3.post('/notification-setting/global-notification', requestParams);
+        await apiv3Post('/notification-setting/global-notification', requestParams);
       }
       window.location.href = urljoin(window.location.origin, '/admin/notification#global-notification');
     }
