@@ -263,5 +263,3 @@ export const SecuritySetting: FC = () => {
     </div>
   );
 };
-
-export default SecuritySetting;
