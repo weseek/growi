@@ -429,8 +429,6 @@ Content Cell,Content Cell
 
 # :pencil: Emoji
 
-See [emojione](https://www.emojione.com/)
-
 :smiley: :smile: :laughing: :innocent: :drooling_face:
 
 :family: :family_man_boy: :family_man_girl: :family_man_girl_girl: :family_woman_girl_girl:
