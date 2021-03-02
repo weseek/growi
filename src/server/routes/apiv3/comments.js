@@ -59,24 +59,6 @@ module.exports = (crowi) => {
   const User = crowi.model('User');
   const Page = crowi.model('Page');
 
-  const validator = {
-    getComment: [
-      body('pageId').isMongoId().withMessage('pageId is required'),
-      body('revisionId').isMongoId().withMessage('revisionId is required'),
-      body('comment').exists().withMessage('comment is required'),
-      body('commentPosition').isInt().withMessage('commentPosition must be int'),
-      body('isMarkdown').isBoolean().withMessage('isMarkdown must be boolean'),
-      body('replyTo').exists().custom((value) => {
-        if (value === '') {
-          return undefined;
-        }
-        return ObjectId(value);
-      }),
-
-      body('isSlackEnabled').isBoolean().exists().withMessage('isSlackEnabled is required'),
-    ],
-  };
-
   /**
    * @swagger
    *
@@ -113,7 +95,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.get('/', accessTokenParser, loginRequired, validator.getComment, apiV3FormValidator, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
     const revisionId = req.query.revisionId;
 
