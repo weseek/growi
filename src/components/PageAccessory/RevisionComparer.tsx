@@ -1,4 +1,4 @@
-import { useState, VFC } from 'react';
+import { useState, useMemo, VFC } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -26,7 +26,7 @@ function encodeSpaces(str) {
 }
 
 type Props = {
-  path: string,
+  path?: string,
   revisions: IRevision[],
   sourceRevision?: IRevision,
   targetRevision?: IRevision,
@@ -37,15 +37,18 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { sourceRevision, targetRevision } = props;
   const { t } = useTranslation();
+  const showDiff = (sourceRevision && targetRevision);
 
   function toggleDropdown() {
     setDropdownOpen(!dropdownOpen);
   }
 
-  const pagePathUrl = () => {
-    const { origin } = window.location;
+  const pagePathUrl = useMemo(() => {
     const { path } = props;
-
+    if (path == null) {
+      return;
+    }
+    const { origin } = window.location;
     const url = new URL(path, origin);
 
     if (sourceRevision != null && targetRevision != null) {
@@ -54,9 +57,8 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
     }
 
     return encodeSpaces(decodeURI(url.pathname));
-  };
+  }, [props, sourceRevision, targetRevision]);
 
-  const showDiff = (sourceRevision && targetRevision);
 
   return (
     <div className="revision-compare">
