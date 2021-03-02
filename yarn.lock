@@ -7321,6 +7321,11 @@ i18next-fs-backend@^1.0.7:
   resolved "https://registry.yarnpkg.com/i18next-fs-backend/-/i18next-fs-backend-1.0.7.tgz#00ca4587e306f8948740408389dda73461a5d07f"
   integrity sha512-aAZ3rvshe1Zbl6JSCWrWWqbZS5JpmVNG+84YqLcgdYcm9uAxzw4xWxnA/a3044Nm2PKXE62CT+pIZjk7OEYtTw==
 
+i18next-hmr@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/i18next-hmr/-/i18next-hmr-1.7.1.tgz#567d1ce6cb5a959973d550b7462cc47ad95e6c10"
+  integrity sha512-+RZCyvquys7ZqnYSXy/wvw7Ap7lMnfeNrvn/XyQbdCLspdpMfVZhT8cYgSSSRr8+A4cxVBN8OqkTJIJHJe6vcg==
+
 i18next-http-backend@^1.0.17:
   version "1.0.18"
   resolved "https://registry.yarnpkg.com/i18next-http-backend/-/i18next-http-backend-1.0.18.tgz#ec3627c6079366665bd265054edf1fe80614089b"
