@@ -2,6 +2,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { pathUtils } from 'growi-commons';
+import urljoin from 'url-join';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -31,6 +33,11 @@ class SamlSecurityManagementContents extends React.Component {
   }
 
   render() {
+
+    function makeCallbackUrl(siteUrl) {
+      return urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/saml/callback');
+    }
+
     const {
       t, adminGeneralSecurityContainer, adminSamlSecurityContainer, siteUrl,
     } = this.props;
@@ -77,7 +84,7 @@ class SamlSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={siteUrl}
+              defaultValue={makeCallbackUrl(siteUrl)}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
