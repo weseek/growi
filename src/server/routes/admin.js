@@ -99,7 +99,7 @@ module.exports = function(crowi, app) {
   };
 
     return res.render('admin/security', {
-      // isWikiModeForced,
+      isWikiModeForced,
       guestModeValue,
     });
   };
