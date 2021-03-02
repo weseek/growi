@@ -1,6 +1,5 @@
 import path from 'path';
 import NextI18Next from 'next-i18next';
-import { applyClientHMR } from 'i18next-hmr';
 
 const nextI18Next = new NextI18Next({
   defaultLanguage: 'en_US',
@@ -23,7 +22,9 @@ const nextI18Next = new NextI18Next({
 });
 
 if (process.env.NODE_ENV !== 'production') {
-  applyClientHMR(nextI18Next.i18n);
+  import('i18next-hmr').then((i18nextHmr) => {
+    i18nextHmr.applyClientHMR(nextI18Next.i18n);
+  });
 }
 
 export default nextI18Next;
