@@ -8,7 +8,7 @@ import { Comment as IComment } from '~/interfaces/page';
 // import FormattedDistanceDate from '../FormattedDistanceDate';
 // import RevisionBody from '../Page/RevisionBody';
 import UserPicture from '~/client/js/components/User/UserPicture';
-// import Username from '../User/Username';
+import Username from '~/client/js/components/User/Username';
 // import CommentEditor from './CommentEditor';
 // import CommentControl from './CommentControl';
 // import HistoryIcon from '../Icons/HistoryIcon';
@@ -62,11 +62,11 @@ export const Comment:VFC<Props> = (props:Props) => {
             <div className="page-comment-writer">
               <UserPicture user={comment.creator} />
             </div>
-            {/* <div className="page-comment-main">
+            <div className="page-comment-main">
               <div className="page-comment-creator">
-                <Username user={creator} />
+                <Username user={comment.creator} />
               </div>
-              <div className="page-comment-body">{commentBody}</div>
+              {/* <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
                 <a href={`#${commentId}`}>
                   <FormattedDistanceDate id={commentId} date={comment.createdAt} />
@@ -91,8 +91,8 @@ export const Comment:VFC<Props> = (props:Props) => {
                   onClickDeleteBtn={this.deleteBtnClickedHandler}
                   onClickEditBtn={() => this.setState({ isReEdit: true })}
                 />
-              ) }
-            </div> */}
+              ) } */}
+            </div>
           </div>
         )
       }
