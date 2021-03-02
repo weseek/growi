@@ -31,6 +31,7 @@ export type Comment = {
   comment: string,
   replyTo?: string,
   creator: User,
+  isMarkdown: boolean,
   createdAt: Date,
   updatedAt: Date,
   revision: Revision,

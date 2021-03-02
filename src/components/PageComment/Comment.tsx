@@ -1,4 +1,6 @@
-import React, { useMemo, useState, VFC } from 'react';
+import React, {
+  useCallback, useMemo, useState, VFC,
+} from 'react';
 import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
@@ -6,7 +8,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { Comment as IComment } from '~/interfaces/page';
 
 import FormattedDistanceDate from '~/client/js/components/FormattedDistanceDate';
-// import RevisionBody from '../Page/RevisionBody';
+import RevisionBody from '~/client/js/components/Page/RevisionBody';
 import UserPicture from '~/client/js/components/User/UserPicture';
 import Username from '~/client/js/components/User/Username';
 import { useTranslation } from '~/i18n';
@@ -19,12 +21,32 @@ type Props = {
 }
 
 export const Comment:VFC<Props> = (props:Props) => {
+  const [html, setHtml] = useState('');
   const [isReEdit, setIsReEdit] = useState(false);
 
   const { comment } = props;
   const { t } = useTranslation();
 
-  // const commentBody = isMarkdown ? this.renderRevisionBody() : this.renderText(comment.comment);
+  const renderRevisionBody = useCallback(() => {
+    // TODO implement
+    // const config = this.props.appContainer.getConfig();
+    // const isMathJaxEnabled = !!config.env.MATHJAX;
+    const isMathJaxEnabled = false;
+    return (
+      <RevisionBody
+        html={html}
+        isMathJaxEnabled={isMathJaxEnabled}
+        renderMathJaxOnInit
+        additionalClassName="comment"
+      />
+    );
+  }, [html]);
+
+  const renderText = useCallback(() => {
+    return <span style={{ whiteSpace: 'pre-wrap' }}>{comment.comment}</span>;
+  }, [comment.comment]);
+
+  const commentBody = comment.isMarkdown ? renderRevisionBody() : renderText();
   const isEdited = comment.createdAt < comment.updatedAt;
   const editedDateId = `editedDate-${comment._id}`;
   const editedDateFormatted = isEdited ? format(comment.updatedAt, 'yyyy/MM/dd HH:mm') : null;
@@ -67,7 +89,6 @@ export const Comment:VFC<Props> = (props:Props) => {
         // />
         ) : (
           <div id={comment._id} className={rootClassName}>
-            comment is here
             <div className="page-comment-writer">
               <UserPicture user={comment.creator} />
             </div>
@@ -75,7 +96,7 @@ export const Comment:VFC<Props> = (props:Props) => {
               <div className="page-comment-creator">
                 <Username user={comment.creator} />
               </div>
-              {/* <div className="page-comment-body">{commentBody}</div> */}
+              <div className="page-comment-body">{commentBody}</div>
               <div className="page-comment-meta">
                 <a href={`#${comment._id}`}>
                   <FormattedDistanceDate id={comment._id} date={comment.createdAt} />
@@ -168,27 +189,6 @@ export const Comment:VFC<Props> = (props:Props) => {
 
 //   isCurrentRevision() {
 //     return this.props.comment.revision === this.props.pageContainer.state.revisionId;
-//   }
-
-//   getRootClassName(comment) {
-//     let className = 'page-comment flex-column';
-
-//     const { revisionId, revisionCreatedAt } = this.props.pageContainer.state;
-//     if (comment.revision === revisionId) {
-//       className += ' page-comment-current';
-//     }
-//     else if (Date.parse(comment.createdAt) / 1000 > revisionCreatedAt) {
-//       className += ' page-comment-newer';
-//     }
-//     else {
-//       className += ' page-comment-older';
-//     }
-
-//     if (this.isCurrentUserEqualsToAuthor()) {
-//       className += ' page-comment-me';
-//     }
-
-//     return className;
 //   }
 
 //   deleteBtnClickedHandler() {
