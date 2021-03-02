@@ -125,17 +125,6 @@ export const PageHistory: VFC = () => {
 
     const { docs: revisions } = paginationResult;
     setRevisions(revisions);
-
-    // load 0, and last default
-    // if (rev[0]) {
-    //   this.fetchPageRevisionBody(rev[0]);
-    // }
-    // if (rev[1]) {
-    //   this.fetchPageRevisionBody(rev[1]);
-    // }
-    // if (lastId !== 0 && lastId !== 1 && rev[lastId]) {
-    //   this.fetchPageRevisionBody(rev[lastId]);
-    // }
   }, [paginationResult]);
 
 

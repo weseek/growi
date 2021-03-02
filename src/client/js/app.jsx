@@ -38,7 +38,6 @@ import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSw
 
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
-import PageHistoryContainer from './services/PageHistoryContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
@@ -56,14 +55,13 @@ const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
-const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
 const pageAccessoriesContainer = new PageAccessoriesContainer(appContainer);
 const injectableContainers = [
-  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer,
+  appContainer, socketIoContainer, navigationContainer, pageContainer,
   commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
 ];
 
