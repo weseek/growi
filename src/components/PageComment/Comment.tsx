@@ -6,7 +6,6 @@ import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -229,11 +228,10 @@ class Comment extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const CommentWrapper = withUnstatedContainers(Comment, [AppContainer, PageContainer]);
+const CommentWrapper = withUnstatedContainers(Comment, [PageContainer]);
 
 Comment.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
   comment: PropTypes.object.isRequired,
