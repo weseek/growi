@@ -5,21 +5,21 @@ import React, { FC } from 'react';
 import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 import { toastError } from '~/client/js/util/apiNotification';
 
-import AdminSamlSecurityContainer from '~/client/js/services/AdminSamlSecurityContainer';
-import { toArrayIfNot } from '~/utils/array-utils';
+// import AdminSamlSecurityContainer from '~/client/js/services/AdminSamlSecurityContainer';
+// import { toArrayIfNot } from '~/utils/array-utils';
 // import { withLoadingSppiner } from '~/client/js/components/SuspenseUtils;
 
 import SamlSecuritySettingContents from '~/client/js/components/Admin/Security/SamlSecuritySettingContents';
 
 
 type Props = {
-  adminSamlSecurityContainer: AdminSamlSecurityContainer,
+  // adminSamlSecurityContainer: AdminSamlSecurityContainer,
 }
 
-const retrieveErrors = null;
-export const SamlSecurityManagement: FC<Props> = (props:Props) => {
+// const retrieveErrors = null;
+export const SamlSecurityManagement: FC = () => {
 
-  const { adminSamlSecurityContainer } = props;
+  // const { adminSamlSecurityContainer } = props;
   // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
   //   throw (async() => {
   //     try {
