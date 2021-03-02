@@ -31,10 +31,12 @@ class SamlSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer } = this.props;
+    const {
+      t, adminGeneralSecurityContainer, adminSamlSecurityContainer, siteUrl,
+    } = this.props;
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
     const { isSamlEnabled } = adminGeneralSecurityContainer.state;
-
+    console.log(siteUrl);
     return (
       <React.Fragment>
 
@@ -75,7 +77,7 @@ class SamlSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminSamlSecurityContainer.state.callbackUrl}
+              defaultValue={siteUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
@@ -501,6 +503,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
 SamlSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  siteUrl: PropTypes.string,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
