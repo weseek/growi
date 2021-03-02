@@ -10,8 +10,6 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useSecuritySettingGeneralSWR } from '~/stores/admin';
 import { apiv3Put } from '~/utils/apiv3-client';
 
-// Temporarily set null. This is null in AdminGeneralSecurityContainer.js
-const retrieveError = null;
 
 const restrictGuestMode = 'restrictGuestMode';
 const pageCompleteDeletionAuthority = 'pageCompleteDeletionAuthority';
@@ -30,7 +28,7 @@ type FormValues ={
 
 export const SecuritySetting: FC = () => {
   const { t } = useTranslation();
-  const { data } = useSecuritySettingGeneralSWR();
+  const { data, error } = useSecuritySettingGeneralSWR();
   const {
     register, control, handleSubmit, setValue, watch,
   } = useForm({
@@ -81,9 +79,9 @@ export const SecuritySetting: FC = () => {
         <h2 className="alert-anchor border-bottom">
           {t('security_settings')}
         </h2>
-        {retrieveError != null && (
+        {error != null && (
         <div className="alert alert-danger">
-          <p>{t('Error occurred')} : {retrieveError}</p>
+          <p>{t('Error occurred')} : {error}</p>
         </div>
         )}
         <h4 className="mt-4">
@@ -252,7 +250,7 @@ export const SecuritySetting: FC = () => {
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  disabled={retrieveError != null}
+                  disabled={error != null}
                 >{ t('Update') }
                 </button>
               </div>
