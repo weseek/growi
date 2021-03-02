@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:models:page');
 
 const BULK_REINDEX_SIZE = 100;
 
-export default class PageService {
+class PageService {
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -793,3 +793,5 @@ export default class PageService {
   }
 
 }
+
+module.exports = PageService;
