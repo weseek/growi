@@ -95,6 +95,7 @@ export const Comment:VFC<Props> = (props:Props) => {
                   </UncontrolledTooltip>
                 </span>
               </div>
+              {/* TODO GW-5317 implement CommentControl */}
               {/* {this.checkPermissionToControlComment() && (
                 <CommentControl
                   onClickDeleteBtn={this.deleteBtnClickedHandler}
@@ -153,9 +154,9 @@ export const Comment:VFC<Props> = (props:Props) => {
 //     interceptorManager.process('postRenderCommentHtml', this.currentRenderingContext);
 //   }
 
-//   checkPermissionToControlComment() {
-//     return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
-//   }
+// checkPermissionToControlComment() {
+//   return this.props.appContainer.isAdmin || this.isCurrentUserEqualsToAuthor();
+// }
 
 //   isCurrentUserEqualsToAuthor() {
 //     const { creator } = this.props.comment;
