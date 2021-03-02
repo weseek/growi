@@ -1,4 +1,4 @@
-import { useState, useMemo, VFC } from 'react';
+import { useState, useCallback, VFC } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -43,7 +43,7 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
     setDropdownOpen(!dropdownOpen);
   }
 
-  const pagePathUrl = useMemo(() => {
+  const pagePathUrl = useCallback(() => {
     const { path } = props;
     if (path == null) {
       return;
