@@ -1,8 +1,7 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, useEffect, VFC,
 } from 'react';
 
-import { withUnstatedContainers } from '~/client/js/components/UnstatedUtils';
 import { useTranslation } from '~/i18n';
 
 import { toastError } from '~/client/js/util/apiNotification';
@@ -12,18 +11,12 @@ import { apiv3Get } from '~/utils/apiv3-client';
 import { PageRevisionTable } from '~/components/PageAccessory/PageRevisionTable';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
-import RevisionComparerContainer from '~/client/js/services/RevisionComparerContainer';
 import { Revision } from '~/interfaces/page';
 
 import { useCurrentPageSWR, useCurrentPageHistorySWR } from '~/stores/page';
 import { useShareLinkId } from '~/stores/context';
 
-type Props = {
-  revisionComparerContainer: RevisionComparerContainer;
-}
-
-const PageHistory:FC<Props> = (props:Props) => {
-  const { revisionComparerContainer } = props;
+export const PageHistory: VFC = () => {
   const { t } = useTranslation();
   const { data: currentPage } = useCurrentPageSWR();
   const { data: shareLinkId } = useShareLinkId();
@@ -166,7 +159,6 @@ const PageHistory:FC<Props> = (props:Props) => {
     <div className="revision-history">
       <h3 className="pb-3">{t('page_history.revision_list')}</h3>
       <PageRevisionTable
-        revisionComparerContainer={revisionComparerContainer}
         revisions={revisions}
         pagingLimit={limit}
         sourceRevision={sourceRevision}
@@ -174,6 +166,8 @@ const PageHistory:FC<Props> = (props:Props) => {
         latestRevision={latestRevision}
         onClickCompareLatestRevisionButton={compareLatestRevision}
         onClickComparePreviousRevisionButton={comparePreviousRevision}
+        onClickSourceRadio={revision => setSourceRevision(revision)}
+        onClickTargetRadio={revision => setTargetRevision(revision)}
       />
       <div className="my-3">
         <PaginationWrapper
@@ -188,8 +182,3 @@ const PageHistory:FC<Props> = (props:Props) => {
     </div>
   );
 };
-
-/**
- * Wrapper component for using unstated
- */
-export const PageHistoryWrapper = withUnstatedContainers(PageHistory, [RevisionComparerContainer]);

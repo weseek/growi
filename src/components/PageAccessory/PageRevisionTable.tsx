@@ -2,19 +2,17 @@ import { FC } from 'react';
 
 import { Revision as IRevision } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
-
-import RevisionComparerContainer from '~/client/js/services/RevisionComparerContainer';
-
 import Revision from '~/client/js/components/PageHistory/Revision';
 
 type Props = {
-  revisionComparerContainer: RevisionComparerContainer;
   revisions: IRevision[],
   sourceRevision?: IRevision,
   targetRevision?: IRevision,
   latestRevision?: IRevision,
   onClickCompareLatestRevisionButton: (revision:IRevision)=>void,
   onClickComparePreviousRevisionButton: (revision:IRevision, previousRevision:IRevision)=>void,
+  onClickSourceRadio: (revision:IRevision)=>void,
+  onClickTargetRadio: (revision:IRevision)=>void,
   pagingLimit: number,
 }
 
@@ -22,7 +20,7 @@ export const PageRevisionTable:FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const {
-    revisions, sourceRevision, targetRevision, latestRevision, pagingLimit, revisionComparerContainer, diffOpened,
+    revisions, sourceRevision, targetRevision, latestRevision, pagingLimit,
   } = props;
   const revisionCount = revisions.length;
 
@@ -38,6 +36,18 @@ export const PageRevisionTable:FC<Props> = (props: Props) => {
     const handleComparePreviousRevisionButton = () => {
       if (props.onClickComparePreviousRevisionButton != null) {
         props.onClickComparePreviousRevisionButton(revision, previousRevision);
+      }
+    };
+
+    const handleSourceRadio = () => {
+      if (props.onClickSourceRadio != null) {
+        props.onClickSourceRadio(revision);
+      }
+    };
+
+    const handleTargetRadio = () => {
+      if (props.onClickTargetRadio != null) {
+        props.onClickTargetRadio(revision);
       }
     };
 
@@ -76,7 +86,7 @@ export const PageRevisionTable:FC<Props> = (props: Props) => {
                 name="compareSource"
                 value={revision._id}
                 checked={revision._id === sourceRevision?._id}
-                onChange={() => revisionComparerContainer.setState({ sourceRevision: revision })}
+                onChange={handleSourceRadio}
               />
               <label className="custom-control-label" htmlFor={`compareSource-${revision._id}`} />
             </div>
@@ -92,7 +102,7 @@ export const PageRevisionTable:FC<Props> = (props: Props) => {
               name="compareTarget"
               value={revision._id}
               checked={revision._id === targetRevision?._id}
-              onChange={() => revisionComparerContainer.setState({ targetRevision: revision })}
+              onChange={handleTargetRadio}
             />
             <label className="custom-control-label" htmlFor={`compareTarget-${revision._id}`} />
           </div>
