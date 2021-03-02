@@ -61,19 +61,19 @@ module.exports = (crowi) => {
 
   const validator = {
     getComment: [
-      body('commentForm.pageId').exists(),
-      body('commentForm.revisionId').exists(),
-      body('commentForm.comment').exists(),
-      body('commentForm.comment_position').isInt(),
-      body('commentForm.is_markdown').isBoolean(),
-      body('commentForm.replyTo').exists().custom((value) => {
+      body('pageId').isMongoId().withMessage('pageId is required'),
+      body('revisionId').isMongoId().withMessage('revisionId is required'),
+      body('comment').exists().withMessage('comment is required'),
+      body('commentPosition').isInt().withMessage('commentPosition must be int'),
+      body('isMarkdown').isBoolean().withMessage('isMarkdown must be boolean'),
+      body('replyTo').exists().custom((value) => {
         if (value === '') {
           return undefined;
         }
         return ObjectId(value);
       }),
 
-      body('slackNotificationForm.isSlackEnabled').isBoolean().exists(),
+      body('isSlackEnabled').isBoolean().exists().withMessage('isSlackEnabled is required'),
     ],
   };
 
