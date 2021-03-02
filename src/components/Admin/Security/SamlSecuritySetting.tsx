@@ -19,7 +19,6 @@ type Props = {
 const retrieveErrors = null;
 export const SamlSecurityManagement: FC<Props> = (props: Props) => {
   const { data } = useSiteUrl(props.siteUrl);
-  console.log(data);
   // const { adminSamlSecurityContainer } = props;
   // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
   //   throw (async() => {
@@ -39,7 +38,7 @@ export const SamlSecurityManagement: FC<Props> = (props: Props) => {
   //   throw new Error(`${retrieveErrors.length} errors occured`);
   // }
 
-  return <SamlSecuritySettingContents siteUrl={useSiteUrl(props.siteUrl)} />;
+  return <SamlSecuritySettingContents siteUrl={data} />;
 };
 
 
