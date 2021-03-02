@@ -75,9 +75,9 @@ export default class AdminGeneralSecurityContainer extends Container {
    * get isWikiModeForced
    * @return {bool} isWikiModeForced
    */
-  // get isWikiModeForced() {
-  //   return this.state.wikiMode === 'public' || this.state.wikiMode === 'private';
-  // }
+  get isWikiModeForced() {
+    return this.state.wikiMode === 'public' || this.state.wikiMode === 'private';
+  }
 
   /**
    * Change restrictGuestMode

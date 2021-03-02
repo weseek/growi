@@ -30,12 +30,12 @@ export default class AclService {
   /**
    * @returns Whether wiki mode is set
    */
-  // isWikiModeForced() {
-  //   const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
-  //   const isPrivateOrPublic = wikiMode === 'private' || wikiMode === 'public';
+  isWikiModeForced() {
+    const wikiMode = this.configManager.getConfig('crowi', 'security:wikiMode');
+    const isPrivateOrPublic = wikiMode === 'private' || wikiMode === 'public';
 
-  //   return isPrivateOrPublic;
-  // }
+    return isPrivateOrPublic;
+  }
 
   /**
    * @returns Whether guest users are allowed to read public pages
