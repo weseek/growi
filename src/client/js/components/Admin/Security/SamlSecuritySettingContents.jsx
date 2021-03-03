@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
+// import { useTranslation } from '~/i18n';
+import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -34,9 +36,9 @@ class SamlSecurityManagementContents extends React.Component {
 
   render() {
 
-    function makeCallbackUrl(siteUrl) {
-      return urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/saml/callback');
-    }
+    // function makeCallbackUrl(siteUrl) {
+    //   return urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/saml/callback');
+    // }
 
     const {
       t, adminGeneralSecurityContainer, adminSamlSecurityContainer, siteUrl,
@@ -84,7 +86,7 @@ class SamlSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={makeCallbackUrl(siteUrl)}
+              // defaultValue={makeCallbackUrl(siteUrl)}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
@@ -515,9 +517,24 @@ SamlSecurityManagementContents.propTypes = {
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
 
-const SamlSecurityManagementContentsWrapper = withUnstatedContainers(SamlSecurityManagementContents, [
+
+const SamlSecurityManagementContentsWithUnstated = withUnstatedContainers(SamlSecurityManagementContents, [
   AdminGeneralSecurityContainer,
   AdminSamlSecurityContainer,
 ]);
 
-export default withTranslation()(SamlSecurityManagementContentsWrapper);
+
+const SamlSecurityManagementContentsWrapper = (props) => {
+  // const { t } = useTranslation();
+  const { data: siteUrl } = useSiteUrl(props.siteUrl);
+
+
+  SamlSecurityManagementContentsWrapper.propTypes = {
+    siteUrl: PropTypes.string,
+  };
+
+  return <SamlSecurityManagementContents siteUrl={siteUrl} />;
+};
+
+// export default SamlSecurityManagementContentsWithUnstated;
+export default withTranslation()(SamlSecurityManagementContentsWithUnstated);
