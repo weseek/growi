@@ -63,6 +63,7 @@ class BoltService {
     };
 
     this.getSearchResultPaths = this.getSearchResultPaths.bind(this);
+    this.updateOffsetNum = this.updateOffsetNum.bind(this);
     this.crowi = crowi;
     this.receiver = new BoltReciever();
 
@@ -132,7 +133,11 @@ class BoltService {
       body, ack, say, action,
     }) => {
       await ack();
-      await say(action.value);
+      const intOffset = parseInt(action.value);
+      const offsetNum = this.updateOffsetNum(intOffset);
+      // ↓ not working, still occur 'this.setState is not a function' err.
+      // const offsetNum = this.updateOffsetNum(intOffset).bind(this);
+      console.log('offsetNum', offsetNum);
     });
 
     this.bolt.action('shareSearchResults', async({
@@ -154,6 +159,14 @@ class BoltService {
       ],
     });
     throw new Error('/growi command: Invalid first argument');
+  }
+
+  updateOffsetNum = (offset) => {
+    /* https://github.com/slackapi/bolt-js/blob/main/src/errors.ts
+       'this.setState is not a function' err is occurred here
+       at Object.asCodedError
+     */
+    this.setState({ pagenationOffset: offset + 10 });
   }
 
   async getSearchResultPaths(command, args) {
