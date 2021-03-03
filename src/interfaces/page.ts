@@ -9,6 +9,7 @@ export type Page = {
   creator: User,
   createdAt: Date,
   updatedAt: Date,
+  seenUsers: string,
 }
 
 export type BookmarkInfo = {

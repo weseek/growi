@@ -9,7 +9,7 @@ import TimeLineIcon from '../../client/js/components/Icons/TimeLineIcon';
 import HistoryIcon from '../../client/js/components/Icons/HistoryIcon';
 import AttachmentIcon from '../../client/js/components/Icons/AttachmentIcon';
 import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
-// import SeenUserInfo from '../../client/js/components/User/SeenUserInfo';
+import { SeenUserInfo } from '~/components/User/SeenUserInfo';
 
 type Props = {
   isGuestUser: boolean;
@@ -100,7 +100,7 @@ export const PageAccessoriesModalControl:FC<Props> = (props:Props) => {
       <div className="d-flex align-items-center">
         <span className="border-left grw-border-vr">&nbsp;</span>
         {/* TODO GW-5193 display SeenUserInfo */}
-        {/* <SeenUserInfo disabled={isSharedUser} /> */}
+        <SeenUserInfo disabled={isSharedUser} />
       </div>
     </div>
   );
