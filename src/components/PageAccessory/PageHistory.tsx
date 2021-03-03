@@ -26,20 +26,21 @@ export const PageHistory: VFC = () => {
 
   const [revisions, setRevisions] = useState<Revision[]>([]);
 
-  const [sourceRevisionIdUrl, setSourceRevisionIdUrl] = useState<string>();
-  const { data: sourceRevisionFoundByIdFromUrl } = useRevisionById(sourceRevisionIdUrl);
-
   const [sourceRevision, setSourceRevision] = useState<Revision>();
   const [targetRevision, setTargetRevision] = useState<Revision>();
 
+  const [sourceRevisionIdFromUrl, setSourceRevisionIdFromUrl] = useState<string>();
+  const { data: sourceRevisionFoundByIdFromUrl } = useRevisionById(sourceRevisionIdFromUrl);
   const [targetRevisionIdFromUrl, setTargetRevisionIdUrl] = useState<string>();
   const { data: targetRevisionFoundByIdFromUrl } = useRevisionById(targetRevisionIdFromUrl);
+
+  // If revision can be retrieved by id from url, set to sourceRevision
   useEffect(() => {
     if (sourceRevisionFoundByIdFromUrl != null) {
       setSourceRevision(sourceRevisionFoundByIdFromUrl);
     }
   }, [sourceRevisionFoundByIdFromUrl]);
-
+  // If revision can be retrieved by id from url, set to targetRevision
   useEffect(() => {
     if (targetRevisionFoundByIdFromUrl != null) {
       setTargetRevision(targetRevisionFoundByIdFromUrl);
@@ -106,7 +107,7 @@ export const PageHistory: VFC = () => {
     const [sourceRevisionId, targetRevisionId] = getRevisionIDsToCompareAsParam();
 
     if (sourceRevisionId != null) {
-      setSourceRevisionIdUrl(sourceRevisionId);
+      setSourceRevisionIdFromUrl(sourceRevisionId);
     }
 
     if (targetRevisionId != null) {
