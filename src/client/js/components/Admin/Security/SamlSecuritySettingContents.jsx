@@ -525,6 +525,7 @@ const SamlSecurityManagementContentsWrapperNext = (props) => {
 
   return (
     <SamlSecurityManagementContentsWrapper
+      {...props}
       t={t}
       siteUrl={siteUrl}
     />
