@@ -128,6 +128,13 @@ class BoltService {
       await this.createPageInGrowi(view, body);
     });
 
+    this.bolt.action('showNextResults', async({
+      body, ack, say, action,
+    }) => {
+      await ack();
+      await say(action.value);
+    });
+
     this.bolt.action('shareSearchResults', async({
       body, ack, say, action,
     }) => {
