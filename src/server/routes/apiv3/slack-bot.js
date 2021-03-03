@@ -15,9 +15,12 @@ module.exports = (crowi) => {
       res.send(req.body);
       return;
     }
+
+    // send response immediately to avoid opelation_timeout error
+    res.send();
+
     try {
-      const response = await requestHandler(req.body) || null;
-      res.send(response);
+      await requestHandler(req.body);
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3(`Error:Slack-Bot:${err}`), 500);
