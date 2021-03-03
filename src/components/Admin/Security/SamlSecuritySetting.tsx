@@ -1,5 +1,4 @@
-/* eslint-disable react/no-danger */
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 // import PropTypes from 'prop-types';
 
 // import { toastError } from '~/client/js/util/apiNotification';
@@ -7,7 +6,7 @@ import React, { FC } from 'react';
 // import AdminSamlSecurityContainer from '~/client/js/services/AdminSamlSecurityContainer';
 // import { toArrayIfNot } from '~/utils/array-utils';
 // import { withLoadingSppiner } from '~/client/js/components/SuspenseUtils;
-import { useSiteUrl } from '../../../stores/context';
+import { useSiteUrl } from '~/stores/context';
 
 import SamlSecuritySettingContents from '~/client/js/components/Admin/Security/SamlSecuritySettingContents';
 
@@ -17,8 +16,8 @@ type Props = {
 }
 
 // const retrieveErrors = null;
-export const SamlSecurityManagement: FC<Props> = (props: Props) => {
-  const { data } = useSiteUrl(props.siteUrl);
+export const SamlSecurityManagement: VFC<Props> = (props: Props) => {
+  const { data: siteUrl } = useSiteUrl(props.siteUrl);
   // const { adminSamlSecurityContainer } = props;
   // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
   //   throw (async() => {
@@ -38,7 +37,7 @@ export const SamlSecurityManagement: FC<Props> = (props: Props) => {
   //   throw new Error(`${retrieveErrors.length} errors occured`);
   // }
 
-  return <SamlSecuritySettingContents siteUrl={data} />;
+  return <SamlSecuritySettingContents siteUrl={siteUrl} />;
 };
 
 
