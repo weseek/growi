@@ -6,7 +6,6 @@ import React, { VFC } from 'react';
 // import AdminSamlSecurityContainer from '~/client/js/services/AdminSamlSecurityContainer';
 // import { toArrayIfNot } from '~/utils/array-utils';
 // import { withLoadingSppiner } from '~/client/js/components/SuspenseUtils;
-import { useSiteUrl } from '~/stores/context';
 
 import SamlSecuritySettingContents from '~/client/js/components/Admin/Security/SamlSecuritySettingContents';
 
@@ -17,7 +16,6 @@ type Props = {
 
 // const retrieveErrors = null;
 export const SamlSecurityManagement: VFC<Props> = (props: Props) => {
-  // const { data: siteUrl } = useSiteUrl(props.siteUrl);
   // const { adminSamlSecurityContainer } = props;
   // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
   //   throw (async() => {
