@@ -320,7 +320,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('*Failed to create new page.*\n Hint\n `/growi create`'),
+          this.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
         ],
       });
       throw err;
