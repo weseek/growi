@@ -12,12 +12,12 @@ import SamlSecuritySettingContents from '~/client/js/components/Admin/Security/S
 
 type Props = {
   // adminSamlSecurityContainer: AdminSamlSecurityContainer,
-  siteUrl: string,
+  // siteUrl: string,
 }
 
 // const retrieveErrors = null;
 export const SamlSecurityManagement: VFC<Props> = (props: Props) => {
-  const { data: siteUrl } = useSiteUrl(props.siteUrl);
+  // const { data: siteUrl } = useSiteUrl(props.siteUrl);
   // const { adminSamlSecurityContainer } = props;
   // if (adminSamlSecurityContainer.state.samlEntryPoint === adminSamlSecurityContainer.dummySamlEntryPoint) {
   //   throw (async() => {
@@ -37,7 +37,7 @@ export const SamlSecurityManagement: VFC<Props> = (props: Props) => {
   //   throw new Error(`${retrieveErrors.length} errors occured`);
   // }
 
-  return <SamlSecuritySettingContents siteUrl={siteUrl} />;
+  return <SamlSecuritySettingContents />;
 };
 
 
