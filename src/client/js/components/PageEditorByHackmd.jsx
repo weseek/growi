@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
-
-import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import EditorContainer from '../services/EditorContainer';
+import { apiPost } from '../util/apiv1-client';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import HackmdEditor from './PageEditorByHackmd/HackmdEditor';
@@ -36,7 +35,7 @@ class PageEditorByHackmd extends React.Component {
   }
 
   componentWillMount() {
-    this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
+    // this.props.appContainer.registerComponentInstance('PageEditorByHackmd', this);
   }
 
   /**
@@ -60,8 +59,11 @@ class PageEditorByHackmd extends React.Component {
   }
 
   getHackmdUri() {
-    const envVars = this.props.appContainer.getConfig().env;
-    return envVars.HACKMD_URI;
+    // const envVars = this.props.appContainer.getConfig().env;
+    // return envVars.HACKMD_URI;
+
+    // TODO: get HACKMD_URI
+    return 'http://example.com';
   }
 
   get isResume() {
@@ -96,7 +98,7 @@ class PageEditorByHackmd extends React.Component {
     };
 
     try {
-      const res = await this.props.appContainer.apiPost('/hackmd.integrate', params);
+      const res = await apiPost('/hackmd.integrate', params);
 
       if (!res.ok) {
         throw new Error(res.error);
@@ -138,7 +140,7 @@ class PageEditorByHackmd extends React.Component {
     const { pageId } = pageContainer.state;
 
     try {
-      const res = await this.props.appContainer.apiPost('/hackmd.discard', { pageId });
+      const res = await apiPost('/hackmd.discard', { pageId });
 
       if (!res.ok) {
         throw new Error(res.error);
@@ -209,7 +211,7 @@ class PageEditorByHackmd extends React.Component {
       pageId: pageContainer.state.pageId,
     };
     try {
-      await this.props.appContainer.apiPost('/hackmd.saveOnHackmd', params);
+      await apiPost('/hackmd.saveOnHackmd', params);
     }
     catch (err) {
       logger.error(err);
@@ -417,12 +419,11 @@ class PageEditorByHackmd extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorByHackmdWrapper = withUnstatedContainers(PageEditorByHackmd, [PageContainer, EditorContainer]);
 
 PageEditorByHackmd.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };

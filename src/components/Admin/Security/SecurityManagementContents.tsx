@@ -8,7 +8,7 @@ import { LdapSecuritySetting } from '~/components/Admin/Security/LdapSecuritySet
 import { LocalSecuritySetting } from '~/components/Admin/Security/LocalSecuritySetting';
 // import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
 // import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
-import SecuritySetting from '~/client/js/components/Admin/Security/SecuritySetting';
+import { SecuritySetting } from '~/components/Admin/Security/SecuritySetting';
 // import BasicSecuritySetting from '~/client/js/components/Admin/Security/BasicSecuritySetting';
 // import GoogleSecuritySetting from '~/client/js/components/Admin/Security/GoogleSecuritySetting';
 // import GitHubSecuritySetting from '~/client/js/components/Admin/Security/GitHubSecuritySetting';
@@ -86,7 +86,6 @@ export const SecurityManagementContents: FC<Props> = (props: Props) => {
   return (
     <Fragment>
       <div className="mb-5">
-        {/* TODO: show dropdown text byGW-5142 */}
         <SecuritySetting />
       </div>
 

@@ -9,6 +9,7 @@ import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions
 import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AdminSocketIoContainer from '../../../../services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '../../../../util/apiNotification';
+import { apiv3Post } from '~/utils/apiv3-client';
 
 
 import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';
@@ -216,7 +217,7 @@ class ImportForm extends React.Component {
     this.setState({ canImport });
   }
 
-  async validateCollectionSize(validationErrors) {
+  async validateCollectionSize() {
     const { t } = this.props;
     const { warnForOtherGroups, selectedCollections } = this.state;
 
@@ -297,7 +298,6 @@ class ImportForm extends React.Component {
     });
 
     try {
-      // TODO: use apiv3-client
       await apiv3Post('/import', {
         fileName,
         collections: Array.from(selectedCollections),

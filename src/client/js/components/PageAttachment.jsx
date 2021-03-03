@@ -3,12 +3,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
-import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
+import { apiv3Get } from '~/utils/apiv3-client';
+import { apiPost } from '../util/apiv1-client';
 
 class PageAttachment extends React.Component {
 
@@ -38,7 +40,7 @@ class PageAttachment extends React.Component {
 
     if (!pageId) { return }
 
-    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, page });
+    const res = await apiv3Get('/attachment/list', { pageId, page });
     const attachments = res.data.paginateResult.docs;
     const totalAttachments = res.data.paginateResult.totalDocs;
     const pagingLimit = res.data.paginateResult.limit;
@@ -86,7 +88,7 @@ class PageAttachment extends React.Component {
       deleting: true,
     });
 
-    this.props.appContainer.apiPost('/attachments.remove', { attachment_id: attachmentId })
+    apiPost('/attachments.remove', { attachment_id: attachmentId })
       .then((res) => {
         this.setState({
           attachments: this.state.attachments.filter((at) => {
@@ -106,7 +108,9 @@ class PageAttachment extends React.Component {
   }
 
   isUserLoggedIn() {
-    return this.props.appContainer.currentUser != null;
+    // TODO retrieve from useCurrentUser at context.tsx
+    const currentUser = null;
+    return currentUser != null;
   }
 
 
@@ -171,12 +175,11 @@ class PageAttachment extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [AppContainer, PageContainer]);
+const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [PageContainer]);
 
 
 PageAttachment.propTypes = {
   t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 

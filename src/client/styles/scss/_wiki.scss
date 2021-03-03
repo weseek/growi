@@ -71,13 +71,6 @@ div.body {
     margin: 5px 0;
   }
 
-  img.emojione {
-    margin-top: -0.3em !important;
-    margin-bottom: 0 !important;
-    border: none;
-    box-shadow: none;
-  }
-
   ul,
   ol {
     padding-left: 30px;
@@ -191,10 +184,6 @@ div.body {
 
     blockquote {
       font-size: 0.9em * $ratio;
-    }
-
-    img.emojione {
-      margin-top: -0.3em * $ratio !important;
     }
 
     ul,

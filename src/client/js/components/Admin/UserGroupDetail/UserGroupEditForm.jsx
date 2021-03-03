@@ -104,6 +104,6 @@ UserGroupEditForm.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const UserGroupEditFormWrapper = withUnstatedContainers(UserGroupEditForm, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupEditFormWrapper = withUnstatedContainers(UserGroupEditForm, [AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupEditFormWrapper);

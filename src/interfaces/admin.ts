@@ -69,3 +69,11 @@ export type customizeParams = {
   styleName: string,
   themeType: string,
 }
+
+export type securityParamsGeneralSetting = {
+    restrictGuestMode: string,
+    pageCompleteDeletionAuthority: string,
+    hideRestrictedByOwner: string,
+    hideRestrictedByGroup: string,
+    wikiMode: string,
+}

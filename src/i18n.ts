@@ -21,6 +21,12 @@ const nextI18Next = new NextI18Next({
   // },
 });
 
+if (process.env.NODE_ENV !== 'production') {
+  import('i18next-hmr').then((i18nextHmr) => {
+    i18nextHmr.applyClientHMR(nextI18Next.i18n);
+  });
+}
+
 export default nextI18Next;
 // export all fields manually because of the difference to `module.exports`
 export const Trans = nextI18Next.Trans;

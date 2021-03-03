@@ -13,13 +13,9 @@ class RevisionDiff extends React.Component {
     const { t } = this.props;
     const currentRevision = this.props.currentRevision;
     const previousRevision = this.props.previousRevision;
-    const revisionDiffOpened = this.props.revisionDiffOpened;
-
 
     let diffViewHTML = '';
-    if (currentRevision.body
-      && previousRevision.body
-      && revisionDiffOpened) {
+    if (currentRevision.body != null && previousRevision.body != null) {
 
       let previousText = previousRevision.body;
       // comparing ObjectId
@@ -74,7 +70,6 @@ RevisionDiff.propTypes = {
   t: PropTypes.func.isRequired,
   currentRevision: PropTypes.object.isRequired,
   previousRevision: PropTypes.object.isRequired,
-  revisionDiffOpened: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(RevisionDiff);

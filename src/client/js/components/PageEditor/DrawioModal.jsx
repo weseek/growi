@@ -7,8 +7,9 @@ import {
   ModalBody,
 } from 'reactstrap';
 
+import { useDrawioUri } from '~/stores/context';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
 import EditorContainer from '../../services/EditorContainer';
 
 class DrawioModal extends React.PureComponent {
@@ -117,9 +118,8 @@ class DrawioModal extends React.PureComponent {
   }
 
   get drawioURL() {
-    const { config } = this.props.appContainer;
+    const { drawioUri } = this.props;
 
-    const drawioUri = config.env.DRAWIO_URI || 'https://embed.diagrams.net/';
     const url = new URL(drawioUri);
 
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
@@ -160,11 +160,15 @@ class DrawioModal extends React.PureComponent {
 }
 
 DrawioModal.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 
+  drawioUri: PropTypes.string.isRequired,
   onSave: PropTypes.func,
 };
 
+const DrawioModalWrapper = (props) => {
+  const { data: drawioUri } = useDrawioUri();
+  return <DrawioModal {...props} drawioUri={drawioUri} />;
+};
 
-export default withUnstatedContainers(DrawioModal, [AppContainer, EditorContainer]);
+export default withUnstatedContainers(DrawioModalWrapper, [EditorContainer]);

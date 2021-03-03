@@ -28,6 +28,7 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
+  useAclEnabled, useHasSlackConfig, useDrawioUri,
 } from '../stores/context';
 import {
   useCurrentPageSWR,
@@ -56,6 +57,9 @@ type Props = CommonProps & {
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isAclEnabled: boolean,
+  hasSlackConfig: boolean,
+  drawioUri: string,
   highlightJsStyle: string,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
@@ -81,6 +85,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
+  useAclEnabled(props.isAclEnabled);
+  useHasSlackConfig(props.hasSlackConfig);
+  useDrawioUri(props.drawioUri);
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
@@ -211,7 +218,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService, configManager,
+    appService, searchService, configManager, aclService, slackNotificationService,
   } = crowi;
 
   const { user } = req;
@@ -237,6 +244,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.confidential = appService.getAppConfidential();
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+  props.isAclEnabled = aclService.isAclEnabled();
+  props.hasSlackConfig = slackNotificationService.hasSlackConfig();
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');

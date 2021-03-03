@@ -4,11 +4,9 @@ import PropTypes from 'prop-types';
 import { Waypoint } from 'react-waypoint';
 
 import loggerFactory from '~/utils/logger';
+import MarkdownRenderer from '~/service/renderer/markdown-renderer';
 
-import { withUnstatedContainers } from '../UnstatedUtils';
-import GrowiRenderer from '../../util/GrowiRenderer';
-import AppContainer from '../../services/AppContainer';
-
+import { apiv3Get } from '../../util/apiv3-client';
 import RevisionRenderer from './RevisionRenderer';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -49,7 +47,7 @@ class RevisionLoader extends React.Component {
 
     // load data with REST API
     try {
-      const res = await this.props.appContainer.apiv3Get(`/revisions/${revisionId}`, { pageId });
+      const res = await apiv3Get(`/revisions/${revisionId}`, { pageId });
 
       this.setState({
         markdown: res.data.revision.body,
@@ -107,7 +105,7 @@ class RevisionLoader extends React.Component {
 
     return (
       <RevisionRenderer
-        growiRenderer={this.props.growiRenderer}
+        renderer={this.props.renderer}
         markdown={markdown}
         highlightKeywords={this.props.highlightKeywords}
       />
@@ -116,15 +114,8 @@ class RevisionLoader extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const RevisionLoaderWrapper = withUnstatedContainers(RevisionLoader, [AppContainer]);
-
 RevisionLoader.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
-  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  renderer: PropTypes.instanceOf(MarkdownRenderer).isRequired,
   pageId: PropTypes.string.isRequired,
   revisionId: PropTypes.string.isRequired,
   lazy: PropTypes.bool,
@@ -132,4 +123,4 @@ RevisionLoader.propTypes = {
   highlightKeywords: PropTypes.string,
 };
 
-export default RevisionLoaderWrapper;
+export default RevisionLoader;

@@ -4,9 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
-
+import { apiGet } from '../util/apiv1-client';
 import { toastError } from '../util/apiNotification';
 
 import SearchPageForm from './SearchPage/SearchPageForm';
@@ -74,7 +72,7 @@ class SearchPage extends React.Component {
       searchingKeyword: keyword,
     });
 
-    this.props.appContainer.apiGet('/search', { q: keyword })
+    apiGet('/search', { q: keyword })
       .then((res) => {
         this.changeURL(keyword);
 
@@ -110,14 +108,8 @@ class SearchPage extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const SearchPageWrapper = withUnstatedContainers(SearchPage, [AppContainer]);
-
 SearchPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   query: PropTypes.object,
 };
@@ -126,4 +118,4 @@ SearchPage.defaultProps = {
   query: SearchPage.getQueryByLocation(window.location || {}),
 };
 
-export default withTranslation()(SearchPageWrapper);
+export default withTranslation()(SearchPage);

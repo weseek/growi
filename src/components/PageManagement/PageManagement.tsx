@@ -217,11 +217,13 @@ export const PageManagement:FC<Props> = (props:Props) => {
       />
 
       <PageRenameModal
+        currentPage={currentPage}
         isOpen={isPageRenameModalShown}
         onClose={() => setIsPageRenameModalShown(false)}
         path={path}
       />
       <PageDuplicateModal
+        currentPage={currentPage}
         isOpen={isPageDuplicateModalShown}
         onClose={() => setIsPageDuplicateModalShown(false)}
       />
@@ -231,9 +233,9 @@ export const PageManagement:FC<Props> = (props:Props) => {
         path={path}
       />
       <PageDeleteModal
+        currentPage={currentPage}
         isOpen={isPageDeleteModalShown}
         onClose={() => setIsPageDeleteModalShown(false)}
-        currentPage={currentPage}
         isAbleToDeleteCompletely={isAbleToDeleteCompletely}
       />
       <PagePresentationModal

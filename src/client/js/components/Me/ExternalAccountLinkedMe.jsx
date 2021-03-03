@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastError } from '../../util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 import ExternalAccountRow from './ExternalAccountRow';
 import AssociateModal from './AssociateModal';
@@ -117,11 +116,10 @@ class ExternalAccountLinkedMe extends React.Component {
 
 }
 
-const ExternalAccountLinkedMeWrapper = withUnstatedContainers(ExternalAccountLinkedMe, [AppContainer, PersonalContainer]);
+const ExternalAccountLinkedMeWrapper = withUnstatedContainers(ExternalAccountLinkedMe, [PersonalContainer]);
 
 ExternalAccountLinkedMe.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 

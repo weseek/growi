@@ -11,7 +11,6 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import PageContainer from '../services/PageContainer';
-import AppContainer from '../services/AppContainer';
 import EditorContainer from '../services/EditorContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -23,9 +22,6 @@ class SavePageControls extends React.Component {
 
   constructor(props) {
     super(props);
-
-    const config = this.props.appContainer.getConfig();
-    this.isAclEnabled = config.isAclEnabled;
 
     this.updateGrantHandler = this.updateGrantHandler.bind(this);
 
@@ -74,7 +70,7 @@ class SavePageControls extends React.Component {
     return (
       <div className="d-flex align-items-center form-inline flex-nowrap">
 
-        {this.isAclEnabled
+        {this.props.isAclEnabled
           && (
           <div className="mr-2">
             <GrantSelector
@@ -107,14 +103,15 @@ class SavePageControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [AppContainer, PageContainer, EditorContainer]);
+const SavePageControlsWrapper = withUnstatedContainers(SavePageControls, [PageContainer, EditorContainer]);
 
 SavePageControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+
+  isAclEnabled: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(SavePageControlsWrapper);

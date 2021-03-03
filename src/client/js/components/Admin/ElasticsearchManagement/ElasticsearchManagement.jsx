@@ -10,6 +10,7 @@ import StatusTable from './StatusTable';
 import ReconnectControls from './ReconnectControls';
 import NormalizeIndicesControls from './NormalizeIndicesControls';
 import RebuildIndexControls from './RebuildIndexControls';
+import { apiv3Get, apiv3Post, apiv3Put } from '~/utils/apiv3-client';
 
 class ElasticsearchManagement extends React.Component {
 
@@ -144,8 +145,9 @@ class ElasticsearchManagement extends React.Component {
       isNormalized, indicesData, aliasesData,
     } = this.state;
 
-    // TODO: retrieve from SWR
+    // TODO: GW- retrieve from SWR
     // const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
+    const isErrorOccuredOnSearchService = true;
 
     const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
 

@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-import AppContainer from '../services/AppContainer';
+import { useCurrentUser } from '~/stores/context';
 
-import { withUnstatedContainers } from './UnstatedUtils';
-
-const NotAvailableForGuest = (props) => {
-  const { appContainer, children } = props;
-  const isLoggedin = appContainer.currentUser != null;
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const NotAvailableForGuest = ({ children }) => {
+  const { data: currentUser } = useCurrentUser();
+  const isLoggedin = currentUser != null;
 
   if (isLoggedin) {
-    return props.children;
+    return children;
   }
 
   const id = children.props.id || `grw-not-available-for-guest-${Math.random().toString(32).substring(2)}`;
@@ -34,8 +33,7 @@ const NotAvailableForGuest = (props) => {
 };
 
 NotAvailableForGuest.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   children: PropTypes.node.isRequired,
 };
 
-export default withUnstatedContainers(NotAvailableForGuest, [AppContainer]);
+export default NotAvailableForGuest;

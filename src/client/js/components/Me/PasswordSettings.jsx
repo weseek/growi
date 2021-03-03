@@ -6,16 +6,14 @@ import { withTranslation } from 'react-i18next';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
+import { apiv3Get, apiv3Put } from '~/utils/apiv3-client';
 
 
 class PasswordSettings extends React.Component {
 
-  constructor(appContainer) {
+  constructor() {
     super();
-
-    this.appContainer = appContainer;
 
     this.state = {
       retrieveError: null,
@@ -31,10 +29,8 @@ class PasswordSettings extends React.Component {
   }
 
   async componentDidMount() {
-    const { appContainer } = this.props;
-
     try {
-      const res = await appContainer.apiv3Get('/personal-setting/is-password-set');
+      const res = await apiv3Get('/personal-setting/is-password-set');
       const { isPasswordSet } = res.data;
       this.setState({ isPasswordSet });
     }
@@ -46,11 +42,11 @@ class PasswordSettings extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, appContainer, personalContainer } = this.props;
+    const { t, personalContainer } = this.props;
     const { oldPassword, newPassword, newPasswordConfirm } = this.state;
 
     try {
-      await appContainer.apiv3Put('/personal-setting/password', {
+      await apiv3Put('/personal-setting/password', {
         oldPassword, newPassword, newPasswordConfirm,
       });
       this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
@@ -154,11 +150,10 @@ class PasswordSettings extends React.Component {
 }
 
 
-const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettings, [AppContainer, PersonalContainer]);
+const PasswordSettingsWrapper = withUnstatedContainers(PasswordSettings, [PersonalContainer]);
 
 PasswordSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 

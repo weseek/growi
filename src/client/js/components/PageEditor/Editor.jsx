@@ -1,7 +1,8 @@
+import dynamic from 'next/dynamic';
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Subscribe } from 'unstated';
+// import { Subscribe } from 'unstated';
 
 import {
   Modal, ModalHeader, ModalBody,
@@ -9,14 +10,15 @@ import {
 
 import Dropzone from 'react-dropzone';
 
-import EditorContainer from '../../services/EditorContainer';
+// import EditorContainer from '../../services/EditorContainer';
 
 import Cheatsheet from './Cheatsheet';
 import AbstractEditor from './AbstractEditor';
-import CodeMirrorEditor from './CodeMirrorEditor';
-import TextAreaEditor from './TextAreaEditor';
+// import TextAreaEditor from './TextAreaEditor';
 
 import pasteHelper from './PasteHelper';
+// import CodeMirrorEditor from './CodeMirrorEditor';
+const CodeMirrorEditor = dynamic(() => import('./CodeMirrorEditor'), { ssr: false });
 
 export default class Editor extends AbstractEditor {
 
@@ -300,27 +302,26 @@ export default class Editor extends AbstractEditor {
               <div className={this.getDropzoneClassName(isDragAccept, isDragReject)} {...getRootProps()}>
                 { this.state.dropzoneActive && this.renderDropzoneOverlay() }
 
-                { this.state.isComponentDidMount && this.renderNavbar() }
-
+                {/* { this.state.isComponentDidMount && this.renderNavbar() } */}
                 {/* for PC */}
                 { !isMobile && (
-                  <Subscribe to={[EditorContainer]}>
-                    { editorContainer => (
+                  // <Subscribe to={[EditorContainer]}>
+                  //   { editorContainer => (
                       // eslint-disable-next-line arrow-body-style
-                      <CodeMirrorEditor
-                        ref={(c) => { this.cmEditor = c }}
-                        editorOptions={editorContainer.state.editorOptions}
-                        onPasteFiles={this.pasteFilesHandler}
-                        onDragEnter={this.dragEnterHandler}
-                        onMarkdownHelpButtonClicked={this.showMarkdownHelp}
-                        {...this.props}
-                      />
-                    )}
-                  </Subscribe>
+                <CodeMirrorEditor
+                  ref={(c) => { this.cmEditor = c }}
+                        // editorOptions={editorContainer.state.editorOptions}
+                  onPasteFiles={this.pasteFilesHandler}
+                  onDragEnter={this.dragEnterHandler}
+                  onMarkdownHelpButtonClicked={this.showMarkdownHelp}
+                  {...this.props}
+                />
+                  //   )}
+                  // </Subscribe>
                 )}
 
                 {/* for mobile */}
-                { isMobile && (
+                {/* { isMobile && (
                   <TextAreaEditor
                     ref={(c) => { this.taEditor = c }}
                     onPasteFiles={this.pasteFilesHandler}
@@ -328,6 +329,7 @@ export default class Editor extends AbstractEditor {
                     {...this.props}
                   />
                 )}
+           */}
 
                 <input {...getInputProps()} />
               </div>

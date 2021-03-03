@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import PropTypes from 'prop-types';
 
 import MarkdownRenderer from '~/service/renderer/markdown-renderer';
 

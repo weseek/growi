@@ -7,6 +7,7 @@ import * as toastr from 'toastr';
 
 import UploadForm from './GrowiArchive/UploadForm';
 import ImportForm from './GrowiArchive/ImportForm';
+import { apiv3Delete, apiv3Get } from '~/utils/apiv3-client';
 
 class GrowiArchiveSection extends React.Component {
 
@@ -41,7 +42,7 @@ class GrowiArchiveSection extends React.Component {
   }
 
   handleUpload({
-    meta, fileName, innerFileStats,
+    fileName, innerFileStats,
   }) {
     this.setState({
       fileName,
@@ -81,7 +82,7 @@ class GrowiArchiveSection extends React.Component {
   }
 
 
-  handleMismatchedVersions(err) {
+  handleMismatchedVersions() {
     this.setState({
       isTheSameVersion: false,
     });
