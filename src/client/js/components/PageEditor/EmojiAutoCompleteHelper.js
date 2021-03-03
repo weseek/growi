@@ -1,5 +1,7 @@
 import UpdateDisplayUtil from '../../util/codemirror/update-display-util.ext';
 
+// TODO: refactor with node-emoji
+
 class EmojiAutoCompleteHelper {
 
   constructor(emojiStrategy) {
@@ -14,11 +16,11 @@ class EmojiAutoCompleteHelper {
   }
 
   initEmojiImageMap() {
-    for (const data of Object.values(this.emojiStrategy)) {
-      const shortname = data.shortname;
-      // add image tag
-      this.emojiShortnameImageMap[shortname] = emojione.shortnameToImage(shortname);
-    }
+    // for (const data of Object.values(this.emojiStrategy)) {
+    //   const shortname = data.shortname;
+    //   // add image tag
+    //   this.emojiShortnameImageMap[shortname] = emojione.shortnameToImage(shortname);
+    // }
   }
 
   /**

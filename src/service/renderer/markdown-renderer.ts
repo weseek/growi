@@ -24,6 +24,7 @@ import unified, { Plugin, PluginTuple, Processor } from 'unified';
 import parse from 'remark-parse';
 import gfm from 'remark-gfm';
 import footnotes from 'remark-footnotes';
+import emoji from 'remark-emoji';
 import breaks from 'remark-breaks';
 import remark2rehype from 'remark-rehype';
 import slug from 'rehype-slug';
@@ -250,6 +251,7 @@ export const generateViewRenderer = (rendererSettings: RendererSettings, storeTo
   const renderer = new MarkdownRenderer();
   // add remark plugins
   renderer.remarkPlugins.push(footnotes);
+  renderer.remarkPlugins.push(emoji);
   if (rendererSettings.isEnabledLinebreaks) {
     renderer.remarkPlugins.push(breaks);
   }
