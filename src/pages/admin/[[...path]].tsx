@@ -21,7 +21,7 @@ import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchi
 
 import {
   useCurrentUser,
-  useSearchServiceConfigured, useSearchServiceReachable,
+  useSearchServiceConfigured, useSearchServiceReachable, useSiteUrl,
 } from '../../stores/context';
 
 const pluginUtils = new PluginUtils();
@@ -37,6 +37,8 @@ type Props = CommonProps & {
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+
+  siteUrl: string,
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
@@ -111,6 +113,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
 
+  useSiteUrl(props.siteUrl);
+
   return (
     <AdminLayout title={title} selectedNavOpt={name}>
       {content.component}
@@ -122,7 +126,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService,
+    appService, searchService,
   } = crowi;
 
   const { user } = req;
@@ -139,6 +143,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user.toObject());
   }
 
+  props.siteUrl = appService.getSiteUrl();
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
