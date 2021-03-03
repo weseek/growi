@@ -11,7 +11,6 @@ import SamlSecuritySettingContents from '~/client/js/components/Admin/Security/S
 
 type Props = {
   // adminSamlSecurityContainer: AdminSamlSecurityContainer,
-  // siteUrl: string,
 }
 
 // const retrieveErrors = null;
