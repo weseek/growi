@@ -65,9 +65,10 @@ export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): r
 export const useRevisionById = (revisionId?:string): responseInterface<Revision, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
   const { data: shareLinkId } = useShareLinkId();
+  const endpoint = revisionId != null ? `/revisions/${revisionId}` : null;
 
   return useSWR(
-    [`/revisions/${revisionId}`, currentPage, shareLinkId],
+    [endpoint, currentPage, shareLinkId],
     (endpoint, page, shareLinkId) => apiv3Get(endpoint, { pageId: page.id, shareLinkId }).then(response => response.data.revision),
     {
       revalidateOnFocus: false,
