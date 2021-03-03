@@ -1,10 +1,9 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
-// import { useTranslation } from '~/i18n';
+import { useTranslation } from '~/i18n';
 import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -35,16 +34,13 @@ class SamlSecurityManagementContents extends React.Component {
   }
 
   render() {
-
-    // function makeCallbackUrl(siteUrl) {
-    //   return urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/saml/callback');
-    // }
-
     const {
-      t, adminGeneralSecurityContainer, adminSamlSecurityContainer, siteUrl,
+      t, adminGeneralSecurityContainer, adminSamlSecurityContainer,
     } = this.props;
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
     const { isSamlEnabled } = adminGeneralSecurityContainer.state;
+
+    const siteUrl = urljoin(pathUtils.removeTrailingSlash(this.props.siteUrl), '/passport/saml/callback');
 
     return (
       <React.Fragment>
@@ -86,7 +82,7 @@ class SamlSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              // defaultValue={makeCallbackUrl(siteUrl)}
+              defaultValue={siteUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
@@ -517,24 +513,22 @@ SamlSecurityManagementContents.propTypes = {
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
 
-
-const SamlSecurityManagementContentsWithUnstated = withUnstatedContainers(SamlSecurityManagementContents, [
+const SamlSecurityManagementContentsWrapper = withUnstatedContainers(SamlSecurityManagementContents, [
   AdminGeneralSecurityContainer,
   AdminSamlSecurityContainer,
 ]);
 
 
-const SamlSecurityManagementContentsWrapper = (props) => {
-  // const { t } = useTranslation();
-  const { data: siteUrl } = useSiteUrl(props.siteUrl);
+const SamlSecurityManagementContentsWrapperNext = (props) => {
+  const { t } = useTranslation();
+  const { data: siteUrl } = useSiteUrl();
 
-
-  SamlSecurityManagementContentsWrapper.propTypes = {
-    siteUrl: PropTypes.string,
-  };
-
-  return <SamlSecurityManagementContents siteUrl={siteUrl} />;
+  return (
+    <SamlSecurityManagementContentsWrapper
+      t={t}
+      siteUrl={siteUrl}
+    />
+  );
 };
 
-// export default SamlSecurityManagementContentsWithUnstated;
-export default withTranslation()(SamlSecurityManagementContentsWithUnstated);
+export default SamlSecurityManagementContentsWrapperNext;
