@@ -168,12 +168,11 @@ class BoltService {
     const { searchService } = this.crowi;
     const ApiPaginate = require('../util/apiPaginate');
 
-    const offset = 0;
+    const offset = this.state.pagenationOffset;
 
     const options = { limit: 10, offset };
 
     const paginateOpts = ApiPaginate.parseOptionsForElasticSearch(options);
-    console.log('paginateOpts', paginateOpts);
 
     const results = await searchService.searchKeyword(keywords, null, {}, paginateOpts);
 
@@ -210,11 +209,12 @@ class BoltService {
       return data._source.path;
     });
 
-    return resultPaths;
+    return { resultPaths, offset };
   }
 
   async showEphemeralSearchResults(command, args) {
-    const resultPaths = await this.getSearchResultPaths(command, args);
+    const { resultPaths, offset } = await this.getSearchResultPaths(command, args);
+
     const base = this.crowi.appService.getSiteUrl();
 
     const urls = resultPaths.map((path) => {
@@ -258,6 +258,7 @@ class BoltService {
                   text: 'Next',
                 },
                 action_id: 'showNextResults',
+                value: `${offset}`,
               },
               {
                 type: 'button',
