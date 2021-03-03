@@ -65,8 +65,8 @@ export const useCurrentPageCommentsSWR = (): responseInterface<Comment[], Error>
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/comments/get', currentPage],
-    (endpoint, page) => apiv3Get(endpoint, { page_id: page.id }).then(response => response.comments),
+    ['/comments', currentPage],
+    (endpoint, page) => apiv3Get(endpoint, { pageId: page.id }).then(response => response.data.comments),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
