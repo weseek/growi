@@ -127,7 +127,6 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
@@ -252,7 +251,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let page;
