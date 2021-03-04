@@ -63,6 +63,7 @@ type Props = CommonProps & {
   highlightJsStyle: string,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
+  editorConfig: any,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -252,6 +253,21 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
 
+  const env = process.env;
+  props.editorConfig = {
+    upload: {
+      image: crowi.fileUploadService.getIsUploadable(),
+      file: crowi.fileUploadService.getFileUploadEnabled(),
+    },
+    env: {
+      PLANTUML_URI: env.PLANTUML_URI || null,
+      BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
+      DRAWIO_URI: env.DRAWIO_URI || null,
+      HACKMD_URI: env.HACKMD_URI || null,
+      MATHJAX: env.MATHJAX || null,
+      NO_CDN: env.NO_CDN || null,
+    },
+  };
   return {
     props,
   };

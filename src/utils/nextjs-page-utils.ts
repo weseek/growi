@@ -10,7 +10,6 @@ export type CommonProps = {
   confidential: string,
   customTitleTemplate: string,
   growiVersion: string,
-  editorConfig: any,
 }
 
 // eslint-disable-next-line max-len
@@ -25,22 +24,6 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const url = new URL(context.resolvedUrl, 'http://example.com');
   const currentPagePath = decodeURI(url.pathname);
 
-  const env = process.env;
-  const editorConfig = {
-    upload: {
-      image: crowi.fileUploadService.getIsUploadable(),
-      file: crowi.fileUploadService.getFileUploadEnabled(),
-    },
-    env: {
-      PLANTUML_URI: env.PLANTUML_URI || null,
-      BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
-      DRAWIO_URI: env.DRAWIO_URI || null,
-      HACKMD_URI: env.HACKMD_URI || null,
-      MATHJAX: env.MATHJAX || null,
-      NO_CDN: env.NO_CDN || null,
-    },
-  };
-
   const props: CommonProps = {
     namespacesRequired: ['translation'],
     currentPagePath,
@@ -48,7 +31,6 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     confidential: appService.getAppConfidential(),
     customTitleTemplate: customizeService.customTitleTemplate,
     growiVersion: crowi.version,
-    editorConfig,
   };
 
   return { props };
