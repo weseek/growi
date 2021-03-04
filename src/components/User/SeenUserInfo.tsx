@@ -22,7 +22,7 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
   // const { pageContainer, disabled } = props;
-  const { data } = useSeenUsersSWR;
+  const { data } = useSeenUsersSWR();
   console.log(data);
 
   return (

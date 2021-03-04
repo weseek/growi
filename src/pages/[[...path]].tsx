@@ -31,7 +31,7 @@ import {
   useAclEnabled, useHasSlackConfig, useDrawioUri,
 } from '../stores/context';
 import {
-  useCurrentPageSWR,
+  useCurrentPageSWR, useSeenUsersSWR,
 } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -101,6 +101,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     page = JSON.parse(props.page);
   }
   useCurrentPageSWR(page);
+  useSeenUsersSWR(page);
 
   let className = '';
   switch (editorMode) {
