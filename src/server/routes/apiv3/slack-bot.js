@@ -2,7 +2,6 @@
 const express = require('express');
 
 const router = express.Router();
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
@@ -15,13 +14,12 @@ module.exports = (crowi) => {
       res.send(req.body);
       return;
     }
-    try {
-      const response = await requestHandler(req.body) || null;
-      res.send(response);
-    }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3(`Error:Slack-Bot:${err}`), 500);
-    }
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
+
+    await requestHandler(req.body);
   });
 
   return router;

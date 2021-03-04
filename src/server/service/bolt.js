@@ -27,7 +27,7 @@ class BoltReciever {
       body: reqBody,
       ack: (response) => {
         if (ackCalled) {
-          return null;
+          return;
         }
 
         ackCalled = true;
@@ -36,13 +36,7 @@ class BoltReciever {
           const message = response.message || 'Error occurred';
           throw new Error(message);
         }
-        else if (!response) {
-          return null;
-        }
-        else {
-          return response;
-        }
-
+        return;
       },
     };
 
@@ -140,7 +134,7 @@ class BoltService {
         this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
     });
-    throw new Error('/growi command: Invalid first argument');
+    return;
   }
 
   async getSearchResultPaths(command, args) {
@@ -153,7 +147,7 @@ class BoltService {
           this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
-      throw new Error('/growi command:search: Invalid keyword');
+      return;
     }
 
     // remove leading 'search'.
@@ -200,6 +194,9 @@ class BoltService {
 
   async showEphemeralSearchResults(command, args) {
     const resultPaths = await this.getSearchResultPaths(command, args);
+    if (resultPaths == null) {
+      return;
+    }
     const base = this.crowi.appService.getSiteUrl();
 
     const urls = resultPaths.map((path) => {
