@@ -268,6 +268,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
       NO_CDN: env.NO_CDN || null,
     },
   };
+
   return {
     props,
   };
