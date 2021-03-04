@@ -31,7 +31,7 @@ export default class NavigationContainer extends Container {
       isDrawerMode: null,
       isDrawerOpened: false,
 
-      sidebarContentsId: 'recent',
+      sidebarContentsId: localStorage.sidebarContentsId || 'recent',
 
       isScrollTop: true,
 
@@ -188,6 +188,11 @@ export default class NavigationContainer extends Container {
     const isDrawerOpened = false; // close Drawer anyway
 
     this.setState({ isDrawerMode, isDrawerOpened });
+  }
+
+  selectSidebarContents(contentsId) {
+    window.localStorage.setItem('sidebarContentsId', contentsId);
+    this.setState({ sidebarContentsId: contentsId });
   }
 
   openPageCreateModal() {

@@ -27,6 +27,7 @@ const CustomSidebar = (props) => {
   const { appContainer } = props;
   const { apiGet } = appContainer;
 
+  const [isMounted, setMounted] = useState(false);
   const [markdown, setMarkdown] = useState();
 
   const growiRenderer = appContainer.getRenderer('sidebar');
@@ -41,6 +42,9 @@ const CustomSidebar = (props) => {
     catch (e) {
       logger.warn(e.message);
       return;
+    }
+    finally {
+      setMounted(true);
     }
 
     setMarkdown(page.revision.body);
@@ -58,7 +62,7 @@ const CustomSidebar = (props) => {
           <i className="icon icon-reload"></i>
         </button>
       </div>
-      { markdown == null && <SidebarNotFound /> }
+      { isMounted && markdown == null && <SidebarNotFound /> }
       {/* eslint-disable-next-line react/no-danger */}
       { markdown != null && (
         <div className="p-3">
