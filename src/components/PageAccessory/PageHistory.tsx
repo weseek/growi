@@ -29,9 +29,20 @@ export const PageHistory: VFC = () => {
   const [sourceRevision, setSourceRevision] = useState<Revision>();
   const [targetRevision, setTargetRevision] = useState<Revision>();
 
-  const [sourceRevisionIdFromUrl, setSourceRevisionIdFromUrl] = useState<string>();
+  /**
+   * Get the IDs of the comparison source and target from "next/route" as an array
+   */
+  const getRevisionIDsToCompareAsParam = useCallback((): Array<string> => {
+    const { compare } = router.query;
+    if (compare == null || Array.isArray(compare)) {
+      return [];
+    }
+
+    return compare.split('...') || [];
+  }, [router.query]);
+
+  const [sourceRevisionIdFromUrl, targetRevisionIdFromUrl] = getRevisionIDsToCompareAsParam();
   const { data: sourceRevisionFoundByIdFromUrl } = useRevisionById(sourceRevisionIdFromUrl);
-  const [targetRevisionIdFromUrl, setTargetRevisionIdUrl] = useState<string>();
   const { data: targetRevisionFoundByIdFromUrl } = useRevisionById(targetRevisionIdFromUrl);
 
   // If revision can be retrieved by id from url, set to sourceRevision
@@ -69,17 +80,6 @@ export const PageHistory: VFC = () => {
     setTargetRevision(revision);
   }, []);
 
-  /**
-   * Get the IDs of the comparison source and target from "next/route" as an array
-   */
-  const getRevisionIDsToCompareAsParam = useCallback((): Array<string> => {
-    const { compare } = router.query;
-    if (compare == null || Array.isArray(compare)) {
-      return [];
-    }
-
-    return compare.split('...') || [];
-  }, [router.query]);
 
   /**
    * Fetch the latest revision
@@ -97,32 +97,18 @@ export const PageHistory: VFC = () => {
     return null;
   }, [currentPage?._id, shareLinkId]);
 
-  /**
-   * Initialize the revisions
-   */
-  const initRevisions = useCallback(async() => {
-    // TODO fetchLatestRevision
-    // const latestRevision = await fetchLatestRevision();
+  //   // const latestRevision = await fetchLatestRevision();
 
-    const [sourceRevisionId, targetRevisionId] = getRevisionIDsToCompareAsParam();
+  //   const [sourceRevisionId, targetRevisionId] = getRevisionIDsToCompareAsParam();
 
-    if (sourceRevisionId != null) {
-      setSourceRevisionIdFromUrl(sourceRevisionId);
-    }
+  //   if (sourceRevisionId != null) {
+  //     setSourceRevisionIdFromUrl(sourceRevisionId);
+  //   }
 
-    if (targetRevisionId != null) {
-      setTargetRevisionIdUrl(targetRevisionId);
-    }
-    // const sourceRevision = sourceRevisionId ? fetchRevision(sourceRevisionId) : latestRevision;
-    // const targetRevision = targetRevisionId ? fetchRevision(targetRevisionId) : latestRevision;
-
-    // setLatestRevision(latestRevision);
-  }, [getRevisionIDsToCompareAsParam]);
-
-  useEffect(() => {
-    initRevisions();
-  }, [initRevisions]);
-
+  //   if (targetRevisionId != null) {
+  //     setTargetRevisionIdUrl(targetRevisionId);
+  //   }
+  //   // setLatestRevision(latestRevision);
 
   useEffect(() => {
     if (paginationResult == null) {
