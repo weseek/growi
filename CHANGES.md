@@ -2,7 +2,7 @@
 
 ## v4.2.12-RC
 
-* 
+* Feature: Custom Sidebar
 
 ## v4.2.11
 
