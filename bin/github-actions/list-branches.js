@@ -14,7 +14,7 @@ const url = require('url');
 
 const EXCLUDE_TERM_DAYS = 14;
 const EXCLUDE_PATTERNS = [
-  /^feat\/custom-sidebar-2$/,
+  /^support\/apply-tsed$/,
   // https://regex101.com/r/Lnx7Pz/3
   /^dev\/[\d.x]*$/,
   /^release\/.+$/,
