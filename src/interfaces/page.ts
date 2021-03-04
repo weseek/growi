@@ -31,12 +31,18 @@ export type Comment = {
   comment: string,
   replyTo?: string,
   creator: User,
+  isMarkdown: boolean,
+  createdAt: Date,
+  updatedAt: Date,
+  revision: Revision,
 }
 
 export type Revision = {
   _id: string,
   author: User,
   hasDiffToPrev: boolean;
+  createdAt: Date,
+  updatedAt: Date,
 }
 
 export type PaginationResult<T> = {
