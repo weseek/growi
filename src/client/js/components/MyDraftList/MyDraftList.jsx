@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
+import { apiGet } from '~/client/js/util/apiv1-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import EditorContainer from '../../services/EditorContainer';
 
@@ -50,7 +50,7 @@ class MyDraftList extends React.Component {
       return;
     }
 
-    const res = await this.props.appContainer.apiGet('/pages.exist', {
+    const res = await apiGet('/pages.exist', {
       pagePaths: JSON.stringify(Object.keys(draftsAsObj)),
     });
 
@@ -175,13 +175,12 @@ class MyDraftList extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const MyDraftListWrapper = withUnstatedContainers(MyDraftList, [AppContainer, PageContainer, EditorContainer]);
+const MyDraftListWrapper = withUnstatedContainers(MyDraftList, [PageContainer, EditorContainer]);
 
 
 MyDraftList.propTypes = {
   t: PropTypes.func.isRequired, // react-i18next
 
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };

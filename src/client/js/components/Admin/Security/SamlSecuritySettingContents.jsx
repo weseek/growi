@@ -1,7 +1,10 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { pathUtils } from 'growi-commons';
+import urljoin from 'url-join';
+import { useTranslation } from '~/i18n';
+import { useSiteUrl } from '~/stores/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -31,9 +34,13 @@ class SamlSecurityManagementContents extends React.Component {
   }
 
   render() {
-    const { t, adminGeneralSecurityContainer, adminSamlSecurityContainer } = this.props;
+    const {
+      t, adminGeneralSecurityContainer, adminSamlSecurityContainer,
+    } = this.props;
     const { useOnlyEnvVars } = adminSamlSecurityContainer.state;
     const { isSamlEnabled } = adminGeneralSecurityContainer.state;
+
+    const siteUrl = urljoin(pathUtils.removeTrailingSlash(this.props.siteUrl), '/passport/saml/callback');
 
     return (
       <React.Fragment>
@@ -75,11 +82,11 @@ class SamlSecurityManagementContents extends React.Component {
             <input
               className="form-control"
               type="text"
-              defaultValue={adminSamlSecurityContainer.state.callbackUrl}
+              defaultValue={siteUrl}
               readOnly
             />
             <p className="form-text text-muted small">{t('security_setting.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
-            {!adminGeneralSecurityContainer.state.appSiteUrl && (
+            {siteUrl == null && (
               <div className="alert alert-danger">
                 <i
                   className="icon-exclamation"
@@ -501,6 +508,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
 
 SamlSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+  siteUrl: PropTypes.string,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
@@ -510,4 +518,18 @@ const SamlSecurityManagementContentsWrapper = withUnstatedContainers(SamlSecurit
   AdminSamlSecurityContainer,
 ]);
 
-export default withTranslation()(SamlSecurityManagementContentsWrapper);
+
+const SamlSecurityManagementContentsWrapperNext = (props) => {
+  const { t } = useTranslation();
+  const { data: siteUrl } = useSiteUrl();
+
+  return (
+    <SamlSecurityManagementContentsWrapper
+      {...props}
+      t={t}
+      siteUrl={siteUrl}
+    />
+  );
+};
+
+export default SamlSecurityManagementContentsWrapperNext;
