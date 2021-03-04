@@ -26,7 +26,7 @@ const CustomSidebar = (props) => {
   const { appContainer } = props;
   const { apiGet } = appContainer;
 
-  const [html, setHtml] = useState('');
+  const [html, setHtml] = useState();
 
   const growiRenderer = appContainer.getRenderer('sidebar');
 
@@ -74,13 +74,13 @@ const CustomSidebar = (props) => {
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
         <h3 className="mb-0">Custom Sidebar</h3>
-        <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={() => {}}>
+        <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={fetchDataAndRenderHtml}>
           <i className="icon icon-reload"></i>
         </button>
       </div>
-      <SidebarNotFound />
+      { html == null && <SidebarNotFound /> }
       {/* eslint-disable-next-line react/no-danger */}
-      <div key="sidebar" dangerouslySetInnerHTML={{ __html: html }}></div>
+      { html != null && <div key="sidebar" dangerouslySetInnerHTML={{ __html: html }}></div> }
     </>
   );
 
