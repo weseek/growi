@@ -2,6 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const { query } = require('express-validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -51,8 +53,17 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
+  const Comment = crowi.model('Comment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');
+
+  const validator = {
+    getComments: [
+      query('pageId').isMongoId().withMessage('pageId is required'),
+      query('revisionId').if(value => value != null).isMongoId().withMessage('revisionId must be MongoId'),
+    ],
+  };
+
 
   /**
    * @swagger
@@ -72,6 +83,8 @@ module.exports = (crowi) => {
    *            name: revisionId
    *            schema:
    *              $ref: '#/components/schemas/Revision/properties/_id'
+   *        required:
+   *          - pageId
    *        responses:
    *          200:
    *            description: Succeeded to get comments of the page of the revision.
@@ -90,9 +103,8 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.get('/', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
-    const pageId = req.query.pageId;
-    const revisionId = req.query.revisionId;
+  router.get('/', accessTokenParser, loginRequired, validator.getComments, apiV3FormValidator, async(req, res) => {
+    const { pageId, revisionId } = req.query;
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
@@ -111,12 +123,18 @@ module.exports = (crowi) => {
       }
     }
     catch (err) {
-      return res.apiv3Err(new ErrorV3(err));
+      return res.apiv3Err(new ErrorV3(err), 500);
     }
 
-    const comments = await fetcher.populate(
-      { path: 'creator', select: User.USER_PUBLIC_FIELDS },
+    const result = await fetcher.populate(
+      { path: 'creator' },
     );
+
+    const comments = result.map((comment) => {
+      // return email only when specified by query
+      comment.creator = serializeUserSecurely(comment.creator);
+      return comment;
+    });
 
     return res.apiv3({ comments });
 
