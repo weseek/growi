@@ -2,7 +2,6 @@
 const express = require('express');
 
 const router = express.Router();
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
