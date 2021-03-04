@@ -16,15 +16,11 @@ module.exports = (crowi) => {
       return;
     }
 
-    // send response immediately to avoid opelation_timeout error
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    try {
-      await requestHandler(req.body);
-    }
-    catch (err) {
-      return res.apiv3Err(new ErrorV3(`Error:Slack-Bot:${err}`), 500);
-    }
+    await requestHandler(req.body);
   });
 
   return router;
