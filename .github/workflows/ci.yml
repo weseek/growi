@@ -218,7 +218,6 @@ jobs:
         image: mongo:4.4
         ports:
         - 27017/tcp
-    services:
       mongodb36:
         image: mongo:3.6
         ports:
