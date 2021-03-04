@@ -28,7 +28,7 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
-  useAclEnabled, useHasSlackConfig, useDrawioUri,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useEditorConfig,
 } from '../stores/context';
 import {
   useCurrentPageSWR,
@@ -88,6 +88,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useAclEnabled(props.isAclEnabled);
   useHasSlackConfig(props.hasSlackConfig);
   useDrawioUri(props.drawioUri);
+  useEditorConfig(props.editorConfig);
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,

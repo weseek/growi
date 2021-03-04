@@ -82,3 +82,7 @@ export const useDrawioUri = (initialData?: string): responseInterface<string, an
 export const useGrowiVersion = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('growiVersion', initialData);
 };
+
+export const useEditorConfig = (initialData?: {}): responseInterface<{}, any> => {
+  return useStaticSWR('editorConfig', initialData);
+};
