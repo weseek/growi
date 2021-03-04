@@ -77,6 +77,22 @@ export const useRevisionById = (revisionId?:string): responseInterface<Revision,
   );
 };
 
+export const useLatestRevision = (): responseInterface<Revision, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+  const { data: shareLinkId } = useShareLinkId();
+
+  return useSWR(
+    ['/revisions/list', currentPage, shareLinkId],
+    (endpoint, page, shareLinkId) => apiv3Get(endpoint, {
+      pageId: page.id, shareLinkId, page: 1, limit: 1,
+    }).then(response => response.data.docs[0]),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
 export const useCurrentPageCommentsSWR = (): responseInterface<Comment[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
