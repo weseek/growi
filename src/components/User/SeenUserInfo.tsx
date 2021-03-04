@@ -2,34 +2,29 @@ import React, { VFC, useState } from 'react';
 import {
   Button, Popover, PopoverBody,
 } from 'reactstrap';
-// import UserPictureList from './UserPictureList';
-
-// import { withUnstatedContainers } from '../UnstatedUtils';
-
-// import PageContainer from '../../services/PageContainer';
-
-// import FootstampIcon from '../FootstampIcon';
-
-/* eslint react/no-multi-comp: 0, react/prop-types: 0 */
-
+import UserPictureList from '~/client/js/components/User/UserPictureList';
 import { useSeenUsersSWR } from '~/stores/page';
 
-type Props ={
 
+import FootstampIcon from '~/client/js/components/FootstampIcon';
+
+type Props ={
+  seenUsers: number
 }
 
 export const SeenUserInfo:VFC<Props> = (props:Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
   // const { pageContainer, disabled } = props;
-  const { data } = useSeenUsersSWR();
-  console.log(data);
+  const { data: seenUsers } = useSeenUsersSWR();
+  const countOfSeenUsers = seenUsers.length;
+  console.log(seenUsers);
 
   return (
     <div className="grw-seen-user-info">
       <Button id="po-seen-user" color="link" className="px-2">
-        {/* <span className="mr-1 footstamp-icon"><FootstampIcon /></span> */}
-        {/* <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span> */}
+        <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
+        <span className="seen-user-count">{countOfSeenUsers}</span>
       </Button>
       <Popover
         placement="bottom"
@@ -41,7 +36,7 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
       >
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            {/* <UserPictureList users={pageContainer.state.seenUsers} /> */}
+            <UserPictureList users={seenUsers} />
           </div>
         </PopoverBody>
       </Popover>

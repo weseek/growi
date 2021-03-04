@@ -111,12 +111,13 @@ export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: bo
   );
 };
 
-export const useSeenUsersSWR = <Data, Error>(): responseInterface<Data, Error> => {
+export const useSeenUsersSWR = <Data, Error>(initialData?: boolean): responseInterface<Data, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
   return useSWR(
     ['/users.list', currentPage],
-    endpoint => apiv3Get(endpoint, { userIds: '600a85c2b1eac9026362dfab' }).then(response => response.data),
+    endpoint => apiv3Get(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.data),
     {
+      initialData: initialData || false,
       revalidateOnFocus: false,
     },
   );
