@@ -61,10 +61,11 @@ const CustomSidebar = (props) => {
       { markdown == null && <SidebarNotFound /> }
       {/* eslint-disable-next-line react/no-danger */}
       { markdown != null && (
-        <div className="grw-custom-sidebar-content p-3">
+        <div className="p-3">
           <RevisionRenderer
             growiRenderer={growiRenderer}
             markdown={markdown}
+            additionalClassName="grw-custom-sidebar-content"
           />
         </div>
       ) }

@@ -1,4 +1,4 @@
-.grw-custom-sidebar-content .wiki {
+%grw-custom-sidebar-content {
   h1,
   h2,
   h3,
@@ -43,4 +43,8 @@
     padding-left: 0;
     margin: 0;
   }
+}
+
+.grw-custom-sidebar-content.wiki {
+  @extend %grw-custom-sidebar-content;
 }
