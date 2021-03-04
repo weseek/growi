@@ -8,7 +8,8 @@ import {
 
 import { isTrashPage } from '../utils/path-utils';
 
-import { useCurrentPagePath } from './context';
+import { useCurrentPagePath, useShareLinkId } from './context';
+
 import { useStaticSWR } from './use-static-swr';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -54,6 +55,21 @@ export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): r
   return useSWR(
     ['/revisions/list', currentPage, selectedPage, limit],
     (endpoint, page, selectedPage, limit) => apiv3Get(endpoint, { pageId: page.id, page: selectedPage, limit }).then(response => response.data),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useRevisionById = (revisionId?:string): responseInterface<Revision, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+  const { data: shareLinkId } = useShareLinkId();
+  const endpoint = revisionId != null ? `/revisions/${revisionId}` : null;
+
+  return useSWR(
+    [endpoint, currentPage, shareLinkId],
+    (endpoint, page, shareLinkId) => apiv3Get(endpoint, { pageId: page.id, shareLinkId }).then(response => response.data.revision),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
