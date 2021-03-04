@@ -9,7 +9,6 @@ import { useSeenUsersSWR } from '~/stores/page';
 import FootstampIcon from '~/client/js/components/FootstampIcon';
 
 type Props ={
-  seenUsers: number
 }
 
 export const SeenUserInfo:VFC<Props> = (props:Props) => {
@@ -17,7 +16,7 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
   const toggle = () => setPopoverOpen(!popoverOpen);
   // const { pageContainer, disabled } = props;
   const { data: seenUsers } = useSeenUsersSWR();
-  const countOfSeenUsers = seenUsers.length;
+  const countOfSeenUsers = [seenUsers].length;
   console.log(seenUsers);
 
   return (

@@ -127,7 +127,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} user_ids
    */
   api.list = async function(req, res) {
-    const userIds = req.query.user_ids || null; // TODO: handling
+    const userIds = req.query.user_ids.join(',') || null; // TODO: handling
 
     let userFetcher;
     if (!userIds || userIds.split(',').length <= 0) {
