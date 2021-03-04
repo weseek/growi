@@ -14,7 +14,9 @@ import { RevisionComparer } from '~/components/PageAccessory/RevisionComparer';
 
 import { Revision } from '~/interfaces/page';
 
-import { useCurrentPageSWR, useCurrentPageHistorySWR, useRevisionById } from '~/stores/page';
+import {
+  useCurrentPageSWR, useCurrentPageHistorySWR, useRevisionById, useLatestRevision,
+} from '~/stores/page';
 import { useShareLinkId } from '~/stores/context';
 
 export const PageHistory: VFC = () => {
@@ -44,6 +46,7 @@ export const PageHistory: VFC = () => {
   const [sourceRevisionIdFromUrl, targetRevisionIdFromUrl] = getRevisionIDsToCompareAsParam();
   const { data: sourceRevisionFoundByIdFromUrl } = useRevisionById(sourceRevisionIdFromUrl);
   const { data: targetRevisionFoundByIdFromUrl } = useRevisionById(targetRevisionIdFromUrl);
+  const { data: latestRevision } = useLatestRevision();
 
   // If revision can be retrieved by id from url, set to sourceRevision
   useEffect(() => {
@@ -57,8 +60,15 @@ export const PageHistory: VFC = () => {
       setTargetRevision(targetRevisionFoundByIdFromUrl);
     }
   }, [targetRevisionFoundByIdFromUrl]);
-
-  const [latestRevision, setLatestRevision] = useState<Revision>();
+  // set latestRevision when revisionIds from url don`t exist.
+  useEffect(() => {
+    if (sourceRevisionIdFromUrl == null) {
+      setSourceRevision(latestRevision);
+    }
+    if (targetRevisionIdFromUrl == null) {
+      setTargetRevision(latestRevision);
+    }
+  }, [latestRevision, sourceRevisionIdFromUrl, targetRevisionIdFromUrl]);
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
@@ -79,36 +89,6 @@ export const PageHistory: VFC = () => {
     setSourceRevision(previousRevision);
     setTargetRevision(revision);
   }, []);
-
-
-  /**
-   * Fetch the latest revision
-   */
-  const fetchLatestRevision = useCallback(async() => {
-    try {
-      const res = await apiv3Get('/revisions/list', {
-        pageId: currentPage?._id, shareLinkId, page: 1, limit: 1,
-      });
-      return res.data.docs[0];
-    }
-    catch (err) {
-      toastError(err);
-    }
-    return null;
-  }, [currentPage?._id, shareLinkId]);
-
-  //   // const latestRevision = await fetchLatestRevision();
-
-  //   const [sourceRevisionId, targetRevisionId] = getRevisionIDsToCompareAsParam();
-
-  //   if (sourceRevisionId != null) {
-  //     setSourceRevisionIdFromUrl(sourceRevisionId);
-  //   }
-
-  //   if (targetRevisionId != null) {
-  //     setTargetRevisionIdUrl(targetRevisionId);
-  //   }
-  //   // setLatestRevision(latestRevision);
 
   useEffect(() => {
     if (paginationResult == null) {
