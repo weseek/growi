@@ -5,9 +5,6 @@ import React, {
 
 import { useTranslation } from '~/i18n';
 
-import { toastError } from '~/client/js/util/apiNotification';
-import { apiv3Get } from '~/utils/apiv3-client';
-
 import { PageRevisionTable } from '~/components/PageAccessory/PageRevisionTable';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 import { RevisionComparer } from '~/components/PageAccessory/RevisionComparer';
@@ -17,14 +14,12 @@ import { Revision } from '~/interfaces/page';
 import {
   useCurrentPageSWR, useCurrentPageHistorySWR, useRevisionById, useLatestRevision,
 } from '~/stores/page';
-import { useShareLinkId } from '~/stores/context';
 
 export const PageHistory: VFC = () => {
   const { t } = useTranslation();
   const router = useRouter();
 
   const { data: currentPage } = useCurrentPageSWR();
-  const { data: shareLinkId } = useShareLinkId();
 
   const [revisions, setRevisions] = useState<Revision[]>([]);
 
