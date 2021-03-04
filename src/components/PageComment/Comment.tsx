@@ -6,46 +6,51 @@ import { format } from 'date-fns';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { Comment as IComment } from '~/interfaces/page';
-
-import FormattedDistanceDate from '~/client/js/components/FormattedDistanceDate';
-import RevisionBody from '~/client/js/components/Page/RevisionBody';
-import UserPicture from '~/client/js/components/User/UserPicture';
-import Username from '~/client/js/components/User/Username';
 import { useTranslation } from '~/i18n';
-// import CommentEditor from './CommentEditor';
-// import CommentControl from './CommentControl';
-import HistoryIcon from '~/client/js/components/Icons/HistoryIcon';
+import { usePreviewRenderer } from '~/stores/renderer';
 import { useCurrentUser } from '~/stores/context';
 import { useCurrentPageSWR } from '~/stores/page';
+
+import FormattedDistanceDate from '~/client/js/components/FormattedDistanceDate';
+import UserPicture from '~/client/js/components/User/UserPicture';
+import Username from '~/client/js/components/User/Username';
+import RevisionRenderer from '~/client/js/components/Page/RevisionRenderer';
+// import CommentEditor from './CommentEditor';
+// import CommentControl from './CommentControl';
+// import HistoryIcon from '~/client/js/components/Icons/HistoryIcon';
 
 type Props = {
   comment: IComment,
 }
 
 export const Comment:VFC<Props> = (props:Props) => {
-  const [html, setHtml] = useState('');
-  const [isReEdit, setIsReEdit] = useState(false);
+  const [isReEdit] = useState(false);
 
   const { comment } = props;
+
   const { t } = useTranslation();
+  const { data: renderer } = usePreviewRenderer();
+
   const { data: currentUser } = useCurrentUser();
   const { data: currentPage } = useCurrentPageSWR();
   const revision = currentPage?.revision;
 
   const renderRevisionBody = useCallback(() => {
+
+    if (renderer == null || comment.comment == null) {
+      return <></>;
+    }
     // TODO implement
     // const config = this.props.appContainer.getConfig();
     // const isMathJaxEnabled = !!config.env.MATHJAX;
-    const isMathJaxEnabled = false;
+    // const isMathJaxEnabled = false;
     return (
-      <RevisionBody
-        html={html}
-        isMathJaxEnabled={isMathJaxEnabled}
-        renderMathJaxOnInit
-        additionalClassName="comment"
+      <RevisionRenderer
+        renderer={renderer}
+        markdown={comment.comment}
       />
     );
-  }, [html]);
+  }, [comment.comment, renderer]);
 
   const renderText = useCallback(() => {
     return <span style={{ whiteSpace: 'pre-wrap' }}>{comment.comment}</span>;
