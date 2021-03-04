@@ -1,22 +1,17 @@
-import { Schema, Types, Model } from 'mongoose';
+import {
+  Schema, Types, Model, Document,
+} from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
-
-export interface IShareLink {
-  _id: Types.ObjectId;
-  relatedPage: Types.ObjectId;
-  expiredAt: Date;
-  description: string;
-  createdAt: Date;
-}
+import { ShareLink as IShareLink } from '~/interfaces/page';
 
 /*
  * define schema
  */
-const schema = new Schema<IShareLink>({
+const schema:Schema<IShareLink & Document> = new Schema<IShareLink & Document>({
   relatedPage: {
     type: Types.ObjectId,
     ref: 'Page',
@@ -43,4 +38,4 @@ class ShareLink extends Model {
 }
 
 schema.loadClass(ShareLink);
-export default getOrCreateModel<IShareLink>('ShareLink', schema);
+export default getOrCreateModel<IShareLink & Document>('ShareLink', schema);

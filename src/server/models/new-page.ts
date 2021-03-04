@@ -12,22 +12,13 @@ import escapeStringRegexp from 'escape-string-regexp';
 import { isTopPage, isTrashPage } from '~/utils/path-utils';
 import templateChecker from '~/utils/template-checker';
 import loggerFactory from '~/utils/logger';
+import { Page as IPage } from '~/interfaces/page';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
-import { USER_PUBLIC_FIELDS, IUser } from '~/server/models/new-user';
+import { USER_PUBLIC_FIELDS } from '~/server/models/new-user';
 import ConfigManager from '~/server/service/config-manager';
 
 
 const logger = loggerFactory('growi:models:page');
-export interface IPage {
-  _id: string;
-  path: string;
-  status: string;
-  // revision: Revision,
-  creator: IUser;
-  createdAt: Date;
-  updatedAt: Date;
-  relatedTag: any;
-}
 
 type PageOptions = {
   format?:string,
@@ -50,7 +41,7 @@ export const PAGE_GRANT_ERROR = 1;
 export const STATUS_PUBLISHED = 'published';
 export const STATUS_DELETED = 'deleted';
 
-const pageSchema = new Schema<IPage>({
+const pageSchema:Schema<IPage & Document> = new Schema<IPage & Document>({
   path: {
     type: String, required: true, index: true, unique: true,
   },
