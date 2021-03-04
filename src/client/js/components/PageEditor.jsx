@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { throttle, debounce } from 'throttle-debounce';
 import { envUtils } from 'growi-commons';
@@ -15,27 +15,12 @@ const PageEditor = (props) => {
 
   // this.previewElement = React.createRef();
   const { data: config } = useEditorConfig();
-  const isUploadable = config.upload.image || config.upload.file;
-  const isUploadableFile = config.upload.file;
-  const isMathJaxEnabled = !!config.env.MATHJAX;
 
-  // this.state = {
+  const [markdown, setMarkdown] = useState('');
   // markdown: this.props.pageContainer.state.markdown,
-  // isUploadable,
-  // isUploadableFile,
-  // isMathJaxEnabled,
-  // };
-
-  // this.setCaretLine = this.setCaretLine.bind(this);
-  // this.focusToEditor = this.focusToEditor.bind(this);
-  // this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
-  // this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
-  // this.onUpload = this.onUpload.bind(this);
-  // this.onEditorScroll = this.onEditorScroll.bind(this);
-  // this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
-  // this.onPreviewScroll = this.onPreviewScroll.bind(this);
-  // this.saveDraft = this.saveDraft.bind(this);
-  // this.clearDraft = this.clearDraft.bind(this);
+  const [isUploadable, setIsUploadable] = useState(config.upload.image || config.upload.file);
+  const [isUploadableFile, setIsUploadableFile] = useState(config.upload.file);
+  const [isMathJaxEnabled, setIsMathJaxEnabled] = useState(!!config.env.MATHJAX);
 
   // // for scrolling
   // this.lastScrolledDateWithCursor = null;
@@ -52,13 +37,9 @@ const PageEditor = (props) => {
   //   this.saveDraftWithDebounce = debounce(800, this.saveDraft);
   // }
 
-  // componentWillMount() {
-  //   // this.props.appContainer.registerComponentInstance('PageEditor', this);
-  // }
-
-  // getMarkdown() {
-  //   return this.state.markdown;
-  // }
+  const getMarkdown = () => {
+    return markdown;
+  };
 
   // updateEditorValue(markdown) {
   //   this.editor.setValue(markdown);
@@ -276,29 +257,27 @@ const PageEditor = (props) => {
   //   this.props.editorContainer.clearDraft(this.props.pageContainer.state.path);
   // }
 
-  // render() {
-  // const config = this.props.appContainer.getConfig();
-  // const noCdn = envUtils.toBoolean(config.env.NO_CDN);
+  const noCdn = envUtils.toBoolean(config.env.NO_CDN);
   // const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
   return (
     <div className="d-flex flex-wrap">
       <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
         hoge
-        {/* <Editor
-          ref={(c) => { this.editor = c }}
-          value={this.state.markdown}
+        <Editor
+          // ref={(c) => { this.editor = c }}
+          value={markdown}
             // noCdn={noCdn}
             // isMobile={this.props.appContainer.isMobile}
-          isUploadable={this.state.isUploadable}
-          isUploadableFile={this.state.isUploadableFile}
+          isUploadable={isUploadable}
+          isUploadableFile={isUploadableFile}
             // emojiStrategy={emojiStrategy}
-          onScroll={this.onEditorScroll}
-          onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
-          onChange={this.onMarkdownChanged}
-          onUpload={this.onUpload}
-          onSave={this.onSaveWithShortcut}
-        /> */}
+          // onScroll={this.onEditorScroll}
+          // onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
+          // onChange={this.onMarkdownChanged}
+          // onUpload={this.onUpload}
+          // onSave={this.onSaveWithShortcut}
+        />
       </div>
       <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
         {/* <Preview
@@ -312,7 +291,6 @@ const PageEditor = (props) => {
       </div>
     </div>
   );
-  // }
 
 };
 
