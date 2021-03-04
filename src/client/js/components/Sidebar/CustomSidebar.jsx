@@ -7,6 +7,7 @@ import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import RevisionRenderer from '../Page/RevisionRenderer';
 
 const logger = loggerFactory('growi:cli:CustomSidebar');
 
@@ -26,7 +27,7 @@ const CustomSidebar = (props) => {
   const { appContainer } = props;
   const { apiGet } = appContainer;
 
-  const [html, setHtml] = useState();
+  const [markdown, setMarkdown] = useState();
 
   const growiRenderer = appContainer.getRenderer('sidebar');
 
@@ -42,29 +43,8 @@ const CustomSidebar = (props) => {
       return;
     }
 
-    const context = {
-      markdown: page.revision.body,
-    };
-
-    const { interceptorManager } = appContainer;
-    await interceptorManager.process('prePreProcess', context)
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => {
-        setHtml(context.parsedHTML);
-      });
-  }, [growiRenderer, apiGet, appContainer]);
+    setMarkdown(page.revision.body);
+  }, [apiGet]);
 
   useEffect(() => {
     fetchDataAndRenderHtml();
@@ -78,9 +58,14 @@ const CustomSidebar = (props) => {
           <i className="icon icon-reload"></i>
         </button>
       </div>
-      { html == null && <SidebarNotFound /> }
+      { markdown == null && <SidebarNotFound /> }
       {/* eslint-disable-next-line react/no-danger */}
-      { html != null && <div key="sidebar" dangerouslySetInnerHTML={{ __html: html }}></div> }
+      { markdown != null && (
+        <RevisionRenderer
+          growiRenderer={growiRenderer}
+          markdown={markdown}
+        />
+      ) }
     </>
   );
 
