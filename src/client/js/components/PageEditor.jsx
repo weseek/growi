@@ -267,7 +267,7 @@ const PageEditor = (props) => {
         <Editor
           // ref={(c) => { this.editor = c }}
           value={markdown}
-            // noCdn={noCdn}
+          noCdn={noCdn}
             // isMobile={this.props.appContainer.isMobile}
           isUploadable={isUploadable}
           isUploadableFile={isUploadableFile}
