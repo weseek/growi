@@ -1,6 +1,6 @@
-// TODO remove this setting after implemented all
-/* eslint-disable no-unused-vars */
 import loggerFactory from '~/utils/logger';
+
+import ShareLink from '~/server/models/share-link';
 
 const logger = loggerFactory('growi:routes:apiv3:share-links');
 
@@ -27,7 +27,6 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-  const ShareLink = crowi.model('ShareLink');
 
 
   /**
@@ -49,7 +48,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', loginRequired, async(req, res) => {
+  router.get('/', async(req, res) => {
     const { relatedPage } = req.query;
     try {
       const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } }).populate({ path: 'relatedPage', select: 'path' });
@@ -103,7 +102,6 @@ module.exports = (crowi) => {
 
   router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
-    const ShareLink = crowi.model('ShareLink');
 
     try {
       const postedShareLink = await ShareLink.create({ relatedPage, expiredAt, description });
