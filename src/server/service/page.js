@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import ShareLink from '~/server/models/share-link';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -195,7 +196,6 @@ class PageService {
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
     const Attachment = this.crowi.model('Attachment');
 

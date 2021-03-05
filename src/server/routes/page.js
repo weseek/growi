@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import ShareLink from '~/server/models/share-link';
 
 const swig = require('swig-templates');
 const { pathUtils } = require('growi-commons');
@@ -138,7 +139,6 @@ module.exports = function(crowi, app) {
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-  const ShareLink = crowi.model('ShareLink');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
