@@ -114,10 +114,9 @@ export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: bo
 export const useSeenUsersSWR = <Data, Error>(): responseInterface<Data, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
   return useSWR(
-    ['/users.list', currentPage],
-    endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.data),
+    '/users.list',
+    endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users),
     {
-      // initialData: initialData || false,
       revalidateOnFocus: false,
     },
   );

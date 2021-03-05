@@ -9,7 +9,7 @@ export type Page = {
   creator: User,
   createdAt: Date,
   updatedAt: Date,
-  seenUsers: string,
+  seenUsers: User[]
 }
 
 export type BookmarkInfo = {
@@ -45,4 +45,8 @@ export type PaginationResult<T> = {
   page: number,
   totalDocs: number,
   limit: number,
+}
+
+export type SeenUsersInfo = {
+  seenUsers: User[]
 }

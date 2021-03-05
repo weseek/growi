@@ -5,6 +5,7 @@ import {
 import UserPictureList from '~/client/js/components/User/UserPictureList';
 import { useSeenUsersSWR } from '~/stores/page';
 
+import { SeenUsersInfo as ISeenUsersInfo } from '~/interfaces/page';
 
 import FootstampIcon from '~/client/js/components/FootstampIcon';
 
@@ -15,9 +16,9 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
   // const { pageContainer, disabled } = props;
-  const { data: seenUsers } = useSeenUsersSWR();
-  const countOfSeenUsers = [seenUsers].length;
-  console.log(seenUsers);
+  const { data: seenUsersInfo } = useSeenUsersSWR();
+  const { seenUsers } = seenUsersInfo as ISeenUsersInfo;
+  const countOfSeenUsers = seenUsers.length;
 
   return (
     <div className="grw-seen-user-info">
