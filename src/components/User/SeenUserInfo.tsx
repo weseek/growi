@@ -4,7 +4,6 @@ import {
 } from 'reactstrap';
 import UserPictureList from '~/client/js/components/User/UserPictureList';
 import { useSeenUsersSWR } from '~/stores/page';
-
 import FootstampIcon from '~/client/js/components/FootstampIcon';
 
 type Props ={
@@ -15,7 +14,7 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
   const { data: seenUsers } = useSeenUsersSWR();
-  const countOfSeenUsers = seenUsers.length;
+  const countOfSeenUsers:number = (seenUsers == null ? 0 : seenUsers.length);
 
   return (
     <div className="grw-seen-user-info">
