@@ -34,7 +34,7 @@ module.exports = (crowi) => {
    *
    *  paths:
    *    /share-links/:
-   *      post:
+   *      get:
    *        tags: [ShareLink]
    *        description: get share links
    *        parameters:
