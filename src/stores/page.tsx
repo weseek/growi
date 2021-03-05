@@ -5,6 +5,7 @@ import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
   Page, Tag, Comment, PaginationResult, Revision,
 } from '~/interfaces/page';
+import { User } from '~/interfaces/user';
 
 import { isTrashPage } from '../utils/path-utils';
 
@@ -111,7 +112,7 @@ export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: bo
   );
 };
 
-export const useSeenUsersSWR = <Data, Error>(): responseInterface<Data, Error> => {
+export const useSeenUsersSWR = ():responseInterface<User[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
   return useSWR(
     '/users.list',
