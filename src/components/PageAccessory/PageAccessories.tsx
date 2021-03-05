@@ -39,8 +39,9 @@ export const PageAccessories:FC = () => {
     // show the Page accessory modal when query of "compare" is requested
     if (compare != null) {
       setIsOpenModal(true);
+      switchActiveTab('pageHistory');
     }
-  }, [router.query]);
+  }, [router.query, switchActiveTab]);
 
 
   return (
