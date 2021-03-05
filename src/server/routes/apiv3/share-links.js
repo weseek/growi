@@ -48,7 +48,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', async(req, res) => {
+  router.get('/', loginRequired, async(req, res) => {
     const { relatedPage } = req.query;
     try {
       const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } }).populate({ path: 'relatedPage', select: 'path' });
