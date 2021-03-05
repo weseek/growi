@@ -1,9 +1,14 @@
-import { FC, useState, useCallback } from 'react';
+import { useRouter } from 'next/router';
+import {
+  FC, useState, useCallback, useEffect,
+} from 'react';
 import { useIsSharedUser, useCurrentUser, useNotFound } from '~/stores/context';
 import { PageAccessoriesModalControl } from '~/components/PageAccessory/PageAccessoriesModalControl';
 import { PageAccessoriesModal } from '~/components/PageAccessory/PageAccessoriesModal';
 
 export const PageAccessories:FC = () => {
+  const router = useRouter();
+
   const { data: currentUser } = useCurrentUser();
   const { data: isSharedUser = false } = useIsSharedUser();
   const { data: isNotFoundPage = false } = useNotFound();
@@ -27,6 +32,16 @@ export const PageAccessories:FC = () => {
   const closePageAccessoriesModal = useCallback(() => {
     setIsOpenModal(false);
   }, [setIsOpenModal]);
+
+
+  useEffect(() => {
+    const { compare } = router.query;
+    // show the Page accessory modal when query of "compare" is requested
+    if (compare != null) {
+      setIsOpenModal(true);
+    }
+  }, [router.query]);
+
 
   return (
     <>
