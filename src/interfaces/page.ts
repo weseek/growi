@@ -46,7 +46,3 @@ export type PaginationResult<T> = {
   totalDocs: number,
   limit: number,
 }
-
-export type SeenUsersInfo = {
-  seenUsers: User[]
-}

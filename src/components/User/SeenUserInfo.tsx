@@ -5,19 +5,16 @@ import {
 import UserPictureList from '~/client/js/components/User/UserPictureList';
 import { useSeenUsersSWR } from '~/stores/page';
 
-import { SeenUsersInfo as ISeenUsersInfo } from '~/interfaces/page';
-
 import FootstampIcon from '~/client/js/components/FootstampIcon';
 
 type Props ={
+  disabled:boolean
 }
 
 export const SeenUserInfo:VFC<Props> = (props:Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
-  // const { pageContainer, disabled } = props;
-  const { data: seenUsersInfo } = useSeenUsersSWR();
-  const { seenUsers } = seenUsersInfo as ISeenUsersInfo;
+  const { data: seenUsers } = useSeenUsersSWR();
   const countOfSeenUsers = seenUsers.length;
 
   return (
@@ -32,7 +29,7 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
         target="po-seen-user"
         toggle={toggle}
         trigger="legacy"
-        // disabled={disabled}
+        disabled={props.disabled}
       >
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
