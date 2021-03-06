@@ -79,12 +79,12 @@ module.exports = (crowi) => {
    *            name: pageId
    *            schema:
    *              $ref: '#/components/schemas/Page/properties/_id'
+   *            required: true
    *          - in: query
    *            name: revisionId
    *            schema:
    *              $ref: '#/components/schemas/Revision/properties/_id'
-   *        required:
-   *          - pageId
+   *            required: true
    *        responses:
    *          200:
    *            description: Succeeded to get comments of the page of the revision.
