@@ -1,10 +1,8 @@
 import { Container } from 'unstated';
 
-
-import { pathUtils } from 'growi-commons';
-import urljoin from 'url-join';
 import loggerFactory from '~/utils/logger';
 import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
+import { apiv3Get, apiv3Put } from '~/utils/apiv3-client';
 
 const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
 
@@ -14,10 +12,9 @@ const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
  */
 export default class AdminSamlSecurityContainer extends Container {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
-    this.appContainer = appContainer;
     this.dummySamlEntryPoint = 0;
     this.dummySamlEntryPointForError = 1;
 
@@ -25,7 +22,6 @@ export default class AdminSamlSecurityContainer extends Container {
       retrieveError: null,
       // TODO GW-1324 ABLCRure DB value takes precedence
       useOnlyEnvVars: false,
-      callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/saml/callback'),
       missingMandatoryConfigKeys: [],
       // set dummy value tile for using suspense
       samlEntryPoint: this.dummySamlEntryPoint,
@@ -57,7 +53,7 @@ export default class AdminSamlSecurityContainer extends Container {
    */
   async retrieveSecurityData() {
     try {
-      const response = await this.appContainer.apiv3.get('/security-setting/');
+      const response = await apiv3Get('/security-setting/');
       const { samlAuth } = response.data.securityParams;
       this.setState({
         missingMandatoryConfigKeys: samlAuth.missingMandatoryConfigKeys,
@@ -195,7 +191,7 @@ export default class AdminSamlSecurityContainer extends Container {
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/saml', requestParams);
+    const response = await apiv3Put('/security-setting/saml', requestParams);
     const { securitySettingParams } = response.data;
 
     this.setState({

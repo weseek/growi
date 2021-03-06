@@ -59,6 +59,7 @@ type Props = CommonProps & {
   hasSlackConfig: boolean,
   drawioUri: string,
   highlightJsStyle: string,
+  isAllReplyShown: boolean,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
 };
@@ -246,6 +247,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
+  props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
 

@@ -1,19 +1,16 @@
-import { Schema, Types, Model } from 'mongoose';
+import { Schema, Model, Document } from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
+import { Tag as ITag } from '~/interfaces/page';
 
-export interface ITag {
-  _id: Types.ObjectId;
-  name: string;
-}
 
 /*
  * define schema
  */
-const schema = new Schema<ITag>({
+const schema:Schema<ITag & Document> = new Schema<ITag & Document>({
   name: {
     type: String,
     required: true,
@@ -67,4 +64,4 @@ class Tag extends Model {
 }
 
 schema.loadClass(Tag);
-export default getOrCreateModel<ITag>('Tag', schema);
+export default getOrCreateModel<ITag & Document>('Tag', schema);

@@ -1,11 +1,9 @@
+import { useRouter } from 'next/router';
 import React, {
   useCallback, useState, useEffect, VFC,
 } from 'react';
 
 import { useTranslation } from '~/i18n';
-
-import { toastError } from '~/client/js/util/apiNotification';
-import { apiv3Get } from '~/utils/apiv3-client';
 
 import { PageRevisionTable } from '~/components/PageAccessory/PageRevisionTable';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
@@ -13,18 +11,59 @@ import { RevisionComparer } from '~/components/PageAccessory/RevisionComparer';
 
 import { Revision } from '~/interfaces/page';
 
-import { useCurrentPageSWR, useCurrentPageHistorySWR } from '~/stores/page';
-import { useShareLinkId } from '~/stores/context';
+import {
+  useCurrentPageSWR, useCurrentPageHistorySWR, useRevisionById, useLatestRevision,
+} from '~/stores/page';
 
 export const PageHistory: VFC = () => {
   const { t } = useTranslation();
+  const router = useRouter();
+
   const { data: currentPage } = useCurrentPageSWR();
-  const { data: shareLinkId } = useShareLinkId();
 
   const [revisions, setRevisions] = useState<Revision[]>([]);
+
   const [sourceRevision, setSourceRevision] = useState<Revision>();
   const [targetRevision, setTargetRevision] = useState<Revision>();
-  const [latestRevision, setLatestRevision] = useState<Revision>();
+
+  /**
+   * Get the IDs of the comparison source and target from "next/route" as an array
+   */
+  const getRevisionIDsToCompareAsParam = useCallback((): Array<string> => {
+    const { compare } = router.query;
+    if (compare == null || Array.isArray(compare)) {
+      return [];
+    }
+
+    return compare.split('...') || [];
+  }, [router.query]);
+
+  const [sourceRevisionIdFromUrl, targetRevisionIdFromUrl] = getRevisionIDsToCompareAsParam();
+  const { data: sourceRevisionFoundByIdFromUrl } = useRevisionById(sourceRevisionIdFromUrl);
+  const { data: targetRevisionFoundByIdFromUrl } = useRevisionById(targetRevisionIdFromUrl);
+  const { data: latestRevision } = useLatestRevision();
+
+  // If revision can be retrieved by id from url, set to sourceRevision
+  useEffect(() => {
+    if (sourceRevisionFoundByIdFromUrl != null) {
+      setSourceRevision(sourceRevisionFoundByIdFromUrl);
+    }
+  }, [sourceRevisionFoundByIdFromUrl]);
+  // If revision can be retrieved by id from url, set to targetRevision
+  useEffect(() => {
+    if (targetRevisionFoundByIdFromUrl != null) {
+      setTargetRevision(targetRevisionFoundByIdFromUrl);
+    }
+  }, [targetRevisionFoundByIdFromUrl]);
+  // set latestRevision when revisionIds from url don`t exist.
+  useEffect(() => {
+    if (sourceRevisionIdFromUrl == null) {
+      setSourceRevision(latestRevision);
+    }
+    if (targetRevisionIdFromUrl == null) {
+      setTargetRevision(latestRevision);
+    }
+  }, [latestRevision, sourceRevisionIdFromUrl, targetRevisionIdFromUrl]);
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
@@ -45,75 +84,6 @@ export const PageHistory: VFC = () => {
     setSourceRevision(previousRevision);
     setTargetRevision(revision);
   }, []);
-
-  /**
-   * Get the IDs of the comparison source and target from "window.location" as an array
-   */
-  const getRevisionIDsToCompareAsParam = (): Array<string> => {
-    const searchParams:{ [key:string]: string} = {};
-    for (const param of window.location.search?.substr(1)?.split('&')) {
-      const [k, v] = param.split('=');
-      searchParams[k] = v;
-    }
-    if (!searchParams.compare) {
-      return [];
-    }
-
-    return searchParams.compare.split('...') || [];
-  };
-
-  /**
-   * Fetch the revision of the specified ID
-   * @param {string} revision ID
-   */
-  const fetchRevision = useCallback(async(revisionId) => {
-    try {
-      const res = await apiv3Get(`/revisions/${revisionId}`, {
-        pageId: currentPage?._id, shareLinkId,
-      });
-      return res.data.revision;
-    }
-    catch (err) {
-      toastError(err);
-    }
-    return null;
-  }, [currentPage?._id, shareLinkId]);
-
-  /**
-   * Fetch the latest revision
-   */
-  const fetchLatestRevision = useCallback(async() => {
-    try {
-      const res = await apiv3Get('/revisions/list', {
-        pageId: currentPage?._id, shareLinkId, page: 1, limit: 1,
-      });
-      return res.data.docs[0];
-    }
-    catch (err) {
-      toastError(err);
-    }
-    return null;
-  }, [currentPage?._id, shareLinkId]);
-
-  /**
-   * Initialize the revisions
-   */
-  const initRevisions = useCallback(async() => {
-    const latestRevision = await fetchLatestRevision();
-
-    const [sourceRevisionId, targetRevisionId] = getRevisionIDsToCompareAsParam();
-    const sourceRevision = sourceRevisionId ? fetchRevision(sourceRevisionId) : latestRevision;
-    const targetRevision = targetRevisionId ? fetchRevision(targetRevisionId) : latestRevision;
-
-    setLatestRevision(latestRevision);
-    setSourceRevision(sourceRevision);
-    setTargetRevision(targetRevision);
-  }, [fetchLatestRevision, fetchRevision]);
-
-  useEffect(() => {
-    initRevisions();
-  }, [initRevisions]);
-
 
   useEffect(() => {
     if (paginationResult == null) {

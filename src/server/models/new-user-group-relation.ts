@@ -7,21 +7,16 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import Debug from 'debug';
 import { getOrCreateModel } from '../util/mongoose-utils';
-import User, { IUser, USER_PUBLIC_FIELDS, STATUS_ACTIVE } from '~/server/models/new-user';
+import User, { USER_PUBLIC_FIELDS, STATUS_ACTIVE } from '~/server/models/new-user';
+import { UserGroupRelation as IUserGroupRelation } from '~/interfaces/user';
 
 const debug = Debug('growi:models:userGroupRelation');
 
-export interface IUserGroupRelation extends Document{
-  _id: Types.ObjectId;
-  relatedGroup: Types.ObjectId;
-  relatedUser: IUser;
-  createdAt: Date;
-}
 
 /*
  * define schema
  */
-const schema = new Schema<IUserGroupRelation>({
+const schema:Schema<IUserGroupRelation & Document> = new Schema<IUserGroupRelation & Document>({
   relatedGroup: { type: Types.ObjectId, ref: 'UserGroup', required: true },
   relatedUser: { type: Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now, required: true },
@@ -309,4 +304,4 @@ class UserGroupRelation extends Model {
 
 }
 schema.loadClass(UserGroupRelation);
-export default getOrCreateModel<IUserGroupRelation>('UserGroupRelation', schema);
+export default getOrCreateModel<IUserGroupRelation & Document>('UserGroupRelation', schema);

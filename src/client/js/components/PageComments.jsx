@@ -5,18 +5,18 @@ import {
   Button,
 } from 'reactstrap';
 
-import { withTranslation } from 'react-i18next';
+import { User } from '~/interfaces/user';
+import Comment from '~/components/PageComment/Comment';
 
-import AppContainer from '../services/AppContainer';
 import CommentContainer from '../services/CommentContainer';
 import PageContainer from '../services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import CommentEditor from './PageComment/CommentEditor';
-import Comment from './PageComment/Comment';
 import DeleteCommentModal from './PageComment/DeleteCommentModal';
-import ReplayComments from './PageComment/ReplayComments';
+import ReplayComments from './PageComment/ReplyComments';
+import { useCurrentUser } from '~/stores/context';
 
 
 /**
@@ -41,8 +41,6 @@ class PageComments extends React.Component {
 
       showEditorIds: new Set(),
     };
-
-    this.growiRenderer = this.props.appContainer.getRenderer('comment');
 
     this.init = this.init.bind(this);
     this.confirmToDeleteComment = this.confirmToDeleteComment.bind(this);
@@ -140,7 +138,7 @@ class PageComments extends React.Component {
   renderThread(comment, replies) {
     const commentId = comment._id;
     const showEditor = this.state.showEditorIds.has(commentId);
-    const isLoggedIn = this.props.appContainer.currentUser != null;
+    const isLoggedIn = this.props.currentUser != null;
 
     let rootClassNames = 'page-comment-thread';
     if (replies.length === 0) {
@@ -227,15 +225,23 @@ class PageComments extends React.Component {
 
 }
 
+PageComments.propTypes = {
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
+  currentUser: PropTypes.instanceOf(User).isRequired,
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const PageCommentsWrapper = (props) => {
+  const { data: currentUser } = useCurrentUser();
+
+  // eslint-disable-next-line react/prop-types
+  return <PageComments {...props} currentUser={currentUser} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const PageCommentsWrapper = withUnstatedContainers(PageComments, [AppContainer, PageContainer, CommentContainer]);
+const PageCommentsWrapperWrapper = withUnstatedContainers(PageCommentsWrapper, [PageContainer, CommentContainer]);
 
-PageComments.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
-};
-
-export default withTranslation()(PageCommentsWrapper);
+export default PageCommentsWrapperWrapper;

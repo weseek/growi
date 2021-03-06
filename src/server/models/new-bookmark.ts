@@ -1,22 +1,20 @@
-import { Schema, Types, Model } from 'mongoose';
+import {
+  Schema, Model, Document,
+} from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
-import { IUser, USER_PUBLIC_FIELDS } from '~/server/models/new-user';
+import { USER_PUBLIC_FIELDS } from '~/server/models/new-user';
 // import BookmarkEvent from '~/server/events/bookmark';
+import { Bookmark as IBookmark } from '~/interfaces/page';
+import { User as IUser } from '~/interfaces/user';
 
 const ObjectId = Schema.Types.ObjectId;
 
 const logger = loggerFactory('growi:models:bookmark');
-export interface IBookmark {
-  _id: Types.ObjectId;
-  page: Types.ObjectId;
-  user: IUser;
-  createdAt: Date;
-}
 
 type Option= {
   limit:number,
@@ -25,7 +23,7 @@ type Option= {
   populatePage: boolean,
 }
 
-const schema = new Schema({
+const schema:Schema<IBookmark & Document> = new Schema<IBookmark & Document>({
   page: { type: ObjectId, ref: 'Page', index: true },
   user: { type: ObjectId, ref: 'User', index: true },
   createdAt: { type: Date, default: Date.now },
@@ -152,4 +150,4 @@ class Bookmark extends Model {
 }
 
 schema.loadClass(Bookmark);
-export default getOrCreateModel<IBookmark>('Bookmark', schema);
+export default getOrCreateModel<IBookmark & Document>('Bookmark', schema);

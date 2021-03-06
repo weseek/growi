@@ -4,24 +4,18 @@ import { Schema, Types, Model } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import Debug from 'debug';
 import { getOrCreateModel } from '../util/mongoose-utils';
-import UserGroupRelation from '~/server/models/new-user-group-relation';
+import { UserGroup as IUserGroup } from '~/interfaces/user';
 
 import ConfigManager from '~/server/service/config-manager';
 // import { PageServise } from '~/server/service/page';
 
 const debug = Debug('growi:models:userGroup');
 
-export interface IUserGroup{
-  _id: Types.ObjectId;
-  userGroupId:string;
-  name: string;
-  createdAt: Date;
-}
 
 /*
  * define schema
  */
-const schema = new Schema<IUserGroup>({
+const schema:Schema<IUserGroup & Document> = new Schema<IUserGroup & Document>({
   userGroupId: String,
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
@@ -156,4 +150,4 @@ class UserGroup extends Model {
 
 
 schema.loadClass(UserGroup);
-export default getOrCreateModel<IUserGroup>('UserGroup', schema);
+export default getOrCreateModel<IUserGroup & Document>('UserGroup', schema);

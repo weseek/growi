@@ -23,14 +23,16 @@ import ExpandOrContractButton from '../../client/js/components/ExpandOrContractB
 
 import { CustomNavTab } from '../../client/js/components/CustomNavigation/CustomNav';
 
+import { AccessoryName } from '~/interfaces/accessory';
+
 type Props = {
   isGuestUser: boolean;
   isSharedUser: boolean;
   isOpen: boolean;
   isNotFoundPage: boolean;
   onClose?: ()=>void;
-  activeTab:string;
-  activeComponents: Set<string>;
+  activeTab: AccessoryName;
+  activeComponents: Set<AccessoryName>;
   switchActiveTab?: ()=> void;
 }
 
@@ -132,7 +134,7 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
           </TabPane>
           {!isGuestUser && (
             <TabPane tabId="pageHistory">
-              {activeComponents.has('pageHistory') && <PageHistory /> }
+              {activeComponents.has(AccessoryName.PAGE_HISTORY) && <PageHistory /> }
             </TabPane>
           )}
           <TabPane tabId="attachment">

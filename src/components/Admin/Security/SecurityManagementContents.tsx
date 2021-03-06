@@ -6,7 +6,7 @@ import { useTranslation } from '~/i18n';
 
 import { LdapSecuritySetting } from '~/components/Admin/Security/LdapSecuritySetting';
 import { LocalSecuritySetting } from '~/components/Admin/Security/LocalSecuritySetting';
-// import SamlSecuritySetting from '~/client/js/components/Admin/Security/SamlSecuritySetting';
+import { SamlSecurityManagement } from '~/components/Admin/Security/SamlSecuritySetting';
 // import OidcSecuritySetting from '~/client/js/components/Admin/Security/OidcSecuritySetting';
 import { SecuritySetting } from '~/components/Admin/Security/SecuritySetting';
 // import BasicSecuritySetting from '~/client/js/components/Admin/Security/BasicSecuritySetting';
@@ -123,7 +123,7 @@ export const SecurityManagementContents: FC<Props> = (props: Props) => {
             {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
           </TabPane>
           <TabPane tabId="passport_saml">
-            {/* {activeComponents.has('passport_saml') && <SamlSecuritySetting />} */}
+            {activeComponents.has('passport_saml') && <SamlSecurityManagement />}
           </TabPane>
           <TabPane tabId="passport_oidc">
             {/* {activeComponents.has('passport_oidc') && <OidcSecuritySetting />} */}
