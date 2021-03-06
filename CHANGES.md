@@ -1,6 +1,11 @@
 # CHANGES
 
-## v4.2.11-RC
+## v4.2.12-RC
+
+* Feature: Custom Sidebar
+* Fix: Set language correctly for draw.io (diagrams.net)
+
+## v4.2.11
 
 * Fix: Rename decendants is not working
     * Introduced by v4.2.8
