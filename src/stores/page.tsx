@@ -118,7 +118,7 @@ export const useSeenUsersSWR = ():responseInterface<User[], Error> => {
     '/users.list',
     endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users),
     {
-      revalidateOnFocus: true,
+      revalidateOnFocus: false,
     },
   );
 };
