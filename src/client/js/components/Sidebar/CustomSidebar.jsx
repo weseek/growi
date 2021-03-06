@@ -57,7 +57,10 @@ const CustomSidebar = (props) => {
   return (
     <>
       <div className="grw-sidebar-content-header p-3 d-flex">
-        <h3 className="mb-0">Custom Sidebar</h3>
+        <h3 className="mb-0">
+          Custom Sidebar
+          <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
+        </h3>
         <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={fetchDataAndRenderHtml}>
           <i className="icon icon-reload"></i>
         </button>
