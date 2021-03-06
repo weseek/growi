@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 
 import { Collapse } from 'reactstrap';
 
-import AppContainer from '../../services/AppContainer';
+import Comment from '~/components/PageComment/Comment';
+
 import PageContainer from '../../services/PageContainer';
 
-import Comment from './Comment';
-
 import { withUnstatedContainers } from '../UnstatedUtils';
+import { useIsAllReplyShown } from '~/stores/context';
 
-class ReplayComments extends React.PureComponent {
+class ReplyComments extends React.PureComponent {
 
   constructor() {
     super();
@@ -32,7 +32,6 @@ class ReplayComments extends React.PureComponent {
         <Comment
           comment={reply}
           deleteBtnClicked={this.props.deleteBtnClicked}
-          growiRenderer={this.props.growiRenderer}
         />
       </div>
     );
@@ -40,7 +39,7 @@ class ReplayComments extends React.PureComponent {
 
   render() {
 
-    const isAllReplyShown = this.props.appContainer.getConfig().isAllReplyShown || false;
+    const isAllReplyShown = this.props.isAllReplyShown;
     const replyList = this.props.replyList;
 
     if (isAllReplyShown) {
@@ -97,18 +96,23 @@ class ReplayComments extends React.PureComponent {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const ReplayCommentsWrapper = withUnstatedContainers(ReplayComments, [AppContainer, PageContainer]);
-
-ReplayComments.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+ReplyComments.propTypes = {
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  growiRenderer: PropTypes.object.isRequired,
+  isAllReplyShown: PropTypes.bool.isRequired,
   deleteBtnClicked: PropTypes.func.isRequired,
   replyList: PropTypes.array,
 };
 
-export default ReplayCommentsWrapper;
+const ReplyCommentsWrapper = (props) => {
+  const { data: isAllReplyShown } = useIsAllReplyShown();
+  return <ReplyComments {...props} isAllReplyShown={isAllReplyShown} />;
+};
+
+
+/**
+ * Wrapper component for using unstated
+ */
+const ReplyCommentsWrapperWrapper = withUnstatedContainers(ReplyCommentsWrapper, [PageContainer]);
+
+export default ReplyCommentsWrapperWrapper;
