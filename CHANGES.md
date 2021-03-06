@@ -3,6 +3,7 @@
 ## v4.2.12-RC
 
 * Feature: Custom Sidebar
+* Fix: Set language correctly for draw.io (diagrams.net)
 
 ## v4.2.11
 
