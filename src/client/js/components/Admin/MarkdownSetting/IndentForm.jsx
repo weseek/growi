@@ -8,37 +8,29 @@ import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import PagingSizeUncontrolledDropdown from '../Customize/PagingSizeUncontrolledDropdown';
 
 const logger = loggerFactory('growi:importer');
 
-class IndentForm extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.onClickSubmit = this.onClickSubmit.bind(this);
-  }
-
-  async onClickSubmit() {
-    const { t } = this.props;
+const IndentForm = (props) => {
+  const onClickSubmit = async(props) => {
+    const { t } = props;
 
     try {
-      await this.props.adminMarkDownContainer.updateIndentSetting();
+      await props.adminMarkDownContainer.updateIndentSetting();
       toastSuccess(t('toaster.update_successed', { target: t('admin:markdown_setting.indent_header') }));
-    } catch (err) {
+    }
+    catch (err) {
       toastError(err);
       logger.error(err);
     }
-  }
+  };
 
-  renderIndentSizeOption() {
-    const { t, adminMarkDownContainer } = this.props;
+  const renderIndentSizeOption = (props) => {
+    const { t, adminMarkDownContainer } = props;
     const { adminPreferredIndentSize } = adminMarkDownContainer.state;
-
-    const helpIndent = { __html: t('admin:markdown_setting.indent_options.indentSize_desc') };
 
     return (
       <div className="col">
@@ -54,10 +46,10 @@ class IndentForm extends React.Component {
         {/* <p className="form-text text-muted" dangerouslySetInnerHTML={helpIndent} /> */}
       </div>
     );
-  }
+  };
 
-  renderIndentForceOption() {
-    const { t, adminMarkDownContainer } = this.props;
+  const renderIndentForceOption = (props) => {
+    const { t, adminMarkDownContainer } = props;
     const { isIndentSizeForced } = adminMarkDownContainer.state;
 
     const helpIndentInComment = { __html: t('admin:markdown_setting.indent_options.disallow_indent_change_desc') };
@@ -81,31 +73,28 @@ class IndentForm extends React.Component {
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpIndentInComment} />
       </div>
     );
-  }
+  };
 
-  render() {
-    const { adminMarkDownContainer } = this.props;
+  const { adminMarkDownContainer } = props;
 
-    return (
-      <React.Fragment>
-        <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
-          {this.renderIndentSizeOption()}
-          {this.renderIndentForceOption()}
-        </fieldset>
-        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} />
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <React.Fragment>
+      <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
+        {renderIndentSizeOption(props)}
+        {renderIndentForceOption(props)}
+      </fieldset>
+      <AdminUpdateButtonRow onClick={() => onClickSubmit(props)} disabled={adminMarkDownContainer.state.retrieveError != null} />
+    </React.Fragment>
+  );
+};
 
 /**
  * Wrapper component for using unstated
  */
-const IndentFormWrapper = withUnstatedContainers(IndentForm, [AppContainer, AdminMarkDownContainer]);
+const IndentFormWrapper = withUnstatedContainers(IndentForm, [AdminMarkDownContainer]);
 
 IndentForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
 };
 
