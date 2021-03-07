@@ -62,6 +62,7 @@ class PageEditor extends React.Component {
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
 
     // Detect indent size from contents (only when users are allowed to change it)
+    // TODO: https://youtrack.weseek.co.jp/issue/GW-5368
     if (!this.props.appContainer.config.isIndentSizeForced && this.state.markdown) {
       const detectedIndent = detectIndent(this.state.markdown);
       if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
