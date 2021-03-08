@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 // import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -88,11 +87,10 @@ function FileUploadSetting(props) {
 /**
  * Wrapper component for using unstated
  */
-const FileUploadSettingWrapper = withUnstatedContainers(FileUploadSetting, [AppContainer, AdminAppContainer]);
+const FileUploadSettingWrapper = withUnstatedContainers(FileUploadSetting, [AdminAppContainer]);
 
 FileUploadSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 

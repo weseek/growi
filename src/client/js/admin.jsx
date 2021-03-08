@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import ErrorBoundary from './components/ErrorBoudary';
 
@@ -16,9 +16,8 @@ import AppSettingsPage from './components/Admin/App/AppSettingsPage';
 import SecurityManagement from './components/Admin/Security/SecurityManagement';
 import ManageExternalAccount from './components/Admin/ManageExternalAccount';
 import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
-import Customize from './components/Admin/Customize/Customize';
 import ImportDataPage from './components/Admin/ImportDataPage';
-import ExportArchiveDataPage from '../../components/Admin/DataExport/ExportArchiveDataPage';
+import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
 import AdminNavigation from './components/Admin/Common/AdminNavigation';
 
@@ -89,7 +88,6 @@ Object.assign(componentMappings, {
   'admin-home': <AdminHome />,
   'admin-app': <AppSettingsPage />,
   'admin-markdown-setting': <MarkdownSetting />,
-  'admin-customize': <Customize />,
   'admin-importer': <ImportDataPage />,
   'admin-export-page': <ExportArchiveDataPage />,
   'admin-notification-setting': <NotificationSetting />,

@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { Provider } from 'unstated';
 
 import BasicLayout from './BasicLayout';
 import AdminNavigation from '~/client/js/components/Admin/Common/AdminNavigation';
@@ -30,7 +31,9 @@ const AdminLayout = ({
               <AdminNavigation selected={selectedNavOpt} />
             </div>
             <div className="col-lg-9">
-              {children}
+              <Provider>
+                {children}
+              </Provider>
             </div>
           </div>
         </div>

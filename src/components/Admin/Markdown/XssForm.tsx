@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 import { useTranslation } from '~/i18n';
 
 import { tags, attrs } from '~/service/xss/recommended-whitelist';
@@ -123,8 +123,8 @@ export const XssForm:FC = () => {
                   <textarea
                     className="form-control xss-list"
                     name="recommendedTags"
-                    rows="6"
-                    cols="40"
+                    rows={6}
+                    cols={40}
                     readOnly
                     defaultValue={tags}
                   />
@@ -136,8 +136,8 @@ export const XssForm:FC = () => {
                   <textarea
                     className="form-control xss-list"
                     name="recommendedAttrs"
-                    rows="6"
-                    cols="40"
+                    rows={6}
+                    cols={40}
                     readOnly
                     defaultValue={attrs}
                   />
@@ -158,7 +158,7 @@ export const XssForm:FC = () => {
               />
               <label className="custom-control-label w-100" htmlFor="xssOption3">
                 <p className="font-weight-bold">{t('admin:markdown_setting.xss_options.custom_whitelist')}</p>
-                <WhiteListInput customizable />
+                <WhiteListInput />
               </label>
             </div>
           </div>

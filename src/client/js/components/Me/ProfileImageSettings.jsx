@@ -6,14 +6,13 @@ import md5 from 'md5';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
 
 import ImageCropModal from './ImageCropModal';
 
 class ProfileImageSettings extends React.Component {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
     this.state = {
@@ -184,11 +183,10 @@ class ProfileImageSettings extends React.Component {
 }
 
 
-const ProfileImageSettingsWrapper = withUnstatedContainers(ProfileImageSettings, [AppContainer, PersonalContainer]);
+const ProfileImageSettingsWrapper = withUnstatedContainers(ProfileImageSettings, [PersonalContainer]);
 
 ProfileImageSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 

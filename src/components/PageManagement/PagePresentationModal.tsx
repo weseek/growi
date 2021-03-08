@@ -7,7 +7,7 @@ type Props = {
   href: string,
 }
 
-export const PagePresentationModal:FC<Props> = (props:Props) => {
+const PagePresentationModal:FC<Props> = (props:Props) => {
 
   function closeModalHandler() {
     if (props.onClose === null) {
@@ -24,3 +24,5 @@ export const PagePresentationModal:FC<Props> = (props:Props) => {
     </Modal>
   );
 };
+
+export default PagePresentationModal;

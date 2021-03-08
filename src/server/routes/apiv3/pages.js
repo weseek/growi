@@ -134,6 +134,7 @@ module.exports = (crowi) => {
       body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
     ],
+
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('revisionId').isMongoId().withMessage('revisionId is required'),
@@ -142,6 +143,13 @@ module.exports = (crowi) => {
       body('isRemainMetadata').if(value => value != null).isBoolean().withMessage('isRemainMetadata must be boolean'),
       body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
       body('socketClientId').if(value => value != null).isInt().withMessage('socketClientId must be int'),
+    ],
+
+    removePage: [
+      body('pageId').isMongoId().withMessage('pageId is required'),
+      body('revisionId').isMongoId().withMessage('revisionId is required'),
+      body('isRecursively').if(value => value != null).isBoolean().withMessage('isRecursively must be boolean'),
+      body('isCompletely').if(value => value != null).isBoolean().withMessage('isCompletely must be boolean'),
     ],
 
     duplicatePage: [
@@ -416,6 +424,96 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Move notification failed', err);
+    }
+
+    return res.apiv3(result);
+  });
+
+  /**
+   * @swagger
+   *
+   *    /pages/remove:
+   *      post:
+   *        tags: [Pages]
+   *        operationId: removePage
+   *        description: Remove page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  revisionId:
+   *                    type: string
+   *                    description: revision ID
+   *                    example: 5e07345972560e001761fa63
+   *                  isRecursively:
+   *                    type: boolean
+   *                    description: whether remove page with descendants
+   *                  isCompletely:
+   *                    type: boolean
+   *                    description: whether delete page completely
+   *                required:
+   *                  - pageId
+   *                  - revisionId
+   *        responses:
+   *          200:
+   *            description: Succeeded to remove page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *          401:
+   *            description: page id is invalid
+   *          409:
+   *            description: page has already been updated by someone else
+   */
+  router.put('/remove', accessTokenParser, loginRequiredStrictly, validator.removePage, apiV3FormValidator, async(req, res) => {
+    const {
+      pageId, revisionId, isRecursively, isCompletely,
+    } = req.body;
+    const options = { socketClientId: req.body.socketClientId || undefined };
+    const page = await Page.findByIdAndViewer(pageId, req.user);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    logger.debug('Delete page', page._id, page.path);
+
+    try {
+      if (isCompletely) {
+        if (!req.user.canDeleteCompletely(page.creator)) {
+          return res.apiv3Err(new ErrorV3('You can not delete completel.', 'user_not_admin'), 403);
+        }
+        await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
+      }
+      else {
+        if (!page.isUpdatable(revisionId)) {
+          return res.apiv3Err(new ErrorV3('Someone could update this page, so couldn\'t delete.', 'outdated'), 409);
+        }
+
+        await crowi.pageService.deletePage(page, req.user, options, isRecursively);
+      }
+    }
+    catch (err) {
+      logger.error('Error occured while get setting', err);
+      return res.apiv3Err(new ErrorV3('Failed to delete page.', 'unknown'), 500);
+    }
+
+    logger.debug('Page deleted', page.path);
+
+    const result = { page: serializePageSecurely(page) };
+
+    try {
+      // global notification
+      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page, req.user);
+    }
+    catch (err) {
+      logger.error('Delete notification failed', err);
     }
 
     return res.apiv3(result);

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
+import Config from '~/server/models/config';
 import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 
 const logger = loggerFactory('growi:migrate:remove-crowi-lauout');
 
@@ -11,8 +11,6 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
-
     const query = { key: 'customize:layout', value: JSON.stringify('crowi') };
 
     await Config.findOneAndUpdate(query, { value: JSON.stringify('growi') }); // update layout
@@ -20,7 +18,8 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  down(db) {
+  down(db, next) {
     // do not rollback
+    next();
   },
 };

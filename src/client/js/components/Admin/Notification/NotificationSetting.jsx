@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import loggerFactory from '@alias/logger';
-
 import { TabContent, TabPane } from 'reactstrap';
+import loggerFactory from '~/utils/logger';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';

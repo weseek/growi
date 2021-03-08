@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
@@ -50,7 +49,9 @@ class StatusSuspendedButton extends React.Component {
 
   render() {
     const { user } = this.props;
-    const { currentUsername } = this.props.appContainer;
+    // TODO: GW-5303 retrieve from SWR
+    // const { currentUsername } = this.props.appContainer;
+    const currentUsername = '';
 
     return (
       <Fragment>
@@ -65,11 +66,10 @@ class StatusSuspendedButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const StatusSuspendedFormWrapper = withUnstatedContainers(StatusSuspendedButton, [AppContainer, AdminUsersContainer]);
+const StatusSuspendedFormWrapper = withUnstatedContainers(StatusSuspendedButton, [AdminUsersContainer]);
 
 StatusSuspendedButton.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
   user: PropTypes.object.isRequired,

@@ -7,7 +7,7 @@ import AdminLayout from '~/components/AdminLayout';
 
 import { useTranslation } from '~/i18n';
 import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 import PluginUtils from '~/server/plugins/plugin-utils';
 import ConfigLoader from '~/server/service/config-loader';
 
@@ -17,11 +17,11 @@ import { SecurityManagementContents } from '~/components/Admin/Security/Security
 import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
-import ExportArchiveDataPage from '~/components/Admin/DataExport/ExportArchiveDataPage';
+import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
 
 import {
   useCurrentUser,
-  useSearchServiceConfigured, useSearchServiceReachable,
+  useSearchServiceConfigured, useSearchServiceReachable, useSiteUrl,
 } from '../../stores/context';
 
 const pluginUtils = new PluginUtils();
@@ -37,6 +37,8 @@ type Props = CommonProps & {
 
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+
+  siteUrl: string,
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
@@ -47,7 +49,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   const adminPagesMap = {
     home: {
-      title: t('Wiki Management Home Page'),
+      title: useCustomTitle(props, t('Wiki Management Home Page')),
       component: <AdminHome
         nodeVersion={props.nodeVersion}
         npmVersion={props.npmVersion}
@@ -57,31 +59,32 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       />,
     },
     app: {
-      title: t('App Settings'),
+      title: useCustomTitle(props, t('App Settings')),
       component: <AppSettingsPageContents />,
     },
     security: {
-      title: t('Security settings'),
+      title: useCustomTitle(props, t('security_settings')),
+
       component: <SecurityManagementContents />,
     },
     markdown: {
-      title: t('Markdown Settings'),
+      title: useCustomTitle(props, t('Markdown Settings')),
       component: <MarkDownSettingContents />,
     },
     customize: {
-      title: t('Customize Settings'),
+      title: useCustomTitle(props, t('Customize Settings')),
       component: <CustomizeSettingContents />,
     },
     importer: {
-      title: t('Import Data'),
+      title: useCustomTitle(props, t('Import Data')),
       component: <DataImportPageContents />,
     },
     export: {
-      title: t('Export Archive Data'),
+      title: useCustomTitle(props, t('Export Archive Data')),
       component: <ExportArchiveDataPage />,
     },
     notification: {
-      title: '',
+      title: useCustomTitle(props, t('Notification Settings')),
       component: <></>,
     },
     'global-notification': {
@@ -89,15 +92,15 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       component: <></>,
     },
     users: {
-      title: '',
+      title: useCustomTitle(props, t('User_Management')),
       component: <></>,
     },
     'user-groups': {
-      title: '',
+      title: useCustomTitle(props, t('UserGroup Management')),
       component: <></>,
     },
     search: {
-      title: '',
+      title: useCustomTitle(props, t('Full Text Search Management')),
       component: <></>,
     },
   };
@@ -110,6 +113,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
 
+  useSiteUrl(props.siteUrl);
+
   return (
     <AdminLayout title={title} selectedNavOpt={name}>
       {content.component}
@@ -121,7 +126,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService,
+    appService, searchService,
   } = crowi;
 
   const { user } = req;
@@ -138,6 +143,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     props.currentUser = JSON.stringify(user.toObject());
   }
 
+  props.siteUrl = appService.getSiteUrl();
   props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
   props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
   props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;

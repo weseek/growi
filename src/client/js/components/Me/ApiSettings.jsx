@@ -6,23 +6,23 @@ import { withTranslation } from 'react-i18next';
 import { toastSuccess, toastError } from '../../util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
 import PersonalContainer from '../../services/PersonalContainer';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 
 class ApiSettings extends React.Component {
 
-  constructor(appContainer) {
+  constructor() {
     super();
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
 
   async onClickSubmit() {
-    const { t, appContainer, personalContainer } = this.props;
+    const { t, personalContainer } = this.props;
 
     try {
-      await appContainer.apiv3Put('/personal-setting/api-token');
+      await apiv3Put('/personal-setting/api-token');
 
       await personalContainer.retrievePersonalData();
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token') }));
@@ -92,11 +92,10 @@ class ApiSettings extends React.Component {
 
 }
 
-const ApiSettingsWrapper = withUnstatedContainers(ApiSettings, [AppContainer, PersonalContainer]);
+const ApiSettingsWrapper = withUnstatedContainers(ApiSettings, [PersonalContainer]);
 
 ApiSettings.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   personalContainer: PropTypes.instanceOf(PersonalContainer).isRequired,
 };
 

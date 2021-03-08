@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from '~/i18n';
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+import MarkdownRenderer from '~/service/renderer/markdown-renderer';
+import { useTimelineRenderer } from '~/stores/renderer';
 
-import AppContainer from '../services/AppContainer';
+import { apiv3Get } from '../util/apiv3-client';
+
 import PageContainer from '../services/PageContainer';
-import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import RevisionLoader from './Page/RevisionLoader';
@@ -30,11 +33,11 @@ class PageTimeline extends React.Component {
 
 
   async handlePage(selectedPage) {
-    const { appContainer, pageContainer } = this.props;
+    const { pageContainer } = this.props;
     const { path } = pageContainer.state;
     const page = selectedPage;
 
-    const res = await appContainer.apiv3Get('/pages/list', { path, page });
+    const res = await apiv3Get('/pages/list', { path, page });
     const totalPageItems = res.data.totalCount;
     const pages = res.data.pages;
     const pagingLimit = res.data.limit;
@@ -44,12 +47,6 @@ class PageTimeline extends React.Component {
       pages,
       limit: pagingLimit,
     });
-  }
-
-  componentWillMount() {
-    const { appContainer } = this.props;
-    // initialize GrowiRenderer
-    this.growiRenderer = appContainer.getRenderer('timeline');
   }
 
   async componentDidMount() {
@@ -82,7 +79,7 @@ class PageTimeline extends React.Component {
                 <div className="card-body">
                   <RevisionLoader
                     lazy
-                    growiRenderer={this.growiRenderer}
+                    renderer={this.props.renderer}
                     pageId={page.id}
                     revisionId={page.revision}
                   />
@@ -108,13 +105,20 @@ class PageTimeline extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
+const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [PageContainer]);
 
 PageTimeline.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  renderer: PropTypes.instanceOf(MarkdownRenderer).isRequired,
   pages: PropTypes.arrayOf(PropTypes.object),
 };
 
-export default withTranslation()(PageTimelineWrapper);
+const PageTimelineWrapperWrapper = (props) => {
+  const { t } = useTranslation();
+  const { data: renderer } = useTimelineRenderer();
+
+  return <PageTimelineWrapper {...props} t={t} renderer={renderer} />;
+};
+
+export default PageTimelineWrapperWrapper;

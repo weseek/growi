@@ -7,7 +7,6 @@ import {
 
 import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
 import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
@@ -77,13 +76,12 @@ class UserGroupUserModal extends React.Component {
 
 UserGroupUserModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserModalWrapper = withUnstatedContainers(UserGroupUserModal, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserModalWrapper = withUnstatedContainers(UserGroupUserModal, [AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupUserModalWrapper);

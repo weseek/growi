@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { apiv3Get, apiv3Post } from '~/utils/apiv3-client';
 
 class UserGroupCreateForm extends React.Component {
 
@@ -36,14 +35,14 @@ class UserGroupCreateForm extends React.Component {
     e.preventDefault();
 
     try {
-      const res = await this.props.appContainer.apiv3.post('/user-groups', {
+      const res = await apiv3Post('/user-groups', {
         name: this.state.name,
       });
 
       const userGroup = res.data.userGroup;
       const userGroupId = userGroup._id;
 
-      const res2 = await this.props.appContainer.apiv3.get(`/user-groups/${userGroupId}/users`);
+      const res2 = await apiv3Get(`/user-groups/${userGroupId}/users`);
 
       const { users } = res2.data;
 
@@ -102,17 +101,11 @@ class UserGroupCreateForm extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupCreateFormWrapper = withUnstatedContainers(UserGroupCreateForm, [AppContainer]);
-
 UserGroupCreateForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isAclEnabled: PropTypes.bool.isRequired,
   onCreate: PropTypes.func.isRequired,
 };
 
-export default withTranslation()(UserGroupCreateFormWrapper);
+export default withTranslation()(UserGroupCreateForm);

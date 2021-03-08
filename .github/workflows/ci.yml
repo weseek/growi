@@ -276,7 +276,7 @@ jobs:
     - name: Launch MongoDB
       uses: wbari/start-mongoDB@v0.2
       with:
-        mongoDBVersion: 3.6
+        mongoDBVersion: 4.4
     - name: Get DB name
       id: getdbname
       run: |

@@ -67,6 +67,22 @@ export const useSearchServiceReachable = (initialData?: boolean): responseInterf
   return useStaticSWR('searchServiceReachable', initialData);
 };
 
+export const useAclEnabled = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isAclEnabled', initialData);
+};
+
+export const useHasSlackConfig = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('hasSlackConfig', initialData);
+};
+
+export const useDrawioUri = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('drawioUri', initialData);
+};
+
+export const useIsAllReplyShown = (initialData?: boolean): responseInterface<boolean, any> => {
+  return useStaticSWR('isAllReplyShown', initialData, false);
+};
+
 export const useGrowiVersion = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('growiVersion', initialData);
 };

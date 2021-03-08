@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 // import PageContainer from '../services/PageContainer';
 // import EditorContainer from '../services/EditorContainer';

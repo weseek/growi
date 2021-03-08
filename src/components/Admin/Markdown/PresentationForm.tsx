@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
@@ -79,7 +79,7 @@ export const PresentationForm:FC = () => {
                   <input
                     className="form-control"
                     type="text"
-                    value={t('admin:markdown_setting.presentation_options.preset_one_separator_value')}
+                    value={t('admin:markdown_setting.presentation_options.preset_one_separator_value').toString()}
                     readOnly
                   />
                 </div>
@@ -104,7 +104,7 @@ export const PresentationForm:FC = () => {
                   <input
                     className="form-control"
                     type="text"
-                    value={t('admin:markdown_setting.presentation_options.preset_two_separator_value')}
+                    value={t('admin:markdown_setting.presentation_options.preset_two_separator_value').toString()}
                     readOnly
                   />
                 </div>

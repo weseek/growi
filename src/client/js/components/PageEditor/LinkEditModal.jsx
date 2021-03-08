@@ -13,16 +13,17 @@ import {
 import path from 'path';
 import validator from 'validator';
 import { withTranslation } from 'react-i18next';
-import PreviewWithSuspense from './PreviewWithSuspense';
-import PagePreviewIcon from '../Icons/PagePreviewIcon';
 
-import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
 
-import SearchTypeahead from '../SearchTypeahead';
 import Linker from '../../models/Linker';
+import PageContainer from '../../services/PageContainer';
+import { apiGet } from '../../util/apiv1-client';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
+import PagePreviewIcon from '../Icons/PagePreviewIcon';
+import SearchTypeahead from '../SearchTypeahead';
+
+import PreviewWithSuspense from './PreviewWithSuspense';
 
 class LinkEditModal extends React.PureComponent {
 
@@ -161,7 +162,7 @@ class LinkEditModal extends React.PureComponent {
       const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
       try {
-        const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
+        const { page } = await apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
         markdown = page.revision.body;
         // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
         permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
@@ -463,7 +464,6 @@ class LinkEditModal extends React.PureComponent {
 
 LinkEditModal.propTypes = {
   t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   onSave: PropTypes.func,
 };
@@ -471,6 +471,6 @@ LinkEditModal.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [AppContainer, PageContainer]);
+const LinkEditModalWrapper = withUnstatedContainers(LinkEditModal, [PageContainer]);
 
 export default withTranslation('translation', { withRef: true })(LinkEditModalWrapper);

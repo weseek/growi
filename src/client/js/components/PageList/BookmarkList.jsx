@@ -1,21 +1,21 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
-import { withUnstatedContainers } from '../UnstatedUtils';
 
+import loggerFactory from '~/utils/logger';
+import { PaginationWrapper } from '~/components/PaginationWrapper';
 
-import AppContainer from '../../services/AppContainer';
 import { toastError } from '../../util/apiNotification';
-
-import PaginationWrapper from '../PaginationWrapper';
+import { apiv3Get } from '../../util/apiv3-client';
 
 import Page from './Page';
+import { useTranslation } from '~/i18n';
 
 const logger = loggerFactory('growi:BookmarkList');
 
 const BookmarkList = (props) => {
-  const { t, appContainer, userId } = props;
+  const { t } = useTranslation();
+
+  const { userId } = props;
 
   const [pages, setPages] = useState([]);
 
@@ -31,7 +31,7 @@ const BookmarkList = (props) => {
     const page = activePage;
 
     try {
-      const res = await appContainer.apiv3Get(`/bookmarks/${userId}`, { page });
+      const res = await apiv3Get(`/bookmarks/${userId}`, { page });
       const { paginationResult } = res.data;
 
       setPages(paginationResult.docs);
@@ -42,7 +42,7 @@ const BookmarkList = (props) => {
       logger.error('failed to fetch data', error);
       toastError(error, 'Error occurred in bookmark page list');
     }
-  }, [appContainer, activePage, userId]);
+  }, [activePage, userId]);
 
   useEffect(() => {
     getMyBookmarkList();
@@ -82,16 +82,8 @@ const BookmarkList = (props) => {
 
 };
 
-/**
- * Wrapper component for using unstated
- */
-const BookmarkListWrapper = withUnstatedContainers(BookmarkList, [AppContainer]);
-
 BookmarkList.propTypes = {
-  t: PropTypes.func.isRequired,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   userId: PropTypes.string.isRequired,
 };
 
-export default withTranslation()(BookmarkListWrapper);
+export default BookmarkList;

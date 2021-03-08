@@ -2,13 +2,12 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import PaginationWrapper from '../PaginationWrapper';
+import { PaginationWrapper } from '~/components/PaginationWrapper';
 
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastError } from '../../util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
 import AdminUsersContainer from '../../services/AdminUsersContainer';
 
 import PasswordResetModal from './Users/PasswordResetModal';
@@ -221,10 +220,9 @@ class UserManagement extends React.Component {
 
 UserManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 };
 
-const UserManagementWrapper = withUnstatedContainers(UserManagement, [AppContainer, AdminUsersContainer]);
+const UserManagementWrapper = withUnstatedContainers(UserManagement, [AdminUsersContainer]);
 
 export default withTranslation()(UserManagementWrapper);

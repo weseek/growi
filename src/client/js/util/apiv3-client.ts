@@ -1,5 +1,6 @@
-import axios from 'axios';
 import * as urljoin from 'url-join';
+
+import axios from '~/utils/axios';
 
 import apiv3ErrorHandler from './apiv3ErrorHandler';
 

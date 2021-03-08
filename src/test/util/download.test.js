@@ -1,11 +1,12 @@
-import axios from 'axios';
 import path from 'path';
 import fs from 'graceful-fs';
 import streamToPromise from 'stream-to-promise';
 import { Transform } from 'stream';
+
+import axios from '~/utils/axios';
 import { downloadTo } from '~/utils/download';
 
-jest.mock('axios');
+jest.mock('~/utils/axios');
 // jest.mock('mkdirp');
 // jest.mock('graceful-fs');
 // jest.mock('path');

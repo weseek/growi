@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import SmtpSetting from './SmtpSetting';
 import SesSetting from './SesSetting';
@@ -106,11 +105,10 @@ function MailSetting(props) {
 /**
  * Wrapper component for using unstated
  */
-const MailSettingWrapper = withUnstatedContainers(MailSetting, [AppContainer, AdminAppContainer]);
+const MailSettingWrapper = withUnstatedContainers(MailSetting, [AdminAppContainer]);
 
 MailSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 

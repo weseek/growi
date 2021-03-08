@@ -7,6 +7,7 @@ const debug = require('debug')('growi:routes:admin');
 
 const express = require('express');
 
+const { pathUtils } = require('growi-commons');
 
 const router = express.Router();
 
@@ -156,7 +157,8 @@ module.exports = (crowi) => {
       body('fileUpload').isBoolean(),
     ],
     siteUrlSetting: [
-      body('siteUrl').trim().matches(/^(https?:\/\/[^/]+|)$/).isURL({ require_tld: false }),
+      // https://regex101.com/r/5Xef8V/1
+      body('siteUrl').trim().matches(/^(https?:\/\/)/).isURL({ require_tld: false }),
     ],
     mailSetting: [
       body('fromAddress').trim().if(value => value !== '').isEmail(),
@@ -334,7 +336,7 @@ module.exports = (crowi) => {
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, csrf, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
     const requestSiteUrlSettingParams = {
-      'app:siteUrl': req.body.siteUrl,
+      'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),
     };
 
     try {

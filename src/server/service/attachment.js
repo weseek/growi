@@ -1,5 +1,7 @@
 import fs from 'fs';
 
+import mongoose from 'mongoose';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars
@@ -8,7 +10,7 @@ const logger = loggerFactory('growi:service:AttachmentService'); // eslint-disab
 /**
  * the service class for Attachment and file-uploader
  */
-class AttachmentService {
+export default class AttachmentService {
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -76,5 +78,3 @@ class AttachmentService {
   }
 
 }
-
-module.exports = AttachmentService;

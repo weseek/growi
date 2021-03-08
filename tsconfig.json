@@ -26,7 +26,6 @@
     "paths": {
       "~/*": ["src/*"],
       "^/*": ["./*"],
-      "@alias/logger": ["src/utils/logger"]
     },
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -41,5 +40,5 @@
     "emitDecoratorMetadata": true
   },
   "exclude": ["dist", ".next", "out", "next.config.js"],
-  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["next-env.d.ts", "src/**/*", "src/**/*"]
 }

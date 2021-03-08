@@ -4,10 +4,10 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { apiv3Delete } from '~/utils/apiv3-client';
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
@@ -76,10 +76,10 @@ class ShareLinkSetting extends React.Component {
   }
 
   async deleteAllLinksButtonHandler() {
-    const { t, appContainer } = this.props;
+    const { t } = this.props;
 
     try {
-      const res = await appContainer.apiv3Delete('/share-links/all');
+      const res = await apiv3Delete('/share-links/all');
       const { deletedCount } = res.data;
       toastSuccess(t('toaster.remove_share_link', { count: deletedCount }));
     }
@@ -90,11 +90,11 @@ class ShareLinkSetting extends React.Component {
   }
 
   async deleteLinkById(shareLinkId) {
-    const { t, appContainer, adminGeneralSecurityContainer } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
     const { shareLinksActivePage } = adminGeneralSecurityContainer.state;
 
     try {
-      const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
+      const res = await apiv3Delete(`/share-links/${shareLinkId}`);
       const { deletedShareLink } = res.data;
       toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
     }
@@ -157,11 +157,10 @@ class ShareLinkSetting extends React.Component {
 
 }
 
-const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AppContainer, AdminGeneralSecurityContainer]);
+const ShareLinkSettingWrapper = withUnstatedContainers(ShareLinkSetting, [AdminGeneralSecurityContainer]);
 
 ShareLinkSetting.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 

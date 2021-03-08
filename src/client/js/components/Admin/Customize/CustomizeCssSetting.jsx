@@ -7,10 +7,8 @@ import { Card, CardBody } from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AdminUpdateButtonRow from '~/components/Admin/Common/AdminUpdateButtonRow';
 
 // dynamic import to skip rendering at SSR
 const CustomCssEditor = dynamic(() => import('../CustomCssEditor'), { ssr: false });
@@ -71,11 +69,10 @@ class CustomizeCssSetting extends React.Component {
 
 }
 
-const CustomizeCssSettingWrapper = withUnstatedContainers(CustomizeCssSetting, [AppContainer, AdminCustomizeContainer]);
+const CustomizeCssSettingWrapper = withUnstatedContainers(CustomizeCssSetting, [AdminCustomizeContainer]);
 
 CustomizeCssSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 

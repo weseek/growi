@@ -3,6 +3,8 @@ import Logger from 'bunyan';
 import loggerFactory from '~/utils/logger';
 import { hasProcessFlag } from '~/utils/process-utils';
 
+import Crowi from './crowi';
+
 const logger: Logger = loggerFactory('growi');
 
 
@@ -20,7 +22,6 @@ process.on('unhandledRejection', (reason, p) => {
 async function main() {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const Crowi = require('./crowi');
     const growi = new Crowi();
     const server = await growi.start();
 

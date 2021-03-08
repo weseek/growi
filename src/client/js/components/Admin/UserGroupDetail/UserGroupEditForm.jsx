@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -99,13 +98,12 @@ class UserGroupEditForm extends React.Component {
 
 UserGroupEditForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const UserGroupEditFormWrapper = withUnstatedContainers(UserGroupEditForm, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupEditFormWrapper = withUnstatedContainers(UserGroupEditForm, [AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupEditFormWrapper);

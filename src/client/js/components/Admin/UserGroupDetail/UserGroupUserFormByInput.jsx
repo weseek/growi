@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import UserPicture from '../../User/UserPicture';
@@ -155,13 +154,12 @@ class UserGroupUserFormByInput extends React.Component {
 
 UserGroupUserFormByInput.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInput, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupUserFormByInputWrapper = withUnstatedContainers(UserGroupUserFormByInput, [AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupUserFormByInputWrapper);

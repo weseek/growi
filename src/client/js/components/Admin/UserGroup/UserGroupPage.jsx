@@ -1,14 +1,13 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
 
-import PaginationWrapper from '../../PaginationWrapper';
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
 
 class UserGroupPage extends React.Component {
 
@@ -74,7 +73,7 @@ class UserGroupPage extends React.Component {
 
   async deleteUserGroupById({ deleteGroupId, actionName, transferToUserGroupId }) {
     try {
-      const res = await this.props.appContainer.apiv3.delete(`/user-groups/${deleteGroupId}`, {
+      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
         actionName,
         transferToUserGroupId,
       });
@@ -115,8 +114,8 @@ class UserGroupPage extends React.Component {
     try {
       const params = { page: this.state.activePage };
       const responses = await Promise.all([
-        this.props.appContainer.apiv3.get('/user-groups', params),
-        this.props.appContainer.apiv3.get('/user-group-relations', params),
+        apiv3Get('/user-groups', params),
+        apiv3Get('/user-group-relations', params),
       ]);
 
       const [userGroupsRes, userGroupRelationsRes] = responses;
@@ -138,7 +137,9 @@ class UserGroupPage extends React.Component {
   }
 
   render() {
-    const { isAclEnabled } = this.props.appContainer.config;
+    // TODO GW-5305 retrieve isAclEnabled from SWR or getServerSideProps
+    // const { isAclEnabled } = this.props.appContainer.config;
+    const isAclEnabled = false;
 
     return (
       <Fragment>
@@ -177,13 +178,4 @@ class UserGroupPage extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const UserGroupPageWrapper = withUnstatedContainers(UserGroupPage, [AppContainer]);
-
-UserGroupPage.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-export default UserGroupPageWrapper;
+export default UserGroupPage;

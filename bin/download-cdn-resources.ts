@@ -5,8 +5,8 @@
  */
 import { envUtils } from 'growi-commons';
 
-import CdnResourcesDownloader from '~/service/cdn-resources-downloader';
-import loggerFactory from '~/utils/logger';
+import CdnResourcesDownloader from '../src/service/cdn-resources-downloader';
+import loggerFactory from '../src/utils/logger';
 
 const logger = loggerFactory('growi:bin:download-cdn-resources');
 

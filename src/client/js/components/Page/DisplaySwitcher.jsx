@@ -7,7 +7,7 @@ import { useEditorMode } from '~/stores/ui';
 import Page from '../Page';
 // import UserInfo from '../User/UserInfo';
 // import ContentLinkButtons from '../ContentLinkButtons';
-// import PageAccessories from '../PageAccessories';
+import { PageAccessories } from '~/components/PageAccessory/PageAccessories';
 
 
 const DisplaySwitcher = (props) => {
@@ -16,7 +16,7 @@ const DisplaySwitcher = (props) => {
 
   // dynamic import to skip rendering at SSR
   const TableOfContents = dynamic(() => import('../TableOfContents'), { ssr: false });
-  // const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
+  const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
   // const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd'), { ssr: false });
   // const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 
@@ -29,7 +29,7 @@ const DisplaySwitcher = (props) => {
             <div className="grw-side-contents-container">
               <div className="grw-side-contents-sticky-container">
                 <div className="border-bottom pb-1">
-                  {/* <PageAccessories /> */}
+                  <PageAccessories />
                 </div>
 
                 <div className="d-none d-lg-block">
@@ -50,7 +50,7 @@ const DisplaySwitcher = (props) => {
         </TabPane>
         <TabPane tabId="edit">
           <div id="page-editor">
-            {/* <PageEditor /> */}
+            <PageEditor />
           </div>
         </TabPane>
         <TabPane tabId="hackmd">

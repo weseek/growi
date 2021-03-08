@@ -5,11 +5,12 @@ import Head from 'next/head';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useTranslation } from '~/i18n';
 
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { renderScriptTagByName, renderHighlightJsStyleTag } from '~/service/cdn-resources-loader';
 import loggerFactory from '~/utils/logger';
-import { CommonProps, getServerSideCommonProps } from '~/utils/nextjs-page-utils';
+import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
 import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
@@ -27,6 +28,7 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
+  useAclEnabled, useHasSlackConfig, useDrawioUri,
 } from '../stores/context';
 import {
   useCurrentPageSWR,
@@ -55,12 +57,17 @@ type Props = CommonProps & {
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isAclEnabled: boolean,
+  hasSlackConfig: boolean,
+  drawioUri: string,
   highlightJsStyle: string,
+  isAllReplyShown: boolean,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
+  const { t } = useTranslation();
   const router = useRouter();
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
@@ -79,6 +86,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
+  useAclEnabled(props.isAclEnabled);
+  useHasSlackConfig(props.hasSlackConfig);
+  useDrawioUri(props.drawioUri);
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
@@ -120,7 +130,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
-      <BasicLayout title="GROWI" className={className}>
+      <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={className}>
         <header className="py-0">
           <GrowiSubNavigation />
         </header>
@@ -209,7 +219,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService, configManager,
+    appService, searchService, configManager, aclService, slackNotificationService,
   } = crowi;
 
   const { user } = req;
@@ -235,7 +245,11 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.confidential = appService.getAppConfidential();
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+  props.isAclEnabled = aclService.isAclEnabled();
+  props.hasSlackConfig = slackNotificationService.hasSlackConfig();
+  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
+  props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
 

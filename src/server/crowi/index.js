@@ -14,6 +14,8 @@ import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import ConfigManager from '../service/config-manager';
+import AclService from '../service/acl';
+import AttachmentService from '../service/attachment';
 
 const logger = loggerFactory('growi:crowi');
 
@@ -29,11 +31,7 @@ function Crowi() {
   this.version = pkg.version;
   this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-  this.pluginDir = path.join(projectRoot, 'node_modules') + sep;
   this.publicDir = path.join(projectRoot, 'public') + sep;
-  this.libDir = path.join(projectRoot, 'src/server') + sep;
-  this.eventsDir = path.join(this.libDir, 'events') + sep;
-  this.viewsDir = path.join(this.libDir, 'views') + sep;
   this.resourceDir = path.join(projectRoot, 'resource') + sep;
   this.localeDir = path.join(this.resourceDir, 'locales') + sep;
   this.tmpDir = path.join(projectRoot, 'tmp') + sep;
@@ -75,11 +73,11 @@ function Crowi() {
   this.port = this.env.PORT || 3000;
 
   this.events = {
-    user: new (require(`${this.eventsDir}user`))(this),
-    page: new (require(`${this.eventsDir}page`))(this),
-    bookmark: new (require(`${this.eventsDir}bookmark`))(this),
-    tag: new (require(`${this.eventsDir}tag`))(this),
-    admin: new (require(`${this.eventsDir}admin`))(this),
+    user: new (require('../events/user'))(this),
+    page: new (require('../events/page'))(this),
+    bookmark: new (require('../events/bookmark'))(this),
+    tag: new (require('../events/tag'))(this),
+    admin: new (require('../events/admin'))(this),
   };
 }
 
@@ -457,7 +455,7 @@ Crowi.prototype.buildServer = async function() {
   // use bunyan
   if (env === 'production') {
     const expressBunyanLogger = require('express-bunyan-logger');
-    const logger = require('~/utils/logger')('express');
+    const logger = loggerFactory('express');
     express.use(expressBunyanLogger({
       logger,
       excludes: ['*'],
@@ -536,7 +534,6 @@ Crowi.prototype.setUpXss = async function() {
  * setup AclService
  */
 Crowi.prototype.setUpAcl = async function() {
-  const AclService = require('../service/acl');
   if (this.aclService == null) {
     this.aclService = new AclService(this.configManager);
   }
@@ -600,7 +597,6 @@ Crowi.prototype.setUpFileUploaderSwitchService = async function() {
  * setup AttachmentService
  */
 Crowi.prototype.setupAttachmentService = async function() {
-  const AttachmentService = require('../service/attachment');
   if (this.attachmentService == null) {
     this.attachmentService = new AttachmentService(this);
   }
@@ -664,4 +660,4 @@ Crowi.prototype.setupSyncPageStatusService = async function() {
   }
 };
 
-module.exports = Crowi;
+export default Crowi;

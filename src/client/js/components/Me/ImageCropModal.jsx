@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
 import canvasToBlob from 'async-canvas-to-blob';
 
 import {
@@ -11,8 +10,7 @@ import {
 } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import ReactCrop from 'react-image-crop';
-import AppContainer from '../../services/AppContainer';
-import { withUnstatedContainers } from '../UnstatedUtils';
+import loggerFactory from '~/utils/logger';
 import 'react-image-crop/dist/ReactCrop.css';
 import { toastError } from '../../util/apiNotification';
 
@@ -21,7 +19,7 @@ const logger = loggerFactory('growi:ImageCropModal');
 class ImageCropModal extends React.Component {
 
   // demo: https://codesandbox.io/s/72py4jlll6
-  constructor(props) {
+  constructor() {
     super();
     this.state = {
       crop: null,
@@ -44,7 +42,7 @@ class ImageCropModal extends React.Component {
     this.setState({ crop });
   }
 
-  async getCroppedImg(image, crop, fileName) {
+  async getCroppedImg(image, crop) {
     const canvas = document.createElement('canvas');
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
@@ -110,15 +108,10 @@ class ImageCropModal extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const ProfileImageFormWrapper = withUnstatedContainers(ImageCropModal, [AppContainer]);
 ImageCropModal.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   show: PropTypes.bool.isRequired,
   src: PropTypes.string,
   onModalClose: PropTypes.func.isRequired,
   onCropCompleted: PropTypes.func.isRequired,
 };
-export default withTranslation()(ProfileImageFormWrapper);
+export default withTranslation()(ImageCropModal);

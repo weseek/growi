@@ -5,7 +5,6 @@
 const MODULE_NAME_MAPPING = {
   '^\\^/(.+)$': '<rootDir>/$1',
   '^~/(.+)$': '<rootDir>/src/$1',
-  '^@alias/logger$': '<rootDir>/src/utils/logger',
 };
 
 module.exports = {

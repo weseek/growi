@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import { toastSuccess, toastError } from '../util/apiNotification';
 

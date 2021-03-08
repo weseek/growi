@@ -1,6 +1,7 @@
 import path from 'path';
 import swig from 'swig-templates';
 import onHeaders from 'on-headers';
+import nextI18next from '~/i18n';
 
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
@@ -47,6 +48,11 @@ class CrowiDev {
   setupServer(app) {
     const port = this.crowi.port;
     let server = app;
+
+    if (process.env.NODE_ENV !== 'production') {
+      const { applyServerHMR } = require('i18next-hmr/server');
+      applyServerHMR(nextI18next.i18n);
+    }
 
     // for log
     let serverUrl = `http://localhost:${port}}`;

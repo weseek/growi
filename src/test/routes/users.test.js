@@ -2,6 +2,8 @@ const request = require('supertest');
 const express = require('express');
 const { getInstance } = require('../setup-crowi');
 
+const dummyUser = { username: 'adminUser1', admin: true };
+
 describe('users', () => {
   let crowi;
   let app;
@@ -10,6 +12,7 @@ describe('users', () => {
     crowi = await getInstance();
     // get injected manual mocks express
     app = express();
+
     jest.mock('~/server/middlewares/login-required');
     const loginRequired = require('~/server/middlewares/login-required');
     loginRequired.mockImplementation(() => {
@@ -17,14 +20,24 @@ describe('users', () => {
         next();
       };
     });
+
+    jest.mock('~/server/middlewares/admin-required');
+    const adminRequired = require('~/server/middlewares/admin-required');
+    adminRequired.mockImplementation(() => {
+      return function(_req, _res, next) {
+        next();
+      };
+    });
+
     jest.mock('~/server/middlewares/access-token-parser');
     const accessTokenParser = require('~/server/middlewares/access-token-parser');
     accessTokenParser.mockImplementation(() => {
       return function(req, _res, next) {
-        req.user = 'loginUser';
+        req.user = dummyUser;
         next();
       };
     });
+
     app.use('/', require('~/server/routes/apiv3/users')(crowi));
   });
 
@@ -143,7 +156,7 @@ describe('users', () => {
         });
 
         expect(crowi.models.Page.findListByCreator.mock.calls[0]).toMatchObject(
-          ['user', 'loginUser', { offset: 0, limit: 10 }],
+          ['user', dummyUser, { offset: 0, limit: 10 }],
         );
         expect(response.statusCode).toBe(200);
       });
@@ -155,7 +168,7 @@ describe('users', () => {
         });
 
         expect(crowi.models.Page.findListByCreator.mock.calls[0]).toMatchObject(
-          ['user', 'loginUser', { offset: 0, limit: 20 }],
+          ['user', dummyUser, { offset: 0, limit: 20 }],
         );
         expect(response.statusCode).toBe(200);
       });
@@ -167,7 +180,7 @@ describe('users', () => {
         });
 
         expect(crowi.models.Page.findListByCreator.mock.calls[0]).toMatchObject(
-          ['user', 'loginUser', { offset: 0, limit: 30 }],
+          ['user', dummyUser, { offset: 0, limit: 30 }],
         );
         expect(response.statusCode).toBe(200);
       });

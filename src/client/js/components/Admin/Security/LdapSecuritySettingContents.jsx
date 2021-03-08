@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 import LdapAuthTestModal from './LdapAuthTestModal';
@@ -432,13 +431,11 @@ class LdapSecuritySettingContents extends React.Component {
 
 LdapSecuritySettingContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 };
 
 const LdapSecuritySettingContentsWrapper = withUnstatedContainers(LdapSecuritySettingContents, [
-  AppContainer,
   AdminGeneralSecurityContainer,
   AdminLdapSecurityContainer,
 ]);

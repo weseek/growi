@@ -1,27 +1,28 @@
-import React, { FC, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React, { VFC, useMemo, ReactNode } from 'react';
 
 import MarkdownRenderer from '~/service/renderer/markdown-renderer';
 
 type Props = {
   renderer: MarkdownRenderer,
   markdown: string,
+  additionalClassNames?: string,
   highlightKeywords?: string,
 }
 
-const RevisionRenderer: FC<Props> = (props: Props) => {
+const RevisionRenderer: VFC<Props> = (props: Props) => {
 
   const { renderer, markdown } = props;
   const { processor } = renderer;
 
-  const html = useMemo(() => {
-    return processor?.processSync(markdown).result;
+  const html: ReactNode = useMemo(() => {
+    return processor?.processSync(markdown).result as ReactNode;
   }, [processor, markdown]);
 
+  const { additionalClassNames } = props;
   return (
-    <>
+    <div className={`wiki ${additionalClassNames ?? ''}`}>
       {html}
-    </>
+    </div>
   );
 
   // initCurrentRenderingContext() {

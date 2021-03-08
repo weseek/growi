@@ -7,15 +7,7 @@ import UserPicture from '../User/UserPicture';
 
 export default class Revision extends React.Component {
 
-  constructor(props) {
-    super(props);
-
-    this._onDiffOpenClicked = this._onDiffOpenClicked.bind(this);
-  }
-
-  _onDiffOpenClicked(e) {
-    e.preventDefault();
-    this.props.onDiffOpenClicked(this.props.revision);
+  componentDidMount() {
   }
 
   renderSimplifiedNodiff(revision) {
@@ -34,11 +26,9 @@ export default class Revision extends React.Component {
           {pic}
         </div>
         <div className="ml-3">
-          <div className="revision-history-meta">
-            <span className="text-muted small">
-              <UserDate dateTime={revision.createdAt} /> ({ t('No diff') })
-            </span>
-          </div>
+          <span className="text-muted small">
+            <UserDate dateTime={revision.createdAt} /> ({ t('No diff') })
+          </span>
         </div>
       </div>
     );
@@ -54,38 +44,22 @@ export default class Revision extends React.Component {
       pic = <UserPicture user={author} size="lg" />;
     }
 
-    const iconClass = this.props.revisionDiffOpened ? 'fa fa-caret-down caret caret-opened' : 'fa fa-caret-down caret';
     return (
-      <div className="revision-history-main d-flex mt-3">
-        <div className="mt-2">
+      <div className="revision-history-main d-flex">
+        <div className="picture-container">
           {pic}
         </div>
         <div className="ml-2">
-          <div className="revision-history-author">
+          <div className="revision-history-author mb-1">
             <strong><Username user={author}></Username></strong>
+            {this.props.isLatestRevision && <span className="badge badge-info ml-2">Latest</span>}
           </div>
-          <div className="revision-history-meta">
-            <p>
-              <UserDate dateTime={revision.createdAt} />
-            </p>
-            <p>
-              <span className="d-inline-block" style={{ minWidth: '90px' }}>
-                { !this.props.hasDiff
-                  && <span className="text-muted">{ t('No diff') }</span>
-                }
-                { this.props.hasDiff
-                  && (
-                  // use dummy href attr (with preventDefault()), because don't apply style by a:not([href])
-                  <a className="diff-view" href="" onClick={this._onDiffOpenClicked}>
-                    <i className={iconClass}></i> {t('View diff')}
-                  </a>
-                  )
-                }
-              </span>
-              <a href={`?revision=${revision._id}`} className="ml-2">
-                <i className="icon-login"></i> { t('Go to this version') }
-              </a>
-            </p>
+          <div className="mb-1">
+            <UserDate dateTime={revision.createdAt} />
+            <br className="d-xl-none d-block" />
+            <a className="ml-xl-3" href={`?revision=${revision._id}`}>
+              <i className="icon-login"></i> { t('Go to this version') }
+            </a>
           </div>
         </div>
       </div>
@@ -95,7 +69,7 @@ export default class Revision extends React.Component {
   render() {
     const revision = this.props.revision;
 
-    if (this.props.isCompactNodiffRevisions && !this.props.hasDiff) {
+    if (!this.props.hasDiff) {
       return this.renderSimplifiedNodiff(revision);
     }
 
@@ -108,8 +82,6 @@ export default class Revision extends React.Component {
 Revision.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   revision: PropTypes.object,
-  revisionDiffOpened: PropTypes.bool.isRequired,
+  isLatestRevision: PropTypes.bool.isRequired,
   hasDiff: PropTypes.bool.isRequired,
-  isCompactNodiffRevisions: PropTypes.bool.isRequired,
-  onDiffOpenClicked: PropTypes.func.isRequired,
 };

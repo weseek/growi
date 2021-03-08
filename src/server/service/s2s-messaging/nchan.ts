@@ -1,8 +1,8 @@
 import path from 'path';
-import axios from 'axios';
 import WebSocket from 'ws';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
+import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../../models/vo/s2s-message';

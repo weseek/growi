@@ -6,7 +6,7 @@ const logger = loggerFactory('growi:service:AclService');
 /**
  * the service class of AclService
  */
-class AclService {
+export default class AclService {
 
   constructor(configManager) {
     this.configManager = configManager;
@@ -83,5 +83,3 @@ class AclService {
   }
 
 }
-
-module.exports = AclService;

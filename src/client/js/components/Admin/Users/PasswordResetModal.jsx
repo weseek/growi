@@ -6,8 +6,7 @@ import {
 } from 'reactstrap';
 
 import { toastError } from '../../../util/apiNotification';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 class PasswordResetModal extends React.Component {
 
@@ -23,9 +22,9 @@ class PasswordResetModal extends React.Component {
   }
 
   async resetPassword() {
-    const { t, appContainer, userForPasswordResetModal } = this.props;
+    const { t, userForPasswordResetModal } = this.props;
     try {
-      const res = await appContainer.apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
+      const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
       const { newPassword } = res.data;
       this.setState({ temporaryPassword: newPassword, isPasswordResetDone: true });
     }
@@ -106,14 +105,8 @@ class PasswordResetModal extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const PasswordResetModalWrapper = withUnstatedContainers(PasswordResetModal, [AppContainer]);
-
 PasswordResetModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -121,4 +114,4 @@ PasswordResetModal.propTypes = {
 
 };
 
-export default withTranslation()(PasswordResetModalWrapper);
+export default withTranslation()(PasswordResetModal);

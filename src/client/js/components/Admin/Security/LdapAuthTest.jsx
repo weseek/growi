@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { apiv3Post } from '~/utils/apiv3-client';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
 
 const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
@@ -41,7 +41,7 @@ class LdapAuthTest extends React.Component {
    */
   async testLdapCredentials() {
     try {
-      const response = await this.props.appContainer.apiPost('/login/testLdap', {
+      const response = await apiv3Post('/login/testLdap', {
         loginForm: {
           username: this.props.username,
           password: this.props.password,
@@ -130,7 +130,6 @@ class LdapAuthTest extends React.Component {
 
 LdapAuthTest.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminLdapSecurityContainer: PropTypes.instanceOf(AdminLdapSecurityContainer).isRequired,
 
   username: PropTypes.string.isRequired,
@@ -139,6 +138,6 @@ LdapAuthTest.propTypes = {
   onChangePassword: PropTypes.func.isRequired,
 };
 
-const LdapAuthTestWrapper = withUnstatedContainers(LdapAuthTest, [AppContainer, AdminLdapSecurityContainer]);
+const LdapAuthTestWrapper = withUnstatedContainers(LdapAuthTest, [AdminLdapSecurityContainer]);
 
 export default withTranslation()(LdapAuthTestWrapper);

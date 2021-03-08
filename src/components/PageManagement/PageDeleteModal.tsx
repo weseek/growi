@@ -6,7 +6,11 @@ import {
 import { useTranslation } from '~/i18n';
 
 import { Page as IPage } from '~/interfaces/page';
-import { apiPost } from '~/client/js/util/apiv1-client';
+import { toastSuccess } from '~/client/js/util/apiNotification';
+import { apiv3Put } from '~/utils/apiv3-client';
+
+import { useCurrentPageSWR } from '~/stores/page';
+
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
 const deleteIconAndKey = {
@@ -31,8 +35,9 @@ type Props = {
   onClose:() => void;
 }
 
-export const PageDeleteModal:FC<Props> = (props:Props) => {
+const PageDeleteModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
+  const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
   const { isAbleToDeleteCompletely = false, currentPage, isDeleteCompletelyModal } = props;
   const [errs, setErrs] = useState([]);
@@ -49,22 +54,26 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
     setErrs([]);
 
     try {
-      // TODO GW-5132 use apiV3 after implement
-      const response = await apiPost('/pages.remove', {
-        recursively: isDeleteRecursively ? true : null,
-        completely: isDeleteCompletely ? true : null,
-        page_id: currentPage.id,
-        revision_id: currentPage.revision._id,
+      const response = await apiv3Put('/pages/remove', {
+        isRecursively: isDeleteRecursively,
+        isCompletely: isDeleteCompletely,
+        pageId: currentPage._id,
+        revisionId: currentPage.revision._id,
         // TODO GW-5134 use SocketIoContainer after implement
         // socketClientId: SocketIoContainer.getSocketClientId(),
       });
-
-      const trashPagePath = response.page.path;
-      window.location.href = encodeURI(trashPagePath);
+      const { page } = response.data;
+      window.location.href = encodeURI(page.path);
     }
     catch (err) {
       setErrs(err);
     }
+  };
+
+  const loadLatestRevision = () => {
+    props.onClose();
+    mutateCurrentPage();
+    toastSuccess(t('retrieve_again'));
   };
 
   function changeIsDeleteCompletelyHandler() {
@@ -122,7 +131,7 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
         )}
       </ModalBody>
       <ModalFooter>
-        <ApiErrorMessageList errs={errs} />
+        <ApiErrorMessageList errs={errs} targetPath={currentPage.path} onLoadLatestRevision={loadLatestRevision} />
         <button type="button" className={`btn btn-${deleteIconAndKey[deleteMode].color}`} onClick={deletePage}>
           <i className={`icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
@@ -131,3 +140,5 @@ export const PageDeleteModal:FC<Props> = (props:Props) => {
     </Modal>
   );
 };
+
+export default PageDeleteModal;

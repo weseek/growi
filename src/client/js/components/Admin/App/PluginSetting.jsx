@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 // import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -68,11 +67,10 @@ class PluginSetting extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PluginSettingWrapper = withUnstatedContainers(PluginSetting, [AppContainer, AdminAppContainer]);
+const PluginSettingWrapper = withUnstatedContainers(PluginSetting, [AdminAppContainer]);
 
 PluginSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 

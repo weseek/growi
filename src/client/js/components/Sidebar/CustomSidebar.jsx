@@ -1,10 +1,4 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
-
-import { withTranslation } from 'react-i18next';
-
-import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
 
 class CustomSidebar extends React.Component {
 
@@ -37,9 +31,4 @@ class CustomSidebar extends React.Component {
 
 }
 
-/**
- * Wrapper component for using unstated
- */
-const CustomSidebarWrapper = withUnstatedContainers(CustomSidebar, [AppContainer]);
-
-export default withTranslation()(CustomSidebarWrapper);
+export default CustomSidebar;

@@ -4,7 +4,6 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
 
 import NotificationTypeIcon from './NotificationTypeIcon';
@@ -36,11 +35,10 @@ class UserNotificationRow extends React.PureComponent {
 }
 
 
-const UserNotificationRowWrapper = withUnstatedContainers(UserNotificationRow, [AppContainer, AdminNotificationContainer]);
+const UserNotificationRowWrapper = withUnstatedContainers(UserNotificationRow, [AdminNotificationContainer]);
 
 UserNotificationRow.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
   notification: PropTypes.object.isRequired,

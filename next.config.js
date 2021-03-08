@@ -1,7 +1,5 @@
 const path = require('path');
 
-const WebpackAssetsManifest = require('webpack-assets-manifest');
-
 // define additional entries
 const additionalWebpackEntries = {
   boot: './src/client/js/boot',
@@ -19,7 +17,7 @@ module.exports = {
     // Will be available on both server and client
   },
 
-  webpack(config) {
+  webpack(config, options) {
 
     // See: https://webpack.js.org/configuration/node/
     // This allows code originally written for the Node.js environment to run in other environments like the browser.
@@ -45,16 +43,25 @@ module.exports = {
       ...config.resolve.alias,
       '~': path.resolve(__dirname, './src'), // src
       '^': path.resolve(__dirname, './'), // project root
-      '@alias/logger': path.resolve(__dirname, './src/utils/logger'), // alias for logger
     };
 
     // configure plugins
+    const WebpackAssetsManifest = require('webpack-assets-manifest');
     config.plugins.push(
       new WebpackAssetsManifest({
         publicPath: true,
         output: 'custom-manifest.json',
       }),
     );
+
+    if (!options.isServer && config.mode === 'development') {
+      const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
+      config.plugins.push(
+        new I18NextHMRPlugin({
+          localesDir: path.resolve(__dirname, 'public/static/locales'),
+        }),
+      );
+    }
 
     return config;
   },

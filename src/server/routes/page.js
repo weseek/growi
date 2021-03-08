@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import ShareLink from '~/server/models/share-link';
 
 const swig = require('swig-templates');
 const { pathUtils } = require('growi-commons');
@@ -138,7 +139,6 @@ module.exports = function(crowi, app) {
   const PageTagRelation = crowi.model('PageTagRelation');
   const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-  const ShareLink = crowi.model('ShareLink');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
@@ -1072,69 +1072,6 @@ module.exports = function(crowi, app) {
         logger.debug('Error occured while get setting', err);
         return res.json(ApiResponse.error({}));
       });
-  };
-
-  /**
-   * @api {post} /pages.remove Remove page
-   * @apiName RemovePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   * @apiParam {String} revision_id
-   */
-  api.remove = async function(req, res) {
-    const pageId = req.body.page_id;
-    const previousRevision = req.body.revision_id || null;
-    const socketClientId = req.body.socketClientId || undefined;
-
-    // get completely flag
-    const isCompletely = (req.body.completely != null);
-    // get recursively flag
-    const isRecursively = (req.body.recursively != null);
-
-    const options = { socketClientId };
-
-    const page = await Page.findByIdAndViewer(pageId, req.user);
-
-    if (page == null) {
-      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
-    }
-
-    logger.debug('Delete page', page._id, page.path);
-
-    try {
-      if (isCompletely) {
-        if (!req.user.canDeleteCompletely(page.creator)) {
-          return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
-        }
-        await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
-      }
-      else {
-        if (!page.isUpdatable(previousRevision)) {
-          return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
-        }
-
-        await crowi.pageService.deletePage(page, req.user, options, isRecursively);
-      }
-    }
-    catch (err) {
-      logger.error('Error occured while get setting', err);
-      return res.json(ApiResponse.error('Failed to delete page.', err.message));
-    }
-
-    logger.debug('Page deleted', page.path);
-    const result = {};
-    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
-
-    res.json(ApiResponse.success(result));
-
-    try {
-      // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page, req.user);
-    }
-    catch (err) {
-      logger.error('Delete notification failed', err);
-    }
   };
 
   /**

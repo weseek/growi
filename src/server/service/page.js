@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import ShareLink from '~/server/models/share-link';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -155,7 +156,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
@@ -195,7 +196,6 @@ class PageService {
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
     const Attachment = this.crowi.model('Attachment');
 
@@ -357,7 +357,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
     const pageEvent = this.pageEvent;
@@ -492,7 +492,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
@@ -568,7 +568,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     let count = 0;
@@ -733,7 +733,7 @@ class PageService {
       .addConditionToFilteringByViewer(user)
       .query
       .lean()
-      .cursor();
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;

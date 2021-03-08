@@ -5,7 +5,6 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 class FacebookSecurityManagement extends React.Component {
@@ -30,10 +29,9 @@ class FacebookSecurityManagement extends React.Component {
 
 FacebookSecurityManagement.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
 };
 
-const TwitterSecurityManagementWrapper = withUnstatedContainers(FacebookSecurityManagement, [AppContainer, AdminGeneralSecurityContainer]);
+const TwitterSecurityManagementWrapper = withUnstatedContainers(FacebookSecurityManagement, [AdminGeneralSecurityContainer]);
 
 export default withTranslation()(TwitterSecurityManagementWrapper);

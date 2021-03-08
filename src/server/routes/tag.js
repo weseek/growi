@@ -1,3 +1,5 @@
+import Tag from '../models/tag';
+
 /**
  * @swagger
  *
@@ -29,7 +31,6 @@
  */
 module.exports = function(crowi, app) {
 
-  const Tag = crowi.model('Tag');
   const PageTagRelation = crowi.model('PageTagRelation');
   const ApiResponse = require('../util/apiResponse');
   const actions = {};

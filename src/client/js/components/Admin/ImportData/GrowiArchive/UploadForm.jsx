@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../../UnstatedUtils';
-import AppContainer from '../../../../services/AppContainer';
 import { toastError } from '../../../../util/apiNotification';
+import { apiv3Post } from '~/utils/apiv3-client';
 
 class UploadForm extends React.Component {
 
@@ -28,11 +27,11 @@ class UploadForm extends React.Component {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('_csrf', this.props.appContainer.csrfToken);
+    // formData.append('_csrf', this.props.appContainer.csrfToken); // MEMO: no need to use use CSRF token -- Yuki Takei
     formData.append('file', this.inputRef.current.files[0]);
 
     try {
-      const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
+      const { data } = await apiv3Post('/import/upload', formData);
       // TODO: toastSuccess, toastError
       this.props.onUpload(data);
     }
@@ -93,15 +92,9 @@ class UploadForm extends React.Component {
 
 UploadForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onUpload: PropTypes.func.isRequired,
   isTheSameVersion: PropTypes.bool,
   onVersionMismatch: PropTypes.func,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const UploadFormWrapper = withUnstatedContainers(UploadForm, [AppContainer]);
-
-export default withTranslation()(UploadFormWrapper);
+export default withTranslation()(UploadForm);

@@ -148,7 +148,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
   app.post('/_api/pages.rename'       , accessTokenParser , loginRequiredStrictly , page.api.rename);
-  app.post('/_api/pages.remove'       , loginRequiredStrictly , page.api.remove); // (Avoid from API Token)
   app.post('/_api/pages.revertRemove' , loginRequiredStrictly , page.api.revertRemove); // (Avoid from API Token)
   app.post('/_api/pages.unlink'       , loginRequiredStrictly , page.api.unlink); // (Avoid from API Token)
   app.post('/_api/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, page.api.duplicate);
@@ -156,7 +155,6 @@ module.exports = function(crowi, app) {
   app.get('/_api/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   app.get('/_api/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
   app.post('/_api/tags.update'        , accessTokenParser, loginRequiredStrictly, tag.api.update);
-  app.get('/_api/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
   app.post('/_api/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , comment.api.add);
   app.post('/_api/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , comment.api.update);
   app.post('/_api/comments.remove'    , accessTokenParser , loginRequiredStrictly , comment.api.remove);

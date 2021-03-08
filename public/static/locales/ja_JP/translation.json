@@ -81,7 +81,6 @@
   "Go to this version": "このバージョンを見る",
   "View diff": "差分を表示",
   "No diff": "差分なし",
-  "Shrink versions that have no diffs": "差分のないバージョンをコンパクトに表示する",
   "User ID": "ユーザーID",
   "User Information": "ユーザー情報",
   "Basic Info": "ユーザーの基本情報",
@@ -95,6 +94,7 @@
   "Current Image": "現在の画像",
   "Delete Image": "画像を削除",
   "Delete this image?": "削除してよろしいですか？",
+  "retrieve_again": "再取得しました",
   "Updated": "更新しました",
   "Upload new image": "新しい画像をアップロード",
   "Connected": "接続されています",
@@ -173,6 +173,7 @@
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
+    "page_not_exist": "このページは存在しません。",
     "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
   },
   "custom_navigation": {
@@ -299,9 +300,12 @@
   "page_page": {
     "notice": {
       "version": "これは現在の版ではありません。",
-      "moved": "このページは <code>%s</code> から移動しました。",
-      "redirected": "リダイレクト元 >> <code>%s</code>",
-      "duplicated": "このページは <code>%s</code> から複製されました。",
+      "moved": "このページは",
+      "moved_period":"から移動しました。",
+      "redirected": "リダイレクト元 >>",
+      "redirected_period":"",
+      "duplicated": "このページは",
+      "duplicated_period": "から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
@@ -328,6 +332,15 @@
     "already_exists": "新しいページが既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
     "user_not_admin": "権限のあるユーザーのみが完全削除できます"
+  },
+  "page_history": {
+    "revision_list": "更新履歴",
+    "revision": "バージョン",
+    "comparing_source": "ソース",
+    "comparing_target": "ターゲット",
+    "comparing_revisions": "差分を比較する",
+    "compare_latest":"最新と比較",
+    "compare_previous":"1つ前のバージョンと比較"
   },
   "modal_rename": {
     "label": {

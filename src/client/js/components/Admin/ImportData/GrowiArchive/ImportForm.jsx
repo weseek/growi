@@ -7,9 +7,9 @@ import ImportOptionForPages from '~/models/admin/import-option-for-pages';
 import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
-import AppContainer from '../../../../services/AppContainer';
 import AdminSocketIoContainer from '../../../../services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '../../../../util/apiNotification';
+import { apiv3Post } from '~/utils/apiv3-client';
 
 
 import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';
@@ -217,7 +217,7 @@ class ImportForm extends React.Component {
     this.setState({ canImport });
   }
 
-  async validateCollectionSize(validationErrors) {
+  async validateCollectionSize() {
     const { t } = this.props;
     const { warnForOtherGroups, selectedCollections } = this.state;
 
@@ -287,7 +287,7 @@ class ImportForm extends React.Component {
   }
 
   async import() {
-    const { appContainer, fileName, onPostImport } = this.props;
+    const { fileName, onPostImport } = this.props;
     const { selectedCollections, optionsMap } = this.state;
 
     // init progress data
@@ -298,8 +298,7 @@ class ImportForm extends React.Component {
     });
 
     try {
-      // TODO: use appContainer.apiv3.post
-      await appContainer.apiv3Post('/import', {
+      await apiv3Post('/import', {
         fileName,
         collections: Array.from(selectedCollections),
         optionsMap,
@@ -492,7 +491,6 @@ class ImportForm extends React.Component {
 
 ImportForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   fileName: PropTypes.string,
@@ -504,6 +502,6 @@ ImportForm.propTypes = {
 /**
  * Wrapper component for using unstated
  */
-const ImportFormWrapper = withUnstatedContainers(ImportForm, [AppContainer, AdminSocketIoContainer]);
+const ImportFormWrapper = withUnstatedContainers(ImportForm, [AdminSocketIoContainer]);
 
 export default withTranslation()(ImportFormWrapper);

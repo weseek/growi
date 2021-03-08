@@ -1,12 +1,22 @@
 # CHANGES
 
-## v4.2.8-RC
+## v4.2.9-RC
 
-* Fix: Fixed the display of updtedAt and createdAt being reversed
-* Improvement: Improved page control performance with stream and bulk
-    * rename, duplicate, delete, deleteCompletely, revrtDeleted
+* Feature: Comparing revisions
+* Improvement: Memory consumption when re-indexing for full text searching
+* Improvement: Site URL settings valildation
+* Fix: Screen transition without displaying notice on browsers except Chrome
+## v4.2.8
+
+* Improvement: Performance for pages to rename/duplicate/delete/revert pages
+* Fix: Preview scrollbar doesn't sync to editor
+    * Introduced by v4.2.6
 * Fix: Failed to save temporaryUrlCached with using gcs
     * Introduced by v4.2.3
+* Fix: Fixed not being able to update ses settings
+    * Introduced by v4.2.0
+* Fix: Fixed the display of updtedAt and createdAt being reversed
+* Fix: Pass app title value through the XSS filter
 
 ## v4.2.7
 

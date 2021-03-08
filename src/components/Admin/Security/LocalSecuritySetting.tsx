@@ -10,7 +10,7 @@ import AdminLocalSecurityContainer from '~/client/js/services/AdminLocalSecurity
 import LocalSecuritySettingContents from '~/components/Admin/Security/LocalSecuritySettingContents';
 
 type Props = {
-  adminLocalSecurityContainer: AdminLocalSecurityContainer,
+  // adminLocalSecurityContainer: AdminLocalSecurityContainer,
 }
 
 const retrieveErrors = null;

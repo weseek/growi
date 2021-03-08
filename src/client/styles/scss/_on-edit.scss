@@ -232,12 +232,15 @@
     }
 
     .page-editor-preview-container {
-      overflow-y: scroll;
     }
 
     .page-editor-preview-body {
-      max-width: 980px;
       padding: 18px 15px 0;
+      overflow-y: scroll;
+    }
+
+    .wiki {
+      max-width: 980px;
       margin: 0 auto;
     }
 

@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:services:TagContainer');
 

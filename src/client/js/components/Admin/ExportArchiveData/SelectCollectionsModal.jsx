@@ -5,9 +5,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import * as toastr from 'toastr';
+import { apiv3Post } from '~/utils/apiv3-client';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
@@ -67,8 +66,7 @@ class SelectCollectionsModal extends React.Component {
     e.preventDefault();
 
     try {
-      // TODO: use appContainer.apiv3.post
-      const result = await this.props.appContainer.apiPost('/v3/export', { collections: Array.from(this.state.selectedCollections) });
+      const result = await apiv3Post('/v3/export', { collections: Array.from(this.state.selectedCollections) });
       // TODO: toastSuccess, toastError
 
       if (!result.ok) {
@@ -231,7 +229,6 @@ class SelectCollectionsModal extends React.Component {
 
 SelectCollectionsModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   isOpen: PropTypes.bool.isRequired,
   onExportingRequested: PropTypes.func.isRequired,
@@ -239,9 +236,4 @@ SelectCollectionsModal.propTypes = {
   collections: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const SelectCollectionsModalWrapper = withUnstatedContainers(SelectCollectionsModal, [AppContainer]);
-
-export default withTranslation()(SelectCollectionsModalWrapper);
+export default withTranslation()(SelectCollectionsModal);

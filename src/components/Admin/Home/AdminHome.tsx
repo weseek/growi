@@ -2,9 +2,9 @@ import React, { FC, Fragment } from 'react';
 
 import { useTranslation } from '~/i18n';
 
-import SystemInfomationTable from '../../../client/js/components/Admin/AdminHome/SystemInfomationTable';
-import InstalledPluginTable from '../../../client/js/components/Admin/AdminHome/InstalledPluginTable';
-import EnvVarsTable from '../../../client/js/components/Admin/AdminHome/EnvVarsTable';
+import { SystemInformationTable } from './SystemInformationTable';
+import { InstalledPluginTable } from './InstalledPluginTable';
+import { EnvVarsTable } from './EnvVarsTable';
 
 type Props = {
   nodeVersion: string,
@@ -30,7 +30,7 @@ export const AdminHome:FC<Props> = (props: Props) => {
       <div className="row mb-5">
         <div className="col-lg-12">
           <h2 className="admin-setting-header">{t('admin:admin_top.system_information')}</h2>
-          <SystemInfomationTable
+          <SystemInformationTable
             nodeVersion={props.nodeVersion}
             npmVersion={props.npmVersion}
             yarnVersion={props.yarnVersion}

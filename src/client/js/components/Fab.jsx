@@ -1,20 +1,22 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
-
 import StickyEvents from 'sticky-events';
+import loggerFactory from '~/utils/logger';
 
-import AppContainer from '../services/AppContainer';
+
 import NavigationContainer from '../services/NavigationContainer';
+import { useCurrentUser } from '~/stores/context';
+
 import { withUnstatedContainers } from './UnstatedUtils';
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';
 
+
 const logger = loggerFactory('growi:cli:Fab');
 
 const Fab = (props) => {
-  const { navigationContainer, appContainer } = props;
-  const { currentUser } = appContainer;
+  const { navigationContainer } = props;
+  const { data: currentUser } = useCurrentUser();
 
   const [animateClasses, setAnimateClasses] = useState('invisible');
   const [buttonClasses, setButtonClasses] = useState('');
@@ -79,8 +81,7 @@ const Fab = (props) => {
 };
 
 Fab.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
-export default withUnstatedContainers(Fab, [AppContainer, NavigationContainer]);
+export default withUnstatedContainers(Fab, [NavigationContainer]);

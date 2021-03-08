@@ -7,12 +7,11 @@ import { useCurrentPagePath, useIsAbleToDeleteCompletely } from '~/stores/contex
 import { useIsAbleToShowEmptyTrashButton, useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
 import PageContainer from '../../services/PageContainer';
 import UserPicture from '../User/UserPicture';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
-import PageDeleteModal from '../PageDeleteModal';
+import PageDeleteModal from '~/components/PageManagement/PageDeleteModal';
 
 const TrashPageAlert = (props) => {
   const { t, pageContainer } = props;
@@ -141,12 +140,11 @@ const TrashPageAlert = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const TrashPageAlertWrapper = withUnstatedContainers(TrashPageAlert, [AppContainer, PageContainer]);
+const TrashPageAlertWrapper = withUnstatedContainers(TrashPageAlert, [PageContainer]);
 
 
 TrashPageAlert.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 

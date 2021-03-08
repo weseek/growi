@@ -1,6 +1,6 @@
-import axios from 'axios';
 import * as urljoin from 'url-join';
 
+import axios from '~/utils/axios';
 import Apiv1ErrorHandler from './apiv1ErrorHandler';
 
 const apiv1Root = '/_api';

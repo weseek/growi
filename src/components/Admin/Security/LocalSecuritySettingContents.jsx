@@ -6,7 +6,6 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../../client/js/components/UnstatedUtils';
 import { toastSuccess, toastError } from '../../../client/js/util/apiNotification';
 
-import AppContainer from '../../../client/js/services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../client/js/services/AdminGeneralSecurityContainer';
 import AdminLocalSecurityContainer from '../../../client/js/services/AdminLocalSecurityContainer';
 
@@ -179,13 +178,11 @@ class LocalSecuritySettingContents extends React.Component {
 
 LocalSecuritySettingContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminGeneralSecurityContainer: PropTypes.instanceOf(AdminGeneralSecurityContainer).isRequired,
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
 const LocalSecuritySettingContentsWrapper = withUnstatedContainers(LocalSecuritySettingContents, [
-  AppContainer,
   AdminGeneralSecurityContainer,
   AdminLocalSecurityContainer,
 ]);

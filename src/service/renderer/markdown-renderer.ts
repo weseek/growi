@@ -24,6 +24,7 @@ import unified, { Plugin, PluginTuple, Processor } from 'unified';
 import parse from 'remark-parse';
 import gfm from 'remark-gfm';
 import footnotes from 'remark-footnotes';
+import emoji from 'remark-emoji';
 import breaks from 'remark-breaks';
 import remark2rehype from 'remark-rehype';
 import slug from 'rehype-slug';
@@ -58,24 +59,24 @@ export default class MarkdownRenderer {
 
   processor?: Processor;
 
-  constructor() {
-    // this.appContainer = appContainer;
+  // constructor() {
+  //   this.appContainer = appContainer;
 
-    // if (originRenderer != null) {
-    //   this.preProcessors = originRenderer.preProcessors;
-    //   this.postProcessors = originRenderer.postProcessors;
-    // }
-    // else {
-    //   this.preProcessors = [
-    //     new EasyGrid(appContainer),
-    //     new Linker(appContainer),
-    //     new CsvToTable(appContainer),
-    //     new XssFilter(appContainer),
-    //   ];
-    //   this.postProcessors = [
-    //   ];
-    // }
-  }
+  //   if (originRenderer != null) {
+  //     this.preProcessors = originRenderer.preProcessors;
+  //     this.postProcessors = originRenderer.postProcessors;
+  //   }
+  //   else {
+  //     this.preProcessors = [
+  //       new EasyGrid(appContainer),
+  //       new Linker(appContainer),
+  //       new CsvToTable(appContainer),
+  //       new XssFilter(appContainer),
+  //     ];
+  //     this.postProcessors = [
+  //     ];
+  //   }
+  // }
 
   init() {
     let parser = unified().use(parse);
@@ -246,10 +247,11 @@ export default class MarkdownRenderer {
 
 }
 
-export const generateViewRenderer = (rendererSettings: RendererSettings, storeTocNode: (toc: HtmlElementNode) => void): MarkdownRenderer => {
+export const generateViewRenderer = (rendererSettings: RendererSettings, storeTocNode?: (toc: HtmlElementNode) => void): MarkdownRenderer => {
   const renderer = new MarkdownRenderer();
   // add remark plugins
   renderer.remarkPlugins.push(footnotes);
+  renderer.remarkPlugins.push(emoji);
   if (rendererSettings.isEnabledLinebreaks) {
     renderer.remarkPlugins.push(breaks);
   }

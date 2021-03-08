@@ -1,6 +1,6 @@
 import React from 'react';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 import Xss from '~/service/xss';
 
 import GrowiNavbar from './components/Navbar/GrowiNavbar';

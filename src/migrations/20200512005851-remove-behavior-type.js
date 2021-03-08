@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
+import Config from '~/server/models/config';
 import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 
 const logger = loggerFactory('growi:migrate:remove-behavior-type');
 
@@ -10,8 +10,6 @@ module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     await Config.findOneAndDelete({ key: 'customize:behavior' }); // remove behavior
 
@@ -22,8 +20,6 @@ module.exports = {
     // do not rollback
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('~/server/models/config')();
 
     const insertConfig = new Config({
       ns: 'crowi',

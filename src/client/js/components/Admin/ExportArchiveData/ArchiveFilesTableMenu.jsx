@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 class ArchiveFilesTableMenu extends React.Component {
@@ -33,14 +31,8 @@ class ArchiveFilesTableMenu extends React.Component {
 
 ArchiveFilesTableMenu.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   fileName: PropTypes.string.isRequired,
   onZipFileStatRemove: PropTypes.func.isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ArchiveFilesTableMenuWrapper = withUnstatedContainers(ArchiveFilesTableMenu, [AppContainer]);
-
-export default withTranslation()(ArchiveFilesTableMenuWrapper);
+export default withTranslation()(ArchiveFilesTableMenu);

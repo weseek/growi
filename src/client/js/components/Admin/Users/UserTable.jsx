@@ -7,7 +7,6 @@ import UserPicture from '../../User/UserPicture';
 import UserMenu from './UserMenu';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import SortIcons from './SortIcons';
 
@@ -216,11 +215,10 @@ class UserTable extends React.Component {
 
 UserTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
 
 };
 
-const UserTableWrapper = withUnstatedContainers(UserTable, [AppContainer, AdminUsersContainer]);
+const UserTableWrapper = withUnstatedContainers(UserTable, [AdminUsersContainer]);
 
 export default withTranslation()(UserTableWrapper);

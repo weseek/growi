@@ -1,3 +1,5 @@
+import ShareLink from '~/server/models/share-link';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
@@ -565,7 +567,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GeneralSetting'
    */
-  router.put('/general-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, validator.generalSetting, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'security:restrictGuestMode': req.body.restrictGuestMode,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
@@ -614,7 +616,6 @@ module.exports = (crowi) => {
    *                      description: suceed to get all share links
    */
   router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const ShareLink = crowi.model('ShareLink');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};

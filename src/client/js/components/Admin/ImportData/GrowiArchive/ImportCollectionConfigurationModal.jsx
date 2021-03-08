@@ -13,7 +13,6 @@ import {
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
-import AppContainer from '../../../../services/AppContainer';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 
@@ -233,9 +232,4 @@ ImportCollectionConfigurationModal.propTypes = {
   option: PropTypes.instanceOf(GrowiArchiveImportOption).isRequired,
 };
 
-/**
- * Wrapper component for using unstated
- */
-const ImportCollectionConfigurationModalWrapper = withUnstatedContainers(ImportCollectionConfigurationModal, [AppContainer]);
-
-export default withTranslation()(ImportCollectionConfigurationModalWrapper);
+export default withTranslation()(ImportCollectionConfigurationModal);

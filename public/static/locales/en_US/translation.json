@@ -80,7 +80,6 @@
   "Go to this version": "View this version",
   "View diff": "View diff",
   "No diff": "No diff",
-  "Shrink versions that have no diffs": "Shrink versions that have no diffs",
   "User ID": "User ID",
   "User Information": "User information",
   "Basic Info": "Basic info",
@@ -94,6 +93,7 @@
   "Current Image": "Current image",
   "Delete Image": "Delete Image",
   "Delete this image?": "Delete this image?",
+  "retrieve_again": "Retrieve again",
   "Updated": "Updated",
   "Upload new image": "Upload new image",
   "Connected": "Connected",
@@ -170,6 +170,7 @@
   },
   "not_found_page": {
     "Create Page": "Create Page",
+    "page_not_exist": "This page does not exist.",
     "page_not_exist_alert": "This page does not exist. Please create a new page."
   },
   "custom_navigation": {
@@ -296,9 +297,12 @@
   "page_page": {
     "notice": {
       "version": "This is not the current version.",
-      "moved": "This page was moved from <code>%s</code>",
-      "redirected": "You are redirected from <code>%s</code>",
-      "duplicated": "This page was duplicated from <code>%s</code>",
+      "moved": "This page was moved from",
+      "moved_period": ".",
+      "redirected": "You are redirected from",
+      "redirected_period": ".",
+      "duplicated": "This page was duplicated from",
+      "duplicated_period": ".",
       "unlinked": "Redirect pages to this page have been deleted.",
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
@@ -326,6 +330,15 @@
     "already_exists": "New page is already exists.",
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete completely"
+  },
+  "page_history": {
+    "revision_list": "Revision list",
+    "revision": "version",
+    "comparing_source": "Source",
+    "comparing_target": "Target",
+    "comparing_revisions": "Comparing the difference",
+    "compare_latest":"Compare latest revision",
+    "compare_previous":"Compare previous revision"
   },
   "modal_rename": {
     "label": {

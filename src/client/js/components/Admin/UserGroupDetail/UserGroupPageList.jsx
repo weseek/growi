@@ -2,12 +2,13 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
+import { PaginationWrapper } from '~/components/PaginationWrapper';
+
 import Page from '../../PageList/Page';
-import PaginationWrapper from '../../PaginationWrapper';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
 import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
 import { toastError } from '../../../util/apiNotification';
+import { apiv3Get } from '~/utils/apiv3-client';
 
 class UserGroupPageList extends React.Component {
 
@@ -33,7 +34,7 @@ class UserGroupPageList extends React.Component {
     const offset = (pageNum - 1) * limit;
 
     try {
-      const res = await this.props.appContainer.apiv3.get(`/user-groups/${this.props.adminUserGroupDetailContainer.state.userGroup._id}/pages`, {
+      const res = await apiv3Get(`/user-groups/${this.props.adminUserGroupDetailContainer.state.userGroup._id}/pages`, {
         limit,
         offset,
       });
@@ -77,13 +78,12 @@ class UserGroupPageList extends React.Component {
 
 UserGroupPageList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminUserGroupDetailContainer: PropTypes.instanceOf(AdminUserGroupDetailContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageList, [AppContainer, AdminUserGroupDetailContainer]);
+const UserGroupPageListWrapper = withUnstatedContainers(UserGroupPageList, [AdminUserGroupDetailContainer]);
 
 export default withTranslation()(UserGroupPageListWrapper);

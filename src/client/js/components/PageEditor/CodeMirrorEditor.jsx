@@ -7,30 +7,30 @@ import * as codemirror from 'codemirror';
 import { Button } from 'reactstrap';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
-import * as loadScript from 'simple-load-script';
-import * as loadCssSync from 'load-css-file';
+// import * as loadScript from 'simple-load-script';
+// import * as loadCssSync from 'load-css-file';
 
-import InterceptorManager from '~/service/interceptor-manager';
+// import InterceptorManager from '~/service/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
-import '~/styles/modules/codemirror-editor.module.scss';
+// import '~/styles/modules/codemirror-editor.module.scss';
 
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
 
-import pasteHelper from './PasteHelper';
-import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
-import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
-import MarkdownTableInterceptor from './MarkdownTableInterceptor';
-import mlu from './MarkdownLinkUtil';
-import mtu from './MarkdownTableUtil';
-import mdu from './MarkdownDrawioUtil';
-import geu from './GridEditorUtil';
-import GridEditModal from './GridEditModal';
-import LinkEditModal from './LinkEditModal';
-import HandsontableModal from './HandsontableModal';
+// import pasteHelper from './PasteHelper';
+// import EmojiAutoCompleteHelper from './EmojiAutoCompleteHelper';
+// import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
+// import MarkdownTableInterceptor from './MarkdownTableInterceptor';
+// import mlu from './MarkdownLinkUtil';
+// import mtu from './MarkdownTableUtil';
+// import mdu from './MarkdownDrawioUtil';
+// import geu from './GridEditorUtil';
+// import GridEditModal from './GridEditModal';
+// import LinkEditModal from './LinkEditModal';
+// import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
-import DrawioModal from './DrawioModal';
+// import DrawioModal from './DrawioModal';
 
 const logger = loggerFactory('growi:PageEditor:CodeMirrorEditor');
 
@@ -54,66 +54,66 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isGfmMode: this.props.isGfmMode,
       isEnabledEmojiAutoComplete: false,
       isLoadingKeymap: false,
-      isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
+      // isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
     };
 
-    this.gridEditModal = React.createRef();
-    this.linkEditModal = React.createRef();
-    this.handsontableModal = React.createRef();
-    this.drawioModal = React.createRef();
+    // this.gridEditModal = React.createRef();
+    // this.linkEditModal = React.createRef();
+    // this.handsontableModal = React.createRef();
+    // this.drawioModal = React.createRef();
 
     this.init();
 
-    this.getCodeMirror = this.getCodeMirror.bind(this);
+    // this.getCodeMirror = this.getCodeMirror.bind(this);
 
-    this.getBol = this.getBol.bind(this);
-    this.getEol = this.getEol.bind(this);
+    // this.getBol = this.getBol.bind(this);
+    // this.getEol = this.getEol.bind(this);
 
-    this.loadTheme = this.loadTheme.bind(this);
-    this.loadKeymapMode = this.loadKeymapMode.bind(this);
-    this.setKeymapMode = this.setKeymapMode.bind(this);
-    this.handleEnterKey = this.handleEnterKey.bind(this);
-    this.handleCtrlEnterKey = this.handleCtrlEnterKey.bind(this);
+    // this.loadTheme = this.loadTheme.bind(this);
+    // this.loadKeymapMode = this.loadKeymapMode.bind(this);
+    // this.setKeymapMode = this.setKeymapMode.bind(this);
+    // this.handleEnterKey = this.handleEnterKey.bind(this);
+    // this.handleCtrlEnterKey = this.handleCtrlEnterKey.bind(this);
 
-    this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
-    this.pasteHandler = this.pasteHandler.bind(this);
-    this.cursorHandler = this.cursorHandler.bind(this);
-    this.changeHandler = this.changeHandler.bind(this);
+    // this.scrollCursorIntoViewHandler = this.scrollCursorIntoViewHandler.bind(this);
+    // this.pasteHandler = this.pasteHandler.bind(this);
+    // this.cursorHandler = this.cursorHandler.bind(this);
+    // this.changeHandler = this.changeHandler.bind(this);
 
-    this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
+    // this.updateCheatsheetStates = this.updateCheatsheetStates.bind(this);
 
-    this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
-    this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
+    // this.renderLoadingKeymapOverlay = this.renderLoadingKeymapOverlay.bind(this);
+    // this.renderCheatsheetModalButton = this.renderCheatsheetModalButton.bind(this);
 
-    this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
-    this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
-    this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
-    this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
-    this.showDrawioHandler = this.showDrawioHandler.bind(this);
+    // this.makeHeaderHandler = this.makeHeaderHandler.bind(this);
+    // this.showGridEditorHandler = this.showGridEditorHandler.bind(this);
+    // this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
+    // this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
+    // this.showDrawioHandler = this.showDrawioHandler.bind(this);
   }
 
   init() {
-    this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
-    this.cmNoCdnScriptRoot = '/js/cdn';
-    this.cmNoCdnStyleRoot = '/styles/cdn';
+    // this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
+    // this.cmNoCdnScriptRoot = '/js/cdn';
+    // this.cmNoCdnStyleRoot = '/styles/cdn';
 
-    this.interceptorManager = new InterceptorManager();
-    this.interceptorManager.addInterceptors([
-      new PreventMarkdownListInterceptor(),
-      new MarkdownTableInterceptor(),
-    ]);
+    // this.interceptorManager = new InterceptorManager();
+    // this.interceptorManager.addInterceptors([
+    //   new PreventMarkdownListInterceptor(),
+    //   new MarkdownTableInterceptor(),
+    // ]);
 
-    this.loadedThemeSet = new Set(['eclipse', 'elegant']); // themes imported in _vendor.scss
-    this.loadedKeymapSet = new Set();
+    // this.loadedThemeSet = new Set(['eclipse', 'elegant']); // themes imported in _vendor.scss
+    // this.loadedKeymapSet = new Set();
   }
 
   componentWillMount() {
-    if (this.props.emojiStrategy != null) {
-      this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
-      this.setState({ isEnabledEmojiAutoComplete: true });
-    }
+    // if (this.props.emojiStrategy != null) {
+    //   this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
+    //   this.setState({ isEnabledEmojiAutoComplete: true });
+    // }
   }
 
   componentDidMount() {
@@ -141,22 +141,22 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.getCodeMirror().codeMirrorEditor = this;
 
     // load theme
-    const theme = this.props.editorOptions.theme;
-    this.loadTheme(theme);
+    // const theme = this.props.editorOptions.theme;
+    // this.loadTheme(theme);
 
     // set keymap
-    const keymapMode = this.props.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
+    // const keymapMode = this.props.editorOptions.keymapMode;
+    // this.setKeymapMode(keymapMode);
   }
 
   componentWillReceiveProps(nextProps) {
     // load theme
-    const theme = nextProps.editorOptions.theme;
-    this.loadTheme(theme);
+    // const theme = nextProps.editorOptions.theme;
+    // this.loadTheme(theme);
 
     // set keymap
-    const keymapMode = nextProps.editorOptions.keymapMode;
-    this.setKeymapMode(keymapMode);
+    // const keymapMode = nextProps.editorOptions.keymapMode;
+    // this.setKeymapMode(keymapMode);
   }
 
   getCodeMirror() {
@@ -330,12 +330,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
     return (pos1.line < pos2.line) ? pos2 : pos1;
   }
 
-  loadCss(source) {
-    return new Promise((resolve) => {
-      loadCssSync(source);
-      resolve();
-    });
-  }
+  // loadCss(source) {
+  //   return new Promise((resolve) => {
+  //     loadCssSync(source);
+  //     resolve();
+  //   });
+  // }
 
   /**
    * load Theme
@@ -360,41 +360,41 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * load assets for Key Maps
    * @param {*} keymapMode 'default' or 'vim' or 'emacs' or 'sublime'
    */
-  loadKeymapMode(keymapMode) {
-    const loadCss = this.loadCss;
-    const scriptList = [];
-    const cssList = [];
+  // loadKeymapMode(keymapMode) {
+  //   const loadCss = this.loadCss;
+  //   const scriptList = [];
+  //   const cssList = [];
 
-    // add dependencies
-    if (this.loadedKeymapSet.size === 0) {
-      const dialogScriptUrl = this.props.noCdn
-        ? urljoin(this.cmNoCdnScriptRoot, 'codemirror-dialog.js')
-        : urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js');
-      const dialogStyleUrl = this.props.noCdn
-        ? urljoin(this.cmNoCdnStyleRoot, 'codemirror-dialog.css')
-        : urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css');
+  //   // add dependencies
+  //   if (this.loadedKeymapSet.size === 0) {
+  //     const dialogScriptUrl = this.props.noCdn
+  //       ? urljoin(this.cmNoCdnScriptRoot, 'codemirror-dialog.js')
+  //       : urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.js');
+  //     const dialogStyleUrl = this.props.noCdn
+  //       ? urljoin(this.cmNoCdnStyleRoot, 'codemirror-dialog.css')
+  //       : urljoin(this.cmCdnRoot, 'addon/dialog/dialog.min.css');
 
-      scriptList.push(loadScript(dialogScriptUrl));
-      cssList.push(loadCss(dialogStyleUrl));
-    }
-    // load keymap
-    if (!this.loadedKeymapSet.has(keymapMode)) {
-      const keymapScriptUrl = this.props.noCdn
-        ? urljoin(this.cmNoCdnScriptRoot, `codemirror-keymap-${keymapMode}.js`)
-        : urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`);
-      scriptList.push(loadScript(keymapScriptUrl));
-      // update Set
-      this.loadedKeymapSet.add(keymapMode);
-    }
+  //     scriptList.push(loadScript(dialogScriptUrl));
+  //     cssList.push(loadCss(dialogStyleUrl));
+  //   }
+  //   // load keymap
+  //   if (!this.loadedKeymapSet.has(keymapMode)) {
+  //     const keymapScriptUrl = this.props.noCdn
+  //       ? urljoin(this.cmNoCdnScriptRoot, `codemirror-keymap-${keymapMode}.js`)
+  //       : urljoin(this.cmCdnRoot, `keymap/${keymapMode}.min.js`);
+  //     scriptList.push(loadScript(keymapScriptUrl));
+  //     // update Set
+  //     this.loadedKeymapSet.add(keymapMode);
+  //   }
 
-    // set loading state
-    this.setState({ isLoadingKeymap: true });
+  //   // set loading state
+  //   this.setState({ isLoadingKeymap: true });
 
-    return Promise.all(scriptList.concat(cssList))
-      .then(() => {
-        this.setState({ isLoadingKeymap: false });
-      });
-  }
+  //   return Promise.all(scriptList.concat(cssList))
+  //     .then(() => {
+  //       this.setState({ isLoadingKeymap: false });
+  //     });
+  // }
 
   /**
    * set Key Maps
@@ -444,7 +444,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const context = {
       handlers: [], // list of handlers which process enter key
       editor: this,
-      editorOptions: this.props.editorOptions,
+      // editorOptions: this.props.editorOptions,
     };
 
     const interceptorManager = this.interceptorManager;
@@ -472,34 +472,34 @@ export default class CodeMirrorEditor extends AbstractEditor {
     }
   }
 
-  cursorHandler(editor, event) {
-    const { additionalClassSet } = this.state;
-    const hasCustomClass = additionalClassSet.has(MARKDOWN_TABLE_ACTIVATED_CLASS);
-    const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
+  // cursorHandler(editor, event) {
+  //   const { additionalClassSet } = this.state;
+  //   const hasCustomClass = additionalClassSet.has(MARKDOWN_TABLE_ACTIVATED_CLASS);
+  //   const hasLinkClass = additionalClassSet.has(MARKDOWN_LINK_ACTIVATED_CLASS);
 
-    const isInTable = mtu.isInTable(editor);
-    const isInLink = mlu.isInLink(editor);
+  //   const isInTable = mtu.isInTable(editor);
+  //   const isInLink = mlu.isInLink(editor);
 
-    if (!hasCustomClass && isInTable) {
-      additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
-      this.setState({ additionalClassSet });
-    }
+  //   if (!hasCustomClass && isInTable) {
+  //     additionalClassSet.add(MARKDOWN_TABLE_ACTIVATED_CLASS);
+  //     this.setState({ additionalClassSet });
+  //   }
 
-    if (hasCustomClass && !isInTable) {
-      additionalClassSet.delete(MARKDOWN_TABLE_ACTIVATED_CLASS);
-      this.setState({ additionalClassSet });
-    }
+  //   if (hasCustomClass && !isInTable) {
+  //     additionalClassSet.delete(MARKDOWN_TABLE_ACTIVATED_CLASS);
+  //     this.setState({ additionalClassSet });
+  //   }
 
-    if (!hasLinkClass && isInLink) {
-      additionalClassSet.add(MARKDOWN_LINK_ACTIVATED_CLASS);
-      this.setState({ additionalClassSet });
-    }
+  //   if (!hasLinkClass && isInLink) {
+  //     additionalClassSet.add(MARKDOWN_LINK_ACTIVATED_CLASS);
+  //     this.setState({ additionalClassSet });
+  //   }
 
-    if (hasLinkClass && !isInLink) {
-      additionalClassSet.delete(MARKDOWN_LINK_ACTIVATED_CLASS);
-      this.setState({ additionalClassSet });
-    }
-  }
+  //   if (hasLinkClass && !isInLink) {
+  //     additionalClassSet.delete(MARKDOWN_LINK_ACTIVATED_CLASS);
+  //     this.setState({ additionalClassSet });
+  //   }
+  // }
 
   changeHandler(editor, data, value) {
     if (this.props.onChange != null) {
@@ -520,20 +520,20 @@ export default class CodeMirrorEditor extends AbstractEditor {
    * @param {any} editor An editor instance of CodeMirror
    * @param {any} event
    */
-  pasteHandler(editor, event) {
-    const types = event.clipboardData.types;
+  // pasteHandler(editor, event) {
+  //   const types = event.clipboardData.types;
 
-    // files
-    if (types.includes('Files')) {
-      event.preventDefault();
-      this.dispatchPasteFiles(event);
-    }
-    // text
-    else if (types.includes('text/plain')) {
-      pasteHelper.pasteText(this, event);
-    }
+  //   // files
+  //   if (types.includes('Files')) {
+  //     event.preventDefault();
+  //     this.dispatchPasteFiles(event);
+  //   }
+  //   // text
+  //   else if (types.includes('text/plain')) {
+  //     pasteHelper.pasteText(this, event);
+  //   }
 
-  }
+  // }
 
   /**
    * update states which related to cheatsheet
@@ -674,21 +674,21 @@ export default class CodeMirrorEditor extends AbstractEditor {
     cm.focus();
   }
 
-  showGridEditorHandler() {
-    this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
-  }
+  // showGridEditorHandler() {
+  //   this.gridEditModal.current.show(geu.getGridHtml(this.getCodeMirror()));
+  // }
 
-  showLinkEditHandler() {
-    this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
-  }
+  // showLinkEditHandler() {
+  //   this.linkEditModal.current.show(mlu.getMarkdownLink(this.getCodeMirror()));
+  // }
 
-  showHandsonTableHandler() {
-    this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
-  }
+  // showHandsonTableHandler() {
+  //   this.handsontableModal.current.show(mtu.getMarkdownTable(this.getCodeMirror()));
+  // }
 
-  showDrawioHandler() {
-    this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
-  }
+  // showDrawioHandler() {
+  //   this.drawioModal.current.show(mdu.getMarkdownDrawioMxfile(this.getCodeMirror()));
+  // }
 
   getNavbarItems() {
     return [
@@ -842,8 +842,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
           value={this.state.value}
           options={{
             mode,
-            theme: this.props.editorOptions.theme,
-            styleActiveLine: this.props.editorOptions.styleActiveLine,
+            // theme: this.props.editorOptions.theme,
+            // styleActiveLine: this.props.editorOptions.styleActiveLine,
             lineNumbers: this.props.lineNumbers,
             tabSize: 4,
             indentUnit: 4,
@@ -886,7 +886,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }
         }}
         />
-
+        {/*
         { this.renderLoadingKeymapOverlay() }
 
         { this.renderCheatsheetOverlay() }
@@ -907,7 +907,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <DrawioModal
           ref={this.drawioModal}
           onSave={(drawioData) => { return mdu.replaceFocusedDrawioWithEditor(this.getCodeMirror(), drawioData) }}
-        />
+        /> */}
 
       </React.Fragment>
     );

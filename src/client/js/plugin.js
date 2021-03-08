@@ -1,4 +1,4 @@
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:plugin');
 
