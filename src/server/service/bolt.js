@@ -63,7 +63,6 @@ class BoltService {
     };
 
     this.getSearchResultPaths = this.getSearchResultPaths.bind(this);
-    // this.updateOffsetNum = this.updateOffsetNum.bind(this);
     this.crowi = crowi;
     this.receiver = new BoltReciever();
 
@@ -130,12 +129,13 @@ class BoltService {
     });
 
     this.bolt.action('showNextResults', async({
-      body, ack, say, action,
+      body, ack, say, action, respond,
     }) => {
       await ack();
-      console.log('action.value', action.value);
+      console.log('respond', respond);
       const intOffset = parseInt(action.value);
-      const nextResults = this.getNextResults(intOffset);
+      const newOffsetNum = this.updateOffsetNum(intOffset);
+      const nextResults = this.getNextResults(newOffsetNum);
       console.log('nextResults', nextResults);
     });
 
@@ -160,14 +160,19 @@ class BoltService {
     throw new Error('/growi command: Invalid first argument');
   }
 
-  getNextResults = (offset) => {
+  updateOffsetNum = (offset) => {
     const newOffset = offset + 10;
     console.log('offset1', newOffset);
 
+    return newOffset;
+  };
+
+
+  getNextResults = () => {
     // this.getSearchResultPaths(command, args);
     // this.showEphemeralSearchResults();
+  }
 
-  };
 
   async getSearchResultPaths(command, args) {
     const firstKeyword = args[1];
@@ -279,8 +284,7 @@ class BoltService {
                   text: 'Next',
                 },
                 action_id: 'showNextResults',
-                value: `${offset}`
-                ,
+                value: `${offset}`,
               },
               {
                 type: 'button',
