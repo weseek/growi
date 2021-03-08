@@ -3,7 +3,7 @@ import { Container } from 'unstated';
 import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
 import loggerFactory from '~/utils/logger';
-import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
+import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
 const logger = loggerFactory('growi:services:AdminLdapSecurityContainer');
 
