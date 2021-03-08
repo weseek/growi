@@ -440,6 +440,16 @@ ul.pagination {
 }
 
 /*
+ * Preview for editing /Sidebar
+ */
+body.pathname-sidebar {
+  .page-editor-preview-body {
+    color: $color-sidebar-context;
+    background-color: $bgcolor-sidebar-context;
+  }
+}
+
+/*
  * GROWI Grid Edit Modal
  */
 .grw-grid-edit-preview {

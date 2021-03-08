@@ -76,6 +76,10 @@ jobs:
         image: mongo:4.4
         ports:
         - 27017/tcp
+      mongodb36:
+        image: mongo:3.6
+        ports:
+        - 27017/tcp
 
     steps:
     - uses: actions/checkout@v2
@@ -115,6 +119,11 @@ jobs:
         yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
+    - name: yarn test with MongoDB 3.6
+      run: |
+        yarn test
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_test
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -218,6 +227,10 @@ jobs:
         image: mongo:4.4
         ports:
         - 27017/tcp
+      mongodb36:
+        image: mongo:3.6
+        ports:
+        - 27017/tcp
 
     steps:
     - uses: actions/checkout@v2
@@ -286,6 +299,11 @@ jobs:
         yarn start:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
+    - name: yarn server:prod:ci with MongoDB 3.6
+      run: |
+        yarn server:prod:ci
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
       with:

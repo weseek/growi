@@ -57,18 +57,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
-  // HACKMD_URI: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
-  // HACKMD_URI_FOR_SERVER: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
+  HACKMD_URI: {
+    ns:      'crowi',
+    key:     'app:hackmdUri',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  HACKMD_URI_FOR_SERVER: {
+    ns:      'crowi',
+    key:     'app:hackmdUriForServer',
+    type:    ValueType.STRING,
+    default: null,
+  },
   // PLANTUML_URI: {
   //   ns:      ,
   //   key:     ,

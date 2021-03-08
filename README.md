@@ -31,7 +31,7 @@ Table Of Contents
 - [Features](#features)
 - [Quick Start for Production](#quick-start-for-production)
     - [docker-compose](#docker-compose)
-    - [Helm (Experimental)](#helm)
+    - [Helm (Experimental)](#helm-experimental)
     - [On-premise](#on-premise)
 - [Environment Variables](#environment-variables)
 - [Documentation](#documentation)
