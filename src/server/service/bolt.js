@@ -63,7 +63,7 @@ class BoltService {
     };
 
     this.getSearchResultPaths = this.getSearchResultPaths.bind(this);
-    this.updateOffsetNum = this.updateOffsetNum.bind(this);
+    // this.updateOffsetNum = this.updateOffsetNum.bind(this);
     this.crowi = crowi;
     this.receiver = new BoltReciever();
 
@@ -133,11 +133,10 @@ class BoltService {
       body, ack, say, action,
     }) => {
       await ack();
-      const intOffset = parseInt(action.value);
-      const offsetNum = this.updateOffsetNum(intOffset);
-      // ↓ not working, still occur 'this.setState is not a function' err.
-      // const offsetNum = this.updateOffsetNum(intOffset).bind(this);
-      console.log('offsetNum', offsetNum);
+      // console.log('action.value', action.value);
+      // const intOffset = parseInt(action.value);
+      // const nextResults = this.getNextResults(intOffset);
+      // console.log('nextResults', nextResults);
     });
 
     this.bolt.action('shareSearchResults', async({
@@ -161,13 +160,13 @@ class BoltService {
     throw new Error('/growi command: Invalid first argument');
   }
 
-  updateOffsetNum = (offset) => {
-    /* https://github.com/slackapi/bolt-js/blob/main/src/errors.ts
-       'this.setState is not a function' err is occurred here
-       at Object.asCodedError
-     */
-    this.setState({ pagenationOffset: offset + 10 });
-  }
+  getNextResults = (offset) => {
+    console.log('offset', offset);
+    // const newOffset = offset + 10;
+    // this.getSearchResultPaths(command, args);
+    // this.showEphemeralSearchResults();
+
+  };
 
   async getSearchResultPaths(command, args) {
     const firstKeyword = args[1];
@@ -188,8 +187,7 @@ class BoltService {
     const { searchService } = this.crowi;
     const ApiPaginate = require('../util/apiPaginate');
 
-    const offset = this.state.pagenationOffset;
-
+    const offset = 0;
     const options = { limit: 10, offset };
 
     const paginateOpts = ApiPaginate.parseOptionsForElasticSearch(options);
@@ -234,6 +232,7 @@ class BoltService {
 
   async showEphemeralSearchResults(command, args) {
     const { resultPaths, offset } = await this.getSearchResultPaths(command, args);
+    // console.log('offset', offset);
 
     const base = this.crowi.appService.getSiteUrl();
 
@@ -261,6 +260,7 @@ class BoltService {
 
     const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDesc}.`;
 
+
     try {
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
@@ -278,7 +278,8 @@ class BoltService {
                   text: 'Next',
                 },
                 action_id: 'showNextResults',
-                value: `${offset}`,
+                value: `${offset}`
+                ,
               },
               {
                 type: 'button',
