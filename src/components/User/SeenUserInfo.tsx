@@ -1,6 +1,6 @@
 import React, { VFC, useState } from 'react';
 import {
-  Button, Popover, PopoverBody,
+  Popover, PopoverBody,
 } from 'reactstrap';
 import UserPictureList from '~/client/js/components/User/UserPictureList';
 import { useSeenUsersSWR } from '~/stores/page';
@@ -18,10 +18,10 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
 
   return (
     <div className="grw-seen-user-info">
-      <Button id="po-seen-user" color="link" className="px-2">
+      <button type="button" id="po-seen-user" color="link" className="btn px-2">
         <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
         <span className="seen-user-count">{countOfSeenUsers}</span>
-      </Button>
+      </button>
       <Popover
         placement="bottom"
         isOpen={popoverOpen}
