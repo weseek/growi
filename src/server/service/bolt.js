@@ -133,10 +133,10 @@ class BoltService {
       body, ack, say, action,
     }) => {
       await ack();
-      // console.log('action.value', action.value);
-      // const intOffset = parseInt(action.value);
-      // const nextResults = this.getNextResults(intOffset);
-      // console.log('nextResults', nextResults);
+      console.log('action.value', action.value);
+      const intOffset = parseInt(action.value);
+      const nextResults = this.getNextResults(intOffset);
+      console.log('nextResults', nextResults);
     });
 
     this.bolt.action('shareSearchResults', async({
@@ -161,8 +161,9 @@ class BoltService {
   }
 
   getNextResults = (offset) => {
-    console.log('offset', offset);
-    // const newOffset = offset + 10;
+    const newOffset = offset + 10;
+    console.log('offset1', newOffset);
+
     // this.getSearchResultPaths(command, args);
     // this.showEphemeralSearchResults();
 
