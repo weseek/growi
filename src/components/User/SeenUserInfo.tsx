@@ -32,7 +32,7 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
       >
         <PopoverBody className="seen-user-popover">
           <div className="px-2 text-right user-list-content text-truncate text-muted">
-            <UserPictureList users={seenUsers?.slice(-15)} />
+            <UserPictureList users={seenUsers?.slice(0,15)} />
           </div>
         </PopoverBody>
       </Popover>
