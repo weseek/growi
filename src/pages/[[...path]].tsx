@@ -30,9 +30,7 @@ import {
   useSearchServiceConfigured, useSearchServiceReachable,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
 } from '../stores/context';
-import {
-  useCurrentPageSWR,
-} from '../stores/page';
+import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
