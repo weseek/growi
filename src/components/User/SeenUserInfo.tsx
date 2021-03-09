@@ -15,7 +15,7 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
   const toggle = () => setPopoverOpen(!popoverOpen);
   const { data: seenUsersLimit } = useCurrentPageSeenUsersSWR(-15);
   const { data: currentPage } = useCurrentPageSWR();
-  const countOfSeenUsers = currentPage?.seenUsers.length;
+  const countOfSeenUsers = currentPage?.seenUsers == null ? 0 : currentPage?.seenUsers.length;
 
   return (
     <div className="grw-seen-user-info">
