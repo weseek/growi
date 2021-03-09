@@ -2,16 +2,24 @@ const request = require('supertest');
 const express = require('express');
 const { getInstance } = require('../setup-crowi');
 
-const dummyUser = { username: 'adminUser1', admin: true };
+
+const dummyUser = { username: 'user1' };
+const dummyAdminUser = { username: 'admin1', admin: true };
+
+const generateAppWithUser = (crowi, user) => {
+  return express()
+    .use((req, res, next) => {
+      req.user = user;
+      next();
+    })
+    .use('/', require('~/server/routes/apiv3/users')(crowi));
+};
 
 describe('users', () => {
   let crowi;
-  let app;
 
   beforeAll(async() => {
     crowi = await getInstance();
-    // get injected manual mocks express
-    app = express();
 
     jest.mock('~/server/middlewares/login-required');
     const loginRequired = require('~/server/middlewares/login-required');
@@ -33,18 +41,18 @@ describe('users', () => {
     const accessTokenParser = require('~/server/middlewares/access-token-parser');
     accessTokenParser.mockImplementation(() => {
       return function(req, _res, next) {
-        req.user = dummyUser;
         next();
       };
     });
 
-    app.use('/', require('~/server/routes/apiv3/users')(crowi));
   });
 
   describe('GET /', () => {
     describe('when normal execution User.paginate', () => {
+      let app;
 
       beforeAll(() => {
+        app = generateAppWithUser(crowi, dummyAdminUser);
         crowi.models.User.paginate = jest.fn().mockImplementation(() => {
           const paginateResult = {
             docs: [
@@ -109,9 +117,13 @@ describe('users', () => {
     });
 
     describe('when throw Error from User.paginate', () => {
+      let app;
+
       beforeAll(() => {
+        app = generateAppWithUser(crowi, dummyAdminUser);
         crowi.models.User.paginate = jest.fn().mockImplementation(() => { throw Error('error') });
       });
+
       test('respond 500', async() => {
         const response = await request(app).get('/').query({
           page: 1, 'selectedStatusList[]': 'all', sort: 'id', sortOrder: 'asc',
@@ -122,14 +134,30 @@ describe('users', () => {
       });
     });
 
-    describe('validator.statusList', () => {
-      test('respond 400 when invalid selectedStatusList', async() => {
+    describe('validator.statusList by not admin user', () => {
+      let app;
+
+      test('respond 400 when the user specified selectedStatusList', async() => {
+        app = generateAppWithUser(crowi, dummyUser);
+
         const response = await request(app).get('/').query({
           page: 1, 'selectedStatusList[]': 'hoge', sort: 'id', sortOrder: 'asc',
         });
         expect(response.statusCode).toBe(400);
-        expect(response.body.errors).toMatchObject([{ code: 'validation_failed', message: 'selectedStatusList: Invalid value' }]);
+        expect(response.body.errors).toMatchObject([{
+          code: 'validation_failed',
+          message: 'selectedStatusList: the param \'selectedStatusList\' is not allowed to use by the users except administrators',
+        }]);
       });
+    });
+
+    describe('validator.statusList by admin user', () => {
+      let app;
+
+      beforeAll(() => {
+        app = generateAppWithUser(crowi, dummyAdminUser);
+      });
+
       test('respond 400 when invalid sortOrder', async() => {
         const response = await request(app).get('/').query({
           page: 1, 'selectedStatusList[]': 'all', sort: 'id', sortOrder: 'hoge',
@@ -157,6 +185,12 @@ describe('users', () => {
   });
 
   describe('GET /:id/recent', () => {
+    let app;
+
+    beforeAll(async() => {
+      app = generateAppWithUser(crowi, dummyUser);
+    });
+
     describe('normal test', () => {
       beforeAll(() => {
         crowi.models.User.findById = jest.fn().mockImplementation(() => { return 'user' });
@@ -253,6 +287,12 @@ describe('users', () => {
   });
 
   describe('GET /exists', () => {
+    let app;
+
+    beforeAll(async() => {
+      app = generateAppWithUser(crowi, dummyUser);
+    });
+
     describe('when exists user', () => {
       beforeAll(() => {
         crowi.models.User.findUserByUsername = jest.fn().mockImplementation(() => { return 'user' });
