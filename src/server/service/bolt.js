@@ -129,14 +129,20 @@ class BoltService {
     });
 
     this.bolt.action('showNextResults', async({
-      body, ack, say, action, respond,
+      body, ack, say, action, respond, client,
     }) => {
       await ack();
-      console.log('respond', respond);
-      const intOffset = parseInt(action.value);
-      const newOffsetNum = this.updateOffsetNum(intOffset);
-      const nextResults = this.getNextResults(newOffsetNum);
-      console.log('nextResults', nextResults);
+      const parsedValue = JSON.parse(action.value);
+
+      const offset = parsedValue.offset;
+      const args = parsedValue.args;
+      const command = parsedValue.command;
+
+      const newOffsetNum = this.updateOffsetNum(offset);
+      console.log(newOffsetNum);
+      // const nextResults = this.getNextResults(offset, args);
+      // console.log('nextResults', nextResults);
+      // respond('hoge');
     });
 
     this.bolt.action('shareSearchResults', async({
@@ -168,9 +174,9 @@ class BoltService {
   };
 
 
-  getNextResults = () => {
+  getNextResults = (value) => {
     // this.getSearchResultPaths(command, args);
-    // this.showEphemeralSearchResults();
+    this.showEphemeralSearchResults(value.command, value.args);
   }
 
 
@@ -237,6 +243,7 @@ class BoltService {
   }
 
   async showEphemeralSearchResults(command, args) {
+    // console.log('command3', command);
     const { resultPaths, offset } = await this.getSearchResultPaths(command, args);
     // console.log('offset', offset);
 
@@ -284,7 +291,8 @@ class BoltService {
                   text: 'Next',
                 },
                 action_id: 'showNextResults',
-                value: `${offset}`,
+                // value: `${offset}`,
+                value: JSON.stringify({ offset, command, args }),
               },
               {
                 type: 'button',
