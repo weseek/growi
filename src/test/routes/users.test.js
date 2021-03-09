@@ -43,9 +43,18 @@ describe('users', () => {
 
   describe('GET /', () => {
     describe('when normal execution User.paginate', () => {
+
       beforeAll(() => {
-        crowi.models.User.paginate = jest.fn();
+        crowi.models.User.paginate = jest.fn().mockImplementation(() => {
+          const paginateResult = {
+            docs: [
+              { username: 'admin', email: 'admin@example.com' },
+            ],
+          };
+          return paginateResult;
+        });
       });
+
       /* eslint-disable indent */
       test.each`
         page  | selectedStatusList  | searchText  | sortOrder  | sort     | searchWord  | sortQuery | statusNoList
@@ -77,7 +86,12 @@ describe('users', () => {
                     $or: [
                       { name: { $in: searchWord } },
                       { username: { $in: searchWord } },
-                      { email: { $in: searchWord } },
+                      {
+                        $and: [
+                          { isEmailPublished: true },
+                          { email: { $in: searchWord } },
+                        ],
+                      },
                     ],
                   },
                 ],
@@ -86,7 +100,6 @@ describe('users', () => {
                 sort: { [sort]: sortQuery },
                 page,
                 limit: 50,
-                select: crowi.models.User.USER_PUBLIC_FIELDS,
               },
             ],
           );
@@ -105,7 +118,7 @@ describe('users', () => {
         });
         expect(response.statusCode).toBe(500);
         expect(response.body.errors.code).toBe('user-group-list-fetch-failed');
-        expect(response.body.errors.message).toBe('Error occurred in fetching user group list');
+        expect(response.body.errors.message).toBe('Error occurred in fetching users data');
       });
     });
 
