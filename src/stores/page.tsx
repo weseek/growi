@@ -146,9 +146,19 @@ export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: bo
 
 export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<string[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
+
+  const isSeenUsersExist = currentPage != null && currentPage.seenUsers.length > 0;
+
   return useSWR(
-    ['/users.list', currentPage, limit],
-    endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users.slice(limit).reverse()),
+    // key
+    currentPage == null
+      ? null
+      : ['/users.list', currentPage, limit],
+    // fetcher
+    isSeenUsersExist
+      ? endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users.slice(limit).reverse())
+      : () => [],
+    // option
     {
       revalidateOnFocus: false,
     },

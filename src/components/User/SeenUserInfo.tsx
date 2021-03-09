@@ -11,11 +11,13 @@ type Props ={
 }
 
 export const SeenUserInfo:VFC<Props> = (props:Props) => {
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const toggle = () => setPopoverOpen(!popoverOpen);
-  const { data: seenUsersLimit } = useCurrentPageSeenUsersSWR(-15);
   const { data: currentPage } = useCurrentPageSWR();
-  const countOfSeenUsers = currentPage?.seenUsers == null ? 0 : currentPage?.seenUsers.length;
+  const { data: seenUsersLimited } = useCurrentPageSeenUsersSWR(-15);
+
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  const countOfSeenUsers = currentPage?.seenUsers.length;
+  const renderPopover = seenUsersLimited != null && seenUsersLimited?.length > 0;
 
   return (
     <div className="grw-seen-user-info">
@@ -23,20 +25,22 @@ export const SeenUserInfo:VFC<Props> = (props:Props) => {
         <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
         <span className="seen-user-count">{countOfSeenUsers}</span>
       </button>
-      <Popover
-        placement="bottom"
-        isOpen={popoverOpen}
-        target="po-seen-user"
-        toggle={toggle}
-        trigger="legacy"
-        disabled={props.disabled}
-      >
-        <PopoverBody className="seen-user-popover">
-          <div className="px-2 text-right user-list-content text-truncate text-muted">
-            <UserPictureList users={seenUsersLimit} />
-          </div>
-        </PopoverBody>
-      </Popover>
+      { renderPopover && (
+        <Popover
+          placement="bottom"
+          isOpen={popoverOpen}
+          target="po-seen-user"
+          toggle={() => setPopoverOpen(!popoverOpen)}
+          trigger="legacy"
+          disabled={props.disabled}
+        >
+          <PopoverBody className="seen-user-popover">
+            <div className="px-2 text-right user-list-content text-truncate text-muted">
+              <UserPictureList users={seenUsersLimited} />
+            </div>
+          </PopoverBody>
+        </Popover>
+      ) }
     </div>
   );
 };
