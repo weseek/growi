@@ -148,7 +148,7 @@ export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<str
   const { data: currentPage } = useCurrentPageSWR();
   return useSWR(
     ['/users.list', currentPage, limit],
-    endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users.slice(limit)),
+    endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users.slice(limit).reverse()),
     {
       revalidateOnFocus: false,
     },
