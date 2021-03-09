@@ -147,7 +147,7 @@ export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: bo
 export const useSeenUsersSWR = ():responseInterface<User[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
   return useSWR(
-    '/users.list',
+    ['/users.list', currentPage],
     endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users),
     {
       revalidateOnFocus: false,
