@@ -1,4 +1,5 @@
 import { responseInterface } from 'swr';
+import { User } from '~/interfaces/user';
 
 import { useStaticSWR } from './use-static-swr';
 
@@ -7,7 +8,7 @@ export const useCsrfToken = (initialData?: string): responseInterface<string, an
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const useCurrentUser = (initialData?: any): responseInterface<any, any> => {
+export const useCurrentUser = (initialData?: any): responseInterface<User, any> => {
   return useStaticSWR('currentUser', initialData);
 };
 
@@ -77,6 +78,10 @@ export const useHasSlackConfig = (initialData?: boolean): responseInterface<bool
 
 export const useDrawioUri = (initialData?: string): responseInterface<string, any> => {
   return useStaticSWR('drawioUri', initialData);
+};
+
+export const useHackmdUri = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('hackmdUri', initialData);
 };
 
 export const useIsAllReplyShown = (initialData?: boolean): responseInterface<boolean, any> => {

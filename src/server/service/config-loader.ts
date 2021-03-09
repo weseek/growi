@@ -5,7 +5,6 @@ import loggerFactory from '~/utils/logger';
 import ConfigModel, {
   Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
 } from '../models/config';
-import isSecurityEnv from '../../lib/util/isSecurityEnv';
 
 const logger = loggerFactory('growi:service:ConfigLoader');
 
@@ -58,18 +57,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
-  // HACKMD_URI: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
-  // HACKMD_URI_FOR_SERVER: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
+  HACKMD_URI: {
+    ns:      'crowi',
+    key:     'app:hackmdUri',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  HACKMD_URI_FOR_SERVER: {
+    ns:      'crowi',
+    key:     'app:hackmdUriForServer',
+    type:    ValueType.STRING,
+    default: null,
+  },
   // PLANTUML_URI: {
   //   ns:      ,
   //   key:     ,
@@ -421,6 +420,17 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 7788,
   },
+};
+
+
+/**
+ * return whether env belongs to Security settings
+ * @param key ex. 'security:passport-saml:isEnabled' is true
+ * @returns
+ */
+const isSecurityEnv = (key) => {
+  const array = key.split(':');
+  return (array[0] === 'security');
 };
 
 export interface ConfigObject extends Record<string, any> {

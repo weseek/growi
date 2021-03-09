@@ -1,6 +1,7 @@
 // remove property if value is null
 
-const removeNullPropertyFromObject = (object) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const removeNullPropertyFromObject = <T>(object: T): T => {
 
   for (const [key, value] of Object.entries(object)) {
     if (value == null) { delete object[key] }
@@ -8,5 +9,3 @@ const removeNullPropertyFromObject = (object) => {
 
   return object;
 };
-
-module.exports = removeNullPropertyFromObject;

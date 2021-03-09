@@ -59,7 +59,7 @@ class RevisionDiff extends React.Component {
             </div>
           </div>
         </div>
-        <div className="revision-history-diff" dangerouslySetInnerHTML={diffView} />
+        <div className="revision-history-diff pb-1" dangerouslySetInnerHTML={diffView} />
       </>
     );
   }

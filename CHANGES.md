@@ -1,11 +1,36 @@
 # CHANGES
 
-## v4.2.9-RC
+## v4.2.13-RC
+
+* 
+
+## v4.2.12
+
+* Feature: Custom Sidebar
+* Fix: Set language correctly for draw.io (diagrams.net)
+
+## v4.2.11
+
+* Fix: Rename decendants is not working
+    * Introduced by v4.2.8
+
+
+## v4.2.10
+
+* Feature: Staff Credits for apps on GROWI.cloud 
+* Improvement: Hackmd button behavior when disabled
+* Improvement: Layout of comparing revisions
+* Fix: Empty trash is not working
+
+## v4.2.9
 
 * Feature: Comparing revisions
 * Improvement: Memory consumption when re-indexing for full text searching
 * Improvement: Site URL settings valildation
-* Fix: Screen transition without displaying notice on browsers except Chrome
+* Fix: Show comfirmation when transiting page without save
+* Fix: Save slack channels history when user trigger notification is invoked
+* Fix: The label of alerts for move/rename/delete are borken
+
 ## v4.2.8
 
 * Improvement: Performance for pages to rename/duplicate/delete/revert pages

@@ -52,14 +52,14 @@ const PageItem = ({ page }: Props): JSX.Element => {
 const RecentChanges = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data, error, mutate } = useRecentlyUpdatedSWR<any, any>();
+  const { data: pages, error, mutate } = useRecentlyUpdatedSWR();
 
   if (error != null) {
     logger.error('failed to save', error);
     toastError(error, 'Error occurred in updating History');
   }
 
-  const recentlyUpdatedPages: any[] = data?.pages || [];
+  const recentlyUpdatedPages: any[] = pages || [];
 
   return (
     <>

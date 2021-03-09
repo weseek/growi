@@ -124,11 +124,14 @@ export const useCurrentPageDeleted = (): responseInterface<boolean, Error> => {
   return useStaticSWR('currentPageDeleted', isDeleted);
 };
 
-export const useRecentlyUpdatedSWR = <Data, Error>(config?: ConfigInterface): responseInterface<Data, Error> => {
+export const useRecentlyUpdatedSWR = <Data, Error>(): responseInterface<Page[], Error> => {
   return useSWR(
     '/pages/recent',
-    endpoint => apiv3Get(endpoint).then(response => response.data),
-    config,
+    endpoint => apiv3Get(endpoint).then(response => response.data?.pages),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 

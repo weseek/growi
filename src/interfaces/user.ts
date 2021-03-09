@@ -4,6 +4,7 @@ export type User = {
   name: string;
   username: string;
   imageUrlCached: string;
+  admin: boolean;
 }
 
 export type UserGroupRelation = {
