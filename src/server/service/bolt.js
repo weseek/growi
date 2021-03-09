@@ -140,8 +140,8 @@ class BoltService {
 
       const newOffsetNum = this.updateOffsetNum(offset);
       console.log(newOffsetNum);
-      // const nextResults = this.getNextResults(offset, args);
-      // console.log('nextResults', nextResults);
+      const nextResults = this.getNextResults(command, args, newOffsetNum);
+      console.log('nextResults', nextResults);
       // respond('hoge');
     });
 
@@ -168,20 +168,22 @@ class BoltService {
 
   updateOffsetNum = (offset) => {
     const newOffset = offset + 10;
-    console.log('offset1', newOffset);
-
     return newOffset;
   };
 
 
-  getNextResults = (value) => {
-    // this.getSearchResultPaths(command, args);
-    this.showEphemeralSearchResults(value.command, value.args);
+  getNextResults = (command, args, offset) => {
+    console.log(command, args, offset);
+    // const hoge = this.getSearchResultPaths(command, args, offset);
+    const hoge = this.showEphemeralSearchResults(command, args, offset);
+    console.log('hoge', hoge);
   }
 
 
-  async getSearchResultPaths(command, args) {
+  async getSearchResultPaths(command, args, offset = 0) {
+    console.log('args1.5', args);
     const firstKeyword = args[1];
+    console.log('args1', args);
     if (firstKeyword == null) {
       this.client.chat.postEphemeral({
         channel: command.channel_id,
@@ -192,6 +194,7 @@ class BoltService {
       });
       throw new Error('/growi command:search: Invalid keyword');
     }
+    console.log('args2', args);
 
     // remove leading 'search'.
     args.shift();
@@ -199,7 +202,7 @@ class BoltService {
     const { searchService } = this.crowi;
     const ApiPaginate = require('../util/apiPaginate');
 
-    const offset = 0;
+    // const offset = 0;
     const options = { limit: 10, offset };
 
     const paginateOpts = ApiPaginate.parseOptionsForElasticSearch(options);
@@ -239,12 +242,13 @@ class BoltService {
       return data._source.path;
     });
 
-    return { resultPaths, offset };
+    return { resultPaths, offset, args };
   }
 
-  async showEphemeralSearchResults(command, args) {
-    // console.log('command3', command);
-    const { resultPaths, offset } = await this.getSearchResultPaths(command, args);
+  async showEphemeralSearchResults(command, argss, offsettt) {
+    console.log('args0', argss);
+    const { resultPaths, offset, args } = await this.getSearchResultPaths(command, argss, offsettt);
+    console.log('args3', argss);
     // console.log('offset', offset);
 
     const base = this.crowi.appService.getSiteUrl();
@@ -271,6 +275,7 @@ class BoltService {
         break;
     }
 
+    console.log('args5', args);
     const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDesc}.`;
 
 
