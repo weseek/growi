@@ -3,7 +3,7 @@ import {
   Popover, PopoverBody,
 } from 'reactstrap';
 import UserPictureList from '~/client/js/components/User/UserPictureList';
-import { useSeenUsersSWR, useCurrentPageSWR } from '~/stores/page';
+import { useCurrentPageSeenUsersSWR, useCurrentPageSWR } from '~/stores/page';
 import FootstampIcon from '~/client/js/components/FootstampIcon';
 
 type Props ={
@@ -13,7 +13,7 @@ type Props ={
 export const SeenUserInfo:VFC<Props> = (props:Props) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const toggle = () => setPopoverOpen(!popoverOpen);
-  const { data: seenUsersLimit } = useSeenUsersSWR(-15);
+  const { data: seenUsersLimit } = useCurrentPageSeenUsersSWR(-15);
   const { data: currentPage } = useCurrentPageSWR();
   const countOfSeenUsers = currentPage?.seenUsers.length;
 
