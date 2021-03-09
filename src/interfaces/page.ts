@@ -9,7 +9,7 @@ export type Page = {
   creator: User,
   createdAt: Date,
   updatedAt: Date,
-  seenUsers: User[]
+  seenUsers: string[]
 }
 
 export type BookmarkInfo = {

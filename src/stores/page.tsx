@@ -144,7 +144,7 @@ export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: bo
   );
 };
 
-export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<User[], Error> => {
+export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<string[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
   return useSWR(
     ['/users.list', currentPage, limit],
