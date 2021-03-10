@@ -48,6 +48,7 @@ export const PagePathAutoComplete:VFC<Props> = (props:Props) => {
   }
 
   const renderMenu = (results, menuProps) => {
+    // Hide the menu when there are no results.
     if (!results.length) {
       return null;
     }
