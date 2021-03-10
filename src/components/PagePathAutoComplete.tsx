@@ -10,7 +10,7 @@ import PageListMeta from '~/client/js/components/PageList/PageListMeta';
 import PagePathLabel from '~/client/js/components/PageList/PagePathLabel';
 
 type Props={
-  addTrailingSlash: boolean,
+  addTrailingSlash?: boolean,
   onSubmit: ()=> void,
   onInputChange: (path:string)=> void,
   initializedPath?: string,
@@ -20,7 +20,7 @@ type Props={
 export const PagePathAutoComplete:VFC<Props> = (props:Props) => {
 
   const {
-    addTrailingSlash, onSubmit, onInputChange, initializedPath = '/', autoFocus = false,
+    addTrailingSlash = false, onSubmit, onInputChange, initializedPath = '/', autoFocus = false,
   } = props;
 
   function inputChangeHandler(pages) {
