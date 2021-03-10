@@ -61,7 +61,7 @@ const IndentForm = (props) => {
             type="checkbox"
             className="custom-control-input"
             id="isIndentSizeForced"
-            checked={isIndentSizeForced}
+            checked={isIndentSizeForced || false}
             onChange={() => {
               adminMarkDownContainer.setState({ isIndentSizeForced: !isIndentSizeForced });
             }}
