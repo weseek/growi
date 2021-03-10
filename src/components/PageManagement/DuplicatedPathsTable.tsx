@@ -4,7 +4,7 @@ import { useTranslation } from '~/i18n';
 import { convertToNewAffiliationPath } from '~/utils/path-utils';
 
 type Props={
-  path: string,
+  currentPagePath: string,
   oldPagePath: string,
   existingPaths: string[],
 }
@@ -12,7 +12,7 @@ type Props={
 export const DuplicatedPathsTable:VFC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    path, oldPagePath, existingPaths,
+    currentPagePath, oldPagePath, existingPaths,
   } = props;
 
   return (
@@ -25,7 +25,7 @@ export const DuplicatedPathsTable:VFC<Props> = (props:Props) => {
       </thead>
       <tbody className="overflow-auto d-block">
         {existingPaths.map((existPath) => {
-          const convertedPath = convertToNewAffiliationPath(oldPagePath, path, existPath);
+          const convertedPath = convertToNewAffiliationPath(oldPagePath, currentPagePath, existPath);
           return (
             <tr key={existPath} className="d-flex">
               <td className="text-break w-50">

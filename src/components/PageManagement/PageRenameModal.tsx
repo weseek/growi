@@ -143,9 +143,9 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             </label>
           </div>
           )}
-          {isRenameRecursively && <ComparePathsTable path={currentPagePath} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          {isRenameRecursively && <ComparePathsTable currentPagePath={currentPagePath} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0
-            && <DuplicatedPathsTable path={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+            && <DuplicatedPathsTable currentPagePath={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">

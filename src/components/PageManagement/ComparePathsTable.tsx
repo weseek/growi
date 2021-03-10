@@ -5,7 +5,7 @@ import { Page } from '~/interfaces/page';
 import { convertToNewAffiliationPath } from '~/utils/path-utils';
 
 type Props = {
-  path: string,
+  currentPagePath: string,
   subordinatedPages: Page[],
   newPagePath: string,
 }
@@ -13,7 +13,7 @@ type Props = {
 export const ComparePathsTable:VFC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const {
-    path, subordinatedPages, newPagePath,
+    currentPagePath, subordinatedPages, newPagePath,
   } = props;
 
   return (
@@ -26,7 +26,7 @@ export const ComparePathsTable:VFC<Props> = (props:Props) => {
       </thead>
       <tbody className="overflow-auto d-block">
         {subordinatedPages.map((subordinatedPage) => {
-          const convertedPath = convertToNewAffiliationPath(path, newPagePath, subordinatedPage.path);
+          const convertedPath = convertToNewAffiliationPath(currentPagePath, newPagePath, subordinatedPage.path);
           return (
             <tr key={subordinatedPage._id} className="d-flex">
               <td className="text-break w-50">
