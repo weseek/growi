@@ -1,5 +1,4 @@
 import { useState, FC } from 'react';
-import { useForm } from 'react-hook-form';
 import { pathUtils } from 'growi-commons';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -38,8 +37,6 @@ type Props = {
 }
 
 const PageRenameModal:FC<Props> = (props:Props) => {
-  const { register, handleSubmit } = useForm();
-
   const { t } = useTranslation();
   const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
@@ -50,15 +47,13 @@ const PageRenameModal:FC<Props> = (props:Props) => {
 
   const [errs, setErrs] = useState([]);
   const [searchError, setSearchError] = useState(null);
+  const [isRenameRecursively, setIsRenameRecursively] = useState(true);
+  const [isRenameRedirect, setIsRenameRedirect] = useState(false);
+  const [isRenameMetadata, setIsRenameMetadata] = useState(false);
 
   const {
-    addTrailingSlash, onSubmit, onInputChange, currentPage,
+    onSubmit, onInputChange, currentPage,
   } = props;
-
-  // TODO imprv submitHandler by GW 5088
-  // const submitHandler = (data) => {
-  //   alert(JSON.stringify(data));
-  // };
 
   function submitHandler() {
     if (onSubmit == null) {
@@ -68,19 +63,14 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   }
 
   function ppacInputChangeHandler(value) {
+    console.log(value);
     setErrs([]);
     setPageNameInput(value);
   }
 
-  function inputChangeHandler(pages) {
-    if (onInputChange == null) {
-      return;
-    }
-    const page = pages[0]; // should be single page selected
-
-    if (page != null) {
-      onInputChange(page.path);
-    }
+  function inputChangeHandler(value) {
+    setErrs([]);
+    setPageNameInput(value);
   }
 
   function loadLatestRevision() {
@@ -88,15 +78,6 @@ const PageRenameModal:FC<Props> = (props:Props) => {
     mutateCurrentPage();
     toastSuccess(t('retrieve_again'));
   }
-
-  function getKeywordOnInit(path) {
-    return addTrailingSlash
-      ? pathUtils.addTrailingSlash(path)
-      : pathUtils.removeTrailingSlash(path);
-  }
-  const emptyLabel = (searchError !== null)
-    ? 'Error on searching.'
-    : t('search.search page bodies');
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.onClose} autoFocus={false}>
@@ -144,12 +125,10 @@ const PageRenameModal:FC<Props> = (props:Props) => {
         <div className="custom-control custom-checkbox custom-checkbox-warning">
           <input
             className="custom-control-input"
-            name="recursively"
             id="cbRenameRecursively"
             type="checkbox"
-            // checked={isRenameRecursively}
-            // onChange={changeIsRenameRecursivelyHandler}
-            ref={register}
+            checked={isRenameRecursively}
+            onChange={() => setIsRenameRecursively(!isRenameRecursively)}
           />
           <label className="custom-control-label" htmlFor="cbRenameRecursively">
             { t('modal_rename.label.Recursively') }
@@ -179,12 +158,10 @@ const PageRenameModal:FC<Props> = (props:Props) => {
         <div className="custom-control custom-checkbox custom-checkbox-success">
           <input
             className="custom-control-input"
-            name="create_redirect"
             id="cbRenameRedirect"
             type="checkbox"
-            // checked={isRenameRedirect}
-            // onChange={changeIsRenameRedirectHandler}
-            ref={register}
+            checked={isRenameRedirect}
+            onChange={() => setIsRenameRedirect(!isRenameRedirect)}
           />
           <label className="custom-control-label" htmlFor="cbRenameRedirect">
             { t('modal_rename.label.Redirect') }
@@ -195,12 +172,10 @@ const PageRenameModal:FC<Props> = (props:Props) => {
         <div className="custom-control custom-checkbox custom-checkbox-primary">
           <input
             className="custom-control-input"
-            name="remain_metadata"
             id="cbRenameMetadata"
             type="checkbox"
-            // checked={isRenameMetadata}
-            // onChange={changeIsRenameMetadataHandler}
-            ref={register}
+            checked={isRenameMetadata}
+            onChange={() => setIsRenameMetadata(!isRenameRedirect)}
           />
           <label className="custom-control-label" htmlFor="cbRenameMetadata">
             { t('modal_rename.label.Do not update metadata') }
@@ -217,7 +192,8 @@ const PageRenameModal:FC<Props> = (props:Props) => {
           //  TODO enable rename by GW 5088
           // onClick={rename}
           // disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
-        >Rename
+        >
+          Rename
         </button>
       </ModalFooter>
     </Modal>
