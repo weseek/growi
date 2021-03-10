@@ -17,7 +17,7 @@ import { useCurrentPagePath, useSearchServiceReachable, useSiteUrl } from '~/sto
 
 // import { toastError } from '../../client/js/util/apiNotification';
 
-import ComparePathsTable from '~/client/js/components/ComparePathsTable';
+import { ComparePathsTable } from '~/components/PageManagement/ComparePathsTable';
 import { DuplicatedPathsTable } from '~/components/PageManagement/DuplicatedPathsTable';
 
 type Props = {
@@ -143,8 +143,9 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             </label>
           </div>
           )}
-          {/* {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />} */}
-          {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+          {isRenameRecursively && <ComparePathsTable path={currentPagePath} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          {isRenameRecursively && existingPaths.length !== 0
+            && <DuplicatedPathsTable path={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">

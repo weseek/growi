@@ -1,17 +1,20 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { VFC } from 'react';
+import { useTranslation } from '~/i18n';
+import { Page } from '~/interfaces/page';
 
-import { withTranslation } from 'react-i18next';
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import PageContainer from '../services/PageContainer';
 import { convertToNewAffiliationPath } from '~/utils/path-utils';
 
-function ComparePathsTable(props) {
+type Props = {
+  path: string,
+  subordinatedPages: Page[],
+  newPagePath: string,
+}
+
+export const ComparePathsTable:VFC<Props> = (props:Props) => {
+  const { t } = useTranslation();
   const {
-    subordinatedPages, pageContainer, newPagePath, t,
+    path, subordinatedPages, newPagePath,
   } = props;
-  const { path } = pageContainer.state;
 
   return (
     <table className="table table-bordered grw-compare-paths-table">
@@ -40,21 +43,4 @@ function ComparePathsTable(props) {
       </tbody>
     </table>
   );
-}
-
-
-/**
- * Wrapper component for using unstated
- */
-const PageDuplicateModallWrapper = withUnstatedContainers(ComparePathsTable, [PageContainer]);
-
-ComparePathsTable.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  subordinatedPages: PropTypes.array.isRequired,
-  newPagePath: PropTypes.string.isRequired,
 };
-
-
-export default withTranslation()(PageDuplicateModallWrapper);
