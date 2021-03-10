@@ -264,7 +264,7 @@ module.exports = (crowi) => {
     // user notification
     if (isSlackEnabled) {
       try {
-        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create');
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
@@ -538,7 +538,7 @@ module.exports = (crowi) => {
     const options = { socketClientId };
 
     try {
-      const pages = await crowi.pageService.deletePageRecursivelyCompletely({ path: '/trash' }, req.user, options);
+      const pages = await crowi.pageService.deleteCompletelyDescendantsWithStream({ path: '/trash' }, req.user, options);
       return res.apiv3({ pages });
     }
     catch (err) {

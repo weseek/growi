@@ -313,7 +313,6 @@
 		"user_not_admin": "仅管理员用户可以完全删除"
   },
   "page_history": {
-    "revision_list": "修订清单",
     "revision": "版本",
     "comparing_source": "源头",
     "comparing_target": "目标",

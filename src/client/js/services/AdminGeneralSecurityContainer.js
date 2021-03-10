@@ -1,7 +1,7 @@
 import { Container } from 'unstated';
 
+import { removeNullPropertyFromObject } from '~/utils/object-utils';
 import { toastError } from '../util/apiNotification';
-import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
 
 /**
  * Service container for admin security page (SecuritySetting.jsx)

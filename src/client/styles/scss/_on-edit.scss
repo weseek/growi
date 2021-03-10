@@ -256,6 +256,20 @@
 
   // .builtin-editor .tab-pane#edit
 
+  // editing /Sidebar
+  &.pathname-sidebar {
+    .page-editor-preview-body {
+      width: 320px;
+      padding-top: 0;
+      margin-right: auto;
+      margin-left: auto;
+
+      .wiki {
+        @extend %grw-custom-sidebar-content;
+      }
+    }
+  }
+
   &.hackmd {
     .hackmd-preinit,
     #iframe-hackmd-container > iframe {
