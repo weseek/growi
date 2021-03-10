@@ -14,7 +14,7 @@ import { Page as IPage } from '~/interfaces/page';
 
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
-import { useCurrentPagePath, useSearchServiceReachable } from '~/stores/context';
+import { useCurrentPagePath, useSearchServiceReachable, useSiteUrl } from '~/stores/context';
 
 
 // import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
@@ -43,6 +43,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
   const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
+  const { data: siteUrl } = useSiteUrl();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
   const [pageNameInput, setPageNameInput] = useState(currentPagePath);
@@ -111,7 +112,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
           <label htmlFor="newPageName">{ t('modal_rename.label.New page name') }</label><br />
           <div className="input-group">
             <div className="input-group-prepend">
-              {/* <span className="input-group-text">{crowi.url} </span> */}
+              <span className="input-group-text">{siteUrl}</span>
             </div>
             {/* TODO imprv submitHandler by GW 5088 */}
             {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
