@@ -5,6 +5,7 @@ import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
   Page, Tag, Comment, PaginationResult, Revision,
 } from '~/interfaces/page';
+import { User } from '~/interfaces/user';
 
 import { isTrashPage } from '../utils/path-utils';
 
@@ -123,11 +124,14 @@ export const useCurrentPageDeleted = (): responseInterface<boolean, Error> => {
   return useStaticSWR('currentPageDeleted', isDeleted);
 };
 
-export const useRecentlyUpdatedSWR = <Data, Error>(config?: ConfigInterface): responseInterface<Data, Error> => {
+export const useRecentlyUpdatedSWR = <Data, Error>(): responseInterface<Page[], Error> => {
   return useSWR(
     '/pages/recent',
-    endpoint => apiv3Get(endpoint).then(response => response.data),
-    config,
+    endpoint => apiv3Get(endpoint).then(response => response.data?.pages),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 
@@ -139,6 +143,27 @@ export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: bo
       initialData: initialData || false,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<string[], Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  const isSeenUsersExist = currentPage != null && currentPage.seenUsers.length > 0;
+
+  return useSWR(
+    // key
+    currentPage == null
+      ? null
+      : ['/users.list', currentPage, limit],
+    // fetcher
+    isSeenUsersExist
+      ? endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users.slice(limit).reverse())
+      : () => [],
+    // option
+    {
+      revalidateOnFocus: false,
     },
   );
 };

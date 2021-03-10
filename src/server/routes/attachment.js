@@ -189,7 +189,7 @@ module.exports = function(crowi, app) {
     const user = req.user;
     const isAccessible = await isAccessibleByViewer(user, attachment);
     if (!isAccessible) {
-      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
+      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'. This attachment might belong to other pages.`));
     }
 
     // add headers before evaluating 'req.fresh'

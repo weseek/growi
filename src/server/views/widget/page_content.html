@@ -18,7 +18,7 @@
   data-page-is-deletable="{% if isDeletablePage() %}true{% else %}false{% endif %}"
   data-page-is-not-creatable="false"
   data-page-is-able-to-delete-completely="{% if user.canDeleteCompletely(page.creator._id) %}true{% else %}false{% endif %}"
-  data-slack-channels="{{ slack|default('') }}"
+  data-slack-channels="{% if page %}{{ page.slackChannels }}{% endif %}"
   data-page-created-at="{% if page %}{{ page.createdAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-creator="{% if page && page.creator %}{{ page.creator|json }}{% endif %}"
   data-page-last-update-username="{% if page && page.lastUpdateUser %}{{ page.lastUpdateUser.name }}{% endif %}"
@@ -36,7 +36,7 @@
 <div id="content-main" class="content-main d-flex"
   data-path="{{ encodeURI(path) }}"
   data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
-  data-slack-channels="{{ slack|default('') }}"
+  data-slack-channels="{% if page %}{{ page.slackChannels }}{% endif %}"
   data-page-is-deleted="{% if page.isDeleted() %}true{% else %}false{% endif %}"
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   >

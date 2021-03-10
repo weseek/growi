@@ -1,34 +1,55 @@
-import React from 'react';
+import loggerFactory from '~/utils/logger';
+import { useCustomSidebarRenderer } from '~/stores/renderer';
+import { usePageSWR } from '~/stores/page';
 
-class CustomSidebar extends React.Component {
+import RevisionRenderer from '../Page/RevisionRenderer';
 
-  static propTypes = {
-  };
+const logger = loggerFactory('growi:cli:CustomSidebar');
 
-  state = {
-  };
 
-  renderHeaderWordmark() {
-    return <h3>Custom Sidebar</h3>;
-  }
+const SidebarNotFound = () => {
+  return (
+    <div className="grw-sidebar-content-header h5 text-center p-3">
+      <a href="/Sidebar#edit">
+        <i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page
+      </a>
+    </div>
+  );
+};
 
-  render() {
-    return (
-      <>
-        <div className="grw-sidebar-content-header p-3 d-flex">
-          <h3 className="mb-0">Custom Sidebar</h3>
-          <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={this.reloadData}>
-            <i className="icon icon-reload"></i>
-          </button>
+const CustomSidebar = (props) => {
+
+  const renderer = useCustomSidebarRenderer();
+
+  const { data: page, isValidating, mutate } = usePageSWR('/Sidebar');
+
+  const markdown = page?.revision?.body;
+
+  return (
+    <>
+      <div className="grw-sidebar-content-header p-3 d-flex">
+        <h3 className="mb-0">
+          Custom Sidebar
+          <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
+        </h3>
+        <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={() => mutate()}>
+          <i className="icon icon-reload"></i>
+        </button>
+      </div>
+      { !isValidating && markdown == null && <SidebarNotFound /> }
+      {/* eslint-disable-next-line react/no-danger */}
+      { markdown != null && (
+        <div className="p-3">
+          <RevisionRenderer
+            renderer={renderer}
+            markdown={markdown}
+            additionalClassName="grw-custom-sidebar-content"
+          />
         </div>
-        <div className="grw-sidebar-content-header p-3">
-          (TBD) Under implementation
-        </div>
-      </>
-    );
+      ) }
+    </>
+  );
 
-  }
-
-}
+};
 
 export default CustomSidebar;

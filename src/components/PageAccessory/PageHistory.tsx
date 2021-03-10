@@ -116,7 +116,6 @@ export const PageHistory: VFC = () => {
 
   return (
     <div className="revision-history">
-      <h3 className="pb-3">{t('page_history.revision_list')}</h3>
       <PageRevisionTable
         revisions={revisions}
         pagingLimit={limit}

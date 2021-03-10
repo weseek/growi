@@ -242,7 +242,7 @@ const GrantSelectorWrapper = (props) => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
-  return <GrantSelector {...props} t={t} isAdmin={currentUser?.isAdmin} />;
+  return <GrantSelector {...props} t={t} isAdmin={currentUser?.admin} />;
 };
 
 export default GrantSelectorWrapper;

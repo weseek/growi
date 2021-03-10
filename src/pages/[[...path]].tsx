@@ -28,11 +28,9 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential,
   useSearchServiceConfigured, useSearchServiceReachable,
-  useAclEnabled, useHasSlackConfig, useDrawioUri,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
 } from '../stores/context';
-import {
-  useCurrentPageSWR,
-} from '../stores/page';
+import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
@@ -60,6 +58,7 @@ type Props = CommonProps & {
   isAclEnabled: boolean,
   hasSlackConfig: boolean,
   drawioUri: string,
+  hackmdUri: string,
   highlightJsStyle: string,
   isAllReplyShown: boolean,
   isEnabledLinebreaks: boolean,
@@ -89,6 +88,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useAclEnabled(props.isAclEnabled);
   useHasSlackConfig(props.hasSlackConfig);
   useDrawioUri(props.drawioUri);
+  useHackmdUri(props.hackmdUri);
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
@@ -248,6 +248,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isAclEnabled = aclService.isAclEnabled();
   props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
