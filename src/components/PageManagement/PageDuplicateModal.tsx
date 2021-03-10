@@ -23,7 +23,7 @@ import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessage
 
 // import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
-import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
+import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 // import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
 // import ComparePathsTable from './ComparePathsTable';
 // import DuplicatePathsTable from './DuplicatedPathsTable';
