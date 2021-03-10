@@ -63,11 +63,6 @@ const PageRenameModal:FC<Props> = (props:Props) => {
     onSubmit();
   }
 
-  function ppacInputChangeHandler(value) {
-    setErrs([]);
-    setPageNameInput(value);
-  }
-
   function inputChangeHandler(value) {
     setErrs([]);
     setPageNameInput(value);
@@ -101,7 +96,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
                 <PagePathAutoComplete
                   initializedPath={currentPagePath}
                   onSubmit={submitHandler}
-                  onInputChange={ppacInputChangeHandler}
+                  onInputChange={inputChangeHandler}
                   autoFocus
                 />
               )
