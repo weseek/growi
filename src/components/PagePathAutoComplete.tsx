@@ -2,7 +2,12 @@ import React, { VFC } from 'react';
 
 import { pathUtils } from 'growi-commons';
 
-import SearchTypeahead from '../client/js/components/SearchTypeahead';
+import { Menu, MenuItem } from 'react-bootstrap-typeahead';
+
+import SearchTypeahead from '~/client/js/components/SearchTypeahead';
+import UserPicture from '~/client/js/components/User/UserPicture';
+import PageListMeta from '~/client/js/components/PageList/PageListMeta';
+import PagePathLabel from '~/client/js/components/PageList/PagePathLabel';
 
 type Props={
   addTrailingSlash: boolean,
@@ -42,12 +47,33 @@ export const PagePathAutoComplete:VFC<Props> = (props:Props) => {
       : pathUtils.removeTrailingSlash(path);
   }
 
+  const renderMenu = (results, menuProps) => {
+    if (!results.length) {
+      return null;
+    }
+
+    return (
+      <Menu {...menuProps}>
+        {results.map((result, index) => {
+        return (
+          <MenuItem option={result} position={index}>
+            <UserPicture user={result.lastUpdateUser} size="sm" noLink />
+            <span className="ml-1 text-break text-wrap"><PagePathLabel page={result} /></span>
+            <PageListMeta page={result} />
+          </MenuItem>
+          );
+        })}
+      </Menu>
+    );
+  };
+
   return (
     <SearchTypeahead
       onSubmit={submitHandler}
       onChange={inputChangeHandler}
       onInputChange={props.onInputChange}
       inputName="new_path"
+      renderMenu={renderMenu}
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
       autoFocus={autoFocus}
