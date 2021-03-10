@@ -1,5 +1,4 @@
 import { useState, FC } from 'react';
-import { pathUtils } from 'growi-commons';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -14,8 +13,6 @@ import { Page as IPage } from '~/interfaces/page';
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 import { useCurrentPagePath, useSearchServiceReachable, useSiteUrl } from '~/stores/context';
-
-// import { toastError } from '../../client/js/util/apiNotification';
 
 import { ComparePathsTable } from '~/components/PageManagement/ComparePathsTable';
 import { DuplicatedPathsTable } from '~/components/PageManagement/DuplicatedPathsTable';
@@ -40,16 +37,20 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: siteUrl } = useSiteUrl();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
-  const [pageNameInput, setPageNameInput] = useState(currentPagePath);
+
+  const [pageNameInput, setPageNameInput] = useState(currentPagePath || '');
 
   const [errs, setErrs] = useState([]);
-  const [searchError, setSearchError] = useState(null);
 
   const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRenameMetadata, setIsRenameMetadata] = useState(false);
+
+  if (currentPagePath == null) {
+    return null;
+  }
 
   const {
     onSubmit, currentPage,
