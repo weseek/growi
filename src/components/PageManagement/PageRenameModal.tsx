@@ -15,13 +15,10 @@ import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessage
 import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 import { useCurrentPagePath, useSearchServiceReachable, useSiteUrl } from '~/stores/context';
 
-
-// import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
 // import { toastError } from '../../client/js/util/apiNotification';
 
-// import PageContainer from '../../client/js/services/PageContainer';
-// import ComparePathsTable from '../../client/js/components/ComparePathsTable';
-// import DuplicatedPathsTable from '../../client/js/components/DuplicatedPathsTable';
+import ComparePathsTable from '~/client/js/components/ComparePathsTable';
+import { DuplicatedPathsTable } from '~/components/PageManagement/DuplicatedPathsTable';
 
 type Props = {
   currentPage: IPage;
@@ -47,12 +44,15 @@ const PageRenameModal:FC<Props> = (props:Props) => {
 
   const [errs, setErrs] = useState([]);
   const [searchError, setSearchError] = useState(null);
+
+  const [subordinatedPages, setSubordinatedPages] = useState([]);
+  const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRenameMetadata, setIsRenameMetadata] = useState(false);
 
   const {
-    onSubmit, onInputChange, currentPage,
+    onSubmit, currentPage,
   } = props;
 
   function submitHandler() {
@@ -63,7 +63,6 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   }
 
   function ppacInputChangeHandler(value) {
-    console.log(value);
     setErrs([]);
     setPageNameInput(value);
   }
@@ -95,10 +94,6 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             <div className="input-group-prepend">
               <span className="input-group-text">{siteUrl}</span>
             </div>
-            {/* TODO imprv submitHandler by GW 5088 */}
-            {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
-            {/* <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}> */}
-            {/* TODO: using PagePathAutoComplete not SearchTypeahead by GW 5194 */}
             <div className="flex-fill">
               {isReachable
               ? (
@@ -119,7 +114,6 @@ const PageRenameModal:FC<Props> = (props:Props) => {
                 />
               )}
             </div>
-            {/* </form> */}
           </div>
         </div>
         <div className="custom-control custom-checkbox custom-checkbox-warning">
@@ -135,24 +129,22 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
 
-          {/* {existingPaths.length !== 0 && (
+          {existingPaths.length !== 0 && (
           <div
             className="custom-control custom-checkbox custom-checkbox-warning"
           >
             <input
               className="custom-control-input"
-              name="withoutExistRecursively"
               id="cbRenamewithoutExistRecursively"
               type="checkbox"
-              // ref={register}
             />
             <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
               { t('modal_rename.label.Rename without exist path') }
             </label>
           </div>
           )}
-          {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
-            {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />} */}
+          {/* {isRenameRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />} */}
+          {isRenameRecursively && existingPaths.length !== 0 && <DuplicatedPathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
@@ -182,7 +174,6 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.metadata') }</p>
           </label>
         </div>
-        {/* <div> {subordinatedError} </div> */}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} targetPath={currentPage.path} onLoadLatestRevision={loadLatestRevision} />

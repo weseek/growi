@@ -1,17 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { VFC } from 'react';
 
-import { withTranslation } from 'react-i18next';
-import { withUnstatedContainers } from './UnstatedUtils';
-
-import PageContainer from '../services/PageContainer';
+import { useTranslation } from '~/i18n';
 import { convertToNewAffiliationPath } from '~/utils/path-utils';
 
-function DuplicatedPathsTable(props) {
+type Props={
+  path: string,
+  oldPagePath: string,
+  existingPaths: string[],
+}
+
+export const DuplicatedPathsTable:VFC<Props> = (props:Props) => {
+  const { t } = useTranslation();
   const {
-    pageContainer, oldPagePath, existingPaths, t,
+    path, oldPagePath, existingPaths,
   } = props;
-  const { path } = pageContainer.state;
 
   return (
     <table className="table table-bordered grw-duplicated-paths-table">
@@ -40,20 +42,4 @@ function DuplicatedPathsTable(props) {
       </tbody>
     </table>
   );
-}
-
-
-/**
- * Wrapper component for using unstated
- */
-const PageDuplicateModallWrapper = withUnstatedContainers(DuplicatedPathsTable, [PageContainer]);
-
-DuplicatedPathsTable.propTypes = {
-  t: PropTypes.func.isRequired, //  i18next
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  existingPaths: PropTypes.array.isRequired,
-  oldPagePath: PropTypes.string.isRequired,
 };
-
-
-export default withTranslation()(PageDuplicateModallWrapper);
