@@ -47,6 +47,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRenameMetadata, setIsRenameMetadata] = useState(false);
+  const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
 
   if (currentPagePath == null) {
     return null;
@@ -56,11 +57,34 @@ const PageRenameModal:FC<Props> = (props:Props) => {
     onSubmit, currentPage,
   } = props;
 
-  function submitHandler() {
-    if (onSubmit == null) {
-      return;
+  async function rename() {
+    setErrs([]);
+    console.log(pageNameInput);
+    try {
+      // const response = await pageContainer.rename(
+      //   pageNameInput,
+      //   isRenameRecursively,
+      //   isRenameRedirect,
+      //   isRenameMetadata,
+      // );
+
+      // const { page } = response.data;
+      // const url = new URL(page.path, 'https://dummy');
+      // url.searchParams.append('renamedFrom', path);
+      // if (isRenameRedirect) {
+      //   url.searchParams.append('withRedirect', true);
+      // }
+
+      // window.location.href = `${url.pathname}${url.search}`;
     }
-    onSubmit();
+    catch (err) {
+      // setErrs([err]);
+    }
+  }
+
+
+  function changeIsRenameRecursivelyWithoutExistPathHandler() {
+    setIsRenameRecursivelyWithoutExistPath(!isRenameRecursivelyWithoutExistPath);
   }
 
   function inputChangeHandler(value) {
@@ -95,7 +119,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
               ? (
                 <PagePathAutoComplete
                   initializedPath={currentPagePath}
-                  onSubmit={submitHandler}
+                  onSubmit={rename}
                   onInputChange={inputChangeHandler}
                   autoFocus
                 />
@@ -126,18 +150,20 @@ const PageRenameModal:FC<Props> = (props:Props) => {
           </label>
 
           {existingPaths.length !== 0 && (
-          <div
-            className="custom-control custom-checkbox custom-checkbox-warning"
-          >
-            <input
-              className="custom-control-input"
-              id="cbRenamewithoutExistRecursively"
-              type="checkbox"
-            />
-            <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
-              { t('modal_rename.label.Rename without exist path') }
-            </label>
-          </div>
+            <div
+              className="custom-control custom-checkbox custom-checkbox-warning"
+            >
+              <input
+                className="custom-control-input"
+                id="cbRenamewithoutExistRecursively"
+                type="checkbox"
+                checked={isRenameRecursivelyWithoutExistPath}
+                onChange={changeIsRenameRecursivelyWithoutExistPathHandler}
+              />
+              <label className="custom-control-label" htmlFor="cbRenamewithoutExistRecursively">
+                { t('modal_rename.label.Rename without exist path') }
+              </label>
+            </div>
           )}
           {isRenameRecursively && <ComparePathsTable currentPagePath={currentPagePath} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0
@@ -177,9 +203,8 @@ const PageRenameModal:FC<Props> = (props:Props) => {
         <button
           type="button"
           className="btn btn-primary"
-          //  TODO enable rename by GW 5088
-          // onClick={rename}
-          // disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+          onClick={rename}
+          disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
         >
           Rename
         </button>
