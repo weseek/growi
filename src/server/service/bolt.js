@@ -257,10 +257,10 @@ class BoltService {
     };
   }
 
-  async showEphemeralSearchResults(command, argss, offsettt) {
+  async showEphemeralSearchResults(command, args, offsettt) {
     const {
-      resultPaths, offset, args, keywords,
-    } = await this.getSearchResultPaths(command, argss, offsettt);
+      resultPaths, offset, keywords,
+    } = await this.getSearchResultPaths(command, args, offsettt);
     console.log('keywords', keywords);
     // console.log('offset', offset);
 
@@ -289,7 +289,7 @@ class BoltService {
     }
 
     console.log('args5', args);
-    const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDesc}.`;
+    const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
 
     try {
