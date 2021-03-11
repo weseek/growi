@@ -126,7 +126,8 @@ class BoltService {
       const args = parsedValue.args;
       const offset = parsedValue.offset;
 
-      this.showNextResults(command, args, offset);
+      const newOffset = offset + 10;
+      this.showEphemeralSearchResults(command, args, newOffset);
     });
 
     this.bolt.action('shareSearchResults', async({
@@ -148,11 +149,6 @@ class BoltService {
       ],
     });
     return;
-  }
-
-  showNextResults = (command, args, offset) => {
-    const newOffset = offset + 10;
-    this.showEphemeralSearchResults(command, args, newOffset);
   }
 
   async getSearchResultPaths(command, args, offset = 0) {
