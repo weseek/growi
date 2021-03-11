@@ -1,3 +1,5 @@
+import UserGroupRelation from '~/server/models/user-group-relation';
+
 /**
  * @swagger
  *
@@ -128,7 +130,6 @@ module.exports = function(crowi, app) {
 
     let userGroups = [];
     if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
