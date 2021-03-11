@@ -57,8 +57,6 @@ const { WebClient, LogLevel } = require('@slack/web-api');
 class BoltService {
 
   constructor(crowi) {
-
-    this.getSearchResultPaths = this.getSearchResultPaths.bind(this);
     this.crowi = crowi;
     this.receiver = new BoltReciever();
 
