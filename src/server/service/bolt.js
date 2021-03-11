@@ -168,6 +168,11 @@ class BoltService {
       return;
     }
 
+    const arr = [];
+    for (let i = 1; i < args.length; i++) {
+      arr.push(args[i]);
+    }
+    console.log('arr', arr);
     // removing 'search' from the head in the array.
     const shiftedValue = args.shift();
     const keywords = args.join(' ');
