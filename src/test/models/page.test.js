@@ -1,4 +1,5 @@
 import UserGroup from '~/server/models/user-group';
+import UserGroupRelation from '~/server/models/user-group-relation';
 
 const mongoose = require('mongoose');
 
@@ -16,13 +17,11 @@ describe('Page', () => {
   let Page;
   let PageQueryBuilder;
   let User;
-  let UserGroupRelation;
 
   beforeAll(async(done) => {
     crowi = await getInstance();
 
     User = mongoose.model('User');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     PageQueryBuilder = Page.PageQueryBuilder;
 

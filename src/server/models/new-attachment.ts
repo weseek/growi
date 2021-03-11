@@ -99,4 +99,5 @@ schema.virtual('downloadPathProxied').get(function(this: { _id : Types.ObjectId 
 });
 
 schema.loadClass(Attachment);
-export default getOrCreateModel<IAttachment & Document>('Attachment', schema);
+// TODO rename model name
+export default getOrCreateModel<IAttachment & Document>('NewAttachment', schema);

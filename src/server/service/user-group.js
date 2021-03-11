@@ -1,8 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
-const mongoose = require('mongoose');
-
-const UserGroupRelation = mongoose.model('UserGroupRelation');
+import UserGroupRelation from '~/server/models/user-group-relation';
 
 const logger = loggerFactory('growi:service:UserGroupService');
 

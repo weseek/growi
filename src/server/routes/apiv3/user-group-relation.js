@@ -1,6 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
 import UserGroup from '~/server/models/user-group';
+import UserGroupRelation from '~/server/models/user-group-relation';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
@@ -19,8 +20,6 @@ const router = express.Router();
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-
-  const { UserGroupRelation } = crowi.models;
 
   /**
    * @swagger

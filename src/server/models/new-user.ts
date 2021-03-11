@@ -720,4 +720,5 @@ class User extends Model {
 
 
 schema.loadClass(User);
-export default getOrCreateModel<IUser & Document>('User', schema);
+// TODO rename model name
+export default getOrCreateModel<IUser & Document>('NewUser', schema);

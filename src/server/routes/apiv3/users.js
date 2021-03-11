@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import UserGroupRelation from '~/server/models/user-group-relation';
+
 const logger = loggerFactory('growi:routes:apiv3:users');
 
 const express = require('express');
@@ -77,7 +79,6 @@ module.exports = (crowi) => {
     User,
     Page,
     ExternalAccount,
-    UserGroupRelation,
   } = crowi.models;
 
 
