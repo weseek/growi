@@ -139,10 +139,7 @@ class BoltService {
       const command = parsedValue.command;
 
       const newOffsetNum = this.updateOffsetNum(offset);
-      console.log(newOffsetNum);
       const nextResults = this.getNextResults(command, args, newOffsetNum);
-      console.log('nextResults', nextResults);
-      // respond('hoge');
     });
 
     this.bolt.action('shareSearchResults', async({
@@ -173,17 +170,13 @@ class BoltService {
 
 
   getNextResults = (command, args, offset) => {
-    console.log(command, args, offset);
     // const hoge = this.getSearchResultPaths(command, args, offset);
     const hoge = this.showEphemeralSearchResults(command, args, offset);
-    console.log('hoge', hoge);
   }
 
 
   async getSearchResultPaths(command, args, offset = 0) {
-    console.log('args1.5', args);
     const firstKeyword = args[1];
-    console.log('args1', args);
     if (firstKeyword == null) {
       this.client.chat.postEphemeral({
         channel: command.channel_id,
@@ -195,15 +188,8 @@ class BoltService {
       throw new Error('/growi command:search: Invalid keyword');
     }
 
-    // const args2 = args;
-    // console.log('args', args);
-    // args2.shift();
-    // const keywords = args2.join(' ');
-    console.log('args', args);
-
     // remove leading 'search'.
     const shiftedValue = args.shift();
-    console.log('shiftedValue', shiftedValue);
     const keywords = args.join(' ');
     const { searchService } = this.crowi;
     const ApiPaginate = require('../util/apiPaginate');
@@ -250,8 +236,6 @@ class BoltService {
 
     args.unshift(shiftedValue);
 
-    console.log('args', args);
-
     return {
       resultPaths, offset, args, keywords,
     };
@@ -261,8 +245,6 @@ class BoltService {
     const {
       resultPaths, offset, keywords,
     } = await this.getSearchResultPaths(command, args, offsettt);
-    console.log('keywords', keywords);
-    // console.log('offset', offset);
 
     const base = this.crowi.appService.getSiteUrl();
 
@@ -288,7 +270,6 @@ class BoltService {
         break;
     }
 
-    console.log('args5', args);
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
 
