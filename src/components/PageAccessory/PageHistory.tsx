@@ -3,8 +3,6 @@ import React, {
   useCallback, useState, useEffect, VFC,
 } from 'react';
 
-import { useTranslation } from '~/i18n';
-
 import { PageRevisionTable } from '~/components/PageAccessory/PageRevisionTable';
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 import { RevisionComparer } from '~/components/PageAccessory/RevisionComparer';
