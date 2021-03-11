@@ -58,10 +58,6 @@ class BoltService {
 
   constructor(crowi) {
 
-    this.state = {
-      pagenationOffset: 0,
-    };
-
     this.getSearchResultPaths = this.getSearchResultPaths.bind(this);
     this.crowi = crowi;
     this.receiver = new BoltReciever();
@@ -167,7 +163,6 @@ class BoltService {
     this.showEphemeralSearchResults(command, args, newOffsetNum);
   }
 
-
   async getSearchResultPaths(command, args, offset = 0) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
@@ -187,7 +182,6 @@ class BoltService {
     const { searchService } = this.crowi;
     const ApiPaginate = require('../util/apiPaginate');
 
-    // const offset = 0;
     const options = { limit: 10, offset };
 
     const paginateOpts = ApiPaginate.parseOptionsForElasticSearch(options);
@@ -230,7 +224,7 @@ class BoltService {
     args.unshift(shiftedValue);
 
     return {
-      resultPaths, offset, args, keywords,
+      resultPaths, offset, keywords,
     };
   }
 
@@ -264,7 +258,6 @@ class BoltService {
     }
 
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
-
 
     try {
       await this.client.chat.postEphemeral({
