@@ -15,7 +15,7 @@ import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 
 // import PageAttachment from '../../client/js/components/PageAttachment';
 // import PageTimeline from '../../client/js/components/PageTimeline';
-// import PageList from '../../client/js/components/PageList';
+import { PageList } from '~/components/PageAccessory/PageList';
 import { PageHistory } from '~/components/PageAccessory/PageHistory';
 // import ShareLink from '../../client/js/components/ShareLink/ShareLink';
 
@@ -127,7 +127,7 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
               the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
         <TabContent activeTab={activeTab}>
           <TabPane tabId="pagelist">
-            {/* {activeComponents.has('pagelist') && <PageList />} */}
+            {activeComponents.has('pagelist') && <PageList />}
           </TabPane>
           <TabPane tabId="timeline">
             {/* {activeComponents.has('timeline') && <PageTimeline /> } */}
