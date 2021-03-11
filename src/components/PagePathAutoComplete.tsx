@@ -11,7 +11,7 @@ import PagePathLabel from '~/client/js/components/PageList/PagePathLabel';
 
 type Props={
   addTrailingSlash?: boolean,
-  onSubmit: ()=> void,
+  onSubmit?: ()=> void,
   onInputChange: (path:string)=> void,
   initializedPath?: string,
   autoFocus?: boolean,
