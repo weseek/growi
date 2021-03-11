@@ -34,7 +34,6 @@ export const PageList:VFC<Props> = (props:Props) => {
     if (paginationResult == null) {
       return;
     }
-    setActivePage(paginationResult.offset + 1);
     setTotalItemsCount(paginationResult.totalCount);
     setLimit(paginationResult.limit);
     setPages(paginationResult.pages);
