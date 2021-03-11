@@ -194,10 +194,16 @@ class BoltService {
       });
       throw new Error('/growi command:search: Invalid keyword');
     }
-    console.log('args2', args);
+
+    // const args2 = args;
+    // console.log('args', args);
+    // args2.shift();
+    // const keywords = args2.join(' ');
+    console.log('args', args);
 
     // remove leading 'search'.
-    args.shift();
+    const shiftedValue = args.shift();
+    console.log('shiftedValue', shiftedValue);
     const keywords = args.join(' ');
     const { searchService } = this.crowi;
     const ApiPaginate = require('../util/apiPaginate');
@@ -217,7 +223,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`),
+          this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
           this.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
           this.divider(),
           this.generateMarkdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
@@ -242,13 +248,20 @@ class BoltService {
       return data._source.path;
     });
 
-    return { resultPaths, offset, args };
+    args.unshift(shiftedValue);
+
+    console.log('args', args);
+
+    return {
+      resultPaths, offset, args, keywords,
+    };
   }
 
   async showEphemeralSearchResults(command, argss, offsettt) {
-    console.log('args0', argss);
-    const { resultPaths, offset, args } = await this.getSearchResultPaths(command, argss, offsettt);
-    console.log('args3', argss);
+    const {
+      resultPaths, offset, args, keywords,
+    } = await this.getSearchResultPaths(command, argss, offsettt);
+    console.log('keywords', keywords);
     // console.log('offset', offset);
 
     const base = this.crowi.appService.getSiteUrl();
