@@ -1,4 +1,4 @@
-import { Schema, Types, Model } from 'mongoose';
+import { Schema, Model } from 'mongoose';
 
 
 import mongoosePaginate from 'mongoose-paginate-v2';
