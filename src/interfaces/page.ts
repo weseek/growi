@@ -53,7 +53,7 @@ export type PaginationResult<T> = {
   limit: number,
 }
 
-export type PaginationResultForPage = {
+export type PaginationResultByQueryBuilder = {
   pages: Page[],
   offset: number,
   totalCount: number,

@@ -2,7 +2,7 @@ import useSWR, { mutate, responseInterface } from 'swr';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
-  Page, Tag, Comment, PaginationResult, PaginationResultForPage, Revision,
+  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision,
 } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
@@ -133,7 +133,7 @@ export const useRecentlyUpdatedSWR = <Data, Error>(): responseInterface<Page[], 
   );
 };
 
-export const useCurrentPageList = (activePage: number): responseInterface<PaginationResultForPage, Error> => {
+export const useCurrentPageList = (activePage: number): responseInterface<PaginationResultByQueryBuilder, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
