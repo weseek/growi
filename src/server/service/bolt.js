@@ -168,12 +168,11 @@ class BoltService {
       return;
     }
 
-    const arr = [];
+    const keywordsArr = [];
     for (let i = 1; i < args.length; i++) {
-      arr.push(args[i]);
+      keywordsArr.push(args[i]);
     }
-
-    const keywords = arr.join(' ');
+    const keywords = keywordsArr.join(' ');
 
     const { searchService } = this.crowi;
     const options = { limit: 10, offset };
