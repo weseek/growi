@@ -4,13 +4,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
+import {
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import PagingSizeUncontrolledDropdown from '../Customize/PagingSizeUncontrolledDropdown';
 
 const logger = loggerFactory('growi:importer');
 
@@ -34,16 +36,28 @@ const IndentForm = (props) => {
 
     return (
       <div className="col">
-        <div className="custom-control custom-checkbox custom-checkbox-success">
-          <PagingSizeUncontrolledDropdown
-            label={t('admin:markdown_setting.indent_options.indentSize')}
-            desc={t('admin:markdown_setting.indent_options.indentSize_desc')}
-            toggleLabel={adminPreferredIndentSize || 4}
-            dropdownItemSize={[2, 4]}
-            onChangeDropdownItem={adminMarkDownContainer.setAdminPreferredIndentSize}
-          />
+        <div>
+          <label htmlFor="adminPreferredIndentSize">{t('admin:markdown_setting.indent_options.indentSize')}</label>
+          <UncontrolledDropdown id="adminPreferredIndentSize">
+            <DropdownToggle caret className="col-3 col-sm-2 col-md-5 col-lg-5 col-xl-3 text-right">
+              <span className="float-left">
+                {adminPreferredIndentSize || 4}
+              </span>
+            </DropdownToggle>
+            <DropdownMenu className="dropdown-menu" role="menu">
+              {[2, 4].map((num) => {
+                return (
+                  <DropdownItem key={num} role="presentation" onClick={() => adminMarkDownContainer.setAdminPreferredIndentSize(num)}>
+                    <a role="menuitem">{num}</a>
+                  </DropdownItem>
+                );
+              })}
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </div>
-        {/* <p className="form-text text-muted" dangerouslySetInnerHTML={helpIndent} /> */}
+        <p className="form-text text-muted">
+          {t('admin:markdown_setting.indent_options.indentSize_desc')}
+        </p>
       </div>
     );
   };
