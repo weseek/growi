@@ -127,7 +127,7 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
               the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
         <TabContent activeTab={activeTab}>
           <TabPane tabId="pagelist">
-            {activeComponents.has('pagelist') && <PageList />}
+            {activeComponents.has(AccessoryName.PAGE_LIST) && <PageList />}
           </TabPane>
           <TabPane tabId="timeline">
             {/* {activeComponents.has('timeline') && <PageTimeline /> } */}
