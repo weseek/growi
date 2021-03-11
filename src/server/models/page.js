@@ -7,6 +7,9 @@ import loggerFactory from '~/utils/logger';
 import templateChecker from '~/utils/template-checker';
 import { isTopPage, isTrashPage } from '~/utils/path-utils';
 
+import UserGroup from '~/server/models/user-group';
+import UserGroupRelation from '~/server/models/user-group-relation';
+
 const logger = loggerFactory('growi:models:page');
 
 const nodePath = require('path');
@@ -533,8 +536,6 @@ module.exports = function(crowi) {
 
     let userGroups = [];
     if (user != null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -555,8 +556,6 @@ module.exports = function(crowi) {
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -588,8 +587,6 @@ module.exports = function(crowi) {
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -620,8 +617,6 @@ module.exports = function(crowi) {
 
     let relatedUserGroups = userGroups;
     if (user != null && relatedUserGroups == null) {
-      validateCrowi();
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -796,7 +791,6 @@ module.exports = function(crowi) {
     // determine UserGroup condition
     let userGroups = null;
     if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -817,7 +811,6 @@ module.exports = function(crowi) {
     // determine UserGroup condition
     let userGroups = null;
     if (user != null) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     }
 
@@ -938,7 +931,6 @@ module.exports = function(crowi) {
     }
 
     if (grant === GRANT_USER_GROUP) {
-      const UserGroupRelation = crowi.model('UserGroupRelation');
       const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
 
       if (count === 0) {
@@ -1090,8 +1082,6 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.transferPageToGroup = async function(page, transferToUserGroupId) {
-    const UserGroup = mongoose.model('UserGroup');
-
     // check page existence
     const isExist = await UserGroup.count({ _id: transferToUserGroupId }) > 0;
     if (isExist) {

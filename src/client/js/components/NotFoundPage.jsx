@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import PageList from './PageList';
+import { PageList } from '~/components/PageAccessory/PageList';
 import PageTimeline from './PageTimeline';
 
 const NotFoundPage = (props) => {

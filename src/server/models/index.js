@@ -6,8 +6,6 @@ module.exports = {
   PageTagRelation: require('./page-tag-relation'),
   User: require('./user'),
   ExternalAccount: require('./external-account'),
-  UserGroup: require('./user-group'),
-  UserGroupRelation: require('./user-group-relation'),
   Revision: require('./revision'),
   Tag: require('./tag'),
   Bookmark: require('./bookmark'),

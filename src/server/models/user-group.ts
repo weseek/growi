@@ -1,4 +1,4 @@
-import { Schema, Types, Model } from 'mongoose';
+import { Schema, Model } from 'mongoose';
 
 
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -7,7 +7,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 import { UserGroup as IUserGroup } from '~/interfaces/user';
 
 import ConfigManager from '~/server/service/config-manager';
-// import { PageServise } from '~/server/service/page';
+// import { PageService } from '~/server/service/page';
 
 const debug = Debug('growi:models:userGroup');
 
@@ -29,14 +29,14 @@ schema.plugin(mongoosePaginate);
  */
 class UserGroup extends Model {
 
-  // static pageService: PageServise;
+  // static pageService: PageService;
 
   static paginate: (query, options)=>Promise<IUserGroup[]>;
 
   constructor() {
     super();
     this.configManager = new ConfigManager();
-    // this.pageService = new PageServise(this.configManager);
+    // this.pageService = new PageService(this.configManager);
   }
 
   /**
@@ -64,15 +64,12 @@ class UserGroup extends Model {
   /*
    * model static methods
    */
-
-  // グループ画像パスの生成
   static createUserGroupPictureFilePath(userGroup, name) {
     const ext = `.${name.match(/(.*)(?:\.([^.]+$))/)[2]}`;
 
     return `userGroup/${userGroup._id}${ext}`;
   }
 
-  // すべてのグループを取得（オプション指定可）
   static findAllGroups(_option) {
     return this.find().exec();
   }
@@ -103,7 +100,6 @@ class UserGroup extends Model {
       });
   }
 
-  // 登録可能グループ名確認
   static isRegisterableName(name) {
     const query = { name };
 
@@ -113,7 +109,7 @@ class UserGroup extends Model {
       });
   }
 
-  // グループの完全削除
+  // TODO GW-5390 Move this method to the service layer
   static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
     const groupToDelete = await this.findById(deleteGroupId);
     if (groupToDelete == null) {
@@ -134,14 +130,11 @@ class UserGroup extends Model {
     return this.estimatedDocumentCount();
   }
 
-  // グループ生成（名前が要る）
   static createGroupByName(name) {
     return this.create({ name });
   }
 
-  // グループ名の更新
   async updateName(name) {
-    // 名前を設定して更新
     this.name = name;
     await this.save();
   }

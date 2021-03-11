@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import PageListIcon from './Icons/PageListIcon';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import PageList from './PageList';
-
+import { PageList } from '~/components/PageAccessory/PageList';
 
 const TrashPageList = (props) => {
   const { t } = props;
