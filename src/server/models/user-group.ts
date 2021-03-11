@@ -64,15 +64,12 @@ class UserGroup extends Model {
   /*
    * model static methods
    */
-
-  // グループ画像パスの生成
   static createUserGroupPictureFilePath(userGroup, name) {
     const ext = `.${name.match(/(.*)(?:\.([^.]+$))/)[2]}`;
 
     return `userGroup/${userGroup._id}${ext}`;
   }
 
-  // すべてのグループを取得（オプション指定可）
   static findAllGroups(_option) {
     return this.find().exec();
   }
@@ -103,7 +100,6 @@ class UserGroup extends Model {
       });
   }
 
-  // 登録可能グループ名確認
   static isRegisterableName(name) {
     const query = { name };
 
@@ -113,7 +109,7 @@ class UserGroup extends Model {
       });
   }
 
-  // グループの完全削除
+  // TODO GW-5390 Move this method to the service layer
   static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
     const groupToDelete = await this.findById(deleteGroupId);
     if (groupToDelete == null) {
