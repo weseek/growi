@@ -174,11 +174,14 @@ class BoltService {
     }
     console.log('arr', arr);
     // removing 'search' from the head in the array.
-    const shiftedValue = args.shift();
-    const keywords = args.join(' ');
+    // const shiftedValue = args.shift();
+    // const keywords = args.join(' ');
+    const keywords = arr.join(' ');
+    console.log('keywords', keywords);
+    console.log('args', args);
 
     // adding 'search' to the head in the array again.
-    args.unshift(shiftedValue);
+    // args.unshift(shiftedValue);
 
     const { searchService } = this.crowi;
     const options = { limit: 10, offset };
