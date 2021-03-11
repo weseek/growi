@@ -129,17 +129,16 @@ class BoltService {
     });
 
     this.bolt.action('showNextResults', async({
-      body, ack, say, action, respond, client,
+      ack, action,
     }) => {
       await ack();
       const parsedValue = JSON.parse(action.value);
 
-      const offset = parsedValue.offset;
-      const args = parsedValue.args;
       const command = parsedValue.command;
+      const args = parsedValue.args;
+      const offset = parsedValue.offset;
 
-      const newOffsetNum = this.updateOffsetNum(offset);
-      const nextResults = this.getNextResults(command, args, newOffsetNum);
+      this.showNextResults(command, args, offset);
     });
 
     this.bolt.action('shareSearchResults', async({
@@ -163,15 +162,9 @@ class BoltService {
     throw new Error('/growi command: Invalid first argument');
   }
 
-  updateOffsetNum = (offset) => {
-    const newOffset = offset + 10;
-    return newOffset;
-  };
-
-
-  getNextResults = (command, args, offset) => {
-    // const hoge = this.getSearchResultPaths(command, args, offset);
-    const hoge = this.showEphemeralSearchResults(command, args, offset);
+  showNextResults = (command, args, offset) => {
+    const newOffsetNum = offset + 10;
+    this.showEphemeralSearchResults(command, args, newOffsetNum);
   }
 
 
@@ -290,7 +283,6 @@ class BoltService {
                   text: 'Next',
                 },
                 action_id: 'showNextResults',
-                // value: `${offset}`,
                 value: JSON.stringify({ offset, command, args }),
               },
               {
