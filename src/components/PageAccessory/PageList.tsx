@@ -1,21 +1,28 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import React, {
+  useEffect, useCallback, useState, VFC,
+} from 'react';
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
-import { apiv3Get } from '../util/apiv3-client';
+import { apiv3Get } from '../../client/js/util/apiv3-client';
 
-import Page from './PageList/Page';
-import { withUnstatedContainers } from './UnstatedUtils';
+import Page from '../../client/js/components/PageList/Page';
+import { Page as IPage } from '~/interfaces/page';
 
-import PageContainer from '../services/PageContainer';
+import { useCurrentPageSWR } from '~/stores/page';
+import { useTranslation } from '~/i18n';
 
+type Props ={
+  liClasses?: string[],
+}
 
-const PageList = (props) => {
-  const { pageContainer, t } = props;
-  const { path } = pageContainer.state;
-  const [pages, setPages] = useState(null);
+export const PageList:VFC<Props> = (props:Props) => {
+  const { t } = useTranslation();
+
+  const { data: currentPage } = useCurrentPageSWR();
+
+  const { liClasses = ['mb-3'] } = props;
+  const [pages, setPages] = useState<IPage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [activePage, setActivePage] = useState(1);
@@ -28,13 +35,13 @@ const PageList = (props) => {
 
   const updatePageList = useCallback(async() => {
     const page = activePage;
-    const res = await apiv3Get('/pages/list', { path, page });
+    const res = await apiv3Get('/pages/list', { path: currentPage?.path, page });
 
     setPages(res.data.pages);
     setIsLoading(false);
     setTotalPages(res.data.totalCount);
     setLimit(res.data.limit);
-  }, [path, activePage]);
+  }, [currentPage?.path, activePage]);
 
   useEffect(() => {
     updatePageList();
@@ -51,9 +58,9 @@ const PageList = (props) => {
     );
   }
 
-  const liClasses = props.liClasses.join(' ');
+
   const pageList = pages.map(page => (
-    <li key={page._id} className={liClasses}>
+    <li key={page._id} className={liClasses.join(' ')}>
       <Page page={page} />
     </li>
   ));
@@ -81,22 +88,4 @@ const PageList = (props) => {
     </div>
   );
 
-
 };
-
-const PageListWrapper = withUnstatedContainers(PageList, [PageContainer]);
-
-const PageListTranslation = withTranslation()(PageListWrapper);
-
-
-PageList.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  pageContainer: PropTypes.instanceOf(PageContainer),
-
-  liClasses: PropTypes.arrayOf(PropTypes.string),
-};
-PageList.defaultProps = {
-  liClasses: ['mb-3'],
-};
-
-export default PageListTranslation;
