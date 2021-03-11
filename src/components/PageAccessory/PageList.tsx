@@ -4,12 +4,10 @@ import React, {
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
-import { apiv3Get } from '../../client/js/util/apiv3-client';
-
 import Page from '../../client/js/components/PageList/Page';
 import { Page as IPage } from '~/interfaces/page';
 
-import { useCurrentPageSWR, useCurrentPageList } from '~/stores/page';
+import { useCurrentPageList } from '~/stores/page';
 import { useTranslation } from '~/i18n';
 
 type Props = {
@@ -29,7 +27,7 @@ export const PageList:VFC<Props> = (props:Props) => {
   const { data: paginationResult } = useCurrentPageList(activePage);
 
   const handlePage = useCallback(async(selectedPage) => {
-    setActivePage(selectedPage - 1);
+    setActivePage(selectedPage);
   }, []);
 
   useEffect(() => {
