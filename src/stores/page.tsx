@@ -205,3 +205,16 @@ export const useSubordinatedList = (pagePath?: string): responseInterface<Page[]
     },
   );
 };
+
+export const useExistingPaths = (pagePath?: string, newParentPath?:string): responseInterface<string[], Error> => {
+  const endpoint = '/page/exist-paths';
+  const key = (pagePath != null && newParentPath != null) ? [endpoint, newParentPath] : null;
+  return useSWR(
+    key,
+    (endpoint, toPath) => apiv3Get(endpoint, { fromPath: pagePath, toPath }).then(response => response.data.existPaths),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};

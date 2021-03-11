@@ -7,7 +7,7 @@ import {
 import { toastSuccess } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
 
-import { useCurrentPageSWR, useSubordinatedList } from '~/stores/page';
+import { useCurrentPageSWR, useExistingPaths, useSubordinatedList } from '~/stores/page';
 
 import { Page as IPage } from '~/interfaces/page';
 
@@ -41,13 +41,13 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
 
-  const { data: subordinatedList = [] } = useSubordinatedList(currentPagePath);
-
   const [pageNameInput, setPageNameInput] = useState(currentPagePath || '');
+
+  const { data: subordinatedList = [] } = useSubordinatedList(currentPagePath);
+  const { data: existingPaths = [] } = useExistingPaths(currentPagePath, pageNameInput);
 
   const [errs, setErrs] = useState([]);
 
-  const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
