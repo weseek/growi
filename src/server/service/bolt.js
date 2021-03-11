@@ -27,7 +27,7 @@ class BoltReciever {
       body: reqBody,
       ack: (response) => {
         if (ackCalled) {
-          return null;
+          return;
         }
 
         ackCalled = true;
@@ -36,13 +36,7 @@ class BoltReciever {
           const message = response.message || 'Error occurred';
           throw new Error(message);
         }
-        else if (!response) {
-          return null;
-        }
-        else {
-          return response;
-        }
-
+        return;
       },
     };
 
@@ -153,7 +147,7 @@ class BoltService {
         this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
     });
-    throw new Error('/growi command: Invalid first argument');
+    return;
   }
 
   showNextResults = (command, args, offset) => {
@@ -171,7 +165,7 @@ class BoltService {
           this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
-      throw new Error('/growi command:search: Invalid keyword');
+      return;
     }
 
     // removing 'search' from the head in the array.
@@ -228,6 +222,9 @@ class BoltService {
       resultPaths, offset, keywords,
     } = await this.getSearchResultPaths(command, args, offsettt);
 
+    if (resultPaths == null) {
+      return;
+    }
     const base = this.crowi.appService.getSiteUrl();
 
     const urls = resultPaths.map((path) => {
@@ -349,7 +346,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock('*Failed to create new page.*\n Hint\n `/growi create`'),
+          this.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
         ],
       });
       throw err;
