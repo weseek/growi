@@ -1,11 +1,9 @@
 import useSWR, { mutate, responseInterface } from 'swr';
-import { ConfigInterface } from 'swr/dist/types';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
-  Page, Tag, Comment, PaginationResult, Revision,
+  Page, Tag, Comment, PaginationResult, PaginationResultForPage, Revision,
 } from '~/interfaces/page';
-import { User } from '~/interfaces/user';
 
 import { isTrashPage } from '../utils/path-utils';
 
@@ -128,6 +126,19 @@ export const useRecentlyUpdatedSWR = <Data, Error>(): responseInterface<Page[], 
   return useSWR(
     '/pages/recent',
     endpoint => apiv3Get(endpoint).then(response => response.data?.pages),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageList = (activePage: number): responseInterface<PaginationResultForPage, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    ['/pages/list', currentPage, activePage],
+    (endpoint, page, activePage) => apiv3Get(endpoint, { path: page.path, page: activePage }).then(response => response.data),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

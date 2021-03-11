@@ -53,6 +53,13 @@ export type PaginationResult<T> = {
   limit: number,
 }
 
+export type PaginationResultForPage = {
+  pages: Page[],
+  offset: number,
+  totalCount: number,
+  limit: number,
+}
+
 export type Attachment = {
   _id: string,
   creator: User,
