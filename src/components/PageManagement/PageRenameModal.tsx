@@ -7,7 +7,7 @@ import {
 import { toastSuccess } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
 
-import { useCurrentPageSWR } from '~/stores/page';
+import { useCurrentPageSWR, useSubordinatedList } from '~/stores/page';
 
 import { Page as IPage } from '~/interfaces/page';
 
@@ -41,11 +41,12 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
 
+  const { data: subordinatedList = [] } = useSubordinatedList(currentPagePath);
+
   const [pageNameInput, setPageNameInput] = useState(currentPagePath || '');
 
   const [errs, setErrs] = useState([]);
 
-  const [subordinatedPages, setSubordinatedPages] = useState([]);
   const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
@@ -171,7 +172,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
               </label>
             </div>
           )}
-          {isRenameRecursively && <ComparePathsTable currentPagePath={currentPagePath} subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
+          {isRenameRecursively && <ComparePathsTable currentPagePath={currentPagePath} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths.length !== 0
             && <DuplicatedPathsTable currentPagePath={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>

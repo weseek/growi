@@ -192,3 +192,16 @@ export const useDescendantsCount = (pagePath?: string): responseInterface<number
     },
   );
 };
+
+export const useSubordinatedList = (pagePath?: string): responseInterface<Page[], Error> => {
+  const endpoint = '/pages/subordinated-list';
+  const key = pagePath != null ? endpoint : null;
+  return useSWR(
+    key,
+    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.subordinatedPaths),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
