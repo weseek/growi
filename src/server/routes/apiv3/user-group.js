@@ -59,7 +59,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     // TODO: filter with querystring
     try {
       const page = parseInt(req.query.page) || 1;
