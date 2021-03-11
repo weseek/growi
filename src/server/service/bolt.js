@@ -217,10 +217,10 @@ class BoltService {
     };
   }
 
-  async showEphemeralSearchResults(command, args, offsettt) {
+  async showEphemeralSearchResults(command, args, offset) {
     const {
       resultPaths, offset, keywords,
-    } = await this.getSearchResultPaths(command, args, offsettt);
+    } = await this.getSearchResultPaths(command, args, offset);
 
     if (resultPaths == null) {
       return;
