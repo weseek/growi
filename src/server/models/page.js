@@ -7,6 +7,8 @@ import loggerFactory from '~/utils/logger';
 import templateChecker from '~/utils/template-checker';
 import { isTopPage, isTrashPage } from '~/utils/path-utils';
 
+import UserGroup from '~/server/models/user-group';
+
 const logger = loggerFactory('growi:models:page');
 
 const nodePath = require('path');
@@ -1090,8 +1092,6 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.transferPageToGroup = async function(page, transferToUserGroupId) {
-    const UserGroup = mongoose.model('UserGroup');
-
     // check page existence
     const isExist = await UserGroup.count({ _id: transferToUserGroupId }) > 0;
     if (isExist) {
