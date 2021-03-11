@@ -16,7 +16,6 @@ import {
 } from '~/stores/page';
 
 export const PageHistory: VFC = () => {
-  const { t } = useTranslation();
   const router = useRouter();
 
   const { data: currentPage } = useCurrentPageSWR();
