@@ -174,9 +174,13 @@ class BoltService {
       throw new Error('/growi command:search: Invalid keyword');
     }
 
-    // remove leading 'search'.
+    // removing 'search' from the head in the array.
     const shiftedValue = args.shift();
     const keywords = args.join(' ');
+
+    // adding 'search' to the head in the array again.
+    args.unshift(shiftedValue);
+
     const { searchService } = this.crowi;
     const ApiPaginate = require('../util/apiPaginate');
 
@@ -218,8 +222,6 @@ class BoltService {
     const resultPaths = results.data.map((data) => {
       return data._source.path;
     });
-
-    args.unshift(shiftedValue);
 
     return {
       resultPaths, offset, keywords,
