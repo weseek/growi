@@ -1,4 +1,5 @@
 import { useState, FC } from 'react';
+import { useRouter } from 'next/router';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -16,6 +17,7 @@ import { useCurrentPagePath, useSearchServiceReachable, useSiteUrl } from '~/sto
 
 import { ComparePathsTable } from '~/components/PageManagement/ComparePathsTable';
 import { DuplicatedPathsTable } from '~/components/PageManagement/DuplicatedPathsTable';
+import { apiv3Put } from '~/utils/apiv3-client';
 
 type Props = {
   currentPage: IPage;
@@ -31,6 +33,7 @@ type Props = {
 }
 
 const PageRenameModal:FC<Props> = (props:Props) => {
+  const router = useRouter();
   const { t } = useTranslation();
   const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
@@ -46,39 +49,42 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const [existingPaths, setExistingPaths] = useState([]);
   const [isRenameRecursively, setIsRenameRecursively] = useState(true);
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
-  const [isRenameMetadata, setIsRenameMetadata] = useState(false);
+  const [isRemainMetadata, setIsRemainMetadata] = useState(false);
   const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
 
   if (currentPagePath == null) {
     return null;
   }
 
-  const {
-    onSubmit, currentPage,
-  } = props;
+  const { currentPage } = props;
 
   async function rename() {
     setErrs([]);
-    console.log(pageNameInput);
+
     try {
-      // const response = await pageContainer.rename(
-      //   pageNameInput,
-      //   isRenameRecursively,
-      //   isRenameRedirect,
-      //   isRenameMetadata,
-      // );
+      const response = await apiv3Put('/pages/rename', {
+        revisionId: currentPage.revision._id,
+        pageId: currentPage._id,
+        isRecursively: isRenameRecursively,
+        isRenameRedirect,
+        isRemainMetadata,
+        newPagePath: pageNameInput,
+        path: currentPage.path,
+        // socketClientId: socketIoContainer.getSocketClientId(),
+      });
 
-      // const { page } = response.data;
-      // const url = new URL(page.path, 'https://dummy');
-      // url.searchParams.append('renamedFrom', path);
-      // if (isRenameRedirect) {
-      //   url.searchParams.append('withRedirect', true);
-      // }
+      const { page } = response.data;
 
-      // window.location.href = `${url.pathname}${url.search}`;
+      const url = new URL(page.path, 'https://dummy');
+      url.searchParams.append('renamedFrom', currentPage.path);
+      if (isRenameRedirect) {
+        url.searchParams.append('withRedirect', 'true');
+      }
+
+      router.push(`${url.pathname}${url.search}`);
     }
     catch (err) {
-      // setErrs([err]);
+      setErrs(err);
     }
   }
 
@@ -189,8 +195,8 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             className="custom-control-input"
             id="cbRenameMetadata"
             type="checkbox"
-            checked={isRenameMetadata}
-            onChange={() => setIsRenameMetadata(!isRenameRedirect)}
+            checked={isRemainMetadata}
+            onChange={() => setIsRemainMetadata(!isRemainMetadata)}
           />
           <label className="custom-control-label" htmlFor="cbRenameMetadata">
             { t('modal_rename.label.Do not update metadata') }
