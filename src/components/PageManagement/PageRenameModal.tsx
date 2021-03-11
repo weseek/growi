@@ -173,7 +173,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             </div>
           )}
           {isRenameRecursively && <ComparePathsTable currentPagePath={currentPagePath} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
-          {isRenameRecursively && existingPaths.length !== 0
+          {isRenameRecursively && existingPaths.length !== 0 && currentPagePath !== pageNameInput
             && <DuplicatedPathsTable currentPagePath={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
