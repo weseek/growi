@@ -157,8 +157,8 @@ class BoltService {
   }
 
   showNextResults = (command, args, offset) => {
-    const newOffsetNum = offset + 10;
-    this.showEphemeralSearchResults(command, args, newOffsetNum);
+    const newOffset = offset + 10;
+    this.showEphemeralSearchResults(command, args, newOffset);
   }
 
   async getSearchResultPaths(command, args, offset = 0) {
