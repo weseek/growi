@@ -7,7 +7,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 import { UserGroup as IUserGroup } from '~/interfaces/user';
 
 import ConfigManager from '~/server/service/config-manager';
-import { PageService } from '~/server/service/page';
+// import { PageService } from '~/server/service/page';
 
 const debug = Debug('growi:models:userGroup');
 
@@ -29,14 +29,14 @@ schema.plugin(mongoosePaginate);
  */
 class UserGroup extends Model {
 
-  static pageService: PageService;
+  // static pageService: PageService;
 
   static paginate: (query, options)=>Promise<IUserGroup[]>;
 
   constructor() {
     super();
     this.configManager = new ConfigManager();
-    this.pageService = new PageService(this.configManager);
+    // this.pageService = new PageService(this.configManager);
   }
 
   /**
