@@ -182,13 +182,8 @@ class BoltService {
     args.unshift(shiftedValue);
 
     const { searchService } = this.crowi;
-    const ApiPaginate = require('../util/apiPaginate');
-
     const options = { limit: 10, offset };
-
-    const paginateOpts = ApiPaginate.parseOptionsForElasticSearch(options);
-
-    const results = await searchService.searchKeyword(keywords, null, {}, paginateOpts);
+    const results = await searchService.searchKeyword(keywords, null, {}, options);
 
 
     // no search results
