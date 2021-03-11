@@ -130,14 +130,11 @@ class UserGroup extends Model {
     return this.estimatedDocumentCount();
   }
 
-  // グループ生成（名前が要る）
   static createGroupByName(name) {
     return this.create({ name });
   }
 
-  // グループ名の更新
   async updateName(name) {
-    // 名前を設定して更新
     this.name = name;
     await this.save();
   }
