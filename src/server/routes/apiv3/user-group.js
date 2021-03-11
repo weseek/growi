@@ -1,5 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
+import UserGroup from '~/server/models/user-group';
+
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -18,7 +20,6 @@ const validator = {};
 
 const { ObjectId } = mongoose.Types;
 
-
 /**
  * @swagger
  *  tags:
@@ -32,7 +33,6 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const {
-    UserGroup,
     UserGroupRelation,
     User,
     Page,
@@ -59,7 +59,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', async(req, res) => {
     // TODO: filter with querystring
     try {
       const page = parseInt(req.query.page) || 1;
