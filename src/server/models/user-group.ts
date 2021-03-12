@@ -7,7 +7,6 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 import { UserGroup as IUserGroup } from '~/interfaces/user';
 
 import ConfigManager from '~/server/service/config-manager';
-// import { PageService } from '~/server/service/page';
 
 const debug = Debug('growi:models:userGroup');
 
@@ -29,14 +28,11 @@ schema.plugin(mongoosePaginate);
  */
 class UserGroup extends Model {
 
-  // static pageService: PageService;
-
   static paginate: (query, options)=>Promise<IUserGroup[]>;
 
   constructor() {
     super();
     this.configManager = new ConfigManager();
-    // this.pageService = new PageService(this.configManager);
   }
 
   /**
@@ -107,23 +103,6 @@ class UserGroup extends Model {
       .then((userGroupData) => {
         return (userGroupData == null);
       });
-  }
-
-  // TODO GW-5390 Move this method to the service layer
-  static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
-    const groupToDelete = await this.findById(deleteGroupId);
-    if (groupToDelete == null) {
-      throw new Error(`UserGroup data is not exists. id: ${deleteGroupId}`);
-    }
-    const deletedGroup = await groupToDelete.remove();
-
-    await Promise.all([
-      // TODO fix
-      // UserGroupRelation.removeAllByUserGroup(deletedGroup),
-      // this.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
-    ]);
-
-    return deletedGroup;
   }
 
   static countUserGroups() {
