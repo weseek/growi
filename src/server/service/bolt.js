@@ -246,7 +246,34 @@ class BoltService {
 
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
+
     try {
+      if (searchResultsNum < 10) {
+        return await this.client.chat.postEphemeral({
+          channel: command.channel_id,
+          user: command.user_id,
+          blocks: [
+            this.generateMarkdownSectionBlock(keywordsAndDesc),
+            this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
+            {
+              type: 'actions',
+              elements: [
+                {
+                  type: 'button',
+                  text: {
+                    type: 'plain_text',
+                    text: 'Share',
+                  },
+                  style: 'primary',
+                  action_id: 'shareSearchResults',
+                  value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+                },
+              ],
+            },
+          ],
+        });
+      }
+
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
@@ -279,6 +306,8 @@ class BoltService {
           },
         ],
       });
+
+
     }
     catch {
       logger.error('Failed to get search results.');
