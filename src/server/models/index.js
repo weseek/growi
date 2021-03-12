@@ -8,7 +8,6 @@ module.exports = {
   ExternalAccount: require('./external-account'),
   Revision: require('./revision'),
   Tag: require('./tag'),
-  Bookmark: require('./bookmark'),
   Comment: require('./comment'),
   Attachment: require('./attachment'),
   UpdatePost: require('./updatePost'),
