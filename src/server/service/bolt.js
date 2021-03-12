@@ -280,8 +280,6 @@ class BoltService {
           },
         ],
       });
-
-
     }
     catch {
       logger.error('Failed to get search results.');
