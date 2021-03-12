@@ -258,16 +258,7 @@ class BoltService {
             {
               type: 'actions',
               elements: [
-                {
-                  type: 'button',
-                  text: {
-                    type: 'plain_text',
-                    text: 'Share',
-                  },
-                  style: 'primary',
-                  action_id: 'shareSearchResults',
-                  value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-                },
+                this.generateElementsSectionBlock('Share', 'shareSearchResults', `${keywordsAndDesc} \n\n ${urls.join('\n')}`, 'primary'),
               ],
             },
           ],
@@ -283,25 +274,8 @@ class BoltService {
           {
             type: 'actions',
             elements: [
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Next',
-                },
-                action_id: 'showNextResults',
-                value: JSON.stringify({ offset, command, args }),
-              },
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Share',
-                },
-                style: 'primary',
-                action_id: 'shareSearchResults',
-                value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-              },
+              this.generateElementsSectionBlock('Next', 'showNextResults', JSON.stringify({ offset, command, args })),
+              this.generateElementsSectionBlock('Share', 'shareSearchResults', `${keywordsAndDesc} \n\n ${urls.join('\n')}`, 'primary'),
             ],
           },
         ],
@@ -441,6 +415,19 @@ class BoltService {
           text: placeholder,
         },
       },
+    };
+  }
+
+  generateElementsSectionBlock(text, actionId, value, style) {
+    return {
+      type: 'button',
+      text: {
+        type: 'plain_text',
+        text,
+      },
+      action_id: actionId,
+      value,
+      style,
     };
   }
 
