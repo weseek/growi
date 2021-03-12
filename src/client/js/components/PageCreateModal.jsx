@@ -13,7 +13,7 @@ import { useCurrentUser, useSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModalOpened } from '~/stores/ui';
 import { userPageRoot } from '~/utils/path-utils';
 
-import PagePathAutoComplete from './PagePathAutoComplete';
+import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 
 const PageCreateModal = () => {
   const { t } = useTranslation();

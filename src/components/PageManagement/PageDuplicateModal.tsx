@@ -1,10 +1,17 @@
-import { useState, FC } from 'react';
+import {
+  useState, useEffect, useCallback, FC,
+} from 'react';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { toastSuccess } from '~/client/js/util/apiNotification';
+import { debounce } from 'throttle-debounce';
+import { useCurrentPagePath, useSearchServiceReachable } from '~/stores/context';
+import { apiv3Get } from '~/client/js/util/apiv3-client';
+
 import { useTranslation } from '~/i18n';
+
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
 import { useCurrentPageSWR } from '~/stores/page';
 
@@ -12,12 +19,11 @@ import { Page as IPage } from '~/interfaces/page';
 
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
-// import { debounce } from 'throttle-debounce';
 // import { withUnstatedContainers } from './UnstatedUtils';
-// import { toastError } from '../util/apiNotification';
 
 // import AppContainer from '../services/AppContainer';
 // import PageContainer from '../services/PageContainer';
+import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 // import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
 // import ComparePathsTable from './ComparePathsTable';
 // import DuplicatePathsTable from './DuplicatedPathsTable';
@@ -33,11 +39,71 @@ type Props = {
 
 const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isReachable } = useSearchServiceReachable();
+
+  const [errs, setErrs] = useState([]);
+  const [existingPaths, setExistingPaths] = useState([]);
+  const [subordinatedPages, setSubordinatedPages] = useState([]);
+
+  if (currentPagePath == null) {
+    throw new Error('currentPagePath should not be null.');
+  }
+  const [pageNameInput, setPageNameInput] = useState(currentPagePath);
+
+  const checkExistPaths = async(newParentPath) => {
+    try {
+      const res = await apiv3Get('/page/exist-paths', { fromPath: currentPagePath, toPath: newParentPath });
+      const { existPaths } = res.data;
+      setExistingPaths(existPaths);
+    }
+    catch (err) {
+      setErrs(err);
+      toastError(t('modal_rename.label.Fail to get exist path'));
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const checkExistPathsDebounce = useCallback(
+    debounce(1000, checkExistPaths), [],
+  );
+
+
+  useEffect(() => {
+    if (pageNameInput !== currentPagePath) {
+      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+    }
+  }, [pageNameInput, subordinatedPages, currentPagePath, checkExistPathsDebounce]);
+
+  function inputChangeHandler(value) {
+    setErrs([]);
+    setPageNameInput(value);
+  }
+
+  function ppacInputChangeHandler(value) {
+    setErrs([]);
+    setPageNameInput(value);
+  }
+
+  async function duplicate() {
+    setErrs([]);
+
+    try {
+      // TODO: enable isDuplicateRecursively by GW-5117
+      // await apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
+      // window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
+    }
+    catch (err) {
+      setErrs(err);
+    }
+  }
+
+  function ppacSubmitHandler() {
+    duplicate();
+  }
   const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
   const { currentPage } = props;
-
-  const [errs, setErrs] = useState([]);
 
   const loadLatestRevision = () => {
     props.onClose();
@@ -61,18 +127,16 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
               {/* <span className="input-group-text">{crowi.url}</span> */}
             </div>
             <div className="flex-fill">
-              {/* TODO enable isReachable and use react-hook-form by GW5116 */}
-              {/* {isReachable
+              {isReachable
               ? (
                 <PagePathAutoComplete
-                  initializedPath={path}
+                  initializedPath={currentPagePath}
                   onSubmit={ppacSubmitHandler}
                   onInputChange={ppacInputChangeHandler}
                   autoFocus
                 />
               )
               : (
-                TODO enable SearchTypeahead by GW5116
                 <input
                   type="text"
                   value={pageNameInput}
@@ -80,7 +144,7 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
                   onChange={e => inputChangeHandler(e.target.value)}
                   required
                 />
-              )} */}
+              )}
             </div>
           </div>
         </div>
