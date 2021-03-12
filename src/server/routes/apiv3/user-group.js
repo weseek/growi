@@ -122,8 +122,8 @@ module.exports = (crowi) => {
 
   validator.delete = [
     param('id').isMongoId(),
-    query('actionName').if(value => value != null).isString(),
-    query('transferToUserGroupId').isMongoId(),
+    query('actionName').isString(),
+    query('transferToUserGroupId').if(value => value != null).isMongoId(),
   ];
 
   /**
