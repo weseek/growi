@@ -4,7 +4,7 @@ import {
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
-import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
+// import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
 import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
 import { Attachment as IAttachment } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
@@ -79,7 +79,7 @@ export const PageAttachment:VFC = () => {
 
   return (
     <>
-      {attachments.map((attachment, idx) => {
+      {attachments.map((attachment) => {
         return (
           <Attachment
             key={`page:attachment:${attachment._id}`}
@@ -97,6 +97,7 @@ export const PageAttachment:VFC = () => {
         pagingLimit={limit}
         align="center"
       />
+      {/* TODO GW-5400 implement delete attachment modal */}
       {/* <DeleteAttachmentModal
         isOpen={showModal}
         animation="false"
@@ -112,72 +113,3 @@ export const PageAttachment:VFC = () => {
   );
 
 };
-
-
-//   onAttachmentDeleteClickedConfirm(attachment) {
-//     const attachmentId = attachment._id;
-//     this.setState({
-//       deleting: true,
-//     });
-
-//     apiPost('/attachments.remove', { attachment_id: attachmentId })
-//       .then((res) => {
-//         this.setState({
-//           attachments: this.state.attachments.filter((at) => {
-//             // comparing ObjectId
-//             // eslint-disable-next-line eqeqeq
-//             return at._id != attachmentId;
-//           }),
-//           attachmentToDelete: null,
-//           deleting: false,
-//         });
-//       }).catch((err) => {
-//         this.setState({
-//           deleteError: 'Something went wrong.',
-//           deleting: false,
-//         });
-//       });
-//   }
-
-//   render() {
-//     const { t } = this.props;
-//     if (this.state.attachments.length === 0) {
-//       return t('No_attachments_yet');
-//     }
-
-//     let deleteAttachmentModal = '';
-//     if (this.isUserLoggedIn()) {
-//       const attachmentToDelete = this.state.attachmentToDelete;
-//       const deleteModalClose = () => {
-//         this.setState({ attachmentToDelete: null, deleteError: '' });
-//       };
-//       const showModal = attachmentToDelete !== null;
-
-//       let deleteInUse = null;
-//       if (attachmentToDelete !== null) {
-//         deleteInUse = this.state.inUse[attachmentToDelete._id] || false;
-//       }
-
-//       deleteAttachmentModal = (
-//         <DeleteAttachmentModal
-//           isOpen={showModal}
-//           animation="false"
-//           toggle={deleteModalClose}
-
-//           attachmentToDelete={attachmentToDelete}
-//           inUse={deleteInUse}
-//           deleting={this.state.deleting}
-//           deleteError={this.state.deleteError}
-//           onAttachmentDeleteClickedConfirm={this.onAttachmentDeleteClickedConfirm}
-//         />
-//       );
-//     }
-
-//     return (
-//       <>
-//         {deleteAttachmentModal}
-//       </>
-//     );
-//   }
-
-// }
