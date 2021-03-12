@@ -72,7 +72,7 @@ export const PageAttachment:VFC = () => {
   if (attachments.length === 0) {
     return (
       <div className="mt-2">
-        <p>{t('custom_navigation.no_page_list')}</p>
+        <p>{t('No_attachments_yet')}</p>
       </div>
     );
   }
@@ -138,13 +138,6 @@ export const PageAttachment:VFC = () => {
 //         });
 //       });
 //   }
-
-//   isUserLoggedIn() {
-//     // TODO retrieve from useCurrentUser at context.tsx
-//     const currentUser = null;
-//     return currentUser != null;
-//   }
-
 
 //   render() {
 //     const { t } = this.props;
