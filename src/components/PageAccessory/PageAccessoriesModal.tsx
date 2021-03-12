@@ -13,10 +13,10 @@ import HistoryIcon from '../../client/js/components/Icons/HistoryIcon';
 import AttachmentIcon from '../../client/js/components/Icons/AttachmentIcon';
 import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 
-import { PageAttachment } from '~/components/PageAccessory/PageAttachment';
 // import PageTimeline from '../../client/js/components/PageTimeline';
 import { PageList } from '~/components/PageAccessory/PageList';
 import { PageHistory } from '~/components/PageAccessory/PageHistory';
+import { PageAttachment } from '~/components/PageAccessory/PageAttachment';
 // import ShareLink from '../../client/js/components/ShareLink/ShareLink';
 
 import ExpandOrContractButton from '../../client/js/components/ExpandOrContractButton';
