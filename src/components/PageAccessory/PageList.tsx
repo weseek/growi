@@ -52,7 +52,6 @@ export const PageList:VFC<Props> = (props:Props) => {
   if (pages.length === 0) {
     return (
       <div className="mt-2">
-        {/* eslint-disable-next-line react/no-danger */}
         <p>{t('custom_navigation.no_page_list')}</p>
       </div>
     );
