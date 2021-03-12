@@ -4,19 +4,18 @@ import {
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
-
-import PageAttachmentList from '../../client/js/components/PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
 import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
-import { Attachment } from '~/interfaces/page';
+import { Attachment as IAttachment } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
+import Attachment from '~/client/js/components/PageAttachment/Attachment';
 
 export const PageAttachment:VFC = () => {
   const { t } = useTranslation();
 
   const [inUse, setInUse] = useState<{ [key:string]:boolean }>({});
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [attachmentToDelete, setAttachmentToDelete] = useState<Attachment>();
+  const [attachments, setAttachments] = useState<IAttachment[]>([]);
+  const [attachmentToDelete, setAttachmentToDelete] = useState<IAttachment>();
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
@@ -54,7 +53,7 @@ export const PageAttachment:VFC = () => {
     setInUse(inUse);
   }, [attachments, checkIfFileInUse]);
 
-  const onAttachmentDeleteClicked = useCallback((attachment:Attachment) => {
+  const onAttachmentDeleteClicked = useCallback((attachment:IAttachment) => {
     setAttachmentToDelete(attachment);
   }, []);
 
@@ -78,11 +77,17 @@ export const PageAttachment:VFC = () => {
 
   return (
     <>
-      <PageAttachmentList
-        attachments={attachments}
-        inUse={inUse}
-        onAttachmentDeleteClicked={onAttachmentDeleteClicked}
-      />
+      {attachments.map((attachment, idx) => {
+        return (
+          <Attachment
+            key={`page:attachment:${attachment._id}`}
+            attachment={attachment}
+            inUse={inUse[attachment._id] || false}
+            onAttachmentDeleteClicked={onAttachmentDeleteClicked}
+            // isUserLoggedIn={isUserLoggedIn}
+          />
+        );
+      })}
       <PaginationWrapper
         activePage={activePage}
         changePage={handlePage}
