@@ -1,9 +1,12 @@
-import React, { VFC, useState, useEffect } from 'react';
+import {
+  VFC, useState, useEffect, useCallback,
+} from 'react';
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
+
 import PageAttachmentList from '../../client/js/components/PageAttachment/PageAttachmentList';
-import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
+// import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
 import { useCurrentPageAttachment } from '~/stores/page';
 import { Attachment } from '~/interfaces/page';
 
@@ -18,6 +21,11 @@ export const PageAttachment:VFC = () => {
 
   const { data: paginationResult } = useCurrentPageAttachment(activePage);
 
+  const handlePage = useCallback(async(selectedPage) => {
+    setActivePage(selectedPage);
+  }, []);
+
+
   useEffect(() => {
     if (paginationResult == null) {
       return;
@@ -28,41 +36,26 @@ export const PageAttachment:VFC = () => {
   }, [paginationResult]);
 
   return (
-    <PageAttachmentList
-      attachments={attachments}
-      inUse={inUse}
-      // onAttachmentDeleteClicked={onAttachmentDeleteClicked}
-      // isUserLoggedIn={isUserLoggedIn}
-    />
-
+    <>
+      <PageAttachmentList
+        attachments={attachments}
+        inUse={inUse}
+      />
+      <PaginationWrapper
+        activePage={activePage}
+        changePage={handlePage}
+        totalItemsCount={totalItemsCount}
+        pagingLimit={limit}
+        align="center"
+      />
+    </>
   );
 
 };
 
-//     this.state = {
-//       activePage: 1,
-//       totalAttachments: 0,
-//       limit: Infinity,
-//       attachments: [],
-//       inUse: {},
-//       attachmentToDelete: null,
-//       deleting: false,
-//       deleteError: '',
-//     };
-
-//   }
-
-
 //   const handlePage=(selectedPage)=> {
-//     const { pageId } = this.props.pageContainer.state;
-//     const page = selectedPage;
 
 //     if (!pageId) { return }
-
-//     const res = await apiv3Get('/attachment/list', { pageId, page });
-//     const attachments = res.data.paginateResult.docs;
-//     const totalAttachments = res.data.paginateResult.totalDocs;
-//     const pagingLimit = res.data.paginateResult.limit;
 
 //     const inUse = {};
 
@@ -78,13 +71,6 @@ export const PageAttachment:VFC = () => {
 //     });
 //   }
 
-
-//   async componentDidMount() {
-//     await this.handlePage(1);
-//     this.setState({
-//       activePage: 1,
-//     });
-//   }
 
 //   checkIfFileInUse(attachment) {
 //     const { markdown } = this.props.pageContainer.state;
@@ -169,22 +155,8 @@ export const PageAttachment:VFC = () => {
 
 //     return (
 //       <>
-//         <PageAttachmentList
-//           attachments={this.state.attachments}
-//           inUse={this.state.inUse}
-//           onAttachmentDeleteClicked={this.onAttachmentDeleteClicked}
-//           isUserLoggedIn={this.isUserLoggedIn()}
-//         />
-
 //         {deleteAttachmentModal}
 
-//         <PaginationWrapper
-//           activePage={this.state.activePage}
-//           changePage={this.handlePage}
-//           totalItemsCount={this.state.totalAttachments}
-//           pagingLimit={this.state.limit}
-//           align="center"
-//         />
 //       </>
 //     );
 //   }
