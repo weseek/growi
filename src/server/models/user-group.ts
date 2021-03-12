@@ -109,23 +109,6 @@ class UserGroup extends Model {
       });
   }
 
-  // TODO GW-5390 Move this method to the service layer
-  static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
-    const groupToDelete = await this.findById(deleteGroupId);
-    if (groupToDelete == null) {
-      throw new Error(`UserGroup data is not exists. id: ${deleteGroupId}`);
-    }
-    const deletedGroup = await groupToDelete.remove();
-
-    await Promise.all([
-      // TODO fix
-      // UserGroupRelation.removeAllByUserGroup(deletedGroup),
-      // this.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
-    ]);
-
-    return deletedGroup;
-  }
-
   static countUserGroups() {
     return this.estimatedDocumentCount();
   }
