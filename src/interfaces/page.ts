@@ -73,6 +73,7 @@ export type Attachment = {
   temporaryUrlCached: string,
   temporaryUrlExpiredAt: Date,
   filePathProxied: string,
+  downloadPathProxied: string,
 }
 
 export type ShareLink = {
