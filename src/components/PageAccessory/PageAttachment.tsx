@@ -1,14 +1,40 @@
-/* eslint-disable react/no-access-state-in-setstate */
-import React, { VFC } from 'react';
+import React, { VFC, useState, useEffect } from 'react';
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
 import PageAttachmentList from '../../client/js/components/PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
+import { useCurrentPageAttachment } from '~/stores/page';
+import { Attachment } from '~/interfaces/page';
 
 export const PageAttachment:VFC = () => {
+  const inUse = {};
+
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+
+  const [activePage, setActivePage] = useState(1);
+  const [totalItemsCount, setTotalItemsCount] = useState(0);
+  const [limit, setLimit] = useState(Infinity);
+
+  const { data: paginationResult } = useCurrentPageAttachment(activePage);
+
+  useEffect(() => {
+    if (paginationResult == null) {
+      return;
+    }
+    setTotalItemsCount(paginationResult.totalDocs);
+    setLimit(paginationResult.limit);
+    setAttachments(paginationResult.docs);
+  }, [paginationResult]);
+
   return (
-    <p>hoge</p>
+    <PageAttachmentList
+      attachments={attachments}
+      inUse={inUse}
+      // onAttachmentDeleteClicked={onAttachmentDeleteClicked}
+      // isUserLoggedIn={isUserLoggedIn}
+    />
+
   );
 
 };
