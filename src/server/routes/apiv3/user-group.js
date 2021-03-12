@@ -122,7 +122,7 @@ module.exports = (crowi) => {
 
   validator.delete = [
     param('id').isMongoId(),
-    query('actionName').isString(),
+    query('actionName').if(value => value != null).isString(),
     query('transferToUserGroupId').isMongoId(),
   ];
 
@@ -179,10 +179,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'user-group-delete-failed'));
     }
   });
-
-  // return one group with the id
-  // router.get('/:id', async(req, res) => {
-  // });
 
   validator.update = [
     body('name', 'Group name is required').trim().exists({ checkFalsy: true }),
