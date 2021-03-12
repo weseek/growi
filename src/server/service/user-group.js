@@ -21,11 +21,12 @@ class UserGroupService {
   }
 
   async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
-    const groupToDelete = await UserGroup.findById(deleteGroupId);
-    if (groupToDelete == null) {
-      throw new Error(`UserGroup data is not exists. id: ${deleteGroupId}`);
+    const deletedGroup = await UserGroup.findByIdAndRemove(deleteGroupId);
+
+    if (deletedGroup == null) {
+      logger.debug(`UserGroup data is not exists. id: ${deleteGroupId}`);
+      return null;
     }
-    const deletedGroup = await groupToDelete.remove();
 
     await Promise.all([
       UserGroupRelation.removeAllByUserGroup(deletedGroup),
