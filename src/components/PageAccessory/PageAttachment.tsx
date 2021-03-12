@@ -6,13 +6,17 @@ import { PaginationWrapper } from '~/components/PaginationWrapper';
 
 
 import PageAttachmentList from '../../client/js/components/PageAttachment/PageAttachmentList';
-// import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
+import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
 import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
 import { Attachment } from '~/interfaces/page';
+import { useTranslation } from '~/i18n';
 
 export const PageAttachment:VFC = () => {
+  const { t } = useTranslation();
+
   const [inUse, setInUse] = useState<{ [key:string]:boolean }>({});
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [attachmentToDelete, setAttachmentToDelete] = useState<Attachment>();
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
@@ -50,11 +54,34 @@ export const PageAttachment:VFC = () => {
     setInUse(inUse);
   }, [attachments, checkIfFileInUse]);
 
+  const onAttachmentDeleteClicked = useCallback((attachment:Attachment) => {
+    setAttachmentToDelete(attachment);
+  }, []);
+
+  if (paginationResult == null) {
+    return (
+      <div className="wiki">
+        <div className="text-muted text-center">
+          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        </div>
+      </div>
+    );
+  }
+
+  if (attachments.length === 0) {
+    return (
+      <div className="mt-2">
+        <p>{t('custom_navigation.no_page_list')}</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <PageAttachmentList
         attachments={attachments}
         inUse={inUse}
+        onAttachmentDeleteClicked={onAttachmentDeleteClicked}
       />
       <PaginationWrapper
         activePage={activePage}
@@ -63,16 +90,22 @@ export const PageAttachment:VFC = () => {
         pagingLimit={limit}
         align="center"
       />
+      {/* <DeleteAttachmentModal
+        isOpen={showModal}
+        animation="false"
+        toggle={deleteModalClose}
+
+        attachmentToDelete={attachmentToDelete}
+        inUse={deleteInUse}
+        deleting={this.state.deleting}
+        deleteError={this.state.deleteError}
+        onAttachmentDeleteClickedConfirm={this.onAttachmentDeleteClickedConfirm}
+      /> */}
     </>
   );
 
 };
 
-//   onAttachmentDeleteClicked(attachment) {
-//     this.setState({
-//       attachmentToDelete: attachment,
-//     });
-//   }
 
 //   onAttachmentDeleteClickedConfirm(attachment) {
 //     const attachmentId = attachment._id;
@@ -143,7 +176,6 @@ export const PageAttachment:VFC = () => {
 //     return (
 //       <>
 //         {deleteAttachmentModal}
-
 //       </>
 //     );
 //   }
