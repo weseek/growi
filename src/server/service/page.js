@@ -1,5 +1,6 @@
 import loggerFactory from '~/utils/logger';
 import ShareLink from '~/server/models/share-link';
+import Bookmark from '~/server/models/bookmark';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -192,7 +193,6 @@ class PageService {
 
   async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
