@@ -13,7 +13,7 @@ import HistoryIcon from '../../client/js/components/Icons/HistoryIcon';
 import AttachmentIcon from '../../client/js/components/Icons/AttachmentIcon';
 import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 
-// import PageAttachment from '../../client/js/components/PageAttachment';
+import { PageAttachment } from '~/components/PageAccessory/PageAttachment';
 // import PageTimeline from '../../client/js/components/PageTimeline';
 import { PageList } from '~/components/PageAccessory/PageList';
 import { PageHistory } from '~/components/PageAccessory/PageHistory';
@@ -138,7 +138,7 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
             </TabPane>
           )}
           <TabPane tabId="attachment">
-            {/* {activeComponents.has('attachment') && <PageAttachment />} */}
+            {activeComponents.has(AccessoryName.ATTACHMENT) && <PageAttachment />}
           </TabPane>
           {!isGuestUser && (
             <TabPane tabId="shareLink">
