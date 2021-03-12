@@ -7,24 +7,23 @@ import { PaginationWrapper } from '~/components/PaginationWrapper';
 
 import PageAttachmentList from '../../client/js/components/PageAttachment/PageAttachmentList';
 // import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
-import { useCurrentPageAttachment } from '~/stores/page';
+import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
 import { Attachment } from '~/interfaces/page';
 
 export const PageAttachment:VFC = () => {
-  const inUse = {};
-
+  const [inUse, setInUse] = useState<{ [key:string]:boolean }>({});
   const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   const [activePage, setActivePage] = useState(1);
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [limit, setLimit] = useState(Infinity);
 
+  const { data: currentPage } = useCurrentPageSWR();
   const { data: paginationResult } = useCurrentPageAttachment(activePage);
 
   const handlePage = useCallback(async(selectedPage) => {
     setActivePage(selectedPage);
   }, []);
-
 
   useEffect(() => {
     if (paginationResult == null) {
@@ -34,6 +33,22 @@ export const PageAttachment:VFC = () => {
     setLimit(paginationResult.limit);
     setAttachments(paginationResult.docs);
   }, [paginationResult]);
+
+  const checkIfFileInUse = useCallback((attachment) => {
+
+    if (currentPage?.revision.body.match(attachment._id)) {
+      return true;
+    }
+    return false;
+  }, [currentPage]);
+
+  useEffect(() => {
+    const inUse: { [key:string]:boolean } = {};
+    for (const attachment of attachments) {
+      inUse[attachment._id] = checkIfFileInUse(attachment);
+    }
+    setInUse(inUse);
+  }, [attachments, checkIfFileInUse]);
 
   return (
     <>
@@ -52,34 +67,6 @@ export const PageAttachment:VFC = () => {
   );
 
 };
-
-//   const handlePage=(selectedPage)=> {
-
-//     if (!pageId) { return }
-
-//     const inUse = {};
-
-//     for (const attachment of attachments) {
-//       inUse[attachment._id] = this.checkIfFileInUse(attachment);
-//     }
-//     this.setState({
-//       activePage: selectedPage,
-//       totalAttachments,
-//       limit: pagingLimit,
-//       attachments,
-//       inUse,
-//     });
-//   }
-
-
-//   checkIfFileInUse(attachment) {
-//     const { markdown } = this.props.pageContainer.state;
-
-//     if (markdown.match(attachment._id)) {
-//       return true;
-//     }
-//     return false;
-//   }
 
 //   onAttachmentDeleteClicked(attachment) {
 //     this.setState({

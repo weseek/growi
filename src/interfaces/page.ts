@@ -40,6 +40,7 @@ export type Comment = {
 
 export type Revision = {
   _id: string,
+  body: string,
   author: User,
   hasDiffToPrev: boolean;
   createdAt: Date,
