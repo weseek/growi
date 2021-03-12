@@ -2,7 +2,7 @@ import useSWR, { mutate, responseInterface } from 'swr';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
-  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision,
+  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision, Attachment,
 } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
@@ -139,6 +139,19 @@ export const useCurrentPageList = (activePage: number): responseInterface<Pagina
   return useSWR(
     ['/pages/list', currentPage, activePage],
     (endpoint, page, activePage) => apiv3Get(endpoint, { path: page.path, page: activePage }).then(response => response.data),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageAttachment = (activePage: number): responseInterface<PaginationResult<Attachment>, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    ['/attachment/list', currentPage, activePage],
+    (endpoint, page, activePage) => apiv3Get(endpoint, { pageId: page._id, page: activePage }).then(response => response.data.paginateResult),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
