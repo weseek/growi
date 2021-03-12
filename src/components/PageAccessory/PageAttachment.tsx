@@ -8,10 +8,12 @@ import DeleteAttachmentModal from '../../client/js/components/PageAttachment/Del
 import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
 import { Attachment as IAttachment } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
-import Attachment from '~/client/js/components/PageAttachment/Attachment';
+import {Attachment} from '~/components/PageAccessory/Attachment';
+import { useCurrentUser } from '~/stores/context';
 
 export const PageAttachment:VFC = () => {
   const { t } = useTranslation();
+  const {data: currentUser}=useCurrentUser()
 
   const [inUse, setInUse] = useState<{ [key:string]:boolean }>({});
   const [attachments, setAttachments] = useState<IAttachment[]>([]);
@@ -83,8 +85,8 @@ export const PageAttachment:VFC = () => {
             key={`page:attachment:${attachment._id}`}
             attachment={attachment}
             inUse={inUse[attachment._id] || false}
+            isUserLoggedIn={currentUser!=null}
             onAttachmentDeleteClicked={onAttachmentDeleteClicked}
-            // isUserLoggedIn={isUserLoggedIn}
           />
         );
       })}
