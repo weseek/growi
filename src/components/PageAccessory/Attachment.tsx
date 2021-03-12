@@ -30,37 +30,28 @@ export const Attachment:VFC<Props> = (props:Props) => {
 
   const formatIcon = iconNameByFormat(attachment.fileFormat);
 
-  const fileInUse = (inUse) ? <span className="attachment-in-use badge badge-pill badge-info">In Use</span> : <></>;
-
-  const fileType = <span className="attachment-filetype badge badge-pill badge-secondary">{attachment.fileFormat}</span>;
-
-  const btnDownload = (isUserLoggedIn)
-    ? (
-      <a className="attachment-download" href={attachment.downloadPathProxied}>
-        <i className="icon-cloud-download" />
-      </a>
-    )
-    : '';
-
-  const btnTrash = (isUserLoggedIn)
-    ? (
-        /* eslint-disable-next-line */
-        <a className="text-danger attachment-delete" onClick={handleDeleteAttachmentButton}>
-          <i className="icon-trash" />
-        </a>
-    )
-    : '';
-
   return (
     <div className="attachment mb-2">
       <span className="mr-1 attachment-userpicture">
         <UserPicture user={attachment.creator} size="sm" />
       </span>
       <a className="mr-2" href={attachment.filePathProxied}><i className={formatIcon}></i> {attachment.originalName}</a>
-      <span className="mr-2">{fileType}</span>
-      <span className="mr-2">{fileInUse}</span>
-      <span className="mr-2">{btnDownload}</span>
-      <span className="mr-2">{btnTrash}</span>
+      <span className="mr-2"><span className="attachment-filetype badge badge-pill badge-secondary">{attachment.fileFormat}</span></span>
+      {inUse && <span className="mr-2"><span className="attachment-in-use badge badge-pill badge-info">In Use</span></span>}
+      {isUserLoggedIn && (
+        <>
+          <span className="mr-2">
+            <a className="attachment-download" href={attachment.downloadPathProxied}>
+              <i className="icon-cloud-download" />
+            </a>
+          </span>
+          <span className="mr-2">
+            <a className="text-danger attachment-delete" onClick={handleDeleteAttachmentButton}>
+              <i className="icon-trash" />
+            </a>
+          </span>
+        </>
+      )}
     </div>
   );
 

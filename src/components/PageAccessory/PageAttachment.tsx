@@ -8,12 +8,12 @@ import { PaginationWrapper } from '~/components/PaginationWrapper';
 import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
 import { Attachment as IAttachment } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
-import {Attachment} from '~/components/PageAccessory/Attachment';
+import { Attachment } from '~/components/PageAccessory/Attachment';
 import { useCurrentUser } from '~/stores/context';
 
 export const PageAttachment:VFC = () => {
   const { t } = useTranslation();
-  const {data: currentUser}=useCurrentUser()
+  const { data: currentUser } = useCurrentUser();
 
   const [inUse, setInUse] = useState<{ [key:string]:boolean }>({});
   const [attachments, setAttachments] = useState<IAttachment[]>([]);
@@ -40,7 +40,6 @@ export const PageAttachment:VFC = () => {
   }, [paginationResult]);
 
   const checkIfFileInUse = useCallback((attachment) => {
-
     if (currentPage?.revision.body.match(attachment._id)) {
       return true;
     }
@@ -85,7 +84,7 @@ export const PageAttachment:VFC = () => {
             key={`page:attachment:${attachment._id}`}
             attachment={attachment}
             inUse={inUse[attachment._id] || false}
-            isUserLoggedIn={currentUser!=null}
+            isUserLoggedIn={currentUser != null}
             onAttachmentDeleteClicked={onAttachmentDeleteClicked}
           />
         );
