@@ -171,14 +171,9 @@ class BoltService {
     const keywords = keywordsArr.join(' ');
 
     const { searchService } = this.crowi;
-    const options = { limit: 11, offset };
+    const options = { limit: 10, offset };
     const results = await searchService.searchKeyword(keywords, null, {}, options);
-    const tenResults = results.data.slice(0, 10);
-
-    let isTenResults = false;
-    if (results.data.length === 10) {
-      isTenResults = true;
-    }
+    const resultsTotal = results.meta.total;
 
     // no search results
     if (results.data.length === 0) {
@@ -208,18 +203,18 @@ class BoltService {
       return;
     }
 
-    const resultPaths = tenResults.map((data) => {
+    const resultPaths = results.data.map((data) => {
       return data._source.path;
     });
 
     return {
-      resultPaths, offset, keywords, isTenResults,
+      resultPaths, offset, keywords, resultsTotal,
     };
   }
 
   async showEphemeralSearchResults(command, args, offsetNum) {
     const {
-      resultPaths, offset, keywords, isTenResults,
+      resultPaths, offset, keywords, resultsTotal,
     } = await this.getSearchResultPaths(command, args, offsetNum);
 
     if (resultPaths == null) {
@@ -252,7 +247,7 @@ class BoltService {
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
     try {
-      if (searchResultsNum < 10 || isTenResults) {
+      if (searchResultsNum < 10 || resultsTotal === 10) {
         return await this.client.chat.postEphemeral({
           channel: command.channel_id,
           user: command.user_id,
