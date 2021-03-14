@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -52,7 +53,7 @@ module.exports = (crowi) => {
       await Promise.all(userGroups.map(async(userGroup) => {
         const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
         userGroupRelationsObj[userGroup._id] = userGroupRelations.map((userGroupRelation) => {
-          return userGroupRelation.relatedUser;
+          return serializeUserSecurely(userGroupRelation.relatedUser);
         });
       }));
 
