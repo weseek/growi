@@ -3,8 +3,8 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
