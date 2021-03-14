@@ -88,9 +88,7 @@ class UserGroupRelation {
     debug('findAllRelationForUserGroup is called', userGroup);
     return this
       .find({ relatedGroup: userGroup })
-      .populate({
-        path: 'relatedUser',
-      })
+      .populate('relatedUser')
       .exec();
   }
 
