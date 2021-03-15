@@ -4,9 +4,9 @@ import { Attachment as IAttachment } from '~/interfaces/page';
 
 type Props = {
   attachment: IAttachment,
-  inUse: boolean,
+  inUse?: boolean,
   isUserLoggedIn: boolean,
-  onAttachmentDeleteClicked:(attachment:IAttachment)=> void,
+  onAttachmentDeleteClicked?:(attachment:IAttachment)=> void,
 }
 
 export const Attachment:VFC<Props> = (props:Props) => {
