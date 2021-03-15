@@ -302,8 +302,6 @@ class BoltService {
           NextShareBlocks,
         ],
       });
-
-
     }
     catch {
       logger.error('Failed to get search results.');
