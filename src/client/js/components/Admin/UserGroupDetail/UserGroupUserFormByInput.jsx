@@ -124,7 +124,7 @@ class UserGroupUserFormByInput extends React.Component {
             ref={(c) => { this.typeahead = c }}
             inputProps={inputProps}
             isLoading={this.state.isLoading}
-            labelKey={user => `${user.username}`}
+            labelKey={user => `${user.username} ${user.name} ${user.email}`}
             minLength={0}
             options={this.state.applicableUsers} // Search result
             searchText={(this.state.isLoading ? 'Searching...' : this.getEmptyLabel())}
