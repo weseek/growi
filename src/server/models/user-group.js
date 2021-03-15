@@ -90,7 +90,7 @@ class UserGroup {
   }
 
   // グループの完全削除
-  static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
+  static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId, user) {
     const UserGroupRelation = mongoose.model('UserGroupRelation');
 
     const groupToDelete = await this.findById(deleteGroupId);
@@ -101,7 +101,7 @@ class UserGroup {
 
     await Promise.all([
       UserGroupRelation.removeAllByUserGroup(deletedGroup),
-      UserGroup.crowi.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
+      UserGroup.crowi.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user),
     ]);
 
     return deletedGroup;

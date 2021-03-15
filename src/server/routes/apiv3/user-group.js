@@ -175,7 +175,7 @@ module.exports = (crowi) => {
     const { actionName, transferToUserGroupId } = req.query;
 
     try {
-      const userGroup = await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId);
+      const userGroup = await UserGroup.removeCompletelyById(deleteGroupId, actionName, transferToUserGroupId, req.user);
 
       return res.apiv3({ userGroup });
     }
