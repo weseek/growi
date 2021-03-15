@@ -15,7 +15,7 @@ export const PageAttachment:VFC = () => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
-  const [inUse, setInUse] = useState<{ [key:string]:boolean }>({});
+  const [inUseByAttachmentId, setInUseByAttachmentId] = useState<{ [key:string]:boolean }>({});
   const [attachments, setAttachments] = useState<IAttachment[]>([]);
   const [attachmentToDelete, setAttachmentToDelete] = useState<IAttachment>();
 
@@ -47,11 +47,12 @@ export const PageAttachment:VFC = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    const inUse: { [key:string]:boolean } = {};
+    const inUseByAttachmentId: { [key:string]:boolean } = {};
+    console.log(attachments);
     for (const attachment of attachments) {
-      inUse[attachment._id] = checkIfFileInUse(attachment);
+      inUseByAttachmentId[attachment._id] = checkIfFileInUse(attachment);
     }
-    setInUse(inUse);
+    setInUseByAttachmentId(inUseByAttachmentId);
   }, [attachments, checkIfFileInUse]);
 
   const onAttachmentDeleteClicked = useCallback((attachment:IAttachment) => {
@@ -83,7 +84,7 @@ export const PageAttachment:VFC = () => {
           <Attachment
             key={`page:attachment:${attachment._id}`}
             attachment={attachment}
-            inUse={inUse[attachment._id] || false}
+            inUse={inUseByAttachmentId[attachment._id]}
             isUserLoggedIn={currentUser != null}
             onAttachmentDeleteClicked={onAttachmentDeleteClicked}
           />
