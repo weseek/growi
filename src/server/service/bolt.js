@@ -250,7 +250,7 @@ class BoltService {
 
     try {
       if (resultsTotal <= offset + PAGINGLIMIT) {
-        return await this.client.chat.postEphemeral({
+        await this.client.chat.postEphemeral({
           channel: command.channel_id,
           user: command.user_id,
           blocks: [
@@ -274,39 +274,40 @@ class BoltService {
           ],
         });
       }
-
-      await this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
-        blocks: [
-          this.generateMarkdownSectionBlock(keywordsAndDesc),
-          this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
-          {
-            type: 'actions',
-            elements: [
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Next',
+      else {
+        await this.client.chat.postEphemeral({
+          channel: command.channel_id,
+          user: command.user_id,
+          blocks: [
+            this.generateMarkdownSectionBlock(keywordsAndDesc),
+            this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
+            {
+              type: 'actions',
+              elements: [
+                {
+                  type: 'button',
+                  text: {
+                    type: 'plain_text',
+                    text: 'Next',
+                  },
+                  action_id: 'showNextResults',
+                  value: JSON.stringify({ offset, command, args }),
                 },
-                action_id: 'showNextResults',
-                value: JSON.stringify({ offset, command, args }),
-              },
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Share',
+                {
+                  type: 'button',
+                  text: {
+                    type: 'plain_text',
+                    text: 'Share',
+                  },
+                  style: 'primary',
+                  action_id: 'shareSearchResults',
+                  value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
                 },
-                style: 'primary',
-                action_id: 'shareSearchResults',
-                value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-              },
-            ],
-          },
-        ],
-      });
+              ],
+            },
+          ],
+        });
+      }
     }
     catch {
       logger.error('Failed to get search results.');
