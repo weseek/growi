@@ -40,6 +40,7 @@ export type Comment = {
 
 export type Revision = {
   _id: string,
+  body: string,
   author: User,
   hasDiffToPrev: boolean;
   createdAt: Date,
@@ -72,6 +73,7 @@ export type Attachment = {
   temporaryUrlCached: string,
   temporaryUrlExpiredAt: Date,
   filePathProxied: string,
+  downloadPathProxied: string,
 }
 
 export type ShareLink = {
