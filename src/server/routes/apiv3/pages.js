@@ -8,6 +8,8 @@ const { body } = require('express-validator');
 const { query } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
+const { isCreatablePage } = require('~/utils/path-utils');
+
 const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
@@ -371,7 +373,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
@@ -382,7 +384,7 @@ module.exports = (crowi) => {
       socketClientId: +req.body.socketClientId || undefined,
     };
 
-    if (!Page.isCreatableName(newPagePath)) {
+    if (!isCreatablePage(newPagePath)) {
       return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath})'`, 'invalid_path'), 409);
     }
 
@@ -551,7 +553,7 @@ module.exports = (crowi) => {
   ];
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
-    const { isTrashPage } = require('~/utils/path-utils');
+    const { isTrashPage, isCreatablePage } = require('~/utils/path-utils');
 
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
