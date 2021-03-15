@@ -248,66 +248,62 @@ class BoltService {
 
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
+    let NextShareBlocks;
     try {
       if (resultsTotal <= offset + PAGINGLIMIT) {
-        await this.client.chat.postEphemeral({
-          channel: command.channel_id,
-          user: command.user_id,
-          blocks: [
-            this.generateMarkdownSectionBlock(keywordsAndDesc),
-            this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
+        NextShareBlocks = {
+          type: 'actions',
+          elements: [
             {
-              type: 'actions',
-              elements: [
-                {
-                  type: 'button',
-                  text: {
-                    type: 'plain_text',
-                    text: 'Share',
-                  },
-                  style: 'primary',
-                  action_id: 'shareSearchResults',
-                  value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-                },
-              ],
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Share',
+              },
+              style: 'primary',
+              action_id: 'shareSearchResults',
+              value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
             },
           ],
-        });
+        };
       }
       else {
-        await this.client.chat.postEphemeral({
-          channel: command.channel_id,
-          user: command.user_id,
-          blocks: [
-            this.generateMarkdownSectionBlock(keywordsAndDesc),
-            this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
+        NextShareBlocks = {
+          type: 'actions',
+          elements: [
             {
-              type: 'actions',
-              elements: [
-                {
-                  type: 'button',
-                  text: {
-                    type: 'plain_text',
-                    text: 'Next',
-                  },
-                  action_id: 'showNextResults',
-                  value: JSON.stringify({ offset, command, args }),
-                },
-                {
-                  type: 'button',
-                  text: {
-                    type: 'plain_text',
-                    text: 'Share',
-                  },
-                  style: 'primary',
-                  action_id: 'shareSearchResults',
-                  value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-                },
-              ],
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Next',
+              },
+              action_id: 'showNextResults',
+              value: JSON.stringify({ offset, command, args }),
+            },
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Share',
+              },
+              style: 'primary',
+              action_id: 'shareSearchResults',
+              value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
             },
           ],
-        });
+        };
       }
+      await this.client.chat.postEphemeral({
+        channel: command.channel_id,
+        user: command.user_id,
+        blocks: [
+          this.generateMarkdownSectionBlock(keywordsAndDesc),
+          this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
+          NextShareBlocks,
+        ],
+      });
+
+
     }
     catch {
       logger.error('Failed to get search results.');
