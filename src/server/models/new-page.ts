@@ -14,7 +14,7 @@ import templateChecker from '~/utils/template-checker';
 import loggerFactory from '~/utils/logger';
 import { Page as IPage } from '~/interfaces/page';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
-import { USER_PUBLIC_FIELDS } from '~/server/models/new-user';
+import { USER_PUBLIC_FIELDS } from '~/server/models/user';
 import ConfigManager from '~/server/service/config-manager';
 
 

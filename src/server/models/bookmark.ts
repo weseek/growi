@@ -7,7 +7,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
-import { USER_PUBLIC_FIELDS } from '~/server/models/new-user';
+import { USER_PUBLIC_FIELDS } from '~/server/models/user';
 // import BookmarkEvent from '~/server/events/bookmark';
 import { Bookmark as IBookmark } from '~/interfaces/page';
 import { User as IUser } from '~/interfaces/user';
