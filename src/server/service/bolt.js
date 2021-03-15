@@ -249,7 +249,7 @@ class BoltService {
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
     try {
-      if (searchResultsNum < PAGINGLIMIT || resultsTotal === PAGINGLIMIT) {
+      if (resultsTotal <= offset + PAGINGLIMIT) {
         return await this.client.chat.postEphemeral({
           channel: command.channel_id,
           user: command.user_id,
