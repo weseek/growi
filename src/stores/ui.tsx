@@ -38,7 +38,7 @@ export type SidebarContents = typeof SidebarContents[keyof typeof SidebarContent
 export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { data: descendantsCount } = useDescendantsCount(currentPagePath);
+  const { data: descendantsCount } = useDescendantsCount(currentPagePath as string);
 
   const hasChildren = (descendantsCount || 0) > 0;
   const isAbleToShowEmptyTrashButton = currentUser != null && currentUser.admin && currentPagePath === '/trash' && hasChildren;

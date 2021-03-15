@@ -43,8 +43,8 @@ const PageRenameModal:FC<Props> = (props:Props) => {
 
   const [pageNameInput, setPageNameInput] = useState(currentPagePath || '');
 
-  const { data: subordinatedList = [] } = useSubordinatedList(currentPagePath);
-  const { data: existingPaths = [] } = useExistingPaths(currentPagePath, pageNameInput);
+  const { data: subordinatedList } = useSubordinatedList(currentPagePath as string);
+  const { data: existingPaths } = useExistingPaths(currentPagePath as string, pageNameInput);
 
   const [errs, setErrs] = useState([]);
 
@@ -156,7 +156,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             <p className="form-text text-muted mt-0">{ t('modal_rename.help.recursive') }</p>
           </label>
 
-          {existingPaths.length !== 0 && (
+          {existingPaths != null && existingPaths.length !== 0 && (
             <div
               className="custom-control custom-checkbox custom-checkbox-warning"
             >
@@ -172,8 +172,9 @@ const PageRenameModal:FC<Props> = (props:Props) => {
               </label>
             </div>
           )}
-          {isRenameRecursively && <ComparePathsTable currentPagePath={currentPagePath} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
-          {isRenameRecursively && existingPaths.length !== 0 && currentPagePath !== pageNameInput
+          {isRenameRecursively && subordinatedList != null
+           && <ComparePathsTable currentPagePath={currentPagePath} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
+          {isRenameRecursively && existingPaths != null && existingPaths.length !== 0 && currentPagePath !== pageNameInput
             && <DuplicatedPathsTable currentPagePath={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
@@ -211,7 +212,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
           type="button"
           className="btn btn-primary"
           onClick={rename}
-          disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+          disabled={(isRenameRecursively && !isRenameRecursivelyWithoutExistPath && existingPaths != null && existingPaths.length !== 0)}
         >
           Rename
         </button>

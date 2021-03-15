@@ -204,11 +204,9 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
   );
 };
 
-export const useDescendantsCount = (pagePath?: string): responseInterface<number, Error> => {
-  const endpoint = '/pages/descendents-count';
-  const key = pagePath != null ? [endpoint, pagePath] : null;
+export const useDescendantsCount = (pagePath: string): responseInterface<number, Error> => {
   return useSWR(
-    key,
+    ['/pages/descendents-count', pagePath],
     (endpoint, pagePath) => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
     {
       revalidateOnFocus: false,
@@ -217,11 +215,9 @@ export const useDescendantsCount = (pagePath?: string): responseInterface<number
   );
 };
 
-export const useSubordinatedList = (pagePath?: string): responseInterface<Page[], Error> => {
-  const endpoint = '/pages/subordinated-list';
-  const key = (pagePath != null) ? [endpoint, pagePath] : null;
+export const useSubordinatedList = (pagePath: string): responseInterface<Page[], Error> => {
   return useSWR(
-    key,
+    ['/pages/subordinated-list', pagePath],
     (endpoint, pagePath) => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.subordinatedPaths),
     {
       revalidateOnFocus: false,
@@ -230,11 +226,9 @@ export const useSubordinatedList = (pagePath?: string): responseInterface<Page[]
   );
 };
 
-export const useExistingPaths = (pagePath?: string, newParentPath?:string): responseInterface<string[], Error> => {
-  const endpoint = '/page/exist-paths';
-  const key = (pagePath != null && newParentPath != null) ? [endpoint, newParentPath] : null;
+export const useExistingPaths = (pagePath: string, newParentPath:string): responseInterface<string[], Error> => {
   return useSWR(
-    key,
+    ['/page/exist-paths', newParentPath],
     (endpoint, toPath) => apiv3Get(endpoint, { fromPath: pagePath, toPath }).then(response => response.data.existPaths),
     {
       revalidateOnFocus: false,
