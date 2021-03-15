@@ -2,7 +2,7 @@ import useSWR, { mutate, responseInterface } from 'swr';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
-  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision,
+  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision, Attachment,
 } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
@@ -39,8 +39,8 @@ export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/pages.getPageTag', currentPage],
-    (endpoint, page) => apiGet(endpoint, { pageId: page.id }).then(response => response.tags),
+    ['/pages.getPageTag', currentPage?._id],
+    (endpoint, pageId) => apiGet(endpoint, { pageId }).then(response => response.tags),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -52,8 +52,8 @@ export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): r
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/revisions/list', currentPage, selectedPage, limit],
-    (endpoint, page, selectedPage, limit) => apiv3Get(endpoint, { pageId: page.id, page: selectedPage, limit }).then(response => response.data),
+    ['/revisions/list', currentPage?._id, selectedPage, limit],
+    (endpoint, pageId, selectedPage, limit) => apiv3Get(endpoint, { pageId, page: selectedPage, limit }).then(response => response.data),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -67,8 +67,8 @@ export const useRevisionById = (revisionId?:string): responseInterface<Revision,
   const endpoint = revisionId != null ? `/revisions/${revisionId}` : null;
 
   return useSWR(
-    [endpoint, currentPage, shareLinkId],
-    (endpoint, page, shareLinkId) => apiv3Get(endpoint, { pageId: page.id, shareLinkId }).then(response => response.data.revision),
+    [endpoint, currentPage?._id, shareLinkId],
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data.revision),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -81,9 +81,9 @@ export const useLatestRevision = (): responseInterface<Revision, Error> => {
   const { data: shareLinkId } = useShareLinkId();
 
   return useSWR(
-    ['/revisions/list', currentPage, shareLinkId],
-    (endpoint, page, shareLinkId) => apiv3Get(endpoint, {
-      pageId: page.id, shareLinkId, page: 1, limit: 1,
+    ['/revisions/list', currentPage?._id, shareLinkId],
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, {
+      pageId, shareLinkId, page: 1, limit: 1,
     }).then(response => response.data.docs[0]),
     {
       revalidateOnFocus: false,
@@ -96,8 +96,8 @@ export const useCurrentPageCommentsSWR = (): responseInterface<Comment[], Error>
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/comments', currentPage],
-    (endpoint, page) => apiv3Get(endpoint, { pageId: page.id }).then(response => response.data.comments),
+    ['/comments', currentPage?._id],
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data.comments),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -137,8 +137,21 @@ export const useCurrentPageList = (activePage: number): responseInterface<Pagina
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/pages/list', currentPage, activePage],
-    (endpoint, page, activePage) => apiv3Get(endpoint, { path: page.path, page: activePage }).then(response => response.data),
+    ['/pages/list', currentPage?.path, activePage],
+    (endpoint, path, activePage) => apiv3Get(endpoint, { path, page: activePage }).then(response => response.data),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageAttachment = (activePage: number): responseInterface<PaginationResult<Attachment>, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    ['/attachment/list', currentPage?._id, activePage],
+    (endpoint, pageId, activePage) => apiv3Get(endpoint, { pageId, page: activePage }).then(response => response.data.paginateResult),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
