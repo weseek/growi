@@ -344,8 +344,13 @@ module.exports = (crowi) => {
     try {
       const userGroup = await UserGroup.findById(id);
       const users = await UserGroupRelation.findUserByNotRelatedGroup(userGroup, queryOptions);
+
+      // return email only this api
       const serializedUsers = users.map((user) => {
-        return serializeUserSecurely(user);
+        const { email } = user;
+        const serializedUser = serializeUserSecurely(user);
+        serializedUser.email = email;
+        return serializedUser;
       });
       return res.apiv3({ users: serializedUsers });
     }
