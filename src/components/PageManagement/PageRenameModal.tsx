@@ -107,6 +107,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             {/* TODO imprv submitHandler by GW 5088 */}
             {/* <form className="flex-fill" onSubmit={(e) => { e.preventDefault(); rename() }}> */}
             {/* <form className="flex-fill" onSubmit={handleSubmit(submitHandler)}> */}
+            {/* TODO: using PagePathAutoComplete not SearchTypeahead by GW 5194 */}
             <SearchTypeahead
               onSubmit={submitHandler}
               onSearchError={setSearchError}

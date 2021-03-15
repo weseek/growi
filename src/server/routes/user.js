@@ -1,3 +1,5 @@
+import Bookmark from '~/server/models/bookmark';
+
 /**
  * @swagger
  *
@@ -47,7 +49,6 @@
 
 module.exports = function(crowi, app) {
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const ApiResponse = require('../util/apiResponse');
 
   const actions = {};
