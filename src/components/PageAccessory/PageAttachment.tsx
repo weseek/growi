@@ -48,7 +48,6 @@ export const PageAttachment:VFC = () => {
 
   useEffect(() => {
     const inUseByAttachmentId: { [key:string]:boolean } = {};
-    console.log(attachments);
     for (const attachment of attachments) {
       inUseByAttachmentId[attachment._id] = checkIfFileInUse(attachment);
     }
