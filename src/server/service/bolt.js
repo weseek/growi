@@ -1,5 +1,7 @@
 const logger = require('@alias/logger')('growi:service:BoltService');
 
+const PAGINGLIMIT = 10;
+
 class BoltReciever {
 
   init(app) {
@@ -247,7 +249,7 @@ class BoltService {
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
     try {
-      if (searchResultsNum < 10 || resultsTotal === 10) {
+      if (searchResultsNum < PAGINGLIMIT || resultsTotal === PAGINGLIMIT) {
         return await this.client.chat.postEphemeral({
           channel: command.channel_id,
           user: command.user_id,
@@ -257,7 +259,16 @@ class BoltService {
             {
               type: 'actions',
               elements: [
-                this.generateElementsSectionBlock('Share', 'shareSearchResults', `${keywordsAndDesc} \n\n ${urls.join('\n')}`, 'primary'),
+                {
+                  type: 'button',
+                  text: {
+                    type: 'plain_text',
+                    text: 'Share',
+                  },
+                  style: 'primary',
+                  action_id: 'shareSearchResults',
+                  value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+                },
               ],
             },
           ],
@@ -273,8 +284,25 @@ class BoltService {
           {
             type: 'actions',
             elements: [
-              this.generateElementsSectionBlock('Next', 'showNextResults', JSON.stringify({ offset, command, args })),
-              this.generateElementsSectionBlock('Share', 'shareSearchResults', `${keywordsAndDesc} \n\n ${urls.join('\n')}`, 'primary'),
+              {
+                type: 'button',
+                text: {
+                  type: 'plain_text',
+                  text: 'Next',
+                },
+                action_id: 'showNextResults',
+                value: JSON.stringify({ offset, command, args }),
+              },
+              {
+                type: 'button',
+                text: {
+                  type: 'plain_text',
+                  text: 'Share',
+                },
+                style: 'primary',
+                action_id: 'shareSearchResults',
+                value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+              },
             ],
           },
         ],
@@ -412,19 +440,6 @@ class BoltService {
           text: placeholder,
         },
       },
-    };
-  }
-
-  generateElementsSectionBlock(text, actionId, value, style) {
-    return {
-      type: 'button',
-      text: {
-        type: 'plain_text',
-        text,
-      },
-      action_id: actionId,
-      value,
-      style,
     };
   }
 
