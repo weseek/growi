@@ -1,5 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
+import User, { UserStatus } from '~/server/models/user';
 import UserGroupRelation from '~/server/models/user-group-relation';
 
 const logger = loggerFactory('growi:routes:apiv3:users');
@@ -75,18 +76,14 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const {
-    User,
-    Page,
-    ExternalAccount,
-  } = crowi.models;
+  const { Page, ExternalAccount } = crowi.models;
 
 
   const statusNo = {
-    registered: User.STATUS_REGISTERED,
-    active: User.STATUS_ACTIVE,
-    suspended: User.STATUS_SUSPENDED,
-    invited: User.STATUS_INVITED,
+    registered: UserStatus.STATUS_REGISTERED,
+    active: UserStatus.STATUS_ACTIVE,
+    suspended: UserStatus.STATUS_SUSPENDED,
+    invited: UserStatus.STATUS_INVITED,
   };
 
   validator.statusList = [

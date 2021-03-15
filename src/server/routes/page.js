@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import User from '~/server/models/user';
 import ShareLink from '~/server/models/share-link';
 import Bookmark from '~/server/models/bookmark';
 
@@ -135,7 +136,6 @@ const { serializeRevisionSecurely } = require('../models/serializers/revision-se
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
-  const User = crowi.model('User');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 

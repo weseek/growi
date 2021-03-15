@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import { UserStatus } from '~/server/models/user';
 
 const logger = loggerFactory('growi:middleware:login-required');
 
@@ -24,21 +25,19 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
       return next();
     }
 
-    const User = crowi.model('User');
-
     // check the user logged in
     if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
-      if (req.user.status === User.STATUS_ACTIVE) {
+      if (req.user.status === UserStatus.STATUS_ACTIVE) {
         // Active の人だけ先に進める
         return next();
       }
-      if (req.user.status === User.STATUS_REGISTERED) {
+      if (req.user.status === UserStatus.STATUS_REGISTERED) {
         return res.redirect('/login/error/registered');
       }
-      if (req.user.status === User.STATUS_SUSPENDED) {
+      if (req.user.status === UserStatus.STATUS_SUSPENDED) {
         return res.redirect('/login/error/suspended');
       }
-      if (req.user.status === User.STATUS_INVITED) {
+      if (req.user.status === UserStatus.STATUS_INVITED) {
         return res.redirect('/login/invited');
       }
     }

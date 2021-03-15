@@ -54,7 +54,6 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Comment = crowi.model('Comment');
-  const User = crowi.model('User');
   const Page = crowi.model('Page');
 
   const validator = {

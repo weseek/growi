@@ -12,6 +12,7 @@ import { Strategy as SamlStrategy } from 'passport-saml';
 import { BasicStrategy } from 'passport-http';
 
 import { IncomingMessage } from 'http';
+import User from '~/server/models/user';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
@@ -255,8 +256,6 @@ class PassportService implements S2sMessageHandlable {
     }
 
     logger.debug('LocalStrategy: setting up..');
-
-    const User = this.crowi.model('User');
 
     passport.use(new LocalStrategy(
       {

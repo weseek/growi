@@ -21,11 +21,15 @@ import { User as IUser } from '~/interfaces/user';
 
 const logger = loggerFactory('growi:models:user');
 
-export const STATUS_REGISTERED = 1;
-export const STATUS_ACTIVE = 2;
-export const STATUS_SUSPENDED = 3;
-export const STATUS_DELETED = 4;
-export const STATUS_INVITED = 5;
+export const UserStatus = {
+  STATUS_REGISTERED: 1,
+  STATUS_ACTIVE: 2,
+  STATUS_SUSPENDED: 3,
+  STATUS_DELETED: 4,
+  STATUS_INVITED: 5,
+} as const;
+export type UserStatus = typeof UserStatus[keyof typeof UserStatus];
+
 export const USER_PUBLIC_FIELDS = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
   + ' status lang createdAt lastLoginAt admin imageUrlCached';
 
@@ -81,7 +85,7 @@ const schema:Schema<IUser & Document> = new Schema<IUser & Document>({
     default: 'en_US',
   },
   status: {
-    type: Number, required: true, default: STATUS_ACTIVE, index: true,
+    type: Number, required: true, default: UserStatus.STATUS_ACTIVE, index: true,
   },
   createdAt: { type: Date, default: Date.now },
   lastLoginAt: { type: Date },
@@ -235,7 +239,7 @@ class User extends Model {
     this.setPassword(password);
     this.name = name;
     this.username = username;
-    this.status = STATUS_ACTIVE;
+    this.status = UserStatus.STATUS_ACTIVE;
 
     this.save((err, userData) => {
       userEvent.emit('activated', userData);
@@ -265,14 +269,14 @@ class User extends Model {
 
   async statusActivate() {
     logger.debug('Activate User', this);
-    this.status = STATUS_ACTIVE;
+    this.status = UserStatus.STATUS_ACTIVE;
     const userData = await this.save();
     return userEvent.emit('activated', userData);
   }
 
   async statusSuspend() {
     logger.debug('Suspend User', this);
-    this.status = STATUS_SUSPENDED;
+    this.status = UserStatus.STATUS_SUSPENDED;
     if (this.email === undefined || this.email === null) { // migrate old data
       this.email = '-';
     }
@@ -291,7 +295,7 @@ class User extends Model {
     const now = new Date();
     const deletedLabel = `deleted_at_${now.getTime()}`;
 
-    this.status = STATUS_DELETED;
+    this.status = UserStatus.STATUS_DELETED;
     this.username = deletedLabel;
     this.password = '';
     this.name = '';
@@ -304,11 +308,11 @@ class User extends Model {
 
   static getUserStatusLabels() {
     const userStatus = {};
-    userStatus[STATUS_REGISTERED] = 'Approval Pending';
-    userStatus[STATUS_ACTIVE] = 'Active';
-    userStatus[STATUS_SUSPENDED] = 'Suspended';
-    userStatus[STATUS_DELETED] = 'Deleted';
-    userStatus[STATUS_INVITED] = 'Invited';
+    userStatus[UserStatus.STATUS_REGISTERED] = 'Approval Pending';
+    userStatus[UserStatus.STATUS_ACTIVE] = 'Active';
+    userStatus[UserStatus.STATUS_SUSPENDED] = 'Suspended';
+    userStatus[UserStatus.STATUS_DELETED] = 'Deleted';
+    userStatus[UserStatus.STATUS_INVITED] = 'Invited';
 
     return userStatus;
   }
@@ -317,19 +321,19 @@ class User extends Model {
 
     const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
     if (!isInstalled) {
-      return STATUS_ACTIVE; // is this ok?
+      return UserStatus.STATUS_ACTIVE; // is this ok?
     }
 
     // status decided depends on registrationMode
     const registrationMode = this.configManager.getConfig('crowi', 'security:registrationMode');
     switch (registrationMode) {
       case this.aclService.labels.SECURITY_REGISTRATION_MODE_OPEN:
-        return STATUS_ACTIVE;
+        return UserStatus.STATUS_ACTIVE;
       case this.aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED:
       case this.aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED: // 一応
-        return STATUS_REGISTERED;
+        return UserStatus.STATUS_REGISTERED;
       default:
-        return STATUS_ACTIVE; // どっちにすんのがいいんだろうな
+        return UserStatus.STATUS_ACTIVE; // どっちにすんのがいいんだろうな
     }
   }
 
@@ -400,7 +404,7 @@ class User extends Model {
     const sort = option.sort || { createdAt: -1 };
     const fields = option.fields || {};
 
-    let status = option.status || [STATUS_ACTIVE, STATUS_SUSPENDED];
+    let status = option.status || [UserStatus.STATUS_ACTIVE, UserStatus.STATUS_SUSPENDED];
     if (!Array.isArray(status)) {
       status = [status];
     }
@@ -416,7 +420,7 @@ class User extends Model {
     option = option || {};
 
     const sort = option.sort || { createdAt: -1 };
-    const status = option.status || STATUS_ACTIVE;
+    const status = option.status || UserStatus.STATUS_ACTIVE;
     const fields = option.fields || {};
 
     return this.find({ _id: { $in: ids }, status })
@@ -472,7 +476,7 @@ class User extends Model {
   static async isUserCountExceedsUpperLimit():Promise<boolean> {
     const userUpperLimit = this.configManager.getConfig('crowi', 'security:userUpperLimit');
 
-    const activeUsers = await this.countListByStatus(STATUS_ACTIVE);
+    const activeUsers = await this.countListByStatus(UserStatus.STATUS_ACTIVE);
     if (userUpperLimit <= activeUsers) {
       return true;
     }
@@ -548,7 +552,7 @@ class User extends Model {
     newUser.email = email;
     newUser.setPassword(password);
     newUser.createdAt = Date.now();
-    newUser.status = STATUS_INVITED;
+    newUser.status = UserStatus.STATUS_INVITED;
 
     const globalLang = this.configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
@@ -572,7 +576,7 @@ class User extends Model {
 
   static async createUsersByEmailList(emailList:string[]):Promise<{existingEmailList:string[], createdUserList:CreateUserByEmail[]}> {
     // check exists and get list of try to create
-    const existingUserList = await this.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
+    const existingUserList = await this.find({ email: { $in: emailList }, userStatus: { $ne: UserStatus.STATUS_DELETED } });
     const existingEmailList = existingUserList.map((user) => { return user.email });
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
@@ -672,7 +676,7 @@ class User extends Model {
         return callback(err);
       }
 
-      if (userData.status === STATUS_ACTIVE) {
+      if (userData.status === UserStatus.STATUS_ACTIVE) {
         userEvent.emit('activated', userData);
       }
       return callback(err, userData);

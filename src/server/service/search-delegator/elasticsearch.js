@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import User from '~/server/models/user';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -834,7 +835,6 @@ class ElasticsearchDelegator {
   }
 
   appendFunctionScore(query, queryString) {
-    const User = mongoose.model('User');
     const count = User.count({}) || 1;
 
     const minScore = queryString.length * 0.1 - 1; // increase with length

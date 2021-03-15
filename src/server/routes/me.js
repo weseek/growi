@@ -1,5 +1,6 @@
 
 import UserGroupRelation from '~/server/models/user-group-relation';
+import User from '~/server/models/user';
 
 /**
  * @swagger
@@ -103,7 +104,6 @@ module.exports = function(crowi, app) {
   };
 
   actions.index = async function(req, res) {
-    const User = crowi.model('User');
     const userData = await User.findById(req.user.id).populate({ path: 'imageAttachment', select: 'filePathProxied' });
     const renderVars = {};
     renderVars.user = userData;

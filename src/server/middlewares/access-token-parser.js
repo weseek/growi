@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import User from '~/server/models/user';
 
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
 
@@ -12,8 +13,6 @@ module.exports = (crowi) => {
     if (!accessToken) {
       return next();
     }
-
-    const User = crowi.model('User');
 
     logger.debug('accessToken is', accessToken);
 

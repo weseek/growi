@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import { UserStatus, USER_PUBLIC_FIELDS } from '~/server/models/user';
 
 const logger = loggerFactory('growi:routes:apiv3:pages');
 
@@ -63,7 +64,6 @@ module.exports = (crowi) => {
   const {
     Revision,
     Page,
-    User,
   } = crowi.models;
 
   const validator = {
@@ -130,7 +130,7 @@ module.exports = (crowi) => {
           sort: { createdAt: -1 },
           populate: {
             path: 'author',
-            select: User.USER_PUBLIC_FIELDS,
+            select: UserStatus.USER_PUBLIC_FIELDS,
           },
         },
       );
@@ -181,7 +181,7 @@ module.exports = (crowi) => {
     }
 
     try {
-      const revision = await Revision.findById(revisionId).populate('author', User.USER_PUBLIC_FIELDS);
+      const revision = await Revision.findById(revisionId).populate('author', USER_PUBLIC_FIELDS);
       return res.apiv3({ revision });
     }
     catch (err) {

@@ -2,6 +2,7 @@
 import loggerFactory from '~/utils/logger';
 import { config as i18nConfig } from '~/i18n';
 
+import User from '~/server/models/user';
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -70,7 +71,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const { User, ExternalAccount } = crowi.models;
+  const { ExternalAccount } = crowi.models;
 
   const validator = {
     personal: [

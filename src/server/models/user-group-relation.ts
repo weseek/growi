@@ -7,7 +7,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import Debug from 'debug';
 import { getOrCreateModel } from '../util/mongoose-utils';
-import User, { USER_PUBLIC_FIELDS, STATUS_ACTIVE } from '~/server/models/user';
+import User, { UserStatus, USER_PUBLIC_FIELDS } from '~/server/models/user';
 import { UserGroupRelation as IUserGroupRelation } from '~/interfaces/user';
 
 const debug = Debug('growi:models:userGroupRelation');
@@ -221,7 +221,7 @@ class UserGroupRelation extends Model {
         });
         const query = {
           _id: { $nin: relatedUserIds },
-          status: STATUS_ACTIVE,
+          status: UserStatus.STATUS_ACTIVE,
           $or: searthField,
         };
 

@@ -13,6 +13,7 @@ import loggerFactory from '~/utils/logger';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 import { isUserPage, isTrashPage, isSharedPage } from '~/utils/path-utils';
 
+import User from '~/server/models/user';
 import { serializeUserSecurely } from '../server/models/serializers/user-serializer';
 import BasicLayout from '../components/BasicLayout';
 
@@ -202,12 +203,8 @@ async function injectPageInformation(context: GetServerSidePropsContext, props: 
 }
 
 async function injectPageUserInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi } = req;
-  const UserModel = crowi.model('User');
-
   if (isUserPage(props.currentPagePath)) {
-    const user = await UserModel.findUserByUsername(UserModel.getUsernameByPath(props.currentPagePath));
+    const user = await User.findUserByUsername(User.getUsernameByPath(props.currentPagePath));
 
     if (user != null) {
       props.pageUser = JSON.stringify(user.toObject());

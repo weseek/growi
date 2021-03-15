@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import User from '~/server/models/user';
 
 const logger = loggerFactory('growi:routes:apiv3:healthcheck'); // eslint-disable-line no-unused-vars
 
@@ -23,9 +24,6 @@ const USER_STATUS_MASTER = {
  *    name: Statistics
  */
 module.exports = (crowi) => {
-
-  const models = crowi.models;
-  const User = models.User;
 
   const getUserStatistics = async() => {
     const userCountGroupByStatus = await User.aggregate().group({

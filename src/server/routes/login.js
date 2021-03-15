@@ -2,6 +2,7 @@
 // because this file is a deprecated legacy of Crowi
 
 import loggerFactory from '~/utils/logger';
+import User, { UserStatus } from '~/server/models/user';
 
 const logger = loggerFactory('growi:routes:login');
 
@@ -10,7 +11,6 @@ const logger = loggerFactory('growi:routes:login');
 module.exports = function(crowi, app) {
 
   const path = require('path');
-  const User = crowi.model('User');
   const { configManager, appService, aclService, mailService } = crowi;
 
   const actions = {};
@@ -58,7 +58,7 @@ module.exports = function(crowi, app) {
   actions.preLogin = function(req, res, next) {
     // user has already logged in
     const { user } = req;
-    if (user != null && user.status === User.STATUS_ACTIVE) {
+    if (user != null && user.status === UserStatus.STATUS_ACTIVE) {
       const { redirectTo } = req.session;
       // remove session.redirectTo
       delete req.session.redirectTo;

@@ -1,3 +1,4 @@
+import User from '~/server/models/user';
 import Bookmark from '~/server/models/bookmark';
 
 /**
@@ -48,7 +49,6 @@ import Bookmark from '~/server/models/bookmark';
  */
 
 module.exports = function(crowi, app) {
-  const User = crowi.model('User');
   const ApiResponse = require('../util/apiResponse');
 
   const actions = {};

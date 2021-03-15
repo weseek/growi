@@ -1,5 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
+import User, { USER_PUBLIC_FIELDS } from '~/server/models/user';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 
@@ -32,7 +33,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const { User, Page } = crowi.models;
+  const { Page } = crowi.models;
 
   /**
    * @swagger
@@ -402,7 +403,7 @@ module.exports = (crowi) => {
       }
 
       const userGroupRelation = await UserGroupRelation.createRelation(userGroup, user);
-      await userGroupRelation.populate('relatedUser', User.USER_PUBLIC_FIELDS).execPopulate();
+      await userGroupRelation.populate('relatedUser', USER_PUBLIC_FIELDS).execPopulate();
 
       return res.apiv3({ user, userGroup, userGroupRelation });
     }
@@ -577,7 +578,7 @@ module.exports = (crowi) => {
         limit,
         populate: {
           path: 'lastUpdateUser',
-          select: User.USER_PUBLIC_FIELDS,
+          select: USER_PUBLIC_FIELDS,
         },
       });
 
