@@ -250,26 +250,24 @@ class BoltService {
 
     try {
       // DEFAULT show "Share" button
-      const actionBlocks = [
-        {
-          type: 'actions',
-          elements: [
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: 'Share',
-              },
-              style: 'primary',
-              action_id: 'shareSearchResults',
-              value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+      const actionBlocks = {
+        type: 'actions',
+        elements: [
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Share',
             },
-          ],
-        },
-      ];
+            style: 'primary',
+            action_id: 'shareSearchResults',
+            value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+          },
+        ],
+      };
       // show "Next" button if next page exists
       if (resultsTotal > offset + PAGINGLIMIT) {
-        actionBlocks[0].elements.push(
+        actionBlocks.elements.push(
           {
             type: 'button',
             text: {
@@ -287,7 +285,7 @@ class BoltService {
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
-          actionBlocks[0],
+          actionBlocks,
         ],
       });
     }
