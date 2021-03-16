@@ -1,15 +1,20 @@
 import {
   VFC, useState, useEffect, useCallback,
 } from 'react';
-
-import { PaginationWrapper } from '~/components/PaginationWrapper';
+import loggerFactory from '~/utils/logger';
 
 import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
+
 import { Attachment as IAttachment } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
+
+import { PaginationWrapper } from '~/components/PaginationWrapper';
 import { Attachment } from '~/components/PageAccessory/Attachment';
 import { DeleteAttachmentModal } from '~/components/PageAccessory/DeleteAttachmentModal';
-import { useCurrentUser } from '~/stores/context';
+import { apiPost } from '~/client/js/util/apiv1-client';
+
+const logger = loggerFactory('growi:components:PageAccessory:PageAttachment');
 
 export const PageAttachment:VFC = () => {
   const { t } = useTranslation();
@@ -20,6 +25,7 @@ export const PageAttachment:VFC = () => {
 
   const [isOpenDeleteAttachmentModal, setIsOpenDeleteAttachmentModal] = useState(false);
   const [isDeletingAttachment, setIsDeletingAttachment] = useState(false);
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState<string>();
   const [attachmentToDelete, setAttachmentToDelete] = useState<IAttachment>();
 
   const [activePage, setActivePage] = useState(1);
@@ -27,7 +33,7 @@ export const PageAttachment:VFC = () => {
   const [limit, setLimit] = useState(Infinity);
 
   const { data: currentPage } = useCurrentPageSWR();
-  const { data: paginationResult } = useCurrentPageAttachment(activePage);
+  const { data: paginationResult, mutate: mutateCurrentPageAttachment } = useCurrentPageAttachment(activePage);
 
   const handlePage = useCallback(async(selectedPage) => {
     setActivePage(selectedPage);
@@ -49,25 +55,25 @@ export const PageAttachment:VFC = () => {
     return false;
   }, [currentPage]);
 
-  const deleteAttachment = () => {
+  const deleteAttachment = async() => {
+    if (attachmentToDelete == null) {
+      return;
+    }
+    setDeleteErrorMessage('');
+
     setIsDeletingAttachment(true);
-    // this.props.appContainer.apiPost('/attachments.remove', { attachment_id: attachmentId })
-    // .then((res) => {
-    //   this.setState({
-    //     attachments: this.state.attachments.filter((at) => {
-    //       // comparing ObjectId
-    //       // eslint-disable-next-line eqeqeq
-    //       return at._id != attachmentId;
-    //     }),
-    //     attachmentToDelete: null,
-    //     deleting: false,
-    //   });
-    // }).catch((err) => {
-    //   this.setState({
-    //     deleteError: 'Something went wrong.',
-    //     deleting: false,
-    //   });
-    // });
+    try {
+      // TODO implement apiV3
+      await apiPost('/attachments.remove', { attachment_id: attachmentToDelete._id });
+      mutateCurrentPageAttachment();
+      setIsOpenDeleteAttachmentModal(false);
+    }
+    catch (error) {
+      logger.error(error);
+      setDeleteErrorMessage(error.message);
+    }
+    setIsDeletingAttachment(false);
+
   };
 
   useEffect(() => {
@@ -127,6 +133,7 @@ export const PageAttachment:VFC = () => {
           onClose={() => (setIsOpenDeleteAttachmentModal(false))}
           attachmentToDelete={attachmentToDelete}
           isDeleting={isDeletingAttachment}
+          deleteErrorMessage={deleteErrorMessage}
           onDeleteAttachment={deleteAttachment}
         />
       )}
