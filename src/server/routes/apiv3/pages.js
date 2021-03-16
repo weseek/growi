@@ -112,6 +112,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
@@ -120,6 +121,7 @@ module.exports = (crowi) => {
 
   const { serializePageSecurely } = require('../../models/serializers/page-serializer');
   const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
+  const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
   const validator = {
     createPage: [
@@ -299,6 +301,12 @@ module.exports = (crowi) => {
         result.pages.pop();
       }
 
+      result.pages.forEach((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+      });
+
       return res.apiv3(result);
     }
     catch (err) {
@@ -470,6 +478,13 @@ module.exports = (crowi) => {
 
     try {
       const result = await Page.findListWithDescendants(path, req.user, queryOptions);
+
+      result.pages.forEach((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+      });
+
       return res.apiv3(result);
     }
     catch (err) {

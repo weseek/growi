@@ -1,5 +1,6 @@
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
 
 /**
  * @swagger
@@ -134,7 +135,6 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
@@ -222,12 +222,11 @@ module.exports = function(crowi, app) {
     renderVars.revision = page.revision;
   }
 
-  async function addRenderVarsForUserPage(renderVars, page, requestUser) {
+  async function addRenderVarsForUserPage(renderVars, page) {
     const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
 
     if (userData != null) {
-      renderVars.pageUser = userData.toObject();
-      renderVars.bookmarkList = await Bookmark.findByUser(userData, { limit: 10, populatePage: true, requestUser });
+      renderVars.pageUser = serializeUserSecurely(userData);
     }
   }
 
@@ -371,7 +370,7 @@ module.exports = function(crowi, app) {
     if (isUserPage(page.path)) {
       // change template
       view = 'layout-growi/user_page';
-      await addRenderVarsForUserPage(renderVars, page, req.user);
+      await addRenderVarsForUserPage(renderVars, page);
     }
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
@@ -653,6 +652,12 @@ module.exports = function(crowi, app) {
       if (result.pages.length > limit) {
         result.pages.pop();
       }
+
+      result.pages.forEach((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+      });
 
       return res.json(ApiResponse.success(result));
     }
