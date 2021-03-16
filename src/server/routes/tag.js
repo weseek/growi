@@ -1,4 +1,4 @@
-import Tag from '../models/tag';
+import Tag from '~/server/models/tag';
 
 /**
  * @swagger
