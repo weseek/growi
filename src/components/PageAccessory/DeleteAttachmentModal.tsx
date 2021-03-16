@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import { Attachment } from '~/interfaces/page';
 
-// import UserPicture from '../../client/js/components/User/UserPicture';
+import UserPicture from '../../client/js/components/User/UserPicture';
 import { Username } from '~/components/User/Username';
 
 type Props = {
@@ -18,9 +18,6 @@ type Props = {
 export const DeleteAttachmentModal:VFC<Props> = (props: Props) => {
   const { attachmentToDelete } = props;
 
-  const content = (attachmentToDelete.fileFormat.match(/image\/.+/i))
-    ? <img src={attachmentToDelete.filePathProxied} alt="deleting image" />
-    : '';
 
   return (
     <Modal
@@ -41,10 +38,10 @@ export const DeleteAttachmentModal:VFC<Props> = (props: Props) => {
           </p> */}
           <p>
             uploaded by{' '}
-            {/* <UserPicture user={attachmentToDelete.creator} size="sm"></UserPicture> */}
+            <UserPicture user={attachmentToDelete.creator} size="sm" />{' '}
             <Username user={attachmentToDelete.creator} />
           </p>
-          {content}
+          {(attachmentToDelete.fileFormat.match(/image\/.+/i)) && <img src={attachmentToDelete.filePathProxied} alt="deleting image" />}
         </div>
       </ModalBody>
       <ModalFooter>
