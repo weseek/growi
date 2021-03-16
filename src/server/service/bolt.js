@@ -248,42 +248,38 @@ class BoltService {
 
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
-    const shareBlock = {
-      type: 'button',
-      text: {
-        type: 'plain_text',
-        text: 'Share',
-      },
-      style: 'primary',
-      action_id: 'shareSearchResults',
-      value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-    };
-    const nextBlock = {
-      type: 'button',
-      text: {
-        type: 'plain_text',
-        text: 'Next',
-      },
-      action_id: 'showNextResults',
-      value: JSON.stringify({ offset, command, args }),
-    };
-
-    let nextShareBlocks;
     try {
-      if (resultsTotal <= offset + PAGINGLIMIT) {
-        nextShareBlocks = {
-          type: 'actions',
-          elements: [shareBlock],
-        };
-      }
-      else {
-        nextShareBlocks = {
+      // DEFAULT show "Share" button
+      const actionBlocks = [
+        {
           type: 'actions',
           elements: [
-            shareBlock,
-            nextBlock,
+            {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: 'Share',
+              },
+              style: 'primary',
+              action_id: 'shareSearchResults',
+              value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+            },
           ],
-        };
+        },
+      ];
+      // show "Next" button if next page exists
+      if (resultsTotal > offset + PAGINGLIMIT) {
+        actionBlocks[0].elements.push(
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Next',
+            },
+            action_id: 'showNextResults',
+            value: JSON.stringify({ offset, command, args }),
+          },
+        );
       }
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
@@ -291,7 +287,7 @@ class BoltService {
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
-          nextShareBlocks,
+          actionBlocks[0],
         ],
       });
     }
