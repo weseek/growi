@@ -239,11 +239,6 @@ module.exports = function(crowi, app) {
     let createdComment;
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
-
-      await Comment.populate(createdComment, [
-        { path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS },
-      ]);
-
     }
     catch (err) {
       logger.error(err);
