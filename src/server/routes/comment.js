@@ -4,6 +4,8 @@
  *    name: Comments
  */
 
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+
 /**
  * @swagger
  *
@@ -130,11 +132,14 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    const comments = await fetcher.populate(
-      { path: 'creator', select: User.USER_PUBLIC_FIELDS },
-    );
+    const comments = await fetcher.populate('creator');
+    const serializedComments = comments.map((comment) => {
+      const serializedComment = comment;
+      serializedComment.creator = serializeUserSecurely(comment.creator);
+      return serializedComment;
+    });
 
-    res.json(ApiResponse.success({ comments }));
+    res.json(ApiResponse.success({ comments: serializedComments }));
   };
 
   api.validators.add = function() {
