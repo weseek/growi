@@ -71,26 +71,6 @@ module.exports = function(crowi) {
       .exec();
   };
 
-  revisionSchema.statics.findRevisionList = function(path, options) {
-    const Revision = this;
-
-
-    const User = crowi.model('User');
-
-    return new Promise(((resolve, reject) => {
-      Revision.find({ path })
-        .sort({ createdAt: -1 })
-        .populate('author', User.USER_PUBLIC_FIELDS)
-        .exec((err, data) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(data);
-        });
-    }));
-  };
-
   revisionSchema.statics.updateRevisionListByPath = function(path, updateData, options) {
     const Revision = this;
 
