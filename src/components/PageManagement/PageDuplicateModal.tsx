@@ -1,4 +1,5 @@
 import { useState, FC } from 'react';
+import { useRouter } from 'next/router';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -18,8 +19,7 @@ import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessage
 import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 import { ComparePathsTable } from '~/components/PageManagement/ComparePathsTable';
 import { DuplicatedPathsTable } from '~/components/PageManagement/DuplicatedPathsTable';
-
-const LIMIT_FOR_LIST = 10;
+import { apiv3Post } from '~/utils/apiv3-client';
 
 type Props = {
   currentPage: IPage;
@@ -29,7 +29,9 @@ type Props = {
 }
 
 const PageDuplicateModal:FC<Props> = (props:Props) => {
+  const router = useRouter();
   const { t } = useTranslation();
+  const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
   const { data: siteUrl } = useSiteUrl();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -45,36 +47,30 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
 
-  function inputChangeHandler(value) {
-    setErrs([]);
-    setPageNameInput(value);
-  }
-
-  function ppacInputChangeHandler(value) {
-    setErrs([]);
-    setPageNameInput(value);
-  }
+  const { currentPage } = props;
 
   async function duplicate() {
     setErrs([]);
 
     try {
-      // TODO: enable isDuplicateRecursively by GW-5117
-      // await apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
-      // window.location.href = encodeURI(`${pageNameInput}?duplicated=${path}`);
+      const response = await apiv3Post('/pages/duplicate', { pageId: currentPage._id, pageNameInput, isRecursively: isDuplicateRecursively });
+
+      const { page } = response.data;
+
+      const url = new URL(page.path, 'https://dummy');
+      url.searchParams.append('duplicated', currentPage.path);
+
+      router.push(`${url.pathname}${url.search}`);
     }
     catch (err) {
       setErrs(err);
     }
   }
 
-  function ppacSubmitHandler() {
-    duplicate();
+  function inputChangeHandler(value) {
+    setErrs([]);
+    setPageNameInput(value);
   }
-
-  const { mutate: mutateCurrentPage } = useCurrentPageSWR();
-
-  const { currentPage } = props;
 
   const loadLatestRevision = () => {
     props.onClose();
@@ -102,8 +98,8 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
               ? (
                 <PagePathAutoComplete
                   initializedPath={currentPagePath}
-                  onSubmit={ppacSubmitHandler}
-                  onInputChange={ppacInputChangeHandler}
+                  onSubmit={duplicate}
+                  onInputChange={inputChangeHandler}
                   autoFocus
                 />
               )
@@ -161,7 +157,7 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
         <button
           type="button"
           className="btn btn-primary"
-          // onClick={duplicate}
+          onClick={duplicate}
           disabled={(isDuplicateRecursively && !isDuplicateRecursivelyWithoutExistPath && existingPaths != null && existingPaths.length !== 0)}
         >
           { t('modal_duplicate.label.Duplicate page') }
