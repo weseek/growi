@@ -162,7 +162,7 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
           type="button"
           className="btn btn-primary"
           // onClick={duplicate}
-          // disabled={(isDuplicateRecursively && !isDuplicateRecursivelyWithoutExistPath && existingPaths.length !== 0)}
+          disabled={(isDuplicateRecursively && !isDuplicateRecursivelyWithoutExistPath && existingPaths != null && existingPaths.length !== 0)}
         >
           { t('modal_duplicate.label.Duplicate page') }
         </button>
