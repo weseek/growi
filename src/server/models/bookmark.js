@@ -43,18 +43,6 @@ module.exports = function(crowi) {
     return idToCountMap;
   };
 
-  bookmarkSchema.statics.populatePage = async function(bookmarks) {
-    const Bookmark = this;
-    const User = crowi.model('User');
-
-    return Bookmark.populate(bookmarks, {
-      path: 'page',
-      populate: {
-        path: 'lastUpdateUser', model: 'User', select: User.USER_PUBLIC_FIELDS,
-      },
-    });
-  };
-
   // bookmark チェック用
   bookmarkSchema.statics.findByPageIdAndUserId = function(pageId, userId) {
     const Bookmark = this;
