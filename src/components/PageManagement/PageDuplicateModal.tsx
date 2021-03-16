@@ -1,19 +1,14 @@
-import {
-  useState, useEffect, useCallback, FC,
-} from 'react';
+import { useState, FC } from 'react';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import { debounce } from 'throttle-debounce';
 
 import { useCurrentPagePath, useSearchServiceReachable, useSiteUrl } from '~/stores/context';
-import { useCurrentPageSWR, useSubordinatedList } from '~/stores/page';
-import { apiv3Get } from '~/client/js/util/apiv3-client';
+import { useCurrentPageSWR, useExistingPaths, useSubordinatedList } from '~/stores/page';
 
+import { toastSuccess } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
-
-import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
 
 import { Page as IPage } from '~/interfaces/page';
@@ -21,10 +16,8 @@ import { Page as IPage } from '~/interfaces/page';
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
 import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
-// import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
 import { ComparePathsTable } from '~/components/PageManagement/ComparePathsTable';
-
-// import DuplicatePathsTable from './DuplicatedPathsTable';
+import { DuplicatedPathsTable } from '~/components/PageManagement/DuplicatedPathsTable';
 
 const LIMIT_FOR_LIST = 10;
 
@@ -42,39 +35,15 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
 
-  const [existingPaths, setExistingPaths] = useState([]);
-
   const [pageNameInput, setPageNameInput] = useState(currentPagePath as string);
 
   const { data: subordinatedList } = useSubordinatedList(currentPagePath as string);
+  const { data: existingPaths } = useExistingPaths(currentPagePath as string, pageNameInput);
+
   const [errs, setErrs] = useState([]);
 
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-
-  const checkExistPaths = async(newParentPath) => {
-    try {
-      const res = await apiv3Get('/page/exist-paths', { fromPath: currentPagePath, toPath: newParentPath });
-      const { existPaths } = res.data;
-      setExistingPaths(existPaths);
-    }
-    catch (err) {
-      setErrs(err);
-      toastError(t('modal_rename.label.Fail to get exist path'));
-    }
-  };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const checkExistPathsDebounce = useCallback(
-    debounce(1000, checkExistPaths), [],
-  );
-
-
-  useEffect(() => {
-    if (pageNameInput !== currentPagePath) {
-      checkExistPathsDebounce(pageNameInput, subordinatedList);
-    }
-  }, [pageNameInput, subordinatedList, currentPagePath, checkExistPathsDebounce]);
 
   function inputChangeHandler(value) {
     setErrs([]);
@@ -164,27 +133,26 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
             <p className="form-text text-muted mt-0">{ t('modal_duplicate.help.recursive') }</p>
           </label>
 
-          <div>
-            {isDuplicateRecursively && existingPaths.length !== 0 && (
-              <div className="custom-control custom-checkbox custom-checkbox-warning">
-                <input
-                  className="custom-control-input"
-                  name="withoutExistRecursively"
-                  id="cbDuplicatewithoutExistRecursively"
-                  type="checkbox"
-                  checked={isDuplicateRecursivelyWithoutExistPath}
-                  onChange={() => setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath)}
-                />
-                <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
-                  { t('modal_duplicate.label.Duplicate without exist path') }
-                </label>
-              </div>
-            )}
+          {isDuplicateRecursively && existingPaths != null && existingPaths.length !== 0 && (
+          <div className="custom-control custom-checkbox custom-checkbox-warning">
+            <input
+              className="custom-control-input"
+              name="withoutExistRecursively"
+              id="cbDuplicatewithoutExistRecursively"
+              type="checkbox"
+              checked={isDuplicateRecursivelyWithoutExistPath}
+              onChange={() => setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath)}
+            />
+            <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+              { t('modal_duplicate.label.Duplicate without exist path') }
+            </label>
           </div>
+            )}
           <div>
             {isDuplicateRecursively && subordinatedList != null
              && <ComparePathsTable currentPagePath={currentPagePath as string} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
-            {/* {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />} */}
+            {isDuplicateRecursively && existingPaths != null && existingPaths.length !== 0
+             && <DuplicatedPathsTable currentPagePath={currentPagePath as string} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
           </div>
         </div>
       </ModalBody>
