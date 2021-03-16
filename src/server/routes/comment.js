@@ -133,13 +133,13 @@ module.exports = function(crowi, app) {
     }
 
     const comments = await fetcher.populate('creator');
-    const serializedComments = comments.map((comment) => {
-      const serializedComment = comment;
-      serializedComment.creator = serializeUserSecurely(comment.creator);
-      return serializedComment;
+    comments.forEach((comment) => {
+      if (comment.creator != null && comment.creator instanceof User) {
+        comment.creator = serializeUserSecurely(comment.creator);
+      }
     });
 
-    res.json(ApiResponse.success({ comments: serializedComments }));
+    res.json(ApiResponse.success({ comments }));
   };
 
   api.validators.add = function() {

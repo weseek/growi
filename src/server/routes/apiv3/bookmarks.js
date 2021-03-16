@@ -213,11 +213,10 @@ module.exports = (crowi) => {
         },
       );
 
-      // serialize user
-      paginationResult.docs = paginationResult.docs.map((doc) => {
-        const serializedDoc = doc;
-        serializedDoc.page.lastUpdateUser = serializeUserSecurely(doc.page.lastUpdateUser);
-        return serializedDoc;
+      paginationResult.docs.forEach((doc) => {
+        if (doc.page.lastUpdateUser != null && doc.page.lastUpdateUser instanceof User) {
+          doc.page.lastUpdateUser = serializeUserSecurely(doc.page.lastUpdateUser);
+        }
       });
 
       return res.apiv3({ paginationResult });
