@@ -7,7 +7,6 @@ module.exports = {
   User: require('./user'),
   ExternalAccount: require('./external-account'),
   Revision: require('./revision'),
-  Tag: require('./tag'),
   Comment: require('./comment'),
   Attachment: require('./attachment'),
   UpdatePost: require('./updatePost'),
