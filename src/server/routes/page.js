@@ -135,7 +135,6 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ShareLink = crowi.model('ShareLink');
