@@ -41,12 +41,13 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
 
   const [existingPaths, setExistingPaths] = useState([]);
 
-  const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
-
   const [pageNameInput, setPageNameInput] = useState(currentPagePath as string);
 
   const { data: subordinatedList } = useSubordinatedList(currentPagePath as string);
   const [errs, setErrs] = useState([]);
+
+  const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
+  const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
 
   const checkExistPaths = async(newParentPath) => {
     try {
@@ -161,22 +162,21 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
           </label>
 
           <div>
-            {/* TODO: enable isDuplicateRecursively by GW-5117 */}
-            {/* {isDuplicateRecursively && existingPaths.length !== 0 && (
-            <div className="custom-control custom-checkbox custom-checkbox-warning">
-              <input
-                className="custom-control-input"
-                name="withoutExistRecursively"
-                id="cbDuplicatewithoutExistRecursively"
-                type="checkbox"
-                checked={isDuplicateRecursivelyWithoutExistPath}
-                onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
-              />
-              <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
-                { t('modal_duplicate.label.Duplicate without exist path') }
-              </label>
-            </div>
-            )} */}
+            {isDuplicateRecursively && existingPaths.length !== 0 && (
+              <div className="custom-control custom-checkbox custom-checkbox-warning">
+                <input
+                  className="custom-control-input"
+                  name="withoutExistRecursively"
+                  id="cbDuplicatewithoutExistRecursively"
+                  type="checkbox"
+                  checked={isDuplicateRecursivelyWithoutExistPath}
+                  onChange={() => setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath)}
+                />
+                <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+                  { t('modal_duplicate.label.Duplicate without exist path') }
+                </label>
+              </div>
+            )}
           </div>
           <div>
             {isDuplicateRecursively && subordinatedList != null
