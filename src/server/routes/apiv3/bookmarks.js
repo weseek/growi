@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-
 
 const express = require('express');
 const { body, query, param } = require('express-validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
@@ -205,13 +206,20 @@ module.exports = (crowi) => {
             populate: {
               path: 'lastUpdateUser',
               model: 'User',
-              select: User.USER_PUBLIC_FIELDS,
             },
           },
           page,
           limit,
         },
       );
+
+      // serialize user
+      paginationResult.docs = paginationResult.docs.map((doc) => {
+        const serializedDoc = doc;
+        serializedDoc.page.lastUpdateUser = serializeUserSecurely(doc.page.lastUpdateUser);
+        return serializedDoc;
+      });
+
       return res.apiv3({ paginationResult });
     }
     catch (err) {
