@@ -43,7 +43,7 @@ function PageEditorModeManager(props) {
   const isAdmin = appContainer.isAdmin;
   const isHackmdEnabled = appContainer.config.env.HACKMD_URI != null;
   const showHackmdBtn = isHackmdEnabled || isAdmin;
-  const showHackmdDisabledTooltip = isAdmin && !isHackmdEnabled;
+  const showHackmdDisabledTooltip = isAdmin && !isHackmdEnabled && editorMode !== 'hackmd';
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
     if (isBtnDisabled) {
@@ -101,7 +101,7 @@ function PageEditorModeManager(props) {
       )}
       {!isBtnDisabled && showHackmdDisabledTooltip && (
         <UncontrolledTooltip placement="top" target="grw-page-editor-mode-manager-hackmd-button" fade={false}>
-          {t('HackMD editor is not available')}
+          {t('hackmd.not_set_up')}
         </UncontrolledTooltip>
       )}
     </>
