@@ -1,6 +1,7 @@
 import loggerFactory from '~/utils/logger';
 import ShareLink from '~/server/models/share-link';
 import Bookmark from '~/server/models/bookmark';
+import PageTagRelation from '~/server/models/page-tag-relation';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -195,7 +196,6 @@ class PageService {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
     const Attachment = this.crowi.model('Attachment');
 
@@ -226,7 +226,6 @@ class PageService {
 
   async duplicate(page, newPagePath, user, isRecursively) {
     const Page = this.crowi.model('Page');
-    const PageTagRelation = mongoose.model('PageTagRelation');
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' }).execPopulate();
 
@@ -265,7 +264,6 @@ class PageService {
    * @param {Object} pageIdMapping e.g. key: oldPageId, value: newPageId
    */
   async duplicateTags(pageIdMapping) {
-    const PageTagRelation = mongoose.model('PageTagRelation');
 
     // convert pageId from string to ObjectId
     const pageIds = Object.keys(pageIdMapping);

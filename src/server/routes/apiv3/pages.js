@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import PageTagRelation from '~/server/models/page-tag-relation';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
@@ -114,7 +115,6 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
-  const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const globalNotificationService = crowi.getGlobalNotificationService();

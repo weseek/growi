@@ -1,11 +1,12 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
+import mongoose, { Schema, Model, Document } from 'mongoose';
+import flatMap from 'array.prototype.flatmap';
 
-const flatMap = require('array.prototype.flatmap');
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
+import Tag from '~/server/models/tag';
 
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
+import { PageTagRelation as IPageTagRelation } from '~/interfaces/page';
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -13,7 +14,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 /*
  * define schema
  */
-const schema = new mongoose.Schema({
+const schema:Schema<IPageTagRelation & Document> = new Schema<IPageTagRelation & Document>({
   relatedPage: {
     type: ObjectId,
     ref: 'Page',
@@ -36,10 +37,9 @@ schema.plugin(uniqueValidator);
  *
  * @class PageTagRelation
  */
-class PageTagRelation {
+class PageTagRelation extends Model {
 
   static async createTagListWithCount(option) {
-    const Tag = mongoose.model('Tag');
     const opt = option || {};
     const sortOpt = opt.sortOpt || {};
     const offset = opt.offset || 0;
@@ -96,8 +96,6 @@ class PageTagRelation {
       .flatMap(result => result.tagIds); // map + flatten
     const distinctTagIds = Array.from(new Set(allTagIds));
 
-    // retrieve tag documents
-    const Tag = mongoose.model('Tag');
     const tagIdToNameMap = await Tag.getIdToNameMap(distinctTagIds);
 
     // convert to map
@@ -155,8 +153,6 @@ class PageTagRelation {
 
 }
 
-module.exports = function() {
-  schema.loadClass(PageTagRelation);
-  const model = mongoose.model('PageTagRelation', schema);
-  return model;
-};
+
+schema.loadClass(PageTagRelation);
+export default getOrCreateModel<IPageTagRelation>('PageTagRelation', schema);
