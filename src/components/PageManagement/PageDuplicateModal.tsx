@@ -13,19 +13,16 @@ import { useTranslation } from '~/i18n';
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
-import { useCurrentPageSWR } from '~/stores/page';
+import { useCurrentPageSWR, useSubordinatedList } from '~/stores/page';
+
 
 import { Page as IPage } from '~/interfaces/page';
 
 import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessageList';
 
-// import { withUnstatedContainers } from './UnstatedUtils';
-
-// import AppContainer from '../services/AppContainer';
-// import PageContainer from '../services/PageContainer';
 import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 // import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
-// import ComparePathsTable from './ComparePathsTable';
+import { ComparePathsTable } from '~/components/PageManagement/ComparePathsTable';
 // import DuplicatePathsTable from './DuplicatedPathsTable';
 
 const LIMIT_FOR_LIST = 10;
@@ -42,14 +39,14 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
 
-  const [errs, setErrs] = useState([]);
   const [existingPaths, setExistingPaths] = useState([]);
-  const [subordinatedPages, setSubordinatedPages] = useState([]);
 
-  if (currentPagePath == null) {
-    throw new Error('currentPagePath should not be null.');
-  }
-  const [pageNameInput, setPageNameInput] = useState(currentPagePath);
+  const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
+
+  const [pageNameInput, setPageNameInput] = useState(currentPagePath as string);
+
+  const { data: subordinatedList } = useSubordinatedList(currentPagePath as string);
+  const [errs, setErrs] = useState([]);
 
   const checkExistPaths = async(newParentPath) => {
     try {
@@ -71,9 +68,9 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
 
   useEffect(() => {
     if (pageNameInput !== currentPagePath) {
-      checkExistPathsDebounce(pageNameInput, subordinatedPages);
+      checkExistPathsDebounce(pageNameInput, subordinatedList);
     }
-  }, [pageNameInput, subordinatedPages, currentPagePath, checkExistPathsDebounce]);
+  }, [pageNameInput, subordinatedList, currentPagePath, checkExistPathsDebounce]);
 
   function inputChangeHandler(value) {
     setErrs([]);
@@ -101,6 +98,7 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
   function ppacSubmitHandler() {
     duplicate();
   }
+
   const { mutate: mutateCurrentPage } = useCurrentPageSWR();
 
   const { currentPage } = props;
@@ -154,8 +152,8 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
             name="recursively"
             id="cbDuplicateRecursively"
             type="checkbox"
-            // checked={isDuplicateRecursively}
-            // onChange={changeIsDuplicateRecursivelyHandler}
+            checked={isDuplicateRecursively}
+            onChange={() => setIsDuplicateRecursively(!isDuplicateRecursively)}
           />
           <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
             { t('modal_duplicate.label.Recursively') }
@@ -181,8 +179,9 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
             )} */}
           </div>
           <div>
-            {/* {isDuplicateRecursively && <ComparePathsTable subordinatedPages={subordinatedPages} newPagePath={pageNameInput} />}
-            {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />} */}
+            {isDuplicateRecursively && subordinatedList != null
+             && <ComparePathsTable currentPagePath={currentPagePath as string} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
+            {/* {isDuplicateRecursively && existingPaths.length !== 0 && <DuplicatePathsTable existingPaths={existingPaths} oldPagePath={pageNameInput} />} */}
           </div>
         </div>
       </ModalBody>
@@ -203,22 +202,6 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
 
 export default PageDuplicateModal;
 
-// const DeprecatedPageDuplicateModal = (props) => {
-//   const { t, appContainer, pageContainer } = props;
-
-//   const config = appContainer.getConfig();
-//   const isReachable = config.isSearchServiceReachable;
-//   const { pageId, path } = pageContainer.state;
-//   const { crowi } = appContainer.config;
-
-//   const [pageNameInput, setPageNameInput] = useState(path);
-
-//   const [errs, setErrs] = useState(null);
-
-//   const [subordinatedPages, setSubordinatedPages] = useState([]);
-//   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
-//   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
-//   const [existingPaths, setExistingPaths] = useState([]);
 
 //   const checkExistPaths = async(newParentPath) => {
 //     try {
@@ -392,21 +375,3 @@ export default PageDuplicateModal;
 //     </Modal>
 //   );
 // };
-
-
-/**
- * Wrapper component for using unstated
- */
-// const PageDuplicateModallWrapper = withUnstatedContainers(PageDuplicateModal, [AppContainer, PageContainer]);
-
-
-// PageDuplicateModal.propTypes = {
-//   t: PropTypes.func.isRequired, //  i18next
-//   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-
-//   isOpen: PropTypes.bool.isRequired,
-//   onClose: PropTypes.func.isRequired,
-// };
-
-// export default withTranslation()(PageDuplicateModallWrapper);
