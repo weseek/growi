@@ -41,7 +41,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
 
-  const [pageNameInput, setPageNameInput] = useState(currentPagePath || '');
+  const [pageNameInput, setPageNameInput] = useState(currentPagePath as string);
 
   const { data: subordinatedList } = useSubordinatedList(currentPagePath as string);
   const { data: existingPaths } = useExistingPaths(currentPagePath as string, pageNameInput);
@@ -52,10 +52,6 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const [isRenameRedirect, setIsRenameRedirect] = useState(false);
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
   const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
-
-  if (currentPagePath == null) {
-    return null;
-  }
 
   const { currentPage } = props;
 
@@ -173,9 +169,9 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             </div>
           )}
           {isRenameRecursively && subordinatedList != null
-           && <ComparePathsTable currentPagePath={currentPagePath} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
+           && <ComparePathsTable currentPagePath={currentPagePath as string} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths != null && existingPaths.length !== 0 && currentPagePath !== pageNameInput
-            && <DuplicatedPathsTable currentPagePath={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+            && <DuplicatedPathsTable currentPagePath={currentPagePath as string} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
