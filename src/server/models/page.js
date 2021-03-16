@@ -429,7 +429,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL)
       .execPopulate();
   };
 
@@ -748,7 +748,7 @@ module.exports = function(crowi) {
     const totalCount = await builder.query.exec('count');
 
     // find
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.exec('find');
 
     const result = {
@@ -791,7 +791,7 @@ module.exports = function(crowi) {
 
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.exec('find');
 
     const result = {

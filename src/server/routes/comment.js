@@ -4,6 +4,8 @@
  *    name: Comments
  */
 
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+
 /**
  * @swagger
  *
@@ -130,9 +132,12 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    const comments = await fetcher.populate(
-      { path: 'creator', select: User.USER_PUBLIC_FIELDS },
-    );
+    const comments = await fetcher.populate('creator');
+    comments.forEach((comment) => {
+      if (comment.creator != null && comment.creator instanceof User) {
+        comment.creator = serializeUserSecurely(comment.creator);
+      }
+    });
 
     res.json(ApiResponse.success({ comments }));
   };
@@ -234,11 +239,6 @@ module.exports = function(crowi, app) {
     let createdComment;
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
-
-      await Comment.populate(createdComment, [
-        { path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS },
-      ]);
-
     }
     catch (err) {
       logger.error(err);
