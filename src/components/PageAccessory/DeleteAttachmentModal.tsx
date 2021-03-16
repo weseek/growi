@@ -14,11 +14,20 @@ type Props = {
   attachmentToDelete: Attachment,
   isDeleting: boolean,
   deleteErrorMessage?: string,
+  onDeleteAttachment?: () => void,
 };
 
 
 export const DeleteAttachmentModal:VFC<Props> = (props: Props) => {
-  const { attachmentToDelete, isDeleting, deleteErrorMessage } = props;
+  const {
+    attachmentToDelete, isDeleting, deleteErrorMessage, onDeleteAttachment,
+  } = props;
+
+  const handleDeleteButton = () => {
+    if (onDeleteAttachment != null) {
+      onDeleteAttachment();
+    }
+  };
 
   return (
     <Modal
@@ -51,26 +60,15 @@ export const DeleteAttachmentModal:VFC<Props> = (props: Props) => {
           {isDeleting && <div className="speeding-wheel-sm" />}
           {deleteErrorMessage != null && <span>{deleteErrorMessage}</span>}
         </div>
-        {/* <button
+        <button
           type="button"
           className="btn btn-danger"
-          onClick={this._onDeleteConfirm}
-          disabled={this.props.deleting}
+          onClick={handleDeleteButton}
+          disabled={isDeleting}
         >
           Delete!
-        </button> */}
+        </button>
       </ModalFooter>
     </Modal>
   );
 };
-// export const  DeleteAttachmentModal = {
-
-//   constructor(props) {
-//     super(props);
-
-//     this._onDeleteConfirm = this._onDeleteConfirm.bind(this);
-//   }
-
-//   _onDeleteConfirm() {
-//     this.props.onAttachmentDeleteClickedConfirm(this.props.attachmentToDelete);
-//   }

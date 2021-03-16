@@ -19,6 +19,7 @@ export const PageAttachment:VFC = () => {
   const [attachments, setAttachments] = useState<IAttachment[]>([]);
 
   const [isOpenDeleteAttachmentModal, setIsOpenDeleteAttachmentModal] = useState(false);
+  const [isDeletingAttachment, setIsDeletingAttachment] = useState(false);
   const [attachmentToDelete, setAttachmentToDelete] = useState<IAttachment>();
 
   const [activePage, setActivePage] = useState(1);
@@ -47,6 +48,27 @@ export const PageAttachment:VFC = () => {
     }
     return false;
   }, [currentPage]);
+
+  const deleteAttachment = () => {
+    setIsDeletingAttachment(true);
+    // this.props.appContainer.apiPost('/attachments.remove', { attachment_id: attachmentId })
+    // .then((res) => {
+    //   this.setState({
+    //     attachments: this.state.attachments.filter((at) => {
+    //       // comparing ObjectId
+    //       // eslint-disable-next-line eqeqeq
+    //       return at._id != attachmentId;
+    //     }),
+    //     attachmentToDelete: null,
+    //     deleting: false,
+    //   });
+    // }).catch((err) => {
+    //   this.setState({
+    //     deleteError: 'Something went wrong.',
+    //     deleting: false,
+    //   });
+    // });
+  };
 
   useEffect(() => {
     const inUseByAttachmentId: { [key:string]:boolean } = {};
@@ -104,7 +126,8 @@ export const PageAttachment:VFC = () => {
           isOpen={isOpenDeleteAttachmentModal}
           onClose={() => (setIsOpenDeleteAttachmentModal(false))}
           attachmentToDelete={attachmentToDelete}
-          isDeleting={false}
+          isDeleting={isDeletingAttachment}
+          onDeleteAttachment={deleteAttachment}
         />
       )}
     </>
