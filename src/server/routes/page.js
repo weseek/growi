@@ -654,6 +654,12 @@ module.exports = function(crowi, app) {
         result.pages.pop();
       }
 
+      result.pages.forEach((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+      });
+
       return res.json(ApiResponse.success(result));
     }
     catch (err) {

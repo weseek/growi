@@ -1,3 +1,5 @@
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+
 /**
  * @swagger
  *
@@ -27,6 +29,7 @@
 module.exports = function(crowi, app) {
   // var debug = require('debug')('growi:routes:search')
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 
@@ -159,6 +162,9 @@ module.exports = function(crowi, app) {
       result.totalCount = findResult.totalCount;
       result.data = findResult.pages
         .map((page) => {
+          if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+            page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+          }
           page.bookmarkCount = (page._source && page._source.bookmark_count) || 0;
           return page;
         })
