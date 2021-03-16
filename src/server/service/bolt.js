@@ -248,48 +248,40 @@ class BoltService {
 
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
-    let NextShareBlocks;
+    const shareBlock = {
+      type: 'button',
+      text: {
+        type: 'plain_text',
+        text: 'Share',
+      },
+      style: 'primary',
+      action_id: 'shareSearchResults',
+      value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+    };
+    const nextBlock = {
+      type: 'button',
+      text: {
+        type: 'plain_text',
+        text: 'Next',
+      },
+      action_id: 'showNextResults',
+      value: JSON.stringify({ offset, command, args }),
+    };
+
+    let nextShareBlocks;
     try {
       if (resultsTotal <= offset + PAGINGLIMIT) {
-        NextShareBlocks = {
+        nextShareBlocks = {
           type: 'actions',
-          elements: [
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: 'Share',
-              },
-              style: 'primary',
-              action_id: 'shareSearchResults',
-              value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-            },
-          ],
+          elements: [shareBlock],
         };
       }
       else {
-        NextShareBlocks = {
+        nextShareBlocks = {
           type: 'actions',
           elements: [
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: 'Next',
-              },
-              action_id: 'showNextResults',
-              value: JSON.stringify({ offset, command, args }),
-            },
-            {
-              type: 'button',
-              text: {
-                type: 'plain_text',
-                text: 'Share',
-              },
-              style: 'primary',
-              action_id: 'shareSearchResults',
-              value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-            },
+            shareBlock,
+            nextBlock,
           ],
         };
       }
@@ -299,7 +291,7 @@ class BoltService {
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
-          NextShareBlocks,
+          nextShareBlocks,
         ],
       });
     }
