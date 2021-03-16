@@ -6,14 +6,14 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
-import { useCurrentPagePath, useSearchServiceReachable } from '~/stores/context';
+
+import { useCurrentPagePath, useSearchServiceReachable, useSiteUrl } from '~/stores/context';
+import { useCurrentPageSWR, useSubordinatedList } from '~/stores/page';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 
 import { useTranslation } from '~/i18n';
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
-
-import { useCurrentPageSWR, useSubordinatedList } from '~/stores/page';
 
 
 import { Page as IPage } from '~/interfaces/page';
@@ -23,6 +23,7 @@ import { ApiErrorMessageList } from '~/components/PageManagement/ApiErrorMessage
 import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 // import PagePathAutoComplete from '~/client/js/components/PagePathAutoComplete';
 import { ComparePathsTable } from '~/components/PageManagement/ComparePathsTable';
+
 // import DuplicatePathsTable from './DuplicatedPathsTable';
 
 const LIMIT_FOR_LIST = 10;
@@ -36,6 +37,8 @@ type Props = {
 
 const PageDuplicateModal:FC<Props> = (props:Props) => {
   const { t } = useTranslation();
+
+  const { data: siteUrl } = useSiteUrl();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
 
@@ -123,7 +126,7 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
           <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
           <div className="input-group">
             <div className="input-group-prepend">
-              {/* <span className="input-group-text">{crowi.url}</span> */}
+              <span className="input-group-text">{siteUrl}</span>
             </div>
             <div className="flex-fill">
               {isReachable
