@@ -133,7 +133,6 @@ module.exports = function(crowi, app) {
 
   app.get('/_api/check_username'           , user.api.checkUsername);
   app.get('/_api/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
-  app.get('/_api/user/bookmarks'           , loginRequired , user.api.bookmarks);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   app.get('/_api/users.list'          , accessTokenParser , loginRequired , user.api.list);

@@ -70,43 +70,6 @@ module.exports = function(crowi) {
     }));
   };
 
-  /**
-   * option = {
-   *  limit: Int
-   *  offset: Int
-   *  requestUser: User
-   * }
-   */
-  bookmarkSchema.statics.findByUser = function(user, option) {
-    const Bookmark = this;
-    const requestUser = option.requestUser || null;
-
-    debug('Finding bookmark with requesting user:', requestUser);
-
-    const limit = option.limit || 50;
-    const offset = option.offset || 0;
-    const populatePage = option.populatePage || false;
-
-    return new Promise(((resolve, reject) => {
-      Bookmark
-        .find({ user: user._id })
-        .sort({ createdAt: -1 })
-        .skip(offset)
-        .limit(limit)
-        .exec((err, bookmarks) => {
-          if (err) {
-            return reject(err);
-          }
-
-          if (!populatePage) {
-            return resolve(bookmarks);
-          }
-
-          return Bookmark.populatePage(bookmarks, requestUser).then(resolve);
-        });
-    }));
-  };
-
   bookmarkSchema.statics.add = async function(page, user) {
     const Bookmark = this;
 
