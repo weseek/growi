@@ -27,43 +27,6 @@ module.exports = function(crowi) {
   });
   revisionSchema.plugin(mongoosePaginate);
 
-  /*
-   * preparation for https://github.com/weseek/growi/issues/216
-   */
-  // // create a XSS Filter instance
-  // // TODO read options
-  // this.xss = new Xss(true);
-  // // prevent XSS when pre save
-  // revisionSchema.pre('save', function(next) {
-  //   this.body = xss.process(this.body);
-  //   next();
-  // });
-
-  revisionSchema.statics.findRevisions = function(ids) {
-    const Revision = this;
-
-
-    const User = crowi.model('User');
-
-    if (!Array.isArray(ids)) {
-      return Promise.reject(new Error('The argument was not Array.'));
-    }
-
-    return new Promise(((resolve, reject) => {
-      Revision
-        .find({ _id: { $in: ids } })
-        .sort({ createdAt: -1 })
-        .populate('author', User.USER_PUBLIC_FIELDS)
-        .exec((err, revisions) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(revisions);
-        });
-    }));
-  };
-
   revisionSchema.statics.findRevisionIdList = function(path) {
     return this.find({ path })
       .select('_id author createdAt hasDiffToPrev')
