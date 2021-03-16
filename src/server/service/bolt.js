@@ -1,5 +1,7 @@
 const logger = require('@alias/logger')('growi:service:BoltService');
 
+const PAGINGLIMIT = 10;
+
 class BoltReciever {
 
   init(app) {
@@ -173,7 +175,7 @@ class BoltService {
     const { searchService } = this.crowi;
     const options = { limit: 10, offset };
     const results = await searchService.searchKeyword(keywords, null, {}, options);
-
+    const resultsTotal = results.meta.total;
 
     // no search results
     if (results.data.length === 0) {
@@ -208,13 +210,13 @@ class BoltService {
     });
 
     return {
-      resultPaths, offset, keywords,
+      resultPaths, offset, keywords, resultsTotal,
     };
   }
 
   async showEphemeralSearchResults(command, args, offsetNum) {
     const {
-      resultPaths, offset, keywords,
+      resultPaths, offset, keywords, resultsTotal,
     } = await this.getSearchResultPaths(command, args, offsetNum);
 
     if (resultPaths == null) {
@@ -247,36 +249,43 @@ class BoltService {
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
     try {
+      // DEFAULT show "Share" button
+      const actionBlocks = {
+        type: 'actions',
+        elements: [
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Share',
+            },
+            style: 'primary',
+            action_id: 'shareSearchResults',
+            value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+          },
+        ],
+      };
+      // show "Next" button if next page exists
+      if (resultsTotal > offset + PAGINGLIMIT) {
+        actionBlocks.elements.push(
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Next',
+            },
+            action_id: 'showNextResults',
+            value: JSON.stringify({ offset, command, args }),
+          },
+        );
+      }
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
-          {
-            type: 'actions',
-            elements: [
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Next',
-                },
-                action_id: 'showNextResults',
-                value: JSON.stringify({ offset, command, args }),
-              },
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Share',
-                },
-                style: 'primary',
-                action_id: 'shareSearchResults',
-                value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-              },
-            ],
-          },
+          actionBlocks,
         ],
       });
     }
