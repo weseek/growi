@@ -168,6 +168,7 @@
   },
   "not_found_page": {
     "Create Page": "ページを作成する",
+    "page_not_exist": "このページは存在しません。",
     "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
   },
   "custom_navigation": {
@@ -332,10 +333,9 @@
     "revision": "バージョン",
     "comparing_source": "ソース",
     "comparing_target": "ターゲット",
-    "comparing_revisions": "比較",
+    "comparing_revisions": "差分を比較する",
     "compare_latest":"最新と比較",
-    "compare_previous":"1つ前のバージョンと比較",
-    "comparing_with_latest": "常に最新バージョンと比較する"
+    "compare_previous":"1つ前のバージョンと比較"
   },
   "modal_rename": {
     "label": {

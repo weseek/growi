@@ -19,7 +19,7 @@ const DisplaySwitcher = (props) => {
     navigationContainer, pageContainer,
   } = props;
   const { editorMode } = navigationContainer.state;
-  const { pageUser } = pageContainer.state;
+  const { isPageExist, pageUser } = pageContainer.state;
 
   return (
     <>
@@ -30,7 +30,7 @@ const DisplaySwitcher = (props) => {
             <div className="grw-side-contents-container">
               <div className="grw-side-contents-sticky-container">
                 <div className="border-bottom pb-1">
-                  <PageAccessories />
+                  <PageAccessories isNotFoundPage={!isPageExist} />
                 </div>
 
                 <div className="d-none d-lg-block">

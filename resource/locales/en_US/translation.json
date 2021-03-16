@@ -165,6 +165,7 @@
   },
   "not_found_page": {
     "Create Page": "Create Page",
+    "page_not_exist": "This page does not exist.",
     "page_not_exist_alert": "This page does not exist. Please create a new page."
   },
   "custom_navigation": {
@@ -330,10 +331,9 @@
     "revision": "version",
     "comparing_source": "Source",
     "comparing_target": "Target",
-    "comparing_revisions": "Comparing versions",
+    "comparing_revisions": "Comparing the difference",
     "compare_latest":"Compare latest revision",
-    "compare_previous":"Compare previous revision",
-    "comparing_with_latest": "Always compare with the latest version"
+    "compare_previous":"Compare previous revision"
   },
   "modal_rename": {
     "label": {

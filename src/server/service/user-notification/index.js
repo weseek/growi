@@ -19,13 +19,17 @@ class UserNotificationService {
    * @param {Page} page
    * @param {User} user
    * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
-   * @param {boolean} updateOrCreate
+   * @param {string} mode 'create' or 'update' or 'comment'
    * @param {string} previousRevision
+   * @param {Comment} comment
    */
-  async fire(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
+  async fire(page, user, slackChannelsStr, mode, option, comment = {}) {
     const { slackNotificationService, slack } = this.crowi;
 
-    await page.updateSlackChannel(slackChannelsStr);
+    const opt = option || {};
+    const previousRevision = opt.previousRevision || '';
+
+    await page.updateSlackChannels(slackChannelsStr);
 
     if (!slackNotificationService.hasSlackConfig()) {
       throw new Error('slackNotificationService has not been set up');
@@ -35,7 +39,13 @@ class UserNotificationService {
     const slackChannels = toArrayFromCsv(slackChannelsStr);
 
     const promises = slackChannels.map(async(chan) => {
-      const res = await slack.postPage(page, user, chan, updateOrCreate, previousRevision);
+      let res;
+      if (mode === 'comment') {
+        res = await slack.postComment(comment, user, chan, page.path);
+      }
+      else {
+        res = await slack.postPage(page, user, chan, mode, previousRevision);
+      }
       if (res.status !== 'ok') {
         throw new Error(`fail to send slack notification to #${chan} channel`);
       }

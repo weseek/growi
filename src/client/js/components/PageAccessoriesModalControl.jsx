@@ -17,7 +17,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const PageAccessoriesModalControl = (props) => {
   const {
-    t, pageAccessoriesContainer, isGuestUser, isSharedUser,
+    t, pageAccessoriesContainer, isGuestUser, isSharedUser, isNotFoundPage,
   } = props;
 
   const accessoriesBtnList = useMemo(() => {
@@ -37,27 +37,36 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'pageHistory',
         Icon: <HistoryIcon />,
-        disabled: isGuestUser || isSharedUser,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage,
         i18n: t('History'),
       },
       {
         name: 'attachment',
         Icon: <AttachmentIcon />,
-        disabled: false,
+        disabled: isNotFoundPage,
         i18n: t('attachment_data'),
       },
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUser || isSharedUser,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage,
         i18n: t('share_links.share_link_management'),
       },
     ];
-  }, [t, isGuestUser, isSharedUser]);
+  }, [t, isGuestUser, isSharedUser, isNotFoundPage]);
 
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
       {accessoriesBtnList.map((accessory) => {
+
+        let tooltipMessage;
+        if (accessory.disabled) {
+          tooltipMessage = isNotFoundPage ? t('not_found_page.page_not_exist') : t('Not available for guest');
+        }
+        else {
+          tooltipMessage = accessory.i18n;
+        }
+
         return (
           <Fragment key={accessory.name}>
             <div id={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`}>
@@ -70,7 +79,7 @@ const PageAccessoriesModalControl = (props) => {
               </button>
             </div>
             <UncontrolledTooltip placement="top" target={`shareLink-btn-wrapper-for-tooltip-for-${accessory.name}`} fade={false}>
-              {accessory.disabled ? t('Not available for guest') : accessory.i18n}
+              {tooltipMessage}
             </UncontrolledTooltip>
           </Fragment>
         );
@@ -94,6 +103,7 @@ PageAccessoriesModalControl.propTypes = {
 
   isGuestUser: PropTypes.bool.isRequired,
   isSharedUser: PropTypes.bool.isRequired,
+  isNotFoundPage: PropTypes.bool.isRequired,
 };
 
 export default withTranslation()(PageAccessoriesModalControlWrapper);

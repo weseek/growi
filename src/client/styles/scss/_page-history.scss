@@ -1,3 +1,6 @@
+// @import '../scss/variables';
+// @import '../scss/override-bootstrap-variables';
+
 .revision-history-table {
   tbody {
     max-height: 250px;
@@ -19,15 +22,41 @@
 }
 
 .revision-history-diff {
-  padding-left: 40px;
   color: $gray-900;
   table-layout: fixed;
 }
 
+.comparison-header {
+  height: 34px;
+  background-color: #ffffff;
+  border: 1px solid $gray-300;
+  .comparison-source-wrapper {
+    height: 26px;
+    margin-right: 1px;
+    border-right: 1px solid $gray-300;
+    .comparison-source {
+      color: $gray-500;
+    }
+  }
+  .comparison-target-wrapper {
+    height: 26px;
+    .comparison-target {
+      color: $gray-500;
+    }
+  }
+}
+
 .revision-compare {
-  .revision-compare-outer {
+  .revision-compare-container {
     min-height: 100px;
-    max-height: 250px;
-    overflow: auto;
+
+    &.nodiff {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .d2h-file-header {
+    display: none;
   }
 }

@@ -45,30 +45,28 @@ const RevisionComparer = (props) => {
     const { path } = revisionComparerContainer.pageContainer.state;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
 
-    const urlParams = (sourceRevision && targetRevision ? `?compare=${sourceRevision._id}...${targetRevision._id}` : '');
-    return encodeSpaces(decodeURI(`${origin}/${path}${urlParams}`));
+    const url = new URL(path, origin);
+
+    if (sourceRevision != null && targetRevision != null) {
+      const urlParams = `${sourceRevision._id}...${targetRevision._id}`;
+      url.searchParams.set('compare', urlParams);
+    }
+
+    return encodeSpaces(decodeURI(url));
   };
 
   const { sourceRevision, targetRevision } = revisionComparerContainer.state;
-  const showDiff = (sourceRevision && targetRevision);
+
+  if (sourceRevision == null || targetRevision == null) {
+    return null;
+  }
+
+  const isNodiff = sourceRevision._id === targetRevision._id;
 
   return (
     <div className="revision-compare">
       <div className="d-flex">
-        <h3 className="align-self-center mb-0">{ t('page_history.comparing_revisions') }</h3>
-        <div className="align-self-center ml-3">
-          <div className="custom-control custom-switch">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="comparingWithLatest"
-              onChange={() => revisionComparerContainer.toggleCompareWithLatest()}
-            />
-            <label className="custom-control-label" htmlFor="comparingWithLatest">
-              { t('page_history.comparing_with_latest') }
-            </label>
-          </div>
-        </div>
+        <h4 className="align-self-center">{ t('page_history.comparing_revisions') }</h4>
         <Dropdown
           className="grw-copy-dropdown align-self-center ml-auto"
           isOpen={dropdownOpen}
@@ -80,7 +78,7 @@ const RevisionComparer = (props) => {
           >
             <i className="ti-clipboard"></i>
           </DropdownToggle>
-          <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
+          <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: null } }}>
             {/* Page path URL */}
             <CopyToClipboard text={pagePathUrl()}>
               <DropdownItem className="px-3">
@@ -92,16 +90,19 @@ const RevisionComparer = (props) => {
         </Dropdown>
       </div>
 
-      <hr />
-
-      <div className="revision-compare-outer">
-        { showDiff && (
-          <RevisionDiff
-            revisionDiffOpened
-            previousRevision={sourceRevision}
-            currentRevision={targetRevision}
-          />
-        )}
+      <div className={`revision-compare-container ${isNodiff ? 'nodiff' : ''}`}>
+        { isNodiff
+          ? (
+            <span className="h3 text-muted">{t('No diff')}</span>
+          )
+          : (
+            <RevisionDiff
+              revisionDiffOpened
+              previousRevision={sourceRevision}
+              currentRevision={targetRevision}
+            />
+          )
+        }
       </div>
     </div>
   );
