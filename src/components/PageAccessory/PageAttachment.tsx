@@ -4,11 +4,11 @@ import {
 
 import { PaginationWrapper } from '~/components/PaginationWrapper';
 
-// import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
 import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
 import { Attachment as IAttachment } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
 import { Attachment } from '~/components/PageAccessory/Attachment';
+import { DeleteAttachmentModal } from '~/components/PageAccessory/DeleteAttachmentModal';
 import { useCurrentUser } from '~/stores/context';
 
 export const PageAttachment:VFC = () => {
@@ -17,6 +17,8 @@ export const PageAttachment:VFC = () => {
 
   const [inUseByAttachmentId, setInUseByAttachmentId] = useState<{ [key:string]:boolean }>({});
   const [attachments, setAttachments] = useState<IAttachment[]>([]);
+
+  const [isOpenDeleteAttachmentModal, setIsOpenDeleteAttachmentModal] = useState(false);
   const [attachmentToDelete, setAttachmentToDelete] = useState<IAttachment>();
 
   const [activePage, setActivePage] = useState(1);
@@ -55,6 +57,7 @@ export const PageAttachment:VFC = () => {
   }, [attachments, checkIfFileInUse]);
 
   const onAttachmentDeleteClicked = useCallback((attachment:IAttachment) => {
+    setIsOpenDeleteAttachmentModal(true);
     setAttachmentToDelete(attachment);
   }, []);
 
@@ -96,18 +99,17 @@ export const PageAttachment:VFC = () => {
         pagingLimit={limit}
         align="center"
       />
-      {/* TODO GW-5400 implement delete attachment modal */}
-      {/* <DeleteAttachmentModal
-        isOpen={showModal}
-        animation="false"
-        toggle={deleteModalClose}
-
+      <DeleteAttachmentModal
+        isOpen={isOpenDeleteAttachmentModal}
+        onClose={() => (setIsOpenDeleteAttachmentModal(false))}
         attachmentToDelete={attachmentToDelete}
-        inUse={deleteInUse}
-        deleting={this.state.deleting}
-        deleteError={this.state.deleteError}
-        onAttachmentDeleteClickedConfirm={this.onAttachmentDeleteClickedConfirm}
-      /> */}
+        // toggle={deleteModalClose}
+
+        // inUse={deleteInUse}
+        // deleting={this.state.deleting}
+        // deleteError={this.state.deleteError}
+        // onAttachmentDeleteClickedConfirm={this.onAttachmentDeleteClickedConfirm}
+      />
     </>
   );
 
