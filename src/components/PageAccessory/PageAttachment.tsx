@@ -99,17 +99,14 @@ export const PageAttachment:VFC = () => {
         pagingLimit={limit}
         align="center"
       />
-      <DeleteAttachmentModal
-        isOpen={isOpenDeleteAttachmentModal}
-        onClose={() => (setIsOpenDeleteAttachmentModal(false))}
-        attachmentToDelete={attachmentToDelete}
-        // toggle={deleteModalClose}
-
-        // inUse={deleteInUse}
-        // deleting={this.state.deleting}
-        // deleteError={this.state.deleteError}
-        // onAttachmentDeleteClickedConfirm={this.onAttachmentDeleteClickedConfirm}
-      />
+      {attachmentToDelete && (
+        <DeleteAttachmentModal
+          isOpen={isOpenDeleteAttachmentModal}
+          onClose={() => (setIsOpenDeleteAttachmentModal(false))}
+          attachmentToDelete={attachmentToDelete}
+          isDeleting={false}
+        />
+      )}
     </>
   );
 

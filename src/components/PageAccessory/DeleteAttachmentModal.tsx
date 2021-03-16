@@ -10,14 +10,15 @@ import { Username } from '~/components/User/Username';
 
 type Props = {
   isOpen: boolean,
-  onClose:() => void,
+  onClose: () => void,
   attachmentToDelete: Attachment,
+  isDeleting: boolean,
+  deleteErrorMessage?: string,
 };
 
 
 export const DeleteAttachmentModal:VFC<Props> = (props: Props) => {
-  const { attachmentToDelete } = props;
-
+  const { attachmentToDelete, isDeleting, deleteErrorMessage } = props;
 
   return (
     <Modal
@@ -45,9 +46,10 @@ export const DeleteAttachmentModal:VFC<Props> = (props: Props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        {/* <div className="mr-3 d-inline-block">
-          {deletingIndicator}
-        </div> */}
+        <div className="mr-3 d-inline-block">
+          {isDeleting && <div className="speeding-wheel-sm" />}
+          {deleteErrorMessage != null && <span>{deleteErrorMessage}</span>}
+        </div>
         {/* <button
           type="button"
           className="btn btn-danger"
@@ -112,13 +114,6 @@ export const DeleteAttachmentModal:VFC<Props> = (props: Props) => {
 //     delete props.deleting;
 //     delete props.deleteError;
 
-//     let deletingIndicator = '';
-//     if (this.props.deleting) {
-//       deletingIndicator = <div className="speeding-wheel-sm"></div>;
-//     }
-//     if (this.props.deleteError) {
-//       deletingIndicator = <span>{this.props.deleteError}</span>;
-//     }
 
 //     const renderAttachment = this.renderByFileFormat(attachment);
 
