@@ -137,6 +137,8 @@ module.exports = function(crowi) {
       'markdown:xss:attrWhiteList': [],
       'markdown:isEnabledLinebreaks': false,
       'markdown:isEnabledLinebreaksInComments': true,
+      'markdown:adminPreferredIndentSize': 4,
+      'markdown:isIndentSizeForced': true,
       'markdown:presentation:pageBreakSeparator': 1,
       'markdown:presentation:pageBreakCustomSeparator': undefined,
     };
@@ -196,6 +198,8 @@ module.exports = function(crowi) {
       themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+      adminPreferredIndentSize: crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+      isIndentSizeForced: crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
       pageBreakSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
       pageBreakCustomSeparator: crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
       isEnabledXssPrevention: crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),

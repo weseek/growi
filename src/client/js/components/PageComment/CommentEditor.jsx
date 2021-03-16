@@ -23,6 +23,7 @@ import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 
+
 const navTabMapping = {
   comment_editor: {
     Icon: () => <i className="icon-settings" />,
@@ -314,6 +315,10 @@ class CommentEditor extends React.Component {
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}
               />
+              {/*
+                Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
+                See a review comment in https://github.com/weseek/growi/pull/3473
+              */}
             </TabPane>
             <TabPane tabId="comment_preview">
               <div className="comment-form-preview">

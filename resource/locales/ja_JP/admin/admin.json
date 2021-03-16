@@ -78,6 +78,14 @@
       "enable_lineBreak_for_comment": "コメント欄で Line Break を有効にする",
       "enable_lineBreak_for_comment_desc": "コメント中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います"
     },
+    "indent_header": "インデント設定",
+    "indent_desc": "インデントの設定を変更できます。",
+    "indent_options": {
+      "indentSize": "既定のインデント幅",
+      "indentSize_desc": "マークダウンの既定のインデント幅を変更できます。",
+      "disallow_indent_change": "ユーザによるインデント幅変更を許可しない",
+      "disallow_indent_change_desc": "ユーザに単一のインデント幅使用を強制することができます。"
+    },
     "presentation_header": "プレゼンテーション設定",
     "presentation_desc": "プレゼンテーションの設定を変更できます。",
     "presentation_options": {

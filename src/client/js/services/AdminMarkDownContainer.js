@@ -18,6 +18,8 @@ export default class AdminMarkDownContainer extends Container {
       // set dummy value tile for using suspense
       isEnabledLinebreaks: this.dummyIsEnabledLinebreaks,
       isEnabledLinebreaksInComments: false,
+      adminPreferredIndentSize: 4,
+      isIndentSizeForced: true,
       pageBreakSeparator: 1,
       pageBreakCustomSeparator: '',
       isEnabledXss: false,
@@ -27,6 +29,7 @@ export default class AdminMarkDownContainer extends Container {
     };
 
     this.switchEnableXss = this.switchEnableXss.bind(this);
+    this.setAdminPreferredIndentSize = this.setAdminPreferredIndentSize.bind(this);
   }
 
   /**
@@ -46,6 +49,8 @@ export default class AdminMarkDownContainer extends Container {
     this.setState({
       isEnabledLinebreaks: markdownParams.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: markdownParams.isEnabledLinebreaksInComments,
+      adminPreferredIndentSize: markdownParams.adminPreferredIndentSize,
+      isIndentSizeForced: markdownParams.isIndentSizeForced,
       pageBreakSeparator: markdownParams.pageBreakSeparator,
       pageBreakCustomSeparator: markdownParams.pageBreakCustomSeparator || '',
       isEnabledXss: markdownParams.isEnabledXss,
@@ -53,6 +58,10 @@ export default class AdminMarkDownContainer extends Container {
       tagWhiteList: markdownParams.tagWhiteList || '',
       attrWhiteList: markdownParams.attrWhiteList || '',
     });
+  }
+
+  setAdminPreferredIndentSize(adminPreferredIndentSize) {
+    this.setState({ adminPreferredIndentSize });
   }
 
   /**
@@ -87,6 +96,19 @@ export default class AdminMarkDownContainer extends Container {
     const response = await this.appContainer.apiv3.put('/markdown-setting/lineBreak', {
       isEnabledLinebreaks: this.state.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
+    });
+
+    return response;
+  }
+
+  /**
+   * Update
+   */
+  async updateIndentSetting() {
+
+    const response = await this.appContainer.apiv3.put('/markdown-setting/indent', {
+      adminPreferredIndentSize: this.state.adminPreferredIndentSize,
+      isIndentSizeForced: this.state.isIndentSizeForced,
     });
 
     return response;

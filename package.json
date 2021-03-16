@@ -96,6 +96,7 @@
     "cross-env": "^7.0.0",
     "csrf": "^3.1.0",
     "date-fns": "^2.0.0",
+    "detect-indent": "^6.0.0",
     "diff": "^4.0.1",
     "elasticsearch": "^16.0.0",
     "entities": "^2.0.0",

@@ -78,6 +78,14 @@
       "enable_lineBreak_for_comment": "Enable line break in comment",
       "enable_lineBreak_for_comment_desc": "Convert line break in comment to<code>&lt;br&gt;</code>in HTML"
     },
+    "indent_header": "Indent setting",
+    "indent_desc": "You can change indent settings.",
+    "indent_options": {
+      "indentSize": "Default indent size",
+      "indentSize_desc": "You can change the default indent size for the Markdown editor",
+      "disallow_indent_change": "Disallow change of indent size by users",
+      "disallow_indent_change_desc": "You can force users to use a specific indent size."
+    },
     "presentation_header": "Presentation setting",
     "presentation_desc": "You can change presentation settings.",
     "presentation_options": {
