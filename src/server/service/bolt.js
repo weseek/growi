@@ -154,10 +154,7 @@ class BoltService {
   }
 
   getKeywords(args) {
-    const keywordsArr = [];
-    for (let i = 1; i < args.length; i++) {
-      keywordsArr.push(args[i]);
-    }
+    const keywordsArr = args.slice(1);
     const keywords = keywordsArr.join(' ');
     return keywords;
   }
