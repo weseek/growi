@@ -10,7 +10,7 @@ import { addSeconds } from 'date-fns';
 import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
-import { IUser } from './new-user';
+import { Attachment as IAttachment } from '~/interfaces/page';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:models:attachment');
@@ -23,21 +23,8 @@ function generateFileHash(fileName:string) {
   return hash.digest('hex');
 }
 
-export interface IAttachment extends Document{
-  _id: Types.ObjectId;
-  creator: IUser;
-  filePath: string;
-  fileName: string;
-  originalName: string;
-  fileFormat: string;
-  fileSize: number;
-  createdAt: Date;
-  temporaryUrlCached: string;
-  temporaryUrlExpiredAt: Date;
-  filePathProxied: string;
-}
 
-const schema:Schema<IAttachment> = new Schema<IAttachment>({
+const schema:Schema<IAttachment & Document> = new Schema<IAttachment & Document>({
   page: { type: Types.ObjectId, ref: 'Page', index: true },
   creator: { type: Types.ObjectId, ref: 'User', index: true },
   filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below
@@ -112,4 +99,5 @@ schema.virtual('downloadPathProxied').get(function(this: { _id : Types.ObjectId 
 });
 
 schema.loadClass(Attachment);
-export default getOrCreateModel<IAttachment>('Attachment', schema);
+// TODO rename model name
+export default getOrCreateModel<IAttachment & Document>('NewAttachment', schema);

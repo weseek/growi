@@ -94,7 +94,7 @@ const SearchForm: FC<Props> = (props: Props) => {
   const placeholder = isReachable
     ? 'Search ...'
     : 'Error on Search Service';
-  const emptyLabel = (searchError !== null)
+  const emptyLabel = (searchError != null)
     ? 'Error on searching.'
     : t('search.search page bodies');
 

@@ -1,4 +1,7 @@
+import ShareLink from '~/server/models/share-link';
+
 import loggerFactory from '~/utils/logger';
+import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
@@ -8,7 +11,6 @@ const router = express.Router();
 
 const { body } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
-const removeNullPropertyFromObject = require('../../../lib/util/removeNullPropertyFromObject');
 
 const validator = {
   generalSetting: [
@@ -614,7 +616,6 @@ module.exports = (crowi) => {
    *                      description: suceed to get all share links
    */
   router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const ShareLink = crowi.model('ShareLink');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};

@@ -17,6 +17,8 @@ import ConfigManager from '~/server/service/config-manager';
 import AclService from '~/server/service/acl';
 import AttachmentService from '~/server/service/attachment';
 
+import { User as IUser } from '~/interfaces/user';
+
 const logger = loggerFactory('growi:models:user');
 
 export const STATUS_REGISTERED = 1;
@@ -54,13 +56,7 @@ class UserUpperLimitException {
 
 }
 
-
-export interface IUser extends Document{
-  _id: Types.ObjectId;
-  userId: Types.ObjectId;
-}
-
-const schema = new Schema({
+const schema:Schema<IUser & Document> = new Schema<IUser & Document>({
   userId: String,
   image: String,
   imageAttachment: { type: Types.ObjectId, ref: 'Attachment' },
@@ -724,4 +720,5 @@ class User extends Model {
 
 
 schema.loadClass(User);
-export default getOrCreateModel<IUser>('User', schema);
+// TODO rename model name
+export default getOrCreateModel<IUser & Document>('NewUser', schema);

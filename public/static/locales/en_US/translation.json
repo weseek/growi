@@ -332,7 +332,6 @@
     "user_not_admin": "Only admin user can delete completely"
   },
   "page_history": {
-    "revision_list": "Revision list",
     "revision": "version",
     "comparing_source": "Source",
     "comparing_target": "Target",

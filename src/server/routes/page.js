@@ -1,4 +1,6 @@
 import loggerFactory from '~/utils/logger';
+import ShareLink from '~/server/models/share-link';
+import Bookmark from '~/server/models/bookmark';
 
 const swig = require('swig-templates');
 const { pathUtils } = require('growi-commons');
@@ -134,18 +136,16 @@ const { serializeRevisionSecurely } = require('../models/serializers/revision-se
 module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
-  const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-  const ShareLink = crowi.model('ShareLink');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
 
-  const { slackNotificationService, configManager, xssService } = crowi;
+  const { configManager, xssService } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const userNotificationService = crowi.getUserNotificationService();
 
   const XssOption = require('~/service/xss/xssOption');
   const Xss = require('~/service/xss/index');
@@ -194,37 +194,6 @@ module.exports = function(crowi, app) {
     };
   }
 
-  // user notification
-  // TODO create '/service/user-notification' module
-  /**
-   *
-   * @param {Page} page
-   * @param {User} user
-   * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
-   * @param {boolean} updateOrCreate
-   * @param {string} previousRevision
-   */
-  async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
-    await page.updateSlackChannel(slackChannelsStr)
-      .catch((err) => {
-        logger.error('Error occured in updating slack channels: ', err);
-      });
-
-
-    if (slackNotificationService.hasSlackConfig()) {
-      const slackChannels = slackChannelsStr != null ? slackChannelsStr.split(',') : [null];
-
-      const promises = slackChannels.map((chan) => {
-        return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
-      });
-
-      Promise.all(promises)
-        .catch((err) => {
-          logger.error('Error occured in sending slack notification: ', err);
-        });
-    }
-  }
-
   function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
     renderVars.revision = page.revision;
@@ -266,10 +235,6 @@ module.exports = function(crowi, app) {
     renderVars.grant = page.grant;
     renderVars.grantedGroupId = page.grantedGroup ? page.grantedGroup.id : null;
     renderVars.grantedGroupName = page.grantedGroup ? page.grantedGroup.name : null;
-  }
-
-  async function addRenderVarsForSlack(renderVars, page) {
-    renderVars.slack = await getSlackChannels(page);
   }
 
   async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
@@ -349,7 +314,6 @@ module.exports = function(crowi, app) {
     portalPage = await portalPage.populateDataToShowRevision();
 
     addRenderVarsForPage(renderVars, portalPage);
-    await addRenderVarsForSlack(renderVars, portalPage);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
     renderVars.sharelinksNumber = sharelinksNumber;
@@ -399,7 +363,6 @@ module.exports = function(crowi, app) {
     addRenderVarsForPage(renderVars, page);
     addRenderVarsForScope(renderVars, page);
 
-    await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
 
     const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
@@ -414,16 +377,6 @@ module.exports = function(crowi, app) {
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
-
-  const getSlackChannels = async(page) => {
-    if (page.extended.slack) {
-      return page.extended.slack;
-    }
-
-    const data = await UpdatePost.findSettingsByPath(page.path);
-    const channels = data.map((e) => { return e.channel }).join(', ');
-    return channels;
-  };
 
   actions.showTopPage = function(req, res) {
     return showTopPage(req, res);
@@ -769,7 +722,17 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled) {
-      await notifyToSlackByUser(createdPage, req.user, slackChannels, 'create', false);
+      try {
+        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create');
+        results.forEach((result) => {
+          if (result.status === 'rejected') {
+            logger.error('Create user notification failed', result.reason);
+          }
+        });
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
   };
 
@@ -904,7 +867,17 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled) {
-      await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
+      try {
+        const results = await userNotificationService.fire(page, req.user, slackChannels, 'update', { previousRevision });
+        results.forEach((result) => {
+          if (result.status === 'rejected') {
+            logger.error('Create user notification failed', result.reason);
+          }
+        });
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
   };
 

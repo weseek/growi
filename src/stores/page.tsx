@@ -1,14 +1,14 @@
 import useSWR, { mutate, responseInterface } from 'swr';
-import { ConfigInterface } from 'swr/dist/types';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
-  Page, Tag, Comment, PaginationResult, Revision,
+  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision, Attachment,
 } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
 
-import { useCurrentPagePath } from './context';
+import { useCurrentPagePath, useShareLinkId } from './context';
+
 import { useStaticSWR } from './use-static-swr';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -39,8 +39,8 @@ export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/pages.getPageTag', currentPage],
-    (endpoint, page) => apiGet(endpoint, { pageId: page.id }).then(response => response.tags),
+    ['/pages.getPageTag', currentPage?._id],
+    (endpoint, pageId) => apiGet(endpoint, { pageId }).then(response => response.tags),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -52,8 +52,39 @@ export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): r
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/revisions/list', currentPage, selectedPage, limit],
-    (endpoint, page, selectedPage, limit) => apiv3Get(endpoint, { pageId: page.id, page: selectedPage, limit }).then(response => response.data),
+    ['/revisions/list', currentPage?._id, selectedPage, limit],
+    (endpoint, pageId, selectedPage, limit) => apiv3Get(endpoint, { pageId, page: selectedPage, limit }).then(response => response.data),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useRevisionById = (revisionId?:string): responseInterface<Revision, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+  const { data: shareLinkId } = useShareLinkId();
+  const endpoint = revisionId != null ? `/revisions/${revisionId}` : null;
+
+  return useSWR(
+    [endpoint, currentPage?._id, shareLinkId],
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data.revision),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useLatestRevision = (): responseInterface<Revision, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+  const { data: shareLinkId } = useShareLinkId();
+
+  return useSWR(
+    ['/revisions/list', currentPage?._id, shareLinkId],
+    (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, {
+      pageId, shareLinkId, page: 1, limit: 1,
+    }).then(response => response.data.docs[0]),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -65,8 +96,8 @@ export const useCurrentPageCommentsSWR = (): responseInterface<Comment[], Error>
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/comments', currentPage],
-    (endpoint, page) => apiv3Get(endpoint, { pageId: page.id }).then(response => response.data.comments),
+    ['/comments', currentPage?._id],
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data.comments),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -91,30 +122,80 @@ export const useCurrentPageDeleted = (): responseInterface<boolean, Error> => {
   return useStaticSWR('currentPageDeleted', isDeleted);
 };
 
-export const useRecentlyUpdatedSWR = <Data, Error>(config?: ConfigInterface): responseInterface<Data, Error> => {
+export const useRecentlyUpdatedSWR = <Data, Error>(): responseInterface<Page[], Error> => {
   return useSWR(
     '/pages/recent',
-    endpoint => apiv3Get(endpoint).then(response => response.data),
-    config,
+    endpoint => apiv3Get(endpoint).then(response => response.data?.pages),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageList = (activePage: number): responseInterface<PaginationResultByQueryBuilder, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    ['/pages/list', currentPage?.path, activePage],
+    (endpoint, path, activePage) => apiv3Get(endpoint, { path, page: activePage }).then(response => response.data),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageAttachment = (activePage: number): responseInterface<PaginationResult<Attachment>, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    ['/attachment/list', currentPage?._id, activePage],
+    (endpoint, pageId, activePage) => apiv3Get(endpoint, { pageId, page: activePage }).then(response => response.data.paginateResult),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 
 export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
   return useSWR(
-    '/bookmarks/info',
-    endpoint => apiv3Get(endpoint, { pageId }).then(response => response.data),
+    ['/bookmarks/info', pageId],
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
     {
       initialData: initialData || false,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<string[], Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  const isSeenUsersExist = currentPage != null && currentPage.seenUsers.length > 0;
+
+  return useSWR(
+    // key
+    currentPage == null
+      ? null
+      : ['/users.list', currentPage.seenUsers, limit],
+    // fetcher
+    isSeenUsersExist
+      ? (endpoint, seenUsers) => apiGet(endpoint, { user_ids: seenUsers }).then(response => response.users.slice(limit).reverse())
+      : () => [],
+    // option
+    {
+      revalidateOnFocus: false,
     },
   );
 };
 
 export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
   return useSWR(
-    '/page/like-info',
-    endpoint => apiv3Get(endpoint, { _id: pageId }).then(response => response.data),
+    ['/page/like-info', pageId],
+    (endpoint, pageId) => apiv3Get(endpoint, { _id: pageId }).then(response => response.data),
     {
       initialData: initialData || false,
       revalidateOnFocus: false,
@@ -123,12 +204,32 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
   );
 };
 
-export const useDescendantsCount = (pagePath?: string): responseInterface<number, Error> => {
-  const endpoint = '/pages/descendents-count';
-  const key = pagePath != null ? endpoint : null;
+export const useDescendantsCount = (pagePath: string): responseInterface<number, Error> => {
   return useSWR(
-    key,
-    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
+    ['/pages/descendents-count', pagePath],
+    (endpoint, pagePath) => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useSubordinatedList = (pagePath: string): responseInterface<Page[], Error> => {
+  return useSWR(
+    ['/pages/subordinated-list', pagePath],
+    (endpoint, pagePath) => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.subordinatedPaths),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useExistingPaths = (pagePath: string, newParentPath:string): responseInterface<string[], Error> => {
+  return useSWR(
+    ['/page/exist-paths', newParentPath],
+    (endpoint, toPath) => apiv3Get(endpoint, { fromPath: pagePath, toPath }).then(response => response.data.existPaths),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

@@ -37,8 +37,6 @@ class SafeRedirectMiddleware {
         return res.redirect('/');
       }
 
-      console.log('this', this);
-
       try {
         // check inner redirect
         const redirectUrl = new URL(redirectTo, `${req.protocol}://${req.get('host')}`);

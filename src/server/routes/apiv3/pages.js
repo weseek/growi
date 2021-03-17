@@ -8,6 +8,8 @@ const { body } = require('express-validator');
 const { query } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
+const { isCreatablePage } = require('~/utils/path-utils');
+
 const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
@@ -264,7 +266,7 @@ module.exports = (crowi) => {
     // user notification
     if (isSlackEnabled) {
       try {
-        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create', false);
+        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create');
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
@@ -371,7 +373,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
@@ -382,7 +384,7 @@ module.exports = (crowi) => {
       socketClientId: +req.body.socketClientId || undefined,
     };
 
-    if (!Page.isCreatableName(newPagePath)) {
+    if (!isCreatablePage(newPagePath)) {
       return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath})'`, 'invalid_path'), 409);
     }
 
@@ -538,7 +540,7 @@ module.exports = (crowi) => {
     const options = { socketClientId };
 
     try {
-      const pages = await crowi.pageService.deletePageRecursivelyCompletely({ path: '/trash' }, req.user, options);
+      const pages = await crowi.pageService.deleteCompletelyDescendantsWithStream({ path: '/trash' }, req.user, options);
       return res.apiv3({ pages });
     }
     catch (err) {
@@ -551,7 +553,7 @@ module.exports = (crowi) => {
   ];
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
-    const { isTrashPage } = require('~/utils/path-utils');
+    const { isTrashPage, isCreatablePage } = require('~/utils/path-utils');
 
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
@@ -618,7 +620,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);

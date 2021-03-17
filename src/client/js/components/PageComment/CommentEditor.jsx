@@ -8,20 +8,21 @@ import {
 
 import * as toastr from 'toastr';
 
-import AppContainer from '../../services/AppContainer';
+import { User } from '~/interfaces/user';
+
 import PageContainer from '../../services/PageContainer';
 import CommentContainer from '../../services/CommentContainer';
 import EditorContainer from '../../services/EditorContainer';
-import GrowiRenderer from '../../util/GrowiRenderer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import UserPicture from '../User/UserPicture';
 import Editor from '../PageEditor/Editor';
 import SlackNotification from '../SlackNotification';
 
-import CommentPreview from './CommentPreview';
 import NotAvailableForGuest from '../NotAvailableForGuest';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
+import Preview from '../PageEditor/Preview';
+import { useCurrentUser, useHasSlackConfig } from '~/stores/context';
 
 const navTabMapping = {
   comment_editor: {
@@ -48,20 +49,17 @@ class CommentEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    const config = this.props.appContainer.getConfig();
-    const isUploadable = config.upload.image || config.upload.file;
-    const isUploadableFile = config.upload.file;
+    // const isUploadable = config.upload.image || config.upload.file;
+    // const isUploadableFile = config.upload.file;
 
     this.state = {
       isReadyToUse: !this.props.isForNewComment,
       comment: this.props.commentBody || '',
       isMarkdown: true,
-      html: '',
       activeTab: 'comment_editor',
-      isUploadable,
-      isUploadableFile,
+      // isUploadable,
+      // isUploadableFile,
       errorMessage: undefined,
-      hasSlackConfig: config.hasSlackConfig,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -107,7 +105,6 @@ class CommentEditor extends React.Component {
     this.setState({
       comment: '',
       isMarkdown: true,
-      html: '',
       activeTab: 'comment_editor',
       errorMessage: undefined,
     });
@@ -211,49 +208,6 @@ class CommentEditor extends React.Component {
     });
   }
 
-  getCommentHtml() {
-    return (
-      <CommentPreview
-        inputRef={(el) => { this.previewElement = el }}
-        html={this.state.html}
-      />
-    );
-  }
-
-  renderHtml(markdown) {
-    const context = {
-      markdown,
-    };
-
-    const { growiRenderer } = this.props;
-    const interceptorManager = this.props.appContainer.interceptorManager;
-    interceptorManager.process('preRenderCommnetPreview', context)
-      .then(() => { return interceptorManager.process('prePreProcess', context) })
-      .then(() => {
-        context.markdown = growiRenderer.preProcess(context.markdown);
-      })
-      .then(() => { return interceptorManager.process('postPreProcess', context) })
-      .then(() => {
-        const parsedHTML = growiRenderer.process(context.markdown);
-        context.parsedHTML = parsedHTML;
-      })
-      .then(() => { return interceptorManager.process('prePostProcess', context) })
-      .then(() => {
-        context.parsedHTML = growiRenderer.postProcess(context.parsedHTML);
-      })
-      .then(() => { return interceptorManager.process('postPostProcess', context) })
-      .then(() => { return interceptorManager.process('preRenderCommentPreviewHtml', context) })
-      .then(() => {
-        this.setState({ html: context.parsedHTML });
-      })
-      // process interceptors for post rendering
-      .then(() => { return interceptorManager.process('postRenderCommentPreviewHtml', context) });
-  }
-
-  generateInnerHtml(html) {
-    return { __html: html };
-  }
-
   renderBeforeReady() {
     return (
       <div className="text-center">
@@ -271,11 +225,11 @@ class CommentEditor extends React.Component {
   }
 
   renderReady() {
-    const { appContainer, commentContainer } = this.props;
+    const { commentContainer } = this.props;
     const { activeTab } = this.state;
 
-    const commentPreview = this.state.isMarkdown ? this.getCommentHtml() : null;
-    const emojiStrategy = appContainer.getEmojiStrategy();
+    const commentPreview = this.state.isMarkdown ? <Preview markdown={this.state.comment} /> : null;
+    // const emojiStrategy = appContainer.getEmojiStrategy();
 
     const errorMessage = <span className="text-danger text-right mr-2">{this.state.errorMessage}</span>;
     const cancelButton = (
@@ -306,10 +260,10 @@ class CommentEditor extends React.Component {
                 value={this.state.comment}
                 isGfmMode={this.state.isMarkdown}
                 lineNumbers={false}
-                isMobile={appContainer.isMobile}
+                // isMobile={appContainer.isMobile}
                 isUploadable={this.state.isUploadable}
                 isUploadableFile={this.state.isUploadableFile}
-                emojiStrategy={emojiStrategy}
+                // emojiStrategy={emojiStrategy}
                 onChange={this.updateState}
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}
@@ -349,7 +303,7 @@ class CommentEditor extends React.Component {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
 
-            { this.state.hasSlackConfig
+            { this.props.hasSlackConfig
               && (
               <div className="form-inline align-self-center mr-md-2">
                 <SlackNotification
@@ -378,14 +332,13 @@ class CommentEditor extends React.Component {
   }
 
   render() {
-    const { appContainer } = this.props;
     const { isReadyToUse } = this.state;
 
     return (
       <div className="form page-comment-form">
         <div className="comment-form">
           <div className="comment-form-user">
-            <UserPicture user={appContainer.currentUser} noLink noTooltip />
+            <UserPicture user={this.props.currentUser} noLink noTooltip />
           </div>
           <div className="comment-form-main">
             { !isReadyToUse
@@ -401,12 +354,13 @@ class CommentEditor extends React.Component {
 }
 
 CommentEditor.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
   commentContainer: PropTypes.instanceOf(CommentContainer).isRequired,
 
-  growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
+  currentUser: PropTypes.instanceOf(User).isRequired,
+  hasSlackConfig: PropTypes.bool.isRequired,
+
   isForNewComment: PropTypes.bool,
   replyTo: PropTypes.string,
   currentCommentId: PropTypes.string,
@@ -416,9 +370,17 @@ CommentEditor.propTypes = {
   onCommentButtonClicked: PropTypes.func,
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+const CommentEditorWrapper = (props) => {
+  const { data: currentUser } = useCurrentUser();
+  const { data: hasSlackConfig } = useHasSlackConfig();
+
+  return <CommentEditor {...props} currentUser={currentUser} hasSlackConfig={hasSlackConfig} />;
+};
+
 /**
  * Wrapper component for using unstated
  */
-const CommentEditorWrapper = withUnstatedContainers(CommentEditor, [AppContainer, PageContainer, EditorContainer, CommentContainer]);
+const CommentEditorWrapperWrapper = withUnstatedContainers(CommentEditorWrapper, [PageContainer, EditorContainer, CommentContainer]);
 
 export default CommentEditorWrapper;

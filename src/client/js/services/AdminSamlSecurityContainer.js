@@ -1,7 +1,7 @@
 import { Container } from 'unstated';
 
 import loggerFactory from '~/utils/logger';
-import removeNullPropertyFromObject from '../../../lib/util/removeNullPropertyFromObject';
+import { removeNullPropertyFromObject } from '~/utils/object-utils';
 import { apiv3Get, apiv3Put } from '~/utils/apiv3-client';
 
 const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');

@@ -1,3 +1,5 @@
+import Bookmark from '~/server/models/bookmark';
+
 /**
  * @swagger
  *
@@ -47,7 +49,6 @@
 
 module.exports = function(crowi, app) {
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const ApiResponse = require('../util/apiResponse');
 
   const actions = {};
@@ -130,11 +131,11 @@ module.exports = function(crowi, app) {
     const userIds = req.query.user_ids || null; // TODO: handling
 
     let userFetcher;
-    if (!userIds || userIds.split(',').length <= 0) {
+    if (userIds == null || userIds.length <= 0) {
       userFetcher = User.findAllUsers();
     }
     else {
-      userFetcher = User.findUsersByIds(userIds.split(','));
+      userFetcher = User.findUsersByIds(userIds);
     }
 
     const data = {};

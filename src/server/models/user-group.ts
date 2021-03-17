@@ -1,27 +1,20 @@
-import { Schema, Types, Model } from 'mongoose';
+import { Schema, Model } from 'mongoose';
 
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import Debug from 'debug';
 import { getOrCreateModel } from '../util/mongoose-utils';
-import UserGroupRelation from '~/server/models/new-user-group-relation';
+import { UserGroup as IUserGroup } from '~/interfaces/user';
 
 import ConfigManager from '~/server/service/config-manager';
-// import { PageServise } from '~/server/service/page';
 
 const debug = Debug('growi:models:userGroup');
 
-export interface IUserGroup{
-  _id: Types.ObjectId;
-  userGroupId:string;
-  name: string;
-  createdAt: Date;
-}
 
 /*
  * define schema
  */
-const schema = new Schema<IUserGroup>({
+const schema:Schema<IUserGroup & Document> = new Schema<IUserGroup & Document>({
   userGroupId: String,
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
@@ -35,14 +28,11 @@ schema.plugin(mongoosePaginate);
  */
 class UserGroup extends Model {
 
-  // static pageService: PageServise;
-
   static paginate: (query, options)=>Promise<IUserGroup[]>;
 
   constructor() {
     super();
     this.configManager = new ConfigManager();
-    // this.pageService = new PageServise(this.configManager);
   }
 
   /**
@@ -70,15 +60,12 @@ class UserGroup extends Model {
   /*
    * model static methods
    */
-
-  // グループ画像パスの生成
   static createUserGroupPictureFilePath(userGroup, name) {
     const ext = `.${name.match(/(.*)(?:\.([^.]+$))/)[2]}`;
 
     return `userGroup/${userGroup._id}${ext}`;
   }
 
-  // すべてのグループを取得（オプション指定可）
   static findAllGroups(_option) {
     return this.find().exec();
   }
@@ -109,7 +96,6 @@ class UserGroup extends Model {
       });
   }
 
-  // 登録可能グループ名確認
   static isRegisterableName(name) {
     const query = { name };
 
@@ -119,35 +105,15 @@ class UserGroup extends Model {
       });
   }
 
-  // グループの完全削除
-  static async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
-    const groupToDelete = await this.findById(deleteGroupId);
-    if (groupToDelete == null) {
-      throw new Error(`UserGroup data is not exists. id: ${deleteGroupId}`);
-    }
-    const deletedGroup = await groupToDelete.remove();
-
-    await Promise.all([
-      // TODO fix
-      // UserGroupRelation.removeAllByUserGroup(deletedGroup),
-      // this.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
-    ]);
-
-    return deletedGroup;
-  }
-
   static countUserGroups() {
     return this.estimatedDocumentCount();
   }
 
-  // グループ生成（名前が要る）
   static createGroupByName(name) {
     return this.create({ name });
   }
 
-  // グループ名の更新
   async updateName(name) {
-    // 名前を設定して更新
     this.name = name;
     await this.save();
   }
@@ -156,4 +122,4 @@ class UserGroup extends Model {
 
 
 schema.loadClass(UserGroup);
-export default getOrCreateModel<IUserGroup>('UserGroup', schema);
+export default getOrCreateModel<IUserGroup & Document>('UserGroup', schema);

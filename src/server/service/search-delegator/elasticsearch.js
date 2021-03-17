@@ -393,7 +393,7 @@ class ElasticsearchDelegator {
         { path: 'revision', model: 'Revision', select: 'body' },
       ])
       .lean()
-      .cursor({ batchSize: BULK_REINDEX_SIZE });
+      .cursor();
 
     let skipped = 0;
     const thinOutStream = new Transform({

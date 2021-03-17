@@ -13,15 +13,17 @@ import HistoryIcon from '../../client/js/components/Icons/HistoryIcon';
 import AttachmentIcon from '../../client/js/components/Icons/AttachmentIcon';
 import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 
-// import PageAttachment from '../../client/js/components/PageAttachment';
 // import PageTimeline from '../../client/js/components/PageTimeline';
-// import PageList from '../../client/js/components/PageList';
+import { PageList } from '~/components/PageAccessory/PageList';
 import { PageHistory } from '~/components/PageAccessory/PageHistory';
+import { PageAttachment } from '~/components/PageAccessory/PageAttachment';
 // import ShareLink from '../../client/js/components/ShareLink/ShareLink';
 
 import ExpandOrContractButton from '../../client/js/components/ExpandOrContractButton';
 
 import { CustomNavTab } from '../../client/js/components/CustomNavigation/CustomNav';
+
+import { AccessoryName } from '~/interfaces/accessory';
 
 type Props = {
   isGuestUser: boolean;
@@ -29,8 +31,8 @@ type Props = {
   isOpen: boolean;
   isNotFoundPage: boolean;
   onClose?: ()=>void;
-  activeTab:string;
-  activeComponents: Set<string>;
+  activeTab: AccessoryName;
+  activeComponents: Set<AccessoryName>;
   switchActiveTab?: ()=> void;
 }
 
@@ -125,18 +127,18 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
               the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
         <TabContent activeTab={activeTab}>
           <TabPane tabId="pagelist">
-            {/* {activeComponents.has('pagelist') && <PageList />} */}
+            {activeComponents.has(AccessoryName.PAGE_LIST) && <PageList />}
           </TabPane>
           <TabPane tabId="timeline">
             {/* {activeComponents.has('timeline') && <PageTimeline /> } */}
           </TabPane>
           {!isGuestUser && (
             <TabPane tabId="pageHistory">
-              {activeComponents.has('pageHistory') && <PageHistory /> }
+              {activeComponents.has(AccessoryName.PAGE_HISTORY) && <PageHistory /> }
             </TabPane>
           )}
           <TabPane tabId="attachment">
-            {/* {activeComponents.has('attachment') && <PageAttachment />} */}
+            {activeComponents.has(AccessoryName.ATTACHMENT) && <PageAttachment />}
           </TabPane>
           {!isGuestUser && (
             <TabPane tabId="shareLink">

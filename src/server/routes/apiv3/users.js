@@ -1,6 +1,8 @@
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:routes:apiv3:user-group');
+import UserGroupRelation from '~/server/models/user-group-relation';
+
+const logger = loggerFactory('growi:routes:apiv3:users');
 
 const express = require('express');
 
@@ -77,7 +79,6 @@ module.exports = (crowi) => {
     User,
     Page,
     ExternalAccount,
-    UserGroupRelation,
   } = crowi.models;
 
 
@@ -240,8 +241,8 @@ module.exports = (crowi) => {
       return res.apiv3({ paginateResult });
     }
     catch (err) {
-      const msg = 'Error occurred in fetching user group list';
-      logger.error('Error', err);
+      const msg = 'Error occurred in fetching users data';
+      logger.error(msg, { err });
       return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
     }
   });
@@ -309,7 +310,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       const msg = 'Error occurred in retrieve recent created pages for user';
-      logger.error('Error', err);
+      logger.error(msg, { err });
       return res.apiv3Err(new ErrorV3(msg, 'retrieve-recent-created-pages-failed'), 500);
     }
   });
@@ -333,7 +334,7 @@ module.exports = (crowi) => {
       return res.apiv3({ exists: user != null });
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error('Error occurred when /exists invoked', { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -379,7 +380,7 @@ module.exports = (crowi) => {
       return res.apiv3({ invitedUserList }, 201);
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error('Error occurred when /invite invoked', { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -421,7 +422,7 @@ module.exports = (crowi) => {
       return res.apiv3({ userData });
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error(`Error occurred when /${id}/giveAdmin invoked`, { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -463,7 +464,7 @@ module.exports = (crowi) => {
       return res.apiv3({ userData });
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error(`Error occurred when /${id}/removeAdmin invoked`, { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -512,7 +513,7 @@ module.exports = (crowi) => {
       return res.apiv3({ userData });
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error(`Error occurred when /${id}/activate invoked`, { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -553,7 +554,7 @@ module.exports = (crowi) => {
       return res.apiv3({ userData });
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error(`Error occurred when /${id}/deactivate invoked`, { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -598,7 +599,7 @@ module.exports = (crowi) => {
       return res.apiv3({ userData });
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error(`Error occurred when /${id}/remove invoked`, { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -631,7 +632,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       const msg = 'Error occurred in fetching external-account list  ';
-      logger.error(msg, err);
+      logger.error(msg, { err });
       return res.apiv3Err(new ErrorV3(msg + err.message, 'external-account-list-fetch-failed'), 500);
     }
   });
@@ -674,7 +675,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       const msg = 'Error occurred in deleting a external account  ';
-      logger.error(msg, err);
+      logger.error(msg, { err });
       return res.apiv3Err(new ErrorV3(msg + err.message, 'extenral-account-delete-failed'));
     }
   });
@@ -726,7 +727,7 @@ module.exports = (crowi) => {
       return res.apiv3({});
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error('Error occurred when /update.imageUrlCache invoked', { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });
@@ -773,7 +774,7 @@ module.exports = (crowi) => {
       return res.apiv3({ newPassword, user });
     }
     catch (err) {
-      logger.error('Error', err);
+      logger.error('Error occurred when /reset-password invoked', { err });
       return res.apiv3Err(new ErrorV3(err));
     }
   });

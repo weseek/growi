@@ -1,24 +1,24 @@
 import { FC, memo, useEffect } from 'react';
 import loggerFactory from '~/utils/logger';
 import { useCurrentPageCommentsSWR } from '~/stores/page';
-import { Comment } from '~/interfaces/page';
+import { Comment as IComment } from '~/interfaces/page';
 
 import { apiv3Put } from '~/utils/apiv3-client';
-
-const logger = loggerFactory('growi:components:PageComment:PageComments');
 
 // import AppContainer from '../services/AppContainer';
 // import CommentContainer from '../services/CommentContainer';
 // import PageContainer from '../services/PageContainer';
 
 // import CommentEditor from './PageComment/CommentEditor';
-// import Comment from './PageComment/Comment';
+import { Comment } from '~/components/PageComment/Comment';
+
+const logger = loggerFactory('growi:components:PageComment:PageComments');
 // import DeleteCommentModal from './PageComment/DeleteCommentModal';
 // import ReplayComments from './PageComment/ReplayComments';
 
 type Props = {
-  comment: Comment;
-  replies: Comment[];
+  comment: IComment;
+  replies: IComment[];
 }
 
 const CommentThread:FC<Props> = memo(({ comment, replies }:Props) => {
@@ -32,14 +32,8 @@ const CommentThread:FC<Props> = memo(({ comment, replies }:Props) => {
 
   return (
     <div key={commentId} className={rootClassNames.join(' ')}>
-      {comment.comment}
-      {/* TODO GW-5146 display comment */}
-      {/* <Comment
-        comment={comment}
-        deleteBtnClicked={this.confirmToDeleteComment}
-        growiRenderer={this.growiRenderer}
-      />
-      {replies.length !== 0 && (
+      <Comment comment={comment} />
+      {/*  {replies.length !== 0 && (
         <ReplayComments
           replyList={replies}
           deleteBtnClicked={this.confirmToDeleteComment}
@@ -107,8 +101,8 @@ export const PageComments:FC = () => {
     return null;
   }
 
-  const topLevelComments = [] as Comment[];
-  const replyComments = [] as Comment[];
+  const topLevelComments = [] as IComment[];
+  const replyComments = [] as IComment[];
 
   comments.forEach((comment) => {
     if (comment.replyTo == null) {

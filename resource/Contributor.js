@@ -1,5 +1,6 @@
 const contributors = [
   {
+    order: 1,
     sectionName: 'GROWI VILLAGE',
     additionalClass: '',
     memberGroups: [
@@ -47,6 +48,7 @@ const contributors = [
     ],
   },
   {
+    order: 10,
     sectionName: 'CONTRIBUTER',
     additionalClass: '',
     memberGroups: [
@@ -92,6 +94,7 @@ const contributors = [
     ],
   },
   {
+    order: 100,
     sectionName: 'VULNERABILITY HUNTER',
     additionalClass: '',
     memberGroups: [
@@ -111,6 +114,7 @@ const contributors = [
     ],
   },
   {
+    order: 200,
     sectionName: 'SPECIAL THANKS',
     additionalClass: '',
     memberGroups: [
