@@ -7,7 +7,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
-import { USER_PUBLIC_FIELDS } from '~/server/models/new-user';
+// import { USER_PUBLIC_FIELDS } from '~/server/models/new-user';
 // import BookmarkEvent from '~/server/events/bookmark';
 import { Bookmark as IBookmark } from '~/interfaces/page';
 import { User as IUser } from '~/interfaces/user';
@@ -63,12 +63,12 @@ class Bookmark extends Model {
   }
 
   static async populatePage(bookmarks) {
-    return this.populate(bookmarks, {
-      path: 'page',
-      populate: {
-        path: 'lastUpdateUser', model: 'User', select: USER_PUBLIC_FIELDS,
-      },
-    });
+    // return this.populate(bookmarks, {
+    //   path: 'page',
+    //   populate: {
+    //     path: 'lastUpdateUser', model: 'User', select: USER_PUBLIC_FIELDS,
+    //   },
+    // });
   }
 
   // bookmark チェック用
