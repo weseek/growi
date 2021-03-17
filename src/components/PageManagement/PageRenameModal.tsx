@@ -41,7 +41,7 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isReachable } = useSearchServiceReachable();
 
-  const [pageNameInput, setPageNameInput] = useState(currentPagePath || '');
+  const [pageNameInput, setPageNameInput] = useState(currentPagePath as string);
 
   const { data: subordinatedList } = useSubordinatedList(currentPagePath as string);
   const { data: existingPaths } = useExistingPaths(currentPagePath as string, pageNameInput);
@@ -53,11 +53,11 @@ const PageRenameModal:FC<Props> = (props:Props) => {
   const [isRemainMetadata, setIsRemainMetadata] = useState(false);
   const [isRenameRecursivelyWithoutExistPath, setIsRenameRecursivelyWithoutExistPath] = useState(true);
 
+  const { currentPage } = props;
+
   if (currentPagePath == null) {
     return null;
   }
-
-  const { currentPage } = props;
 
   async function rename() {
     setErrs([]);
