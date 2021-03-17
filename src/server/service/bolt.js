@@ -153,6 +153,15 @@ class BoltService {
     return;
   }
 
+  getKeywords(args) {
+    const keywordsArr = [];
+    for (let i = 1; i < args.length; i++) {
+      keywordsArr.push(args[i]);
+    }
+    const keywords = keywordsArr.join(' ');
+    return keywords;
+  }
+
   async getSearchResultPaths(command, args, offset = 0) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
@@ -166,11 +175,13 @@ class BoltService {
       return;
     }
 
-    const keywordsArr = [];
-    for (let i = 1; i < args.length; i++) {
-      keywordsArr.push(args[i]);
-    }
-    const keywords = keywordsArr.join(' ');
+    // const keywordsArr = [];
+    // for (let i = 1; i < args.length; i++) {
+    //   keywordsArr.push(args[i]);
+    // }
+    // const keywords = keywordsArr.join(' ');
+
+    const keywords = this.getKeywords(args);
 
     const { searchService } = this.crowi;
     const options = { limit: 10, offset };
