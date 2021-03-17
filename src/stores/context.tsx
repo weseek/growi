@@ -92,6 +92,6 @@ export const useGrowiVersion = (initialData?: string): responseInterface<string,
   return useStaticSWR('growiVersion', initialData);
 };
 
-export const useEditorConfig = (initialData?: {}): responseInterface<{}, any> => {
+export const useEditorConfig = (initialData?: any): responseInterface<any, any> => {
   return useStaticSWR('editorConfig', initialData);
 };
