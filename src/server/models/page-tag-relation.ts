@@ -10,6 +10,14 @@ import { PageTagRelation as IPageTagRelation, Tag as ITag } from '~/interfaces/p
 
 
 /*
+ * define methods type
+ */
+interface ModelMethods{
+  updatePageTags: any
+}
+
+
+/*
  * define schema
  */
 const schema:Schema<IPageTagRelation & Document> = new Schema<IPageTagRelation & Document>({
@@ -151,4 +159,4 @@ class PageTagRelation extends Model {
 
 
 schema.loadClass(PageTagRelation);
-export default getOrCreateModel<IPageTagRelation>('PageTagRelation', schema);
+export default getOrCreateModel<IPageTagRelation, ModelMethods>('PageTagRelation', schema);
