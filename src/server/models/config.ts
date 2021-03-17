@@ -12,6 +12,12 @@ export interface Config {
   value: string;
 }
 
+/*
+ * define methods type
+ */
+interface ModelMethods { any }
+
+
 const schema = new Schema<Config>({
   ns: { type: String, required: true },
   key: { type: String, required: true },
@@ -229,4 +235,4 @@ export const defaultNotificationConfigs: { [key: string]: any } = {
 //   return localConfig;
 // };
 
-export default getOrCreateModel<Config>('Config', schema);
+export default getOrCreateModel<Config, ModelMethods>('Config', schema);

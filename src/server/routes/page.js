@@ -1,6 +1,7 @@
 import loggerFactory from '~/utils/logger';
 import ShareLink from '~/server/models/share-link';
 import Bookmark from '~/server/models/bookmark';
+import PageTagRelation from '~/server/models/page-tag-relation';
 
 const swig = require('swig-templates');
 const { pathUtils } = require('growi-commons');
@@ -136,7 +137,6 @@ const { serializeRevisionSecurely } = require('../models/serializers/revision-se
 module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const ApiResponse = require('../util/apiResponse');
