@@ -49,6 +49,10 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
 
   const { currentPage } = props;
 
+  if (currentPagePath == null) {
+    return null;
+  }
+
   async function duplicate() {
     setErrs([]);
 
@@ -146,9 +150,9 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
             )}
           <div>
             {isDuplicateRecursively && subordinatedList != null
-             && <ComparePathsTable currentPagePath={currentPagePath as string} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
+             && <ComparePathsTable currentPagePath={currentPagePath} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
             {isDuplicateRecursively && existingPaths != null && existingPaths.length !== 0
-             && <DuplicatedPathsTable currentPagePath={currentPagePath as string} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+             && <DuplicatedPathsTable currentPagePath={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
           </div>
         </div>
       </ModalBody>

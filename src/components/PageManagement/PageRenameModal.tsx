@@ -55,6 +55,10 @@ const PageRenameModal:FC<Props> = (props:Props) => {
 
   const { currentPage } = props;
 
+  if (currentPagePath == null) {
+    return null;
+  }
+
   async function rename() {
     setErrs([]);
 
@@ -169,9 +173,9 @@ const PageRenameModal:FC<Props> = (props:Props) => {
             </div>
           )}
           {isRenameRecursively && subordinatedList != null
-           && <ComparePathsTable currentPagePath={currentPagePath as string} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
+           && <ComparePathsTable currentPagePath={currentPagePath} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
           {isRenameRecursively && existingPaths != null && existingPaths.length !== 0 && currentPagePath !== pageNameInput
-            && <DuplicatedPathsTable currentPagePath={currentPagePath as string} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
+            && <DuplicatedPathsTable currentPagePath={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
         </div>
 
         <div className="custom-control custom-checkbox custom-checkbox-success">
