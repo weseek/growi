@@ -1,4 +1,4 @@
-import mongoose, { Schema, Model, Document } from 'mongoose';
+import { Schema, Model, Document } from 'mongoose';
 import flatMap from 'array.prototype.flatmap';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -6,9 +6,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 import Tag from '~/server/models/tag';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
-import { PageTagRelation as IPageTagRelation } from '~/interfaces/page';
-
-const ObjectId = mongoose.Schema.Types.ObjectId;
+import { PageTagRelation as IPageTagRelation, Tag as ITag } from '~/interfaces/page';
 
 
 /*
@@ -16,13 +14,13 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
  */
 const schema:Schema<IPageTagRelation & Document> = new Schema<IPageTagRelation & Document>({
   relatedPage: {
-    type: ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Page',
     required: true,
     index: true,
   },
   relatedTag: {
-    type: ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Tag',
     required: true,
   },
@@ -119,8 +117,6 @@ class PageTagRelation extends Model {
     // filter empty string
     // eslint-disable-next-line no-param-reassign
     tags = tags.filter((tag) => { return tag !== '' });
-
-    const Tag = mongoose.model('Tag');
 
     // get relations for this page
     const relations = await this.findByPageId(pageId);

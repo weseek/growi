@@ -1,4 +1,6 @@
-import { Schema, Model, Document } from 'mongoose';
+import {
+  Schema, Model, Document, model,
+} from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -6,11 +8,19 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import { Tag as ITag } from '~/interfaces/page';
 
+export interface TagDocument extends Document{
+  ITag
+}
+
+export interface TagModel extends Model<TagDocument>{
+  getIdToNameMap(tagIds:Schema.Types.ObjectId[]): {[key:string]:string}
+  findOrCreateMany(tagsToCreate:ITag): ITag[]
+}
 
 /*
  * define schema
  */
-const schema:Schema<ITag & Document> = new Schema<ITag & Document>({
+const schema = new Schema<ITag>({
   name: {
     type: String,
     required: true,
@@ -64,4 +74,5 @@ class Tag extends Model {
 }
 
 schema.loadClass(Tag);
-export default getOrCreateModel<ITag & Document>('Tag', schema);
+// export default getOrCreateModel<ITag, RevisionModel>('Tag', schema);
+export default model<TagDocument, TagModel>('Tag', schema);
