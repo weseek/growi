@@ -10,6 +10,12 @@ import ConfigManager from '~/server/service/config-manager';
 
 const debug = Debug('growi:models:userGroup');
 
+/*
+ * define methods type
+ */
+interface ModelMethods {
+  updateName(name:string): Promise<void>;
+}
 
 /*
  * define schema
@@ -122,4 +128,4 @@ class UserGroup extends Model {
 
 
 schema.loadClass(UserGroup);
-export default getOrCreateModel<IUserGroup & Document>('UserGroup', schema);
+export default getOrCreateModel<IUserGroup, ModelMethods>('UserGroup', schema);

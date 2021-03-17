@@ -9,7 +9,7 @@ import { Tag as ITag } from '~/interfaces/page';
 /*
  * define methods type
  */
-interface ModelMethods{
+interface ModelMethods {
   getIdToNameMap(tagIds:Schema.Types.ObjectId[]): {[key:string]:string}
   findOrCreateMany(tagsToCreate:ITag): ITag[]
 }
