@@ -175,12 +175,6 @@ class BoltService {
       return;
     }
 
-    // const keywordsArr = [];
-    // for (let i = 1; i < args.length; i++) {
-    //   keywordsArr.push(args[i]);
-    // }
-    // const keywords = keywordsArr.join(' ');
-
     const keywords = this.getKeywords(args);
 
     const { searchService } = this.crowi;
@@ -221,14 +215,16 @@ class BoltService {
     });
 
     return {
-      resultPaths, offset, keywords, resultsTotal,
+      resultPaths, offset, resultsTotal,
     };
   }
 
   async showEphemeralSearchResults(command, args, offsetNum) {
     const {
-      resultPaths, offset, keywords, resultsTotal,
+      resultPaths, offset, resultsTotal,
     } = await this.getSearchResultPaths(command, args, offsetNum);
+
+    const keywords = this.getKeywords(args);
 
     if (resultPaths == null) {
       return;
