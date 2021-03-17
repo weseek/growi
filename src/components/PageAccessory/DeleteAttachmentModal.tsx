@@ -1,32 +1,48 @@
-import { VFC } from 'react';
-
+import { useState, VFC } from 'react';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+import loggerFactory from '~/utils/logger';
+import { useCurrentPageAttachment } from '~/stores/page';
+
 import { Attachment } from '~/interfaces/page';
 
 import UserPicture from '../../client/js/components/User/UserPicture';
 import { Username } from '~/components/User/Username';
+import { apiPost } from '~/client/js/util/apiv1-client';
+
+const logger = loggerFactory('growi:components:PageAccessory:PageAttachment');
 
 type Props = {
   isOpen: boolean,
   onClose: () => void,
   attachmentToDelete: Attachment,
-  isDeleting: boolean,
-  deleteErrorMessage?: string,
-  onDeleteAttachment?: () => void,
+  activePage: number,
 };
 
-
 export const DeleteAttachmentModal:VFC<Props> = (props: Props) => {
-  const {
-    attachmentToDelete, isDeleting, deleteErrorMessage, onDeleteAttachment,
-  } = props;
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState<string>();
 
-  const handleDeleteButton = () => {
-    if (onDeleteAttachment != null) {
-      onDeleteAttachment();
+  const { attachmentToDelete } = props;
+  const { mutate: mutateCurrentPageAttachment } = useCurrentPageAttachment(props.activePage);
+
+
+  const handleDeleteButton = async() => {
+    setDeleteErrorMessage('');
+
+    setIsDeleting(true);
+    try {
+      // TODO implement apiV3
+      await apiPost('/attachments.remove', { attachment_id: attachmentToDelete._id });
+      mutateCurrentPageAttachment();
+      props.onClose();
     }
+    catch (error) {
+      logger.error(error);
+      setDeleteErrorMessage(error.message);
+    }
+    setIsDeleting(false);
   };
 
   return (
