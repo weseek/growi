@@ -151,7 +151,7 @@ const PageDuplicateModal:FC<Props> = (props:Props) => {
           <div>
             {isDuplicateRecursively && subordinatedList != null
              && <ComparePathsTable currentPagePath={currentPagePath} subordinatedList={subordinatedList} newPagePath={pageNameInput} />}
-            {isDuplicateRecursively && existingPaths != null && existingPaths.length !== 0
+            {isDuplicateRecursively && existingPaths != null && existingPaths.length !== 0 && currentPagePath !== pageNameInput
              && <DuplicatedPathsTable currentPagePath={currentPagePath} existingPaths={existingPaths} oldPagePath={pageNameInput} />}
           </div>
         </div>
