@@ -19,11 +19,11 @@ export const getModelSafely = <T>(modelName: string): Model<T & Document> | null
   return null;
 };
 
-export const getOrCreateModel = <T>(modelName: string, schema: Schema<T>): Model<T & Document> => {
+export const getOrCreateModel = <T, M>(modelName: string, schema: Schema<T>): M & Model<T & Document> => {
   if (mongoose.modelNames().includes(modelName)) {
-    return mongoose.model<T & Document>(modelName);
+    return mongoose.model<T & Document, M & Model<T & Document>>(modelName);
   }
-  return mongoose.model<T & Document>(modelName, schema);
+  return mongoose.model<T & Document, M & Model<T & Document>>(modelName, schema);
 };
 
 export const mongoOptions: ConnectionOptions = {
