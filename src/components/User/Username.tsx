@@ -5,6 +5,7 @@ import { User } from '~/interfaces/user';
 type Props = {
   user?:User
 };
+
 export const Username:VFC<Props> = (props: Props) => {
   const { user } = props;
 
