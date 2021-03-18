@@ -1,20 +1,11 @@
 const loggerFactory = require('@alias/logger');
 
-// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
-
 const express = require('express');
 const { body } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
-
-const validator = {
-  CusotmBotSettings: [
-    body('slackSigningSecret').if(value => value != null).isStirng(),
-    body('slackBotToken').if(value => value != null).isStirng(),
-  ],
-};
 
 /**
  * @swagger
@@ -28,6 +19,14 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+
+
+  const validator = {
+    CusotmBotSettings: [
+      body('slackSigningSecret').if(value => value != null).isStirng(),
+      body('slackBotToken').if(value => value != null).isStirng(),
+    ],
+  };
 
   async function updateCustomBotSettings(params) {
     const { configManager } = crowi;
