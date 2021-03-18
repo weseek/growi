@@ -23,8 +23,8 @@ module.exports = (crowi) => {
 
   const validator = {
     CusotmBotSettings: [
-      body('slackSigningSecret').if(value => value != null).isStirng(),
-      body('slackBotToken').if(value => value != null).isStirng(),
+      body('slackSigningSecret').exists().not().isEmpty({ ignore_whitespace: true }),
+      body('slackBotToken').exists().not().isEmpty({ ignore_whitespace: true }),
     ],
   };
 
@@ -58,11 +58,9 @@ module.exports = (crowi) => {
 
   router.put('/custom-bot-setting',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
-
       const requestParams = {
-      // temp data
-        'slackbot:signingSecret': 1234567890, // req.body.slackSigningSecret
-        'slackbot:token': 'asdfghjkkl1234567890', // req.body.slackBotToken
+        'slackbot:signingSecret': req.body.slackSigningSecret,
+        'slackbot:token': req.body.slackBotToken,
       };
 
       try {
