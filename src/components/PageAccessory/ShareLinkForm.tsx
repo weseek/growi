@@ -3,11 +3,18 @@ import { format as dateFnsFormat, parse as dateFnsParse } from 'date-fns';
 
 import { isInteger } from 'core-js/fn/number';
 
-import { toastSuccess, toastError } from '../../client/js/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
-import { apiv3Post } from '../../client/js/util/apiv3-client';
-
+import { useCurrentPageSWR } from '~/stores/page';
+import { apiv3Post } from '~/utils/apiv3-client';
 import { useTranslation } from '~/i18n';
+
+const ExpirationType = {
+  UNLIMITED: 'unlimited',
+  NUMBER_OF_DAYS: 'numberOfDays',
+  CUSTOM: 'custom',
+} as const;
+type ExpirationType = typeof ExpirationType[keyof typeof ExpirationType];
 
 type Props = {
   onCloseForm: () => void,
@@ -15,17 +22,70 @@ type Props = {
 
 export const ShareLinkForm:VFC<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { data: currentPage } = useCurrentPageSWR();
 
-  const [expirationType, setExpirationType] = useState('');
+  const [expirationType, setExpirationType] = useState<ExpirationType>(ExpirationType.UNLIMITED);
   const [description, setDescription] = useState('');
   const [numberOfDays, setNumberOfDays] = useState(7);
   const [customExpirationDate, setCustomExpirationDate] = useState(dateFnsFormat(new Date(), 'yyyy-MM-dd'));
   const [customExpirationTime, setCustomExpirationTime] = useState(dateFnsFormat(new Date(), 'HH:mm'));
 
+  if (currentPage == null) {
+    return null;
+  }
+
   const closeForm = () => {
     if (props.onCloseForm != null) {
       props.onCloseForm();
     }
+  };
+
+  /**
+   * Generate expiredAt by expirationType
+   */
+  const generateExpired = () => {
+    let expiredAt;
+
+    if (expirationType === ExpirationType.UNLIMITED) {
+      return null;
+    }
+
+    if (expirationType === ExpirationType.NUMBER_OF_DAYS) {
+      if (!isInteger(Number(numberOfDays))) {
+        throw new Error(t('share_links.Invalid_Number_of_Date'));
+      }
+      const date = new Date();
+      date.setDate(date.getDate() + Number(numberOfDays));
+      expiredAt = date;
+    }
+
+    if (expirationType === ExpirationType.CUSTOM) {
+      expiredAt = dateFnsParse(`${customExpirationDate}T${customExpirationTime}`, "yyyy-MM-dd'T'HH:mm", new Date());
+    }
+
+    return expiredAt;
+  };
+
+
+  const handleIssueShareLink = async() => {
+    let expiredAt;
+
+    try {
+      expiredAt = generateExpired();
+    }
+    catch (err) {
+      return toastError(err);
+    }
+
+    try {
+      await apiv3Post('/share-links/', { relatedPage: currentPage._id, expiredAt, description });
+      closeForm();
+      toastSuccess(t('toaster.issue_share_link'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
   };
 
   return (
@@ -42,8 +102,8 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
                 id="customRadio1"
                 name="expirationType"
                 value="customRadio1"
-                checked={expirationType === 'unlimited'}
-                onChange={() => { setExpirationType('unlimited') }}
+                checked={expirationType === ExpirationType.UNLIMITED}
+                onChange={() => { setExpirationType(ExpirationType.UNLIMITED) }}
               />
               <label className="custom-control-label" htmlFor="customRadio1">{t('share_links.Unlimited')}</label>
             </div>
@@ -54,8 +114,8 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
                 className="custom-control-input"
                 id="customRadio2"
                 value="customRadio2"
-                checked={expirationType === 'numberOfDays'}
-                onChange={() => { setExpirationType('numberOfDays') }}
+                checked={expirationType === ExpirationType.NUMBER_OF_DAYS}
+                onChange={() => { setExpirationType(ExpirationType.NUMBER_OF_DAYS) }}
                 name="expirationType"
               />
               <label className="custom-control-label" htmlFor="customRadio2">
@@ -66,7 +126,7 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
                     className="col-4"
                     name="expirationType"
                     value={numberOfDays}
-                    onFocus={() => { setExpirationType('numberOfDays') }}
+                    onFocus={() => { setExpirationType(ExpirationType.NUMBER_OF_DAYS) }}
                     onChange={e => setNumberOfDays(Number(e.target.value))}
                   />
                   <span className="col-auto">{t('share_links.Days')}</span>
@@ -81,8 +141,8 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
                 id="customRadio3"
                 name="expirationType"
                 value="customRadio3"
-                checked={expirationType === 'custom'}
-                onChange={() => { setExpirationType('custom') }}
+                checked={expirationType === ExpirationType.CUSTOM}
+                onChange={() => { setExpirationType(ExpirationType.CUSTOM) }}
               />
               <label className="custom-control-label" htmlFor="customRadio3">
                 {t('share_links.Custom')}
@@ -93,7 +153,7 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
                   className="ml-3 mb-2"
                   name="customExpirationDate"
                   value={customExpirationDate}
-                  onFocus={() => { setExpirationType('custom') }}
+                  onFocus={() => { setExpirationType(ExpirationType.CUSTOM) }}
                   onChange={e => setCustomExpirationDate(e.target.value)}
                 />
                 <input
@@ -101,7 +161,7 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
                   className="ml-3 mb-2"
                   name="customExpiration"
                   value={customExpirationTime}
-                  onFocus={() => { setExpirationType('custom') }}
+                  onFocus={() => { setExpirationType(ExpirationType.CUSTOM) }}
                   onChange={e => setCustomExpirationTime(e.target.value)}
                 />
               </div>
@@ -121,67 +181,10 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
             />
           </div>
         </div>
-        {/* <button type="button" className="btn btn-primary d-block mx-auto px-5" onClick={handleIssueShareLink}>
+        <button type="button" className="btn btn-primary d-block mx-auto px-5" onClick={handleIssueShareLink}>
           {t('share_links.Issue')}
-        </button> */}
+        </button>
       </div>
     </div>
   );
 };
-
-//   /**
-//    * Generate expiredAt by expirationType
-//    */
-//   generateExpired() {
-//     const { t } = props;
-//     const { expirationType } = state;
-//     let expiredAt;
-
-//     if (expirationType === 'unlimited') {
-//       return null;
-//     }
-
-//     if (expirationType === 'numberOfDays') {
-//       if (!isInteger(Number(numberOfDays))) {
-//         throw new Error(t('share_links.Invalid_Number_of_Date'));
-//       }
-//       const date = new Date();
-//       date.setDate(date.getDate() + Number(numberOfDays));
-//       expiredAt = date;
-//     }
-
-//     if (expirationType === 'custom') {
-//       const { customExpirationDate, customExpirationTime } = state;
-//       expiredAt = dateFnsParse(`${customExpirationDate}T${customExpirationTime}`, "yyyy-MM-dd'T'HH:mm", new Date());
-//     }
-
-//     return expiredAt;
-//   }
-
-
-//   async handleIssueShareLink() {
-//     const {
-//       t, pageContainer,
-//     } = props;
-//     const { pageId } = pageContainer.state;
-//     const { description } = state;
-
-//     let expiredAt;
-
-//     try {
-//       expiredAt = generateExpired();
-//     }
-//     catch (err) {
-//       return toastError(err);
-//     }
-
-//     try {
-//       await apiv3Post('/share-links/', { relatedPage: pageId, expiredAt, description });
-//       closeForm();
-//       toastSuccess(t('toaster.issue_share_link'));
-//     }
-//     catch (err) {
-//       toastError(err);
-//     }
-
-//   }
