@@ -5,9 +5,9 @@ import { isInteger } from 'core-js/fn/number';
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
-import { useCurrentPageSWR } from '~/stores/page';
 import { apiv3Post } from '~/utils/apiv3-client';
 import { useTranslation } from '~/i18n';
+import { useCurrentPageSWR, useCurrentPageShareLinks } from '~/stores/page';
 
 const ExpirationType = {
   UNLIMITED: 'unlimited',
@@ -23,6 +23,8 @@ type Props = {
 export const ShareLinkForm:VFC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { data: currentPage } = useCurrentPageSWR();
+  const { mutate: mutateShareLinks } = useCurrentPageShareLinks();
+
 
   const [expirationType, setExpirationType] = useState<ExpirationType>(ExpirationType.UNLIMITED);
   const [description, setDescription] = useState('');
@@ -79,6 +81,7 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
 
     try {
       await apiv3Post('/share-links/', { relatedPage: currentPage._id, expiredAt, description });
+      mutateShareLinks();
       closeForm();
       toastSuccess(t('toaster.issue_share_link'));
     }
