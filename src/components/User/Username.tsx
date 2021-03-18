@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { VFC } from 'react';
 import { User } from '~/interfaces/user';
 
@@ -18,6 +19,10 @@ export const Username:VFC<Props> = (props: Props) => {
   const href = `/user/${user.username}`;
 
   return (
-    <a href={href}>{name} (@{username})</a>
+    <Link href={href}>
+      <a>
+        {name} (@{username})
+      </a>
+    </Link>
   );
 };
