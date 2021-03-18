@@ -2,16 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import { withUnstatedContainers } from '../UnstatedUtils';
+import { withUnstatedContainers } from '../../client/js/components/UnstatedUtils';
 
-import PageContainer from '../../services/PageContainer';
+import PageContainer from '../../client/js/services/PageContainer';
 
-import { apiv3Get, apiv3Delete } from '../../util/apiv3-client';
+import { apiv3Get, apiv3Delete } from '../../client/js/util/apiv3-client';
 
-import ShareLinkList from './ShareLinkList';
-import ShareLinkForm from './ShareLinkForm';
+import ShareLinkList from '../../client/js/components/ShareLink/ShareLinkList';
+import ShareLinkForm from '../../client/js/components/ShareLink/ShareLinkForm';
 
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastSuccess, toastError } from '../../client/js/util/apiNotification';
 
 class ShareLink extends React.Component {
 
