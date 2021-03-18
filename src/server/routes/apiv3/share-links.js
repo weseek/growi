@@ -25,7 +25,6 @@ const today = new Date();
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
 
@@ -100,7 +99,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
 
     try {
@@ -133,7 +132,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
-  router.delete('/', loginRequired, csrf, async(req, res) => {
+  router.delete('/', loginRequired, async(req, res) => {
     const { relatedPage } = req.query;
 
     try {
@@ -158,7 +157,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to remove all share links
   */
-  router.delete('/all', loginRequired, adminRequired, csrf, async(req, res) => {
+  router.delete('/all', loginRequired, adminRequired, async(req, res) => {
 
     try {
       const deletedShareLink = await ShareLink.deleteMany({});
@@ -190,7 +189,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', loginRequired, csrf, async(req, res) => {
+  router.delete('/:id', loginRequired, async(req, res) => {
     const { id } = req.params;
 
     try {
