@@ -12,7 +12,7 @@ import { config as i18nConfig } from '~/i18n';
 import { omitInsecureAttributes } from './serializers/user-serializer';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-import Attachment from '~/server/models/new-attachment';
+// import Attachment from '~/server/models/attachment';
 import ConfigManager from '~/server/service/config-manager';
 import AclService from '~/server/service/acl';
 import AttachmentService from '~/server/service/attachment';
@@ -42,6 +42,14 @@ let userEvent;
 //   userEvent = crowi.event('user');
 //   userEvent.on('activated', userEvent.onActivated);
 // }
+
+
+/*
+ * define methods type
+ */
+interface ModelMethods {
+  makeAdmin(): Promise<void>;
+}
 
 type CreateUserByEmail = {
   email:string,
@@ -207,20 +215,20 @@ class User extends Model {
   }
 
   async generateImageUrlCached(): Promise<string> {
-    if (this.isGravatarEnabled) {
-      const email = this.email || '';
-      const hash = md5(email.trim().toLowerCase());
-      return `https://gravatar.com/avatar/${hash}`;
-    }
-    if (this.image != null) {
-      return this.image;
-    }
-    if (this.imageAttachment != null && this.imageAttachment._id != null) {
-      const imageAttachment = await Attachment.findById(this.imageAttachment);
-      if (imageAttachment != null) {
-        return imageAttachment.filePathProxied;
-      }
-    }
+    // if (this.isGravatarEnabled) {
+    //   const email = this.email || '';
+    //   const hash = md5(email.trim().toLowerCase());
+    //   return `https://gravatar.com/avatar/${hash}`;
+    // }
+    // if (this.image != null) {
+    //   return this.image;
+    // }
+    // if (this.imageAttachment != null && this.imageAttachment._id != null) {
+    //   const imageAttachment = await Attachment.findById(this.imageAttachment);
+    //   if (imageAttachment != null) {
+    //     return imageAttachment.filePathProxied;
+    //   }
+    // }
     return '/images/icons/user.svg';
   }
 
@@ -724,4 +732,4 @@ class User extends Model {
 
 
 schema.loadClass(User);
-export default getOrCreateModel<IUser & Document>('User', schema);
+export default getOrCreateModel<IUser, ModelMethods>('User', schema);
