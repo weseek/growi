@@ -1,3 +1,5 @@
+import User from '~/server/models/user';
+
 const request = require('supertest');
 const express = require('express');
 const { getInstance } = require('../setup-crowi');
@@ -53,7 +55,7 @@ describe('users', () => {
 
       beforeAll(() => {
         app = generateAppWithUser(crowi, dummyAdminUser);
-        crowi.models.User.paginate = jest.fn().mockImplementation(() => {
+        User.paginate = jest.fn().mockImplementation(() => {
           const paginateResult = {
             docs: [
               { username: 'admin', email: 'admin@example.com' },
@@ -80,8 +82,8 @@ describe('users', () => {
           });
           expect(app.response.apiv3Err).not.toHaveBeenCalled();
           expect(response.statusCode).toBe(200);
-          expect(crowi.models.User.paginate).toHaveBeenCalled();
-          expect(crowi.models.User.paginate.mock.calls[0]).toMatchObject(
+          expect(User.paginate).toHaveBeenCalled();
+          expect(User.paginate.mock.calls[0]).toMatchObject(
             [
               {
                 $and: [
@@ -121,7 +123,7 @@ describe('users', () => {
 
       beforeAll(() => {
         app = generateAppWithUser(crowi, dummyAdminUser);
-        crowi.models.User.paginate = jest.fn().mockImplementation(() => { throw Error('error') });
+        User.paginate = jest.fn().mockImplementation(() => { throw Error('error') });
       });
 
       test('respond 500', async() => {
@@ -193,7 +195,7 @@ describe('users', () => {
 
     describe('normal test', () => {
       beforeAll(() => {
-        crowi.models.User.findById = jest.fn().mockImplementation(() => { return 'user' });
+        User.findById = jest.fn().mockImplementation(() => { return 'user' });
         const toObjectMock = jest.fn().mockImplementation(() => { return 'userObject' });
         crowi.models.Page.findListByCreator = jest.fn().mockImplementation(() => { return { pages: [{ lastUpdateUser: { toObject: toObjectMock } }] } });
       });
@@ -245,7 +247,7 @@ describe('users', () => {
 
     describe('when throw Error from User.findById', () => {
       beforeAll(() => {
-        crowi.models.User.findById = jest.fn().mockImplementation(() => { throw Error('error') });
+User.findById = jest.fn().mockImplementation(() => { throw Error('error') });
       });
       test('respond 500', async() => {
         const response = await request(app).get('/userId/recent').query({
@@ -259,7 +261,7 @@ describe('users', () => {
 
     describe('when dont return user from User.findById', () => {
       beforeAll(() => {
-        crowi.models.User.findById = jest.fn().mockImplementation(() => { return null });
+User.findById = jest.fn().mockImplementation(() => { return null });
       });
       test('respond 400', async() => {
         const response = await request(app).get('/userId/recent').query({
@@ -295,7 +297,7 @@ describe('users', () => {
 
     describe('when exists user', () => {
       beforeAll(() => {
-        crowi.models.User.findUserByUsername = jest.fn().mockImplementation(() => { return 'user' });
+User.findUserByUsername = jest.fn().mockImplementation(() => { return 'user' });
       });
       test('respond exists true', async() => {
         const response = await request(app).get('/exists').query({
@@ -308,7 +310,7 @@ describe('users', () => {
 
     describe('when no exists user', () => {
       beforeAll(() => {
-        crowi.models.User.findUserByUsername = jest.fn().mockImplementation(() => { return null });
+User.findUserByUsername = jest.fn().mockImplementation(() => { return null });
       });
       test('respond exists false', async() => {
         const response = await request(app).get('/exists').query({
@@ -321,7 +323,7 @@ describe('users', () => {
 
     describe('when throw Error from User.findUserByUsername', () => {
       beforeAll(() => {
-        crowi.models.User.findUserByUsername = jest.fn().mockImplementation(() => { throw Error('error') });
+User.findUserByUsername = jest.fn().mockImplementation(() => { throw Error('error') });
       });
       test('respond 400', async() => {
         const response = await request(app).get('/exists').query({

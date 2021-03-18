@@ -6,7 +6,6 @@ describe('accessTokenParser', () => {
   let crowi;
   let accessTokenParser;
 
-  let User;
   let targetUser;
 
   beforeAll(async(done) => {
