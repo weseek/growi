@@ -19,7 +19,7 @@ const router = express.Router();
  *  components:
  *    schemas:
  *      CustomBot:
- *        description: CustomizeFunction
+ *        description: CustomBot
  *        type: object
  *        properties:
  *          slackSigningSecret:
