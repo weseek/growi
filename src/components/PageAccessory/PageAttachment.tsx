@@ -2,14 +2,16 @@ import {
   VFC, useState, useEffect, useCallback,
 } from 'react';
 
-import { PaginationWrapper } from '~/components/PaginationWrapper';
-
-// import DeleteAttachmentModal from '../../client/js/components/PageAttachment/DeleteAttachmentModal';
 import { useCurrentPageAttachment, useCurrentPageSWR } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
+
 import { Attachment as IAttachment } from '~/interfaces/page';
 import { useTranslation } from '~/i18n';
+
+import { PaginationWrapper } from '~/components/PaginationWrapper';
 import { Attachment } from '~/components/PageAccessory/Attachment';
-import { useCurrentUser } from '~/stores/context';
+import { DeleteAttachmentModal } from '~/components/PageAccessory/DeleteAttachmentModal';
+
 
 export const PageAttachment:VFC = () => {
   const { t } = useTranslation();
@@ -17,6 +19,8 @@ export const PageAttachment:VFC = () => {
 
   const [inUseByAttachmentId, setInUseByAttachmentId] = useState<{ [key:string]:boolean }>({});
   const [attachments, setAttachments] = useState<IAttachment[]>([]);
+
+  const [isOpenDeleteAttachmentModal, setIsOpenDeleteAttachmentModal] = useState(false);
   const [attachmentToDelete, setAttachmentToDelete] = useState<IAttachment>();
 
   const [activePage, setActivePage] = useState(1);
@@ -55,6 +59,7 @@ export const PageAttachment:VFC = () => {
   }, [attachments, checkIfFileInUse]);
 
   const onAttachmentDeleteClicked = useCallback((attachment:IAttachment) => {
+    setIsOpenDeleteAttachmentModal(true);
     setAttachmentToDelete(attachment);
   }, []);
 
@@ -96,18 +101,14 @@ export const PageAttachment:VFC = () => {
         pagingLimit={limit}
         align="center"
       />
-      {/* TODO GW-5400 implement delete attachment modal */}
-      {/* <DeleteAttachmentModal
-        isOpen={showModal}
-        animation="false"
-        toggle={deleteModalClose}
-
-        attachmentToDelete={attachmentToDelete}
-        inUse={deleteInUse}
-        deleting={this.state.deleting}
-        deleteError={this.state.deleteError}
-        onAttachmentDeleteClickedConfirm={this.onAttachmentDeleteClickedConfirm}
-      /> */}
+      {attachmentToDelete && (
+        <DeleteAttachmentModal
+          isOpen={isOpenDeleteAttachmentModal}
+          onClose={() => (setIsOpenDeleteAttachmentModal(false))}
+          attachmentToDelete={attachmentToDelete}
+          activePage={activePage}
+        />
+      )}
     </>
   );
 

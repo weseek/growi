@@ -8,7 +8,7 @@ import {
 import { format } from 'date-fns';
 
 import UserPicture from '../User/UserPicture';
-import Username from '../User/Username';
+import { Username } from '~/components/User/Username';
 
 export default class DeleteCommentModal extends React.Component {
 
