@@ -73,8 +73,8 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *
-   *    slack-bot-setting/custom-bot-setting/:
+   *   paths:
+   *     slack-bot-setting/custom-bot-setting/:
    *      put:
    *        tags: [CustomBot]
    *        operationId: putCustomBotSetting
