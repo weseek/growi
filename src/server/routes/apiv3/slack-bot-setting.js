@@ -86,7 +86,7 @@ module.exports = (crowi) => {
    *           required: true
    *           content:
    *             application/json:
-   *               shema:
+   *               schema:
    *                 $ref: '#/components/schemas/CustomBot
    *         responses:
    *            200:
