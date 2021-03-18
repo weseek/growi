@@ -4,13 +4,10 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 
 const express = require('express');
-const apiv3FormValidator = require('../../middlewares/apiv3-form-validator');
+const { body } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
-
-const { body } = require('../../express-validator');
-
 
 const validator = {
   CusotmBotSettings: [
@@ -27,12 +24,10 @@ const validator = {
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
-  // const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   async function updateCustomBotSettings(params) {
     const { configManager } = crowi;
@@ -65,7 +60,7 @@ module.exports = (crowi) => {
   });
 
   router.put('/custom-bot-setting',
-    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiv3FormValidator, async(req, res) => {
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
 
       const requestParams = {
       // temp data
