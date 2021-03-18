@@ -1,21 +1,34 @@
 import { VFC, useState } from 'react';
 
-import { apiv3Get, apiv3Delete } from '../../client/js/util/apiv3-client';
+import { apiv3Delete } from '~/utils/apiv3-client';
 
-import ShareLinkList from '../../client/js/components/ShareLink/ShareLinkList';
-import { ShareLinkForm } from '~/components/PageAccessory/ShareLinkForm';
-
-import { toastSuccess, toastError } from '../../client/js/util/apiNotification';
+import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
 import { useCurrentPageShareLinks } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
+
+import { ShareLinkList } from '~/components/PageAccessory/ShareLinkList';
+import { ShareLinkForm } from '~/components/PageAccessory/ShareLinkForm';
 
 export const ShareLink:VFC = () => {
   const { t } = useTranslation();
 
-  const { data: shareLinks } = useCurrentPageShareLinks();
-  console.log(shareLinks);
+  const { data: shareLinks, mutate: mutateShareLinks } = useCurrentPageShareLinks();
+  const { data: currentUser } = useCurrentUser();
 
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState(false);
+
+  const deleteLinkById = async(shareLinkId:string) => {
+    try {
+      const res = await apiv3Delete(`/share-links/${shareLinkId}`);
+      const { deletedShareLink } = res.data;
+      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+    mutateShareLinks();
+  };
 
 
   return (
@@ -26,10 +39,14 @@ export const ShareLink:VFC = () => {
       </h3>
 
       <div>
-        {/* <ShareLinkList
-          shareLinks={this.state.shareLinks}
-          onClickDeleteButton={this.deleteLinkById}
-        /> */}
+        {shareLinks != null
+        && (
+          <ShareLinkList
+            isAdmin={currentUser != null && currentUser.admin}
+            shareLinks={shareLinks}
+            onClickDeleteButton={deleteLinkById}
+          />
+        )}
         <button
           className="btn btn-outline-secondary d-block mx-auto px-5"
           type="button"
@@ -42,58 +59,3 @@ export const ShareLink:VFC = () => {
     </div>
   );
 };
-
-//   componentDidMount() {
-//     this.retrieveShareLinks();
-//   }
-
-//   async retrieveShareLinks() {
-//     const { pageContainer } = this.props;
-//     const { pageId } = pageContainer.state;
-
-//     try {
-//       const res = await apiv3Get('/share-links/', { relatedPage: pageId });
-//       const { shareLinksResult } = res.data;
-//       this.setState({ shareLinks: shareLinksResult });
-//     }
-//     catch (err) {
-//       toastError(err);
-//     }
-
-//   }
-
-//   toggleShareLinkFormHandler() {
-//     this.setState({ isOpenShareLinkForm: !this.state.isOpenShareLinkForm });
-//     this.retrieveShareLinks();
-//   }
-
-//   async deleteAllLinksButtonHandler() {
-//     const { t, pageContainer } = this.props;
-//     const { pageId } = pageContainer.state;
-
-//     try {
-//       const res = await apiv3Delete('/share-links/', { relatedPage: pageId });
-//       const count = res.data.n;
-//       toastSuccess(t('toaster.remove_share_link', { count }));
-//     }
-//     catch (err) {
-//       toastError(err);
-//     }
-
-//     this.retrieveShareLinks();
-//   }
-
-//   async deleteLinkById(shareLinkId) {
-//     const { t } = this.props;
-
-//     try {
-//       const res = await apiv3Delete(`/share-links/${shareLinkId}`);
-//       const { deletedShareLink } = res.data;
-//       toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id }));
-//     }
-//     catch (err) {
-//       toastError(err);
-//     }
-
-//     this.retrieveShareLinks();
-//   }
