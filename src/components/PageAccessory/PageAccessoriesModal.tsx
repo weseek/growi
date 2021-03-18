@@ -142,7 +142,7 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
           </TabPane>
           {!isGuestUser && (
             <TabPane tabId="shareLink">
-              {activeComponents.has('shareLink') && <ShareLink />}
+              {activeComponents.has(AccessoryName.SHARE_LINK) && <ShareLink />}
             </TabPane>
           )}
         </TabContent>
