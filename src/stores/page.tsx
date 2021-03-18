@@ -2,7 +2,7 @@ import useSWR, { mutate, responseInterface } from 'swr';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
-  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision, Attachment,
+  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision, Attachment, ShareLink,
 } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
@@ -159,12 +159,12 @@ export const useCurrentPageAttachment = (activePage: number): responseInterface<
   );
 };
 
-export const useCurrentPageShareLinks = (): responseInterface<PaginationResult<Attachment>, Error> => {
+export const useCurrentPageShareLinks = (): responseInterface<ShareLink[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
     ['/share-links', currentPage?._id],
-    (endpoint, pageId) => apiv3Get(endpoint, { relatedPage: pageId }).then(response => response.data.paginateResult),
+    (endpoint, pageId) => apiv3Get(endpoint, { relatedPage: pageId }).then(response => response.data.shareLinksResult),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
