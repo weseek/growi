@@ -30,11 +30,9 @@ module.exports = (crowi) => {
 
   async function updateCustomBotSettings(params) {
     const { configManager } = crowi;
-
     // update config without publishing S2sMessage
     return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
   }
-
 
   /**
    * @swagger
@@ -63,8 +61,8 @@ module.exports = (crowi) => {
 
       const requestParams = {
       // temp data
-        'slackbot:signingSecret': 1234567890, // req.body.
-        'slackbot:token': 'asdfghjkkl1234567890',
+        'slackbot:signingSecret': 1234567890, // req.body.slackSigningSecret
+        'slackbot:token': 'asdfghjkkl1234567890', // req.body.slackBotToken
       };
 
       try {
