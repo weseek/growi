@@ -53,16 +53,15 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *   paths:
-   *     /slack-bot-setting/custom-bot-setting/:
-   *       get:
-   *         tags: [CustomBot]
-   *         operationId: getCustomBotSetting
-   *         summary: /slack-bot-setting/custom-bot-setting
-   *         description: Get singingSecret and slackBotToken
-   *         responses:
-   *           200:
-   *             description: Succeeded to get SigningSecret and SlackBotToken.
+   *    /slack-bot-setting/custom-bot-setting/:
+   *      get:
+   *        tags: [CustomBot]
+   *        operationId: getCustomBotSetting
+   *        summary: /slack-bot-setting/custom-bot-setting
+   *        description: Get singingSecret and slackBotToken
+   *        responses:
+   *          200:
+   *            description: Succeeded to get SigningSecret and SlackBotToken.
    */
   router.get('/custom-bot-setting', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
@@ -75,22 +74,22 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   paths:
-   *     slack-bot-setting/custom-bot-setting/:
-   *       put:
-   *         tags: [CustomBot]
-   *         operationId: putCustomBotSetting
-   *         summary: /slack-bot-setting/custom-bot-setting
-   *         description: Put singingSecret and slackBotToken
-   *         requestBody:
-   *           required: true
-   *           content:
-   *             application/json:
-   *               schema:
-   *                 $ref: '#/components/schemas/CustomBot
-   *         responses:
-   *            200:
-   *              description: Succeeded to put SigningSecret and SlackBotToken.
+   *
+   *    /slack-bot-setting/custom-bot-setting/:
+   *      put:
+   *        tags: [CustomBot]
+   *        operationId: putCustomBotSetting
+   *        summary: /slack-bot-setting/custom-bot-setting
+   *        description: Put singingSecret and slackBotToken
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/CustomBot
+   *        responses:
+   *           200:
+   *             description: Succeeded to put SigningSecret and SlackBotToken.
    */
   router.put('/custom-bot-setting',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
