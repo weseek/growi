@@ -10,7 +10,7 @@ const router = express.Router();
 /**
  * @swagger
  *  tags:
- *    name: SlackBot
+ *    name: SlackBotSetting
  */
 
 module.exports = (crowi) => {
@@ -58,9 +58,10 @@ module.exports = (crowi) => {
 
   router.put('/custom-bot-setting',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
+      const { slackSigningSecret, slackBotToken } = req.body;
       const requestParams = {
-        'slackbot:signingSecret': req.body.slackSigningSecret,
-        'slackbot:token': req.body.slackBotToken,
+        'slackbot:signingSecret': slackSigningSecret,
+        'slackbot:token': slackBotToken,
       };
 
       try {
