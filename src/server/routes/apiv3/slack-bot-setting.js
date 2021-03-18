@@ -13,6 +13,21 @@ const router = express.Router();
  *    name: SlackBotSetting
  */
 
+/**
+ * @swagger
+ *  components:
+ *    schemas:
+ *     CustomBot:
+ *       description: CustomizeFunction
+ *       type: object
+ *       properties:
+ *        slackSigningSecret:
+ *          type: string
+ *        slackBotToken:
+ *          type: string
+ */
+
+
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -56,6 +71,25 @@ module.exports = (crowi) => {
     return res.apiv3({ slackBotSettingParams });
   });
 
+  /**
+   * @swagger
+   *
+   *    slack-bot-setting/custom-bot-setting/:
+   *      put:
+   *        tags: [CustomBot]
+   *        operationId: putCustomBotSetting
+   *        summary: /slack-bot-setting/custom-bot-setting
+   *        description: Put singingSecret and slackBotToken
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              shema:
+   *                $ref: '#/components/schemas/CustomBot
+   *        responses:
+   *          200:
+   *            description: Succeeded to get SigningSecret and SlackBotToken.
+   */
   router.put('/custom-bot-setting',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
       const { slackSigningSecret, slackBotToken } = req.body;
