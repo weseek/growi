@@ -86,7 +86,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/CustomBot
+   *                $ref: '#/components/schemas/CustomBot'
    *        responses:
    *           200:
    *             description: Succeeded to put SigningSecret and SlackBotToken.
