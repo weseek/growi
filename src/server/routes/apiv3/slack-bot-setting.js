@@ -15,16 +15,17 @@ const router = express.Router();
 
 /**
  * @swagger
+ *
  *  components:
  *    schemas:
- *     CustomBot:
- *       description: CustomizeFunction
- *       type: object
- *       properties:
- *        slackSigningSecret:
- *          type: string
- *        slackBotToken:
- *          type: string
+ *      CustomBot:
+ *        description: CustomizeFunction
+ *        type: object
+ *        properties:
+ *          slackSigningSecret:
+ *            type: string
+ *          slackBotToken:
+ *            type: string
  */
 
 
