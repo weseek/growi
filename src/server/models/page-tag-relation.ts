@@ -1,27 +1,34 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
+import { Schema, Model, Document } from 'mongoose';
+import flatMap from 'array.prototype.flatmap';
 
-const flatMap = require('array.prototype.flatmap');
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
+import Tag from '~/server/models/tag';
 
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
+import { PageTagRelation as IPageTagRelation, Tag as ITag } from '~/interfaces/page';
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
+
+/*
+ * define methods type
+ */
+interface ModelMethods{
+  updatePageTags: any
+}
 
 
 /*
  * define schema
  */
-const schema = new mongoose.Schema({
+const schema:Schema<IPageTagRelation & Document> = new Schema<IPageTagRelation & Document>({
   relatedPage: {
-    type: ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Page',
     required: true,
     index: true,
   },
   relatedTag: {
-    type: ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Tag',
     required: true,
   },
@@ -36,10 +43,9 @@ schema.plugin(uniqueValidator);
  *
  * @class PageTagRelation
  */
-class PageTagRelation {
+class PageTagRelation extends Model {
 
   static async createTagListWithCount(option) {
-    const Tag = mongoose.model('Tag');
     const opt = option || {};
     const sortOpt = opt.sortOpt || {};
     const offset = opt.offset || 0;
@@ -96,8 +102,6 @@ class PageTagRelation {
       .flatMap(result => result.tagIds); // map + flatten
     const distinctTagIds = Array.from(new Set(allTagIds));
 
-    // retrieve tag documents
-    const Tag = mongoose.model('Tag');
     const tagIdToNameMap = await Tag.getIdToNameMap(distinctTagIds);
 
     // convert to map
@@ -121,8 +125,6 @@ class PageTagRelation {
     // filter empty string
     // eslint-disable-next-line no-param-reassign
     tags = tags.filter((tag) => { return tag !== '' });
-
-    const Tag = mongoose.model('Tag');
 
     // get relations for this page
     const relations = await this.findByPageId(pageId);
@@ -155,8 +157,6 @@ class PageTagRelation {
 
 }
 
-module.exports = function() {
-  schema.loadClass(PageTagRelation);
-  const model = mongoose.model('PageTagRelation', schema);
-  return model;
-};
+
+schema.loadClass(PageTagRelation);
+export default getOrCreateModel<IPageTagRelation, ModelMethods>('PageTagRelation', schema);

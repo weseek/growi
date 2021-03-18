@@ -7,7 +7,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
-import { USER_PUBLIC_FIELDS } from '~/server/models/new-user';
+// import { USER_PUBLIC_FIELDS } from '~/server/models/new-user';
 // import BookmarkEvent from '~/server/events/bookmark';
 import { Bookmark as IBookmark } from '~/interfaces/page';
 import { User as IUser } from '~/interfaces/user';
@@ -22,6 +22,13 @@ type Option= {
   requestUser: IUser,
   populatePage: boolean,
 }
+
+/*
+ * define methods type
+ */
+interface ModelMethods {
+  removeBookmark(pageId:string, user:IUser): Promise<IBookmark>
+ }
 
 const schema:Schema<IBookmark & Document> = new Schema<IBookmark & Document>({
   page: { type: ObjectId, ref: 'Page', index: true },
@@ -56,12 +63,12 @@ class Bookmark extends Model {
   }
 
   static async populatePage(bookmarks) {
-    return this.populate(bookmarks, {
-      path: 'page',
-      populate: {
-        path: 'lastUpdateUser', model: 'User', select: USER_PUBLIC_FIELDS,
-      },
-    });
+    // return this.populate(bookmarks, {
+    //   path: 'page',
+    //   populate: {
+    //     path: 'lastUpdateUser', model: 'User', select: USER_PUBLIC_FIELDS,
+    //   },
+    // });
   }
 
   // bookmark チェック用
@@ -150,4 +157,4 @@ class Bookmark extends Model {
 }
 
 schema.loadClass(Bookmark);
-export default getOrCreateModel<IBookmark & Document>('Bookmark', schema);
+export default getOrCreateModel<IBookmark, ModelMethods>('Bookmark', schema);

@@ -7,11 +7,17 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import Debug from 'debug';
 import { getOrCreateModel } from '../util/mongoose-utils';
-import User, { USER_PUBLIC_FIELDS, STATUS_ACTIVE } from '~/server/models/new-user';
+// import User, { USER_PUBLIC_FIELDS, STATUS_ACTIVE } from '~/server/models/user';
 import { UserGroupRelation as IUserGroupRelation } from '~/interfaces/user';
 
 const debug = Debug('growi:models:userGroupRelation');
 
+/*
+ * define methods type
+ */
+interface ModelMethods {
+  removeById(id:string): void;
+}
 
 /*
  * define schema
@@ -86,14 +92,14 @@ class UserGroupRelation extends Model {
    * @memberof UserGroupRelation
    */
   static findAllRelationForUserGroup(userGroup) {
-    debug('findAllRelationForUserGroup is called', userGroup);
-    return this
-      .find({ relatedGroup: userGroup })
-      .populate({
-        path: 'relatedUser',
-        select: USER_PUBLIC_FIELDS,
-      })
-      .exec();
+    // debug('findAllRelationForUserGroup is called', userGroup);
+    // return this
+    //   .find({ relatedGroup: userGroup })
+    //   .populate({
+    //     path: 'relatedUser',
+    //     select: USER_PUBLIC_FIELDS,
+    //   })
+    //   .exec();
   }
 
   /**
@@ -199,35 +205,35 @@ class UserGroupRelation extends Model {
    * @memberof UserGroupRelation
    */
   static findUserByNotRelatedGroup(userGroup, queryOptions) {
-    let searchWord = new RegExp(`${queryOptions.searchWord}`);
-    switch (queryOptions.searchType) {
-      case 'forward':
-        searchWord = new RegExp(`^${queryOptions.searchWord}`);
-        break;
-      case 'backword':
-        searchWord = new RegExp(`${queryOptions.searchWord}$`);
-        break;
-    }
-    const searthField:Array<{[key:string]:RegExp}> = [
-      { username: searchWord },
-    ];
-    if (queryOptions.isAlsoMailSearched === 'true') { searthField.push({ email: searchWord }) }
-    if (queryOptions.isAlsoNameSearched === 'true') { searthField.push({ name: searchWord }) }
+    // let searchWord = new RegExp(`${queryOptions.searchWord}`);
+    // switch (queryOptions.searchType) {
+    //   case 'forward':
+    //     searchWord = new RegExp(`^${queryOptions.searchWord}`);
+    //     break;
+    //   case 'backword':
+    //     searchWord = new RegExp(`${queryOptions.searchWord}$`);
+    //     break;
+    // }
+    // const searthField:Array<{[key:string]:RegExp}> = [
+    //   { username: searchWord },
+    // ];
+    // if (queryOptions.isAlsoMailSearched === 'true') { searthField.push({ email: searchWord }) }
+    // if (queryOptions.isAlsoNameSearched === 'true') { searthField.push({ name: searchWord }) }
 
-    return this.findAllRelationForUserGroup(userGroup)
-      .then((relations) => {
-        const relatedUserIds = relations.map((relation) => {
-          return relation.relatedUser.id;
-        });
-        const query = {
-          _id: { $nin: relatedUserIds },
-          status: STATUS_ACTIVE,
-          $or: searthField,
-        };
+    // return this.findAllRelationForUserGroup(userGroup)
+    //   .then((relations) => {
+    //     const relatedUserIds = relations.map((relation) => {
+    //       return relation.relatedUser.id;
+    //     });
+    //     const query = {
+    //       _id: { $nin: relatedUserIds },
+    //       status: STATUS_ACTIVE,
+    //       $or: searthField,
+    //     };
 
-        debug('findUserByNotRelatedGroup ', query);
-        return User.find(query).exec();
-      });
+    //     debug('findUserByNotRelatedGroup ', query);
+    //     return User.find(query).exec();
+    //   });
   }
 
   /**
@@ -304,4 +310,4 @@ class UserGroupRelation extends Model {
 
 }
 schema.loadClass(UserGroupRelation);
-export default getOrCreateModel<IUserGroupRelation & Document>('UserGroupRelation', schema);
+export default getOrCreateModel<IUserGroupRelation, ModelMethods>('UserGroupRelation', schema);

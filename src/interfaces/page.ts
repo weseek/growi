@@ -26,6 +26,11 @@ export type Tag = {
   name: string,
 }
 
+export type PageTagRelation = {
+  relatedPage: Page,
+  relatedTag: Tag,
+}
+
 export type Comment = {
   _id: string,
   page: Page,
