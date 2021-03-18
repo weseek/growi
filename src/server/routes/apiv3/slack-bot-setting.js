@@ -88,7 +88,7 @@ module.exports = (crowi) => {
    *                $ref: '#/components/schemas/CustomBot
    *        responses:
    *          200:
-   *            description: Succeeded to get SigningSecret and SlackBotToken.
+   *            description: Succeeded to put SigningSecret and SlackBotToken.
    */
   router.put('/custom-bot-setting',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
