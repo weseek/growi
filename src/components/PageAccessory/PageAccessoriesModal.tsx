@@ -17,7 +17,7 @@ import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 import { PageList } from '~/components/PageAccessory/PageList';
 import { PageHistory } from '~/components/PageAccessory/PageHistory';
 import { PageAttachment } from '~/components/PageAccessory/PageAttachment';
-// import ShareLink from '../../client/js/components/ShareLink/ShareLink';
+import { ShareLink } from '~/components/PageAccessory/ShareLink';
 
 import ExpandOrContractButton from '../../client/js/components/ExpandOrContractButton';
 
@@ -142,7 +142,7 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
           </TabPane>
           {!isGuestUser && (
             <TabPane tabId="shareLink">
-              {/* {activeComponents.has('shareLink') && <ShareLink />} */}
+              {activeComponents.has('shareLink') && <ShareLink />}
             </TabPane>
           )}
         </TabContent>

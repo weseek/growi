@@ -1,4 +1,4 @@
-import { VFC } from 'react';
+import { VFC, useState } from 'react';
 
 import { apiv3Get, apiv3Delete } from '../../client/js/util/apiv3-client';
 
@@ -6,11 +6,34 @@ import ShareLinkList from '../../client/js/components/ShareLink/ShareLinkList';
 import ShareLinkForm from '../../client/js/components/ShareLink/ShareLinkForm';
 
 import { toastSuccess, toastError } from '../../client/js/util/apiNotification';
+import { useTranslation } from '~/i18n';
 
 export const ShareLink:VFC = () => {
-  return (
-    <div>
+  const { t } = useTranslation();
+  const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState(false);
 
+
+  return (
+    <div className="container p-0">
+      <h3 className="grw-modal-head d-flex pb-2">
+        { t('share_links.share_link_list') }
+        {/* <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button> */}
+      </h3>
+
+      <div>
+        {/* <ShareLinkList
+          shareLinks={this.state.shareLinks}
+          onClickDeleteButton={this.deleteLinkById}
+        /> */}
+        <button
+          className="btn btn-outline-secondary d-block mx-auto px-5"
+          type="button"
+          onClick={() => setIsOpenShareLinkForm(!isOpenShareLinkForm)}
+        >
+          {isOpenShareLinkForm ? t('Close') : t('New')}
+        </button>
+        {/* {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />} */}
+      </div>
     </div>
   );
 };
@@ -87,40 +110,26 @@ export const ShareLink:VFC = () => {
 //     const { t } = this.props;
 
 //     return (
-//       <div className="container p-0">
-//         <h3 className="grw-modal-head d-flex pb-2">
-//           { t('share_links.share_link_list') }
-//           <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
-//         </h3>
+// <div className="container p-0">
+//   <h3 className="grw-modal-head d-flex pb-2">
+//     { t('share_links.share_link_list') }
+//     <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
+//   </h3>
 
-//         <div>
-//           <ShareLinkList
-//             shareLinks={this.state.shareLinks}
-//             onClickDeleteButton={this.deleteLinkById}
-//           />
-//           <button
-//             className="btn btn-outline-secondary d-block mx-auto px-5"
-//             type="button"
-//             onClick={this.toggleShareLinkFormHandler}
-//           >
-//             {this.state.isOpenShareLinkForm ? t('Close') : t('New')}
-//           </button>
-//           {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
-//         </div>
-//       </div>
+//   <div>
+//     <ShareLinkList
+//       shareLinks={this.state.shareLinks}
+//       onClickDeleteButton={this.deleteLinkById}
+//     />
+//     <button
+//       className="btn btn-outline-secondary d-block mx-auto px-5"
+//       type="button"
+//       onClick={this.toggleShareLinkFormHandler}
+//     >
+//       {this.state.isOpenShareLinkForm ? t('Close') : t('New')}
+//     </button>
+//     {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
+//   </div>
+// </div>
 //     );
 //   }
-
-// }
-
-// /**
-//  * Wrapper component for using unstated
-//  */
-// const ShareLinkWrapper = withUnstatedContainers(ShareLink, [PageContainer]);
-
-// ShareLink.propTypes = {
-//   t: PropTypes.func.isRequired, //  i18next
-//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-// };
-
-// export default withTranslation()(ShareLinkWrapper);
