@@ -37,15 +37,15 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *  paths:
-   *    /custom-bot-setting/:
+   *    slack-bot-setting/custom-bot-setting/:
    *      get:
-   *        tags:
-   *        description: get SingingSecret and slackBotToken
-   *        parameters:
+   *        tags: [CustomBot]
+   *        operationId: getCustomBotSetting
+   *        summary: /slack-bot-setting/custom-bot-setting
+   *        description: Get singingSecret and slackBotToken
    *        responses:
    *          200:
-   *            description: Succeeded to get SigningSecret and SlackBotToken
+   *            description: Succeeded to get SigningSecret and SlackBotToken.
    */
   router.get('/custom-bot-setting', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
