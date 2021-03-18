@@ -705,11 +705,8 @@ class User extends Model {
    * @return {Promise<User>}
    */
   static createUser(name, username, email, password, lang, status) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const User = this;
-
     return new Promise((resolve, reject) => {
-      User.createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, (err, userData) => {
+      this.createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, (err, userData) => {
         if (err) {
           return reject(err);
         }
