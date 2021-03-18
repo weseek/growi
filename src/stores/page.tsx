@@ -161,8 +161,8 @@ export const useCurrentPageAttachment = (activePage: number): responseInterface<
 
 export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
   return useSWR(
-    '/bookmarks/info',
-    endpoint => apiv3Get(endpoint, { pageId }).then(response => response.data),
+    ['/bookmarks/info', pageId],
+    (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
     {
       initialData: initialData || false,
       revalidateOnFocus: false,
@@ -180,10 +180,10 @@ export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<str
     // key
     currentPage == null
       ? null
-      : ['/users.list', currentPage, limit],
+      : ['/users.list', currentPage.seenUsers, limit],
     // fetcher
     isSeenUsersExist
-      ? endpoint => apiGet(endpoint, { user_ids: currentPage?.seenUsers }).then(response => response.users.slice(limit).reverse())
+      ? (endpoint, seenUsers) => apiGet(endpoint, { user_ids: seenUsers }).then(response => response.users.slice(limit).reverse())
       : () => [],
     // option
     {
@@ -194,8 +194,8 @@ export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<str
 
 export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
   return useSWR(
-    '/page/like-info',
-    endpoint => apiv3Get(endpoint, { _id: pageId }).then(response => response.data),
+    ['/page/like-info', pageId],
+    (endpoint, pageId) => apiv3Get(endpoint, { _id: pageId }).then(response => response.data),
     {
       initialData: initialData || false,
       revalidateOnFocus: false,
@@ -204,12 +204,32 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
   );
 };
 
-export const useDescendantsCount = (pagePath?: string): responseInterface<number, Error> => {
-  const endpoint = '/pages/descendents-count';
-  const key = pagePath != null ? endpoint : null;
+export const useDescendantsCount = (pagePath: string): responseInterface<number, Error> => {
   return useSWR(
-    key,
-    endpoint => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
+    ['/pages/descendents-count', pagePath],
+    (endpoint, pagePath) => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useSubordinatedList = (pagePath: string): responseInterface<Page[], Error> => {
+  return useSWR(
+    ['/pages/subordinated-list', pagePath],
+    (endpoint, pagePath) => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.subordinatedPaths),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useExistingPaths = (pagePath: string, newParentPath:string): responseInterface<string[], Error> => {
+  return useSWR(
+    ['/page/exist-paths', newParentPath],
+    (endpoint, toPath) => apiv3Get(endpoint, { fromPath: pagePath, toPath }).then(response => response.data.existPaths),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

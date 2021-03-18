@@ -13,7 +13,7 @@ import { useCurrentPageSWR } from '~/stores/page';
 
 import FormattedDistanceDate from '~/client/js/components/FormattedDistanceDate';
 import UserPicture from '~/client/js/components/User/UserPicture';
-import Username from '~/client/js/components/User/Username';
+import { Username } from '~/components/User/Username';
 import RevisionRenderer from '~/client/js/components/Page/RevisionRenderer';
 // import CommentEditor from './CommentEditor';
 // import CommentControl from './CommentControl';

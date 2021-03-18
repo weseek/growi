@@ -23,6 +23,13 @@ type Option= {
   populatePage: boolean,
 }
 
+/*
+ * define methods type
+ */
+interface ModelMethods {
+  removeBookmark(pageId:string, user:IUser): Promise<IBookmark>
+ }
+
 const schema:Schema<IBookmark & Document> = new Schema<IBookmark & Document>({
   page: { type: ObjectId, ref: 'Page', index: true },
   user: { type: ObjectId, ref: 'User', index: true },
@@ -150,4 +157,4 @@ class Bookmark extends Model {
 }
 
 schema.loadClass(Bookmark);
-export default getOrCreateModel<IBookmark & Document>('Bookmark', schema);
+export default getOrCreateModel<IBookmark, ModelMethods>('Bookmark', schema);

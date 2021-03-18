@@ -9,6 +9,7 @@ import { isTopPage, isTrashPage } from '~/utils/path-utils';
 
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
+import PageTagRelation from '~/server/models/page-tag-relation';
 
 const logger = loggerFactory('growi:models:page');
 
@@ -328,7 +329,6 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.findRelatedTagsById = async function() {
-    const PageTagRelation = mongoose.model('PageTagRelation');
     const relations = await PageTagRelation.find({ relatedPage: this._id }).populate('relatedTag');
     return relations.map((relation) => { return relation.relatedTag.name });
   };

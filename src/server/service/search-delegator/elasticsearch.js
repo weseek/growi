@@ -1,5 +1,6 @@
 import loggerFactory from '~/utils/logger';
 import User from '~/server/models/user';
+import PageTagRelation from '~/server/models/page-tag-relation';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
@@ -373,7 +374,6 @@ class ElasticsearchDelegator {
     const Page = mongoose.model('Page');
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark');
-    const PageTagRelation = mongoose.model('PageTagRelation');
 
     const socket = this.socketIoService.getAdminSocket();
 

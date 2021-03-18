@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import PageTagRelation from '~/server/models/page-tag-relation';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
@@ -7,6 +8,8 @@ const pathUtils = require('growi-commons').pathUtils;
 const { body } = require('express-validator');
 const { query } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
+const { isCreatablePage } = require('~/utils/path-utils');
 
 const router = express.Router();
 
@@ -112,7 +115,6 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
-  const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
@@ -371,7 +373,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, csrf, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser, loginRequiredStrictly, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively, revisionId } = req.body;
 
     let newPagePath = pathUtils.normalizePath(req.body.newPagePath);
@@ -382,7 +384,7 @@ module.exports = (crowi) => {
       socketClientId: +req.body.socketClientId || undefined,
     };
 
-    if (!Page.isCreatableName(newPagePath)) {
+    if (!isCreatablePage(newPagePath)) {
       return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath})'`, 'invalid_path'), 409);
     }
 
@@ -551,7 +553,7 @@ module.exports = (crowi) => {
   ];
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
-    const { isTrashPage } = require('~/utils/path-utils');
+    const { isTrashPage, isCreatablePage } = require('~/utils/path-utils');
 
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
@@ -618,7 +620,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);

@@ -12,6 +12,12 @@ import { UserGroupRelation as IUserGroupRelation } from '~/interfaces/user';
 
 const debug = Debug('growi:models:userGroupRelation');
 
+/*
+ * define methods type
+ */
+interface ModelMethods {
+  removeById(id:string): void;
+}
 
 /*
  * define schema
@@ -214,20 +220,19 @@ class UserGroupRelation extends Model {
     if (queryOptions.isAlsoMailSearched === 'true') { searthField.push({ email: searchWord }) }
     if (queryOptions.isAlsoNameSearched === 'true') { searthField.push({ name: searchWord }) }
 
-    return this.findAllRelationForUserGroup(userGroup)
-      .then((relations) => {
-        const relatedUserIds = relations.map((relation) => {
-          return relation.relatedUser.id;
-        });
-        const query = {
-          _id: { $nin: relatedUserIds },
-          status: UserStatus.STATUS_ACTIVE,
-          $or: searthField,
-        };
-
-        debug('findUserByNotRelatedGroup ', query);
-        return User.find(query).exec();
+    return this.findAllRelationForUserGroup(userGroup).then((relations) => {
+      const relatedUserIds = relations.map((relation) => {
+        return relation.relatedUser.id;
       });
+      const query = {
+        _id: { $nin: relatedUserIds },
+        status: UserStatus.STATUS_ACTIVE,
+        $or: searthField,
+      };
+
+      debug('findUserByNotRelatedGroup ', query);
+      return User.find(query).exec();
+    });
   }
 
   /**
@@ -304,4 +309,4 @@ class UserGroupRelation extends Model {
 
 }
 schema.loadClass(UserGroupRelation);
-export default getOrCreateModel<IUserGroupRelation & Document>('UserGroupRelation', schema);
+export default getOrCreateModel<IUserGroupRelation, ModelMethods>('UserGroupRelation', schema);
