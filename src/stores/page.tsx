@@ -159,6 +159,19 @@ export const useCurrentPageAttachment = (activePage: number): responseInterface<
   );
 };
 
+export const useCurrentPageShareLinks = (): responseInterface<PaginationResult<Attachment>, Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    ['/share-links', currentPage?._id],
+    (endpoint, pageId) => apiv3Get(endpoint, { relatedPage: pageId }).then(response => response.data.paginateResult),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
 export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
   return useSWR(
     ['/bookmarks/info', pageId],

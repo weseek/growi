@@ -7,9 +7,14 @@ import ShareLinkForm from '../../client/js/components/ShareLink/ShareLinkForm';
 
 import { toastSuccess, toastError } from '../../client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
+import { useCurrentPageShareLinks } from '~/stores/page';
 
 export const ShareLink:VFC = () => {
   const { t } = useTranslation();
+
+  const { data: shareLinks } = useCurrentPageShareLinks();
+  console.log(shareLinks);
+
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState(false);
 
 
@@ -37,19 +42,6 @@ export const ShareLink:VFC = () => {
     </div>
   );
 };
-// class ShareLink extends React.Component {
-
-//   constructor() {
-//     super();
-//     this.state = {
-//       shareLinks: [],
-//       isOpenShareLinkForm: false,
-//     };
-
-//     this.toggleShareLinkFormHandler = this.toggleShareLinkFormHandler.bind(this);
-//     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
-//     this.deleteLinkById = this.deleteLinkById.bind(this);
-//   }
 
 //   componentDidMount() {
 //     this.retrieveShareLinks();
@@ -104,32 +96,4 @@ export const ShareLink:VFC = () => {
 //     }
 
 //     this.retrieveShareLinks();
-//   }
-
-//   render() {
-//     const { t } = this.props;
-
-//     return (
-// <div className="container p-0">
-//   <h3 className="grw-modal-head d-flex pb-2">
-//     { t('share_links.share_link_list') }
-//     <button className="btn btn-danger ml-auto " type="button" onClick={this.deleteAllLinksButtonHandler}>{t('delete_all')}</button>
-//   </h3>
-
-//   <div>
-//     <ShareLinkList
-//       shareLinks={this.state.shareLinks}
-//       onClickDeleteButton={this.deleteLinkById}
-//     />
-//     <button
-//       className="btn btn-outline-secondary d-block mx-auto px-5"
-//       type="button"
-//       onClick={this.toggleShareLinkFormHandler}
-//     >
-//       {this.state.isOpenShareLinkForm ? t('Close') : t('New')}
-//     </button>
-//     {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />}
-//   </div>
-// </div>
-//     );
 //   }
