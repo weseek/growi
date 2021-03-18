@@ -1,4 +1,5 @@
 /* eslint-disable arrow-body-style */
+import User from '~/server/models/user';
 
 const { getInstance } = require('../setup-crowi');
 
@@ -130,7 +131,6 @@ describe('loginRequired', () => {
     });
 
     test('pass user who logged in', () => {
-      const User = crowi.model('User');
 
       req.user = {
         _id: 'user id',
@@ -174,8 +174,6 @@ describe('loginRequired', () => {
     /* eslint-disable indent */
 
     test('redirect to \'/login\' when user.status is \'STATUS_DELETED\'', () => {
-      const User = crowi.model('User');
-
       req.path = '/path/that/requires/loggedin';
       req.user = {
         _id: 'user id',

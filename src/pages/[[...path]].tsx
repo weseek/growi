@@ -207,7 +207,7 @@ async function injectPageUserInformation(context: GetServerSidePropsContext, pro
     const user = await User.findUserByUsername(User.getUsernameByPath(props.currentPagePath));
 
     if (user != null) {
-      props.pageUser = JSON.stringify(user.toObject());
+      props.pageUser = JSON.stringify(serializeUserSecurely(user));
     }
   }
 }

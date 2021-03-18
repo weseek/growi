@@ -1,9 +1,8 @@
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
+import User from '~/server/models/user';
 
 const mongoose = require('mongoose');
-
-const { getInstance } = require('../setup-crowi');
 
 let testUser0;
 let testUser1;
@@ -12,16 +11,11 @@ let testGroup0;
 let parentPage;
 
 describe('Page', () => {
-  // eslint-disable-next-line no-unused-vars
-  let crowi;
   let Page;
   let PageQueryBuilder;
-  let User;
 
   beforeAll(async(done) => {
-    crowi = await getInstance();
 
-    User = mongoose.model('User');
     Page = mongoose.model('Page');
     PageQueryBuilder = Page.PageQueryBuilder;
 

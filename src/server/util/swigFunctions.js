@@ -1,3 +1,5 @@
+import User from '~/server/models/user';
+
 module.exports = function(crowi, req, locals) {
   const debug = require('debug')('growi:lib:swigFunctions');
   const stringWidth = require('string-width');
@@ -5,7 +7,6 @@ module.exports = function(crowi, req, locals) {
   const { pathUtils } = require('growi-commons');
 
   const Page = crowi.model('Page');
-  const User = crowi.model('User');
   const {
     configManager,
     cdnResourcesService,

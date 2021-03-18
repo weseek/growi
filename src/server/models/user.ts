@@ -49,6 +49,10 @@ let userEvent;
  */
 interface ModelMethods {
   makeAdmin(): Promise<void>;
+  findUserByUsernameOrEmail(username:string, callback:(err, user)=>void): Promise<any>;
+  updateImageUrlCached(): void;
+  findUserByUsername(username:string): IUser;
+  getUsernameByPath(path:string): string;
 }
 
 type CreateUserByEmail = {
@@ -463,7 +467,7 @@ class User extends Model {
     });
   }
 
-  static findUserByUsernameOrEmail(usernameOrEmail, password, callback) {
+  static findUserByUsernameOrEmail(usernameOrEmail, callback) {
     this.findOne()
       .or([
         { username: usernameOrEmail },

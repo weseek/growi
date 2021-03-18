@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import User from '~/server/models/user';
 
 const { getInstance } = require('../setup-crowi');
 
@@ -11,7 +11,6 @@ describe('accessTokenParser', () => {
 
   beforeAll(async(done) => {
     crowi = await getInstance();
-    User = mongoose.model('User');
     accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
 
     targetUser = await User.create({

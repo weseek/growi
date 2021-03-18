@@ -1,6 +1,8 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
+import User from '~/server/models/user';
+
 const debug = require('debug')('growi:models:external-account');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -102,8 +104,6 @@ class ExternalAccount {
           debug(`ExternalAccount '${accountId}' is found `, account);
           return account;
         }
-
-        const User = ExternalAccount.crowi.model('User');
 
         let promise = User.findOne({ username: usernameToBeRegistered });
         if (isSameUsernameTreatedAsIdenticalUser && isSameEmailTreatedAsIdenticalUser) {

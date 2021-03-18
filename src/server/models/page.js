@@ -7,6 +7,7 @@ import loggerFactory from '~/utils/logger';
 import templateChecker from '~/utils/template-checker';
 import { isTopPage, isTrashPage } from '~/utils/path-utils';
 
+import User from '~/server/models/user';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
@@ -427,9 +428,6 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.populateDataToShowRevision = async function() {
-    validateCrowi();
-
-    const User = crowi.model('User');
     return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
       .execPopulate();
   };
@@ -709,8 +707,6 @@ module.exports = function(crowi) {
   };
 
   pageSchema.statics.findListByPageIds = async function(ids, option) {
-    const User = crowi.model('User');
-
     const opt = Object.assign({}, option);
     const builder = new PageQueryBuilder(this.find({ _id: { $in: ids } }));
 
@@ -739,10 +735,6 @@ module.exports = function(crowi) {
    * @param {any} option
    */
   async function findListFromBuilderAndViewer(builder, user, showAnyoneKnowsLink, option) {
-    validateCrowi();
-
-    const User = crowi.model('User');
-
     const opt = Object.assign({ sort: 'updatedAt', desc: -1 }, option);
     const sortOpt = {};
     sortOpt[opt.sort] = opt.desc;

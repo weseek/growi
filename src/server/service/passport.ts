@@ -264,7 +264,7 @@ class PassportService implements S2sMessageHandlable {
       },
       (username, password, done) => {
         // find user
-        User.findUserByUsernameOrEmail(username, password, (err, user) => {
+        User.findUserByUsernameOrEmail(username, (err, user) => {
           if (err) { return done(err) }
           // check existence and password
           if (!user || !user.isPasswordValid(password)) {
@@ -936,14 +936,12 @@ class PassportService implements S2sMessageHandlable {
 
     logger.debug('setting up serializer and deserializer');
 
-    const User = this.crowi.model('User');
-
     passport.serializeUser((user, done) => {
       done(null, (user as any).id);
     });
     passport.deserializeUser(async(id, done) => {
       try {
-        const user = await User.findById(id);
+        const user: any = await User.findById(id);
         if (user == null) {
           throw new Error('user not found');
         }

@@ -1,16 +1,8 @@
-const mongoose = require('mongoose');
-
-const { getInstance } = require('../setup-crowi');
-
+import User from '~/server/models/user';
 
 describe('User', () => {
-  // eslint-disable-next-line no-unused-vars
-  let crowi;
-  let User;
 
   beforeAll(async(done) => {
-    crowi = await getInstance();
-    User = mongoose.model('User');
 
     await User.create({
       name: 'Example for User Test',

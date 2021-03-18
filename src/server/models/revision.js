@@ -1,6 +1,7 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 import loggerFactory from '~/utils/logger';
+import User, { UserStatus } from '~/server/models/user';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:models:revision');
@@ -43,7 +44,6 @@ module.exports = function(crowi) {
   // });
 
   revisionSchema.statics.findRevisions = function(ids) {
-    const User = crowi.model('User');
 
     if (!Array.isArray(ids)) {
       return Promise.reject(new Error('The argument was not Array.'));
@@ -71,12 +71,10 @@ module.exports = function(crowi) {
   };
 
   revisionSchema.statics.findRevisionList = function(path, options) {
-    const User = crowi.model('User');
-
     return new Promise(((resolve, reject) => {
       this.find({ path })
         .sort({ createdAt: -1 })
-        .populate('author', User.USER_PUBLIC_FIELDS)
+        .populate('author', UserStatus.USER_PUBLIC_FIELDS)
         .exec((err, data) => {
           if (err) {
             return reject(err);
