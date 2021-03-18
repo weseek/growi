@@ -1,5 +1,7 @@
 const logger = require('@alias/logger')('growi:service:BoltService');
 
+const PAGINGLIMIT = 10;
+
 class BoltReciever {
 
   init(app) {
@@ -116,6 +118,20 @@ class BoltService {
       await this.createPageInGrowi(view, body);
     });
 
+    this.bolt.action('showNextResults', async({
+      ack, action,
+    }) => {
+      await ack();
+      const parsedValue = JSON.parse(action.value);
+
+      const command = parsedValue.command;
+      const args = parsedValue.args;
+      const offset = parsedValue.offset;
+
+      const newOffset = offset + 10;
+      this.showEphemeralSearchResults(command, args, newOffset);
+    });
+
     this.bolt.action('shareSearchResults', async({
       body, ack, say, action,
     }) => {
@@ -137,7 +153,13 @@ class BoltService {
     return;
   }
 
-  async getSearchResultPaths(command, args) {
+  getKeywords(args) {
+    const keywordsArr = args.slice(1);
+    const keywords = keywordsArr.join(' ');
+    return keywords;
+  }
+
+  async getSearchResultPaths(command, args, offset = 0) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
       this.client.chat.postEphemeral({
@@ -150,12 +172,12 @@ class BoltService {
       return;
     }
 
-    // remove leading 'search'.
-    args.shift();
-    const keywords = args.join(' ');
+    const keywords = this.getKeywords(args);
+
     const { searchService } = this.crowi;
-    const option = { limit: 10 };
-    const results = await searchService.searchKeyword(keywords, null, {}, option);
+    const options = { limit: 10, offset };
+    const results = await searchService.searchKeyword(keywords, null, {}, options);
+    const resultsTotal = results.meta.total;
 
     // no search results
     if (results.data.length === 0) {
@@ -164,7 +186,7 @@ class BoltService {
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
-          this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${args}".*`),
+          this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
           this.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
           this.divider(),
           this.generateMarkdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
@@ -189,11 +211,18 @@ class BoltService {
       return data._source.path;
     });
 
-    return resultPaths;
+    return {
+      resultPaths, offset, resultsTotal,
+    };
   }
 
-  async showEphemeralSearchResults(command, args) {
-    const resultPaths = await this.getSearchResultPaths(command, args);
+  async showEphemeralSearchResults(command, args, offsetNum) {
+    const {
+      resultPaths, offset, resultsTotal,
+    } = await this.getSearchResultPaths(command, args, offsetNum);
+
+    const keywords = this.getKeywords(args);
+
     if (resultPaths == null) {
       return;
     }
@@ -221,38 +250,46 @@ class BoltService {
         break;
     }
 
-    const keywordsAndDesc = `keyword(s) : "${args}" \n ${searchResultsDesc}.`;
+    const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
     try {
+      // DEFAULT show "Share" button
+      const actionBlocks = {
+        type: 'actions',
+        elements: [
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Share',
+            },
+            style: 'primary',
+            action_id: 'shareSearchResults',
+            value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+          },
+        ],
+      };
+      // show "Next" button if next page exists
+      if (resultsTotal > offset + PAGINGLIMIT) {
+        actionBlocks.elements.push(
+          {
+            type: 'button',
+            text: {
+              type: 'plain_text',
+              text: 'Next',
+            },
+            action_id: 'showNextResults',
+            value: JSON.stringify({ offset, command, args }),
+          },
+        );
+      }
       await this.client.chat.postEphemeral({
         channel: command.channel_id,
         user: command.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
-          {
-            type: 'actions',
-            elements: [
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Next',
-                },
-                action_id: 'showNextResults',
-              },
-              {
-                type: 'button',
-                text: {
-                  type: 'plain_text',
-                  text: 'Share',
-                },
-                style: 'primary',
-                action_id: 'shareSearchResults',
-                value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-              },
-            ],
-          },
+          actionBlocks,
         ],
       });
     }
