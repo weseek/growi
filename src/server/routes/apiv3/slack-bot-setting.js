@@ -9,13 +9,15 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
 
-// const { body } = require('express-validator');
+const { body } = require('../../express-validator');
 
-// const ErrorV3 = require('../../models/vo/error-apiv3');
 
-// const validator = {
-
-// };
+const validator = {
+  CusotmBotSettings: [
+    body('slackSigningSecret').if(value => value != null).isStirng(),
+    body('slackBotToken').if(value => value != null).isStirng(),
+  ],
+};
 
 /**
  * @swagger
@@ -62,28 +64,29 @@ module.exports = (crowi) => {
     return res.apiv3({ slackBotSettingParams });
   });
 
-  router.put('/custom-bot-setting', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/custom-bot-setting',
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiv3FormValidator, async(req, res) => {
 
-    const requestParams = {
+      const requestParams = {
       // temp data
-      'slackbot:signingSecret': 1234567890,
-      'slackbot:token': 'asdfghjkkl1234567890',
-    };
-
-    try {
-      await updateCustomBotSettings(requestParams);
-      const slackBotSettingParams = {
-        slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-        slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
+        'slackbot:signingSecret': 1234567890, // req.body.
+        'slackbot:token': 'asdfghjkkl1234567890',
       };
-      return res.apiv3({ slackBotSettingParams });
-    }
-    catch (error) {
-      const msg = 'Error occured in updating Custom bot setting';
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-Custom bot-failed'));
-    }
-  });
+
+      try {
+        await updateCustomBotSettings(requestParams);
+        const slackBotSettingParams = {
+          slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
+          slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
+        };
+        return res.apiv3({ slackBotSettingParams });
+      }
+      catch (error) {
+        const msg = 'Error occured in updating Custom bot setting';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'update-Custom bot-failed'));
+      }
+    });
 
   return router;
 };
