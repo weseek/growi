@@ -3,7 +3,7 @@ import { VFC, useState } from 'react';
 import { apiv3Get, apiv3Delete } from '../../client/js/util/apiv3-client';
 
 import ShareLinkList from '../../client/js/components/ShareLink/ShareLinkList';
-import ShareLinkForm from '../../client/js/components/ShareLink/ShareLinkForm';
+import { ShareLinkForm } from '~/components/PageAccessory/ShareLinkForm';
 
 import { toastSuccess, toastError } from '../../client/js/util/apiNotification';
 import { useTranslation } from '~/i18n';
@@ -37,7 +37,7 @@ export const ShareLink:VFC = () => {
         >
           {isOpenShareLinkForm ? t('Close') : t('New')}
         </button>
-        {/* {this.state.isOpenShareLinkForm && <ShareLinkForm onCloseForm={this.toggleShareLinkFormHandler} />} */}
+        {isOpenShareLinkForm && <ShareLinkForm onCloseForm={() => setIsOpenShareLinkForm(false)} />}
       </div>
     </div>
   );
