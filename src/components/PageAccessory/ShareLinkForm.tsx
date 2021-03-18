@@ -96,7 +96,7 @@ export const ShareLinkForm:VFC<Props> = (props: Props) => {
       <h3 className="grw-modal-head pb-2"> { t('share_links.share_settings') }</h3>
       <div className=" p-3">
         <div className="form-group row">
-          <label htmlFor="inputDesc" className="col-md-5 col-form-label">{t('share_links.expire')}</label>
+          <label htmlFor="inputDesc" className="col-md-5 text-right">{t('share_links.expire')}</label>
           <div className="col-md-7">
             <div className="custom-control custom-radio form-group ">
               <input
