@@ -1,5 +1,8 @@
+import Attachment from '~/server/models/attachment';
+
 const request = require('supertest');
 const express = require('express');
+
 const { getInstance } = require('../setup-crowi');
 
 describe('attachment', () => {
@@ -36,14 +39,14 @@ describe('attachment', () => {
       });
       describe('test limit', () => {
         beforeAll(() => {
-          crowi.models.Attachment.paginate = jest.fn().mockImplementation(() => { return { docs: [] } });
+          Attachment.paginate = jest.fn().mockImplementation(() => { return { docs: [] } });
         });
         test('respond 200 when set query limit', async() => {
           const response = await request(app).get('/list').query({
             pageId: '52fcf1060af12baf9e8d5bba', limit: 30, page: 1,
           });
 
-          expect(crowi.models.Attachment.paginate.mock.calls[0]).toMatchObject(
+          expect(Attachment.paginate.mock.calls[0]).toMatchObject(
             [
               { page: '52fcf1060af12baf9e8d5bba' },
               { limit: 30, offset: 0, populate: { path: 'creator', select: crowi.models.User.USER_PUBLIC_FIELDS } },
@@ -58,7 +61,7 @@ describe('attachment', () => {
             pageId: '52fcf1060af12baf9e8d5bba', page: 1,
           });
 
-          expect(crowi.models.Attachment.paginate.mock.calls[0]).toMatchObject(
+          expect(Attachment.paginate.mock.calls[0]).toMatchObject(
             [
               { page: '52fcf1060af12baf9e8d5bba' },
               { limit: 20, offset: 0, populate: { path: 'creator', select: crowi.models.User.USER_PUBLIC_FIELDS } },
@@ -73,7 +76,7 @@ describe('attachment', () => {
             pageId: '52fcf1060af12baf9e8d5bba', page: 1,
           });
 
-          expect(crowi.models.Attachment.paginate.mock.calls[0]).toMatchObject(
+          expect(Attachment.paginate.mock.calls[0]).toMatchObject(
             [
               { page: '52fcf1060af12baf9e8d5bba' },
               { limit: 10, offset: 0, populate: { path: 'creator', select: crowi.models.User.USER_PUBLIC_FIELDS } },
@@ -86,13 +89,13 @@ describe('attachment', () => {
       describe.skip('when exist docs and valid creater', () => {
         beforeAll(() => {
           // TODO: Mocking User instance to creator, because test instanceof operator
-          crowi.models.Attachment.paginate = jest.fn().mockImplementation(() => { return { docs: [{ creator: 'creator' }] } });
+          Attachment.paginate = jest.fn().mockImplementation(() => { return { docs: [{ creator: 'creator' }] } });
         });
       });
       describe.skip('when exist docs and invalid creater', () => {
         beforeAll(() => {
           // TODO: Mocking User instance to creator, because test instanceof operator
-          crowi.models.Attachment.paginate = jest.fn().mockImplementation(() => { return { docs: [{ creator: 'creator' }] } });
+          Attachment.paginate = jest.fn().mockImplementation(() => { return { docs: [{ creator: 'creator' }] } });
         });
       });
     });

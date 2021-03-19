@@ -1,5 +1,7 @@
-// file uploader virtual class
 
+import Attachment from '~/server/models/attachment';
+
+// file uploader virtual class
 class Uploader {
 
   constructor(crowi) {
@@ -45,7 +47,6 @@ class Uploader {
     if (uploadFileSize > maxFileSize) {
       return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
     }
-    const Attachment = this.crowi.model('Attachment');
     // Get attachment total file size
     const res = await Attachment.aggregate().group({
       _id: null,

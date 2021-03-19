@@ -7,7 +7,6 @@ module.exports = {
   ExternalAccount: require('./external-account'),
   Revision: require('./revision'),
   Comment: require('./comment'),
-  Attachment: require('./attachment'),
   UpdatePost: require('./updatePost'),
   GlobalNotificationSetting: require('./GlobalNotificationSetting'),
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),

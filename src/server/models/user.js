@@ -1,6 +1,7 @@
 import { config as i18nConfig } from '~/i18n';
 import loggerFactory from '~/utils/logger';
 import { migrateDeprecatedLocaleId } from '~/utils/locale-utils';
+import Attachment from '~/server/models/attachment';
 
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -252,7 +253,6 @@ module.exports = function(crowi) {
       return this.image;
     }
     if (this.imageAttachment != null && this.imageAttachment._id != null) {
-      const Attachment = crowi.model('Attachment');
       const imageAttachment = await Attachment.findById(this.imageAttachment);
       return imageAttachment.filePathProxied;
     }
