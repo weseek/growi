@@ -2,6 +2,7 @@ import loggerFactory from '~/utils/logger';
 import ShareLink from '~/server/models/share-link';
 import Bookmark from '~/server/models/bookmark';
 import Comment from '~/server/models/comment';
+import Revision from '~/server/models/revision';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import Attachment from '~/server/models/attachment';
 
@@ -57,7 +58,6 @@ class PageService {
   async renamePage(page, newPagePath, user, options, isRecursively = false) {
 
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
     const path = page.path;
     const createRedirectPage = options.createRedirectPage || false;
     const updateMetadata = options.updateMetadata || false;
@@ -197,7 +197,6 @@ class PageService {
   async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
@@ -297,7 +296,6 @@ class PageService {
 
   async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const paths = pages.map(page => (page.path));
     const revisions = await Revision.find({ path: { $in: paths } });
@@ -392,7 +390,6 @@ class PageService {
 
   async deletePage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
@@ -685,7 +682,6 @@ class PageService {
 
   async revertDeletedPage(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
