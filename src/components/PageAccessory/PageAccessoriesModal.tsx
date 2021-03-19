@@ -33,7 +33,7 @@ type Props = {
   onClose?: ()=>void;
   activeTab: AccessoryName;
   activeComponents: Set<AccessoryName>;
-  switchActiveTab?: ()=> void;
+  switchActiveTab?: (accessoryName: AccessoryName)=> void;
 }
 
 export const PageAccessoriesModal:FC<Props> = (props:Props) => {
