@@ -131,17 +131,9 @@ class Revision extends Model {
     return newRevision;
   }
 
-static removeRevisionsByPath = function(path) {
-  return new Promise(((resolve, reject) => {
-    this.remove({ path }, (err, data) => {
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(data);
-    });
-  }));
-};
+  static removeRevisionsByPath(path) {
+    return this.remove({ path });
+  }
 
 }
 
