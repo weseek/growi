@@ -41,8 +41,9 @@ module.exports = (crowi) => {
 
   const validator = {
     CusotmBotSettings: [
-      body('slackSigningSecret').exists({ checkFalsy: true }).isString(),
-      body('slackBotToken').exists({ checkFalsy: true }).isString(),
+      body('slackSigningSecret').isString(),
+      body('slackBotToken').isString(),
+      body('botType').isString(),
     ],
   };
 
