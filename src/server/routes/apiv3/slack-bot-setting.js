@@ -63,11 +63,26 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get SigningSecret and SlackBotToken.
    */
-  router.get('/custom-bot-setting', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const slackBotSettingParams = {
-      slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-      slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
+
+      generalSlackBot: {
+        isCustomNonProxyEnabled: await crowi.configManager.getConfig('crowi', ''),
+        // isCustomWithProxyEnabled: ,
+        // isOfficialEnabled: ,
+      },
+      // TODO impl when creating official bot
+      // officialBotSettings: {
+      // },
+      cusotmBotSettingsNonProxy: {
+        slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
+        slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
+      },
+      // TODO imple when creating with proxy
+      // cusotmBotSettingsWithProxy: {
+      // },
+
     };
     return res.apiv3({ slackBotSettingParams });
   });
