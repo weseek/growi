@@ -412,19 +412,19 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   OFFICIAL_BOT_ENABLED: {
     ns:      'crowi',
-    key:     'slackbot:isOfficialEnabled',
+    key:     'slackbot:isOfficial:Enabled',
     type:    TYPES.BOOLEAN,
     default: true,
   },
   CUSTOM_BOT_NON_PROXY_ENABLED: {
     ns:      'crowi',
-    key:     'slackbot:isCustomNonProxyEnabled',
+    key:     'slackbot:isCustomNonProxy:Enabled',
     type:    TYPES.BOOLEAN,
     default: false,
   },
   CUSTOM_BOT_WITH_PROXY_ENABLED: {
     ns:      'crowi',
-    key:     'slackbot:isCustomWithProxyEnabled',
+    key:     'slackbot:isCustomWithProxy:Enabled',
     type:    TYPES.BOOLEAN,
     default: false,
   },
