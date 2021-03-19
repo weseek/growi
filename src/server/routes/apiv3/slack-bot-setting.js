@@ -67,11 +67,8 @@ module.exports = (crowi) => {
 
     const slackBotSettingParams = {
 
-      generalSlackBot: {
-        isOfficialEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isOfficial:Enabled'),
-        isCustomNonProxyEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isCustomNonProxy:Enabled'),
-        isCustomWithProxyEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isCustomWithProxy:Enabled'),
-      },
+      slackBotType: await crowi.configManager.getConfig('crowi', 'slackbot:type'),
+
       // TODO impl when creating official bot
       officialBotSettings: {
       },
@@ -130,15 +127,14 @@ module.exports = (crowi) => {
     });
 
   router.put('/enabled', async(req, res) => {
-    const { isEnabled, botType } = req.body;
-    const enableParams = {
-      [`slackbot:${botType}:Enabled`]: JSON.parse(isEnabled),
-    };
+    const { botType } = req.body;
+    console.log(botType);
+    const requestParams = { 'slackbot:type': botType };
 
     try {
-      await updateBotSettings(enableParams);
+      await updateBotSettings(requestParams);
       const responseParams = {
-        [`slackbot:${botType}:Enabled`]:  await crowi.configManager.getConfig('crowi', `slackbot:${botType}:Enabled`),
+        'slackbot:type': await crowi.configManager.getConfig('crowi', 'slackbot:type'),
       };
       return res.apiv3({ responseParams });
     }
