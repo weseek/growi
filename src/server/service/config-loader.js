@@ -414,7 +414,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'slackbot:type', // eg. official || custom-non-proxy || custom-with-proxy
     type:    TYPES.STRING,
-    default: 'custom-non-proxy', // If imple Official bot, set official in default
+    default: 'custom-non-proxy', // If impl Official bot, set official in default
   },
 };
 
