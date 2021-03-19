@@ -12,7 +12,6 @@ import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEd
 import Page from './components/Page';
 import PageComments from './components/PageComments';
 import PageContentFooter from './components/PageContentFooter';
-import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
 import ShareLinkAlert from './components/Page/ShareLinkAlert';
@@ -92,8 +91,6 @@ Object.assign(componentMappings, {
   />,
 
   'forbidden-page': <ForbiddenPage />,
-
-  'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
 
