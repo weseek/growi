@@ -68,9 +68,9 @@ module.exports = (crowi) => {
     const slackBotSettingParams = {
 
       generalSlackBot: {
-        isOfficialEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isOfficialEnabled'),
-        isCustomNonProxyEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isCustomNonProxyEnabled'),
-        isCustomWithProxyEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isCustomWithProxyEnabled'),
+        isOfficialEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isOfficial:Enabled'),
+        isCustomNonProxyEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isCustomNonProxy:Enabled'),
+        isCustomWithProxyEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isCustomWithProxy:Enabled'),
       },
       // TODO impl when creating official bot
       officialBotSettings: {
@@ -128,6 +128,14 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
       }
     });
+
+  router.put('/enabled', async(req, res) => {
+    const { isEnabled, botType } = req.body;
+    const enableParams = { [`slackbot:${botType}:isEnabled`]: isEnabled };
+
+
+  });
+
 
   return router;
 };
