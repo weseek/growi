@@ -1,6 +1,7 @@
 import loggerFactory from '~/utils/logger';
 import ShareLink from '~/server/models/share-link';
 import Bookmark from '~/server/models/bookmark';
+import Comment from '~/server/models/comment';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import Attachment from '~/server/models/attachment';
 
@@ -195,7 +196,6 @@ class PageService {
 
   async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 

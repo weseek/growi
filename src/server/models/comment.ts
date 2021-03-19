@@ -30,20 +30,6 @@ const schema = new Schema<IComment>({
  */
 class Comment extends Model {
 
-  static create(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
-    const newComment = new this();
-
-    newComment.page = pageId;
-    newComment.creator = creatorId;
-    newComment.revision = revisionId;
-    newComment.comment = comment;
-    newComment.commentPosition = position;
-    newComment.isMarkdown = isMarkdown || false;
-    newComment.replyTo = replyTo;
-
-    return newComment.save();
-  }
-
   static getCommentsByPageId(id) {
     return this.find({ page: id }).sort({ createdAt: -1 });
   }

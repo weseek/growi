@@ -10,6 +10,7 @@ import { isTopPage, isTrashPage } from '~/utils/path-utils';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import Comment from '~/server/models/comment';
 
 const logger = loggerFactory('growi:models:page');
 
@@ -466,7 +467,6 @@ module.exports = function(crowi) {
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();
 
-    const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
       .then((count) => {
         this.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
