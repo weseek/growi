@@ -5,7 +5,6 @@ module.exports = {
   // PageArchive: require('./page-archive'),
   User: require('./user'),
   ExternalAccount: require('./external-account'),
-  Revision: require('./revision'),
   UpdatePost: require('./updatePost'),
   GlobalNotificationSetting: require('./GlobalNotificationSetting'),
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
