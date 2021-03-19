@@ -1,5 +1,5 @@
 /* eslint-disable arrow-body-style */
-import User from '~/server/models/user';
+import User, { UserStatus } from '~/server/models/user';
 
 const { getInstance } = require('../setup-crowi');
 
@@ -134,7 +134,7 @@ describe('loginRequired', () => {
 
       req.user = {
         _id: 'user id',
-        status: User.STATUS_ACTIVE,
+        status: UserStatus.STATUS_ACTIVE,
       };
 
       const result = loginRequiredStrictly(req, res, next);
@@ -177,7 +177,7 @@ describe('loginRequired', () => {
       req.path = '/path/that/requires/loggedin';
       req.user = {
         _id: 'user id',
-        status: User.STATUS_DELETED,
+        status: UserStatus.STATUS_DELETED,
       };
 
       const result = loginRequiredStrictly(req, res, next);
