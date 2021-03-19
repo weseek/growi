@@ -1,12 +1,13 @@
 import loggerFactory from '~/utils/logger';
 
+import Attachment from '~/server/models/attachment';
 import ShareLink from '~/server/models/share-link';
 
 const url = require('url');
 
 const logger = loggerFactory('growi:middleware:certify-shared-fire');
 
-module.exports = (crowi) => {
+module.exports = () => {
 
   return async(req, res, next) => {
     const { referer } = req.headers;
@@ -24,8 +25,6 @@ module.exports = (crowi) => {
     }
 
     const fileId = req.params.id || null;
-
-    const Attachment = crowi.model('Attachment');
 
     const attachment = await Attachment.findOne({ _id: fileId });
 

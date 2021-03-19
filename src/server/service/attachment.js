@@ -3,6 +3,7 @@ import fs from 'fs';
 import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
+import Attachment from '~/server/models/attachment';
 
 const logger = loggerFactory('growi:service:AttachmentService'); // eslint-disable-line no-unused-vars
 
@@ -24,8 +25,6 @@ export default class AttachmentService {
     if (!res.isUploadable) {
       throw new Error(res.errorMessage);
     }
-
-    const Attachment = this.crowi.model('Attachment');
 
     const fileStream = fs.createReadStream(file.path, {
       flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
@@ -67,7 +66,6 @@ export default class AttachmentService {
   }
 
   async removeAttachment(attachmentId) {
-    const Attachment = this.crowi.model('Attachment');
     const { fileUploadService } = this.crowi;
     const attachment = await Attachment.findById(attachmentId);
 

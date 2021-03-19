@@ -1,5 +1,6 @@
 import loggerFactory from '~/utils/logger';
 import User, { UserStatus } from '~/server/models/user';
+import Attachment from '~/server/models/attachment';
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
 
@@ -20,7 +21,7 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const Page = crowi.model('Page');
-  const Attachment = crowi.model('Attachment');
+
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
