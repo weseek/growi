@@ -274,7 +274,7 @@ User.findById = jest.fn().mockImplementation(() => { return null });
 
     describe('when throw Error from Page.findListByCreator', () => {
       beforeAll(() => {
-        crowi.models.User.findById = jest.fn().mockImplementation(() => { return 'user' });
+        User.findById = jest.fn().mockImplementation(() => { return 'user' });
         crowi.models.Page.findListByCreator = jest.fn().mockImplementation(() => { throw Error('error') });
       });
       test('respond 500', async() => {
