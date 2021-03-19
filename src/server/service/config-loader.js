@@ -410,6 +410,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  OFFICIAL_BOT_ENABLED: {
+    ns:      'crowi',
+    key:     'slackbot:isOfficialEnabled',
+    type:    TYPES.BOOLEAN,
+    default: true,
+  },
   CUSTOM_BOT_NON_PROXY_ENABLED: {
     ns:      'crowi',
     key:     'slackbot:isCustomNonProxyEnabled',
@@ -422,13 +428,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
-  OFFICIAL_BOT_ENABLED: {
-    ns:      'crowi',
-    key:     'slackbot:isOfficialEnabled',
-    type:    TYPES.BOOLEAN,
-    default: false,
-  },
-
 };
 
 class ConfigLoader {

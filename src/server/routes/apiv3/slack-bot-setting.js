@@ -68,20 +68,20 @@ module.exports = (crowi) => {
     const slackBotSettingParams = {
 
       generalSlackBot: {
-        isCustomNonProxyEnabled: await crowi.configManager.getConfig('crowi', ''),
-        // isCustomWithProxyEnabled: ,
-        // isOfficialEnabled: ,
+        isOfficialEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isOfficialEnabled'),
+        isCustomNonProxyEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isCustomNonProxyEnabled'),
+        isCustomWithProxyEnabled: await crowi.configManager.getConfig('crowi', 'slackbot:isCustomWithProxyEnabled'),
       },
       // TODO impl when creating official bot
-      // officialBotSettings: {
-      // },
+      officialBotSettings: {
+      },
       cusotmBotSettingsNonProxy: {
         slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
       },
       // TODO imple when creating with proxy
-      // cusotmBotSettingsWithProxy: {
-      // },
+      cusotmBotSettingsWithProxy: {
+      },
 
     };
     return res.apiv3({ slackBotSettingParams });
