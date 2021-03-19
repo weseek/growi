@@ -3,7 +3,7 @@ import { Schema, Model } from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import Debug from 'debug';
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
 import { UserGroup as IUserGroup } from '~/interfaces/user';
 
 import ConfigManager from '~/server/service/config-manager';
@@ -72,7 +72,7 @@ class UserGroup extends Model {
     return `userGroup/${userGroup._id}${ext}`;
   }
 
-  static findAllGroups(_option) {
+  static findAllGroups() {
     return this.find().exec();
   }
 
