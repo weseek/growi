@@ -323,7 +323,7 @@ User.findUserByUsername = jest.fn().mockImplementation(() => { return null });
 
     describe('when throw Error from User.findUserByUsername', () => {
       beforeAll(() => {
-User.findUserByUsername = jest.fn().mockImplementation(() => { throw Error('error') });
+        User.findUserByUsername = jest.fn().mockImplementation(() => { throw Error('error') });
       });
       test('respond 400', async() => {
         const response = await request(app).get('/exists').query({
