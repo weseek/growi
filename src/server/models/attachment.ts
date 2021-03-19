@@ -1,56 +1,64 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
+import path from 'path';
+import { Schema, Model } from 'mongoose';
 
-import loggerFactory from '~/utils/logger';
+import uniqueValidator from 'mongoose-unique-validator';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-const path = require('path');
+import { createHash } from 'crypto';
+import { addSeconds } from 'date-fns';
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
+import { Attachment as IAttachment } from '~/interfaces/page';
 
-const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const { addSeconds } = require('date-fns');
+const ObjectId = Schema.Types.ObjectId;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const logger = loggerFactory('growi:models:attachment');
+/*
+ * define methods type
+ */
+interface ModelMethods {
+  getValidTemporaryUrl(): string| null;
+}
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
+function generateFileHash(fileName) {
+  const hash = createHash('md5');
+  hash.update(`${fileName}_${Date.now()}`);
 
-module.exports = function(crowi) {
-  function generateFileHash(fileName) {
-    const hash = require('crypto').createHash('md5');
-    hash.update(`${fileName}_${Date.now()}`);
+  return hash.digest('hex');
+}
 
-    return hash.digest('hex');
-  }
+const schema = new Schema({
+  page: { type: ObjectId, ref: 'Page', index: true },
+  creator: { type: ObjectId, ref: 'User', index: true },
+  filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below
+  fileName: { type: String, required: true, unique: true },
+  originalName: { type: String },
+  fileFormat: { type: String, required: true },
+  fileSize: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  temporaryUrlCached: { type: String },
+  temporaryUrlExpiredAt: { type: Date },
+});
+schema.plugin(uniqueValidator);
+schema.plugin(mongoosePaginate);
 
-  const attachmentSchema = new mongoose.Schema({
-    page: { type: ObjectId, ref: 'Page', index: true },
-    creator: { type: ObjectId, ref: 'User', index: true },
-    filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below
-    fileName: { type: String, required: true, unique: true },
-    originalName: { type: String },
-    fileFormat: { type: String, required: true },
-    fileSize: { type: Number, default: 0 },
-    createdAt: { type: Date, default: Date.now },
-    temporaryUrlCached: { type: String },
-    temporaryUrlExpiredAt: { type: Date },
-  });
-  attachmentSchema.plugin(uniqueValidator);
-  attachmentSchema.plugin(mongoosePaginate);
+schema.virtual('filePathProxied').get(function(this) {
+  return `/attachment/${this._id}`;
+});
 
-  attachmentSchema.virtual('filePathProxied').get(function() {
-    return `/attachment/${this._id}`;
-  });
+schema.virtual('downloadPathProxied').get(function(this) {
+  return `/download/${this._id}`;
+});
 
-  attachmentSchema.virtual('downloadPathProxied').get(function() {
-    return `/download/${this._id}`;
-  });
+schema.set('toObject', { virtuals: true });
+schema.set('toJSON', { virtuals: true });
 
-  attachmentSchema.set('toObject', { virtuals: true });
-  attachmentSchema.set('toJSON', { virtuals: true });
+/**
+ * UserGroup Class
+ *
+ * @class UserGroup
+ */
+class Attachment extends Model {
 
-
-  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
+  static createWithoutSave(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const extname = path.extname(originalName);
     let fileName = generateFileHash(originalName);
     if (extname.length > 1) { // ignore if empty or '.' only
@@ -67,10 +75,9 @@ module.exports = function(crowi) {
     attachment.createdAt = Date.now();
 
     return attachment;
-  };
+  }
 
-
-  attachmentSchema.methods.getValidTemporaryUrl = function() {
+  getValidTemporaryUrl() {
     if (this.temporaryUrlExpiredAt == null) {
       return null;
     }
@@ -79,9 +86,9 @@ module.exports = function(crowi) {
       return null;
     }
     return this.temporaryUrlCached;
-  };
+  }
 
-  attachmentSchema.methods.cashTemporaryUrlByProvideSec = function(temporaryUrl, provideSec) {
+  cashTemporaryUrlByProvideSec(temporaryUrl, provideSec) {
     if (temporaryUrl == null) {
       throw new Error('url is required.');
     }
@@ -89,7 +96,9 @@ module.exports = function(crowi) {
     this.temporaryUrlExpiredAt = addSeconds(new Date(), provideSec);
 
     return this.save();
-  };
+  }
 
-  return mongoose.model('Attachment', attachmentSchema);
-};
+}
+
+schema.loadClass(Attachment);
+export default getOrCreateModel<IAttachment, ModelMethods>('Attachment', schema);
