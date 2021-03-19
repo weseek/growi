@@ -2,6 +2,7 @@ import loggerFactory from '~/utils/logger';
 import ShareLink from '~/server/models/share-link';
 import Bookmark from '~/server/models/bookmark';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import Attachment from '~/server/models/attachment';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
@@ -197,7 +198,6 @@ class PageService {
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
-    const Attachment = this.crowi.model('Attachment');
 
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });

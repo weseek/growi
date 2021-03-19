@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 
 import loggerFactory from '~/utils/logger';
+import Attachment from '~/server/models/attachment';
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
@@ -130,7 +131,6 @@ const logger = loggerFactory('growi:routes:attachment');
  */
 
 module.exports = function(crowi, app) {
-  const Attachment = crowi.model('Attachment');
   const Page = crowi.model('Page');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
