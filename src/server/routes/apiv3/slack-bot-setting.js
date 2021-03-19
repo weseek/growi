@@ -71,13 +71,19 @@ module.exports = (crowi) => {
       slackBotType: await crowi.configManager.getConfig('crowi', 'slackbot:type'),
       // TODO impl when creating official bot
       officialBotSettings: {
+        // TODO impl this after GW-4939
+        // AccessToken: "tempaccessdatahogehoge",
       },
       cusotmBotNonProxySettings: {
+        // TODO impl this after GW-4939
+        // AccessToken: "tempaccessdatahogehoge",
         slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
       },
       // TODO imple when creating with proxy
       cusotmBotWithProxySettings: {
+        // TODO impl this after GW-4939
+        // AccessToken: "tempaccessdatahogehoge",
       },
     };
     return res.apiv3({ slackBotSettingParams });
