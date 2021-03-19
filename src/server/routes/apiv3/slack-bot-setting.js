@@ -26,6 +26,8 @@ const router = express.Router();
  *            type: string
  *          slackBotToken:
  *            type: string
+ *          botType:
+ *            type: string
  */
 
 
@@ -105,10 +107,12 @@ module.exports = (crowi) => {
    */
   router.put('/custom-bot-setting',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
-      const { slackSigningSecret, slackBotToken } = req.body;
+      const { slackSigningSecret, slackBotToken, botType } = req.body;
+
       const requestParams = {
         'slackbot:signingSecret': slackSigningSecret,
         'slackbot:token': slackBotToken,
+        'slackbot:type': botType,
       };
 
       try {
@@ -116,6 +120,7 @@ module.exports = (crowi) => {
         const slackBotSettingParams = {
           slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
           slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
+          slackBotType: await crowi.configManager.getConfig('crowi', 'slackbot:type'),
         };
         return res.apiv3({ slackBotSettingParams });
       }
@@ -125,26 +130,6 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
       }
     });
-
-  router.put('/enabled', async(req, res) => {
-    const { botType } = req.body;
-    console.log(botType);
-    const requestParams = { 'slackbot:type': botType };
-
-    try {
-      await updateBotSettings(requestParams);
-      const responseParams = {
-        'slackbot:type': await crowi.configManager.getConfig('crowi', 'slackbot:type'),
-      };
-      return res.apiv3({ responseParams });
-    }
-    catch (error) {
-      console.log('errormatu');
-    }
-
-
-  });
-
 
   return router;
 };

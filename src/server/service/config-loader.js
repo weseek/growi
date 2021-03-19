@@ -412,7 +412,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   SLACK_BOT_TYPE: {
     ns:      'crowi',
-    key:     'slackbot:type', // official || nonProxy || withProxy
+    key:     'slackbot:type', // eg. official || nonProxy || withProxy
     type:    TYPES.STRING,
     default: 'custom',
   },
