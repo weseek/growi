@@ -274,7 +274,7 @@ class User extends Model {
     return this.save();
   }
 
-  async asyncMakeAdmin(callback) {
+  async asyncMakeAdmin() {
     this.admin = 1;
     return this.save();
   }
