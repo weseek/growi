@@ -4,15 +4,11 @@ import { Schema, Model } from 'mongoose';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import { Comment as IComment } from '~/interfaces/page';
 
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:models:comment');
-
 /*
  * define methods type
  */
 interface ModelMethods {
-  getIdToNameMap(tagIds:Schema.Types.ObjectId[]): {[key:string]:string}
+  removeWithReplies(): void
 }
 
 const schema = new Schema<IComment>({
@@ -35,26 +31,17 @@ const schema = new Schema<IComment>({
 class Comment extends Model {
 
   static create(pageId, creatorId, revisionId, comment, position, isMarkdown, replyTo) {
-    return new Promise(((resolve, reject) => {
-      const newComment = new this();
+    const newComment = new this();
 
-      newComment.page = pageId;
-      newComment.creator = creatorId;
-      newComment.revision = revisionId;
-      newComment.comment = comment;
-      newComment.commentPosition = position;
-      newComment.isMarkdown = isMarkdown || false;
-      newComment.replyTo = replyTo;
+    newComment.page = pageId;
+    newComment.creator = creatorId;
+    newComment.revision = revisionId;
+    newComment.comment = comment;
+    newComment.commentPosition = position;
+    newComment.isMarkdown = isMarkdown || false;
+    newComment.replyTo = replyTo;
 
-      newComment.save((err, data) => {
-        if (err) {
-          logger.debug('Error on saving comment.', err);
-          return reject(err);
-        }
-        logger.debug('Comment saved.', data);
-        return resolve(data);
-      });
-    }));
+    return newComment.save();
   }
 
   static getCommentsByPageId(id) {
@@ -77,7 +64,7 @@ class Comment extends Model {
 
   }
 
-  async removeWithReplies() {
+  removeWithReplies() {
     return this.remove({
       $or: (
         [{ replyTo: this._id }, { _id: this._id }]),
