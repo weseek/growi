@@ -10,7 +10,7 @@ const router = express.Router();
 /**
  * @swagger
  *  tags:
- *    name: SlackBotSetting
+ *    name: SlackIntegration
  */
 
 /**
@@ -56,15 +56,15 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-bot-setting/custom-bot-setting/:
+   *    /slack-integration/:
    *      get:
    *        tags: [CustomBot]
    *        operationId: getCustomBotSetting
-   *        summary: /slack-bot-setting/custom-bot-setting
-   *        description: Get singingSecret and slackBotToken
+   *        summary: /slack-bot-setting
+   *        description: Get singingSecret, slackBotToken and botType
    *        responses:
    *          200:
-   *            description: Succeeded to get SigningSecret and SlackBotToken.
+   *            description: Succeeded to get SigningSecret, SlackBotToken and BotType.
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
@@ -93,12 +93,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-bot-setting/custom-bot-setting/:
+   *    /slack-integration/custom-bot-setting/:
    *      put:
    *        tags: [CustomBot]
    *        operationId: putCustomBotSetting
-   *        summary: /slack-bot-setting/custom-bot-setting
-   *        description: Put singingSecret and slackBotToken
+   *        summary: /slack-integration/custom-bot-setting
+   *        description: Put singingSecret, slackBotToken and botType
    *        requestBody:
    *          required: true
    *          content:
@@ -107,7 +107,7 @@ module.exports = (crowi) => {
    *                $ref: '#/components/schemas/CustomBot'
    *        responses:
    *           200:
-   *             description: Succeeded to put SigningSecret and SlackBotToken.
+   *             description: Succeeded to put SigningSecret, SlackBotToken and BotType.
    */
   router.put('/custom-bot-setting',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
@@ -121,12 +121,12 @@ module.exports = (crowi) => {
 
       try {
         await updateSlackBotSettings(requestParams);
-        const slackBotSettingParams = {
+        const customBotNonProxySettingsParams = {
           slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
           slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
           slackBotType: await crowi.configManager.getConfig('crowi', 'slackbot:type'),
         };
-        return res.apiv3({ slackBotSettingParams });
+        return res.apiv3({ customBotNonProxySettingsParams });
       }
       catch (error) {
         const msg = 'Error occured in updating Custom bot setting';
