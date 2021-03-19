@@ -44,7 +44,7 @@ module.exports = (crowi) => {
     ],
   };
 
-  async function updateCustomBotSettings(params) {
+  async function updateBotSettings(params) {
     const { configManager } = crowi;
     // update config without publishing S2sMessage
     return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
@@ -115,7 +115,7 @@ module.exports = (crowi) => {
       };
 
       try {
-        await updateCustomBotSettings(requestParams);
+        await updateBotSettings(requestParams);
         const slackBotSettingParams = {
           slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
           slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
@@ -131,7 +131,20 @@ module.exports = (crowi) => {
 
   router.put('/enabled', async(req, res) => {
     const { isEnabled, botType } = req.body;
-    const enableParams = { [`slackbot:${botType}:isEnabled`]: isEnabled };
+    const enableParams = {
+      [`slackbot:${botType}:Enabled`]: JSON.parse(isEnabled),
+    };
+
+    try {
+      await updateBotSettings(enableParams);
+      const responseParams = {
+        [`slackbot:${botType}:Enabled`]:  await crowi.configManager.getConfig('crowi', `slackbot:${botType}:Enabled`),
+      };
+      return res.apiv3({ responseParams });
+    }
+    catch (error) {
+      console.log('errormatu');
+    }
 
 
   });
