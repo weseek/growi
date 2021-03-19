@@ -73,31 +73,31 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
 
   const navTabMapping = useMemo(() => {
     return {
-      pagelist: {
+      [AccessoryName.PAGE_LIST]: {
         Icon: PageListIcon,
         i18n: t('page_list'),
         index: 0,
         isLinkEnabled: () => !isSharedUser,
       },
-      timeline: {
+      [AccessoryName.TIME_LINE]: {
         Icon: TimeLineIcon,
         i18n: t('Timeline View'),
         index: 1,
         isLinkEnabled: () => !isSharedUser,
       },
-      pageHistory: {
+      [AccessoryName.PAGE_HISTORY]: {
         Icon: HistoryIcon,
         i18n: t('History'),
         index: 2,
         isLinkEnabled: () => !isGuestUser && !isSharedUser && !isNotFoundPage,
       },
-      attachment: {
+      [AccessoryName.ATTACHMENT]: {
         Icon: AttachmentIcon,
         i18n: t('attachment_data'),
         index: 3,
         isLinkEnabled: () => !isNotFoundPage,
       },
-      shareLink: {
+      [AccessoryName.SHARE_LINK]: {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
@@ -126,22 +126,22 @@ export const PageAccessoriesModal:FC<Props> = (props:Props) => {
         {/* Do not use CustomTabContent because of performance problem:
               the 'navTabMapping[tabId].Content' for PageAccessoriesModal depends on activeComponents */}
         <TabContent activeTab={activeTab}>
-          <TabPane tabId="pagelist">
+          <TabPane tabId={AccessoryName.PAGE_LIST}>
             {activeComponents.has(AccessoryName.PAGE_LIST) && <PageList />}
           </TabPane>
-          <TabPane tabId="timeline">
+          <TabPane tabId={AccessoryName.TIME_LINE}>
             {/* {activeComponents.has('timeline') && <PageTimeline /> } */}
           </TabPane>
           {!isGuestUser && (
-            <TabPane tabId="pageHistory">
+            <TabPane tabId={AccessoryName.PAGE_HISTORY}>
               {activeComponents.has(AccessoryName.PAGE_HISTORY) && <PageHistory /> }
             </TabPane>
           )}
-          <TabPane tabId="attachment">
+          <TabPane tabId={AccessoryName.ATTACHMENT}>
             {activeComponents.has(AccessoryName.ATTACHMENT) && <PageAttachment />}
           </TabPane>
           {!isGuestUser && (
-            <TabPane tabId="shareLink">
+            <TabPane tabId={AccessoryName.SHARE_LINK}>
               {/* {activeComponents.has('shareLink') && <ShareLink />} */}
             </TabPane>
           )}

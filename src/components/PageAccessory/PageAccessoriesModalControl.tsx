@@ -11,6 +11,8 @@ import AttachmentIcon from '../../client/js/components/Icons/AttachmentIcon';
 import ShareLinkIcon from '../../client/js/components/Icons/ShareLinkIcon';
 import { SeenUserInfo } from '~/components/User/SeenUserInfo';
 
+import { AccessoryName } from '~/interfaces/accessory';
+
 type Props = {
   isGuestUser: boolean;
   isSharedUser: boolean;
@@ -36,31 +38,31 @@ export const PageAccessoriesModalControl:FC<Props> = (props:Props) => {
   const accessoriesBtnList:AccessoriesBtnListType[] = useMemo(() => {
     return [
       {
-        name: 'pagelist',
+        name: AccessoryName.PAGE_LIST,
         Icon: <PageListIcon />,
         disabled: isSharedUser,
         i18n: t('page_list'),
       },
       {
-        name: 'timeline',
+        name: AccessoryName.TIME_LINE,
         Icon: <TimeLineIcon />,
         disabled: isSharedUser,
         i18n: t('Timeline View'),
       },
       {
-        name: 'pageHistory',
+        name: AccessoryName.PAGE_HISTORY,
         Icon: <HistoryIcon />,
         disabled: isGuestUser || isSharedUser || isNotFoundPage,
         i18n: t('History'),
       },
       {
-        name: 'attachment',
+        name: AccessoryName.ATTACHMENT,
         Icon: <AttachmentIcon />,
         disabled: isNotFoundPage,
         i18n: t('attachment_data'),
       },
       {
-        name: 'shareLink',
+        name: AccessoryName.SHARE_LINK,
         Icon: <ShareLinkIcon />,
         disabled: isGuestUser || isSharedUser || isNotFoundPage,
         i18n: t('share_links.share_link_management'),
