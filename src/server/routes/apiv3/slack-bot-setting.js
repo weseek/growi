@@ -46,7 +46,7 @@ module.exports = (crowi) => {
     ],
   };
 
-  async function updateBotSettings(params) {
+  async function updateSlackBotSettings(params) {
     const { configManager } = crowi;
     // update config without publishing S2sMessage
     return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
@@ -68,20 +68,17 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const slackBotSettingParams = {
-
       slackBotType: await crowi.configManager.getConfig('crowi', 'slackbot:type'),
-
       // TODO impl when creating official bot
       officialBotSettings: {
       },
-      cusotmBotSettingsNonProxy: {
+      cusotmBotNonProxySettings: {
         slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
       },
       // TODO imple when creating with proxy
-      cusotmBotSettingsWithProxy: {
+      cusotmBotWithProxySettings: {
       },
-
     };
     return res.apiv3({ slackBotSettingParams });
   });
@@ -116,7 +113,7 @@ module.exports = (crowi) => {
       };
 
       try {
-        await updateBotSettings(requestParams);
+        await updateSlackBotSettings(requestParams);
         const slackBotSettingParams = {
           slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
           slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
