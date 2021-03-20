@@ -2,7 +2,8 @@
 
 ## v4.2.13-RC
 
-* 
+* Feature: Detect indent size automatically
+* Fix: Some API responses includes email unintentionally
 
 ## v4.2.12
 
