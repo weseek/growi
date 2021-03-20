@@ -4,6 +4,8 @@
  *    name: Comments
  */
 
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+
 /**
  * @swagger
  *
@@ -48,7 +50,10 @@ module.exports = function(crowi, app) {
   const Page = crowi.model('Page');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');
+
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const userNotificationService = crowi.getUserNotificationService();
+
   const { body } = require('express-validator');
   const mongoose = require('mongoose');
   const ObjectId = mongoose.Types.ObjectId;
@@ -127,9 +132,12 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    const comments = await fetcher.populate(
-      { path: 'creator', select: User.USER_PUBLIC_FIELDS },
-    );
+    const comments = await fetcher.populate('creator');
+    comments.forEach((comment) => {
+      if (comment.creator != null && comment.creator instanceof User) {
+        comment.creator = serializeUserSecurely(comment.creator);
+      }
+    });
 
     res.json(ApiResponse.success({ comments }));
   };
@@ -231,11 +239,6 @@ module.exports = function(crowi, app) {
     let createdComment;
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
-
-      await Comment.populate(createdComment, [
-        { path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS },
-      ]);
-
     }
     catch (err) {
       logger.error(err);
@@ -253,8 +256,6 @@ module.exports = function(crowi, app) {
 
     res.json(ApiResponse.success({ comment: createdComment }));
 
-    const path = page.path;
-
     // global notification
     try {
       await globalNotificationService.fire(GlobalNotificationSetting.EVENT.COMMENT, page, req.user, {
@@ -265,26 +266,21 @@ module.exports = function(crowi, app) {
       logger.error('Comment notification　failed', err);
     }
 
-
     // slack notification
     if (slackNotificationForm.isSlackEnabled) {
-      const user = await User.findUserByUsername(req.user.username);
-      const channelsStr = slackNotificationForm.slackChannels || null;
+      const { slackChannels } = slackNotificationForm;
 
-      page.updateSlackChannel(channelsStr).catch((err) => {
-        logger.error('Error occured in updating slack channels: ', err);
-      });
-
-      const channels = channelsStr != null ? channelsStr.split(',') : [null];
-
-      const promises = channels.map((chan) => {
-        return crowi.slack.postComment(createdComment, user, chan, path);
-      });
-
-      Promise.all(promises)
-        .catch((err) => {
-          logger.error('Error occured in sending slack notification: ', err);
+      try {
+        const results = await userNotificationService.fire(page, req.user, slackChannels, 'comment', {}, createdComment);
+        results.forEach((result) => {
+          if (result.status === 'rejected') {
+            logger.error('Create user notification failed', result.reason);
+          }
         });
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
   };
 

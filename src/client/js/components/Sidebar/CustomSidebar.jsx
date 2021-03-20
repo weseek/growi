@@ -1,45 +1,93 @@
-import React from 'react';
-// import PropTypes from 'prop-types';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
+import PropTypes from 'prop-types';
 
-import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
+import RevisionRenderer from '../Page/RevisionRenderer';
 
-class CustomSidebar extends React.Component {
+const logger = loggerFactory('growi:cli:CustomSidebar');
 
-  static propTypes = {
-  };
 
-  state = {
-  };
+const SidebarNotFound = () => {
+  return (
+    <div className="grw-sidebar-content-header h5 text-center p-3">
+      <a href="/Sidebar#edit">
+        <i className="icon-magic-wand"></i> Create <strong>/Sidebar</strong> page
+      </a>
+    </div>
+  );
+};
 
-  renderHeaderWordmark() {
-    return <h3>Custom Sidebar</h3>;
-  }
+const CustomSidebar = (props) => {
 
-  render() {
-    return (
-      <>
-        <div className="grw-sidebar-content-header p-3 d-flex">
-          <h3 className="mb-0">Custom Sidebar</h3>
-          <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={this.reloadData}>
-            <i className="icon icon-reload"></i>
-          </button>
+  const { appContainer } = props;
+  const { apiGet } = appContainer;
+
+  const [isMounted, setMounted] = useState(false);
+  const [markdown, setMarkdown] = useState();
+
+  const growiRenderer = appContainer.getRenderer('sidebar');
+
+  // TODO: refactor with SWR
+  const fetchDataAndRenderHtml = useCallback(async() => {
+    let page = null;
+    try {
+      const result = await apiGet('/pages.get', { path: '/Sidebar' });
+      page = result.page;
+    }
+    catch (e) {
+      logger.warn(e.message);
+      return;
+    }
+    finally {
+      setMounted(true);
+    }
+
+    setMarkdown(page.revision.body);
+  }, [apiGet]);
+
+  useEffect(() => {
+    fetchDataAndRenderHtml();
+  }, [fetchDataAndRenderHtml]);
+
+  return (
+    <>
+      <div className="grw-sidebar-content-header p-3 d-flex">
+        <h3 className="mb-0">
+          Custom Sidebar
+          <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
+        </h3>
+        <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={fetchDataAndRenderHtml}>
+          <i className="icon icon-reload"></i>
+        </button>
+      </div>
+      { isMounted && markdown == null && <SidebarNotFound /> }
+      {/* eslint-disable-next-line react/no-danger */}
+      { markdown != null && (
+        <div className="p-3">
+          <RevisionRenderer
+            growiRenderer={growiRenderer}
+            markdown={markdown}
+            additionalClassName="grw-custom-sidebar-content"
+          />
         </div>
-        <div className="grw-sidebar-content-header p-3">
-          (TBD) Under implementation
-        </div>
-      </>
-    );
+      ) }
+    </>
+  );
 
-  }
+};
 
-}
+CustomSidebar.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
 
 /**
  * Wrapper component for using unstated
  */
 const CustomSidebarWrapper = withUnstatedContainers(CustomSidebar, [AppContainer]);
 
-export default withTranslation()(CustomSidebarWrapper);
+export default CustomSidebarWrapper;

@@ -23,7 +23,7 @@ class SidebarNav extends React.Component {
       onItemSelected(contentsId);
     }
 
-    navigationContainer.setState({ sidebarContentsId: contentsId });
+    navigationContainer.selectSidebarContents(contentsId);
   }
 
   PrimaryItem = ({ id, label, iconName }) => {

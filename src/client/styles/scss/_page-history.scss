@@ -47,10 +47,14 @@
 }
 
 .revision-compare {
-  .revision-compare-outer {
+  .revision-compare-container {
     min-height: 100px;
-    max-height: 250px;
-    overflow: auto;
+
+    &.nodiff {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
   .d2h-file-header {
     display: none;

@@ -44,6 +44,7 @@ class OptionsSelector extends React.Component {
       emacs: 'Emacs',
       sublime: 'Sublime Text',
     };
+    this.typicalIndentSizes = [2, 4];
 
     this.onChangeTheme = this.onChangeTheme.bind(this);
     this.onChangeKeymapMode = this.onChangeKeymapMode.bind(this);
@@ -51,6 +52,7 @@ class OptionsSelector extends React.Component {
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
+    this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
   }
 
   onChangeTheme(newValue) {
@@ -111,6 +113,11 @@ class OptionsSelector extends React.Component {
 
   onToggleConfigurationDropdown(newValue) {
     this.setState({ isCddMenuOpened: !this.state.isCddMenuOpened });
+  }
+
+  onChangeIndentSize(newValue) {
+    const { editorContainer } = this.props;
+    editorContainer.setState({ indentSize: newValue });
   }
 
   renderThemeSelector() {
@@ -279,11 +286,42 @@ class OptionsSelector extends React.Component {
     );
   }
 
+  renderIndentSizeSelector() {
+    const { appContainer, editorContainer } = this.props;
+    const menuItems = this.typicalIndentSizes.map((indent) => {
+      return <button key={indent} className="dropdown-item" type="button" onClick={() => this.onChangeIndentSize(indent)}>{indent}</button>;
+    });
+    return (
+      <div className="input-group flex-nowrap">
+        <div className="input-group-prepend">
+          <span className="input-group-text" id="igt-indent">Indent</span>
+        </div>
+        <div className="input-group-append dropup">
+          <button
+            type="button"
+            className="btn btn-outline-secondary dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-describedby="igt-indent"
+            disabled={appContainer.config.isIndentSizeForced}
+          >
+            {editorContainer.state.indentSize}
+          </button>
+          <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {menuItems}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="d-flex flex-row">
         <span>{this.renderThemeSelector()}</span>
-        <span className="ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
+        <span className="d-none d-sm-block ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
+        <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
         <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
       </div>
     );

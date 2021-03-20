@@ -35,6 +35,7 @@ export default class EditorContainer extends Container {
 
       editorOptions: {},
       previewOptions: {},
+      indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
 
     this.isSetBeforeunloadEventHandler = false;

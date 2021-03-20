@@ -31,7 +31,7 @@ export default class NavigationContainer extends Container {
       isDrawerMode: null,
       isDrawerOpened: false,
 
-      sidebarContentsId: 'recent',
+      sidebarContentsId: localStorage.sidebarContentsId || 'recent',
 
       isScrollTop: true,
 
@@ -109,6 +109,7 @@ export default class NavigationContainer extends Container {
       $('body').removeClass('on-edit');
       $('body').removeClass('builtin-editor');
       $('body').removeClass('hackmd');
+      $('body').removeClass('pathname-sidebar');
       window.history.replaceState(null, '', window.location.pathname);
     }
 
@@ -116,6 +117,10 @@ export default class NavigationContainer extends Container {
       $('body').addClass('on-edit');
       $('body').addClass('builtin-editor');
       $('body').removeClass('hackmd');
+      // editing /Sidebar
+      if (window.location.pathname === '/Sidebar') {
+        $('body').addClass('pathname-sidebar');
+      }
       window.location.hash = '#edit';
     }
 
@@ -123,8 +128,8 @@ export default class NavigationContainer extends Container {
       $('body').addClass('on-edit');
       $('body').addClass('hackmd');
       $('body').removeClass('builtin-editor');
+      $('body').removeClass('pathname-sidebar');
       window.location.hash = '#hackmd';
-
     }
 
     this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
@@ -183,6 +188,11 @@ export default class NavigationContainer extends Container {
     const isDrawerOpened = false; // close Drawer anyway
 
     this.setState({ isDrawerMode, isDrawerOpened });
+  }
+
+  selectSidebarContents(contentsId) {
+    window.localStorage.setItem('sidebarContentsId', contentsId);
+    this.setState({ sidebarContentsId: contentsId });
   }
 
   openPageCreateModal() {
