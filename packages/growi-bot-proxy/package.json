@@ -14,21 +14,17 @@
     "test:lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
+    "@tsed/common": "^6.34.3",
+    "@tsed/di": "^6.34.3",
+    "@tsed/platform-express": "^6.34.3",
+    "@tsed/swagger": "^6.34.3",
     "compression": "^1.7.4"
   },
   "devDependencies": {
-    "@tsed/common": "^6.34.3",
     "@tsed/core": "^6.34.3",
-    "@tsed/di": "^6.34.3",
     "@tsed/exceptions": "^6.34.3",
     "@tsed/json-mapper": "^6.34.3",
-    "@tsed/platform-express": "^6.34.3",
     "@tsed/schema": "^6.34.3",
-    "@tsed/swagger": "^6.34.3",
-    "@types/compression": "^1.7.0",
-    "@types/express": "^4.17.11",
-    "@types/multer": "^1.4.5",
-    "@types/node": "^14.14.35",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint-import-resolver-typescript": "^2.4.0",
