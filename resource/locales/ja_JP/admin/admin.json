@@ -82,9 +82,9 @@
     "indent_desc": "インデントの設定を変更できます。",
     "indent_options": {
       "indentSize": "既定のインデント幅",
-      "indentSize_desc": "マークダウンの既定のインデント幅を変更できます。",
+      "indentSize_desc": "既定のインデント幅を指定します。",
       "disallow_indent_change": "ユーザによるインデント幅変更を許可しない",
-      "disallow_indent_change_desc": "ユーザに単一のインデント幅使用を強制することができます。"
+      "disallow_indent_change_desc": "ユーザにデフォルトのインデント幅の使用を強制します。"
     },
     "presentation_header": "プレゼンテーション設定",
     "presentation_desc": "プレゼンテーションの設定を変更できます。",
