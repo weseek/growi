@@ -1,7 +1,6 @@
 import { Configuration, Inject } from '@tsed/di';
 import { PlatformApplication } from '@tsed/common';
 import '@tsed/platform-express'; // /!\ keep this import
-import session from 'express-session';
 import bodyParser from 'body-parser';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
@@ -46,18 +45,7 @@ export class Server {
       .use(methodOverride())
       .use(bodyParser.json())
       .use(bodyParser.urlencoded({
-        extended: true
-      }))
-      // @ts-ignore
-      .use(session({
-        secret: "mysecretkey",
-        resave: true,
-        saveUninitialized: true,
-        cookie: {
-          path: "/",
-          httpOnly: true,
-          secure: false,
-        }
+        extended: true,
       }));
   }
 
