@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc",
-    "tsc": "tsc --project tsconfig.compile.json",
-    "tsc:w": "tsc --project tsconfig.json -w",
+    "tsc": "tsc && tsc-alias",
+    "tsc:w": "tsc -w",
     "dev:ci": "yarn dev --ci",
     "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
@@ -35,6 +35,7 @@
     "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.6",
+    "tsc-alias": "^1.2.8",
     "typescript": "^4.2.3"
   }
 }
