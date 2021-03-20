@@ -7,8 +7,6 @@ on:
       - tmp/**
     paths:
       - packages/growi-bot-proxy/*
-    paths-ignore:
-      - src
 
 defaults:
   run:
