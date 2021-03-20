@@ -6,6 +6,7 @@ on:
       - release/**
       - tmp/**
     paths:
+      - .github/workflows/ci-bot-proxy.yml
       - packages/growi-bot-proxy/*
 
 defaults:
