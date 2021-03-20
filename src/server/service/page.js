@@ -721,7 +721,7 @@ class PageService {
   }
 
 
-  async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId) {
+  async handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user) {
     const Page = this.crowi.model('Page');
     const pages = await Page.find({ grantedGroup: deletedGroup });
 
@@ -732,7 +732,7 @@ class PageService {
         }));
         break;
       case 'delete':
-        return this.deleteMultiplePagesCompletely(pages);
+        return this.deleteMultipleCompletely(pages, user);
       case 'transfer':
         await Promise.all(pages.map((page) => {
           return Page.transferPageToGroup(page, transferToUserGroupId);

@@ -1,6 +1,12 @@
 # CHANGES
 
-## v4.2.12-RC
+## v4.2.13-RC
+
+* Feature: Detect indent size automatically
+* Fix: Some API responses includes email unintentionally
+* Fix: An error always displayed in admin pages
+
+## v4.2.12
 
 * Feature: Custom Sidebar
 * Fix: Set language correctly for draw.io (diagrams.net)

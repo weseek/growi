@@ -6,6 +6,7 @@ import { I18nextProvider } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import ErrorBoundary from './components/ErrorBoudary';
+import Sidebar from './components/Sidebar';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
 import DisplaySwitcher from './components/Page/DisplaySwitcher';
@@ -79,6 +80,8 @@ logger.info('unstated containers have been initialized');
  *  value: React Element
  */
 Object.assign(componentMappings, {
+  'grw-sidebar-wrapper': <Sidebar />,
+
   'search-page': <SearchPage crowi={appContainer} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,

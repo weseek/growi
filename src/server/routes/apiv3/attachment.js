@@ -6,6 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 const { query } = require('express-validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -69,15 +70,13 @@ module.exports = (crowi) => {
         {
           limit,
           offset,
-          populate: {
-            path: 'creator',
-            select: User.USER_PUBLIC_FIELDS,
-          },
+          populate: 'creator',
         },
       );
+
       paginateResult.docs.forEach((doc) => {
         if (doc.creator != null && doc.creator instanceof User) {
-          doc.creator = doc.creator.toObject();
+          doc.creator = serializeUserSecurely(doc.creator);
         }
       });
 
