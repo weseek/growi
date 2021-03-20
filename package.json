@@ -19,6 +19,11 @@
   "bugs": {
     "url": "https://github.com/weseek/growi/issues"
   },
+  "private": true,
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": []
+  },
   "scripts": {
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "build:apiv3:jsdoc": "cross-env API_VERSION=3 npm run build:api:jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
