@@ -1,10 +1,12 @@
-name: Node CI
+name: Node CI for growi
 
 on:
   push:
     branches-ignore:
       - release/**
       - tmp/**
+    paths-ignore:
+      - packages/growi-bot-proxy/*
 
 jobs:
 
@@ -57,7 +59,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*test (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - lint (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -129,7 +131,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*test (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -200,7 +202,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*build-dev (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - build-dev (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -300,7 +302,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*build-prod (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - build-prod (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
