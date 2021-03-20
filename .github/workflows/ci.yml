@@ -5,8 +5,13 @@ on:
     branches-ignore:
       - release/**
       - tmp/**
-    paths-ignore:
-      - packages/growi-bot-proxy/*
+    paths:
+      - .github/workflows/ci.yml
+      - config
+      - resource
+      - src
+      - package.json
+      - yarn.lock
 
 jobs:
 
