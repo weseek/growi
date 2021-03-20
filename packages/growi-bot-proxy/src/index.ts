@@ -1,7 +1,7 @@
 import { $log } from '@tsed/common';
 import { PlatformExpress } from '@tsed/platform-express';
 
-import helpers from '^/../../src/lib/util/helpers';
+import helpers from '^/src/lib/util/helpers';
 
 import { Server } from './Server';
 

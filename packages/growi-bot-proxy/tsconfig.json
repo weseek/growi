@@ -19,10 +19,11 @@
     "noUnusedParameters": false,
 
     /* Module Resolution Options */
+    "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
-      "^/*": ["./*"],
+      "^/*": ["../../*"],
     },
     "typeRoots": [
       "../../node_modules/@types",

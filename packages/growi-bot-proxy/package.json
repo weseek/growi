@@ -7,7 +7,7 @@
     "tsc": "tsc --project tsconfig.compile.json",
     "tsc:w": "tsc --project tsconfig.json -w",
     "dev:ci": "yarn dev --ci",
-    "dev": "ts-node-dev src/index.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
     "start:prod": "cross-env NODE_ENV=production node dist/index.js",
     "test": "yarn test:lint && yarn test:coverage",
@@ -21,7 +21,8 @@
     "@tsed/di": "^6.34.3",
     "@tsed/platform-express": "^6.34.3",
     "@tsed/swagger": "^6.34.3",
-    "compression": "^1.7.4"
+    "compression": "^1.7.4",
+    "tsconfig-paths": "^3.9.0"
   },
   "devDependencies": {
     "@tsed/core": "^6.34.3",
