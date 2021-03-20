@@ -4,6 +4,7 @@
 
 * Feature: Detect indent size automatically
 * Fix: Some API responses includes email unintentionally
+* Fix: An error always displayed in admin pages
 
 ## v4.2.12
 
