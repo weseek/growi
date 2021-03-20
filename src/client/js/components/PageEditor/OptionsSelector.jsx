@@ -320,7 +320,7 @@ class OptionsSelector extends React.Component {
     return (
       <div className="d-flex flex-row">
         <span>{this.renderThemeSelector()}</span>
-        <span className="ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
+        <span className="d-none d-sm-block ml-2 ml-sm-4">{this.renderKeymapModeSelector()}</span>
         <span className="ml-2 ml-sm-4">{this.renderIndentSizeSelector()}</span>
         <span className="ml-2 ml-sm-4">{this.renderConfigurationDropdown()}</span>
       </div>
