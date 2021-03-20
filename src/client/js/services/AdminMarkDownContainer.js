@@ -19,7 +19,7 @@ export default class AdminMarkDownContainer extends Container {
       isEnabledLinebreaks: this.dummyIsEnabledLinebreaks,
       isEnabledLinebreaksInComments: false,
       adminPreferredIndentSize: 4,
-      isIndentSizeForced: true,
+      isIndentSizeForced: false,
       pageBreakSeparator: 1,
       pageBreakCustomSeparator: '',
       isEnabledXss: false,

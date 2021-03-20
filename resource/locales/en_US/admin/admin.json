@@ -82,9 +82,9 @@
     "indent_desc": "You can change indent settings.",
     "indent_options": {
       "indentSize": "Default indent size",
-      "indentSize_desc": "You can change the default indent size for the Markdown editor",
+      "indentSize_desc": "Set the default indent size for the Markdown editor",
       "disallow_indent_change": "Disallow change of indent size by users",
-      "disallow_indent_change_desc": "You can force users to use a specific indent size."
+      "disallow_indent_change_desc": "Force users to use ther default indent size."
     },
     "presentation_header": "Presentation setting",
     "presentation_desc": "You can change presentation settings.",

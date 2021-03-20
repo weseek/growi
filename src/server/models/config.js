@@ -138,7 +138,7 @@ module.exports = function(crowi) {
       'markdown:isEnabledLinebreaks': false,
       'markdown:isEnabledLinebreaksInComments': true,
       'markdown:adminPreferredIndentSize': 4,
-      'markdown:isIndentSizeForced': true,
+      'markdown:isIndentSizeForced': false,
       'markdown:presentation:pageBreakSeparator': 1,
       'markdown:presentation:pageBreakCustomSeparator': undefined,
     };
