@@ -7,7 +7,7 @@
     "noEmit": true,
     "removeComments": false,
     "importHelpers": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
 
     /* Strict Type-Checking Options */
     // "strict": true,

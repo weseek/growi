@@ -16406,10 +16406,10 @@ ts-node@^9.0.0, ts-node@^9.1.1:
     source-map-support "^0.5.17"
     yn "3.1.1"
 
-tsc-alias@^1.2.8:
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/tsc-alias/-/tsc-alias-1.2.8.tgz#d88bfce778c0b31d095a132209b4eefe7e16cc16"
-  integrity sha512-29WMSalu0cW/VuNeTEs/CPjz5z5Ae2ZBlTV0gjeoQwJNjZ5sDyPmu1C0rDmvOLPEJyo/iwqOMtNAlG17fEqBCw==
+tsc-alias@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/tsc-alias/-/tsc-alias-1.2.6.tgz#d35811e50fde00491d32d859ed200b64d7c6f8ad"
+  integrity sha512-Zqny9ypQNt5UO2f2KPVM9pqamSOGdfyXPPqGgB8ypi6bP3m5yjysHEFn7ZhVpYA4TF1XA27GJMH/0twLqjCyhg==
   dependencies:
     "@jfonx/console-utils" "^1.0.3"
     "@jfonx/file-utils" "^3.0.1"

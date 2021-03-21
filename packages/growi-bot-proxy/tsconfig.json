@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./dist",
+    "outDir": "dist",
     "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,
