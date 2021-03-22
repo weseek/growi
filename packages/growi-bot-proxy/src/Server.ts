@@ -30,13 +30,13 @@ const connectionOptions: ConnectionOptions = {
     {
       ...connectionOptions,
       entities: [
-        `${__dirname}/entity/*{.ts,.js}`,
+        `${rootDir}/entity/*{.ts,.js}`,
       ],
       migrations: [
-        `${__dirname}/migrations/*{.ts,.js}`,
+        `${rootDir}/migrations/*{.ts,.js}`,
       ],
       subscribers: [
-        `${__dirname}/subscriber/*{.ts,.js}`,
+        `${rootDir}/subscriber/*{.ts,.js}`,
       ],
     } as ConnectionOptions,
   ],
