@@ -110,6 +110,7 @@ class RevisionRenderer extends React.PureComponent {
       <RevisionBody
         html={this.state.html}
         isMathJaxEnabled={isMathJaxEnabled}
+        additionalClassName={this.props.additionalClassName}
         renderMathJaxOnInit
       />
     );
@@ -129,6 +130,7 @@ RevisionRenderer.propTypes = {
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
   highlightKeywords: PropTypes.string,
+  additionalClassName: PropTypes.string,
 };
 
 export default RevisionRendererWrapper;

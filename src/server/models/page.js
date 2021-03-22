@@ -46,21 +46,7 @@ const pageSchema = new mongoose.Schema({
   liker: [{ type: ObjectId, ref: 'User' }],
   seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
-  extended: {
-    type: String,
-    default: '{}',
-    get(data) {
-      try {
-        return JSON.parse(data);
-      }
-      catch (e) {
-        return data;
-      }
-    },
-    set(data) {
-      return JSON.stringify(data);
-    },
-  },
+  slackChannels: { type: String },
   pageIdOnHackmd: String,
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
@@ -426,33 +412,10 @@ module.exports = function(crowi) {
     return saved;
   };
 
-  pageSchema.methods.getSlackChannel = function() {
-    const extended = this.get('extended');
-    if (!extended) {
-      return '';
-    }
+  pageSchema.methods.updateSlackChannels = function(slackChannels) {
+    this.slackChannels = slackChannels;
 
-    return extended.slack || '';
-  };
-
-  pageSchema.methods.updateSlackChannel = function(slackChannel) {
-    const extended = this.extended;
-    extended.slack = slackChannel;
-
-    return this.updateExtended(extended);
-  };
-
-  pageSchema.methods.updateExtended = function(extended) {
-    const page = this;
-    page.extended = extended;
-    return new Promise(((resolve, reject) => {
-      return page.save((err, doc) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(doc);
-      });
-    }));
+    return this.save();
   };
 
   pageSchema.methods.initLatestRevisionField = async function(revisionId) {
@@ -466,7 +429,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL)
       .execPopulate();
   };
 
@@ -785,7 +748,7 @@ module.exports = function(crowi) {
     const totalCount = await builder.query.exec('count');
 
     // find
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.exec('find');
 
     const result = {
@@ -828,7 +791,7 @@ module.exports = function(crowi) {
 
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.exec('find');
 
     const result = {

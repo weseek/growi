@@ -10,6 +10,7 @@ import {
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import EditorContainer from '../../services/EditorContainer';
+import { getDiagramsNetLangCode } from '../../util/locale-utils';
 
 class DrawioModal extends React.PureComponent {
 
@@ -125,7 +126,7 @@ class DrawioModal extends React.PureComponent {
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
     url.searchParams.append('spin', 1);
     url.searchParams.append('embed', 1);
-    url.searchParams.append('lang', i18next.language);
+    url.searchParams.append('lang', getDiagramsNetLangCode(i18next.language));
     url.searchParams.append('ui', 'atlas');
     url.searchParams.append('configure', 1);
 

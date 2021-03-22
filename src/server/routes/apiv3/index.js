@@ -48,6 +48,7 @@ module.exports = (crowi) => {
 
   router.use('/slack-bot', require('./slack-bot')(crowi));
   router.use('/slack-integration', require('./slack-integration')(crowi));
+  router.use('/staffs', require('./staffs')(crowi));
 
   return router;
 };

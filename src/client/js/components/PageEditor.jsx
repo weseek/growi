@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
+import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
 import { envUtils } from 'growi-commons';
@@ -59,6 +60,15 @@ class PageEditor extends React.Component {
       this.setState({ markdown: value });
     }));
     this.saveDraftWithDebounce = debounce(800, this.saveDraft);
+
+    // Detect indent size from contents (only when users are allowed to change it)
+    // TODO: https://youtrack.weseek.co.jp/issue/GW-5368
+    if (!this.props.appContainer.config.isIndentSizeForced && this.state.markdown) {
+      const detectedIndent = detectIndent(this.state.markdown);
+      if (detectedIndent.type === 'space' && new Set([2, 4]).has(detectedIndent.amount)) {
+        this.props.editorContainer.setState({ indentSize: detectedIndent.amount });
+      }
+    }
   }
 
   componentWillMount() {

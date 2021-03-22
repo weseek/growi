@@ -18,7 +18,7 @@ class PageRevisionTable extends React.Component {
    */
   renderRow(revision, previousRevision, hasDiff, isContiguousNodiff) {
     const { revisionComparerContainer, t } = this.props;
-    const { latestRevision } = this.props.pageHistoryContainer.state;
+    const { latestRevision, oldestRevision } = this.props.pageHistoryContainer.state;
     const revisionId = revision._id;
     const revisionDiffOpened = this.props.diffOpened[revisionId] || false;
     const { sourceRevision, targetRevision } = revisionComparerContainer.state;
@@ -48,10 +48,19 @@ class PageRevisionTable extends React.Component {
             {hasDiff && (
               <div className="ml-md-3 mt-auto">
                 <div className="btn-group">
-                  <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleCompareLatestRevisionButton}>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary btn-sm"
+                    onClick={handleCompareLatestRevisionButton}
+                  >
                     {t('page_history.compare_latest')}
                   </button>
-                  <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleComparePreviousRevisionButton}>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary btn-sm"
+                    onClick={handleComparePreviousRevisionButton}
+                    disabled={revision === oldestRevision}
+                  >
                     {t('page_history.compare_previous')}
                   </button>
                 </div>
@@ -116,6 +125,7 @@ class PageRevisionTable extends React.Component {
       else {
         previousRevision = revision; // if it is the first revision, show full text as diff text
       }
+
 
       const hasDiff = revision.hasDiffToPrev !== false; // set 'true' if undefined for backward compatibility
       const isContiguousNodiff = !hasDiff && !hasDiffPrev;

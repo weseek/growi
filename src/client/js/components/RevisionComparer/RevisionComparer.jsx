@@ -56,7 +56,12 @@ const RevisionComparer = (props) => {
   };
 
   const { sourceRevision, targetRevision } = revisionComparerContainer.state;
-  const showDiff = (sourceRevision && targetRevision);
+
+  if (sourceRevision == null || targetRevision == null) {
+    return null;
+  }
+
+  const isNodiff = sourceRevision._id === targetRevision._id;
 
   return (
     <div className="revision-compare">
@@ -73,7 +78,7 @@ const RevisionComparer = (props) => {
           >
             <i className="ti-clipboard"></i>
           </DropdownToggle>
-          <DropdownMenu positionFixed modifiers={{ preventOverflow: { boundariesElement: null } }}>
+          <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: null } }}>
             {/* Page path URL */}
             <CopyToClipboard text={pagePathUrl()}>
               <DropdownItem className="px-3">
@@ -85,14 +90,19 @@ const RevisionComparer = (props) => {
         </Dropdown>
       </div>
 
-      <div className="revision-compare-outer">
-        { showDiff && (
-          <RevisionDiff
-            revisionDiffOpened
-            previousRevision={sourceRevision}
-            currentRevision={targetRevision}
-          />
-        )}
+      <div className={`revision-compare-container ${isNodiff ? 'nodiff' : ''}`}>
+        { isNodiff
+          ? (
+            <span className="h3 text-muted">{t('No diff')}</span>
+          )
+          : (
+            <RevisionDiff
+              revisionDiffOpened
+              previousRevision={sourceRevision}
+              currentRevision={targetRevision}
+            />
+          )
+        }
       </div>
     </div>
   );
