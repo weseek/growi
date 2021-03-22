@@ -2,11 +2,7 @@ import { useRouter } from 'next/router';
 import { VFC } from 'react';
 import { useTranslation } from '~/i18n';
 
-type Props = {
-
-}
-
-export const RenameAlert:VFC<Props> = (props:Props) => {
+export const RenameAlert:VFC = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const { renamedFrom, redirectFrom, withRedirect } = router.query;
@@ -14,6 +10,10 @@ export const RenameAlert:VFC<Props> = (props:Props) => {
   if (renamedFrom == null && redirectFrom == null) {
     return null;
   }
+
+  const handleUnlinkPageButton = () => {
+    console.log('unlink');
+  };
 
   return (
     <div className="alert alert-pink d-edit-none py-3 px-4 d-flex align-items-center justify-content-between">
@@ -26,6 +26,12 @@ export const RenameAlert:VFC<Props> = (props:Props) => {
         <span>
           <strong>{ t('Redirected') }:</strong> { t('page_page.notice.redirected')} <code>{redirectFrom}</code> {t('page_page.notice.redirected_period')}
         </span>
+      )}
+      {withRedirect != null && (
+        <button type="button" id="unlink-page-button" className="btn btn-outline-dark btn-sm" onClick={handleUnlinkPageButton}>
+          <i className="ti-unlink" aria-hidden="true" />
+          Unlink redirection
+        </button>
       )}
     </div>
   );
