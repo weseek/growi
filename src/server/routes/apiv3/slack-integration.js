@@ -60,7 +60,7 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [CustomBot]
    *        operationId: getCustomBotSetting
-   *        summary: /slack-bot-setting
+   *        summary: /slack-integration
    *        description: Get singingSecret, slackBotToken and botType
    *        responses:
    *          200:
