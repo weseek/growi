@@ -7,9 +7,9 @@
     "tsc": "tsc && tsc-alias",
     "tsc:w": "tsc -w",
     "dev:ci": "yarn dev --ci",
-    "dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
+    "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
-    "start:prod": "cross-env NODE_ENV=production node dist/index.js",
+    "start:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config dist/index.js",
     "test": "yarn test:lint && yarn test:coverage",
     "test:unit": "cross-env NODE_ENV=test jest --passWithNoTests",
     "test:coverage": "yarn test:unit",
@@ -21,8 +21,12 @@
     "@tsed/di": "^6.34.3",
     "@tsed/platform-express": "^6.34.3",
     "@tsed/swagger": "^6.34.3",
+    "@tsed/typeorm": "^6.34.3",
     "compression": "^1.7.4",
-    "tsconfig-paths": "^3.9.0"
+    "dotenv-flow": "^3.2.0",
+    "mysql2": "^2.2.5",
+    "tsconfig-paths": "^3.9.0",
+    "typeorm": "^0.2.31"
   },
   "devDependencies": {
     "@tsed/core": "^6.34.3",
@@ -32,6 +36,7 @@
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "eslint-import-resolver-typescript": "^2.4.0",
+    "sqlite3": "^5.0.2",
     "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.6",

@@ -6,9 +6,15 @@ import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 import '@tsed/swagger';
+import '@tsed/typeorm';
+import { ConnectionOptions } from 'typeorm';
 
 export const rootDir = __dirname;
 
+const connectionOptions: ConnectionOptions = {
+  type: process.env.TYPEORM_CONNECTION,
+  database: process.env.TYPEORM_DATABASE,
+} as ConnectionOptions;
 @Configuration({
   rootDir,
   acceptMimes: ['application/json'],
@@ -20,6 +26,20 @@ export const rootDir = __dirname;
       `${rootDir}/middlewares/*.ts`,
     ],
   },
+  typeorm: [
+    {
+      ...connectionOptions,
+      entities: [
+        `${__dirname}/entity/*{.ts,.js}`,
+      ],
+      migrations: [
+        `${__dirname}/migrations/*{.ts,.js}`,
+      ],
+      subscribers: [
+        `${__dirname}/subscriber/*{.ts,.js}`,
+      ],
+    } as ConnectionOptions,
+  ],
   swagger: [
     {
       path: '/docs',
