@@ -109,7 +109,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put SigningSecret, SlackBotToken and BotType.
    */
-  router.put('/custom-bot-setting',
+  router.put('/custom-bot-non-proxy',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
       const { slackSigningSecret, slackBotToken, botType } = req.body;
 
@@ -121,6 +121,7 @@ module.exports = (crowi) => {
 
       try {
         await updateSlackBotSettings(requestParams);
+        // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
         const customBotNonProxySettingsParams = {
           slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
           slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
