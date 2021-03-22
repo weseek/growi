@@ -18,6 +18,7 @@ import BasicLayout from '../components/BasicLayout';
 
 import GrowiSubNavigation from '../client/js/components/Navbar/GrowiSubNavigation';
 // import GrowiSubNavigationSwitcher from '../client/js/components/Navbar/GrowiSubNavigationSwitcher';
+import { PageAlerts } from '~/components/PageAlert/PageAlerts';
 import DisplaySwitcher from '../client/js/components/Page/DisplaySwitcher';
 // import PageStatusAlert from '../client/js/components/PageStatusAlert';
 
@@ -146,6 +147,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
           <div className="row">
             <div className="col grw-page-content-container">
               <div id="content-main" className="content-main container">
+                <PageAlerts />
                 <DisplaySwitcher />
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
                 {/* <PageStatusAlert /> */}
