@@ -69,7 +69,7 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const slackBotSettingParams = {
-      slackBotType: await crowi.configManager.getConfig('crowi', 'slackbot:type'),
+      slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
       // TODO impl when creating official bot
       officialBotSettings: {
         // TODO impl this after GW-4939
@@ -78,8 +78,8 @@ module.exports = (crowi) => {
       cusotmBotNonProxySettings: {
         // TODO impl this after GW-4939
         // AccessToken: "tempaccessdatahogehoge",
-        slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-        slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
+        slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
+        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
       },
       // TODO imple when creating with proxy
       cusotmBotWithProxySettings: {
@@ -122,9 +122,9 @@ module.exports = (crowi) => {
       try {
         await updateSlackBotSettings(requestParams);
         const customBotNonProxySettingsParams = {
-          slackSigningSecret: await crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-          slackBotToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
-          slackBotType: await crowi.configManager.getConfig('crowi', 'slackbot:type'),
+          slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
+          slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
+          slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
         };
         return res.apiv3({ customBotNonProxySettingsParams });
       }
