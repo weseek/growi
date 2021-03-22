@@ -1,6 +1,7 @@
-import loggerFactory from '~/utils/logger';
+import loggerFactory from '~/utils/logger'; // eslint-disable-line no-unused-vars
+import Revision from '~/server/models/revision';
 
-const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:routes:apiv3:page');
 
 const express = require('express');
 const { body, query } = require('express-validator');
@@ -362,7 +363,6 @@ module.exports = (crowi) => {
 
       const revisionIdForFind = revisionId || page.revision;
 
-      const Revision = crowi.model('Revision');
       revision = await Revision.findById(revisionIdForFind);
     }
     catch (err) {

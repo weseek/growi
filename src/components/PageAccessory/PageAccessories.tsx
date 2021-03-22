@@ -62,6 +62,7 @@ export const PageAccessories:FC = () => {
           activeTab={activeTab}
           activeComponents={activeComponents}
           isNotFoundPage={isNotFoundPage}
+          switchActiveTab={switchActiveTab}
         />
       )}
     </>
