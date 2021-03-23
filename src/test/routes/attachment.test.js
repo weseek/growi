@@ -1,4 +1,3 @@
-import { USER_PUBLIC_FIELDS } from '~/server/models/user';
 import Attachment from '~/server/models/attachment';
 
 const request = require('supertest');
@@ -50,7 +49,7 @@ describe('attachment', () => {
           expect(Attachment.paginate.mock.calls[0]).toMatchObject(
             [
               { page: '52fcf1060af12baf9e8d5bba' },
-              { limit: 30, offset: 0, populate: { path: 'creator', select: USER_PUBLIC_FIELDS } },
+              { limit: 30, offset: 0, populate: { path: 'creator' } },
             ],
           );
           expect(response.statusCode).toBe(200);
@@ -65,7 +64,7 @@ describe('attachment', () => {
           expect(Attachment.paginate.mock.calls[0]).toMatchObject(
             [
               { page: '52fcf1060af12baf9e8d5bba' },
-              { limit: 20, offset: 0, populate: { path: 'creator', select: USER_PUBLIC_FIELDS } },
+              { limit: 20, offset: 0, populate: { path: 'creator' } },
             ],
           );
           expect(response.statusCode).toBe(200);
@@ -80,7 +79,7 @@ describe('attachment', () => {
           expect(Attachment.paginate.mock.calls[0]).toMatchObject(
             [
               { page: '52fcf1060af12baf9e8d5bba' },
-              { limit: 10, offset: 0, populate: { path: 'creator', select: USER_PUBLIC_FIELDS } },
+              { limit: 10, offset: 0, populate: { path: 'creator' } },
             ],
           );
           expect(response.statusCode).toBe(200);
