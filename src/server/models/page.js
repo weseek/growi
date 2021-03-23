@@ -11,6 +11,8 @@ import User from '~/server/models/user';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import Comment from '~/server/models/comment';
+import Revision from '~/server/models/revision';
 
 const logger = loggerFactory('growi:models:page');
 
@@ -464,7 +466,6 @@ module.exports = function(crowi) {
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();
 
-    const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
       .then((count) => {
         this.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
@@ -934,7 +935,6 @@ module.exports = function(crowi) {
   pageSchema.statics.create = async function(path, body, user, options = {}) {
     validateCrowi();
 
-    const Revision = crowi.model('Revision');
     const format = options.format || 'markdown';
     const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
@@ -980,7 +980,6 @@ module.exports = function(crowi) {
   pageSchema.statics.updatePage = async function(pageData, body, previousBody, user, options = {}) {
     validateCrowi();
 
-    const Revision = crowi.model('Revision');
     const grant = options.grant || pageData.grant; //                                  use the previous data if absence
     const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;

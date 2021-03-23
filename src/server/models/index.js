@@ -4,8 +4,6 @@ module.exports = {
   // TODO GW-2746 bulk export pages
   // PageArchive: require('./page-archive'),
   ExternalAccount: require('./external-account'),
-  Revision: require('./revision'),
-  Comment: require('./comment'),
   UpdatePost: require('./updatePost'),
   GlobalNotificationSetting: require('./GlobalNotificationSetting'),
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),

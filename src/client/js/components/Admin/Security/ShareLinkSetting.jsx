@@ -11,7 +11,7 @@ import { PaginationWrapper } from '~/components/PaginationWrapper';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
-import ShareLinkList from '../../ShareLink/ShareLinkList';
+import { ShareLinkList } from '~/components/PageAccessory/ShareLinkList';
 
 
 const Pager = (props) => {

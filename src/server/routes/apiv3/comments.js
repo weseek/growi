@@ -1,3 +1,5 @@
+import Comment from '~/server/models/comment';
+
 const express = require('express');
 
 const router = express.Router();
@@ -53,7 +55,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const Comment = crowi.model('Comment');
   const Page = crowi.model('Page');
 
   const validator = {

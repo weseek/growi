@@ -2,6 +2,7 @@ import loggerFactory from '~/utils/logger';
 import User from '~/server/models/user';
 import ShareLink from '~/server/models/share-link';
 import Bookmark from '~/server/models/bookmark';
+import Revision from '~/server/models/revision';
 import PageTagRelation from '~/server/models/page-tag-relation';
 
 const swig = require('swig-templates');
@@ -829,7 +830,6 @@ module.exports = function(crowi, app) {
       options.grantUserGroupId = grantUserGroupId;
     }
 
-    const Revision = crowi.model('Revision');
     const previousRevision = await Revision.findById(revisionId);
     try {
       page = await Page.updatePage(page, pageBody, previousRevision.body, req.user, options);

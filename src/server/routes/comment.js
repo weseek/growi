@@ -1,11 +1,11 @@
 import loggerFactory from '~/utils/logger';
 import User from '~/server/models/user';
+import Comment from '~/server/models/comment';
 
 const logger = loggerFactory('growi:routes:comment');
 
 module.exports = function(crowi, app) {
 
-  const Comment = crowi.model('Comment');
   const Page = crowi.model('Page');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');

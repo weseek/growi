@@ -2,7 +2,7 @@ import useSWR, { mutate, responseInterface } from 'swr';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
-  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision, Attachment,
+  Page, Tag, Comment, PaginationResult, PaginationResultByQueryBuilder, Revision, Attachment, ShareLink,
 } from '~/interfaces/page';
 
 import { isTrashPage } from '../utils/path-utils';
@@ -39,7 +39,7 @@ export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/pages.getPageTag', currentPage?._id],
+    currentPage == null ? null : ['/pages.getPageTag', currentPage._id],
     (endpoint, pageId) => apiGet(endpoint, { pageId }).then(response => response.tags),
     {
       revalidateOnFocus: false,
@@ -52,7 +52,7 @@ export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): r
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/revisions/list', currentPage?._id, selectedPage, limit],
+    currentPage == null ? null : ['/revisions/list', currentPage._id, selectedPage, limit],
     (endpoint, pageId, selectedPage, limit) => apiv3Get(endpoint, { pageId, page: selectedPage, limit }).then(response => response.data),
     {
       revalidateOnFocus: false,
@@ -67,7 +67,7 @@ export const useRevisionById = (revisionId?:string): responseInterface<Revision,
   const endpoint = revisionId != null ? `/revisions/${revisionId}` : null;
 
   return useSWR(
-    [endpoint, currentPage?._id, shareLinkId],
+    currentPage == null ? null : [endpoint, currentPage._id, shareLinkId],
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, { pageId, shareLinkId }).then(response => response.data.revision),
     {
       revalidateOnFocus: false,
@@ -81,7 +81,7 @@ export const useLatestRevision = (): responseInterface<Revision, Error> => {
   const { data: shareLinkId } = useShareLinkId();
 
   return useSWR(
-    ['/revisions/list', currentPage?._id, shareLinkId],
+    currentPage == null ? null : ['/revisions/list', currentPage._id, shareLinkId],
     (endpoint, pageId, shareLinkId) => apiv3Get(endpoint, {
       pageId, shareLinkId, page: 1, limit: 1,
     }).then(response => response.data.docs[0]),
@@ -96,7 +96,7 @@ export const useCurrentPageCommentsSWR = (): responseInterface<Comment[], Error>
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/comments', currentPage?._id],
+    currentPage == null ? null : ['/comments', currentPage._id],
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data.comments),
     {
       revalidateOnFocus: false,
@@ -137,7 +137,7 @@ export const useCurrentPageList = (activePage: number): responseInterface<Pagina
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/pages/list', currentPage?.path, activePage],
+    currentPage == null ? null : ['/pages/list', currentPage.path, activePage],
     (endpoint, path, activePage) => apiv3Get(endpoint, { path, page: activePage }).then(response => response.data),
     {
       revalidateOnFocus: false,
@@ -150,8 +150,21 @@ export const useCurrentPageAttachment = (activePage: number): responseInterface<
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
-    ['/attachment/list', currentPage?._id, activePage],
+    currentPage == null ? null : ['/attachment/list', currentPage._id, activePage],
     (endpoint, pageId, activePage) => apiv3Get(endpoint, { pageId, page: activePage }).then(response => response.data.paginateResult),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+};
+
+export const useCurrentPageShareLinks = (): responseInterface<ShareLink[], Error> => {
+  const { data: currentPage } = useCurrentPageSWR();
+
+  return useSWR(
+    currentPage == null ? null : ['/share-links', currentPage._id],
+    (endpoint, pageId) => apiv3Get(endpoint, { relatedPage: pageId }).then(response => response.data.shareLinksResult),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -178,9 +191,7 @@ export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<str
 
   return useSWR(
     // key
-    currentPage == null
-      ? null
-      : ['/users.list', currentPage.seenUsers, limit],
+    currentPage == null ? null : ['/users.list', currentPage.seenUsers, limit],
     // fetcher
     isSeenUsersExist
       ? (endpoint, seenUsers) => apiGet(endpoint, { user_ids: seenUsers }).then(response => response.users.slice(limit).reverse())

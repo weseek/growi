@@ -5,7 +5,6 @@ import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { PageList } from '~/components/PageAccessory/PageList';
-import PageTimeline from './PageTimeline';
 
 const NotFoundPage = (props) => {
   const { t } = props;
@@ -20,7 +19,7 @@ const NotFoundPage = (props) => {
       },
       timeLine: {
         Icon: TimeLineIcon,
-        Content: PageTimeline,
+        Content: <PageList isTimeLine />,
         i18n: t('Timeline View'),
         index: 1,
       },

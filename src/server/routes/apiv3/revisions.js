@@ -1,6 +1,8 @@
 import loggerFactory from '~/utils/logger';
 import { UserStatus, USER_PUBLIC_FIELDS } from '~/server/models/user';
 
+import Revision from '~/server/models/revision';
+
 const logger = loggerFactory('growi:routes:apiv3:pages');
 
 const express = require('express');
@@ -61,10 +63,7 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const {
-    Revision,
-    Page,
-  } = crowi.models;
+  const { Page } = crowi.models;
 
   const validator = {
     retrieveRevisions: [
