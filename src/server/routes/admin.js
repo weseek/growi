@@ -225,10 +225,7 @@ module.exports = function(crowi, app) {
 
   actions.legacyExternalNotification = {};
   actions.legacyExternalNotification = function(req, res) {
-    // res.send('hoge');
-    console.log('hoge');
     return res.render('admin/legacy-external-notification');
-    // return res.render('admin/external-accounts');
   };
 
 
