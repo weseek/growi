@@ -98,7 +98,7 @@ module.exports = (crowi) => {
    *        tags: [CustomBotNonProxy]
    *        operationId: putCustomBotNonProxySetting
    *        summary: /slack-integration/custom-bot-non-proxy
-   *        description: Put customBotNonProxySetting.
+   *        description: Put customBotNonProxy setting.
    *        requestBody:
    *          required: true
    *          content:
@@ -107,7 +107,7 @@ module.exports = (crowi) => {
    *                $ref: '#/components/schemas/CustomBotNonProxy'
    *        responses:
    *           200:
-   *             description: Succeeded to put CustomBotNonProxySetting.
+   *             description: Succeeded to put CustomBotNonProxy setting.
    */
   router.put('/custom-bot-non-proxy',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
