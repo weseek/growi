@@ -243,14 +243,14 @@ module.exports = function(crowi) {
         debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }
-      if (configManager.getConfig('notification', 'slack:token')) {
+      if (configManager.getConfig('crowi', 'slackbot:token')) {
         debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }
     }
     // else
     else {
-      if (configManager.getConfig('notification', 'slack:token')) {
+      if (configManager.getConfig('crowi', 'slackbot:token')) {
         debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }

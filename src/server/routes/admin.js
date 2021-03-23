@@ -167,7 +167,7 @@ module.exports = function(crowi, app) {
         debug('oauth response', data);
 
         try {
-          await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': data.access_token });
+          await configManager.updateConfigsInTheSameNamespace('crowi', { 'slackbot:token': data.access_token });
           req.flash('successMessage', [t('message.successfully_connected')]);
         }
         catch (err) {
@@ -185,7 +185,7 @@ module.exports = function(crowi, app) {
 
   // app.post('/admin/notification/slackSetting/disconnect' , admin.notification.disconnectFromSlack);
   actions.notification.disconnectFromSlack = async function(req, res) {
-    await configManager.updateConfigsInTheSameNamespace('notification', { 'slack:token': '' });
+    await configManager.updateConfigsInTheSameNamespace('crowi', { 'slackbot:token': '' });
     req.flash('successMessage', [req.t('successfully_disconnected')]);
 
     return res.redirect('/admin/notification');

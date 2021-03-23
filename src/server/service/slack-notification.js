@@ -9,7 +9,7 @@ class SlackNotificationService {
   }
 
   hasSlackConfig() {
-    const hasSlackToken = !!this.configManager.getConfig('notification', 'slack:token');
+    const hasSlackToken = !!this.configManager.getConfig('crowi', 'slackbot:token');
     const hasSlackIwhUrl = !!this.configManager.getConfig('notification', 'slack:incomingWebhookUrl');
 
     return hasSlackToken || hasSlackIwhUrl;

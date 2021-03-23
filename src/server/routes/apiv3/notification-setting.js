@@ -136,7 +136,7 @@ module.exports = (crowi) => {
     const notificationParams = {
       webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
       isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
-      slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
+      slackToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
       userNotifications: await UpdatePost.findAll(),
       isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
       isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
@@ -179,7 +179,7 @@ module.exports = (crowi) => {
       const responseParams = {
         webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
         isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
-        slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
+        slackToken: await crowi.configManager.getConfig('crowi', 'slackbot:token'),
       };
       await crowi.setupSlack();
       return res.apiv3({ responseParams });
