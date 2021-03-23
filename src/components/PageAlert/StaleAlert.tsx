@@ -23,7 +23,7 @@ export const StaleAlert:VFC = () => {
       alertColor = 'info';
       break;
     case 2:
-      alertColor = 'info';
+      alertColor = 'warning';
       break;
     default:
       alertColor = 'danger';
