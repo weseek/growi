@@ -93,6 +93,7 @@ module.exports = function(crowi, app) {
   app.get('/admin/notification/slackSetting/disconnect' , loginRequiredStrictly , adminRequired , admin.notification.disconnectFromSlack);
   app.get('/admin/global-notification/new'              , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
   app.get('/admin/global-notification/:id'              , loginRequiredStrictly , adminRequired , admin.globalNotification.detail);
+  app.get('/admin/legacy-external-notification'         , loginRequiredStrictly , adminRequired,  admin.legacyExternalNotification);
 
   app.get('/admin/users'                                , loginRequiredStrictly , adminRequired , admin.user.index);
 
