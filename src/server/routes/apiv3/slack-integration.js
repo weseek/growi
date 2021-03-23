@@ -40,7 +40,7 @@ module.exports = (crowi) => {
 
 
   const validator = {
-    CusotmBotSettings: [
+    CusotmBotNonProxy: [
       body('slackSigningSecret').isString(),
       body('slackBotToken').isString(),
       body('botType').isString(),
@@ -58,8 +58,8 @@ module.exports = (crowi) => {
    *
    *    /slack-integration/:
    *      get:
-   *        tags: [SlackBotSettings]
-   *        operationId: getSlackBotSettings
+   *        tags: [SlackBotSettingParams]
+   *        operationId: getSlackBotSettingParams
    *        summary: /slack-integration
    *        description: Get slackBot setting params.
    *        responses:
@@ -68,7 +68,7 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    const slackBotSettingsParams = {
+    const slackBotSettingParams = {
       slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
       // TODO impl when creating official bot
       officialBotSettings: {
@@ -87,7 +87,7 @@ module.exports = (crowi) => {
         // AccessToken: "tempaccessdatahogehoge",
       },
     };
-    return res.apiv3({ slackBotSettingsParams });
+    return res.apiv3({ slackBotSettingParams });
   });
 
   /**
@@ -110,7 +110,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to put CustomBotNonProxy setting.
    */
   router.put('/custom-bot-non-proxy',
-    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotNonProxy, apiV3FormValidator, async(req, res) => {
       const { slackSigningSecret, slackBotToken, botType } = req.body;
 
       const requestParams = {
@@ -122,12 +122,12 @@ module.exports = (crowi) => {
       try {
         await updateSlackBotSettings(requestParams);
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
-        const customBotNonProxySettingsParams = {
+        const customBotNonProxySettingParams = {
           slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
           slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
           slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
         };
-        return res.apiv3({ customBotNonProxySettingsParams });
+        return res.apiv3({ customBotNonProxySettingParams });
       }
       catch (error) {
         const msg = 'Error occured in updating Custom bot setting';
