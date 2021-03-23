@@ -30,7 +30,7 @@ module.exports = function(crowi) {
 
   const postWithWebApi = function(messageObj) {
     return new Promise((resolve, reject) => {
-      const client = new Slack(configManager.getConfig('notification', 'slack:token'));
+      const client = new Slack(configManager.getConfig('crowi', 'slackbot:token'));
       // stringify attachments
       if (messageObj.attachments != null) {
         messageObj.attachments = JSON.stringify(messageObj.attachments);
