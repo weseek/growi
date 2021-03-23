@@ -21,6 +21,7 @@ const AdminNavigation = (props) => {
       case 'importer':      return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
       case 'export':        return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
       case 'notification':  return <><i className="icon-fw icon-bell"></i>            { t('Notification Settings') }</>;
+      case 'slack':         return <><i className="icon-fw icon-paper-plane"></i>     { t('Slack Integration') }</>;
       case 'users':         return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':   return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
       case 'search':        return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
@@ -61,6 +62,7 @@ const AdminNavigation = (props) => {
         <MenuLink menu="importer"     isListGroupItems isActive={isActiveMenu('/importer')} />
         <MenuLink menu="export"       isListGroupItems isActive={isActiveMenu('/export')} />
         <MenuLink menu="notification" isListGroupItems isActive={isActiveMenu('/notification') || isActiveMenu('/global-notification')} />
+        <MenuLink menu="slack"        isListGroupItems isActive={isActiveMenu('/slack')} />
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
@@ -95,6 +97,7 @@ const AdminNavigation = (props) => {
             {isActiveMenu('/importer') &&     <MenuLabel menu="importer" />}
             {isActiveMenu('/export') &&       <MenuLabel menu="export" />}
             {(isActiveMenu('/notification') || isActiveMenu('/global-notification')) && <MenuLabel menu="notification" />}
+            {isActiveMenu('/slack') &&        <MenuLabel menu="slack" />}
             {isActiveMenu('/users') &&        <MenuLabel menu="users" />}
             {isActiveMenu('/user-groups') &&  <MenuLabel menu="user-groups" />}
             {isActiveMenu('/search') &&       <MenuLabel menu="search" />}
