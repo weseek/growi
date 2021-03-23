@@ -18,8 +18,8 @@ const router = express.Router();
  *
  *  components:
  *    schemas:
- *      CustomBot:
- *        description: CustomBot
+ *      CustomBotNonProxy:
+ *        description: CustomBotNonProxy
  *        type: object
  *        properties:
  *          slackSigningSecret:
@@ -93,18 +93,18 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/custom-bot-setting/:
+   *    /slack-integration/custom-bot-non-proxy/:
    *      put:
    *        tags: [CustomBot]
    *        operationId: putCustomBotSetting
-   *        summary: /slack-integration/custom-bot-setting
+   *        summary: /slack-integration/custom-bot-non-proxy
    *        description: Put singingSecret, slackBotToken and botType
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/CustomBot'
+   *                $ref: '#/components/schemas/CustomBotNonProxy'
    *        responses:
    *           200:
    *             description: Succeeded to put SigningSecret, SlackBotToken and BotType.
