@@ -96,7 +96,7 @@ module.exports = (crowi) => {
    *    /slack-integration/custom-bot-non-proxy/:
    *      put:
    *        tags: [CustomBotNonProxy]
-   *        operationId: putCustomBotNonProxySetting
+   *        operationId: putCustomBotNonProxy
    *        summary: /slack-integration/custom-bot-non-proxy
    *        description: Put customBotNonProxy setting.
    *        requestBody:
