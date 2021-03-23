@@ -17,7 +17,7 @@ export const StaleAlert:VFC = () => {
     return null;
   }
 
-  let alertColor;
+  let alertColor: 'info' | 'warning' | 'danger';
   switch (countAge) {
     case 1:
       alertColor = 'info';
