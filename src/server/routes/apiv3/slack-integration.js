@@ -58,13 +58,13 @@ module.exports = (crowi) => {
    *
    *    /slack-integration/:
    *      get:
-   *        tags: [CustomBot]
-   *        operationId: getCustomBotSetting
+   *        tags: [SlackBotSettings]
+   *        operationId: getSlackBotSettings
    *        summary: /slack-integration
-   *        description: Get singingSecret, slackBotToken and botType
+   *        description: Get slackBot setting params.
    *        responses:
    *          200:
-   *            description: Succeeded to get SigningSecret, SlackBotToken and BotType.
+   *            description: Succeeded to get slackBot setting params.
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
@@ -95,10 +95,10 @@ module.exports = (crowi) => {
    *
    *    /slack-integration/custom-bot-non-proxy/:
    *      put:
-   *        tags: [CustomBot]
-   *        operationId: putCustomBotSetting
+   *        tags: [CustomBotNonProxy]
+   *        operationId: putCustomBotNonProxySetting
    *        summary: /slack-integration/custom-bot-non-proxy
-   *        description: Put singingSecret, slackBotToken and botType
+   *        description: Put customBotNonProxySetting.
    *        requestBody:
    *          required: true
    *          content:
@@ -107,7 +107,7 @@ module.exports = (crowi) => {
    *                $ref: '#/components/schemas/CustomBotNonProxy'
    *        responses:
    *           200:
-   *             description: Succeeded to put SigningSecret, SlackBotToken and BotType.
+   *             description: Succeeded to put CustomBotNonProxySetting.
    */
   router.put('/custom-bot-non-proxy',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotSettings, apiV3FormValidator, async(req, res) => {
