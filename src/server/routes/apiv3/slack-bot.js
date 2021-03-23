@@ -8,7 +8,21 @@ module.exports = (crowi) => {
   const { boltService } = crowi;
   const requestHandler = boltService.receiver.requestHandler.bind(boltService.receiver);
 
-  router.post('/', async(req, res) => {
+  function accessTokenParserForSlackBot(req, res, next) {
+    const slackBotAccessToken = req.body.slack_bot_access_token || null;
+    if (slackBotAccessToken == null) {
+      next();
+    }
+
+    if (slackBotAccessToken === crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
+      req.body.user = {
+        username: 'slackBot',
+      };
+    }
+    next();
+  }
+
+  router.post('/', accessTokenParserForSlackBot, async(req, res) => {
     // for verification request URL on Event Subscriptions
     if (req.body.type === 'url_verification') {
       res.send(req.body);
