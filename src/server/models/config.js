@@ -148,7 +148,6 @@ module.exports = function(crowi) {
     return {
       'slack:isIncomingWebhookPrioritized': false,
       'slack:incomingWebhookUrl': undefined,
-      'slack:token': undefined,
     };
   }
 
