@@ -1,4 +1,3 @@
-import User from '~/server/models/user';
 /* eslint-disable no-unused-vars */
 const mongoose = require('mongoose');
 
@@ -40,6 +39,7 @@ describe('PageService', () => {
   let crowi;
   let Page;
   let Revision;
+  let User;
   let Tag;
   let PageTagRelation;
   let Bookmark;
@@ -50,6 +50,7 @@ describe('PageService', () => {
   beforeAll(async(done) => {
     crowi = await getInstance();
 
+    User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
     Tag = mongoose.model('Tag');
