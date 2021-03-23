@@ -27,7 +27,7 @@ import { PageComments } from '~/components/PageComment/PageComments';
 import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
-  useAppTitle, useSiteUrl, useConfidential,
+  useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useSearchServiceConfigured, useSearchServiceReachable,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
 } from '../stores/context';
@@ -62,6 +62,7 @@ type Props = CommonProps & {
   hackmdUri: string,
   highlightJsStyle: string,
   isAllReplyShown: boolean,
+  isEnabledStaleNotification: boolean,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
 };
@@ -80,6 +81,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useShareLinkId(props.shareLinkId);
   useIsAbleToDeleteCompletely(props.isAbleToDeleteCompletely);
   useIsSharedUser(props.currentUser == null && isSharedPage(props.currentPagePath));
+  useIsEnabledStaleNotification(props.isEnabledStaleNotification);
 
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
@@ -253,6 +255,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
+  props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
 
