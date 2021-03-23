@@ -1,24 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useRouter } from 'next/router';
+import { VFC } from 'react';
+import { useTranslation } from '~/i18n';
 
+export const DuplicatedAlert:VFC = () => {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { duplicated } = router.query;
 
-const DuplicatedAlert = (props) => {
-  const { t } = props;
-  const urlParams = new URLSearchParams(window.location.search);
-  const fromPath = urlParams.get('duplicated');
+  if (duplicated == null) {
+    return null;
+  }
 
   return (
     <div className="alert alert-success py-3 px-4">
       <strong>
-        { t('Duplicated') }: {t('page_page.notice.duplicated')} <code>{fromPath}</code> {t('page_page.notice.duplicated_period')}
+        { t('Duplicated') }: {t('page_page.notice.duplicated')} <code>{duplicated}</code> {t('page_page.notice.duplicated_period')}
       </strong>
     </div>
   );
 };
-
-DuplicatedAlert.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-};
-
-export default withTranslation()(DuplicatedAlert);
