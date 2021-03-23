@@ -21,7 +21,8 @@ const AdminNavigation = (props) => {
       case 'importer':      return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
       case 'export':        return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
       case 'notification':  return <><i className="icon-fw icon-bell"></i>            { t('Notification Settings') }</>;
-      case 'legacy-external-notification':  return <><i className="icon-fw icon-bell"></i>            { t('External Notification') }</>;
+      // TODO change icon for legacy-external-notification by GW-5466
+      case 'legacy-external-notification':  return <> <i className="icon-fw icon-bell"></i>{ t('Legacy_External_Notification') }</>;
       case 'users':         return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':   return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
       case 'search':        return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
