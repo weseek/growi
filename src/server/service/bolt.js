@@ -74,10 +74,6 @@ class BoltService {
   }
 
   init() {
-    // Example of listening for event
-    // See. https://github.com/slackapi/bolt-js#listening-for-events
-    // or https://slack.dev/bolt-js/concepts#basic
-
     this.bolt.command('/growi', async({
       command, client, body, ack,
     }) => {
