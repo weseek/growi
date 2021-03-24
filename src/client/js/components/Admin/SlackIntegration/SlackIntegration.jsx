@@ -5,13 +5,17 @@ import React, { Fragment } from 'react';
 // import AppContainer from '../../../services/AppContainer';
 
 class SlackIntegration extends React.Component {
+
   render() {
+
     return (
       <Fragment>
         <h1>AAA</h1>
       </Fragment>
     );
+
   }
+
 }
 
 // const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer]);
