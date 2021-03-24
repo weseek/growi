@@ -9,11 +9,26 @@ const urljoin = require('url-join');
 
 module.exports = function(crowi) {
   const Slack = require('slack-node');
-  const { configManager } = crowi;
+  const { WebClient, LogLevel } = require('@slack/web-api');
 
+  const { configManager } = crowi;
   const slack = {};
 
-  // create notification from bot
+  const postWithSlackBot = function(messageObj) {
+    return new Promise((resolve, reject) => {
+      const client = new WebClient(configManager.getConfig('crowi', 'slackbot:token'), {
+        logLevel: LogLevel.DEBUG,
+      });
+      client.chat.postMessage(messageObj, (err, res) => {
+        if (err) {
+          debug('Post error', err, res);
+          debug('Sent data to slack is:', messageObj);
+          return reject(err);
+        }
+        resolve(res);
+      });
+    });
+  };
 
   const postWithIwh = function(messageObj) {
     return new Promise((resolve, reject) => {
@@ -245,6 +260,9 @@ module.exports = function(crowi) {
         debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }
+      if (configManager.getConfig('crowi', 'slackbot:token')) {
+        return postWithSlackBot(messageObj);
+      }
       if (configManager.getConfig('notification', 'slack:token')) {
         debug('posting message with Web API');
         return postWithWebApi(messageObj);
@@ -252,6 +270,9 @@ module.exports = function(crowi) {
     }
     // else
     else {
+      if (configManager.getConfig('crowi', 'slackbot:token')) {
+        return postWithSlackBot(messageObj);
+      }
       if (configManager.getConfig('notification', 'slack:token')) {
         debug('posting message with Web API');
         return postWithWebApi(messageObj);
