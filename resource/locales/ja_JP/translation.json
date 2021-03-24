@@ -109,6 +109,8 @@
   "Site URL settings": "サイトURL設定",
   "Markdown Settings": "マークダウン設定",
   "Customize": "カスタマイズ",
+  "Notification Settings": "通知設定",
+  "slack_integration": "Slack連携",
   "External_Notification": "外部ツールへの通知",
   "Legacy_External_Notification": "外部ツールへの通知 (レガシー)",
   "User_Management": "ユーザー管理",
