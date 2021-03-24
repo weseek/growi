@@ -410,6 +410,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  SLACK_BOT_TYPE: {
+    ns:      'crowi',
+    key:     'slackbot:type', // eg. official || custom-non-proxy || custom-with-proxy
+    type:    TYPES.STRING,
+    default: null,
+  },
 };
 
 class ConfigLoader {

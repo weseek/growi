@@ -111,6 +111,8 @@
   "Customize": "カスタマイズ",
   "Notification Settings": "通知設定",
   "slack_integration": "Slack連携",
+  "External_Notification": "外部ツールへの通知",
+  "Legacy_External_Notification": "外部ツールへの通知 (レガシー)",
   "User_Management": "ユーザー管理",
   "external_account_management": "外部アカウント管理",
   "UserGroup Management": "グループ管理",
