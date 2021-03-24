@@ -23,7 +23,7 @@ const AdminNavigation = (props) => {
       case 'notification':      return <><i className="icon-fw icon-bell"></i>            { t('External_Notification') }</>;
       // TODO change icon for legacy-external-notification by GW-5466
       case 'legacy-external-notification':  return <> <i className="icon-fw icon-bell"></i>{ t('Legacy_External_Notification') }</>;
-      case 'slack-integration': return <><i className="icon-fw icon-paper-plane"></i>     { t('Slack_Integration') }</>;
+      case 'slack-integration': return <><i className="icon-fw icon-paper-plane"></i>     { t('slack_integration') }</>;
       case 'users':             return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':       return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
       case 'search':            return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
