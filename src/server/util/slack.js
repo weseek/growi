@@ -13,6 +13,8 @@ module.exports = function(crowi) {
 
   const slack = {};
 
+  // create notification from bot
+
   const postWithIwh = function(messageObj) {
     return new Promise((resolve, reject) => {
       const client = new Slack();
