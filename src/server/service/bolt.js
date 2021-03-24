@@ -77,17 +77,6 @@ class BoltService {
     // Example of listening for event
     // See. https://github.com/slackapi/bolt-js#listening-for-events
     // or https://slack.dev/bolt-js/concepts#basic
-    this.bolt.command('/growi-bot', async({ command, ack, say }) => { // demo
-      await say('Hello');
-    });
-
-    // The echo command simply echoes on command
-    this.bolt.command('/echo', async({ command, ack, say }) => {
-      // Acknowledge command request
-      await ack();
-
-      await say(`${command.text}`);
-    });
 
     this.bolt.command('/growi', async({
       command, client, body, ack,
@@ -271,7 +260,7 @@ class BoltService {
       };
       // show "Next" button if next page exists
       if (resultsTotal > offset + PAGINGLIMIT) {
-        actionBlocks.elements.push(
+        actionBlocks.elements.unshift(
           {
             type: 'button',
             text: {
