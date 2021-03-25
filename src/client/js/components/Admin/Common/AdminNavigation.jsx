@@ -21,8 +21,8 @@ const AdminNavigation = (props) => {
       case 'importer':          return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
       case 'export':            return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
       case 'notification':      return <><i className="icon-fw icon-bell"></i>            { t('External_Notification') }</>;
-      // TODO change icon for legacy-external-notification by GW-5466
-      case 'legacy-external-notification':  return <> <i className="icon-fw icon-bell"></i>{ t('Legacy_External_Notification') }</>;
+      // TODO change icon for legacy-slack-integration by GW-5466
+      case 'legacy-slack-integration':  return <> <i className="icon-fw icon-paper-plane"></i>    { t('Legacy_Slack_Integration') }</>;
       case 'slack-integration': return <><i className="icon-fw icon-paper-plane"></i>     { t('slack_integration') }</>;
       case 'users':             return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':       return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
@@ -64,8 +64,8 @@ const AdminNavigation = (props) => {
         <MenuLink menu="importer"     isListGroupItems isActive={isActiveMenu('/importer')} />
         <MenuLink menu="export"       isListGroupItems isActive={isActiveMenu('/export')} />
         <MenuLink menu="notification" isListGroupItems isActive={isActiveMenu('/notification') || isActiveMenu('/global-notification')} />
-        <MenuLink menu="legacy-external-notification" isListGroupItems isActive={isActiveMenu('/legacy-external-notification')} />
         <MenuLink menu="slack-integration" isListGroupItems isActive={isActiveMenu('/slack-integration')} />
+        <MenuLink menu="legacy-slack-integration" isListGroupItems isActive={isActiveMenu('/legacy-slack-integration')} />
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
