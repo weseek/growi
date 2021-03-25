@@ -37,7 +37,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-
+  const User = crowi.model('User');
 
   const validator = {
     CusotmBotNonProxy: [
@@ -135,6 +135,34 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
       }
     });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration/access-token:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: getCustomBotSetting
+   *        summary: /slack-integration
+   *        description: Generate accessToken
+   *        responses:
+   *          200:
+   *            description: Succeeded to get SigningSecret, SlackBotToken and BotType.
+   */
+  router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+
+    try {
+      const slackUser = await User.findOrCreateSlackUser();
+      // updateApiToken
+      await slackUser.updateApiToken();
+      return res.apiv3({ accessToken: slackUser.apiToken });
+    }
+    catch (error) {
+      const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
+    }
+  });
 
   return router;
 };
