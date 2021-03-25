@@ -2,7 +2,6 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-
 import AccessTokenSettings from './AccessTokenSettings';
 import CustomBotNonProxySettings from './CustomBotNonProxySettings';
 
