@@ -9,18 +9,20 @@ module.exports = (crowi) => {
   const requestHandler = boltService.receiver.requestHandler.bind(boltService.receiver);
 
 
-  function accessTokenParserForSlackBot(req, res, next) {
+  async function accessTokenParserForSlackBot(req, res, next) {
     const slackBotAccessToken = req.body.slack_bot_access_token || null;
     if (slackBotAccessToken == null) {
-      next();
+      return next();
     }
 
-    if (slackBotAccessToken === crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-      req.body.user = {
-        username: 'slackBot',
-      };
+    const User = crowi.model('User');
+    const slackUser = await User.findOne({ username: 'slackUser' });
+
+    if (slackBotAccessToken === slackUser.apiToken) {
+      req.body.user = slackUser;
     }
-    next();
+
+    return next();
   }
 
   router.post('/', accessTokenParserForSlackBot, async(req, res) => {
