@@ -181,7 +181,8 @@ module.exports = (crowi) => {
         isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
         slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
       };
-      await crowi.setupSlack();
+      // await crowi.setupSlack();
+      await crowi.setupSlackLegacy();
       return res.apiv3({ responseParams });
     }
     catch (err) {

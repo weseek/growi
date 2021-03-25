@@ -314,6 +314,10 @@ Crowi.prototype.getSlack = function() {
   return this.slack;
 };
 
+Crowi.prototype.getSlackLegacy = function() {
+  return this.slackLegacy;
+};
+
 Crowi.prototype.getInterceptorManager = function() {
   return this.interceptorManager;
 };
