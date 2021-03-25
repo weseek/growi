@@ -105,6 +105,7 @@ Crowi.prototype.init = async function() {
     this.setupSearcher(),
     this.setupMailer(),
     this.setupSlack(),
+    this.setupSlackLegacy(),
     this.setupCsrf(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
@@ -381,6 +382,15 @@ Crowi.prototype.setupSlack = async function() {
 
   return new Promise(((resolve, reject) => {
     self.slack = require('../util/slack')(self);
+    resolve();
+  }));
+};
+
+Crowi.prototype.setupSlackLegacy = async function() {
+  const self = this;
+
+  return new Promise(((resolve, reject) => {
+    self.slackLegacy = require('../util/slack-legacy')(self);
     resolve();
   }));
 };
