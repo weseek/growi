@@ -22,7 +22,7 @@ const AdminNavigation = (props) => {
       case 'export':            return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
       case 'notification':      return <><i className="icon-fw icon-bell"></i>            { t('External_Notification') }</>;
       // TODO change icon for legacy-slack-integration by GW-5466
-      case 'legacy-slack-integration':  return <> <i className="icon-fw icon-bell"></i>{ t('Legacy_Slack_Integration') }</>;
+      case 'legacy-slack-integration':  return <> <i className="icon-fw icon-paper-plane"></i>    { t('Legacy_Slack_Integration') }</>;
       case 'slack-integration': return <><i className="icon-fw icon-paper-plane"></i>     { t('slack_integration') }</>;
       case 'users':             return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':       return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
