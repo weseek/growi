@@ -68,7 +68,6 @@ module.exports = function(crowi) {
   };
 
   const slackPost = (messageObj) => {
-    console.log('fuga');
     // when incoming Webhooks is prioritized
     if (configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
       if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
