@@ -251,8 +251,14 @@
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
   "slack_integration": {
-    "access_token": "アクセストークン",
-    "custom_button_non_proxy_settings": "Custom bot (non-proxy) 設定"
+    "access_token_settings": {
+      "discard": "破棄",
+      "generate": "発行"
+    },
+    "custom_bot_non_proxy_settings": "Custom bot (non-proxy) 設定",
+    "non_proxy": {
+      "create_bot": "Bot を作成する"
+    }
   },
   "user_management": {
     "invite_users": "新規ユーザーの招待",

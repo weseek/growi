@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react';
-// import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 class CustomBotNonProxySettings extends React.Component {
 
@@ -17,19 +19,19 @@ class CustomBotNonProxySettings extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
 
     return (
       <Fragment>
         <div className="row my-5">
           <div className="mx-auto">
             <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-              Create Bot
+              {t('admin:slack_integration.non_proxy.create_bot')}
             </button>
           </div>
         </div>
 
         <div className="form-group row">
-          {/* <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label> */}
           <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
           <div className="col-md-6">
             <input
@@ -41,7 +43,6 @@ class CustomBotNonProxySettings extends React.Component {
         </div>
 
         <div className="form-group row mb-5">
-          {/* <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label> */}
           <label className="text-left text-md-right col-md-3 col-form-label">Bot User OAuth Token</label>
           <div className="col-md-6">
             <input
@@ -52,18 +53,15 @@ class CustomBotNonProxySettings extends React.Component {
           </div>
         </div>
 
-        {/* <AdminUpdateButtonRow /> */}
-        <div className="row">
-          <div className="mx-auto">
-            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={this.updateHandler}>
-              Update
-            </button>
-          </div>
-        </div>
+        <AdminUpdateButtonRow onClick={this.updateHandler} disabled={false} />
       </Fragment>
     );
   }
 
 }
 
-export default CustomBotNonProxySettings;
+CustomBotNonProxySettings.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+};
+
+export default withTranslation()(CustomBotNonProxySettings);

@@ -1,4 +1,6 @@
 import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 class AccessTokenSettings extends React.Component {
 
@@ -11,10 +13,11 @@ class AccessTokenSettings extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     return (
       <Fragment>
         <div className="form-group row my-5">
-          {/* <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label> */}
           <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
           <div className="col-md-6">
             <input className="form-control" type="text" placeholder="access-token" />
@@ -24,10 +27,10 @@ class AccessTokenSettings extends React.Component {
         <div className="row">
           <div className="mx-auto">
             <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={this.discardHandler}>
-              Discard
+              {t('admin:slack_integration.access_token_settings.discard')}
             </button>
             <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={this.updateHandler}>
-              Generate
+              {t('admin:slack_integration.access_token_settings.generate')}
             </button>
           </div>
         </div>
@@ -37,4 +40,8 @@ class AccessTokenSettings extends React.Component {
 
 }
 
-export default AccessTokenSettings;
+AccessTokenSettings.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+};
+
+export default withTranslation()(AccessTokenSettings);

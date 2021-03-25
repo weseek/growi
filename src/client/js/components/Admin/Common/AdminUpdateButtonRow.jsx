@@ -16,7 +16,6 @@ const AdminUpdateButtonRow = (props) => {
 
 AdminUpdateButtonRow.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
   onClick: PropTypes.func.isRequired,
   disabled: PropTypes.bool.isRequired,
 };

@@ -15,14 +15,14 @@ class SlackIntegration extends React.Component {
       <Fragment>
         <div className="row">
           <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('admin:slack_integration.access_token')}</h2>
+            <h2 className="admin-setting-header">Access Token</h2>
             <AccessTokenSettings />
           </div>
         </div>
 
         <div className="row">
           <div className="col-lg-12">
-            <h2 className="admin-setting-header">{t('admin:slack_integration.custom_button_non_proxy_settings')}</h2>
+            <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_non_proxy_settings')}</h2>
             <CustomBotNonProxySettings />
           </div>
         </div>
