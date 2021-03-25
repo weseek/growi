@@ -11,7 +11,7 @@ module.exports = function(crowi) {
   const Slack = require('slack-node');
 
   const { configManager } = crowi;
-  const slack = {};
+  const slackLegacy = {};
 
   const postWithIwh = function(messageObj) {
     return new Promise((resolve, reject) => {
@@ -217,20 +217,20 @@ module.exports = function(crowi) {
     return text;
   };
 
-  // slack.post = function (channel, message, opts) {
-  slack.postPage = (page, user, channel, updateType, previousRevision) => {
+  // slackLegacy.post = function (channel, message, opts) {
+  slackLegacy.postPage = (page, user, channel, updateType, previousRevision) => {
     const messageObj = prepareSlackMessageForPage(page, user, channel, updateType, previousRevision);
 
     return slackPost(messageObj);
   };
 
-  slack.postComment = (comment, user, channel, path) => {
+  slackLegacy.postComment = (comment, user, channel, path) => {
     const messageObj = prepareSlackMessageForComment(comment, user, channel, path);
 
     return slackPost(messageObj);
   };
 
-  slack.sendGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
+  slackLegacy.sendGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
     const messageObj = await prepareSlackMessageForGlobalNotification(messageBody, attachmentBody, slackChannel);
 
     return slackPost(messageObj);
@@ -261,5 +261,5 @@ module.exports = function(crowi) {
     }
   };
 
-  return slack;
+  return slackLegacy;
 };
