@@ -21,6 +21,7 @@ module.exports = function(crowi) {
   const STATUS_SUSPENDED = 3;
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
+  const STATUS_SLACK_BOT = 6;
   const USER_FIELDS_EXCEPT_CONFIDENTIAL = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
   + ' status lang createdAt lastLoginAt admin imageUrlCached';
 
@@ -701,6 +702,20 @@ module.exports = function(crowi) {
     });
   };
 
+  /**
+   * find or create slack user
+   *
+   * @return {Promise<User>}
+   */
+  userSchema.statics.findOrCreateSlackUser = async function() {
+    const slackUser = await this.findOne({ username: 'slackUser' });
+    if (slackUser == null) {
+      return this.create({ username: 'slackUser', status: STATUS_SLACK_BOT });
+    }
+    return slackUser;
+  };
+
+
   userSchema.statics.getUsernameByPath = function(path) {
     let username = null;
     const match = path.match(/^\/user\/([^/]+)\/?/);
@@ -724,6 +739,7 @@ module.exports = function(crowi) {
   userSchema.statics.STATUS_SUSPENDED = STATUS_SUSPENDED;
   userSchema.statics.STATUS_DELETED = STATUS_DELETED;
   userSchema.statics.STATUS_INVITED = STATUS_INVITED;
+  userSchema.statics.STATUS_SLACK_BOT = STATUS_SLACK_BOT;
   userSchema.statics.USER_FIELDS_EXCEPT_CONFIDENTIAL = USER_FIELDS_EXCEPT_CONFIDENTIAL;
   userSchema.statics.PAGE_ITEMS = PAGE_ITEMS;
 
