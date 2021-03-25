@@ -8,7 +8,6 @@ const urljoin = require('url-join');
 /* eslint-disable no-use-before-define */
 
 module.exports = function(crowi) {
-  const Slack = require('slack-node');
   const { WebClient, LogLevel } = require('@slack/web-api');
 
   const { configManager } = crowi;
@@ -20,39 +19,6 @@ module.exports = function(crowi) {
         logLevel: LogLevel.DEBUG,
       });
       client.chat.postMessage(messageObj, (err, res) => {
-        if (err) {
-          debug('Post error', err, res);
-          debug('Sent data to slack is:', messageObj);
-          return reject(err);
-        }
-        resolve(res);
-      });
-    });
-  };
-
-  const postWithIwh = function(messageObj) {
-    return new Promise((resolve, reject) => {
-      const client = new Slack();
-      client.setWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
-      client.webhook(messageObj, (err, res) => {
-        if (err) {
-          debug('Post error', err, res);
-          debug('Sent data to slack is:', messageObj);
-          return reject(err);
-        }
-        resolve(res);
-      });
-    });
-  };
-
-  const postWithWebApi = function(messageObj) {
-    return new Promise((resolve, reject) => {
-      const client = new Slack(configManager.getConfig('notification', 'slack:token'));
-      // stringify attachments
-      if (messageObj.attachments != null) {
-        messageObj.attachments = JSON.stringify(messageObj.attachments);
-      }
-      client.api('chat.postMessage', messageObj, (err, res) => {
         if (err) {
           debug('Post error', err, res);
           debug('Sent data to slack is:', messageObj);
@@ -256,31 +222,17 @@ module.exports = function(crowi) {
   const slackPost = (messageObj) => {
     // when incoming Webhooks is prioritized
     if (configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
-      if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
-        debug('posting message with IncomingWebhook');
-        return postWithIwh(messageObj);
-      }
+      // if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
+      //   debug('posting message with IncomingWebhook');
+      //   return postWithIwh(messageObj);
+      // }
       if (configManager.getConfig('crowi', 'slackbot:token')) {
         return postWithSlackBot(messageObj);
-      }
-      if (configManager.getConfig('notification', 'slack:token')) {
-        debug('posting message with Web API');
-        return postWithWebApi(messageObj);
       }
     }
     // else
-    else {
-      if (configManager.getConfig('crowi', 'slackbot:token')) {
-        return postWithSlackBot(messageObj);
-      }
-      if (configManager.getConfig('notification', 'slack:token')) {
-        debug('posting message with Web API');
-        return postWithWebApi(messageObj);
-      }
-      if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
-        debug('posting message with IncomingWebhook');
-        return postWithIwh(messageObj);
-      }
+    else if (configManager.getConfig('crowi', 'slackbot:token')) {
+      return postWithSlackBot(messageObj);
     }
   };
 
