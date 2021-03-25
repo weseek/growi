@@ -1,9 +1,11 @@
 import { $log } from '@tsed/common';
 import { PlatformExpress } from '@tsed/platform-express';
 
-import helpers from '../../../src/lib/util/helpers';
-
 import { Server } from './Server';
+
+function hasProcessFlag(flag: string): boolean {
+  return process.argv.join('').indexOf(flag) > -1;
+}
 
 async function bootstrap() {
   try {
@@ -13,7 +15,7 @@ async function bootstrap() {
     await platform.listen();
     $log.debug('Server initialized');
 
-    if (helpers.hasProcessFlag('ci')) {
+    if (hasProcessFlag('ci')) {
       $log.info('"--ci" flag is detected. Exit process.');
       process.exit();
     }
