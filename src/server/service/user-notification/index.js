@@ -24,7 +24,7 @@ class UserNotificationService {
    * @param {Comment} comment
    */
   async fire(page, user, slackChannelsStr, mode, option, comment = {}) {
-    const { slackNotificationService, slackLegacy } = this.crowi;
+    const { slackNotificationService, slackLegacy, slack } = this.crowi;
 
     const opt = option || {};
     const previousRevision = opt.previousRevision || '';
@@ -41,10 +41,16 @@ class UserNotificationService {
     const promises = slackChannels.map(async(chan) => {
       let res;
       if (mode === 'comment') {
-        res = await slackLegacy.postComment(comment, user, chan, page.path);
+        if (this.crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
+          res = slackLegacy.postComment(comment, user, chan, page.path);
+        }
+        res = await slack.postComment(comment, user, chan, page.path);
       }
       else {
-        res = await slackLegacy.postPage(page, user, chan, mode, previousRevision);
+        if (this.crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
+          res = slackLegacy.postComment(comment, user, chan, page.path);
+        }
+        res = await slack.postPage(page, user, chan, mode, previousRevision);
       }
       if (res.status !== 'ok') {
         throw new Error(`fail to send slack notification to #${chan} channel`);
