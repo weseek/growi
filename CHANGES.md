@@ -5,8 +5,11 @@
 * Support: Update libs
     * bunyan
     * browser-bunyan
+* Fix: Can create pages on the share route
+    * Introduced by v4.2.8
 * Fix: Group page is excluded by recurrence operation
     * Introduced by v4.2.8
+
 ## v4.2.13
 
 * Feature: Detect indent size automatically
