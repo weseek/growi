@@ -223,11 +223,15 @@ module.exports = function(crowi, app) {
     return res.render('admin/external-accounts');
   };
 
-  actions.legacyExternalNotification = {};
-  actions.legacyExternalNotification = function(req, res) {
-    return res.render('admin/legacy-external-notification');
+  actions.legacySlackIntegration = {};
+  actions.legacySlackIntegration = function(req, res) {
+    return res.render('admin/legacy-slack-integration');
   };
 
+  actions.slackIntegration = {};
+  actions.slackIntegration = function(req, res) {
+    return res.render('admin/slack-integration');
+  };
 
   actions.userGroup = {};
   actions.userGroup.index = function(req, res) {

@@ -252,6 +252,16 @@
     "download": "Download",
     "delete": "Delete"
   },
+  "slack_integration": {
+    "access_token_settings": {
+      "discard": "Discard",
+      "generate": "Generate"
+    },
+    "custom_bot_non_proxy_settings": "Custom bot (non-proxy) Settings",
+    "non_proxy": {
+      "create_bot": "Create Bot"
+    }
+  },
   "user_management": {
     "invite_users": "Invite new users",
     "click_twice_same_checkbox": "You should check at least one checkbox.",
