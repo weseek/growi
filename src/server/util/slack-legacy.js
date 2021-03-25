@@ -1,5 +1,5 @@
 const debug = require('debug')('growi:util:slack');
-const slack = require('./slack');
+// const slack = require('./slack');
 
 /**
  * slack
@@ -11,6 +11,8 @@ module.exports = function(crowi) {
   const Slack = require('slack-node');
 
   const { configManager } = crowi;
+  const slack = crowi.getSlack();
+
   const slackLegacy = {};
 
   const postWithIwh = function(messageObj) {
@@ -66,6 +68,7 @@ module.exports = function(crowi) {
   };
 
   const slackPost = (messageObj) => {
+    console.log('fuga');
     // when incoming Webhooks is prioritized
     if (configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
       if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {

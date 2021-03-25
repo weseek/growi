@@ -9,6 +9,7 @@ class GlobalNotificationSlackService {
   constructor(crowi) {
     this.crowi = crowi;
     this.slack = crowi.getSlack();
+    this.slackLegacy = crowi.getSlackLegacy();
     this.type = crowi.model('GlobalNotificationSetting').TYPE.SLACK;
     this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
@@ -31,7 +32,7 @@ class GlobalNotificationSlackService {
     const attachmentBody = this.generateAttachmentBody(event, path, triggeredBy, vars);
 
     await Promise.all(notifications.map((notification) => {
-      return this.slack.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
+      return this.slackLegacy.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
     }));
   }
 
