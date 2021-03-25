@@ -141,6 +141,9 @@ class PageService {
    */
   async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
     const Page = this.crowi.model('Page');
+    const UserGroupRelation = this.crowi.model('UserGroupRelation');
+
+    const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     const newPagePathPrefix = newPagePath;
     const { PageQueryBuilder } = Page;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
@@ -148,7 +151,7 @@ class PageService {
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
+      .addConditionToFilteringByViewer(user, userGroups)
       .query
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
@@ -342,6 +345,9 @@ class PageService {
 
   async duplicateDescendantsWithStream(page, newPagePath, user) {
     const Page = this.crowi.model('Page');
+    const UserGroupRelation = this.crowi.model('UserGroupRelation');
+
+    const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
 
@@ -350,7 +356,7 @@ class PageService {
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(page.path)
-      .addConditionToFilteringByViewer(user)
+      .addConditionToFilteringByViewer(user, userGroups)
       .query
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
@@ -480,12 +486,15 @@ class PageService {
    */
   async deleteDescendantsWithStream(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
+    const UserGroupRelation = this.crowi.model('UserGroupRelation');
+
+    const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     const { PageQueryBuilder } = Page;
 
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
+      .addConditionToFilteringByViewer(user, userGroups)
       .query
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
@@ -556,12 +565,15 @@ class PageService {
    */
   async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
+    const UserGroupRelation = this.crowi.model('UserGroupRelation');
+
+    const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     const { PageQueryBuilder } = Page;
 
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
+      .addConditionToFilteringByViewer(user, userGroups)
       .query
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
@@ -682,12 +694,15 @@ class PageService {
    */
   async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
     const Page = this.crowi.model('Page');
+    const UserGroupRelation = this.crowi.model('UserGroupRelation');
+
+    const userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
     const { PageQueryBuilder } = Page;
 
     const readStream = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
+      .addConditionToFilteringByViewer(user, userGroups)
       .query
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
