@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc",
-    "tsc": "tsc && tsc-alias",
+    "tsc": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "tsc:w": "tsc -w",
     "dev:ci": "yarn dev --ci",
     "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config src/index.ts",
