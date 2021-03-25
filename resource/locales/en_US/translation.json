@@ -111,7 +111,7 @@
   "Notification Settings": "Notification Settings",
   "slack_integration": "Slack Integration",
   "External_Notification": "External Notification",
-  "Legacy_External_Notification": "Legacy External Notification",
+  "Legacy_Slack_Integration": "Legacy_Slack_Integration",
   "User_Management": "User Management",
   "external_account_management": "External Account Management",
   "UserGroup Management": "UserGroup Management",
