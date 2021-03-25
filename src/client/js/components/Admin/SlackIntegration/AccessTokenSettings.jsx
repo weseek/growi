@@ -7,13 +7,13 @@ class AccessTokenSettings extends React.Component {
   }
 
   discardHandler() {
-    console.log('Discard button pressed');
+    console.log('Generate button pressed');
   }
 
   render() {
     return (
       <Fragment>
-        <div className="form-group row">
+        <div className="form-group row my-5">
           {/* <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label> */}
           <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
           <div className="col-md-6">
@@ -21,13 +21,13 @@ class AccessTokenSettings extends React.Component {
           </div>
         </div>
 
-        <div className="row my-3">
-          <div className="offset-4 col-5">
-            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={this.updateHandler}>
-              Update
-            </button>
-            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={this.discardHandler}>
+        <div className="row">
+          <div className="mx-auto">
+            <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={this.discardHandler}>
               Discard
+            </button>
+            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={this.updateHandler}>
+              Generate
             </button>
           </div>
         </div>

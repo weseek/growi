@@ -5,6 +5,7 @@ import React, { Fragment } from 'react';
 // import AppContainer from '../../../services/AppContainer';
 
 import AccessTokenSettings from './AccessTokenSettings';
+import CustomBotNonProxySettings from './CustomBotNonProxySettings';
 
 class SlackIntegration extends React.Component {
 
@@ -17,11 +18,18 @@ class SlackIntegration extends React.Component {
           <div className="col-lg-12">
             {/* <h2 className="admin-setting-header">{t('Access Token')}</h2> */}
             <h2 className="admin-setting-header">Access Token</h2>
-
             <AccessTokenSettings />
-
           </div>
         </div>
+
+        <div className="row">
+          <div className="col-lg-12">
+            {/* <h2 className="admin-setting-header">{t('Access Token')}</h2> */}
+            <h2 className="admin-setting-header">Custom bot (non-proxy) Settings</h2>
+            <CustomBotNonProxySettings />
+          </div>
+        </div>
+
       </Fragment>
     );
   }
