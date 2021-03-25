@@ -218,21 +218,7 @@ module.exports = function(crowi) {
   };
 
   const slackPost = (messageObj) => {
-    console.log('hoge');
-    // when incoming Webhooks is prioritized
-    if (configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
-      // if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
-      //   debug('posting message with IncomingWebhook');
-      //   return postWithIwh(messageObj);
-      // }
-      if (configManager.getConfig('crowi', 'slackbot:token')) {
-        return postWithSlackBot(messageObj);
-      }
-    }
-    // else
-    else if (configManager.getConfig('crowi', 'slackbot:token')) {
-      return postWithSlackBot(messageObj);
-    }
+    return postWithSlackBot(messageObj);
   };
 
   return slack;

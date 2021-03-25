@@ -31,9 +31,21 @@ class GlobalNotificationSlackService {
     const messageBody = this.generateMessageBody(event, path, triggeredBy, vars);
     const attachmentBody = this.generateAttachmentBody(event, path, triggeredBy, vars);
 
-    await Promise.all(notifications.map((notification) => {
-      return this.slackLegacy.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
-    }));
+    if (this.crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
+      await Promise.all(notifications.map((notification) => {
+        return this.slackLegacy.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
+      }));
+    }
+    else if (this.crowi.configManager.getConfig('crowi', 'slackbot:token')) {
+      await Promise.all(notifications.map((notification) => {
+        return this.slack.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
+      }));
+    }
+    else {
+      await Promise.all(notifications.map((notification) => {
+        return this.slackLegacy.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
+      }));
+    }
   }
 
   /**
