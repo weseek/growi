@@ -5,6 +5,8 @@
 * Support: Update libs
     * bunyan
     * browser-bunyan
+* Fix: Can create pages on the share route
+    * Introduced by v4.2.8
 
 ## v4.2.13
 
