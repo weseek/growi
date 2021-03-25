@@ -22,7 +22,7 @@ class CustomBotNonProxySettings extends React.Component {
       <Fragment>
         <div className="row my-5">
           <div className="mx-auto">
-            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://google.com', '_blank')}>
+            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
               Create Bot
             </button>
           </div>
