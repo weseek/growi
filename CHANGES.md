@@ -5,7 +5,8 @@
 * Support: Update libs
     * bunyan
     * browser-bunyan
-
+* Fix: Group page is excluded by recurrence operation
+    * Introduced by v4.2.8
 ## v4.2.13
 
 * Feature: Detect indent size automatically
