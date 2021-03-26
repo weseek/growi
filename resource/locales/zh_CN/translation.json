@@ -120,7 +120,7 @@
 	"Notification Settings": "通知设置",
   "slack_integration": "Slack一体化",
   "External_Notification": "外部通知",
-  "Legacy_External_Notification": "旧版外部通知",
+  "Legacy_Slack_Integration": "旧版Slack一体化",
 	"User_Management": "用户管理",
 	"external_account_management": "外部账户管理",
 	"UserGroup Management": "用户组管理",
