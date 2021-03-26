@@ -1,6 +1,5 @@
 
 const express = require('express');
-const mongoose = require('mongoose');
 
 const router = express.Router();
 
@@ -12,14 +11,11 @@ module.exports = (crowi) => {
   function accessTokenParserForSlackBot(req, res, next) {
     const slackBotAccessToken = req.body.slack_bot_access_token || null;
     if (slackBotAccessToken == null) {
-      return next();
+      throw new Error('slack_bot_access_token is required');
     }
 
-    if (slackBotAccessToken === crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-      req.body.user = {
-        id: new mongoose.Types.ObjectId(),
-        username: 'slackBot',
-      };
+    if (slackBotAccessToken !== crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
+      throw new Error('slack_bot_access_token is required');
     }
     next();
   }
