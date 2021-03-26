@@ -11,18 +11,21 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 function CustomBotNonProxySettings() {
 
   const { t } = useTranslation('admin');
-  const [secret, setSecret] = useState('');
-  const [token, setToken] = useState('');
+  const [slackSigningSecret, setSlackSigningSecret] = useState('');
+  const [slackBotToken, setSlackBotToken] = useState('');
+  const [botType, setBotType] = useState('non-proxy');
+
+  const requestParams = { slackSigningSecret, slackBotToken, botType };
 
   async function updateHandler() {
-    // console.log(`Signing Secret: ${secret}, Bot User OAuth Token: ${token}`);
     try {
       // toastSuccess(t('toaster.update_successed'));
-      await AppContainer.updateCustomBotNonProxySettings();
+      const response = await AppContainer.apiv3.put('/custom-bot-non-proxy', requestParams);
+      console.log(response);
     }
     catch (err) {
       // toastError(err);
-      console.log("ERROR");
+      console.log(err);
     }
   }
 
@@ -42,7 +45,7 @@ function CustomBotNonProxySettings() {
           <input
             className="form-control"
             type="text"
-            onChange={e => setSecret(e.target.value)}
+            onChange={e => setSlackSigningSecret(e.target.value)}
           />
         </div>
       </div>
@@ -53,7 +56,7 @@ function CustomBotNonProxySettings() {
           <input
             className="form-control"
             type="text"
-            onChange={e => setToken(e.target.value)}
+            onChange={e => setSlackBotToken(e.target.value)}
           />
         </div>
       </div>
