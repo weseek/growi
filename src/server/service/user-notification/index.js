@@ -25,7 +25,7 @@ class UserNotificationService {
    */
   async fire(page, user, slackChannelsStr, mode, option, comment = {}) {
     const {
-      slackNotificationService, configManager, slackLegacy, slack,
+      slackNotificationService, slackLegacy, slack,
     } = this.crowi;
 
     const opt = option || {};
@@ -43,17 +43,11 @@ class UserNotificationService {
     const promises = slackChannels.map(async(chan) => {
       let res;
       if (mode === 'comment') {
-        if (configManager.getConfig('crowi', 'slackbot:token')) {
-          res = await slack.postComment(comment, user, chan, page.path);
-        }
-        else {
-          res = await slackLegacy.postComment(comment, user, chan, page.path);
-        }
-      }
-      else if (configManager.getConfig('crowi', 'slackbot:token')) {
-        res = await slack.postPage(page, user, chan, mode, previousRevision);
+        res = await slack.postComment(comment, user, chan, page.path);
+        res = await slackLegacy.postComment(comment, user, chan, page.path);
       }
       else {
+        res = await slack.postPage(page, user, chan, mode, previousRevision);
         res = await slackLegacy.postPage(page, user, chan, mode, previousRevision);
       }
       if (res.status !== 'ok') {

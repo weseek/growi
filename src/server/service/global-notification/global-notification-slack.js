@@ -31,18 +31,14 @@ class GlobalNotificationSlackService {
     const messageBody = this.generateMessageBody(event, path, triggeredBy, vars);
     const attachmentBody = this.generateAttachmentBody(event, path, triggeredBy, vars);
 
-    // use SlackBot
-    if (this.crowi.configManager.getConfig('crowi', 'slackbot:token')) {
-      await Promise.all(notifications.map((notification) => {
-        return this.slack.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
-      }));
-    }
-    // use SlackLegacy
-    else {
-      await Promise.all(notifications.map((notification) => {
-        return this.slackLegacy.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
-      }));
-    }
+    await Promise.all(notifications.map((notification) => {
+      return [
+        this.slack.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels),
+        this.slackLegacy.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels),
+      ];
+    }));
+
+
   }
 
   /**
