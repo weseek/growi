@@ -20,7 +20,7 @@ function CustomBotNonProxySettings() {
   async function updateHandler() {
     try {
       // toastSuccess(t('toaster.update_successed'));
-      const response = await AppContainer.apiv3.put('/custom-bot-non-proxy', requestParams);
+      const response = await AppContainer.apiv3.put('/slack-integration/custom-bot-non-proxy/', requestParams);
       console.log(response);
     }
     catch (err) {
