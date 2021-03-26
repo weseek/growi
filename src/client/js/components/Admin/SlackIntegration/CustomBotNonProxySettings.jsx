@@ -2,6 +2,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+// import { toastSuccess, toastError } from '../../../util/apiNotification';
+
+import AppContainer from '../../../services/AppContainer';
+
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 function CustomBotNonProxySettings() {
@@ -10,8 +14,16 @@ function CustomBotNonProxySettings() {
   const [secret, setSecret] = useState('');
   const [token, setToken] = useState('');
 
-  function updateHandler() {
-    console.log(`Signing Secret: ${secret}, Bot User OAuth Token: ${token}`);
+  async function updateHandler() {
+    // console.log(`Signing Secret: ${secret}, Bot User OAuth Token: ${token}`);
+    try {
+      // toastSuccess(t('toaster.update_successed'));
+      await AppContainer.updateCustomBotNonProxySettings();
+    }
+    catch (err) {
+      // toastError(err);
+      console.log("ERROR");
+    }
   }
 
   return (
