@@ -1,4 +1,5 @@
 const logger = require('@alias/logger')('growi:service:BoltService');
+const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
 
@@ -73,6 +74,20 @@ class BoltService {
     }
   }
 
+  async accessTokenParserForSlackBot(body) {
+    const slackBotAccessToken = body.slack_bot_access_token || null;
+    if (slackBotAccessToken == null) {
+      return;
+    }
+
+    if (slackBotAccessToken === this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
+      body.user = {
+        id: new mongoose.Types.ObjectId(),
+        username: 'slackBot',
+      };
+    }
+  }
+
   init() {
     this.bolt.command('/growi', async({
       command, client, body, ack,
@@ -100,6 +115,7 @@ class BoltService {
       ack, view, body, client,
     }) => {
       await ack();
+      this.accessTokenParserForSlackBot(body);
       await this.createPageInGrowi(view, body);
     });
 
@@ -292,20 +308,6 @@ class BoltService {
   }
 
   async createModal(command, client, body) {
-    const User = this.crowi.model('User');
-    const slackUser = await User.findUserByUsername('slackUser');
-
-    // if "slackUser" is null, don't show create Modal
-    if (slackUser == null) {
-      logger.error('Failed to create a page because slackUser is not found.');
-      this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
-        blocks: [this.generateMarkdownSectionBlock('*slackUser does not exist.*')],
-      });
-      throw new Error('/growi command:create: slackUser is not found');
-    }
-
     try {
       await client.views.open({
         trigger_id: body.trigger_id,
@@ -348,23 +350,18 @@ class BoltService {
 
   // Submit action in create Modal
   async createPageInGrowi(view, body) {
-    const User = this.crowi.model('User');
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
 
     const contentsBody = view.state.values.contents.contents_input.value;
 
     try {
-      // search "slackUser" to create page in slack
-      const slackUser = await User.findUserByUsername('slackUser');
-
       let path = view.state.values.path.path_input.value;
       // sanitize path
       path = this.crowi.xss.process(path);
       path = pathUtils.normalizePath(path);
 
-      const user = slackUser._id;
-      await Page.create(path, contentsBody, user, {});
+      await Page.create(path, contentsBody, body.slackUser.id, {});
     }
     catch (err) {
       this.client.chat.postMessage({
