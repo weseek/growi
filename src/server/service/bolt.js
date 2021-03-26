@@ -101,7 +101,6 @@ class BoltService {
       ack, view, body, client,
     }) => {
       await ack();
-      this.accessTokenParserForSlackBot(body);
       await this.createPageInGrowi(view, body);
     });
 

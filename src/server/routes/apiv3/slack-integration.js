@@ -62,7 +62,6 @@ module.exports = (crowi) => {
     return hasher.digest('base64');
   }
 
-
   /**
    * @swagger
    *
