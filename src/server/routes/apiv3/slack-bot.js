@@ -15,7 +15,7 @@ module.exports = (crowi) => {
     }
 
     if (slackBotAccessToken !== crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-      throw new Error('slack_bot_access_token is required');
+      throw new Error('slack_bot_access_token is wrong');
     }
     next();
   }
