@@ -74,20 +74,6 @@ class BoltService {
     }
   }
 
-  async accessTokenParserForSlackBot(body) {
-    const slackBotAccessToken = body.slack_bot_access_token || null;
-    if (slackBotAccessToken == null) {
-      return;
-    }
-
-    if (slackBotAccessToken === this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-      body.user = {
-        id: new mongoose.Types.ObjectId(),
-        username: 'slackBot',
-      };
-    }
-  }
-
   init() {
     this.bolt.command('/growi', async({
       command, client, body, ack,
@@ -361,7 +347,8 @@ class BoltService {
       path = this.crowi.xss.process(path);
       path = pathUtils.normalizePath(path);
 
-      await Page.create(path, contentsBody, body.slackUser.id, {});
+      const slackUserId = new mongoose.Types.ObjectId();
+      await Page.create(path, contentsBody, slackUserId, {});
     }
     catch (err) {
       this.client.chat.postMessage({
