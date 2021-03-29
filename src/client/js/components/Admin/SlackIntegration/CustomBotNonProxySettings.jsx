@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -15,6 +15,17 @@ const CustomBotNonProxySettings = (props) => {
   const [slackBotToken, setSlackBotToken] = useState('');
   const botType = 'non-proxy';
 
+  useEffect(
+    async() => {
+      try {
+        const res = await appContainer.apiv3.get('/slack-integration/');
+        console.log(res);
+      } catch (err) {
+        toastError(err);
+      }
+    }
+  );
+
   async function updateHandler() {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-non-proxy', {
@@ -23,8 +34,7 @@ const CustomBotNonProxySettings = (props) => {
         botType,
       });
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_non_proxy_settings') }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
@@ -42,22 +52,14 @@ const CustomBotNonProxySettings = (props) => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
         <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            onChange={e => setSlackSigningSecret(e.target.value)}
-          />
+          <input className="form-control" type="text" onChange={e => setSlackSigningSecret(e.target.value)} />
         </div>
       </div>
 
       <div className="form-group row mb-5">
         <label className="text-left text-md-right col-md-3 col-form-label">Bot User OAuth Token</label>
         <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            onChange={e => setSlackBotToken(e.target.value)}
-          />
+          <input className="form-control" type="text" onChange={e => setSlackBotToken(e.target.value)} />
         </div>
       </div>
 
