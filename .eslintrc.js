@@ -33,5 +33,6 @@ module.exports = {
     ],
     // eslint-plugin-import rules
     'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
+    "react-hooks/exhaustive-deps": 'warn', // useEffect() second argument error fix
   },
 };
