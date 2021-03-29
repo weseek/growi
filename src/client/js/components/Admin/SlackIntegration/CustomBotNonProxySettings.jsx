@@ -15,16 +15,18 @@ const CustomBotNonProxySettings = (props) => {
   const [slackBotToken, setSlackBotToken] = useState('');
   const botType = 'non-proxy';
 
-  useEffect(
-    async() => {
+  useEffect(() => {
+    async function fetchData() {
       try {
         const res = await appContainer.apiv3.get('/slack-integration/');
         console.log(res);
-      } catch (err) {
+      }
+      catch (err) {
         toastError(err);
       }
     }
-  );
+    fetchData();
+  });
 
   async function updateHandler() {
     try {
