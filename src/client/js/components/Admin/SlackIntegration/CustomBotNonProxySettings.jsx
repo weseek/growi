@@ -9,25 +9,24 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const CustomBotNonProxySettings = (props) => {
   const { appContainer } = props;
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation();
+
   const [slackSigningSecret, setSlackSigningSecret] = useState('');
   const [slackBotToken, setSlackBotToken] = useState('');
-  const botType = 'non-proxy'
+  const botType = 'non-proxy';
 
   async function updateHandler() {
     try {
-      // toastSuccess(t('toaster.update_successed'));
-      const response = await appContainer.apiv3.put('/slack-integration/custom-bot-non-proxy', {
+      await appContainer.apiv3.put('/slack-integration/custom-bot-non-proxy', {
         slackSigningSecret,
         slackBotToken,
         botType,
       });
-      toastSuccess(t('toaster.update_successed', { target: t('slack_integration.custom_bot_non_proxy_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_non_proxy_settings') }));
     }
     catch (err) {
       toastError(err);
     }
-
   }
 
   return (
@@ -35,7 +34,7 @@ const CustomBotNonProxySettings = (props) => {
       <div className="row my-5">
         <div className="mx-auto">
           <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-            {t('slack_integration.non_proxy.create_bot')}
+            {t('admin:slack_integration.non_proxy.create_bot')}
           </button>
         </div>
       </div>
@@ -65,7 +64,7 @@ const CustomBotNonProxySettings = (props) => {
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
     </>
   );
-}
+};
 
 const CustomBotNonProxySettingsWrapper = withUnstatedContainers(CustomBotNonProxySettings, [AppContainer]);
 
