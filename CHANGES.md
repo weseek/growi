@@ -9,6 +9,8 @@
     * Introduced by v4.2.8
 * Fix: Group page is excluded by recurrence operation
     * Introduced by v4.2.8
+* Fix: New path to rename and duplicate is considered as a child page
+    * Introduced by v4.2.8
 
 ## v4.2.13
 
