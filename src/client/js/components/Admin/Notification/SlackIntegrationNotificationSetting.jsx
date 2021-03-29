@@ -29,8 +29,6 @@ function NotificationSetting(props) {
     setActiveComponents(activeComponents.add(selectedTab));
   };
 
-
-
   if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
     throw (async() => {
       try {
