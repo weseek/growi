@@ -29,13 +29,13 @@ const CustomBotNonProxySettings = (props) => {
       }
     }
     fetchData();
-  });
+  }, []);
 
   async function updateHandler() {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-non-proxy', {
-        secret,
-        token,
+        slackSigningSecret: secret,
+        slackBotToken: token,
         botType,
       });
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_non_proxy_settings') }));
