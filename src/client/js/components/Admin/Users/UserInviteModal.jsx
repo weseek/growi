@@ -74,12 +74,20 @@ class UserInviteModal extends React.Component {
   }
 
   renderModalFooter() {
-    const { t } = this.props;
+    const { t, appContainer } = this.props;
+    const { isMailerSetup } = appContainer.config;
 
     return (
       <>
         <div className="col text-left custom-control custom-checkbox custom-checkbox-info text-left" onChange={this.handleCheckBox}>
-          <input type="checkbox" id="sendEmail" className="custom-control-input" name="sendEmail" defaultChecked={this.state.sendEmail} />
+          <input
+            type="checkbox"
+            id="sendEmail"
+            className="custom-control-input"
+            name="sendEmail"
+            defaultChecked={this.state.sendEmail}
+            disabled={!isMailerSetup}
+          />
           <label className="custom-control-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
