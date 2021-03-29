@@ -416,12 +416,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  SLACK_BOT_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
-    ns:      'crowi',
-    key:     'security:slack-signing-secret:useOnlyEnvVarsForSomeOptions',
-    type:    TYPES.BOOLEAN,
-    default: false,
-  },
 };
 
 class ConfigLoader {
