@@ -5,6 +5,7 @@ const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('@server/util/batch-stream');
 const { isTrashPage } = require('@commons/util/path-utils');
+const streamToPromise = require('stream-to-promise');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;
@@ -57,6 +58,10 @@ class PageService {
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
+    if (isRecursively) {
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
+
     const update = {};
     // update Page
     update.path = newPagePath;
@@ -72,10 +77,6 @@ class PageService {
     if (createRedirectPage) {
       const body = `redirect ${newPagePath}`;
       await Page.create(path, body, user, { redirectTo: newPagePath });
-    }
-
-    if (isRecursively) {
-      this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
     this.pageEvent.emit('delete', page, user, socketClientId);
@@ -185,6 +186,8 @@ class PageService {
     readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
+
+    return streamToPromise(writeStream);
   }
 
 
@@ -237,13 +240,13 @@ class PageService {
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
+    if (isRecursively) {
+      await this.duplicateDescendantsWithStream(page, newPagePath, user);
+    }
+
     const createdPage = await Page.create(
       newPagePath, page.revision.body, user, options,
     );
-
-    if (isRecursively) {
-      this.duplicateDescendantsWithStream(page, newPagePath, user);
-    }
 
     // take over tags
     const originTags = await page.findRelatedTagsById();
@@ -391,6 +394,7 @@ class PageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
 
+    return streamToPromise(writeStream);
   }
 
 
