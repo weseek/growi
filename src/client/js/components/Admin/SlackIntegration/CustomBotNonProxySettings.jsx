@@ -31,7 +31,7 @@ const CustomBotNonProxySettings = (props) => {
     }
     fetchData();
 
-  }, []);
+  }, [appContainer.apiv3]);
 
   async function updateHandler() {
     try {
