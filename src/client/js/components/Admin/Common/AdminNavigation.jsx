@@ -14,20 +14,19 @@ const AdminNavigation = (props) => {
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
     switch (menu) {
-      case 'app':               return <><i className="icon-fw icon-settings"></i>        { t('App Settings') }</>;
-      case 'security':          return <><i className="icon-fw icon-shield"></i>          { t('security_settings') }</>;
-      case 'markdown':          return <><i className="icon-fw icon-note"></i>            { t('Markdown Settings') }</>;
-      case 'customize':         return <><i className="icon-fw icon-wrench"></i>          { t('Customize') }</>;
-      case 'importer':          return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
-      case 'export':            return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
-      case 'notification':      return <><i className="icon-fw icon-bell"></i>            { t('External_Notification') }</>;
-      // TODO change icon for legacy-slack-integration by GW-5466
-      case 'legacy-slack-integration':  return <> <i className="icon-fw icon-paper-plane"></i>    { t('Legacy_Slack_Integration') }</>;
-      case 'slack-integration': return <><i className="icon-fw icon-paper-plane"></i>     { t('slack_integration') }</>;
-      case 'users':             return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
-      case 'user-groups':       return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
-      case 'search':            return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
-      default:                  return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
+      case 'app':                      return <><i className="icon-fw icon-settings"></i>        { t('App Settings') }</>;
+      case 'security':                 return <><i className="icon-fw icon-shield"></i>          { t('security_settings') }</>;
+      case 'markdown':                 return <><i className="icon-fw icon-note"></i>            { t('Markdown Settings') }</>;
+      case 'customize':                return <><i className="icon-fw icon-wrench"></i>          { t('Customize') }</>;
+      case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
+      case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
+      case 'notification':             return <><i className="icon-fw icon-bell"></i>            { t('External_Notification')}</>;
+      case 'legacy-slack-integration': return <><i className="fa fa-slack mr-2"></i>             { t('Legacy_Slack_Integration')}</>;
+      case 'slack-integration':        return <><i className="fa fa-slack mr-2"></i>             { t('slack_integration') }</>;
+      case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
+      case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
+      case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
+      default:                         return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
     }
   };
 
