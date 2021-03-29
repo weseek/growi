@@ -1,9 +1,10 @@
-/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
+
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -11,8 +12,8 @@ const CustomBotNonProxySettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
-  const [secret, setSecret] = useState('');
-  const [token, setToken] = useState('');
+  const [secret, setSecret] = useState(' ');
+  const [token, setToken] = useState(' ');
   const botType = 'non-proxy';
 
   useEffect(() => {
@@ -20,9 +21,9 @@ const CustomBotNonProxySettings = (props) => {
       try {
         const res = await appContainer.apiv3.get('/slack-integration/');
         const { slackSigningSecret, slackBotToken } = res.data.slackBotSettingParams.customBotNonProxySettings;
-        console.log(slackSigningSecret, slackBotToken);
-        setSecret(slackSigningSecret);
-        setToken(slackBotToken);
+        setSecret(slackSigningSecret || ' ');
+        setToken(slackBotToken || ' ');
+
       }
       catch (err) {
         toastError(err);
