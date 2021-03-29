@@ -78,6 +78,7 @@ module.exports = (crowi) => {
       cusotmBotNonProxySettings: {
         // TODO impl this after GW-4939
         // AccessToken: "tempaccessdatahogehoge",
+        slackSigningSecretEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret'),
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
       },
