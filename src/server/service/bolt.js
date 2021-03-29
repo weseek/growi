@@ -74,17 +74,14 @@ class BoltService {
     }
   }
 
-  verifyAccessToken(body, command) {
+  // Check if the access token is correct
+  isValidAccessToken(body, command) {
     const slackBotAccessToken = body.slack_bot_access_token || null;
-    if (slackBotAccessToken == null || slackBotAccessToken !== this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-      logger.error('slack_bot_access_token is inValid.');
-      this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
-        blocks: [this.generateMarkdownSectionBlock('*Access token is inValid*')],
-      });
-      throw new Error('slack_bot_access_token is inValid');
+
+    if (slackBotAccessToken == null) {
+      return false;
     }
+    return slackBotAccessToken === this.crowi.configManager.getConfig('crowi', 'slackbot:access-token');
   }
 
   init() {
@@ -92,7 +89,16 @@ class BoltService {
       command, client, body, ack,
     }) => {
       await ack();
-      this.verifyAccessToken(body, command);
+
+      if (!this.isValidAccessToken(body, command)) {
+        logger.error('slack_bot_access_token is inValid.');
+        this.client.chat.postEphemeral({
+          channel: command.channel_id,
+          user: command.user_id,
+          blocks: [this.generateMarkdownSectionBlock('*Access token is inValid*')],
+        });
+        throw new Error('slack_bot_access_token is inValid');
+      }
 
       const args = command.text.split(' ');
       const firstArg = args[0];
