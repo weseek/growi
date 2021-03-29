@@ -173,5 +173,32 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /slack-integration/access-token:
+   *      delete:
+   *        tags: [SlackIntegration]
+   *        operationId: deleteAccessTokenForSlackBot
+   *        summary: /slack-integration
+   *        description: Delete accessToken
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete accessToken
+   */
+  router.delete('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+
+    try {
+      await updateSlackBotSettings({ 'slackbot:access-token': '' });
+
+      return res.apiv3({});
+    }
+    catch (error) {
+      const msg = 'Error occured in discard of slackbotAccessToken';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'discard-slackbotAccessToken-failed'));
+    }
+  });
+
   return router;
 };
