@@ -12,8 +12,8 @@ const CustomBotNonProxySettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
-  const [secret, setSecret] = useState(' ');
-  const [token, setToken] = useState(' ');
+  const [slackSigningSecret, setSecret] = useState('');
+  const [slackBotToken, setToken] = useState('');
   const botType = 'non-proxy';
 
   useEffect(() => {
@@ -21,9 +21,8 @@ const CustomBotNonProxySettings = (props) => {
       try {
         const res = await appContainer.apiv3.get('/slack-integration/');
         const { slackSigningSecret, slackBotToken } = res.data.slackBotSettingParams.customBotNonProxySettings;
-        setSecret(slackSigningSecret || ' ');
-        setToken(slackBotToken || ' ');
-
+        setSecret(slackSigningSecret);
+        setToken(slackBotToken);
       }
       catch (err) {
         toastError(err);
@@ -36,8 +35,8 @@ const CustomBotNonProxySettings = (props) => {
   async function updateHandler() {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-non-proxy', {
-        slackSigningSecret: secret,
-        slackBotToken: token,
+        slackSigningSecret,
+        slackBotToken,
         botType,
       });
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_non_proxy_settings') }));
@@ -60,14 +59,14 @@ const CustomBotNonProxySettings = (props) => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
         <div className="col-md-6">
-          <input className="form-control" type="text" value={secret} onChange={e => setSecret(e.target.value)} />
+          <input className="form-control" type="text" value={slackSigningSecret || ''} onChange={e => setSecret(e.target.value)} />
         </div>
       </div>
 
       <div className="form-group row mb-5">
         <label className="text-left text-md-right col-md-3 col-form-label">Bot User OAuth Token</label>
         <div className="col-md-6">
-          <input className="form-control" type="text" value={token} onChange={e => setToken(e.target.value)} />
+          <input className="form-control" type="text" value={slackBotToken || ''} onChange={e => setToken(e.target.value)} />
         </div>
       </div>
 
