@@ -54,7 +54,7 @@ function NotificationSetting(props) {
         Icon: () => <i className="icon-settings" />,
         i18n: 'Slack configuration',
         index: 0,
-      }
+      },
     };
   }, []);
 

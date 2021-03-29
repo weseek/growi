@@ -10,7 +10,7 @@ import ErrorBoundary from './components/ErrorBoudary';
 import AdminHome from './components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import NotificationSetting from './components/Admin/Notification/NotificationSetting';
-import SlackIntegrationNotificationSetting from './components/Admin/Notification/SlackIntegrationNotificationSetting'
+import SlackIntegrationNotificationSetting from './components/Admin/Notification/SlackIntegrationNotificationSetting';
 import SlackIntegration from './components/Admin/SlackIntegration/SlackIntegration';
 import ManageGlobalNotification from './components/Admin/Notification/ManageGlobalNotification';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
@@ -65,7 +65,6 @@ const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
 const adminNotificationContainer = new AdminNotificationContainer(appContainer);
-const adminSlackIntegrationNotificationSetting = new AdminNotificationContainer(appContainer)
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
 const injectableContainers = [
