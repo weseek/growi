@@ -18,7 +18,7 @@ module.exports = (crowi) => {
     const slackBotAccessToken = req.body.slack_bot_access_token || null;
 
     if (slackBotAccessToken == null || slackBotAccessToken !== this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-      logger.error('slack_bot_access_token is inValid.');
+      logger.error('slack_bot_access_token is invalid.');
       return res.send('*Access token is inValid*');
     }
 
