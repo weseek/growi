@@ -156,7 +156,7 @@ module.exports = (crowi) => {
    *        description: Generate accessToken
    *        responses:
    *          200:
-   *            description: Succeeded to get SigningSecret, SlackBotToken and BotType.
+   *            description: Succeeded to update access token for slack
    */
   router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
@@ -167,9 +167,9 @@ module.exports = (crowi) => {
       return res.apiv3({ accessToken });
     }
     catch (error) {
-      const msg = 'Error occured in updating Custom bot setting';
+      const msg = 'Error occured in updating access token for access token';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'));
     }
   });
 
