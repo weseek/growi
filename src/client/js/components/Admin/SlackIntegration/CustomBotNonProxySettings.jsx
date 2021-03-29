@@ -1,32 +1,33 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
-
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-function CustomBotNonProxySettings() {
-
+const CustomBotNonProxySettings = (props) => {
+  const { appContainer } = props;
   const { t } = useTranslation('admin');
   const [slackSigningSecret, setSlackSigningSecret] = useState('');
   const [slackBotToken, setSlackBotToken] = useState('');
-  const [botType, setBotType] = useState('non-proxy');
-
-  const requestParams = { slackSigningSecret, slackBotToken, botType };
+  const botType = 'non-proxy'
 
   async function updateHandler() {
     try {
       // toastSuccess(t('toaster.update_successed'));
-      const response = await AppContainer.apiv3.put('/slack-integration/custom-bot-non-proxy/', requestParams);
-      console.log(response);
+      const response = await appContainer.apiv3.put('/slack-integration/custom-bot-non-proxy', {
+        slackSigningSecret,
+        slackBotToken,
+        botType,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('slack_integration.custom_bot_non_proxy_settings') }));
     }
     catch (err) {
-      // toastError(err);
-      console.log(err);
+      toastError(err);
     }
+
   }
 
   return (
@@ -66,4 +67,10 @@ function CustomBotNonProxySettings() {
   );
 }
 
-export default CustomBotNonProxySettings;
+const CustomBotNonProxySettingsWrapper = withUnstatedContainers(CustomBotNonProxySettings, [AppContainer]);
+
+CustomBotNonProxySettings.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default CustomBotNonProxySettingsWrapper;
