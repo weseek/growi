@@ -258,6 +258,7 @@
     "invite_modal": {
       "emails": "Emails (Possible to invite multiple people with new lines)",
       "invite_thru_email": "Send invitation email",
+      "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
       "send_new_password": "Please send the new password to the user.",

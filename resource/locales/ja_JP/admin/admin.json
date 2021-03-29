@@ -256,6 +256,7 @@
     "invite_modal": {
       "emails": "メールアドレス (複数行入力で複数人招待可能)",
       "invite_thru_email": "招待をメールで送信",
+      "mailer_setup_required":"送信するには <a href='/admin/app'>メールの設定</a> が必要です。",
       "valid_email": "メールアドレスを入力してください。",
       "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
       "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",

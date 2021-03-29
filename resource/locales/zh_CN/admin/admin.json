@@ -266,6 +266,7 @@
 		"invite_modal": {
 			"emails": "电子邮件",
 			"invite_thru_email": "发送邀请电子邮件",
+      "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
 			"valid_email": "需要有效的电子邮件地址",
 			"temporary_password": "创建的用户具有临时密码",
 			"send_new_password": "请将新密码发送给用户。",
