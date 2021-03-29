@@ -24,6 +24,10 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
+const KEYS_FOR_SLACK_SINING_SECRET_OPTION = [
+  'security:slack-signing-secret',
+];
+
 const KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION = [
   'app:fileUploadType',
 ];
@@ -238,6 +242,12 @@ class ConfigManager extends S2sMessageHandlable {
         KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
         && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:useOnlyEnvVarsForSomeOptions')
       )
+       // slack bot option
+       || (
+         KEYS_FOR_SLACK_SINING_SECRET_OPTION.includes(key)
+        && this.defaultSearch('crowi', 'security:slack-signing-secret:useOnlyEnvVarsForSomeOptions')
+       )
+
     ));
   }
 
