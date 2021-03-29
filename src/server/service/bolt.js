@@ -361,8 +361,9 @@ class BoltService {
       path = this.crowi.xss.process(path);
       path = pathUtils.normalizePath(path);
 
-      const slackUserId = new mongoose.Types.ObjectId();
-      await Page.create(path, contentsBody, slackUserId, {});
+      // generate a dummy id because Operation to create a page needs ObjectId
+      const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
+      await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
     }
     catch (err) {
       this.client.chat.postMessage({
