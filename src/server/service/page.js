@@ -5,6 +5,7 @@ const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('@server/util/batch-stream');
 const { isTrashPage } = require('@commons/util/path-utils');
+const streamToPromise = require('stream-to-promise');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;
@@ -148,52 +149,45 @@ class PageService {
     const { PageQueryBuilder } = Page;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
-    await new Promise((resolve) => {
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(targetPage.path)
+      .addConditionToFilteringByViewer(user, userGroups)
+      .query
+      .lean()
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
-      const readStream = new PageQueryBuilder(Page.find())
-        .addConditionToExcludeRedirect()
-        .addConditionToListOnlyDescendants(targetPage.path)
-        .addConditionToFilteringByViewer(user, userGroups)
-        .query
-        .lean()
-        .cursor({ batchSize: BULK_REINDEX_SIZE });
+    const renameDescendants = this.renameDescendants.bind(this);
+    const pageEvent = this.pageEvent;
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
+          logger.debug(`Reverting pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('revertPages error on add anyway: ', err);
+        }
 
-      const renameDescendants = this.renameDescendants.bind(this);
-      const pageEvent = this.pageEvent;
-      let count = 0;
-      const writeStream = new Writable({
-        objectMode: true,
-        async write(batch, encoding, callback) {
-          try {
-            count += batch.length;
-            await renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
-            logger.debug(`Reverting pages progressing: (count=${count})`);
-          }
-          catch (err) {
-            logger.error('revertPages error on add anyway: ', err);
-          }
-
-          callback();
-        },
-        final(callback) {
-          logger.debug(`Reverting pages has completed: (totalCount=${count})`);
-          // update  path
-          targetPage.path = newPagePath;
-          pageEvent.emit('syncDescendants', targetPage, user);
-          callback();
-        },
-      });
-
-      readStream
-        .pipe(createBatchStream(BULK_REINDEX_SIZE))
-        .pipe(writeStream);
-
-      // Write Stream
-      writeStream.on('finish', () => {
-        resolve();
-      });
-
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Reverting pages has completed: (totalCount=${count})`);
+        // update  path
+        targetPage.path = newPagePath;
+        pageEvent.emit('syncDescendants', targetPage, user);
+        callback();
+      },
     });
+
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+
+    return streamToPromise(writeStream);
   }
 
 
@@ -362,51 +356,45 @@ class PageService {
 
     const { PageQueryBuilder } = Page;
 
-    await new Promise((resolve) => {
+    const readStream = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(page.path)
+      .addConditionToFilteringByViewer(user, userGroups)
+      .query
+      .lean()
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
-      const readStream = new PageQueryBuilder(Page.find())
-        .addConditionToExcludeRedirect()
-        .addConditionToListOnlyDescendants(page.path)
-        .addConditionToFilteringByViewer(user, userGroups)
-        .query
-        .lean()
-        .cursor({ batchSize: BULK_REINDEX_SIZE });
+    const duplicateDescendants = this.duplicateDescendants.bind(this);
+    const pageEvent = this.pageEvent;
+    let count = 0;
+    const writeStream = new Writable({
+      objectMode: true,
+      async write(batch, encoding, callback) {
+        try {
+          count += batch.length;
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix);
+          logger.debug(`Adding pages progressing: (count=${count})`);
+        }
+        catch (err) {
+          logger.error('addAllPages error on add anyway: ', err);
+        }
 
-      const duplicateDescendants = this.duplicateDescendants.bind(this);
-      const pageEvent = this.pageEvent;
-      let count = 0;
-      const writeStream = new Writable({
-        objectMode: true,
-        async write(batch, encoding, callback) {
-          try {
-            count += batch.length;
-            await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix);
-            logger.debug(`Adding pages progressing: (count=${count})`);
-          }
-          catch (err) {
-            logger.error('addAllPages error on add anyway: ', err);
-          }
-
-          callback();
-        },
-        final(callback) {
-          logger.debug(`Adding pages has completed: (totalCount=${count})`);
-          // update  path
-          page.path = newPagePath;
-          pageEvent.emit('syncDescendants', page, user);
-          callback();
-        },
-      });
-
-      readStream
-        .pipe(createBatchStream(BULK_REINDEX_SIZE))
-        .pipe(writeStream);
-
-      writeStream.on('finish', () => {
-        resolve();
-      });
+        callback();
+      },
+      final(callback) {
+        logger.debug(`Adding pages has completed: (totalCount=${count})`);
+        // update  path
+        page.path = newPagePath;
+        pageEvent.emit('syncDescendants', page, user);
+        callback();
+      },
     });
 
+    readStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(writeStream);
+
+    return streamToPromise(writeStream);
   }
 
 
