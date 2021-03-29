@@ -1911,6 +1911,18 @@
     jsonwebtoken "^8.5.1"
     lodash.isstring "^4.0.1"
 
+"@slack/oauth@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@slack/oauth/-/oauth-2.0.1.tgz#56f8f3cd45258465e2c45860f1ca60e307126e30"
+  integrity sha512-Htiwa70u+uZuWNvYvMjCUuALTl7hMb/1v0sQhrXDDY0dh9tWWUxZCvL6dAR6pxqMCXMjhS3j+tq4o157SGVhRg==
+  dependencies:
+    "@slack/logger" "^2.0.0"
+    "@slack/web-api" "^5.7.0"
+    "@types/jsonwebtoken" "^8.3.7"
+    "@types/node" ">=12"
+    jsonwebtoken "^8.5.1"
+    lodash.isstring "^4.0.1"
+
 "@slack/socket-mode@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@slack/socket-mode/-/socket-mode-1.0.0.tgz#b774e2e19b90b6a33f652afbd2cf2189eb7d497c"

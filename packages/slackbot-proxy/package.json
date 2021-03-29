@@ -17,6 +17,7 @@
     "test:lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
+    "@slack/oauth": "^2.0.1",
     "@tsed/common": "^6.34.3",
     "@tsed/di": "^6.34.3",
     "@tsed/platform-express": "^6.34.3",
@@ -39,8 +40,8 @@
     "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.6",
-    "tsconfig-paths": "^3.9.0",
     "tsc-alias": "1.2.6",
+    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
   }
 }
