@@ -17,6 +17,7 @@ const SlackIntegration = () => {
   }
 
   const handleBotTypeSelect = (clickedBotType) => {
+    console.log(clickedBotType);
     setmodalVisibility(true);
   };
 
@@ -39,7 +40,6 @@ const SlackIntegration = () => {
     <>
       <div className="container">
         <ConfirmBotChangeModal
-          title="Modal Title"
           show={modalVisibility}
           onButtonClick={(button) => {
             if (button === 'close') setmodalVisibility(false);
