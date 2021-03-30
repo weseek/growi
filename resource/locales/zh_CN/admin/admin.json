@@ -261,6 +261,7 @@
 		"delete": "删除"
   },
   "slack_integration": {
+    "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。",
     "access_token_settings": {
       "discard": "丢弃",
       "generate": "生成"
