@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-const CustomBotNonProxySettings = (props) => {
+const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
@@ -21,7 +21,7 @@ const CustomBotNonProxySettings = (props) => {
       const res = await appContainer.apiv3.get('/slack-integration/');
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
-      } = res.data.slackBotSettingParams.customBotNonProxySettings;
+      } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
@@ -92,10 +92,10 @@ const CustomBotNonProxySettings = (props) => {
   );
 };
 
-const CustomBotNonProxySettingsWrapper = withUnstatedContainers(CustomBotNonProxySettings, [AppContainer]);
+const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer]);
 
-CustomBotNonProxySettings.propTypes = {
+CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default CustomBotNonProxySettingsWrapper;
+export default CustomBotWithoutProxySettingsWrapper;
