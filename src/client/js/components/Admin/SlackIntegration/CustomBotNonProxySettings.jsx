@@ -101,7 +101,7 @@ const CustomBotNonProxySettings = (props) => {
               <input
                 className="form-control"
                 type="text"
-                value={slackBotToken || slackBotTokenEnv || ''}
+                value={slackBotToken || ''}
                 onChange={e => setSlackBotToken(e.target.value)}
               />
             </td>
@@ -109,7 +109,7 @@ const CustomBotNonProxySettings = (props) => {
               <input
                 className="form-control"
                 type="text"
-                value={slackSigningSecretEnv || ''}
+                value={slackBotTokenEnv || ''}
                 readOnly
               />
               <p className="form-text text-muted">
