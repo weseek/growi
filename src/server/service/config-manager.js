@@ -238,12 +238,6 @@ class ConfigManager extends S2sMessageHandlable {
         KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
         && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:useOnlyEnvVarsForSomeOptions')
       )
-       // slack bot option
-       || (
-         KEYS_FOR_SLACK_SINING_SECRET_OPTION.includes(key)
-        && this.defaultSearch('crowi', 'security:slack-signing-secret:useOnlyEnvVarsForSomeOptions')
-       )
-
     ));
   }
 
