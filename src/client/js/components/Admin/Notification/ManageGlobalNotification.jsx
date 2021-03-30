@@ -183,13 +183,8 @@ class ManageGlobalNotification extends React.Component {
                   </div>
 
                   <p className="p-2">
-                    {!isMailerSetup && (
-                      <span
-                        className="form-text text-muted"
-                            //  eslint-disable-next-line react/no-danger
-                        dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mailer_setup_required') }}
-                      />
-                    )}
+                    {/* eslint-disable-next-line react/no-danger */}
+                    {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />}
                     <b>Hint: </b>
                     <a href="https://ifttt.com/create" target="blank">{t('notification_setting.email.ifttt_link')}
                       <i className="icon-share-alt" />
