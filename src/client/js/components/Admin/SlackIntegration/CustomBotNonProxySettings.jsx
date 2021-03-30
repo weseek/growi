@@ -52,6 +52,7 @@ const CustomBotNonProxySettings = (props) => {
 
   return (
     <>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_non_proxy_settings')}</h2>
       <div className="row my-5">
         <div className="mx-auto">
           <button
@@ -59,11 +60,11 @@ const CustomBotNonProxySettings = (props) => {
             className="btn btn-primary text-nowrap mx-1"
             onClick={() => window.open('https://api.slack.com/apps', '_blank')}
           >
-            {t('slack_integration.non_proxy.create_bot')}
+            {t('admin:slack_integration.non_proxy.create_bot')}
           </button>
         </div>
       </div>
-      
+
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
         <div className="col-md-6">
