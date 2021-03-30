@@ -12,7 +12,7 @@ const SlackIntegration = () => {
     // showModal();
   };
 
-  const currentBotType = 'custom-bot-with-proxy';
+  const currentBotType = 'custom-bot-non-proxy';
   let settingsComponent = null;
 
   switch (currentBotType) {
