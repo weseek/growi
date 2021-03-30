@@ -2,11 +2,34 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AccessTokenSettings from './AccessTokenSettings';
+import OfficialBotSettings from './CustomBotNonProxySettings';
 import CustomBotNonProxySettings from './CustomBotNonProxySettings';
+import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 
-function SlackIntegration() {
+const SlackIntegration = () => {
 
-  const { t } = useTranslation('admin');
+
+  const handleBotTypeSelect = (e) => {
+    console.log(e.target.value);
+  };
+
+  // const selectedBotType = 'official-bot';
+  const selectedBotType = 'custom-bot-non-proxy';
+  // const selectedBotType = 'custom-bot-with-proxy';
+  let settingsComponent = '';
+
+  switch (selectedBotType) {
+    case 'custom-bot-non-proxy':
+      settingsComponent = <CustomBotNonProxySettings />;
+      break;
+    case 'custom-bot-with-proxy':
+      settingsComponent = <CustomBotWithProxySettings />;
+      break;
+    default:
+      settingsComponent = <OfficialBotSettings />;
+      break;
+  }
+
   return (
     <>
       <div className="row">
@@ -16,24 +39,25 @@ function SlackIntegration() {
         </div>
       </div>
 
-      <div className="row mx-auto my-5 btn-group btn-group-toggle" data-toggle="buttons">
-        <label className="btn btn-secondary active">
-          <input type="radio" name="options" id="option1" checked /> Official Bot
-        </label>
-        <label className="btn btn-secondary">
-          <input type="radio" name="options" id="option2" /> Custom Bot (Non-Proxy)
-        </label>
-        <label className="btn btn-secondary">
-          <input type="radio" name="options" id="option3" /> Custom Bot (With-Proxy)
-        </label>
-      </div>
-
-      <div className="row">
-        <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('slack_integration.custom_bot_non_proxy_settings')}</h2>
-          <CustomBotNonProxySettings />
+      <div className="row my-5">
+        <div className="mx-auto form-check" onChange={handleBotTypeSelect}>
+          <div className="form-check-inline">
+            <input className="form-check-input" type="radio" id="checkbox1" value="official-bot" />
+            <label className="form-check-label" htmlFor="checkbox1">Official Bot</label>
+          </div>
+          <div className="form-check-inline">
+            <input className="form-check-input" type="radio" id="checkbox2" value="custom-bot-non-proxy" />
+            <label className="form-check-label" htmlFor="checkbox2">Custom Bot (Non Proxy)</label>
+          </div>
+          <div className="form-check-inline">
+            <input className="form-check-input" type="radio" id="checkbox3" value="custom-bot-with-proxy" />
+            <label className="form-check-label" htmlFor="checkbox3">Custom Bot (With Proxy)</label>
+          </div>
         </div>
       </div>
+
+      {settingsComponent}
+
     </>
   );
 }
