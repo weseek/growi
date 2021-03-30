@@ -63,81 +63,63 @@ const CustomBotNonProxySettings = (props) => {
           </button>
         </div>
       </div>
+      <table className="table settings-table">
+        <colgroup>
+          <col className="item-name" />
+          <col className="from-db" />
+          <col className="from-env-vars" />
+        </colgroup>
+        <thead>
+          <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Signing Secret</th>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                value={slackSigningSecret || ''}
+                onChange={e => setSlackSigningSecret(e.target.value)}
+              />
+            </td>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                value={slackSigningSecretEnv || ''}
+                readOnly
+              />
+              <p className="form-text text-muted">
+                <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th>Bot User OAuth Token</th>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                value={slackBotToken || slackBotTokenEnv || ''}
+                onChange={e => setSlackBotToken(e.target.value)}
+              />
+            </td>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                value={slackSigningSecretEnv || ''}
+                readOnly
+              />
+              <p className="form-text text-muted">
+                <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
+              </p>
+            </td>
 
-
-      <div className="row form-group">
-        <div className="">
-          <table className="table settings-table">
-            <colgroup>
-              <col className="from-db" />
-              <col className="from-env-vars" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Signing Secret</th>
-                <th>環境変数 SLACK_SIGNING_SECRET</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={slackSigningSecret || ''}
-                    onChange={e => setSlackSigningSecret(e.target.value)}
-                  />
-
-                </td>
-                <td>
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={slackSigningSecretEnv || ''}
-                    readOnly
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div className="row form-group">
-        <div className="">
-          <table className="table settings-table">
-            <colgroup>
-              <col className="from-db" />
-              <col className="from-env-vars" />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>Bot User OAuth Token</th>
-                <th>環境変数 SLACK_BOT_TOKEN</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={slackBotToken || slackBotTokenEnv || ''}
-                    onChange={e => setSlackBotToken(e.target.value)}
-                  />
-                </td>
-                <td>
-                  <input
-                    className="form-control"
-                    type="text"
-                    value={slackSigningSecretEnv || ''}
-                    readOnly
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+          </tr>
+        </tbody>
+      </table>
 
 
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
