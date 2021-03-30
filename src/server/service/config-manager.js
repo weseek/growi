@@ -24,10 +24,6 @@ const KEYS_FOR_SAML_USE_ONLY_ENV_OPTION = [
   'security:passport-saml:ABLCRule',
 ];
 
-const KEYS_FOR_SLACK_SINING_SECRET_OPTION = [
-  'security:slack-signing-secret',
-];
-
 const KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION = [
   'app:fileUploadType',
 ];
