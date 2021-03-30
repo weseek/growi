@@ -1,24 +1,19 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
 import AccessTokenSettings from './AccessTokenSettings';
-import OfficialBotSettings from './CustomBotNonProxySettings';
+import OfficialBotSettings from './OfficialBotSettings';
 import CustomBotNonProxySettings from './CustomBotNonProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 
 const SlackIntegration = () => {
-
-
-  const handleBotTypeSelect = (e) => {
+  const handleBotTypeSelect = e => {
     console.log(e.target.value);
   };
 
-  // const selectedBotType = 'official-bot';
-  const selectedBotType = 'custom-bot-non-proxy';
-  // const selectedBotType = 'custom-bot-with-proxy';
-  let settingsComponent = '';
+  let currentBotType = null;
+  let settingsComponent = null;
 
-  switch (selectedBotType) {
+  switch (currentBotType) {
     case 'custom-bot-non-proxy':
       settingsComponent = <CustomBotNonProxySettings />;
       break;
@@ -40,26 +35,38 @@ const SlackIntegration = () => {
       </div>
 
       <div className="row my-5">
-        <div className="mx-auto form-check" onChange={handleBotTypeSelect}>
-          <div className="form-check-inline">
-            <input className="form-check-input" type="radio" id="checkbox1" value="official-bot" />
-            <label className="form-check-label" htmlFor="checkbox1">Official Bot</label>
+        <div className="card-group mx-auto">
+
+          <div className="card mx-3 py-5">
+            <div className="card-body">
+              <h5 className="card-title">Official Bot</h5>
+              <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <a href="#" className="stretched-link" onClick={handleBotTypeSelect} />
+            </div>
           </div>
-          <div className="form-check-inline">
-            <input className="form-check-input" type="radio" id="checkbox2" value="custom-bot-non-proxy" />
-            <label className="form-check-label" htmlFor="checkbox2">Custom Bot (Non Proxy)</label>
+
+          <div className="card mx-3 py-5">
+            <div className="card-body">
+              <h5 className="card-title">Custom Bot (Non Proxy)</h5>
+              <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <a href="#" className="stretched-link" onClick={handleBotTypeSelect} />
+            </div>
           </div>
-          <div className="form-check-inline">
-            <input className="form-check-input" type="radio" id="checkbox3" value="custom-bot-with-proxy" />
-            <label className="form-check-label" htmlFor="checkbox3">Custom Bot (With Proxy)</label>
+
+          <div className="card mx-3 py-5">
+            <div className="card-body">
+              <h5 className="card-title">Custom Bot (With Proxy)</h5>
+              <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+              <a href="#" className="stretched-link" onClick={handleBotTypeSelect} />
+            </div>
           </div>
+
         </div>
       </div>
 
       {settingsComponent}
-
     </>
   );
-}
+};
 
 export default SlackIntegration;
