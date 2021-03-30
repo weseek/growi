@@ -55,25 +55,38 @@ class BoltService {
   constructor(crowi) {
     this.crowi = crowi;
     this.receiver = new BoltReciever();
+    this.client = null;
 
-    const signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
-    const token = crowi.configManager.getConfig('crowi', 'slackbot:token');
+    this.isBoltSetup = false;
 
-    const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
-    this.client = client;
-
-    if (token != null || signingSecret != null) {
-      logger.debug('SlackBot: setup is done');
-      this.bolt = new App({
-        token,
-        signingSecret,
-        receiver: this.receiver,
-      });
-      this.init();
-    }
+    this.init();
   }
 
   init() {
+    this.isBoltSetup = false;
+
+    const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
+    const signingSecret = this.crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+
+    this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
+
+    if (token == null || signingSecret == null) {
+      this.bolt = null;
+      return;
+    }
+
+    this.bolt = new App({
+      token,
+      signingSecret,
+      receiver: this.receiver,
+    });
+    this.setupRoute();
+
+    logger.debug('SlackBot: setup is done');
+    this.isBoltSetup = true;
+  }
+
+  setupRoute() {
     this.bolt.command('/growi', async({
       command, client, body, ack,
     }) => {
