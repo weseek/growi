@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
-
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -14,23 +12,29 @@ const CustomBotNonProxySettings = (props) => {
 
   const [slackSigningSecret, setSlackSigningSecret] = useState('');
   const [slackBotToken, setSlackBotToken] = useState('');
+  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
+  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const botType = 'non-proxy';
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await appContainer.apiv3.get('/slack-integration/');
-        const { slackSigningSecret, slackBotToken } = res.data.slackBotSettingParams.customBotNonProxySettings;
-        setSlackSigningSecret(slackSigningSecret);
-        setSlackBotToken(slackBotToken);
-      }
-      catch (err) {
-        toastError(err);
-      }
+  const fetchData = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration/');
+      const {
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+      } = res.data.slackBotSettingParams.customBotNonProxySettings;
+      setSlackSigningSecret(slackSigningSecret);
+      setSlackBotToken(slackBotToken);
+      setSlackSigningSecretEnv(slackSigningSecretEnvVars);
+      setSlackBotTokenEnv(slackBotTokenEnvVars);
     }
-    fetchData();
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer]);
 
-  }, [appContainer.apiv3]);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   async function updateHandler() {
     try {
@@ -50,8 +54,12 @@ const CustomBotNonProxySettings = (props) => {
     <>
       <div className="row my-5">
         <div className="mx-auto">
-          <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-            {t('admin:slack_integration.non_proxy.create_bot')}
+          <button
+            type="button"
+            className="btn btn-primary text-nowrap mx-1"
+            onClick={() => window.open('https://api.slack.com/apps', '_blank')}
+          >
+            {t('slack_integration.non_proxy.create_bot')}
           </button>
         </div>
       </div>
@@ -59,17 +67,26 @@ const CustomBotNonProxySettings = (props) => {
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
         <div className="col-md-6">
-          <input className="form-control" type="text" value={slackSigningSecret || ''} onChange={e => setSlackSigningSecret(e.target.value)} />
+          <input
+            className="form-control"
+            type="text"
+            value={slackSigningSecret || slackSigningSecretEnv || ''}
+            onChange={e => setSlackSigningSecret(e.target.value)}
+          />
         </div>
       </div>
 
       <div className="form-group row mb-5">
         <label className="text-left text-md-right col-md-3 col-form-label">Bot User OAuth Token</label>
         <div className="col-md-6">
-          <input className="form-control" type="text" value={slackBotToken || ''} onChange={e => setSlackBotToken(e.target.value)} />
+          <input
+            className="form-control"
+            type="text"
+            value={slackBotToken || slackBotTokenEnv || ''}
+            onChange={e => setSlackBotToken(e.target.value)}
+          />
         </div>
       </div>
-
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
     </>
   );
