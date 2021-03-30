@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-
+import PropTypes from 'prop-types';
 
 const ConfirmBotChangeModal = ({ show, onButtonClick }) => {
   const dialog = useRef({});
@@ -44,6 +44,11 @@ const ConfirmBotChangeModal = ({ show, onButtonClick }) => {
       </div>
     </div>
   );
+};
+
+ConfirmBotChangeModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onButtonClick: PropTypes.func.isRequired,
 };
 
 export default ConfirmBotChangeModal;

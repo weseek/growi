@@ -33,8 +33,6 @@ const SlackIntegration = () => {
       break;
   }
 
-
-
   return (
     <>
       <div className="container">
