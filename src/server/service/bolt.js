@@ -59,10 +59,10 @@ class BoltService {
 
     this.isBoltSetup = false;
 
-    this.init();
+    this.initialize();
   }
 
-  init() {
+  initialize() {
     this.isBoltSetup = false;
 
     const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
