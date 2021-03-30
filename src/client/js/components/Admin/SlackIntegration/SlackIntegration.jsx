@@ -7,9 +7,12 @@ import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 
 const SlackIntegration = () => {
+
+  const [modalVisibility, setmodalVisibility] = useState(false);
+
   const handleBotTypeSelect = (clickedBotType) => {
     console.log(clickedBotType);
-    // showModal();
+    setmodalVisibility(true);
   };
 
   const currentBotType = 'custom-bot-non-proxy';
@@ -30,28 +33,19 @@ const SlackIntegration = () => {
       break;
   }
 
-  const [showDialog, setShowDialog] = useState(false);
+
 
   return (
     <>
       <div className="container">
         <ConfirmBotChangeModal
           title="Modal Title"
-          show={showDialog}
+          show={modalVisibility}
           onButtonClick={(button) => {
-            if (button === 'close') setShowDialog(false);
+            if (button === 'close') setmodalVisibility(false);
             if (button === 'save') console.log('save button clicked');
           }}
         />
-        <button
-          className="btn btn-primary"
-          type="button"
-          onClick={() => {
-          setShowDialog(true);
-        }}
-        >
-          Show Dialog
-        </button>
       </div>
 
       <div className="row">
