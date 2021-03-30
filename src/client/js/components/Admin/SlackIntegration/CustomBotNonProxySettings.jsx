@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 
 import PropTypes from 'prop-types';
 
@@ -10,38 +9,55 @@ import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-const logger = loggerFactory('growi:appSettings');
 
-function CustomBotNonProxySettings(props) {
+const CustomBotNonProxySettings = (props) => {
   const { appContainer } = props;
-  const { t } = useTranslation('admin');
-  const [secret, setSecret] = useState('');
-  const [token, setToken] = useState('');
-  const [secretEnv, setSecretEnv] = useState('');
-  const [tokenEnv, setTokenEnv] = useState('');
+  const { t } = useTranslation();
 
+  const [slackSigningSecret, setSlackSigningSecret] = useState('');
+  const [slackBotToken, setSlackBotToken] = useState('');
+  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
+  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
 
-  function updateHandler() {
-    console.log(`Signing Secret: ${secret}, Bot User OAuth Token: ${token}`);
-  }
+  const botType = 'non-proxy';
 
-
-  const getSlackBotSettingParams = useCallback(async() => {
+  const fetchData = useCallback(async() => {
     try {
-      const response = await appContainer.apiv3.get('/slack-integration');
-      setSecretEnv(response.data.slackBotSettingParams.cusotmBotNonProxySettings.slackSigningSecretEnvVars);
-      setTokenEnv(response.data.slackBotSettingParams.cusotmBotNonProxySettings.slackBotTokenEnvVars);
+      const res = await appContainer.apiv3.get('/slack-integration/');
+      const {
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+      } = res.data.slackBotSettingParams.customBotNonProxySettings;
+      setSlackSigningSecret(slackSigningSecret);
+      setSlackBotToken(slackBotToken);
+      setSlackSigningSecretEnv(slackSigningSecretEnvVars);
+      setSlackBotTokenEnv(slackBotTokenEnvVars);
     }
     catch (err) {
-      logger.error(err);
+      toastError(err);
     }
   }, [appContainer]);
-
   useEffect(() => {
-    getSlackBotSettingParams();
-  }, [getSlackBotSettingParams]);
+    fetchData();
+
+  }, [fetchData]);
+
+
+  async function updateHandler() {
+    try {
+      await appContainer.apiv3.put('/slack-integration/custom-bot-non-proxy', {
+        slackSigningSecret,
+        slackBotToken,
+        botType,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_non_proxy_settings') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
 
   return (
     <>
@@ -61,10 +77,10 @@ function CustomBotNonProxySettings(props) {
         <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
         <div className="col-md-6">
           <input
-            defaultValue={secretEnv || null}
             className="form-control"
             type="text"
-            onChange={e => setSecret(e.target.value)}
+            value={slackSigningSecret || slackSigningSecretEnv || ''}
+            onChange={e => setSlackSigningSecret(e.target.value)}
           />
         </div>
       </div>
@@ -73,10 +89,10 @@ function CustomBotNonProxySettings(props) {
         <label className="text-left text-md-right col-md-3 col-form-label">Bot User OAuth Token</label>
         <div className="col-md-6">
           <input
-            defaultValue={tokenEnv || null}
             className="form-control"
             type="text"
-            onChange={e => setToken(e.target.value)}
+            value={slackBotToken || slackBotTokenEnv || ''}
+            onChange={e => setSlackBotToken(e.target.value)}
           />
         </div>
       </div>
@@ -84,7 +100,7 @@ function CustomBotNonProxySettings(props) {
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
     </>
   );
-}
+};
 
 const CustomBotNonProxySettingsWrapper = withUnstatedContainers(CustomBotNonProxySettings, [AppContainer]);
 
