@@ -64,7 +64,7 @@ const CustomBotNonProxySettings = (props) => {
         </div>
       </div>
 
-      <div className="form-group row">
+      {/* <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
         <div className="col-md-6">
           <input
@@ -74,9 +74,83 @@ const CustomBotNonProxySettings = (props) => {
             onChange={e => setSlackSigningSecret(e.target.value)}
           />
         </div>
+      </div> */}
+
+      <div className="row form-group">
+        <div className="">
+          <table className="table settings-table">
+            <colgroup>
+              <col className="from-db" />
+              <col className="from-env-vars" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Signing Secret</th>
+                <th>環境変数 SLACK_SIGNING_SECRET</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={slackSigningSecret || ''}
+                    onChange={e => setSlackSigningSecret(e.target.value)}
+                  />
+
+                </td>
+                <td>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={slackSigningSecretEnv || ''}
+                    readOnly
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="row form-group">
+        <div className="">
+          <table className="table settings-table">
+            <colgroup>
+              <col className="from-db" />
+              <col className="from-env-vars" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Bot User OAuth Token</th>
+                <th>環境変数 SLACK_BOT_TOKEN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={slackBotToken || slackBotTokenEnv || ''}
+                    onChange={e => setSlackBotToken(e.target.value)}
+                  />
+                </td>
+                <td>
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={slackSigningSecretEnv || ''}
+                    readOnly
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div className="form-group row mb-5">
+      {/* <div className="form-group row mb-5">
         <label className="text-left text-md-right col-md-3 col-form-label">Bot User OAuth Token</label>
         <div className="col-md-6">
           <input
@@ -86,7 +160,7 @@ const CustomBotNonProxySettings = (props) => {
             onChange={e => setSlackBotToken(e.target.value)}
           />
         </div>
-      </div>
+      </div> */}
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
     </>
   );
