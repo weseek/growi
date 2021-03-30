@@ -113,7 +113,7 @@ const CustomBotNonProxySettings = (props) => {
                 readOnly
               />
               <p className="form-text text-muted">
-                <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
+                <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_BOT_TOKEN' }) }} />
               </p>
             </td>
 
