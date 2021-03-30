@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import AccessTokenSettings from './AccessTokenSettings';
 import OfficialBotSettings from './OfficialBotSettings';
@@ -30,9 +30,29 @@ const SlackIntegration = () => {
       break;
   }
 
+  const [showDialog, setShowDialog] = useState(false);
+
   return (
     <>
-      <ConfirmBotChangeModal />
+      <div className="container">
+        <ConfirmBotChangeModal
+          title="Modal Title"
+          show={showDialog}
+          onButtonClick={(button) => {
+            if (button === 'close') setShowDialog(false);
+            if (button === 'save') console.log('save button clicked');
+          }}
+        />
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={() => {
+          setShowDialog(true);
+        }}
+        >
+          Show Dialog
+        </button>
+      </div>
 
       <div className="row">
         <div className="col-lg-12">

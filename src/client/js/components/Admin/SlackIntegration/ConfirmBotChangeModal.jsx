@@ -1,13 +1,57 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 
-const ConfirmBotChangeModal = () => {
+const ConfirmBotChangeModal = ({ show, onButtonClick }) => {
+
+  const dialog = useRef({});
+  useEffect(() => { $(dialog.current).modal(show ? 'show' : 'hide') }, [show]);
+  useEffect(() => { $(dialog.current).on('hide.bs.modal', () => onButtonClick('close')) }, []);
+
   return (
-    <>
-      <div className="modal">
-        aa
+    <div
+      className="modal fade"
+      ref={dialog}
+      id="modalDialog"
+      tabIndex="-1"
+      role="dialog"
+      aria-labelledby="modalDialogLabel"
+      aria-hidden="true"
+    >
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="modalDialogLabel">TITLE</h5>
+            <button
+              type="button"
+              className="close"
+              aria-label="Close"
+              onClick={() => onButtonClick('close')}
+          >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div className="modal-body">
+            <h1>asdfasdfasdfasdf</h1>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => onButtonClick('close')}
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => onButtonClick('save')}
+            >
+              Save
+            </button>
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default ConfirmBotChangeModal;
