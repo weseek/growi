@@ -35,7 +35,6 @@ const CustomBotNonProxySettings = (props) => {
 
   useEffect(() => {
     fetchData();
-
   }, [fetchData]);
 
   async function updateHandler() {
