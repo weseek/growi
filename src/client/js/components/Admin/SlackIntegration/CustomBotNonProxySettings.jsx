@@ -1,17 +1,11 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import PropTypes from 'prop-types';
-
 import AppContainer from '../../../services/AppContainer';
-
 import { withUnstatedContainers } from '../../UnstatedUtils';
-
-
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-
 
 const CustomBotNonProxySettings = (props) => {
   const { appContainer } = props;
@@ -21,7 +15,6 @@ const CustomBotNonProxySettings = (props) => {
   const [slackBotToken, setSlackBotToken] = useState('');
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-
   const botType = 'non-proxy';
 
   const fetchData = useCallback(async() => {
@@ -39,11 +32,11 @@ const CustomBotNonProxySettings = (props) => {
       toastError(err);
     }
   }, [appContainer]);
+
   useEffect(() => {
     fetchData();
 
   }, [fetchData]);
-
 
   async function updateHandler() {
     try {
@@ -96,7 +89,6 @@ const CustomBotNonProxySettings = (props) => {
           />
         </div>
       </div>
-
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
     </>
   );
