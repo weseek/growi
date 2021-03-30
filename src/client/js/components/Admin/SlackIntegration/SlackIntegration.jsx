@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import AccessTokenSettings from './AccessTokenSettings';
-import CustomBotNonProxySettings from './CustomBotNonProxySettings';
+import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 
 function SlackIntegration() {
 
@@ -18,8 +18,8 @@ function SlackIntegration() {
 
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('slack_integration.custom_bot_non_proxy_settings')}</h2>
-          <CustomBotNonProxySettings />
+          <h2 className="admin-setting-header">{t('slack_integration.custom_bot_without_proxy_settings')}</h2>
+          <CustomBotWithoutProxySettings />
         </div>
       </div>
     </>
