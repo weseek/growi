@@ -43,7 +43,7 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken,
         botType,
       });
-      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_non_proxy_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -59,7 +59,7 @@ const CustomBotWithoutProxySettings = (props) => {
             className="btn btn-primary text-nowrap mx-1"
             onClick={() => window.open('https://api.slack.com/apps', '_blank')}
           >
-            {t('slack_integration.non_proxy.create_bot')}
+            {t('slack_integration.without_proxy.create_bot')}
           </button>
         </div>
       </div>

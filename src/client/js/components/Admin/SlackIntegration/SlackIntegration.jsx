@@ -18,7 +18,7 @@ function SlackIntegration() {
 
       <div className="row">
         <div className="col-lg-12">
-          <h2 className="admin-setting-header">{t('slack_integration.custom_bot_non_proxy_settings')}</h2>
+          <h2 className="admin-setting-header">{t('slack_integration.custom_bot_without_proxy_settings')}</h2>
           <CustomBotWithoutProxySettings />
         </div>
       </div>
