@@ -15,7 +15,7 @@ module.exports = function(crowi) {
 
   const postWithSlackBot = function(messageObj) {
     return new Promise((resolve, reject) => {
-      const client = new WebClient(configManager.getConfig('crowi', 'slackbot:token'), {
+      const client = new WebClient(configManager.getConfig('crowi', 'security:slackbot:token'), {
         logLevel: LogLevel.DEBUG,
       });
       client.chat.postMessage(messageObj, (err, res) => {
