@@ -91,8 +91,10 @@ class UserInviteModal extends React.Component {
           <label className="custom-control-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
-          {/* eslint-disable-next-line react/no-danger */}
-          <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mailer_setup_required') }} />
+          {!isMailerSetup
+            // eslint-disable-next-line react/no-danger
+            && <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mailer_setup_required') }} />
+          }
         </div>
         <div>
           <button
