@@ -97,7 +97,7 @@ html[dark] {
   //Button
   // Outline buttons are applyed the accent color to this spring theme cuz the primary is too light and it looks like unable to click them.
   .btn.btn-outline-primary {
-    @include button-outline-variant($accentcolor, $accentcolor, lighten($accentcolor, 20%), $accentcolor);
+    @include btn-page-editor-mode-manager(darken($primary, 50%), darken($primary, 50%), lighten($primary, 10%));
   }
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
@@ -150,8 +150,6 @@ html[dark] {
 
   h1,
   h2 {
-    color: $subthemecolor;
-
     svg {
       fill: $subthemecolor;
     }
