@@ -64,17 +64,6 @@ const CustomBotNonProxySettings = (props) => {
         </div>
       </div>
 
-      {/* <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
-        <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            value={slackSigningSecret || slackSigningSecretEnv || ''}
-            onChange={e => setSlackSigningSecret(e.target.value)}
-          />
-        </div>
-      </div> */}
 
       <div className="row form-group">
         <div className="">
@@ -150,17 +139,7 @@ const CustomBotNonProxySettings = (props) => {
         </div>
       </div>
 
-      {/* <div className="form-group row mb-5">
-        <label className="text-left text-md-right col-md-3 col-form-label">Bot User OAuth Token</label>
-        <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            value={slackBotToken || slackBotTokenEnv || ''}
-            onChange={e => setSlackBotToken(e.target.value)}
-          />
-        </div>
-      </div> */}
+
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
     </>
   );
