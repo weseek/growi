@@ -255,7 +255,7 @@
       "discard": "破棄",
       "generate": "発行"
     },
-    "custom_bot_without_proxy_settings": "Custom bot (non-proxy) 設定",
+    "custom_bot_without_proxy_settings": "Custom bot (without-proxy) 設定",
     "without_proxy": {
       "create_bot": "Bot を作成する"
     }

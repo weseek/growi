@@ -257,7 +257,7 @@
       "discard": "Discard",
       "generate": "Generate"
     },
-    "custom_bot_without_proxy_settings": "Custom bot (non-proxy) Settings",
+    "custom_bot_without_proxy_settings": "Custom bot (without-proxy) Settings",
     "without_proxy": {
       "create_bot": "Create Bot"
     }

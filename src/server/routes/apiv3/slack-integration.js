@@ -95,11 +95,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/custom-bot-non-proxy/:
+   *    /slack-integration/custom-bot-without-proxy/:
    *      put:
    *        tags: [CustomBotWithoutProxy]
    *        operationId: putCustomBotWithoutProxy
-   *        summary: /slack-integration/custom-bot-non-proxy
+   *        summary: /slack-integration/custom-bot-without-proxy
    *        description: Put customBotWithoutProxy setting.
    *        requestBody:
    *          required: true
@@ -111,7 +111,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
-  router.put('/custom-bot-non-proxy',
+  router.put('/custom-bot-without-proxy',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotWithoutProxy, apiV3FormValidator, async(req, res) => {
       const { slackSigningSecret, slackBotToken, botType } = req.body;
 
