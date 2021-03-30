@@ -46,7 +46,12 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label> {t('admin:user_management.invite_modal.emails')}</label>
+        <label>{t('admin:user_management.invite_modal.emails')}</label>
+        <p>
+          {t('admin:user_management.invite_modal.description1')}
+          <br />
+          {t('admin:user_management.invite_modal.description2')}
+        </p>
         <textarea
           className="form-control"
           placeholder="e.g.&#13;&#10;user1@growi.org&#13;&#10;user2@growi.org"
@@ -102,7 +107,7 @@ class UserInviteModal extends React.Component {
             className="btn btn-outline-secondary mr-2"
             onClick={this.onToggleModal}
           >
-            Cancel
+            {t('Cancel')}
           </button>
 
           <button
@@ -111,7 +116,7 @@ class UserInviteModal extends React.Component {
             onClick={this.handleSubmit}
             disabled={!this.validEmail()}
           >
-            Invite
+            {t('admin:user_management.invite_modal.issue')}
           </button>
         </div>
       </>
@@ -131,7 +136,7 @@ class UserInviteModal extends React.Component {
           className="btn btn-outline-secondary"
           onClick={this.onToggleModal}
         >
-          Close
+          {t('Close')}
         </button>
       </>
     );

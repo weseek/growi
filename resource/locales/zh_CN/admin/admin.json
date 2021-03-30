@@ -261,17 +261,20 @@
 		"delete": "删除"
   },
 	"user_management": {
-		"invite_users": "邀请新用户",
+		"invite_users": "临时发布新用户",
 		"click_twice_same_checkbox": "您应该至少选中一个复选框。",
 		"invite_modal": {
 			"emails": "电子邮件",
+      "description1":"通过电子邮件地址临时发布新用户。",
+      "description2":"将为首次登录生成一个临时密码。",
 			"invite_thru_email": "发送邀请电子邮件",
       "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
 			"valid_email": "需要有效的电子邮件地址",
 			"temporary_password": "创建的用户具有临时密码",
 			"send_new_password": "请将新密码发送给用户。",
 			"send_temporary_password": "请确保复制此屏幕上的临时密码并将其发送给用户。",
-			"existing_email": "以下电子邮件已存在"
+			"existing_email": "以下电子邮件已存在",
+      "issue": "Issue"
 		},
 		"user_table": {
 			"administrator": "管理员",
