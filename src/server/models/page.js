@@ -533,7 +533,7 @@ module.exports = function(crowi) {
       /\s+\/\s+/, // avoid miss in renaming
       /.+\/edit$/,
       /.+\.md$/,
-      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags)(\/.*|$)/,
+      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
     ];
 
     let isCreatable = true;

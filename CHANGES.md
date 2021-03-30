@@ -2,7 +2,15 @@
 
 ## v4.2.14-RC
 
-* 
+* Support: Update libs
+    * bunyan
+    * browser-bunyan
+* Fix: Can create pages on the share route
+    * Introduced by v4.2.8
+* Fix: Group page is excluded by recurrence operation
+    * Introduced by v4.2.8
+* Fix: New path to rename and duplicate is considered as a child page
+    * Introduced by v4.2.8
 
 ## v4.2.13
 
