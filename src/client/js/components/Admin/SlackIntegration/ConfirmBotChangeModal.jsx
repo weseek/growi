@@ -34,10 +34,10 @@ const ConfirmBotChangeModal = ({ show, onButtonClick }) => {
 
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={() => onButtonClick('close')}>
-              Close
+              Cancel
             </button>
-            <button type="button" className="btn btn-primary" onClick={() => onButtonClick('save')}>
-              Save
+            <button type="button" className="btn btn-primary" onClick={() => onButtonClick('change')}>
+              Change
             </button>
           </div>
         </div>

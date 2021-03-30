@@ -9,14 +9,16 @@ import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 const SlackIntegration = () => {
 
   const [modalVisibility, setmodalVisibility] = useState(false);
+  const [currentBotType, setcurrentBotType] = useState('custom-bot-non-proxy');
+  let settingsComponent = null;
+
+  const changeBotSettings = (botType) => {
+    console.log(botType);
+  }
 
   const handleBotTypeSelect = (clickedBotType) => {
-    console.log(clickedBotType);
     setmodalVisibility(true);
   };
-
-  const currentBotType = 'custom-bot-non-proxy';
-  let settingsComponent = null;
 
   switch (currentBotType) {
     case 'official-bot':
@@ -41,7 +43,7 @@ const SlackIntegration = () => {
           show={modalVisibility}
           onButtonClick={(button) => {
             if (button === 'close') setmodalVisibility(false);
-            if (button === 'save') console.log('save button clicked');
+            if (button === 'change') changeBotSettings();
           }}
         />
       </div>
