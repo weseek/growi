@@ -15,7 +15,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const botType = 'non-proxy';
-
   const fetchData = useCallback(async() => {
     try {
       const res = await appContainer.apiv3.get('/slack-integration/');
