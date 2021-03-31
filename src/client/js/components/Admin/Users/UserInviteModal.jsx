@@ -100,7 +100,7 @@ class UserInviteModal extends React.Component {
             // eslint-disable-next-line react/no-danger
             ? <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mail_setting_link') }} />
             // eslint-disable-next-line react/no-danger
-            : <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mailer_setup_required') }} />
+            : <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
           }
         </div>
         <div>
