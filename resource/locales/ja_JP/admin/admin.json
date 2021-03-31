@@ -263,7 +263,7 @@
       "generate": "発行"
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without Proxy) 設定",
-    "non_proxy": {
+    "without_proxy": {
       "create_bot": "Bot を作成する"
     }
   },

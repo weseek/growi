@@ -7,6 +7,6 @@ const CustomBotWithProxySettings = () => {
       <h1>With Proxy Component</h1>
     </div>
   );
-}
+};
 
 export default CustomBotWithProxySettings;
