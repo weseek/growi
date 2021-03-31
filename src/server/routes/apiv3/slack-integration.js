@@ -55,9 +55,9 @@ module.exports = (crowi) => {
   }
 
 
-  function generateAccessToken(user) {
-    const hasher = crypto.createHash('sha512');
-    hasher.update(new Date().getTime() + user._id);
+  function generateAccessToken() {
+    const hasher = crypto.createHash('sha256');
+    hasher.update(`${new Date().getTime()}`);
 
     return hasher.digest('base64');
   }
@@ -158,10 +158,10 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access token for slack
    */
-  router.put('/access-token', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     try {
-      const accessToken = generateAccessToken(req.user);
+      const accessToken = generateAccessToken();
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
       return res.apiv3({ accessToken });
