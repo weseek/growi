@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import AccessTokenSettings from './AccessTokenSettings';
 import OfficialBotSettings from './OfficialBotSettings';
-import CustomBotNonProxySettings from './CustomBotNonProxySettings';
+import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 
@@ -12,6 +12,9 @@ const SlackIntegration = () => {
   const [modalVisibility, setmodalVisibility] = useState(false);
 
   const handleBotTypeSelect = (clickedBotType) => {
+    if (clickedBotType === currentBotType) {
+      return;
+    }
     setSelectedBotType(clickedBotType);
     setmodalVisibility(true);
   };
@@ -34,7 +37,7 @@ const SlackIntegration = () => {
       settingsComponent = <OfficialBotSettings />;
       break;
     case 'custom-bot-non-proxy':
-      settingsComponent = <CustomBotNonProxySettings />;
+      settingsComponent = <CustomBotWithoutProxySettings />;
       break;
     case 'custom-bot-with-proxy':
       settingsComponent = <CustomBotWithProxySettings />;
@@ -46,10 +49,8 @@ const SlackIntegration = () => {
       <div className="container">
         <ConfirmBotChangeModal
           show={modalVisibility}
-          onButtonClick={(button) => {
-            if (button === 'close') handleBotChangeCancel();
-            if (button === 'change') changeCurrentBotSettings();
-          }}
+          onConfirmClick={changeCurrentBotSettings}
+          onCancelClick={handleBotChangeCancel}
         />
       </div>
 

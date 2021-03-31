@@ -6,7 +6,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-const CustomBotNonProxySettings = (props) => {
+const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
@@ -43,7 +43,7 @@ const CustomBotNonProxySettings = (props) => {
         slackBotToken,
         botType,
       });
-      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_non_proxy_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -52,7 +52,7 @@ const CustomBotNonProxySettings = (props) => {
 
   return (
     <>
-      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_non_proxy_settings')}</h2>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
       <div className="row my-5">
         <div className="mx-auto">
           <button
@@ -93,10 +93,10 @@ const CustomBotNonProxySettings = (props) => {
   );
 };
 
-const CustomBotNonProxySettingsWrapper = withUnstatedContainers(CustomBotNonProxySettings, [AppContainer]);
+const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer]);
 
-CustomBotNonProxySettings.propTypes = {
+CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default CustomBotNonProxySettingsWrapper;
+export default CustomBotWithoutProxySettingsWrapper;
