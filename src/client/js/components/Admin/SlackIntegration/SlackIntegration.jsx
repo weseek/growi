@@ -40,7 +40,7 @@ const SlackIntegration = () => {
     case 'official-bot':
       settingsComponent = <OfficialBotSettings />;
       break;
-    case 'custom-bot-non-proxy':
+    case 'custom-bot-without-proxy':
       settingsComponent = <CustomBotWithoutProxySettings />;
       break;
     case 'custom-bot-with-proxy':
@@ -78,9 +78,9 @@ const SlackIntegration = () => {
 
           <div className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-non-proxy' ? 'border-info' : ''}`}>
             <div className="card-body">
-              <h5 className="card-title">Custom Bot (Non Proxy)</h5>
+              <h5 className="card-title">Custom Bot (Without Proxy)</h5>
               <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. </p>
-              <a href="#" className="stretched-link" onClick={() => handleBotTypeSelect('custom-bot-non-proxy')} />
+              <a href="#" className="stretched-link" onClick={() => handleBotTypeSelect('custom-bot-without-proxy')} />
             </div>
           </div>
 
