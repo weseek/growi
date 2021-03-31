@@ -17,11 +17,12 @@ const SlackIntegration = (props) => {
 
   const resetBotType = async() => {
     try {
-      await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
+      const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
         slackBotToken: '',
         botType: '',
       });
+      console.log(res);
     }
     catch (err) {
       toastError(err);
