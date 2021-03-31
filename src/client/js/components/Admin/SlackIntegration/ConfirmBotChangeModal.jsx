@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 const ConfirmBotChangeModal = ({ show, onConfirmClick, onCancelClick }) => {
@@ -23,12 +23,12 @@ const ConfirmBotChangeModal = ({ show, onConfirmClick, onCancelClick }) => {
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={onCancelClick}>
+          <button type="button" className="btn btn-secondary" onClick={onCancelClick}>
             {t('slack_integration.modal.cancel')}
-          </Button>
-          <Button color="primary" onClick={onConfirmClick}>
+          </button>
+          <button type="button" className="btn btn-primary" onClick={onConfirmClick}>
             {t('slack_integration.modal.change')}
-          </Button>
+          </button>
         </ModalFooter>
       </Modal>
     </>
