@@ -266,8 +266,8 @@
       "discard": "丢弃",
       "generate": "生成"
     },
-    "custom_bot_non_proxy_settings": "Custom bot (non-proxy) 设置",
-    "non_proxy": {
+    "custom_bot_without_proxy_settings": "Custom bot (without-proxy) 设置",
+    "without_proxy": {
       "create_bot": "创建 Bot"
     }
   },
