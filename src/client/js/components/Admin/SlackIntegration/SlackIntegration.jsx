@@ -65,6 +65,7 @@ const SlackIntegration = () => {
         </div>
       </div>
 
+
       <div className="row my-5">
         <div className="card-deck mx-auto">
 

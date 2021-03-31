@@ -265,7 +265,7 @@
       "generate": "Generate"
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) Settings",
-    "non_proxy": {
+    "without_proxy": {
       "create_bot": "Create Bot"
     }
   },

@@ -14,14 +14,14 @@ const CustomBotWithoutProxySettings = (props) => {
   const [slackBotToken, setSlackBotToken] = useState('');
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  const botType = 'non-proxy';
-
+  const botType = 'without-proxy';
+  
   const fetchData = useCallback(async() => {
     try {
       const res = await appContainer.apiv3.get('/slack-integration/');
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
-      } = res.data.slackBotSettingParams.customBotNonProxySettings;
+      } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
@@ -38,7 +38,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
   async function updateHandler() {
     try {
-      await appContainer.apiv3.put('/slack-integration/custom-bot-non-proxy', {
+      await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret,
         slackBotToken,
         botType,
@@ -60,7 +60,7 @@ const CustomBotWithoutProxySettings = (props) => {
             className="btn btn-primary text-nowrap mx-1"
             onClick={() => window.open('https://api.slack.com/apps', '_blank')}
           >
-            {t('admin:slack_integration.non_proxy.create_bot')}
+            {t('slack_integration.without_proxy.create_bot')}
           </button>
         </div>
       </div>
