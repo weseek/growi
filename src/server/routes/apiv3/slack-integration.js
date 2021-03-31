@@ -3,7 +3,8 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
-const axios = require('axios');
+const { WebClient } = require('@slack/web-api');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -91,13 +92,11 @@ module.exports = (crowi) => {
       },
     };
 
-    const url = new URL('https://slack.com/api/team.info');
-    const hoge = await axios({
-      method: 'GET',
-      url: url.toString(),
-      Authorization: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
-    });
-    console.log(hoge);
+    const token = crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
+    const web = new WebClient(token);
+    const slackTeamInfo = await web.team.info();
+    console.log(slackTeamInfo.team.name);
+
     return res.apiv3({ slackBotSettingParams });
   });
 
