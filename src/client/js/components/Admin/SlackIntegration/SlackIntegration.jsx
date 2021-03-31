@@ -15,6 +15,10 @@ const SlackIntegration = () => {
     if (clickedBotType === currentBotType) {
       return;
     }
+    if (currentBotType === null) {
+      setSelectedBotType(clickedBotType);
+      return;
+    }
     setSelectedBotType(clickedBotType);
     setmodalVisibility(true);
   };
