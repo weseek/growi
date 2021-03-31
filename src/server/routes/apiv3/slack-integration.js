@@ -126,6 +126,7 @@ module.exports = (crowi) => {
 
         // initialize bolt service
         crowi.boltService.initialize();
+        crowi.boltService.publishUpdatedMessage();
 
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
         const customBotNonProxySettingParams = {

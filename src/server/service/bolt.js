@@ -49,6 +49,7 @@ class BoltReciever {
 
 const { App } = require('@slack/bolt');
 const { WebClient, LogLevel } = require('@slack/web-api');
+const S2sMessage = require('../models/vo/s2s-message');
 
 class BoltService {
 
@@ -85,6 +86,22 @@ class BoltService {
     logger.debug('SlackBot: setup is done');
     this.isBoltSetup = true;
   }
+
+  async publishUpdatedMessage() {
+    const { s2sMessagingService } = this;
+
+    if (s2sMessagingService != null) {
+      const s2sMessage = new S2sMessage('boltServiceUpdated', { updatedAt: new Date() });
+
+      try {
+        await s2sMessagingService.publish(s2sMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
+      }
+    }
+  }
+
 
   setupRoute() {
     this.bolt.command('/growi', async({
