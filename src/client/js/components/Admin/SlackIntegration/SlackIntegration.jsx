@@ -7,31 +7,31 @@ import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 
 const SlackIntegration = () => {
-  const [currentBotType, setcurrentBotType] = useState(null);
+  const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
-  const [modalVisibility, setmodalVisibility] = useState(false);
+  const [isConfirmBotChangeModalOpen, setIsConfirmBotChangeModalOpen] = useState(false);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
       return;
     }
     if (currentBotType === null) {
-      setcurrentBotType(clickedBotType);
+      setCurrentBotType(clickedBotType);
       return;
     }
     setSelectedBotType(clickedBotType);
-    setmodalVisibility(true);
+    setIsConfirmBotChangeModalOpen(true);
   };
 
   const handleBotChangeCancel = () => {
     setSelectedBotType(null);
-    setmodalVisibility(false);
+    setIsConfirmBotChangeModalOpen(false);
   };
 
   const changeCurrentBotSettings = () => {
-    setcurrentBotType(selectedBotType);
+    setCurrentBotType(selectedBotType);
     setSelectedBotType(null);
-    setmodalVisibility(false);
+    setIsConfirmBotChangeModalOpen(false);
   };
 
   let settingsComponent = null;
@@ -52,7 +52,7 @@ const SlackIntegration = () => {
     <>
       <div className="container">
         <ConfirmBotChangeModal
-          show={modalVisibility}
+          isOpen = {isConfirmBotChangeModalOpen}
           onConfirmClick={changeCurrentBotSettings}
           onCancelClick={handleBotChangeCancel}
         />
@@ -71,8 +71,8 @@ const SlackIntegration = () => {
 
           <div
             className={`card mx-3 py-5 rounded ${currentBotType === 'official-bot' ? 'border-info' : ''}`}
-            onClick={) => handleBotTypeSelect('official-bot')}
-            style={{cursor: pointer}}
+            onClick={() => handleBotTypeSelect('official-bot')}
+            style={{ cursor: 'pointer' }}
           >
             <div className="card-body">
               <h5 className="card-title">Official Bot</h5>
@@ -83,7 +83,7 @@ const SlackIntegration = () => {
           <div
             className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
             onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
-            style={{cursor: pointer}}
+            style={{ cursor: 'pointer' }}
           >
             <div className="card-body">
               <h5 className="card-title">Custom Bot (Without Proxy)</h5>
@@ -94,7 +94,7 @@ const SlackIntegration = () => {
           <div
             className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
             onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
-            style={{cursor: pointer}}
+            style={{ cursor: 'pointer' }}
           >
             <div className="card-body">
               <h5 className="card-title">Custom Bot (With Proxy)</h5>

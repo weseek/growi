@@ -59,7 +59,7 @@ const CustomBotWithoutProxySettings = (props) => {
             className="btn btn-primary text-nowrap mx-1"
             onClick={() => window.open('https://api.slack.com/apps', '_blank')}
           >
-            {t('slack_integration.without_proxy.create_bot')}
+            {t('admin:slack_integration.without_proxy.create_bot')}
           </button>
         </div>
       </div>
