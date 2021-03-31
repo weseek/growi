@@ -5,12 +5,27 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-const ConfirmBotChangeModal = ({ show, onConfirmClick, onCancelClick }) => {
+const ConfirmBotChangeModal = (props) => {
   const { t } = useTranslation('admin');
+  let isOpen = false;
+  let onConfirmClick = null;
+  let onCancelClick = null;
+
+  if (props.isOpen != null) {
+    isOpen = props.isOpen;
+  }
+
+  if (props.onConfirmClick != null) {
+    onConfirmClick = props.onConfirmClick;
+  }
+
+  if (props.onCancelClick != null) {
+    onCancelClick = props.onCancelClick;
+  }
 
   return (
     <>
-      <Modal isOpen={show} centered>
+      <Modal isOpen={isOpen} centered>
         <ModalHeader toggle={onCancelClick}>
           {t('slack_integration.modal.warning')}
         </ModalHeader>
@@ -36,9 +51,9 @@ const ConfirmBotChangeModal = ({ show, onConfirmClick, onCancelClick }) => {
 };
 
 ConfirmBotChangeModal.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onConfirmClick: PropTypes.func.isRequired,
-  onCancelClick: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool,
+  onConfirmClick: PropTypes.func,
+  onCancelClick: PropTypes.func,
 };
 
 export default ConfirmBotChangeModal;
