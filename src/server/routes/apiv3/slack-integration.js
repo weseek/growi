@@ -70,7 +70,15 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
+    // get work space name from slack
+    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+    const web = new WebClient(slackBotToken);
+    const slackTeamInfo = await web.team.info();
+    const slackWorkSpaceName = slackTeamInfo.team.name;
+    console.log(slackTeamInfo.team.name);
+
     const slackBotSettingParams = {
+      slackWorkSpaceName,
       slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
       // TODO impl when creating official bot
       officialBotSettings: {
@@ -83,7 +91,7 @@ module.exports = (crowi) => {
         slackSigningSecretEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret'),
         slackBotTokenEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
+        slackBotToken,
       },
       // TODO imple when creating with proxy
       customBotWithProxySettings: {
@@ -91,11 +99,6 @@ module.exports = (crowi) => {
         // AccessToken: "tempaccessdatahogehoge",
       },
     };
-
-    const token = crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
-    const web = new WebClient(token);
-    const slackTeamInfo = await web.team.info();
-    console.log(slackTeamInfo.team.name);
 
     return res.apiv3({ slackBotSettingParams });
   });
