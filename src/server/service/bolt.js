@@ -205,7 +205,7 @@ class BoltService {
           this.generateMarkdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
         ],
       });
-      return;
+      return { resultPaths: [] };
     }
 
     const resultPaths = results.data.map((data) => {
@@ -224,9 +224,10 @@ class BoltService {
 
     const keywords = this.getKeywords(args);
 
-    if (resultPaths == null) {
+    if (resultPaths.length === 0) {
       return;
     }
+
     const base = this.crowi.appService.getSiteUrl();
 
     const urls = resultPaths.map((path) => {

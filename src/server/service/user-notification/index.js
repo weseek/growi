@@ -24,7 +24,9 @@ class UserNotificationService {
    * @param {Comment} comment
    */
   async fire(page, user, slackChannelsStr, mode, option, comment = {}) {
-    const { slackNotificationService, slack } = this.crowi;
+    const {
+      slackNotificationService, slackLegacy, slack,
+    } = this.crowi;
 
     const opt = option || {};
     const previousRevision = opt.previousRevision || '';
@@ -42,9 +44,11 @@ class UserNotificationService {
       let res;
       if (mode === 'comment') {
         res = await slack.postComment(comment, user, chan, page.path);
+        res = await slackLegacy.postComment(comment, user, chan, page.path);
       }
       else {
         res = await slack.postPage(page, user, chan, mode, previousRevision);
+        res = await slackLegacy.postPage(page, user, chan, mode, previousRevision);
       }
       if (res.status !== 'ok') {
         throw new Error(`fail to send slack notification to #${chan} channel`);

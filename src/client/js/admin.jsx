@@ -10,6 +10,7 @@ import ErrorBoundary from './components/ErrorBoudary';
 import AdminHome from './components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
 import NotificationSetting from './components/Admin/Notification/NotificationSetting';
+import SlackIntegrationNotificationSetting from './components/Admin/Notification/SlackIntegrationNotificationSetting';
 import SlackIntegration from './components/Admin/SlackIntegration/SlackIntegration';
 import ManageGlobalNotification from './components/Admin/Notification/ManageGlobalNotification';
 import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
@@ -98,6 +99,7 @@ Object.assign(componentMappings, {
   'admin-export-page': <ExportArchiveDataPage />,
   'admin-notification-setting': <NotificationSetting />,
   'admin-slack-integration': <SlackIntegration />,
+  'admin-slack-integration-notification-setting': <SlackIntegrationNotificationSetting />,
   'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
