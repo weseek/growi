@@ -76,7 +76,7 @@ const SlackIntegration = () => {
             </div>
           </div>
 
-          <div className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-non-proxy' ? 'border-info' : ''}`}>
+          <div className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}>
             <div className="card-body">
               <h5 className="card-title">Custom Bot (Without Proxy)</h5>
               <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. </p>
