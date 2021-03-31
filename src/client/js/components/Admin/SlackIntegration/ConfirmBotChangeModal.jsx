@@ -1,7 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+// import { useTranslation } from 'react-i18next';
 
 const ConfirmBotChangeModal = ({ show, onButtonClick }) => {
+  // const { t } = useTranslation();
   const dialog = useRef({});
   useEffect(() => {
     $(dialog.current).modal(show ? 'show' : 'hide');
