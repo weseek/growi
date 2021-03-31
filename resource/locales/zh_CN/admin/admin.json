@@ -269,6 +269,7 @@
       "description2":"将为首次登录生成一个临时密码。",
 			"invite_thru_email": "发送邀请电子邮件",
       "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
+      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>",
 			"valid_email": "需要有效的电子邮件地址",
 			"temporary_password": "创建的用户具有临时密码",
 			"send_new_password": "请将新密码发送给用户。",
