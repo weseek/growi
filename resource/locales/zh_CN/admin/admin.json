@@ -261,6 +261,13 @@
 		"delete": "删除"
   },
   "slack_integration": {
+    "modal": {
+      "warning": "警告",
+      "sure_change_bot_type": "您确定要更改设置吗？",
+      "changes_will_be_deleted": "其他Bot类型的设置将被删除。",
+      "cancel": "取消",
+      "change": "改变"
+    },
     "access_token_settings": {
       "discard": "丢弃",
       "generate": "生成"

@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const ConfirmBotChangeModal = ({ show, onButtonClick }) => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const dialog = useRef({});
   useEffect(() => {
     $(dialog.current).modal(show ? 'show' : 'hide');
@@ -18,7 +18,7 @@ const ConfirmBotChangeModal = ({ show, onButtonClick }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="modalDialogLabel">
-              Warning
+              {t('slack_integration.modal.warning')}
             </h5>
             <button type="button" className="close" aria-label="Close" onClick={() => onButtonClick('close')}>
               <span aria-hidden="true">&times;</span>
@@ -27,19 +27,19 @@ const ConfirmBotChangeModal = ({ show, onButtonClick }) => {
 
           <div className="modal-body">
             <div>
-              <h4>Are you sure you want to change the bot type?</h4>
+              <h4>{t('slack_integration.modal.sure_change_bot_type')}</h4>
             </div>
             <div>
-              <p>Settings from other bots will be deleted.</p>
+              <p>{t('slack_integration.modal.changes_will_be_deleted')}</p>
             </div>
           </div>
 
           <div className="modal-footer">
             <button type="button" className="btn btn-secondary" onClick={() => onButtonClick('close')}>
-              Cancel
+              {t('slack_integration.modal.cancel')}
             </button>
             <button type="button" className="btn btn-primary" onClick={() => onButtonClick('change')}>
-              Change
+              {t('slack_integration.modal.change')}
             </button>
           </div>
         </div>

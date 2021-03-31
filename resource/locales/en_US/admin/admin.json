@@ -253,6 +253,13 @@
     "delete": "Delete"
   },
   "slack_integration": {
+    "modal": {
+      "warning": "Warning",
+      "sure_change_bot_type": "Are you sure you want to change the bot type?",
+      "changes_will_be_deleted": "Settings for other bot types will be deleted.",
+      "cancel": "Cancel",
+      "change": "Change"
+    },
     "access_token_settings": {
       "discard": "Discard",
       "generate": "Generate"

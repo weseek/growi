@@ -251,6 +251,13 @@
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
   "slack_integration": {
+    "modal": {
+      "warning": "注意",
+      "sure_change_bot_type": "Botの種類を変更しますか?",
+      "changes_will_be_deleted": "他のBotの設定が消去されます。",
+      "cancel": "取消",
+      "change": "変更する"
+    },
     "access_token_settings": {
       "discard": "破棄",
       "generate": "発行"
