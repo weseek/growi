@@ -9,7 +9,6 @@ import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 const SlackIntegration = () => {
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
-  // const [isConfirmBotChangeModalOpen, setIsConfirmBotChangeModalOpen] = useState(false);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -20,18 +19,15 @@ const SlackIntegration = () => {
       return;
     }
     setSelectedBotType(clickedBotType);
-    // setIsConfirmBotChangeModalOpen(true);
   };
 
-  const handleBotChangeCancel = () => {
+  const handleCancelBotChange = () => {
     setSelectedBotType(null);
-    // setIsConfirmBotChangeModalOpen(false);
   };
 
   const changeCurrentBotSettings = () => {
     setCurrentBotType(selectedBotType);
     setSelectedBotType(null);
-    // setIsConfirmBotChangeModalOpen(false);
   };
 
   let settingsComponent = null;
@@ -54,7 +50,7 @@ const SlackIntegration = () => {
         <ConfirmBotChangeModal
           isOpen={selectedBotType != null}
           onConfirmClick={changeCurrentBotSettings}
-          onCancelClick={handleBotChangeCancel}
+          onCancelClick={handleCancelBotChange}
         />
       </div>
 
