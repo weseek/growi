@@ -69,27 +69,36 @@ const SlackIntegration = () => {
       <div className="row my-5">
         <div className="card-deck mx-auto">
 
-          <div className={`card mx-3 py-5 rounded ${currentBotType === 'official-bot' ? 'border-info' : ''}`}>
+          <div
+            className={`card mx-3 py-5 rounded ${currentBotType === 'official-bot' ? 'border-info' : ''}`}
+            onClick={) => handleBotTypeSelect('official-bot')}
+            style={{cursor: pointer}}
+          >
             <div className="card-body">
               <h5 className="card-title">Official Bot</h5>
               <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" className="stretched-link" onClick={() => handleBotTypeSelect('official-bot')} />
             </div>
           </div>
 
-          <div className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}>
+          <div
+            className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
+            onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
+            style={{cursor: pointer}}
+          >
             <div className="card-body">
               <h5 className="card-title">Custom Bot (Without Proxy)</h5>
               <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. </p>
-              <a href="#" className="stretched-link" onClick={() => handleBotTypeSelect('custom-bot-without-proxy')} />
             </div>
           </div>
 
-          <div className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}>
+          <div
+            className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
+            onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
+            style={{cursor: pointer}}
+          >
             <div className="card-body">
               <h5 className="card-title">Custom Bot (With Proxy)</h5>
               <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-              <a href="#" className="stretched-link" onClick={() => handleBotTypeSelect('custom-bot-with-proxy')} />
             </div>
           </div>
 
