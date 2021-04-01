@@ -59,34 +59,69 @@ const CustomBotWithoutProxySettings = (props) => {
             className="btn btn-primary text-nowrap mx-1"
             onClick={() => window.open('https://api.slack.com/apps', '_blank')}
           >
-            {t('slack_integration.without_proxy.create_bot')}
+            {t('admin:slack_integration.without_proxy.create_bot')}
           </button>
         </div>
       </div>
+      <table className="table settings-table">
+        <colgroup>
+          <col className="item-name" />
+          <col className="from-db" />
+          <col className="from-env-vars" />
+        </colgroup>
+        <thead>
+          <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Signing Secret</th>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                value={slackSigningSecret || ''}
+                onChange={e => setSlackSigningSecret(e.target.value)}
+              />
+            </td>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                value={slackSigningSecretEnv || ''}
+                readOnly
+              />
+              <p className="form-text text-muted">
+                <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <th>Bot User OAuth Token</th>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                value={slackBotToken || ''}
+                onChange={e => setSlackBotToken(e.target.value)}
+              />
+            </td>
+            <td>
+              <input
+                className="form-control"
+                type="text"
+                value={slackBotTokenEnv || ''}
+                readOnly
+              />
+              <p className="form-text text-muted">
+                <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_BOT_TOKEN' }) }} />
+              </p>
+            </td>
 
-      <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">Signing Secret</label>
-        <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            value={slackSigningSecret || slackSigningSecretEnv || ''}
-            onChange={e => setSlackSigningSecret(e.target.value)}
-          />
-        </div>
-      </div>
+          </tr>
+        </tbody>
+      </table>
 
-      <div className="form-group row mb-5">
-        <label className="text-left text-md-right col-md-3 col-form-label">Bot User OAuth Token</label>
-        <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            value={slackBotToken || slackBotTokenEnv || ''}
-            onChange={e => setSlackBotToken(e.target.value)}
-          />
-        </div>
-      </div>
+
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
     </>
   );
