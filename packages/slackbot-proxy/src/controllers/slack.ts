@@ -43,14 +43,14 @@ export class SlackCtrl {
   }
 
   @Get('/oauth_redirect')
-  handleOauthRedirect(@Req() req: Req, @Res() res: Res): void {
+  async handleOauthRedirect(@Req() req: Req, @Res() res: Res): Promise<void> {
     // illegal state
     // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
     if (req.query.state === '') {
       throw new Error('illegal state');
     }
 
-    this.installerService.installer.handleCallback(req, res);
+    return this.installerService.installer.handleCallback(req, res);
 
     // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
     // this.installer.handleCallback(req, res, {

@@ -6,6 +6,7 @@ import { Service } from '@tsed/di';
 
 const installationStore: InstallationStore = {
   storeInstallation: async(installation: Installation<'v1' | 'v2', boolean>) => {
+    console.log({ installation });
   },
   fetchInstallation: async(installQuery: InstallationQuery<boolean>) => {
     const installation: Installation<'v1' | 'v2', boolean> = {
@@ -42,7 +43,7 @@ export class InstallerService {
       clientId,
       clientSecret,
       stateSecret,
-      // installationStore,
+      installationStore,
     });
   }
 
