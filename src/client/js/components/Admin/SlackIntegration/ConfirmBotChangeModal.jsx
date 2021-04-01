@@ -49,7 +49,7 @@ const ConfirmBotChangeModal = (props) => {
 };
 
 ConfirmBotChangeModal.propTypes = {
-  isOpen: PropTypes.bool,
+  isOpen: PropTypes.bool.isRequired,
   onConfirmClick: PropTypes.func,
   onCancelClick: PropTypes.func,
 };
