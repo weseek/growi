@@ -59,6 +59,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
   return (
     <>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
       <div className="row my-5">
         <div className="mx-auto">
           <button

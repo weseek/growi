@@ -251,12 +251,19 @@
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
   "slack_integration": {
+    "modal": {
+      "warning": "注意",
+      "sure_change_bot_type": "Botの種類を変更しますか?",
+      "changes_will_be_deleted": "他のBotの設定が消去されます。",
+      "cancel": "取消",
+      "change": "変更する"
+    },
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
     "access_token_settings": {
       "discard": "破棄",
       "generate": "発行"
     },
-    "custom_bot_without_proxy_settings": "Custom bot (without-proxy) 設定",
+    "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
     "without_proxy": {
       "create_bot": "Bot を作成する"
     }

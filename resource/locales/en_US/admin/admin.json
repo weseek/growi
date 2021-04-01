@@ -253,12 +253,19 @@
     "delete": "Delete"
   },
   "slack_integration": {
+    "modal": {
+      "warning": "Warning",
+      "sure_change_bot_type": "Are you sure you want to change the bot type?",
+      "changes_will_be_deleted": "Settings for other bot types will be deleted.",
+      "cancel": "Cancel",
+      "change": "Change"
+    },
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
     "access_token_settings": {
       "discard": "Discard",
       "generate": "Generate"
     },
-    "custom_bot_without_proxy_settings": "Custom bot (without-proxy) Settings",
+    "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) Settings",
     "without_proxy": {
       "create_bot": "Create Bot"
     }
