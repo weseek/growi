@@ -148,7 +148,7 @@ module.exports = (crowi) => {
       catch (error) {
         const msg = 'Error occured in updating Custom bot setting';
         logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
+        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
       }
     });
 
@@ -168,7 +168,7 @@ module.exports = (crowi) => {
   router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     try {
-      const accessToken = generateAccessToken();
+      const accessToken = generateAccessToken(req.user);
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
       // initialize bolt service
@@ -180,7 +180,7 @@ module.exports = (crowi) => {
     catch (error) {
       const msg = 'Error occured in updating access token for access token';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'), 500);
     }
   });
 
@@ -200,7 +200,7 @@ module.exports = (crowi) => {
   router.delete('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     try {
-      await updateSlackBotSettings({ 'slackbot:access-token': '' });
+      await updateSlackBotSettings({ 'slackbot:access-token': null });
 
       // initialize bolt service
       crowi.boltService.initialize();
@@ -211,7 +211,7 @@ module.exports = (crowi) => {
     catch (error) {
       const msg = 'Error occured in discard of slackbotAccessToken';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'discard-slackbotAccessToken-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'discard-slackbotAccessToken-failed'), 500);
     }
   });
 
