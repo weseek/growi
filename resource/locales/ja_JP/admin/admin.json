@@ -345,4 +345,8 @@
       "select_group": "グループを選択してください",
       "no_groups": "グループがありません",
       "publish_pages": "全て公開する",
-      "de
+      "delete_pages": "全て削除する",
+      "transfer_pages": "全て他のグループに移譲する"
+    }
+  }
+}

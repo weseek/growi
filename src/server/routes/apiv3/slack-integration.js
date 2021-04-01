@@ -95,7 +95,7 @@ module.exports = (crowi) => {
     return res.apiv3({ slackBotSettingParams });
   });
 
-    /**
+  /**
    * @swagger
    *
    *    /slack-integration/:
