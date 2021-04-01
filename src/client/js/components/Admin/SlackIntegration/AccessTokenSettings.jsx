@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const AccessTokenSettings = (props) => {
   const { appContainer } = props;
@@ -26,14 +26,16 @@ const AccessTokenSettings = (props) => {
 
     // }
     // catch (err) {
-      
     // }
+    // eslint-disable-next-line no-console
     console.log('discard');
   };
 
-  const textboxFocusHandler = (e) => {
+  const textboxClickHandler = (e) => {
     e.target.select();
-  }
+    document.execCommand('copy');
+    toastSuccess('Copied');
+  };
 
   return (
     <>
@@ -44,7 +46,7 @@ const AccessTokenSettings = (props) => {
             className="form-control"
             type="text"
             value={accessToken}
-            onFocus={textboxFocusHandler}
+            onClick={textboxClickHandler}
             readOnly
           />
         </div>

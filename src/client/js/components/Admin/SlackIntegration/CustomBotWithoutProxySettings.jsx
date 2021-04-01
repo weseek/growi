@@ -60,6 +60,7 @@ const CustomBotWithoutProxySettings = (props) => {
             onClick={() => window.open('https://api.slack.com/apps', '_blank')}
           >
             {t('admin:slack_integration.without_proxy.create_bot')}
+            <i className="fas fa-external-link-alt"></i>
           </button>
         </div>
       </div>
