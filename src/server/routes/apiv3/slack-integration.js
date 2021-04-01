@@ -3,7 +3,6 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
-const { WebClient } = require('@slack/web-api');
 
 const crypto = require('crypto');
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -78,15 +77,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to get slackBot setting params.
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
-
-    // get work space name from slackbot token
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-    const web = new WebClient(slackBotToken);
-    const slackTeamInfo = await web.team.info();
-    const slackWorkSpaceName = slackTeamInfo.team.name;
-
     const slackBotSettingParams = {
-      slackWorkSpaceName,
       slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
       // TODO impl when creating official bot
       officialBotSettings: {
@@ -99,7 +90,7 @@ module.exports = (crowi) => {
         slackSigningSecretEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret'),
         slackBotTokenEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-        slackBotToken,
+        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
       },
       // TODO imple when creating with proxy
       customBotWithProxySettings: {
