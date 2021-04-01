@@ -95,10 +95,24 @@ module.exports = (crowi) => {
     return res.apiv3({ slackBotSettingParams });
   });
 
-  /**
+    /**
    * @swagger
-   *  /slack-integration/:
-   *    put:
+   *
+   *    /slack-integration/:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: putSlackIntegration
+   *        summary: /slack-integration/slack-integration
+   *        description: Put SlackIntegration setting.
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/Slack Integration'
+   *        responses:
+   *           200:
+   *             description: Succeeded to put Slack Integration setting.
    */
   router.put('/',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.SlackIntegration, apiV3FormValidator, async(req, res) => {

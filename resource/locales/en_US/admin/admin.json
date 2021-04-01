@@ -346,9 +346,4 @@
       "dropdown_desc": "Choose an action for private pages",
       "select_group": "Select a group",
       "no_groups": "No groups to select",
-      "publish_pages": "Publish all",
-      "delete_pages": "Delete all",
-      "transfer_pages": "Transfer to another group"
-    }
-  }
-}
+      "publish_pages
