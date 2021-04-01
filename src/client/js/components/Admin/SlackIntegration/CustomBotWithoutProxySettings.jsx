@@ -99,6 +99,7 @@ const CustomBotWithoutProxySettings = (props) => {
                 readOnly
               />
               <p className="form-text text-muted">
+                {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
               </p>
             </td>
@@ -121,6 +122,7 @@ const CustomBotWithoutProxySettings = (props) => {
                 readOnly
               />
               <p className="form-text text-muted">
+                {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_BOT_TOKEN' }) }} />
               </p>
             </td>
