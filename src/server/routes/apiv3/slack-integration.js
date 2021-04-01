@@ -84,7 +84,6 @@ module.exports = (crowi) => {
     const web = new WebClient(slackBotToken);
     const slackTeamInfo = await web.team.info();
     const slackWorkSpaceName = slackTeamInfo.team.name;
-    console.log(slackTeamInfo.team.name);
 
     const slackBotSettingParams = {
       slackWorkSpaceName,
