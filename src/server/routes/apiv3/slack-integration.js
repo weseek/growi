@@ -55,9 +55,9 @@ module.exports = (crowi) => {
   }
 
 
-  function generateAccessToken() {
-    const hasher = crypto.createHash('sha256');
-    hasher.update(`${new Date().getTime()}`);
+  function generateAccessToken(user) {
+    const hasher = crypto.createHash('sha512');
+    hasher.update(new Date().getTime() + user._id);
 
     return hasher.digest('base64');
   }
@@ -171,6 +171,10 @@ module.exports = (crowi) => {
       const accessToken = generateAccessToken();
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
+      // initialize bolt service
+      crowi.boltService.initialize();
+      crowi.boltService.publishUpdatedMessage();
+
       return res.apiv3({ accessToken });
     }
     catch (error) {
@@ -197,6 +201,10 @@ module.exports = (crowi) => {
 
     try {
       await updateSlackBotSettings({ 'slackbot:access-token': '' });
+
+      // initialize bolt service
+      crowi.boltService.initialize();
+      crowi.boltService.publishUpdatedMessage();
 
       return res.apiv3({});
     }
