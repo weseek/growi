@@ -132,6 +132,11 @@ module.exports = (crowi) => {
 
       try {
         await updateSlackBotSettings(requestParams);
+
+        // initialize bolt service
+        crowi.boltService.initialize();
+        crowi.boltService.publishUpdatedMessage();
+
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
         const customBotWithoutProxySettingParams = {
           slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),

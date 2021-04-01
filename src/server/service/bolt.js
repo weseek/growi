@@ -50,31 +50,92 @@ class BoltReciever {
 
 const { App } = require('@slack/bolt');
 const { WebClient, LogLevel } = require('@slack/web-api');
+const S2sMessage = require('../models/vo/s2s-message');
+const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
-class BoltService {
+class BoltService extends S2sMessageHandlable {
 
   constructor(crowi) {
+    super();
+
     this.crowi = crowi;
+    this.s2sMessagingService = crowi.s2sMessagingService;
     this.receiver = new BoltReciever();
+    this.client = null;
 
-    const signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
-    const token = crowi.configManager.getConfig('crowi', 'slackbot:token');
+    this.isBoltSetup = false;
+    this.lastLoadedAt = null;
 
-    const client = new WebClient(token, { logLevel: LogLevel.DEBUG });
-    this.client = client;
+    this.initialize();
+  }
 
-    if (token != null || signingSecret != null) {
-      logger.debug('SlackBot: setup is done');
-      this.bolt = new App({
-        token,
-        signingSecret,
-        receiver: this.receiver,
-      });
-      this.init();
+  initialize() {
+    this.isBoltSetup = false;
+
+    const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
+    const signingSecret = this.crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+
+    this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
+
+    if (token == null || signingSecret == null) {
+      this.bolt = null;
+      return;
+    }
+
+    this.bolt = new App({
+      token,
+      signingSecret,
+      receiver: this.receiver,
+    });
+    this.setupRoute();
+
+    logger.debug('SlackBot: setup is done');
+
+    this.isBoltSetup = true;
+    this.lastLoadedAt = new Date();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName, updatedAt } = s2sMessage;
+    if (eventName !== 'boltServiceUpdated' || updatedAt == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(s2sMessage.updatedAt);
+  }
+
+
+  /**
+   * @inheritdoc
+   */
+  async handleS2sMessage() {
+    const { configManager } = this.crowi;
+
+    logger.info('Reset bolt by pubsub notification');
+    await configManager.loadConfigs();
+    this.initialize();
+  }
+
+  async publishUpdatedMessage() {
+    const { s2sMessagingService } = this;
+
+    if (s2sMessagingService != null) {
+      const s2sMessage = new S2sMessage('boltServiceUpdated', { updatedAt: new Date() });
+
+      try {
+        await s2sMessagingService.publish(s2sMessage);
+      }
+      catch (e) {
+        logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
+      }
     }
   }
 
-  init() {
+
+  setupRoute() {
     this.bolt.command('/growi', async({
       command, client, body, ack,
     }) => {

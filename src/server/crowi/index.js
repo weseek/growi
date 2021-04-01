@@ -675,6 +675,11 @@ Crowi.prototype.setupBoltService = async function() {
   if (this.boltService == null) {
     this.boltService = new BoltService(this);
   }
+
+  // add as a message handler
+  if (this.s2sMessagingService != null) {
+    this.s2sMessagingService.addMessageHandler(this.boltService);
+  }
 };
 
 module.exports = Crowi;
