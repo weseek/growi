@@ -64,6 +64,7 @@ class BoltService extends S2sMessageHandlable {
     this.client = null;
 
     this.isBoltSetup = false;
+    this.lastLoadedAt = null;
 
     this.initialize();
   }
@@ -89,7 +90,33 @@ class BoltService extends S2sMessageHandlable {
     this.setupRoute();
 
     logger.debug('SlackBot: setup is done');
+
     this.isBoltSetup = true;
+    this.lastLoadedAt = new Date();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  shouldHandleS2sMessage(s2sMessage) {
+    const { eventName, updatedAt } = s2sMessage;
+    if (eventName !== 'boltServiceUpdated' || updatedAt == null) {
+      return false;
+    }
+
+    return this.lastLoadedAt == null || this.lastLoadedAt < new Date(s2sMessage.updatedAt);
+  }
+
+
+  /**
+   * @inheritdoc
+   */
+  async handleS2sMessage() {
+    const { configManager } = this.crowi;
+
+    logger.info('Reset bolt by pubsub notification');
+    await configManager.loadConfigs();
+    this.initialize();
   }
 
   async publishUpdatedMessage() {
