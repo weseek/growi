@@ -105,6 +105,7 @@ Crowi.prototype.init = async function() {
     this.setupSearcher(),
     this.setupMailer(),
     this.setupSlack(),
+    this.setupSlackLegacy(),
     this.setupCsrf(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
@@ -313,6 +314,10 @@ Crowi.prototype.getSlack = function() {
   return this.slack;
 };
 
+Crowi.prototype.getSlackLegacy = function() {
+  return this.slackLegacy;
+};
+
 Crowi.prototype.getInterceptorManager = function() {
   return this.interceptorManager;
 };
@@ -381,6 +386,15 @@ Crowi.prototype.setupSlack = async function() {
 
   return new Promise(((resolve, reject) => {
     self.slack = require('../util/slack')(self);
+    resolve();
+  }));
+};
+
+Crowi.prototype.setupSlackLegacy = async function() {
+  const self = this;
+
+  return new Promise(((resolve, reject) => {
+    self.slackLegacy = require('../util/slack-legacy')(self);
     resolve();
   }));
 };
@@ -660,6 +674,11 @@ Crowi.prototype.setupBoltService = async function() {
   const BoltService = require('../service/bolt');
   if (this.boltService == null) {
     this.boltService = new BoltService(this);
+  }
+
+  // add as a message handler
+  if (this.s2sMessagingService != null) {
+    this.s2sMessagingService.addMessageHandler(this.boltService);
   }
 };
 

@@ -13,8 +13,7 @@ import AdminNotificationContainer from '../../../services/AdminNotificationConta
 
 import { CustomNavTab } from '../../CustomNavigation/CustomNav';
 
-import UserTriggerNotification from './UserTriggerNotification';
-import GlobalNotification from './GlobalNotification';
+import SlackAppConfiguration from './SlackAppConfiguration';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
@@ -22,8 +21,8 @@ let retrieveErrors = null;
 function NotificationSetting(props) {
   const { adminNotificationContainer } = props;
 
-  const [activeTab, setActiveTab] = useState('user_trigger_notification');
-  const [activeComponents, setActiveComponents] = useState(new Set(['user_trigger_notification']));
+  const [activeTab, setActiveTab] = useState('slack_configuration');
+  const [activeComponents, setActiveComponents] = useState(new Set(['slack_configuration']));
 
   const switchActiveTab = (selectedTab) => {
     setActiveTab(selectedTab);
@@ -51,15 +50,10 @@ function NotificationSetting(props) {
 
   const navTabMapping = useMemo(() => {
     return {
-      user_trigger_notification: {
+      slack_configuration: {
         Icon: () => <i className="icon-settings" />,
-        i18n: 'User trigger notification',
+        i18n: 'Slack configuration',
         index: 0,
-      },
-      global_notification: {
-        Icon: () => <i className="icon-settings" />,
-        i18n: 'Global notification',
-        index: 1,
       },
     };
   }, []);
@@ -69,11 +63,8 @@ function NotificationSetting(props) {
       <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
 
       <TabContent activeTab={activeTab} className="p-5">
-        <TabPane tabId="user_trigger_notification">
-          {activeComponents.has('user_trigger_notification') && <UserTriggerNotification />}
-        </TabPane>
-        <TabPane tabId="global_notification">
-          {activeComponents.has('global_notification') && <GlobalNotification />}
+        <TabPane tabId="slack_configuration">
+          {activeComponents.has('slack_configuration') && <SlackAppConfiguration />}
         </TabPane>
       </TabContent>
     </>
