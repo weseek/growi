@@ -2,22 +2,28 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer } = props;
+  const { appContainer, adminAppContainer } = props;
   const { t } = useTranslation();
 
   const [slackSigningSecret, setSlackSigningSecret] = useState('');
   const [slackBotToken, setSlackBotToken] = useState('');
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+
+  // get site name from this GROWI
+  // eslint-disable-next-line no-unused-vars
+  const [siteName, setSiteName] = useState('');
   const botType = 'without-proxy';
 
   const fetchData = useCallback(async() => {
     try {
+      await adminAppContainer.retrieveAppSettingsData();
       const res = await appContainer.apiv3.get('/slack-integration/');
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
@@ -26,11 +32,12 @@ const CustomBotWithoutProxySettings = (props) => {
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
+      setSiteName(adminAppContainer.state.title);
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer]);
+  }, [appContainer, adminAppContainer]);
 
   useEffect(() => {
     fetchData();
@@ -127,10 +134,11 @@ const CustomBotWithoutProxySettings = (props) => {
   );
 };
 
-const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer]);
+const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer, AdminAppContainer]);
 
 CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
