@@ -9,7 +9,7 @@ const AccessTokenSettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation('admin');
 
-  const [accessToken, setAccessToken] = useState('asdfasdf');
+  const [accessToken, setAccessToken] = useState('');
 
   const generateTokenHandler = async() => {
     try {
@@ -31,10 +31,11 @@ const AccessTokenSettings = (props) => {
     console.log('discard');
   };
 
-  const textboxClickHandler = (e) => {
-    e.target.select();
-    document.execCommand('copy');
-    toastSuccess('Copied');
+  const textboxClickHandler = () => {
+    const a = navigator.permissions.query({name: "clipboard-write"});
+    console.log(a);
+    
+
   };
 
   return (
