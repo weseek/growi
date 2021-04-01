@@ -3,53 +3,9 @@ const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
 
-class BoltReciever {
-
-  init(app) {
-    this.bolt = app;
-  }
-
-  async requestHandler(body) {
-    if (this.bolt === undefined) {
-      throw new Error('Slack Bot service is not setup');
-    }
-
-    let ackCalled = false;
-
-    const payload = body.payload;
-    let reqBody;
-
-    if (payload != null) {
-      reqBody = JSON.parse(payload);
-    }
-    else {
-      reqBody = body;
-    }
-
-    const event = {
-      body: reqBody,
-      ack: (response) => {
-        if (ackCalled) {
-          return;
-        }
-
-        ackCalled = true;
-
-        if (response instanceof Error) {
-          const message = response.message || 'Error occurred';
-          throw new Error(message);
-        }
-        return;
-      },
-    };
-
-    await this.bolt.processEvent(event);
-  }
-
-}
-
-const { App } = require('@slack/bolt');
 const { WebClient, LogLevel } = require('@slack/web-api');
+const { createMessageAdapter } = require('@slack/interactive-messages');
+
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
@@ -60,38 +16,30 @@ class BoltService extends S2sMessageHandlable {
 
     this.crowi = crowi;
     this.s2sMessagingService = crowi.s2sMessagingService;
-    this.receiver = new BoltReciever();
-    this.client = null;
 
-    this.isBoltSetup = false;
+    this.client = null;
+    this.searchService = null;
+
+    this.isSetup = false;
     this.lastLoadedAt = null;
 
     this.initialize();
   }
 
   initialize() {
-    this.isBoltSetup = false;
+    this.isSetup = false;
 
     const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
-    const signingSecret = this.crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+    // const signingSecret = this.crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
 
-    this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
-
-    if (token == null || signingSecret == null) {
-      this.bolt = null;
-      return;
+    if (token != null) {
+      // const slackInteractions = createMessageAdapter(signingSecret);
+      // this.crowi.express.use('/_api/v3/slack-bot', slackInteractions.requestListener());
+      this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
     }
 
-    this.bolt = new App({
-      token,
-      signingSecret,
-      receiver: this.receiver,
-    });
-    this.setupRoute();
-
     logger.debug('SlackBot: setup is done');
-
-    this.isBoltSetup = true;
+    this.isSetup = true;
     this.lastLoadedAt = new Date();
   }
 
@@ -134,57 +82,56 @@ class BoltService extends S2sMessageHandlable {
     }
   }
 
-
   setupRoute() {
-    this.bolt.command('/growi', async({
-      command, client, body, ack,
-    }) => {
-      await ack();
-      const args = command.text.split(' ');
-      const firstArg = args[0];
+    // this.bolt.command('/growi', async({
+    //   command, client, body, ack,
+    // }) => {
+    //   await ack();
+    //   const args = command.text.split(' ');
+    //   const firstArg = args[0];
 
-      switch (firstArg) {
-        case 'search':
-          await this.showEphemeralSearchResults(command, args);
-          break;
+    //   switch (firstArg) {
+    //     case 'search':
+    //       await this.showEphemeralSearchResults(command, args);
+    //       break;
 
-        case 'create':
-          await this.createModal(command, client, body);
-          break;
+    //     case 'create':
+    //       await this.createModal(command, client, body);
+    //       break;
 
-        default:
-          this.notCommand(command);
-          break;
-      }
-    });
+    //     default:
+    //       this.notCommand(command);
+    //       break;
+    //   }
+    // });
 
-    this.bolt.view('createPage', async({
-      ack, view, body, client,
-    }) => {
-      await ack();
-      await this.createPageInGrowi(view, body);
-    });
+    // this.bolt.view('createPage', async({
+    //   ack, view, body, client,
+    // }) => {
+    //   await ack();
+    //   await this.createPageInGrowi(view, body);
+    // });
 
-    this.bolt.action('showNextResults', async({
-      ack, action,
-    }) => {
-      await ack();
-      const parsedValue = JSON.parse(action.value);
+    // this.bolt.action('showNextResults', async({
+    //   ack, action,
+    // }) => {
+    //   await ack();
+    //   const parsedValue = JSON.parse(action.value);
 
-      const command = parsedValue.command;
-      const args = parsedValue.args;
-      const offset = parsedValue.offset;
+    //   const command = parsedValue.command;
+    //   const args = parsedValue.args;
+    //   const offset = parsedValue.offset;
 
-      const newOffset = offset + 10;
-      this.showEphemeralSearchResults(command, args, newOffset);
-    });
+    //   const newOffset = offset + 10;
+    //   this.showEphemeralSearchResults(command, args, newOffset);
+    // });
 
-    this.bolt.action('shareSearchResults', async({
-      body, ack, say, action,
-    }) => {
-      await ack();
-      await say(action.value);
-    });
+    // this.bolt.action('shareSearchResults', async({
+    //   body, ack, say, action,
+    // }) => {
+    //   await ack();
+    //   await say(action.value);
+    // });
 
   }
 
@@ -206,12 +153,12 @@ class BoltService extends S2sMessageHandlable {
     return keywords;
   }
 
-  async getSearchResultPaths(command, args, offset = 0) {
+  async getSearchResultPaths(body, args, offset = 0) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
       this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
@@ -230,8 +177,8 @@ class BoltService extends S2sMessageHandlable {
     if (results.data.length === 0) {
       logger.info(`No page found with "${keywords}"`);
       this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
           this.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
@@ -263,10 +210,10 @@ class BoltService extends S2sMessageHandlable {
     };
   }
 
-  async showEphemeralSearchResults(command, args, offsetNum) {
+  async showEphemeralSearchResults(body, args, offsetNum) {
     const {
       resultPaths, offset, resultsTotal,
-    } = await this.getSearchResultPaths(command, args, offsetNum);
+    } = await this.getSearchResultPaths(body, args, offsetNum);
 
     const keywords = this.getKeywords(args);
 
@@ -327,13 +274,13 @@ class BoltService extends S2sMessageHandlable {
               text: 'Next',
             },
             action_id: 'showNextResults',
-            value: JSON.stringify({ offset, command, args }),
+            value: JSON.stringify({ offset, body, args }),
           },
         );
       }
       await this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
@@ -344,8 +291,8 @@ class BoltService extends S2sMessageHandlable {
     catch {
       logger.error('Failed to get search results.');
       await this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
