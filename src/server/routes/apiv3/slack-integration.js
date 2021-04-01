@@ -29,6 +29,12 @@ const router = express.Router();
  *            type: string
  *          botType:
  *            type: string
+ *      SlackIntegration:
+ *        description: SlackIntegration
+ *        type: object
+ *        properties:
+ *          currentBotType:
+ *            type: string
  */
 
 
