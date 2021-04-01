@@ -85,9 +85,8 @@ const SlackIntegration = (props) => {
         <div className="card-deck mx-auto">
 
           <div
-            className={`card mx-3 py-5 rounded ${currentBotType === 'official-bot' ? 'border-info' : ''}`}
+            className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'official-bot' ? 'border-info' : ''}`}
             onClick={() => handleBotTypeSelect('official-bot')}
-            style={{ cursor: 'pointer' }}
           >
             <div className="card-body">
               <h5 className="card-title">Official Bot</h5>
@@ -96,9 +95,8 @@ const SlackIntegration = (props) => {
           </div>
 
           <div
-            className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
+            className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
             onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
-            style={{ cursor: 'pointer' }}
           >
             <div className="card-body">
               <h5 className="card-title">Custom Bot (Without Proxy)</h5>
@@ -107,9 +105,8 @@ const SlackIntegration = (props) => {
           </div>
 
           <div
-            className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
+            className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
             onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
-            style={{ cursor: 'pointer' }}
           >
             <div className="card-body">
               <h5 className="card-title">Custom Bot (With Proxy)</h5>
