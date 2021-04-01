@@ -12,13 +12,13 @@ const ConfirmBotChangeModal = (props) => {
     if (props.onCancelClick != null) {
       props.onCancelClick();
     }
-  }
+  };
 
   const handleChangeButton = () => {
     if (props.onConfirmClick != null) {
       props.onConfirmClick();
     }
-  }
+  };
 
   return (
     <Modal isOpen={props.isOpen} centered>
