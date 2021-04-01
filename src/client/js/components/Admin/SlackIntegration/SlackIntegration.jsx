@@ -17,7 +17,8 @@ const SlackIntegration = (props) => {
 
   const fetchData = useCallback(async() => {
     try {
-      console.log(await appContainer.apiv3.get('slack-integration/'));
+      const response = await appContainer.apiv3.get('slack-integration/');
+      setCurrentBotType(response.currentBotType);
     }
     catch (err) {
       toastError(err);
