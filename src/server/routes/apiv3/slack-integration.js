@@ -79,7 +79,7 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    // get work space name from slack
+    // get work space name from slackbot token
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     const web = new WebClient(slackBotToken);
     const slackTeamInfo = await web.team.info();
