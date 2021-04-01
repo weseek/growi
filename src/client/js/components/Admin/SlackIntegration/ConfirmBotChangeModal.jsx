@@ -7,25 +7,22 @@ import {
 
 const ConfirmBotChangeModal = (props) => {
   const { t } = useTranslation('admin');
-  let isOpen = false;
-  let onConfirmClick = null;
-  let onCancelClick = null;
 
-  if (props.isOpen != null) {
-    isOpen = props.isOpen;
+  const handleCancelButton = () => {
+    if (props.onCancelClick != null) {
+      props.onCancelClick();
+    }
   }
 
-  if (props.onConfirmClick != null) {
-    onConfirmClick = props.onConfirmClick;
-  }
-
-  if (props.onCancelClick != null) {
-    onCancelClick = props.onCancelClick;
+  const handleChangeButton = () => {
+    if (props.onConfirmClick != null) {
+      props.onConfirmClick();
+    }
   }
 
   return (
-    <Modal isOpen={isOpen} centered>
-      <ModalHeader toggle={onCancelClick}>
+    <Modal isOpen={props.isOpen} centered>
+      <ModalHeader toggle={handleCancelButton}>
         {t('slack_integration.modal.warning')}
       </ModalHeader>
       <ModalBody>
@@ -37,10 +34,10 @@ const ConfirmBotChangeModal = (props) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-secondary" onClick={onCancelClick}>
+        <button type="button" className="btn btn-secondary" onClick={handleCancelButton}>
           {t('slack_integration.modal.cancel')}
         </button>
-        <button type="button" className="btn btn-primary" onClick={onConfirmClick}>
+        <button type="button" className="btn btn-primary" onClick={handleChangeButton}>
           {t('slack_integration.modal.change')}
         </button>
       </ModalFooter>
