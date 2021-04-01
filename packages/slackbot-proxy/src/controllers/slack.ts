@@ -32,7 +32,7 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  handlewEvent(@BodyParams() body: any, @Res() res: Res): string {
+  handleEvent(@BodyParams() body: any, @Res() res: Res): string {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
