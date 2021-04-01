@@ -31,6 +31,10 @@ const AccessTokenSettings = (props) => {
     console.log('discard');
   };
 
+  const textboxFocusHandler = (e) => {
+    e.target.select();
+  }
+
   return (
     <>
       <div className="form-group row my-5">
@@ -40,6 +44,7 @@ const AccessTokenSettings = (props) => {
             className="form-control"
             type="text"
             value={accessToken}
+            onFocus={textboxFocusHandler}
             readOnly
           />
         </div>
