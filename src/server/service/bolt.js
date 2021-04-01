@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const PAGINGLIMIT = 10;
 
 const { WebClient, LogLevel } = require('@slack/web-api');
-const { createMessageAdapter } = require('@slack/interactive-messages');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -33,8 +32,6 @@ class BoltService extends S2sMessageHandlable {
     // const signingSecret = this.crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
 
     if (token != null) {
-      // const slackInteractions = createMessageAdapter(signingSecret);
-      // this.crowi.express.use('/_api/v3/slack-bot', slackInteractions.requestListener());
       this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
     }
 
@@ -83,27 +80,6 @@ class BoltService extends S2sMessageHandlable {
   }
 
   setupRoute() {
-    // this.bolt.command('/growi', async({
-    //   command, client, body, ack,
-    // }) => {
-    //   await ack();
-    //   const args = command.text.split(' ');
-    //   const firstArg = args[0];
-
-    //   switch (firstArg) {
-    //     case 'search':
-    //       await this.showEphemeralSearchResults(command, args);
-    //       break;
-
-    //     case 'create':
-    //       await this.createModal(command, client, body);
-    //       break;
-
-    //     default:
-    //       this.notCommand(command);
-    //       break;
-    //   }
-    // });
 
     // this.bolt.view('createPage', async({
     //   ack, view, body, client,
@@ -135,11 +111,11 @@ class BoltService extends S2sMessageHandlable {
 
   }
 
-  notCommand(command) {
+  notCommand(body) {
     logger.error('Invalid first argument');
     this.client.chat.postEphemeral({
-      channel: command.channel_id,
-      user: command.user_id,
+      channel: body.channel_id,
+      user: body.user_id,
       blocks: [
         this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
@@ -301,9 +277,9 @@ class BoltService extends S2sMessageHandlable {
     }
   }
 
-  async createModal(command, client, body) {
+  async createModal(body) {
     try {
-      await client.views.open({
+      await this.client.views.open({
         trigger_id: body.trigger_id,
 
         view: {
@@ -332,8 +308,8 @@ class BoltService extends S2sMessageHandlable {
     catch (err) {
       logger.error('Failed to create a page.');
       await this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
         ],

@@ -1,10 +1,6 @@
 
 const express = require('express');
 
-const loggerFactory = require('@alias/logger');
-
-const logger = loggerFactory('growi:routes:apiv3:slack-bot');
-
 const router = express.Router();
 
 module.exports = (crowi) => {
@@ -38,22 +34,24 @@ module.exports = (crowi) => {
     res.send();
     console.log(req.body);
 
-    const { text } = req.body;
-    const args = text.split(' ');
+    const { body } = req;
+    const args = body.text.split(' ');
     const command = args[0];
 
     switch (command) {
       case 'search':
-        await crowi.boltService.searchService.search(req.body, args);
+        await crowi.boltService.showEphemeralSearchResults(body, args);
         break;
-
+      case 'create':
+        await crowi.boltService.createModal(body);
+        break;
       default:
-        this.notCommand(command);
+        await crowi.boltService.notCommand(body);
         break;
     }
 
-
   });
+
 
   return router;
 };
