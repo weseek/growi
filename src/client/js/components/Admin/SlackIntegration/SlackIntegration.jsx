@@ -18,12 +18,13 @@ const SlackIntegration = (props) => {
   const fetchData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
-      setCurrentBotType(response.currentBotType);
+      const { currentBotType } = response.data.slackBotSettingParams;
+      setCurrentBotType(currentBotType);
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer]);
+  }, [appContainer.apiv3]);
 
   useEffect(() => {
     fetchData();
@@ -34,7 +35,7 @@ const SlackIntegration = (props) => {
       await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
         slackBotToken: '',
-        botType: '',
+        botType: selectedBotType,
       });
     }
     catch (err) {
