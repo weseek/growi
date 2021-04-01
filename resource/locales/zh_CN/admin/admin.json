@@ -192,7 +192,7 @@
 			"upload": "Upload",
 			"discard": "Discard uploaded data",
 			"errors": {
-        "versions_not_met": "this growi and the uploarded data versions are not met",
+        "versions_not_met": "this growi and the uploaded data versions are not met",
 				"at_least_one": "Select one or more collections.",
 				"page_and_revision": "'Pages' and 'Revisions' must be imported both.",
 				"depends": "'{{target}}' must be selected when '{{condition}}' is selected."
@@ -261,11 +261,19 @@
 		"delete": "删除"
   },
   "slack_integration": {
+    "modal": {
+      "warning": "警告",
+      "sure_change_bot_type": "您确定要更改设置吗？",
+      "changes_will_be_deleted": "其他Bot类型的设置将被删除。",
+      "cancel": "取消",
+      "change": "改变"
+    },
+    "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。",
     "access_token_settings": {
       "discard": "丢弃",
       "generate": "生成"
     },
-    "custom_bot_without_proxy_settings": "Custom bot (without-proxy) 设置",
+    "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 设置",
     "without_proxy": {
       "create_bot": "创建 Bot"
     }
