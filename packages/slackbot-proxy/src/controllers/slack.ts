@@ -2,35 +2,18 @@ import {
   BodyParams, Controller, Get, Post, Req, Res,
 } from '@tsed/common';
 
-import { InstallProvider } from '@slack/oauth';
+import { InstallerService } from '~/services/InstallerService';
 
 @Controller('/slack')
 export class SlackCtrl {
 
-  installer: InstallProvider;
-
-  constructor() {
-    const clientId = process.env.SLACK_CLIENT_ID;
-    const clientSecret = process.env.SLACK_CLIENT_SECRET;
-    const stateSecret = process.env.SLACK_INSTALLPROVIDER_STATE_SECRET;
-
-    if (clientId === undefined) {
-      throw new Error('The environment variable \'SLACK_CLIENT_ID\' must be defined.');
-    }
-    if (clientSecret === undefined) {
-      throw new Error('The environment variable \'SLACK_CLIENT_SECRET\' must be defined.');
-    }
-
-    this.installer = new InstallProvider({
-      clientId,
-      clientSecret,
-      stateSecret,
-    });
+  // eslint-disable-next-line no-useless-constructor
+  constructor(private readonly installerService: InstallerService) {
   }
 
   @Get('/install')
   async install(): Promise<string> {
-    const url = await this.installer.generateInstallUrl({
+    const url = await this.installerService.installer.generateInstallUrl({
       // Add the scopes your app needs
       scopes: [
         'channels:history',
@@ -67,7 +50,7 @@ export class SlackCtrl {
       throw new Error('illegal state');
     }
 
-    this.installer.handleCallback(req, res);
+    this.installerService.installer.handleCallback(req, res);
 
     // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
     // this.installer.handleCallback(req, res, {

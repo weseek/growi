@@ -26,6 +26,9 @@ const connectionOptions: ConnectionOptions = {
       `${rootDir}/middlewares/*.ts`,
     ],
   },
+  componentsScan: [
+    `${rootDir}/services/*.ts`,
+  ],
   typeorm: [
     {
       ...connectionOptions,
