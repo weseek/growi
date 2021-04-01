@@ -140,8 +140,6 @@ class BoltService extends S2sMessageHandlable {
       command, client, body, ack,
     }) => {
       await ack();
-      this.verifyAccessToken(body, command);
-
       const args = command.text.split(' ');
       const firstArg = args[0];
 
