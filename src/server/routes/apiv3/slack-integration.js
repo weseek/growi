@@ -45,9 +45,9 @@ module.exports = (crowi) => {
       body('botType').isString(),
     ],
     SlackIntegration: [
-      body('currentBotType') === 'official-bot'
-      || body('currentBotType') === 'custom-bot-without-proxy'
-      || body('currentBotType') === 'custom-bot-with-proxy',
+      body('currentBotType')
+        .isString()
+        .isIn(['official-bot', 'custom-bot-without-proxy', 'custom-bot-with-proxy']),
     ],
   };
 
