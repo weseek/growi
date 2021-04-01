@@ -1845,6 +1845,27 @@
   optionalDependencies:
     express "^4.0.0"
 
+"@slack/interactive-messages@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@slack/interactive-messages/-/interactive-messages-2.0.1.tgz#7847aa17f7303cd28ccb7df130632f193b07ff91"
+  integrity sha512-d213Lx+COphczYqJM+TO5O/Faq4Z5LDHC2j++BqMHZkYRIEplXLaTEM8wmU+DPW0CFgxPwGhiq+bQCylQC+Wiw==
+  dependencies:
+    "@types/debug" "^4.1.4"
+    "@types/express" "^4.17.0"
+    "@types/lodash.isfunction" "^3.0.6"
+    "@types/lodash.isplainobject" "^4.0.6"
+    "@types/lodash.isregexp" "^4.0.6"
+    "@types/lodash.isstring" "^4.0.6"
+    "@types/node" ">=12.0.0"
+    axios "^0.21.1"
+    debug "^3.1.0"
+    lodash.isfunction "^3.0.9"
+    lodash.isplainobject "^4.0.6"
+    lodash.isregexp "^4.0.1"
+    lodash.isstring "^4.0.1"
+    raw-body "^2.3.3"
+    tsscmp "^1.0.6"
+
 "@slack/logger@>=1.0.0 <3.0.0", "@slack/logger@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@slack/logger/-/logger-2.0.0.tgz#6a4e1c755849bc0f66dac08a8be54ce790ec0e6b"
@@ -2077,6 +2098,27 @@
   resolved "https://registry.yarnpkg.com/@types/ldapjs/-/ldapjs-1.0.2.tgz#1152cb17564a1a5445af9956b95fc18d1a811ba6"
   dependencies:
     "@types/node" "*"
+
+"@types/lodash.isfunction@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.isfunction/-/lodash.isfunction-3.0.6.tgz#4b040bf914089ec34f0aacfef81a37237a0a8b8f"
+  integrity sha512-olhgKmBgzHnA5pxsOI6YHunzTBMSyBw1XjxIKFio8W+XhYiELGTt05FStE0suV0GWtlIMdn7V8M/UbYbSVdGYw==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash.isplainobject@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#757d2dcdecbb32f4452018b285a586776092efd1"
+  integrity sha512-8G41YFhmOl8Ck6NrwLK5hhnbz6ADfuDJP+zusDnX3PoYhfC60+H/rQE6zmdO4yFzPCPJPY4oGZK2spbXm6gYEA==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash.isregexp@^4.0.6":
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash.isregexp/-/lodash.isregexp-4.0.6.tgz#873f0505d565f8257204076e7d77e9c00b129f15"
+  integrity sha512-+MxWeayd6d0xdLuLA6T3kY7uNdfHH82m4gsxgpcQkpHcqEmXJiTWDrfUhDdlmErAn6tlj5zhjKsV0mQEkfJcfA==
+  dependencies:
+    "@types/lodash" "*"
 
 "@types/lodash.isstring@^4.0.6":
   version "4.0.6"
@@ -9584,6 +9626,11 @@ lodash.isplainobject@^4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
   integrity sha1-fFJqUtibRcRcxpC4gWO+BJf1UMs=
+
+lodash.isregexp@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/lodash.isregexp/-/lodash.isregexp-4.0.1.tgz#e13e647b30cd559752a04cd912086faf7da1c30b"
+  integrity sha1-4T5kezDNVZdSoEzZEghvr32hwws=
 
 lodash.isstring@^4.0.1:
   version "4.0.1"
