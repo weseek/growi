@@ -1,9 +1,8 @@
 import {
-  BodyParams, Context, Controller, Get, Post, Req, Res,
+  BodyParams, Controller, Get, Post, Req, Res,
 } from '@tsed/common';
 
 import { InstallProvider } from '@slack/oauth';
-import { parse as parseUrl } from 'url';
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -42,22 +41,15 @@ export class SlackCtrl {
 
   @Get('/oauth_redirect')
   handleOauthRedirect(@Req() req: Req, @Res() res: Res): void {
-    const parsedUrl = parseUrl(req.url, true);
-    const code = parsedUrl.query.code as string;
-    const state = parsedUrl.query.state as string;
-
-    console.log({ parsedUrl, code, state });
-
-    if (state.length === 0) {
-      req.query.state = 'initial';
+    // illegal state
+    // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
+    if (req.query.state !== 'init') {
+      throw new Error('illegal state');
     }
 
-    const parsedUrl2 = parseUrl(req.url, true);
-    const code2 = parsedUrl.query.code as string;
-    const state2 = parsedUrl.query.state as string;
-    console.log({ parsedUrl2, code2, state2 });
-
     this.installer.handleCallback(req, res);
+
+    // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
     // this.installer.handleCallback(req, res, {
     //   success: (installation, metadata, req, res) => {},
     //   failure: (error, installOptions, req, res) => {},
