@@ -109,7 +109,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/Slack Integration'
+   *                $ref: '#/components/schemas/SlackIntegration'
    *        responses:
    *           200:
    *             description: Succeeded to put Slack Integration setting.
