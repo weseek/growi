@@ -51,11 +51,15 @@ class BoltReciever {
 const { App } = require('@slack/bolt');
 const { WebClient, LogLevel } = require('@slack/web-api');
 const S2sMessage = require('../models/vo/s2s-message');
+const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
-class BoltService {
+class BoltService extends S2sMessageHandlable {
 
   constructor(crowi) {
+    super();
+
     this.crowi = crowi;
+    this.s2sMessagingService = crowi.s2sMessagingService;
     this.receiver = new BoltReciever();
     this.client = null;
 
