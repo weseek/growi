@@ -5,6 +5,7 @@ import OfficialBotSettings from './OfficialBotSettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
+import SlackGrowiBridging from './SlackGrowiBridging';
 
 const SlackIntegration = () => {
   const [currentBotType, setCurrentBotType] = useState(null);
@@ -60,6 +61,8 @@ const SlackIntegration = () => {
           <AccessTokenSettings />
         </div>
       </div>
+
+      <SlackGrowiBridging />
 
 
       <div className="row my-5">
