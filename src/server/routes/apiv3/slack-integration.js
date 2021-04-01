@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
+const crypto = require('crypto');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -51,6 +52,14 @@ module.exports = (crowi) => {
     const { configManager } = crowi;
     // update config without publishing S2sMessage
     return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+  }
+
+
+  function generateAccessToken(user) {
+    const hasher = crypto.createHash('sha512');
+    hasher.update(new Date().getTime() + user._id);
+
+    return hasher.digest('base64');
   }
 
   /**
@@ -137,6 +146,34 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
       }
     });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration/access-token:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: getCustomBotSetting
+   *        summary: /slack-integration
+   *        description: Generate accessToken
+   *        responses:
+   *          200:
+   *            description: Succeeded to update access token for slack
+   */
+  router.put('/access-token', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    try {
+      const accessToken = generateAccessToken(req.user);
+      await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
+
+      return res.apiv3({ accessToken });
+    }
+    catch (error) {
+      const msg = 'Error occured in updating access token for access token';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'));
+    }
+  });
 
   return router;
 };
