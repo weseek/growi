@@ -46,7 +46,6 @@ module.exports = (crowi) => {
     ],
     SlackIntegration: [
       body('currentBotType')
-        .isString()
         .isIn(['official-bot', 'custom-bot-without-proxy', 'custom-bot-with-proxy']),
     ],
   };
@@ -73,7 +72,7 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const slackBotSettingParams = {
-      slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
+      currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
       // TODO impl when creating official bot
       officialBotSettings: {
         // TODO impl this after GW-4939
@@ -119,10 +118,9 @@ module.exports = (crowi) => {
       catch (error) {
         const msg = 'Error occured in updating Slack bot setting';
         logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'update-SlackBotSetting-failed'));
+        return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'));
       }
     });
-
 
   /**
    * @swagger

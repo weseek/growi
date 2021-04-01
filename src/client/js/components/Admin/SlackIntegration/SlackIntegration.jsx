@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -14,6 +14,19 @@ const SlackIntegration = (props) => {
 
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
+
+  const fetchData = useCallback(async() => {
+    try {
+      console.log(await appContainer.apiv3.get('slack-integration/'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const resetBotType = async() => {
     try {
