@@ -32,8 +32,11 @@ const AccessTokenSettings = (props) => {
   };
 
   const textboxClickHandler = () => {
-    const a = navigator.permissions.query({ name: 'clipboard-write' });
-    console.log(a);
+    if (accessToken) {
+      navigator.clipboard.writeText(accessToken)
+        .then(() => { toastSuccess('Copied to clipboard') });
+    }
+
   };
 
   return (
