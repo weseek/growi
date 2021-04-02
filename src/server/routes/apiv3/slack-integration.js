@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
+const { WebClient } = require('@slack/web-api');
 
 const crypto = require('crypto');
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -152,6 +153,19 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
       }
     });
+
+  router.get('/custom-bot-without-proxy-slack-workspace', async(req, res) => {
+    // get work space name from slackbot token
+    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+
+    let slackWorkSpaceName = null;
+    if (slackBotToken != null) {
+      const web = new WebClient(slackBotToken);
+      const slackTeamInfo = await web.team.info();
+      slackWorkSpaceName = slackTeamInfo.team.name;
+    }
+    return res.apiv3({ slackWorkSpaceName });
+  });
 
   /**
    * @swagger
