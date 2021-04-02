@@ -18,17 +18,17 @@ const SlackIntegration = (props) => {
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
-  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
+  // const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
 
-  const getSlackWSInWithoutProxy = useCallback(async() => {
-    try {
-      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy-slack-workspace');
-      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer]);
+  // const getSlackWSInWithoutProxy = useCallback(async() => {
+  //   try {
+  //     const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy-slack-workspace');
+  //     setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //   }
+  // }, [appContainer]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -39,7 +39,6 @@ const SlackIntegration = (props) => {
       return;
     }
     setSelectedBotType(clickedBotType);
-    getSlackWSInWithoutProxy();
   };
 
   const handleCancelBotChange = () => {
@@ -70,10 +69,7 @@ const SlackIntegration = (props) => {
       break;
     case 'custom-bot-without-proxy':
       settingsComponent = (
-        <CustomBotWithoutProxySettings
-          onChangeRenderer={getSlackWSInWithoutProxy}
-          slackWorkSpaceName={slackWSNameInWithoutProxy}
-        />
+        <CustomBotWithoutProxySettings />
       );
       break;
     case 'custom-bot-with-proxy':
@@ -144,7 +140,6 @@ const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppCon
 SlackIntegration.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-  onChangeRenderer: PropTypes.func,
 };
 
 export default SlackIntegrationWrapper;

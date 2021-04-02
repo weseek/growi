@@ -17,11 +17,21 @@ const CustomBotWithoutProxySettings = (props) => {
   const [slackBotToken, setSlackBotToken] = useState('');
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-
+  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
   const botType = 'without-proxy';
+
+  const getSlackWSInWithoutProxy = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy-slack-workspace');
+      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer]);
 
   const fetchData = useCallback(async() => {
     try {
@@ -52,7 +62,7 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken,
         botType,
       });
-      props.onChangeRenderer();
+      getSlackWSInWithoutProxy();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -66,7 +76,7 @@ const CustomBotWithoutProxySettings = (props) => {
       {/* temporarily put bellow component */}
       <SlackGrowiBridging
         siteName={siteName}
-        slackWorkSpaceName={props.slackWorkSpaceName}
+        slackWorkSpaceName={slackWSNameInWithoutProxy}
       />
       <div className="row my-5">
         <div className="mx-auto">
@@ -150,8 +160,6 @@ const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWit
 CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
-  slackWorkSpaceName: PropTypes.string,
-  onChangeRenderer: PropTypes.func.isRequired,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
