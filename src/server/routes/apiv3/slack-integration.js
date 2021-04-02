@@ -154,6 +154,19 @@ module.exports = (crowi) => {
       }
     });
 
+  /**
+   * @swagger
+   *
+   *    /slack-integration/custom-bot-without-proxy-slack-workspace:
+   *      get:
+   *        tags: [slackWorkSpaceName]
+   *        operationId: getSlackWorkSpaceName
+   *        summary: /slack-integration
+   *        description: get slack WS name in custom bot without proxy
+   *        responses:
+   *          200:
+   *            description: Succeeded to get slack ws name for custom bot without proxy
+   */
   router.get('/custom-bot-without-proxy-slack-workspace', async(req, res) => {
     // get work space name from slackbot token
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
