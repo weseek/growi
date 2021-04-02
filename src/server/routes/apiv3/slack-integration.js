@@ -161,9 +161,17 @@ module.exports = (crowi) => {
     let slackWorkSpaceName = null;
     if (slackBotToken != null) {
       const web = new WebClient(slackBotToken);
-      const slackTeamInfo = await web.team.info();
-      slackWorkSpaceName = slackTeamInfo.team.name;
+      try {
+        const slackTeamInfo = await web.team.info();
+        slackWorkSpaceName = slackTeamInfo.team.name;
+      }
+      catch (error) {
+        const msg = 'Error occured in slack_bot_token';
+        logger.error('Error', msg);
+        return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'));
+      }
     }
+
     return res.apiv3({ slackWorkSpaceName });
   });
 
