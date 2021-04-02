@@ -17,12 +17,12 @@ const SlackIntegration = (props) => {
 
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
-  const [slackWorkSpaceName, setSlackWorkSpaceName] = useState(null);
+  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
 
   const getSlackWSInWithoutProxy = useCallback(async() => {
     try {
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy-slack-workspace');
-      setSlackWorkSpaceName(res.data.slackWorkSpaceName);
+      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
     }
     catch (err) {
       toastError(err);
@@ -60,7 +60,7 @@ const SlackIntegration = (props) => {
       settingsComponent = (
         <CustomBotWithoutProxySettings
           onChangeRenderer={getSlackWSInWithoutProxy}
-          slackWorkSpaceName={slackWorkSpaceName}
+          slackWorkSpaceName={slackWSNameInWithoutProxy}
         />
       );
       break;
