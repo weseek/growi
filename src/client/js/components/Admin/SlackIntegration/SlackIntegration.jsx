@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
@@ -18,17 +18,6 @@ const SlackIntegration = (props) => {
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
-  // const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
-
-  // const getSlackWSInWithoutProxy = useCallback(async() => {
-  //   try {
-  //     const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy-slack-workspace');
-  //     setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // }, [appContainer]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
