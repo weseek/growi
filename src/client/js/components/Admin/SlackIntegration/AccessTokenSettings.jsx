@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess } from '../../../util/apiNotification';
 
 const AccessTokenSettings = (props) => {
   const { t } = useTranslation('admin');
@@ -12,13 +12,13 @@ const AccessTokenSettings = (props) => {
     if (props.discardTokenHandler != null) {
       props.discardTokenHandler();
     }
-  }
+  };
 
   const generateTokenHandler = () => {
     if (props.generateTokenHandler != null) {
       props.generateTokenHandler();
     }
-  }
+  };
 
   const textboxClickHandler = (e) => {
     e.target.select();
