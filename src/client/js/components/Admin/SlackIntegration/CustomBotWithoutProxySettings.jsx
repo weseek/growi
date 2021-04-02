@@ -6,6 +6,8 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import SlackGrowiBridging from './SlackGrowiBridging';
+
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, adminAppContainer } = props;
@@ -60,6 +62,8 @@ const CustomBotWithoutProxySettings = (props) => {
   return (
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
+      {/* temporarily put bellow component */}
+      <SlackGrowiBridging />
       <div className="row my-5">
         <div className="mx-auto">
           <button

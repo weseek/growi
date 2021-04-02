@@ -8,7 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 
 
-const SlackGrowiBridging = (crowi, props) => {
+const SlackGrowiBridging = (props) => {
   const { WebClient, LogLevel } = require('@slack/web-api');
   const { adminAppContainer } = props;
   const [siteName, setSiteName] = useState('');
@@ -29,8 +29,8 @@ const SlackGrowiBridging = (crowi, props) => {
 
   const fetchData = useCallback(async() => {
     try {
-      // await adminAppContainer.retrieveAppSettingsData();
-      // setSiteName(adminAppContainer.state.title);
+      await adminAppContainer.retrieveAppSettingsData();
+      setSiteName(adminAppContainer.state.title);
       checkSlackGrowiCommunication();
 
     }
