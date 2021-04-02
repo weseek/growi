@@ -3,6 +3,7 @@ services:
 
   mysql:
     image: mysql:8.0
+    restart: unless-stopped
     ports:
       - 3306:3306
     environment:
@@ -12,6 +13,18 @@ services:
       - MYSQL_DATABASE=growi-slackbot-proxy
     volumes:
       - /data/db
+
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 13306:80
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=growi-slackbot-proxy
+      - PMA_PASSWORD=YrkUi7rCW46Z2N6EXSFUBwaQTUR8biCU
 
 networks:
   default:
