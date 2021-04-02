@@ -41,7 +41,7 @@ const AccessTokenSettings = (props) => {
 
         <div className="row">
           <div className="mx-auto">
-            <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={discardTokenHandler}>
+            <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={discardTokenHandler} disabled={!props.accessToken}>
               {t('slack_integration.access_token_settings.discard')}
             </button>
             <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={generateTokenHandler}>
