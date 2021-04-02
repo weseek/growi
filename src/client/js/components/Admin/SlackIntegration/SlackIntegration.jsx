@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import PropTypes from 'prop-types';
 
 import AccessTokenSettings from './AccessTokenSettings';
 import OfficialBotSettings from './OfficialBotSettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
 
-const SlackIntegration = () => {
+import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
+
+const SlackIntegration = (props) => {
+  const { appContainer } = props;
+
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
+  const [slackWorkSpaceName, setSlackWorkSpaceName] = useState(null);
+
+  const getSlackWSInWithoutProxy = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy-slack-workspace');
+      setSlackWorkSpaceName(res.data.slackWorkSpaceName);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -19,6 +38,7 @@ const SlackIntegration = () => {
       return;
     }
     setSelectedBotType(clickedBotType);
+    getSlackWSInWithoutProxy();
   };
 
   const handleCancelBotChange = () => {
@@ -37,7 +57,12 @@ const SlackIntegration = () => {
       settingsComponent = <OfficialBotSettings />;
       break;
     case 'custom-bot-without-proxy':
-      settingsComponent = <CustomBotWithoutProxySettings />;
+      settingsComponent = (
+        <CustomBotWithoutProxySettings
+          onChangeRenderer={getSlackWSInWithoutProxy}
+          slackWorkSpaceName={slackWorkSpaceName}
+        />
+      );
       break;
     case 'custom-bot-with-proxy':
       settingsComponent = <CustomBotWithProxySettings />;
@@ -101,5 +126,11 @@ const SlackIntegration = () => {
     </>
   );
 };
+const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer, AdminAppContainer]);
 
-export default SlackIntegration;
+SlackIntegration.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer),
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer),
+  onChangeRenderer: PropTypes.func,
+};
+export default SlackIntegrationWrapper;

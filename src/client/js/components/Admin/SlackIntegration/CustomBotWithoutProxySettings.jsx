@@ -52,6 +52,7 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken,
         botType,
       });
+      props.onChangeRenderer();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -63,7 +64,10 @@ const CustomBotWithoutProxySettings = (props) => {
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
       {/* temporarily put bellow component */}
-      <SlackGrowiBridging />
+      <SlackGrowiBridging
+        siteName={siteName}
+        slackWorkSpaceName={props.slackWorkSpaceName}
+      />
       <div className="row my-5">
         <div className="mx-auto">
           <button
@@ -146,6 +150,8 @@ const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWit
 CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
+  slackWorkSpaceName: PropTypes.string,
+  onChangeRenderer: PropTypes.func.isRequired,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
