@@ -4,7 +4,6 @@ const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
 const { WebClient } = require('@slack/web-api');
-
 const crypto = require('crypto');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -99,7 +98,6 @@ module.exports = (crowi) => {
         // AccessToken: "tempaccessdatahogehoge",
       },
     };
-
     return res.apiv3({ slackBotSettingParams });
   });
 
