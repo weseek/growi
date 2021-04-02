@@ -25,7 +25,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const getSlackWSInWithoutProxy = useCallback(async() => {
     try {
-      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy-slack-workspace');
+      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
     }
     catch (err) {
