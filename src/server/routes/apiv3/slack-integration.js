@@ -78,7 +78,7 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [SlackBotSettingParams]
    *        operationId: getSlackBotSettingParams
-   *        summary: /slack-integration
+   *        summary: get /slack-integration
    *        description: Get slackBot setting params.
    *        responses:
    *          200:
@@ -117,7 +117,7 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [SlackIntegration]
    *        operationId: putSlackIntegration
-   *        summary: /slack-integration/slack-integration
+   *        summary: put /slack-integration
    *        description: Put SlackIntegration setting.
    *        requestBody:
    *          required: true
