@@ -148,7 +148,7 @@ module.exports = (crowi) => {
       catch (error) {
         const msg = 'Error occured in updating Custom bot setting';
         logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
+        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
       }
     });
 
@@ -199,18 +199,53 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access token for slack
    */
-  router.put('/access-token', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     try {
       const accessToken = generateAccessToken(req.user);
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
+
+      // initialize bolt service
+      crowi.boltService.initialize();
+      crowi.boltService.publishUpdatedMessage();
 
       return res.apiv3({ accessToken });
     }
     catch (error) {
       const msg = 'Error occured in updating access token for access token';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'), 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration/access-token:
+   *      delete:
+   *        tags: [SlackIntegration]
+   *        operationId: deleteAccessTokenForSlackBot
+   *        summary: /slack-integration
+   *        description: Delete accessToken
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete accessToken
+   */
+  router.delete('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+
+    try {
+      await updateSlackBotSettings({ 'slackbot:access-token': null });
+
+      // initialize bolt service
+      crowi.boltService.initialize();
+      crowi.boltService.publishUpdatedMessage();
+
+      return res.apiv3({});
+    }
+    catch (error) {
+      const msg = 'Error occured in discard of slackbotAccessToken';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'discard-slackbotAccessToken-failed'), 500);
     }
   });
 

@@ -253,6 +253,7 @@
     "delete": "Delete"
   },
   "slack_integration": {
+    "bot_reset_successful": "Bot settings have been reset.",
     "modal": {
       "warning": "Warning",
       "sure_change_bot_type": "Are you sure you want to change the bot type?",

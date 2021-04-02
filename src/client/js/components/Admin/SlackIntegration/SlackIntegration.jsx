@@ -1,20 +1,21 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AccessTokenSettings from './AccessTokenSettings';
 import OfficialBotSettings from './OfficialBotSettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
 
 const SlackIntegration = (props) => {
   const { appContainer } = props;
-
+  const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
@@ -45,9 +46,20 @@ const SlackIntegration = (props) => {
     setSelectedBotType(null);
   };
 
-  const changeCurrentBotSettings = () => {
-    setCurrentBotType(selectedBotType);
-    setSelectedBotType(null);
+  const handleChangeCurrentBotSettings = async() => {
+    try {
+      const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
+        slackSigningSecret: '',
+        slackBotToken: '',
+        botType: selectedBotType,
+      });
+      setCurrentBotType(res.data.customBotWithoutProxySettingParams.slackBotType);
+      setSelectedBotType(null);
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   let settingsComponent = null;
@@ -74,7 +86,7 @@ const SlackIntegration = (props) => {
       <div className="container">
         <ConfirmBotChangeModal
           isOpen={selectedBotType != null}
-          onConfirmClick={changeCurrentBotSettings}
+          onConfirmClick={handleChangeCurrentBotSettings}
           onCancelClick={handleCancelBotChange}
         />
       </div>
@@ -126,11 +138,13 @@ const SlackIntegration = (props) => {
     </>
   );
 };
+
 const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer, AdminAppContainer]);
 
 SlackIntegration.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer),
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer),
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   onChangeRenderer: PropTypes.func,
 };
+
 export default SlackIntegrationWrapper;
