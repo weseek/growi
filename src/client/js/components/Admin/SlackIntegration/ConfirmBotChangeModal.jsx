@@ -7,51 +7,46 @@ import {
 
 const ConfirmBotChangeModal = (props) => {
   const { t } = useTranslation('admin');
-  let isOpen = false;
-  let onConfirmClick = null;
-  let onCancelClick = null;
 
-  if (props.isOpen != null) {
-    isOpen = props.isOpen;
-  }
+  const handleCancelButton = () => {
+    if (props.onCancelClick != null) {
+      props.onCancelClick();
+    }
+  };
 
-  if (props.onConfirmClick != null) {
-    onConfirmClick = props.onConfirmClick;
-  }
-
-  if (props.onCancelClick != null) {
-    onCancelClick = props.onCancelClick;
-  }
+  const handleChangeButton = () => {
+    if (props.onConfirmClick != null) {
+      props.onConfirmClick();
+    }
+  };
 
   return (
-    <>
-      <Modal isOpen={isOpen} centered>
-        <ModalHeader toggle={onCancelClick}>
-          {t('slack_integration.modal.warning')}
-        </ModalHeader>
-        <ModalBody>
-          <div>
-            <h4>{t('slack_integration.modal.sure_change_bot_type')}</h4>
-          </div>
-          <div>
-            <p>{t('slack_integration.modal.changes_will_be_deleted')}</p>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          <button type="button" className="btn btn-secondary" onClick={onCancelClick}>
-            {t('slack_integration.modal.cancel')}
-          </button>
-          <button type="button" className="btn btn-primary" onClick={onConfirmClick}>
-            {t('slack_integration.modal.change')}
-          </button>
-        </ModalFooter>
-      </Modal>
-    </>
+    <Modal isOpen={props.isOpen} centered>
+      <ModalHeader toggle={handleCancelButton}>
+        {t('slack_integration.modal.warning')}
+      </ModalHeader>
+      <ModalBody>
+        <div>
+          <h4>{t('slack_integration.modal.sure_change_bot_type')}</h4>
+        </div>
+        <div>
+          <p>{t('slack_integration.modal.changes_will_be_deleted')}</p>
+        </div>
+      </ModalBody>
+      <ModalFooter>
+        <button type="button" className="btn btn-secondary" onClick={handleCancelButton}>
+          {t('slack_integration.modal.cancel')}
+        </button>
+        <button type="button" className="btn btn-primary" onClick={handleChangeButton}>
+          {t('slack_integration.modal.change')}
+        </button>
+      </ModalFooter>
+    </Modal>
   );
 };
 
 ConfirmBotChangeModal.propTypes = {
-  isOpen: PropTypes.bool,
+  isOpen: PropTypes.bool.isRequired,
   onConfirmClick: PropTypes.func,
   onCancelClick: PropTypes.func,
 };
