@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
-
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AccessTokenSettings from './AccessTokenSettings';
@@ -139,11 +137,10 @@ const SlackIntegration = (props) => {
   );
 };
 
-const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer, AdminAppContainer]);
+const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer]);
 
 SlackIntegration.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default SlackIntegrationWrapper;
