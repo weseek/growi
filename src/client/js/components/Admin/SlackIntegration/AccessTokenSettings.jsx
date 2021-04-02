@@ -25,16 +25,18 @@ const AccessTokenSettings = (props) => {
     try {
       const res = await appContainer.apiv3.put('slack-integration/access-token', { deleteAccessToken: true });
       setAccessToken(res.data.accessToken);
+      toastSuccess(t('slack_integration.bot_reset_successful'));
     }
     catch (err) {
       toastError(err);
     }
   };
 
-  const textboxClickHandler = () => {
+  const textboxClickHandler = (e) => {
+    e.target.select();
     if (accessToken) {
       navigator.clipboard.writeText(accessToken)
-        .then(() => { toastSuccess('Copied to clipboard') });
+        .then(() => { toastSuccess('slack_integration.copied_to_clipboard') });
     }
 
   };
@@ -48,7 +50,7 @@ const AccessTokenSettings = (props) => {
         <div className="form-group row my-5">
           <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
           <div className="col-md-6">
-            <input className="form-control" type="text" value={accessToken} onClick={textboxClickHandler} readOnly />
+            <input className="form-control" type="text" value={accessToken} onClick={e => textboxClickHandler(e)} readOnly />
           </div>
         </div>
 
