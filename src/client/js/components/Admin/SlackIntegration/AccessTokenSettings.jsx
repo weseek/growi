@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import AppContainer from '../../../services/AppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess } from '../../../util/apiNotification';
 
 const AccessTokenSettings = (props) => {
@@ -57,13 +55,10 @@ const AccessTokenSettings = (props) => {
   );
 };
 
-const AccessTokenSettingsWrapper = withUnstatedContainers(AccessTokenSettings, [AppContainer]);
-
 AccessTokenSettings.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   accessToken: PropTypes.string,
   discardTokenHandler: PropTypes.func,
   generateTokenHandler: PropTypes.func,
 };
 
-export default AccessTokenSettingsWrapper;
+export default AccessTokenSettings;
