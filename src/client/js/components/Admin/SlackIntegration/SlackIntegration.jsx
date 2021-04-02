@@ -40,7 +40,7 @@ const SlackIntegration = (props) => {
       });
       setCurrentBotType(selectedBotType);
       setSelectedBotType(null);
-      toastSuccess(t('toaster.update_successed'), { target: t('admin:slack_integration.bot_reset_successful') });
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.bot_reset_successful') }));
     }
     catch (err) {
       toastError(err);
