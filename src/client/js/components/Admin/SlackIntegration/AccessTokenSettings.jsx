@@ -22,7 +22,7 @@ const AccessTokenSettings = (props) => {
     e.target.select();
     if (props.accessToken) {
       navigator.clipboard.writeText(props.accessToken)
-        .then(() => { toastSuccess('slack_integration.copied_to_clipboard') });
+        .then(() => { toastSuccess(t('slack_integration.copied_to_clipboard')) });
     }
   };
 
