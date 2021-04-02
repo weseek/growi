@@ -10,6 +10,7 @@ import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 
+
 const SlackIntegration = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
@@ -69,7 +70,9 @@ const SlackIntegration = (props) => {
       settingsComponent = <OfficialBotSettings />;
       break;
     case 'custom-bot-without-proxy':
-      settingsComponent = <CustomBotWithoutProxySettings />;
+      settingsComponent = (
+        <CustomBotWithoutProxySettings />
+      );
       break;
     case 'custom-bot-with-proxy':
       settingsComponent = <CustomBotWithProxySettings />;
@@ -92,7 +95,6 @@ const SlackIntegration = (props) => {
           <AccessTokenSettings />
         </div>
       </div>
-
 
       <div className="row my-5">
         <div className="card-deck mx-auto">
