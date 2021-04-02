@@ -16,6 +16,7 @@ const SlackIntegration = (props) => {
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
+  const [accessToken, setAccessToken] = useState('');
 
   const fetchData = useCallback(async() => {
     try {
@@ -63,6 +64,27 @@ const SlackIntegration = (props) => {
     }
   };
 
+  const generateTokenHandler = async() => {
+    try {
+      const res = await appContainer.apiv3.put('slack-integration/access-token');
+      setAccessToken(res.data.accessToken);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
+  const discardTokenHandler = async() => {
+    try {
+      const res = await appContainer.apiv3.put('slack-integration/access-token', { deleteAccessToken: true });
+      setAccessToken(res.data.accessToken);
+      toastSuccess(t('slack_integration.bot_reset_successful'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
   let settingsComponent = null;
 
   switch (currentBotType) {
@@ -87,7 +109,11 @@ const SlackIntegration = (props) => {
         />
       </div>
 
-      <AccessTokenSettings />
+      <AccessTokenSettings
+        accessToken={accessToken}
+        discardTokenHandler={discardTokenHandler}
+        generateTokenHandler={generateTokenHandler}
+      />
 
       <div className="row my-5">
         <div className="card-deck mx-auto">
