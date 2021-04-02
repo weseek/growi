@@ -168,7 +168,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to get slack ws name for custom bot without proxy
    */
   router.get('/custom-bot-without-proxy-slack-workspace', async(req, res) => {
-    // get work space name from slackbot token
+    // get ws name in custom bot from slackbot token
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
 
     let slackWorkSpaceName = null;
