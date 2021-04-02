@@ -87,7 +87,7 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const slackBotSettingParams = {
-      currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
+      currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
       // TODO impl when creating official bot
       officialBotSettings: {
         // TODO impl this after GW-4939
@@ -134,7 +134,7 @@ module.exports = (crowi) => {
       const { currentBotType } = req.body;
 
       const requestParams = {
-        'slackbot:type': currentBotType,
+        'slackbot:currentBotType': currentBotType,
       };
 
       try {
@@ -145,7 +145,7 @@ module.exports = (crowi) => {
         crowi.boltService.publishUpdatedMessage();
 
         const slackIntegrationSettingsParams = {
-          currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
+          currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
         };
         return res.apiv3({ slackIntegrationSettingsParams });
       }
@@ -182,7 +182,7 @@ module.exports = (crowi) => {
       const requestParams = {
         'slackbot:signingSecret': slackSigningSecret,
         'slackbot:token': slackBotToken,
-        'slackbot:type': botType,
+        'slackbot:currentBotType': botType,
       };
 
       try {
@@ -196,7 +196,7 @@ module.exports = (crowi) => {
         const customBotWithoutProxySettingParams = {
           slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
           slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
-          slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
+          slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
         };
         return res.apiv3({ customBotWithoutProxySettingParams });
       }
