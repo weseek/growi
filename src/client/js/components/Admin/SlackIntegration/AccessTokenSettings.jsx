@@ -22,48 +22,46 @@ const AccessTokenSettings = (props) => {
   };
 
   const discardTokenHandler = async() => {
-    // try {
-
-    // }
-    // catch (err) {
-    // }
-    // eslint-disable-next-line no-console
-    console.log('discard');
+    try {
+      const res = await appContainer.apiv3.put('slack-integration/access-token', { deleteAccessToken: true });
+      setAccessToken(res.data.accessToken);
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   const textboxClickHandler = () => {
-    const a = navigator.permissions.query({name: "clipboard-write"});
+    const a = navigator.permissions.query({ name: 'clipboard-write' });
     console.log(a);
-    
-
   };
 
   return (
-    <>
-      <div className="form-group row my-5">
-        <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
-        <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            value={accessToken}
-            onClick={textboxClickHandler}
-            readOnly
-          />
-        </div>
-      </div>
+    <div className="row">
+      <div className="col-lg-12">
 
-      <div className="row">
-        <div className="mx-auto">
-          <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={discardTokenHandler}>
-            {t('slack_integration.access_token_settings.discard')}
-          </button>
-          <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={generateTokenHandler}>
-            {t('slack_integration.access_token_settings.generate')}
-          </button>
+        <h2 className="admin-setting-header">Access Token</h2>
+
+        <div className="form-group row my-5">
+          <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
+          <div className="col-md-6">
+            <input className="form-control" type="text" value={accessToken} onClick={textboxClickHandler} readOnly />
+          </div>
         </div>
+
+        <div className="row">
+          <div className="mx-auto">
+            <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={discardTokenHandler}>
+              {t('slack_integration.access_token_settings.discard')}
+            </button>
+            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={generateTokenHandler}>
+              {t('slack_integration.access_token_settings.generate')}
+            </button>
+          </div>
+        </div>
+
       </div>
-    </>
+    </div>
   );
 };
 

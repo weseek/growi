@@ -73,13 +73,7 @@ const SlackIntegration = (props) => {
         />
       </div>
 
-      <div className="row">
-        <div className="col-lg-12">
-          <h2 className="admin-setting-header">Access Token</h2>
-          <AccessTokenSettings />
-        </div>
-      </div>
-
+      <AccessTokenSettings />
 
       <div className="row my-5">
         <div className="card-deck mx-auto">

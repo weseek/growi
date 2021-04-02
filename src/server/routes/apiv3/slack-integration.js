@@ -78,6 +78,7 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const slackBotSettingParams = {
+      accessToken: crowi.configManager.getConfig('crowi', 'slackbot:accessToken'),
       slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
       // TODO impl when creating official bot
       officialBotSettings: {
@@ -168,7 +169,11 @@ module.exports = (crowi) => {
   router.put('/access-token', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
-      const accessToken = generateAccessToken(req.user);
+      let accessToken = '';
+
+      if (req.body.deleteAccessToken !== true) {
+        accessToken = generateAccessToken(req.user);
+      }
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
       return res.apiv3({ accessToken });
