@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
-
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import AppContainer from '../../../services/AppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AccessTokenSettings from './AccessTokenSettings';
 import OfficialBotSettings from './OfficialBotSettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 
-const SlackIntegration = () => {
+const SlackIntegration = (props) => {
+  const { appContainer } = props;
+  const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
 
@@ -25,9 +31,20 @@ const SlackIntegration = () => {
     setSelectedBotType(null);
   };
 
-  const changeCurrentBotSettings = () => {
-    setCurrentBotType(selectedBotType);
-    setSelectedBotType(null);
+  const handleChangeCurrentBotSettings = async() => {
+    try {
+      const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
+        slackSigningSecret: '',
+        slackBotToken: '',
+        botType: selectedBotType,
+      });
+      setCurrentBotType(res.data.customBotWithoutProxySettingParams.slackBotType);
+      setSelectedBotType(null);
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   let settingsComponent = null;
@@ -49,7 +66,7 @@ const SlackIntegration = () => {
       <div className="container">
         <ConfirmBotChangeModal
           isOpen={selectedBotType != null}
-          onConfirmClick={changeCurrentBotSettings}
+          onConfirmClick={handleChangeCurrentBotSettings}
           onCancelClick={handleCancelBotChange}
         />
       </div>
@@ -103,4 +120,10 @@ const SlackIntegration = () => {
   );
 };
 
-export default SlackIntegration;
+const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer]);
+
+SlackIntegration.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default SlackIntegrationWrapper;
