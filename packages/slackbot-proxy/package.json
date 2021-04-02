@@ -17,6 +17,7 @@
     "test:lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
+    "@slack/interactive-messages": "^2.0.1",
     "@slack/oauth": "^2.0.1",
     "@slack/web-api": "^6.1.0",
     "@tsed/common": "^6.34.3",
