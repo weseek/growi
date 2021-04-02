@@ -29,6 +29,12 @@ const router = express.Router();
  *            type: string
  *          botType:
  *            type: string
+ *      SlackIntegration:
+ *        description: SlackIntegration
+ *        type: object
+ *        properties:
+ *          currentBotType:
+ *            type: string
  */
 
 
@@ -39,12 +45,15 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-
   const validator = {
-    CusotmBotWithoutProxy: [
+    CustomBotWithoutProxy: [
       body('slackSigningSecret').isString(),
       body('slackBotToken').isString(),
       body('botType').isString(),
+    ],
+    SlackIntegration: [
+      body('currentBotType')
+        .isIn(['official-bot', 'custom-bot-without-proxy', 'custom-bot-with-proxy']),
     ],
   };
 
@@ -79,7 +88,7 @@ module.exports = (crowi) => {
 
     const slackBotSettingParams = {
       accessToken: crowi.configManager.getConfig('crowi', 'slackbot:accessToken'),
-      slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
+      currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
       // TODO impl when creating official bot
       officialBotSettings: {
         // TODO impl this after GW-4939
@@ -105,6 +114,47 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /slack-integration/:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: putSlackIntegration
+   *        summary: /slack-integration/slack-integration
+   *        description: Put SlackIntegration setting.
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/SlackIntegration'
+   *        responses:
+   *           200:
+   *             description: Succeeded to put Slack Integration setting.
+   */
+  router.put('/',
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.SlackIntegration, apiV3FormValidator, async(req, res) => {
+      const { currentBotType } = req.body;
+
+      const requestParams = {
+        'slackbot:type': currentBotType,
+      };
+
+      try {
+        await updateSlackBotSettings(requestParams);
+        const slackIntegrationSettingsParams = {
+          currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
+        };
+        return res.apiv3({ slackIntegrationSettingsParams });
+      }
+      catch (error) {
+        const msg = 'Error occured in updating Slack bot setting';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'));
+      }
+    });
+
+  /**
+   * @swagger
+   *
    *    /slack-integration/custom-bot-without-proxy/:
    *      put:
    *        tags: [CustomBotWithoutProxy]
@@ -122,7 +172,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
   router.put('/custom-bot-without-proxy',
-    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CusotmBotWithoutProxy, apiV3FormValidator, async(req, res) => {
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CustomBotWithoutProxy, apiV3FormValidator, async(req, res) => {
       const { slackSigningSecret, slackBotToken, botType } = req.body;
 
       const requestParams = {
@@ -149,7 +199,7 @@ module.exports = (crowi) => {
       catch (error) {
         const msg = 'Error occured in updating Custom bot setting';
         logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'));
+        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
       }
     });
 
@@ -166,7 +216,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access token for slack
    */
-  router.put('/access-token', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     try {
       let accessToken = '';
@@ -176,12 +226,47 @@ module.exports = (crowi) => {
       }
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
+      // initialize bolt service
+      crowi.boltService.initialize();
+      crowi.boltService.publishUpdatedMessage();
+
       return res.apiv3({ accessToken });
     }
     catch (error) {
       const msg = 'Error occured in updating access token for access token';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'), 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration/access-token:
+   *      delete:
+   *        tags: [SlackIntegration]
+   *        operationId: deleteAccessTokenForSlackBot
+   *        summary: /slack-integration
+   *        description: Delete accessToken
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete accessToken
+   */
+  router.delete('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+
+    try {
+      await updateSlackBotSettings({ 'slackbot:access-token': null });
+
+      // initialize bolt service
+      crowi.boltService.initialize();
+      crowi.boltService.publishUpdatedMessage();
+
+      return res.apiv3({});
+    }
+    catch (error) {
+      const msg = 'Error occured in discard of slackbotAccessToken';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'discard-slackbotAccessToken-failed'), 500);
     }
   });
 
