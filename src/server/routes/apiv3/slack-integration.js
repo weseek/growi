@@ -210,11 +210,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/custom-bot-without-proxy-slack-workspace:
+   *    /slack-integration/custom-bot-without-proxy/slack-workspace-name:
    *      get:
    *        tags: [slackWorkSpaceName]
    *        operationId: getSlackWorkSpaceName
-   *        summary: /slack-integration
+   *        summary: Get slack work space name for custom bot without proxy
    *        description: get slack WS name in custom bot without proxy
    *        responses:
    *          200:
