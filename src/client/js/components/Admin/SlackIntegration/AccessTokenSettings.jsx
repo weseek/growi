@@ -7,13 +7,13 @@ const AccessTokenSettings = (props) => {
   const { t } = useTranslation('admin');
 
   const discardTokenHandler = () => {
-    if (props.discardTokenHandler != null) {
+    if (props.discardTokenHandler) {
       props.discardTokenHandler();
     }
   };
 
   const generateTokenHandler = () => {
-    if (props.generateTokenHandler != null) {
+    if (props.generateTokenHandler) {
       props.generateTokenHandler();
     }
   };
