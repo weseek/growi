@@ -1,15 +1,37 @@
 import {
-  BodyParams, Controller, Get, Post, Req, Res,
+  BodyParams, Controller, Get, Inject, Post, Req, Res,
 } from '@tsed/common';
+import { Installation } from '~/entities/installation';
+import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
 
 @Controller('/slack')
 export class SlackCtrl {
 
+  @Inject()
+  installationRepository: InstallationRepository;
+
   // eslint-disable-next-line no-useless-constructor
   constructor(private readonly installerService: InstallerService) {
   }
+
+  @Get('/testsave')
+  testsave(): void {
+    const installation = new Installation();
+    installation.data = {
+      team: undefined,
+      enterprise: undefined,
+      user: {
+        id: '',
+        token: undefined,
+        scopes: undefined,
+      },
+    };
+
+    this.installationRepository.save(installation);
+  }
+
 
   @Get('/install')
   async install(): Promise<string> {

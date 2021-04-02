@@ -1,31 +1,22 @@
 import {
-  Installation, InstallationQuery, InstallationStore, InstallProvider,
+  Installation as SlackInstallation, InstallationQuery, InstallProvider,
 } from '@slack/oauth';
 import { Service } from '@tsed/di';
 
-
-const installationStore: InstallationStore = {
-  storeInstallation: async(installation: Installation<'v1' | 'v2', boolean>) => {
-    console.log({ installation });
-  },
-  fetchInstallation: async(installQuery: InstallationQuery<boolean>) => {
-    const installation: Installation<'v1' | 'v2', boolean> = {
-      team: undefined,
-      enterprise: undefined,
-      user: {
-        id: '',
-        token: undefined,
-        scopes: undefined,
-      },
-    };
-    return installation;
-  },
-};
+import { Installation } from '~/entities/installation';
+import { InstallationRepository } from '~/repositories/installation';
 
 @Service()
 export class InstallerService {
 
   installer: InstallProvider;
+
+  repository: InstallationRepository;
+
+  // eslint-disable-next-line no-useless-constructor
+  constructor(repository: InstallationRepository) {
+    this.repository = repository;
+  }
 
   $onInit(): Promise<any> | void {
     const clientId = process.env.SLACK_CLIENT_ID;
@@ -39,11 +30,36 @@ export class InstallerService {
       throw new Error('The environment variable \'SLACK_CLIENT_SECRET\' must be defined.');
     }
 
+    const { repository } = this;
+
     this.installer = new InstallProvider({
       clientId,
       clientSecret,
       stateSecret,
-      installationStore,
+      installationStore: {
+        storeInstallation: async(slackInstallation: SlackInstallation<'v1' | 'v2', boolean>) => {
+          console.log({ slackInstallation });
+
+          const installation = new Installation();
+          installation.data = slackInstallation;
+
+          await repository.save(installation);
+
+          return;
+        },
+        fetchInstallation: async(installQuery: InstallationQuery<boolean>) => {
+          const installation: SlackInstallation<'v1' | 'v2', boolean> = {
+            team: undefined,
+            enterprise: undefined,
+            user: {
+              id: '',
+              token: undefined,
+              scopes: undefined,
+            },
+          };
+          return installation;
+        },
+      },
     });
   }
 
