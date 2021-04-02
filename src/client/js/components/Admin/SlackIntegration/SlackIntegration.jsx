@@ -78,7 +78,7 @@ const SlackIntegration = (props) => {
     try {
       const res = await appContainer.apiv3.put('slack-integration/access-token', { deleteAccessToken: true });
       setAccessToken(res.data.accessToken);
-      toastSuccess(t('slack_integration.bot_reset_successful'));
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
     catch (err) {
       toastError(err);
@@ -101,13 +101,11 @@ const SlackIntegration = (props) => {
 
   return (
     <>
-      <div className="container">
-        <ConfirmBotChangeModal
-          isOpen={selectedBotType != null}
-          onConfirmClick={handleChangeCurrentBotSettings}
-          onCancelClick={handleCancelBotChange}
-        />
-      </div>
+      <ConfirmBotChangeModal
+        isOpen={selectedBotType != null}
+        onConfirmClick={handleChangeCurrentBotSettings}
+        onCancelClick={handleCancelBotChange}
+      />
 
       <AccessTokenSettings
         accessToken={accessToken}
