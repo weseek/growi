@@ -21,7 +21,7 @@ const CustomBotWithoutProxySettings = (props) => {
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
-  const botType = 'without-proxy';
+  const currentBotType = 'custom-bot-without-proxy';
 
   const getSlackWSInWithoutProxy = useCallback(async() => {
     try {
@@ -60,7 +60,7 @@ const CustomBotWithoutProxySettings = (props) => {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret,
         slackBotToken,
-        botType,
+        currentBotType,
       });
       getSlackWSInWithoutProxy();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));

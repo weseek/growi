@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
@@ -18,6 +18,21 @@ const SlackIntegration = (props) => {
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
+
+  const fetchData = useCallback(async() => {
+    try {
+      const response = await appContainer.apiv3.get('slack-integration/');
+      const { currentBotType } = response.data.slackBotSettingParams;
+      setCurrentBotType(currentBotType);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer.apiv3]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -39,7 +54,7 @@ const SlackIntegration = (props) => {
       const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
         slackBotToken: '',
-        botType: selectedBotType,
+        currentBotType: selectedBotType,
       });
       setCurrentBotType(res.data.customBotWithoutProxySettingParams.slackBotType);
       setSelectedBotType(null);
