@@ -27,7 +27,7 @@ const router = express.Router();
  *            type: string
  *          slackBotToken:
  *            type: string
- *          botType:
+ *          currentBotType:
  *            type: string
  *      SlackIntegration:
  *        description: SlackIntegration
@@ -49,7 +49,7 @@ module.exports = (crowi) => {
     CustomBotWithoutProxy: [
       body('slackSigningSecret').isString(),
       body('slackBotToken').isString(),
-      body('botType').isString(),
+      body('currentBotType').isString(),
     ],
     SlackIntegration: [
       body('currentBotType')
@@ -177,12 +177,12 @@ module.exports = (crowi) => {
    */
   router.put('/custom-bot-without-proxy',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CustomBotWithoutProxy, apiV3FormValidator, async(req, res) => {
-      const { slackSigningSecret, slackBotToken, botType } = req.body;
+      const { slackSigningSecret, slackBotToken, currentBotType } = req.body;
 
       const requestParams = {
         'slackbot:signingSecret': slackSigningSecret,
         'slackbot:token': slackBotToken,
-        'slackbot:currentBotType': botType,
+        'slackbot:currentBotType': currentBotType,
       };
 
       try {
