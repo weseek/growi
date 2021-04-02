@@ -51,7 +51,7 @@ const SlackIntegration = (props) => {
       const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
         slackBotToken: '',
-        botType: selectedBotType,
+        currentBotType: selectedBotType,
       });
       setCurrentBotType(res.data.customBotWithoutProxySettingParams.slackBotType);
       setSelectedBotType(null);
