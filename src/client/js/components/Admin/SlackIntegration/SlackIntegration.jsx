@@ -31,19 +31,6 @@ const SlackIntegration = (props) => {
     fetchData();
   }, [fetchData]);
 
-  const resetBotType = async() => {
-    try {
-      await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
-        slackSigningSecret: '',
-        slackBotToken: '',
-        botType: selectedBotType,
-      });
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
-
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
       return;
