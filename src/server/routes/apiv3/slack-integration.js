@@ -139,6 +139,11 @@ module.exports = (crowi) => {
 
       try {
         await updateSlackBotSettings(requestParams);
+
+        // initialize bolt service
+        crowi.boltService.initialize();
+        crowi.boltService.publishUpdatedMessage();
+
         const slackIntegrationSettingsParams = {
           currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:type'),
         };
