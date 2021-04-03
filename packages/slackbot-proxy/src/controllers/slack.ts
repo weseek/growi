@@ -7,6 +7,7 @@ import { InstallationRepository } from '~/repositories/installation';
 import { InstallerService } from '~/services/InstallerService';
 
 import { supportedSlackCommands } from '../../../slack/src/index';
+import { RegisterService } from '../../../slack/src/services/register';
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -61,7 +62,9 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
     // console.log(supportedSlackCommands);
-    console.log('body', body);
+    const hoge = new RegisterService();
+    console.log(hoge.hogeFunction(body));
+    // console.log('body', body);
 
     return 'This action will be handled by bolt service.';
   }
