@@ -1,4 +1,4 @@
-import { Configuration, Inject } from '@tsed/di';
+import { Configuration, Inject, InjectorService } from '@tsed/di';
 import { PlatformApplication } from '@tsed/common';
 import '@tsed/platform-express'; // /!\ keep this import
 import bodyParser from 'body-parser';
@@ -6,15 +6,23 @@ import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 import '@tsed/swagger';
-import '@tsed/typeorm';
+import { TypeORMService } from '@tsed/typeorm';
 import { ConnectionOptions } from 'typeorm';
+
 
 export const rootDir = __dirname;
 
 const connectionOptions: ConnectionOptions = {
   type: process.env.TYPEORM_CONNECTION,
+  host: process.env.TYPEORM_HOST,
   database: process.env.TYPEORM_DATABASE,
+  username: process.env.TYPEORM_USERNAME,
+  password: process.env.TYPEORM_PASSWORD,
+  synchronize: true,
+  logging: true,
 } as ConnectionOptions;
+
+
 @Configuration({
   rootDir,
   acceptMimes: ['application/json'],
@@ -33,13 +41,13 @@ const connectionOptions: ConnectionOptions = {
     {
       ...connectionOptions,
       entities: [
-        `${rootDir}/entity/*{.ts,.js}`,
+        `${rootDir}/entities/*{.ts,.js}`,
       ],
       migrations: [
         `${rootDir}/migrations/*{.ts,.js}`,
       ],
       subscribers: [
-        `${rootDir}/subscriber/*{.ts,.js}`,
+        `${rootDir}/subscribers/*{.ts,.js}`,
       ],
     } as ConnectionOptions,
   ],
@@ -61,6 +69,9 @@ export class Server {
   @Configuration()
   settings: Configuration;
 
+  @Inject()
+  injector: InjectorService;
+
   $beforeRoutesInit(): void {
     this.app
       .use(cookieParser())
@@ -70,6 +81,14 @@ export class Server {
       .use(bodyParser.urlencoded({
         extended: true,
       }));
+  }
+
+  async $onReady(): Promise<void> {
+    const typeormService = this.injector.get<TypeORMService>(TypeORMService);
+    console.log(typeormService);
+
+    const connection = typeormService?.connectionManager.get('0');
+    console.log(connection);
   }
 
 }
