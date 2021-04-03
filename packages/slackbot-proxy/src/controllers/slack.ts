@@ -6,6 +6,8 @@ import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
 
+import { supportedSlackCommands } from '../../../slack/src/index';
+
 @Controller('/slack')
 export class SlackCtrl {
 
@@ -58,7 +60,7 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
-
+    // console.log(supportedSlackCommands);
     console.log('body', body);
 
     return 'This action will be handled by bolt service.';
