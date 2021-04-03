@@ -6,8 +6,8 @@ import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
 
-import { supportedSlackCommands } from '../../../slack/src/index';
-import { RegisterService } from '../../../slack/src/services/register';
+// import { supportedSlackCommands } from '../../../slack/src/index';
+import { parse } from '../../../slack/src/utils/slash-command-parser';
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -61,9 +61,9 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
-    // console.log(supportedSlackCommands);
-    const hoge = new RegisterService();
-    console.log(hoge.hogeFunction(body));
+    // console.log(body.text);
+    const parseBody = parse(body);
+    console.log(parseBody);
     // console.log('body', body);
 
     return 'This action will be handled by bolt service.';
