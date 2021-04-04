@@ -4,7 +4,7 @@ import { parse } from '../utils/slash-command-parser';
 
 export const openModal = async(body) => {
 
-  const client = new WebClient('xoxb-1399660543842-1848670292404-huKeykaKhdyLyBqTiVlMxqY8', { logLevel: LogLevel.DEBUG });
+  const client = new WebClient('', { logLevel: LogLevel.DEBUG });
 
   await client.views.open({
     trigger_id: body.trigger_id,
