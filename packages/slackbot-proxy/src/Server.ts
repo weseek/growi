@@ -8,7 +8,7 @@ import methodOverride from 'method-override';
 import '@tsed/swagger';
 import { TypeORMService } from '@tsed/typeorm';
 import { ConnectionOptions } from 'typeorm';
-import { ReceiveService } from './services/RecieveService';
+// import { ReceiveService } from './services/RecieveService';
 
 export const rootDir = __dirname;
 
