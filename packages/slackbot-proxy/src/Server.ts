@@ -8,7 +8,7 @@ import methodOverride from 'method-override';
 import '@tsed/swagger';
 import { TypeORMService } from '@tsed/typeorm';
 import { ConnectionOptions } from 'typeorm';
-
+import { ReceiveService } from './services/RecieveService';
 
 export const rootDir = __dirname;
 
@@ -71,6 +71,9 @@ export class Server {
 
   @Inject()
   injector: InjectorService;
+
+  // @Inject()
+  // receiveService:ReceiveService
 
   $beforeRoutesInit(): void {
     this.app
