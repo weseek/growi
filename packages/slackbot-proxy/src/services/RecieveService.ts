@@ -1,5 +1,4 @@
 import { Service } from '@tsed/di';
-// import { parse } from '../../../slack/src/utils/slash-command-parser';
 import { openModal } from '../../../slack/src/services/register';
 
 @Service()

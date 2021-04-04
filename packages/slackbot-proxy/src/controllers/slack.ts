@@ -7,7 +7,6 @@ import { InstallationRepository } from '~/repositories/installation';
 import { InstallerService } from '~/services/InstallerService';
 import { ReceiveService } from '~/services/RecieveService';
 
-// import { IndexService } from '../../../slack/src/services/index';
 @Controller('/slack')
 export class SlackCtrl {
 
@@ -63,8 +62,8 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
-    const hoge = this.receiveService.receive(body);
-    console.log('Controller', hoge);
+    const slackInput = this.receiveService.receive(body);
+    console.log('Controller', slackInput);
     res.send();
     // console.log(body.text);
     // const index = new IndexService();
