@@ -4,8 +4,7 @@ export class RegisterService {
   //   this.crowi = crowi;
   // }
 
-  hogeFunction(body) {
-    console.log(body);
+  openModal() {
     console.log('waimatu');
   }
 
