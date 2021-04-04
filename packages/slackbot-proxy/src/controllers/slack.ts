@@ -5,8 +5,9 @@ import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
+import { ReceiveService } from '~/services/RecieveService';
 
-import { IndexService } from '../../../slack/src/services/index';
+// import { IndexService } from '../../../slack/src/services/index';
 @Controller('/slack')
 export class SlackCtrl {
 
@@ -16,6 +17,9 @@ export class SlackCtrl {
   // eslint-disable-next-line no-useless-constructor
   constructor(private readonly installerService: InstallerService) {
   }
+
+  @Inject()
+  receiveService: ReceiveService;
 
   @Get('/testsave')
   testsave(): void {
@@ -58,10 +62,13 @@ export class SlackCtrl {
   handleEvent(@BodyParams() body: any, @Res() res: Res): string {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+
+    const hoge = this.receiveService.receive(body);
+    console.log('Controller', hoge);
     res.send();
     // console.log(body.text);
-    const index = new IndexService();
-    index.receiveBody(body);
+    // const index = new IndexService();
+    // index.receiveBody(body);
     // console.log('body', body);
 
     return 'This action will be handled by bolt service.';
