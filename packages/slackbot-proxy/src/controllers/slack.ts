@@ -1,22 +1,20 @@
 import {
-  BodyParams, Controller, Get, Post, Req, Res,
+  BodyParams, Controller, Get, Inject, Post, Req, Res,
 } from '@tsed/common';
-import { getRepository } from 'typeorm';
 
 import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
-
 import { InstallerService } from '~/services/InstallerService';
+
 
 @Controller('/slack')
 export class SlackCtrl {
 
-  // @Inject()
-  // installationRepository: InstallationRepository;
+  @Inject()
+  installerService: InstallerService;
 
-  // eslint-disable-next-line no-useless-constructor
-  constructor(private readonly installerService: InstallerService) {
-  }
+  @Inject()
+  installationRepository: InstallationRepository;
 
   @Get('/testsave')
   testsave(): void {
@@ -31,9 +29,9 @@ export class SlackCtrl {
       },
     };
 
-    const installationRepository = getRepository(Installation);
+    // const installationRepository = getRepository(Installation);
 
-    installationRepository.save(installation);
+    this.installationRepository.save(installation);
   }
 
 
