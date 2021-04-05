@@ -1,6 +1,6 @@
 import { Service } from '@tsed/di';
 import { SlashCommand } from '@slack/bolt';
-import { parse } from '../../../slack/src/utils/slash-command-parser';
+import { parse } from '@growi/slack/src/utils/slash-command-parser';
 
 @Service()
 export class ReceiveService {
