@@ -653,8 +653,8 @@ module.exports = function(crowi) {
     const configManager = crowi.configManager;
 
     const isEmailPubshedForNewUser = configManager.getConfig('crowi', 'app:isEmailPubshedForNewUser');
-    if (isEmailPubshedForNewUser === false) {
-      newUser.isEmailPublished = false;
+    if (isEmailPubshedForNewUser !== null) {
+      newUser.isEmailPublished = isEmailPubshedForNewUser;
     }
 
 
