@@ -79,37 +79,23 @@ class BoltService extends S2sMessageHandlable {
     }
   }
 
-  setupRoute() {
 
-    // this.bolt.view('createPage', async({
-    //   ack, view, body, client,
-    // }) => {
-    //   await ack();
-    //   await this.createPageInGrowi(view, body);
-    // });
+  // this.bolt.action('showNextResults', async({
 
-    // this.bolt.action('showNextResults', async({
-    //   ack, action,
-    // }) => {
-    //   await ack();
-    //   const parsedValue = JSON.parse(action.value);
+  //   const command = parsedValue.command;
+  //   const args = parsedValue.args;
+  //   const offset = parsedValue.offset;
 
-    //   const command = parsedValue.command;
-    //   const args = parsedValue.args;
-    //   const offset = parsedValue.offset;
+  //   const newOffset = offset + 10;
+  //   this.showEphemeralSearchResults(command, args, newOffset);
+  // });
 
-    //   const newOffset = offset + 10;
-    //   this.showEphemeralSearchResults(command, args, newOffset);
-    // });
-
-    // this.bolt.action('shareSearchResults', async({
-    //   body, ack, say, action,
-    // }) => {
-    //   await ack();
-    //   await say(action.value);
-    // });
-
-  }
+  // this.bolt.action('shareSearchResults', async({
+  //   body, ack, say, action,
+  // }) => {
+  //   await ack();
+  //   await say(action.value);
+  // });
 
   notCommand(body) {
     logger.error('Invalid first argument');
@@ -319,14 +305,14 @@ class BoltService extends S2sMessageHandlable {
   }
 
   // Submit action in create Modal
-  async createPageInGrowi(view, body) {
+  async createPageInGrowi(payload) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
 
-    const contentsBody = view.state.values.contents.contents_input.value;
+    const contentsBody = payload.view.state.values.contents.contents_input.value;
 
     try {
-      let path = view.state.values.path.path_input.value;
+      let path = payload.view.state.values.path.path_input.value;
       // sanitize path
       path = this.crowi.xss.process(path);
       path = pathUtils.normalizePath(path);
@@ -337,7 +323,7 @@ class BoltService extends S2sMessageHandlable {
     }
     catch (err) {
       this.client.chat.postMessage({
-        channel: body.user.id,
+        channel: payload.user.id,
         blocks: [
           this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
       });
