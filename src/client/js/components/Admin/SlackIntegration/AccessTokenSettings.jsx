@@ -29,7 +29,6 @@ const AccessTokenSettings = (props) => {
   return (
     <div className="row">
       <div className="col-lg-12">
-
         <h2 className="admin-setting-header">Access Token</h2>
 
         <div className="form-group row my-5">
