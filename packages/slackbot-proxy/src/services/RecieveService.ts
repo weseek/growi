@@ -8,14 +8,13 @@ import { openRegisterModal } from './RegisterService';
 export class ReceiveService {
 
   receiveContentsFromSlack(body:SlashCommand) : string {
-    console.log(body);
     const parseBody = parse(body);
-    console.log(parseBody);
-    if (body.text === 'register') {
-      openRegisterModal(body);
 
+    if (parseBody.growiCommandType === 'register') {
+      openRegisterModal(body);
       return 'register action occurd';
     }
+
     return 'return receiveContentsFromSlack';
   }
 
