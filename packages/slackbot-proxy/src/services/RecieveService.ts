@@ -1,11 +1,13 @@
 import { Service } from '@tsed/di';
 import { SlashCommand } from '@slack/bolt';
+import { parse } from '../../../slack/src/utils/slash-command-parser';
 
 @Service()
 export class ReceiveService {
 
   receiveContentsFromSlack(body:SlashCommand) : string {
-    if (body.text === 'register') {
+    const parseBody = parse(body);
+    if (parseBody.growiCommandType === 'register') {
       console.log('register action occured');
       return 'register action occurd';
     }

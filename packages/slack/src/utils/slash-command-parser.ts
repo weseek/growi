@@ -1,7 +1,7 @@
 import { SlashCommand } from '@slack/bolt';
 
-import { GrowiCommand } from '~/interfaces/growi-command';
-import { InvalidGrowiCommandError } from '~/models/errors';
+import { GrowiCommand } from '../interfaces/growi-command';
+import { InvalidGrowiCommandError } from '../models/errors';
 
 export const parse = (slashCommand: SlashCommand): GrowiCommand => {
   const splitted = slashCommand.text.split(' ');
