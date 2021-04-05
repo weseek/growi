@@ -68,7 +68,7 @@ const SlackIntegration = (props) => {
   const generateTokenHandler = async() => {
     try {
       const res = await appContainer.apiv3.put('slack-integration/access-token');
-      setAccessToken(res.data.accessToken);
+      fetchData()
     }
     catch (err) {
       toastError(err);
