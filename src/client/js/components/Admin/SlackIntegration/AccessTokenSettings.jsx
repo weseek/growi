@@ -19,10 +19,6 @@ const AccessTokenSettings = (props) => {
     }
   };
 
-  const showCopiedToaster = () => {
-    toastSuccess(t('slack_integration.copied_to_clipboard'));
-  };
-
   const accessToken = props.accessToken ? props.accessToken : '';
 
   return (
@@ -37,7 +33,7 @@ const AccessTokenSettings = (props) => {
             {props.accessToken == null ? (
               <input className="form-control" type="text" value={accessToken} readOnly />
             ) : (
-              <CopyToClipboard text={accessToken} onCopy={showCopiedToaster}>
+              <CopyToClipboard text={accessToken} onCopy={toastSuccess(t('slack_integration.copied_to_clipboard'))}>
                 <input className="form-control" type="text" value={accessToken} readOnly />
               </CopyToClipboard>
             )}
