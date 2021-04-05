@@ -101,7 +101,7 @@ module.exports = (crowi) => {
         slackBotTokenEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
-        isSetupSlackBot: crowi.slackService.isSetupSlackBot,
+        isSetupSlackBot: crowi.slackBotService.isSetupSlackBot,
       },
       // TODO imple when creating with proxy
       customBotWithProxySettings: {
@@ -143,8 +143,8 @@ module.exports = (crowi) => {
         await updateSlackBotSettings(requestParams);
 
         // initialize slack service
-        crowi.slackService.initialize();
-        crowi.slackService.publishUpdatedMessage();
+        crowi.slackBotService.initialize();
+        crowi.slackBotService.publishUpdatedMessage();
 
         const slackIntegrationSettingsParams = {
           currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
@@ -191,8 +191,8 @@ module.exports = (crowi) => {
         await updateSlackBotSettings(requestParams);
 
         // initialize slack service
-        crowi.slackService.initialize();
-        crowi.slackService.publishUpdatedMessage();
+        crowi.slackBotService.initialize();
+        crowi.slackBotService.publishUpdatedMessage();
 
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
         const customBotWithoutProxySettingParams = {
@@ -263,8 +263,8 @@ module.exports = (crowi) => {
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
       // initialize slack service
-      crowi.slackService.initialize();
-      crowi.slackService.publishUpdatedMessage();
+      crowi.slackBotService.initialize();
+      crowi.slackBotService.publishUpdatedMessage();
 
       return res.apiv3({ accessToken });
     }
@@ -294,8 +294,8 @@ module.exports = (crowi) => {
       await updateSlackBotSettings({ 'slackbot:access-token': null });
 
       // initialize slack service
-      crowi.slackService.initialize();
-      crowi.slackService.publishUpdatedMessage();
+      crowi.slackBotService.initialize();
+      crowi.slackBotService.publishUpdatedMessage();
 
       return res.apiv3({});
     }
