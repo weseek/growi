@@ -39,7 +39,7 @@ const CustomBotWithoutProxySettings = (props) => {
       await adminAppContainer.retrieveAppSettingsData();
       const res = await appContainer.apiv3.get('/slack-integration/');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isBoltSetup
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isBoltSetup,
       } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
