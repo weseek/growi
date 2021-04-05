@@ -112,8 +112,8 @@ const SlackIntegration = (props) => {
 
       <AccessTokenSettings
         accessToken={accessToken}
-        discardTokenHandler={discardTokenHandler}
-        generateTokenHandler={generateTokenHandler}
+        onClickDiscardButton={discardTokenHandler}
+        onClickGenerateToken={generateTokenHandler}
       />
 
       <div className="row my-5">

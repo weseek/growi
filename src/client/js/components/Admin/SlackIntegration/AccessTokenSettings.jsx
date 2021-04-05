@@ -6,15 +6,15 @@ import { toastSuccess } from '../../../util/apiNotification';
 const AccessTokenSettings = (props) => {
   const { t } = useTranslation('admin');
 
-  const discardTokenHandler = () => {
-    if (props.discardTokenHandler) {
-      props.discardTokenHandler();
+  const onClickDiscardButton = () => {
+    if (props.onClickDiscardButton) {
+      props.onClickDiscardButton();
     }
   };
 
-  const generateTokenHandler = () => {
-    if (props.generateTokenHandler) {
-      props.generateTokenHandler();
+  const onClickGenerateToken = () => {
+    if (props.onClickGenerateToken) {
+      props.onClickGenerateToken();
     }
   };
 
@@ -41,10 +41,10 @@ const AccessTokenSettings = (props) => {
 
         <div className="row">
           <div className="mx-auto">
-            <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={discardTokenHandler} disabled={!props.accessToken}>
+            <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={onClickDiscardButton} disabled={!props.accessToken}>
               {t('slack_integration.access_token_settings.discard')}
             </button>
-            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={generateTokenHandler}>
+            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={onClickGenerateToken}>
               {t('slack_integration.access_token_settings.generate')}
             </button>
           </div>
@@ -57,8 +57,8 @@ const AccessTokenSettings = (props) => {
 
 AccessTokenSettings.propTypes = {
   accessToken: PropTypes.string,
-  discardTokenHandler: PropTypes.func,
-  generateTokenHandler: PropTypes.func,
+  onClickDiscardButton: PropTypes.func,
+  onClickGenerateToken: PropTypes.func,
 };
 
 export default AccessTokenSettings;
