@@ -87,6 +87,7 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
     const slackBotSettingParams = {
+      isBoltSetup: crowi.boltService.isBoltSetup,
       currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
       // TODO impl when creating official bot
       officialBotSettings: {
