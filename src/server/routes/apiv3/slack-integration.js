@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
+const { WebClient } = require('@slack/web-api');
 const crypto = require('crypto');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -85,7 +86,6 @@ module.exports = (crowi) => {
    *            description: Succeeded to get slackBot setting params.
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
-
     const slackBotSettingParams = {
       accessToken: crowi.configManager.getConfig('crowi', 'slackbot:accessToken'),
       currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
@@ -207,6 +207,40 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
       }
     });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration/custom-bot-without-proxy/slack-workspace-name:
+   *      get:
+   *        tags: [slackWorkSpaceName]
+   *        operationId: getSlackWorkSpaceName
+   *        summary: Get slack work space name for custom bot without proxy
+   *        description: get slack WS name in custom bot without proxy
+   *        responses:
+   *          200:
+   *            description: Succeeded to get slack ws name for custom bot without proxy
+   */
+  router.get('/custom-bot-without-proxy/slack-workspace-name', async(req, res) => {
+    // get ws name in custom bot from slackbot token
+    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+
+    let slackWorkSpaceName = null;
+    if (slackBotToken != null) {
+      const web = new WebClient(slackBotToken);
+      try {
+        const slackTeamInfo = await web.team.info();
+        slackWorkSpaceName = slackTeamInfo.team.name;
+      }
+      catch (error) {
+        const msg = 'Error occured in slack_bot_token';
+        logger.error('Error', msg);
+        return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'));
+      }
+    }
+
+    return res.apiv3({ slackWorkSpaceName });
+  });
 
   /**
    * @swagger
