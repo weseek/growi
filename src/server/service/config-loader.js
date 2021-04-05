@@ -402,7 +402,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'app:isEmailPubshedForNewUser',
     type:    TYPES.BOOLEAN,
-    default: null,
+    default: false,
   },
 };
 
