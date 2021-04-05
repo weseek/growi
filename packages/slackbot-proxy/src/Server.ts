@@ -9,6 +9,7 @@ import '@tsed/swagger';
 import { TypeORMService } from '@tsed/typeorm';
 import { ConnectionOptions } from 'typeorm';
 
+
 export const rootDir = __dirname;
 
 const connectionOptions: ConnectionOptions = {
