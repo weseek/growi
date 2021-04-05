@@ -74,6 +74,18 @@ module.exports = (crowi) => {
     }
   };
 
+  const handleViewSubmission = async(payload) => {
+    const { callback_id: callbackId } = payload.view;
+
+    switch (callbackId) {
+      case 'createPage':
+        await crowi.boltService.createPageInGrowi(payload);
+        break;
+      default:
+        break;
+    }
+  };
+
   router.post('/interactive', verificationRequestUrl, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
@@ -82,15 +94,14 @@ module.exports = (crowi) => {
 
     const payload = JSON.parse(req.body.payload);
     const { type } = payload;
-    // const { callback_id: callbackId } = payload.view;
 
     switch (type) {
       case 'block_actions':
-        handleBlockActions(payload);
+        await handleBlockActions(payload);
         break;
-      // case 'block_actions':
-      //   await crowi.boltService.createPageInGrowi(payload);
-      //   break;
+      case 'view_submission':
+        await handleViewSubmission(payload);
+        break;
       default:
         break;
     }
