@@ -1,5 +1,5 @@
-import { SlashCommand } from '@slack/bolt';
 import { Service } from '@tsed/di';
+import { SlashCommand } from '@slack/bolt';
 import { openRegisterModal } from './RegisterService';
 import { parse } from '../../../slack/src/utils/slash-command-parser';
 
