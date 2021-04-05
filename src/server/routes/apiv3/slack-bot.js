@@ -42,18 +42,23 @@ module.exports = (crowi) => {
     const args = body.text.split(' ');
     const command = args[0];
 
-    switch (command) {
-      case 'search':
-        await crowi.slackBotService.showEphemeralSearchResults(body, args);
-        break;
-      case 'create':
-        await crowi.slackBotService.createModal(body);
-        break;
-      default:
-        await crowi.slackBotService.notCommand(body);
-        break;
+    try {
+      switch (command) {
+        case 'search':
+          await crowi.slackBotService.showEphemeralSearchResults(body, args);
+          break;
+        case 'create':
+          await crowi.slackBotService.createModal(body);
+          break;
+        default:
+          await crowi.slackBotService.notCommand(body);
+          break;
+      }
     }
-
+    catch (error) {
+      logger.error(error);
+      return res.send(error.message);
+    }
   });
 
   const handleBlockActions = async(payload) => {
@@ -98,15 +103,21 @@ module.exports = (crowi) => {
     const payload = JSON.parse(req.body.payload);
     const { type } = payload;
 
-    switch (type) {
-      case 'block_actions':
-        await handleBlockActions(payload);
-        break;
-      case 'view_submission':
-        await handleViewSubmission(payload);
-        break;
-      default:
-        break;
+    try {
+      switch (type) {
+        case 'block_actions':
+          await handleBlockActions(payload);
+          break;
+        case 'view_submission':
+          await handleViewSubmission(payload);
+          break;
+        default:
+          break;
+      }
+    }
+    catch (error) {
+      logger.error(error);
+      return res.send(error.message);
     }
 
   });
