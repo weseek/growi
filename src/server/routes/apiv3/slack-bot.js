@@ -1,6 +1,10 @@
 
 const express = require('express');
 
+const loggerFactory = require('@alias/logger');
+
+const logger = loggerFactory('growi:routes:apiv3:slack-bot');
+
 const router = express.Router();
 
 module.exports = (crowi) => {
@@ -8,16 +12,16 @@ module.exports = (crowi) => {
 
 
   // Check if the access token is correct
-  // function verificationAccessToken(req, res, next) {
-  //   const slackBotAccessToken = req.body.slack_bot_access_token || null;
+  function verificationAccessToken(req, res, next) {
+    const slackBotAccessToken = req.body.slack_bot_access_token || null;
 
-  //   if (slackBotAccessToken == null || slackBotAccessToken !== this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-  //     logger.error('slack_bot_access_token is invalid.');
-  //     return res.send('*Access token is inValid*');
-  //   }
+    if (slackBotAccessToken == null || slackBotAccessToken !== this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
+      logger.error('slack_bot_access_token is invalid.');
+      return res.send('*Access token is inValid*');
+    }
 
-  //   return next();
-  // }
+    return next();
+  }
 
   function verificationRequestUrl(req, res, next) {
     // for verification request URL on Event Subscriptions
@@ -28,7 +32,7 @@ module.exports = (crowi) => {
     return next();
   }
 
-  router.post('/', verificationRequestUrl, async(req, res) => {
+  router.post('/', verificationRequestUrl, verificationAccessToken, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
