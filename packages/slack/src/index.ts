@@ -5,5 +5,4 @@ export const supportedSlackCommands: string[] = [
 export const supportedGrowiCommands: string[] = [
   'search',
   'create',
-  'register',
 ];
