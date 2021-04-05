@@ -258,11 +258,7 @@ module.exports = (crowi) => {
   router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     try {
-      let accessToken = '';
-
-      if (req.body.deleteAccessToken !== true) {
-        accessToken = generateAccessToken(req.user);
-      }
+      const accessToken = generateAccessToken(req.user);
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
       // initialize bolt service

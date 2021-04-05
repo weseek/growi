@@ -77,7 +77,7 @@ const SlackIntegration = (props) => {
 
   const discardTokenHandler = async() => {
     try {
-      const res = await appContainer.apiv3.put('slack-integration/access-token', { deleteAccessToken: true });
+      const res = await appContainer.apiv3.put('slack-integration/access-token');
       setAccessToken(res.data.accessToken);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
