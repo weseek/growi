@@ -22,7 +22,6 @@ const SlackIntegration = (props) => {
   const fetchData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
-      console.log(response.data.slackBotSettingParams);
       const { currentBotType, accessToken } = response.data.slackBotSettingParams;
       setCurrentBotType(currentBotType);
       setAccessToken(accessToken);
