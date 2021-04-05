@@ -33,7 +33,6 @@ module.exports = (crowi) => {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
-    console.log(req.body);
 
     const { body } = req;
     const args = body.text.split(' ');
@@ -58,7 +57,7 @@ module.exports = (crowi) => {
 
     switch (actionId) {
       case 'shareSearchResults': {
-        console.log(payload);
+        await crowi.boltService.shareSearchResults(payload);
         break;
       }
       case 'showNextResults': {

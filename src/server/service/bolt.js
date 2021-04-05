@@ -154,6 +154,13 @@ class BoltService extends S2sMessageHandlable {
     };
   }
 
+  shareSearchResults(payload) {
+    this.client.chat.postMessage({
+      channel: payload.channel.id,
+      text: payload.actions[0].value,
+    });
+  }
+
   async showEphemeralSearchResults(body, args, offsetNum) {
     const {
       resultPaths, offset, resultsTotal,
