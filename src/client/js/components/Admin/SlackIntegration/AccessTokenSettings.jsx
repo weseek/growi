@@ -26,6 +26,8 @@ const AccessTokenSettings = (props) => {
     }
   };
 
+  const accessToken = props.accessToken || '';
+
   return (
     <div className="row">
       <div className="col-lg-12">
@@ -34,7 +36,7 @@ const AccessTokenSettings = (props) => {
         <div className="form-group row my-5">
           <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
           <div className="col-md-6">
-            <input className="form-control" type="text" value={props.accessToken} onClick={e => textboxClickHandler(e)} readOnly />
+            <input className="form-control" type="text" value={accessToken} onClick={e => textboxClickHandler(e)} readOnly />
           </div>
         </div>
 

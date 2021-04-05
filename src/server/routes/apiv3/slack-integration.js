@@ -263,7 +263,7 @@ module.exports = (crowi) => {
       if (req.body.deleteAccessToken !== true) {
         accessToken = generateAccessToken(req.user);
       }
-      await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
+      await updateSlackBotSettings({ 'slackbot:accessToken': accessToken });
 
       // initialize bolt service
       crowi.boltService.initialize();
@@ -294,7 +294,7 @@ module.exports = (crowi) => {
   router.delete('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     try {
-      await updateSlackBotSettings({ 'slackbot:access-token': null });
+      await updateSlackBotSettings({ 'slackbot:accessToken': null });
 
       // initialize bolt service
       crowi.boltService.initialize();
