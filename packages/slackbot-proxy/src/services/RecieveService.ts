@@ -5,7 +5,7 @@ export class ReceiveService {
 
   receiveContentsFromSlack(body) {
     if (body.text === 'register') {
-      console.log(body);
+      return console.log('register action occured');
     }
     return;
   }

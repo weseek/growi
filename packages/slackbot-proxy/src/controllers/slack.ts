@@ -62,12 +62,10 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
-    const slackInput = this.receiveService.receive(body);
-    console.log('Controller', slackInput);
+    const slackInput = this.receiveService.receiveContentsFromSlack(body);
+    console.log('Controller/events', slackInput);
     res.send();
-    // console.log(body.text);
-    // const index = new IndexService();
-    // index.receiveBody(body);
+
     // console.log('body', body);
 
     return 'This action will be handled by bolt service.';
