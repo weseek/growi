@@ -21,7 +21,7 @@ const CustomBotWithoutProxySettings = (props) => {
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
-// eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
   const [isBoltSetup, setIsBoltSetup] = useState(null);
   const currentBotType = 'custom-bot-without-proxy';
 
@@ -53,8 +53,6 @@ const CustomBotWithoutProxySettings = (props) => {
       toastError(err);
     }
   }, [appContainer, adminAppContainer]);
-
-  console.log(isBoltSetup);
 
   useEffect(() => {
     fetchData();
