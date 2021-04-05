@@ -79,24 +79,6 @@ class BoltService extends S2sMessageHandlable {
     }
   }
 
-
-  // this.bolt.action('showNextResults', async({
-
-  //   const command = parsedValue.command;
-  //   const args = parsedValue.args;
-  //   const offset = parsedValue.offset;
-
-  //   const newOffset = offset + 10;
-  //   this.showEphemeralSearchResults(command, args, newOffset);
-  // });
-
-  // this.bolt.action('shareSearchResults', async({
-  //   body, ack, say, action,
-  // }) => {
-  //   await ack();
-  //   await say(action.value);
-  // });
-
   notCommand(body) {
     logger.error('Invalid first argument');
     this.client.chat.postEphemeral({
