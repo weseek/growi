@@ -1,32 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { toastSuccess } from '../../../util/apiNotification';
 
 const AccessTokenSettings = (props) => {
   const { t } = useTranslation('admin');
 
-  const discardTokenHandler = () => {
-    if (props.discardTokenHandler) {
-      props.discardTokenHandler();
+  const onClickDiscardButton = () => {
+    if (props.onClickDiscardButton) {
+      props.onClickDiscardButton();
     }
   };
 
-  const generateTokenHandler = () => {
-    if (props.generateTokenHandler) {
-      props.generateTokenHandler();
+  const onClickGenerateToken = () => {
+    if (props.onClickGenerateToken) {
+      props.onClickGenerateToken();
     }
   };
 
-  const textboxClickHandler = (e) => {
-    e.target.select();
-    if (props.accessToken) {
-      navigator.clipboard.writeText(props.accessToken)
-        .then(() => { toastSuccess(t('slack_integration.copied_to_clipboard')) });
-    }
+  const showCopiedToaster = () => {
+    toastSuccess(t('slack_integration.copied_to_clipboard'));
   };
-
-  const accessToken = props.accessToken || '';
 
   return (
     <div className="row">
@@ -36,16 +31,18 @@ const AccessTokenSettings = (props) => {
         <div className="form-group row my-5">
           <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
           <div className="col-md-6">
-            <input className="form-control" type="text" value={accessToken} onClick={e => textboxClickHandler(e)} readOnly />
+            <CopyToClipboard text={props.accessToken} onCopy={props.accessToken ? showCopiedToaster : null}>
+              <input className="form-control" type="text" value={props.accessToken} readOnly />
+            </CopyToClipboard>
           </div>
         </div>
 
         <div className="row">
           <div className="mx-auto">
-            <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={discardTokenHandler} disabled={!props.accessToken}>
+            <button type="button" className="btn btn-outline-secondary text-nowrap mx-1" onClick={onClickDiscardButton} disabled={!props.accessToken}>
               {t('slack_integration.access_token_settings.discard')}
             </button>
-            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={generateTokenHandler}>
+            <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={onClickGenerateToken}>
               {t('slack_integration.access_token_settings.generate')}
             </button>
           </div>
@@ -58,8 +55,8 @@ const AccessTokenSettings = (props) => {
 
 AccessTokenSettings.propTypes = {
   accessToken: PropTypes.string,
-  discardTokenHandler: PropTypes.func,
-  generateTokenHandler: PropTypes.func,
+  onClickDiscardButton: PropTypes.func,
+  onClickGenerateToken: PropTypes.func,
 };
 
 export default AccessTokenSettings;

@@ -78,8 +78,8 @@ const SlackIntegration = (props) => {
 
   const discardTokenHandler = async() => {
     try {
-      const res = await appContainer.apiv3.put('slack-integration/access-token', { deleteAccessToken: true });
-      setAccessToken(res.data.accessToken);
+      await appContainer.apiv3.delete('slack-integration/access-token');
+      setAccessToken('');
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
     catch (err) {
@@ -113,8 +113,8 @@ const SlackIntegration = (props) => {
 
       <AccessTokenSettings
         accessToken={accessToken}
-        discardTokenHandler={discardTokenHandler}
-        generateTokenHandler={generateTokenHandler}
+        onClickDiscardButton={discardTokenHandler}
+        onClickGenerateToken={generateTokenHandler}
       />
 
       <div className="row my-5">
