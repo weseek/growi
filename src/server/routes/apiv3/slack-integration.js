@@ -100,6 +100,7 @@ module.exports = (crowi) => {
         slackBotTokenEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
+        isBoltSetup: crowi.boltService.isBoltSetup,
       },
       // TODO imple when creating with proxy
       customBotWithProxySettings: {
