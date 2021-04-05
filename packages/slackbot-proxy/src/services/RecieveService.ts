@@ -6,11 +6,11 @@ import { parse } from '../../../slack/src/utils/slash-command-parser';
 @Service()
 export class ReceiveService {
 
-  receiveContentsFromSlack(body:SlashCommand) : string {
+  async receiveContentsFromSlack(body:SlashCommand) : Promise<string> {
     const parseBody = parse(body);
 
     if (parseBody.growiCommandType === 'register') {
-      openRegisterModal(body);
+      await openRegisterModal(body);
       return 'register action occurd';
     }
 
