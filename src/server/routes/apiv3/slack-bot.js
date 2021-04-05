@@ -1,10 +1,14 @@
 
 const express = require('express');
+const { createMessageAdapter } = require('@slack/interactive-messages');
 
 const router = express.Router();
 
 module.exports = (crowi) => {
   this.app = crowi.express;
+
+  const signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+  const slackInteractions = createMessageAdapter(signingSecret);
 
   // Check if the access token is correct
   // function verificationAccessToken(req, res, next) {
@@ -17,6 +21,12 @@ module.exports = (crowi) => {
 
   //   return next();
   // }
+
+  slackInteractions.viewSubmission('view_submission', (payload) => {
+    // Log the input elements from the view submission.
+    console.log(payload.view.state);
+  });
+
 
   function verificationRequestUrl(req, res, next) {
     // for verification request URL on Event Subscriptions
@@ -47,6 +57,25 @@ module.exports = (crowi) => {
         break;
       default:
         await crowi.boltService.notCommand(body);
+        break;
+    }
+
+  });
+
+  router.post('/interactive', verificationRequestUrl, async(req, res) => {
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
+    console.log(req.body);
+    const payload = JSON.parse(req.body.payload);
+    const { type } = payload;
+
+    switch (type) {
+      case 'view_submission':
+        await crowi.boltService.createPageInGrowi(payload);
+        break;
+      default:
         break;
     }
 
