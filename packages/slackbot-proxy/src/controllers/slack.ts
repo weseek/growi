@@ -1,3 +1,4 @@
+import { SlashCommand } from '@slack/bolt';
 import {
   BodyParams, Controller, Get, Inject, Post, Req, Res,
 } from '@tsed/common';
@@ -58,11 +59,10 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): string {
+  handleEvent(@BodyParams() body:SlashCommand, @Res() res: Res): string {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
-    console.log(body);
     const slackInput = this.receiveService.receiveContentsFromSlack(body);
     console.log('Controller/events', slackInput);
     res.send();
