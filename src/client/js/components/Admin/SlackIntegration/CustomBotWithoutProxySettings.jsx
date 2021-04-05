@@ -53,6 +53,7 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   }, [appContainer, adminAppContainer]);
 
+  console.log(isBoltSetup);
 
   useEffect(() => {
     fetchData();
