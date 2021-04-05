@@ -41,6 +41,7 @@ module.exports = function(crowi) {
     imageUrlCached: String,
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },
+    isEmailPublishedForNewUser: { type: Boolean, default: false },
     googleId: String,
     name: { type: String },
     username: { type: String, required: true, unique: true },
@@ -542,6 +543,7 @@ module.exports = function(crowi) {
     newUser.setPassword(password);
     newUser.createdAt = Date.now();
     newUser.status = STATUS_INVITED;
+    newUser.isEmailPublishedForNewUser = false;
 
     const globalLang = configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
