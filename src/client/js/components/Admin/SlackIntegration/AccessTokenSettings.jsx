@@ -32,7 +32,7 @@ const AccessTokenSettings = (props) => {
         <div className="form-group row my-5">
           <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
           <div className="col-md-6">
-            <CopyToClipboard text={props.accessToken} onCopy={showCopiedToaster ? props.accessToken : null}>
+            <CopyToClipboard text={props.accessToken} onCopy={props.accessToken ? showCopiedToaster : null}>
               <input className="form-control" type="text" value={props.accessToken} readOnly />
             </CopyToClipboard>
           </div>
