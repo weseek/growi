@@ -33,7 +33,7 @@ const AccessTokenSettings = (props) => {
             {props.accessToken == null ? (
               <input className="form-control" type="text" value={accessToken} readOnly />
             ) : (
-              <CopyToClipboard text={accessToken} onCopy={toastSuccess(t('slack_integration.copied_to_clipboard'))}>
+              <CopyToClipboard text={accessToken} onCopy={() => toastSuccess(t('slack_integration.copied_to_clipboard'))}>
                 <input className="form-control" type="text" value={accessToken} readOnly />
               </CopyToClipboard>
             )}
