@@ -22,7 +22,6 @@ const connectionOptions: ConnectionOptions = {
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   synchronize: true,
-  logging: true,
 } as ConnectionOptions;
 
 
@@ -87,11 +86,8 @@ export class Server {
   }
 
   async $onReady(): Promise<void> {
-    const typeormService = this.injector.get<TypeORMService>(TypeORMService);
-    console.log(typeormService);
-
-    const connection = typeormService?.connectionManager.get('default');
-    console.log(connection);
+    // for synchromizing when boot
+    this.injector.get<TypeORMService>(TypeORMService);
   }
 
 }
