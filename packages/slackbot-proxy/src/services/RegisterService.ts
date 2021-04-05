@@ -1,8 +1,10 @@
+import { SlashCommand } from '@slack/bolt';
 import { WebClient, LogLevel } from '@slack/web-api';
+import { generateInputSectionBlock, generateMarkdownSectionBlock } from '../../../slack/src/utils/block-creater';
 
-export const openRegisterModal = async(body:{[key:string]:string}) : Promise<void> => {
+export const openRegisterModal = async(body:SlashCommand) : Promise<void> => {
 
-  const client = new WebClient('', { logLevel: LogLevel.DEBUG });
+  const client = new WebClient('xoxb-1399660543842-1848670292404-TYsbWjgHPtNcTvqupgwb3h75', { logLevel: LogLevel.DEBUG });
   await client.views.open({
     trigger_id: body.trigger_id,
     view: {
@@ -16,22 +18,9 @@ export const openRegisterModal = async(body:{[key:string]:string}) : Promise<voi
         text: 'Close',
       },
       blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: 'hoge',
-          },
-        },
-        {
-          type: 'context',
-          elements: [
-            {
-              type: 'mrkdwn',
-              text: 'fuga',
-            },
-          ],
-        },
+        generateMarkdownSectionBlock('hoge'),
+        // generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
+
       ],
     },
   });
