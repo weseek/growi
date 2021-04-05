@@ -46,11 +46,11 @@ const SlackIntegration = (props) => {
     setSelectedBotType(clickedBotType);
   };
 
-  const handleCancelBotChange = () => {
+  const cancelBotChangeHandler = () => {
     setSelectedBotType(null);
   };
 
-  const handleChangeCurrentBotSettings = async() => {
+  const changeCurrentBotSettingsHandler = async() => {
     try {
       const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
@@ -68,8 +68,8 @@ const SlackIntegration = (props) => {
 
   const generateTokenHandler = async() => {
     try {
-      const res = await appContainer.apiv3.put('slack-integration/access-token');
-      setAccessToken(res.data.accessToken);
+      await appContainer.apiv3.put('slack-integration/access-token');
+      fetchData();
     }
     catch (err) {
       toastError(err);
@@ -79,7 +79,7 @@ const SlackIntegration = (props) => {
   const discardTokenHandler = async() => {
     try {
       await appContainer.apiv3.delete('slack-integration/access-token');
-      setAccessToken('');
+      fetchData();
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
     catch (err) {
@@ -107,8 +107,8 @@ const SlackIntegration = (props) => {
     <>
       <ConfirmBotChangeModal
         isOpen={selectedBotType != null}
-        onConfirmClick={handleChangeCurrentBotSettings}
-        onCancelClick={handleCancelBotChange}
+        onConfirmClick={changeCurrentBotSettingsHandler}
+        onCancelClick={cancelBotChangeHandler}
       />
 
       <AccessTokenSettings
