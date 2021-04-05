@@ -57,7 +57,7 @@ function Crowi(rootdir) {
   this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
-  this.slackService = null;
+  this.slackBotService = null;
   this.xss = new Xss();
 
   this.tokens = null;
@@ -118,7 +118,7 @@ Crowi.prototype.init = async function() {
     this.setupImport(),
     this.setupPageService(),
     this.setupSyncPageStatusService(),
-    this.setupSlackService(),
+    this.setupSlackBotService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -670,15 +670,15 @@ Crowi.prototype.setupSyncPageStatusService = async function() {
   }
 };
 
-Crowi.prototype.setupSlackService = async function() {
-  const SlackService = require('../service/slack');
-  if (this.slackService == null) {
-    this.slackService = new SlackService(this);
+Crowi.prototype.setupSlackBotService = async function() {
+  const SlackBotService = require('../service/slackbot');
+  if (this.slackBotService == null) {
+    this.slackBotService = new SlackBotService(this);
   }
 
   // add as a message handler
   if (this.s2sMessagingService != null) {
-    this.s2sMessagingService.addMessageHandler(this.slackService);
+    this.s2sMessagingService.addMessageHandler(this.slackBotService);
   }
 };
 

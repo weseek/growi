@@ -44,13 +44,13 @@ module.exports = (crowi) => {
 
     switch (command) {
       case 'search':
-        await crowi.slackService.showEphemeralSearchResults(body, args);
+        await crowi.slackBotService.showEphemeralSearchResults(body, args);
         break;
       case 'create':
-        await crowi.slackService.createModal(body);
+        await crowi.slackBotService.createModal(body);
         break;
       default:
-        await crowi.slackService.notCommand(body);
+        await crowi.slackBotService.notCommand(body);
         break;
     }
 
@@ -61,7 +61,7 @@ module.exports = (crowi) => {
 
     switch (actionId) {
       case 'shareSearchResults': {
-        await crowi.slackService.shareSearchResults(payload);
+        await crowi.slackBotService.shareSearchResults(payload);
         break;
       }
       case 'showNextResults': {
@@ -69,7 +69,7 @@ module.exports = (crowi) => {
 
         const { body, args, offset } = parsedValue;
         const newOffset = offset + 10;
-        await crowi.slackService.showEphemeralSearchResults(body, args, newOffset);
+        await crowi.slackBotService.showEphemeralSearchResults(body, args, newOffset);
         break;
       }
       default:
@@ -82,7 +82,7 @@ module.exports = (crowi) => {
 
     switch (callbackId) {
       case 'createPage':
-        await crowi.slackService.createPageInGrowi(payload);
+        await crowi.slackBotService.createPageInGrowi(payload);
         break;
       default:
         break;

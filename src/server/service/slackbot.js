@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:SlackService');
+const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
@@ -8,7 +8,7 @@ const { WebClient, LogLevel } = require('@slack/web-api');
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
-class SlackService extends S2sMessageHandlable {
+class SlackBotService extends S2sMessageHandlable {
 
   constructor(crowi) {
     super();
@@ -44,7 +44,7 @@ class SlackService extends S2sMessageHandlable {
    */
   shouldHandleS2sMessage(s2sMessage) {
     const { eventName, updatedAt } = s2sMessage;
-    if (eventName !== 'slackServiceUpdated' || updatedAt == null) {
+    if (eventName !== 'slackBotServiceUpdated' || updatedAt == null) {
       return false;
     }
 
@@ -67,7 +67,7 @@ class SlackService extends S2sMessageHandlable {
     const { s2sMessagingService } = this;
 
     if (s2sMessagingService != null) {
-      const s2sMessage = new S2sMessage('slackServiceUpdated', { updatedAt: new Date() });
+      const s2sMessage = new S2sMessage('slackBotServiceUpdated', { updatedAt: new Date() });
 
       try {
         await s2sMessagingService.publish(s2sMessage);
@@ -358,4 +358,4 @@ class SlackService extends S2sMessageHandlable {
 
 }
 
-module.exports = SlackService;
+module.exports = SlackBotService;
