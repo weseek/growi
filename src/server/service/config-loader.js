@@ -412,7 +412,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   SLACK_BOT_ACCESS_TOKEN: {
     ns:      'crowi',
-    key:     'slackbot:accessToken',
+    key:     'slackbot:access-token',
     type:    TYPES.STRING,
     default: null,
   },
