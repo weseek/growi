@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import AppContainer from '../../../services/AppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AccessTokenSettings from './AccessTokenSettings';
 import OfficialBotSettings from './OfficialBotSettings';
@@ -6,9 +11,29 @@ import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 
-const SlackIntegration = () => {
+
+const SlackIntegration = (props) => {
+  const { appContainer } = props;
+  const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
+  const [accessToken, setAccessToken] = useState('');
+
+  const fetchData = useCallback(async() => {
+    try {
+      const response = await appContainer.apiv3.get('slack-integration/');
+      const { currentBotType, accessToken } = response.data.slackBotSettingParams;
+      setCurrentBotType(currentBotType);
+      setAccessToken(accessToken);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer.apiv3]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -21,13 +46,45 @@ const SlackIntegration = () => {
     setSelectedBotType(clickedBotType);
   };
 
-  const handleCancelBotChange = () => {
+  const cancelBotChangeHandler = () => {
     setSelectedBotType(null);
   };
 
-  const changeCurrentBotSettings = () => {
-    setCurrentBotType(selectedBotType);
-    setSelectedBotType(null);
+  const changeCurrentBotSettingsHandler = async() => {
+    try {
+      const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
+        slackSigningSecret: '',
+        slackBotToken: '',
+        currentBotType: selectedBotType,
+      });
+      setCurrentBotType(res.data.customBotWithoutProxySettingParams.slackBotType);
+      setSelectedBotType(null);
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
+  const generateTokenHandler = async() => {
+    try {
+      await appContainer.apiv3.put('slack-integration/access-token');
+      fetchData();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
+  const discardTokenHandler = async() => {
+    try {
+      await appContainer.apiv3.delete('slack-integration/access-token');
+      fetchData();
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   let settingsComponent = null;
@@ -37,7 +94,9 @@ const SlackIntegration = () => {
       settingsComponent = <OfficialBotSettings />;
       break;
     case 'custom-bot-without-proxy':
-      settingsComponent = <CustomBotWithoutProxySettings />;
+      settingsComponent = (
+        <CustomBotWithoutProxySettings />
+      );
       break;
     case 'custom-bot-with-proxy':
       settingsComponent = <CustomBotWithProxySettings />;
@@ -46,21 +105,17 @@ const SlackIntegration = () => {
 
   return (
     <>
-      <div className="container">
-        <ConfirmBotChangeModal
-          isOpen={selectedBotType != null}
-          onConfirmClick={changeCurrentBotSettings}
-          onCancelClick={handleCancelBotChange}
-        />
-      </div>
+      <ConfirmBotChangeModal
+        isOpen={selectedBotType != null}
+        onConfirmClick={changeCurrentBotSettingsHandler}
+        onCancelClick={cancelBotChangeHandler}
+      />
 
-      <div className="row">
-        <div className="col-lg-12">
-          <h2 className="admin-setting-header">Access Token</h2>
-          <AccessTokenSettings />
-        </div>
-      </div>
-
+      <AccessTokenSettings
+        accessToken={accessToken}
+        onClickDiscardButton={discardTokenHandler}
+        onClickGenerateToken={generateTokenHandler}
+      />
 
       <div className="row my-5">
         <div className="card-deck mx-auto">
@@ -103,4 +158,10 @@ const SlackIntegration = () => {
   );
 };
 
-export default SlackIntegration;
+const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer]);
+
+SlackIntegration.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default SlackIntegrationWrapper;

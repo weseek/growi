@@ -410,9 +410,15 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  SLACK_BOT_ACCESS_TOKEN: {
+    ns:      'crowi',
+    key:     'slackbot:access-token',
+    type:    TYPES.STRING,
+    default: null,
+  },
   SLACK_BOT_TYPE: {
     ns:      'crowi',
-    key:     'slackbot:type', // eg. official || custom-without-proxy || custom-with-proxy
+    key:     'slackbot:currentBotType', // 'official-bot' || 'custom-bot-without-proxy' || 'custom-bot-with-proxy'
     type:    TYPES.STRING,
     default: null,
   },
