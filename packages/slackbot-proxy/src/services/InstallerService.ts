@@ -35,7 +35,7 @@ export class InstallerService {
       installationStore: {
         storeInstallation: async(slackInstallation: SlackInstallation<'v1' | 'v2', boolean>) => {
           const installation = new Installation();
-          installation.data = slackInstallation;
+          installation.setData(slackInstallation);
 
           await repository.save(installation);
 

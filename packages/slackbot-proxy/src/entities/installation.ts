@@ -1,5 +1,5 @@
 import {
-  Property, Required,
+  Required,
 } from '@tsed/schema';
 import {
   Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,
@@ -11,7 +11,6 @@ import { Installation as SlackInstallation } from '@slack/oauth';
 export class Installation {
 
   @PrimaryGeneratedColumn()
-  @Property()
   readonly id: number;
 
   @Column({ type: 'json' })
@@ -23,5 +22,22 @@ export class Installation {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  @Column({ nullable: true })
+  isEnterpriseInstall?: boolean;
+
+  @Column({ nullable: true, unique: true })
+  teamId?: string;
+
+  @Column({ nullable: true, unique: true })
+  enterpriseId?: string;
+
+  setData(slackInstallation: SlackInstallation): void {
+    this.data = slackInstallation;
+
+    this.isEnterpriseInstall = slackInstallation.isEnterpriseInstall;
+    this.teamId = slackInstallation.team?.id;
+    this.enterpriseId = slackInstallation.enterprise?.id;
+  }
 
 }
