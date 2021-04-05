@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { toastSuccess } from '../../../util/apiNotification';
 
 const AccessTokenSettings = (props) => {
@@ -18,12 +19,8 @@ const AccessTokenSettings = (props) => {
     }
   };
 
-  const textboxClickHandler = (e) => {
-    e.target.select();
-    if (props.accessToken) {
-      navigator.clipboard.writeText(props.accessToken)
-        .then(() => { toastSuccess(t('slack_integration.copied_to_clipboard')) });
-    }
+  const showCopiedToaster = () => {
+    toastSuccess(t('slack_integration.copied_to_clipboard'));
   };
 
   return (
@@ -35,7 +32,9 @@ const AccessTokenSettings = (props) => {
         <div className="form-group row my-5">
           <label className="text-left text-md-right col-md-3 col-form-label">Access Token</label>
           <div className="col-md-6">
-            <input className="form-control" type="text" value={props.accessToken} onClick={e => textboxClickHandler(e)} readOnly />
+            <CopyToClipboard text={props.accessToken ? props.accessToken : null} onCopy={showCopiedToaster}>
+              <input className="form-control" type="text" value={props.accessToken} readOnly />
+            </CopyToClipboard>
           </div>
         </div>
 
