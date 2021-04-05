@@ -252,6 +252,7 @@
   },
   "slack_integration": {
     "bot_reset_successful": "Botの設定を消去しました。",
+    "copied_to_clipboard": "クリップボードにコピーされました。",
     "modal": {
       "warning": "注意",
       "sure_change_bot_type": "Botの種類を変更しますか?",
