@@ -1,8 +1,7 @@
 import { SlashCommand } from '@slack/bolt';
 import { Service } from '@tsed/di';
-import { parse } from '../../../slack/src/utils/slash-command-parser';
 import { openRegisterModal } from './RegisterService';
-
+import { parse } from '../../../slack/src/utils/slash-command-parser';
 
 @Service()
 export class ReceiveService {

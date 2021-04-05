@@ -67,7 +67,7 @@ export class SlackCtrl {
     console.log('Controller/events', slackInput);
     res.send();
 
-    // console.log('body', body);
+    console.log('body', body);
 
     return 'This action will be handled by bolt service.';
   }
