@@ -22,7 +22,7 @@ const CustomBotWithoutProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
   // eslint-disable-next-line no-unused-vars
-  const [isBoltSetup, setIsBoltSetup] = useState(null);
+  const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
   const currentBotType = 'custom-bot-without-proxy';
 
   const getSlackWSInWithoutProxy = useCallback(async() => {
@@ -40,14 +40,14 @@ const CustomBotWithoutProxySettings = (props) => {
       await adminAppContainer.retrieveAppSettingsData();
       const res = await appContainer.apiv3.get('/slack-integration/');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isBoltSetup,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot,
       } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSiteName(adminAppContainer.state.title);
-      setIsBoltSetup(isBoltSetup);
+      setIsSetupSlackBot(isSetupSlackBot);
     }
     catch (err) {
       toastError(err);

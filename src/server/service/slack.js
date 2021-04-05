@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:BoltService');
+const logger = require('@alias/logger')('growi:service:SlackService');
 const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
@@ -8,7 +8,7 @@ const { WebClient, LogLevel } = require('@slack/web-api');
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
-class BoltService extends S2sMessageHandlable {
+class SlackService extends S2sMessageHandlable {
 
   constructor(crowi) {
     super();
@@ -19,24 +19,23 @@ class BoltService extends S2sMessageHandlable {
     this.client = null;
     this.searchService = null;
 
-    this.isSetup = false;
+    this.isSetupSlackBot = false;
     this.lastLoadedAt = null;
 
     this.initialize();
   }
 
   initialize() {
-    this.isSetup = false;
+    this.isSetupSlackBot = false;
 
     const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
-    // const signingSecret = this.crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
 
     if (token != null) {
       this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
     }
 
     logger.debug('SlackBot: setup is done');
-    this.isSetup = true;
+    this.isSetupSlackBot = true;
     this.lastLoadedAt = new Date();
   }
 
@@ -45,7 +44,7 @@ class BoltService extends S2sMessageHandlable {
    */
   shouldHandleS2sMessage(s2sMessage) {
     const { eventName, updatedAt } = s2sMessage;
-    if (eventName !== 'boltServiceUpdated' || updatedAt == null) {
+    if (eventName !== 'slackServiceUpdated' || updatedAt == null) {
       return false;
     }
 
@@ -59,7 +58,7 @@ class BoltService extends S2sMessageHandlable {
   async handleS2sMessage() {
     const { configManager } = this.crowi;
 
-    logger.info('Reset bolt by pubsub notification');
+    logger.info('Reset slack bot by pubsub notification');
     await configManager.loadConfigs();
     this.initialize();
   }
@@ -68,7 +67,7 @@ class BoltService extends S2sMessageHandlable {
     const { s2sMessagingService } = this;
 
     if (s2sMessagingService != null) {
-      const s2sMessage = new S2sMessage('boltServiceUpdated', { updatedAt: new Date() });
+      const s2sMessage = new S2sMessage('slackServiceUpdated', { updatedAt: new Date() });
 
       try {
         await s2sMessagingService.publish(s2sMessage);
@@ -359,4 +358,4 @@ class BoltService extends S2sMessageHandlable {
 
 }
 
-module.exports = BoltService;
+module.exports = SlackService;
