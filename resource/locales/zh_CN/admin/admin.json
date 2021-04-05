@@ -261,6 +261,7 @@
 		"delete": "删除"
   },
   "slack_integration": {
+    "bot_reset_successful": "删除了BOT设置。",
     "modal": {
       "warning": "警告",
       "sure_change_bot_type": "您确定要更改设置吗？",
