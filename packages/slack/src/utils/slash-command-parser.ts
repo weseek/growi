@@ -5,7 +5,8 @@ import { InvalidGrowiCommandError } from '../models/errors';
 
 export const parse = (slashCommand: SlashCommand): GrowiCommand => {
   console.log(slashCommand);
-  const splitted = slashCommand.command.split(' ');
+  const splitted = slashCommand.text.split(' ');
+  console.log('splited', splitted);
   if (splitted.length < 1) {
     throw new InvalidGrowiCommandError('The SlashCommand.text does not specify GrowiCommand type');
   }
