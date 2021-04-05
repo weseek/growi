@@ -3,11 +3,12 @@ import { Service } from '@tsed/di';
 @Service()
 export class ReceiveService {
 
-  receiveContentsFromSlack(body) {
+  receiveContentsFromSlack(body:{[key:string]:string}) : string {
     if (body.text === 'register') {
-      return console.log('register action occured');
+      console.log('register action occured');
+      return 'register action occurd';
     }
-    return;
+    return 'return receiveContentsFromSlack';
   }
 
 }
