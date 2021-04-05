@@ -2,7 +2,7 @@ import {
   Property, Required,
 } from '@tsed/schema';
 import {
-  Column, Entity, PrimaryGeneratedColumn,
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,
 } from 'typeorm';
 
 import { Installation as SlackInstallation } from '@slack/oauth';
@@ -12,10 +12,16 @@ export class Installation {
 
   @PrimaryGeneratedColumn()
   @Property()
-  id: number;
+  readonly id: number;
 
   @Column({ type: 'json' })
   @Required()
   data: SlackInstallation;
+
+  @CreateDateColumn()
+  readonly createdAt: Date;
+
+  @UpdateDateColumn()
+  readonly updatedAt: Date;
 
 }
