@@ -12,7 +12,7 @@ export const parse = (slashCommand: SlashCommand): GrowiCommand => {
 
   return {
     text: slashCommand.text,
-    growiCommandType: 'hoge',
-    growiCommandArgs: ['fugo'],
+    growiCommandType: splitted[0],
+    growiCommandArgs: splitted.slice(1),
   };
 };
