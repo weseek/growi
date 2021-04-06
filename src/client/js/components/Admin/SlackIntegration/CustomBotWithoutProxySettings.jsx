@@ -36,6 +36,7 @@ const CustomBotWithoutProxySettings = (props) => {
         toastError(err);
       }
     };
+    setSlackWSNameInWithoutProxy(null);
     if (isConnectedToSlack) {
       fetchData();
     }
