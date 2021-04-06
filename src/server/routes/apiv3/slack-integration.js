@@ -101,6 +101,7 @@ module.exports = (crowi) => {
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
         isSetupSlackBot: crowi.slackBotService.isSetupSlackBot,
+        isConnectedToSlack: crowi.slackBotService.isConnectedToSlack,
       },
       // TODO imple when creating with proxy
       customBotWithProxySettings: {
@@ -142,7 +143,7 @@ module.exports = (crowi) => {
         await updateSlackBotSettings(requestParams);
 
         // initialize slack service
-        crowi.slackBotService.initialize();
+        await crowi.slackBotService.initialize();
         crowi.slackBotService.publishUpdatedMessage();
 
         const slackIntegrationSettingsParams = {
@@ -190,7 +191,7 @@ module.exports = (crowi) => {
         await updateSlackBotSettings(requestParams);
 
         // initialize slack service
-        crowi.slackBotService.initialize();
+        await crowi.slackBotService.initialize();
         crowi.slackBotService.publishUpdatedMessage();
 
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
@@ -255,7 +256,7 @@ module.exports = (crowi) => {
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
       // initialize slack service
-      crowi.slackBotService.initialize();
+      await crowi.slackBotService.initialize();
       crowi.slackBotService.publishUpdatedMessage();
 
       return res.apiv3({ accessToken });
@@ -286,7 +287,7 @@ module.exports = (crowi) => {
       await updateSlackBotSettings({ 'slackbot:access-token': null });
 
       // initialize slack service
-      crowi.slackBotService.initialize();
+      await crowi.slackBotService.initialize();
       crowi.slackBotService.publishUpdatedMessage();
 
       return res.apiv3({});

@@ -27,7 +27,7 @@ class SlackBotService extends S2sMessageHandlable {
     this.initialize();
   }
 
-  initialize() {
+  async initialize() {
     this.isSetupSlackBot = false;
 
     const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
@@ -36,7 +36,7 @@ class SlackBotService extends S2sMessageHandlable {
       this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
       logger.debug('SlackBot: setup is done');
       this.isSetupSlackBot = true;
-      this.sendAuthTest();
+      await this.sendAuthTest();
     }
 
     this.lastLoadedAt = new Date();
