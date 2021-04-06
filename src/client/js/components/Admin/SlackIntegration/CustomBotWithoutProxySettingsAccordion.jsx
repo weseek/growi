@@ -19,7 +19,9 @@ const CustomBotWithoutSettingsAccordion = () => {
               onClick={() => setCurrentOpenAccordionIndex(0)}
             >
               ① Botを作成する
-              <i className="fa fa-chevron-down"></i>
+              {currentOpenAccordionIndex === 0
+              ? <i className="fa fa-chevron-down"></i>
+              : <i className="fa fa-chevron-up"></i>}
             </button>
           </h2>
         </div>
@@ -48,7 +50,9 @@ const CustomBotWithoutSettingsAccordion = () => {
               onClick={() => setCurrentOpenAccordionIndex(1)}
             >
               ② BotをSlackにインストールする
-              <i className="fa fa-chevron-down"></i>
+              {currentOpenAccordionIndex === 1
+              ? <i className="fa fa-chevron-down"></i>
+              : <i className="fa fa-chevron-up"></i>}
             </button>
           </h2>
         </div>
@@ -75,7 +79,9 @@ const CustomBotWithoutSettingsAccordion = () => {
               onClick={() => setCurrentOpenAccordionIndex(2)}
             >
               ③ Signing SecretとBot Tokenを登録する
-              <i className="fa fa-chevron-down"></i>
+              {currentOpenAccordionIndex === 2
+              ? <i className="fa fa-chevron-down"></i>
+              : <i className="fa fa-chevron-up"></i>}
             </button>
           </h2>
         </div>
@@ -102,7 +108,9 @@ const CustomBotWithoutSettingsAccordion = () => {
               onClick={() => setCurrentOpenAccordionIndex(3)}
             >
               ④ 連携状況のテストをする
-              <i className="fa fa-chevron-down"></i>
+              {currentOpenAccordionIndex === 3
+              ? <i className="fa fa-chevron-down"></i>
+              : <i className="fa fa-chevron-up"></i>}
             </button>
           </h2>
         </div>
