@@ -29,6 +29,7 @@ class AppSetting extends React.Component {
       toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
     }
     catch (err) {
+      console.log('errorだよ');
       toastError(err);
       logger.error(err);
     }
@@ -115,10 +116,10 @@ class AppSetting extends React.Component {
               <input
                 type="radio"
                 id="radio-email-show"
-                value="true"
                 className="custom-control-input"
                 name="mailVisibility"
-                onChange={(e) => { adminAppContainer.changeDefaultEmailShow(e.target.value) }}
+                checked={adminAppContainer.state.defaultEmailShow}
+                onChange={() => { adminAppContainer.changeDefaultEmailShow(true) }}
               />
               <label className="custom-control-label" htmlFor="radio-email-show">{t('Show')}</label>
             </div>
@@ -127,10 +128,10 @@ class AppSetting extends React.Component {
               <input
                 type="radio"
                 id="radio-email-hide"
-                value="false"
                 className="custom-control-input"
                 name="mailVisibility"
-                onChange={(e) => { adminAppContainer.changeDefaultEmailShow(e.target.value) }}
+                checked={!adminAppContainer.state.defaultEmailShow}
+                onChange={() => { adminAppContainer.changeDefaultEmailShow(false) }}
               />
               <label className="custom-control-label" htmlFor="radio-email-hide">{t('Hide')}</label>
             </div>
