@@ -74,6 +74,7 @@ export default class AdminAppContainer extends Container {
   async retrieveAppSettingsData() {
     const response = await this.appContainer.apiv3.get('/app-settings/');
     const { appSettingsParams } = response.data;
+
     this.setState({
       title: appSettingsParams.title,
       confidential: appSettingsParams.confidential,
