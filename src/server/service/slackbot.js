@@ -155,7 +155,6 @@ class SlackBotService extends S2sMessageHandlable {
 
   async getSlackChannelName() {
     const slackTeamInfo = await this.client.team.info();
-    console.log(slackTeamInfo);
     return slackTeamInfo.team.name;
   }
 

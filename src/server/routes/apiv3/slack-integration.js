@@ -223,24 +223,17 @@ module.exports = (crowi) => {
    *            description: Succeeded to get slack ws name for custom bot without proxy
    */
   router.get('/custom-bot-without-proxy/slack-workspace-name', async(req, res) => {
-    // get ws name in custom bot from slackbot token
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
 
-    let slackWorkSpaceName = null;
-    if (slackBotToken != null) {
-      const web = new WebClient(slackBotToken);
-      try {
-        const slackTeamInfo = await web.team.info();
-        slackWorkSpaceName = slackTeamInfo.team.name;
-      }
-      catch (error) {
-        const msg = 'Error occured in slack_bot_token';
-        logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
-      }
+    try {
+      const slackWorkSpaceName = await crowi.slackBotService.getSlackChannelName();
+      return res.apiv3({ slackWorkSpaceName });
+    }
+    catch (error) {
+      const msg = 'Error occured in slack_bot_token';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
     }
 
-    return res.apiv3({ slackWorkSpaceName });
   });
 
   /**
