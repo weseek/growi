@@ -8,7 +8,6 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import SlackGrowiBridging from './SlackGrowiBridging';
 
-
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, adminAppContainer } = props;
   const { t } = useTranslation();
@@ -40,7 +39,11 @@ const CustomBotWithoutProxySettings = (props) => {
       await adminAppContainer.retrieveAppSettingsData();
       const res = await appContainer.apiv3.get('/slack-integration/');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isBoltSetup,
+        slackSigningSecret,
+        slackBotToken,
+        slackSigningSecretEnvVars,
+        slackBotTokenEnvVars,
+        isBoltSetup,
       } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
@@ -77,17 +80,10 @@ const CustomBotWithoutProxySettings = (props) => {
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
       {/* temporarily put bellow component */}
-      <SlackGrowiBridging
-        siteName={siteName}
-        slackWorkSpaceName={slackWSNameInWithoutProxy}
-      />
+      <SlackGrowiBridging siteName={siteName} slackWorkSpaceName={slackWSNameInWithoutProxy} />
       <div className="row my-5">
         <div className="mx-auto">
-          <button
-            type="button"
-            className="btn btn-primary text-nowrap mx-1"
-            onClick={() => window.open('https://api.slack.com/apps', '_blank')}
-          >
+          <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
             {t('admin:slack_integration.without_proxy.create_bot')}
           </button>
         </div>
@@ -99,26 +95,20 @@ const CustomBotWithoutProxySettings = (props) => {
           <col className="from-env-vars" />
         </colgroup>
         <thead>
-          <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+          <tr>
+            <th></th>
+            <th>Database</th>
+            <th>Environment variables</th>
+          </tr>
         </thead>
         <tbody>
           <tr>
             <th>Signing Secret</th>
             <td>
-              <input
-                className="form-control"
-                type="text"
-                value={slackSigningSecret || ''}
-                onChange={e => setSlackSigningSecret(e.target.value)}
-              />
+              <input className="form-control" type="text" value={slackSigningSecret || ''} onChange={e => setSlackSigningSecret(e.target.value)} />
             </td>
             <td>
-              <input
-                className="form-control"
-                type="text"
-                value={slackSigningSecretEnv || ''}
-                readOnly
-              />
+              <input className="form-control" type="text" value={slackSigningSecretEnv || ''} readOnly />
               <p className="form-text text-muted">
                 {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
@@ -128,32 +118,99 @@ const CustomBotWithoutProxySettings = (props) => {
           <tr>
             <th>Bot User OAuth Token</th>
             <td>
-              <input
-                className="form-control"
-                type="text"
-                value={slackBotToken || ''}
-                onChange={e => setSlackBotToken(e.target.value)}
-              />
+              <input className="form-control" type="text" value={slackBotToken || ''} onChange={e => setSlackBotToken(e.target.value)} />
             </td>
             <td>
-              <input
-                className="form-control"
-                type="text"
-                value={slackBotTokenEnv || ''}
-                readOnly
-              />
+              <input className="form-control" type="text" value={slackBotTokenEnv || ''} readOnly />
               <p className="form-text text-muted">
                 {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_BOT_TOKEN' }) }} />
               </p>
             </td>
-
           </tr>
         </tbody>
       </table>
 
-
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
+
+      <div className="accordion" id="accordionExample">
+        <div className="card">
+          <div className="card-header" id="headingOne">
+            <h2 className="mb-0">
+              <button
+                className="btn btn-link btn-block text-left"
+                type="button"
+                data-toggle="collapse"
+                data-target="#collapseOne"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                Collapsible Group Item #1
+              </button>
+            </h2>
+          </div>
+
+          <div id="collapseOne" className="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div className="card-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
+              dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
+              assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
+              butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus
+              labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-header" id="headingTwo">
+            <h2 className="mb-0">
+              <button
+                className="btn btn-link btn-block text-left collapsed"
+                type="button"
+                data-toggle="collapse"
+                data-target="#collapseTwo"
+                aria-expanded="false"
+                aria-controls="collapseTwo"
+              >
+                Collapsible Group Item #2
+              </button>
+            </h2>
+          </div>
+          <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div className="card-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
+              dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
+              assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
+              butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus
+              labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-header" id="headingThree">
+            <h2 className="mb-0">
+              <button
+                className="btn btn-link btn-block text-left collapsed"
+                type="button"
+                data-toggle="collapse"
+                data-target="#collapseThree"
+                aria-expanded="false"
+                aria-controls="collapseThree"
+              >
+                Collapsible Group Item #3
+              </button>
+            </h2>
+          </div>
+          <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div className="card-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
+              dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
+              assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
+              butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus
+              labore sustainable VHS.
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
