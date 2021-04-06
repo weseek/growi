@@ -5,6 +5,16 @@
 //
 //
 
+.nav-link {
+  // Disabled state lightens text
+  &.disabled {
+    color: $nav-link-disabled-color;
+    svg {
+      fill: $nav-link-disabled-color;
+    }
+  }
+}
+
 //
 // Tabs
 //

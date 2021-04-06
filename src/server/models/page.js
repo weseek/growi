@@ -14,7 +14,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
-const { isTopPage } = require('@commons/util/path-utils');
+const { isTopPage, isTrashPage } = require('@commons/util/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -46,26 +46,14 @@ const pageSchema = new mongoose.Schema({
   liker: [{ type: ObjectId, ref: 'User' }],
   seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
-  extended: {
-    type: String,
-    default: '{}',
-    get(data) {
-      try {
-        return JSON.parse(data);
-      }
-      catch (e) {
-        return data;
-      }
-    },
-    set(data) {
-      return JSON.stringify(data);
-    },
-  },
+  slackChannels: { type: String },
   pageIdOnHackmd: String,
   revisionHackmdSynced: { type: ObjectId, ref: 'Revision' }, // the revision that is synced to HackMD
   hasDraftOnHackmd: { type: Boolean }, // set true if revision and revisionHackmdSynced are same but HackMD document has modified
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
+  deleteUser: { type: ObjectId, ref: 'User' },
+  deletedAt: { type: Date },
 }, {
   toJSON: { getters: true },
   toObject: { getters: true },
@@ -96,14 +84,6 @@ const extractToAncestorsPaths = (pagePath) => {
   return ancestorsPaths;
 };
 
-const addSlashOfEnd = (path) => {
-  let returnPath = path;
-  if (!path.match(/\/$/)) {
-    returnPath += '/';
-  }
-  return returnPath;
-};
-
 /**
  * populate page (Query or Document) to show revision
  * @param {any} page Query or Document
@@ -115,6 +95,7 @@ const populateDataToShowRevision = (page, userPublicFields) => {
     .populate([
       { path: 'lastUpdateUser', model: 'User', select: userPublicFields },
       { path: 'creator', model: 'User', select: userPublicFields },
+      { path: 'deleteUser', model: 'User', select: userPublicFields },
       { path: 'grantedGroup', model: 'UserGroup' },
       { path: 'revision', model: 'Revision', populate: {
         path: 'author', model: 'User', select: userPublicFields,
@@ -148,15 +129,50 @@ class PageQueryBuilder {
   }
 
   /**
-   * generate the query to find the page that is match with `path` and its descendants
+   * generate the query to find the pages '{path}/*' and '{path}' self.
+   * If top page, return without doing anything.
    */
   addConditionToListWithDescendants(path, option) {
-    // ignore other pages than descendants
-    // eslint-disable-next-line no-param-reassign
-    path = addSlashOfEnd(path);
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
 
-    this.addConditionToListByStartWith(path, option);
+    const pathNormalized = pathUtils.normalizePath(path);
+    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    this.query = this.query
+      .and({
+        $or: [
+          { path: pathNormalized },
+          { path: new RegExp(`^${startsPattern}`) },
+        ],
+      });
+
     return this;
+  }
+
+  /**
+   * generate the query to find the pages '{path}/*' (exclude '{path}' self).
+   * If top page, return without doing anything.
+   */
+  addConditionToListOnlyDescendants(path, option) {
+    // No request is set for the top page
+    if (isTopPage(path)) {
+      return this;
+    }
+
+    const pathWithTrailingSlash = pathUtils.addTrailingSlash(path);
+
+    const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+    this.query = this.query
+      .and({ path: new RegExp(`^${startsPattern}`) });
+
+    return this;
+
   }
 
   /**
@@ -173,36 +189,11 @@ class PageQueryBuilder {
     if (isTopPage(path)) {
       return this;
     }
-    const pathCondition = [];
 
-    /*
-     * 1. add condition for finding the page completely match with `path` w/o last slash
-     */
-    let pathSlashOmitted = path;
-    if (path.match(/\/$/)) {
-      pathSlashOmitted = path.substr(0, path.length - 1);
-      pathCondition.push({ path: pathSlashOmitted });
-    }
-    /*
-     * 2. add decendants
-     */
-    const pattern = escapeStringRegexp(path); // escape
-
-    let queryReg;
-    try {
-      queryReg = new RegExp(`^${pattern}`);
-    }
-    // if regular expression is invalid
-    catch (e) {
-      // force to escape
-      queryReg = new RegExp(`^${escapeStringRegexp(pattern)}`);
-    }
-    pathCondition.push({ path: queryReg });
+    const startsPattern = escapeStringRegexp(path);
 
     this.query = this.query
-      .and({
-        $or: pathCondition,
-      });
+      .and({ path: new RegExp(`^${startsPattern}`) });
 
     return this;
   }
@@ -256,6 +247,17 @@ class PageQueryBuilder {
     return this;
   }
 
+  addConditionToListByPathsArray(paths) {
+    this.query = this.query
+      .and({
+        path: {
+          $in: paths,
+        },
+      });
+
+    return this;
+  }
+
   populateDataToList(userPublicFields) {
     this.query = this.query
       .populate({
@@ -280,6 +282,7 @@ module.exports = function(crowi) {
     pageEvent = crowi.event('page');
     pageEvent.on('create', pageEvent.onCreate);
     pageEvent.on('update', pageEvent.onUpdate);
+    pageEvent.on('createMany', pageEvent.onCreateMany);
   }
 
   function validateCrowi() {
@@ -289,7 +292,7 @@ module.exports = function(crowi) {
   }
 
   pageSchema.methods.isDeleted = function() {
-    return (this.status === STATUS_DELETED) || checkIfTrashed(this.path);
+    return (this.status === STATUS_DELETED) || isTrashPage(this.path);
   };
 
   pageSchema.methods.isPublic = function() {
@@ -401,7 +404,7 @@ module.exports = function(crowi) {
       throw new Error('User data is not valid');
     }
 
-    const added = this.seenUsers.addToSet(userData);
+    const added = this.seenUsers.addToSet(userData._id);
     const saved = await this.save();
 
     debug('seenUsers updated!', added);
@@ -409,33 +412,10 @@ module.exports = function(crowi) {
     return saved;
   };
 
-  pageSchema.methods.getSlackChannel = function() {
-    const extended = this.get('extended');
-    if (!extended) {
-      return '';
-    }
+  pageSchema.methods.updateSlackChannels = function(slackChannels) {
+    this.slackChannels = slackChannels;
 
-    return extended.slack || '';
-  };
-
-  pageSchema.methods.updateSlackChannel = function(slackChannel) {
-    const extended = this.extended;
-    extended.slack = slackChannel;
-
-    return this.updateExtended(extended);
-  };
-
-  pageSchema.methods.updateExtended = function(extended) {
-    const page = this;
-    page.extended = extended;
-    return new Promise(((resolve, reject) => {
-      return page.save((err, doc) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(doc);
-      });
-    }));
+    return this.save();
   };
 
   pageSchema.methods.initLatestRevisionField = async function(revisionId) {
@@ -449,7 +429,7 @@ module.exports = function(crowi) {
     validateCrowi();
 
     const User = crowi.model('User');
-    return populateDataToShowRevision(this, User.USER_PUBLIC_FIELDS)
+    return populateDataToShowRevision(this, User.USER_FIELDS_EXCEPT_CONFIDENTIAL)
       .execPopulate();
   };
 
@@ -553,7 +533,7 @@ module.exports = function(crowi) {
       /\s+\/\s+/, // avoid miss in renaming
       /.+\/edit$/,
       /.+\.md$/,
-      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags)(\/.*|$)/,
+      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
     ];
 
     let isCreatable = true;
@@ -701,6 +681,32 @@ module.exports = function(crowi) {
   };
 
   /**
+   * find pages that is match with `path` and its descendants whitch user is able to manage
+   */
+  pageSchema.statics.findManageableListWithDescendants = async function(page, user, option = {}) {
+    if (user == null) {
+      return null;
+    }
+
+    const builder = new PageQueryBuilder(this.find());
+    builder.addConditionToListWithDescendants(page.path, option);
+    builder.addConditionToExcludeRedirect();
+
+    // add grant conditions
+    await addConditionToFilteringByViewerToEdit(builder, user);
+
+    const { pages } = await findListFromBuilderAndViewer(builder, user, false, option);
+
+    // add page if 'grant' is GRANT_RESTRICTED
+    // because addConditionToListWithDescendants excludes GRANT_RESTRICTED pages
+    if (page.grant === GRANT_RESTRICTED) {
+      pages.push(page);
+    }
+
+    return pages;
+  };
+
+  /**
    * find pages that start with `path`
    */
   pageSchema.statics.findListByStartWith = async function(path, user, option) {
@@ -742,7 +748,7 @@ module.exports = function(crowi) {
     const totalCount = await builder.query.exec('count');
 
     // find
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.exec('find');
 
     const result = {
@@ -785,7 +791,7 @@ module.exports = function(crowi) {
 
     // find
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
-    builder.populateDataToList(User.USER_PUBLIC_FIELDS);
+    builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.exec('find');
 
     const result = {
@@ -1063,144 +1069,6 @@ module.exports = function(crowi) {
     }
   };
 
-  pageSchema.statics.deletePage = async function(pageData, user, options = {}) {
-    const newPath = this.getDeletedPageName(pageData.path);
-    const isTrashed = checkIfTrashed(pageData.path);
-
-    if (isTrashed) {
-      throw new Error('This method does NOT support deleting trashed pages.');
-    }
-
-    const socketClientId = options.socketClientId || null;
-    if (this.isDeletableName(pageData.path)) {
-
-      pageData.status = STATUS_DELETED;
-      const updatedPageData = await this.rename(pageData, newPath, user, { socketClientId, createRedirectPage: true });
-
-      return updatedPageData;
-    }
-
-    return Promise.reject(new Error('Page is not deletable.'));
-  };
-
-  const checkIfTrashed = (path) => {
-    return (path.search(/^\/trash/) !== -1);
-  };
-
-  pageSchema.statics.deletePageRecursively = async function(targetPage, user, options = {}) {
-    const isTrashed = checkIfTrashed(targetPage.path);
-
-    if (isTrashed) {
-      throw new Error('This method does NOT supports deleting trashed pages.');
-    }
-
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(targetPage.path, user);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
-
-    await Promise.all(pages.map((page) => {
-      return this.deletePage(page, user, options);
-    }));
-  };
-
-  pageSchema.statics.revertDeletedPage = async function(page, user, options = {}) {
-    const newPath = this.getRevertDeletedPageName(page.path);
-
-    const originPage = await this.findByPath(newPath);
-    if (originPage != null) {
-      // 削除時、元ページの path には必ず redirectTo 付きで、ページが作成される。
-      // そのため、そいつは削除してOK
-      // が、redirectTo ではないページが存在している場合それは何かがおかしい。(データ補正が必要)
-      if (originPage.redirectTo !== page.path) {
-        throw new Error('The new page of to revert is exists and the redirect path of the page is not the deleted page.');
-      }
-
-      await this.completelyDeletePage(originPage, options);
-    }
-
-    page.status = STATUS_PUBLISHED;
-    page.lastUpdateUser = user;
-    debug('Revert deleted the page', page, newPath);
-    const updatedPage = await this.rename(page, newPath, user, {});
-
-    return updatedPage;
-  };
-
-  pageSchema.statics.revertDeletedPageRecursively = async function(targetPage, user, options = {}) {
-    const findOpts = { includeTrashed: true };
-    const result = await this.findListWithDescendants(targetPage.path, user, findOpts);
-    const pages = result.pages;
-
-    let updatedPage = null;
-    await Promise.all(pages.map((page) => {
-      const isParent = (page.path === targetPage.path);
-      const p = this.revertDeletedPage(page, user, options);
-      if (isParent) {
-        updatedPage = p;
-      }
-      return p;
-    }));
-
-    return updatedPage;
-  };
-
-  /**
-   * This is danger.
-   */
-  pageSchema.statics.completelyDeletePage = async function(pageData, user, options = {}) {
-    validateCrowi();
-
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = crowi.model('Bookmark');
-    const Attachment = crowi.model('Attachment');
-    const Comment = crowi.model('Comment');
-    const PageTagRelation = crowi.model('PageTagRelation');
-    const Revision = crowi.model('Revision');
-    const pageId = pageData._id;
-    const socketClientId = options.socketClientId || null;
-
-    debug('Completely delete', pageData.path);
-
-    await Bookmark.removeBookmarksByPageId(pageId);
-    await Attachment.removeAttachmentsByPageId(pageId);
-    await Comment.removeCommentsByPageId(pageId);
-    await PageTagRelation.remove({ relatedPage: pageId });
-    await Revision.removeRevisionsByPath(pageData.path);
-    await this.findByIdAndRemove(pageId);
-    await this.removeRedirectOriginPageByPath(pageData.path);
-    if (socketClientId != null) {
-      pageEvent.emit('delete', pageData, user, socketClientId); // update as renamed page
-    }
-    return pageData;
-  };
-
-  /**
-   * Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-   */
-  pageSchema.statics.completelyDeletePageRecursively = async function(targetPage, user, options = {}) {
-    const pagePath = targetPage.path;
-
-    const findOpts = { includeTrashed: true };
-
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(pagePath, user, findOpts);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
-
-    await Promise.all(pages.map((page) => {
-      return this.completelyDeletePage(page, user, options);
-    }));
-  };
-
   pageSchema.statics.removeByPath = function(path) {
     if (path == null) {
       throw new Error('path is required');
@@ -1231,91 +1099,11 @@ module.exports = function(crowi) {
     await this.removeRedirectOriginPageByPath(redirectPage.path);
   };
 
-  pageSchema.statics.rename = async function(pageData, newPagePath, user, options) {
-    validateCrowi();
+  pageSchema.statics.findListByPathsArray = async function(paths) {
+    const queryBuilder = new PageQueryBuilder(this.find());
+    queryBuilder.addConditionToListByPathsArray(paths);
 
-    const Page = this;
-    const Revision = crowi.model('Revision');
-    const path = pageData.path;
-    const createRedirectPage = options.createRedirectPage || false;
-    const updateMetadata = options.updateMetadata || false;
-    const socketClientId = options.socketClientId || null;
-
-    // sanitize path
-    newPagePath = crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
-
-    // update Page
-    pageData.path = newPagePath;
-    if (updateMetadata) {
-      pageData.lastUpdateUser = user;
-      pageData.updatedAt = Date.now();
-    }
-    const updatedPageData = await pageData.save();
-
-    // update Rivisions
-    await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
-
-    if (createRedirectPage) {
-      const body = `redirect ${newPagePath}`;
-      await Page.create(path, body, user, { redirectTo: newPagePath });
-    }
-
-    pageEvent.emit('delete', pageData, user, socketClientId);
-    pageEvent.emit('create', updatedPageData, user, socketClientId);
-
-    return updatedPageData;
-  };
-
-  pageSchema.statics.renameRecursively = async function(targetPage, newPagePathPrefix, user, options) {
-    validateCrowi();
-
-    const path = targetPage.path;
-    const pathRegExp = new RegExp(`^${escapeStringRegexp(path)}`, 'i');
-
-    // sanitize path
-    newPagePathPrefix = crowi.xss.process(newPagePathPrefix); // eslint-disable-line no-param-reassign
-
-    // find descendants (this array does not include GRANT_RESTRICTED)
-    const result = await this.findListWithDescendants(path, user, options);
-    const pages = result.pages;
-    // add targetPage if 'grant' is GRANT_RESTRICTED
-    //  because findListWithDescendants excludes GRANT_RESTRICTED pages
-    if (targetPage.grant === GRANT_RESTRICTED) {
-      pages.push(targetPage);
-    }
-
-    await Promise.all(pages.map((page) => {
-      const newPagePath = page.path.replace(pathRegExp, newPagePathPrefix);
-      return this.rename(page, newPagePath, user, options);
-    }));
-    targetPage.path = newPagePathPrefix;
-    return targetPage;
-  };
-
-  pageSchema.statics.handlePrivatePagesForDeletedGroup = async function(deletedGroup, action, transferToUserGroupId) {
-    const Page = mongoose.model('Page');
-
-    const pages = await this.find({ grantedGroup: deletedGroup });
-
-    switch (action) {
-      case 'public':
-        await Promise.all(pages.map((page) => {
-          return Page.publicizePage(page);
-        }));
-        break;
-      case 'delete':
-        await Promise.all(pages.map((page) => {
-          return Page.completelyDeletePage(page);
-        }));
-        break;
-      case 'transfer':
-        await Promise.all(pages.map((page) => {
-          return Page.transferPageToGroup(page, transferToUserGroupId);
-        }));
-        break;
-      default:
-        throw new Error('Unknown action for private pages');
-    }
+    return await queryBuilder.query.exec();
   };
 
   pageSchema.statics.publicizePage = async function(page) {
@@ -1386,13 +1174,8 @@ module.exports = function(crowi) {
 
   };
 
-  /**
-   * return path that added slash to the end for specified path
-   */
-  pageSchema.statics.addSlashOfEnd = function(path) {
-    return addSlashOfEnd(path);
-  };
-
+  pageSchema.statics.STATUS_PUBLISHED = STATUS_PUBLISHED;
+  pageSchema.statics.STATUS_DELETED = STATUS_DELETED;
   pageSchema.statics.GRANT_PUBLIC = GRANT_PUBLIC;
   pageSchema.statics.GRANT_RESTRICTED = GRANT_RESTRICTED;
   pageSchema.statics.GRANT_SPECIFIED = GRANT_SPECIFIED;

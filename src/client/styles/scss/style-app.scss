@@ -23,42 +23,52 @@
 
 // molecules
 @import 'molecules/copy-dropdown';
+@import 'molecules/page-editor-mode-manager';
+@import 'molecules/slack-notification';
+@import 'molecules/duplicated-paths-table.scss';
+@import 'molecules/compare-paths-table.scss';
 
 // growi component
 @import 'admin';
 @import 'attachments';
 @import 'comment';
 @import 'comment_growi';
-@import 'comment_kibela';
 @import 'drawio';
-@import 'navbar_kibela';
 @import 'create-page';
 @import 'draft';
 @import 'editor-attachment';
 @import 'editor-navbar';
+@import 'page-content-footer';
 @import 'handsontable';
 @import 'layout';
-@import 'layout_growi';
-@import 'layout_kibela';
 @import 'login';
 @import 'me';
+@import 'mirror_mode';
+@import 'modal';
 @import 'navbar';
-@import 'navbar_kibela';
-@import 'notification';
+@import 'old-ios';
 @import 'on-edit';
+@import 'page-duplicate-modal';
 @import 'page_list';
+@import 'page-accessories-control';
+@import 'page-accessories-modal';
 @import 'page-path';
 @import 'page';
+@import 'page-presentation';
+@import 'page-history';
 @import 'search';
 @import 'shortcuts';
 @import 'sidebar';
+@import 'sidebar-wiki';
 @import 'subnav';
 @import 'tag';
+@import 'toc';
 @import 'user';
-@import 'user_growi';
 @import 'staff_credit';
 @import 'waves';
 @import 'wiki';
+@import 'sharelink';
+@import 'linkedit-preview';
 
 /*
  * for Guest User Mode

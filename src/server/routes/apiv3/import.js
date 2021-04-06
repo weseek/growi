@@ -8,6 +8,7 @@ const multer = require('multer');
 const express = require('express');
 
 const GrowiArchiveImportOption = require('@commons/models/admin/growi-archive-import-option');
+const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
 const router = express.Router();
@@ -60,7 +61,7 @@ const generateOverwriteParams = (collectionName, req, options) => {
 };
 
 module.exports = (crowi) => {
-  const { growiBridgeService, importService } = crowi;
+  const { growiBridgeService, importService, socketIoService } = crowi;
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -70,13 +71,13 @@ module.exports = (crowi) => {
 
   // setup event
   this.adminEvent.on('onProgressForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onProgressForImport', data);
+    socketIoService.getAdminSocket().emit('admin:onProgressForImport', data);
   });
   this.adminEvent.on('onTerminateForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onTerminateForImport', data);
+    socketIoService.getAdminSocket().emit('admin:onTerminateForImport', data);
   });
   this.adminEvent.on('onErrorForImport', (data) => {
-    crowi.getIo().sockets.emit('admin:onErrorForImport', data);
+    socketIoService.getAdminSocket().emit('admin:onErrorForImport', data);
   });
 
   const uploads = multer({
@@ -97,6 +98,42 @@ module.exports = (crowi) => {
     },
   });
 
+  /**
+   * @swagger
+   *
+   *  /import:
+   *    get:
+   *      tags: [Import]
+   *      operationId: getImportSettingsParams
+   *      summary: /import
+   *      description: Get import settings params
+   *      responses:
+   *        200:
+   *          description: import settings params
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  importSettingsParams:
+   *                    type: object
+   *                    description: import settings params
+   */
+  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+    try {
+      const importSettingsParams = {
+        esaTeamName: await crowi.configManager.getConfig('crowi', 'importer:esa:team_name'),
+        esaAccessToken: await crowi.configManager.getConfig('crowi', 'importer:esa:access_token'),
+        qiitaTeamName: await crowi.configManager.getConfig('crowi', 'importer:qiita:team_name'),
+        qiitaAccessToken: await crowi.configManager.getConfig('crowi', 'importer:qiita:access_token'),
+      };
+      return res.apiv3({
+        importSettingsParams,
+      });
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
+  });
 
   /**
    * @swagger
@@ -269,19 +306,25 @@ module.exports = (crowi) => {
   router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
+    let data = null;
 
     try {
-      const data = await growiBridgeService.parseZipFile(zipFile);
-
-      // validate with meta.json
-      importService.validate(data.meta);
-
-      return res.apiv3(data);
+      data = await growiBridgeService.parseZipFile(zipFile);
     }
     catch (err) {
       // TODO: use ApiV3Error
       logger.error(err);
       return res.status(500).send({ status: 'ERROR' });
+    }
+    try {
+      // validate with meta.json
+      importService.validate(data.meta);
+      return res.apiv3(data);
+    }
+    catch {
+      const msg = 'the version of this growi and the growi that exported the data are not met';
+      const varidationErr = 'versions-are-not-met';
+      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
     }
   });
 

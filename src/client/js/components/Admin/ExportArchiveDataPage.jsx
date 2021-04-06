@@ -8,9 +8,9 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 // import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import AppContainer from '../../services/AppContainer';
-import WebsocketContainer from '../../services/WebsocketContainer';
+import AdminSocketIoContainer from '../../services/AdminSocketIoContainer';
 
-import ProgressBar from './Common/ProgressBar';
+import LabeledProgressBar from './Common/LabeledProgressBar';
 
 import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
 import ArchiveFilesTable from './ExportArchiveData/ArchiveFilesTable';
@@ -67,7 +67,7 @@ class ExportArchiveDataPage extends React.Component {
   }
 
   setupWebsocketEventHandler() {
-    const socket = this.props.websocketContainer.getWebSocket();
+    const socket = this.props.adminSocketIoContainer.getSocket();
 
     // websocket event
     socket.on('admin:onProgressForExport', ({ currentCount, totalCount, progressList }) => {
@@ -169,7 +169,7 @@ class ExportArchiveDataPage extends React.Component {
       const { collectionName, currentCount, totalCount } = progressData;
       return (
         <div className="col-md-6" key={collectionName}>
-          <ProgressBar
+          <LabeledProgressBar
             header={collectionName}
             currentCount={currentCount}
             totalCount={totalCount}
@@ -192,7 +192,7 @@ class ExportArchiveDataPage extends React.Component {
     return (
       <div className="row px-3">
         <div className="col-md-12" key="progressBarForZipping">
-          <ProgressBar
+          <LabeledProgressBar
             header="Zip Files"
             currentCount={1}
             totalCount={1}
@@ -248,12 +248,12 @@ class ExportArchiveDataPage extends React.Component {
 ExportArchiveDataPage.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
+  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 };
 
 /**
  * Wrapper component for using unstated
  */
-const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, WebsocketContainer]);
+const ExportArchiveDataPageWrapper = withUnstatedContainers(ExportArchiveDataPage, [AppContainer, AdminSocketIoContainer]);
 
 export default withTranslation()(ExportArchiveDataPageWrapper);

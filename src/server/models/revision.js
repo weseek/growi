@@ -6,10 +6,11 @@ module.exports = function(crowi) {
   const logger = require('@alias/logger')('growi:models:revision');
 
   const mongoose = require('mongoose');
+  const mongoosePaginate = require('mongoose-paginate-v2');
 
   const ObjectId = mongoose.Schema.Types.ObjectId;
   const revisionSchema = new mongoose.Schema({
-    path: { type: String, required: true },
+    path: { type: String, required: true, index: true },
     body: {
       type: String,
       required: true,
@@ -24,69 +25,13 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
     hasDiffToPrev: { type: Boolean },
   });
-
-  /*
-   * preparation for https://github.com/weseek/growi/issues/216
-   */
-  // // create a XSS Filter instance
-  // // TODO read options
-  // this.xss = new Xss(true);
-  // // prevent XSS when pre save
-  // revisionSchema.pre('save', function(next) {
-  //   this.body = xss.process(this.body);
-  //   next();
-  // });
-
-  revisionSchema.statics.findRevisions = function(ids) {
-    const Revision = this;
-
-
-    const User = crowi.model('User');
-
-    if (!Array.isArray(ids)) {
-      return Promise.reject(new Error('The argument was not Array.'));
-    }
-
-    return new Promise(((resolve, reject) => {
-      Revision
-        .find({ _id: { $in: ids } })
-        .sort({ createdAt: -1 })
-        .populate('author', User.USER_PUBLIC_FIELDS)
-        .exec((err, revisions) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(revisions);
-        });
-    }));
-  };
+  revisionSchema.plugin(mongoosePaginate);
 
   revisionSchema.statics.findRevisionIdList = function(path) {
     return this.find({ path })
       .select('_id author createdAt hasDiffToPrev')
       .sort({ createdAt: -1 })
       .exec();
-  };
-
-  revisionSchema.statics.findRevisionList = function(path, options) {
-    const Revision = this;
-
-
-    const User = crowi.model('User');
-
-    return new Promise(((resolve, reject) => {
-      Revision.find({ path })
-        .sort({ createdAt: -1 })
-        .populate('author', User.USER_PUBLIC_FIELDS)
-        .exec((err, data) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(data);
-        });
-    }));
   };
 
   revisionSchema.statics.updateRevisionListByPath = function(path, updateData, options) {

@@ -3,7 +3,8 @@
 
 const logger = require('@alias/logger')('growi:routes:attachment');
 
-const fs = require('fs');
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 
 const ApiResponse = require('../util/apiResponse');
 
@@ -129,10 +130,9 @@ const ApiResponse = require('../util/apiResponse');
 
 module.exports = function(crowi, app) {
   const Attachment = crowi.model('Attachment');
-  const User = crowi.model('User');
   const Page = crowi.model('Page');
-  const fileUploader = require('../service/file-uploader')(crowi, app);
-
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const { attachmentService, globalNotificationService } = crowi;
 
   /**
    * Check the user is accessible to the related page
@@ -155,6 +155,11 @@ module.exports = function(crowi, app) {
    * @param {Attachment} attachment
    */
   async function isDeletableByUser(user, attachment) {
+    // deletable if creator is null
+    if (attachment.creator == null) {
+      return true;
+    }
+
     const ownerId = attachment.creator._id || attachment.creator;
     if (attachment.page == null) { // when profile image
       return user.id === ownerId.toString();
@@ -174,6 +179,8 @@ module.exports = function(crowi, app) {
    * @param {boolean} forceDownload
    */
   async function responseForAttachment(req, res, attachment, forceDownload) {
+    const { fileUploadService } = crowi;
+
     if (attachment == null) {
       return res.json(ApiResponse.error('attachment not found'));
     }
@@ -181,7 +188,7 @@ module.exports = function(crowi, app) {
     const user = req.user;
     const isAccessible = await isAccessibleByViewer(user, attachment);
     if (!isAccessible) {
-      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'`));
+      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'. This attachment might belong to other pages.`));
     }
 
     // add headers before evaluating 'req.fresh'
@@ -193,13 +200,13 @@ module.exports = function(crowi, app) {
       return res.sendStatus(304);
     }
 
-    if (fileUploader.canRespond()) {
-      return fileUploader.respond(res, attachment);
+    if (fileUploadService.canRespond()) {
+      return fileUploadService.respond(res, attachment);
     }
 
     let fileStream;
     try {
-      fileStream = await fileUploader.findDeliveryFile(attachment);
+      fileStream = await fileUploadService.findDeliveryFile(attachment);
     }
     catch (e) {
       logger.error(e);
@@ -230,33 +237,11 @@ module.exports = function(crowi, app) {
     }
     // reference
     else {
-      res.set('Content-Type', attachment.fileFormat);
+      res.set({
+        'Content-Type': attachment.fileFormat,
+        'Content-Security-Policy': "script-src 'unsafe-hashes'; object-src 'none'; require-trusted-types-for 'script'; default-src 'none';",
+      });
     }
-  }
-
-  async function createAttachment(file, user, pageId = null) {
-    // check limit
-    const res = await fileUploader.checkLimit(file.size);
-    if (!res.isUploadable) {
-      throw new Error(res.errorMessage);
-    }
-
-    const fileStream = fs.createReadStream(file.path, {
-      flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
-    });
-
-    // create an Attachment document and upload file
-    let attachment;
-    try {
-      attachment = await Attachment.create(pageId, user, fileStream, file.originalname, file.mimetype, file.size);
-    }
-    catch (err) {
-      // delete temporary file
-      fs.unlink(file.path, (err) => { if (err) { logger.error('Error while deleting tmp file.') } });
-      throw err;
-    }
-
-    return attachment;
   }
 
 
@@ -296,7 +281,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} pageId, fileName
    */
   api.obsoletedGetForMongoDB = async function(req, res) {
-    if (process.env.FILE_UPLOAD !== 'mongodb') {
+    if (crowi.configManager.getConfig('crowi', 'app:fileUploadType') !== 'mongodb') {
       return res.status(400);
     }
 
@@ -309,63 +294,6 @@ module.exports = function(crowi, app) {
     return responseForAttachment(req, res, attachment);
   };
 
-  /**
-   * @swagger
-   *
-   *    /attachments.list:
-   *      get:
-   *        tags: [Attachments, CrowiCompatibles]
-   *        operationId: listAttachments
-   *        summary: /attachments.list
-   *        description: Get list of attachments in page
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *            required: true
-   *        responses:
-   *          200:
-   *            description: Succeeded to get list of attachments.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    attachments:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/Attachment'
-   *                      description: attachment list
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /attachments.list Get attachments of the page
-   * @apiName ListAttachments
-   * @apiGroup Attachment
-   *
-   * @apiParam {String} page_id
-   */
-  api.list = async function(req, res) {
-    const id = req.query.page_id || null;
-    if (!id) {
-      return res.json(ApiResponse.error('Parameters page_id is required.'));
-    }
-
-    let attachments = await Attachment.find({ page: id })
-      .sort({ updatedAt: 1 })
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS });
-
-    attachments = attachments.map((attachment) => {
-      return attachment.toObject({ virtuals: true });
-    });
-
-    return res.json(ApiResponse.success({ attachments }));
-  };
 
   /**
    * @swagger
@@ -408,8 +336,9 @@ module.exports = function(crowi, app) {
    * @apiGroup Attachment
    */
   api.limit = async function(req, res) {
+    const { fileUploadService } = crowi;
     const fileSize = Number(req.query.fileSize);
-    return res.json(ApiResponse.success(await fileUploader.checkLimit(fileSize)));
+    return res.json(ApiResponse.success(await fileUploadService.checkLimit(fileSize)));
   };
 
   /**
@@ -522,7 +451,7 @@ module.exports = function(crowi, app) {
 
     let attachment;
     try {
-      attachment = await createAttachment(file, req.user, pageId);
+      attachment = await attachmentService.createAttachment(file, req.user, pageId);
     }
     catch (err) {
       logger.error(err);
@@ -530,12 +459,23 @@ module.exports = function(crowi, app) {
     }
 
     const result = {
-      page: page.toObject(),
+      page: serializePageSecurely(page),
+      revision: serializeRevisionSecurely(page.revision),
       attachment: attachment.toObject({ virtuals: true }),
       pageCreated,
     };
 
-    return res.json(ApiResponse.success(result));
+    res.json(ApiResponse.success(result));
+
+    if (pageCreated) {
+      // global notification
+      try {
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
+      }
+      catch (err) {
+        logger.error('Create notification failed', err);
+      }
+    }
   };
 
   /**
@@ -618,7 +558,7 @@ module.exports = function(crowi, app) {
     let attachment;
     try {
       req.user.deleteImage();
-      attachment = await createAttachment(file, req.user);
+      attachment = await attachmentService.createAttachment(file, req.user);
       await req.user.updateImage(attachment);
     }
     catch (err) {
@@ -687,7 +627,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
-      await Attachment.removeWithSubstanceById(id);
+      await attachmentService.removeAttachment(attachment);
     }
     catch (err) {
       logger.error(err);

@@ -42,13 +42,6 @@ describe('User', () => {
         expect(user.name).toBe('Example for User Test');
       });
 
-      test('should be found by findUsersByPartOfEmail', async() => {
-        const users = await User.findUsersByPartOfEmail('usert', {});
-        expect(users).toBeInstanceOf(Array);
-        expect(users.length).toBe(2);
-        expect(users[0]).toBeInstanceOf(User);
-        expect(users[1]).toBeInstanceOf(User);
-      });
     });
   });
 

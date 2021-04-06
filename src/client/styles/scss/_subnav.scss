@@ -1,8 +1,10 @@
 .grw-subnav {
-  padding: 10px 15px;
+  min-height: $grw-subnav-min-height;
+  padding-top: 8px;
+  padding-bottom: 8px;
 
   @include media-breakpoint-up(md) {
-    min-height: 115px;
+    min-height: $grw-subnav-min-height-md;
   }
 
   &:hover {
@@ -25,6 +27,10 @@
     line-height: 1.4em;
   }
 
+  .grw-taglabels-container {
+    margin-bottom: 0.5rem;
+  }
+
   .grw-page-path-nav {
     .separator {
       margin-right: 0.2em;
@@ -34,16 +40,18 @@
 
   .btn-like,
   .btn-bookmark {
-    width: 40px;
     height: 40px;
     font-size: 20px;
+    border-radius: $border-radius-xl;
+  }
+
+  .total-likes,
+  .total-bookmarks {
+    font-size: 17px;
+    font-weight: $font-weight-bold;
   }
 
   ul.authors {
-    padding: 0.7em 0 0.7em 1.5em;
-    margin-bottom: 0;
-    margin-left: 1em;
-
     li {
       font-size: 12px;
       list-style: none;
@@ -56,7 +64,7 @@
     .picture {
       width: 22px;
       height: 22px;
-      border: 1px solid #ccc;
+      border: 1px solid $gray-300;
 
       &.picture-xs {
         width: 14px;
@@ -79,9 +87,15 @@
     .btn-bookmark {
       @extend .btn-sm;
 
-      width: 30px;
       height: 30px;
       font-size: 15px !important;
+      border-radius: $border-radius-xl;
+    }
+
+    .total-likes,
+    .total-bookmarks {
+      height: 12px;
+      font-size: 12px;
     }
   }
 }
@@ -96,7 +110,7 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
   z-index: $zindex-sticky - 5;
 
   .grw-subnav {
-    box-shadow: 0px 6px 6px -3px rgba(black, 0.15);
+    box-shadow: 0px 0px 6px 3px rgba(black, 0.15);
   }
 }
 

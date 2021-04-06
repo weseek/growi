@@ -4,9 +4,9 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
-import WebsocketContainer from '../../../services/WebsocketContainer';
+import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
 
-import ProgressBar from '../Common/ProgressBar';
+import LabeledProgressBar from '../Common/LabeledProgressBar';
 
 class RebuildIndexControls extends React.Component {
 
@@ -25,17 +25,21 @@ class RebuildIndexControls extends React.Component {
   }
 
   initWebSockets() {
-    const socket = this.props.websocketContainer.getWebSocket();
+    const socket = this.props.adminSocketIoContainer.getSocket();
 
-    socket.on('admin:addPageProgress', (data) => {
+    socket.on('addPageProgress', (data) => {
       this.setState({
-        ...data,
+        total: data.totalCount,
+        current: data.count,
+        skip: data.skipped,
       });
     });
 
-    socket.on('admin:finishAddPage', (data) => {
+    socket.on('finishAddPage', (data) => {
       this.setState({
-        ...data,
+        total: data.totalCount,
+        current: data.count,
+        skip: data.skipped,
       });
     });
 
@@ -54,12 +58,22 @@ class RebuildIndexControls extends React.Component {
       return null;
     }
 
-    const header = isRebuildingCompleted ? 'Completed' : `Processing.. (${skip} skips)`;
+    function getCompletedLabel() {
+      const completedLabel = skip === 0 ? 'Completed' : `Done (${skip} skips)`;
+      return completedLabel;
+    }
+
+    function getSkipLabel() {
+      return `Processing.. (${skip} skips)`;
+    }
+
+    const header = isRebuildingCompleted ? getCompletedLabel() : getSkipLabel();
 
     return (
-      <ProgressBar
+      <LabeledProgressBar
         header={header}
         currentCount={current}
+        errorsCount={skip}
         totalCount={total}
       />
     );
@@ -97,12 +111,12 @@ class RebuildIndexControls extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControls, [AppContainer, WebsocketContainer]);
+const RebuildIndexControlsWrapper = withUnstatedContainers(RebuildIndexControls, [AppContainer, AdminSocketIoContainer]);
 
 RebuildIndexControls.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  websocketContainer: PropTypes.instanceOf(WebsocketContainer).isRequired,
+  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
 
   isRebuildingProcessing: PropTypes.bool.isRequired,
   isRebuildingCompleted: PropTypes.bool.isRequired,

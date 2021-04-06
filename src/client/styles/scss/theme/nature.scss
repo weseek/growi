@@ -38,13 +38,14 @@ $themecolor: #12b105;
 html[light],
 html[dark] {
   $primary: #460039;
-  $light: #f0f0f0;
+  $light: $gray-100;
 
   // Background colors
   $bgcolor-global: #fdfdfd;
-  $bgcolor-inline-code: #f0f0f0; //optional
+  $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: #f1ffe4;
   $bgcolor-subnav: #fafafa;
+  $bgcolor-highlighted: rgba($primary, 0.1);
 
   // Font colors
   $color-global: #460039;
@@ -79,7 +80,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc;
+  $border-color-theme: $gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -88,7 +89,7 @@ html[dark] {
   $color-dropdown-link-hover: $color-global;
 
   // Table colors
-  $border-color-table: #aaa; // optional
+  $border-color-table: $gray-400; // optional
 
   // admin theme box
   $color-theme-color-box: lighten($primary, 20%);
@@ -108,6 +109,13 @@ html[dark] {
     color: $color-link !important;
     &:hover {
       color: $color-link-hover !important;
+    }
+  }
+
+  // Button
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager($bgcolor-navbar, lighten($bgcolor-navbar, 65%), lighten($bgcolor-navbar, 70%));
     }
   }
 }

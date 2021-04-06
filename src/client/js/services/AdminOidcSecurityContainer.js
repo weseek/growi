@@ -17,11 +17,14 @@ export default class AdminOidcSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyOidcProviderName = 0;
+    this.dummyOidcProviderNameForError = 1;
 
     this.state = {
       retrieveError: null,
       callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/oidc/callback'),
-      oidcProviderName: '',
+      // set dummy value tile for using suspense
+      oidcProviderName: this.dummyOidcProviderName,
       oidcIssuerHost: '',
       oidcAuthorizationEndpoint: '',
       oidcTokenEndpoint: '',

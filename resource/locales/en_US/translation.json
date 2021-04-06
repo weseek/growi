@@ -1,10 +1,15 @@
 {
   "Help": "Help",
+  "view": "View",
   "Edit": "Edit",
   "Delete": "Delete",
   "delete_all": "Delete all",
   "Duplicate": "Duplicate",
   "Copy": "Copy",
+  "preview":"Preview",
+  "desktop":"Desktop",
+  "phone":"Smartphone",
+  "tablet":"Tablet",
   "Click to copy": "Click to copy",
   "Move/Rename": "Move/Rename",
   "Moved": "Moved",
@@ -12,6 +17,7 @@
   "Unlinked": "Unlinked",
   "Like!": "Like!",
   "Seen by": "Seen by",
+  "Done": "Done",
   "Cancel": "Cancel",
   "Create": "Create",
   "Admin": "Admin",
@@ -19,6 +25,7 @@
   "Tag": "Tag",
   "Tags": "Tags",
   "New": "New",
+  "Close": "Close",
   "Shortcuts": "Shortcuts",
   "eg": "e.g.",
   "add": "Add",
@@ -45,20 +52,30 @@
   "List View": "List",
   "Timeline View": "Timeline",
   "History": "History",
+  "attachment_data": "Attachment Data",
+  "No_attachments_yet": "No attachments yet.",
   "Presentation Mode": "Presentation",
+  "The end": "The end",
   "Not available for guest": "Not available for guest",
+  "Create Archive Page": "Create Archive Page",
+  "File type": "File type",
+  "Target page": "Target page",
+  "Include Attachment File": "Include Attachment File",
+  "Include Comment": "Include Comment",
+  "Include Subordinated Page": "Include Subordinated Page",
+  "All Subordinated Page": "All Subordinated Page",
+  "Specify Hierarchy": "Specify Hierarchy",
+  "Submitted the request to create the archive": "Submitted the request to create the archive",
   "username": "Username",
   "Created": "Created",
   "Last updated": "Updated",
   "Last_Login": "Last login",
   "Share": "Share",
-  "Share Link": "Share Link",
   "Markdown Link": "Markdown Link",
   "Create/Edit Template": "Create/Edit template page",
   "Go to this version": "View this version",
   "View diff": "View diff",
   "No diff": "No diff",
-  "Shrink versions that have no diffs": "Shrink versions that have no diffs",
   "User ID": "User ID",
   "User Information": "User information",
   "Basic Info": "Basic info",
@@ -86,7 +103,6 @@
   "Input page name (optional)": "Input page name (optional)",
   "New Page": "New page",
   "Create under": "Create page under below:",
-  "Table of Contents": "Table of Contents",
   "Wiki Management Home Page": "Wiki Management Home Page",
   "App Settings": "App Settings",
   "Site URL settings": "Site URL settings",
@@ -108,6 +124,7 @@
   "Specified users only": "Specified users only",
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
+  "page_list": "Page List",
   "page_list_and_search_results": "Page list / Search results",
   "scope_of_page_disclosure": "Scope of page disclosure",
   "set_point": "Set point",
@@ -127,20 +144,32 @@
   "Deleted Pages": "Deleted Pages",
   "Sign out": "Logout",
   "Disassociate": "Disassociate",
+  "No bookmarks yet": "No bookmarks yet",
   "Recent Created": "Recent Created",
   "Recent Changes": "Recent Changes",
+  "original_path":"Original path",
+  "new_path":"New path",
+  "duplicated_path":"duplicated_path",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
     "color_mode": "Color mode",
     "sidebar_mode": "Sidebar mode",
-    "sidebar_mode_editor": "Sidebar mode on Editor",
+    "sidebar_mode_editor": "Sidebar mode on editor",
     "use_os_settings": "Use OS settings"
   },
   "form_validation": {
     "error_message": "Some values ​​are incorrect",
     "required": "%s is required",
     "invalid_syntax": "The syntax of %s is invalid."
+  },
+  "not_found_page": {
+    "Create Page": "Create Page",
+    "page_not_exist": "This page does not exist.",
+    "page_not_exist_alert": "This page does not exist. Please create a new page."
+  },
+  "custom_navigation": {
+    "no_page_list": "There are no pages under this page."
   },
   "installer": {
     "setup": "Setup",
@@ -169,6 +198,7 @@
     }
   },
   "page_me_apitoken": {
+    "api_token": "API Token",
     "notice": {
       "apitoken_issued": "API token is not issued.",
       "update_token1": "You can update to generate a new API token.",
@@ -189,6 +219,25 @@
     "password_is_not_set": "Password is not set"
   },
   "security_settings": "Security settings",
+  "share_links": {
+    "Shere this page link to public": "Shere this page link to public",
+    "share_link_list": "Share link list",
+    "share_link_management": "Share Link Management",
+    "No_share_links":"No share links",
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "share_link_notice":"remove all share links",
+    "delete_all_share_links":"Delete all share links",
+    "expire": "Expiration",
+    "Days": "Days",
+    "Custom": "Custom",
+    "description": "description",
+    "enter_desc": "Enter description",
+    "Unlimited": "unlimited",
+    "Issue": "Issue",
+    "share_settings" :"Share settings",
+    "Invalid_Number_of_Date" : "You entered invalid value"
+  },
   "API Settings": "API settings",
   "API Token Settings": "API token settings",
   "Current API Token": "Current API token",
@@ -207,8 +256,8 @@
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
     "Page URL": "Page URL",
-    "Parmanent link": "Parmanent link",
-    "Page path and parmanent link": "Page path and parmanent link",
+    "Permanent link": "Permanent link",
+    "Page path and permanent link": "Page path and permanent link",
     "Markdown link": "Markdown link"
   },
   "search_help": {
@@ -243,21 +292,33 @@
   "page_page": {
     "notice": {
       "version": "This is not the current version.",
-      "moved": "This page was moved from <code>%s</code>",
-      "redirected": "You are redirected from <code>%s</code>",
-      "duplicated": "This page was duplicated from <code>%s</code>",
+      "moved": "This page was moved from",
+      "moved_period": ".",
+      "redirected": "You are redirected from",
+      "redirected_period": ".",
+      "duplicated": "This page was duplicated from",
+      "duplicated_period": ".",
       "unlinked": "Redirect pages to this page have been deleted.",
       "restricted": "Access to this page is restricted",
       "stale": "More than {{count}} year has passed since last update.",
-      "stale_plural": "More than {{count}} years has passed since last update."
+      "stale_plural": "More than {{count}} years has passed since last update.",
+      "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
+      "no_deadline":"This page has no expiration date"
     }
+  },
+  "page_table_of_contents": {
+    "empty": "Table of Contents is empty"
   },
   "page_edit": {
     "Show active line": "Show active line",
+    "auto_format_table": "Auto format table",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
     "notice": {
       "conflict": "Couldn't save the changes you made because someone else was editing this page. Please re-edit the affected section after reloading the page."
     }
+  },
+  "page_comment": {
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
   },
   "page_api_error": {
     "notfound_or_forbidden": "Original page is not found or forbidden.",
@@ -265,10 +326,22 @@
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete completely"
   },
+  "page_history": {
+    "revision_list": "Revision list",
+    "revision": "version",
+    "comparing_source": "Source",
+    "comparing_target": "Target",
+    "comparing_revisions": "Comparing the difference",
+    "compare_latest":"Compare latest revision",
+    "compare_previous":"Compare previous revision"
+  },
   "modal_rename": {
     "label": {
       "Move/Rename page": "Move/Rename page",
       "New page name": "New page name",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Fail to get exist path": "Fail to get exist path",
+      "Rename without exist path": "Rename without exist path",
       "Current page name": "Current page name",
       "Recursively": "Recursively",
       "Do not update metadata": "Do not update metadata",
@@ -299,7 +372,14 @@
     "label": {
       "Duplicate page": "Duplicate page",
       "New page name": "New page name",
-      "Current page name": "Current page name"
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Current page name": "Current page name",
+      "Recursively": "Recursively",
+      "Duplicate without exist path": "Duplicate without exist path",
+      "Same page already exists": "Same page already exists"
+    },
+    "help": {
+      "recursive": "Duplicate children of under this path recursively"
     }
   },
   "modal_putback": {
@@ -318,6 +398,7 @@
       "Edit Page": "Edit Page",
       "Create Page": "Create Page",
       "Show Contributors": "Show Contributors",
+      "MirrorMode": "Mirror Mode",
       "Konami Code": "Konami Code",
       "konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
     },
@@ -333,14 +414,34 @@
       "Post": "Post"
     }
   },
+  "link_edit": {
+    "edit_link": "Edit Link",
+    "set_link_and_label": "Set link and label",
+    "link": "Link",
+    "placeholder_of_link_input": "Input page path or URL",
+    "label": "Label",
+    "path_format": "Path format",
+    "use_relative_path": "Use relative path",
+    "use_permanent_link": "Use permanent link",
+    "notation": "Notation",
+    "markdown": "Markdown",
+    "GROWI_original": "GROWI original",
+    "pukiwiki": "Pukiwiki",
+    "preview": "Preview",
+    "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
+  },
   "toaster": {
     "update_successed": "Succeeded to update {{target}}",
+    "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
-    "remove_user_admin": "Succeeded to remove {{username}} admin ",
+    "remove_user_admin": "Succeeded to remove {{username}} admin",
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
-    "remove_user_success": "Succeeded to removing {{username}} ",
-    "remove_external_user_success": "Succeeded to remove {{accountId}} ",
+    "remove_user_success": "Succeeded to removing {{username}}",
+    "remove_external_user_success": "Succeeded to remove {{accountId}}",
+    "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
+    "issue_share_link": "Succeeded to issue new share link",
+    "remove_share_link": "Succeeded to remove {{count}} share links",
     "failed_to_reset_password":"Failed to reset password"
   },
   "template": {
@@ -393,7 +494,9 @@
     "open_sandbox": "Open Sandbox"
   },
   "hackmd": {
+    "hack_md": "HackMD",
     "not_set_up": "HackMD is not set up.",
+    "used_for_not_found": "Can not use HackMD to a page that does not exist.",
     "start_to_edit": "Start to edit with HackMD",
     "clone_page_content": "Click to clone page content and start to edit.",
     "unsaved_draft": "HackMD has unsaved draft.",
@@ -407,7 +510,13 @@
     "check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
     "not_initialized": "HackmdEditor component has not initialized",
     "someone_editing": "Someone editing this page on HackMD",
-    "this_page_has_draft": "This page has a draft on HackMD"
+    "this_page_has_draft": "This page has a draft on HackMD",
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "To use HackMD for simultaneous multi-person editing, need to associate HackMD with GROWI.Please refer to <a href='https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html'>here</a>.",
+    "need_to_make_page": "To use HackMD, please make a new page from the <a href='#edit'>built-in editor.</a>"
+  },
+  "slack_notification": {
+    "popover_title": "Slack Notification",
+    "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
   },
   "search_result": {
     "result_meta": "Found \"{{keyword}}\" in {{total}}.",
@@ -482,7 +591,7 @@
     "missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
     "Local": {
       "name": "ID/Password",
-      "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
+      "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
       "enable_local": "Enable ID/Password"
     },
     "mikan": {
@@ -623,7 +732,7 @@
     "how_to": {
       "header": "How to configure Incoming Webhooks?",
       "workspace": "(At Workspace) Add a hook",
-      "workspace_desc1": "Go to <a href='https: //slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
+      "workspace_desc1": "Go to <a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
       "workspace_desc2": "Choose the default channel to post.",
       "workspace_desc3": "Add.",
       "at_growi": "(At GROWI admin page) Set Webhook URL",
@@ -684,28 +793,16 @@
     "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
     "rebuild_description_2": "This may take a while."
   },
-  "export_management": {
-    "exporting_collection_list": "Exporting Collection List",
-    "exported_data_list": "Exported Archive Data List",
-    "export_collections": "Export Collections",
-    "check_all": "Check All",
-    "uncheck_all": "Uncheck All",
-    "desc_password_seed": "<p>DO NOT FORGET to set current <code>PASSWORD_SEED</code> to your new GROWI system when restoring user data, or users will NOT be able to login with their password.</p><strong>HINT:</strong><p>The current <code>PASSWORD_SEED</code> will be stored in <code>meta.json</code> in exported ZIP.</p>",
-    "create_new_archive_data": "Create New Archive Data",
-    "export": "Export",
-    "cancel": "Cancel",
-    "file": "File",
-    "growi_version": "Growi Version",
-    "collections": "Collections",
-    "exported_at": "Exported At",
-    "export_menu": "Export Menu",
-    "download": "Download",
-    "delete": "Delete"
-  },
   "login": {
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",
     "Setup": "Setup"
+  },
+  "export_bulk": {
+    "failed_to_export": "Failed to export",
+    "failed_to_count_pages": "Failed to count pages",
+    "export_page_markdown": "Export page as Markdown",
+    "export_page_pdf": "Export page as PDF"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",
@@ -730,5 +827,18 @@
     "complete_to_install1":"Complete to Install GROWI ! Please login as admin account.",
     "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
     "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}"
+  },
+  "grid_edit":{
+    "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",
+    "grid_settings": "Grid Settings",
+    "grid_pattern":"Grid Pattern",
+    "division":"Divisions",
+    "smart_no":"Smartphone / No Break",
+    "break_point":"Break point by display size"
+  },
+  "validation":{
+    "aws_region": "For the region, enter the AWS region name. ex):us-east-1",
+    "aws_custom_endpoint":"For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required.",
+    "failed_to_send_a_test_email":"Failed to send a test email using SMTP. Please check your settings."
   }
 }

@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '../../services/NavigationContainer';
 import AppContainer from '../../services/AppContainer';
 
-import GrowiLogo from '../GrowiLogo';
+
+import GrowiLogo from '../Icons/GrowiLogo';
 
 import PersonalDropdown from './PersonalDropdown';
 import GlobalSearch from './GlobalSearch';
@@ -45,10 +47,17 @@ class GrowiNavbar extends React.Component {
 
     return (
       <li className="nav-item confidential text-light">
-        <i className="icon-info d-md-none" data-toggle="tooltip" title={crowi.confidential} />
+        <i id="confidentialTooltip" className="icon-info d-md-none" />
         <span className="d-none d-md-inline">
           {crowi.confidential}
         </span>
+        <UncontrolledTooltip
+          placement="bottom"
+          target="confidentialTooltip"
+          className="d-md-none"
+        >
+          {crowi.confidential}
+        </UncontrolledTooltip>
       </li>
     );
   }
@@ -76,9 +85,8 @@ class GrowiNavbar extends React.Component {
         {/* Navbar Right  */}
         <ul className="navbar-nav ml-auto">
           {this.renderNavbarRight()}
+          {crowi.confidential != null && this.renderConfidential()}
         </ul>
-
-        {crowi.confidential != null && this.renderConfidential()}
 
         { isSearchServiceConfigured && !isDeviceSmallerThanMd && (
           <div className="grw-global-search grw-global-search-top position-absolute">

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
+import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import RevisionLoader from './Page/RevisionLoader';
@@ -14,112 +16,105 @@ class PageTimeline extends React.Component {
   constructor(props) {
     super(props);
 
-    const { appContainer } = this.props;
-
     this.state = {
-      isEnabled: appContainer.getConfig().isEnabledTimeline,
-      isInitialized: false,
+      activePage: 1,
+      totalPageItems: 0,
+      limit: null,
 
       // TODO: remove after when timeline is implemented with React and inject data with props
       pages: this.props.pages,
     };
 
+    this.handlePage = this.handlePage.bind(this);
+  }
+
+
+  async handlePage(selectedPage) {
+    const { appContainer, pageContainer } = this.props;
+    const { path } = pageContainer.state;
+    const page = selectedPage;
+
+    const res = await appContainer.apiv3Get('/pages/list', { path, page });
+    const totalPageItems = res.data.totalCount;
+    const pages = res.data.pages;
+    const pagingLimit = res.data.limit;
+    this.setState({
+      activePage: selectedPage,
+      totalPageItems,
+      pages,
+      limit: pagingLimit,
+    });
   }
 
   componentWillMount() {
-    if (!this.state.isEnabled) {
-      return;
-    }
-
     const { appContainer } = this.props;
-
     // initialize GrowiRenderer
     this.growiRenderer = appContainer.getRenderer('timeline');
-
-    this.initBsTab();
   }
 
-  /**
-   * initialize Bootstrap Tab event for 'shown.bs.tab'
-   * TODO: remove this method after implement with React
-   */
-  initBsTab() {
-    $('a[data-toggle="tab"][href="#view-timeline"]').on('shown.bs.tab', () => {
-      if (this.state.isInitialized) {
-        return;
-      }
-
-      const pageIdsElm = document.getElementById('page-timeline-data');
-
-      if (pageIdsElm == null || pageIdsElm.text.length === 0) {
-        return;
-      }
-
-      const pages = this.extractDataFromDom();
-
-      this.setState({
-        isInitialized: true,
-        pages,
-      });
+  async componentDidMount() {
+    await this.handlePage(1);
+    this.setState({
+      activePage: 1,
     });
-  }
-
-  /**
-   * extract page data from DOM
-   * TODO: remove this method after implement with React
-   */
-  extractDataFromDom() {
-    const pageIdsElm = document.getElementById('page-timeline-data');
-
-    if (pageIdsElm == null || pageIdsElm.text.length === 0) {
-      return null;
-    }
-
-    return JSON.parse(pageIdsElm.text);
   }
 
   render() {
-    if (!this.state.isEnabled) {
-      return <React.Fragment></React.Fragment>;
-    }
-
+    const { t } = this.props;
     const { pages } = this.state;
 
-    if (pages == null) {
-      return <React.Fragment></React.Fragment>;
-    }
-
-    return pages.map((page) => {
+    if (pages == null || pages.length === 0) {
       return (
-        <div className="timeline-body" key={`key-${page.id}`}>
-          <div className="card card-timeline">
-            <div className="card-header"><a href={page.path}>{page.path}</a></div>
-            <div className="card-body">
-              <RevisionLoader
-                lazy
-                growiRenderer={this.growiRenderer}
-                pageId={page.id}
-                revisionId={page.revision}
-              />
-            </div>
-          </div>
+        <div className="mt-2">
+          {/* eslint-disable-next-line react/no-danger */}
+          <p>{t('custom_navigation.no_page_list')}</p>
         </div>
       );
-    });
+    }
+
+    return (
+      <div>
+        { pages.map((page) => {
+          return (
+            <div className="timeline-body" key={`key-${page.id}`}>
+              <div className="card card-timeline">
+                <div className="card-header"><a href={page.path}>{page.path}</a></div>
+                <div className="card-body">
+                  <RevisionLoader
+                    lazy
+                    growiRenderer={this.growiRenderer}
+                    pageId={page.id}
+                    revisionId={page.revision}
+                  />
+                </div>
+              </div>
+            </div>
+          );
+        }) }
+        <PaginationWrapper
+          activePage={this.state.activePage}
+          changePage={this.handlePage}
+          totalItemsCount={this.state.totalPageItems}
+          pagingLimit={this.state.limit}
+          align="center"
+        />
+      </div>
+    );
 
   }
 
 }
 
-PageTimeline.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pages: PropTypes.arrayOf(PropTypes.object),
-};
-
 /**
  * Wrapper component for using unstated
  */
-const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer]);
+const PageTimelineWrapper = withUnstatedContainers(PageTimeline, [AppContainer, PageContainer]);
+
+PageTimeline.propTypes = {
+  t: PropTypes.func.isRequired, // i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  pages: PropTypes.arrayOf(PropTypes.object),
+};
 
 export default withTranslation()(PageTimelineWrapper);

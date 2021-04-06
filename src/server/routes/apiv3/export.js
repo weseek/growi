@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:export');
 const fs = require('fs');
 
 const express = require('express');
+const { param } = require('express-validator');
 
 const router = express.Router();
 
@@ -41,22 +42,31 @@ module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
 
-  const { exportService } = crowi;
+  const { exportService, socketIoService } = crowi;
 
   this.adminEvent = crowi.event('admin');
 
   // setup event
   this.adminEvent.on('onProgressForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onProgressForExport', data);
+    socketIoService.getAdminSocket().emit('admin:onProgressForExport', data);
   });
   this.adminEvent.on('onStartZippingForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onStartZippingForExport', data);
+    socketIoService.getAdminSocket().emit('admin:onStartZippingForExport', data);
   });
   this.adminEvent.on('onTerminateForExport', (data) => {
-    crowi.getIo().sockets.emit('admin:onTerminateForExport', data);
+    socketIoService.getAdminSocket().emit('admin:onTerminateForExport', data);
   });
+
+  const validator = {
+    deleteFile: [
+      // https://regex101.com/r/mD4eZs/6
+      // prevent from unexpecting attack doing delete file (path traversal attack)
+      param('fileName').not().matches(/(\.\.\/|\.\.\\)/),
+    ],
+  };
 
 
   /**
@@ -150,7 +160,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, csrf, async(req, res) => {
     // TODO: add express validator
     const { fileName } = req.params;
 

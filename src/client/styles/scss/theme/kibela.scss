@@ -6,6 +6,26 @@ $themelight: #f4f5f6;
 $subthemecolor: rgb(88, 130, 250);
 $lightthemecolor: rgba(181, 203, 247, 0.61);
 
+.main {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-fluid {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    background-color: white;
+    border-radius: 0.35em;
+  }
+}
+
+.user-page-footer {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+  background-color: white;
+  border-radius: 0.35em;
+}
+
 // Light Mode
 html[light],
 html[dark] {
@@ -20,10 +40,12 @@ html[dark] {
   $color-link: rgb(74, 109, 204);
   $color-link-hover: lighten($color-link, 12%);
   $sidebar-text: $bgcolor-theme;
-  $color-reversal: #eee;
+  $color-reversal: $gray-100;
 
   $primary: $bgcolor-theme;
   $info: lighten($bgcolor-theme, 20%);
+
+  $bgcolor-highlighted: rgba($primary, 0.2);
 
   // List Group colors
   $color-list: $color-global;
@@ -78,5 +100,11 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-light';
-  @import 'apply-colors-kibela';
+
+  //Button
+  .grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager(darken($primary, 15%), lighten($primary, 45%), lighten($primary, 50%));
+    }
+  }
 }

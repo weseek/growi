@@ -50,8 +50,16 @@
   }
 
   .grw-personal-dropdown {
-    .grw-email-sm {
-      font-size: 0.75em;
+    .dropdown-menu {
+      min-width: 15rem;
+
+      .grw-email-sm {
+        font-size: 0.75em;
+      }
+      .grw-icon-container svg {
+        width: 18px;
+        height: 18px;
+      }
     }
   }
 }
@@ -65,5 +73,31 @@
 
   &.grw-navbar-bottom-drawer-opened {
     bottom: -$grw-navbar-bottom-height;
+  }
+}
+
+.grw-custom-nav-tab,
+.grw-custom-nav-dropdown {
+  svg {
+    width: 17px;
+    height: 17px;
+    margin-right: 5px;
+    vertical-align: text-bottom;
+  }
+}
+
+.grw-custom-nav-tab {
+  .nav-title {
+    flex-wrap: nowrap;
+  }
+
+  .nav-link {
+    padding: 1rem 1.5rem;
+  }
+
+  .grw-nav-slide-hr {
+    border-top: 0rem;
+    border-bottom: 3px solid;
+    transition: 0.3s ease-in-out;
   }
 }

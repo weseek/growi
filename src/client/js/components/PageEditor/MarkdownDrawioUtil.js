@@ -10,7 +10,7 @@ class MarkdownDrawioUtil {
 
   /**
    * return the postion of the BOD(beginning of drawio)
-   * (If the cursor is not in a drawio block, return its position)
+   * (If the BOD is not found after the cursor or the EOD is found before the BOD, return null)
    */
   getBod(editor) {
     const curPos = editor.getCursor();
@@ -36,7 +36,7 @@ class MarkdownDrawioUtil {
     }
 
     if (!isFound) {
-      return { line: curPos.line, ch: curPos.ch };
+      return null;
     }
 
     const bodLine = Math.max(firstLine, line);
@@ -45,7 +45,7 @@ class MarkdownDrawioUtil {
 
   /**
    * return the postion of the EOD(end of drawio)
-   * (If the cursor is not in a drawio block, return its position)
+   * (If the EOD is not found after the cursor or the BOD is found before the EOD, return null)
    */
   getEod(editor) {
     const curPos = editor.getCursor();
@@ -71,7 +71,7 @@ class MarkdownDrawioUtil {
     }
 
     if (!isFound) {
-      return { line: curPos.line, ch: curPos.ch };
+      return null;
     }
 
     const eodLine = Math.min(line, lastLine);
@@ -85,17 +85,17 @@ class MarkdownDrawioUtil {
   isInDrawioBlock(editor) {
     const bod = this.getBod(editor);
     const eod = this.getEod(editor);
-
-    return (JSON.stringify(bod) !== JSON.stringify(eod));
+    if (bod === null || eod === null) {
+      return false;
+    }
+    return JSON.stringify(bod) !== JSON.stringify(eod);
   }
 
   /**
    * return drawioData instance where the cursor is
-   * (If the cursor is not in a drawio block, return current line)
+   * (If the cursor is not in a drawio block, return null)
    */
   getMarkdownDrawioMxfile(editor) {
-    const curPos = editor.getCursor();
-
     if (this.isInDrawioBlock(editor)) {
       const bod = this.getBod(editor);
       const eod = this.getEod(editor);
@@ -108,8 +108,7 @@ class MarkdownDrawioUtil {
 
       return editor.getDoc().getRange(bod, eod);
     }
-
-    return editor.getDoc().getLine(curPos.line);
+    return null;
   }
 
   replaceFocusedDrawioWithEditor(editor, drawioData) {
@@ -139,17 +138,17 @@ class MarkdownDrawioUtil {
    */
   replaceDrawioInMarkdown(drawioData, markdown, beginLineNumber, endLineNumber) {
     const splitMarkdown = markdown.split(/\r\n|\r|\n/);
-    const markdownBeforeDrawio = splitMarkdown.slice(0, beginLineNumber);
+    const markdownBeforeDrawio = splitMarkdown.slice(0, beginLineNumber - 1);
     const markdownAfterDrawio = splitMarkdown.slice(endLineNumber);
 
     let newMarkdown = '';
     if (markdownBeforeDrawio.length > 0) {
       newMarkdown += `${markdownBeforeDrawio.join('\n')}\n`;
-      newMarkdown += '::: drawio\n';
     }
+    newMarkdown += '::: drawio\n';
     newMarkdown += drawioData;
+    newMarkdown += '\n:::';
     if (markdownAfterDrawio.length > 0) {
-      newMarkdown += '\n:::';
       newMarkdown += `\n${markdownAfterDrawio.join('\n')}`;
     }
 

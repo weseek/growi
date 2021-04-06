@@ -12,11 +12,6 @@ div.body {
 
   font-size: 15px;
 
-  // override line-height except hljs and child of it.
-  :not(pre*) {
-    line-height: 1.8em;
-  }
-
   h1,
   h2,
   h3,
@@ -39,6 +34,7 @@ div.body {
     border-bottom: solid 1px transparent;
   }
   h2 {
+    // padding-top: 0.5em;
     padding-bottom: 0.5em;
     font-size: 1.4em;
     font-weight: bold;
@@ -67,6 +63,7 @@ div.body {
     margin: 0 0 30px 0;
     font-size: 0.9em;
     color: lighten($gray-800, 35%);
+    border-left: 0.3rem solid #ddd;
   }
 
   img {
@@ -89,6 +86,10 @@ div.body {
     li {
       margin: 5px 0;
       line-height: 1.8em;
+
+      pre {
+        line-height: $line-height-base;
+      }
     }
 
     ul,
@@ -135,10 +136,6 @@ div.body {
       top: 8px;
       right: 8px;
     }
-  }
-
-  .highlighted {
-    background-color: $warning;
   }
 
   .revision-head {
@@ -206,7 +203,10 @@ div.body {
       margin: 10px 0;
 
       li {
-        line-height: 1.1em;
+        line-height: $line-height-base;
+        pre {
+          line-height: $line-height-base;
+        }
       }
     }
 

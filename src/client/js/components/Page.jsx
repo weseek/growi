@@ -9,7 +9,9 @@ import EditorContainer from '../services/EditorContainer';
 
 import MarkdownTable from '../models/MarkdownTable';
 
+import LinkEditModal from './PageEditor/LinkEditModal';
 import RevisionRenderer from './Page/RevisionRenderer';
+import GridEditModal from './PageEditor/GridEditModal';
 import HandsontableModal from './PageEditor/HandsontableModal';
 import DrawioModal from './PageEditor/DrawioModal';
 import mtu from './PageEditor/MarkdownTableUtil';
@@ -29,6 +31,8 @@ class Page extends React.Component {
 
     this.growiRenderer = this.props.appContainer.getRenderer('page');
 
+    this.gridEditModal = React.createRef();
+    this.linkEditModal = React.createRef();
     this.handsontableModal = React.createRef();
     this.drawioModal = React.createRef();
 
@@ -59,7 +63,7 @@ class Page extends React.Component {
    */
   launchDrawioModal(beginLineNumber, endLineNumber) {
     const markdown = this.props.pageContainer.state.markdown;
-    const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber, endLineNumber);
+    const drawioMarkdownArray = markdown.split(/\r\n|\r|\n/).slice(beginLineNumber - 1, endLineNumber);
     const drawioData = drawioMarkdownArray.slice(1, drawioMarkdownArray.length - 1).join('\n').trim();
     this.setState({ currentTargetDrawioArea: { beginLineNumber, endLineNumber } });
     this.drawioModal.current.show(drawioData);
@@ -127,16 +131,18 @@ class Page extends React.Component {
 
   render() {
     const { appContainer, pageContainer } = this.props;
-    const isMobile = appContainer.isMobile;
+    const { isMobile } = appContainer;
     const isLoggedIn = appContainer.currentUser != null;
     const { markdown } = pageContainer.state;
 
     return (
-      <div className={isMobile ? 'page-mobile' : ''}>
+      <div className={`mb-5 ${isMobile ? 'page-mobile' : ''}`}>
         <RevisionRenderer growiRenderer={this.growiRenderer} markdown={markdown} />
 
         { isLoggedIn && (
           <>
+            <GridEditModal ref={this.gridEditModal} />
+            <LinkEditModal ref={this.LinkEditModal} />
             <HandsontableModal ref={this.handsontableModal} onSave={this.saveHandlerForHandsontableModal} />
             <DrawioModal ref={this.drawioModal} onSave={this.saveHandlerForDrawioModal} />
           </>

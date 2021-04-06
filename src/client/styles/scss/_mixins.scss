@@ -10,14 +10,13 @@
   @include media-breakpoint-only(lg) {
     font-size: #{$basesize * 0.9};
   }
-  @include media-breakpoint-only(xl) {
+  @include media-breakpoint-up(xl) {
     font-size: $basesize;
   }
 }
 
-@mixin expand-editor($editor-header-plus-footer, $navbar-height-adjustment: 0px) {
-  $navbar-height: $grw-navbar-border-width + $navbar-height-adjustment;
-  $header-plus-footer: $navbar-height + $editor-header-plus-footer + 2px; // add .main padding-top
+@mixin expand-editor($editor-margin-top) {
+  $header-plus-footer: $editor-margin-top + $grw-editor-navbar-bottom-height;
 
   $editor-margin: $header-plus-footer //
     + 25px //   add .btn-open-dropzone height
@@ -25,9 +24,14 @@
 
   .main {
     width: 100%;
-    height: calc(100vh - #{$navbar-height});
-    padding-top: 2px;
+    height: calc(100vh - #{$editor-margin-top});
     margin-top: 0px !important;
+
+    .container-lg {
+      max-width: unset;
+      padding: 0;
+      margin: 0;
+    }
 
     &,
     .content-main,
@@ -36,8 +40,7 @@
       flex: 1;
       flex-direction: column;
 
-      .tab-pane#edit,
-      .tab-pane#hackmd {
+      .tab-pane {
         height: calc(100vh - #{$header-plus-footer});
         min-height: calc(100vh - #{$header-plus-footer}); // for IE11
       }
@@ -222,4 +225,53 @@
 @mixin apply-navigation-transition() {
   transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
   transition-duration: 300ms;
+}
+
+@mixin border-vertical($beforeOrAfter, $borderLength, $zIndex: initial, $isBtnGroup: false) {
+  position: relative;
+  @if $isBtnGroup {
+    &:not(:first-child) {
+      margin-left: 0;
+      border-left: none;
+    }
+    &:not(:last-child) {
+      border-right: none;
+    }
+  }
+  &:not(:first-child) {
+    &::#{$beforeOrAfter} {
+      position: absolute;
+      top: calc((100% - #{$borderLength}) / 2);
+      left: 0;
+      z-index: $zIndex;
+      width: 100%;
+      height: $borderLength;
+      margin-left: -0.5px;
+      content: '';
+      border-left: 1px solid transparent;
+      transition: border-color 0.15s ease-in-out;
+    }
+  }
+}
+@mixin highlighted($color) {
+  @keyframes fadeout {
+    100% {
+      opacity: 0;
+    }
+  }
+  position: relative;
+  z-index: 1;
+
+  &::after {
+    position: absolute;
+    top: 15%;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 70%;
+    content: '';
+    background-color: $color;
+    border-radius: 2px;
+    animation: fadeout 1s ease-in 1.5s forwards;
+  }
 }

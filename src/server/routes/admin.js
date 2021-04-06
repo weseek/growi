@@ -19,12 +19,10 @@ module.exports = function(crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
-  const searchEvent = crowi.event('search');
-
   const MAX_PAGE_LIST = 50;
   const actions = {};
 
-  const { check } = require('express-validator/check');
+  const { check, param } = require('express-validator');
 
   const api = {};
 
@@ -83,17 +81,6 @@ module.exports = function(crowi, app) {
 
     return pager;
   }
-
-  // setup websocket event for rebuild index
-  searchEvent.on('addPageProgress', (total, current, skip) => {
-    crowi.getIo().sockets.emit('admin:addPageProgress', { total, current, skip });
-  });
-  searchEvent.on('finishAddPage', (total, current, skip) => {
-    crowi.getIo().sockets.emit('admin:finishAddPage', { total, current, skip });
-  });
-  searchEvent.on('rebuildingFailed', (error) => {
-    crowi.getIo().sockets.emit('admin:rebuildingFailed', { error: error.message });
-  });
 
   actions.index = function(req, res) {
     return res.render('admin/index');
@@ -329,13 +316,29 @@ module.exports = function(crowi, app) {
 
   // Export management
   actions.export = {};
+  actions.export.api = api;
+  api.validators.export = {};
+
   actions.export.index = (req, res) => {
     return res.render('admin/export');
   };
 
+  api.validators.export.download = function() {
+    const validator = [
+      // https://regex101.com/r/mD4eZs/6
+      // prevent from pass traversal attack
+      param('fileName').not().matches(/(\.\.\/|\.\.\\)/),
+    ];
+    return validator;
+  };
+
   actions.export.download = (req, res) => {
-    // TODO: add express validator
     const { fileName } = req.params;
+    const { validationResult } = require('express-validator');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: `${fileName} is invalid. Do not use path like '../'.` });
+    }
 
     try {
       const zipFile = exportService.getFile(fileName);
@@ -349,23 +352,6 @@ module.exports = function(crowi, app) {
   };
 
   actions.api = {};
-
-  // app.get('/_api/admin/users.search' , admin.api.userSearch);
-  actions.api.usersSearch = function(req, res) {
-    const User = crowi.model('User');
-    const email = req.query.email;
-
-    User.findUsersByPartOfEmail(email, {})
-      .then((users) => {
-        const result = {
-          data: users,
-        };
-        return res.json(ApiResponse.success(result));
-      })
-      .catch((err) => {
-        return res.json(ApiResponse.error());
-      });
-  };
 
   /**
    * save esa settings, update config cache, and response json

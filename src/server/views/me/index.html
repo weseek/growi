@@ -1,19 +1,21 @@
-{% extends '../layout-growi/base/layout.html' %}
+{% extends '../layout/layout.html' %}
 
 {% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('User Settings')) }}{% endblock %}
 
-{% block html_base_css %}user-settings-page{% endblock %}
+{% block layout_main %}
 
-{% block content_header %}
-<h1 class="title">{{ t('User Settings') }}</h1>
+{% block content_header_wrapper %}
+<header class="py-3">
+  <div class="container-fluid">
+    <h1 class="title">{{ t('User Settings') }}</h1>
+  </div>
+</header>
+<div id="grw-fav-sticky-trigger" class="sticky-top"></div>
 {% endblock %}
 
-{% block content_main %}
-<div class="content-main" id="personal-setting"></div>
-{% endblock content_main %}
-
-{% block content_footer %}
-{% endblock content_footer %}
-
-{% block layout_footer %}
-{% endblock layout_footer %}
+<div id="main" class="main">
+  <div id="content-main" class="content-main container-lg">
+    <div id="personal-setting"></div>
+  </div>
+</div>
+{% endblock %}

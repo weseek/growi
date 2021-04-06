@@ -11,10 +11,11 @@ html[dark] {
   $bgcolor-global: $themecolor;
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($themecolor, 5%);
+  $bgcolor-highlighted: rgba($primary, 0.4);
 
   // Font colors
   $color-global: #95abba;
-  $color-reversal: #222;
+  $color-reversal: $gray-900;
   $color-header: #95abba;
   $color-link: $accentcolor;
   $color-link-hover: lighten($color-link, 20%);
@@ -88,6 +89,13 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-dark';
+
+  //Button
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager(lighten($primary, 10%), $primary, darken($primary, 10%), darken($primary, 20%));
+    }
+  }
 
   // headers
   @for $i from 1 through 6 {

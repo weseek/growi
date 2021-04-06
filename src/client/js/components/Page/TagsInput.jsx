@@ -82,6 +82,7 @@ class TagsInput extends React.Component {
           options={this.state.resultTags} // Search result (Some tag names)
           placeholder="tag name"
           selectHintOnEnter
+          autoFocus={this.props.autoFocus}
         />
       </div>
     );
@@ -95,13 +96,15 @@ class TagsInput extends React.Component {
 const TagsInputWrapper = withUnstatedContainers(TagsInput, [AppContainer]);
 
 TagsInput.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  appContainer:  PropTypes.instanceOf(AppContainer).isRequired,
 
-  tags: PropTypes.array.isRequired,
+  tags:          PropTypes.array.isRequired,
   onTagsUpdated: PropTypes.func.isRequired,
+  autoFocus:     PropTypes.bool,
 };
 
 TagsInput.defaultProps = {
+  autoFocus:     false,
 };
 
 export default TagsInputWrapper;

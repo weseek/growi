@@ -184,8 +184,8 @@ class SearchResult extends React.Component {
       // Add prefix 'id_' in pageId, because scrollspy of bootstrap doesn't work when the first letter of id attr of target component is numeral.
       const pageId = `#id_${page._id}`;
       return (
-        <li key={page._id} className="nav-item page-list-li w-100">
-          <a className="nav-link page-list-link d-flex align-items-center" href={pageId}>
+        <li key={page._id} className="nav-item page-list-li w-100 m-1">
+          <a className="nav-link page-list-link d-flex align-items-baseline" href={pageId}>
             <Page page={page} noLink />
             <div className="ml-auto d-flex">
               { this.state.deletionMode

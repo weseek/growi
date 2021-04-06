@@ -13,7 +13,7 @@
             <div class="col-lg-6">
               <h3><strong>{{ t('modal_shortcuts.global.title') }}</strong></h3>
 
-                <table class="table table-responsive">
+                <table class="table">
                   <tr>
                     <th>{{ t('modal_shortcuts.global.Open/Close shortcut help') }}:</th>
                     <td><span class="key cmd-key"></span> + <span class="key">/</span></td>
@@ -37,6 +37,17 @@
                       <span class="key key-small">B</span>&nbsp;<span class="key key-small">A</span>
                     </td>
                   </tr>
+                  <tr>
+                    <th>{{ t('modal_shortcuts.global.MirrorMode') }}:</th>
+                    <td>
+                      <a href="{{ t('modal_shortcuts.global.konami_code_url') }}" target="_blank">{{ t('modal_shortcuts.global.Konami Code') }}</a><br>
+                      <span class="key key-small">X</span>&nbsp;<span class="key key-small">X</span>
+                      <span class="key key-small">B</span>&nbsp;<span class="key key-small">B</span>
+                      <span class="key key-small">A</span><br><span class="key key-small">Y</span>
+                      <span class="key key-small">A</span>&nbsp;<span class="key key-small">Y</span>
+                      <span class="key key-small">↓</span>&nbsp;<span class="key key-small">←</span>
+                    </td>
+                  </tr>
                 </table>
             </div><!-- /.col-lg-6 -->
 
@@ -44,7 +55,7 @@
             <div class="col-lg-6">
               <h3><strong>{{ t('modal_shortcuts.editor.title') }}</strong></h3>
 
-              <table class="table table-responsive">
+              <table class="table">
                 <tr>
                   <th>{{ t('modal_shortcuts.editor.Indent') }}:</th>
                   <td><span class="key key-longer">Tab</span></td>
@@ -62,20 +73,10 @@
                   <td><span class="key cmd-key"></span> + <span class="key">D</span></td>
                 </tr>
               </table>
-            </div><!-- /.col-lg-6 -->
-          </div><!-- /.row -->
-        </div><!-- /.container -->
 
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-6">
-              <h3><strong></strong></h3>
-            </div><!-- /.col-lg-6 -->
-
-            <div class="col-lg-6">
               <h3><strong>{{ t('modal_shortcuts.commentform.title') }}</strong></h3>
 
-              <table class="table table-responsive">
+              <table class="table">
                 <tr>
                   <th>{{ t('modal_shortcuts.commentform.Post') }}:</th>
                   <td><span class="key cmd-key"></span> + <span class="key key-longer">{% include '../widget/icon-keyboard-return-enter.html' %}</span></td>
@@ -85,10 +86,11 @@
                   <td><span class="key cmd-key"></span> + <span class="key">D</span></td>
                 </tr>
               </table>
-            </div><!-- /.col-lg-6 -->
 
+            </div><!-- /.col-lg-6 -->
           </div><!-- /.row -->
         </div><!-- /.container -->
+
       </div>
     </div>
 

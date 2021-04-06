@@ -8,10 +8,7 @@
   }
 }
 
-// expanded window layout
-.handsontable-modal.handsontable-modal-expanded {
-  @include expand-modal-fullscreen(true, true);
-
+.handsontable-modal.grw-modal-expanded {
   // expand .hot-table-container (with flexbox)
   .hot-table-container {
     flex: 1;

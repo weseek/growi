@@ -1,4 +1,7 @@
 import { Container } from 'unstated';
+import loggerFactory from '@alias/logger';
+
+const logger = loggerFactory('growi:services:NavigationContainer');
 
 /**
  * Service container related to options for Application
@@ -6,6 +9,7 @@ import { Container } from 'unstated';
  */
 
 const SCROLL_THRES_SKIP = 200;
+const WIKI_HEADER_LINK = 120;
 
 export default class NavigationContainer extends Container {
 
@@ -18,7 +22,7 @@ export default class NavigationContainer extends Container {
     const { localStorage } = window;
 
     this.state = {
-      editorMode: null,
+      editorMode: 'view',
 
       isDeviceSmallerThanMd: null,
       preferDrawerModeByUser: localStorage.preferDrawerModeByUser === 'true',
@@ -27,7 +31,7 @@ export default class NavigationContainer extends Container {
       isDrawerMode: null,
       isDrawerOpened: false,
 
-      sidebarContentsId: 'recent',
+      sidebarContentsId: localStorage.sidebarContentsId || 'recent',
 
       isScrollTop: true,
 
@@ -36,8 +40,7 @@ export default class NavigationContainer extends Container {
 
     this.openPageCreateModal = this.openPageCreateModal.bind(this);
     this.closePageCreateModal = this.closePageCreateModal.bind(this);
-
-    this.initHotkeys();
+    this.setEditorMode = this.setEditorMode.bind(this);
     this.initDeviceSize();
     this.initScrollEvent();
   }
@@ -49,23 +52,8 @@ export default class NavigationContainer extends Container {
     return 'NavigationContainer';
   }
 
-  initHotkeys() {
-    window.addEventListener('keydown', (event) => {
-      const target = event.target;
-
-      // ignore when target dom is input
-      const inputPattern = /^input|textinput|textarea$/i;
-      if (inputPattern.test(target.tagName) || target.isContentEditable) {
-        return;
-      }
-
-      if (event.key === 'c') {
-        // don't fire when not needed
-        if (!event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
-          this.setState({ isPageCreateModalShown: true });
-        }
-      }
-    });
+  getPageContainer() {
+    return this.appContainer.getContainer('PageContainer');
   }
 
   initDeviceSize() {
@@ -104,7 +92,46 @@ export default class NavigationContainer extends Container {
   }
 
   setEditorMode(editorMode) {
+    const { isNotCreatable } = this.getPageContainer().state;
+
+    if (this.appContainer.currentUser == null) {
+      logger.warn('Please login or signup to edit the page or use hackmd.');
+      return;
+    }
+
+    if (isNotCreatable) {
+      logger.warn('This page could not edit.');
+      return;
+    }
+
     this.setState({ editorMode });
+    if (editorMode === 'view') {
+      $('body').removeClass('on-edit');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      $('body').removeClass('pathname-sidebar');
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    if (editorMode === 'edit') {
+      $('body').addClass('on-edit');
+      $('body').addClass('builtin-editor');
+      $('body').removeClass('hackmd');
+      // editing /Sidebar
+      if (window.location.pathname === '/Sidebar') {
+        $('body').addClass('pathname-sidebar');
+      }
+      window.location.hash = '#edit';
+    }
+
+    if (editorMode === 'hackmd') {
+      $('body').addClass('on-edit');
+      $('body').addClass('hackmd');
+      $('body').removeClass('builtin-editor');
+      $('body').removeClass('pathname-sidebar');
+      window.location.hash = '#hackmd';
+    }
+
     this.updateDrawerMode({ ...this.state, editorMode }); // generate newest state object
   }
 
@@ -155,7 +182,7 @@ export default class NavigationContainer extends Container {
     } = newState;
 
     // get preference on view or edit
-    const preferDrawerMode = editorMode != null ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
+    const preferDrawerMode = editorMode !== 'view' ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
 
     const isDrawerMode = isDeviceSmallerThanMd || preferDrawerMode;
     const isDrawerOpened = false; // close Drawer anyway
@@ -163,12 +190,36 @@ export default class NavigationContainer extends Container {
     this.setState({ isDrawerMode, isDrawerOpened });
   }
 
+  selectSidebarContents(contentsId) {
+    window.localStorage.setItem('sidebarContentsId', contentsId);
+    this.setState({ sidebarContentsId: contentsId });
+  }
+
   openPageCreateModal() {
+    if (this.appContainer.currentUser == null) {
+      logger.warn('Please login or signup to create a new page.');
+      return;
+    }
     this.setState({ isPageCreateModalShown: true });
   }
 
   closePageCreateModal() {
     this.setState({ isPageCreateModalShown: false });
+  }
+
+  /**
+   * Function that implements the click event for realizing smooth scroll
+   * @param {array} elements
+   */
+  addSmoothScrollEvent(elements = {}) {
+    elements.forEach(link => link.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      const href = link.getAttribute('href').replace('#', '');
+      window.location.hash = href;
+      const targetDom = document.getElementById(href);
+      this.smoothScrollIntoView(targetDom, WIKI_HEADER_LINK);
+    }));
   }
 
   smoothScrollIntoView(element = null, offsetTop = 0) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
 import TagsInput from './TagsInput';
@@ -35,17 +35,17 @@ function TagEditModal(props) {
   }
 
   return (
-    <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal">
+    <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal" autoFocus={false}>
       <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-light">
-          Edit Tags
+        Edit Tags
       </ModalHeader>
       <ModalBody>
-        <TagsInput tags={tags} onTagsUpdated={onTagsUpdatedByTagsInput} />
+        <TagsInput tags={tags} onTagsUpdated={onTagsUpdatedByTagsInput} autoFocus />
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={handleSubmit}>
-            Done
-        </Button>
+        <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+          Done
+        </button>
       </ModalFooter>
     </Modal>
   );

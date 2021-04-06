@@ -37,7 +37,6 @@ const PagePathAutoComplete = (props) => {
 
   return (
     <SearchTypeahead
-      crowi={props.crowi}
       onSubmit={submitHandler}
       onChange={inputChangeHandler}
       onInputChange={props.onInputChange}
@@ -45,22 +44,24 @@ const PagePathAutoComplete = (props) => {
       emptyLabelExceptError={null}
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
+      autoFocus={props.autoFocus}
     />
   );
 
 };
 
 PagePathAutoComplete.propTypes = {
-  crowi:            PropTypes.object.isRequired,
   initializedPath:  PropTypes.string,
   addTrailingSlash: PropTypes.bool,
 
   onSubmit:         PropTypes.func,
   onInputChange:    PropTypes.func,
+  autoFocus:        PropTypes.bool,
 };
 
 PagePathAutoComplete.defaultProps = {
-  initializedPath: '/',
+  initializedPath:  '/',
+  autoFocus:        false,
 };
 
 export default PagePathAutoComplete;

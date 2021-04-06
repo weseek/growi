@@ -35,6 +35,12 @@ module.exports = function(crowi) {
     return lib.deleteFileByFilePath(filePath);
   };
 
+  lib.deleteFiles = async function(attachments) {
+    attachments.map((attachment) => {
+      return this.deleteFile(attachment);
+    });
+  };
+
   lib.deleteFileByFilePath = async function(filePath) {
     // check file exists
     try {
@@ -42,6 +48,7 @@ module.exports = function(crowi) {
     }
     catch (err) {
       logger.warn(`Any AttachmentFile which path is '${filePath}' does not exist in local fs`);
+      return;
     }
 
     return fs.unlinkSync(filePath);
@@ -98,7 +105,7 @@ module.exports = function(crowi) {
    */
   lib.canRespond = () => {
     // Check whether to use internal redirect of nginx or Apache.
-    return process.env.FILE_UPLOAD === 'local' && lib.configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect');
+    return lib.configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect');
   };
 
   /**

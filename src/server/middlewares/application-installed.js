@@ -2,12 +2,20 @@ module.exports = (crowi) => {
   const { appService } = crowi;
 
   return async(req, res, next) => {
-    const isInstalled = await appService.isDBInitialized();
+    const isDBInitialized = await appService.isDBInitialized();
 
-    if (!isInstalled) {
-      return res.redirect('/installer');
+    // when already installed
+    if (isDBInitialized) {
+      return next();
     }
 
-    return next();
+    // when other server have initialized DB
+    const isDBInitializedAfterForceReload = await appService.isDBInitialized(true);
+    if (isDBInitializedAfterForceReload) {
+      await appService.setupAfterInstall();
+      return res.safeRedirect(req.originalUrl);
+    }
+
+    return res.redirect('/installer');
   };
 };

@@ -21,3 +21,7 @@
 .border-left {
   border-left: $border-width solid $border-color !important;
 }
+
+.border-info {
+  border-color: $info !important;
+}

@@ -6,8 +6,9 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query } = require('express-validator/check');
+const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -65,6 +66,8 @@ const validator = {};
  */
 
 module.exports = (crowi) => {
+  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
@@ -86,21 +89,31 @@ module.exports = (crowi) => {
   };
 
   validator.statusList = [
-    // validate status list status array match to statusNo
-    query('selectedStatusList').custom((value) => {
-      const error = [];
-      value.forEach((status) => {
-        if (!Object.keys(statusNo)) {
-          error.push(status);
-        }
-      });
-      return (error.length === 0);
+    query('selectedStatusList').if(value => value != null).custom((value, { req }) => {
+
+      const { user } = req;
+
+      if (user != null && user.admin) {
+        return value;
+      }
+      throw new Error('the param \'selectedStatusList\' is not allowed to use by the users except administrators');
     }),
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
     query('sort').isIn(['id', 'status', 'username', 'name', 'email', 'createdAt', 'lastLoginAt']),
     query('page').isInt({ min: 1 }),
+    query('forceIncludeAttributes').toArray().custom((value, { req }) => {
+      // only the admin user can specify forceIncludeAttributes
+      if (value.length === 0) {
+        return true;
+      }
+      return req.user.admin;
+    }),
+  ];
+
+  validator.recentCreatedByUser = [
+    query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
   /**
@@ -119,7 +132,7 @@ module.exports = (crowi) => {
    *            description: page number
    *            schema:
    *              type: number
-   *          - name:  selectedStatusList
+   *          - name: selectedStatusList
    *            in: query
    *            description: status list
    *            schema:
@@ -150,11 +163,13 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', validator.statusList, apiV3FormValidator, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
-    const { selectedStatusList } = req.query;
+    const { forceIncludeAttributes } = req.query;
+    const selectedStatusList = req.query.selectedStatusList || ['active'];
+
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
@@ -166,32 +181,132 @@ module.exports = (crowi) => {
       [sort]: (sortOrder === 'desc') ? -1 : 1,
     };
 
-    try {
-      const paginateResult = await User.paginate(
+    //  For more information about the external specification of the User API, see here (https://dev.growi.org/5fd7466a31d89500488248e3)
+
+    const orConditions = [
+      { name: { $in: searchWord } },
+      { username: { $in: searchWord } },
+    ];
+
+    const query = {
+      $and: [
+        { status: { $in: statusNoList } },
         {
-          $and: [
-            { status: { $in: statusNoList } },
-            {
-              $or: [
-                { name: { $in: searchWord } },
-                { username: { $in: searchWord } },
-                { email: { $in: searchWord } },
-              ],
-            },
-          ],
+          $or: orConditions,
         },
+      ],
+    };
+
+    try {
+      if (req.user != null) {
+        orConditions.push(
+          {
+            $and: [
+              { isEmailPublished: true },
+              { email: { $in: searchWord } },
+            ],
+          },
+        );
+      }
+      if (forceIncludeAttributes.includes('email')) {
+        orConditions.push({ email: { $in: searchWord } });
+      }
+
+      const paginateResult = await User.paginate(
+        query,
         {
           sort: sortOutput,
           page,
           limit: PAGE_ITEMS,
         },
       );
+
+      paginateResult.docs = paginateResult.docs.map((doc) => {
+
+        // return email only when specified by query
+        const { email } = doc;
+        const user = serializeUserSecurely(doc);
+        if (forceIncludeAttributes.includes('email')) {
+          user.email = email;
+        }
+
+        return user;
+      });
+
       return res.apiv3({ paginateResult });
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group list';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'), 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /{id}/recent:
+   *      get:
+   *        tags: [Users]
+   *        operationId: recent created page of user id
+   *        summary: /usersIdReacent
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of user
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: users recent created pages are fetched
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    paginateResult:
+   *                      $ref: '#/components/schemas/PaginateResult'
+   */
+  router.get('/:id/recent', accessTokenParser, loginRequired, validator.recentCreatedByUser, apiV3FormValidator, async(req, res) => {
+    const { id } = req.params;
+
+    let user;
+
+    try {
+      user = await User.findById(id);
+    }
+    catch (err) {
+      const msg = 'Error occurred in find user';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'retrieve-recent-created-pages-failed'), 500);
+    }
+
+    if (user == null) {
+      return res.apiv3Err(new ErrorV3('find-user-is-not-found'));
+    }
+
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const page = req.query.page;
+    const offset = (page - 1) * limit;
+    const queryOptions = { offset, limit };
+
+    try {
+      const result = await Page.findListByCreator(user, req.user, queryOptions);
+
+      // Delete unnecessary data about users
+      result.pages = result.pages.map((page) => {
+        const user = page.lastUpdateUser.toObject();
+        page.lastUpdateUser = user;
+        return page;
+      });
+
+      return res.apiv3(result);
+    }
+    catch (err) {
+      const msg = 'Error occurred in retrieve recent created pages for user';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'retrieve-recent-created-pages-failed'), 500);
     }
   });
 
@@ -244,13 +359,14 @@ module.exports = (crowi) => {
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
     try {
       const invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
-      return res.apiv3({ invitedUserList });
+      return res.apiv3({ invitedUserList }, 201);
     }
     catch (err) {
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
   /**
    * @swagger
    *
@@ -292,6 +408,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(err));
     }
   });
+
   /**
    * @swagger
    *

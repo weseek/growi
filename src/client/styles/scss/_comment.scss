@@ -38,7 +38,12 @@
       justify-content: flex-end;
 
       font-size: 0.9em;
-      color: #999;
+      color: $gray-400;
+    }
+
+    .page-comment-revision svg {
+      width: 16px;
+      height: 16px;
     }
   }
 

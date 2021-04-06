@@ -1,11 +1,5 @@
 import { Container } from 'unstated';
 
-import loggerFactory from '@alias/logger';
-
-import { toastError } from '../util/apiNotification';
-
-const logger = loggerFactory('growi:appSettings');
-
 /**
  * Service container for admin app setting page (AppSettings.jsx)
  * @extends {Container} unstated Container
@@ -16,50 +10,54 @@ export default class AdminAppContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyTitle = 0;
+    this.dummyTitleForError = 1;
 
     this.state = {
       retrieveError: null,
-      title: '',
+      // set dummy value tile for using suspense
+      title: this.dummyTitle,
       confidential: '',
       globalLang: '',
       fileUpload: '',
+
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
+      isMailerSetup: false,
       fromAddress: '',
+      transmissionMethod: '',
+
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
-      region: '',
-      customEndpoint: '',
-      bucket: '',
-      accessKeyId: '',
-      secretAccessKey: '',
+      sesAccessKeyId: '',
+      sesSecretAccessKey: '',
+
+      fileUploadType: '',
+      envFileUploadType: '',
+      isFixedFileUploadByEnvVar: false,
+
+      gcsUseOnlyEnvVars: false,
+      gcsApiKeyJsonPath: '',
+      envGcsApiKeyJsonPath: '',
+      gcsBucket: '',
+      envGcsBucket: '',
+      gcsUploadNamespace: '',
+      envGcsUploadNamespace: '',
+      gcsReferenceFileWithRelayMode: false,
+
+      s3Region: '',
+      s3CustomEndpoint: '',
+      s3Bucket: '',
+      s3AccessKeyId: '',
+      s3SecretAccessKey: '',
+      s3ReferenceFileWithRelayMode: false,
+
       isEnabledPlugins: true,
     };
 
-    this.changeTitle = this.changeTitle.bind(this);
-    this.changeConfidential = this.changeConfidential.bind(this);
-    this.changeGlobalLang = this.changeGlobalLang.bind(this);
-    this.changeFileUpload = this.changeFileUpload.bind(this);
-    this.changeSiteUrl = this.changeSiteUrl.bind(this);
-    this.changeFromAddress = this.changeFromAddress.bind(this);
-    this.changeSmtpHost = this.changeSmtpHost.bind(this);
-    this.changeSmtpPort = this.changeSmtpPort.bind(this);
-    this.changeSmtpUser = this.changeSmtpUser.bind(this);
-    this.changeSmtpPassword = this.changeSmtpPassword.bind(this);
-    this.changeRegion = this.changeRegion.bind(this);
-    this.changeCustomEndpoint = this.changeCustomEndpoint.bind(this);
-    this.changeBucket = this.changeBucket.bind(this);
-    this.changeAccessKeyId = this.changeAccessKeyId.bind(this);
-    this.changeSecretAccessKey = this.changeSecretAccessKey.bind(this);
-    this.changeIsEnabledPlugins = this.changeIsEnabledPlugins.bind(this);
-    this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
-    this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
-    this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
-    this.updateAwsSettingHandler = this.updateAwsSettingHandler.bind(this);
-    this.updatePluginSettingHandler = this.updatePluginSettingHandler.bind(this);
   }
 
   /**
@@ -73,36 +71,56 @@ export default class AdminAppContainer extends Container {
    * retrieve app sttings data
    */
   async retrieveAppSettingsData() {
-    try {
-      const response = await this.appContainer.apiv3.get('/app-settings/');
-      const { appSettingsParams } = response.data;
+    const response = await this.appContainer.apiv3.get('/app-settings/');
+    const { appSettingsParams } = response.data;
 
-      this.setState({
-        title: appSettingsParams.title,
-        confidential: appSettingsParams.confidential,
-        globalLang: appSettingsParams.globalLang,
-        fileUpload: appSettingsParams.fileUpload,
-        siteUrl: appSettingsParams.siteUrl,
-        envSiteUrl: appSettingsParams.envSiteUrl,
-        isSetSiteUrl: !!appSettingsParams.siteUrl,
-        fromAddress: appSettingsParams.fromAddress,
-        smtpHost: appSettingsParams.smtpHost,
-        smtpPort: appSettingsParams.smtpPort,
-        smtpUser: appSettingsParams.smtpUser,
-        smtpPassword: appSettingsParams.smtpPassword,
-        region: appSettingsParams.region,
-        customEndpoint: appSettingsParams.customEndpoint,
-        bucket: appSettingsParams.bucket,
-        accessKeyId: appSettingsParams.accessKeyId,
-        secretAccessKey: appSettingsParams.secretAccessKey,
-        isEnabledPlugins: appSettingsParams.isEnabledPlugins,
-      });
+    this.setState({
+      title: appSettingsParams.title,
+      confidential: appSettingsParams.confidential,
+      globalLang: appSettingsParams.globalLang,
+      fileUpload: appSettingsParams.fileUpload,
+      siteUrl: appSettingsParams.siteUrl,
+      envSiteUrl: appSettingsParams.envSiteUrl,
+      isSetSiteUrl: !!appSettingsParams.siteUrl,
+      isMailerSetup: appSettingsParams.isMailerSetup,
+      fromAddress: appSettingsParams.fromAddress,
+      transmissionMethod: appSettingsParams.transmissionMethod,
+      smtpHost: appSettingsParams.smtpHost,
+      smtpPort: appSettingsParams.smtpPort,
+      smtpUser: appSettingsParams.smtpUser,
+      smtpPassword: appSettingsParams.smtpPassword,
+      sesAccessKeyId: appSettingsParams.sesAccessKeyId,
+      sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
 
+      fileUploadType: appSettingsParams.fileUploadType,
+      envFileUploadType: appSettingsParams.envFileUploadType,
+      useOnlyEnvVarForFileUploadType: appSettingsParams.useOnlyEnvVarForFileUploadType,
+
+      s3Region: appSettingsParams.s3Region,
+      s3CustomEndpoint: appSettingsParams.s3CustomEndpoint,
+      s3Bucket: appSettingsParams.s3Bucket,
+      s3AccessKeyId: appSettingsParams.s3AccessKeyId,
+      s3SecretAccessKey: appSettingsParams.s3SecretAccessKey,
+      s3ReferenceFileWithRelayMode: appSettingsParams.s3ReferenceFileWithRelayMode,
+
+      gcsUseOnlyEnvVars: appSettingsParams.gcsUseOnlyEnvVars,
+      gcsApiKeyJsonPath: appSettingsParams.gcsApiKeyJsonPath,
+      gcsBucket: appSettingsParams.gcsBucket,
+      gcsUploadNamespace: appSettingsParams.gcsUploadNamespace,
+      gcsReferenceFileWithRelayMode: appSettingsParams.gcsReferenceFileWithRelayMode,
+      envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
+      envGcsBucket: appSettingsParams.envGcsBucket,
+      envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
+      isEnabledPlugins: appSettingsParams.isEnabledPlugins,
+    });
+
+    // if useOnlyEnvVarForFileUploadType is true, get fileUploadType from only env var and make the forms fixed.
+    // and if env var 'FILE_UPLOAD' is null, envFileUploadType is 'aws' that is default value of 'FILE_UPLOAD'.
+    if (appSettingsParams.useOnlyEnvVarForFileUploadType) {
+      this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
+      this.setState({ isFixedFileUploadByEnvVar: true });
     }
-    catch (err) {
-      logger.error(err);
-      toastError(new Error('Failed to fetch data'));
-    }
+
   }
 
   /**
@@ -149,6 +167,13 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change from transmission method
+   */
+  changeTransmissionMethod(transmissionMethod) {
+    this.setState({ transmissionMethod });
+  }
+
+  /**
    * Change smtp host
    */
   changeSmtpHost(smtpHost) {
@@ -177,38 +202,94 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change sesAccessKeyId
+   */
+  changeSesAccessKeyId(sesAccessKeyId) {
+    this.setState({ sesAccessKeyId });
+  }
+
+  /**
+   * Change sesSecretAccessKey
+   */
+  changeSesSecretAccessKey(sesSecretAccessKey) {
+    this.setState({ sesSecretAccessKey });
+  }
+
+  /**
+   * Change s3Region
+   */
+  changeS3Region(s3Region) {
+    this.setState({ s3Region });
+  }
+
+  /**
+   * Change s3CustomEndpoint
+   */
+  changeS3CustomEndpoint(s3CustomEndpoint) {
+    this.setState({ s3CustomEndpoint });
+  }
+
+  /**
+   * Change fileUploadType
+   */
+  changeFileUploadType(fileUploadType) {
+    this.setState({ fileUploadType });
+  }
+
+  /**
    * Change region
    */
-  changeRegion(region) {
-    this.setState({ region });
-  }
-
-  /**
-   * Change custom endpoint
-   */
-  changeCustomEndpoint(customEndpoint) {
-    this.setState({ customEndpoint });
-  }
-
-  /**
-   * Change bucket name
-   */
-  changeBucket(bucket) {
-    this.setState({ bucket });
+  changeS3Bucket(s3Bucket) {
+    this.setState({ s3Bucket });
   }
 
   /**
    * Change access key id
    */
-  changeAccessKeyId(accessKeyId) {
-    this.setState({ accessKeyId });
+  changeS3AccessKeyId(s3AccessKeyId) {
+    this.setState({ s3AccessKeyId });
   }
 
   /**
    * Change secret access key
    */
-  changeSecretAccessKey(secretAccessKey) {
-    this.setState({ secretAccessKey });
+  changeS3SecretAccessKey(s3SecretAccessKey) {
+    this.setState({ s3SecretAccessKey });
+  }
+
+  /**
+   * Change s3ReferenceFileWithRelayMode
+   */
+  changeS3ReferenceFileWithRelayMode(s3ReferenceFileWithRelayMode) {
+    this.setState({ s3ReferenceFileWithRelayMode });
+  }
+
+  /**
+   * Change gcsApiKeyJsonPath
+   */
+  changeGcsApiKeyJsonPath(gcsApiKeyJsonPath) {
+    this.setState({ gcsApiKeyJsonPath });
+  }
+
+  /**
+   * Change gcsBucket
+   */
+  changeGcsBucket(gcsBucket) {
+    this.setState({ gcsBucket });
+  }
+
+  /**
+   * Change gcsUploadNamespace
+   */
+  changeGcsUploadNamespace(gcsUploadNamespace) {
+    this.setState({ gcsUploadNamespace });
+  }
+
+  /**
+   * Change gcsReferenceFileWithRelayMode
+   */
+  changeGcsReferenceFileWithRelayMode(gcsReferenceFileWithRelayMode) {
+    this.setState({ gcsReferenceFileWithRelayMode });
   }
 
   /**
@@ -253,33 +334,87 @@ export default class AdminAppContainer extends Container {
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateMailSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/mail-setting', {
+  updateMailSettingHandler() {
+    if (this.state.transmissionMethod === 'smtp') {
+      return this.updateSmtpSetting();
+    }
+    return this.updateSesSetting();
+  }
+
+  /**
+   * Update smtp setting
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateSmtpSetting() {
+    const response = await this.appContainer.apiv3.put('/app-settings/smtp-setting', {
       fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
       smtpHost: this.state.smtpHost,
       smtpPort: this.state.smtpPort,
       smtpUser: this.state.smtpUser,
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
+    this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 
   /**
-   * Update AWS setting
+   * Update ses setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateAwsSettingHandler() {
-    const response = await this.appContainer.apiv3.put('/app-settings/aws-setting', {
-      region: this.state.region,
-      customEndpoint: this.state.customEndpoint,
-      bucket: this.state.bucket,
-      accessKeyId: this.state.accessKeyId,
-      secretAccessKey: this.state.secretAccessKey,
+  async updateSesSetting() {
+    const response = await this.appContainer.apiv3.put('/app-settings/ses-setting', {
+      fromAddress: this.state.fromAddress,
+      transmissionMethod: this.state.transmissionMethod,
+      sesAccessKeyId: this.state.sesAccessKeyId,
+      sesSecretAccessKey: this.state.sesSecretAccessKey,
     });
-    const { awsSettingParams } = response.data;
-    return awsSettingParams;
+    const { mailSettingParams } = response.data;
+    this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
+    return mailSettingParams;
+  }
+
+  /**
+   * send test e-mail
+   * @memberOf AdminAppContainer
+   */
+  async sendTestEmail() {
+    return this.appContainer.apiv3.post('/app-settings/smtp-test');
+  }
+
+  /**
+   * Update updateFileUploadSettingHandler
+   * @memberOf AdminAppContainer
+   */
+  async updateFileUploadSettingHandler() {
+    const { fileUploadType } = this.state;
+
+    const requestParams = {
+      fileUploadType,
+    };
+
+    if (fileUploadType === 'gcs') {
+      requestParams.gcsApiKeyJsonPath = this.state.gcsApiKeyJsonPath;
+      requestParams.gcsBucket = this.state.gcsBucket;
+      requestParams.gcsUploadNamespace = this.state.gcsUploadNamespace;
+      requestParams.gcsReferenceFileWithRelayMode = this.state.gcsReferenceFileWithRelayMode;
+    }
+
+    if (fileUploadType === 'aws') {
+      requestParams.s3Region = this.state.s3Region;
+      requestParams.s3CustomEndpoint = this.state.s3CustomEndpoint;
+      requestParams.s3Bucket = this.state.s3Bucket;
+      requestParams.s3AccessKeyId = this.state.s3AccessKeyId;
+      requestParams.s3SecretAccessKey = this.state.s3SecretAccessKey;
+      requestParams.s3ReferenceFileWithRelayMode = this.state.s3ReferenceFileWithRelayMode;
+    }
+
+    const response = await this.appContainer.apiv3.put('/app-settings/file-upload-setting', requestParams);
+    const { responseParams } = response.data;
+    return this.setState(responseParams);
   }
 
   /**

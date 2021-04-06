@@ -32,11 +32,6 @@
     }
   }
 
-  .page-comments-row {
-    margin: 30px 0px;
-    border-top: 5px solid;
-  }
-
   .page-comments {
     h4 {
       margin-bottom: 1em;
@@ -98,13 +93,8 @@
   }
   // reply button
   .btn.btn-comment-reply {
-    width: 120px;
     margin-top: 0.5em;
-    margin-right: 15px;
-
-    border-top: none;
-    border-right: none;
-    border-left: none;
+    border: none;
   }
 
   // display cheatsheet for comment form only

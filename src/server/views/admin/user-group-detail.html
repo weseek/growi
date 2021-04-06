@@ -7,16 +7,9 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main row">
-  {% parent %}
-  <div
-    id="admin-user-group-detail"
-    class="col-lg-9"
-    data-user-group="{{ userGroup|json }}"
-  >
-  </div>
+<div
+  id="admin-user-group-detail"
+  data-user-group="{{ userGroup|json }}"
+>
 </div>
 {% endblock content_main %}
-
-{% block content_footer %}
-{% endblock content_footer %}

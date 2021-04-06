@@ -1,75 +1,48 @@
 import React from 'react';
-import { Card, CardBody } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AppContainer from '../../../services/AppContainer';
-import LineBreakForm from './LineBreakForm';
-import PresentationForm from './PresentationForm';
-import XssForm from './XssForm';
+import MarkDownSettingContents from './MarkDownSettingContents';
 import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
 
 const logger = loggerFactory('growi:MarkDown');
 
-class MarkdownSetting extends React.Component {
+let retrieveErrors = null;
+function MarkdownSetting(props) {
+  const { adminMarkDownContainer } = props;
 
-  async componentDidMount() {
-    const { adminMarkDownContainer } = this.props;
-
-    try {
-      await adminMarkDownContainer.retrieveMarkdownData();
-    }
-    catch (err) {
-      toastError(err);
-      adminMarkDownContainer.setState({ retrieveError: err.message });
-      logger.error(err);
-    }
-
+  if (adminMarkDownContainer.state.isEnabledLinebreaks === adminMarkDownContainer.dummyIsEnabledLinebreaks) {
+    throw (async() => {
+      try {
+        await adminMarkDownContainer.retrieveMarkdownData();
+      }
+      catch (err) {
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
+        retrieveErrors = errs;
+        adminMarkDownContainer.setState({ isEnabledLinebreaks: adminMarkDownContainer.dummyIsEnabledLinebreaksForError });
+      }
+    })();
   }
 
-  render() {
-    const { t } = this.props;
-
-    return (
-      <React.Fragment>
-        {/* Line Break Setting */}
-        <h2 className="admin-setting-header">{t('admin:markdown_setting.lineBreak_header')}</h2>
-        <Card className="card well my-3">
-          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.lineBreak_desc') }</CardBody>
-        </Card>
-        <LineBreakForm />
-
-        {/* Presentation Setting */}
-        <h2 className="admin-setting-header">{ t('admin:markdown_setting.presentation_header') }</h2>
-        <Card className="card well my-3">
-          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.presentation_desc') }</CardBody>
-        </Card>
-        <PresentationForm />
-
-        {/* XSS Setting */}
-        <h2 className="admin-setting-header">{ t('admin:markdown_setting.xss_header') }</h2>
-        <Card className="card well my-3">
-          <CardBody className="px-0 py-2">{ t('admin:markdown_setting.xss_desc') }</CardBody>
-        </Card>
-        <XssForm />
-      </React.Fragment>
-    );
+  if (adminMarkDownContainer.state.isEnabledLinebreaks === adminMarkDownContainer.dummyIsEnabledLinebreaksForError) {
+    throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
+  return <MarkDownSettingContents />;
 }
 
-const MarkdownSettingWrapper = withUnstatedContainers(MarkdownSetting, [AppContainer, AdminMarkDownContainer]);
+const MarkdownSettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(MarkdownSetting), [AdminMarkDownContainer]);
 
 MarkdownSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminMarkDownContainer: PropTypes.instanceOf(AdminMarkDownContainer).isRequired,
-
 };
 
-export default withTranslation()(MarkdownSettingWrapper);
+export default MarkdownSettingWithUnstatedContainer;

@@ -38,7 +38,8 @@ html[dark] {
   // Background colors
   $bgcolor-global: #050000;
   $bgcolor-inline-code: #1f1f22; //optional
-  $bgcolor-card: #f5f5f5;
+  $bgcolor-card: $bgcolor-global;
+  $bgcolor-highlighted: rgba($primary, 0.4);
 
   // Font colors
   $color-global: #e9af2b;
@@ -93,7 +94,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
   $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
@@ -107,6 +108,13 @@ html[dark] {
   @import 'apply-colors';
   @import 'apply-colors-dark';
 
+  //Button
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager(lighten($primary, 35%), $primary, lighten($primary, 5%), darken($primary, 20%));
+    }
+  }
+
   // Table
   .table {
     color: $color-global;
@@ -114,6 +122,6 @@ html[dark] {
 
   pre {
     color: #edba4a;
-    background: #000000;
+    background: black;
   }
 }

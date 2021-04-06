@@ -145,8 +145,10 @@ class PageEditorByHackmd extends React.Component {
       }
 
       this.props.pageContainer.setState({
+        isHackmdDraftUpdatingInRealtime: false,
         hasDraftOnHackmd: false,
         pageIdOnHackmd: res.pageIdOnHackmd,
+        remoteRevisionId: res.revisionIdHackmdSynced,
         revisionIdHackmdSynced: res.revisionIdHackmdSynced,
       });
     }
@@ -230,9 +232,9 @@ class PageEditorByHackmd extends React.Component {
     const hackmdUri = this.getHackmdUri();
     const { pageContainer, t } = this.props;
     const {
-      revisionId, revisionIdHackmdSynced, remoteRevisionId,
+      revisionId, revisionIdHackmdSynced, remoteRevisionId, pageId,
     } = pageContainer.state;
-
+    const isPageNotFound = pageId == null;
 
     let content;
 
@@ -243,6 +245,24 @@ class PageEditorByHackmd extends React.Component {
       content = (
         <div>
           <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> { t('hackmd.not_set_up')}</p>
+          {/* eslint-disable-next-line react/no-danger */}
+          <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_associate_with_growi_to_use_hackmd_refer_to_this') }} />
+        </div>
+      );
+    }
+
+    /*
+    * used HackMD from NotFound Page
+    */
+    else if (isPageNotFound) {
+      content = (
+        <div className="text-center">
+          <p className="hackmd-status-label">
+            <i className="fa fa-file-text mr-2" />
+            { t('hackmd.used_for_not_found') }
+          </p>
+          {/* eslint-disable-next-line react/no-danger */}
+          <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_make_page') }} />
         </div>
       );
     }

@@ -6,37 +6,47 @@ import { I18nextProvider } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import ErrorBoundary from './components/ErrorBoudary';
+import Sidebar from './components/Sidebar';
 import SearchPage from './components/SearchPage';
 import TagsList from './components/TagsList';
-import PageEditor from './components/PageEditor';
-import PagePathNavForEditor from './components/PageEditor/PagePathNavForEditor';
-import EditorNavbarBottom from './components/PageEditor/EditorNavbarBottom';
+import DisplaySwitcher from './components/Page/DisplaySwitcher';
 import { defaultEditorOptions, defaultPreviewOptions } from './components/PageEditor/OptionsSelector';
-import PageEditorByHackmd from './components/PageEditorByHackmd';
 import Page from './components/Page';
-import PageHistory from './components/PageHistory';
 import PageComments from './components/PageComments';
+import PageContentFooter from './components/PageContentFooter';
 import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
+import ShareLinkAlert from './components/Page/ShareLinkAlert';
+import DuplicatedAlert from './components/Page/DuplicatedAlert';
+import RedirectedAlert from './components/Page/RedirectedAlert';
+import RenamedAlert from './components/Page/RenamedAlert';
+import TrashPageList from './components/TrashPageList';
 import TrashPageAlert from './components/Page/TrashPageAlert';
-import PageAttachment from './components/PageAttachment';
+import NotFoundPage from './components/NotFoundPage';
+import NotFoundAlert from './components/Page/NotFoundAlert';
+import ForbiddenPage from './components/ForbiddenPage';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
+import RecentlyCreatedIcon from './components/Icons/RecentlyCreatedIcon';
 import MyDraftList from './components/MyDraftList/MyDraftList';
-import SeenUserList from './components/User/SeenUserList';
+import BookmarkIcon from './components/Icons/BookmarkIcon';
+import BookmarkList from './components/PageList/BookmarkList';
 import LikerList from './components/User/LikerList';
-import TableOfContents from './components/TableOfContents';
-
+import Fab from './components/Fab';
 import PersonalSettings from './components/Me/PersonalSettings';
+import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
+import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
+
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
+import PageHistoryContainer from './services/PageHistoryContainer';
+import RevisionComparerContainer from './services/RevisionComparerContainer';
 import CommentContainer from './services/CommentContainer';
 import EditorContainer from './services/EditorContainer';
 import TagContainer from './services/TagContainer';
-import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
-import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
 import PersonalContainer from './services/PersonalContainer';
+import PageAccessoriesContainer from './services/PageAccessoriesContainer';
 
 import { appContainer, componentMappings } from './base';
 
@@ -45,17 +55,21 @@ const logger = loggerFactory('growi:cli:app');
 appContainer.initContents();
 
 const { i18n } = appContainer;
-const websocketContainer = appContainer.getContainer('WebsocketContainer');
+const socketIoContainer = appContainer.getContainer('SocketIoContainer');
 
 // create unstated container instance
 const navigationContainer = new NavigationContainer(appContainer);
 const pageContainer = new PageContainer(appContainer);
+const pageHistoryContainer = new PageHistoryContainer(appContainer, pageContainer);
+const revisionComparerContainer = new RevisionComparerContainer(appContainer, pageContainer);
 const commentContainer = new CommentContainer(appContainer);
 const editorContainer = new EditorContainer(appContainer, defaultEditorOptions, defaultPreviewOptions);
 const tagContainer = new TagContainer(appContainer);
 const personalContainer = new PersonalContainer(appContainer);
+const pageAccessoriesContainer = new PageAccessoriesContainer(appContainer);
 const injectableContainers = [
-  appContainer, websocketContainer, navigationContainer, pageContainer, commentContainer, editorContainer, tagContainer, personalContainer,
+  appContainer, socketIoContainer, navigationContainer, pageContainer, pageHistoryContainer, revisionComparerContainer,
+  commentContainer, editorContainer, tagContainer, personalContainer, pageAccessoriesContainer,
 ];
 
 logger.info('unstated containers have been initialized');
@@ -66,6 +80,8 @@ logger.info('unstated containers have been initialized');
  *  value: React Element
  */
 Object.assign(componentMappings, {
+  'grw-sidebar-wrapper': <Sidebar />,
+
   'search-page': <SearchPage crowi={appContainer} />,
 
   // 'revision-history': <PageHistory pageId={pageId} />,
@@ -75,9 +91,29 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
+  'trash-page-list': <TrashPageList />,
+
+  'not-found-page': <NotFoundPage />,
+  'not-found-alert': <NotFoundAlert
+    onPageCreateClicked={navigationContainer.setEditorMode}
+    isGuestUserMode={appContainer.isGuestUser}
+    isHidden={pageContainer.state.isNotCreatable || pageContainer.state.isTrashPage}
+  />,
+
+  'forbidden-page': <ForbiddenPage />,
+
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
+
+  'my-drafts': <MyDraftList />,
+
+  'grw-fab-container': <Fab />,
+
+  'share-link-alert': <ShareLinkAlert />,
+  'duplicated-alert': <DuplicatedAlert />,
+  'redirected-alert': <RedirectedAlert />,
+  'renamed-alert': <RenamedAlert />,
 });
 
 // additional definitions if data exists
@@ -85,15 +121,23 @@ if (pageContainer.state.pageId != null) {
   Object.assign(componentMappings, {
     'page-comments-list': <PageComments />,
     'page-comment-write': <CommentEditorLazyRenderer />,
-    'page-attachment': <PageAttachment />,
     'page-management': <PageManagement />,
-
-    'revision-toc': <TableOfContents />,
-    'seen-user-list': <SeenUserList />,
     'liker-list': <LikerList />,
+    'page-content-footer': <PageContentFooter />,
 
-    'user-created-list': <RecentCreated />,
-    'user-draft-list': <MyDraftList />,
+    'recent-created-icon': <RecentlyCreatedIcon />,
+    'user-bookmark-icon': <BookmarkIcon />,
+  });
+
+  // show the Page accessory modal when query of "compare" is requested
+  if (revisionComparerContainer.getRevisionIDsToCompareAsParam().length > 0) {
+    pageAccessoriesContainer.openPageAccessoriesModal('pageHistory');
+  }
+}
+if (pageContainer.state.creator != null) {
+  Object.assign(componentMappings, {
+    'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
+    'user-bookmark-list': <BookmarkList userId={pageContainer.state.creator._id} />,
   });
 }
 if (pageContainer.state.path != null) {
@@ -102,20 +146,8 @@ if (pageContainer.state.path != null) {
     'page': <Page />,
     'grw-subnav-container': <GrowiSubNavigation />,
     'grw-subnav-switcher-container': <GrowiSubNavigationSwitcher />,
+    'display-switcher': <DisplaySwitcher />,
   });
-}
-// additional definitions if user is logged in
-if (appContainer.currentUser != null) {
-  Object.assign(componentMappings, {
-    'page-editor': <PageEditor />,
-    'page-editor-path-nav': <PagePathNavForEditor />,
-    'page-editor-navbar-bottom-container': <EditorNavbarBottom />,
-  });
-  if (pageContainer.state.pageId != null) {
-    Object.assign(componentMappings, {
-      'page-editor-with-hackmd': <PageEditorByHackmd />,
-    });
-  }
 }
 
 Object.keys(componentMappings).forEach((key) => {
@@ -132,17 +164,6 @@ Object.keys(componentMappings).forEach((key) => {
       elem,
     );
   }
-});
-
-// うわーもうー (commented by Crowi team -- 2018.03.23 Yuki Takei)
-$('a[data-toggle="tab"][href="#revision-history"]').on('show.bs.tab', () => {
-  ReactDOM.render(
-    <I18nextProvider i18n={i18n}>
-      <ErrorBoundary>
-        <PageHistory pageId={pageContainer.state.pageId} crowi={appContainer} />
-      </ErrorBoundary>
-    </I18nextProvider>, document.getElementById('revision-history'),
-  );
 });
 
 // initialize scrollpos-styler

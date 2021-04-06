@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
 import AppContainer from '../../../../services/AppContainer';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastError } from '../../../../util/apiNotification';
 
 class UploadForm extends React.Component {
 
@@ -31,9 +31,21 @@ class UploadForm extends React.Component {
     formData.append('_csrf', this.props.appContainer.csrfToken);
     formData.append('file', this.inputRef.current.files[0]);
 
-    const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
-    this.props.onUpload(data);
-    // TODO: toastSuccess, toastError
+    try {
+      const { data } = await this.props.appContainer.apiv3Post('/import/upload', formData);
+      // TODO: toastSuccess, toastError
+      this.props.onUpload(data);
+    }
+    catch (err) {
+      if (err[0].code === 'versions-are-not-met') {
+        if (this.props.onVersionMismatch !== null) {
+          this.props.onVersionMismatch(err[0].code);
+        }
+      }
+      else {
+        toastError(err);
+      }
+    }
   }
 
   validateForm() {
@@ -83,6 +95,8 @@ UploadForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   onUpload: PropTypes.func.isRequired,
+  isTheSameVersion: PropTypes.bool,
+  onVersionMismatch: PropTypes.func,
 };
 
 /**

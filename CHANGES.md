@@ -1,6 +1,221 @@
 # CHANGES
 
-## v4.1.0-RC
+## v4.2.14-RC
+
+* Support: Update libs
+    * bunyan
+    * browser-bunyan
+* Fix: Can create pages on the share route
+    * Introduced by v4.2.8
+* Fix: Group page is excluded by recurrence operation
+    * Introduced by v4.2.8
+* Fix: New path to rename and duplicate is considered as a child page
+    * Introduced by v4.2.8
+
+## v4.2.13
+
+* Feature: Detect indent size automatically
+* Fix: Some API responses includes email unintentionally
+* Fix: An error always displayed in admin pages
+
+## v4.2.12
+
+* Feature: Custom Sidebar
+* Fix: Set language correctly for draw.io (diagrams.net)
+
+## v4.2.11
+
+* Fix: Rename decendants is not working
+    * Introduced by v4.2.8
+
+
+## v4.2.10
+
+* Feature: Staff Credits for apps on GROWI.cloud 
+* Improvement: Hackmd button behavior when disabled
+* Improvement: Layout of comparing revisions
+* Fix: Empty trash is not working
+
+## v4.2.9
+
+* Feature: Comparing revisions
+* Improvement: Memory consumption when re-indexing for full text searching
+* Improvement: Site URL settings valildation
+* Fix: Show comfirmation when transiting page without save
+* Fix: Save slack channels history when user trigger notification is invoked
+* Fix: The label of alerts for move/rename/delete are borken
+
+## v4.2.8
+
+* Improvement: Performance for pages to rename/duplicate/delete/revert pages
+* Fix: Preview scrollbar doesn't sync to editor
+    * Introduced by v4.2.6
+* Fix: Failed to save temporaryUrlCached with using gcs
+    * Introduced by v4.2.3
+* Fix: Fixed not being able to update ses settings
+    * Introduced by v4.2.0
+* Fix: Fixed the display of updtedAt and createdAt being reversed
+* Fix: Pass app title value through the XSS filter
+
+## v4.2.7
+
+* Fix: Installer doesn't work on Chrome
+
+## v4.2.6
+
+* Feature: Add a button to jump to Comments section
+* Feature: Paste Bootstrap4 Grid HTML with GUI
+* Feature: Disable auto formating table option
+* Improvement: Layout of Edit Link Modal
+* Improvement: Focus to the first input when modal is opened
+* Improvement: Preview layout in edit mode
+* Improvement: Install process under redundant environment
+* Improvement: Add contributors
+* Fix: Upgrading to v4.x failed when the user uses Kibela Layout
+    * Introduced by v4.2.0
+* Fix: diagrams.net (draw.io) errors
+* Fix: Navbar is not rendered on old iOS
+* Support: Expose metrics with Promster
+* Support: Upgrade libs
+    * axios
+
+## v4.2.5
+
+* Improvement: Invoke garbage collection when reindex all pages by elasticsearch
+* Fix: MathJax rendering does not work
+
+## v4.2.4
+
+* Fix: Fixed an error when creating a new page with `Ctrl-S`
+    * Introduced by v4.2.2
+* Fix: Fixed a strange diff in PageHistory due to Pagination
+* Fix: Fixed that the user group page could not be found when using api from the outside
+
+## v4.2.3
+
+* Feature: Insert/edit links with GUI
+* Feature: Auto reconnecting to search service
+* Improvement: New style of params for Healthcheck API
+* Fix: Referencing attachments when `FILE_UPLOAD_DISABLED` is true
+* Fix: The message of timeline for restricted pages
+* Fix: Parameter validation for Import/Export Archive API
+* Fix: Prevent regexp for Search Tags API
+* Fix: Add `Content-Security-Policy` when referencing attachments
+* Fix: Sanitize at presentation time
+* Fix: Remove page path string from message for page lists and timeline when there is no contents
+
+## v4.2.2
+
+* Fix: Consecutive save operations with built-in editor fail
+    * Introduced by v4.2.1
+
+## v4.2.1
+
+* Fix: Consecutive save operations with HackMD fail
+    * Introduced by v4.2.0
+* Fix: Switching theme to kibela fail
+    * Introduced by v4.2.0
+
+## v4.2.0
+
+### BREAKING CHANGES
+
+* GROWI v4.2.x no longer support Kibela layout
+    * Kibela theme is newly added and the configuration will migrate to it automatically
+
+### Updates
+
+* Feature: File Upload Settings on admin pages
+* Improvement: Basic layout of page
+* Support: Support MongoDB 4.0, 4.2 and 4.4
+* Support: Upgrade libs
+    * migrate-mongo
+    * mongoose
+
+## v4.1.13
+
+* Fix: MathJax rendering does not work
+
+## v4.1.12
+
+* Fix: Adjust line-height for pre under li
+* Fix: Emptying trash process is broken
+
+## v4.1.11
+
+* Improvement: Generating draft DOM id strategy
+* Fix: GROWI version downgrade causes a validation error for user.lang
+
+## v4.1.10
+
+* Fix: Make listing users API secure
+* Fix: Error message when the server denies guest user connecting with socket.io
+
+## v4.1.9
+
+* Feature: Environment variables to set max connection size to deliver push messages to all clients
+
+## v4.1.8
+
+* Improvement: Rebuilding progress bar colors for Full Text Search Management
+* Improvement: Support operations on page data with a null value for author
+
+## v4.1.7
+
+* Improvement: Fire global notification when a new page is created by uploading file
+* Fix: Change default `DRAWIO_URI` to embed.diagrams.net
+* Fix: An unhandled rejection occures when a user who does not send referer accesses
+
+## v4.1.6
+
+* Improvement: Hide Fab at admin pages
+* Fix: Presentation does not work
+* Fix: Update GrantSelector status when uploading a file to a new page
+* Fix: CopyDropdown origin refs draw.io host wrongly
+
+## v4.1.5
+
+* Feature: Independent S3 configuration and SES configuration for AWS
+* Fix: Author name does not displayed in page history
+* Fix: Hide unnecessary component when pringing
+
+## v4.1.4 (Missing number)
+
+## v4.1.3
+
+* Feature: Create/edit linker with GUI
+* Improvement: Paging page histories
+* Improvement: Avoid using `cursor.snapshot()` in preparation for MongoDB version upgrade
+* Improvement: Allow to save "From e-mail address" only in App Settings
+* Improvement: Allow to empty "From e-mail address" in App Settings
+* Improvement: Export/Import archive data serially so as not to waste memory
+* Fix: To be able to delete attachment metadata even when the actual data does not exist
+* Fix: Limit the attrubutes of user data for `/_api/v3/users`
+* Fix: Prevent XSS with SVG
+* Upgrade libs
+    * optimize-css-assets-webpack-plugin
+    * terser-webpack-plugin
+
+## v4.1.2
+
+* Fix: Uploaded images do not displayed
+    * Introduced by v4.1.1
+
+## v4.1.1
+
+* Feature: External share link
+* Improvement: Optimize some features that operate revision data
+    * Page history
+    * Renaming pages
+    * Deleting pages
+* Fix: Cmd+c/v/... does not work on Mac
+    * Introduced by v4.1.0
+* Fix: "Append params" switch of CopyDropdown does not work when multiple CopyDropdown instance exists
+* Fix: "Append params" switch of CopyDropdown escapes spaces
+* Fix: Blockdiag does not be rendered
+* Fix: Access token parser
+
+## v4.1.0
 
 ### BREAKING CHANGES
 
@@ -11,18 +226,31 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 
 ### Updates
 
-* Feature: Config synchronization for multiple GROWI Apps
+* Feature: Server settings synchronization for multiple GROWI Apps
+* Feature: Page status alert synchronization for multiple GROWI Apps
+* Feature: Smooth scroll for anchor links
+* Feature: Mirror Mode with [Konami Code](https://en.wikipedia.org/wiki/Konami_Code)
 * Improvement: Determine whether the "In Use" badge is displayed or not by attachment ID
+* Improvement: draw.io under NO_CDN environment
+* Fix: Deleting/renaming with recursive option affects pages that are inaccessible to active users
+* Fix: DrawioModal cuts without beginning/ending line
 * Fix: New settings of SMTP and AWS SES are not reflected when server is running
+* Fix: Sidebar layout broken when using Kibela layout
 * Support: Support Node.js v14
+* Support: Update libs
+    * mathjax
 
+## v4.0.11
 
+* Fix: Fab on search result page does not displayed
+* Fix: Adjust margin/padding for search result page
+* Fix: PageAlert broken
+    * Introduced by v4.0.9
 
 ## v4.0.10
 
 * Improvement: Adjust ToC height
 * Fix: Fail to rename/delete a page set as "Anyone with the link"
-
 
 ## v4.0.9
 
@@ -46,7 +274,7 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/41x.html>
 * Fix: Unable to create page with original path after emptying trash
 * I18n: Support zh-CN
 
-## v4.0.8  (Missing number)
+## v4.0.8 (Missing number)
 
 ## v4.0.7
 

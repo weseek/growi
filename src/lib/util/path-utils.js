@@ -1,3 +1,5 @@
+const escapeStringRegexp = require('escape-string-regexp');
+
 /**
  * Whether path is the top page
  * @param {string} path
@@ -47,9 +49,26 @@ const userPageRoot = (user) => {
   return `/user/${user.username}`;
 };
 
+/**
+ * return user path
+ * @param {string} parentPath
+ * @param {string} childPath
+ * @param {string} newPath
+ *
+ * @return {string}
+ */
+const convertToNewAffiliationPath = (oldPath, newPath, childPath) => {
+  if (newPath === null) {
+    throw new Error('Please input the new page path');
+  }
+  const pathRegExp = new RegExp(`^${escapeStringRegexp(oldPath)}`, 'i');
+  return childPath.replace(pathRegExp, newPath);
+};
+
 module.exports = {
   isTopPage,
   isTrashPage,
   isUserPage,
   userPageRoot,
+  convertToNewAffiliationPath,
 };

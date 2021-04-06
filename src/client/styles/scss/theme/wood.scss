@@ -41,8 +41,9 @@ html[dark] {
   $primary: #aaa45f;
 
   // Background colors
-  $bgcolor-global: #ffffff;
+  $bgcolor-global: white;
   $bgcolor-card: #ece8de;
+  $bgcolor-highlighted: rgba($primary, 0.3);
 
   // Font colors
   // $color-global: black;
@@ -63,7 +64,7 @@ html[dark] {
   // List Group colors
   // $color-list: $color-global;
   $bgcolor-list: transparent;
-  $color-list-hover: #eee;
+  $color-list-hover: $gray-100;
   $bgcolor-list-hover: darken($bgcolor-global, 3%);
   // $color-list-active: $color-reversal;
   // $bgcolor-list-active: $primary;
@@ -71,7 +72,7 @@ html[dark] {
   // Table colors
   // $color-table: #; // optional
   // $bgcolor-table: #; // optional
-  $border-color-table: #aaa; // optional
+  $border-color-table: $gray-400; // optional
   // $color-table-hover: #; // optional
   // $bgcolor-table-hover: #; // optional
 
@@ -97,7 +98,7 @@ html[dark] {
   $bgcolor-resize-button: $themecolor;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -158,6 +159,13 @@ html[dark] {
 
     .grw-external-auth-form {
       border-color: #aaa !important;
+    }
+  }
+
+  // Button
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager(darken($primary, 30%), lighten($primary, 15%), lighten($primary, 25%));
     }
   }
 }

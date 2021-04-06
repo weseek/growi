@@ -47,7 +47,6 @@
 
 module.exports = function(crowi, app) {
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const ApiResponse = require('../util/apiResponse');
 
   const actions = {};
@@ -56,16 +55,6 @@ module.exports = function(crowi, app) {
   const api = {};
 
   actions.api = api;
-
-  api.bookmarks = function(req, res) {
-    const options = {
-      skip: req.query.offset || 0,
-      limit: req.query.limit || 50,
-    };
-    Bookmark.findByUser(req.user, options, (err, bookmarks) => {
-      res.json(bookmarks);
-    });
-  };
 
   api.checkUsername = function(req, res) {
     const username = req.query.username;

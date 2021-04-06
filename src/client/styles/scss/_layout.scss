@@ -16,7 +16,7 @@ body {
 
 .grw-modal-head {
   font-size: 1em;
-  border-bottom: 1px solid $gray-500;
+  border-bottom: 1px solid transparent;
 }
 
 // padding settings for GrowiNavbarBottom
@@ -30,30 +30,27 @@ body {
 
 .main {
   margin-top: 1rem;
+
+  @include media-breakpoint-up(lg) {
+    margin-top: 2rem;
+  }
 }
 
-.revision-toc {
-  // to get on the Attachment row
-  z-index: 1;
-  overflow: hidden;
-  font-size: 0.9em;
+.grw-side-contents-container {
+  margin-bottom: 1rem;
 
-  .revision-toc-content {
-    padding: 10px;
-
-    > ul {
-      padding-left: 0;
-      ul {
-        padding-left: 1em;
-      }
-    }
-
-    // first level of li
-    > ul > li {
-      padding: 5px;
-      margin: 4px 4px 4px 17px;
-    }
+  @include media-breakpoint-up(lg) {
+    width: 250px;
+    min-width: 250px;
+    margin-left: 30px;
   }
+}
+
+.grw-side-contents-sticky-container {
+  position: sticky;
+  // growisubnavigation + grw-navbar-boder
+  top: calc(100px + 4px);
+  margin-top: 5px;
 }
 
 .grw-fab {
@@ -70,6 +67,10 @@ body {
     font-size: 24px;
 
     box-shadow: 2px 3px 6px #0000005d;
+    svg {
+      width: 28px;
+      height: 28px;
+    }
   }
 
   .btn-scroll-to-top {
@@ -77,10 +78,9 @@ body {
     height: 40px;
 
     opacity: 0.4;
-
-    i {
-      display: inline-block;
-      transform: rotate(90deg);
+    svg {
+      width: 18px;
+      height: 18px;
     }
   }
 }
@@ -94,10 +94,10 @@ body {
   }
   .main {
     header {
-      border-bottom: solid 1px #666;
+      border-bottom: solid 1px $secondary;
       h1 {
         font-size: 2em;
-        color: #000;
+        color: black;
       }
     }
 
@@ -110,23 +110,13 @@ body {
       max-width: 100%;
       margin-bottom: 20px;
       font-size: 0.9em;
-      border: solid 1px #aaa;
-
-      .revision-toc-head {
-        display: inline-block;
-        float: none;
-      }
-
-      .revision-toc-content.collapse {
-        display: block;
-        height: auto;
-      }
+      border: solid 1px $gray-400;
     }
 
     .meta {
       margin-top: 32px;
-      color: #666;
-      border-top: solid 1px #ccc;
+      color: $secondary;
+      border-top: solid 1px $gray-300;
     }
   }
 }

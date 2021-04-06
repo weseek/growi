@@ -1,9 +1,11 @@
 /* eslint-disable react/no-access-state-in-setstate */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
+import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
@@ -14,6 +16,9 @@ class PageAttachment extends React.Component {
     super(props);
 
     this.state = {
+      activePage: 1,
+      totalAttachments: 0,
+      limit: Infinity,
       attachments: [],
       inUse: {},
       attachmentToDelete: null,
@@ -21,31 +26,43 @@ class PageAttachment extends React.Component {
       deleteError: '',
     };
 
+    this.handlePage = this.handlePage.bind(this);
     this.onAttachmentDeleteClicked = this.onAttachmentDeleteClicked.bind(this);
     this.onAttachmentDeleteClickedConfirm = this.onAttachmentDeleteClickedConfirm.bind(this);
   }
 
-  componentDidMount() {
+
+  async handlePage(selectedPage) {
     const { pageId } = this.props.pageContainer.state;
+    const page = selectedPage;
 
-    if (!pageId) {
-      return;
+    if (!pageId) { return }
+
+    const res = await this.props.appContainer.apiv3Get('/attachment/list', { pageId, page });
+    const attachments = res.data.paginateResult.docs;
+    const totalAttachments = res.data.paginateResult.totalDocs;
+    const pagingLimit = res.data.paginateResult.limit;
+
+    const inUse = {};
+
+    for (const attachment of attachments) {
+      inUse[attachment._id] = this.checkIfFileInUse(attachment);
     }
+    this.setState({
+      activePage: selectedPage,
+      totalAttachments,
+      limit: pagingLimit,
+      attachments,
+      inUse,
+    });
+  }
 
-    this.props.appContainer.apiGet('/attachments.list', { page_id: pageId })
-      .then((res) => {
-        const attachments = res.attachments;
-        const inUse = {};
 
-        for (const attachment of attachments) {
-          inUse[attachment._id] = this.checkIfFileInUse(attachment);
-        }
-
-        this.setState({
-          attachments,
-          inUse,
-        });
-      });
+  async componentDidMount() {
+    await this.handlePage(1);
+    this.setState({
+      activePage: 1,
+    });
   }
 
   checkIfFileInUse(attachment) {
@@ -92,7 +109,13 @@ class PageAttachment extends React.Component {
     return this.props.appContainer.currentUser != null;
   }
 
+
   render() {
+    const { t } = this.props;
+    if (this.state.attachments.length === 0) {
+      return t('No_attachments_yet');
+    }
+
     let deleteAttachmentModal = '';
     if (this.isUserLoggedIn()) {
       const attachmentToDelete = this.state.attachmentToDelete;
@@ -109,7 +132,7 @@ class PageAttachment extends React.Component {
       deleteAttachmentModal = (
         <DeleteAttachmentModal
           isOpen={showModal}
-          animation={false}
+          animation="false"
           toggle={deleteModalClose}
 
           attachmentToDelete={attachmentToDelete}
@@ -121,9 +144,8 @@ class PageAttachment extends React.Component {
       );
     }
 
-
     return (
-      <div>
+      <>
         <PageAttachmentList
           attachments={this.state.attachments}
           inUse={this.state.inUse}
@@ -132,7 +154,15 @@ class PageAttachment extends React.Component {
         />
 
         {deleteAttachmentModal}
-      </div>
+
+        <PaginationWrapper
+          activePage={this.state.activePage}
+          changePage={this.handlePage}
+          totalItemsCount={this.state.totalAttachments}
+          pagingLimit={this.state.limit}
+          align="center"
+        />
+      </>
     );
   }
 
@@ -145,8 +175,9 @@ const PageAttachmentWrapper = withUnstatedContainers(PageAttachment, [AppContain
 
 
 PageAttachment.propTypes = {
+  t: PropTypes.func.isRequired,
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
-export default PageAttachmentWrapper;
+export default withTranslation()(PageAttachmentWrapper);

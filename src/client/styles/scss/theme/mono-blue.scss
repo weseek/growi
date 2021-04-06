@@ -12,12 +12,13 @@ html[light] {
 
   // Background colors
   $bgcolor-global: $themelight;
-  $bgcolor-inline-code: #f0f0f0; //optional
+  $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: darken($themelight, 5%);
+  $bgcolor-highlighted: rgba($primary, 0.1);
 
   // Font colors
   $color-global: $themecolor;
-  $color-reversal: #eee;
+  $color-reversal: $gray-100;
   $color-link: lighten($primary, 5%);
   $color-link-hover: lighten($color-link, 12%);
   $color-link-wiki: lighten($primary, 20%);
@@ -62,7 +63,7 @@ html[light] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc;
+  $border-color-theme: $gray-300;
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -88,6 +89,12 @@ html[light] {
       }
     }
   }
+  // Button
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager($primary, lighten($primary, 65%), lighten($primary, 70%));
+    }
+  }
 }
 
 html[dark] {
@@ -105,10 +112,11 @@ html[dark] {
   $bgcolor-navbar: #27343b;
   $bgcolor-inline-code: #1f1f22; //optional
   $bgcolor-card: darken($themedark, 5%);
+  $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
   $color-global: #d3d4d4;
-  $color-reversal: #eee;
+  $color-reversal: $gray-100;
   $color-link: #97d1f0;
   $color-link-hover: darken($color-link, 12%);
   $color-link-wiki: lighten($primary, 20%);
@@ -188,5 +196,12 @@ html[dark] {
   // Table
   .table {
     color: white;
+  }
+
+  // Button
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
+    }
   }
 }

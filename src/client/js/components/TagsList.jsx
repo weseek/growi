@@ -80,6 +80,7 @@ class TagsList extends React.Component {
             changePage={this.handlePage}
             totalItemsCount={this.state.totalTags}
             pagingLimit={this.state.pagingLimit}
+            size="sm"
           />
         </div>
       </div>

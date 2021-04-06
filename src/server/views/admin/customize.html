@@ -7,7 +7,7 @@
 {{ cdnStyleTag('jquery-ui') }}
 <style>
   .CodeMirror {
-    border: 1px solid #eee;
+    border: 1px solid $gray-100;
   }
 </style>
 {% endblock %}
@@ -17,13 +17,8 @@
 {% endblock %}
 
 {% block content_main %}
-<div class="content-main admin-customize row">
-  {% parent %}
-  <div id="grw-hljs-container-for-demo">
-    {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
-  </div>
-  <div class="col-lg-9" id="admin-customize"></div>
+<div id="grw-hljs-container-for-demo">
+  {{ cdnHighlightJsStyleTag(getConfig('crowi', 'customize:highlightJsStyle')) }}
 </div>
+<div id="admin-customize" class="admin-customize"></div>
 {% endblock content_main %}
-
-{% block content_footer %} {% endblock content_footer %}

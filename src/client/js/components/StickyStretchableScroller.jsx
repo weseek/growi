@@ -81,16 +81,21 @@ const StickyStretchableScroller = (props) => {
     logger.debug(`[${scrollTargetSelector}] viewHeight`, viewHeight);
     logger.debug(`[${scrollTargetSelector}] contentsHeight`, contentsHeight);
 
+    const isScrollEnabled = viewHeight === 'auto' || (viewHeight < contentsHeight);
+
     $(scrollTargetSelector).slimScroll({
       color: '#666',
       railColor: '#999',
       railVisible: true,
       position: 'right',
-      height: viewHeight,
+      height: isScrollEnabled ? viewHeight : contentsHeight,
     });
-    if (contentsHeight < viewHeight) {
+
+    // destroy
+    if (!isScrollEnabled) {
       $(scrollTargetSelector).slimScroll({ destroy: true });
     }
+
   }, [contentsElemSelector, calcViewHeightFunc, calcContentsHeightFunc, scrollTargetSelector]);
 
   const resetScrollbarDebounced = debounce(100, resetScrollbar);

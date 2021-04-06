@@ -9,6 +9,25 @@
     outline: none !important;
   }
 
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl,
+  .container-fluid {
+    // default: 15px
+    // padding-right: 15px;
+    // padding-left: 15px;
+    @include media-breakpoint-down(xs) {
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+    @include media-breakpoint-up(md) {
+      padding-right: 30px;
+      padding-left: 30px;
+    }
+  }
+
   h1 {
     font-size: 36px;
     line-height: 48px;
@@ -79,7 +98,9 @@
   // Dropdowns
   .dropdown-toggle {
     &.btn.disabled {
+      pointer-events: auto;
       cursor: not-allowed;
+      opacity: unset;
     }
 
     // hide caret

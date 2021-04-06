@@ -11,9 +11,6 @@
 <p align="center">
   <a href="https://docs.growi.org">Documentation</a> / <a href="https://demo.growi.org">Demo</a>
 </p>
-<p align="center">
-  <a href="https://heroku.com/deploy"><img src="https://www.herokucdn.com/deploy/button.png"></a>
-</p>
 
 
 GROWI
@@ -33,8 +30,8 @@ Table Of Contents
 
 - [Features](#features)
 - [Quick Start for Production](#quick-start-for-production)
-    - [Heroku](#heroku)
     - [docker-compose](#docker-compose)
+    - [Helm (Experimental)](#helm-experimental)
     - [On-premise](#on-premise)
 - [Environment Variables](#environment-variables)
 - [Documentation](#documentation)
@@ -61,13 +58,14 @@ Features
 Quick Start for Production
 ===========================
 
-### Heroku
-
-- [GROWI Docs: Launch on Heroku](https://docs.growi.org/en/admin-guide/getting-started/heroku.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/heroku.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/heroku.html))
 
 ### docker-compose
 
 - [GROWI Docs: Launch with docker-compose](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html))
+
+### Helm (Experimental)
+
+- [GROWI Helm Chart](https://github.com/weseek/helm-charts/tree/master/charts/growi)
 
 ### On-premise
 
@@ -95,7 +93,7 @@ Development
 - Node.js v12.x or v14.x
 - npm 6.x
 - yarn
-- MongoDB 3.x
+- MongoDB 4.x
 
 See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment).
 
@@ -111,11 +109,11 @@ See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-
 
 |command|desc|
 |--|--|
-|`npm run build:prod`|Build the client|
-|`npm run server:prod`|Launch the server|
-|`npm start`|Invoke `npm run build:prod` and `npm run server:prod`|
+|`yarn run build:prod`|Build the client|
+|`yarn run server:prod`|Launch the server|
+|`yarn start`|Invoke `yarn run build:prod` and `yarn run server:prod`|
 
-For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup/launch.html#list-of-npm-commands).
+For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands).
 
 
 Documentation

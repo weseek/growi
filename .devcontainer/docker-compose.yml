@@ -22,22 +22,15 @@ services:
       - 3001:3001 # for browser-sync
 
     volumes:
-      - ..:/workspace/growi:cached
-      - /workspace/growi/node_modules
-      - ../../growi-docker-compose:/workspace/growi-docker-compose:cached
-      - ../../node_modules:/workspace/node_modules:cached
+      - ..:/workspace/growi:delegated
+      - node_modules:/workspace/growi/node_modules
+      - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
+      - ../../node_modules:/workspace/node_modules:delegated
 
-
-    # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
-
-    links:
-      - mongo
-      - elasticsearch
-      - hackmd
+    tty: true
 
   mongo:
-    image: mongo:3.6
+    image: mongo:4.4
     restart: unless-stopped
     ports:
       - 27017:27017
@@ -86,3 +79,5 @@ services:
       - 3010:3000
     volumes:
       - /files/sqlite
+volumes:
+  node_modules:

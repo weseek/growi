@@ -13,11 +13,10 @@ import PageDeleteModal from '../PageDeleteModal';
 
 
 const TrashPageAlert = (props) => {
-  const { t, appContainer, pageContainer } = props;
+  const { t, pageContainer } = props;
   const {
-    path, isDeleted, revisionAuthor, updatedAt, hasChildren, isAbleToDeleteCompletely,
+    path, isDeleted, lastUpdateUsername, updatedAt, deletedUserName, deletedAt, isAbleToDeleteCompletely,
   } = pageContainer.state;
-  const { currentUser } = appContainer;
   const [isEmptyTrashModalShown, setIsEmptyTrashModalShown] = useState(false);
   const [isPutbackPageModalShown, setIsPutbackPageModalShown] = useState(false);
   const [isPageDeleteModalShown, setIsPageDeleteModalShown] = useState(false);
@@ -73,7 +72,7 @@ const TrashPageAlert = (props) => {
         </button>
         <button
           type="button"
-          className="btn btn-danger rounded-pill btn-sm mr-2"
+          className="btn btn-danger rounded-pill btn-sm"
           disabled={!isAbleToDeleteCompletely}
           onClick={openPageDeleteModalHandler}
         >
@@ -108,13 +107,23 @@ const TrashPageAlert = (props) => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 px-4 d-flex align-items-center">
-        <div>
+      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
+        <div className="flex-grow-1">
           This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
-          {isDeleted && <span><br /><UserPicture user={revisionAuthor} /> Deleted by {revisionAuthor.name} at {updatedAt}</span>}
+          {isDeleted && (
+            <>
+              <br />
+              <UserPicture user={{ username: deletedUserName || lastUpdateUsername }} />
+              <span className="ml-2">
+                Deleted by {deletedUserName || lastUpdateUsername} at {deletedAt || updatedAt}
+              </span>
+            </>
+          )}
         </div>
-        {(currentUser.admin && path === '/trash' && hasChildren) && renderEmptyButton()}
-        {(isDeleted && currentUser != null) && renderTrashPageManagementButtons()}
+        <div className="pt-1 d-flex align-items-end align-items-lg-center">
+          <span>{ pageContainer.isAbleToShowEmptyTrashButton && renderEmptyButton()}</span>
+          { pageContainer.isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
+        </div>
       </div>
       {renderModals()}
     </>

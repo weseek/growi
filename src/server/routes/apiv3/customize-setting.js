@@ -21,12 +21,10 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *
  *  components:
  *    schemas:
- *      CustomizeLayoutTheme:
- *        description: CustomizeLayoutTheme
+ *      CustomizeTheme:
+ *        description: CustomizeTheme
  *        type: object
  *        properties:
- *          layoutType:
- *            type: string
  *          themeType:
  *            type: string
  *      CustomizeFunction:
@@ -39,7 +37,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *            type: boolean
  *          isEnabledAttachTitleHeader:
  *            type: boolean
- *          recentCreatedLimit:
+ *          pageLimitationS:
+ *            type: number
+ *          pageLimitationM:
  *            type: number
  *          isEnabledStaleNotification:
  *            type: boolean
@@ -88,21 +88,19 @@ module.exports = (crowi) => {
 
   const validator = {
     themeAssetPath: [
-      query('themeName').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring',
-      ]),
+      query('themeName').isString(),
     ],
-    layoutTheme: [
-      body('layoutType').isString().isIn(['growi', 'kibela']),
-      body('themeType').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring',
-      ]),
+    theme: [
+      body('themeType').isString(),
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
       body('isSavedStatesOfTabChanges').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
-      body('recentCreatedLimit').isInt().isInt({ min: 1, max: 1000 }),
+      body('pageLimitationS').isInt().isInt({ min: 1, max: 1000 }),
+      body('pageLimitationM').isInt().isInt({ min: 1, max: 1000 }),
+      body('pageLimitationL').isInt().isInt({ min: 1, max: 1000 }),
+      body('pageLimitationXL').isInt().isInt({ min: 1, max: 1000 }),
       body('isEnabledStaleNotification').isBoolean(),
       body('isAllReplyShown').isBoolean(),
     ],
@@ -154,7 +152,10 @@ module.exports = (crowi) => {
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
       isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-      recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+      pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
+      pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
+      pageLimitationL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
+      pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
       isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
       isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
@@ -171,12 +172,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/layout-theme/asset-path:
+   *    /customize-setting/theme/asset-path:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: getLayoutThemeAssetPath
-   *        summary: /customize-setting/layout-theme/asset-path
-   *        description: Get layout theme asset path
+   *        operationId: getThemeAssetPath
+   *        summary: /customize-setting/theme/asset-path
+   *        description: Get theme asset path
    *        parameters:
    *          - name: themeName
    *            in: query
@@ -185,7 +186,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Succeeded to update layout and theme
+   *            description: Succeeded to get theme asset path
    *            content:
    *              application/json:
    *                schema:
@@ -193,8 +194,8 @@ module.exports = (crowi) => {
    *                    assetPath:
    *                      type: string
    */
-  router.get('/layout-theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, apiV3FormValidator, async(req, res) => {
-    const themeName = req.query.themeName;
+  router.get('/theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, apiV3FormValidator, async(req, res) => {
+    const { themeName } = req.query;
 
     const webpackAssetKey = `styles/theme-${themeName}.css`;
     const assetPath = res.locals.webpack_asset(webpackAssetKey);
@@ -209,44 +210,42 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/layout-theme:
+   *    /customize-setting/theme:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: updateLayoutThemeCustomizeSetting
-   *        summary: /customize-setting/layout-theme
-   *        description: Update layout and theme
+   *        operationId: updateThemeCustomizeSetting
+   *        summary: /customize-setting/theme
+   *        description: Update theme
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/CustomizeLayoutTheme'
+   *                $ref: '#/components/schemas/CustomizeTheme'
    *        responses:
    *          200:
-   *            description: Succeeded to update layout and theme
+   *            description: Succeeded to update theme
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeLayoutTheme'
+   *                  $ref: '#/components/schemas/CustomizeTheme'
    */
-  router.put('/layout-theme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, apiV3FormValidator, async(req, res) => {
+  router.put('/theme', loginRequiredStrictly, adminRequired, csrf, validator.theme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
-      'customize:layout': req.body.layoutType,
       'customize:theme': req.body.themeType,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
         themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       };
       return res.apiv3({ customizedParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating layout and theme';
+      const msg = 'Error occurred in updating theme';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-layoutTheme-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-theme-failed'));
     }
   });
 
@@ -278,7 +277,10 @@ module.exports = (crowi) => {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
       'customize:isSavedStatesOfTabChanges': req.body.isSavedStatesOfTabChanges,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
-      'customize:showRecentCreatedNumber': req.body.recentCreatedLimit,
+      'customize:showPageLimitationS': req.body.pageLimitationS,
+      'customize:showPageLimitationM': req.body.pageLimitationM,
+      'customize:showPageLimitationL': req.body.pageLimitationL,
+      'customize:showPageLimitationXL': req.body.pageLimitationXL,
       'customize:isEnabledStaleNotification': req.body.isEnabledStaleNotification,
       'customize:isAllReplyShown': req.body.isAllReplyShown,
     };
@@ -289,7 +291,10 @@ module.exports = (crowi) => {
         isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
         isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-        recentCreatedLimit: await crowi.configManager.getConfig('crowi', 'customize:showRecentCreatedNumber'),
+        pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
+        pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
+        pageLimitationL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
+        pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
         isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
         isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
       };

@@ -1,3 +1,7 @@
+const { serializePageSecurely } = require('../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+
 /**
  * @swagger
  *  tags:
@@ -65,13 +69,6 @@
  *            example: ""
  *          revision:
  *            $ref: '#/components/schemas/Revision'
- *          seenUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
  *          status:
  *            type: string
  *            description: status
@@ -138,52 +135,30 @@ module.exports = function(crowi, app) {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Bookmark = crowi.model('Bookmark');
   const PageTagRelation = crowi.model('PageTagRelation');
-  const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const ShareLink = crowi.model('ShareLink');
 
   const ApiResponse = require('../util/apiResponse');
   const getToday = require('../util/getToday');
 
-  const { slackNotificationService, configManager } = crowi;
+  const { configManager, xssService } = crowi;
   const interceptorManager = crowi.getInterceptorManager();
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const userNotificationService = crowi.getUserNotificationService();
+
+  const XssOption = require('../../lib/service/xss/xssOption');
+  const Xss = require('../../lib/service/xss/index');
+  const initializedConfig = {
+    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
+    tagWhiteList: xssService.getTagWhiteList(),
+    attrWhiteList: xssService.getAttrWhiteList(),
+  };
+  const xssOption = new XssOption(initializedConfig);
+  const xss = new Xss(xssOption);
+
 
   const actions = {};
-
-  // register page events
-
-  const pageEvent = crowi.event('page');
-  pageEvent.on('create', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:create', { page, user, socketClientId });
-  });
-  pageEvent.on('update', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:update', { page, user, socketClientId });
-  });
-  pageEvent.on('delete', (page, user, socketClientId) => {
-    page = serializeToObj(page); // eslint-disable-line no-param-reassign
-    crowi.getIo().sockets.emit('page:delete', { page, user, socketClientId });
-  });
-
-
-  function serializeToObj(page) {
-    const returnObj = page.toObject();
-    if (page.revisionHackmdSynced != null && page.revisionHackmdSynced._id != null) {
-      returnObj.revisionHackmdSynced = page.revisionHackmdSynced._id;
-    }
-
-    if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-      returnObj.lastUpdateUser = page.lastUpdateUser.toObject();
-    }
-    if (page.creator != null && page.creator instanceof User) {
-      returnObj.creator = page.creator.toObject();
-    }
-
-    return returnObj;
-  }
 
   function getPathFromRequest(req) {
     return pathUtils.normalizePath(req.params[0] || '');
@@ -219,63 +194,46 @@ module.exports = function(crowi, app) {
     };
   }
 
-  // user notification
-  // TODO create '/service/user-notification' module
-  /**
-   *
-   * @param {Page} page
-   * @param {User} user
-   * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
-   * @param {boolean} updateOrCreate
-   * @param {string} previousRevision
-   */
-  async function notifyToSlackByUser(page, user, slackChannelsStr, updateOrCreate, previousRevision) {
-    await page.updateSlackChannel(slackChannelsStr)
-      .catch((err) => {
-        logger.error('Error occured in updating slack channels: ', err);
-      });
-
-
-    if (slackNotificationService.hasSlackConfig()) {
-      const slackChannels = slackChannelsStr != null ? slackChannelsStr.split(',') : [null];
-
-      const promises = slackChannels.map((chan) => {
-        return crowi.slack.postPage(page, user, chan, updateOrCreate, previousRevision);
-      });
-
-      Promise.all(promises)
-        .catch((err) => {
-          logger.error('Error occured in sending slack notification: ', err);
-        });
-    }
-  }
-
-  function addRendarVarsForPage(renderVars, page) {
+  function addRenderVarsForPage(renderVars, page) {
     renderVars.page = page;
     renderVars.revision = page.revision;
-    renderVars.author = page.revision.author;
     renderVars.pageIdOnHackmd = page.pageIdOnHackmd;
     renderVars.revisionHackmdSynced = page.revisionHackmdSynced;
     renderVars.hasDraftOnHackmd = page.hasDraftOnHackmd;
-  }
 
-  async function addRenderVarsForUserPage(renderVars, page, requestUser) {
-    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
-
-    if (userData != null) {
-      renderVars.pageUser = userData;
-      renderVars.bookmarkList = await Bookmark.findByUser(userData, { limit: 10, populatePage: true, requestUser });
+    if (page.creator != null) {
+      renderVars.page.creator = renderVars.page.creator.toObject();
+    }
+    if (page.revision.author != null) {
+      renderVars.revision.author = renderVars.revision.author.toObject();
+    }
+    if (page.deleteUser != null) {
+      renderVars.page.deleteUser = renderVars.page.deleteUser.toObject();
     }
   }
 
-  function addRendarVarsForScope(renderVars, page) {
+  function addRenderVarsForPresentation(renderVars, page) {
+    // sanitize page.revision.body
+    if (crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention')) {
+      const preventXssRevision = xss.process(page.revision.body);
+      page.revision.body = preventXssRevision;
+    }
+    renderVars.page = page;
+    renderVars.revision = page.revision;
+  }
+
+  async function addRenderVarsForUserPage(renderVars, page) {
+    const userData = await User.findUserByUsername(User.getUsernameByPath(page.path));
+
+    if (userData != null) {
+      renderVars.pageUser = serializeUserSecurely(userData);
+    }
+  }
+
+  function addRenderVarsForScope(renderVars, page) {
     renderVars.grant = page.grant;
     renderVars.grantedGroupId = page.grantedGroup ? page.grantedGroup.id : null;
     renderVars.grantedGroupName = page.grantedGroup ? page.grantedGroup.name : null;
-  }
-
-  async function addRenderVarsForSlack(renderVars, page) {
-    renderVars.slack = await getSlackChannels(page);
   }
 
   async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
@@ -316,7 +274,7 @@ module.exports = function(crowi, app) {
 
   async function showPageForPresentation(req, res, next) {
     const path = getPathFromRequest(req);
-    const revisionId = req.query.revision;
+    const { revisionId } = req.query;
 
     let page = await Page.findByPathAndViewer(path, req.user);
 
@@ -328,26 +286,36 @@ module.exports = function(crowi, app) {
 
     // populate
     page = await page.populateDataToMakePresentation(revisionId);
-    addRendarVarsForPage(renderVars, page);
+
+    if (page != null) {
+      addRenderVarsForPresentation(renderVars, page);
+    }
+
     return res.render('page_presentation', renderVars);
   }
 
   async function showTopPage(req, res, next) {
     const portalPath = req.path;
     const revisionId = req.query.revision;
-    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
-    const view = `layout-${layoutName}/page_list`;
+    const view = 'layout-growi/page_list';
     const renderVars = { path: portalPath };
 
     let portalPage = await Page.findByPathAndViewer(portalPath, req.user);
     portalPage.initLatestRevisionField(revisionId);
 
+    // add user to seen users
+    if (req.user != null) {
+      portalPage = await portalPage.seen(req.user);
+    }
+
     // populate
     portalPage = await portalPage.populateDataToShowRevision();
 
-    addRendarVarsForPage(renderVars, portalPage);
-    await addRenderVarsForSlack(renderVars, portalPage);
+    addRenderVarsForPage(renderVars, portalPage);
+
+    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: portalPage._id });
+    renderVars.sharelinksNumber = sharelinksNumber;
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
@@ -361,7 +329,6 @@ module.exports = function(crowi, app) {
   async function showPageForGrowiBehavior(req, res, next) {
     const path = getPathFromRequest(req);
     const revisionId = req.query.revision;
-    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let page = await Page.findByPathAndViewer(path, req.user);
 
@@ -381,37 +348,34 @@ module.exports = function(crowi, app) {
     const offset = parseInt(req.query.offset) || 0;
     const renderVars = {};
 
-    let view = `layout-${layoutName}/page`;
+    let view = 'layout-growi/page';
 
     page.initLatestRevisionField(revisionId);
 
+    // add user to seen users
+    if (req.user != null) {
+      page = await page.seen(req.user);
+    }
+
     // populate
     page = await page.populateDataToShowRevision();
-    addRendarVarsForPage(renderVars, page);
-    addRendarVarsForScope(renderVars, page);
+    addRenderVarsForPage(renderVars, page);
+    addRenderVarsForScope(renderVars, page);
 
-    await addRenderVarsForSlack(renderVars, page);
     await addRenderVarsForDescendants(renderVars, path, req.user, offset, limit, true);
+
+    const sharelinksNumber = await ShareLink.countDocuments({ relatedPage: page._id });
+    renderVars.sharelinksNumber = sharelinksNumber;
 
     if (isUserPage(page.path)) {
       // change template
-      view = `layout-${layoutName}/user_page`;
-      await addRenderVarsForUserPage(renderVars, page, req.user);
+      view = 'layout-growi/user_page';
+      await addRenderVarsForUserPage(renderVars, page);
     }
 
     await interceptorManager.process('beforeRenderPage', req, res, renderVars);
     return res.render(view, renderVars);
   }
-
-  const getSlackChannels = async(page) => {
-    if (page.extended.slack) {
-      return page.extended.slack;
-    }
-
-    const data = await UpdatePost.findSettingsByPath(page.path);
-    const channels = data.map((e) => { return e.channel }).join(', ');
-    return channels;
-  };
 
   actions.showTopPage = function(req, res) {
     return showTopPage(req, res);
@@ -436,6 +400,49 @@ module.exports = function(crowi, app) {
     }
     // delegate to showPageForGrowiBehavior
     return showPageForGrowiBehavior(req, res, next);
+  };
+
+  actions.showSharedPage = async function(req, res, next) {
+    const { linkId } = req.params;
+    const revisionId = req.query.revision;
+
+    const shareLink = await ShareLink.findOne({ _id: linkId }).populate('relatedPage');
+
+    if (shareLink == null || shareLink.relatedPage == null) {
+      // page or sharelink are not found
+      return res.render('layout-growi/not_found_shared_page');
+    }
+
+    const renderVars = {};
+
+    renderVars.sharelink = shareLink;
+
+    // check if share link is expired
+    if (shareLink.isExpired()) {
+      // page is not found
+      return res.render('layout-growi/expired_shared_page', renderVars);
+    }
+
+    let page = shareLink.relatedPage;
+
+    // presentation mode
+    if (req.query.presentation) {
+      page = await page.populateDataToMakePresentation(revisionId);
+
+      // populate
+      addRenderVarsForPage(renderVars, page);
+      return res.render('page_presentation', renderVars);
+    }
+
+    page.initLatestRevisionField(revisionId);
+
+    // populate
+    page = await page.populateDataToShowRevision();
+    addRenderVarsForPage(renderVars, page);
+    addRenderVarsForScope(renderVars, page);
+
+    await interceptorManager.process('beforeRenderPage', req, res, renderVars);
+    return res.render('layout-growi/shared_page', renderVars);
   };
 
   /**
@@ -472,19 +479,18 @@ module.exports = function(crowi, app) {
     const path = getPathFromRequest(req);
 
     const isCreatable = Page.isCreatableName(path);
-    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     let view;
     const renderVars = { path };
 
     if (!isCreatable) {
-      view = `layout-${layoutName}/not_creatable`;
+      view = 'layout-growi/not_creatable';
     }
     else if (req.isForbidden) {
-      view = `layout-${layoutName}/forbidden`;
+      view = 'layout-growi/forbidden';
     }
     else {
-      view = `layout-${layoutName}/not_found`;
+      view = 'layout-growi/not_found';
 
       // retrieve templates
       if (req.user != null) {
@@ -501,7 +507,7 @@ module.exports = function(crowi, app) {
       const ancestor = await Page.findAncestorByPathAndViewer(path, req.user);
       if (ancestor != null) {
         await ancestor.populate('grantedGroup').execPopulate();
-        addRendarVarsForScope(renderVars, ancestor);
+        addRenderVarsForScope(renderVars, ancestor);
       }
     }
 
@@ -515,7 +521,6 @@ module.exports = function(crowi, app) {
   actions.deletedPageListShow = async function(req, res) {
     // normalizePath makes '/trash/' -> '/trash'
     const path = pathUtils.normalizePath(`/trash${getPathFromRequest(req)}`);
-    const layoutName = configManager.getConfig('crowi', 'customize:layout');
 
     const limit = 50;
     const offset = parseInt(req.query.offset) || 0;
@@ -540,7 +545,7 @@ module.exports = function(crowi, app) {
 
     renderVars.pager = generatePager(result.offset, result.limit, result.totalCount);
     renderVars.pages = result.pages;
-    res.render(`layout-${layoutName}/page_list`, renderVars);
+    res.render('layout-growi/page_list', renderVars);
   };
 
   /**
@@ -648,6 +653,12 @@ module.exports = function(crowi, app) {
         result.pages.pop();
       }
 
+      result.pages.forEach((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+      });
+
       return res.json(ApiResponse.success(result));
     }
     catch (err) {
@@ -655,55 +666,7 @@ module.exports = function(crowi, app) {
     }
   };
 
-  /**
-   * @swagger
-   *
-   *    /pages.create:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: createPage
-   *        summary: /pages.create
-   *        description: Create page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  body:
-   *                    $ref: '#/components/schemas/Revision/properties/body'
-   *                  path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
-   *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
-   *                required:
-   *                  - body
-   *                  - path
-   *        responses:
-   *          200:
-   *            description: Succeeded to create page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.create Create new page
-   * @apiName CreatePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} body
-   * @apiParam {String} path
-   * @apiParam {String} grant
-   * @apiParam {Array} pageTags
-   */
+  // TODO If everything that depends on this route, delete it too
   api.create = async function(req, res) {
     const body = req.body.body || null;
     let pagePath = req.body.path || null;
@@ -742,7 +705,11 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
     }
 
-    const result = { page: serializeToObj(createdPage), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(createdPage),
+      revision: serializeRevisionSecurely(createdPage.revision),
+      tags: savedTags,
+    };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -760,7 +727,17 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled) {
-      await notifyToSlackByUser(createdPage, req.user, slackChannels, 'create', false);
+      try {
+        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create');
+        results.forEach((result) => {
+          if (result.status === 'rejected') {
+            logger.error('Create user notification failed', result.reason);
+          }
+        });
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
   };
 
@@ -801,6 +778,8 @@ module.exports = function(crowi, app) {
    *                      $ref: '#/components/schemas/V1Response/properties/ok'
    *                    page:
    *                      $ref: '#/components/schemas/Page'
+   *                    revision:
+   *                      $ref: '#/components/schemas/Revision'
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
@@ -871,7 +850,11 @@ module.exports = function(crowi, app) {
       savedTags = await PageTagRelation.listTagNamesByPage(pageId);
     }
 
-    const result = { page: serializeToObj(page), tags: savedTags };
+    const result = {
+      page: serializePageSecurely(page),
+      revision: serializeRevisionSecurely(page.revision),
+      tags: savedTags,
+    };
     res.json(ApiResponse.success(result));
 
     // update scopes for descendants
@@ -889,7 +872,17 @@ module.exports = function(crowi, app) {
 
     // user notification
     if (isSlackEnabled) {
-      await notifyToSlackByUser(page, req.user, slackChannels, 'update', previousRevision);
+      try {
+        const results = await userNotificationService.fire(page, req.user, slackChannels, 'update', { previousRevision });
+        results.forEach((result) => {
+          if (result.status === 'rejected') {
+            logger.error('Create user notification failed', result.reason);
+          }
+        });
+      }
+      catch (err) {
+        logger.error('Create user notification failed', err);
+      }
     }
   };
 
@@ -971,7 +964,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1084,75 +1077,6 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /pages.seen:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: seenPage
-   *        summary: /pages.seen
-   *        description: Mark as seen user
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to be page seen.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    seenUser:
-   *                      $ref: '#/components/schemas/Page/properties/seenUsers'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.seen Mark as seen user
-   * @apiName SeenPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   */
-  api.seen = async function(req, res) {
-    const user = req.user;
-    const pageId = req.body.page_id;
-    if (!pageId) {
-      return res.json(ApiResponse.error('page_id required'));
-    }
-    if (!req.user) {
-      return res.json(ApiResponse.error('user required'));
-    }
-
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, user);
-      if (user != null) {
-        page = await page.seen(user);
-      }
-    }
-    catch (err) {
-      debug('Seen user update error', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-    const result = {};
-    result.seenUser = page.seenUsers;
-
-    return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
    *    /pages.updatePost:
    *      get:
    *        tags: [Pages, CrowiCompatibles]
@@ -1244,24 +1168,14 @@ module.exports = function(crowi, app) {
         if (!req.user.canDeleteCompletely(page.creator)) {
           return res.json(ApiResponse.error('You can not delete completely', 'user_not_admin'));
         }
-        if (isRecursively) {
-          await Page.completelyDeletePageRecursively(page, req.user, options);
-        }
-        else {
-          await Page.completelyDeletePage(page, req.user, options);
-        }
+        await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively);
       }
       else {
         if (!page.isUpdatable(previousRevision)) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
-        if (isRecursively) {
-          await Page.deletePageRecursively(page, req.user, options);
-        }
-        else {
-          await Page.deletePage(page, req.user, options);
-        }
+        await crowi.pageService.deletePage(page, req.user, options, isRecursively);
       }
     }
     catch (err) {
@@ -1271,7 +1185,7 @@ module.exports = function(crowi, app) {
 
     debug('Page deleted', page.path);
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 
@@ -1304,13 +1218,7 @@ module.exports = function(crowi, app) {
       if (page == null) {
         throw new Error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden');
       }
-
-      if (isRecursively) {
-        page = await Page.revertDeletedPageRecursively(page, req.user, { socketClientId });
-      }
-      else {
-        page = await Page.revertDeletedPage(page, req.user, { socketClientId });
-      }
+      page = await crowi.pageService.revertDeletedPage(page, req.user, { socketClientId }, isRecursively);
     }
     catch (err) {
       logger.error('Error occured while get setting', err);
@@ -1318,7 +1226,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
   };
@@ -1416,12 +1324,7 @@ module.exports = function(crowi, app) {
         return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
       }
 
-      if (isRecursively) {
-        page = await Page.renameRecursively(page, newPagePath, req.user, options);
-      }
-      else {
-        page = await Page.rename(page, newPagePath, req.user, options);
-      }
+      page = await crowi.pageService.renamePage(page, newPagePath, req.user, options, isRecursively);
     }
     catch (err) {
       logger.error(err);
@@ -1429,7 +1332,7 @@ module.exports = function(crowi, app) {
     }
 
     const result = {};
-    result.page = page; // TODO consider to use serializeToObj method -- 2018.08.06 Yuki Takei
+    result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     res.json(ApiResponse.success(result));
 
@@ -1540,83 +1443,6 @@ module.exports = function(crowi, app) {
 
     const result = { path };
     return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.recentCreated:
-   *      get:
-   *        tags: [Pages]
-   *        operationId: getRecentCreatedPages
-   *        summary: /pages.recentCreated
-   *        description: Get recent created page list
-   *        parameters:
-   *          - in: query
-   *            name: page_id
-   *            required: true
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/_id'
-   *          - in: query
-   *            name: offset
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *          - in: query
-   *            name: limit
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get recent created page list.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    pages:
-   *                      type: array
-   *                      description: recent created page list
-   *                      items:
-   *                        $ref: '#/components/schemas/Page'
-   *                    totalCount:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/total'
-   *                    offset:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *                    limit:
-   *                      $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  api.recentCreated = async function(req, res) {
-    const pageId = req.query.page_id;
-
-    if (pageId == null) {
-      return res.json(ApiResponse.error('param \'pageId\' must not be null'));
-    }
-
-    const page = await Page.findById(pageId);
-    if (page == null) {
-      return res.json(ApiResponse.error(`Page (id='${pageId}') does not exist`));
-    }
-    if (!isUserPage(page.path)) {
-      return res.json(ApiResponse.error(`Page (id='${pageId}') is not a user home`));
-    }
-
-    const limit = +req.query.limit || 50;
-    const offset = +req.query.offset || 0;
-    const queryOptions = { offset, limit };
-
-    try {
-      const result = await Page.findListByCreator(page.creator, req.user, queryOptions);
-
-      return res.json(ApiResponse.success(result));
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
   };
 
   return actions;

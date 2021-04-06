@@ -17,9 +17,9 @@ const BULK_REINDEX_SIZE = 100;
 
 class ElasticsearchDelegator {
 
-  constructor(configManager, searchEvent) {
+  constructor(configManager, socketIoService) {
     this.configManager = configManager;
-    this.searchEvent = searchEvent;
+    this.socketIoService = socketIoService;
 
     this.client = null;
 
@@ -51,7 +51,7 @@ class ElasticsearchDelegator {
   }
 
   shouldIndexed(page) {
-    return page.creator != null && page.revision != null && page.redirectTo == null;
+    return page.revision != null && page.redirectTo == null;
   }
 
   initClient() {
@@ -225,8 +225,8 @@ class ElasticsearchDelegator {
     catch (error) {
       logger.warn('An error occured while \'rebuildIndex\', normalize indices anyway.');
 
-      const { searchEvent } = this;
-      searchEvent.emit('rebuildingFailed', error);
+      const socket = this.socketIoService.getAdminSocket();
+      socket.emit('rebuildingFailed', { error: error.message });
 
       throw error;
     }
@@ -310,7 +310,8 @@ class ElasticsearchDelegator {
     let document = {
       path: page.path,
       body: page.revision.body,
-      username: page.creator.username,
+      // username: page.creator?.username, // available Node.js v14 and above
+      username: page.creator != null ? page.creator.username : null,
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       like_count: page.liker.length || 0,
@@ -343,7 +344,7 @@ class ElasticsearchDelegator {
 
   addAllPages() {
     const Page = mongoose.model('Page');
-    return this.updateOrInsertPages(() => Page.find(), true);
+    return this.updateOrInsertPages(() => Page.find(), { isEmittingProgressEvent: true, invokeGarbageCollection: true });
   }
 
   updateOrInsertPageById(pageId) {
@@ -351,16 +352,26 @@ class ElasticsearchDelegator {
     return this.updateOrInsertPages(() => Page.findById(pageId));
   }
 
+  updateOrInsertDescendantsPagesById(page, user) {
+    const Page = mongoose.model('Page');
+    const { PageQueryBuilder } = Page;
+    const builder = new PageQueryBuilder(Page.find());
+    builder.addConditionToListWithDescendants(page.path);
+    return this.updateOrInsertPages(() => builder.query);
+  }
+
   /**
    * @param {function} queryFactory factory method to generate a Mongoose Query instance
    */
-  async updateOrInsertPages(queryFactory, isEmittingProgressEvent = false) {
+  async updateOrInsertPages(queryFactory, option = {}) {
+    const { isEmittingProgressEvent = false, invokeGarbageCollection = false } = option;
+
     const Page = mongoose.model('Page');
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark');
     const PageTagRelation = mongoose.model('PageTagRelation');
 
-    const { searchEvent } = this;
+    const socket = this.socketIoService.getAdminSocket();
 
     // prepare functions invoked from custom streams
     const prepareBodyForCreate = this.prepareBodyForCreate.bind(this);
@@ -378,7 +389,6 @@ class ElasticsearchDelegator {
         { path: 'creator', model: 'User', select: 'username' },
         { path: 'revision', model: 'Revision', select: 'body' },
       ])
-      .snapshot()
       .lean()
       .cursor();
 
@@ -458,11 +468,21 @@ class ElasticsearchDelegator {
           logger.info(`Adding pages progressing: (count=${count}, errors=${res.errors}, took=${res.took}ms)`);
 
           if (isEmittingProgressEvent) {
-            searchEvent.emit('addPageProgress', totalCount, count, skipped);
+            socket.emit('addPageProgress', { totalCount, count, skipped });
           }
         }
         catch (err) {
           logger.error('addAllPages error on add anyway: ', err);
+        }
+
+        if (invokeGarbageCollection) {
+          try {
+            // First aid to prevent unexplained memory leaks
+            global.gc();
+          }
+          catch (err) {
+            logger.error('fail garbage collection: ', err);
+          }
         }
 
         callback();
@@ -471,7 +491,7 @@ class ElasticsearchDelegator {
         logger.info(`Adding pages has completed: (totalCount=${totalCount}, skipped=${skipped})`);
 
         if (isEmittingProgressEvent) {
-          searchEvent.emit('finishAddPage', totalCount, count, skipped);
+          socket.emit('finishAddPage', { totalCount, count, skipped });
         }
         callback();
       },
@@ -489,13 +509,8 @@ class ElasticsearchDelegator {
   }
 
   deletePages(pages) {
-    const self = this;
     const body = [];
-
-    pages.map((page) => {
-      self.prepareBodyForDelete(body, page);
-      return;
-    });
+    pages.forEach(page => this.prepareBodyForDelete(body, page));
 
     logger.debug('deletePages(): Sending Request to ES', body);
     return this.client.bulk({
@@ -949,6 +964,44 @@ class ElasticsearchDelegator {
     }
 
     return this.updateOrInsertPageById(page._id);
+  }
+
+  // remove pages whitch should nod Indexed
+  async syncPagesUpdated(pages, user) {
+    const shoudDeletePages = [];
+    pages.forEach((page) => {
+      logger.debug('SearchClient.syncPageUpdated', page.path);
+      if (!this.shouldIndexed(page)) {
+        shoudDeletePages.append(page);
+      }
+    });
+
+    // delete if page should not indexed
+    try {
+      if (shoudDeletePages.length !== 0) {
+        await this.deletePages(shoudDeletePages);
+      }
+    }
+    catch (err) {
+      logger.error('deletePages:ES Error', err);
+    }
+  }
+
+  async syncDescendantsPagesUpdated(parentPage, user) {
+    return this.updateOrInsertDescendantsPagesById(parentPage, user);
+  }
+
+  async syncPagesDeletedCompletely(pages, user) {
+    for (let i = 0; i < pages.length; i++) {
+      logger.debug('SearchClient.syncPageDeleted', pages[i].path);
+    }
+
+    try {
+      return await this.deletePages(pages);
+    }
+    catch (err) {
+      logger.error('deletePages:ES Error', err);
+    }
   }
 
   async syncPageDeleted(page, user) {

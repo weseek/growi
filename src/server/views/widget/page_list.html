@@ -8,7 +8,7 @@
 {% endif %}
 
 <li>
-  <img src="{{ listPage.lastUpdateUser.imageUrlCached }}" class="picture rounded-circle">
+  <img src="{{ listPage.lastUpdateUser.imageUrlCached|default('/images/icons/user.svg') }}" class="picture rounded-circle">
   <a href="{{ encodeURI(listPage.path) }}" class="text-break ml-1">
     {{ listPage.path | preventXss }}
   </a>
@@ -37,7 +37,7 @@
     <span class="page-list-seer" data-count="{{ listPage.seenUsers.length }}">
       <i class="fa fa-paw"></i>{{ listPage.seenUsers.length }}
     </span>
-    {% endif  %}
+    {% endif %}
 
     {% if !listPage.isPublic() %}
     <span>

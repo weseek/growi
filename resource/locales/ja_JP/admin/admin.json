@@ -1,4 +1,5 @@
 {
+  "mailer_setup_required":"送信するには <a href='/admin/app'>メールの設定</a> が必要です。",
   "admin_top": {
     "management_wiki": "Wiki管理",
     "system_information": "システム情報",
@@ -27,17 +28,35 @@
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
     "update": "更新",
     "mail_settings": "メールの設定",
-    "smtp_used": "SMTPの設定がされている場合、それが利用されます。",
-    "smtp_but_aws": "SMTP設定がなく、AWSの設定がある場合、SESでの送信を試みます。",
-    "neihter_of": "どちらの設定もない場合、メールは送信されません。",
+    "mailer_is_not_set_up": "メール設定がセットアップされていません。",
     "from_e-mail_address": "Fromアドレス",
+    "transmission_method":"送信方法",
+    "smtp_label":"SMTP",
+    "ses_label":"SES(AWS)",
+    "send_test_email": "テストメールを送信",
+    "success_to_send_test_email": "テストメールを送信しました。",
     "smtp_settings": "SMTP設定",
     "host": "ホスト",
     "port": "ポート",
     "user": "ユーザー",
-    "aws_settings": "AWS設定",
-    "aws_access": "AWS にアクセスするための設定を行います。AWS の設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
-    "no_smtp_setting": "また、SMTP の設定が無い場合、SES を利用したメール送信が行われます。FromメールアドレスのVerify、プロダクション利用設定をする必要があります。",
+    "initialize_mail_settings": "設定を初期化",
+    "initialize_mail_modal_header": "メール設定の初期化",
+    "confirm_to_initialize_mail_settings": "一度初期化した設定は戻せません。本当に初期化しますか？",
+    "file_upload_settings":"ファイルアップロード設定",
+    "file_upload_method":"ファイルアップロード方法",
+    "file_delivery_method":"ファイルの配信方法",
+    "file_delivery_method_redirect":"リダイレクト",
+    "file_delivery_method_relay":"内部システム中継",
+    "file_delivery_method_redirect_info":"リダイレクト： GROWIサーバーを介さずに署名付きURLにリダイレクトされるため、優れたパフォーマンスを出します。",
+    "file_delivery_method_relay_info":"内部システム中継： GROWIサーバーがクライアントに配信するため、完全なセキュリティーを提供します。",
+    "gcs_label": "GCP(GCS)",
+    "aws_label": "AWS(S3)",
+    "local_label": "Local",
+    "gridfs_label": "MongoDB(GridFS)",
+    "fixed_by_env_var": "環境変数 <code>FILE_UPLOAD={{fileUploadType}}</code> により固定されています。",
+    "file_upload": "ファイルをアップロードするための設定を行います。ファイルアップロードの設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
+    "ses_settings":"SES設定",
+    "test_connection": "接続テスト",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
     "bucket_name": "バケット名",
@@ -48,7 +67,8 @@
     "load_plugins": "プラグインを読み込む",
     "enable": "有効",
     "disable": "無効",
-    "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します"
+    "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
+    "note_for_the_only_env_option": "現在GCS設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
   },
   "markdown_setting": {
     "lineBreak_header": "Line Break設定",
@@ -58,6 +78,14 @@
       "enable_lineBreak_desc": "ページテキスト中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います",
       "enable_lineBreak_for_comment": "コメント欄で Line Break を有効にする",
       "enable_lineBreak_for_comment_desc": "コメント中の改行を、HTML内で<code>&lt;br&gt;</code>として扱います"
+    },
+    "indent_header": "インデント設定",
+    "indent_desc": "インデントの設定を変更できます。",
+    "indent_options": {
+      "indentSize": "既定のインデント幅",
+      "indentSize_desc": "既定のインデント幅を指定します。",
+      "disallow_indent_change": "ユーザによるインデント幅変更を許可しない",
+      "disallow_indent_change_desc": "ユーザにデフォルトのインデント幅の使用を強制します。"
     },
     "presentation_header": "プレゼンテーション設定",
     "presentation_desc": "プレゼンテーションの設定を変更できます。",
@@ -86,19 +114,7 @@
     }
   },
   "customize_setting": {
-    "recommended": "おすすめ",
-    "layout": "レイアウト",
     "theme": "テーマ",
-    "layout_desc": {
-      "growi_title": "シンプル・明瞭",
-      "growi_text1": "全画面レイアウトで、余白は少なくなります。",
-      "growi_text2": "コメントはページの下部に表示されます。",
-      "growi_text3": "ページ情報は下部に表示されます。",
-      "kibela_title": "閲覧重視の構造",
-      "kibela_text1": "コンテンツが中心に表示されます。",
-      "kibela_text2": "コメントはページの下部に表示されます。",
-      "kibela_text3": "ページ情報は下部に表示されます。"
-    },
     "theme_desc" : {
       "light_and_dark": "Light/Dark モード選択あり",
       "unique": "モード選択なし"
@@ -115,8 +131,19 @@
       "tab_switch_desc2": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
       "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
       "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
-      "recent_created__n_draft_num_desc": "最近作成したページと下書きの表示数",
-      "recently_created_n_draft_num_desc": "ホーム画面の Recently Created での、1ページの表示数を設定します。",
+
+      "list_num_s": "モーダルに表示されるリスト数",
+      "list_num_desc_s": "モーダルにおける <ページリスト> <タイムライン> <更新履歴> <添付ファイル>での、1ページあたりの表示数を設定します。",
+
+      "list_num_m": "ユーザーページに表示されるリスト数",
+      "list_num_desc_m": "ユーザーページにおける <Bookmarks> <Recently Created>での、1ページあたりの表示数を設定します。",
+
+      "list_num_l": "検索ページに表示されるリスト数",
+      "list_num_desc_l": "<Search>での、1ページあたりの表示数を設定します。",
+
+      "list_num_xl": "Not FoundページやTrashページに表示されるリスト数",
+      "list_num_desc_xl": "記事エリアにおける<Not Found> <Trash>での、1ページあたりの表示数を設定します。",
+
       "stale_notification": "古いページに通知を表示する",
       "stale_notification_desc": "最後の更新から1年を超えるページへの通知を表示します。",
       "show_all_reply_comments": "返信コメントを全て表示する",
@@ -144,7 +171,7 @@
     "export_collections": "コレクションのエクスポート",
     "check_all": "全てにチェックを付ける",
     "uncheck_all": "全てからチェックを外す",
-    "desc_password_seed": "ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。",
+    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。<br><br><strong>ヒント:</strong><br>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
     "create_new_archive_data": "アーカイブデータの新規作成",
     "export": "エクスポート",
     "cancel": "キャンセル",
@@ -174,6 +201,7 @@
       "upload": "アップロード",
       "discard": "アップロードしたデータを破棄する",
       "errors": {
+        "different_versions": "現在のGROWIとアップロードしたデータのバージョンが違います",
         "at_least_one": "コレクションが選択されていません",
         "page_and_revision": "'Pages' と 'Revisions' はセットでインポートする必要があります",
         "depends": "'{{condition}}' をインポートする場合は、'{{target}}' を一緒に選択する必要があります"
@@ -216,20 +244,28 @@
       "test_connection": "接続テスト"
     },
     "import": "インポート",
+    "skip_username_and_email_when_overlapped": "ユーザー名またはメールアドレスが同じ場合、その部分がスキップされます。",
+    "prepare_new_account_for_migration":"移行用のアカウントを新環境で用意してください。",
+    "archive_data_import_detail":"参考： GROWI Docs - データのインポート",
+    "admin_archive_data_import_guide_url":"https://docs.growi.org/ja/admin-guide/management-cookbook/import.html#growi-%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A4%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%88",
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
   "user_management": {
-    "invite_users": "新規ユーザーの招待",
+    "invite_users": "新規ユーザーの仮発行",
     "click_twice_same_checkbox": "少なくとも一つはチェックしてください。",
     "invite_modal": {
-      "emails": "メールアドレス (複数行入力で複数人招待可能)",
-      "invite_thru_email": "招待をメールで送信",
+      "emails": "メールアドレス (複数行入力で複数人発行可能)",
+      "description1":"メールアドレスを使用して新規ユーザーを仮発行します。",
+      "description2":"初回のログイン時に使用する仮パスワードが生成されます。",
+      "invite_thru_email": "招待メールを送信する",
+      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>メールの設定</a>",
       "valid_email": "メールアドレスを入力してください。",
       "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
       "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
       "send_temporary_password": "招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。",
-      "existing_email": "以下のEmailはすでに存在しています。"
+      "existing_email": "以下のEmailはすでに存在しています。",
+      "issue": "発行"
     },
     "user_table": {
       "administrator": "管理者",
@@ -255,6 +291,7 @@
     "external_accounts": "外部アカウント",
     "create_external_account":"外部アカウントの作成",
     "external_account_list": "外部アカウント一覧",
+    "external_account_none":"外部アカウントはありません",
     "invite": "招待する",
     "invited": "ユーザーを招待しました",
     "back_to_user_management": "ユーザー管理に戻る",

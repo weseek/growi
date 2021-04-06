@@ -1,6 +1,7 @@
 .admin-page {
   .title {
-    padding: 0.5rem 15px;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 
     line-height: 1em;
 
@@ -28,7 +29,7 @@
 
     .ss-container img {
       padding: 0.5em;
-      background-color: #ddd;
+      background-color: $gray-300;
     }
 
     .table-user-list {
@@ -39,7 +40,7 @@
   }
 
   .admin-setting-header {
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid transparent;
   }
 
   .admin-security {
@@ -51,7 +52,7 @@
     }
 
     .auth-mechanism-configurations {
-      min-height: 300px;
+      min-height: 80vh;
     }
   }
 
@@ -140,8 +141,8 @@
 
     // style
     .theme-option-container a {
-      background-color: #f5f5f5;
-      border: 1px solid #ccc;
+      background-color: $gray-50;
+      border: 1px solid $border-color;
     }
     .theme-option-name {
       opacity: 0.3;

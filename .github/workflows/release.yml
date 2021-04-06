@@ -28,7 +28,7 @@ jobs:
         npm --no-git-tag-version version patch
         export RELEASE_VERSION=`npm run version --silent`
         sh ./bin/github-actions/update-readme.sh
-        echo ::set-env name=RELEASE_VERSION::$RELEASE_VERSION
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
         echo ::set-output name=RELEASE_VERSION::$RELEASE_VERSION
 
     - name: Checkout, Commit, Tag and Push
@@ -69,18 +69,10 @@ jobs:
     - name: Determine suffix
       run: |
         [[ ${{ matrix.flavor }} = "nocdn" ]] && suffix="-nocdn" || suffix=""
-        echo ::set-env name=SUFFIX::$suffix
-
-    - name: Cache/Restore yarn cache
-      uses: actions/cache@v1
-      with:
-        path: /usr/local/share/.cache/yarn
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
+        echo "SUFFIX=$suffix" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: crazy-max/ghaction-docker-buildx@v1.0.4
+      uses: docker/setup-buildx-action@v1
 
     - name: Login to docker.io registry
       run: |
@@ -88,14 +80,11 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        CACHE_REF=weseek/growi-cache:4${{ env.SUFFIX }}
         docker buildx build \
           --tag growi${{ env.SUFFIX }} \
           --build-arg flavor=${{ matrix.flavor }} \
           --platform linux/amd64 \
           --load \
-          --cache-from=type=registry,ref=$CACHE_REF \
-          --cache-to=type=registry,ref=$CACHE_REF,mode=max \
           --file ./docker/Dockerfile .
 
     - name: Docker Tags by SemVer
@@ -108,20 +97,37 @@ jobs:
         additional-tags: 'latest'
         publish: true
 
+    - name: Update Docker Hub Description
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        repository: weseek/growi
+        readme-filepath: ./docker/README.md
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+
+    - name: Docker Tags by SemVer in Github Container Registry
+      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
+      with:
+        source: growi${{ env.SUFFIX }}
+        target: ghcr.io/weseek/growi
+        semver: ${{ needs.github-release.outputs.RELEASE_VERSION }}
+        suffix: ${{ env.SUFFIX }}
+        additional-tags: 'latest'
+        publish: true
+
     - name: Slack Notification
       uses: weseek/ghaction-release-slack-notification@master
       with:
         channel: '#general'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         created_tag: 'v${{ needs.github-release.outputs.RELEASE_VERSION }}${{ env.SUFFIX }}'
-
-    - name: Update Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2.1.0
-      env:
-        DOCKERHUB_USERNAME: wsmoogle
-        DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-        DOCKERHUB_REPOSITORY: weseek/growi
-        README_FILEPATH: ./docker/README.md
 
     - name: Check whether workspace is clean
       run: |

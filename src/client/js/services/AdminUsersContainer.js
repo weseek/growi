@@ -132,6 +132,8 @@ export default class AdminUsersContainer extends Container {
       sortOrder: this.state.sortOrder,
       selectedStatusList: Array.from(this.state.selectedStatusList),
       searchText: this.state.searchText,
+      // Even if email is hidden, it will be displayed on admin page.
+      forceIncludeAttributes: ['email'],
     };
     const { data } = await this.appContainer.apiv3.get('/users', params);
 

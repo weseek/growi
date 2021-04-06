@@ -13,30 +13,46 @@ class InstallerForm extends React.Component {
 
     this.state = {
       isValidUserName: true,
+      isSubmittingDisabled: false,
       selectedLang: {},
     };
-    this.checkUserName = this.checkUserName.bind(this);
+    // this.checkUserName = this.checkUserName.bind(this);
+
+    this.submitHandler = this.submitHandler.bind(this);
   }
 
   componentWillMount() {
     this.changeLanguage(localeMetadatas[0]);
   }
 
-  checkUserName(event) {
-    const axios = require('axios').create({
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-      responseType: 'json',
-    });
-    axios.get('/_api/check_username', { params: { username: event.target.value } })
-      .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
-  }
+  // checkUserName(event) {
+  //   const axios = require('axios').create({
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'X-Requested-With': 'XMLHttpRequest',
+  //     },
+  //     responseType: 'json',
+  //   });
+  //   axios.get('/_api/check_username', { params: { username: event.target.value } })
+  //     .then((res) => { return this.setState({ isValidUserName: res.data.valid }) });
+  // }
 
   changeLanguage(meta) {
     i18next.changeLanguage(meta.id);
     this.setState({ selectedLang: meta });
+  }
+
+  submitHandler() {
+    if (this.state.isSubmittingDisabled) {
+      return;
+    }
+
+    this.setState({ isSubmittingDisabled: true });
+    setTimeout(() => {
+      this.setState({ isSubmittingDisabled: false });
+    }, 3000);
+
+    document['register-form'].submit();
   }
 
   render() {
@@ -56,7 +72,7 @@ class InstallerForm extends React.Component {
           </div>
         </div>
         <div className="row">
-          <form role="form" action="/installer" method="post" id="register-form" className="col-md-12">
+          <form role="form" action="/installer" method="post" id="register-form" className="col-md-12" onSubmit={this.submitHandler}>
             <div className="dropdown mb-3">
               <div className="d-flex dropdown-with-icon">
                 <i className="icon-bubbles border-0 rounded-0" />
@@ -72,6 +88,11 @@ class InstallerForm extends React.Component {
                     {this.state.selectedLang.displayName}
                   </span>
                 </button>
+                <input
+                  type="hidden"
+                  value={this.state.selectedLang.id}
+                  name="registerForm[app:globalLang]"
+                />
                 <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                   {
                   localeMetadatas.map(meta => (
@@ -94,7 +115,7 @@ class InstallerForm extends React.Component {
                 placeholder={this.props.t('User ID')}
                 name="registerForm[username]"
                 defaultValue={this.props.userName}
-                onBlur={this.checkUserName}
+                // onBlur={this.checkUserName} // need not to check username before installation -- 2020.07.24 Yuki Takei
                 required
               />
             </div>
@@ -144,7 +165,12 @@ class InstallerForm extends React.Component {
             <input type="hidden" name="_csrf" value={this.props.csrf} />
 
             <div className="input-group mt-4 mb-3 d-flex justify-content-center">
-              <button type="submit" className="btn-fill btn btn-register" id="register">
+              <button
+                type="submit"
+                className="btn-fill btn btn-register"
+                id="register"
+                disabled={this.state.isSubmittingDisabled}
+              >
                 <div className="eff"></div>
                 <span className="btn-label"><i className="icon-user-follow" /></span>
                 <span className="btn-label-text">{ this.props.t('Create') }</span>

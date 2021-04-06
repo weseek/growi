@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import { isTrashPage } from '@commons/util/path-utils';
-
 import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
@@ -14,31 +12,30 @@ import AppContainer from '../../services/AppContainer';
 import NavigationContainer from '../../services/NavigationContainer';
 import PageContainer from '../../services/PageContainer';
 
-import RevisionPathControls from '../Page/RevisionPathControls';
+import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';
-import LikeButton from '../LikeButton';
-import BookmarkButton from '../BookmarkButton';
+import SubnavButtons from './SubNavButtons';
+import PageEditorModeManager from './PageEditorModeManager';
 
-import PageCreator from './PageCreator';
-import RevisionAuthor from './RevisionAuthor';
+import AuthorInfo from './AuthorInfo';
 import DrawerToggler from './DrawerToggler';
-import UserPicture from '../User/UserPicture';
 
-
-// eslint-disable-next-line react/prop-types
-const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
+const PagePathNav = ({
+  // eslint-disable-next-line react/prop-types
+  pageId, pagePath, isEditorMode, isCompactMode,
+}) => {
 
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   let formerLink;
   let latterLink;
 
-  // when the path is root or first level
-  if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+  // one line
+  if (dPagePath.isRoot || dPagePath.isFormerRoot || isEditorMode) {
     const linkedPagePath = new LinkedPagePath(pagePath);
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
   }
-  // when the path is second level or deeper
+  // two line
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -46,170 +43,96 @@ const PagePathNav = ({ pageId, pagePath, isPageForbidden }) => {
     latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} />;
   }
 
+  const copyDropdownId = `copydropdown${isCompactMode ? '-subnav-compact' : ''}-${pageId}`;
+  const copyDropdownToggleClassName = 'd-block text-muted bg-transparent btn-copy border-0 py-0';
+
   return (
     <div className="grw-page-path-nav">
       {formerLink}
-      <span className="d-flex align-items-center flex-wrap">
+      <span className="d-flex align-items-center">
         <h1 className="m-0">{latterLink}</h1>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-          isPageForbidden={isPageForbidden}
-        />
-      </span>
-    </div>
-  );
-};
-
-// eslint-disable-next-line react/prop-types
-const UserPagePathNav = ({ pageId, pagePath }) => {
-  const linkedPagePath = new LinkedPagePath(pagePath);
-  const latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />;
-
-  return (
-    <div className="grw-page-path-nav">
-      <span className="d-flex align-items-center flex-wrap">
-        <h4 className="grw-user-page-path">{latterLink}</h4>
-        <RevisionPathControls
-          pageId={pageId}
-          pagePath={pagePath}
-        />
-      </span>
-    </div>
-  );
-};
-
-/* eslint-disable react/prop-types */
-const UserInfo = ({ pageUser }) => {
-  return (
-    <div className="grw-users-info d-flex align-items-center d-edit-none">
-      <UserPicture user={pageUser} />
-
-      <div className="users-meta">
-        <h1 className="user-page-name">
-          {pageUser.name}
-        </h1>
-        <div className="user-page-meta mt-1 mb-0">
-          <span className="user-page-username mr-2"><i className="icon-user mr-1"></i>{pageUser.username}</span>
-          <span className="user-page-email mr-2">
-            <i className="icon-envelope mr-1"></i>
-            {pageUser.isEmailPublished ? pageUser.email : '*****'}
-          </span>
-          {pageUser.introduction && <span className="user-page-introduction">{pageUser.introduction}</span>}
+        <div className="mx-2">
+          <CopyDropdown
+            pageId={pageId}
+            pagePath={pagePath}
+            dropdownToggleId={copyDropdownId}
+            dropdownToggleClassName={copyDropdownToggleClassName}
+          >
+            <i className="ti-clipboard"></i>
+          </CopyDropdown>
         </div>
-      </div>
-
+      </span>
     </div>
   );
 };
-/* eslint-enable react/prop-types */
-
-/* eslint-disable react/prop-types */
-const PageReactionButtons = ({ appContainer, pageContainer }) => {
-
-  const { pageId, isLiked, pageUser } = pageContainer.state;
-
-  return (
-    <>
-      {pageUser == null && (
-      <span className="mr-2">
-        <LikeButton pageId={pageId} isLiked={isLiked} />
-      </span>
-      )}
-      <span className="mr-2">
-        <BookmarkButton pageId={pageId} crowi={appContainer} />
-      </span>
-    </>
-  );
-};
-/* eslint-enable react/prop-types */
 
 const GrowiSubNavigation = (props) => {
   const {
     appContainer, navigationContainer, pageContainer, isCompactMode,
   } = props;
-  const { isDrawerMode } = navigationContainer.state;
+  const { isDrawerMode, editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
   const {
-    pageId, path, createdAt, creator, updatedAt, revisionAuthor,
-    isForbidden: isPageForbidden, pageUser,
+    pageId, path, createdAt, creator, updatedAt, revisionAuthor, isPageExist,
   } = pageContainer.state;
 
-  const isPageNotFound = pageId == null;
-  const isUserPage = pageUser != null;
-  const isPageInTrash = isTrashPage(path);
+  const { isGuestUser } = appContainer;
+  const isEditorMode = editorMode !== 'view';
+  // Tags cannot be edited while the new page and editorMode is view
+  const isTagLabelHidden = (editorMode !== 'edit' && !isPageExist);
 
-  // Display only the RevisionPath
-  if (isPageNotFound || isPageForbidden) {
-    return (
-      <div className="grw-subnav d-flex align-items-center justify-content-between">
-        <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-      </div>
-    );
+  function onPageEditorModeButtonClicked(viewType) {
+    navigationContainer.setEditorMode(viewType);
   }
 
   return (
-    <div className={`grw-subnav d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact' : ''}`}>
+    <div className={`grw-subnav container-fluid d-flex align-items-center justify-content-between ${isCompactMode ? 'grw-subnav-compact d-print-none' : ''}`}>
 
       {/* Left side */}
-      <div className="d-flex">
+      <div className="d-flex grw-subnav-left-side">
         { isDrawerMode && (
-          <div className="d-none d-md-flex align-items-center border-right mr-3 pr-3">
+          <div className={`d-none d-md-flex align-items-center ${isEditorMode ? 'mr-2 pr-2' : 'border-right mr-4 pr-4'}`}>
             <DrawerToggler />
           </div>
         ) }
 
-        <div>
-          { !isCompactMode && !isPageNotFound && !isPageForbidden && !isUserPage && (
-            <div className="mb-2">
-              <TagLabels />
+        <div className="grw-path-nav-container">
+          { pageContainer.isAbleToShowTagLabel && !isCompactMode && !isTagLabelHidden && (
+            <div className="grw-taglabels-container">
+              <TagLabels editorMode={editorMode} />
             </div>
           ) }
-
-          { isUserPage
-            ? (
-              <>
-                <UserPagePathNav pageId={pageId} pagePath={path} />
-                <UserInfo pageUser={pageUser} />
-              </>
-            )
-            : (
-              <PagePathNav pageId={pageId} pagePath={path} isPageForbidden={isPageForbidden} />
-            )
-          }
-
+          <PagePathNav pageId={pageId} pagePath={path} isEditorMode={isEditorMode} isCompactMode={isCompactMode} />
         </div>
       </div>
 
       {/* Right side */}
       <div className="d-flex">
 
-        <div className="d-flex flex-column align-items-end justify-content-center">
+        <div className="d-flex flex-column align-items-end">
           <div className="d-flex">
-            { !isPageInTrash && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-            <div className="mt-2">
-              {/* TODO: impl View / Edit / HackMD button group */}
-              {/* <div className="btn-group" role="group" aria-label="Basic example">
-              <button type="button" className="btn btn-outline-primary">Left</button>
-              <button type="button" className="btn btn-outline-primary">Middle</button>
-              <button type="button" className="btn btn-outline-primary">Right</button>
-            </div> */}
-            </div>
+            <SubnavButtons isCompactMode={isCompactMode} />
+          </div>
+          <div className="mt-2">
+            {pageContainer.isAbleToShowPageEditorModeManager && (
+              <PageEditorModeManager
+                onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
+                isBtnDisabled={isGuestUser}
+                editorMode={editorMode}
+                isDeviceSmallerThanMd={isDeviceSmallerThanMd}
+              />
+            )}
           </div>
         </div>
 
         {/* Page Authors */}
-        { (!isCompactMode && !isUserPage) && (
-          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none">
-            { creator != null && (
-              <li className="pb-1">
-                <PageCreator creator={creator} createdAt={createdAt} />
-              </li>
-            ) }
-            { revisionAuthor != null && (
-              <li className="mt-1 pt-1 border-top">
-                <RevisionAuthor revisionAuthor={revisionAuthor} updatedAt={updatedAt} />
-              </li>
-            ) }
+        { (pageContainer.isAbleToShowPageAuthors && !isCompactMode) && (
+          <ul className="authors text-nowrap border-left d-none d-lg-block d-edit-none py-2 pl-4 mb-0 ml-3">
+            <li className="pb-1">
+              <AuthorInfo user={creator} date={createdAt} locate="subnav" />
+            </li>
+            <li className="mt-1 pt-1 border-top">
+              <AuthorInfo user={revisionAuthor} date={updatedAt} mode="update" locate="subnav" />
+            </li>
           </ul>
         ) }
       </div>

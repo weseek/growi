@@ -7,29 +7,35 @@
 {% endblock %}
 
 {% block layout_main %}
+<div class="h-100 d-flex flex-column justify-content-between">
 
-{% block content_header_wrapper %}
-<header class="py-0">
-  {% block content_header %}
-    <div id="grw-subnav-container" class="d-edit-none"></div>
-  {% endblock %}
-</header>
-<div id="grw-subnav-switcher-container" class="d-edit-none"></div>
-<div id="grw-subnav-sticky-trigger" class="sticky-top"></div>
-<div id="grw-fav-sticky-trigger" class="sticky-top"></div>
-{% endblock %}
-
-<div id="main" class="main container-fluid {% if page %}{{ css.grant(page) }}{% endif %} {% block main_css_class %}{% endblock %}">
-  {% block content_main_before %}
+  {% block content_header_wrapper %}
+    <header class="py-0">
+      {% block content_header %}
+        <div id="grw-subnav-container"></div>
+      {% endblock %}
+    </header>
+    <div id="grw-subnav-switcher-container" class="d-edit-none"></div>
+    <div id="grw-subnav-sticky-trigger" class="sticky-top"></div>
+    <div id="grw-fav-sticky-trigger" class="sticky-top"></div>
   {% endblock %}
 
-  {% block content_main %}
-  {% endblock content_main %}
+  <div class="flex-grow-1">
+    <div id="main" class="main {% if page %}{{ css.grant(page) }}{% endif %}">
+      {% block content_main_before %}
+      {% endblock %}
 
-  {% block content_main_after %}
-  {% endblock %}
-</div><!-- /.main -->
+      {% block content_main %}
+      {% endblock content_main %}
 
-<footer class="footer">
-</footer>
+      {% block content_main_after %}
+      {% endblock %}
+    </div>
+  </div>
+
+  <footer class="footer">
+    {% block content_footer %}{% endblock %}
+  </footer>
+
+</div>
 {% endblock %} {# layout_main #}

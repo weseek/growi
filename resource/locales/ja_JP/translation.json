@@ -1,10 +1,15 @@
 {
   "Help": "ヘルプ",
+  "view": "View",
   "Edit": "編集",
   "Delete": "削除",
   "delete_all": "全て削除",
   "Duplicate": "複製",
   "Copy": "コピー",
+  "preview":"プレビュー",
+  "desktop":"パソコン",
+  "phone":"スマホ",
+  "tablet":"タブレット",
   "Click to copy": "クリックでコピー",
   "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
@@ -12,6 +17,7 @@
   "Unlinked": "リダイレクト削除",
   "Like!": "いいね！",
   "Seen by": "見た人",
+  "Done": "完了",
   "Cancel": "キャンセル",
   "Create": "作成",
   "Admin": "管理",
@@ -19,6 +25,7 @@
   "Tag": "タグ",
   "Tags": "タグ",
   "New": "作成",
+  "Close": "閉じる",
   "Shortcuts": "ショートカット",
   "eg": "例:",
   "add": "追加",
@@ -30,6 +37,7 @@
   "User": "ユーザー",
   "status": "ステータス",
   "account_id": "アカウントID",
+  "Initialize": "初期化",
   "Update": "更新",
   "Update Page": "ページを更新",
   "Warning": "注意",
@@ -43,22 +51,32 @@
   "Example": "例",
   "Taro Yamada": "山田 太郎",
   "List View": "リスト表示",
-  "Timeline View": "タイムライン表示",
+  "Timeline View": "タイムライン",
   "History": "更新履歴",
+  "attachment_data": "添付データ",
+  "No_attachments_yet": "No attachments yet.",
   "Presentation Mode": "プレゼンテーション",
+  "The end": "おしまい",
   "Not available for guest": "ゲストユーザーは利用できません",
+  "Create Archive Page": "アーカイブページの作成",
+  "Target page": "対象ページ",
+  "File type": "ファイル形式",
+  "Include Attachment File": "添付ファイルも含める",
+  "Include Comment": "コメントも含める",
+  "Include Subordinated Page": "配下ページも含める",
+  "All Subordinated Page": "全ての配下ページ",
+  "Specify Hierarchy": "階層の深さを指定",
+  "Submitted the request to create the archive": "アーカイブ作成のリクエストを正常に送信しました",
   "username": "ユーザー名",
   "Created": "作成日",
   "Last updated": "最終更新",
   "Last_Login": "最終ログイン",
   "Share": "共有",
-  "Share Link": "共有用リンク",
   "Markdown Link": "Markdown形式のリンク",
   "Create/Edit Template": "テンプレートページの作成/編集",
   "Go to this version": "このバージョンを見る",
   "View diff": "差分を表示",
   "No diff": "差分なし",
-  "Shrink versions that have no diffs": "差分のないバージョンをコンパクトに表示する",
   "User ID": "ユーザーID",
   "User Information": "ユーザー情報",
   "Basic Info": "ユーザーの基本情報",
@@ -86,7 +104,6 @@
   "Input page name (optional)": "ページ名を入力(空欄OK)",
   "New Page": "新規ページ",
   "Create under": "ページを以下に作成",
-  "Table of Contents": "目次",
   "Wiki Management Home Page": "Wiki管理トップ",
   "App Settings": "アプリ設定",
   "Site URL settings": "サイトURL設定",
@@ -107,6 +124,7 @@
   "Specified users": "特定ユーザーのみ",
   "Only me": "自分のみ",
   "Only inside the group": "特定グループのみ",
+  "page_list": "ページリスト",
   "page_list_and_search_results": "ページリスト・検索結果",
   "scope_of_page_disclosure": "ページの公開範囲",
   "set_point": "設定値",
@@ -129,8 +147,12 @@
   "Color mode": "カラーモード",
   "Sidebar mode": "サイドバーモード",
   "Sidebar mode on Editor": "サイドバーモード(編集時)",
+  "No bookmarks yet": "No bookmarks yet",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
+  "original_path":"元のパス",
+  "new_path":"新しいパス",
+  "duplicated_path":"重複したパス",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
@@ -143,6 +165,14 @@
     "error_message": "いくつかの値が設定されていません",
     "required": "%sに値を入力してください",
     "invalid_syntax": "%sの構文が不正です"
+  },
+  "not_found_page": {
+    "Create Page": "ページを作成する",
+    "page_not_exist": "このページは存在しません。",
+    "page_not_exist_alert": "このページは存在しません。新たに作成する必要があります。"
+  },
+  "custom_navigation": {
+    "no_page_list": "このページの配下にはページが存在しません。"
   },
   "installer": {
     "setup": "セットアップ",
@@ -171,6 +201,7 @@
     }
   },
   "page_me_apitoken": {
+    "api_token": "API Token",
     "notice": {
       "apitoken_issued": "API Token が設定されていません。",
       "update_token1": "API Token を更新すると、自動的に新しい Token が生成されます。",
@@ -191,6 +222,25 @@
     "password_is_not_set": "パスワードが設定されていません"
   },
   "security_settings": "セキュリティ設定",
+  "share_links": {
+    "Shere this page link to public": "外部に共有するリンクを発行する",
+    "share_link_list": "共有リンクリスト",
+    "share_link_management": "共有リンク管理",
+    "No_share_links":"共有リンクが存在しません",
+    "Share Link": "共有用リンク",
+    "Page Path": "ページパス",
+    "share_link_notice":"共有リンクを全て削除します",
+    "delete_all_share_links":"全ての共有リンクを削除します",
+    "expire": "有効期限",
+    "Days": "日間",
+    "Custom": "カスタム",
+    "description": "概要",
+    "enter_desc": "概要を入力",
+    "Unlimited": "無期限",
+    "Issue": "発行",
+    "share_settings" :"共有設定",
+    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください"
+  },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
@@ -209,8 +259,8 @@
     "Copy to clipboard": "クリップボードにコピー",
     "Page path": "ページ名",
     "Page URL": "ページURL",
-    "Parmanent link": "パーマリンク",
-    "Page path and parmanent link": "ページ名とパーマリンク",
+    "Permanent link": "パーマリンク",
+    "Page path and permanent link": "ページ名とパーマリンク",
     "Markdown link": "マークダウン形式のリンク"
   },
   "search_help": {
@@ -245,20 +295,32 @@
   "page_page": {
     "notice": {
       "version": "これは現在の版ではありません。",
-      "moved": "このページは <code>%s</code> から移動しました。",
-      "redirected": "リダイレクト元 >> <code>%s</code>",
-      "duplicated": "このページは <code>%s</code> から複製されました。",
+      "moved": "このページは",
+      "moved_period":"から移動しました。",
+      "redirected": "リダイレクト元 >>",
+      "redirected_period":"",
+      "duplicated": "このページは",
+      "duplicated_period": "から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
-      "stale": "このページは最終更新日から{{count}}年以上が経過しています。"
+      "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
+      "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。",
+      "no_deadline": "このページに有効期限は設定されていません。"
     }
+  },
+  "page_table_of_contents": {
+    "empty": "目次は空です"
   },
   "page_edit": {
     "Show active line": "アクティブ行をハイライト",
+    "auto_format_table": "表の自動整形",
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",
     "notice": {
       "conflict": "すでに他の人がこのページを編集していたため保存できませんでした。ページを再読み込み後、自分の編集箇所のみ再度編集してください。"
     }
+  },
+  "page_comment": {
+    "display_the_page_when_posting_this_comment": "投稿時のページを表示する"
   },
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
@@ -266,10 +328,22 @@
     "outdated": "ページが他のユーザーによって更新されました。",
     "user_not_admin": "権限のあるユーザーのみが完全削除できます"
   },
+  "page_history": {
+    "revision_list": "更新履歴",
+    "revision": "バージョン",
+    "comparing_source": "ソース",
+    "comparing_target": "ターゲット",
+    "comparing_revisions": "差分を比較する",
+    "compare_latest":"最新と比較",
+    "compare_previous":"1つ前のバージョンと比較"
+  },
   "modal_rename": {
     "label": {
       "Move/Rename page": "ページを移動/名前変更する",
       "New page name": "移動先のページ名",
+      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
+      "Fail to get exist path": "存在するパスの取得に失敗しました",
+      "Rename without exist path": "存在するパス以外を名前変更する",
       "Current page name": "現在のページ名",
       "Recursively": "再帰的に移動/名前変更",
       "Do not update metadata": "メタデータを更新しない",
@@ -300,7 +374,14 @@
     "label": {
       "Duplicate page": "ページを複製する",
       "New page name": "複製後のページ名",
-      "Current page name": "現在のページ名"
+      "Fail to get subordinated pages": "配下ページの取得に失敗しました",
+      "Current page name": "現在のページ名",
+      "Recursively": "再帰的に複製",
+      "Duplicate without exist path": "存在するパス以外を複製する",
+      "Same page already exists": "同じページがすでに存在します"
+    },
+    "help": {
+      "recursive": "配下のページも複製します"
     }
   },
   "modal_putback": {
@@ -319,6 +400,7 @@
       "Edit Page": "ページ編集",
       "Create Page": "ページ作成",
       "Show Contributors": "コントリビューター<br>を表示",
+      "MirrorMode": "ミラーモード",
       "Konami Code": "コナミコマンド",
       "konami_code_url": "https://ja.wikipedia.org/wiki/コナミコマンド"
     },
@@ -334,14 +416,34 @@
       "Post": "投稿"
     }
   },
+  "link_edit": {
+    "edit_link": "リンク編集",
+    "set_link_and_label": "リンク情報",
+    "link": "リンク",
+    "placeholder_of_link_input": "ページパスまたはURLを入力してください",
+    "label": "ラベル",
+    "path_format": "ページパス設定",
+    "use_relative_path": "相対パスを使う",
+    "use_permanent_link": "パーマリンクを使う",
+    "notation": "リンクの形式",
+    "markdown": "マークダウン 記法",
+    "GROWI_original": "GROWI 独自記法",
+    "pukiwiki": "Pukiwiki 記法",
+    "preview": "プレビュー",
+    "page_not_found_in_preview": "\"{{path}}\" というページはありません。"
+  },
   "toaster": {
     "update_successed": "{{target}}を更新しました",
+    "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",
     "remove_external_user_success": "{{accountId}}を削除しました",
+    "remove_share_link_success": "{{shareLinkId}}を削除しました",
+    "issue_share_link": "共有リンクを作成しました",
+    "remove_share_link": "共有リンクを{{count}}件削除しました",
     "failed_to_reset_password":"パスワードのリセットに失敗しました"
   },
   "template": {
@@ -393,8 +495,10 @@
     "insert_image": "で画像を挿入できます",
     "open_sandbox": "Sandbox を開く"
   },
-  "hackmd": {
+  "hackmd":{
+    "hack_md": "HackMD",
     "not_set_up": "HackMD はセットアップされていません",
+    "used_for_not_found": "HackMD は新しいページの作成には利用できません",
     "start_to_edit": "HackMD を開始する",
     "clone_page_content": "ページを複製して編集を開始します",
     "unsaved_draft": "HackMD のドラフトが保存されていません",
@@ -408,7 +512,13 @@
     "check_configuration": "<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちらのマニュアル</a>から設定を確認してください",
     "not_initialized": "HackMD コンポーネントは初期化されていません",
     "someone_editing": "このページは、HackMD で編集されています。",
-    "this_page_has_draft": "このページは、HackMD のドラフトがあります。"
+    "this_page_has_draft": "このページは、HackMD のドラフトがあります。",
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "HackMD を利用して同時多人数編集を行うには、HackMD と GROWI を連携する必要があります。<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>こちら</a>を参照してください。",
+    "need_to_make_page": "HackMD を利用するためには、<a href='#edit'>ビルトインエディタ</a>で新しいページを作成してください。"
+  },
+  "slack_notification": {
+    "popover_title": "Slack 通知",
+    "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。"
   },
   "search_result": {
     "result_meta": "{{total}}件のページが見つかりました。検索ワード: \"{{keyword}}\"",
@@ -676,28 +786,16 @@
     "rebuild_description_1": "全てのページのインデックスを削除し、作り直します。",
     "rebuild_description_2": "この作業には数秒かかります。"
   },
-  "export_management": {
-    "exporting_collection_list": "エクスポート中のコレクション",
-    "exported_data_list": "エクスポートされたアーカイブリスト",
-    "export_collections": "コレクションのエクスポート",
-    "check_all": "全てにチェックを付ける",
-    "uncheck_all": "全てからチェックを外す",
-    "desc_password_seed": "<p>ユーザーデータをバックアップ/リストアする場合、現在の <code>PASSWORD_SEED</code> を新しい GROWI システムにセットすることを忘れないでください。さもなくば、ユーザーがパスワードでログインできなくなります。</p><strong>ヒント:</strong><p>現在の <code>PASSWORD_SEED</code> は、エクスポートされる ZIP 中の <code>meta.json</code> に保存されます。</p>",
-    "create_new_archive_data": "アーカイブデータの新規作成",
-    "export": "エクスポート",
-    "cancel": "キャンセル",
-    "file": "ファイル名",
-    "growi_version": "Growi バージョン",
-    "collections": "コレクション",
-    "exported_at": "エクスポートされた時間",
-    "export_menu": "エクスポートメニュー",
-    "download": "ダウンロード",
-    "delete": "削除"
-  },
   "login": {
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
     "Setup": "セットアップ"
+  },
+  "export_bulk": {
+    "failed_to_export": "ページのエクスポートに失敗しました",
+    "failed_to_count_pages": "ページ数の取得に失敗しました",
+    "export_page_markdown": "マークダウン形式でページをエクスポート",
+    "export_page_pdf": "PDF形式でページをエクスポート"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",
@@ -722,5 +820,18 @@
     "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
     "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
     "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}"
+  },
+  "grid_edit":{
+    "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",
+    "grid_settings": "グリッド設定",
+    "grid_pattern":"グリッド　パターン",
+    "division":"分割",
+    "smart_no":"スマホ / 分割なし",
+    "break_point":"画面サイズより分割"
+  },
+  "validation":{
+    "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",
+    "aws_custom_endpoint": "カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。",
+    "failed_to_send_a_test_email":"SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。"
   }
 }

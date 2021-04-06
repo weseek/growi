@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { debounce } from 'throttle-debounce';
+
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../services/AppContainer';
@@ -26,6 +28,9 @@ class Drawio extends React.Component {
     this.drawioContent = this.props.drawioContent;
 
     this.onEdit = this.onEdit.bind(this);
+
+    // create debounced method for rendering Drawio
+    this.renderDrawioWithDebounce = debounce(200, this.renderDrawio);
   }
 
   onEdit() {
@@ -35,6 +40,16 @@ class Drawio extends React.Component {
   }
 
   componentDidMount() {
+    const DrawioViewer = window.GraphViewer;
+    if (DrawioViewer != null) {
+      this.renderDrawio();
+    }
+    else {
+      this.renderDrawioWithDebounce();
+    }
+  }
+
+  renderDrawio() {
     const DrawioViewer = window.GraphViewer;
     if (DrawioViewer != null) {
       const mxgraphs = this.drawioContainer.getElementsByClassName('mxgraph');
@@ -47,6 +62,9 @@ class Drawio extends React.Component {
           DrawioViewer.createViewerForElement(div);
         }
       }
+    }
+    else {
+      this.renderDrawioWithDebounce();
     }
   }
 

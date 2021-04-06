@@ -155,10 +155,10 @@ module.exports = (crowi) => {
 
   middlewares.awsEnabled = function() {
     return function(req, res, next) {
-      if ((configManager.getConfig('crowi', 'aws:region') !== '' || this.configManager.getConfig('crowi', 'aws:customEndpoint') !== '')
-          && configManager.getConfig('crowi', 'aws:bucket') !== ''
-          && configManager.getConfig('crowi', 'aws:accessKeyId') !== ''
-          && configManager.getConfig('crowi', 'aws:secretAccessKey') !== '') {
+      if ((configManager.getConfig('crowi', 'aws:s3Region') !== '' || this.configManager.getConfig('crowi', 'aws:s3CustomEndpoint') !== '')
+          && configManager.getConfig('crowi', 'aws:s3Bucket') !== ''
+          && configManager.getConfig('crowi', 'aws:s3AccessKeyId') !== ''
+          && configManager.getConfig('crowi', 'aws:s3SecretAccessKey') !== '') {
         req.flash('globalError', req.t('message.aws_sttings_required'));
         return res.redirect('/');
       }

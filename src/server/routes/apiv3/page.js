@@ -3,11 +3,13 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const router = express.Router();
 
-// const ErrorV3 = require('../../models/vo/error-apiv3');
+const { convertToNewAffiliationPath } = require('../../../lib/util/path-utils');
+const ErrorV3 = require('../../models/vo/error-apiv3');
+
 
 /**
  * @swagger
@@ -109,20 +111,53 @@ const router = express.Router();
  *          bool:
  *            type: boolean
  *            description: boolean for like status
+ *
+ *      LikeInfo:
+ *        description: LikeInfo
+ *        type: object
+ *        properties:
+ *          sumOfLikers:
+ *            type: number
+ *            description: how many people liked the page
+ *          isLiked:
+ *            type: boolean
+ *            description: Whether the request user liked (will be returned if the user is included in the request)
  */
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi);
+  const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
+  const { exportService } = crowi;
 
   const validator = {
     likes: [
       body('pageId').isString(),
       body('bool').isBoolean(),
+    ],
+    likeInfo: [
+      query('_id').isMongoId(),
+    ],
+    export: [
+      query('format').isString().isIn(['md', 'pdf']),
+      query('revisionId').isString(),
+    ],
+    archive: [
+      body('rootPagePath').isString(),
+      body('isCommentDownload').isBoolean(),
+      body('isAttachmentFileDownload').isBoolean(),
+      body('isSubordinatedPageDownload').isBoolean(),
+      body('fileType').isString().isIn(['pdf', 'markdown']),
+      body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
+      body('hierarchyValue').isNumeric(),
+    ],
+    exist: [
+      query('fromPath').isString(),
+      query('toPath').isString(),
     ],
   };
 
@@ -148,7 +183,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequired, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
 
     let page;
@@ -181,6 +216,247 @@ module.exports = (crowi) => {
     result.seenUser = page.seenUsers;
     return res.apiv3({ result });
   });
+
+  /**
+   * @swagger
+   *
+   *    /page/like-info:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/like-info
+   *        description: Get like info
+   *        operationId: getLikeInfo
+   *        parameters:
+   *          - name: _id
+   *            in: query
+   *            description: page id
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to get bookmark info.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/LikeInfo'
+   */
+  router.get('/like-info', loginRequired, validator.likeInfo, apiV3FormValidator, async(req, res) => {
+    const pageId = req.query._id;
+
+    const responsesParams = {};
+
+    try {
+      const page = await Page.findById(pageId);
+      responsesParams.sumOfLikers = page.liker.length;
+
+      // guest user return nothing
+      if (!req.user) {
+        return res.apiv3(responsesParams);
+      }
+
+      responsesParams.isLiked = page.liker.includes(req.user._id);
+      return res.apiv3(responsesParams);
+    }
+    catch (err) {
+      logger.error('get-like-count-failed', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  /**
+  * @swagger
+  *
+  *    /pages/export:
+  *      get:
+  *        tags: [Export]
+  *        description: return page's markdown
+  *        responses:
+  *          200:
+  *            description: Return page's markdown
+  */
+  router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
+    const { pageId } = req.params;
+    const { format, revisionId = null } = req.query;
+    let revision;
+
+    try {
+      const Page = crowi.model('Page');
+      const page = await Page.findByIdAndViewer(pageId, req.user);
+
+      if (page == null) {
+        const isPageExist = await Page.count({ _id: pageId }) > 0;
+        if (isPageExist) {
+          // This page exists but req.user has not read permission
+          return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
+        }
+        return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
+      }
+
+      const revisionIdForFind = revisionId || page.revision;
+
+      const Revision = crowi.model('Revision');
+      revision = await Revision.findById(revisionIdForFind);
+    }
+    catch (err) {
+      logger.error('Failed to get page data', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    const fileName = revision.id;
+    let stream;
+
+    try {
+      stream = exportService.getReadStreamFromRevision(revision, format);
+    }
+    catch (err) {
+      logger.error('Failed to create readStream', err);
+      return res.apiv3Err(err, 500);
+    }
+
+    res.set({
+      'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+    });
+
+    return stream.pipe(res);
+  });
+
+  /**
+   * @swagger
+   *
+   *    /page/exist-paths:
+   *      get:
+   *        tags: [Page]
+   *        summary: /page/exist-paths
+   *        description: Get already exist paths
+   *        operationId: getAlreadyExistPaths
+   *        parameters:
+   *          - name: fromPath
+   *            in: query
+   *            description: old parent path
+   *            schema:
+   *              type: string
+   *          - name: toPath
+   *            in: query
+   *            description: new parent path
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to retrieve pages.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    existPaths:
+   *                      type: object
+   *                      description: Paths are already exist in DB
+   *          500:
+   *            description: Internal server error.
+   */
+  router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
+    const { fromPath, toPath } = req.query;
+
+    try {
+      const fromPage = await Page.findByPath(fromPath);
+      const fromPageDescendants = await Page.findManageableListWithDescendants(fromPage, req.user);
+
+      const toPathDescendantsArray = fromPageDescendants.map((subordinatedPage) => {
+        return convertToNewAffiliationPath(fromPath, toPath, subordinatedPage.path);
+      });
+
+      const existPages = await Page.findListByPathsArray(toPathDescendantsArray);
+      const existPaths = existPages.map(page => page.path);
+
+      return res.apiv3({ existPaths });
+
+    }
+    catch (err) {
+      logger.error('Failed to get exist path', err);
+      return res.apiv3Err(err, 500);
+    }
+
+  });
+
+  // TODO GW-2746 bulk export pages
+  // /**
+  //  * @swagger
+  //  *
+  //  *    /page/archive:
+  //  *      post:
+  //  *        tags: [Page]
+  //  *        summary: /page/archive
+  //  *        description: create page archive
+  //  *        requestBody:
+  //  *          content:
+  //  *            application/json:
+  //  *              schema:
+  //  *                properties:
+  //  *                  rootPagePath:
+  //  *                    type: string
+  //  *                    description: path of the root page
+  //  *                  isCommentDownload:
+  //  *                    type: boolean
+  //  *                    description: whether archive data contains comments
+  //  *                  isAttachmentFileDownload:
+  //  *                    type: boolean
+  //  *                    description: whether archive data contains attachments
+  //  *                  isSubordinatedPageDownload:
+  //  *                    type: boolean
+  //  *                    description: whether archive data children pages
+  //  *                  fileType:
+  //  *                    type: string
+  //  *                    description: file type of archive data(.md, .pdf)
+  //  *                  hierarchyType:
+  //  *                    type: string
+  //  *                    description: method of select children pages archive data contains('allSubordinatedPage', 'decideHierarchy')
+  //  *                  hierarchyValue:
+  //  *                    type: number
+  //  *                    description: depth of hierarchy(use when hierarchyType is 'decideHierarchy')
+  //  *        responses:
+  //  *          200:
+  //  *            description: create page archive
+  //  *            content:
+  //  *              application/json:
+  //  *                schema:
+  //  *                  $ref: '#/components/schemas/Page'
+  //  */
+  // router.post('/archive', accessTokenParser, loginRequired, csrf, validator.archive, apiV3FormValidator, async(req, res) => {
+  //   const PageArchive = crowi.model('PageArchive');
+
+  //   const {
+  //     rootPagePath,
+  //     isCommentDownload,
+  //     isAttachmentFileDownload,
+  //     fileType,
+  //   } = req.body;
+  //   const owner = req.user._id;
+
+  //   const numOfPages = 1; // TODO 最終的にzipファイルに取り込むページ数を入れる
+
+  //   const createdPageArchive = PageArchive.create({
+  //     owner,
+  //     fileType,
+  //     rootPagePath,
+  //     numOfPages,
+  //     hasComment: isCommentDownload,
+  //     hasAttachment: isAttachmentFileDownload,
+  //   });
+
+  //   console.log(createdPageArchive);
+  //   return res.apiv3({ });
+
+  // });
+
+  // router.get('/count-children-pages', accessTokenParser, loginRequired, async(req, res) => {
+
+  //   // TO DO implement correct number at another task
+
+  //   const { pageId } = req.query;
+  //   console.log(pageId);
+
+  //   const dummy = 6;
+  //   return res.apiv3({ dummy });
+  // });
 
   return router;
 };

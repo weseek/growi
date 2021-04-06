@@ -16,17 +16,17 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
   .user-page-name {
     margin: 0;
     font-size: 2.5em;
-    color: #666;
+    color: $secondary;
   }
 
   .picture {
-    width: 72px;
-    height: 72px;
+    width: 120px;
+    height: 120px;
   }
 
   div.user-page-meta {
     padding-left: 0;
-    color: #999;
+    color: $gray-400;
 
     .user-page-username {
       font-weight: bold;
@@ -40,6 +40,16 @@ $easeInOutCubic: cubic-bezier(0.65, 0, 0.35, 1);
     .draft-delete,
     .icon-edit {
       cursor: pointer;
+    }
+  }
+}
+
+.user-page-footer {
+  .grw-user-page-list-m {
+    svg {
+      width: 35px;
+      height: 35px;
+      margin-bottom: 6px;
     }
   }
 }

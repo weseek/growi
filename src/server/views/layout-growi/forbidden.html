@@ -2,17 +2,21 @@
 
 
 {% block content_main_before %}
-  {% include '../widget/page_alerts.html' %}
+  <div class="container-lg">
+    {% include '../widget/page_alerts.html' %}
+  </div>
 {% endblock %}
 
-
 {% block content_main %}
-  <div class="row">
-    <div class="col grw-page-content-container">
-      {% include '../widget/forbidden_content.html' %}
-    </div>
-    <div class="col-xl-2 col-lg-3 d-none d-lg-block revision-toc-container"></div>
+  <div
+    id="content-main"
+    class="content-main page-list"
+    data-path="{{ encodeURI(path) }}"
+    data-current-user="{% if user %}{{ user._id.toString() }}{% endif %}"
+    data-page-is-not-creatable="true"
+    >
   </div>
+  <div class="container-lg" id="forbidden-page"></div>
 {% endblock %}
 
 {% block body_end %}

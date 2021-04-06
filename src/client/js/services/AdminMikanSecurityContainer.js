@@ -15,12 +15,15 @@ export default class AdminMikanSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyApiUrl = 0;
+    this.dummyApiUrlForError = 1;
 
     this.state = {
       retrieveError: null,
       mikanApiUrl: '',
       mikanLoginUrl: '',
       mikanCookieName: '',
+      isSameUsernameTreatedAsIdenticalUser: false,
     };
 
   }
@@ -36,6 +39,7 @@ export default class AdminMikanSecurityContainer extends Container {
         mikanApiUrl: mikanAuth.mikanApiUrl,
         mikanLoginUrl: mikanAuth.mikanLoginUrl,
         mikanCookieName: mikanAuth.mikanCookieName,
+        isSameUsernameTreatedAsIdenticalUser: mikanAuth.isSameUsernameTreatedAsIdenticalUser,
       });
     }
     catch (err) {
@@ -76,17 +80,25 @@ export default class AdminMikanSecurityContainer extends Container {
   }
 
   /**
+   * Switch is same username treated as identical user
+   */
+     switchIsSameUsernameTreatedAsIdenticalUser() {
+      this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
+    }
+
+  /**
    * Update mikan option
    */
   async updateMikanSetting() {
     const {
-      mikanApiUrl, mikanLoginUrl, mikanCookieName,
+      mikanApiUrl, mikanLoginUrl, mikanCookieName, isSameUsernameTreatedAsIdenticalUser,
     } = this.state;
 
     let requestParams = {
       mikanApiUrl,
       mikanLoginUrl,
       mikanCookieName,
+      isSameUsernameTreatedAsIdenticalUser,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
@@ -97,6 +109,7 @@ export default class AdminMikanSecurityContainer extends Container {
       mikanApiUrl: securitySettingParams.mikanApiUrl,
       mikanLoginUrl: securitySettingParams.mikanLoginUrl,
       mikanCookieName: securitySettingParams.mikanCookieName,
+      isSameUsernameTreatedAsIdenticalUser: securitySettingParams.isSameUsernameTreatedAsIdenticalUser,
     });
     return response;
   }

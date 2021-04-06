@@ -17,11 +17,14 @@ export default class AdminGoogleSecurityContainer extends Container {
     super();
 
     this.appContainer = appContainer;
+    this.dummyGoogleClientId = 0;
+    this.dummyGoogleClientIdForError = 1;
 
     this.state = {
       retrieveError: null,
       callbackUrl: urljoin(pathUtils.removeTrailingSlash(appContainer.config.crowi.url), '/passport/google/callback'),
-      googleClientId: '',
+      // set dummy value tile for using suspense
+      googleClientId: this.dummyGoogleClientId,
       googleClientSecret: '',
       isSameUsernameTreatedAsIdenticalUser: false,
     };

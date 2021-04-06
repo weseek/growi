@@ -2,6 +2,7 @@ import MarkdownIt from 'markdown-it';
 
 import Linker from './PreProcessor/Linker';
 import CsvToTable from './PreProcessor/CsvToTable';
+import EasyGrid from './PreProcessor/EasyGrid';
 import XssFilter from './PreProcessor/XssFilter';
 
 import EmojiConfigurer from './markdown-it/emoji';
@@ -37,6 +38,7 @@ export default class GrowiRenderer {
     }
     else {
       this.preProcessors = [
+        new EasyGrid(appContainer),
         new Linker(appContainer),
         new CsvToTable(appContainer),
         new XssFilter(appContainer),

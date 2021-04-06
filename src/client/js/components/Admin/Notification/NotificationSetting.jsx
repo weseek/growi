@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
-import {
-  TabContent, TabPane, Nav, NavItem, NavLink,
-} from 'reactstrap';
 
 import loggerFactory from '@alias/logger';
 
+import { TabContent, TabPane } from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
+import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AppContainer from '../../../services/AppContainer';
 import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+
+import { CustomNavTab } from '../../CustomNavigation/CustomNav';
 
 import SlackAppConfiguration from './SlackAppConfiguration';
 import UserTriggerNotification from './UserTriggerNotification';
@@ -19,98 +19,80 @@ import GlobalNotification from './GlobalNotification';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
-class NotificationSetting extends React.Component {
+let retrieveErrors = null;
+function NotificationSetting(props) {
+  const { adminNotificationContainer } = props;
 
-  constructor() {
-    super();
+  const [activeTab, setActiveTab] = useState('slack_configuration');
+  const [activeComponents, setActiveComponents] = useState(new Set(['slack_configuration']));
 
-    this.state = {
-      activeTab: 'slack-configuration',
-      // Prevent unnecessary rendering
-      activeComponents: new Set(['slack-configuration']),
+  const switchActiveTab = (selectedTab) => {
+    setActiveTab(selectedTab);
+    setActiveComponents(activeComponents.add(selectedTab));
+  };
+
+  if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
+    throw (async() => {
+      try {
+        await adminNotificationContainer.retrieveNotificationData();
+      }
+      catch (err) {
+        const errs = toArrayIfNot(err);
+        toastError(errs);
+        logger.error(errs);
+        retrieveErrors = errs;
+        adminNotificationContainer.setState({ webhookUrl: adminNotificationContainer.dummyWebhookUrlForError });
+      }
+    })();
+  }
+
+  if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrlForError) {
+    throw new Error(`${retrieveErrors.length} errors occured`);
+  }
+
+  const navTabMapping = useMemo(() => {
+    return {
+      slack_configuration: {
+        Icon: () => <i className="icon-settings" />,
+        i18n: 'Slack configuration',
+        index: 0,
+      },
+      user_trigger_notification: {
+        Icon: () => <i className="icon-settings" />,
+        i18n: 'User trigger notification',
+        index: 1,
+      },
+      global_notification: {
+        Icon: () => <i className="icon-settings" />,
+        i18n: 'Global notification',
+        index: 2,
+      },
     };
+  }, []);
 
-    this.toggleActiveTab = this.toggleActiveTab.bind(this);
-  }
+  return (
+    <>
+      <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
 
-  async componentDidMount() {
-    const { adminNotificationContainer } = this.props;
-
-    try {
-      await adminNotificationContainer.retrieveNotificationData();
-    }
-    catch (err) {
-      toastError(err);
-      adminNotificationContainer.setState({ retrieveError: err });
-      logger.error(err);
-    }
-
-  }
-
-  toggleActiveTab(activeTab) {
-    this.setState({
-      activeTab, activeComponents: this.state.activeComponents.add(activeTab),
-    });
-  }
-
-  render() {
-    const { activeTab, activeComponents } = this.state;
-
-    return (
-      <React.Fragment>
-        <Nav tabs>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'slack-configuration' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('slack-configuration') }}
-              href="#slack-configuration"
-            >
-              <i className="icon-settings"></i> Slack configuration
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'user-trigger-notification' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('user-trigger-notification') }}
-              href="#user-trigger-notification"
-            >
-              <i className="icon-settings"></i> User trigger notification
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink
-              className={`${activeTab === 'global-notification' && 'active'} `}
-              onClick={() => { this.toggleActiveTab('global-notification') }}
-              href="#global-notification"
-            >
-              <i className="icon-settings"></i> Global notification
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <TabContent activeTab={activeTab}>
-          <TabPane tabId="slack-configuration">
-            {activeComponents.has('slack-configuration') && <SlackAppConfiguration />}
-          </TabPane>
-          <TabPane tabId="user-trigger-notification">
-            {activeComponents.has('user-trigger-notification') && <UserTriggerNotification />}
-          </TabPane>
-          <TabPane tabId="global-notification">
-            {activeComponents.has('global-notification') && <GlobalNotification />}
-          </TabPane>
-        </TabContent>
-      </React.Fragment>
-    );
-  }
-
+      <TabContent activeTab={activeTab} className="p-5">
+        <TabPane tabId="slack_configuration">
+          {activeComponents.has('slack_configuration') && <SlackAppConfiguration />}
+        </TabPane>
+        <TabPane tabId="user_trigger_notification">
+          {activeComponents.has('user_trigger_notification') && <UserTriggerNotification />}
+        </TabPane>
+        <TabPane tabId="global_notification">
+          {activeComponents.has('global_notification') && <GlobalNotification />}
+        </TabPane>
+      </TabContent>
+    </>
+  );
 }
 
-const NotificationSettingWrapper = withUnstatedContainers(NotificationSetting, [AppContainer, AdminNotificationContainer]);
+const NotificationSettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(NotificationSetting), [AdminNotificationContainer]);
 
 NotificationSetting.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
-
 };
 
-export default withTranslation()(NotificationSettingWrapper);
+export default NotificationSettingWithUnstatedContainer;

@@ -102,7 +102,7 @@ class ProfileImageSettings extends React.Component {
     return (
       <React.Fragment>
         <div className="row">
-          <div className="col-md-3 offset-1 col-sm-4">
+          <div className="col-md-6 col-12 mb-3 mb-md-0">
             <h4>
               <div className="custom-control custom-radio radio-primary">
                 <input
@@ -122,11 +122,10 @@ class ProfileImageSettings extends React.Component {
                 </a>
               </div>
             </h4>
-
             <img src={this.generateGravatarSrc()} width="64" />
           </div>
 
-          <div className="col-md-3 offset-1 col-sm-4">
+          <div className="col-md-6 col-12">
             <h4>
               <div className="custom-control custom-radio radio-primary">
                 <input

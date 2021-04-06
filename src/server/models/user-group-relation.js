@@ -85,14 +85,10 @@ class UserGroupRelation {
    * @memberof UserGroupRelation
    */
   static findAllRelationForUserGroup(userGroup) {
-    const User = UserGroupRelation.crowi.model('User');
     debug('findAllRelationForUserGroup is called', userGroup);
     return this
       .find({ relatedGroup: userGroup })
-      .populate({
-        path: 'relatedUser',
-        select: User.USER_PUBLIC_FIELDS,
-      })
+      .populate('relatedUser')
       .exec();
   }
 
@@ -139,7 +135,7 @@ class UserGroupRelation {
    * @returns {Promise<ObjectId[]>}
    */
   static async findAllUserGroupIdsRelatedToUser(user) {
-    const relations = await this.find({ relatedUser: user.id })
+    const relations = await this.find({ relatedUser: user._id })
       .select('relatedGroup')
       .exec();
 

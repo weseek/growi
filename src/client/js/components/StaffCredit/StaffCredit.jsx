@@ -1,15 +1,11 @@
 import React from 'react';
-import { GlobalHotKeys } from 'react-hotkeys';
-
+import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
-
-import contributors from './Contributor';
-
-// px / sec
-const scrollSpeed = 200;
+import AppContainer from '../../services/AppContainer';
+import { withUnstatedContainers } from '../UnstatedUtils';
 
 /**
  * Page staff credit component
@@ -19,56 +15,22 @@ const scrollSpeed = 200;
  * @extends {React.Component}
  */
 
-export default class StaffCredit extends React.Component {
+// eslint-disable-next-line no-unused-vars
+const logger = loggerFactory('growi:cli:StaffCredit');
+
+class StaffCredit extends React.Component {
 
   constructor(props) {
+
     super(props);
-
-    this.logger = loggerFactory('growi:StaffCredit');
-
     this.state = {
-      isShown: false,
-      userCommand: [],
+      isShown: true,
+      contributors: null,
     };
-    this.konamiCommand = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
     this.deleteCredit = this.deleteCredit.bind(this);
   }
 
-  check(event) {
-    this.logger.debug(`'${event.key}' pressed`);
-
-    // compare keydown and next konamiCommand
-    if (this.konamiCommand[this.state.userCommand.length] === event.key) {
-      const nextValue = this.state.userCommand.concat(event.key);
-      if (nextValue.length === this.konamiCommand.length) {
-        this.setState({
-          isShown: true,
-          userCommand: [],
-        });
-        const target = $('.credit-curtain');
-        const scrollTargetHeight = target.children().innerHeight();
-        const duration = scrollTargetHeight / scrollSpeed * 1000;
-        target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
-
-        target.slimScroll({
-          height: target.innerHeight(),
-          // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
-          start: 'bottom',
-          color: '#FFFFFF',
-        });
-      }
-      else {
-        // add UserCommand
-        this.setState({ userCommand: nextValue });
-
-        this.logger.debug('userCommand', this.state.userCommand);
-      }
-    }
-    else {
-      this.setState({ userCommand: [] });
-    }
-  }
-
+  // to delete the staffCredit and to inform that to Hotkeys.jsx
   deleteCredit() {
     if (this.state.isShown) {
       this.setState({ isShown: false });
@@ -97,7 +59,7 @@ export default class StaffCredit extends React.Component {
 
   renderContributors() {
     if (this.state.isShown) {
-      const credit = contributors.map((contributor) => {
+      const credit = this.state.contributors.map((contributor) => {
         // construct members elements
         const memberGroups = contributor.memberGroups.map((memberGroup, idx) => {
           return this.renderMembers(memberGroup, `${contributor.sectionName}-group${idx}`);
@@ -123,21 +85,60 @@ export default class StaffCredit extends React.Component {
     return null;
   }
 
+  async componentDidMount() {
+    const res = await this.props.appContainer.apiv3Get('/staffs');
+    const contributors = res.data.contributors;
+    this.setState({ contributors });
+
+    setTimeout(() => {
+      // px / sec
+      const scrollSpeed = 200;
+      const target = $('.credit-curtain');
+      const scrollTargetHeight = target.children().innerHeight();
+      const duration = scrollTargetHeight / scrollSpeed * 1000;
+      target.animate({ scrollTop: scrollTargetHeight }, duration, 'linear');
+      target.slimScroll({
+        height: target.innerHeight(),
+        // Able to scroll after automatic schooling is complete so set "bottom" to allow scrolling from the bottom.
+        start: 'bottom',
+        color: '#FFFFFF',
+      });
+    }, 10);
+  }
+
   render() {
-    const keyMap = { check: ['up', 'down', 'right', 'left', 'b', 'a'] };
-    const handlers = { check: (event) => { return this.check(event) } };
+    const { onClosed } = this.props;
+
+    if (this.state.contributors === null) {
+      return <></>;
+    }
+
     return (
-      <GlobalHotKeys keyMap={keyMap} handlers={handlers}>
-        <Modal isOpen={this.state.isShown} toggle={this.deleteCredit} scrollable className="staff-credit">
-          <ModalBody className="credit-curtain">
-            {this.renderContributors()}
-          </ModalBody>
-        </Modal>
-      </GlobalHotKeys>
+      <Modal
+        isOpen={this.state.isShown}
+        onClosed={() => {
+          if (onClosed != null) {
+            onClosed();
+          }
+        }}
+        toggle={this.deleteCredit}
+        scrollable
+        className="staff-credit"
+      >
+        <ModalBody className="credit-curtain">
+          {this.renderContributors()}
+        </ModalBody>
+      </Modal>
     );
   }
 
 }
 
+const StaffCreditWrapper = withUnstatedContainers(StaffCredit, [AppContainer]);
+
 StaffCredit.propTypes = {
+  onClosed: PropTypes.func,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
+
+export default StaffCreditWrapper;

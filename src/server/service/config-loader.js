@@ -23,12 +23,18 @@ const TYPES = {
  *  So, parameters of these are under consideration.
  */
 const ENV_VAR_NAME_TO_CONFIG_INFO = {
-  // FILE_UPLOAD: {
-  //   ns:      ,
-  //   key:     ,
-  //   type:    ,
-  //   default:
-  // },
+  FILE_UPLOAD: {
+    ns:      'crowi',
+    key:     'app:fileUploadType',
+    type:    TYPES.STRING,
+    default: 'aws',
+  },
+  FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE: {
+    ns:      'crowi',
+    key:     'app:useOnlyEnvVarForFileUploadType',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
   // HACKMD_URI: {
   //   ns:      ,
   //   key:     ,
@@ -107,6 +113,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   //   type:    ,
   //   default:
   // },
+  DRAWIO_URI: {
+    ns:      'crowi',
+    key:     'app:drawioUri',
+    type:    TYPES.STRING,
+    default: null,
+  },
   NCHAN_URI: {
     ns:      'crowi',
     key:     'app:nchanUri',
@@ -125,23 +137,47 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
-  CONFIG_PUBSUB_SERVER_TYPE: {
+  S2SMSG_PUBSUB_SERVER_TYPE: {
     ns:      'crowi',
-    key:     'configPubsub:serverType',
+    key:     's2sMessagingPubsub:serverType',
     type:    TYPES.STRING,
     default: null,
   },
-  CONFIG_PUBSUB_NCHAN_PUBLISH_PATH: {
+  S2SMSG_PUBSUB_NCHAN_PUBLISH_PATH: {
     ns:      'crowi',
-    key:     'configPubsub:nchan:publishPath',
+    key:     's2sMessagingPubsub:nchan:publishPath',
     type:    TYPES.STRING,
     default: '/pubsub',
   },
-  CONFIG_PUBSUB_NCHAN_SUBSCRIBE_PATH: {
+  S2SMSG_PUBSUB_NCHAN_SUBSCRIBE_PATH: {
     ns:      'crowi',
-    key:     'configPubsub:nchan:subscribePath',
+    key:     's2sMessagingPubsub:nchan:subscribePath',
     type:    TYPES.STRING,
     default: '/pubsub',
+  },
+  S2SMSG_PUBSUB_NCHAN_CHANNEL_ID: {
+    ns:      'crowi',
+    key:     's2sMessagingPubsub:nchan:channelId',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimit',
+    type:    TYPES.NUMBER,
+    default: 5000,
+  },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_ADMIN: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimitForAdmin',
+    type:    TYPES.NUMBER,
+    default: 100,
+  },
+  S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_GUEST: {
+    ns:      'crowi',
+    key:     's2cMessagingPubsub:connectionsLimitForGuest',
+    type:    TYPES.NUMBER,
+    default: 2000,
   },
   MAX_FILE_SIZE: {
     ns:      'crowi',
@@ -296,6 +332,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  S3_REFERENCE_FILE_WITH_RELAY_MODE: {
+    ns:      'crowi',
+    key:     'aws:referenceFileWithRelayMode',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
+  S3_LIFETIME_SEC_FOR_TEMPORARY_URL: {
+    ns:      'crowi',
+    key:     'aws:lifetimeSecForTemporaryUrl',
+    type:    TYPES.NUMBER,
+    default: 120,
+  },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
@@ -311,6 +359,42 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   GCS_UPLOAD_NAMESPACE: {
     ns:      'crowi',
     key:     'gcs:uploadNamespace',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  GCS_REFERENCE_FILE_WITH_RELAY_MODE: {
+    ns:      'crowi',
+    key:     'gcs:referenceFileWithRelayMode',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
+  GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
+    ns:      'crowi',
+    key:     'gcs:useOnlyEnvVarsForSomeOptions',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
+  GCS_LIFETIME_SEC_FOR_TEMPORARY_URL: {
+    ns:      'crowi',
+    key:     'gcs:lifetimeSecForTemporaryUrl',
+    type:    TYPES.NUMBER,
+    default: 120,
+  },
+  PROMSTER_ENABLED: {
+    ns:      'crowi',
+    key:     'promster:isEnabled',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
+  PROMSTER_PORT: {
+    ns:      'crowi',
+    key:     'promster:port',
+    type:    TYPES.NUMBER,
+    default: 7788,
+  },
+  GROWI_CLOUD_URI: {
+    ns:      'crowi',
+    key:     'app:growiCloudUri',
     type:    TYPES.STRING,
     default: null,
   },

@@ -79,7 +79,7 @@ class LineBreakForm extends React.Component {
             onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
           />
           <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
-            {t('admin:markdown_setting.lineBreak_options.enable_lineBreak') }
+            {t('admin:markdown_setting.lineBreak_options.enable_lineBreak_for_comment') }
           </label>
         </div>
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreakInComment} />

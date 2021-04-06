@@ -13,10 +13,13 @@ class SearchForm extends React.Component {
 
     this.state = {
       searchError: null,
+      isShownHelp: false,
     };
 
     this.onSearchError = this.onSearchError.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onBlur = this.onBlur.bind(this);
+    this.onFocus = this.onFocus.bind(this);
   }
 
   componentDidMount() {
@@ -40,11 +43,27 @@ class SearchForm extends React.Component {
     }
   }
 
+  onBlur() {
+    this.setState({
+      isShownHelp: false,
+    });
+
+    this.getHelpElement();
+  }
+
+  onFocus() {
+    this.setState({
+      isShownHelp: true,
+    });
+  }
+
   getHelpElement() {
     const { t, appContainer } = this.props;
+    const { isShownHelp } = this.state;
 
     const config = appContainer.getConfig();
     const isReachable = config.isSearchServiceReachable;
+
 
     if (!isReachable) {
       return (
@@ -53,6 +72,10 @@ class SearchForm extends React.Component {
           Try to reconnect from management page.
         </>
       );
+    }
+
+    if (!isShownHelp) {
+      return <></>;
     }
 
     return (
@@ -124,6 +147,8 @@ class SearchForm extends React.Component {
         placeholder={placeholder}
         helpElement={this.getHelpElement()}
         keywordOnInit={this.props.keyword}
+        onBlur={this.onBlur}
+        onFocus={this.onFocus}
       />
     );
   }

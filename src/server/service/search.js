@@ -11,7 +11,7 @@ class SearchService {
     this.isErrorOccuredOnSearching = null;
 
     try {
-      this.delegator = this.initDelegator();
+      this.delegator = this.generateDelegator();
     }
     catch (err) {
       logger.error(err);
@@ -39,29 +39,29 @@ class SearchService {
     return this.configManager.getConfig('crowi', 'app:elasticsearchUri') != null;
   }
 
-  initDelegator() {
+  generateDelegator() {
     logger.info('Initializing search delegator');
-
-    const searchEvent = this.crowi.event('search');
 
     if (this.isSearchboxEnabled) {
       logger.info('Searchbox is enabled');
       const SearchboxDelegator = require('./search-delegator/searchbox.js');
-      return new SearchboxDelegator(this.configManager, searchEvent);
+      return new SearchboxDelegator(this.configManager, this.crowi.socketIoService);
     }
     if (this.isElasticsearchEnabled) {
       logger.info('Elasticsearch (not Searchbox) is enabled');
       const ElasticsearchDelegator = require('./search-delegator/elasticsearch.js');
-      return new ElasticsearchDelegator(this.configManager, searchEvent);
+      return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
     }
-
   }
 
   registerUpdateEvent() {
     const pageEvent = this.crowi.event('page');
     pageEvent.on('create', this.delegator.syncPageUpdated.bind(this.delegator));
     pageEvent.on('update', this.delegator.syncPageUpdated.bind(this.delegator));
+    pageEvent.on('deleteCompletely', this.delegator.syncPagesDeletedCompletely.bind(this.delegator));
     pageEvent.on('delete', this.delegator.syncPageDeleted.bind(this.delegator));
+    pageEvent.on('updateMany', this.delegator.syncPagesUpdated.bind(this.delegator));
+    pageEvent.on('syncDescendants', this.delegator.syncDescendantsPagesUpdated.bind(this.delegator));
 
     const bookmarkEvent = this.crowi.event('bookmark');
     bookmarkEvent.on('create', this.delegator.syncBookmarkChanged.bind(this.delegator));
@@ -71,12 +71,24 @@ class SearchService {
     tagEvent.on('update', this.delegator.syncTagChanged.bind(this.delegator));
   }
 
-  async initClient() {
-    // reset error flag
+  resetErrorStatus() {
     this.isErrorOccuredOnHealthcheck = false;
     this.isErrorOccuredOnSearching = false;
+  }
 
-    return this.delegator.initClient();
+  async reconnectClient() {
+    logger.info('Try to reconnect...');
+    this.delegator.initClient();
+
+    try {
+      await this.getInfoForHealth();
+
+      logger.info('Reconnecting succeeded.');
+      this.resetErrorStatus();
+    }
+    catch (err) {
+      throw err;
+    }
   }
 
   async getInfo() {

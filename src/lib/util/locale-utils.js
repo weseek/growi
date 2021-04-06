@@ -2,6 +2,11 @@ const fs = require('fs');
 
 const helpers = require('./helpers');
 
+const MIGRATE_LOCALE_MAP = {
+  en: 'en_US',
+  ja: 'ja_JP',
+};
+
 /**
  * List locales dirents
  */
@@ -28,7 +33,18 @@ function listLocaleIds() {
     .map(meta => meta.id);
 }
 
+function migrateDeprecatedLocaleId(localeId) {
+  const toValue = MIGRATE_LOCALE_MAP[localeId];
+
+  if (toValue != null) {
+    return toValue;
+  }
+
+  return localeId;
+}
+
 module.exports = {
   listLocaleMetadatas,
   listLocaleIds,
+  migrateDeprecatedLocaleId,
 };

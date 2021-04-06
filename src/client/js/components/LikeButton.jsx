@@ -1,53 +1,64 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { toastError } from '../util/apiNotification';
+import { UncontrolledTooltip } from 'reactstrap';
+import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
+
+import { toastError } from '../util/apiNotification';
 import AppContainer from '../services/AppContainer';
+import PageContainer from '../services/PageContainer';
 
 class LikeButton extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      isLiked: props.isLiked,
-    };
-
     this.handleClick = this.handleClick.bind(this);
   }
 
   async handleClick() {
-    const { appContainer, pageId } = this.props;
-    const bool = !this.state.isLiked;
+    const { appContainer, pageContainer } = this.props;
+    const { isGuestUser } = appContainer;
+
+    if (isGuestUser) {
+      return;
+    }
+
     try {
-      await appContainer.apiv3.put('/page/likes', { pageId, bool });
-      this.setState({ isLiked: bool });
+      pageContainer.toggleLike();
     }
     catch (err) {
       toastError(err);
     }
   }
 
-  isUserLoggedIn() {
-    return this.props.appContainer.currentUserId != null;
-  }
 
   render() {
-    // if guest user
-    if (!this.isUserLoggedIn()) {
-      return <div></div>;
-    }
+    const { appContainer, pageContainer, t } = this.props;
+    const { isGuestUser } = appContainer;
 
     return (
-      <button
-        type="button"
-        onClick={this.handleClick}
-        className={`btn rounded-circle btn-like border-0 d-edit-none
-        ${this.state.isLiked ? 'btn-info active' : 'btn-outline-info'}`}
-      >
-        <i className="icon-like"></i>
-      </button>
+      <div>
+        <button
+          type="button"
+          id="like-button"
+          onClick={this.handleClick}
+          className={`btn btn-like border-0
+          ${pageContainer.state.isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+        >
+          <i className="icon-like mr-3"></i>
+          <span className="total-likes">
+            {pageContainer.state.sumOfLikers}
+          </span>
+        </button>
+
+        {isGuestUser && (
+        <UncontrolledTooltip placement="top" target="like-button" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+        )}
+      </div>
     );
   }
 
@@ -56,14 +67,14 @@ class LikeButton extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const LikeButtonWrapper = withUnstatedContainers(LikeButton, [AppContainer]);
+const LikeButtonWrapper = withUnstatedContainers(LikeButton, [AppContainer, PageContainer]);
 
 LikeButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 
-  pageId: PropTypes.string,
-  isLiked: PropTypes.bool,
+  t: PropTypes.func.isRequired,
   size: PropTypes.string,
 };
 
-export default LikeButtonWrapper;
+export default withTranslation()(LikeButtonWrapper);

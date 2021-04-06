@@ -40,11 +40,6 @@ module.exports = function(crowi, app) {
   let agentScriptContentTpl;
   let stylesScriptContentTpl;
 
-  // init 'saveOnHackmd' event
-  pageEvent.on('saveOnHackmd', (page) => {
-    crowi.getIo().sockets.emit('page:editingWithHackmd', { page });
-  });
-
   /**
    * GET /_hackmd/load-agent
    *
@@ -196,8 +191,8 @@ module.exports = function(crowi, app) {
 
     const { status, headers } = hackmdResponse;
 
-    // validate HackMD/CodiMD specific header
-    if (headers['codimd-version'] == null && headers['hackmd-version'] == null) {
+    // validate HackMD/CodiMD/HedgeDoc specific header
+    if (headers['codimd-version'] == null && headers['hackmd-version'] == null && headers['hedgedoc-version'] == null) {
       const message = 'Connecting to a non-HackMD server.';
       logger.error(message);
       return res.json(ApiResponse.error(message));

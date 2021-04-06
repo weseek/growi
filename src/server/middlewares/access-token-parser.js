@@ -1,4 +1,5 @@
 const loggerFactory = require('@alias/logger');
+const { serializeUserSecurely } = require('../models/serializers/user-serializer');
 
 const logger = loggerFactory('growi:middleware:access-token-parser');
 
@@ -16,14 +17,19 @@ module.exports = (crowi) => {
     logger.debug('accessToken is', accessToken);
 
     const user = await User.findUserByApiToken(accessToken);
+
+    if (user == null) {
+      logger.debug('The access token is invalid');
+      return next();
+    }
+
     // transforming attributes
-    // see User model
-    req.user = user.toObject();
+    req.user = serializeUserSecurely(user);
     req.skipCsrfVerify = true;
 
     logger.debug('Access token parsed: skipCsrfVerify');
 
-    next();
+    return next();
   };
 
 };

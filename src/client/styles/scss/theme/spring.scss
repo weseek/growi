@@ -32,8 +32,9 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: white;
-  $bgcolor-inline-code: #f0f0f0; //optional
-  $bgcolor-card: #f5f5f5;
+  $bgcolor-inline-code: $gray-100; //optional
+  $bgcolor-card: $gray-50;
+  $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
   $color-global: black;
@@ -79,7 +80,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #ccc; // former: `$navbar-border: #ccc;`
+  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -92,6 +93,17 @@ html[dark] {
 
   @import 'apply-colors';
   @import 'apply-colors-light';
+
+  //Button
+  // Outline buttons are applyed the accent color to this spring theme cuz the primary is too light and it looks like unable to click them.
+  .btn.btn-outline-primary {
+    @include btn-page-editor-mode-manager(darken($primary, 50%), darken($primary, 50%), lighten($primary, 10%));
+  }
+  .btn-group.grw-page-editor-mode-manager {
+    .btn.btn-outline-primary {
+      @include btn-page-editor-mode-manager(darken($primary, 50%), lighten($primary, 5%), lighten($primary, 10%));
+    }
+  }
 
   .growi:not(.login-page) {
     // add background-image
@@ -138,7 +150,9 @@ html[dark] {
 
   h1,
   h2 {
-    color: $subthemecolor;
+    svg {
+      fill: $subthemecolor;
+    }
   }
 
   .nav.nav-tabs {

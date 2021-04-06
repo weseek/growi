@@ -24,12 +24,14 @@ class SearchTypeahead extends React.Component {
     };
 
     this.restoreInitialData = this.restoreInitialData.bind(this);
+    this.clearKeyword = this.clearKeyword.bind(this);
+    this.changeKeyword = this.changeKeyword.bind(this);
     this.search = this.search.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.dispatchSubmit = this.dispatchSubmit.bind(this);
     this.getEmptyLabel = this.getEmptyLabel.bind(this);
-    this.getRestoreFormButton = this.getRestoreFormButton.bind(this);
+    this.getResetFormButton = this.getResetFormButton.bind(this);
     this.renderMenuItemChildren = this.renderMenuItemChildren.bind(this);
     this.getTypeahead = this.getTypeahead.bind(this);
   }
@@ -42,20 +44,30 @@ class SearchTypeahead extends React.Component {
   }
 
   componentDidMount() {
-    // **MEMO** This doesn't work at this time -- 2019.05.13 Yuki Takei
-    // It is needed to use Modal component of react-bootstrap when showing Move/Duplicate/CreateNewPage modals
-    // this.typeahead.getInstance().focus();
   }
 
   componentWillUnmount() {
   }
 
   /**
-   * Initialize keyword
+   * Initialize keywordyword
    */
   restoreInitialData() {
+    this.changeKeyword(this.props.keywordOnInit);
+  }
+
+  /**
+   * clear keyword
+   */
+  clearKeyword(text) {
+    this.changeKeyword('');
+  }
+
+  /**
+   * change keyword
+   */
+  changeKeyword(text) {
     // see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
-    const text = this.props.keywordOnInit;
     const instance = this.typeahead.getInstance();
     instance.clear();
     instance.setState({ text });
@@ -149,11 +161,16 @@ class SearchTypeahead extends React.Component {
   /**
    * Get restore form button to initialize button
    */
-  getRestoreFormButton() {
-    const isHidden = (this.state.input === this.props.keywordOnInit);
+  getResetFormButton() {
+    const isClearBtn = this.props.behaviorOfResetBtn === 'clear';
+    const initialKeyword = isClearBtn ? '' : this.props.keywordOnInit;
+    const isHidden = this.state.input === initialKeyword;
+    const resetForm = isClearBtn ? this.clearKeyword : this.restoreInitialData;
 
-    return isHidden ? <span /> : (
-      <button type="button" className="btn btn-link search-clear" onMouseDown={this.restoreInitialData}>
+    return isHidden ? (
+      <span />
+    ) : (
+      <button type="button" className="btn btn-link search-clear" onMouseDown={resetForm}>
         <i className="icon-close" />
       </button>
     );
@@ -179,7 +196,7 @@ class SearchTypeahead extends React.Component {
       inputProps.name = this.props.inputName;
     }
 
-    const restoreFormButton = this.getRestoreFormButton();
+    const resetFormButton = this.getResetFormButton();
 
     return (
       <div className="search-typeahead">
@@ -202,8 +219,11 @@ class SearchTypeahead extends React.Component {
           renderMenuItemChildren={this.renderMenuItemChildren}
           caseSensitive={false}
           defaultSelected={defaultSelected}
+          autoFocus={this.props.autoFocus}
+          onBlur={this.props.onBlur}
+          onFocus={this.props.onFocus}
         />
-        {restoreFormButton}
+        {resetFormButton}
       </div>
     );
   }
@@ -224,6 +244,8 @@ SearchTypeahead.propTypes = {
   onSearchSuccess: PropTypes.func,
   onSearchError:   PropTypes.func,
   onChange:        PropTypes.func,
+  onBlur:          PropTypes.func,
+  onFocus:         PropTypes.func,
   onSubmit:        PropTypes.func,
   onInputChange:   PropTypes.func,
   inputName:       PropTypes.string,
@@ -232,6 +254,8 @@ SearchTypeahead.propTypes = {
   placeholder:     PropTypes.string,
   keywordOnInit:   PropTypes.string,
   helpElement:     PropTypes.object,
+  autoFocus:       PropTypes.bool,
+  behaviorOfResetBtn: PropTypes.oneOf(['restore', 'clear']),
 };
 
 /**
@@ -243,6 +267,8 @@ SearchTypeahead.defaultProps = {
   onChange:        noop,
   placeholder:     '',
   keywordOnInit:   '',
+  behaviorOfResetBtn: 'restore',
+  autoFocus:       false,
   onInputChange: () => {},
 };
 

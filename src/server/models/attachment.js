@@ -7,6 +7,8 @@ const path = require('path');
 
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const mongoosePaginate = require('mongoose-paginate-v2');
+const { addSeconds } = require('date-fns');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -27,8 +29,11 @@ module.exports = function(crowi) {
     fileFormat: { type: String, required: true },
     fileSize: { type: Number, default: 0 },
     createdAt: { type: Date, default: Date.now },
+    temporaryUrlCached: { type: String },
+    temporaryUrlExpiredAt: { type: Date },
   });
   attachmentSchema.plugin(uniqueValidator);
+  attachmentSchema.plugin(mongoosePaginate);
 
   attachmentSchema.virtual('filePathProxied').get(function() {
     return `/attachment/${this._id}`;
@@ -42,8 +47,7 @@ module.exports = function(crowi) {
   attachmentSchema.set('toJSON', { virtuals: true });
 
 
-  attachmentSchema.statics.create = async function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
-    const fileUploader = require('../service/file-uploader')(crowi);
+  attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize) {
     const Attachment = this;
 
     const extname = path.extname(originalName);
@@ -52,7 +56,7 @@ module.exports = function(crowi) {
       fileName = `${fileName}${extname}`;
     }
 
-    let attachment = new Attachment();
+    const attachment = new Attachment();
     attachment.page = pageId;
     attachment.creator = user._id;
     attachment.originalName = originalName;
@@ -61,30 +65,29 @@ module.exports = function(crowi) {
     attachment.fileSize = fileSize;
     attachment.createdAt = Date.now();
 
-    // upload file
-    await fileUploader.uploadFile(fileStream, attachment);
-    // save attachment
-    attachment = await attachment.save();
-
     return attachment;
   };
 
-  attachmentSchema.statics.removeAttachmentsByPageId = async function(pageId) {
-    const attachments = await this.find({ page: pageId });
 
-    const promises = attachments.map(async(attachment) => {
-      return this.removeWithSubstanceById(attachment._id);
-    });
-
-    return Promise.all(promises);
+  attachmentSchema.methods.getValidTemporaryUrl = function() {
+    if (this.temporaryUrlExpiredAt == null) {
+      return null;
+    }
+    // return null when expired url
+    if (this.temporaryUrlExpiredAt.getTime() < new Date().getTime()) {
+      return null;
+    }
+    return this.temporaryUrlCached;
   };
 
-  attachmentSchema.statics.removeWithSubstanceById = async function(id) {
-    const fileUploader = require('../service/file-uploader')(crowi);
-    // retrieve data from DB to get a completely populated instance
-    const attachment = await this.findById(id);
-    await fileUploader.deleteFile(attachment);
-    return await attachment.remove();
+  attachmentSchema.methods.cashTemporaryUrlByProvideSec = function(temporaryUrl, provideSec) {
+    if (temporaryUrl == null) {
+      throw new Error('url is required.');
+    }
+    this.temporaryUrlCached = temporaryUrl;
+    this.temporaryUrlExpiredAt = addSeconds(new Date(), provideSec);
+
+    return this.save();
   };
 
   return mongoose.model('Attachment', attachmentSchema);

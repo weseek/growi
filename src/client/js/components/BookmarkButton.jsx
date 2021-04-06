@@ -1,83 +1,80 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { UncontrolledTooltip } from 'reactstrap';
+import { withTranslation } from 'react-i18next';
+import { withUnstatedContainers } from './UnstatedUtils';
+
 import { toastError } from '../util/apiNotification';
+import PageContainer from '../services/PageContainer';
+import AppContainer from '../services/AppContainer';
 
 class BookmarkButton extends React.Component {
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      isBookmarked: false,
-    };
-
     this.handleClick = this.handleClick.bind(this);
   }
 
-  async componentDidMount() {
-    const { pageId, crowi } = this.props;
-    // if guest user
-    if (!this.isUserLoggedIn()) {
-      // do nothing
+  async handleClick() {
+    const { appContainer, pageContainer } = this.props;
+    const { isGuestUser } = appContainer;
+
+    if (isGuestUser) {
       return;
     }
 
     try {
-      const response = await crowi.apiv3.get('/bookmarks', { pageId });
-      if (response.data.bookmark != null) {
-        this.setState({ isBookmarked: true });
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-  }
-
-  async handleClick() {
-    const { crowi, pageId } = this.props;
-    const bool = !this.state.isBookmarked;
-
-    try {
-      await crowi.apiv3.put('/bookmarks', { pageId, bool });
-      this.setState({ isBookmarked: bool });
+      pageContainer.toggleBookmark();
     }
     catch (err) {
       toastError(err);
     }
   }
 
-  isUserLoggedIn() {
-    return this.props.crowi.currentUserId != null;
-  }
 
   render() {
-    // if guest user
-    if (!this.isUserLoggedIn()) {
-      return <div></div>;
-    }
+    const { appContainer, pageContainer, t } = this.props;
+    const { isGuestUser } = appContainer;
 
     return (
-      <button
-        type="button"
-        href="#"
-        title="Bookmark"
-        onClick={this.handleClick}
-        className={`btn rounded-circle btn-bookmark border-0 d-edit-none
-          ${`btn-${this.props.size}`}
-          ${this.state.isBookmarked ? 'btn-warning active' : 'btn-outline-warning'}`}
-      >
-        <i className="icon-star"></i>
-      </button>
+      <div>
+        <button
+          type="button"
+          id="bookmark-button"
+          onClick={this.handleClick}
+          className={`btn btn-bookmark border-0
+          ${`btn-${this.props.size}`} ${pageContainer.state.isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+        >
+          <i className="icon-star mr-3"></i>
+          <span className="total-bookmarks">
+            {pageContainer.state.sumOfBookmarks}
+          </span>
+        </button>
+
+        {isGuestUser && (
+        <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+          {t('Not available for guest')}
+        </UncontrolledTooltip>
+        )}
+      </div>
     );
   }
 
 }
 
+/**
+ * Wrapper component for using unstated
+ */
+const BookmarkButtonWrapper = withUnstatedContainers(BookmarkButton, [AppContainer, PageContainer]);
+
 BookmarkButton.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
   pageId: PropTypes.string,
-  crowi: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
   size: PropTypes.string,
 };
 
@@ -85,4 +82,4 @@ BookmarkButton.defaultProps = {
   size: 'md',
 };
 
-export default BookmarkButton;
+export default withTranslation()(BookmarkButtonWrapper);

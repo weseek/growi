@@ -1,16 +1,21 @@
 <!-- Mathjax -->
-<script type="text/x-mathjax-config" async>
-  MathJax.Hub.Config({
-    skipStartupTypeset: true,
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX", "output/SVG"],
-    tex2jax: {
-      processEscapes: true
+<script type="text/javascript">
+  window.MathJax = {
+    startup: {
+      typeset: false
     },
-    showMathMenu: false,
-    showMathMenuMSIE: false,
-    showProcessingMessages: false,
-    messageStyle: "none"
-  });
+    tex: {
+      processEscapes: true,
+      inlineMath: [['$', '$'], ['\\(', '\\)']]
+    },
+    options: {
+      renderActions: {
+        addMenu: [],
+        checkLoading: []
+      },
+      ignoreHtmlClass: 'tex2jax_ignore',
+      processHtmlClass: 'tex2jax_process'
+    }
+  };
 </script>
 {{ cdnScriptTag('mathjax') }}

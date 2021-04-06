@@ -3,17 +3,18 @@
 //
 
 // determine optional variables
-$border-image-navbar: linear-gradient(to right, #ccc 0%, #ccc 100%) !default;
+$border-image-navbar: linear-gradient(to right, $gray-300 0%, $gray-300 100%) !default;
 $bgcolor-search-top-dropdown: $secondary !default;
 $bgcolor-sidebar-nav-item-active: darken($bgcolor-sidebar, 10%) !default;
 $text-shadow-sidebar-nav-item-active: 1px 1px 2px $primary !default;
-$bgcolor-inline-code: #f0f0f0 !default;
-$color-inline-code: #c7254e !default;
-$bordercolor-inline-code: #ccc8c8 !default;
-$bordercolor-nav-tabs: #dee2e6 !default;
-$bordercolor-nav-tabs-hover: #e9ecef #e9ecef $bordercolor-nav-tabs !default;
-$color-nav-tabs-link-active: #495057 !default;
+$bgcolor-inline-code: $gray-100 !default;
+$color-inline-code: darken($red, 15%) !default;
+$bordercolor-inline-code: $gray-400 !default;
+$bordercolor-nav-tabs: $gray-300 !default;
+$bordercolor-nav-tabs-hover: $gray-200 $gray-200 $bordercolor-nav-tabs !default;
+$color-nav-tabs-link-active: $gray-600 !default;
 $bordercolor-nav-tabs-active: $bordercolor-nav-tabs $bordercolor-nav-tabs $bgcolor-global !default;
+$color-seen-user: #549c79 !default;
 
 // override bootstrap variables
 $body-bg: $bgcolor-global;
@@ -32,11 +33,16 @@ $nav-tabs-link-active-border-color: $bordercolor-nav-tabs-active;
 @import '~bootstrap/scss/mixins';
 @import '../mixins';
 @import 'mixins/list-group';
+@import 'mixins/page-editor-mode-manager';
 @import 'mixins/tables'; // comment out and use _reboot-bootstrap-tables instead -- 2020.05.28 Yuki Takei
+@import 'reboot-bootstrap-buttons';
 @import 'reboot-bootstrap-colors';
 @import 'reboot-bootstrap-theme-colors';
 @import 'reboot-bootstrap-nav';
 @import 'reboot-toastr-colors';
+
+// determine variables with　bootstrap function (These variables can be used after importing bootstrap above)
+$color-modal-header: color-yiq($primary) !default;
 
 :not(pre) {
   > code {
@@ -65,26 +71,40 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
-// Link buttons
-.btn-link {
-  color: $link-color;
-
-  @include hover {
-    color: $link-hover-color;
-  }
-}
-
 // Dropdown
 .dropdown-menu {
   color: $color-global;
 }
 
+.grw-personal-dropdown {
+  .grw-icon-container svg {
+    fill: $color-global;
+  }
+  .grw-icon-container-muted svg {
+    fill: $secondary;
+  }
+}
+
 .dropdown-item {
   color: $color-global;
+
+  svg {
+    fill: $color-global;
+  }
+
+  &:active,
   &.active,
-  &:active {
+  &:active:hover,
+  &.active:hover {
     color: $color-dropdown-link-active;
     background-color: $bgcolor-dropdown-link-active;
+
+    svg {
+      fill: $color-dropdown-link-active;
+    }
+  }
+  &:hover {
+    background-color: $light;
   }
 }
 
@@ -101,6 +121,37 @@ pre:not(.hljs):not(.CodeMirror-line) {
   &:hover,
   &:focus {
     color: $color-link-hover !important;
+  }
+}
+
+// Pagination
+ul.pagination {
+  li.page-item.disabled {
+    button.page-link {
+      color: $gray-400;
+    }
+  }
+  li.page-item.active {
+    button.page-link {
+      color: color-yiq($primary);
+      background-color: $primary;
+      &:hover,
+      &:focus {
+        color: color-yiq($primary);
+        background-color: $primary;
+      }
+    }
+  }
+  li.page-item {
+    button.page-link {
+      color: $primary;
+      border-color: $secondary;
+      &:hover,
+      &:active,
+      &:focus {
+        color: $primary;
+      }
+    }
   }
 }
 
@@ -221,14 +272,22 @@ pre:not(.hljs):not(.CodeMirror-line) {
   fill: $color-editor-icons;
 }
 
+// page preview button in link form
+.btn-page-preview svg {
+  fill: white;
+}
+
 /*
  * Modal
  */
 .modal {
   .modal-header {
     border-bottom-color: $border-color-theme;
+    .modal-title {
+      color: $color-modal-header;
+    }
     .close {
-      color: $light;
+      color: $color-modal-header;
       opacity: 0.5;
       &:hover {
         opacity: 0.9;
@@ -245,8 +304,54 @@ pre:not(.hljs):not(.CodeMirror-line) {
   }
 }
 
-.liker-and-seenusers {
-  border-bottom-color: $bordercolor-nav-tabs;
+.grw-page-accessories-control {
+  .grw-seen-user-info {
+    .btn {
+      color: $color-seen-user;
+      &:active {
+        color: $color-seen-user;
+      }
+      .footstamp-icon {
+        fill: $color-seen-user;
+      }
+    }
+  }
+}
+
+.grw-custom-nav-tab {
+  .nav-item {
+    &:hover,
+    &:focus {
+      background-color: rgba($color-link, 0.08);
+    }
+    .nav-link {
+      -webkit-appearance: none;
+      color: $color-link;
+      svg {
+        fill: $color-link;
+      }
+
+      // Disabled state lightens text
+      &.disabled {
+        color: $nav-link-disabled-color;
+        svg {
+          fill: $nav-link-disabled-color;
+        }
+      }
+    }
+  }
+
+  .grw-nav-slide-hr {
+    border-color: $color-link;
+  }
+}
+
+.grw-page-accessories-modal {
+  .modal-header {
+    .close {
+      color: $secondary;
+    }
+  }
 }
 
 /*
@@ -264,7 +369,7 @@ pre:not(.hljs):not(.CodeMirror-line) {
  */
 .admin-page {
   span.slider {
-    background-color: #ccc;
+    background-color: $gray-300;
 
     &:before {
       background-color: white;
@@ -284,6 +389,10 @@ pre:not(.hljs):not(.CodeMirror-line) {
  * GROWI wiki
  */
 .wiki {
+  .highlighted {
+    @include highlighted($bgcolor-highlighted);
+  }
+
   a {
     color: $color-link-wiki;
 
@@ -328,26 +437,69 @@ body.on-edit {
       border-top-color: $border-color-theme;
     }
   }
+}
 
-  .grw-editor-navbar-bottom {
-    background-color: darken($bgcolor-global, 2%);
+/*
+ * Preview for editing /Sidebar
+ */
+body.pathname-sidebar {
+  .page-editor-preview-body {
+    color: $color-sidebar-context;
+    background-color: $bgcolor-sidebar-context;
+  }
+}
+
+/*
+ * GROWI Grid Edit Modal
+ */
+.grw-grid-edit-preview {
+  .desktop-preview,
+  .tablet-preview,
+  .mobile-preview {
+    background: $bgcolor-global;
+  }
+  .grid-edit-border-for-each-cols {
+    border: 2px solid $bgcolor-global;
+  }
+}
+
+.grid-preview-col-0 {
+  background: $growi-blue;
+}
+
+.grid-preview-col-1 {
+  background: $info;
+}
+
+.grid-preview-col-2 {
+  background: $success;
+}
+
+.grid-preview-col-3 {
+  background: $growi-green;
+}
+
+/*
+ * GROWI comment
+ */
+.page-comment-meta .page-comment-revision svg {
+  fill: $color-link;
+
+  &:hover() {
+    fill: $color-link-hover;
   }
 }
 
 /*
  * GROWI comment form
  */
-.growi .main {
-  .page-comments-row {
-    border-top-color: $border-color-theme;
-  }
-
+.page-comments {
   .page-comment .page-comment-main,
   .page-comment-form .comment-form-main {
-    background-color: darken($bgcolor-global, 4%);
+    background-color: $bgcolor-global;
 
     &:before {
-      border-right-color: darken($bgcolor-global, 4%);
+      border-right-color: $bgcolor-global;
     }
 
     .nav.nav-tabs {
@@ -370,7 +522,6 @@ body.on-edit {
         > li.nav-item > a.nav-link {
           color: inherit;
         }
-
         a {
           &.hover {
             background-color: darken($bgcolor-global, 4%);
@@ -394,9 +545,9 @@ mark.rbt-highlight-text {
 }
 
 /*
- * GROWI page attachments
+ * GROWI page content footer
  */
-.page-attachments-row {
+.page-content-footer {
   background-color: darken($bgcolor-global, 2%);
   border-top-color: $border-color-theme;
 }
@@ -423,4 +574,20 @@ mark.rbt-highlight-text {
  */
 .bg-box {
   background-color: $bgcolor-global;
+}
+
+.grw-fab {
+  .btn-create-page {
+    fill: color-yiq($primary);
+  }
+
+  .btn-scroll-to-top {
+    fill: $gray-900;
+  }
+}
+
+// Page Management Dropdown icon
+.grw-btn-page-management:hover,
+.grw-btn-page-management:focus {
+  background-color: rgba($color-link, 0.15);
 }

@@ -152,12 +152,17 @@ class UserGroupPage extends React.Component {
           onDelete={this.showDeleteModal}
           userGroupRelations={this.state.userGroupRelations}
         />
-        <PaginationWrapper
-          activePage={this.state.activePage}
-          changePage={this.handlePage}
-          totalItemsCount={this.state.totalUserGroups}
-          pagingLimit={this.state.pagingLimit}
-        />
+        {this.state.userGroups.length === 0
+        ? <p>No groups yet</p> : (
+          <PaginationWrapper
+            activePage={this.state.activePage}
+            changePage={this.handlePage}
+            totalItemsCount={this.state.totalUserGroups}
+            pagingLimit={this.state.pagingLimit}
+            align="center"
+            size="sm"
+          />
+        )}
         <UserGroupDeleteModal
           userGroups={this.state.userGroups}
           deleteUserGroup={this.state.selectedUserGroup}

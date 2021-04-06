@@ -6,14 +6,21 @@ const logger = loggerFactory('growi:middleware:login-required');
  * require login handler
  *
  * @param {boolean} isGuestAllowed whethere guest user is allowed (default false)
+ * @param {function} fallback fallback function which will be triggered when the check cannot be passed
  */
-module.exports = (crowi, isGuestAllowed = false) => {
+module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
 
   return function(req, res, next) {
 
     // check the route config and ACL
     if (isGuestAllowed && crowi.aclService.isGuestAllowedToRead()) {
       logger.debug('Allowed to read: ', req.path);
+      return next();
+    }
+
+    // check the page is shared
+    if (isGuestAllowed && req.isSharedPage) {
+      logger.debug('Target page is shared page');
       return next();
     }
 
@@ -39,9 +46,15 @@ module.exports = (crowi, isGuestAllowed = false) => {
     // is api path
     const path = req.path || '';
     if (path.match(/^\/_api\/.+$/)) {
+      if (fallback != null) {
+        return fallback(req, res, next);
+      }
       return res.sendStatus(403);
     }
 
+    if (fallback != null) {
+      return fallback(req, res, next);
+    }
     req.session.redirectTo = req.originalUrl;
     return res.redirect('/login');
   };

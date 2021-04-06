@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
-
-import PaginationWrapper from '../PaginationWrapper';
 
 import Page from '../PageList/Page';
+import PaginationWrapper from '../PaginationWrapper';
 
 class RecentCreated extends React.Component {
 
@@ -18,7 +16,7 @@ class RecentCreated extends React.Component {
       pages: [],
       activePage: 1,
       totalPages: 0,
-      pagingLimit: Infinity,
+      pagingLimit: 10,
     };
 
     this.handlePage = this.handlePage.bind(this);
@@ -33,29 +31,21 @@ class RecentCreated extends React.Component {
     await this.getRecentCreatedList(selectedPage);
   }
 
-  getRecentCreatedList(selectPageNumber) {
-    const { appContainer, pageContainer } = this.props;
-    const { pageId } = pageContainer.state;
-
-    const userId = appContainer.currentUserId;
-    const limit = appContainer.getConfig().recentCreatedLimit;
-    const offset = (selectPageNumber - 1) * limit;
+  async getRecentCreatedList(selectedPage) {
+    const { appContainer, userId } = this.props;
+    const page = selectedPage;
 
     // pagesList get and pagination calculate
-    this.props.appContainer.apiGet('/pages.recentCreated', {
-      page_id: pageId, user: userId, limit, offset,
-    })
-      .then((res) => {
-        const totalPages = res.totalCount;
-        const pages = res.pages;
-        const activePage = selectPageNumber;
-        this.setState({
-          pages,
-          activePage,
-          totalPages,
-          pagingLimit: limit,
-        });
-      });
+    const res = await appContainer.apiv3Get(`/users/${userId}/recent`, { page });
+    const { totalCount, pages, limit } = res.data;
+
+    this.setState({
+      pages,
+      activePage: selectedPage,
+      totalPages: totalCount,
+      pagingLimit: limit,
+    });
+
   }
 
   /**
@@ -66,7 +56,7 @@ class RecentCreated extends React.Component {
    */
   generatePageList(pages) {
     return pages.map(page => (
-      <li key={`recent-created:list-view:${page._id}`}>
+      <li key={`recent-created:list-view:${page._id}`} className="mt-4">
         <Page page={page} />
       </li>
     ));
@@ -81,10 +71,12 @@ class RecentCreated extends React.Component {
           {pageList}
         </ul>
         <PaginationWrapper
+          align="center"
           activePage={this.state.activePage}
           changePage={this.handlePage}
           totalItemsCount={this.state.totalPages}
           pagingLimit={this.state.pagingLimit}
+          size="sm"
         />
       </div>
     );
@@ -95,11 +87,12 @@ class RecentCreated extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RecentCreatedWrapper = withUnstatedContainers(RecentCreated, [AppContainer, PageContainer]);
+const RecentCreatedWrapper = withUnstatedContainers(RecentCreated, [AppContainer]);
 
 RecentCreated.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+
+  userId: PropTypes.string.isRequired,
 };
 
 export default RecentCreatedWrapper;

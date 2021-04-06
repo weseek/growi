@@ -1,10 +1,15 @@
 {
-	"Help": "帮助",
+  "Help": "帮助",
+  "view": "View",
 	"Edit": "编辑",
 	"Delete": "删除",
 	"delete_all": "删除所有",
 	"Duplicate": "复制",
 	"Copy": "复制",
+  "preview":"预览",
+  "desktop":"电脑",
+  "phone":"手机",
+  "tablet":"平板",
 	"Login": "登录",
 	"Click to copy": "点击复制",
 	"Move/Rename": "移动/重命名",
@@ -13,13 +18,15 @@
 	"Unlinked": "Unlinked",
 	"Like!": "Like!",
 	"Seen by": "Seen by",
-	"Cancel": "取消",
+  "Done": "Done",
+  "Cancel": "取消",
 	"Create": "创建",
 	"Admin": "管理",
 	"administrator": "管理员",
 	"Tag": "标签",
 	"Tags": "Tags",
-	"New": "新建",
+  "New": "新建",
+  "Close": "Close",
 	"Shortcuts": "快捷方式",
 	"eg": "e.g.",
 	"add": "添加",
@@ -31,7 +38,8 @@
 	"User": "用户",
 	"status": "状态",
 	"account_id": "用户Id",
-	"Update": "更新",
+	"Initialize": "初始化",
+  "Update": "更新",
 	"Update Page": "更新本页",
 	"Warning": "警告",
 	"Sign in": "登录",
@@ -45,24 +53,36 @@
 	"Taro Yamada": "John Doe",
 	"List View": "列表",
 	"Timeline View": "时间线",
-	"History": "历史",
+  "History": "历史",
+  "attachment_data": "Attachment Data",
+  "No_attachments_yet": "暂无附件",
 	"Presentation Mode": "演示文稿",
-	"Not available for guest": "Not available for guest",
-	"username": "用户名",
+  "The end": "结束",
+  "Not available for guest": "Not available for guest",
+  "Create Archive Page": "创建归档页",
+  "File type": "文件类型",
+  "Target page": "目标页面",
+  "Include Attachment File": "包含附件",
+  "Include Comment": "包含评论",
+  "Include Subordinated Page": "包括子页面",
+  "All Subordinated Page": "所有子页面",
+  "Specify Hierarchy": "指定层级",
+  "Submitted the request to create the archive": "提交创建归档请求",
+  "username": "用户名",
 	"Created": "创建",
 	"Last updated": "上次更新",
-	"Last_Login": "上次登录",
+  "Last_Login": "上次登录",
 	"Share": "分享",
-	"Share Link": "分享链接",
+  "Share Link": "分享链接",
 	"Markdown Link": "Markdown链接",
 	"Create/Edit Template": "创建/编辑 模板页面",
 	"Unportalize": "未启动",
 	"Go to this version": "查看此版本",
 	"View diff": "查看差异",
 	"No diff": "无差异",
-	"Shrink versions that have no diffs": "收缩没有差异的版本",
 	"User ID": "用户ID",
 	"Home": "首页",
+	"My Drafts": "My Drafts",
 	"User Settings": "用户设置",
 	"User Information": "用户信息",
 	"Basic Info": "基础信息",
@@ -92,7 +112,6 @@
 	"Input page name (optional)": "Input page name (optional)",
 	"New Page": "新页面",
 	"Create under": "Create page under below:",
-	"Table of Contents": "Table of Contents",
 	"Wiki Management Home Page": "Wiki管理首页",
 	"App Settings": "系统设置",
 	"Site URL settings": "主页URL设置",
@@ -113,7 +132,8 @@
 	"Anyone with the link": "任何人",
 	"Specified users only": "仅指定用户",
 	"Only me": "只有我",
-	"Only inside the group": "仅组内",
+  "Only inside the group": "仅组内",
+  "page_list": "Page List",
 	"page_list_and_search_results": "页面列表/搜索结果",
 	"scope_of_page_disclosure": "页面公开范围",
 	"set_point": "设定值",
@@ -132,14 +152,26 @@
 	"List Drafts": "草稿",
 	"Deleted Pages": "已删除页",
 	"Sign out": "退出",
-	"Disassociate": "解除关联",
+  "Disassociate": "解除关联",
+  "No bookmarks yet": "暂无书签",
 	"Recent Created": "最新创建",
-	"Recent Changes": "最新修改",
+  "Recent Changes": "最新修改",
+  "original_path":"Original path",
+  "new_path":"New path",
+  "duplicated_path":"duplicated_path",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
 		"invalid_syntax": "%s的语法无效。"
-	},
+  },
+  "not_found_page": {
+    "Create Page": "创建页面",
+    "page_not_exist": "该页面不存在",
+    "page_not_exist_alert": "该页面不存在，请创建一个新页面"
+  },
+  "custom_navigation": {
+    "no_page_list": "There are no pages under this page."
+  },
 	"installer": {
 		"setup": "安装",
 		"create_initial_account": "创建初始用户",
@@ -168,6 +200,7 @@
 		}
 	},
 	"page_me_apitoken": {
+    "api_token": "API Token",
 		"notice": {
 			"apitoken_issued": "API token 未发布。",
 			"update_token1": "您可以更新以生成新的API令牌。",
@@ -241,32 +274,55 @@
 	"page_page": {
 		"notice": {
 			"version": "这不是当前版本。",
-			"moved": "此页已从<code>%s</code>",
-			"redirected": "您将从<code>%s</code>",
-			"duplicated": "此页来自<code>%s</code>",
+			"moved": "此页已从",
+      "moved_period": "",
+			"redirected": "您将从",
+      "redirected_period": "",
+			"duplicated": "此页来自",
+      "duplicated_period": "",
 			"unlinked": "将网页重定向到此网页已被删除。",
 			"restricted": "访问此页受到限制",
 			"stale": "自上次更新以来，已超过{{count}年。",
-			"stale_plural": "自上次更新以来已过去{{count}年以上。"
+      "stale_plural": "自上次更新以来已过去{{count}年以上。",
+      "no_deadline": "This page has no expiration date"
 		}
 	},
 	"page_edit": {
 		"Show active line": "显示活动行",
+		"auto_format_table": "自动格式化表格",
 		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
 		"notice": {
 			"conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
 		}
-	},
+  },
+  "page_table_of_contents": {
+    "empty": "目录为空"
+  },
+  "page_comment": {
+    "display_the_page_when_posting_this_comment": "Display the page when posting this comment"
+  },
 	"page_api_error": {
 		"notfound_or_forbidden": "未找到或禁止原始页。",
 		"already_exists": "新建页面已存在",
 		"outdated": "页面已被某人更新，现在已过时。",
 		"user_not_admin": "仅管理员用户可以完全删除"
-	},
+  },
+  "page_history": {
+    "revision_list": "修订清单",
+    "revision": "版本",
+    "comparing_source": "源头",
+    "comparing_target": "目标",
+    "comparing_revisions": "比较两者的区别",
+    "compare_latest":"比較最新版本",
+    "compare_previous":"比較以前的版本"
+  },
 	"modal_rename": {
 		"label": {
 			"Move/Rename page": "页面 移动/重命名",
-			"New page name": "新建页面名称",
+      "New page name": "新建页面名称",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
+      "Fail to get exist path": "Fail to get exist path",
+      "Rename without exist path": "Rename without exist path",
 			"Current page name": "当前页面名称",
 			"Recursively": "递归地",
 			"Do not update metadata": "不更新元数据",
@@ -296,9 +352,16 @@
 	"modal_duplicate": {
 		"label": {
 			"Duplicate page": "Duplicate page",
-			"New page name": "New page name",
-			"Current page name": "Current page name"
-		}
+      "New page name": "New page name",
+      "Fail to get subordinated pages": "Fail to get subordinated pages",
+			"Current page name": "Current page name",
+      "Recursively": "Recursively",
+      "Duplicate without exist path": "Duplicate without exist path",
+      "Same page already exists": "Same page already exists"
+    },
+    "help": {
+      "recursive": "Duplicate children of under this path recursively"
+    }
 	},
 	"modal_putback": {
 		"label": {
@@ -331,8 +394,25 @@
 			"Post": "提交"
 		}
 	},
+  "link_edit": {
+    "edit_link": "Edit Link",
+    "set_link_and_label": "Set link and label",
+    "link": "Link",
+    "placeholder_of_link_input": "Input page path or URL",
+    "label": "Label",
+    "path_format": "Path format",
+    "use_relative_path": "Use relative path",
+    "use_permanent_link": "Use permanent link",
+    "notation": "Notation",
+    "markdown": "Markdown",
+    "GROWI_original": "GROWI original",
+    "pukiwiki": "Pukiwiki",
+    "preview": "Preview",
+    "page_not_found_in_preview": "\"{{path}}\" is not a GROWI page."
+  },
 	"toaster": {
 		"update_successed": "Succeeded to update {{target}}",
+    "initialize_successed": "Succeeded to initialize {{target}}",
 		"give_user_admin": "Succeeded to give {{username}} admin",
 		"remove_user_admin": "Succeeded to remove {{username}} admin ",
 		"activate_user_success": "Succeeded to activating {{username}}",
@@ -391,7 +471,9 @@
 		"open_sandbox": "开放式沙箱"
 	},
 	"hackmd": {
-		"not_set_up": "HackMD is not set up.",
+    "hack_md": "HackMD",
+    "not_set_up": "HackMD is not set up.",
+    "used_for_not_found": "Can not use HackMD to a page that does not exist.",
 		"start_to_edit": "Start to edit with HackMD",
 		"clone_page_content": "Click to clone page content and start to edit.",
 		"unsaved_draft": "HackMD has unsaved draft.",
@@ -405,9 +487,34 @@
 		"check_configuration": "Check your configuration following <a href='https://docs.growi.org/guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
 		"not_initialized": "HackmdEditor component has not initialized",
 		"someone_editing": "Someone editing this page on HackMD",
-		"this_page_has_draft": "This page has a draft on HackMD"
-	},
-	"security_settings": "安全设置",
+    "this_page_has_draft": "This page has a draft on HackMD",
+    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "若要使用HackMD的多人同时编辑功能，请先关联HackMD和GROWI。详情请参考<a href='https://docs.growi.org/cn/admin-guide/admin-cookbook/integrate-with-hackmd.html'>这里</a>。",
+    "need_to_make_page": "To use HackMD, please make a new page from the <a href='#edit'>built-in editor.</a>"
+  },
+  "slack_notification": {
+    "popover_title": "Slack Notification",
+    "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
+  },
+  "security_settings": "安全设置",
+  "share_links": {
+    "Shere this page link to public": "Shere this page link to public",
+    "share_link_list": "Share link list",
+    "share_link_management": "Share Link Management",
+    "No_share_links":"No share links",
+    "Share Link": "Share Link",
+    "Page Path": "Page Path",
+    "share_link_notice":"remove all share links",
+    "delete_all_share_links":"Delete all share links",
+    "expire": "Expiration",
+    "Days": "Days",
+    "Custom": "Custom",
+    "description": "description",
+    "enter_desc": "Enter description",
+    "Unlimited": "unlimited",
+    "Issue": "Issue",
+    "share_settings" :"Share settings",
+    "Invalid_Number_of_Date" : "You entered invalid value"
+  },
 	"security_setting": {
 		"Security settings": "安全设置",
 		"Guest Users Access": "来宾用户访问",
@@ -472,7 +579,7 @@
 		"missing mandatory configs": "The following mandatory items are not set in either database nor environment variables.",
 		"Local": {
 			"name": "ID/Password",
-			"note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}/code> .",
+			"note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
 			"enable_local": "Enable ID/Password"
 		},
 		"mikan": {
@@ -613,7 +720,7 @@
 		"how_to": {
 			"header": "How to configure Incoming Webhooks?",
 			"workspace": "(At Workspace) Add a hook",
-			"workspace_desc1": "Go to <a href='https: //slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
+			"workspace_desc1": "Go to <a href='https://slack.com/services/new/incoming-webhook'>Incoming Webhooks configuration page</a>.",
 			"workspace_desc2": "Choose the default channel to post.",
 			"workspace_desc3": "Add.",
 			"at_growi": "(At GROWI admin page) Set Webhook URL",
@@ -674,24 +781,6 @@
 		"rebuild_description_1": "单击按钮以重新生成索引并添加所有页面数据。",
 		"rebuild_description_2": "这可能需要一段时间。"
 	},
-	"export_management": {
-		"exporting_collection_list": "正在导出集合列表",
-		"exported_data_list": "导出的存档数据列表",
-		"export_collections": "导出集合",
-		"check_all": "全部选中",
-		"uncheck_all": "全部取消选中",
-		"desc_password_seed": "还原用户数据时，不要忘记将当前的<code>密码种子设置到新的GROWI系统，否则用户将无法使用其密码登录。<br><br><strong>提示：</strong><br>当前的<code>密码种子将存储在<code>meta.json格式</code>在导出的zip压缩包中。",
-		"create_new_archive_data": "创建新的存档数据",
-		"export": "导出",
-		"cancel": "取消",
-		"file": "文件",
-		"growi_version": "Growi 版本号",
-		"collections": "收藏",
-		"exported_at": "导出在",
-		"export_menu": "导出菜单",
-		"download": "下载",
-		"delete": "删除"
-	},
 	"personal_dropdown": {
 		"home": "家",
 		"settings": "设置",
@@ -714,6 +803,12 @@
 		"Registration successful": "注册成功",
 		"Setup": "安装程序"
 	},
+  "export_bulk": {
+    "failed_to_export": "导出失败",
+    "failed_to_count_pages": "页面计数失败",
+    "export_page_markdown": "以Markdown格式导出页面",
+    "export_page_pdf": "以PDF格式导出页面"
+  },
 	"message": {
 		"successfully_connected": "连接成功！",
 		"fail_to_save_access_token": "无法保存访问令牌。请再试一次。",
@@ -737,5 +832,18 @@
 		"complete_to_install1": "完成安装GROWI！请以管理员帐户登录。",
 		"complete_to_install2": "完成安装GROWI！请先检查此页上的每个设置。",
 		"failed_to_create_admin_user": "无法创建管理用户。{{errMessage}"
-	}
+	},
+  "grid_edit":{
+    "create_bootstrap_4_grid":"创建Bootstrap 4网格",
+    "grid_settings": "网格设置",
+    "grid_pattern": "网格样式",
+    "division":"分割",
+    "smart_no":"手机/不分割",
+    "break_point":"按画面大小分割"
+  },
+  "validation":{
+    "aws_region": "关于地区，请输入AWS地区名，例如：ap-east-1",
+    "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”",
+    "failed_to_send_a_test_email":"SMTP方式测试邮件发送失败，请检查相关设定。"
+  }
 }
