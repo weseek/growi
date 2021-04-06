@@ -14,10 +14,6 @@ const CustomBotWithoutSettingsAccordion = () => {
             <button
               className="btn btn-link btn-block d-flex justify-content-between text-decoration-none"
               type="button"
-              data-toggle="collapse"
-              data-target="#collapseOne"
-              aria-expanded="true"
-              aria-controls="collapseOne"
             >
               ① Botを作成する
               <i className="fa fa-chevron-down"></i>
@@ -25,7 +21,7 @@ const CustomBotWithoutSettingsAccordion = () => {
           </h2>
         </div>
 
-        <div id="collapseOne" className="collapse show" aria-labelledby="headingOne" data-parent="#withoutProxySettingsAccordion" onChange={e => {console.log('Event fired')}}>
+        <div id="collapseOne" className="collapse show">
           <div className="card-body">
             <div className="row my-5">
               <div className="mx-auto">
@@ -46,10 +42,6 @@ const CustomBotWithoutSettingsAccordion = () => {
             <button
               className="btn btn-link btn-block d-flex justify-content-between text-decoration-none"
               type="button"
-              data-toggle="collapse"
-              data-target="#collapseTwo"
-              aria-expanded="false"
-              aria-controls="collapseTwo"
             >
               ② BotをSlackにインストールする
               <i className="fa fa-chevron-down"></i>
@@ -57,7 +49,7 @@ const CustomBotWithoutSettingsAccordion = () => {
           </h2>
         </div>
 
-        <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#withoutProxySettingsAccordion">
+        <div id="collapseTwo" className="collapse">
           <div className="card-body">
             Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
             dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
@@ -76,10 +68,6 @@ const CustomBotWithoutSettingsAccordion = () => {
             <button
               className="btn btn-link btn-block d-flex justify-content-between text-decoration-none"
               type="button"
-              data-toggle="collapse"
-              data-target="#collapseThree"
-              aria-expanded="false"
-              aria-controls="collapseThree"
             >
               ③ Signing SecretとBot Tokenを登録する
               <i className="fa fa-chevron-down"></i>
@@ -87,7 +75,7 @@ const CustomBotWithoutSettingsAccordion = () => {
           </h2>
         </div>
 
-        <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#withoutProxySettingsAccordion">
+        <div id="collapseThree" className="collapse">
           <div className="card-body">
             Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
             dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
@@ -106,10 +94,6 @@ const CustomBotWithoutSettingsAccordion = () => {
             <button
               className="btn btn-link btn-block d-flex justify-content-between text-decoration-none"
               type="button"
-              data-toggle="collapse"
-              data-target="#collapseFour"
-              aria-expanded="false"
-              aria-controls="collapseFour"
             >
               ④ 連携状況のテストをする
               <i className="fa fa-chevron-down"></i>
@@ -117,7 +101,7 @@ const CustomBotWithoutSettingsAccordion = () => {
           </h2>
         </div>
 
-        <div id="collapseFour" className="collapse" aria-labelledby="headingFour" data-parent="#withoutProxySettingsAccordion">
+        <div id="collapseFour" className="collapse">
           <div className="card-body">
             Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
             dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
