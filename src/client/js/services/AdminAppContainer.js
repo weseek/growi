@@ -147,6 +147,13 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change defaultEmailShow
+   */
+  changeDefaultEmailShow(defaultEmailShow) {
+    this.setState({ defaultEmailShow });
+  }
+
+  /**
    * Change fileUpload
    */
   changeFileUpload(fileUpload) {
