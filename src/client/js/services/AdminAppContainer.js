@@ -19,7 +19,7 @@ export default class AdminAppContainer extends Container {
       title: this.dummyTitle,
       confidential: '',
       globalLang: '',
-      defaultEmailShow: true,
+      isEmailPublishedForNewUser: true,
       fileUpload: '',
 
       siteUrl: '',
@@ -74,12 +74,12 @@ export default class AdminAppContainer extends Container {
   async retrieveAppSettingsData() {
     const response = await this.appContainer.apiv3.get('/app-settings/');
     const { appSettingsParams } = response.data;
-
+    console.log(appSettingsParams);
     this.setState({
       title: appSettingsParams.title,
       confidential: appSettingsParams.confidential,
       globalLang: appSettingsParams.globalLang,
-      defaultEmailShow: appSettingsParams.isEmailPublishedForNewUser,
+      isEmailPublishedForNewUser: appSettingsParams.isEmailPublishedForNewUser,
       fileUpload: appSettingsParams.fileUpload,
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
@@ -147,12 +147,11 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change defaultEmailShow
+   * Change isEmailPublishedForNewUser
    */
-  changeDefaultEmailShow(defaultEmailShow) {
-    console.log(defaultEmailShow);
-    this.setState({ defaultEmailShow });
-    console.log(defaultEmailShow);
+  changeIsEmailPublishedForNewUserShow(isEmailPublishedForNewUser) {
+    this.setState({ isEmailPublishedForNewUser });
+    console.log(isEmailPublishedForNewUser);
   }
 
   /**
@@ -320,7 +319,7 @@ export default class AdminAppContainer extends Container {
       title: this.state.title,
       confidential: this.state.confidential,
       globalLang: this.state.globalLang,
-      defaultEmailShow: this.state.isEmailPublishedForNewUser,
+      isEmailPublishedForNewUser: this.state.isEmailPublishedForNewUser,
       fileUpload: this.state.fileUpload,
     });
     console.log(response.data);
