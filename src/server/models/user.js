@@ -653,7 +653,7 @@ module.exports = function(crowi) {
     const configManager = crowi.configManager;
 
     // Default email show/hide is up to the administrator
-    const isEmailPubshedForNewUser = configManager.getConfig('crowi', 'app:isEmailPubshedForNewUser');
+    const isEmailPubshedForNewUser = configManager.getConfig('crowi', 'app:isEmailPublishedForNewUser');
     if (isEmailPubshedForNewUser !== null) {
       newUser.isEmailPublished = isEmailPubshedForNewUser;
     }
