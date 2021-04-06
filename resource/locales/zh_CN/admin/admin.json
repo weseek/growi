@@ -23,6 +23,7 @@
 		"confidential_name": "内部名称",
 		"confidential_example": "ex）：仅供内部使用",
 		"default_language": "新用户的默认语言",
+		"default_mail_visibility": "新用户的默认电子邮件可见性",
 		"file_uploading": "文件上传",
 		"enable_files_except_image": "启用此选项将允许上传任何文件类型。如果没有此选项，则仅支持图像文件上载。",
 		"attach_enable": "如果启用此选项，则可以附加图像文件以外的文件。",

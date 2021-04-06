@@ -107,6 +107,37 @@ class AppSetting extends React.Component {
           <label
             className="text-left text-md-right col-md-3 col-form-label"
           >
+            {t('admin:app_setting.default_mail_visibility')}
+          </label>
+          <div className="col-md-6 py-2">
+
+            <div className="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radio-email-show"
+                className="custom-control-input"
+                name="mailVisibility"
+              />
+              <label className="custom-control-label" htmlFor="radio-email-show">{t('Show')}</label>
+            </div>
+
+            <div className="custom-control custom-radio custom-control-inline">
+              <input
+                type="radio"
+                id="radio-email-hide"
+                className="custom-control-input"
+                name="mailVisibility"
+              />
+              <label className="custom-control-label" htmlFor="radio-email-hide">{t('Hide')}</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div className="row form-group mb-5">
+          <label
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
             {t('admin:app_setting.file_uploading')}
           </label>
           <div className="col-md-6">
