@@ -126,7 +126,12 @@ const SlackIntegration = (props) => {
           >
             <div className="card-body">
               <h5 className="card-title">Official Bot</h5>
-              <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+              <p className="card-text">
+                {t('admin:slack_integration.selecting_bot_types.for_beginners')}
+                {t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}
+                {t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}
+                {t('admin:slack_integration.selecting_bot_types.security_control')}
+              </p>
             </div>
           </div>
 
@@ -135,8 +140,8 @@ const SlackIntegration = (props) => {
             onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
           >
             <div className="card-body">
-              <h5 className="card-title">Custom Bot (Without Proxy)</h5>
-              <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. </p>
+              <h5 className="card-title">Custom Bot without proxy)</h5>
+              <p className="card-text">セットアップの手間 </p>
             </div>
           </div>
 
@@ -145,7 +150,7 @@ const SlackIntegration = (props) => {
             onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
           >
             <div className="card-body">
-              <h5 className="card-title">Custom Bot (With Proxy)</h5>
+              <h5 className="card-title">Custom Bot with proxy)</h5>
               <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
             </div>
           </div>
