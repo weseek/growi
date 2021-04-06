@@ -261,7 +261,6 @@ module.exports = (crowi) => {
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
     };
-    console.log(appSettingsParams.isEmailPublishedForNewUser);
     return res.apiv3({ appSettingsParams });
 
   });
@@ -291,7 +290,6 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
   router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {
-    console.log(req.body);
     const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,

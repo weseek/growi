@@ -29,7 +29,6 @@ class AppSetting extends React.Component {
       toastSuccess(t('toaster.update_successed', { target: t('App Settings') }));
     }
     catch (err) {
-      console.log('errorだよ');
       toastError(err);
       logger.error(err);
     }

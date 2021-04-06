@@ -150,7 +150,6 @@ export default class AdminAppContainer extends Container {
    */
   changeIsEmailPublishedForNewUserShow(isEmailPublishedForNewUser) {
     this.setState({ isEmailPublishedForNewUser });
-    console.log(isEmailPublishedForNewUser);
   }
 
   /**
@@ -321,7 +320,6 @@ export default class AdminAppContainer extends Container {
       isEmailPublishedForNewUser: this.state.isEmailPublishedForNewUser,
       fileUpload: this.state.fileUpload,
     });
-    console.log(response.data);
     const { appSettingParams } = response.data;
     return appSettingParams;
   }
