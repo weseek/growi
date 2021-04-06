@@ -115,8 +115,10 @@ class AppSetting extends React.Component {
               <input
                 type="radio"
                 id="radio-email-show"
+                value="true"
                 className="custom-control-input"
                 name="mailVisibility"
+                onChange={(e) => { adminAppContainer.changeDefaultEmailShow(e.target.value) }}
               />
               <label className="custom-control-label" htmlFor="radio-email-show">{t('Show')}</label>
             </div>
@@ -125,8 +127,10 @@ class AppSetting extends React.Component {
               <input
                 type="radio"
                 id="radio-email-hide"
+                value="false"
                 className="custom-control-input"
                 name="mailVisibility"
+                onChange={(e) => { adminAppContainer.changeDefaultEmailShow(e.target.value) }}
               />
               <label className="custom-control-label" htmlFor="radio-email-hide">{t('Hide')}</label>
             </div>
