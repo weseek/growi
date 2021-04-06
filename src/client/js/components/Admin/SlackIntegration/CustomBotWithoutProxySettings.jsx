@@ -134,7 +134,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
 
       <div className="accordion" id="accordionExample">
-        <div className="card">
+        <div className="card admin-accordion-card">
           <div className="card-header" id="headingOne">
             <h2 className="mb-0">
               <button
@@ -152,7 +152,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
           <div id="collapseOne" className="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
             <div className="card-body">
-              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
+              Anim pariatur cliche reprehenderit, nim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
               dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
               assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
               butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus
@@ -160,7 +160,7 @@ const CustomBotWithoutProxySettings = (props) => {
             </div>
           </div>
         </div>
-        <div className="card">
+        <div className="card admin-accordion-card">
           <div className="card-header" id="headingTwo">
             <h2 className="mb-0">
               <button
@@ -172,6 +172,7 @@ const CustomBotWithoutProxySettings = (props) => {
                 aria-controls="collapseTwo"
               >
                 Collapsible Group Item #2
+                <i className="fa fa-chevron-down"></i>
               </button>
             </h2>
           </div>
@@ -185,7 +186,7 @@ const CustomBotWithoutProxySettings = (props) => {
             </div>
           </div>
         </div>
-        <div className="card">
+        <div className="card admin-accordion-card">
           <div className="card-header" id="headingThree">
             <h2 className="mb-0">
               <button
