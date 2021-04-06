@@ -114,21 +114,21 @@ class AppSetting extends React.Component {
             <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
-                id="radioEmailShow"
+                id="radio-email-show"
                 className="custom-control-input"
                 name="mailVisibility"
               />
-              <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
+              <label className="custom-control-label" htmlFor="radio-email-show">{t('Show')}</label>
             </div>
 
             <div className="custom-control custom-radio custom-control-inline">
               <input
                 type="radio"
-                id="radioEmailHide"
+                id="radio-email-hide"
                 className="custom-control-input"
                 name="mailVisibility"
               />
-              <label className="custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
+              <label className="custom-control-label" htmlFor="radio-email-hide">{t('Hide')}</label>
             </div>
 
           </div>
