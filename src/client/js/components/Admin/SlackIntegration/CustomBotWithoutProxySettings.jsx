@@ -23,24 +23,30 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
+  const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
   const currentBotType = 'custom-bot-without-proxy';
 
-  const getSlackWSInWithoutProxy = useCallback(async() => {
-    try {
-      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
-      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+  useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
+        setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+      }
+      catch (err) {
+        toastError(err);
+      }
+    };
+    if (isConnectedToSlack) {
+      fetchData();
     }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer]);
+  }, [appContainer, isConnectedToSlack]);
 
   const fetchData = useCallback(async() => {
     try {
       await adminAppContainer.retrieveAppSettingsData();
       const res = await appContainer.apiv3.get('/slack-integration/');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot, isConnectedToSlack,
       } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
@@ -48,6 +54,7 @@ const CustomBotWithoutProxySettings = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSiteName(adminAppContainer.state.title);
       setIsSetupSlackBot(isSetupSlackBot);
+      setIsConnectedToSlack(isConnectedToSlack);
     }
     catch (err) {
       toastError(err);
@@ -65,7 +72,7 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken,
         currentBotType,
       });
-      getSlackWSInWithoutProxy();
+      fetchData();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
