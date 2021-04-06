@@ -223,7 +223,7 @@ module.exports = (crowi) => {
       title: crowi.configManager.getConfig('crowi', 'app:title'),
       confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
-      isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'app:isEmailPublishedForNewUser'),
+      isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
@@ -294,7 +294,7 @@ module.exports = (crowi) => {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
       'app:globalLang': req.body.globalLang,
-      'app:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
+      'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
     };
 
@@ -304,7 +304,7 @@ module.exports = (crowi) => {
         title: crowi.configManager.getConfig('crowi', 'app:title'),
         confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
         globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
-        isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'app:isEmailPublishedForNewUser'),
+        isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       };
       return res.apiv3({ appSettingParams });
