@@ -119,7 +119,7 @@ class AppSetting extends React.Component {
                 name="mailVisibility"
                 value="show-mail-address"
               />
-              <label className="custom-control-label" htmlFor="radio1">{t('show')}</label>
+              <label className="custom-control-label" htmlFor="radio1">{t('Show')}</label>
             </div>
 
             <div className="custom-control custom-radio custom-control-inline">
@@ -130,7 +130,7 @@ class AppSetting extends React.Component {
                 name="mailVisibility"
                 value="hide-mail-address"
               />
-              <label className="custom-control-label" htmlFor="radio2">{t('hide')}</label>
+              <label className="custom-control-label" htmlFor="radio2">{t('Hide')}</label>
             </div>
 
           </div>
