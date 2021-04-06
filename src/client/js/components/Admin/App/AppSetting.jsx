@@ -82,6 +82,31 @@ class AppSetting extends React.Component {
             {t('admin:app_setting.default_language')}
           </label>
           <div className="col-md-6 py-2">
+            <input
+              className="custom-control-input"
+              type="radio"
+              name="mail-setting"
+              id="1"
+            />
+            <label className="custom-control-label" htmlFor="1">公開</label>
+            <input
+              className="custom-control-input"
+              type="radio"
+              name="mail-setting"
+              id="2"
+            />
+            <label className="custom-control-label" htmlFor="2">非公開</label>
+          </div>
+        </div>
+
+        <div className="row form-group mb-5">
+          <label
+            className="text-left text-md-right col-md-3 col-form-label"
+          >
+            {/* {t('admin:app_setting.default_language')} */}
+            {'新規ユーザーのデフォルトメール公開設定'}
+          </label>
+          <div className="col-md-6 py-2">
             {
               localeMetadatas.map(meta => (
                 <div key={meta.id} className="custom-control custom-radio custom-control-inline">
