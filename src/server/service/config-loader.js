@@ -400,7 +400,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   EMAIL_PUBLISHED_BY_ADMIN: {
     ns:      'crowi',
-    key:     'app:isEmailPubshedForNewUser',
+    key:     'app:isEmailPublishedForNewUser',
     type:    TYPES.BOOLEAN,
     default: true,
   },
