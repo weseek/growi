@@ -651,6 +651,10 @@ module.exports = function(crowi) {
     }
 
     const configManager = crowi.configManager;
+
+    // Default email show/hide is up to the administrator
+    newUser.isEmailPublished = configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
+
     const globalLang = configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;

@@ -38,6 +38,9 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *          globalLang:
  *            type: string
  *            description: language set when create user
+ *          isEmailPublishedForNewUser:
+ *            type: boolean
+ *            description: default email show/hide setting when create user
  *          fileUpload:
  *            type: boolean
  *            description: enable upload file except image file
@@ -154,6 +157,7 @@ module.exports = (crowi) => {
       body('title').trim(),
       body('confidential'),
       body('globalLang').isIn(listLocaleIds()),
+      body('isEmailPublishedForNewUser').isBoolean(),
       body('fileUpload').isBoolean(),
     ],
     siteUrlSetting: [
@@ -219,6 +223,7 @@ module.exports = (crowi) => {
       title: crowi.configManager.getConfig('crowi', 'app:title'),
       confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
+      isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       envSiteUrl: crowi.configManager.getConfigFromEnvVars('crowi', 'app:siteUrl'),
@@ -290,6 +295,7 @@ module.exports = (crowi) => {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
       'app:globalLang': req.body.globalLang,
+      'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
       'app:isMailPublished': req.body.isMailPublished
     };
@@ -300,6 +306,7 @@ module.exports = (crowi) => {
         title: crowi.configManager.getConfig('crowi', 'app:title'),
         confidential: crowi.configManager.getConfig('crowi', 'app:confidential'),
         globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
+        isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
         isMailPublished: crowi.configManager.getConfig('crowi', 'app:isMailPublished'),
       };
