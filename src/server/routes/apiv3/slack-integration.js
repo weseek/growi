@@ -221,7 +221,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get slack ws name for custom bot without proxy
    */
-  router.get('/custom-bot-without-proxy/slack-workspace-name', async(req, res) => {
+  router.get('/custom-bot-without-proxy/slack-workspace-name', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
       const slackWorkSpaceName = await crowi.slackBotService.getSlackChannelName();
