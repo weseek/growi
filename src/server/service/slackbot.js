@@ -20,6 +20,8 @@ class SlackBotService extends S2sMessageHandlable {
     this.searchService = null;
 
     this.isSetupSlackBot = false;
+    this.isConnectedToSlack = false;
+
     this.lastLoadedAt = null;
 
     this.initialize();
@@ -32,10 +34,11 @@ class SlackBotService extends S2sMessageHandlable {
 
     if (token != null) {
       this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
+      logger.debug('SlackBot: setup is done');
+      this.isSetupSlackBot = true;
+      this.sendAuthTest();
     }
 
-    logger.debug('SlackBot: setup is done');
-    this.isSetupSlackBot = true;
     this.lastLoadedAt = new Date();
   }
 
@@ -75,6 +78,18 @@ class SlackBotService extends S2sMessageHandlable {
       catch (e) {
         logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
+    }
+  }
+
+  async sendAuthTest() {
+    this.isConnectedToSlack = false;
+
+    try {
+      await this.client.api.test();
+      this.isConnectedToSlack = true;
+    }
+    catch (e) {
+      logger.error('Failed to connect to slack: ', e.message);
     }
   }
 
