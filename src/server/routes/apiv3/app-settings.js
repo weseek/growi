@@ -297,6 +297,7 @@ module.exports = (crowi) => {
       'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
     };
+
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAppSettingParams);
       const appSettingParams = {
