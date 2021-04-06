@@ -398,9 +398,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  EMAIL_PUBLISHED_BY_ADMIN: {
+  DEFAULT_EMAIL_PUBLISHED: {
     ns:      'crowi',
-    key:     'app:isEmailPublishedForNewUser',
+    key:     'customize:isEmailPublishedForNewUser',
     type:    TYPES.BOOLEAN,
     default: true,
   },
