@@ -82,9 +82,9 @@ export default class AdminMikanSecurityContainer extends Container {
   /**
    * Switch is same username treated as identical user
    */
-     switchIsSameUsernameTreatedAsIdenticalUser() {
-      this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
-    }
+  switchIsSameUsernameTreatedAsIdenticalUser() {
+    this.setState({ isSameUsernameTreatedAsIdenticalUser: !this.state.isSameUsernameTreatedAsIdenticalUser });
+  }
 
   /**
    * Update mikan option

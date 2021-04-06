@@ -38,7 +38,7 @@ module.exports = function(crowi, app) {
   app.use('/_api/v3', require('./apiv3')(crowi));
 
   app.get('/'                         , applicationInstalled, loginRequired , autoReconnectToSearch, page.showTopPage);
-  
+
   app.get('/login/growiUser'         , applicationInstalled, login.preLogin, login.login);
   app.get('/login/error/:reason'      , applicationInstalled, login.error);
   app.get('/login'                    , applicationInstalled, loginPassport.loginWithMikan, login.preLogin, login.mikanLogin, login.login);
