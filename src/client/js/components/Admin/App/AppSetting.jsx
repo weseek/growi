@@ -120,7 +120,7 @@ class AppSetting extends React.Component {
                 name="globalLang"
                 value="show-mail-address"
               />
-              <label className="custom-control-label" htmlFor="radio1"></label>
+              <label className="custom-control-label" htmlFor="radio1">公開</label>
             </div>
 
             <div className="custom-control custom-radio custom-control-inline">
@@ -131,7 +131,7 @@ class AppSetting extends React.Component {
                 name="globalLang"
                 value="hide-mail-address"
               />
-              <label className="custom-control-label" htmlFor="radio2"></label>
+              <label className="custom-control-label" htmlFor="radio2">非公開</label>
             </div>
 
           </div>
