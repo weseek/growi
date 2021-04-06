@@ -154,7 +154,7 @@ module.exports = (crowi) => {
       catch (error) {
         const msg = 'Error occured in updating Slack bot setting';
         logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'));
+        return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'), 500);
       }
     });
 
@@ -235,8 +235,8 @@ module.exports = (crowi) => {
       }
       catch (error) {
         const msg = 'Error occured in slack_bot_token';
-        logger.error('Error', msg);
-        return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'));
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
       }
     }
 
