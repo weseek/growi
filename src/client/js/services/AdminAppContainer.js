@@ -19,7 +19,7 @@ export default class AdminAppContainer extends Container {
       title: this.dummyTitle,
       confidential: '',
       globalLang: '',
-      isEmailPublishedForNewUser: '',
+      isEmailPublishedForNewUser: true,
       fileUpload: '',
 
       siteUrl: '',
