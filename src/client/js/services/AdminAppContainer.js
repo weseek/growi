@@ -20,7 +20,7 @@ export default class AdminAppContainer extends Container {
       confidential: '',
       globalLang: '',
       isEmailPublishedForNewUser: true,
-      fileUpload: true,
+      fileUpload: '',
 
       siteUrl: '',
       envSiteUrl: '',
