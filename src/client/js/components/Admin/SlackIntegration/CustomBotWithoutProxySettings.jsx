@@ -7,7 +7,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import SlackGrowiBridging from './SlackGrowiBridging';
-import CustomBotWithoutSettingsAccordion from './CustomBotWithoutSettingsAccordion';
+import CustomBotWithoutProxySettingsAccordion from './CustomBotWithoutProxySettingsAccordion';
 
 
 const CustomBotWithoutProxySettings = (props) => {
@@ -128,8 +128,8 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
 
-      <CustomBotWithoutSettingsAccordion />
-      </>
+      <CustomBotWithoutProxySettingsAccordion />
+    </>
   );
 };
 
