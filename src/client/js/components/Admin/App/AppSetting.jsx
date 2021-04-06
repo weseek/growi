@@ -118,7 +118,7 @@ class AppSetting extends React.Component {
                 id="radio-email-show"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={adminAppContainer.state.defaultEmailShow}
+                checked={adminAppContainer.state.isEmailPublishedForNewUser}
                 onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(true) }}
               />
               <label className="custom-control-label" htmlFor="radio-email-show">{t('Show')}</label>
@@ -130,7 +130,7 @@ class AppSetting extends React.Component {
                 id="radio-email-hide"
                 className="custom-control-input"
                 name="mailVisibility"
-                checked={!adminAppContainer.state.defaultEmailShow}
+                checked={!adminAppContainer.state.isEmailPublishedForNewUser}
                 onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(false) }}
               />
               <label className="custom-control-label" htmlFor="radio-email-hide">{t('Hide')}</label>

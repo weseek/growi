@@ -19,7 +19,7 @@ export default class AdminAppContainer extends Container {
       title: this.dummyTitle,
       confidential: '',
       globalLang: '',
-      isEmailPublishedForNewUser: true,
+      isEmailPublishedForNewUser: '',
       fileUpload: '',
 
       siteUrl: '',
@@ -74,7 +74,6 @@ export default class AdminAppContainer extends Container {
   async retrieveAppSettingsData() {
     const response = await this.appContainer.apiv3.get('/app-settings/');
     const { appSettingsParams } = response.data;
-    console.log(appSettingsParams);
     this.setState({
       title: appSettingsParams.title,
       confidential: appSettingsParams.confidential,

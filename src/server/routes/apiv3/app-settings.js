@@ -296,7 +296,7 @@ module.exports = (crowi) => {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
       'app:globalLang': req.body.globalLang,
-      'customize:isEmailPublishedForNewUser': req.body.defaultEmailShow,
+      'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
     };
     try {
