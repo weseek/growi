@@ -150,7 +150,9 @@ export default class AdminAppContainer extends Container {
    * Change defaultEmailShow
    */
   changeDefaultEmailShow(defaultEmailShow) {
+    console.log(defaultEmailShow);
     this.setState({ defaultEmailShow });
+    console.log(defaultEmailShow);
   }
 
   /**
@@ -321,6 +323,7 @@ export default class AdminAppContainer extends Container {
       defaultEmailShow: this.state.isEmailPublishedForNewUser,
       fileUpload: this.state.fileUpload,
     });
+    console.log(response.data);
     const { appSettingParams } = response.data;
     return appSettingParams;
   }

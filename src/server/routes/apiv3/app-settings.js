@@ -294,10 +294,10 @@ module.exports = (crowi) => {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
       'app:globalLang': req.body.globalLang,
-      'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
+      'customize:isEmailPublishedForNewUser': req.body.defaultEmailShow,
       'app:fileUpload': req.body.fileUpload,
     };
-
+    console.log(requestAppSettingParams);
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestAppSettingParams);
       const appSettingParams = {
