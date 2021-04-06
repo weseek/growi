@@ -142,7 +142,7 @@ const SlackIntegration = (props) => {
             onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
           >
             <div className="card-body">
-              <h5 className="card-title">Custom Bot without proxy)</h5>
+              <h5 className="card-title">Custom Bot without proxy</h5>
               <p className="card-text">セットアップの手間 </p>
             </div>
           </div>
@@ -152,7 +152,7 @@ const SlackIntegration = (props) => {
             onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
           >
             <div className="card-body">
-              <h5 className="card-title">Custom Bot with proxy)</h5>
+              <h5 className="card-title">Custom Bot with proxy</h5>
               <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
             </div>
           </div>
