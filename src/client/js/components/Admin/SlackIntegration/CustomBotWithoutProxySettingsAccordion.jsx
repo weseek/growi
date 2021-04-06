@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
+
   return (
     <div className="accordion my-5" id="withoutProxySettingsAccordion">
 
@@ -11,7 +12,7 @@ const CustomBotWithoutSettingsAccordion = () => {
         <div className="card-header" id="headingOne">
           <h2 className="mb-0">
             <button
-              className="btn btn-link btn-block d-flex justify-content-between"
+              className="btn btn-link btn-block d-flex justify-content-between text-decoration-none"
               type="button"
               data-toggle="collapse"
               data-target="#collapseOne"
@@ -19,12 +20,12 @@ const CustomBotWithoutSettingsAccordion = () => {
               aria-controls="collapseOne"
             >
               ① Botを作成する
-              <i className="fa fa-chevron-down text-decoration-none"></i>
+              <i className="fa fa-chevron-down"></i>
             </button>
           </h2>
         </div>
 
-        <div id="collapseOne" className="collapse show" aria-labelledby="headingOne" data-parent="#withoutProxySettingsAccordion">
+        <div id="collapseOne" className="collapse show" aria-labelledby="headingOne" data-parent="#withoutProxySettingsAccordion" onChange={e => {console.log('Event fired')}}>
           <div className="card-body">
             <div className="row my-5">
               <div className="mx-auto">
@@ -43,7 +44,7 @@ const CustomBotWithoutSettingsAccordion = () => {
         <div className="card-header" id="headingTwo">
           <h2 className="mb-0">
             <button
-              className="btn btn-link btn-block d-flex justify-content-between"
+              className="btn btn-link btn-block d-flex justify-content-between text-decoration-none"
               type="button"
               data-toggle="collapse"
               data-target="#collapseTwo"
@@ -51,7 +52,7 @@ const CustomBotWithoutSettingsAccordion = () => {
               aria-controls="collapseTwo"
             >
               ② BotをSlackにインストールする
-              <i className="fa fa-chevron-down text-decoration-none"></i>
+              <i className="fa fa-chevron-down"></i>
             </button>
           </h2>
         </div>
@@ -73,7 +74,7 @@ const CustomBotWithoutSettingsAccordion = () => {
         <div className="card-header" id="headingThree">
           <h2 className="mb-0">
             <button
-              className="btn btn-link btn-block d-flex justify-content-between"
+              className="btn btn-link btn-block d-flex justify-content-between text-decoration-none"
               type="button"
               data-toggle="collapse"
               data-target="#collapseThree"
@@ -81,7 +82,7 @@ const CustomBotWithoutSettingsAccordion = () => {
               aria-controls="collapseThree"
             >
               ③ Signing SecretとBot Tokenを登録する
-              <i className="fa fa-chevron-down text-decoration-none"></i>
+              <i className="fa fa-chevron-down"></i>
             </button>
           </h2>
         </div>
@@ -103,7 +104,7 @@ const CustomBotWithoutSettingsAccordion = () => {
         <div className="card-header" id="headingFour">
           <h2 className="mb-0">
             <button
-              className="btn btn-link btn-block d-flex justify-content-between"
+              className="btn btn-link btn-block d-flex justify-content-between text-decoration-none"
               type="button"
               data-toggle="collapse"
               data-target="#collapseFour"
@@ -111,7 +112,7 @@ const CustomBotWithoutSettingsAccordion = () => {
               aria-controls="collapseFour"
             >
               ④ 連携状況のテストをする
-              <i className="fa fa-chevron-down text-decoration-none"></i>
+              <i className="fa fa-chevron-down"></i>
             </button>
           </h2>
         </div>
