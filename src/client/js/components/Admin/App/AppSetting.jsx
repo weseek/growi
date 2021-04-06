@@ -107,8 +107,7 @@ class AppSetting extends React.Component {
           <label
             className="text-left text-md-right col-md-3 col-form-label"
           >
-            {/* {t('admin:app_setting.default_language')} */}
-            新規ユーザーのデフォルトメール公開設定
+            {t('admin:app_setting.default_mail_visibility')}
           </label>
           <div className="col-md-6 py-2">
 
@@ -117,10 +116,10 @@ class AppSetting extends React.Component {
                 type="radio"
                 id="radio1"
                 className="custom-control-input"
-                name="globalLang"
+                name="mailVisibility"
                 value="show-mail-address"
               />
-              <label className="custom-control-label" htmlFor="radio1">公開</label>
+              <label className="custom-control-label" htmlFor="radio1">{t('admin:app_setting.show')}</label>
             </div>
 
             <div className="custom-control custom-radio custom-control-inline">
@@ -128,10 +127,10 @@ class AppSetting extends React.Component {
                 type="radio"
                 id="radio2"
                 className="custom-control-input"
-                name="globalLang"
+                name="mailVisibility"
                 value="hide-mail-address"
               />
-              <label className="custom-control-label" htmlFor="radio2">非公開</label>
+              <label className="custom-control-label" htmlFor="radio2">{t('admin:app_setting.hide')}</label>
             </div>
 
           </div>
