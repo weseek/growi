@@ -2,10 +2,6 @@ import {
   Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,
 } from 'typeorm';
 
-export type {
-
-};
-
 @Entity()
 export class Order {
 
@@ -17,6 +13,9 @@ export class Order {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  @Column({ nullable: true, default: false })
+  isCompleted?: boolean;
 
   @Column({ nullable: true })
   growiUrl?: string;
