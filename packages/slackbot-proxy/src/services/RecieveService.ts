@@ -5,7 +5,7 @@ import { openRegisterModal } from './RegisterService';
 @Service()
 export class ReceiveService {
 
-  receiveContentsFromSlack(body:{[key:string]:string}) : string {
+  async receiveContentsFromSlack(body:{[key:string]:string}) : string {
     const parseBody = parse(body);
 
     if (parseBody.growiCommandType === 'register') {
