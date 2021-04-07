@@ -29,10 +29,6 @@ export class Order {
   @Column({ nullable: true })
   proxyAccessToken?: string;
 
-  constructor(teamId:string) {
-    this.teamId = teamId;
-  }
-
   isExpired():Error {
     throw new Error('TODO GW-5555 implement this');
   }
