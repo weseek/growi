@@ -117,77 +117,81 @@ const SlackIntegration = (props) => {
         onClickGenerateToken={generateTokenHandler}
       />
 
-      <h2 className="admin-setting-header selecting-bot-type">
+      <div className="selecting-bot-type">
+        <h2 className="admin-setting-header">
         Slack bot
-        <span className="ml-2 btn-link">
-          <span className="mr-1">詳しい説明はこちら</span>
-          <i className="fa fa-external-link" aria-hidden="true"></i>
-        </span>
+          <span className="ml-2 btn-link">
+            <span className="mr-1">詳しい説明はこちら</span>
+            <i className="fa fa-external-link" aria-hidden="true"></i>
+          </span>
 
-      </h2>
+        </h2>
 
-      ・Botタイプを選択する
+        ・Botタイプを選択する
 
-      <div className="row my-5">
-        <div className="card-deck mx-auto">
+        <div className="row my-5">
+          <div className="card-deck mx-auto">
 
-          <div
-            className={`card admin-bot-card mx-3 rounded ${currentBotType === 'official-bot' && 'border-primary'}`}
-            onClick={() => handleBotTypeSelect('official-bot')}
-          >
-            <div className={`card-header py-2 ${currentBotType === 'official-bot' && 'bg-primary'}`}>
-              <h2 className={`text-center ${currentBotType === 'official-bot' && 'text-light'}`}>
-                {t('admin:slack_integration.official_bot')}
-                <span className="badge badge-info mr-2">
-                  {t('admin:slack_integration.recommended')}
-                </span>
-                <i className="fa fa-external-link btn-link" aria-hidden="true"></i>
-              </h2>
-            </div>
-            <div className="card-body">
-              <p className="card-text">
-                <div className="text-center">
-                  {t('admin:slack_integration.selecting_bot_types.for_beginners')}
-                </div>
-                <div className="mt-4">
-                  <div className="mb-2">
-                    {t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}
-                    <i className="fa fa-circle-o fa-lg" aria-hidden="true"></i>
+            <div
+              className={`card admin-bot-card mx-3 rounded ${currentBotType === 'official-bot' && 'border-primary'}`}
+              onClick={() => handleBotTypeSelect('official-bot')}
+            >
+              <div className={`card-header py-2 ${currentBotType === 'official-bot' && 'bg-primary'}`}>
+                <h2 className={`text-center ${currentBotType === 'official-bot' && 'text-light'}`}>
+                  <span className="mr-2">
+                    {t('admin:slack_integration.official_bot')}
+                  </span>
+                  <span className="badge badge-info mr-2">
+                    {t('admin:slack_integration.recommended')}
+                  </span>
+                  <i className="fa fa-external-link btn-link" aria-hidden="true"></i>
+                </h2>
+              </div>
+              <div className="card-body">
+                <p className="card-text">
+                  <div className="text-center">
+                    {t('admin:slack_integration.selecting_bot_types.for_beginners')}
                   </div>
-                  <div className="mb-2">
-                    {t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}
-                    <i className="fa fa-circle-o fa-lg" aria-hidden="true"></i>
+                  <div className="mt-4">
+                    <div className="mb-2">
+                      {t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}
+                      <i className="fa fa-circle-o fa-lg" aria-hidden="true"></i>
+                    </div>
+                    <div className="mb-2">
+                      {t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}
+                      <i className="fa fa-circle-o fa-lg" aria-hidden="true"></i>
+                    </div>
+                    <div className="mb-2">
+                      {t('admin:slack_integration.selecting_bot_types.security_control')}
+                      <i className="fa fa-times fa-2x" aria-hidden="true"></i>
+
+                    </div>
                   </div>
-                  <div className="mb-2">
-                    {t('admin:slack_integration.selecting_bot_types.security_control')}
-                    <i className="fa fa-times fa-2x" aria-hidden="true"></i>
-
-                  </div>
-                </div>
-              </p>
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div
-            className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
-            onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
-          >
-            <div className="card-body">
-              <h5 className="card-title">Custom Bot without proxy</h5>
-              <p className="card-text">セットアップの手間 </p>
+            <div
+              className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
+              onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
+            >
+              <div className="card-body">
+                <h5 className="card-title">Custom Bot without proxy</h5>
+                <p className="card-text">セットアップの手間 </p>
+              </div>
             </div>
-          </div>
 
-          <div
-            className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
-            onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
-          >
-            <div className="card-body">
-              <h5 className="card-title">Custom Bot with proxy</h5>
-              <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+            <div
+              className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
+              onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
+            >
+              <div className="card-body">
+                <h5 className="card-title">Custom Bot with proxy</h5>
+                <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
+              </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
 
