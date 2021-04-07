@@ -268,6 +268,7 @@ module.exports = function(crowi) {
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
+    this.isEmailPublished = crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
 
     this.save((err, userData) => {
       userEvent.emit('activated', userData);
