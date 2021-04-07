@@ -14,6 +14,9 @@ export class Order {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
+  @Column()
+  teamId: string;
+
   @Column({ nullable: true, default: false })
   isCompleted?: boolean;
 
