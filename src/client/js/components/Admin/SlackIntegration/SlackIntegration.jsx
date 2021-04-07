@@ -125,7 +125,7 @@ const SlackIntegration = (props) => {
             onClick={() => handleBotTypeSelect('official-bot')}
           >
             <div className="card-header py-2">
-              <h2 className="text-center">Official Bot</h2>
+              <h2 className="text-center">{t('admin:slack_integration.official_bot')}</h2>
             </div>
             <div className="card-body">
               <p className="card-text">

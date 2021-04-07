@@ -251,6 +251,9 @@
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
   "slack_integration": {
+    "official_bot": "Official bot",
+    "custom_bot_without_proxy": "Custom_bot_without_proxy",
+    "custom_bot_with_proxy": "Custom bot without proxy",
     "selecting_bot_types": {
       "for_beginners": "- 初心者向け -",
       "for_intermediate": "- 中級者向け -",
