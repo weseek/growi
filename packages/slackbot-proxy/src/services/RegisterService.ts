@@ -3,7 +3,7 @@ import { generateInputSectionBlock, generateMarkdownSectionBlock } from '@growi/
 
 export const openRegisterModal = async(body:{[key:string]:string}) : Promise<void> => {
 
-  const client = new WebClient('xoxb-1399660543842-1848670292404-TYsbWjgHPtNcTvqupgwb3h75', { logLevel: LogLevel.DEBUG });
+  const client = new WebClient('', { logLevel: LogLevel.DEBUG });
   await client.views.open({
     trigger_id: body.trigger_id,
     view: {
