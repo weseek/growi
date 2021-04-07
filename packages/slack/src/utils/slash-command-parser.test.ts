@@ -24,11 +24,12 @@ describe('parse SlashCommand', () => {
 
   test('returns a GrowiCommand instance with empty growiCommandArgs', () => {
     // setup
-    const slashCommandText = '/growi search';
+    const slashCommandText = 'search';
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
     const result = parse(slashCommand);
+    console.log('32', result);
 
     // then
     expect(result.text).toBe(slashCommandText);
@@ -38,7 +39,7 @@ describe('parse SlashCommand', () => {
 
   test('returns a GrowiCommand instance', () => {
     // setup
-    const slashCommandText = '/growi search keyword1 keyword2';
+    const slashCommandText = 'search keyword1 keyword2';
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
