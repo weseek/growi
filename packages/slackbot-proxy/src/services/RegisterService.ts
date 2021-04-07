@@ -1,5 +1,5 @@
 import { WebClient, LogLevel } from '@slack/web-api';
-import { generateInputSectionBlock, generateMarkdownSectionBlock } from '@growi/slack/src/utils/block-creater';
+import { generateInputSectionBlock } from '@growi/slack/src/utils/block-creater';
 
 export const openRegisterModal = async(body:{[key:string]:string}) : Promise<void> => {
 
@@ -21,7 +21,6 @@ export const openRegisterModal = async(body:{[key:string]:string}) : Promise<voi
         text: 'Close',
       },
       blocks: [
-        generateMarkdownSectionBlock('hoge'),
         generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', true, 'https://example.com'),
         generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', true, 'jBMZvpk0buKsZy9wSYJF6ZVefaedzh5Q883q+yoBrea='),
         generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEM', 'contents_input', true, 'IOKufkjs0buKsZy9wSYWE6ZVS5Jdzh5Q883q+yoB4F0='),
