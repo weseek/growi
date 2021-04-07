@@ -10,7 +10,11 @@ export const openRegisterModal = async(body:{[key:string]:string}) : Promise<voi
       type: 'modal',
       title: {
         type: 'plain_text',
-        text: 'Register Credential',
+        text: 'Register Credentials',
+      },
+      submit: {
+        type: 'plain_text',
+        text: 'Submit',
       },
       close: {
         type: 'plain_text',
