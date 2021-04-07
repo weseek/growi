@@ -68,9 +68,11 @@ export class SlackCtrl {
     res.send();
 
     console.log('body', body);
+    const teamId = body.team_id;
 
-    const order = new Order(body.team_id);
-    await this.orderRepository.save(order);
+    // TODO move to service
+    const order = await this.orderRepository.findOrCreateByTeamId(teamId);
+    console.log('order', order);
 
     return 'This action will be handled by bolt service.';
   }

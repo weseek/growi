@@ -7,8 +7,14 @@ import { Order } from '~/entities/order';
 @EntityRepository(Order)
 export class OrderRepository extends Repository<Order> {
 
-  isExpired():Error {
-    throw new Error('TODO GW-5555 implement this');
+  async findOrCreateByTeamId(teamId:string):Promise<Order> {
+    const order = await this.findOne({ teamId });
+
+    if (order == null) {
+      return this.save({ teamId });
+    }
+
+    return order;
   }
 
 }

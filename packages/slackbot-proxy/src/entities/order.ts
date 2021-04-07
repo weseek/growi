@@ -33,4 +33,8 @@ export class Order {
     this.teamId = teamId;
   }
 
+  isExpired():Error {
+    throw new Error('TODO GW-5555 implement this');
+  }
+
 }
