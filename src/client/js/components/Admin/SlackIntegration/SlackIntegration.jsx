@@ -155,16 +155,15 @@ const SlackIntegration = (props) => {
                   <div className="mt-4">
                     <div className="mb-2">
                       {t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}
-                      <i className="fa fa-circle-o fa-lg" aria-hidden="true"></i>
+                      {t('admin:slack_integration.selecting_bot_types.easy')}
                     </div>
                     <div className="mb-2">
                       {t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}
-                      <i className="fa fa-circle-o fa-lg" aria-hidden="true"></i>
+                      {t('admin:slack_integration.selecting_bot_types.possible')}
                     </div>
                     <div className="mb-2">
                       {t('admin:slack_integration.selecting_bot_types.security_control')}
-                      <i className="fa fa-times fa-2x" aria-hidden="true"></i>
-
+                      {t('admin:slack_integration.selecting_bot_types.impossible')}
                     </div>
                   </div>
                 </p>
