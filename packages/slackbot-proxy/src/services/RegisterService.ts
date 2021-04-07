@@ -22,7 +22,9 @@ export const openRegisterModal = async(body:{[key:string]:string}) : Promise<voi
       },
       blocks: [
         generateMarkdownSectionBlock('hoge'),
-        generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
+        generateInputSectionBlock('contents', 'GROWI domain', 'contents_input', true, 'https://example.com'),
+        generateInputSectionBlock('contents', 'GROWI ACCESS_TOKEN', 'contents_input', true, 'jBMZvpk0buKsZy9wSYJF6ZVefaedzh5Q883q+yoBrea='),
+        generateInputSectionBlock('contents', 'PROXY ACCESS_TOKEM', 'contents_input', true, 'IOKufkjs0buKsZy9wSYWE6ZVS5Jdzh5Q883q+yoB4F0='),
 
       ],
     },
