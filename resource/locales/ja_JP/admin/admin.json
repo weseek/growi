@@ -254,6 +254,7 @@
     "official_bot": "Official bot",
     "custom_bot_without_proxy": "Custom bot without proxy",
     "custom_bot_with_proxy": "Custom bot without proxy",
+    "recommended": "おすすめ",
     "selecting_bot_types": {
       "for_beginners": "- 初心者向け -",
       "for_intermediate": "- 中級者向け -",

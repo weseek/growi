@@ -117,6 +117,17 @@ const SlackIntegration = (props) => {
         onClickGenerateToken={generateTokenHandler}
       />
 
+      <h2 className="admin-setting-header selecting-bot-type">
+        Slack bot
+        <span className="ml-2 btn-link">
+          <span className="mr-1">詳しい説明はこちら</span>
+          <i className="fa fa-external-link" aria-hidden="true"></i>
+        </span>
+
+      </h2>
+
+      ・Botタイプを選択する
+
       <div className="row my-5">
         <div className="card-deck mx-auto">
 
@@ -125,7 +136,13 @@ const SlackIntegration = (props) => {
             onClick={() => handleBotTypeSelect('official-bot')}
           >
             <div className={`card-header py-2 ${currentBotType === 'official-bot' && 'bg-primary'}`}>
-              <h2 className={`text-center ${currentBotType === 'official-bot' && 'text-light'}`}>{t('admin:slack_integration.official_bot')}</h2>
+              <h2 className={`text-center ${currentBotType === 'official-bot' && 'text-light'}`}>
+                {t('admin:slack_integration.official_bot')}
+                <span className="badge badge-info mr-2">
+                  {t('admin:slack_integration.recommended')}
+                </span>
+                <i className="fa fa-external-link btn-link" aria-hidden="true"></i>
+              </h2>
             </div>
             <div className="card-body">
               <p className="card-text">
