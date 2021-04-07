@@ -129,10 +129,20 @@ const SlackIntegration = (props) => {
             </div>
             <div className="card-body">
               <p className="card-text">
-                {t('admin:slack_integration.selecting_bot_types.for_beginners')}<br />
-                {t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}<br />
-                {t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}<br />
-                {t('admin:slack_integration.selecting_bot_types.security_control')}
+                <div className="text-center">
+                  {t('admin:slack_integration.selecting_bot_types.for_beginners')}
+                </div>
+                <div className="mt-4">
+                  <div className="mb-2">
+                    {t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}
+                  </div>
+                  <div className="mb-2">
+                    {t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}
+                  </div>
+                  <div className="mb-2">
+                    {t('admin:slack_integration.selecting_bot_types.security_control')}
+                  </div>
+                </div>
               </p>
             </div>
           </div>

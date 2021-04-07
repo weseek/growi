@@ -252,9 +252,9 @@
   },
   "slack_integration": {
     "selecting_bot_types": {
-      "for_beginners": "初心者向け",
-      "for_intermediate": "中級者向け",
-      "for_advanced": "上級者向け",
+      "for_beginners": "- 初心者向け -",
+      "for_intermediate": "- 中級者向け -",
+      "for_advanced": "- 上級者向け -",
       "set_up_to_take_time": "セットアップの手間",
       "integration_to_multi_workspaces": "複数ワークスペースとの連携",
       "security_control": "セキュリティコントロール"
