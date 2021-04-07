@@ -260,8 +260,6 @@ module.exports = (crowi) => {
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
-
-      isMailPublished: crowi.configManager.getConfig('crowi', 'app:isMailPublished'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -291,13 +289,13 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {    const requestAppSettingParams = {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {
+    const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
       'app:globalLang': req.body.globalLang,
       'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
-      'app:isMailPublished': req.body.isMailPublished
     };
 
     try {
@@ -308,7 +306,6 @@ module.exports = (crowi) => {
         globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
         isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
-        isMailPublished: crowi.configManager.getConfig('crowi', 'app:isMailPublished'),
       };
       return res.apiv3({ appSettingParams });
     }
