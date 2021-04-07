@@ -14,7 +14,7 @@ export class Order {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @Column()
+  @Column({ unique: true })
   teamId: string;
 
   @Column({ nullable: true, default: false })
@@ -28,5 +28,9 @@ export class Order {
 
   @Column({ nullable: true })
   proxyAccessToken?: string;
+
+  constructor(teamId:string) {
+    this.teamId = teamId;
+  }
 
 }

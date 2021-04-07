@@ -3,7 +3,10 @@ import {
 } from '@tsed/common';
 
 import { Installation } from '~/entities/installation';
+import { Order } from '~/entities/order';
+
 import { InstallationRepository } from '~/repositories/installation';
+import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 
 
@@ -15,6 +18,9 @@ export class SlackCtrl {
 
   @Inject()
   installationRepository: InstallationRepository;
+
+  @Inject()
+  orderRepository: OrderRepository;
 
   @Get('/testsave')
   testsave(): void {
@@ -56,12 +62,15 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  handleEvent(@BodyParams() body: any, @Res() res: Res): string {
+  async handleEvent(@BodyParams() body: any, @Res() res: Res): Promise<string> {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
     console.log('body', body);
+
+    const order = new Order(body.team_id);
+    await this.orderRepository.save(order);
 
     return 'This action will be handled by bolt service.';
   }
