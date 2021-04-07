@@ -3,7 +3,8 @@ import { generateInputSectionBlock } from '@growi/slack/src/utils/block-creater'
 
 export const openRegisterModal = async(body:{[key:string]:string}) : Promise<void> => {
 
-  const client = new WebClient('', { logLevel: LogLevel.DEBUG });
+  // tmp use process.env
+  const client = new WebClient(process.env.SLACK_BOT_USER_OAUTH_TOKEN, { logLevel: LogLevel.DEBUG });
   await client.views.open({
     trigger_id: body.trigger_id,
     view: {
@@ -21,9 +22,9 @@ export const openRegisterModal = async(body:{[key:string]:string}) : Promise<voi
         text: 'Close',
       },
       blocks: [
-        generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', true, 'https://example.com'),
-        generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', true, 'jBMZvpk0buKsZy9wSYJF6ZVefaedzh5Q883q+yoBrea='),
-        generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEM', 'contents_input', true, 'IOKufkjs0buKsZy9wSYWE6ZVS5Jdzh5Q883q+yoB4F0='),
+        generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', false, 'https://example.com'),
+        generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
+        generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEM', 'contents_input', false, 'jBMZvpk.....'),
 
       ],
     },
