@@ -289,7 +289,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/AppSettingParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {    const requestAppSettingParams = {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, csrf, validator.appSetting, apiV3FormValidator, async(req, res) => {
+    const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
       'app:globalLang': req.body.globalLang,
