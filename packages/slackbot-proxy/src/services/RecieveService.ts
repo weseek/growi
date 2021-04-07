@@ -1,12 +1,11 @@
 import { Service } from '@tsed/di';
-import { SlashCommand } from '@slack/bolt';
+import { parse } from '@growi/slack/src/utils/slash-command-parser';
 import { openRegisterModal } from './RegisterService';
-import { parse } from '../../../slack/src/utils/slash-command-parser';
 
 @Service()
 export class ReceiveService {
 
-  async receiveContentsFromSlack(body:SlashCommand) : Promise<string> {
+  receiveContentsFromSlack(body:{[key:string]:string}) : string {
     const parseBody = parse(body);
 
     if (parseBody.growiCommandType === 'register') {
