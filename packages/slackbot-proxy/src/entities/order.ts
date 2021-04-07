@@ -1,0 +1,30 @@
+import {
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,
+} from 'typeorm';
+
+export type {
+
+};
+
+@Entity()
+export class Order {
+
+  @PrimaryGeneratedColumn()
+  readonly id: number;
+
+  @CreateDateColumn()
+  readonly createdAt: Date;
+
+  @UpdateDateColumn()
+  readonly updatedAt: Date;
+
+  @Column({ nullable: true })
+  growiUrl?: string;
+
+  @Column({ nullable: true })
+  growiAccessToken?: string;
+
+  @Column({ nullable: true })
+  proxyAccessToken?: string;
+
+}
