@@ -20,22 +20,25 @@ class SlackBotService extends S2sMessageHandlable {
     this.searchService = null;
 
     this.isSetupSlackBot = false;
+    this.isConnectedToSlack = false;
+
     this.lastLoadedAt = null;
 
     this.initialize();
   }
 
-  initialize() {
+  async initialize() {
     this.isSetupSlackBot = false;
 
     const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
 
     if (token != null) {
       this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
+      logger.debug('SlackBot: setup is done');
+      this.isSetupSlackBot = true;
+      await this.sendAuthTest();
     }
 
-    logger.debug('SlackBot: setup is done');
-    this.isSetupSlackBot = true;
     this.lastLoadedAt = new Date();
   }
 
@@ -76,6 +79,13 @@ class SlackBotService extends S2sMessageHandlable {
         logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
+  }
+
+  async sendAuthTest() {
+    this.isConnectedToSlack = false;
+
+    await this.client.api.test();
+    this.isConnectedToSlack = true;
   }
 
   notCommand(body) {
@@ -151,6 +161,11 @@ class SlackBotService extends S2sMessageHandlable {
     return {
       resultPaths, offset, resultsTotal,
     };
+  }
+
+  async getSlackChannelName() {
+    const slackTeamInfo = await this.client.team.info();
+    return slackTeamInfo.team.name;
   }
 
   shareSearchResults(payload) {
