@@ -103,6 +103,30 @@ const SlackIntegration = (props) => {
       break;
   }
 
+  // renderBotTypeDescription(difficulties) {
+  //   let desc = null;
+  //   switch (difficulties) {
+  //     case 'easy':
+  //       desc =  <span>{t('admin:slack_integration.selecting_bot_types.easy')}</span>;
+  //       break;
+  //     case 'normal':
+  //       desc =  <span>{t('admin:slack_integration.selecting_bot_types.normal')}</span>;
+  //       break;
+  //     case 'difficult':
+  //       desc = <span>{t('admin:slack_integration.selecting_bot_types.difficult')}</span>;
+  //       break;
+  //   }
+  // };
+  const easy = () => {
+    return <span>{t('admin:slack_integration.selecting_bot_types.easy')}</span>;
+  };
+  const normal = () => {
+    return <span>{t('admin:slack_integration.selecting_bot_types.normal')}</span>;
+  };
+  const difficult = () => {
+    return <span>{t('admin:slack_integration.selecting_bot_types.difficult')}</span>;
+  };
+
   return (
     <>
       <ConfirmBotChangeModal
@@ -118,26 +142,27 @@ const SlackIntegration = (props) => {
       />
 
       <div className="selecting-bot-type">
-        <h2 className="admin-setting-header">
-        Slack bot
+        <h2 className="admin-setting-header mb-4">
+          {t('admin:slack_integration.slack_bot')}
           <span className="ml-2 btn-link">
-            <span className="mr-1">詳しい説明はこちら</span>
+            <span className="mr-1">{t('admin:slack_integration.detailed_explanation')}</span>
             <i className="fa fa-external-link" aria-hidden="true"></i>
           </span>
 
         </h2>
 
-        ・Botタイプを選択する
+        {t('admin:slack_integration.selecting_bot_type')}
 
-        <div className="row my-5">
+        <div className="row my-4">
           <div className="card-deck mx-auto">
 
             <div
-              className={`card admin-bot-card mx-3 rounded ${currentBotType === 'official-bot' && 'border-primary'}`}
+              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'official-bot' && 'border-info'}`}
               onClick={() => handleBotTypeSelect('official-bot')}
             >
-              <div className={`card-header py-2 ${currentBotType === 'official-bot' && 'bg-primary'}`}>
-                <h2 className={`text-center ${currentBotType === 'official-bot' && 'text-light'}`}>
+              <div className={`pt-4 ${currentBotType === 'official-bot' && ''}`}>
+                {/* <h3 className={`text-center mb-0 ${currentBotType === 'official-bot' && 'text-light'}`}> */}
+                <h3 className="text-center mb-0 ">
                   <span className="mr-2">
                     {t('admin:slack_integration.official_bot')}
                   </span>
@@ -145,25 +170,26 @@ const SlackIntegration = (props) => {
                     {t('admin:slack_integration.recommended')}
                   </span>
                   <i className="fa fa-external-link btn-link" aria-hidden="true"></i>
-                </h2>
+                </h3>
               </div>
-              <div className="card-body">
+              <div className="card-body px-4 py-5">
                 <p className="card-text">
                   <div className="text-center">
                     {t('admin:slack_integration.selecting_bot_types.for_beginners')}
                   </div>
                   <div className="mt-4">
-                    <div className="mb-2">
-                      {t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}
-                      {t('admin:slack_integration.selecting_bot_types.easy')}
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>{t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}</span>
+                      {/* <span>{t('admin:slack_integration.selecting_bot_types.easy')}</span> */}
+                      {easy()}
                     </div>
-                    <div className="mb-2">
-                      {t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}
-                      {t('admin:slack_integration.selecting_bot_types.possible')}
+                    <div className="d-flex justify-content-between mb-2">
+                      <span>{t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}</span>
+                      <span>{t('admin:slack_integration.selecting_bot_types.possible')}</span>
                     </div>
-                    <div className="mb-2">
-                      {t('admin:slack_integration.selecting_bot_types.security_control')}
-                      {t('admin:slack_integration.selecting_bot_types.impossible')}
+                    <div className="d-flex justify-content-between">
+                      <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
+                      <span>{t('admin:slack_integration.selecting_bot_types.impossible')}</span>
                     </div>
                   </div>
                 </p>
@@ -171,7 +197,7 @@ const SlackIntegration = (props) => {
             </div>
 
             <div
-              className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
+              className={`card admin-bot-card mx-3 py-5 rounded shadow ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
               onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
             >
               <div className="card-body">
@@ -181,7 +207,7 @@ const SlackIntegration = (props) => {
             </div>
 
             <div
-              className={`card admin-bot-card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
+              className={`card admin-bot-card mx-3 py-5 rounded shadow ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
               onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
             >
               <div className="card-body">
