@@ -121,11 +121,11 @@ const SlackIntegration = (props) => {
         <div className="card-deck mx-auto">
 
           <div
-            className={`card admin-bot-card mx-3 rounded ${currentBotType === 'official-bot' ? 'border-info' : ''}`}
+            className={`card admin-bot-card mx-3 rounded ${currentBotType === 'official-bot' && 'border-primary'}`}
             onClick={() => handleBotTypeSelect('official-bot')}
           >
-            <div className="card-header py-2">
-              <h2 className="text-center">{t('admin:slack_integration.official_bot')}</h2>
+            <div className={`card-header py-2 ${currentBotType === 'official-bot' && 'bg-primary'}`}>
+              <h2 className={`text-center ${currentBotType === 'official-bot' && 'text-light'}`}>{t('admin:slack_integration.official_bot')}</h2>
             </div>
             <div className="card-body">
               <p className="card-text">
