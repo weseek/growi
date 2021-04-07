@@ -260,8 +260,6 @@ module.exports = (crowi) => {
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
-
-      isMailPublished: crowi.configManager.getConfig('crowi', 'app:isMailPublished'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -297,7 +295,6 @@ module.exports = (crowi) => {
       'app:globalLang': req.body.globalLang,
       'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
-      'app:isMailPublished': req.body.isMailPublished
     };
 
     try {
@@ -308,7 +305,6 @@ module.exports = (crowi) => {
         globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
         isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
-        isMailPublished: crowi.configManager.getConfig('crowi', 'app:isMailPublished'),
       };
       return res.apiv3({ appSettingParams });
     }
