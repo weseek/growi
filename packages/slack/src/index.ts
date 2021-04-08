@@ -2,7 +2,7 @@ export const supportedSlackCommands: string[] = [
   '/growi',
 ];
 
-export const supportedGrowiCommandsMappings = {
-  search: 'search',
-  create: 'create',
-};
+export const supportedGrowiCommands: string[] = [
+  'search',
+  'create',
+];
