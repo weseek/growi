@@ -1315,21 +1315,31 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@browser-bunyan/console-formatted-stream@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@browser-bunyan/console-formatted-stream/-/console-formatted-stream-1.3.0.tgz#3dc059aa5c1b2a7a1f26e2706e2bdeb9a09bbe57"
+"@browser-bunyan/console-formatted-stream@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@browser-bunyan/console-formatted-stream/-/console-formatted-stream-1.6.2.tgz#e458a1913b952249afa4be3fde0d7b3068ab9507"
+  integrity sha512-RFY4VG5+ewPG5A4LC3uN4AC8MIXEjlUJ568VlXhdMDfV9/LUrUX1LUbf0UmFQ3OhI2jqbeC31XwP0gBIrwbXpw==
   dependencies:
-    "@browser-bunyan/levels" "^1.3.0"
+    "@browser-bunyan/levels" "^1.6.0"
 
-"@browser-bunyan/console-raw-stream@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@browser-bunyan/console-raw-stream/-/console-raw-stream-1.3.0.tgz#ccf24b56f2265058297c6517fbecea84ebb7818c"
+"@browser-bunyan/console-plain-stream@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@browser-bunyan/console-plain-stream/-/console-plain-stream-1.6.0.tgz#295404482150e7693846ccb07045676218bcc911"
+  integrity sha512-92j8/Lk7yD6F4JKygWd7g9++QoNiEIj1MAP5zMGVk0g1ssPs3vqK1F+HgWfzYaHccREJ6S553imX9Ll5OAn2nA==
   dependencies:
-    "@browser-bunyan/levels" "^1.3.0"
+    "@browser-bunyan/levels" "^1.6.0"
 
-"@browser-bunyan/levels@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@browser-bunyan/levels/-/levels-1.3.0.tgz#a052303ae5d1a1f9b63eeb3a94495a2f429f4831"
+"@browser-bunyan/console-raw-stream@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@browser-bunyan/console-raw-stream/-/console-raw-stream-1.6.0.tgz#255f4734c064dc046fe7896353982c563e2ec150"
+  integrity sha512-OqPe4uy/rGOL8ZRiq3iwGM/YIGWKd2ne+8cxWSsMbcLL5hr66IOhzr3nwhyRsSo58JbWDC3K/IaJDyoOTcwrdA==
+  dependencies:
+    "@browser-bunyan/levels" "^1.6.0"
+
+"@browser-bunyan/levels@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@browser-bunyan/levels/-/levels-1.6.0.tgz#3a50b8118254aa2ac26caf9d2aafa72d157e374b"
+  integrity sha512-wte6nXXZH62Y/RGysYRlOkKxuJn+4S8xEamMF0fDncxxy0SriCHYwGPyWGF0FWYWmRzbZuEkp7dNebBf9Xfeeg==
 
 "@cnakazawa/watch@^1.0.3":
   version "1.0.3"
@@ -3218,13 +3228,15 @@ brorand@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
 
-browser-bunyan@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/browser-bunyan/-/browser-bunyan-1.3.0.tgz#26378dc58d7a98002cc9bfcfba2ea5d712449992"
+browser-bunyan@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/browser-bunyan/-/browser-bunyan-1.6.3.tgz#0e58c51ff48507317ba8e5cf579e8b6bad7281e0"
+  integrity sha512-HRg+acpwO3dsY2RWgtjw2wPVHV+uzbCrdhUxD25+qo5NFSTpbfJekrRP0yFNypAhG5LwXFV1Dc5FIc8cxwU5rQ==
   dependencies:
-    "@browser-bunyan/console-formatted-stream" "^1.3.0"
-    "@browser-bunyan/console-raw-stream" "^1.3.0"
-    "@browser-bunyan/levels" "^1.3.0"
+    "@browser-bunyan/console-formatted-stream" "^1.6.2"
+    "@browser-bunyan/console-plain-stream" "^1.6.0"
+    "@browser-bunyan/console-raw-stream" "^1.6.0"
+    "@browser-bunyan/levels" "^1.6.0"
 
 browser-or-node@>=1.2.1:
   version "1.2.1"
@@ -3464,6 +3476,16 @@ bunyan@^1.8.12, bunyan@^1.8.3:
   optionalDependencies:
     dtrace-provider "~0.8"
     moment "^2.10.6"
+    mv "~2"
+    safe-json-stringify "~1"
+
+bunyan@^1.8.15:
+  version "1.8.15"
+  resolved "https://registry.yarnpkg.com/bunyan/-/bunyan-1.8.15.tgz#8ce34ca908a17d0776576ca1b2f6cbd916e93b46"
+  integrity sha512-0tECWShh6wUysgucJcBAoYegf3JJoZWibxdqhTm7OHPeT42qdjkZ29QCMcKwbgU1kiH+auSIasNRXMLWXafXig==
+  optionalDependencies:
+    dtrace-provider "~0.8"
+    moment "^2.19.3"
     mv "~2"
     safe-json-stringify "~1"
 
@@ -9803,6 +9825,11 @@ moment@>=2.26.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.26.0.tgz#5e1f82c6bafca6e83e808b30c8705eed0dcbd39a"
   integrity sha512-oIixUO+OamkUkwjhAVE18rAMfRJNsNe/Stid/gwHSOfHrOtw9EhAY2AHvdKZ/k/MggcYELFCJz/Sn2pL8b8JMw==
 
+moment@^2.19.3:
+  version "2.29.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
+
 mongodb@3.6.2, mongodb@^3.1.0, mongodb@^3.6.2:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-3.6.2.tgz#1154a4ac107bf1375112d83a29c5cf97704e96b6"
@@ -15191,6 +15218,14 @@ unist-util-visit@^1.1.0:
   integrity sha512-AvGNk7Bb//EmJZyhtRUnNMEpId/AZ5Ph/KUpTI09WHQuDZHKovQ1oEv3mfmKpWKtoMzyMC4GLBm1Zy5k12fjIw==
   dependencies:
     unist-util-visit-parents "^2.0.0"
+
+universal-bunyan@^0.9.2:
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/universal-bunyan/-/universal-bunyan-0.9.2.tgz#4cf09dc34070390d8f5df4fe9af6a80fcd0dd574"
+  integrity sha512-MkyO17+5AVCpFfhMtYLODvSZmPxV8eHcoOAWobEXXzlXrSnf5YgCV5lBWcMV3VPaaKyZPQ0oG5PSWYmGSBGtIg==
+  dependencies:
+    bunyan-format "^0.2.1"
+    minimatch "^3.0.4"
 
 universalify@^0.1.0:
   version "0.1.1"
