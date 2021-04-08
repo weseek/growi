@@ -1,11 +1,12 @@
 import { Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock } from '@growi/slack/src/utils/block-creater';
+import { GrowiCommandsMappings } from '../interfaces/growi-commands-mappings';
 
 @Service()
-export class RegisterService {
+export class RegisterService implements GrowiCommandsMappings {
 
-  async openRegisterModal(body:{[key:string]:string}):Promise<void> {
+  async execSlashCommand(body:{[key:string]:string}):Promise<void> {
     // tmp use process.env
     const client = new WebClient(process.env.SLACK_BOT_USER_OAUTH_TOKEN, { logLevel: LogLevel.DEBUG });
     await client.views.open({
