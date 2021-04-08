@@ -22,7 +22,7 @@ export class SlackCtrl {
 
 
    growiCommandsMappings = {
-     register: (body:{[key:string]:string}):Promise<void> => this.registerService.execSlashCommand(body),
+     register: async(body:{[key:string]:string}):Promise<void> => this.registerService.execSlashCommand(body),
    };
 
   @Get('/testsave')
@@ -71,7 +71,6 @@ export class SlackCtrl {
 
     const parsedBody = parse(body);
     const executeGrowiCommand = this.growiCommandsMappings[parsedBody.growiCommandType];
-    // console.log(executeGrowiCommand());
     await executeGrowiCommand(body);
     res.send();
 
