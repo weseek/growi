@@ -65,10 +65,9 @@ export class SlackCtrl {
 
     const method = supportedGrowiCommandsMappings[body.text];
     const modulePath = `../services/${method}Service`;
-    const hoge = require(modulePath);
-    console.log('hoge', hoge);
+    const targetModule = require(modulePath);
+    console.log('hoge', targetModule);
 
-    console.log(method);
 
     // const slackInput = this.receiveService.receiveContentsFromSlack(body);
     // console.log('Controller/events', slackInput);
