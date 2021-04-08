@@ -127,7 +127,7 @@ const SlackIntegration = (props) => {
         onClickGenerateToken={generateTokenHandler}
       />
 
-      <div className="selecting-bot-type">
+      <div className="selecting-bot-type my-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
           <span className="ml-2 btn-link">
