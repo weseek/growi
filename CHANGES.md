@@ -1,6 +1,11 @@
 # CHANGES
 
-## v4.2.14-RC
+## v4.2.15-EC
+
+*
+
+
+## v4.2.14
 
 * Feature: Add an option to restrict publishing email property for new users
 * Improvement: Invite modal in admin page without email server settings
