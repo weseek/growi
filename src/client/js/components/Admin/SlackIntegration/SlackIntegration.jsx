@@ -178,8 +178,6 @@ const SlackIntegration = (props) => {
               </div>
             </div>
 
-
-            {/* ここから */}
             <div
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-without-proxy' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
@@ -217,16 +215,6 @@ const SlackIntegration = (props) => {
               </div>
             </div>
 
-            {/* <div
-              className={`card admin-bot-card mx-3 py-5 rounded shadow ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
-              onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
-            >
-              <div className="card-body">
-                <h5 className="card-title">Custom Bot without proxy</h5>
-                <p className="card-text">セットアップの手間 </p>
-              </div>
-            </div> */}
-
             <div
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
@@ -259,16 +247,6 @@ const SlackIntegration = (props) => {
                 </p>
               </div>
             </div>
-
-            {/* <div
-              className={`card admin-bot-card mx-3 py-5 rounded shadow ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
-              onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
-            >
-              <div className="card-body">
-                <h5 className="card-title">Custom Bot with proxy</h5>
-                <p className="card-text">This is a wider card with supporting text below as a natural lead-in to additional content.</p>
-              </div>
-            </div> */}
 
           </div>
         </div>
