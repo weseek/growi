@@ -86,7 +86,10 @@ const CustomBotWithoutProxySettings = (props) => {
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
       {/* temporarily put bellow component */}
-      <SlackGrowiBridging siteName={siteName} slackWorkSpaceName={slackWSNameInWithoutProxy} />
+      <SlackGrowiBridging
+        siteName={siteName}
+        slackWorkSpaceName={slackWSNameInWithoutProxy}
+      />
       <table className="table settings-table">
         <colgroup>
           <col className="item-name" />
@@ -94,17 +97,18 @@ const CustomBotWithoutProxySettings = (props) => {
           <col className="from-env-vars" />
         </colgroup>
         <thead>
-          <tr>
-            <th></th>
-            <th>Database</th>
-            <th>Environment variables</th>
-          </tr>
+          <tr><th></th><th>Database</th><th>Environment variables</th></tr>
         </thead>
         <tbody>
           <tr>
             <th>Signing Secret</th>
             <td>
-              <input className="form-control" type="text" value={slackSigningSecret || ''} onChange={e => setSlackSigningSecret(e.target.value)} />
+              <input
+                className="form-control"
+                type="text"
+                value={slackSigningSecret || ''}
+                onChange={e => setSlackSigningSecret(e.target.value)}
+              />
             </td>
             <td>
               <input className="form-control" type="text" value={slackSigningSecretEnv || ''} readOnly />
@@ -117,10 +121,20 @@ const CustomBotWithoutProxySettings = (props) => {
           <tr>
             <th>Bot User OAuth Token</th>
             <td>
-              <input className="form-control" type="text" value={slackBotToken || ''} onChange={e => setSlackBotToken(e.target.value)} />
+              <input
+                className="form-control"
+                type="text"
+                value={slackBotToken || ''}
+                onChange={e => setSlackBotToken(e.target.value)}
+              />
             </td>
             <td>
-              <input className="form-control" type="text" value={slackBotTokenEnv || ''} readOnly />
+              <input
+                className="form-control"
+                type="text"
+                value={slackBotTokenEnv || ''}
+                readOnly
+              />
               <p className="form-text text-muted">
                 {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_BOT_TOKEN' }) }} />
