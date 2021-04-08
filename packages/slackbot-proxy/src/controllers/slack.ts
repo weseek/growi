@@ -1,12 +1,13 @@
 import {
   BodyParams, Controller, Get, Inject, Post, Req, Res,
 } from '@tsed/common';
-import { supportedGrowiCommandsMappings, supportedGrowiCommandsAction } from '@growi/slack/src/index';
+import { supportedGrowiCommandsMappings } from '@growi/slack/src/index';
 import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
 import { ReceiveService } from '~/services/RecieveService';
+import { RegisterService } from '~/services/RegisterService';
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -20,6 +21,8 @@ export class SlackCtrl {
 
   @Inject()
   receiveService: ReceiveService;
+
+  registerService: RegisterService;
 
   @Get('/testsave')
   testsave(): void {
@@ -65,6 +68,11 @@ export class SlackCtrl {
 
     console.log(body.text);
     const method = supportedGrowiCommandsMappings[body.text];
+    const modulePath = `../service/${method}`;
+    const hoge = require(modulePath);
+    console.log('hoge', hoge);
+
+    console.log(modulePath);
     console.log(method);
 
     const slackInput = this.receiveService.receiveContentsFromSlack(body);
