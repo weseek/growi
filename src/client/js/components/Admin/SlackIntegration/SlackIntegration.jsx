@@ -118,6 +118,9 @@ const SlackIntegration = (props) => {
   //   }
   // };
 
+  const showBotTypeLabel = (label) => {
+    return <span>{t(`admin:slack_integration.selecting_bot_types.${label}`)}</span>;
+  };
   const showBotTypeDiscription = (desc) => {
     return <span className="text-blue">{t(`admin:slack_integration.selecting_bot_types.${desc}`)}</span>;
   };
@@ -174,15 +177,15 @@ const SlackIntegration = (props) => {
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
-                      <span>{t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}</span>
+                      {showBotTypeLabel('set_up_to_take_time')}
                       {showBotTypeDiscription('easy')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">
-                      <span>{t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}</span>
+                      {showBotTypeLabel('integration_to_multi_workspaces')}
                       {showBotTypeDiscription('possible')}
                     </div>
                     <div className="d-flex justify-content-between">
-                      <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
+                      {showBotTypeLabel('security_control')}
                       {showBotTypeDiscription('impossible')}
                     </div>
                   </div>
