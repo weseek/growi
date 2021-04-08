@@ -14,7 +14,7 @@ const CustomBotWithoutSettingsAccordion = () => {
 
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable" onClick={() => toggleAccordion(0)}>
-          <p className="mb-0 bot-setup-accordion-header-text">{`① ${t('slack_integration.without_proxy.create_bot')}`}</p>
+          <p className="mb-0 text-primary">{`① ${t('slack_integration.without_proxy.create_bot')}`}</p>
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 0}>
           <div className="card-body">
@@ -43,7 +43,7 @@ const CustomBotWithoutSettingsAccordion = () => {
 
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable" onClick={() => toggleAccordion(1)}>
-          <p className="mb-0 bot-setup-accordion-header-text">{`② ${t('slack_integration.without_proxy.install_bot_to_slack')}`}</p>
+          <p className="mb-0 text-primary">{`② ${t('slack_integration.without_proxy.install_bot_to_slack')}`}</p>
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 1}>
           <div className="card-body">
@@ -54,7 +54,7 @@ const CustomBotWithoutSettingsAccordion = () => {
 
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable" onClick={() => toggleAccordion(2)}>
-          <p className="mb-0 bot-setup-accordion-header-text">{`③ ${t('slack_integration.without_proxy.register_secret_and_token')}`}</p>
+          <p className="mb-0 text-primary">{`③ ${t('slack_integration.without_proxy.register_secret_and_token')}`}</p>
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 2}>
           <div className="card-body">
@@ -65,7 +65,7 @@ const CustomBotWithoutSettingsAccordion = () => {
 
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable" onClick={() => toggleAccordion(3)}>
-          <p className="mb-0 bot-setup-accordion-header-text">{`④ ${t('slack_integration.without_proxy.test_connection')}`}</p>
+          <p className="mb-0 text-primary">{`④ ${t('slack_integration.without_proxy.test_connection')}`}</p>
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 3}>
           <div className="card-body">
