@@ -1,6 +1,7 @@
 import {
   BodyParams, Controller, Get, Inject, Post, Req, Res,
 } from '@tsed/common';
+import { parse } from '@growi/slack/src/utils/slash-command-parser';
 import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
 
@@ -63,10 +64,13 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
+    const parsedBody = parse(body);
+
     const growiCommandsMappings = {
       register: () => this.registerService.openRegisterModal(body),
     };
-    const executeGrowiCommand = growiCommandsMappings[body.text];
+    const executeGrowiCommand = growiCommandsMappings[parsedBody.growiCommandType];
+
     await executeGrowiCommand();
     res.send();
 
