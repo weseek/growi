@@ -33,9 +33,6 @@ export class Installation {
   @Column({ nullable: true, unique: true })
   enterpriseId?: string;
 
-  @OneToMany(() => Order, order => order.installation)
-  orders?: Order[];
-
   setData(slackInstallation: SlackInstallation): void {
     this.data = slackInstallation;
 
