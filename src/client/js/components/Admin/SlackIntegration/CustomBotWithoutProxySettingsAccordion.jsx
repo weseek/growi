@@ -19,7 +19,10 @@ const CustomBotWithoutSettingsAccordion = () => {
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => toggleAccordion(0)}>
           <p className="mb-0 text-primary">{`① ${t('slack_integration.without_proxy.create_bot')}`}</p>
-          <i className="fa fa-chevron-down" />
+          {currentlyOpenAccordionIndex === 0
+            ? <i className="fa fa-chevron-up" />
+            : <i className="fa fa-chevron-down" />
+          }
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 0}>
           <div className="card-body">
@@ -49,7 +52,10 @@ const CustomBotWithoutSettingsAccordion = () => {
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => toggleAccordion(1)}>
           <p className="mb-0 text-primary">{`② ${t('slack_integration.without_proxy.install_bot_to_slack')}`}</p>
-          <i className="fa fa-chevron-down" />
+          {currentlyOpenAccordionIndex === 1
+            ? <i className="fa fa-chevron-up" />
+            : <i className="fa fa-chevron-down" />
+          }
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 1}>
           <div className="card-body">
@@ -61,7 +67,10 @@ const CustomBotWithoutSettingsAccordion = () => {
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => toggleAccordion(2)}>
           <p className="mb-0 text-primary">{`③ ${t('slack_integration.without_proxy.register_secret_and_token')}`}</p>
-          <i className="fa fa-chevron-down" />
+          {currentlyOpenAccordionIndex === 2
+            ? <i className="fa fa-chevron-up" />
+            : <i className="fa fa-chevron-down" />
+          }
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 2}>
           <div className="card-body">
@@ -73,7 +82,10 @@ const CustomBotWithoutSettingsAccordion = () => {
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => toggleAccordion(3)}>
           <p className="mb-0 text-primary">{`④ ${t('slack_integration.without_proxy.test_connection')}`}</p>
-          <i className="fa fa-chevron-down" />
+          {currentlyOpenAccordionIndex === 3
+            ? <i className="fa fa-chevron-up" />
+            : <i className="fa fa-chevron-down" />
+          }
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 3}>
           <div className="card-body">
@@ -81,7 +93,6 @@ const CustomBotWithoutSettingsAccordion = () => {
           </div>
         </Collapse>
       </div>
-
 
     </div>
 
