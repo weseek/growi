@@ -159,7 +159,7 @@ const SlackIntegration = (props) => {
           <div className="card-deck mx-auto">
 
             <div
-              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'official-bot' && 'border-info'}`}
+              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'official-bot' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('official-bot')}
             >
               <div className={`pt-4 ${currentBotType === 'official-bot' && ''}`}>
