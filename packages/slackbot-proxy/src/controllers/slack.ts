@@ -6,7 +6,7 @@ import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
-import { ReceiveService } from '~/services/RecieveService';
+// import { ReceiveService } from '~/services/RecieveService';
 import { RegisterService } from '~/services/RegisterService';
 
 @Controller('/slack')
@@ -20,7 +20,7 @@ export class SlackCtrl {
   }
 
   @Inject()
-  receiveService: ReceiveService;
+  // receiveService: ReceiveService;
 
   registerService: RegisterService;
 
@@ -75,8 +75,8 @@ export class SlackCtrl {
     console.log(modulePath);
     console.log(method);
 
-    const slackInput = this.receiveService.receiveContentsFromSlack(body);
-    console.log('Controller/events', slackInput);
+    // const slackInput = this.receiveService.receiveContentsFromSlack(body);
+    // console.log('Controller/events', slackInput);
     res.send();
 
     console.log('body', body);
