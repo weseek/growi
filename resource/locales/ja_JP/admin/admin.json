@@ -251,7 +251,6 @@
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
   "slack_integration": {
-
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
       "detailed_explanation": "詳しい説明はこちら",
