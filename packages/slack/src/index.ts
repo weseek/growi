@@ -5,12 +5,7 @@ export const supportedSlackCommands: string[] = [
 ];
 
 export const supportedGrowiCommandsMappings = {
-  search: 'search',
-  create: 'create',
-  register: 'register',
+  Search: 'search',
+  Create: 'create',
+  Register: 'register',
 };
-
-
-// export const supportedGrowiCommandsAction = {
-//   register: (body:{[key:string]:string}) => openRegisterModal(body),
-// };
