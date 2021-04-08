@@ -2,15 +2,18 @@
 
 ## v4.2.14-RC
 
+* Feature: Add an option to restrict publishing email property for new users
+* Improvement: Invite modal in admin page without email server settings
+* Improvement: Global notification settings in admin page without email server settings
+* Fix: Can create pages on the share route
+    * Introduced by v4.2.8
+* Fix: Pages restrected by group are excluded for recurrence operation
+    * Introduced by v4.2.8
+* Fix: Rename and duplicate to descendants path does not work correctly
+    * Introduced by v4.2.8
 * Support: Update libs
     * bunyan
     * browser-bunyan
-* Fix: Can create pages on the share route
-    * Introduced by v4.2.8
-* Fix: Group page is excluded by recurrence operation
-    * Introduced by v4.2.8
-* Fix: New path to rename and duplicate is considered as a child page
-    * Introduced by v4.2.8
 
 ## v4.2.13
 
