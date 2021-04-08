@@ -1,4 +1,5 @@
 {
+  "mailer_setup_required":"送信するには <a href='/admin/app'>メールの設定</a> が必要です。",
   "admin_top": {
     "management_wiki": "Wiki管理",
     "system_information": "システム情報",
@@ -22,6 +23,7 @@
     "confidential_name": "コンフィデンシャル表示",
     "confidential_example": "例: 社外秘",
     "default_language": "新規ユーザーのデフォルト設定言語",
+    "default_mail_visibility": "新規ユーザーの初期メール公開設定",
     "file_uploading": "ファイルアップロード",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
@@ -252,6 +254,7 @@
   },
   "slack_integration": {
     "bot_reset_successful": "Botの設定を消去しました。",
+    "copied_to_clipboard": "クリップボードにコピーされました。",
     "modal": {
       "warning": "注意",
       "sure_change_bot_type": "Botの種類を変更しますか?",
@@ -270,16 +273,20 @@
     }
   },
   "user_management": {
-    "invite_users": "新規ユーザーの招待",
+    "invite_users": "新規ユーザーの仮発行",
     "click_twice_same_checkbox": "少なくとも一つはチェックしてください。",
     "invite_modal": {
-      "emails": "メールアドレス (複数行入力で複数人招待可能)",
-      "invite_thru_email": "招待をメールで送信",
+      "emails": "メールアドレス (複数行入力で複数人発行可能)",
+      "description1":"メールアドレスを使用して新規ユーザーを仮発行します。",
+      "description2":"初回のログイン時に使用する仮パスワードが生成されます。",
+      "invite_thru_email": "招待メールを送信する",
+      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>メールの設定</a>",
       "valid_email": "メールアドレスを入力してください。",
       "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
       "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
       "send_temporary_password": "招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。",
-      "existing_email": "以下のEmailはすでに存在しています。"
+      "existing_email": "以下のEmailはすでに存在しています。",
+      "issue": "発行"
     },
     "user_table": {
       "administrator": "管理者",
