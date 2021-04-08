@@ -129,15 +129,15 @@ const SlackIntegration = (props) => {
 
       <div className="selecting-bot-type">
         <h2 className="admin-setting-header mb-4">
-          {t('admin:slack_integration.slack_bot')}
+          {t('admin:slack_integration.selecting_bot_types.slack_bot')}
           <span className="ml-2 btn-link">
-            <span className="mr-1">{t('admin:slack_integration.detailed_explanation')}</span>
+            <span className="mr-1">{t('admin:slack_integration.selecting_bot_types.detailed_explanation')}</span>
             <i className="fa fa-external-link" aria-hidden="true"></i>
           </span>
 
         </h2>
 
-        {t('admin:slack_integration.selecting_bot_type')}
+        {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
         <div className="row my-4">
           <div className="card-deck mx-auto">
@@ -148,10 +148,10 @@ const SlackIntegration = (props) => {
             >
               <h3 className={`card-header mb-0 py-3 text-center   ${currentBotType === 'official-bot' && 'bg-primary text-light'}`}>
                 <span className="mr-2">
-                  {t('admin:slack_integration.official_bot')}
+                  {t('admin:slack_integration.selecting_bot_types.official_bot')}
                 </span>
                 <span className="badge badge-info mr-2">
-                  {t('admin:slack_integration.recommended')}
+                  {t('admin:slack_integration.selecting_bot_types.recommended')}
                 </span>
                 <i className={`fa fa-external-link btn-link ${currentBotType === 'official-bot' && 'bg-primary text-light'}`} aria-hidden="true"></i>
               </h3>
@@ -184,7 +184,7 @@ const SlackIntegration = (props) => {
             >
               <h3 className={`card-header mb-0 py-3 text-center   ${currentBotType === 'custom-bot-without-proxy' && 'bg-primary text-light'}`}>
                 <span className="mr-2">
-                  {t('admin:slack_integration.custom_bot_without_proxy')}
+                  {t('admin:slack_integration.selecting_bot_types.custom_bot_without_proxy')}
                 </span>
                 <i
                   className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-without-proxy' && 'bg-primary text-light'}`}
@@ -221,7 +221,7 @@ const SlackIntegration = (props) => {
             >
               <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`}>
                 <span className="mr-2">
-                  {t('admin:slack_integration.custom_bot_with_proxy')}
+                  {t('admin:slack_integration.selecting_bot_types.custom_bot_with_proxy')}
                 </span>
                 <i className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`} aria-hidden="true"></i>
               </h3>
