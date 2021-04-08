@@ -266,7 +266,7 @@
       "generate": "発行"
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
-    "custom_bot_without_proxy_integration": "Custom Bot without proxy 連携 ",
+    "custom_bot_without_proxy_integration": "Custom bot without proxy 連携 ",
     "without_proxy": {
       "create_bot": "Bot を作成する"
     }
