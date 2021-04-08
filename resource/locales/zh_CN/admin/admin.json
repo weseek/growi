@@ -276,6 +276,7 @@
       "generate": "生成"
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 设置",
+    "custom_bot_without_proxy_integration": "Custom Bot Without Proxy 一体化",
     "without_proxy": {
       "create_bot": "创建 Bot"
     }
