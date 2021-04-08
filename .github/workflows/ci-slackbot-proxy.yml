@@ -79,6 +79,22 @@ jobs:
       matrix:
         node-version: [14.x]
 
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306
+        options: --health-cmd "mysqladmin ping" --health-interval 5s --health-timeout 2s --health-retries 3
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: growi-slackbot-proxy
+
+    env:
+      TYPEORM_CONNECTION: mysql
+      TYPEORM_HOST: localhost
+      TYPEORM_DATABASE: growi-slackbot-proxy
+      TYPEORM_USERNAME: root
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -133,6 +149,22 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306
+        options: --health-cmd "mysqladmin ping" --health-interval 5s --health-timeout 2s --health-retries 3
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: growi-slackbot-proxy
+
+    env:
+      TYPEORM_CONNECTION: mysql
+      TYPEORM_HOST: localhost
+      TYPEORM_DATABASE: growi-slackbot-proxy
+      TYPEORM_USERNAME: root
 
     steps:
     - uses: actions/checkout@v2
