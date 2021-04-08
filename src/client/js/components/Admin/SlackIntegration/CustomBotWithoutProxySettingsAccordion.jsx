@@ -10,47 +10,71 @@ const CustomBotWithoutSettingsAccordion = () => {
   };
 
   return (
-    <div className="card rounded border-0 shadow" id="customBotWithoutProxySettingsAccordion">
-      <div className="card border-0 mb-0 rounded-top">
-        <div className="card-header clickable rounded-top" onClick={() => toggleAccordion(0)}>
-        ① {t('slack_integration.without_proxy.create_bot')}
+
+    <div className="card border-0 rounded-lg shadow" id="customBotWithoutProxySettingsAccordion">
+
+      <div className="card border-0 rounded-lg mb-0">
+        <div className="card-header clickable" onClick={() => toggleAccordion(0)}>
+          <p className="mb-0">① {t('slack_integration.without_proxy.create_bot')}</p>
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 0}>
           <div className="card-body">
-          BODY 1
+
+            <div className="row my-5">
+              <div className="mx-auto">
+                <div>
+                  <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+                    {t('slack_integration.without_proxy.create_bot')}
+                    <i className="fa fa-external-link ml-2" aria-hidden="true" />
+                  </button>
+                </div>
+                <a href="#">
+                  <p className="text-center mt-1">
+                    <small>
+                      作成方法はこちら
+                      <i className="fa fa-external-link ml-2" aria-hidden="true" />
+                    </small>
+                  </p>
+                </a>
+              </div>
+            </div>
           </div>
         </Collapse>
       </div>
-      <div className="card border-0 mb-0">
+
+      <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable" onClick={() => toggleAccordion(1)}>
-        ② {t('slack_integration.without_proxy.install_bot_to_slack')}
+          <p className="mb-0">② {t('slack_integration.without_proxy.install_bot_to_slack')}</p>
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 1}>
           <div className="card-body">
-          BODY 2
+            BODY2
           </div>
         </Collapse>
       </div>
-      <div className="card border-0 mb-0">
+
+      <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable" onClick={() => toggleAccordion(2)}>
-        ③ {t('slack_integration.without_proxy.register_secret_and_token')}
+          <p className="mb-0">③ {t('slack_integration.without_proxy.register_secret_and_token')}</p>
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 2}>
           <div className="card-body">
-          BODY 3
+            BODY 3
           </div>
         </Collapse>
       </div>
-      <div className="card border-0 mb-0 rounded-bottom">
-        <div className="card-header clickable rounded-bottom" onClick={() => toggleAccordion(3)}>
-        ④ {t('slack_integration.without_proxy.test_connection')}
+
+      <div className="card border-0 rounded-lg mb-0">
+        <div className="card-header clickable" onClick={() => toggleAccordion(3)}>
+          <p className="mb-0">④ {t('slack_integration.without_proxy.test_connection')}</p>
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 3}>
-          <div className="card-body rounded-bottom">
-          BODY 4
+          <div className="card-body">
+            BODY 4
           </div>
         </Collapse>
       </div>
+
 
     </div>
 
