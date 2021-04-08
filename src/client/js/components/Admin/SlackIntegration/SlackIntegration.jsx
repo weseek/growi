@@ -146,21 +146,23 @@ const SlackIntegration = (props) => {
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'official-bot' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('official-bot')}
             >
-              <h3 className={`card-header mb-0 py-3 text-center   ${currentBotType === 'official-bot' && 'bg-primary text-light'}`}>
-                <span className="mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.official_bot')}
-                </span>
-                <span className="badge badge-info mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.recommended')}
-                </span>
-                <i className={`fa fa-external-link btn-link ${currentBotType === 'official-bot' && 'bg-primary text-light'}`} aria-hidden="true"></i>
-              </h3>
-              <div className="card-body px-4 py-5">
+              <div>
+                <h3 className={`card-header mb-0 py-3 text-center   ${currentBotType === 'official-bot' && 'bg-primary text-light'}`}>
+                  <span className="mr-2">
+                    {t('admin:slack_integration.selecting_bot_types.official_bot')}
+                  </span>
+                  <span className="badge badge-info mr-2">
+                    {t('admin:slack_integration.selecting_bot_types.recommended')}
+                  </span>
+                  <i className={`fa fa-external-link btn-link ${currentBotType === 'official-bot' && 'bg-primary text-light'}`} aria-hidden="true"></i>
+                </h3>
+              </div>
+              <div className="card-body p-4">
                 <p className="card-text">
                   <div className="text-center">
                     {showBotTypeLebel('for_beginners')}
                   </div>
-                  <div className="mt-4">
+                  <div className="my-4">
                     <div className="d-flex justify-content-between mb-2">
                       {showBotTypeLabel('set_up')}
                       {showBotTypeDiscription('easy')}
@@ -195,12 +197,12 @@ const SlackIntegration = (props) => {
                 >
                 </i>
               </h3>
-              <div className="card-body px-4 py-5">
+              <div className="card-body p-4">
                 <p className="card-text">
                   <div className="text-center">
                     {showBotTypeLebel('for_intermediate')}
                   </div>
-                  <div className="mt-4">
+                  <div className="my-4">
                     <div className="d-flex justify-content-between mb-2">
                       {showBotTypeLabel('set_up')}
                       {showBotTypeDiscription('normal')}
@@ -231,12 +233,12 @@ const SlackIntegration = (props) => {
                 </span>
                 <i className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`} aria-hidden="true"></i>
               </h3>
-              <div className="card-body px-4 py-5">
+              <div className="card-body p-4">
                 <p className="card-text">
                   <div className="text-center">
                     {showBotTypeLebel('for_advanced')}
                   </div>
-                  <div className="mt-4">
+                  <div className="my-4">
                     <div className="d-flex justify-content-between mb-2">
                       {showBotTypeLabel('set_up')}
                       {showBotTypeDiscription('difficult')}
