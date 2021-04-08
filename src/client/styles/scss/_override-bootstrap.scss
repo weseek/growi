@@ -81,7 +81,7 @@
     margin-bottom: 20px;
   }
 
-  .card-header {
+  .card-header:not(#customBotWithoutProxySettingsAccordion) {
     font-weight: 700;
     text-transform: none;
   }
