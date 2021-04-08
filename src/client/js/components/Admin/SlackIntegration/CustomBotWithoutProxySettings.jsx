@@ -132,7 +132,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
 
-      <div className="my-5 mx-3 bg-alert">
+      <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion />
       </div>
 
