@@ -118,6 +118,10 @@ const SlackIntegration = (props) => {
   //   }
   // };
 
+
+  const showBotTypeLebel = (level) => {
+    return <span>{t(`admin:slack_integration.selecting_bot_types.${level}`)}</span>;
+  };
   const showBotTypeLabel = (label) => {
     return <span>{t(`admin:slack_integration.selecting_bot_types.${label}`)}</span>;
   };
@@ -173,7 +177,7 @@ const SlackIntegration = (props) => {
               <div className="card-body px-4 py-5">
                 <p className="card-text">
                   <div className="text-center">
-                    {t('admin:slack_integration.selecting_bot_types.for_beginners')}
+                    {showBotTypeLebel('for_beginners')}
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
