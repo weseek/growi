@@ -111,7 +111,12 @@ const CustomBotWithoutProxySettings = (props) => {
               />
             </td>
             <td>
-              <input className="form-control" type="text" value={slackSigningSecretEnv || ''} readOnly />
+              <input
+                className="form-control"
+                type="text"
+                value={slackSigningSecretEnv || ''}
+                readOnly
+              />
               <p className="form-text text-muted">
                 {/* eslint-disable-next-line react/no-danger */}
                 <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
