@@ -21,23 +21,27 @@ export class SlackCtrl {
   registerService: RegisterService
 
 
+   growiCommandsMappings = {
+     register: (body:{[key:string]:string}):Promise<void> => this.registerService.execSlashCommand(body),
+   };
+
   @Get('/testsave')
-  testsave(): void {
-    const installation = new Installation();
-    installation.data = {
-      team: undefined,
-      enterprise: undefined,
-      user: {
-        id: '',
-        token: undefined,
-        scopes: undefined,
-      },
-    };
+   testsave(): void {
+     const installation = new Installation();
+     installation.data = {
+       team: undefined,
+       enterprise: undefined,
+       user: {
+         id: '',
+         token: undefined,
+         scopes: undefined,
+       },
+     };
 
-    // const installationRepository = getRepository(Installation);
+     // const installationRepository = getRepository(Installation);
 
-    this.installationRepository.save(installation);
-  }
+     this.installationRepository.save(installation);
+   }
 
 
   @Get('/install')
@@ -66,13 +70,9 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
     const parsedBody = parse(body);
-
-    const growiCommandsMappings = {
-      register: () => this.registerService.execSlashCommand(body),
-    };
-    const executeGrowiCommand = growiCommandsMappings[parsedBody.growiCommandType];
-
-    await executeGrowiCommand();
+    const executeGrowiCommand = this.growiCommandsMappings[parsedBody.growiCommandType];
+    // console.log(executeGrowiCommand());
+    await executeGrowiCommand(body);
     res.send();
 
     return 'This action will be handled by bolt service.';
