@@ -32,12 +32,15 @@ const CustomBotWithoutSettingsAccordion = () => {
                     <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
                   </button>
                 </div>
-                <p className="text-center mt-1">
-                  <small>
-                    作成方法はこちら
-                    <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
-                  </small>
-                </p>
+                <a href="#">
+                  <p className="text-center mt-1">
+                    <small>
+                      作成方法はこちら
+                      <i className="fa fa-external-link ml-1" aria-hidden="true"/>
+                    </small>
+                  </p>
+                </a>
+
               </div>
             </div>
           </div>
