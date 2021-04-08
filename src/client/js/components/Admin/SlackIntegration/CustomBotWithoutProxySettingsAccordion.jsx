@@ -5,11 +5,11 @@ const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
 
   return (
-    <div className="accordion my-5" id="withoutProxySettingsAccordion">
+    <div className="accordion my-5 px-5" id="withoutProxySettingsAccordion">
 
       <div className="card mb-0">
 
-        <div className="card-header" id="headingOne">
+        <div className="card-header">
           <h2 className="mb-0">
             <button
               className="btn btn-link btn-block d-flex text-decoration-none"
@@ -24,11 +24,14 @@ const CustomBotWithoutSettingsAccordion = () => {
 
         <div id="collapsibleMakeBotSection" className="collapse show" data-parent="#withoutProxySettingsAccordion">
           <div className="card-body">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard
-            dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla
-            assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur
-            butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably havent heard of them accusamus
-            labore sustainable VHS.
+            <div className="row my-5">
+              <div className="mx-auto">
+                <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+                  {`${t('slack_integration.without_proxy.create_bot')} `}
+                  <i className="fa fa-external-link" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -36,7 +39,7 @@ const CustomBotWithoutSettingsAccordion = () => {
 
       <div className="card mb-0">
 
-        <div className="card-header" id="headingTwo">
+        <div className="card-header">
           <h2 className="mb-0">
             <button
               className="btn btn-link btn-block d-flex text-decoration-none"
@@ -63,7 +66,7 @@ const CustomBotWithoutSettingsAccordion = () => {
 
       <div className="card mb-0">
 
-        <div className="card-header" id="headingTwo">
+        <div className="card-header">
           <h2 className="mb-0">
             <button
               className="btn btn-link btn-block d-flex text-decoration-none"
@@ -90,7 +93,7 @@ const CustomBotWithoutSettingsAccordion = () => {
 
       <div className="card mb-0">
 
-        <div className="card-header" id="headingTwo">
+        <div className="card-header">
           <h2 className="mb-0">
             <button
               className="btn btn-link btn-block d-flex text-decoration-none"
@@ -115,13 +118,6 @@ const CustomBotWithoutSettingsAccordion = () => {
 
       </div>
 
-      {/* <div className="row my-5">
-        <div className="mx-auto">
-          <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-            {t('slack_integration.without_proxy.create_bot')}
-          </button>
-        </div>
-      </div> */}
     </div>
 
   );
