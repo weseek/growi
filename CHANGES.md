@@ -2,7 +2,10 @@
 
 ## v4.2.14-RC
 
-* 
+* Support: Update libs
+    * bunyan
+    * browser-bunyan
+    * eslint-config-weseek
 
 ## v4.2.13
 
