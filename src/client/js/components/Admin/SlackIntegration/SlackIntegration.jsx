@@ -158,7 +158,7 @@ const SlackIntegration = (props) => {
               <div className="card-body px-4 py-5">
                 <p className="card-text">
                   <div className="text-center">
-                    {showBotTypeLebel('for_beginners')}
+                    {showBotTypeLebel('for_intermediate')}
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
@@ -189,7 +189,7 @@ const SlackIntegration = (props) => {
                   {t('admin:slack_integration.custom_bot_without_proxy')}
                 </span>
                 <i
-                  className={`fa fa-external-link btn-link${currentBotType === 'custom-bot-without-proxy' && 'bg-primary text-light'}`}
+                  className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-without-proxy' && 'bg-primary text-light'}`}
                   aria-hidden="true"
                 >
                 </i>
@@ -197,7 +197,7 @@ const SlackIntegration = (props) => {
               <div className="card-body px-4 py-5">
                 <p className="card-text">
                   <div className="text-center">
-                    {showBotTypeLebel('for_beginners')}
+                    {showBotTypeLebel('for_advanced')}
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
@@ -231,11 +231,11 @@ const SlackIntegration = (props) => {
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
             >
-              <h3 className={`card-header mb-0 py-3 text-center   ${currentBotType === 'official-bot' && 'bg-primary text-light'}`}>
+              <h3 className={`card-header mb-0 py-3 text-center   ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`}>
                 <span className="mr-2">
                   {t('admin:slack_integration.custom_bot_with_proxy')}
                 </span>
-                <i className={`fa fa-external-link btn-link ${currentBotType === 'official-bot' && 'bg-primary text-light'}`} aria-hidden="true"></i>
+                <i className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`} aria-hidden="true"></i>
               </h3>
               <div className="card-body px-4 py-5">
                 <p className="card-text">
