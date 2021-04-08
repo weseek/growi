@@ -1,4 +1,4 @@
-name: Node CI for growi-bot-proxy
+name: Node CI for slackbot-proxy
 
 on:
   push:
@@ -6,17 +6,14 @@ on:
       - release/**
       - tmp/**
     paths:
-      - .github/workflows/ci-bot-proxy.yml
-      - .eslint*
-      - .prettier*
-      - .stylelint*
-      - packages/growi-bot-proxy/*
+      - .github/workflows/ci-slackbot-proxy.yml
+      - packages/slackbot-proxy/*
       - package.json
       - yarn.lock
 
 defaults:
   run:
-    working-directory: packages/growi-bot-proxy
+    working-directory: packages/slackbot-proxy
 
 jobs:
 
