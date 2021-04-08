@@ -68,7 +68,7 @@ export class SlackCtrl {
 
     console.log(body.text);
     const method = supportedGrowiCommandsMappings[body.text];
-    const modulePath = `../service/${method}`;
+    const modulePath = `../services/${method}Service`;
     const hoge = require(modulePath);
     console.log('hoge', hoge);
 
