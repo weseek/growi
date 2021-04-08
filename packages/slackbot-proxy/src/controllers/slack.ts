@@ -17,6 +17,9 @@ export class SlackCtrl {
   constructor(private readonly installerService: InstallerService) {
   }
 
+  @Inject()
+  registerService: RegisterService
+
 
   @Get('/testsave')
   testsave(): void {
@@ -60,8 +63,9 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
+
     const supportedGrowiCommandsMappings = {
-      register: () => RegisterService(body),
+      register: () => this.registerService.registerServiceHoge(body),
     };
 
     const method = supportedGrowiCommandsMappings[body.text];
