@@ -57,15 +57,20 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): string {
+  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<string> {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
     const method = supportedGrowiCommandsMappings[body.text];
+    const methodService = `${method}Service`;
     const modulePath = `../services/${method}Service`;
     const targetModule = require(modulePath);
-    console.log('hoge', targetModule);
-    targetModule();
+    // const targetModuleAction = Object.values(targetModule);
+    const service = targetModule.methodService;
+    console.log(service);
+
+
+    // await targeModuleAction(body);
 
 
     // const slackInput = this.receiveService.receiveContentsFromSlack(body);
