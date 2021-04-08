@@ -5,7 +5,7 @@ export const supportedSlackCommands: string[] = [
 ];
 
 export const supportedGrowiCommandsMappings = {
-  Search: 'search',
-  Create: 'create',
-  Register: 'register',
+  search: 'Search',
+  create: 'Create',
+  register: 'Register',
 };
