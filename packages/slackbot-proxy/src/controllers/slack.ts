@@ -6,7 +6,6 @@ import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
-// import { ReceiveService } from '~/services/RecieveService';
 import { RegisterService } from '~/services/RegisterService';
 
 @Controller('/slack')
@@ -20,8 +19,6 @@ export class SlackCtrl {
   }
 
   @Inject()
-  // receiveService: ReceiveService;
-
   registerService: RegisterService;
 
   @Get('/testsave')
@@ -66,13 +63,11 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
-    console.log(body.text);
     const method = supportedGrowiCommandsMappings[body.text];
     const modulePath = `../services/${method}Service`;
     const hoge = require(modulePath);
     console.log('hoge', hoge);
 
-    console.log(modulePath);
     console.log(method);
 
     // const slackInput = this.receiveService.receiveContentsFromSlack(body);
