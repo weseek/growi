@@ -1,4 +1,4 @@
-import { registerService, Service } from '@tsed/di';
+import { Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock } from '@growi/slack/src/utils/block-creater';
 
