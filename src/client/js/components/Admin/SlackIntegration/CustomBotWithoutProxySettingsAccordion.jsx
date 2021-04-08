@@ -15,7 +15,7 @@ const CustomBotWithoutSettingsAccordion = () => {
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
-      
+
       <div className="card border-0 rounded-lg mb-0">
         <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(0)}>
           <p className="mb-0 text-primary">{`① ${t('slack_integration.without_proxy.create_bot')}`}</p>
