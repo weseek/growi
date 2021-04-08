@@ -7,6 +7,9 @@ on:
       - tmp/**
     paths:
       - .github/workflows/ci-bot-proxy.yml
+      - .eslint*
+      - .prettier*
+      - .stylelint*
       - packages/growi-bot-proxy/*
       - package.json
       - yarn.lock
