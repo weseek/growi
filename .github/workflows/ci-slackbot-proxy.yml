@@ -132,6 +132,7 @@ jobs:
         TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
         TYPEORM_DATABASE: growi-slackbot-proxy
         TYPEORM_USERNAME: root
+        TYPEORM_PASSWORD:
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
@@ -221,6 +222,7 @@ jobs:
         TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
         TYPEORM_DATABASE: growi-slackbot-proxy
         TYPEORM_USERNAME: root
+        TYPEORM_PASSWORD:
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
       with:
