@@ -66,8 +66,8 @@ export class SlackCtrl {
     const supportedGrowiCommandsMappings = {
       register: () => this.registerService.openRegisterModal(body),
     };
-    const method = supportedGrowiCommandsMappings[body.text];
-    await method();
+    const executeGrowiCommand = supportedGrowiCommandsMappings[body.text];
+    await executeGrowiCommand();
     res.send();
 
     return 'This action will be handled by bolt service.';
