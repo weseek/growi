@@ -198,20 +198,9 @@
   }
   .border-primary {
     border-width: 2px;
+    // border-radius: 30px;
   }
-  .bot-type-disc-easy {
-    color: #33d541;
-  }
-  .bot-type-disc-normal {
-    color: #e6a63c;
-  }
-  .bot-type-disc-difficult {
-    color: #ff5757;
-  }
-  .bot-type-disc-possible {
-    color: #33d541;
-  }
-  .bot-type-disc-impossible {
-    color: #ff5757;
+  .rounded {
+    // border-radius: 30px;
   }
 }

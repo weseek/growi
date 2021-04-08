@@ -216,10 +216,10 @@ const SlackIntegration = (props) => {
             </div>
 
             <div
-              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' ? 'border-primary' : ''}`}
+              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
             >
-              <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === 'custom-bot-with-proxy' ? 'bg-primary text-light' : ''}`}>
+              <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`}>
                 <span className="mr-2">
                   {t('admin:slack_integration.custom_bot_with_proxy')}
                 </span>
