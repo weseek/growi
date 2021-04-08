@@ -38,7 +38,7 @@ describe('parse SlashCommand', () => {
 
   test('returns a GrowiCommand instance with space growiCommandType', () => {
     // setup
-    const slashCommandText = 'search         ';
+    const slashCommandText = '   search   ';
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
@@ -52,7 +52,7 @@ describe('parse SlashCommand', () => {
 
   test('returns a GrowiCommand instance with space growiCommandArgs', () => {
     // setup
-    const slashCommandText = 'search hoge       ';
+    const slashCommandText = '   search hoge   ';
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
