@@ -8,6 +8,7 @@ import { Order } from '~/entities/order';
 import { InstallationRepository } from '~/repositories/installation';
 import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
+import { ReceiveService } from '~/services/RecieveService';
 
 
 @Controller('/slack')
@@ -21,6 +22,9 @@ export class SlackCtrl {
 
   @Inject()
   orderRepository: OrderRepository;
+
+  @Inject()
+  receiveService: ReceiveService;
 
   @Get('/testsave')
   testsave(): void {
@@ -62,9 +66,12 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  async handleEvent(@BodyParams() body: any, @Res() res: Res): Promise<string> {
+  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<string> {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+
+    const slackInput = this.receiveService.receiveContentsFromSlack(body);
+    console.log('Controller/events', slackInput);
     res.send();
 
     const installation = await this.installationRepository.findByID('1');

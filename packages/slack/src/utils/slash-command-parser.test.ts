@@ -12,7 +12,7 @@ describe('parse SlashCommand', () => {
   describe('without growiCommandType', () => {
     test('throws InvalidGrowiCommandError', () => {
       // setup
-      const slashCommandText = '/growi';
+      const slashCommandText = '';
       const slashCommand = new SlashCommandMock(slashCommandText);
 
       // when/then
@@ -24,7 +24,7 @@ describe('parse SlashCommand', () => {
 
   test('returns a GrowiCommand instance with empty growiCommandArgs', () => {
     // setup
-    const slashCommandText = '/growi search';
+    const slashCommandText = 'search';
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
@@ -36,9 +36,37 @@ describe('parse SlashCommand', () => {
     expect(result.growiCommandArgs).toStrictEqual([]);
   });
 
+  test('returns a GrowiCommand instance with space growiCommandType', () => {
+    // setup
+    const slashCommandText = '   search   ';
+    const slashCommand = new SlashCommandMock(slashCommandText);
+
+    // when
+    const result = parse(slashCommand);
+
+    // then
+    expect(result.text).toBe(slashCommandText);
+    expect(result.growiCommandType).toBe('search');
+    expect(result.growiCommandArgs).toStrictEqual([]);
+  });
+
+  test('returns a GrowiCommand instance with space growiCommandArgs', () => {
+    // setup
+    const slashCommandText = '   search hoge   ';
+    const slashCommand = new SlashCommandMock(slashCommandText);
+
+    // when
+    const result = parse(slashCommand);
+
+    // then
+    expect(result.text).toBe(slashCommandText);
+    expect(result.growiCommandType).toBe('search');
+    expect(result.growiCommandArgs).toStrictEqual(['hoge']);
+  });
+
   test('returns a GrowiCommand instance', () => {
     // setup
-    const slashCommandText = '/growi search keyword1 keyword2';
+    const slashCommandText = 'search keyword1 keyword2';
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
