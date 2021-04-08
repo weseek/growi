@@ -6,7 +6,7 @@ import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
-import { registerService } from '~/services/RegisterService';
+import { RegisterService } from '~/services/RegisterService';
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -62,12 +62,15 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
     const method = supportedGrowiCommandsMappings[body.text];
-    const methodService = `${method}Service`;
+    // const methodService = `${method}Service`;
     const modulePath = `../services/${method}Service`;
-    const targetModule = require(modulePath);
+    const { RegisterService } = require(modulePath);
     // const targetModuleAction = Object.values(targetModule);
-    const service = targetModule.methodService;
-    console.log(service);
+    // const service = targetModule.methodService;
+    await RegisterService(body);
+    console.log(RegisterService);
+    // console.log(service);
+    // console.log(methodService);
 
 
     // await targeModuleAction(body);
