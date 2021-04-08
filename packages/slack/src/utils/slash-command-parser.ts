@@ -2,7 +2,8 @@ import { GrowiCommand } from '../interfaces/growi-command';
 import { InvalidGrowiCommandError } from '../models/errors';
 
 export const parse = (slashCommand:{[key:string]:string}): GrowiCommand => {
-  const splitted = slashCommand.text.split(' ');
+  const trimmedText = slashCommand.text.trim();
+  const splitted = trimmedText.split(' ');
   console.log('slash-command', splitted);
 
   if (splitted[0] === '') {
