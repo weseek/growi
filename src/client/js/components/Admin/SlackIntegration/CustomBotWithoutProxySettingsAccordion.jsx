@@ -38,7 +38,7 @@ const CustomBotWithoutSettingsAccordion = () => {
                 <a href="#">
                   <p className="text-center mt-1">
                     <small>
-                      {t('slack_integration.how_to_create_a_bot')}
+                      {t('slack_integration.without_proxy.how_to_create_a_bot')}
                       <i className="fa fa-external-link ml-2" aria-hidden="true" />
                     </small>
                   </p>
