@@ -1,7 +1,6 @@
 import {
   BodyParams, Controller, Get, Inject, Post, Req, Res,
 } from '@tsed/common';
-import { supportedGrowiCommandsMappings } from '@growi/slack/src/index';
 import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
 
@@ -61,26 +60,13 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
+    const supportedGrowiCommandsMappings = {
+      register: () => RegisterService(body),
+    };
+
     const method = supportedGrowiCommandsMappings[body.text];
-    // const methodService = `${method}Service`;
-    const modulePath = `../services/${method}Service`;
-    const { RegisterService } = require(modulePath);
-    // const targetModuleAction = Object.values(targetModule);
-    // const service = targetModule.methodService;
-    await RegisterService(body);
-    console.log(RegisterService);
-    // console.log(service);
-    // console.log(methodService);
-
-
-    // await targeModuleAction(body);
-
-
-    // const slackInput = this.receiveService.receiveContentsFromSlack(body);
-    // console.log('Controller/events', slackInput);
+    await method();
     res.send();
-
-    console.log('body', body);
 
     return 'This action will be handled by bolt service.';
   }
