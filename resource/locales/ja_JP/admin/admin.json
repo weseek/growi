@@ -268,7 +268,7 @@
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
     "without_proxy": {
       "create_bot": "Bot を作成する",
-      "install_bot_to_slack": "BotをSlackにインストールする",
+      "install_bot_to_slack": "Bot を Slackにインストールする",
       "register_secret_and_token": "Signing Secret と Bot Token を登録する",
       "test_connection": "連携状況のテストをする"
     }
