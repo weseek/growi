@@ -1,97 +1,44 @@
-const logger = require('@alias/logger')('growi:service:BoltService');
+const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
 
-class BoltReciever {
-
-  init(app) {
-    this.bolt = app;
-  }
-
-  async requestHandler(body) {
-    if (this.bolt === undefined) {
-      throw new Error('Slack Bot service is not setup');
-    }
-
-    let ackCalled = false;
-
-    const payload = body.payload;
-    let reqBody;
-
-    if (payload != null) {
-      reqBody = JSON.parse(payload);
-    }
-    else {
-      reqBody = body;
-    }
-
-    const event = {
-      body: reqBody,
-      ack: (response) => {
-        if (ackCalled) {
-          return;
-        }
-
-        ackCalled = true;
-
-        if (response instanceof Error) {
-          const message = response.message || 'Error occurred';
-          throw new Error(message);
-        }
-        return;
-      },
-    };
-
-    await this.bolt.processEvent(event);
-  }
-
-}
-
-const { App } = require('@slack/bolt');
 const { WebClient, LogLevel } = require('@slack/web-api');
+
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
-class BoltService extends S2sMessageHandlable {
+class SlackBotService extends S2sMessageHandlable {
 
   constructor(crowi) {
     super();
 
     this.crowi = crowi;
     this.s2sMessagingService = crowi.s2sMessagingService;
-    this.receiver = new BoltReciever();
-    this.client = null;
 
-    this.isBoltSetup = false;
+    this.client = null;
+    this.searchService = null;
+
+    this.isSetupSlackBot = false;
+    this.isConnectedToSlack = false;
+
     this.lastLoadedAt = null;
 
     this.initialize();
   }
 
-  initialize() {
-    this.isBoltSetup = false;
+  async initialize() {
+    this.isSetupSlackBot = false;
 
     const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
-    const signingSecret = this.crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
 
-    this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
-
-    if (token == null || signingSecret == null) {
-      this.bolt = null;
-      return;
+    if (token != null) {
+      this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
+      logger.debug('SlackBot: setup is done');
+      this.isSetupSlackBot = true;
+      await this.sendAuthTest();
     }
 
-    this.bolt = new App({
-      token,
-      signingSecret,
-      receiver: this.receiver,
-    });
-    this.setupRoute();
-
-    logger.debug('SlackBot: setup is done');
-
-    this.isBoltSetup = true;
     this.lastLoadedAt = new Date();
   }
 
@@ -100,7 +47,7 @@ class BoltService extends S2sMessageHandlable {
    */
   shouldHandleS2sMessage(s2sMessage) {
     const { eventName, updatedAt } = s2sMessage;
-    if (eventName !== 'boltServiceUpdated' || updatedAt == null) {
+    if (eventName !== 'slackBotServiceUpdated' || updatedAt == null) {
       return false;
     }
 
@@ -114,7 +61,7 @@ class BoltService extends S2sMessageHandlable {
   async handleS2sMessage() {
     const { configManager } = this.crowi;
 
-    logger.info('Reset bolt by pubsub notification');
+    logger.info('Reset slack bot by pubsub notification');
     await configManager.loadConfigs();
     this.initialize();
   }
@@ -123,7 +70,7 @@ class BoltService extends S2sMessageHandlable {
     const { s2sMessagingService } = this;
 
     if (s2sMessagingService != null) {
-      const s2sMessage = new S2sMessage('boltServiceUpdated', { updatedAt: new Date() });
+      const s2sMessage = new S2sMessage('slackBotServiceUpdated', { updatedAt: new Date() });
 
       try {
         await s2sMessagingService.publish(s2sMessage);
@@ -134,65 +81,18 @@ class BoltService extends S2sMessageHandlable {
     }
   }
 
+  async sendAuthTest() {
+    this.isConnectedToSlack = false;
 
-  setupRoute() {
-    this.bolt.command('/growi', async({
-      command, client, body, ack,
-    }) => {
-      await ack();
-      const args = command.text.split(' ');
-      const firstArg = args[0];
-
-      switch (firstArg) {
-        case 'search':
-          await this.showEphemeralSearchResults(command, args);
-          break;
-
-        case 'create':
-          await this.createModal(command, client, body);
-          break;
-
-        default:
-          this.notCommand(command);
-          break;
-      }
-    });
-
-    this.bolt.view('createPage', async({
-      ack, view, body, client,
-    }) => {
-      await ack();
-      await this.createPageInGrowi(view, body);
-    });
-
-    this.bolt.action('showNextResults', async({
-      ack, action,
-    }) => {
-      await ack();
-      const parsedValue = JSON.parse(action.value);
-
-      const command = parsedValue.command;
-      const args = parsedValue.args;
-      const offset = parsedValue.offset;
-
-      const newOffset = offset + 10;
-      this.showEphemeralSearchResults(command, args, newOffset);
-    });
-
-    this.bolt.action('shareSearchResults', async({
-      body, ack, say, action,
-    }) => {
-      await ack();
-      await say(action.value);
-    });
-
+    await this.client.api.test();
+    this.isConnectedToSlack = true;
   }
 
-  notCommand(command) {
+  notCommand(body) {
     logger.error('Invalid first argument');
     this.client.chat.postEphemeral({
-      channel: command.channel_id,
-      user: command.user_id,
+      channel: body.channel_id,
+      user: body.user_id,
       blocks: [
         this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
@@ -206,12 +106,12 @@ class BoltService extends S2sMessageHandlable {
     return keywords;
   }
 
-  async getSearchResultPaths(command, args, offset = 0) {
+  async getSearchResultPaths(body, args, offset = 0) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
       this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
@@ -230,8 +130,8 @@ class BoltService extends S2sMessageHandlable {
     if (results.data.length === 0) {
       logger.info(`No page found with "${keywords}"`);
       this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
           this.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
@@ -263,10 +163,22 @@ class BoltService extends S2sMessageHandlable {
     };
   }
 
-  async showEphemeralSearchResults(command, args, offsetNum) {
+  async getSlackChannelName() {
+    const slackTeamInfo = await this.client.team.info();
+    return slackTeamInfo.team.name;
+  }
+
+  shareSearchResults(payload) {
+    this.client.chat.postMessage({
+      channel: payload.channel.id,
+      text: payload.actions[0].value,
+    });
+  }
+
+  async showEphemeralSearchResults(body, args, offsetNum) {
     const {
       resultPaths, offset, resultsTotal,
-    } = await this.getSearchResultPaths(command, args, offsetNum);
+    } = await this.getSearchResultPaths(body, args, offsetNum);
 
     const keywords = this.getKeywords(args);
 
@@ -327,13 +239,13 @@ class BoltService extends S2sMessageHandlable {
               text: 'Next',
             },
             action_id: 'showNextResults',
-            value: JSON.stringify({ offset, command, args }),
+            value: JSON.stringify({ offset, body, args }),
           },
         );
       }
       await this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
@@ -344,8 +256,8 @@ class BoltService extends S2sMessageHandlable {
     catch {
       logger.error('Failed to get search results.');
       await this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
@@ -354,9 +266,9 @@ class BoltService extends S2sMessageHandlable {
     }
   }
 
-  async createModal(command, client, body) {
+  async createModal(body) {
     try {
-      await client.views.open({
+      await this.client.views.open({
         trigger_id: body.trigger_id,
 
         view: {
@@ -385,8 +297,8 @@ class BoltService extends S2sMessageHandlable {
     catch (err) {
       logger.error('Failed to create a page.');
       await this.client.chat.postEphemeral({
-        channel: command.channel_id,
-        user: command.user_id,
+        channel: body.channel_id,
+        user: body.user_id,
         blocks: [
           this.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
         ],
@@ -396,14 +308,14 @@ class BoltService extends S2sMessageHandlable {
   }
 
   // Submit action in create Modal
-  async createPageInGrowi(view, body) {
+  async createPageInGrowi(payload) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
 
-    const contentsBody = view.state.values.contents.contents_input.value;
+    const contentsBody = payload.view.state.values.contents.contents_input.value;
 
     try {
-      let path = view.state.values.path.path_input.value;
+      let path = payload.view.state.values.path.path_input.value;
       // sanitize path
       path = this.crowi.xss.process(path);
       path = pathUtils.normalizePath(path);
@@ -414,7 +326,7 @@ class BoltService extends S2sMessageHandlable {
     }
     catch (err) {
       this.client.chat.postMessage({
-        channel: body.user.id,
+        channel: payload.user.id,
         blocks: [
           this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
       });
@@ -461,4 +373,4 @@ class BoltService extends S2sMessageHandlable {
 
 }
 
-module.exports = BoltService;
+module.exports = SlackBotService;

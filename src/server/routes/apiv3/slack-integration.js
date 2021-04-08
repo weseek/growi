@@ -3,7 +3,6 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
-const { WebClient } = require('@slack/web-api');
 const crypto = require('crypto');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -87,6 +86,7 @@ module.exports = (crowi) => {
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
     const slackBotSettingParams = {
+      accessToken: crowi.configManager.getConfig('crowi', 'slackbot:access-token'),
       currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
       // TODO impl when creating official bot
       officialBotSettings: {
@@ -100,6 +100,8 @@ module.exports = (crowi) => {
         slackBotTokenEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
+        isSetupSlackBot: crowi.slackBotService.isSetupSlackBot,
+        isConnectedToSlack: crowi.slackBotService.isConnectedToSlack,
       },
       // TODO imple when creating with proxy
       customBotWithProxySettings: {
@@ -140,9 +142,9 @@ module.exports = (crowi) => {
       try {
         await updateSlackBotSettings(requestParams);
 
-        // initialize bolt service
-        crowi.boltService.initialize();
-        crowi.boltService.publishUpdatedMessage();
+        // initialize slack service
+        await crowi.slackBotService.initialize();
+        crowi.slackBotService.publishUpdatedMessage();
 
         const slackIntegrationSettingsParams = {
           currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
@@ -152,7 +154,7 @@ module.exports = (crowi) => {
       catch (error) {
         const msg = 'Error occured in updating Slack bot setting';
         logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'));
+        return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'), 500);
       }
     });
 
@@ -188,9 +190,9 @@ module.exports = (crowi) => {
       try {
         await updateSlackBotSettings(requestParams);
 
-        // initialize bolt service
-        crowi.boltService.initialize();
-        crowi.boltService.publishUpdatedMessage();
+        // initialize slack service
+        await crowi.slackBotService.initialize();
+        crowi.slackBotService.publishUpdatedMessage();
 
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
         const customBotWithoutProxySettingParams = {
@@ -220,25 +222,18 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get slack ws name for custom bot without proxy
    */
-  router.get('/custom-bot-without-proxy/slack-workspace-name', async(req, res) => {
-    // get ws name in custom bot from slackbot token
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+  router.get('/custom-bot-without-proxy/slack-workspace-name', loginRequiredStrictly, adminRequired, async(req, res) => {
 
-    let slackWorkSpaceName = null;
-    if (slackBotToken != null) {
-      const web = new WebClient(slackBotToken);
-      try {
-        const slackTeamInfo = await web.team.info();
-        slackWorkSpaceName = slackTeamInfo.team.name;
-      }
-      catch (error) {
-        const msg = 'Error occured in slack_bot_token';
-        logger.error('Error', msg);
-        return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'));
-      }
+    try {
+      const slackWorkSpaceName = await crowi.slackBotService.getSlackChannelName();
+      return res.apiv3({ slackWorkSpaceName });
+    }
+    catch (error) {
+      const msg = 'Error occured in slack_bot_token';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
     }
 
-    return res.apiv3({ slackWorkSpaceName });
   });
 
   /**
@@ -260,9 +255,9 @@ module.exports = (crowi) => {
       const accessToken = generateAccessToken(req.user);
       await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
 
-      // initialize bolt service
-      crowi.boltService.initialize();
-      crowi.boltService.publishUpdatedMessage();
+      // initialize slack service
+      await crowi.slackBotService.initialize();
+      crowi.slackBotService.publishUpdatedMessage();
 
       return res.apiv3({ accessToken });
     }
@@ -291,9 +286,9 @@ module.exports = (crowi) => {
     try {
       await updateSlackBotSettings({ 'slackbot:access-token': null });
 
-      // initialize bolt service
-      crowi.boltService.initialize();
-      crowi.boltService.publishUpdatedMessage();
+      // initialize slack service
+      await crowi.slackBotService.initialize();
+      crowi.slackBotService.publishUpdatedMessage();
 
       return res.apiv3({});
     }
