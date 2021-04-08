@@ -1,7 +1,7 @@
 import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock } from '@growi/slack/src/utils/block-creater';
 
-export const openRegisterModal = async(body:{[key:string]:string}) : Promise<void> => {
+export const registerService = async(body:{[key:string]:string}) : Promise<void> => {
 
   // tmp use process.env
   const client = new WebClient(process.env.SLACK_BOT_USER_OAUTH_TOKEN, { logLevel: LogLevel.DEBUG });

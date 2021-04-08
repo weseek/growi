@@ -6,7 +6,7 @@ import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
 
 import { InstallerService } from '~/services/InstallerService';
-import { RegisterService } from '~/services/RegisterService';
+import { registerService } from '~/services/RegisterService';
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -18,8 +18,6 @@ export class SlackCtrl {
   constructor(private readonly installerService: InstallerService) {
   }
 
-  @Inject()
-  registerService: RegisterService;
 
   @Get('/testsave')
   testsave(): void {
@@ -67,6 +65,7 @@ export class SlackCtrl {
     const modulePath = `../services/${method}Service`;
     const targetModule = require(modulePath);
     console.log('hoge', targetModule);
+    targetModule();
 
 
     // const slackInput = this.receiveService.receiveContentsFromSlack(body);
