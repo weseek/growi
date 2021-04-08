@@ -33,8 +33,4 @@ export class RegisterService {
     });
   }
 
-  get registerService() {
-    return this.openRegisterModal;
-  }
-
 }
