@@ -89,12 +89,6 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: growi-slackbot-proxy
 
-    env:
-      TYPEORM_CONNECTION: mysql
-      TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
-      TYPEORM_DATABASE: growi-slackbot-proxy
-      TYPEORM_USERNAME: root
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -131,7 +125,11 @@ jobs:
     - name: yarn dev:ci
       run: |
         yarn dev:ci
-
+      env:
+        TYPEORM_CONNECTION: mysql
+        TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
+        TYPEORM_DATABASE: growi-slackbot-proxy
+        TYPEORM_USERNAME: root
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
@@ -159,12 +157,6 @@ jobs:
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: growi-slackbot-proxy
-
-    env:
-      TYPEORM_CONNECTION: mysql
-      TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
-      TYPEORM_DATABASE: growi-slackbot-proxy
-      TYPEORM_USERNAME: root
 
     steps:
     - uses: actions/checkout@v2
@@ -220,6 +212,11 @@ jobs:
     - name: yarn start:prod:ci
       run: |
         yarn start:prod:ci
+      env:
+        TYPEORM_CONNECTION: mysql
+        TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
+        TYPEORM_DATABASE: growi-slackbot-proxy
+        TYPEORM_USERNAME: root
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
       with:
