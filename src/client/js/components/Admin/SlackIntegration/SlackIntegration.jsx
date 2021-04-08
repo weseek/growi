@@ -158,7 +158,7 @@ const SlackIntegration = (props) => {
               <div className="card-body px-4 py-5">
                 <p className="card-text">
                   <div className="text-center">
-                    {showBotTypeLebel('for_intermediate')}
+                    {showBotTypeLebel('for_beginners')}
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
@@ -195,7 +195,7 @@ const SlackIntegration = (props) => {
               <div className="card-body px-4 py-5">
                 <p className="card-text">
                   <div className="text-center">
-                    {showBotTypeLebel('for_advanced')}
+                    {showBotTypeLebel('for_intermediate')}
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
@@ -204,11 +204,11 @@ const SlackIntegration = (props) => {
                     </div>
                     <div className="d-flex justify-content-between mb-2">
                       {showBotTypeLabel('integration_to_multi_workspaces')}
-                      {showBotTypeDiscription('possible')}
+                      {showBotTypeDiscription('impossible')}
                     </div>
                     <div className="d-flex justify-content-between">
                       {showBotTypeLabel('security_control')}
-                      {showBotTypeDiscription('impossible')}
+                      {showBotTypeDiscription('possible')}
                     </div>
                   </div>
                 </p>
@@ -216,10 +216,10 @@ const SlackIntegration = (props) => {
             </div>
 
             <div
-              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' && 'border-primary'}`}
+              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' ? 'border-primary' : ''}`}
               onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
             >
-              <h3 className={`card-header mb-0 py-3 text-center   ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`}>
+              <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === 'custom-bot-with-proxy' ? 'bg-primary text-light' : ''}`}>
                 <span className="mr-2">
                   {t('admin:slack_integration.custom_bot_with_proxy')}
                 </span>
@@ -228,7 +228,7 @@ const SlackIntegration = (props) => {
               <div className="card-body px-4 py-5">
                 <p className="card-text">
                   <div className="text-center">
-                    {showBotTypeLebel('for_beginners')}
+                    {showBotTypeLebel('for_advanced')}
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
