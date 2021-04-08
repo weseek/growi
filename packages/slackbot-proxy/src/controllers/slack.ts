@@ -68,7 +68,7 @@ export class SlackCtrl {
     const parsedBody = parse(body);
 
     const growiCommandsMappings = {
-      register: () => this.registerService.openRegisterModal(body),
+      register: () => this.registerService.execSlashCommand(body),
     };
     const executeGrowiCommand = growiCommandsMappings[parsedBody.growiCommandType];
 
