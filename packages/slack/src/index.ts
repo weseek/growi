@@ -1,4 +1,3 @@
-import { openRegisterModal } from '../../slackbot-proxy/src/services/RegisterService';
 
 
 export const supportedSlackCommands: string[] = [
@@ -12,6 +11,6 @@ export const supportedGrowiCommandsMappings = {
 };
 
 
-export const supportedGrowiCommandsAction = {
-  register: (body:{[key:string]:string}) => openRegisterModal(body),
-};
+// export const supportedGrowiCommandsAction = {
+//   register: (body:{[key:string]:string}) => openRegisterModal(body),
+// };
