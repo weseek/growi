@@ -117,14 +117,9 @@ const SlackIntegration = (props) => {
   //       break;
   //   }
   // };
-  const easy = () => {
-    return <span>{t('admin:slack_integration.selecting_bot_types.easy')}</span>;
-  };
-  const normal = () => {
-    return <span>{t('admin:slack_integration.selecting_bot_types.normal')}</span>;
-  };
-  const difficult = () => {
-    return <span>{t('admin:slack_integration.selecting_bot_types.difficult')}</span>;
+
+  const showBotTypeDiscription = (desc) => {
+    return <span className="text-blue">{t(`admin:slack_integration.selecting_bot_types.${desc}`)}</span>;
   };
 
   return (
@@ -180,16 +175,15 @@ const SlackIntegration = (props) => {
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
                       <span>{t('admin:slack_integration.selecting_bot_types.set_up_to_take_time')}</span>
-                      {/* <span>{t('admin:slack_integration.selecting_bot_types.easy')}</span> */}
-                      {easy()}
+                      {showBotTypeDiscription('easy')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">
                       <span>{t('admin:slack_integration.selecting_bot_types.integration_to_multi_workspaces')}</span>
-                      <span>{t('admin:slack_integration.selecting_bot_types.possible')}</span>
+                      {showBotTypeDiscription('possible')}
                     </div>
                     <div className="d-flex justify-content-between">
                       <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
-                      <span>{t('admin:slack_integration.selecting_bot_types.impossible')}</span>
+                      {showBotTypeDiscription('impossible')}
                     </div>
                   </div>
                 </p>
