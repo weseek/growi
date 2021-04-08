@@ -67,12 +67,16 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
+    const installation = await this.installationRepository.findByID('1');
+    if (installation == null) {
+      throw new Error('installation is reqiured');
+    }
+
     console.log('body', body);
     const teamId = body.team_id;
 
     // TODO move to service
-    const order = await this.orderRepository.findOrCreateByTeamId(teamId);
-    console.log('order', order);
+    // console.log('order', order);
 
     return 'This action will be handled by bolt service.';
   }
