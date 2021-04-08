@@ -16,7 +16,7 @@ export class Order {
   readonly updatedAt: Date;
 
   @ManyToOne(() => Installation, installation => installation.orders)
-  readonly installationId: number;
+  readonly installation: number;
 
   @Column({ nullable: true, default: false })
   isCompleted?: boolean;
@@ -30,8 +30,9 @@ export class Order {
   @Column({ nullable: true })
   proxyAccessToken?: string;
 
-  isExpired():Error {
-    throw new Error('TODO GW-5555 implement this');
+  isExpired():boolean {
+    // TODO GW-5555 implement this
+    return false;
   }
 
 }

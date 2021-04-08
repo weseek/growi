@@ -72,11 +72,21 @@ export class SlackCtrl {
       throw new Error('installation is reqiured');
     }
 
-    console.log('body', body);
-    const teamId = body.team_id;
+    // Find the latest order by installationId
+    let order = await this.orderRepository.findOne({
+      installation: installation.id,
+    }, {
+      order: {
+        createdAt: 'DESC',
+      },
+    });
 
-    // TODO move to service
-    // console.log('order', order);
+    if (order == null || order.isExpired()) {
+      order = await this.orderRepository.save({ installation: installation.id });
+    }
+
+    console.log('body', body);
+    console.log('order', order);
 
     return 'This action will be handled by bolt service.';
   }
