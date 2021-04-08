@@ -13,13 +13,15 @@ import { ConnectionOptions } from 'typeorm';
 export const rootDir = __dirname;
 
 const connectionOptions: ConnectionOptions = {
+  // The 'name' property must be set. Otherwise, the 'name' will be '0' and won't work well. -- 2021.04.05 Yuki Takei
+  // see: https://github.com/TypedProject/tsed/blob/7630cda20a1f6fa3a692ecc3e6cd51d37bc3c45f/packages/typeorm/src/utils/createConnection.ts#L10
+  name: 'default',
   type: process.env.TYPEORM_CONNECTION,
   host: process.env.TYPEORM_HOST,
   database: process.env.TYPEORM_DATABASE,
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
   synchronize: true,
-  logging: true,
 } as ConnectionOptions;
 
 
@@ -84,11 +86,8 @@ export class Server {
   }
 
   async $onReady(): Promise<void> {
-    const typeormService = this.injector.get<TypeORMService>(TypeORMService);
-    console.log(typeormService);
-
-    const connection = typeormService?.connectionManager.get('0');
-    console.log(connection);
+    // for synchromizing when boot
+    this.injector.get<TypeORMService>(TypeORMService);
   }
 
 }

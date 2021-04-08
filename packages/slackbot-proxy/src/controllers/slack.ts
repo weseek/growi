@@ -4,19 +4,18 @@ import {
 import { parse } from '@growi/slack/src/utils/slash-command-parser';
 import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
-
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
+
 
 @Controller('/slack')
 export class SlackCtrl {
 
   @Inject()
-  installationRepository: InstallationRepository;
+  installerService: InstallerService;
 
-  // eslint-disable-next-line no-useless-constructor
-  constructor(private readonly installerService: InstallerService) {
-  }
+  @Inject()
+  installationRepository: InstallationRepository;
 
   @Inject()
   registerService: RegisterService
@@ -34,6 +33,8 @@ export class SlackCtrl {
         scopes: undefined,
       },
     };
+
+    // const installationRepository = getRepository(Installation);
 
     this.installationRepository.save(installation);
   }

@@ -1,7 +1,7 @@
 import {
   Installation as SlackInstallation, InstallationQuery, InstallProvider,
 } from '@slack/oauth';
-import { Service } from '@tsed/di';
+import { Inject, Service } from '@tsed/di';
 
 import { Installation } from '~/entities/installation';
 import { InstallationRepository } from '~/repositories/installation';
@@ -11,12 +11,8 @@ export class InstallerService {
 
   installer: InstallProvider;
 
-  repository: InstallationRepository;
-
-  // eslint-disable-next-line no-useless-constructor
-  constructor(repository: InstallationRepository) {
-    this.repository = repository;
-  }
+  @Inject()
+  private readonly repository: InstallationRepository;
 
   $onInit(): Promise<any> | void {
     const clientId = process.env.SLACK_CLIENT_ID;
@@ -38,10 +34,8 @@ export class InstallerService {
       stateSecret,
       installationStore: {
         storeInstallation: async(slackInstallation: SlackInstallation<'v1' | 'v2', boolean>) => {
-          console.log({ slackInstallation });
-
           const installation = new Installation();
-          installation.data = slackInstallation;
+          installation.setData(slackInstallation);
 
           await repository.save(installation);
 
