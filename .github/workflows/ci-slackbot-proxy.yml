@@ -127,6 +127,7 @@ jobs:
         yarn dev:ci
       env:
         TYPEORM_CONNECTION: mysql
+        TYPEORM_HOST: localhost
         TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
         TYPEORM_DATABASE: growi-slackbot-proxy
         TYPEORM_USERNAME: root
@@ -214,6 +215,7 @@ jobs:
         yarn start:prod:ci
       env:
         TYPEORM_CONNECTION: mysql
+        TYPEORM_HOST: localhost
         TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
         TYPEORM_DATABASE: growi-slackbot-proxy
         TYPEORM_USERNAME: root
