@@ -74,7 +74,7 @@ const CustomBotWithoutSettingsAccordion = () => {
               data-toggle="collapse"
               data-target="#collapsibleSecretTokenSection"
             >
-              ③{t('slack_integration.without_proxy.register_secret_and_token')}
+              ③ {t('slack_integration.without_proxy.register_secret_and_token')}
             </button>
           </h2>
         </div>
