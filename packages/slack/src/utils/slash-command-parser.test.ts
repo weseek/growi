@@ -29,12 +29,39 @@ describe('parse SlashCommand', () => {
 
     // when
     const result = parse(slashCommand);
-    console.log('32', result);
 
     // then
     expect(result.text).toBe(slashCommandText);
     expect(result.growiCommandType).toBe('search');
     expect(result.growiCommandArgs).toStrictEqual([]);
+  });
+
+  test('returns a GrowiCommand instance with space growiCommandType', () => {
+    // setup
+    const slashCommandText = 'search         ';
+    const slashCommand = new SlashCommandMock(slashCommandText);
+
+    // when
+    const result = parse(slashCommand);
+
+    // then
+    expect(result.text).toBe(slashCommandText);
+    expect(result.growiCommandType).toBe('search');
+    expect(result.growiCommandArgs).toStrictEqual([]);
+  });
+
+  test('returns a GrowiCommand instance with space growiCommandArgs', () => {
+    // setup
+    const slashCommandText = 'search hoge       ';
+    const slashCommand = new SlashCommandMock(slashCommandText);
+
+    // when
+    const result = parse(slashCommand);
+
+    // then
+    expect(result.text).toBe(slashCommandText);
+    expect(result.growiCommandType).toBe('search');
+    expect(result.growiCommandArgs).toStrictEqual(['hoge']);
   });
 
   test('returns a GrowiCommand instance', () => {
