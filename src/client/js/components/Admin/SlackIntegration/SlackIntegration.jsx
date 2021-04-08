@@ -162,7 +162,7 @@ const SlackIntegration = (props) => {
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('set_up_to_take_time')}
+                      {showBotTypeLabel('set_up')}
                       {showBotTypeDiscription('easy')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">
@@ -202,7 +202,7 @@ const SlackIntegration = (props) => {
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('set_up_to_take_time')}
+                      {showBotTypeLabel('set_up')}
                       {showBotTypeDiscription('normal')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">
@@ -238,7 +238,7 @@ const SlackIntegration = (props) => {
                   </div>
                   <div className="mt-4">
                     <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('set_up_to_take_time')}
+                      {showBotTypeLabel('set_up')}
                       {showBotTypeDiscription('difficult')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">

@@ -253,6 +253,27 @@
     "delete": "Delete"
   },
   "slack_integration": {
+    "selecting_bot_types": {
+      "slack_bot": "Slack bot",
+      "detailed_explanation": "Detailed explanation",
+      "selecting_bot_type": "・Selecting bot type",
+      "official_bot": "Official bot",
+      "custom_bot": "Custom bot",
+      "without_proxy": "without proxy",
+      "with_proxy": "with proxy",
+      "recommended": "Recommended",
+      "for_beginners": "- For beginners -",
+      "for_intermediate": "- For intermediate -",
+      "for_advanced": "- For advanced -",
+      "set_up": "Set up",
+      "integration_to_multi_workspaces": "Integration to multi workspaces",
+      "security_control": "Security control",
+      "easy": "Easy",
+      "normal": "Normal",
+      "difficult": "Difficult",
+      "possible": "Possible",
+      "impossible": "Impossible"
+    },
     "bot_reset_successful": "Bot settings have been reset.",
     "copied_to_clipboard": "Copied to clipboard",
     "modal": {
