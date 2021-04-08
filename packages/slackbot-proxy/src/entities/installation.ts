@@ -7,6 +7,7 @@ import {
 
 import { Installation as SlackInstallation } from '@slack/oauth';
 import { Order } from './order';
+import { Relation } from './relation';
 
 @Entity()
 export class Installation {
@@ -35,6 +36,9 @@ export class Installation {
 
   @OneToMany(() => Order, order => order.installation)
   orders?: Order[];
+
+  @OneToMany(() => Relation, relation => relation.installation)
+  relations?: Relation[];
 
   setData(slackInstallation: SlackInstallation): void {
     this.data = slackInstallation;
