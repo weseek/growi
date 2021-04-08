@@ -5,7 +5,7 @@ import { generateInputSectionBlock } from '@growi/slack/src/utils/block-creater'
 @Service()
 export class RegisterService {
 
-  async registerService(body:{[key:string]:string}):Promise<void> {
+  async openRegisterModal(body:{[key:string]:string}):Promise<void> {
     // tmp use process.env
     const client = new WebClient(process.env.SLACK_BOT_USER_OAUTH_TOKEN, { logLevel: LogLevel.DEBUG });
     await client.views.open({
@@ -33,8 +33,8 @@ export class RegisterService {
     });
   }
 
-  get registerServiceHoge() {
-    return this.registerService;
+  get registerService() {
+    return this.openRegisterModal;
   }
 
 }

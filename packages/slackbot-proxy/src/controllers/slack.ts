@@ -65,7 +65,7 @@ export class SlackCtrl {
 
 
     const supportedGrowiCommandsMappings = {
-      register: () => this.registerService.registerServiceHoge(body),
+      register: () => this.registerService.openRegisterModal(body),
     };
 
     const method = supportedGrowiCommandsMappings[body.text];
