@@ -272,7 +272,8 @@
       "create_bot": "Create Bot",
       "install_bot_to_slack": "Install Bot To Slack",
       "register_secret_and_token": "Set Signing Secret and Bot Token",
-      "test_connection": "Test Connection"
+      "test_connection": "Test Connection",
+      "how_to_create_a_bot": "How to create a bot"
     }
   },
   "user_management": {

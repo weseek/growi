@@ -280,7 +280,8 @@
       "create_bot": "创建 Bot",
       "install_bot_to_slack": "将Bot安装到Slack",
       "register_secret_and_token": "设置签名秘密和BOT令牌",
-      "test_connection": "测试连接"
+      "test_connection": "测试连接",
+      "how_to_create_a_bot": "如何创建一个BOT"
     }
   },
 	"user_management": {
