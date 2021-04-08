@@ -124,6 +124,7 @@ jobs:
         yarn list --depth=0
     - name: yarn dev:ci
       run: |
+        cp config/ci/.env.local.for-ci .env.local
         yarn dev:ci
       env:
         TYPEORM_CONNECTION: mysql
@@ -212,6 +213,7 @@ jobs:
         yarn list --production --depth=0
     - name: yarn start:prod:ci
       run: |
+        cp config/ci/.env.local.for-ci .env.local
         yarn start:prod:ci
       env:
         TYPEORM_CONNECTION: mysql
