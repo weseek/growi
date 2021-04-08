@@ -257,9 +257,9 @@
       "detailed_explanation": "詳しい説明はこちら",
       "selecting_bot_type": "・Botタイプを選択する",
       "official_bot": "Official bot",
-      "custom_bot_without_proxy": "Custom bot without proxy",
-      "custom_bot_with_proxy": "Custom bot with proxy",
-
+      "custom_bot": "Custom bot",
+      "without_proxy": "without proxy",
+      "with_proxy": "with proxy",
       "recommended": "おすすめ",
       "for_beginners": "- 初心者向け -",
       "for_intermediate": "- 中級者向け -",

@@ -182,9 +182,12 @@ const SlackIntegration = (props) => {
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-without-proxy' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
             >
-              <h3 className={`card-header mb-0 py-3 text-center   ${currentBotType === 'custom-bot-without-proxy' && 'bg-primary text-light'}`}>
+              <h3 className={`card-header mb-0 py-3 text-center text-nowrap  ${currentBotType === 'custom-bot-without-proxy' && 'bg-primary text-light'}`}>
                 <span className="mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.custom_bot_without_proxy')}
+                  {t('admin:slack_integration.selecting_bot_types.custom_bot')}
+                </span>
+                <span className="supplementary-desc mr-2">
+                  {t('admin:slack_integration.selecting_bot_types.without_proxy')}
                 </span>
                 <i
                   className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-without-proxy' && 'bg-primary text-light'}`}
@@ -219,9 +222,12 @@ const SlackIntegration = (props) => {
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
             >
-              <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`}>
+              <h3 className={`card-header mb-0 py-3 text-center text-nowrap ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`}>
                 <span className="mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.custom_bot_with_proxy')}
+                  {t('admin:slack_integration.selecting_bot_types.custom_bot')}
+                </span>
+                <span className="supplementary-desc mr-2">
+                  {t('admin:slack_integration.selecting_bot_types.with_proxy')}
                 </span>
                 <i className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-with-proxy' && 'bg-primary text-light'}`} aria-hidden="true"></i>
               </h3>
