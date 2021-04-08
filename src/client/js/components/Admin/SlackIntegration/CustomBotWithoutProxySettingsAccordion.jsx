@@ -5,9 +5,9 @@ const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
 
   return (
-    <div className="accordion my-5 px-5" id="withoutProxySettingsAccordion">
+    <div className="accordion shadow" id="withoutProxySettingsAccordion">
 
-      <div className="card mb-0">
+      <div className="card border-0 mb-0">
 
         <div className="card-header">
           <h2 className="mb-0">
@@ -22,7 +22,7 @@ const CustomBotWithoutSettingsAccordion = () => {
           </h2>
         </div>
 
-        <div id="collapsibleMakeBotSection" className="collapse show" data-parent="#withoutProxySettingsAccordion">
+        <div id="collapsibleMakeBotSection" className="collapse" data-parent="#withoutProxySettingsAccordion">
           <div className="card-body">
             <div className="row my-5">
               <div className="mx-auto">
