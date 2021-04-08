@@ -162,18 +162,15 @@ const SlackIntegration = (props) => {
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'official-bot' && 'border-primary'}`}
               onClick={() => handleBotTypeSelect('official-bot')}
             >
-              <div className={`pt-4 ${currentBotType === 'official-bot' && ''}`}>
-                {/* <h3 className={`text-center mb-0 ${currentBotType === 'official-bot' && 'text-light'}`}> */}
-                <h3 className="text-center mb-0 ">
-                  <span className="mr-2">
-                    {t('admin:slack_integration.official_bot')}
-                  </span>
-                  <span className="badge badge-info mr-2">
-                    {t('admin:slack_integration.recommended')}
-                  </span>
-                  <i className="fa fa-external-link btn-link" aria-hidden="true"></i>
-                </h3>
-              </div>
+              <h3 className={`card-header mb-0 py-2 text-center   ${currentBotType === 'official-bot' && 'bg-primary text-light'}`}>
+                <span className="mr-2">
+                  {t('admin:slack_integration.official_bot')}
+                </span>
+                <span className="badge badge-info mr-2">
+                  {t('admin:slack_integration.recommended')}
+                </span>
+                <i className="fa fa-external-link btn-link" aria-hidden="true"></i>
+              </h3>
               <div className="card-body px-4 py-5">
                 <p className="card-text">
                   <div className="text-center">
