@@ -63,11 +63,9 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
-
     const supportedGrowiCommandsMappings = {
       register: () => this.registerService.openRegisterModal(body),
     };
-
     const method = supportedGrowiCommandsMappings[body.text];
     await method();
     res.send();
