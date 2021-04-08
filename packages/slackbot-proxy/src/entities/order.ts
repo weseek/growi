@@ -1,6 +1,7 @@
 import {
-  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne,
 } from 'typeorm';
+import { Installation } from './installation';
 
 @Entity()
 export class Order {
@@ -14,8 +15,8 @@ export class Order {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @Column({ unique: true })
-  teamId: string;
+  @ManyToOne(() => Installation, installation => installation.orders)
+  readonly installationId: number;
 
   @Column({ nullable: true, default: false })
   isCompleted?: boolean;

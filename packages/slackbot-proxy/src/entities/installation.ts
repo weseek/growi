@@ -2,10 +2,11 @@ import {
   Required,
 } from '@tsed/schema';
 import {
-  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, OneToMany,
 } from 'typeorm';
 
 import { Installation as SlackInstallation } from '@slack/oauth';
+import { Order } from './order';
 
 @Entity()
 export class Installation {
@@ -31,6 +32,9 @@ export class Installation {
 
   @Column({ nullable: true, unique: true })
   enterpriseId?: string;
+
+  @OneToMany(() => Order, order => order.installationId)
+  orders?: Order[];
 
   setData(slackInstallation: SlackInstallation): void {
     this.data = slackInstallation;
