@@ -26,10 +26,16 @@ const CustomBotWithoutSettingsAccordion = () => {
           <div className="card-body">
             <div className="row my-5">
               <div className="mx-auto">
-                <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-                  {`${t('slack_integration.without_proxy.create_bot')} `}
-                  <i className="fa fa-external-link" aria-hidden="true"></i>
-                </button>
+                <div>
+                  <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+                    {t('slack_integration.without_proxy.create_bot')}
+                    <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <p className="text-center">
+                  作成方法はこちら
+                  <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
+                </p>
               </div>
             </div>
           </div>
