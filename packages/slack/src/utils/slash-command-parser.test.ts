@@ -12,7 +12,7 @@ describe('parse SlashCommand', () => {
   describe('without growiCommandType', () => {
     test('throws InvalidGrowiCommandError', () => {
       // setup
-      const slashCommandText = '/growi';
+      const slashCommandText = '';
       const slashCommand = new SlashCommandMock(slashCommandText);
 
       // when/then
