@@ -17,7 +17,7 @@ const CustomBotWithoutSettingsAccordion = () => {
               data-toggle="collapse"
               data-target="#collapsibleMakeBotSection"
             >
-              ① Botを作成する
+              ① {t('slack_integration.without_proxy.create_bot')}
             </button>
           </h2>
         </div>
@@ -47,7 +47,7 @@ const CustomBotWithoutSettingsAccordion = () => {
               data-toggle="collapse"
               data-target="#collapsibleInstallBotSection"
             >
-              ② BotをSlackにインストールする
+              ② {t('slack_integration.without_proxy.install_bot_to_slack')}
             </button>
           </h2>
         </div>
@@ -74,7 +74,7 @@ const CustomBotWithoutSettingsAccordion = () => {
               data-toggle="collapse"
               data-target="#collapsibleSecretTokenSection"
             >
-              ③ Signing Secret と Bot Token を登録する
+              ③{t('slack_integration.without_proxy.register_secret_and_token')}
             </button>
           </h2>
         </div>
@@ -101,7 +101,7 @@ const CustomBotWithoutSettingsAccordion = () => {
               data-toggle="collapse"
               data-target="#collapsibleTestConnectionSection"
             >
-              ④ 連携状況のテストをする
+              ④ {t('slack_integration.without_proxy.test_connection')}
             </button>
           </h2>
         </div>
