@@ -1,7 +1,8 @@
 import {
-  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne,
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, OneToOne,
 } from 'typeorm';
 import { Installation } from './installation';
+import { Relation } from './relation';
 
 @Entity()
 export class Order {
@@ -17,6 +18,9 @@ export class Order {
 
   @ManyToOne(() => Installation, installation => installation.orders)
   readonly installation: number;
+
+  @OneToOne(() => Relation, relation => relation.order)
+  relation: Relation;
 
   @Column({ nullable: true, default: false })
   isCompleted?: boolean;

@@ -1,7 +1,8 @@
 import {
-  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne,
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, OneToOne, JoinColumn,
 } from 'typeorm';
 import { Installation } from './installation';
+import { Order } from './order';
 
 @Entity()
 export class Relation {
@@ -18,8 +19,9 @@ export class Relation {
   @ManyToOne(() => Installation, installation => installation.relations)
   readonly installation: number;
 
-  @Column({ nullable: true, default: false })
-  isCompleted?: boolean;
+  @OneToOne(() => Order)
+  @JoinColumn()
+  order: Order;
 
   @Column()
   tokenGtoP: string;
