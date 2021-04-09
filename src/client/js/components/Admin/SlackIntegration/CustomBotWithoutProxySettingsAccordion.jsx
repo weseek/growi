@@ -6,14 +6,13 @@ const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
   const [currentlyOpenAccordionIndexes, setCurrentlyOpenAccordionIndexes] = useState(new Set());
   const onToggleAccordionHandler = (i) => {
-    const indexSetObject =  new Set(currentlyOpenAccordionIndexes);
-    if (indexSetObject.has(i)) {
-      indexSetObject.delete(i);
-      setCurrentlyOpenAccordionIndexes(indexSetObject);
+    if (currentlyOpenAccordionIndexes.has(i)) {
+      currentlyOpenAccordionIndexes.delete(i);
+      setCurrentlyOpenAccordionIndexes(currentlyOpenAccordionIndexes);
       return;
     }
-    indexSetObject.add(i);
-    setCurrentlyOpenAccordionIndexes(indexSetObject);
+    
+    setCurrentlyOpenAccordionIndexes(currentlyOpenAccordionIndexes.add(i));
   };
 
   return (
