@@ -1,10 +1,10 @@
 import {
-  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, OneToOne, JoinColumn,
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne,Index
 } from 'typeorm';
 import { Installation } from './installation';
-import { Order } from './order';
 
 @Entity()
+@Index(["installation", "growiUri"], { unique: true })
 export class Relation {
 
   @PrimaryGeneratedColumn()
@@ -19,14 +19,12 @@ export class Relation {
   @ManyToOne(() => Installation)
   readonly installation: number;
 
-  @OneToOne(() => Order)
-  @JoinColumn()
-  order: Order;
-
   @Column()
+  @Index({ unique: true })
   tokenGtoP: string;
 
   @Column()
+  @Index()
   tokenPtoG: string;
 
   @Column()
