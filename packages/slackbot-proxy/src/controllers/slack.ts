@@ -3,7 +3,10 @@ import {
 } from '@tsed/common';
 import { parse } from '@growi/slack/src/utils/slash-command-parser';
 import { Installation } from '~/entities/installation';
+import { Order } from '~/entities/order';
+
 import { InstallationRepository } from '~/repositories/installation';
+import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 
@@ -18,30 +21,32 @@ export class SlackCtrl {
   installationRepository: InstallationRepository;
 
   @Inject()
-  registerService: RegisterService
+  orderRepository: OrderRepository;
 
+  @Inject()
+  registerService: RegisterService;
 
-   growiCommandsMappings = {
-     register: async(body:{[key:string]:string}):Promise<void> => this.registerService.execSlashCommand(body),
-   };
+  growiCommandsMappings = {
+    register: async(body:{[key:string]:string}):Promise<void> => this.registerService.execSlashCommand(body),
+  };
 
   @Get('/testsave')
-   testsave(): void {
-     const installation = new Installation();
-     installation.data = {
-       team: undefined,
-       enterprise: undefined,
-       user: {
-         id: '',
-         token: undefined,
-         scopes: undefined,
-       },
-     };
+  testsave(): void {
+    const installation = new Installation();
+    installation.data = {
+      team: undefined,
+      enterprise: undefined,
+      user: {
+        id: '',
+        token: undefined,
+        scopes: undefined,
+      },
+    };
 
-     // const installationRepository = getRepository(Installation);
+    // const installationRepository = getRepository(Installation);
 
-     this.installationRepository.save(installation);
-   }
+    this.installationRepository.save(installation);
+  }
 
 
   @Get('/install')
@@ -73,6 +78,27 @@ export class SlackCtrl {
     const executeGrowiCommand = this.growiCommandsMappings[parsedBody.growiCommandType];
     await executeGrowiCommand(body);
     res.send();
+
+    const installation = await this.installationRepository.findByID('1');
+    if (installation == null) {
+      throw new Error('installation is reqiured');
+    }
+
+    // Find the latest order by installationId
+    let order = await this.orderRepository.findOne({
+      installation: installation.id,
+    }, {
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    if (order == null || order.isExpired()) {
+      order = await this.orderRepository.save({ installation: installation.id });
+    }
+
+    console.log('body', body);
+    console.log('order', order);
 
     return 'This action will be handled by bolt service.';
   }
