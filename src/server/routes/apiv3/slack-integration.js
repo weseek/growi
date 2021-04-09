@@ -269,6 +269,19 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /slack-integration/test-notification-to-slack-work-space:
+   *      post:
+   *        tags: [SlackIntegration]
+   *        operationId: postSlackMessageToSlackWorkSpace
+   *        summary: test to send message to slack work space
+   *        description: post message to slack work space
+   *        responses:
+   *          200:
+   *            description: Succeeded to send a message to slack work space
+   */
   router.post('/test-notification-to-slack-work-space', async(req, res) => {
     const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
     if (isConnectedToSlack === false) {
