@@ -113,6 +113,12 @@ const SlackIntegration = (props) => {
     return <span className={`bot-type-disc-${desc}`}>{t(`admin:slack_integration.selecting_bot_types.${desc}`)}</span>;
   };
 
+  const renderBotTypeCard = () => {
+    return (
+      <></>
+    );
+  };
+
   return (
     <>
       <ConfirmBotChangeModal
