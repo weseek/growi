@@ -103,7 +103,7 @@ const SlackIntegration = (props) => {
       break;
   }
 
-  const showBotTypeLebel = (level) => {
+  const showBotTypeLevel = (level) => {
     return <span>{t(`admin:slack_integration.selecting_bot_types.${level}`)}</span>;
   };
   const showBotTypeLabel = (label) => {
@@ -160,7 +160,7 @@ const SlackIntegration = (props) => {
               <div className="card-body p-4">
                 <p className="card-text">
                   <div className="text-center">
-                    {showBotTypeLebel('for_beginners')}
+                    {showBotTypeLevel('for_beginners')}
                   </div>
                   <div className="my-4">
                     <div className="d-flex justify-content-between mb-2">
@@ -200,7 +200,7 @@ const SlackIntegration = (props) => {
               <div className="card-body p-4">
                 <p className="card-text">
                   <div className="text-center">
-                    {showBotTypeLebel('for_intermediate')}
+                    {showBotTypeLevel('for_intermediate')}
                   </div>
                   <div className="my-4">
                     <div className="d-flex justify-content-between mb-2">
@@ -236,7 +236,7 @@ const SlackIntegration = (props) => {
               <div className="card-body p-4">
                 <p className="card-text">
                   <div className="text-center">
-                    {showBotTypeLebel('for_advanced')}
+                    {showBotTypeLevel('for_advanced')}
                   </div>
                   <div className="my-4">
                     <div className="d-flex justify-content-between mb-2">
