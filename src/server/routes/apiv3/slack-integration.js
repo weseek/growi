@@ -270,15 +270,19 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/test-notification-to-slack-work-space', async(req, res) => {
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-
-    if (slackBotToken == null) {
+  function checkConnectedToSlack(res) {
+    const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
+    if (!isConnectedToSlack) {
       const msg = 'Bot User OAuth Token is not setup.';
       logger.error('Error', msg);
       return res.apiv3Err(new ErrorV3(msg, 'not-setup-slack-bot-token', 400));
     }
+  }
 
+  router.post('/test-notification-to-slack-work-space', async(req, res) => {
+    checkConnectedToSlack(res);
+
+    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
     logger.debug('SlackBot: setup is done');
 
