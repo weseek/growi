@@ -272,6 +272,7 @@ module.exports = (crowi) => {
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
       console.log(slackBotToken);
+      return 'hoge';
     }
     catch (error) {
       console.log('error dayo');
