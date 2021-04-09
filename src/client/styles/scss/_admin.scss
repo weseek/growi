@@ -83,9 +83,27 @@
     }
   }
 
-  .admin-bot-card {
-    min-width: 280px;
-    cursor: pointer;
+  /*
+  Slack Integration
+  */
+  .selecting-bot-type {
+    .btn-link {
+      font-size: 1rem;
+    }
+    .supplementary-desc {
+      font-size: 1rem;
+    }
+    .badge-info {
+      font-size: 0.6rem;
+    }
+    .admin-bot-card {
+      min-width: 280px;
+      cursor: pointer;
+      border-radius: 0.5rem !important;
+    }
+    .border-primary {
+      border-width: 2px;
+    }
   }
 
   //// TODO: migrate to Bootstrap 4
@@ -183,26 +201,5 @@
   }
   &.sticky-top {
     top: 30px;
-  }
-}
-
-/*
-  Slack Integration
-*/
-.selecting-bot-type {
-  .btn-link {
-    font-size: 1rem;
-  }
-  .supplementary-desc {
-    font-size: 1rem;
-  }
-  .badge-info {
-    font-size: 0.6rem;
-  }
-  .admin-bot-card {
-    border-radius: 0.5rem !important;
-  }
-  .border-primary {
-    border-width: 2px;
   }
 }
