@@ -1,12 +1,14 @@
 import React from 'react';
 import { Collapse } from 'reactstrap';
-import PropTypes from 'prop'
+import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
-const Group = ({children}) => (
-  <div className="card border-0 rounded-lg mb-0">{children}</div>
+const Group = ({ children }) => (
+  <div className="card border-0 rounded-lg mb-0">{ children }</div>
 )
 
-const Header = ({children}) => (
+const Header = ({ children }) => (
+  const { t } = useTranslation();
   <div
     className="card-header font-weight-normal py-3 d-flex justify-content-between"
     role="button"
@@ -20,20 +22,20 @@ const Header = ({children}) => (
   </div>
 )
 
-const Body = ({children}) => (
+const Body = ({ children }) => (
   <Collapse isOpen={currentlyOpenAccordionIndexes.includes(0)}>
     <div className="card-body">
-      {children}
+      { children }
     </div>
   </Collapse>
 )
 
-const BotSettingsAccordion = ({children, currentlyOpenAccordionIndexes}) => {
+const BotSettingsAccordion = ({ children, currentlyOpenAccordionIndexes }) => {
 
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
-      {children}
+      { children }
     </div>
   )
 
@@ -42,5 +44,22 @@ const BotSettingsAccordion = ({children, currentlyOpenAccordionIndexes}) => {
 BotSettingsAccordion.Group = Group;
 BotSettingsAccordion.Header = Header;
 BotSettingsAccordion.Body = Body;
+
+Group.propTypes = {
+  children: PropTypes.element,
+}
+
+Header.propTypes = {
+  children: PropTypes.element,
+}
+
+Body.propTypes = {
+  children: PropTypes.element,
+}
+
+BotSettingsAccordion.propTypes = {
+  children: PropTypes.element,
+  currentlyOpenAccordionIndexes: PropTypes.object,
+}
 
 export default BotSettingsAccordion;
