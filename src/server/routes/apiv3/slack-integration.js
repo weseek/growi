@@ -288,7 +288,8 @@ module.exports = (crowi) => {
       });
       logger.info('SlackTest: send success massage to slack work space at #general.');
       logger.info('If you do not receive a message, you may not have invited the bot to the #general channel.');
-      return res.apiv3({ slackBotToken });
+      const message = 'Send massage to slack work space at #general. If you do not receive a message, you may not have invited the bot to the #general channel.';
+      return res.apiv3({ message });
     }
     catch (error) {
       const msg = 'Error occured in testing to notify slack work space';
