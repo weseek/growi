@@ -270,10 +270,11 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/test-notification-to-slack-work-space', async(req, res) => {
+  router.post('/test-notification-to-slack-work-space', async(req, res) => {
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
 
     if (slackBotToken === null) {
+      // i18n
       return 'Bot User OAuth Token is not setup.';
     }
 
@@ -284,8 +285,8 @@ module.exports = (crowi) => {
       this.client.chat.postMessage({
         channel: '#general',
         text: 'Your test was successful!',
-
       });
+      logger.info('SlackTest: send success massage to slack work space at #general');
       return res.apiv3({ slackBotToken });
     }
     catch (error) {
