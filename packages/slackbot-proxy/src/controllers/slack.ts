@@ -23,7 +23,7 @@ export class SlackCtrl {
   installationRepository: InstallationRepository;
 
   @Inject()
-  RelationRepository: RelationRepository;
+  relationRepository: RelationRepository;
 
   @Inject()
   orderRepository: OrderRepository;
