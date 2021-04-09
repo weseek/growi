@@ -2,6 +2,8 @@ import React from 'react';
 import { Collapse } from 'reactstrap';
 import PropTypes from 'prop-types';
 
+let groupNumber = 0;
+
 const Group = ({ children }) => (
   <div className="card border-0 rounded-lg mb-0">{ children }</div>
 );
