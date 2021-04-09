@@ -7,7 +7,6 @@ const crypto = require('crypto');
 const { WebClient, LogLevel } = require('@slack/web-api');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-
 const router = express.Router();
 
 /**
@@ -272,7 +271,7 @@ module.exports = (crowi) => {
 
   router.post('/test-notification-to-slack-work-space', async(req, res) => {
     const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
-    if (!isConnectedToSlack) {
+    if (isConnectedToSlack === false) {
       const msg = 'Bot User OAuth Token is not setup.';
       logger.error('Error', msg);
       return res.apiv3Err(new ErrorV3(msg, 'not-setup-slack-bot-token', 400));
