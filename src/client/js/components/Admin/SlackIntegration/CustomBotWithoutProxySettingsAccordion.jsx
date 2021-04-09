@@ -4,7 +4,7 @@ import { Collapse } from 'reactstrap';
 
 const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
-  const [currentlyOpenAccordionIndexes, setCurrentlyOpenAccordionIndexes] = useState([0]);
+  const [currentlyOpenAccordionIndexes, setCurrentlyOpenAccordionIndexes] = useState([]);
   const onToggleAccordionHandler = (i) => {
     if (currentlyOpenAccordionIndexes.includes(i)) {
       const filteredArray = currentlyOpenAccordionIndexes.filter(n => n !== i);
