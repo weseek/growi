@@ -268,6 +268,10 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/test-notification-to-slack-work-space', async(req, res) => {
+
+  });
+
   /**
    * @swagger
    *
