@@ -170,7 +170,7 @@ const SlackIntegration = (props) => {
                       {showBotTypeDiscription('easy')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('integration_to_multi_workspaces')}
+                      {showBotTypeLabel('multiple_workspaces_integration')}
                       {showBotTypeDiscription('possible')}
                     </div>
                     <div className="d-flex justify-content-between">
@@ -211,7 +211,7 @@ const SlackIntegration = (props) => {
                       {showBotTypeDiscription('normal')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('integration_to_multi_workspaces')}
+                      {showBotTypeLabel('multiple_workspaces_integration')}
                       {showBotTypeDiscription('impossible')}
                     </div>
                     <div className="d-flex justify-content-between">
@@ -252,7 +252,7 @@ const SlackIntegration = (props) => {
                       {showBotTypeDiscription('difficult')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('integration_to_multi_workspaces')}
+                      {showBotTypeLabel('multiple_workspaces_integration')}
                       {showBotTypeDiscription('possible')}
                     </div>
                     <div className="d-flex justify-content-between">
