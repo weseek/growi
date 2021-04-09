@@ -271,7 +271,7 @@
       "install_bot_to_slack": "Bot を Slackにインストールする",
       "register_secret_and_token": "Signing Secret と Bot Token を登録する",
       "test_connection": "連携状況のテストをする",
-      "how_to_create_a_bot": "Bot の作り方"
+      "how_to_create_a_bot": "作成方法はこちら"
     }
   },
   "user_management": {
