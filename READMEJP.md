@@ -23,9 +23,9 @@
 | :-------------------------------------------------------------------------------------------------------------------: |
 | ![sample image](https://user-images.githubusercontent.com/42988650/70600974-6b29cc80-1c34-11ea-94ef-33c39c6a00dc.gif) |
 
-## Table Of Contents
+## 目次
 
-- [Features](#features)
+- [特徴](#features)
 - [Quick Start for Production](#quick-start-for-production)
   - [docker-compose](#docker-compose)
   - [Helm (Experimental)](#helm-experimental)
@@ -34,22 +34,31 @@
 - [Documentation](#documentation)
 - [License](#license)
 
-# Features
+# 特徴
 
-- **Features**
+- **特徴**
   - Create hierarchical pages with markdown -> [HERE](https://docs.growi.org/en/guide/getting-started/five_minutes.html) is 5 minutes tutorial
+  - マークダウンを使用してページを階層構造で作成できます。 -> [HERE](https://docs.growi.org/en/guide/getting-started/five_minutes.html) is 5 minutes tutorial
   - Simultaneously edit with multiple people by [HackMD(CodiMD)](https://hackmd.io/) integration
     - [GROWI Docs: HackMD(CodiMD) Integration](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
+  - HackMD(CodiMd) を統合することで同時多人数編集ができます。
   - Support Authentication with LDAP / Active Directory, OAuth
+  - LDAP / Active Direcotry 認証をサポートしています。
   - SSO(Single Sign On) with SAML
+  - SAML を用いた Single Sign On が可能です。
   - Slack/Mattermost, IFTTT Integration
+  - Slack/Mattermost, IFTTT と連携することができます。
   - [GROWI Docs: Features](https://docs.growi.org/en/guide/features/page_layout.html)
 - **Pluggable**
+- **プラグイン**
   - You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
+  - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [github](https://github.com/search?q=topic%3Agrowi-plugin)! から 便利なプラグインを見つけることができます。
 - **[Docker Ready][dockerhub]**
+- **[Docker の準備][dockerhub]**
 - **[Docker Compose Ready][docker-compose]**
-  - [GROWI Docs: Multiple sites](https://docs.growi.org/en/admin-guide/admin-cookbook/multi-app.html)
-  - [GROWI Docs: HTTPS(with Let's Encrypt) proxy integration](https://docs.growi.org/en/admin-guide/admin-cookbook/lets-encrypt.html)
+- **[Docker Compose の準備][docker-compose]**
+  - [GROWI Docs: 複数の GROWI を起動](https://docs.growi.org/en/admin-guide/admin-cookbook/multi-app.html)
+  - [GROWI Docs: Let's Encrypt による HTTPS 運用](https://docs.growi.org/en/admin-guide/admin-cookbook/lets-encrypt.html)
 
 # Quick Start for Production
 
