@@ -277,7 +277,15 @@ module.exports = (crowi) => {
       return 'Bot User OAuth Token is not setup.';
     }
 
+    this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
+    logger.debug('SlackBot: setup is done');
+
     try {
+      this.client.postMessage({
+        channel: this.client.channels,
+        text: '届いたよ',
+
+      });
       console.log(slackBotToken);
       return res.apiv3({ slackBotToken });
     }
