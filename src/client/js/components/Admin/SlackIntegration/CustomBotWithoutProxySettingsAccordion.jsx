@@ -7,8 +7,7 @@ const CustomBotWithoutSettingsAccordion = () => {
   const [currentlyOpenAccordionIndexes, setCurrentlyOpenAccordionIndexes] = useState([]);
   const onToggleAccordionHandler = (i) => {
     if (currentlyOpenAccordionIndexes.includes(i)) {
-      const filteredArray = currentlyOpenAccordionIndexes.filter(n => n !== i);
-      setCurrentlyOpenAccordionIndexes(filteredArray);
+      setCurrentlyOpenAccordionIndexes(currentlyOpenAccordionIndexes.filter(n => n !== i));
       return;
     }
     setCurrentlyOpenAccordionIndexes([...currentlyOpenAccordionIndexes, i]);
