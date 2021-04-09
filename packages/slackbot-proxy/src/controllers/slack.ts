@@ -3,7 +3,10 @@ import {
 } from '@tsed/common';
 
 import { Installation } from '~/entities/installation';
+import { Order } from '~/entities/order';
+
 import { InstallationRepository } from '~/repositories/installation';
+import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import { ReceiveService } from '~/services/RecieveService';
 
@@ -16,6 +19,9 @@ export class SlackCtrl {
 
   @Inject()
   installationRepository: InstallationRepository;
+
+  @Inject()
+  orderRepository: OrderRepository;
 
   @Inject()
   receiveService: ReceiveService;
@@ -60,7 +66,7 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): string {
+  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<string> {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
@@ -68,7 +74,26 @@ export class SlackCtrl {
     console.log('Controller/events', slackInput);
     res.send();
 
+    const installation = await this.installationRepository.findByID('1');
+    if (installation == null) {
+      throw new Error('installation is reqiured');
+    }
+
+    // Find the latest order by installationId
+    let order = await this.orderRepository.findOne({
+      installation: installation.id,
+    }, {
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    if (order == null || order.isExpired()) {
+      order = await this.orderRepository.save({ installation: installation.id });
+    }
+
     console.log('body', body);
+    console.log('order', order);
 
     return 'This action will be handled by bolt service.';
   }
