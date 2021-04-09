@@ -280,7 +280,7 @@
       "security_control": "安全控制",
       "easy": "简单",
       "normal": "通常",
-      "difficult": "难的",
+      "hard": "难的",
       "possible": "可能的",
       "impossible": "不可能"
     },

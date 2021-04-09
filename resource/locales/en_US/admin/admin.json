@@ -272,7 +272,7 @@
       "security_control": "Security control",
       "easy": "Easy",
       "normal": "Normal",
-      "difficult": "Hard",
+      "hard": "Hard",
       "possible": "Possible",
       "impossible": "Impossible"
     },

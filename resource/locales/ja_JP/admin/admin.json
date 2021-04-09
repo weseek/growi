@@ -270,7 +270,7 @@
       "security_control": "セキュリティコントロール",
       "easy": "かんたん",
       "normal": "ふつう",
-      "difficult": "むずかしい",
+      "hard": "むずかしい",
       "possible": "可能",
       "impossible": "不可"
     },

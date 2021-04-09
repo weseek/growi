@@ -249,7 +249,7 @@ const SlackIntegration = (props) => {
                   <div className="my-4">
                     <div className="d-flex justify-content-between mb-2">
                       {showBotTypeLabel('set_up')}
-                      {showBotTypeDiscription('difficult')}
+                      {showBotTypeDiscription('hard')}
                     </div>
                     <div className="d-flex justify-content-between mb-2">
                       {showBotTypeLabel('multiple_workspaces_integration')}
