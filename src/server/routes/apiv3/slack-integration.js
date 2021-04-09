@@ -46,6 +46,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  const url = crowi.appService.getSiteUrl();
 
   const validator = {
     CustomBotWithoutProxy: [
@@ -284,13 +285,19 @@ module.exports = (crowi) => {
     try {
       this.client.chat.postMessage({
         channel: '#general',
-        text: '届いたよ',
-
+        blocks: [{
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `Success your test! \n Go back to your app. ${url}`,
+          },
+        }],
       });
       console.log(slackBotToken);
       return res.apiv3({ slackBotToken });
     }
     catch (error) {
+      console.log(error);
       const msg = 'Error occured in testing to notify slack work space';
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'test-notify-slack-work-space-failed'), 500);
