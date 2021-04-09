@@ -4,13 +4,14 @@ import { Collapse } from 'reactstrap';
 
 const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
-  const [currentlyOpenAccordionIndex, setCurrentlyOpenAccordionIndex] = useState(null);
+  const [currentlyOpenAccordionIndexes, setCurrentlyOpenAccordionIndexes] = useState([0]);
   const onToggleAccordionHandler = (i) => {
-    if (currentlyOpenAccordionIndex === i) {
-      setCurrentlyOpenAccordionIndex(null);
+    if (currentlyOpenAccordionIndexes.includes(i)) {
+      const filteredArray = currentlyOpenAccordionIndexes.filter(n => n !== i);
+      setCurrentlyOpenAccordionIndexes(filteredArray);
       return;
     }
-    setCurrentlyOpenAccordionIndex(i);
+    setCurrentlyOpenAccordionIndexes([...currentlyOpenAccordionIndexes, i]);
   };
 
   return (
@@ -23,12 +24,12 @@ const CustomBotWithoutSettingsAccordion = () => {
           onClick={() => onToggleAccordionHandler(0)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</p>
-          {currentlyOpenAccordionIndex === 0
+          {currentlyOpenAccordionIndexes.includes(0)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndex === 0}>
+        <Collapse isOpen={currentlyOpenAccordionIndexes.includes(0)}>
           <div className="card-body">
 
             <div className="row my-5">
@@ -61,12 +62,12 @@ const CustomBotWithoutSettingsAccordion = () => {
           onClick={() => onToggleAccordionHandler(1)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</p>
-          {currentlyOpenAccordionIndex === 1
+          {currentlyOpenAccordionIndexes.includes(1)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndex === 1}>
+        <Collapse isOpen={currentlyOpenAccordionIndexes.includes(1)}>
           <div className="card-body">
             BODY2
           </div>
@@ -80,12 +81,12 @@ const CustomBotWithoutSettingsAccordion = () => {
           onClick={() => onToggleAccordionHandler(2)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}</p>
-          {currentlyOpenAccordionIndex === 2
+          {currentlyOpenAccordionIndexes.includes(2)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndex === 2}>
+        <Collapse isOpen={currentlyOpenAccordionIndexes.includes(2)}>
           <div className="card-body">
             BODY 3
           </div>
@@ -99,12 +100,12 @@ const CustomBotWithoutSettingsAccordion = () => {
           onClick={() => onToggleAccordionHandler(3)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</p>
-          {currentlyOpenAccordionIndex === 3
+          {currentlyOpenAccordionIndexes.includes(3)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndex === 3}>
+        <Collapse isOpen={currentlyOpenAccordionIndexes.includes(3)}>
           <div className="card-body">
             BODY 4
           </div>
