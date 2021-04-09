@@ -268,6 +268,7 @@ module.exports = function(crowi) {
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
+    this.isEmailPublished = crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
 
     this.save((err, userData) => {
       userEvent.emit('activated', userData);
@@ -651,6 +652,10 @@ module.exports = function(crowi) {
     }
 
     const configManager = crowi.configManager;
+
+    // Default email show/hide is up to the administrator
+    newUser.isEmailPublished = configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
+
     const globalLang = configManager.getConfig('crowi', 'app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;

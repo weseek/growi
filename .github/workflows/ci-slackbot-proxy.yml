@@ -1,4 +1,4 @@
-name: Node CI for growi-bot-proxy
+name: Node CI for slackbot-proxy
 
 on:
   push:
@@ -6,14 +6,15 @@ on:
       - release/**
       - tmp/**
     paths:
-      - .github/workflows/ci-bot-proxy.yml
-      - packages/growi-bot-proxy/*
+      - .github/workflows/ci-slackbot-proxy.yml
+      - packages/slack/*
+      - packages/slackbot-proxy/*
       - package.json
       - yarn.lock
 
 defaults:
   run:
-    working-directory: packages/growi-bot-proxy
+    working-directory: packages/slackbot-proxy
 
 jobs:
 
@@ -79,6 +80,16 @@ jobs:
       matrix:
         node-version: [14.x]
 
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306
+        options: --health-cmd "mysqladmin ping" --health-interval 5s --health-timeout 2s --health-retries 3
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: growi-slackbot-proxy
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -114,8 +125,15 @@ jobs:
         yarn list --depth=0
     - name: yarn dev:ci
       run: |
+        cp config/ci/.env.local.for-ci .env.local
         yarn dev:ci
-
+      env:
+        TYPEORM_CONNECTION: mysql
+        TYPEORM_HOST: localhost
+        TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
+        TYPEORM_DATABASE: growi-slackbot-proxy
+        TYPEORM_USERNAME: root
+        TYPEORM_PASSWORD:
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
@@ -133,6 +151,16 @@ jobs:
     strategy:
       matrix:
         node-version: [14.x]
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306
+        options: --health-cmd "mysqladmin ping" --health-interval 5s --health-timeout 2s --health-retries 3
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: growi-slackbot-proxy
 
     steps:
     - uses: actions/checkout@v2
@@ -187,7 +215,15 @@ jobs:
         yarn list --production --depth=0
     - name: yarn start:prod:ci
       run: |
+        cp config/ci/.env.local.for-ci .env.local
         yarn start:prod:ci
+      env:
+        TYPEORM_CONNECTION: mysql
+        TYPEORM_HOST: localhost
+        TYPEORM_PORT: ${{ job.services.mysql.ports[3306] }}
+        TYPEORM_DATABASE: growi-slackbot-proxy
+        TYPEORM_USERNAME: root
+        TYPEORM_PASSWORD:
     - name: Upload report as artifact
       uses: actions/upload-artifact@v2
       with:
