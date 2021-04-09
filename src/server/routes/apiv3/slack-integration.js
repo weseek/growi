@@ -275,6 +275,7 @@ module.exports = (crowi) => {
 
     if (slackBotToken == null) {
       const msg = 'Bot User OAuth Token is not setup.';
+      logger.error('Error', msg);
       return res.apiv3Err(new ErrorV3(msg, 'not-setup-slack-bot-token', 400));
     }
 
