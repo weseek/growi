@@ -14,10 +14,14 @@ const CustomBotWithoutSettingsAccordion = () => {
   };
 
   return (
-    <div className="card border-0 rounded-lg shadow overflow-hidden" id="customBotWithoutProxySettingsAccordion">
+    <div className="card border-0 rounded-lg shadow overflow-hidden">
 
       <div className="card border-0 rounded-lg mb-0">
-        <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(0)}>
+        <div
+          className="card-header py-3 d-flex justify-content-between"
+          role="button"
+          onClick={() => onToggleAccordionHandler(0)}
+        >
           <p className="mb-0 text-primary">{`① ${t('slack_integration.without_proxy.create_bot')}`}</p>
           {currentlyOpenAccordionIndex === 0
             ? <i className="fa fa-chevron-up" />
@@ -50,7 +54,11 @@ const CustomBotWithoutSettingsAccordion = () => {
       </div>
 
       <div className="card border-0 rounded-lg mb-0">
-        <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(1)}>
+        <div
+          className="card-header py-3 d-flex justify-content-between"
+          role="button"
+          onClick={() => onToggleAccordionHandler(1)}
+        >
           <p className="mb-0 text-primary">{`② ${t('slack_integration.without_proxy.install_bot_to_slack')}`}</p>
           {currentlyOpenAccordionIndex === 1
             ? <i className="fa fa-chevron-up" />
@@ -65,7 +73,11 @@ const CustomBotWithoutSettingsAccordion = () => {
       </div>
 
       <div className="card border-0 rounded-lg mb-0">
-        <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(2)}>
+        <div
+          className="card-header py-3 d-flex justify-content-between"
+          role="button"
+          onClick={() => onToggleAccordionHandler(2)}
+        >
           <p className="mb-0 text-primary">{`③ ${t('slack_integration.without_proxy.register_secret_and_token')}`}</p>
           {currentlyOpenAccordionIndex === 2
             ? <i className="fa fa-chevron-up" />
@@ -80,7 +92,11 @@ const CustomBotWithoutSettingsAccordion = () => {
       </div>
 
       <div className="card border-0 rounded-lg mb-0">
-        <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(3)}>
+        <div
+          className="card-header py-3 d-flex justify-content-between"
+          role="button"
+          onClick={() => onToggleAccordionHandler(3)}
+        >
           <p className="mb-0 text-primary">{`④ ${t('slack_integration.without_proxy.test_connection')}`}</p>
           {currentlyOpenAccordionIndex === 3
             ? <i className="fa fa-chevron-up" />
