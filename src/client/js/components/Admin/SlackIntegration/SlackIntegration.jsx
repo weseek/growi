@@ -113,6 +113,53 @@ const SlackIntegration = (props) => {
     return <span className={`bot-type-disc-${desc}`}>{t(`admin:slack_integration.selecting_bot_types.${desc}`)}</span>;
   };
 
+  const botTypeDescription = () => {
+    return {
+      officialBot: {
+        setUp: t('admin:slack_integration.selecting_bot_types.easy'),
+        multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
+        securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
+      },
+      customBotWithProxy: {
+        setUp: t('admin:slack_integration.selecting_bot_types.normal'),
+        multiWSIntegration: t('admin:slack_integration.selecting_bot_types.impossible'),
+        securityControl: t('admin:slack_integration.selecting_bot_types.possible'),
+      },
+      customBotWithoutProxy: {
+        setUp: t('admin:slack_integration.selecting_bot_types.hard'),
+        multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
+        securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
+      },
+    };
+  };
+
+
+  const renderCaedBody = (setUpDesc, multiWSIntegrationDesc, securityControlDesc) => {
+    return (
+      <div className="card-body p-4">
+        <p className="card-text">
+          <div className="text-center">
+            {showBotTypeLevel('for_beginners')}
+          </div>
+          <div className="my-4">
+            <div className="d-flex justify-content-between mb-2">
+              {showBotTypeLabel('set_up')}
+              {showBotTypeDiscription('easy')}
+            </div>
+            <div className="d-flex justify-content-between mb-2">
+              {showBotTypeLabel('multiple_workspaces_integration')}
+              {showBotTypeDiscription('possible')}
+            </div>
+            <div className="d-flex justify-content-between">
+              {showBotTypeLabel('security_control')}
+              {showBotTypeDiscription('impossible')}
+            </div>
+          </div>
+        </p>
+      </div>
+    );
+  };
+
   const renderBotTypeCard = (botType) => {
     return (
       <div
@@ -132,7 +179,8 @@ const SlackIntegration = (props) => {
             <i className={`fa fa-external-link btn-link ${currentBotType === `${botType}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
           </h3>
         </div>
-        <div className="card-body p-4">
+
+        {/* <div className="card-body p-4">
           <p className="card-text">
             <div className="text-center">
               {showBotTypeLevel('for_beginners')}
@@ -152,7 +200,8 @@ const SlackIntegration = (props) => {
               </div>
             </div>
           </p>
-        </div>
+        </div> */}
+
       </div>
     );
   };
