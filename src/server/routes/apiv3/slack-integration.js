@@ -46,7 +46,6 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-  const url = crowi.appService.getSiteUrl();
 
   const validator = {
     CustomBotWithoutProxy: [
@@ -289,7 +288,6 @@ module.exports = (crowi) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Success your test! \n Go back to your app. ${url}`,
           },
         }],
       });
