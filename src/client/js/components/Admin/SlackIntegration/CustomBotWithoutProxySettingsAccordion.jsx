@@ -5,13 +5,17 @@ import BotSettingsAccordion from './BotSettingsAccordion';
 
 const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
-  const [currentlyOpenAccordionIndexes, setCurrentlyOpenAccordionIndexes] = useState([]);
+  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
+
   const onToggleAccordionHandler = (i) => {
-    if (currentlyOpenAccordionIndexes.includes(i)) {
-      setCurrentlyOpenAccordionIndexes(currentlyOpenAccordionIndexes.filter(n => n !== i));
-      return;
+    const accordionIndexes = new Set(openAccordionIndexes);
+    if (accordionIndexes.has(i)) {
+      accordionIndexes.delete(i);
     }
-    setCurrentlyOpenAccordionIndexes([...currentlyOpenAccordionIndexes, i]);
+    else {
+      accordionIndexes.add(i);
+    }
+    setOpenAccordionIndexes(accordionIndexes);
   };
 
   return (
@@ -49,12 +53,12 @@ const CustomBotWithoutSettingsAccordion = () => {
           onClick={() => onToggleAccordionHandler(0)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</p>
-          {currentlyOpenAccordionIndexes.includes(0)
+          {openAccordionIndexes.has(0)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndexes.includes(0)}>
+        <Collapse isOpen={openAccordionIndexes.has(0)}>
           <div className="card-body">
 
             <div className="row my-5">
@@ -87,12 +91,12 @@ const CustomBotWithoutSettingsAccordion = () => {
           onClick={() => onToggleAccordionHandler(1)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</p>
-          {currentlyOpenAccordionIndexes.includes(1)
+          {openAccordionIndexes.has(1)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndexes.includes(1)}>
+        <Collapse isOpen={openAccordionIndexes.has(1)}>
           <div className="card-body">
             BODY2
           </div>
@@ -106,12 +110,12 @@ const CustomBotWithoutSettingsAccordion = () => {
           onClick={() => onToggleAccordionHandler(2)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}</p>
-          {currentlyOpenAccordionIndexes.includes(2)
+          {openAccordionIndexes.has(2)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndexes.includes(2)}>
+        <Collapse isOpen={openAccordionIndexes.has(2)}>
           <div className="card-body">
             BODY 3
           </div>
@@ -125,12 +129,12 @@ const CustomBotWithoutSettingsAccordion = () => {
           onClick={() => onToggleAccordionHandler(3)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</p>
-          {currentlyOpenAccordionIndexes.includes(3)
+          {openAccordionIndexes.has(3)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndexes.includes(3)}>
+        <Collapse isOpen={openAccordionIndexes.has(3)}>
           <div className="card-body">
             BODY 4
           </div>
