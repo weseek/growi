@@ -273,13 +273,10 @@ module.exports = (crowi) => {
   router.post('/test-notification-to-slack-work-space', async(req, res) => {
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
 
-    if (slackBotToken === null) {
-      // i18n
-      return 'Bot User OAuth Token is not setup.';
+    if (slackBotToken != null) {
+      this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
+      logger.debug('SlackBot: setup is done');
     }
-
-    this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
-    logger.debug('SlackBot: setup is done');
 
     try {
       this.client.chat.postMessage({
@@ -293,9 +290,10 @@ module.exports = (crowi) => {
       return res.apiv3({ message });
     }
     catch (error) {
-      const msg = 'Error occured in testing to notify slack work space';
+      console.log(error);
+      // const msg = 'Error occured in testing to notify slack work space';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'test-notify-slack-work-space-failed'), 500);
+      return res.apiv3Err(new ErrorV3(error, 'test-notify-slack-work-space-failed'), 500);
     }
   });
 
