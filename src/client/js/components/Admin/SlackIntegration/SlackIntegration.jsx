@@ -146,6 +146,7 @@ const SlackIntegration = (props) => {
             <div
               className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === 'official-bot' ? 'border-primary' : ''}`}
               onClick={() => handleBotTypeSelect('official-bot')}
+              role="button"
             >
               <div>
                 <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === 'official-bot' ? 'bg-primary text-light' : ''}`}>
@@ -185,6 +186,7 @@ const SlackIntegration = (props) => {
             <div
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-without-proxy' ? 'border-primary' : ''}`}
               onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
+              role="button"
             >
               <h3 className={`card-header mb-0 py-3 text-center text-nowrap  ${currentBotType === 'custom-bot-without-proxy' ? 'bg-primary text-light' : ''}`}>
                 <span className="mr-2">
@@ -226,6 +228,7 @@ const SlackIntegration = (props) => {
             <div
               className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' ? 'border-primary' : ''}`}
               onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
+              role="button"
             >
               <h3 className={`card-header mb-0 py-3 text-center text-nowrap ${currentBotType === 'custom-bot-with-proxy' ? 'bg-primary text-light' : ''}`}>
                 <span className="mr-2">
