@@ -4,7 +4,9 @@ const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
 const crypto = require('crypto');
+const { WebClient, LogLevel } = require('@slack/web-api');
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
 
 const router = express.Router();
 
@@ -270,6 +272,11 @@ module.exports = (crowi) => {
 
   router.put('/test-notification-to-slack-work-space', async(req, res) => {
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+
+    if (slackBotToken === null) {
+      return 'Bot User OAuth Token is not setup.';
+    }
+
     try {
       console.log(slackBotToken);
       return res.apiv3({ slackBotToken });
