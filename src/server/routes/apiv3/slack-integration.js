@@ -280,9 +280,10 @@ module.exports = (crowi) => {
     this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
     logger.debug('SlackBot: setup is done');
 
+    console.log(this.client);
     try {
-      this.client.postMessage({
-        channel: this.client.channels,
+      this.client.chat.postMessage({
+        channel: '#general',
         text: '届いたよ',
 
       });
