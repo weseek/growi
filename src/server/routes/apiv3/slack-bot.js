@@ -1,5 +1,6 @@
 
 const express = require('express');
+const crypto = require('crypto');
 
 const loggerFactory = require('@alias/logger');
 
@@ -39,6 +40,14 @@ module.exports = (crowi) => {
     console.log(timestamp);
     const sigBaseString = `v0:${timestamp}:${req.body}`;
     console.log(sigBaseString);
+    const signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+
+    const hasher = crypto.createHmac('sha256', signingSecret);
+    hasher.update(sigBaseString, 'utf8');
+    const hashedSigningSecret = hasher.digest('hex');
+
+    const mySignature = `v0=${hashedSigningSecret}`;
+    console.log(mySignature);
 
     return next();
   }
