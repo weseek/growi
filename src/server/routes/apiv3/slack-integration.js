@@ -274,7 +274,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration/test-notification-to-slack-work-space:
    *      post:
-   *        tags: [SlackIntegration]
+   *        tags: [SlackTestToWorkSpace]
    *        operationId: postSlackMessageToSlackWorkSpace
    *        summary: test to send message to slack work space
    *        description: post message to slack work space
