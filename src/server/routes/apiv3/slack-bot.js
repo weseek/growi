@@ -33,6 +33,15 @@ module.exports = (crowi) => {
   }
 
   router.post('/', verificationRequestUrl, verificationAccessToken, async(req, res) => {
+  function verifyingIsSlackRequest(req, res, next) {
+    console.log(req.body);
+    const timestamp = req.headers['x-slack-request-timestamp'];
+    console.log(timestamp);
+    const sigBaseString = `v0:${timestamp}:${req.body}`;
+    console.log(sigBaseString);
+
+    return next();
+  }
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
