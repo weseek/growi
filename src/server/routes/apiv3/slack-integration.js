@@ -269,7 +269,13 @@ module.exports = (crowi) => {
   });
 
   router.put('/test-notification-to-slack-work-space', async(req, res) => {
-
+    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+    try {
+      console.log(slackBotToken);
+    }
+    catch (error) {
+      console.log('error dayo');
+    }
   });
 
   /**
