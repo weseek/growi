@@ -192,13 +192,15 @@
 .selecting-bot-type {
   .btn-link {
     font-size: 1rem;
-    cursor: pointer;
   }
   .supplementary-desc {
     font-size: 1rem;
   }
   .badge-info {
     font-size: 0.6rem;
+  }
+  .admin-bot-card {
+    border-radius: 0.5rem !important;
   }
   .border-primary {
     border-width: 2px;
