@@ -280,18 +280,15 @@ module.exports = (crowi) => {
     this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
     logger.debug('SlackBot: setup is done');
 
-    console.log(this.client);
     try {
       this.client.chat.postMessage({
         channel: '#general',
         text: 'Your test was successful!',
 
       });
-      console.log(slackBotToken);
       return res.apiv3({ slackBotToken });
     }
     catch (error) {
-      console.log(error);
       const msg = 'Error occured in testing to notify slack work space';
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'test-notify-slack-work-space-failed'), 500);
