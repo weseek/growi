@@ -121,7 +121,8 @@ const SlackIntegration = (props) => {
         <div className="card-deck mx-auto">
 
           <div
-            className={`card clickable mx-3 py-5 rounded ${currentBotType === 'official-bot' ? 'border-info' : ''}`}
+            className={`card mx-3 py-5 rounded ${currentBotType === 'official-bot' ? 'border-info' : ''}`}
+            role="button"
             onClick={() => handleBotTypeSelect('official-bot')}
           >
             <div className="card-body">
@@ -131,7 +132,8 @@ const SlackIntegration = (props) => {
           </div>
 
           <div
-            className={`card clickable mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
+            className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-without-proxy' ? 'border-info' : ''}`}
+            role="button"
             onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
           >
             <div className="card-body">
@@ -141,7 +143,8 @@ const SlackIntegration = (props) => {
           </div>
 
           <div
-            className={`card clickable mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
+            className={`card mx-3 py-5 rounded ${currentBotType === 'custom-bot-with-proxy' ? 'border-info' : ''}`}
+            role="button"
             onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
           >
             <div className="card-body">
