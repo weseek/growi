@@ -18,8 +18,6 @@ module.exports = (crowi) => {
   function verificationAccessToken(req, res, next) {
     const slackBotAccessToken = req.body.slack_bot_access_token || null;
 
-    return next();
-
     if (slackBotAccessToken == null || slackBotAccessToken !== this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
       logger.error('slack_bot_access_token is invalid.');
       return res.send('*Access token is inValid*');
@@ -37,28 +35,32 @@ module.exports = (crowi) => {
     return next();
   }
 
-  // https://api.slack.com/authentication/verifying-requests-from-slack
+  /**
+   * Verify if the request came from slack
+   * See: https://api.slack.com/authentication/verifying-requests-from-slack
+   */
   function verifyingIsSlackRequest(req, res, next) {
-    console.log(req.body);
 
+    // take out slackSignature and timestamp from header
     const slackSignature = req.headers['x-slack-signature'];
     const timestamp = req.headers['x-slack-request-timestamp'];
 
-    const sigBaseString = `v0:${timestamp}:${qs.stringify(req.body, { format: 'RFC1738' })}`;
-    console.log(sigBaseString);
-    const signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+    // protect against replay attacks
+    const time = Math.floor(new Date().getTime() / 1000);
+    if (Math.abs(time - timestamp) > 300) {
+      return res.send('Verification failed.');
+    }
 
+    // generate growi signature
+    const signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+    const sigBaseString = `v0:${timestamp}:${qs.stringify(req.body, { format: 'RFC1738' })}`;
     const hasher = crypto.createHmac('sha256', signingSecret);
     hasher.update(sigBaseString, 'utf8');
     const hashedSigningSecret = hasher.digest('hex');
+    const growiSignature = `v0=${hashedSigningSecret}`;
 
-    const mySignature = `v0=${hashedSigningSecret}`;
-    console.log(mySignature, slackSignature);
-
-    if (crypto.timingSafeEqual(
-      Buffer.from(mySignature, 'utf8'),
-      Buffer.from(slackSignature, 'utf8'),
-    )) {
+    // compare growiSignature and slackSignature
+    if (crypto.timingSafeEqual(Buffer.from(growiSignature, 'utf8'), Buffer.from(slackSignature, 'utf8'))) {
       return next();
     }
 
