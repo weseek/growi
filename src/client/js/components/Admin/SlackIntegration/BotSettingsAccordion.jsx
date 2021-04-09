@@ -2,7 +2,18 @@ import React from 'react';
 import { Collapse } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-let groupNumber = 0;
+const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
+
+const onToggleAccordionHandler = (i) => {
+  const accordionIndexes = new Set(openAccordionIndexes);
+  if (accordionIndexes.has(i)) {
+    accordionIndexes.delete(i);
+  }
+  else {
+    accordionIndexes.add(i);
+  }
+  setOpenAccordionIndexes(accordionIndexes);
+};
 
 const Group = ({ children }) => (
   <div className="card border-0 rounded-lg mb-0">{ children }</div>
@@ -32,17 +43,6 @@ const Body = ({ children }) => (
 
 const BotSettingsAccordion = ({ children, currentlyOpenAccordionIndexes }) => {
 
-  const onToggleAccordionHandler = (i) => {
-    const accordionIndexes = new Set(openAccordionIndexes);
-    if (accordionIndexes.has(i)) {
-      accordionIndexes.delete(i);
-    }
-    else {
-      accordionIndexes.add(i);
-    }
-    setOpenAccordionIndexes(accordionIndexes);
-  };
-
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       { children }
@@ -70,6 +70,7 @@ Body.propTypes = {
 BotSettingsAccordion.propTypes = {
   children: PropTypes.element,
   currentlyOpenAccordionIndexes: PropTypes.object,
+  onToggleAccordionHandler: PropTypes.func
 };
 
 export default BotSettingsAccordion;
