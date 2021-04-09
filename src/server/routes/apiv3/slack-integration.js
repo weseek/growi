@@ -284,12 +284,8 @@ module.exports = (crowi) => {
     try {
       this.client.chat.postMessage({
         channel: '#general',
-        blocks: [{
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-          },
-        }],
+        text: 'Your test was successful!',
+
       });
       console.log(slackBotToken);
       return res.apiv3({ slackBotToken });
