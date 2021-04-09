@@ -271,7 +271,6 @@ module.exports = (crowi) => {
   });
 
   router.post('/test-notification-to-slack-work-space', async(req, res) => {
-
     const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
     if (!isConnectedToSlack) {
       const msg = 'Bot User OAuth Token is not setup.';
