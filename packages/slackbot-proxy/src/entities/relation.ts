@@ -16,7 +16,7 @@ export class Relation {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @ManyToOne(() => Installation, installation => installation.relations)
+  @ManyToOne(() => Installation)
   readonly installation: number;
 
   @OneToOne(() => Order)
