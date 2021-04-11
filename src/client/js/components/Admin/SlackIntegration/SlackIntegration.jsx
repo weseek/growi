@@ -207,7 +207,6 @@ const SlackIntegration = (props) => {
             <div className="card-body p-4">
               <p className="card-text">
                 <div className="text-center">
-                  {/* {showBotTypeLevel('for_beginners')} */}
                   {value.level}
                 </div>
                 <div className="my-4">
