@@ -113,24 +113,22 @@ const SlackIntegration = (props) => {
     return <span className={`bot-type-disc-${desc}`}>{t(`admin:slack_integration.selecting_bot_types.${desc}`)}</span>;
   };
 
-  const botTypeDescription = () => {
-    return {
-      officialBot: {
-        setUp: t('admin:slack_integration.selecting_bot_types.easy'),
-        multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
-        securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
-      },
-      customBotWithProxy: {
-        setUp: t('admin:slack_integration.selecting_bot_types.normal'),
-        multiWSIntegration: t('admin:slack_integration.selecting_bot_types.impossible'),
-        securityControl: t('admin:slack_integration.selecting_bot_types.possible'),
-      },
-      customBotWithoutProxy: {
-        setUp: t('admin:slack_integration.selecting_bot_types.hard'),
-        multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
-        securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
-      },
-    };
+  const botTypeDescription = {
+    officialBot: {
+      setUp: t('admin:slack_integration.selecting_bot_types.easy'),
+      multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
+      securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
+    },
+    customBotWithProxy: {
+      setUp: t('admin:slack_integration.selecting_bot_types.normal'),
+      multiWSIntegration: t('admin:slack_integration.selecting_bot_types.impossible'),
+      securityControl: t('admin:slack_integration.selecting_bot_types.possible'),
+    },
+    customBotWithoutProxy: {
+      setUp: t('admin:slack_integration.selecting_bot_types.hard'),
+      multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
+      securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
+    },
   };
 
 
@@ -201,7 +199,39 @@ const SlackIntegration = (props) => {
             </div>
           </p>
         </div> */}
+        aaa
+        {Object.entries(botTypeDescription).map(([key, value]) => {
+          return (
+            <>hoge
+            </>
 
+            // <div className="card-body p-4">
+            //   uuu
+            //   <p className="card-text">
+            //     <div className="text-center">
+            //       {showBotTypeLevel('for_beginners')}
+            //     </div>
+            //     <div className="my-4">
+            //       <div className="d-flex justify-content-between mb-2">
+            //         {showBotTypeLabel('set_up')}
+            //         <span>{value.setUp}</span>
+            //       </div>
+            //       <div className="d-flex justify-content-between mb-2">
+            //         {showBotTypeLabel('multiple_workspaces_integration')}
+            //         <span>{value.multiWSIntegration}</span>
+
+            //       </div>
+            //       <div className="d-flex justify-content-between">
+            //         {showBotTypeLabel('security_control')}
+            //         <span>{value.securityControl}</span>
+            //       </div>
+            //     </div>
+            //   </p>
+            // </div>
+            );
+          })}
+
+        iii
       </div>
     );
   };
