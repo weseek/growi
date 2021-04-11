@@ -202,32 +202,28 @@ const SlackIntegration = (props) => {
         aaa
         {Object.entries(botTypeDescription).map(([key, value]) => {
           return (
-            <>hoge
-            </>
+            <div className="card-body p-4">
+              <p className="card-text">
+                <div className="text-center">
+                  {showBotTypeLevel('for_beginners')}
+                </div>
+                <div className="my-4">
+                  <div className="d-flex justify-content-between mb-2">
+                    {showBotTypeLabel('set_up')}
+                    <span>{value.setUp}</span>
+                  </div>
+                  <div className="d-flex justify-content-between mb-2">
+                    {showBotTypeLabel('multiple_workspaces_integration')}
+                    <span>{value.multiWSIntegration}</span>
 
-            // <div className="card-body p-4">
-            //   uuu
-            //   <p className="card-text">
-            //     <div className="text-center">
-            //       {showBotTypeLevel('for_beginners')}
-            //     </div>
-            //     <div className="my-4">
-            //       <div className="d-flex justify-content-between mb-2">
-            //         {showBotTypeLabel('set_up')}
-            //         <span>{value.setUp}</span>
-            //       </div>
-            //       <div className="d-flex justify-content-between mb-2">
-            //         {showBotTypeLabel('multiple_workspaces_integration')}
-            //         <span>{value.multiWSIntegration}</span>
-
-            //       </div>
-            //       <div className="d-flex justify-content-between">
-            //         {showBotTypeLabel('security_control')}
-            //         <span>{value.securityControl}</span>
-            //       </div>
-            //     </div>
-            //   </p>
-            // </div>
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    {showBotTypeLabel('security_control')}
+                    <span>{value.securityControl}</span>
+                  </div>
+                </div>
+              </p>
+            </div>
             );
           })}
 
