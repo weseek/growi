@@ -115,16 +115,19 @@ const SlackIntegration = (props) => {
 
   const botTypeDescription = {
     officialBot: {
+      level: t('admin:slack_integration.selecting_bot_types.for_beginners'),
       setUp: t('admin:slack_integration.selecting_bot_types.easy'),
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
       securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
     },
     customBotWithProxy: {
+      level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
       setUp: t('admin:slack_integration.selecting_bot_types.normal'),
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.impossible'),
       securityControl: t('admin:slack_integration.selecting_bot_types.possible'),
     },
     customBotWithoutProxy: {
+      level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
       setUp: t('admin:slack_integration.selecting_bot_types.hard'),
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
       securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
@@ -199,13 +202,13 @@ const SlackIntegration = (props) => {
             </div>
           </p>
         </div> */}
-        aaa
         {Object.entries(botTypeDescription).map(([key, value]) => {
           return (
             <div className="card-body p-4">
               <p className="card-text">
                 <div className="text-center">
-                  {showBotTypeLevel('for_beginners')}
+                  {/* {showBotTypeLevel('for_beginners')} */}
+                  {value.level}
                 </div>
                 <div className="my-4">
                   <div className="d-flex justify-content-between mb-2">
@@ -226,8 +229,6 @@ const SlackIntegration = (props) => {
             </div>
             );
           })}
-
-        iii
       </div>
     );
   };
