@@ -284,6 +284,8 @@ module.exports = (crowi) => {
    */
   router.post('/test-notification-to-slack-work-space', async(req, res) => {
     const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
+    const channel = req.body.channel;
+    console.log(channel);
     if (isConnectedToSlack === false) {
       const msg = 'Bot User OAuth Token is not setup.';
       logger.error('Error', msg);
@@ -296,7 +298,7 @@ module.exports = (crowi) => {
 
     try {
       this.client.chat.postMessage({
-        channel: '#general',
+        channel: `#${channel}`,
         text: 'Your test was successful!',
       });
       logger.info('SlackTest: send success massage to slack work space at #general.');
