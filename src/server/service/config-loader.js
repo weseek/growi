@@ -422,6 +422,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  DEFAULT_EMAIL_PUBLISHED: {
+    ns:      'crowi',
+    key:     'customize:isEmailPublishedForNewUser',
+    type:    TYPES.BOOLEAN,
+    default: true,
+  },
 };
 
 class ConfigLoader {

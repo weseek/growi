@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "../../dist/slackbot-proxy",
+    "declaration": true,
+    "noResolve": false,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "noEmit": false,
+    "inlineSources": true,
+    "baseUrl": "./src",
+    "paths": {
+      "~/*": ["./*"],
+      "@growi/*": ["../../../dist/*"]
+    }
+  },
+  "references": [
+    { "path": "../slack/tsconfig.build.json" }
+  ]
+}
