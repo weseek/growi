@@ -107,7 +107,10 @@ const CustomBotWithoutSettingsAccordion = () => {
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 3}>
           <div className="card-body">
-            BODY 4
+            <p className="text-dark">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
+            <button type="button" className="btn btn-info">Test</button>
+            <p className="text-danger">エラーが発生しました。下記のログを確認してください。</p>
+            
           </div>
         </Collapse>
       </div>
