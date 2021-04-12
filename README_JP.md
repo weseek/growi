@@ -29,7 +29,7 @@
 - [さっそくはじめてみる](#さっそくはじめてみる)
   - [docker-compose を使ってはじめる](#docker-compose-を使ってはじめる)
   - [Helm (Experimental)](#Helm-Experimental-でデプロイする)
-  - [オンプレミス](#on-premise)
+  - [オンプレミス](#オンプレミスではじめる)
 - [環境変数](#environment-variables)
 - [ドキュメント](#documentation)
 - [ライセンス](#license)
@@ -69,74 +69,83 @@ Crowi からの マイグレーションガイドは **[こちら。](https://do
 - [GROWI Docs: Ubuntu Server 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/ubuntu-server.html)
 - [GROWI Docs: CentOS 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/centos.html)
 
-## Configuration
+## 設定
 
-See [GROWI Docs: Admin Guide](https://docs.growi.org/en/admin-guide/) ([en](https://docs.growi.org/en/admin-guide/)/[ja](https://docs.growi.org/ja/admin-guide/)).
+See [GROWI Docs: 管理者ガイド](https://docs.growi.org/en/admin-guide/) ([en](https://docs.growi.org/en/admin-guide/)/[ja](https://docs.growi.org/ja/admin-guide/)).
 
-### Environment Variables
+### 環境変数
 
-See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html) ([en](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)/[ja](https://docs.growi.org/ja/admin-guide/admin-cookbook/env-vars.html)).
+[GROWI Docs: 環境変数](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html) ([en](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)/[ja](https://docs.growi.org/ja/admin-guide/admin-cookbook/env-vars.html)) をご覧ください。
 
-# Development
+# 開発環境
 
-## Dependencies
+## 依存関係
 
 - Node.js v12.x or v14.x
 - npm 6.x
 - yarn
 - MongoDB 4.x
 
-See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment).
+[確認済みのバージョン](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
 
 ### Optional Dependencies
 
 - Redis 3.x
 - ElasticSearch 6.x (needed when using Full-text search)
-  - **CAUTION: Following plugins are required**
+  - **注意: 次のプラグインが必要です**
     - [Japanese (kuromoji) Analysis plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html)
     - [ICU Analysis Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-icu.html)
 
-## Command details
+## コマンド詳細
 
-| command                | desc                                                    |
-| ---------------------- | ------------------------------------------------------- |
-| `yarn run build:prod`  | Build the client                                        |
-| `yarn run server:prod` | Launch the server                                       |
-| `yarn start`           | Invoke `yarn run build:prod` and `yarn run server:prod` |
+| コマンド               | 説明                                                             |
+| ---------------------- | ---------------------------------------------------------------- |
+| `yarn run build:prod`  | クライアントをビルドします。                                     |
+| `yarn run server:prod` | サーバーを立ち上げます。                                         |
+| `yarn start`           | `yarn run build:prod` と `yarn run server:prod` を呼び出します。 |
 
 For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands).
 
-# Documentation
+# ドキュメント
 
 - [GROWI Docs](https://docs.growi.org/)
-- [GROWI Developers Wiki (ja)](https://dev.growi.org/)
+- [GROWI Developers Wiki](https://dev.growi.org/)
 
-# Contribution
+# コントリビューション
 
-## Found a Bug?
+## バグがありましたか？
 
+もし、ソースコード上でバグを発見したら、GitHub Repository 上でイシューを作成してもらえると助かります。バグを修正してプルリクエストを提出してもらえるとなお助かります。
 If you found a bug in the source code, you can help us by
 [submitting an issue][issues] to our [GitHub Repository][growi]. Even better, you can
 [submit a Pull Request][pulls] with a fix.
 
-## Missing a Feature?
+## 機能が足りませんか？
+
+私たちの GitHub 上にイシューを出して新しい機能をリクエストすることができます。もし新機能を実装したい場合、まず、ご提案内容を確認させていただくために、イシューを提出してください。どのような変更を提案されるのかを明確にしていただきます。
 
 You can _request_ a new feature by [submitting an issue][issues] to our GitHub
 Repository. If you would like to _implement_ a new feature, firstly please submit the issue with your proposal to make sure we can confirm it. Please clarify what kind of change you would like to propose.
 
-- For a **Major Feature**, firstly open an issue and outline your proposal so it can be discussed.  
+- For a **Major Feature**, firstly open an issue and outline your proposal so it can be discussed.
+  大規模な機能追加につきましては、まずイシューを open にした上で、提案された概要を説明し、議論できるようにします。
   It also allows us to coordinate better, prevent duplication of work and help you to create the change so it can be successfully accepted into the project.
+  また、より良い調整を行い、作業の重複を防ぐことで、プロジェクトに導入されるように変更を作成することができます
+
 - **Small Features** can be created and directly [submitted as a Pull Request][pulls].
+- **小規模の機能追加につきましては** イシューを作成し、直接プルリクエストを提出してください。
 
-## Language on GitHub
+## GitHub 上での言語について
 
-You can write issues and PRs in English or Japanese.
+イシューとプルリクエストの作成は英語・日本語どちらでも受け付けています。
 
-## Discussion
+## GROWI について話し合いましょう！
 
+もし、質問や提案があれば、私たちの Slack team にぜひご参加ください！
+いつでも、どこでも GROWI について議論しましょう！
 If you have questions or suggestions, you can [join our Slack team](https://growi-slackin.weseek.co.jp/) and talk about anything, anytime.
 
-# License
+# ライセンス
 
 - The MIT License (MIT)
 - See [LICENSE](https://github.com/weseek/growi/blob/master/LICENSE) and [THIRD-PARTY-NOTICES.md](https://github.com/weseek/growi/blob/master/THIRD-PARTY-NOTICES.md).
