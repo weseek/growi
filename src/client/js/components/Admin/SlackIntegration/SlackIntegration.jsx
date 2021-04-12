@@ -148,7 +148,10 @@ const SlackIntegration = (props) => {
             key={key}
           >
             <div>
-              <h3 className={`card-header mb-0 py-3 d-flex align-items-center justify-content-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
+              <h3 className={`card-header mb-0 py-3
+              ${key === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
+              ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}
+              >
                 <span className="mr-2">
                   {value.name}
 
