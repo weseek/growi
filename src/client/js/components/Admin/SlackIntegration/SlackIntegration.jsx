@@ -168,7 +168,7 @@ const SlackIntegration = (props) => {
             </div>
             <div className="card-body p-4">
               <div className="card-text">
-                <div className="text-center">
+                <div className="text-center font-weight-bold">
                   {value.level}
                 </div>
                 <div className="my-4">
