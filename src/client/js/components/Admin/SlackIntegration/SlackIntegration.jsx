@@ -111,7 +111,7 @@ const SlackIntegration = (props) => {
       multiWSIntegration: 'possible',
       securityControl: 'impossible',
     },
-    customBotWithProxy: {
+    customBotWithoutProxy: {
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.without_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
@@ -119,7 +119,7 @@ const SlackIntegration = (props) => {
       multiWSIntegration: 'impossible',
       securityControl: 'possible',
     },
-    customBotWithoutProxy: {
+    customBotWithProxy: {
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
