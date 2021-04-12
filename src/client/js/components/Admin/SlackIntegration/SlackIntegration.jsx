@@ -122,7 +122,7 @@ const SlackIntegration = (props) => {
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       setUp: 'hard',
       multiWSIntegration: 'possible',
-      securityControl: 'impossible',
+      securityControl: 'possible',
     },
   };
 
