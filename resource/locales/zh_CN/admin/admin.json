@@ -305,7 +305,8 @@
       "register_secret_and_token": "设置签名秘密和BOT令牌",
       "test_connection": "测试连接",
       "how_to_create_a_bot": "如何创建一个BOT"
-    }
+    },
+    "custom_bot_without_proxy_integration": "Custom bot without proxy 一体化"
   },
 	"user_management": {
 		"invite_users": "临时发布新用户",

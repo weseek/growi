@@ -295,7 +295,8 @@
       "register_secret_and_token": "Signing Secret と Bot Token を登録する",
       "test_connection": "連携状況のテストをする",
       "how_to_create_a_bot": "作成方法はこちら"
-    }
+    },
+    "custom_bot_without_proxy_integration": "Custom bot without proxy 連携"
   },
   "user_management": {
     "invite_users": "新規ユーザーの仮発行",

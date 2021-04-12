@@ -297,7 +297,8 @@
       "register_secret_and_token": "Set Signing Secret and Bot Token",
       "test_connection": "Test Connection",
       "how_to_create_a_bot": "How to create a bot"
-    }
+    },
+    "custom_bot_without_proxy_integration": "Custom bot without proxy integration"
   },
   "user_management": {
     "invite_users": "Temporarily issue a new user",
