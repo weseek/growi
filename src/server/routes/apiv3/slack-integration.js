@@ -282,7 +282,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to send a message to slack work space
    */
-  router.post('/test-notification-to-slack-work-space', async(req, res) => {
+  router.post('/test-notification-to-slack-work-space', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
     const channel = req.body.channel;
     console.log(channel);
