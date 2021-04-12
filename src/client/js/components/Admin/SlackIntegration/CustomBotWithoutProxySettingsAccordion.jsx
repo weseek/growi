@@ -58,12 +58,19 @@ const CustomBotWithoutSettingsAccordion = () => {
           }
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 1}>
-          <div className="card-body px-5 py-4">
+          <div className="card-body px-3 py-4">
             <div className="container">
-              <p className="text-dark">1. 〇〇でWSを選んでインストールボタンを押す。</p>
-              <img src="placeholder.png" style={{ width: '300px', height: '150px' }} className="border border-light mb-4" />
-              <p className="text-dark">2. Slack Workspaceの任意のチャンネルで&apos;@名前&apos;を入力し、作成したBotを招待する</p>
-              <img src="placeholder.png" style={{ width: '300px', height: '150px' }} className="border border-light" />
+              <p className="text-dark">1. Install your app をクリックします。</p>
+              <img src="../../../../../../public/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light mb-4" />
+              <p className="text-dark">2. Install to Workspace をクリックします。</p>
+              <img src="../../../../../../public/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light mb-4" />
+              <p className="text-dark">3. 遷移先の画面にて、Allowをクリックします。</p>
+              <img src="../../../../../../public/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light mb-4" />
+              <p className="text-dark">4. Install your app の右側に 緑色のチェックがつけばワークスペースへのインストール完了です。</p>
+              <img src="../../../../../../public/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light mb-4" />
+              <p className="text-dark">5. GROWI bot を使いたいチャンネルに @example を使用して招待します。</p>
+              <img src="../../../../../../public/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light" />
+
             </div>
           </div>
         </Collapse>
