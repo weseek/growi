@@ -48,7 +48,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn lerna bootstrap
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -113,7 +113,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn lerna bootstrap
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -192,7 +192,7 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Install dependencies
       run: |
-        yarn --frozen-lockfile
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
