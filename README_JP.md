@@ -45,7 +45,6 @@
   - Slack/Mattermost, IFTTT と連携することが可能です。
   - [GROWI Docs: 機能紹介](https://docs.growi.org/en/guide/features/page_layout.html)
 - **プラグイン**
-  - You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
   - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [github](https://github.com/search?q=topic%3Agrowi-plugin)! から 便利なプラグインを見つけることができます。
 - **[Docker の準備][dockerhub]**
 - **[Docker Compose の準備][docker-compose]**
