@@ -63,7 +63,7 @@
 
 ### オンプレミスではじめる
 
-Crowi からの マイグレーションガイドは **[こちら。](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))**
+Crowi からの 移行は **[こちら。](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))**
 
 - [GROWI Docs: Ubuntu Server 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/ubuntu-server.html)
 - [GROWI Docs: CentOS 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/centos.html)
