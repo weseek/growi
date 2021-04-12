@@ -6,7 +6,6 @@ import {
 } from 'typeorm';
 
 import { Installation as SlackInstallation } from '@slack/oauth';
-import { Order } from './order';
 
 @Entity()
 export class Installation {

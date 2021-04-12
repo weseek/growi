@@ -1,12 +1,18 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "lib",
+    "rootDir": "./src",
+    "outDir": "../../dist/slack",
+    "composite": true,
     "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,
     "sourceMap": true,
     "noEmit": false,
-    "inlineSources": true
+    "inlineSources": true,
+
+    "baseUrl": ".",
+    "paths": {
+    }
   }
 }

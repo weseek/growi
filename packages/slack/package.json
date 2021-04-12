@@ -2,12 +2,7 @@
   "name": "@growi/slack",
   "version": "0.9.0-RC",
   "license": "MIT",
-  "main": "lib/index.js",
-  "files": ["lib"],
   "scripts": {
-    "build": "yarn tsc",
-    "tsc": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "tsc:w": "tsc -w",
     "test": "yarn test:lint && yarn test:coverage",
     "test:unit": "cross-env NODE_ENV=test jest --passWithNoTests",
     "test:coverage": "yarn test:unit",
@@ -29,10 +24,6 @@
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-jest": "^24.3.2",
     "ts-jest": "^26.5.4",
-    "ts-node": "^9.1.1",
-    "ts-node-dev": "^1.1.6",
-    "tsc-alias": "1.2.6",
-    "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
   }
 }

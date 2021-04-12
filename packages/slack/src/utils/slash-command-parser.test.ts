@@ -1,5 +1,5 @@
 import { SlashCommand } from '@slack/bolt';
-import { InvalidGrowiCommandError } from '~/models/errors';
+import { InvalidGrowiCommandError } from '../models/errors';
 
 import { parse } from './slash-command-parser';
 

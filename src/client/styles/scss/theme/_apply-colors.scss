@@ -591,3 +591,24 @@ mark.rbt-highlight-text {
 .grw-btn-page-management:focus {
   background-color: rgba($color-link, 0.15);
 }
+
+/*
+  Slack Integration
+*/
+.selecting-bot-type {
+  .bot-type-disc-easy {
+    color: #33d541;
+  }
+  .bot-type-disc-normal {
+    color: #e6a63c;
+  }
+  .bot-type-disc-hard {
+    color: #ff5757;
+  }
+  .bot-type-disc-possible {
+    color: $info;
+  }
+  .bot-type-disc-impossible {
+    color: $gray-500;
+  }
+}
