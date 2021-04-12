@@ -168,19 +168,24 @@ const SlackIntegration = (props) => {
                 <div className="my-2">
                   <div className="d-flex justify-content-between mb-3">
                     <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span>
-                    <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span>
+                    {/* <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span> */}
+                    <img className="bot-type-disc-easy" src="/images/slack-integration/batten-basic-red.png" alt="" />
+
+
                   </div>
                   <div className="d-flex justify-content-between mb-3">
                     <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>
-                    <span className={`bot-type-disc-${value.multiWSIntegration}`}>
+                    {/* <span className={`bot-type-disc-${value.multiWSIntegration}`}>
                       {t(`admin:slack_integration.selecting_bot_types.${value.multiWSIntegration}`)}
-                    </span>
+                    </span> */}
+                    <img className="bot-type-disc-easy" src="/images/slack-integration/batten-basic-red.png" alt="" />
                   </div>
                   <div className="d-flex justify-content-between">
                     <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
-                    <span className={`bot-type-disc-${value.securityControl}`}>
+                    {/* <span className={`bot-type-disc-${value.securityControl}`}>
                       {t(`admin:slack_integration.selecting_bot_types.${value.securityControl}`)}
-                    </span>
+                    </span> */}
+                    <img className="bot-type-disc-easy" src="/images/slack-integration/batten-basic-red.png" alt="" />
                   </div>
                 </div>
               </div>
