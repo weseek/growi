@@ -1,12 +1,13 @@
-<p align="center">
-  <a href="https://growi.org">
-    <img src="https://user-images.githubusercontent.com/1638767/38254268-d4476bbe-3793-11e8-964c-8865d690baff.png" width="240px">
-  </a>
-</p>
-<p align="center">
-  <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg"></a>
-  <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
-</p>
+- [English](./README.md)
+  <p align="center">
+    <a href="https://growi.org">
+      <img src="https://user-images.githubusercontent.com/1638767/38254268-d4476bbe-3793-11e8-964c-8865d690baff.png" width="240px">
+    </a>
+  </p>
+  <p align="center">
+    <a href="https://github.com/weseek/growi/releases/latest"><img src="https://img.shields.io/github/release/weseek/growi.svg"></a>
+    <a href="https://growi-slackin.weseek.co.jp/"><img src="https://growi-slackin.weseek.co.jp/badge.svg"></a>
+  </p>
 
 <p align="center">
   <a href="https://docs.growi.org">ドキュメント</a> / <a href="https://demo.growi.org">デモ</a>
