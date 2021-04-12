@@ -33,12 +33,19 @@ export class InstallerService {
       clientSecret,
       stateSecret,
       installationStore: {
+        // upsert
         storeInstallation: async(slackInstallation: SlackInstallation<'v1' | 'v2', boolean>) => {
+          const existedInstallation = await repository.findByTeamIdOrEnterpriseId(slackInstallation.team?.id, slackInstallation.enterprise?.id);
+
+          if (existedInstallation != null) {
+            existedInstallation.setData(slackInstallation);
+            repository.save(existedInstallation);
+            return;
+          }
+
           const installation = new Installation();
           installation.setData(slackInstallation);
-
-          await repository.save(installation);
-
+          repository.save(installation);
           return;
         },
         fetchInstallation: async(installQuery: InstallationQuery<boolean>) => {
