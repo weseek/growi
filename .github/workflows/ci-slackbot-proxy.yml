@@ -122,7 +122,7 @@ jobs:
     - name: yarn dev:ci
       run: |
         cp packages/slackbot-proxy/config/ci/.env.local.for-ci packages/slackbot-proxy/.env.local
-        yarn lerna run --scope slackbot-proxy dev:ci
+        yarn lerna run --scope @growi/slackbot-proxy dev:ci
       env:
         TYPEORM_CONNECTION: mysql
         TYPEORM_HOST: localhost
@@ -212,7 +212,7 @@ jobs:
     - name: yarn start:prod:ci
       run: |
         cp packages/slackbot-proxy/config/ci/.env.local.for-ci packages/slackbot-proxy/.env.local
-        yarn lerna run --scope slackbot-proxy start:prod:ci
+        yarn lerna run --scope @growi/slackbot-proxy start:prod:ci
       env:
         TYPEORM_CONNECTION: mysql
         TYPEORM_HOST: localhost
