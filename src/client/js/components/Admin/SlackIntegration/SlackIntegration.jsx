@@ -165,12 +165,12 @@ const SlackIntegration = (props) => {
             </div>
             <div className="card-body p-4">
               <div className="card-text">
-                <div className="my-4">
-                  <div className="d-flex justify-content-between mb-2">
+                <div className="my-2">
+                  <div className="d-flex justify-content-between mb-3">
                     <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span>
                     <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span>
                   </div>
-                  <div className="d-flex justify-content-between mb-2">
+                  <div className="d-flex justify-content-between mb-3">
                     <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>
                     <span className={`bot-type-disc-${value.multiWSIntegration}`}>
                       {t(`admin:slack_integration.selecting_bot_types.${value.multiWSIntegration}`)}
