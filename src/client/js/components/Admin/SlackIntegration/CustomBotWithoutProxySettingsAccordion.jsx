@@ -76,7 +76,7 @@ const CustomBotWithoutSettingsAccordion = () => {
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndex === 1}>
+        <Collapse isOpen={openAccordionIndexes === 1}>
           <div className="card-body py-5">
             <div className="container w-75">
               <p className="text-dark">1. Install your app をクリックします。</p>
@@ -131,7 +131,7 @@ const CustomBotWithoutSettingsAccordion = () => {
             <p className="text-dark">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
             <button type="button" className="btn btn-info">Test</button>
             <p className="text-danger">エラーが発生しました。下記のログを確認してください。</p>
-
+            
           </div>
         </Collapse>
       </div>
