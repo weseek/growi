@@ -141,9 +141,8 @@ Repository. If you would like to _implement_ a new feature, firstly please submi
 
 ## GROWI について話し合いましょう！
 
-もし、質問や提案があれば、私たちの Slack team にぜひご参加ください！
+もし、質問や提案があれば、私たちの [Slack team](https://growi-slackin.weseek.co.jp/) にぜひご参加ください！
 いつでも、どこでも GROWI について議論しましょう！
-If you have questions or suggestions, you can [join our Slack team](https://growi-slackin.weseek.co.jp/) and talk about anything, anytime.
 
 # ライセンス
 
