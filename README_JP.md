@@ -70,7 +70,7 @@ Crowi からの 移行は **[こちら。](https://docs.growi.org/en/admin-guide
 
 ## 設定
 
-See [GROWI Docs: 管理者ガイド](https://docs.growi.org/en/admin-guide/) ([en](https://docs.growi.org/en/admin-guide/)/[ja](https://docs.growi.org/ja/admin-guide/)).
+[GROWI Docs: 管理者ガイド](https://docs.growi.org/en/admin-guide/) ([en](https://docs.growi.org/en/admin-guide/)/[ja](https://docs.growi.org/ja/admin-guide/))をご覧ください。
 
 ### 環境変数
 
