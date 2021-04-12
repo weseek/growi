@@ -85,7 +85,9 @@ Crowi からの 移行は **[こちら。](https://docs.growi.org/en/admin-guide
 - yarn
 - MongoDB 4.x
 
-[確認済みのバージョン](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
+  <!-- 以下のリンクは存在しない -->
+
+  [確認済みのバージョン](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
 
 ### オプションの依存関係
 
@@ -103,7 +105,9 @@ Crowi からの 移行は **[こちら。](https://docs.growi.org/en/admin-guide
 | `yarn run server:prod` | サーバーを立ち上げます。                                         |
 | `yarn start`           | `yarn run build:prod` と `yarn run server:prod` を呼び出します。 |
 
-For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands).
+<!-- 以下のリンクは存在しない -->
+
+詳しくは[GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands)をご覧ください。
 
 # ドキュメント
 
