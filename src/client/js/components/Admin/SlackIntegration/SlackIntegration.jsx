@@ -152,7 +152,7 @@ const SlackIntegration = (props) => {
                   {value.name}
 
                 </span>
-                <span className="supplementary-desc mr-2">
+                <span className="supplementary-bot-name mr-2">
                   {value.name2}
                 </span>
 
