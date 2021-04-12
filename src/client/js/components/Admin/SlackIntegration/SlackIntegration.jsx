@@ -112,14 +112,16 @@ const SlackIntegration = (props) => {
       securityControl: 'impossible',
     },
     customBotWithProxy: {
-      name: t('admin:slack_integration.selecting_bot_types.without_proxy'),
+      name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
+      name2: t('admin:slack_integration.selecting_bot_types.without_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
       setUp: 'normal',
       multiWSIntegration: 'impossible',
       securityControl: 'possible',
     },
     customBotWithoutProxy: {
-      name: t('admin:slack_integration.selecting_bot_types.with_proxy'),
+      name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
+      name2: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
       setUp: 'hard',
       multiWSIntegration: 'possible',
@@ -148,6 +150,10 @@ const SlackIntegration = (props) => {
               <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
                 <span className="mr-2">
                   {value.name}
+
+                </span>
+                <span className="supplementary-desc mr-2">
+                  {value.name2}
                 </span>
 
                 {key === 'officialBot' ? renderRecommendedBadge() : ''}
