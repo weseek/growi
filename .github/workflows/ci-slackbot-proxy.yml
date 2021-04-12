@@ -120,9 +120,10 @@ jobs:
         echo -n "npm " && npm -v
         yarn list --depth=0
     - name: yarn dev:ci
+      working-directory: ./packages/slackbot-proxy
       run: |
-        cp packages/slackbot-proxy/config/ci/.env.local.for-ci packages/slackbot-proxy/.env.local
-        yarn lerna run --scope @growi/slackbot-proxy dev:ci
+        cp config/ci/.env.local.for-ci .env.local
+        yarn dev:ci
       env:
         TYPEORM_CONNECTION: mysql
         TYPEORM_HOST: localhost
@@ -210,9 +211,10 @@ jobs:
         echo -n "npm " && npm -v
         yarn list --production --depth=0
     - name: yarn start:prod:ci
+      working-directory: ./packages/slackbot-proxy
       run: |
-        cp packages/slackbot-proxy/config/ci/.env.local.for-ci packages/slackbot-proxy/.env.local
-        yarn lerna run --scope @growi/slackbot-proxy start:prod:ci
+        cp config/ci/.env.local.for-ci .env.local
+        yarn start:prod:ci
       env:
         TYPEORM_CONNECTION: mysql
         TYPEORM_HOST: localhost
