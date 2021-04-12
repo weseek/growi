@@ -128,13 +128,21 @@ const CustomBotWithoutSettingsAccordion = () => {
         </div>
         <Collapse isOpen={openAccordionIndexes.has(3)}>
           <div className="card-body">
-            <div className="mx-auto">
-              <p className="text-dark">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
-              <button type="button" className="btn btn-info">Test</button>
-              <p className="text-danger">エラーが発生しました。下記のログを確認してください。</p>
-              <p className="border-left border-info text-dark">Logs</p>
-              <div className="card border border-info p-3">
-                <p className="text-secondary">Mon Apr 05 2021 20:24:11 GMT+0900 (Japan Standard Time) -Incorrect credentials.</p>
+            <div className="container">
+              <p className="text-dark text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
+              <div className="d-flex justify-content-center">
+                <button type="button" className="btn btn-info m-3 px-5 font-weight-bold">Test</button>
+              </div>
+              <div>
+                <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
+                <div className="row m-3 justify-content-center">
+                  <div className="col-sm-6">
+                    <p className="border-left border-info text-dark mb-1 pl-2 pb-1">Logs</p>
+                    <div className="card border border-info rounded-lg px-5 py-4">
+                      <p className="text-secondary m-0">Mon Apr 05 2021 20:24:11 GMT+0900 (Japan Standard Time) -Incorrect credentials.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
