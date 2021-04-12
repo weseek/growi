@@ -106,7 +106,6 @@ const SlackIntegration = (props) => {
   const botTypes = {
     officialBot: {
       name: t('admin:slack_integration.selecting_bot_types.official_bot'),
-      level: t('admin:slack_integration.selecting_bot_types.for_beginners'),
       setUp: 'easy',
       multiWSIntegration: 'possible',
       securityControl: 'impossible',
@@ -114,7 +113,6 @@ const SlackIntegration = (props) => {
     customBotWithoutProxy: {
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.without_proxy'),
-      level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
       setUp: 'normal',
       multiWSIntegration: 'impossible',
       securityControl: 'possible',
@@ -122,10 +120,9 @@ const SlackIntegration = (props) => {
     customBotWithProxy: {
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.with_proxy'),
-      level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
       setUp: 'hard',
       multiWSIntegration: 'possible',
-      securityControl: 'impossible',
+      securityControl: 'possible',
     },
   };
 
@@ -148,7 +145,10 @@ const SlackIntegration = (props) => {
             key={key}
           >
             <div>
-              <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
+              <h3 className={`card-header mb-0 py-3
+              ${key === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
+              ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}
+              >
                 <span className="mr-2">
                   {value.name}
 
@@ -164,29 +164,25 @@ const SlackIntegration = (props) => {
               </h3>
             </div>
             <div className="card-body p-4">
-              <p className="card-text">
-                <div className="text-center">
-                  {value.level}
-                </div>
-                <div className="my-4">
-                  <div className="d-flex justify-content-between mb-2">
-                    <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span>
-                    <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span>
+              <div className="card-text">
+                <div className="my-2">
+                  <div className="d-flex justify-content-between mb-3">
+                    {/* TODO add image of difficulties by GW-5638 */}
+                    {/* <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span> */}
+                    {/* <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span> */}
+
+
                   </div>
-                  <div className="d-flex justify-content-between mb-2">
+                  <div className="d-flex justify-content-between mb-3">
                     <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>
-                    <span className={`bot-type-disc-${value.multiWSIntegration}`}>
-                      {t(`admin:slack_integration.selecting_bot_types.${value.multiWSIntegration}`)}
-                    </span>
+                    <img className="bot-type-disc" src={`/images/slack-integration/${value.multiWSIntegration}.png`} alt="" />
                   </div>
                   <div className="d-flex justify-content-between">
                     <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
-                    <span className={`bot-type-disc-${value.securityControl}`}>
-                      {t(`admin:slack_integration.selecting_bot_types.${value.securityControl}`)}
-                    </span>
+                    <img className="bot-type-disc" src={`/images/slack-integration/${value.securityControl}.png`} alt="" />
                   </div>
                 </div>
-              </p>
+              </div>
             </div>
           </div>
         );
