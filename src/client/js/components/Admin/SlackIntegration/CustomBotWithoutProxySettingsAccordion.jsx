@@ -64,18 +64,18 @@ const CustomBotWithoutSettingsAccordion = () => {
           }
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 1}>
-          <div className="card-body px-3 py-4">
+          <div className="card-body py-5">
             <div className="container w-75">
               <p className="text-dark">1. Install your app をクリックします。</p>
-              <img src={installYourAppIntroductionImage} className="border border-light img-fluid mb-4" />
+              <img src={installYourAppIntroductionImage} className="border border-light img-fluid mb-5" />
               <p className="text-dark">2. Install to Workspace をクリックします。</p>
-              <img src={installToWorkspaceImage} className="border border-light img-fluid mb-4" />
+              <img src={installToWorkspaceImage} className="border border-light img-fluid mb-5" />
               <p className="text-dark">3. 遷移先の画面にて、Allowをクリックします。</p>
-              <img src={installYourAppTransitionDestinationImage} className="border border-light img-fluid mb-4" />
+              <img src={installYourAppTransitionDestinationImage} className="border border-light img-fluid mb-5" />
               <p className="text-dark">4. Install your app の右側に 緑色のチェックがつけばワークスペースへのインストール完了です。</p>
-              <img src={installYourAppCompleteImage} className="border border-light img-fluid mb-4" />
+              <img src={installYourAppCompleteImage} className="border border-light img-fluid mb-5" />
               <p className="text-dark">5. GROWI bot を使いたいチャンネルに @example を使用して招待します。</p>
-              <img src={workspaceJoinedBotImage} className="border border-light img-fluid" />
+              <img src={workspaceJoinedBotImage} className="border border-light img-fluid mb-1" />
               <img src={introductionToChannelImage} className="border border-light img-fluid" />
             </div>
           </div>
