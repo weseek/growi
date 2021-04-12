@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://docs.growi.org">Documentation</a> / <a href="https://demo.growi.org">Demo</a>
+  <a href="https://docs.growi.org">ドキュメント</a> / <a href="https://demo.growi.org">デモ</a>
 </p>
 
 # GROWI
@@ -19,7 +19,7 @@
 [![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
 
-|                                                     demonstration                                                     |
+|                                                         デモ                                                          |
 | :-------------------------------------------------------------------------------------------------------------------: |
 | ![sample image](https://user-images.githubusercontent.com/42988650/70600974-6b29cc80-1c34-11ea-94ef-33c39c6a00dc.gif) |
 
@@ -30,9 +30,9 @@
   - [docker-compose を使ってはじめる](#docker-compose-を使ってはじめる)
   - [Helm (Experimental)](#Helm-Experimental-でデプロイする)
   - [オンプレミス](#オンプレミスではじめる)
-- [環境変数](#environment-variables)
-- [ドキュメント](#documentation)
-- [ライセンス](#license)
+- [環境変数](#環境変数)
+- [ドキュメント](#ドキュメント)
+- [ライセンス](#ライセンス)
 
 # 機能紹介
 
