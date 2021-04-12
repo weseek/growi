@@ -2,6 +2,7 @@
 .github
 .vscode
 node_modules
+packages
 src/linter-checker
 src/test
 .editorconfig

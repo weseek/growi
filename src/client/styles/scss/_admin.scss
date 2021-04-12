@@ -83,8 +83,26 @@
     }
   }
 
-  .clickable {
-    cursor: pointer;
+  /*
+  Slack Integration
+  */
+  .selecting-bot-type {
+    .btn-link {
+      font-size: 1rem;
+    }
+    .supplementary-desc {
+      font-size: 1rem;
+    }
+    .badge-info {
+      font-size: 0.6rem;
+    }
+    .admin-bot-card {
+      min-width: 280px;
+      border-radius: 8px !important;
+    }
+    .border-primary {
+      border-width: 2px;
+    }
   }
 
   #customBotWithoutProxySettingsAccordion .card-header {

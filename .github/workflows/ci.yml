@@ -1,10 +1,20 @@
-name: Node CI
+name: Node CI for growi
 
 on:
   push:
     branches-ignore:
       - release/**
       - tmp/**
+    paths:
+      - .github/workflows/ci.yml
+      - .eslint*
+      - .prettier*
+      - .stylelint*
+      - config
+      - resource
+      - src
+      - package.json
+      - yarn.lock
 
 jobs:
 
@@ -42,7 +52,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
+        yarn add -W growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -57,7 +67,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*test (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - lint (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -107,7 +117,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
+        yarn add -W growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -129,7 +139,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*test (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -185,7 +195,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
+        yarn add -W growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -200,7 +210,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*build-dev (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - build-dev (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -257,8 +267,8 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Install dependencies
       run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
-        yarn add -D react-images@1.0.0 react-motion
+        yarn add -W growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
+        yarn add -W -D react-images@1.0.0 react-motion
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -300,7 +310,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*build-prod (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - build-prod (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}

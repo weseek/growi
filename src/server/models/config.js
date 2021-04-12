@@ -229,6 +229,7 @@ module.exports = function(crowi) {
       isAclEnabled: crowi.aclService.isAclEnabled(),
       isSearchServiceConfigured: crowi.searchService.isConfigured,
       isSearchServiceReachable: crowi.searchService.isReachable,
+      isMailerSetup: crowi.mailService.isMailerSetup,
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
     };
 
