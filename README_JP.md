@@ -148,11 +148,11 @@ If you have questions or suggestions, you can [join our Slack team](https://grow
 # ライセンス
 
 - The MIT License (MIT)
-- See [LICENSE](https://github.com/weseek/growi/blob/master/LICENSE) and [THIRD-PARTY-NOTICES.md](https://github.com/weseek/growi/blob/master/THIRD-PARTY-NOTICES.md).
+- [ライセンス](https://github.com/weseek/growi/blob/master/LICENSE) と[THIRD-PARTY-NOTICES.md](https://github.com/weseek/growi/blob/master/THIRD-PARTY-NOTICES.md) をご覧ください。
 
-[crowi]: https://github.com/crowi/crowi
-[growi]: https://github.com/weseek/growi
-[issues]: https://github.com/weseek/growi/issues
-[pulls]: https://github.com/weseek/growi/pulls
-[dockerhub]: https://hub.docker.com/r/weseek/growi
-[docker-compose]: https://github.com/weseek/growi-docker-compose
+  [crowi]: https://github.com/crowi/crowi
+  [growi]: https://github.com/weseek/growi
+  [issues]: https://github.com/weseek/growi/issues
+  [pulls]: https://github.com/weseek/growi/pulls
+  [dockerhub]: https://hub.docker.com/r/weseek/growi
+  [docker-compose]: https://github.com/weseek/growi-docker-compose
