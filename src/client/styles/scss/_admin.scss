@@ -105,6 +105,15 @@
     }
   }
 
+  .error-log {
+    .title-border {
+      border-left: 2px;
+    }
+    .body-border {
+      border: 2px;
+    }
+  }
+
   //// TODO: migrate to Bootstrap 4
   //// omit all .btn-toggle and use Switches
   //// https://getbootstrap.com/docs/4.2/components/forms/#switches

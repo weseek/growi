@@ -136,9 +136,9 @@ const CustomBotWithoutSettingsAccordion = () => {
               <div>
                 <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
                 <div className="row m-3 justify-content-center">
-                  <div className="col-sm-6">
-                    <p className="border-left border-info text-dark mb-1 pl-2 pb-1">Logs</p>
-                    <div className="card border border-info rounded-lg px-5 py-4">
+                  <div className="col-sm-6 error-log">
+                    <p className="border-info title-border text-dark mb-1 pl-2 pb-1">Logs</p>
+                    <div className="card border-info body-border rounded-lg px-5 py-4">
                       <p className="text-secondary m-0">Mon Apr 05 2021 20:24:11 GMT+0900 (Japan Standard Time) -Incorrect credentials.</p>
                     </div>
                   </div>
