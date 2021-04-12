@@ -113,7 +113,7 @@ const SlackIntegration = (props) => {
     return <span className={`bot-type-disc-${desc}`}>{t(`admin:slack_integration.selecting_bot_types.${desc}`)}</span>;
   };
 
-  const botTypeCard = {
+  const botTypes = {
     officialBot: {
       level: t('admin:slack_integration.selecting_bot_types.for_beginners'),
       setUp: t('admin:slack_integration.selecting_bot_types.easy'),
@@ -164,7 +164,7 @@ const SlackIntegration = (props) => {
   const renderBotTypeCards = () => {
     console.log('fuga');
     return (
-      Object.entries(botTypeCard).map(([key, value]) => {
+      Object.entries(botTypes).map(([key, value]) => {
         return (
           <div
             className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === `${key}` ? 'border-primary' : ''}`}
