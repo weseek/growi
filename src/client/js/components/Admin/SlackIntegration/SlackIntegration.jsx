@@ -103,16 +103,6 @@ const SlackIntegration = (props) => {
       break;
   }
 
-  const showBotTypeLevel = (level) => {
-    return <span>{t(`admin:slack_integration.selecting_bot_types.${level}`)}</span>;
-  };
-  const showBotTypeLabel = (label) => {
-    return <span>{t(`admin:slack_integration.selecting_bot_types.${label}`)}</span>;
-  };
-  const showBotTypeDiscription = (desc) => {
-    return <span className={`bot-type-disc-${desc}`}>{t(`admin:slack_integration.selecting_bot_types.${desc}`)}</span>;
-  };
-
   const botTypes = {
     officialBot: {
       name: t('admin:slack_integration.selecting_bot_types.official_bot'),
@@ -200,17 +190,17 @@ const SlackIntegration = (props) => {
                 </div>
                 <div className="my-4">
                   <div className="d-flex justify-content-between mb-2">
-                    {showBotTypeLabel('set_up')}
+                    <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span>;
                     <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
-                    {showBotTypeLabel('multiple_workspaces_integration')}
+                    <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>;
                     <span className={`bot-type-disc-${value.multiWSIntegration}`}>
                       {t(`admin:slack_integration.selecting_bot_types.${value.multiWSIntegration}`)}
                     </span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    {showBotTypeLabel('security_control')}
+                    <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
                     <span className={`bot-type-disc-${value.securityControl}`}>
                       {t(`admin:slack_integration.selecting_bot_types.${value.securityControl}`)}
                     </span>
