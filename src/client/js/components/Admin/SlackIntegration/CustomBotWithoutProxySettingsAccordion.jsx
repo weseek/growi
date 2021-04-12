@@ -58,8 +58,13 @@ const CustomBotWithoutSettingsAccordion = () => {
           }
         </div>
         <Collapse isOpen={currentlyOpenAccordionIndex === 1}>
-          <div className="card-body">
-            BODY2
+          <div className="card-body px-5 py-4">
+            <div className="container">
+              <p className="text-dark">1. 〇〇でWSを選んでインストールボタンを押す。</p>
+              <img src="placeholder.png" style={{ width: '300px', height: '150px' }} className="border border-light mb-4" />
+              <p className="text-dark">2. Slack Workspaceの任意のチャンネルで&apos;@名前&apos;を入力し、作成したBotを招待する</p>
+              <img src="placeholder.png" style={{ width: '300px', height: '150px' }} className="border border-light" />
+            </div>
           </div>
         </Collapse>
       </div>
