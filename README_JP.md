@@ -115,29 +115,25 @@ For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/
 
 ## バグがありましたか？
 
-もし、ソースコード上でバグを発見したら、GitHub Repository 上でイシューを作成してもらえると助かります。バグを修正してプルリクエストを提出してもらえるとなお助かります。
-If you found a bug in the source code, you can help us by
-[submitting an issue][issues] to our [GitHub Repository][growi]. Even better, you can
-[submit a Pull Request][pulls] with a fix.
+もし、ソースコード上でバグを発見したら、GitHub Repository 上で Issue を作成していただけると助かります。バグを修正してプルリクエストを提出していただけるとさらに助かります。
 
 ## 機能が足りませんか？
 
-私たちの GitHub 上にイシューを出して新しい機能をリクエストすることができます。もし新機能を実装したい場合、まず、ご提案内容を確認させていただくために、イシューを提出してください。どのような変更を提案されるのかを明確にしていただきます。
+私たちの GitHub 上に Issue を出して新しい機能をリクエストすることができます。もし新機能を実装したい場合、まず、ご提案内容を確認させていただくために、Issue を提出してください。どのような変更を提案されるのかを明確にしていただきます。
 
 You can _request_ a new feature by [submitting an issue][issues] to our GitHub
 Repository. If you would like to _implement_ a new feature, firstly please submit the issue with your proposal to make sure we can confirm it. Please clarify what kind of change you would like to propose.
 
 - For a **Major Feature**, firstly open an issue and outline your proposal so it can be discussed.
-  大規模な機能追加につきましては、まずイシューを open にした上で、提案された概要を説明し、議論できるようにします。
+  大規模な機能追加につきましては、まず Issue を open にした上で、提案された概要を説明し、議論できるようにします。
   It also allows us to coordinate better, prevent duplication of work and help you to create the change so it can be successfully accepted into the project.
   また、より良い調整を行い、作業の重複を防ぐことで、プロジェクトに導入されるように変更を作成することができます
 
-- **Small Features** can be created and directly [submitted as a Pull Request][pulls].
-- **小規模の機能追加につきましては** イシューを作成し、直接プルリクエストを提出してください。
+- **小規模の機能追加につきましては** Issue を作成し、直接[プルリクエスト](pulls)を提出してください。
 
 ## GitHub 上での言語について
 
-イシューとプルリクエストの作成は英語・日本語どちらでも受け付けています。
+Issue とプルリクエストの作成は英語・日本語どちらでも受け付けています。
 
 ## GROWI について話し合いましょう！
 
