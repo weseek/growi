@@ -158,7 +158,7 @@ const SlackIntegration = (props) => {
 
                 {key === 'officialBot' ? renderRecommendedBadge() : ''}
 
-                {/* TODO: add an appropriate link by GW-5614 */}
+                {/* TODO: add an appropriate links by GW-5614 */}
                 <i className={`fa fa-external-link btn-link ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
               </h3>
             </div>
