@@ -2,8 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "../../dist/slack",
-    "composite": true,
+    "outDir": "dist",
     "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,
