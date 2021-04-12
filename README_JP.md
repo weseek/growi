@@ -123,15 +123,10 @@ Crowi からの 移行は **[こちら](https://docs.growi.org/en/admin-guide/mi
 
 ## 機能が足りませんか？
 
-私たちの GitHub 上に Issue を出して新しい機能をリクエストすることができます。もし新機能を実装したい場合、まず、ご提案内容を確認させていただくために、Issue を提出してください。どのような変更を提案されるのかを明確にしていただきます。
+私たちの GitHub 上の リポジトリに Issue を出して、新しい機能をリクエストすることができます。もし新機能を実装したい場合、Issue を提出してください。どのような新機能や変更を提案されるのかを明確にしていただきます。
 
-You can _request_ a new feature by [submitting an issue][issues] to our GitHub
-Repository. If you would like to _implement_ a new feature, firstly please submit the issue with your proposal to make sure we can confirm it. Please clarify what kind of change you would like to propose.
-
-- For a **Major Feature**, firstly open an issue and outline your proposal so it can be discussed.
-  大規模な機能追加につきましては、まず Issue を open にした上で、提案された概要を説明し、議論できるようにします。
-  It also allows us to coordinate better, prevent duplication of work and help you to create the change so it can be successfully accepted into the project.
-  また、より良い調整を行い、作業の重複を防ぐことで、プロジェクトに導入されるように変更を作成することができます
+- 大規模な機能追加につきましては、まず Issue を open にした上で、提案された概要を説明していただき、議論できるようにします。
+  議論を積み重ねることで、提案内容を双方向的に調整することができ、実装の重複を防ぐことにもなります。これによって、実装していただいた機能が GROWI に導入されやすくなります。
 
 - **小規模の機能追加につきましては** Issue を作成し、直接[Pull requests](pulls)を提出してください。
 
