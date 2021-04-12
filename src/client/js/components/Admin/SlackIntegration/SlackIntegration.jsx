@@ -161,19 +161,18 @@ const SlackIntegration = (props) => {
     );
   };
 
-  const renderBotTypeCard = (botType) => {
+  const renderBotTypeCard = () => {
     console.log('fuga');
-    // return (
     Object.entries(botTypeCard).map(([key, value]) => {
       return (
         <div
-          className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === `${botType}` ? 'border-primary' : ''}`}
-          onClick={() => handleBotTypeSelect(`${botType}`)}
+          className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === `${key}` ? 'border-primary' : ''}`}
+          onClick={() => handleBotTypeSelect(`${key}`)}
           role="button"
         >
           fuga
           <div>
-            <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${botType}` ? 'bg-primary text-light' : ''}`}>
+            <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
               <span className="mr-2">
                 {t('admin:slack_integration.selecting_bot_types.official_bot')}
               </span>
@@ -181,7 +180,7 @@ const SlackIntegration = (props) => {
                 {t('admin:slack_integration.selecting_bot_types.recommended')}
               </span>
               {/* TODO: add an appropriate link by GW-5614 */}
-              <i className={`fa fa-external-link btn-link ${currentBotType === `${botType}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
+              <i className={`fa fa-external-link btn-link ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
             </h3>
           </div>
 
@@ -206,8 +205,6 @@ const SlackIntegration = (props) => {
           </div>
           </p>
         </div> */}
-          {/* {Object.entries(botTypeCard).map(([key, value]) => {
-          return ( */}
           <div className="card-body p-4">
             <p className="card-text">
               <div className="text-center">
@@ -230,12 +227,9 @@ const SlackIntegration = (props) => {
               </div>
             </p>
           </div>
-          {/* );
-          })} */}
         </div>
       );
     });
-    // );
     console.log('fuga22');
   };
 
@@ -269,7 +263,8 @@ const SlackIntegration = (props) => {
         <div className="row my-4">
           <div className="card-deck mx-auto">
             aa
-            {renderBotTypeCard('official-bot')}
+            {/* {renderBotTypeCard('official-bot')} */}
+            {renderBotTypeCard()}
             ii
 
             {/* <div
