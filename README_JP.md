@@ -87,7 +87,7 @@ Crowi からの 移行は **[こちら。](https://docs.growi.org/en/admin-guide
 
 [確認済みのバージョン](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
 
-### Optional Dependencies
+### オプションの依存関係
 
 - Redis 3.x
 - ElasticSearch 6.x (needed when using Full-text search)
