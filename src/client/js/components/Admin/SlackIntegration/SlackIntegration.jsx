@@ -167,7 +167,7 @@ const SlackIntegration = (props) => {
               <div className="card-text">
                 <div className="my-2">
                   <div className="d-flex justify-content-between mb-3">
-                    {/* TODO change image of difficulties */}
+                    {/* TODO add image of difficulties by GW-5638 */}
                     {/* <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span> */}
                     {/* <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span> */}
 
@@ -175,11 +175,11 @@ const SlackIntegration = (props) => {
                   </div>
                   <div className="d-flex justify-content-between mb-3">
                     <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>
-                    <img className="bot-type-disc-easy" src={`/images/slack-integration/${value.multiWSIntegration}.png`} alt="" />
+                    <img className="bot-type-disc" src={`/images/slack-integration/${value.multiWSIntegration}.png`} alt="" />
                   </div>
                   <div className="d-flex justify-content-between">
                     <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
-                    <img className="bot-type-disc-easy" src={`/images/slack-integration/${value.securityControl}.png`} alt="" />
+                    <img className="bot-type-disc" src={`/images/slack-integration/${value.securityControl}.png`} alt="" />
                   </div>
                 </div>
               </div>

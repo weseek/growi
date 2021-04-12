@@ -596,22 +596,7 @@ mark.rbt-highlight-text {
   Slack Integration
 */
 .selecting-bot-type {
-  .bot-type-disc-easy {
+  .bot-type-disc {
     width: 20px;
-    color: #33d541;
-  }
-  .bot-type-disc-normal {
-    width: 20px;
-    color: #e6a63c;
-  }
-  .bot-type-disc-hard {
-    width: 20px;
-    color: #ff5757;
-  }
-  .bot-type-disc-possible {
-    color: $info;
-  }
-  .bot-type-disc-impossible {
-    color: $gray-500;
   }
 }
