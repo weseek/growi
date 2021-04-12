@@ -185,9 +185,7 @@ const SlackIntegration = (props) => {
             <div>
               <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
                 <span className="mr-2">
-                  {/* {t(`admin:slack_integration.selecting_bot_types.${value.name}`)} */}
                   {value.name}
-                  {/* {t('admin:slack_integration.selecting_bot_types.official_bot')} */}
                 </span>
 
                 {key === 'officialBot' ? renderRecommendedBadge() : ''}
