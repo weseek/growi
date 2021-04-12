@@ -99,13 +99,19 @@ const CustomBotWithoutProxySettings = (props) => {
 
         {/* 破線 */}
         {/* <div className="w-25 border-danger align-self-center" style={{ border: "dashed" }}></div> */}
-        <hr className="border-danger align-self-center w-25" style={{ border: "dashed" }}></hr>
+        {/* <hr className="border-danger align-self-center w-25" style={{ border: "dashed" }}></hr> */}
+
+        {/* 破線 & 文字 */}
+        <div className="text-center w-25">
+          <p className="text-secondary">連携は完了していません。下記の連携手順を進めてください。</p>
+          <hr className="border-danger align-self-center" style={{ border: "dashed" }}></hr>
+        </div>
 
         {/* カード２ */}
         <div className="card rounded-lg shadow border-0 w-50">
           <h5 className="card-title m-2">GROWI App</h5>
           <div className="card-body p-5 text-center">
-            <a className="btn btn-primary">WESEEK Inner Wiki</a>
+            <a className="btn btn-primary">WESEEK Inner brWiki</a>
           </div>
         </div>
 
