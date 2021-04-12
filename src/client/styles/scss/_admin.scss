@@ -106,11 +106,11 @@
   }
 
   .error-log {
-    .title-border {
-      border-left: 2px;
+    .log-title {
+      border-left: 2px solid;
     }
-    .body-border {
-      border: 2px;
+    .log-body {
+      border: 2px solid;
     }
   }
 
