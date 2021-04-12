@@ -145,6 +145,7 @@ const SlackIntegration = (props) => {
             className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === `${key}` ? 'border-primary' : ''}`}
             onClick={() => handleBotTypeSelect(`${key}`)}
             role="button"
+            key={key}
           >
             <div>
               <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
