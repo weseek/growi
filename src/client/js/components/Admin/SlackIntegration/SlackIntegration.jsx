@@ -164,6 +164,14 @@ const SlackIntegration = (props) => {
     );
   };
 
+  const renderRecommendedBadge = () => {
+    return (
+      <span className="badge badge-info mr-2">
+        {t('admin:slack_integration.selecting_bot_types.recommended')}
+      </span>
+    );
+  };
+
   const renderBotTypeCards = () => {
     console.log('fuga');
     return (
@@ -181,9 +189,9 @@ const SlackIntegration = (props) => {
                   {value.name}
                   {/* {t('admin:slack_integration.selecting_bot_types.official_bot')} */}
                 </span>
-                <span className="badge badge-info mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.recommended')}
-                </span>
+
+                {key === 'officialBot' ? renderRecommendedBadge() : ''}
+
                 {/* TODO: add an appropriate link by GW-5614 */}
                 <i className={`fa fa-external-link btn-link ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
               </h3>
