@@ -161,30 +161,30 @@ const SlackIntegration = (props) => {
     );
   };
 
-  const renderBotTypeCard = () => {
+  const renderBotTypeCards = () => {
     console.log('fuga');
-    Object.entries(botTypeCard).map(([key, value]) => {
-      return (
-        <div
-          className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === `${key}` ? 'border-primary' : ''}`}
-          onClick={() => handleBotTypeSelect(`${key}`)}
-          role="button"
-        >
-          fuga
-          <div>
-            <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
-              <span className="mr-2">
-                {t('admin:slack_integration.selecting_bot_types.official_bot')}
-              </span>
-              <span className="badge badge-info mr-2">
-                {t('admin:slack_integration.selecting_bot_types.recommended')}
-              </span>
-              {/* TODO: add an appropriate link by GW-5614 */}
-              <i className={`fa fa-external-link btn-link ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
-            </h3>
-          </div>
+    return (
+      Object.entries(botTypeCard).map(([key, value]) => {
+        return (
+          <div
+            className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === `${key}` ? 'border-primary' : ''}`}
+            onClick={() => handleBotTypeSelect(`${key}`)}
+            role="button"
+          >
+            <div>
+              <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
+                <span className="mr-2">
+                  {t('admin:slack_integration.selecting_bot_types.official_bot')}
+                </span>
+                <span className="badge badge-info mr-2">
+                  {t('admin:slack_integration.selecting_bot_types.recommended')}
+                </span>
+                {/* TODO: add an appropriate link by GW-5614 */}
+                <i className={`fa fa-external-link btn-link ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
+              </h3>
+            </div>
 
-          {/* <div className="card-body p-4">
+            {/* <div className="card-body p-4">
           <p className="card-text">
           <div className="text-center">
           {showBotTypeLevel('for_beginners')}
@@ -205,32 +205,32 @@ const SlackIntegration = (props) => {
           </div>
           </p>
         </div> */}
-          <div className="card-body p-4">
-            <p className="card-text">
-              <div className="text-center">
-                {value.level}
-              </div>
-              <div className="my-4">
-                <div className="d-flex justify-content-between mb-2">
-                  {showBotTypeLabel('set_up')}
-                  <span>{value.setUp}</span>
+            <div className="card-body p-4">
+              <p className="card-text">
+                <div className="text-center">
+                  {value.level}
                 </div>
-                <div className="d-flex justify-content-between mb-2">
-                  {showBotTypeLabel('multiple_workspaces_integration')}
-                  <span>{value.multiWSIntegration}</span>
+                <div className="my-4">
+                  <div className="d-flex justify-content-between mb-2">
+                    {showBotTypeLabel('set_up')}
+                    <span>{value.setUp}</span>
+                  </div>
+                  <div className="d-flex justify-content-between mb-2">
+                    {showBotTypeLabel('multiple_workspaces_integration')}
+                    <span>{value.multiWSIntegration}</span>
 
+                  </div>
+                  <div className="d-flex justify-content-between">
+                    {showBotTypeLabel('security_control')}
+                    <span>{value.securityControl}</span>
+                  </div>
                 </div>
-                <div className="d-flex justify-content-between">
-                  {showBotTypeLabel('security_control')}
-                  <span>{value.securityControl}</span>
-                </div>
-              </div>
-            </p>
+              </p>
+            </div>
           </div>
-        </div>
-      );
-    });
-    console.log('fuga22');
+        );
+      })
+    );
   };
 
   return (
@@ -262,10 +262,8 @@ const SlackIntegration = (props) => {
 
         <div className="row my-4">
           <div className="card-deck mx-auto">
-            aa
-            {/* {renderBotTypeCard('official-bot')} */}
-            {renderBotTypeCard()}
-            ii
+            {/* {renderBotTypeCards('official-bot')} */}
+            {renderBotTypeCards()}
 
             {/* <div
               className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === 'official-bot' ? 'border-primary' : ''}`}
