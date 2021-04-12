@@ -98,13 +98,15 @@ const CustomBotWithoutProxySettings = (props) => {
         </div>
 
         {/* 破線 */}
-        {/* <div className="w-25 border-danger align-self-center" style={{ border: "dashed" }}></?div> */}
+        {/* <div className="w-25 border-danger align-self-center" style={{ border: "dashed" }}></div> */}
         <hr className="border-danger align-self-center w-25" style={{ border: "dashed" }}></hr>
 
         {/* カード２ */}
         <div className="card rounded-lg shadow border-0 w-50">
           <h5 className="card-title m-2">GROWI App</h5>
-          <div className="card-body p-5"></div>
+          <div className="card-body p-5 text-center">
+            <a className="btn btn-primary">WESEEK Inner Wiki</a>
+          </div>
         </div>
 
       </div>
