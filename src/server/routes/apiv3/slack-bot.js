@@ -13,7 +13,6 @@ const router = express.Router();
 module.exports = (crowi) => {
   this.app = crowi.express;
 
-
   // Check if the access token is correct
   function verificationAccessToken(req, res, next) {
     const slackBotAccessToken = req.body.slack_bot_access_token || null;
@@ -39,7 +38,10 @@ module.exports = (crowi) => {
    * Verify if the request came from slack
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
    */
+  // TODO GW-5628 move this to slack package
   function verifyingIsSlackRequest(req, res, next) {
+    // Temporary
+    req.signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
 
     // take out slackSignature and timestamp from header
     const slackSignature = req.headers['x-slack-signature'];
@@ -52,9 +54,8 @@ module.exports = (crowi) => {
     }
 
     // generate growi signature
-    const signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
     const sigBaseString = `v0:${timestamp}:${qs.stringify(req.body, { format: 'RFC1738' })}`;
-    const hasher = crypto.createHmac('sha256', signingSecret);
+    const hasher = crypto.createHmac('sha256', req.signingSecret);
     hasher.update(sigBaseString, 'utf8');
     const hashedSigningSecret = hasher.digest('hex');
     const growiSignature = `v0=${hashedSigningSecret}`;
@@ -129,7 +130,7 @@ module.exports = (crowi) => {
     }
   };
 
-  router.post('/interactive', verifyingIsSlackRequest, verificationRequestUrl, async(req, res) => {
+  router.post('/interactive', verificationRequestUrl, verifyingIsSlackRequest, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
