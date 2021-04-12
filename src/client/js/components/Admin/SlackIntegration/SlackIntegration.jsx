@@ -117,52 +117,55 @@ const SlackIntegration = (props) => {
     officialBot: {
       name: t('admin:slack_integration.selecting_bot_types.official_bot'),
       level: t('admin:slack_integration.selecting_bot_types.for_beginners'),
-      setUp: t('admin:slack_integration.selecting_bot_types.easy'),
+      // setUp: t('admin:slack_integration.selecting_bot_types.easy'),
+      setUp: 'easy',
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
       securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
     },
     customBotWithProxy: {
       name: t('admin:slack_integration.selecting_bot_types.without_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
-      setUp: t('admin:slack_integration.selecting_bot_types.normal'),
+      // setUp: t('admin:slack_integration.selecting_bot_types.normal'),
+      setUp: 'normal',
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.impossible'),
       securityControl: t('admin:slack_integration.selecting_bot_types.possible'),
     },
     customBotWithoutProxy: {
       name: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
-      setUp: t('admin:slack_integration.selecting_bot_types.hard'),
+      // setUp: t('admin:slack_integration.selecting_bot_types.hard'),
+      setUp: 'hard',
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
       securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
     },
   };
 
 
-  const renderCardBody = (setUpDesc, multiWSIntegrationDesc, securityControlDesc) => {
-    return (
-      <div className="card-body p-4">
-        <p className="card-text">
-          <div className="text-center">
-            {showBotTypeLevel('for_beginners')}
-          </div>
-          <div className="my-4">
-            <div className="d-flex justify-content-between mb-2">
-              {showBotTypeLabel('set_up')}
-              {showBotTypeDiscription('easy')}
-            </div>
-            <div className="d-flex justify-content-between mb-2">
-              {showBotTypeLabel('multiple_workspaces_integration')}
-              {showBotTypeDiscription('possible')}
-            </div>
-            <div className="d-flex justify-content-between">
-              {showBotTypeLabel('security_control')}
-              {showBotTypeDiscription('impossible')}
-            </div>
-          </div>
-        </p>
-      </div>
-    );
-  };
+  // const renderCardBody = (setUpDesc, multiWSIntegrationDesc, securityControlDesc) => {
+  //   return (
+  //     <div className="card-body p-4">
+  //       <p className="card-text">
+  //         <div className="text-center">
+  //           {showBotTypeLevel('for_beginners')}
+  //         </div>
+  //         <div className="my-4">
+  //           <div className="d-flex justify-content-between mb-2">
+  //             {showBotTypeLabel('set_up')}
+  //             {showBotTypeDiscription('easy')}
+  //           </div>
+  //           <div className="d-flex justify-content-between mb-2">
+  //             {showBotTypeLabel('multiple_workspaces_integration')}
+  //             {showBotTypeDiscription('possible')}
+  //           </div>
+  //           <div className="d-flex justify-content-between">
+  //             {showBotTypeLabel('security_control')}
+  //             {showBotTypeDiscription('impossible')}
+  //           </div>
+  //         </div>
+  //       </p>
+  //     </div>
+  //   );
+  // };
 
   const renderRecommendedBadge = () => {
     return (
@@ -173,7 +176,6 @@ const SlackIntegration = (props) => {
   };
 
   const renderBotTypeCards = () => {
-    console.log('fuga');
     return (
       Object.entries(botTypes).map(([key, value]) => {
         return (
@@ -202,7 +204,8 @@ const SlackIntegration = (props) => {
                 <div className="my-4">
                   <div className="d-flex justify-content-between mb-2">
                     {showBotTypeLabel('set_up')}
-                    <span>{value.setUp}</span>
+                    {/* <span>{value.setUp}</span> */}
+                    <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
                     {showBotTypeLabel('multiple_workspaces_integration')}
