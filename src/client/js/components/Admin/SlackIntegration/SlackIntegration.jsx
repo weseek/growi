@@ -106,7 +106,6 @@ const SlackIntegration = (props) => {
   const botTypes = {
     officialBot: {
       name: t('admin:slack_integration.selecting_bot_types.official_bot'),
-      level: t('admin:slack_integration.selecting_bot_types.for_beginners'),
       setUp: 'easy',
       multiWSIntegration: 'possible',
       securityControl: 'impossible',
@@ -114,7 +113,6 @@ const SlackIntegration = (props) => {
     customBotWithoutProxy: {
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.without_proxy'),
-      level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
       setUp: 'normal',
       multiWSIntegration: 'impossible',
       securityControl: 'possible',
@@ -122,7 +120,6 @@ const SlackIntegration = (props) => {
     customBotWithProxy: {
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.with_proxy'),
-      level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
       setUp: 'hard',
       multiWSIntegration: 'possible',
       securityControl: 'impossible',
@@ -168,9 +165,6 @@ const SlackIntegration = (props) => {
             </div>
             <div className="card-body p-4">
               <div className="card-text">
-                <div className="text-center font-weight-bold">
-                  {value.level}
-                </div>
                 <div className="my-4">
                   <div className="d-flex justify-content-between mb-2">
                     <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span>
