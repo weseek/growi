@@ -118,7 +118,7 @@ Crowi からの 移行は **[こちら。](https://docs.growi.org/en/admin-guide
 
 ## バグがありましたか？
 
-もし、ソースコード上でバグを発見したら、GitHub Repository 上で Issue を作成していただけると助かります。バグを修正してプルリクエストを提出していただけるとさらに助かります。
+もし、ソースコード上でバグを発見したら、GitHub Repository 上で Issue を作成していただけると助かります。バグを修正して Pull requests を提出していただけるとさらに助かります。
 
 ## 機能が足りませんか？
 
@@ -132,11 +132,11 @@ Repository. If you would like to _implement_ a new feature, firstly please submi
   It also allows us to coordinate better, prevent duplication of work and help you to create the change so it can be successfully accepted into the project.
   また、より良い調整を行い、作業の重複を防ぐことで、プロジェクトに導入されるように変更を作成することができます
 
-- **小規模の機能追加につきましては** Issue を作成し、直接[プルリクエスト](pulls)を提出してください。
+- **小規模の機能追加につきましては** Issue を作成し、直接[Pull requests](pulls)を提出してください。
 
 ## GitHub 上での言語について
 
-Issue とプルリクエストの作成は英語・日本語どちらでも受け付けています。
+Issue と Pull requests の作成は英語・日本語どちらでも受け付けています。
 
 ## GROWI について話し合いましょう！
 
