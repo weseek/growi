@@ -7,8 +7,8 @@ on:
       - tmp/**
     paths:
       - .github/workflows/ci-slackbot-proxy.yml
-      - packages/slack/*
-      - packages/slackbot-proxy/*
+      - packages/slack/**
+      - packages/slackbot-proxy/**
       - package.json
       - yarn.lock
 
