@@ -56,6 +56,9 @@ module.exports = (crowi) => {
       body('currentBotType')
         .isIn(['official-bot', 'custom-bot-without-proxy', 'custom-bot-with-proxy']),
     ],
+    NotificationTestToSlackWorkSpace: [
+      body('channel').isString(),
+    ],
   };
 
   async function updateSlackBotSettings(params) {
