@@ -127,33 +127,6 @@ const SlackIntegration = (props) => {
     },
   };
 
-
-  // const renderCardBody = (setUpDesc, multiWSIntegrationDesc, securityControlDesc) => {
-  //   return (
-  //     <div className="card-body p-4">
-  //       <p className="card-text">
-  //         <div className="text-center">
-  //           {showBotTypeLevel('for_beginners')}
-  //         </div>
-  //         <div className="my-4">
-  //           <div className="d-flex justify-content-between mb-2">
-  //             {showBotTypeLabel('set_up')}
-  //             {showBotTypeDiscription('easy')}
-  //           </div>
-  //           <div className="d-flex justify-content-between mb-2">
-  //             {showBotTypeLabel('multiple_workspaces_integration')}
-  //             {showBotTypeDiscription('possible')}
-  //           </div>
-  //           <div className="d-flex justify-content-between">
-  //             {showBotTypeLabel('security_control')}
-  //             {showBotTypeDiscription('impossible')}
-  //           </div>
-  //         </div>
-  //       </p>
-  //     </div>
-  //   );
-  // };
-
   const renderRecommendedBadge = () => {
     return (
       <span className="badge badge-info mr-2">
