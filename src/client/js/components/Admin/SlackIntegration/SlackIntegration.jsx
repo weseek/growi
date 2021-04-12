@@ -113,7 +113,7 @@ const SlackIntegration = (props) => {
     },
     customBotWithProxy: {
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
-      name2: t('admin:slack_integration.selecting_bot_types.without_proxy'),
+      supplementaryBotName: t('admin:slack_integration.selecting_bot_types.without_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
       setUp: 'normal',
       multiWSIntegration: 'impossible',
@@ -121,7 +121,7 @@ const SlackIntegration = (props) => {
     },
     customBotWithoutProxy: {
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
-      name2: t('admin:slack_integration.selecting_bot_types.with_proxy'),
+      supplementaryBotName: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
       setUp: 'hard',
       multiWSIntegration: 'possible',
@@ -153,7 +153,7 @@ const SlackIntegration = (props) => {
 
                 </span>
                 <span className="supplementary-bot-name mr-2">
-                  {value.name2}
+                  {value.supplementaryBotName}
                 </span>
 
                 {key === 'officialBot' ? renderRecommendedBadge() : ''}
