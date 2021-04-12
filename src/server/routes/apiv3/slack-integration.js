@@ -282,37 +282,38 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to send a message to slack work space
    */
-  router.post('/test-notification-to-slack-work-space', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
-    const channel = req.body.channel;
+  router.post('/notification-test-to-slack-work-space',
+    loginRequiredStrictly, adminRequired, csrf, validator.NotificationTestToSlackWorkSpace, apiV3FormValidator, async(req, res) => {
+      const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
+      const channel = req.body.channel;
 
-    if (isConnectedToSlack === false) {
-      const msg = 'Bot User OAuth Token is not setup.';
-      logger.error('Error', msg);
-      return res.apiv3Err(new ErrorV3(msg, 'not-setup-slack-bot-token', 400));
-    }
+      if (isConnectedToSlack === false) {
+        const msg = 'Bot User OAuth Token is not setup.';
+        logger.error('Error', msg);
+        return res.apiv3Err(new ErrorV3(msg, 'not-setup-slack-bot-token', 400));
+      }
 
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-    this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
-    logger.debug('SlackBot: setup is done');
+      const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+      this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
+      logger.debug('SlackBot: setup is done');
 
-    try {
-      this.client.chat.postMessage({
-        channel: `#${channel}`,
-        text: 'Your test was successful!',
-      });
-      logger.info('SlackTest: send success massage to slack work space at #general.');
-      logger.info('If you do not receive a message, you may not have invited the bot to the #general channel.');
-      // eslint-disable-next-line max-len
-      const message = 'Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #general channel.';
-      return res.apiv3({ message });
-    }
-    catch (error) {
-      const msg = 'Error occured in testing to notify slack work space';
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'test-notify-slack-work-space-failed'), 500);
-    }
-  });
+      try {
+        this.client.chat.postMessage({
+          channel: `#${channel}`,
+          text: 'Your test was successful!',
+        });
+        logger.info('SlackTest: send success massage to slack work space at #general.');
+        logger.info('If you do not receive a message, you may not have invited the bot to the #general channel.');
+        // eslint-disable-next-line max-len
+        const message = 'Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #general channel.';
+        return res.apiv3({ message });
+      }
+      catch (error) {
+        const msg = 'Error occured in testing to notify slack work space';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'test-notify-slack-work-space-failed'), 500);
+      }
+    });
 
   /**
    * @swagger
