@@ -37,12 +37,12 @@
 # 機能紹介
 
 - **機能紹介**
-  - マークダウンを使用してページを階層構造で作成できます。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/en/guide/getting-started/five_minutes.html)
-  - HackMD(CodiMd)[https://hackmd.io/] と連携することで同時多人数編集ができます。
+  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/en/guide/getting-started/five_minutes.html)。
+  - HackMD(CodiMd)[https://hackmd.io/] と連携することで同時多人数編集が可能です。
     - - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
   - SAML を用いた Single Sign On が可能です。
-  - Slack/Mattermost, IFTTT と連携することができます。
+  - Slack/Mattermost, IFTTT と連携することが可能です。
   - [GROWI Docs: 機能紹介](https://docs.growi.org/en/guide/features/page_layout.html)
 - **プラグイン**
   - You can find plugins from [npm](https://www.npmjs.com/browse/keyword/growi-plugin) or [github](https://github.com/search?q=topic%3Agrowi-plugin)!
