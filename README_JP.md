@@ -25,10 +25,10 @@
 
 ## 目次
 
-- [機能紹介](#features)
-- [さっそくはじめてみる](#quick-start-for-production)
-  - [docker-compose](#docker-compose)
-  - [Helm (Experimental)](#helm-experimental)
+- [機能紹介](#機能紹介)
+- [さっそくはじめてみる](#さっそくはじめてみる)
+  - [docker-compose を使ってはじめる](#docker-compose-を使ってはじめる)
+  - [Helm (Experimental)](#Helm-Experimental-でデプロイする)
   - [オンプレミス](#on-premise)
 - [環境変数](#environment-variables)
 - [ドキュメント](#documentation)
