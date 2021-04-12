@@ -117,26 +117,23 @@ const SlackIntegration = (props) => {
     officialBot: {
       name: t('admin:slack_integration.selecting_bot_types.official_bot'),
       level: t('admin:slack_integration.selecting_bot_types.for_beginners'),
-      // setUp: t('admin:slack_integration.selecting_bot_types.easy'),
       setUp: 'easy',
-      multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
-      securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
+      multiWSIntegration: 'possible',
+      securityControl: 'impossible',
     },
     customBotWithProxy: {
       name: t('admin:slack_integration.selecting_bot_types.without_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
-      // setUp: t('admin:slack_integration.selecting_bot_types.normal'),
       setUp: 'normal',
-      multiWSIntegration: t('admin:slack_integration.selecting_bot_types.impossible'),
-      securityControl: t('admin:slack_integration.selecting_bot_types.possible'),
+      multiWSIntegration: 'impossible',
+      securityControl: 'possible',
     },
     customBotWithoutProxy: {
       name: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
-      // setUp: t('admin:slack_integration.selecting_bot_types.hard'),
       setUp: 'hard',
-      multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
-      securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
+      multiWSIntegration: 'possible',
+      securityControl: 'impossible',
     },
   };
 
@@ -204,17 +201,19 @@ const SlackIntegration = (props) => {
                 <div className="my-4">
                   <div className="d-flex justify-content-between mb-2">
                     {showBotTypeLabel('set_up')}
-                    {/* <span>{value.setUp}</span> */}
                     <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
                     {showBotTypeLabel('multiple_workspaces_integration')}
-                    <span>{value.multiWSIntegration}</span>
-
+                    <span className={`bot-type-disc-${value.multiWSIntegration}`}>
+                      {t(`admin:slack_integration.selecting_bot_types.${value.multiWSIntegration}`)}
+                    </span>
                   </div>
                   <div className="d-flex justify-content-between">
                     {showBotTypeLabel('security_control')}
-                    <span>{value.securityControl}</span>
+                    <span className={`bot-type-disc-${value.securityControl}`}>
+                      {t(`admin:slack_integration.selecting_bot_types.${value.securityControl}`)}
+                    </span>
                   </div>
                 </div>
               </p>
