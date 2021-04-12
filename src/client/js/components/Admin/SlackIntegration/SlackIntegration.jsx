@@ -115,18 +115,21 @@ const SlackIntegration = (props) => {
 
   const botTypes = {
     officialBot: {
+      name: t('admin:slack_integration.selecting_bot_types.official_bot'),
       level: t('admin:slack_integration.selecting_bot_types.for_beginners'),
       setUp: t('admin:slack_integration.selecting_bot_types.easy'),
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
       securityControl: t('admin:slack_integration.selecting_bot_types.impossible'),
     },
     customBotWithProxy: {
+      name: t('admin:slack_integration.selecting_bot_types.without_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_intermediate'),
       setUp: t('admin:slack_integration.selecting_bot_types.normal'),
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.impossible'),
       securityControl: t('admin:slack_integration.selecting_bot_types.possible'),
     },
     customBotWithoutProxy: {
+      name: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       level: t('admin:slack_integration.selecting_bot_types.for_advanced'),
       setUp: t('admin:slack_integration.selecting_bot_types.hard'),
       multiWSIntegration: t('admin:slack_integration.selecting_bot_types.possible'),
@@ -174,7 +177,9 @@ const SlackIntegration = (props) => {
             <div>
               <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}>
                 <span className="mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.official_bot')}
+                  {/* {t(`admin:slack_integration.selecting_bot_types.${value.name}`)} */}
+                  {value.name}
+                  {/* {t('admin:slack_integration.selecting_bot_types.official_bot')} */}
                 </span>
                 <span className="badge badge-info mr-2">
                   {t('admin:slack_integration.selecting_bot_types.recommended')}
@@ -183,28 +188,6 @@ const SlackIntegration = (props) => {
                 <i className={`fa fa-external-link btn-link ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
               </h3>
             </div>
-
-            {/* <div className="card-body p-4">
-          <p className="card-text">
-          <div className="text-center">
-          {showBotTypeLevel('for_beginners')}
-          </div>
-          <div className="my-4">
-          <div className="d-flex justify-content-between mb-2">
-          {showBotTypeLabel('set_up')}
-          {showBotTypeDiscription('easy')}
-          </div>
-          <div className="d-flex justify-content-between mb-2">
-          {showBotTypeLabel('multiple_workspaces_integration')}
-          {showBotTypeDiscription('possible')}
-          </div>
-          <div className="d-flex justify-content-between">
-          {showBotTypeLabel('security_control')}
-          {showBotTypeDiscription('impossible')}
-          </div>
-          </div>
-          </p>
-        </div> */}
             <div className="card-body p-4">
               <p className="card-text">
                 <div className="text-center">
@@ -262,7 +245,6 @@ const SlackIntegration = (props) => {
 
         <div className="row my-4">
           <div className="card-deck mx-auto">
-            {/* {renderBotTypeCards('official-bot')} */}
             {renderBotTypeCards()}
 
             {/* <div
