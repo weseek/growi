@@ -38,7 +38,7 @@
 
 - **機能紹介**
   - マークダウンを使用してページを階層構造で作成できます。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/en/guide/getting-started/five_minutes.html)
-  - HackMD(CodiMd)[https://hackmd.io/] を統合することで同時多人数編集ができます。
+  - HackMD(CodiMd)[https://hackmd.io/] と連携することで同時多人数編集ができます。
     - - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
   - SAML を用いた Single Sign On が可能です。
@@ -58,7 +58,7 @@
 
 - [GROWI Docs: Launch with docker-compose](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html))
 
-### Helm (Experimental) を使ってはじめる
+### Helm (Experimental) でデプロイする
 
 - [GROWI Helm Chart](https://github.com/weseek/helm-charts/tree/master/charts/growi)
 
