@@ -10,27 +10,35 @@ import introductionToChannelImage from '../../../../../../public/images/slack-in
 
 const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
-  const [currentlyOpenAccordionIndex, setCurrentlyOpenAccordionIndex] = useState(null);
+  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
+
   const onToggleAccordionHandler = (i) => {
-    if (currentlyOpenAccordionIndex === i) {
-      setCurrentlyOpenAccordionIndex(null);
-      return;
+    const accordionIndexes = new Set(openAccordionIndexes);
+    if (accordionIndexes.has(i)) {
+      accordionIndexes.delete(i);
     }
-    setCurrentlyOpenAccordionIndex(i);
+    else {
+      accordionIndexes.add(i);
+    }
+    setOpenAccordionIndexes(accordionIndexes);
   };
 
   return (
-    <div className="card border-0 rounded-lg shadow overflow-hidden" id="customBotWithoutProxySettingsAccordion">
+    <div className="card border-0 rounded-lg shadow overflow-hidden">
 
       <div className="card border-0 rounded-lg mb-0">
-        <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(0)}>
-          <p className="mb-0 text-primary">{`① ${t('slack_integration.without_proxy.create_bot')}`}</p>
-          {currentlyOpenAccordionIndex === 0
+        <div
+          className="card-header font-weight-normal py-3 d-flex justify-content-between"
+          role="button"
+          onClick={() => onToggleAccordionHandler(0)}
+        >
+          <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</p>
+          {openAccordionIndexes.has(0)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndex === 0}>
+        <Collapse isOpen={openAccordionIndexes.has(0)}>
           <div className="card-body">
 
             <div className="row my-5">
@@ -41,6 +49,7 @@ const CustomBotWithoutSettingsAccordion = () => {
                     <i className="fa fa-external-link ml-2" aria-hidden="true" />
                   </button>
                 </div>
+                {/* TODO: Insert DOCS link */}
                 <a href="#">
                   <p className="text-center mt-1">
                     <small>
@@ -56,9 +65,13 @@ const CustomBotWithoutSettingsAccordion = () => {
       </div>
 
       <div className="card border-0 rounded-lg mb-0">
-        <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(1)}>
-          <p className="mb-0 text-primary">{`② ${t('slack_integration.without_proxy.install_bot_to_slack')}`}</p>
-          {currentlyOpenAccordionIndex === 1
+        <div
+          className="card-header font-weight-normal py-3 d-flex justify-content-between"
+          role="button"
+          onClick={() => onToggleAccordionHandler(1)}
+        >
+          <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</p>
+          {openAccordionIndexes.has(1)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
@@ -83,14 +96,18 @@ const CustomBotWithoutSettingsAccordion = () => {
       </div>
 
       <div className="card border-0 rounded-lg mb-0">
-        <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(2)}>
-          <p className="mb-0 text-primary">{`③ ${t('slack_integration.without_proxy.register_secret_and_token')}`}</p>
-          {currentlyOpenAccordionIndex === 2
+        <div
+          className="card-header font-weight-normal py-3 d-flex justify-content-between"
+          role="button"
+          onClick={() => onToggleAccordionHandler(2)}
+        >
+          <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}</p>
+          {openAccordionIndexes.has(2)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndex === 2}>
+        <Collapse isOpen={openAccordionIndexes.has(2)}>
           <div className="card-body">
             BODY 3
           </div>
@@ -98,19 +115,23 @@ const CustomBotWithoutSettingsAccordion = () => {
       </div>
 
       <div className="card border-0 rounded-lg mb-0">
-        <div className="card-header clickable py-3 d-flex justify-content-between" onClick={() => onToggleAccordionHandler(3)}>
-          <p className="mb-0 text-primary">{`④ ${t('slack_integration.without_proxy.test_connection')}`}</p>
-          {currentlyOpenAccordionIndex === 3
+        <div
+          className="card-header font-weight-normal py-3 d-flex justify-content-between"
+          role="button"
+          onClick={() => onToggleAccordionHandler(3)}
+        >
+          <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</p>
+          {openAccordionIndexes.has(3)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={currentlyOpenAccordionIndex === 3}>
+        <Collapse isOpen={openAccordionIndexes.has(3)}>
           <div className="card-body">
             <p className="text-dark">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
             <button type="button" className="btn btn-info">Test</button>
             <p className="text-danger">エラーが発生しました。下記のログを確認してください。</p>
-            
+
           </div>
         </Collapse>
       </div>

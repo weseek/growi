@@ -125,7 +125,7 @@ jobs:
     - name: Slack Notification
       uses: weseek/ghaction-release-slack-notification@master
       with:
-        channel: '#general'
+        channel: '#release'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         created_tag: 'v${{ needs.github-release.outputs.RELEASE_VERSION }}${{ env.SUFFIX }}'
 
