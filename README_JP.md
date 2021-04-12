@@ -29,7 +29,7 @@
 - [機能紹介](#機能紹介)
 - [さっそくはじめてみる](#さっそくはじめてみる)
   - [docker-compose を使ってはじめる](#docker-compose-を使ってはじめる)
-  - [Helm (Experimental)](#Helm-Experimental-でデプロイする)
+  - [Helm (Experimental) でデプロイする](#Helm-Experimental-でデプロイする)
   - [オンプレミス](#オンプレミスではじめる)
 - [環境変数](#環境変数)
 - [ドキュメント](#ドキュメント)
@@ -40,13 +40,13 @@
 - **機能紹介**
   - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/en/guide/getting-started/five_minutes.html)。
   - HackMD(CodiMd)[https://hackmd.io/] と連携することで同時多人数編集が可能です。
-    - - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
+    - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
   - SAML を用いた Single Sign On が可能です。
-  - Slack/Mattermost, IFTTT と連携することが可能です。
+  - Slack / Mattermost, IFTTT と連携することが可能です。
   - [GROWI Docs: 機能紹介](https://docs.growi.org/en/guide/features/page_layout.html)
 - **プラグイン**
-  - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [github](https://github.com/search?q=topic%3Agrowi-plugin)! から 便利なプラグインを見つけることができます。
+  - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [github](https://github.com/search?q=topic%3Agrowi-plugin) から 便利なプラグインを見つけることができます。
 - **[Docker の準備][dockerhub]**
 - **[Docker Compose の準備][docker-compose]**
   - [GROWI Docs: 複数の GROWI を起動](https://docs.growi.org/en/admin-guide/admin-cookbook/multi-app.html)
@@ -64,7 +64,7 @@
 
 ### オンプレミスではじめる
 
-Crowi からの 移行は **[こちら。](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))**
+Crowi からの 移行は **[こちら](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))**。
 
 - [GROWI Docs: Ubuntu Server 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/ubuntu-server.html)
 - [GROWI Docs: CentOS 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/centos.html)
@@ -108,7 +108,7 @@ Crowi からの 移行は **[こちら。](https://docs.growi.org/en/admin-guide
 
 <!-- 以下のリンクは存在しない -->
 
-詳しくは[GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands)をご覧ください。
+詳しくは [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands)をご覧ください。
 
 # ドキュメント
 
