@@ -305,10 +305,10 @@ module.exports = (crowi) => {
           channel: `#${channel}`,
           text: 'Your test was successful!',
         });
-        logger.info('SlackTest: send success massage to slack work space at #general.');
-        logger.info('If you do not receive a message, you may not have invited the bot to the #general channel.');
+        logger.info(`SlackTest: send success massage to slack work space at #${channel}.`);
+        logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
         // eslint-disable-next-line max-len
-        const message = 'Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #general channel.';
+        const message = `Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #${channel} channel.`;
         return res.apiv3({ message });
       }
       catch (error) {
