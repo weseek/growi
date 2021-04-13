@@ -10,6 +10,7 @@ import OfficialBotSettings from './OfficialBotSettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
+import BotTypeCard from './BotTypeCard';
 
 
 const SlackIntegration = (props) => {
@@ -134,20 +135,20 @@ const SlackIntegration = (props) => {
     );
   };
 
-  const renderBotTypeCards = () => {
+  const BotTypeCardOld = () => {
     return (
       Object.entries(botTypes).map(([key, value]) => {
         return (
           <div
-            className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === key ? 'border-primary' : ''}`}
-            onClick={() => handleBotTypeSelect(key)}
+            className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType ? 'border-primary' : ''}`}
+            onClick={() => handleBotTypeSelect(props.key)}
             role="button"
             key={key}
           >
             <div>
               <h3 className={`card-header mb-0 py-3
               ${key === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
-              ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`}
+              ${currentBotType ? 'bg-primary text-light' : ''}`}
               >
                 <span className="mr-2">
                   {value.name}
@@ -160,7 +161,7 @@ const SlackIntegration = (props) => {
                 {key === 'officialBot' ? renderRecommendedBadge() : ''}
 
                 {/* TODO: add an appropriate links by GW-5614 */}
-                <i className={`fa fa-external-link btn-link ${currentBotType === `${key}` ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
+                <i className={`fa fa-external-link btn-link ${currentBotType ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
               </h3>
             </div>
             <div className="card-body p-4">
@@ -219,7 +220,9 @@ const SlackIntegration = (props) => {
 
         <div className="row my-4">
           <div className="card-deck mx-auto">
-            {renderBotTypeCards()}
+            {Object.entries(botTypes).map(([key, value]) => {
+              return <BotTypeCard isActive={currentBotType === key} key={key} value={value} />;
+            })}
           </div>
         </div>
       </div>
