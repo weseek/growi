@@ -26,7 +26,9 @@
     "@tsed/swagger": "^6.34.3",
     "@tsed/typeorm": "^6.34.3",
     "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
     "dotenv-flow": "^3.2.0",
+    "method-override": "^3.0.0",
     "mysql2": "^2.2.5",
     "typeorm": "^0.2.31"
   },

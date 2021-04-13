@@ -52,6 +52,8 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt
 
+WORKDIR ${appDir}
+
 COPY --from=deps-resolver ${appDir}/node_modules ${appDir}/node_modules
 
 # copy all packages
@@ -59,11 +61,12 @@ COPY packages ${appDir}/packages
 
 COPY ./package.json ./
 COPY ./lerna.json ./
+COPY ./tsconfig.base.json ./
 COPY ./packages/slack ./packages/slack
 COPY ./packages/slackbot-proxy ./packages/slackbot-proxy
 
 # build
-RUN npx lerna run build
+RUN yarn lerna run build
 
 
 
@@ -76,9 +79,9 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 ENV appDir /opt
 
 COPY --from=builder \
-  ${appDir}/packages/slack/dist ${appDir}/slack
+  ${appDir}/packages/slack ${appDir}/slack
 COPY --from=builder \
-  ${appDir}/packages/slackbot-proxy/dist ${appDir}/slackbot-proxy
+  ${appDir}/packages/slackbot-proxy ${appDir}/slackbot-proxy
 COPY --from=deps-resolver-prod \
   ${appDir}/node_modules ${appDir}/node_modules
 
