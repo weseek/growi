@@ -18,10 +18,6 @@
   },
   "devDependencies": {
     "@slack/bolt": "^3.3.0",
-    "@tsed/core": "^6.34.3",
-    "@tsed/exceptions": "^6.34.3",
-    "@tsed/json-mapper": "^6.34.3",
-    "@tsed/schema": "^6.34.3",
     "@types/jest": "^26.0.22",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
