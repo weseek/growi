@@ -88,7 +88,6 @@ const CustomBotWithoutProxySettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
       <div className="d-flex justify-content-center my-5">
-
         <div className="card rounded-lg shadow border-0 w-50">
           <h5 className="card-title m-3"><b>Slack</b></h5>
           <div className="card-body p-5"></div>
@@ -106,7 +105,6 @@ const CustomBotWithoutProxySettings = (props) => {
             <a className="btn btn-primary mb-3">WESEEK Inner Wiki</a>
           </div>
         </div>
-
       </div>
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
