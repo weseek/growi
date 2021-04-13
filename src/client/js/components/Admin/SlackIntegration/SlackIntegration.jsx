@@ -107,14 +107,14 @@ const SlackIntegration = (props) => {
   const botTypes = {
     officialBot: {
       botType: 'official-bot',
-      name: 'official_bot',
+      botTypeCategory: 'official_bot',
       setUp: 'easy',
       multiWSIntegration: 'possible',
       securityControl: 'impossible',
     },
     customBotWithoutProxy: {
       botType: 'custom-bot-without-proxy',
-      name: 'custom_bot',
+      botTypeCategory: 'custom_bot',
       supplementaryBotName: 'without_proxy',
       setUp: 'normal',
       multiWSIntegration: 'impossible',
@@ -122,7 +122,7 @@ const SlackIntegration = (props) => {
     },
     customBotWithProxy: {
       botType: 'custom-bot-with-proxy',
-      name: 'custom_bot',
+      botTypeCategory: 'custom_bot',
       supplementaryBotName: 'with_proxy',
       setUp: 'hard',
       multiWSIntegration: 'possible',

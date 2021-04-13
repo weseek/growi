@@ -34,10 +34,10 @@ const BotTypeCard = (props) => {
               ${props.isActive ? 'bg-primary text-light' : ''}`}
         >
           <span className="mr-2">
-            {t(`admin:slack_integration.selecting_bot_types.${props.value.name}`)}
+            {t(`admin:slack_integration.selecting_bot_types.${props.value.botTypeCategory}`)}
           </span>
 
-          {props.value.name === 'custom_bot' ? renderSupplementaryBotName() : ''}
+          {props.value.botTypeCategory === 'custom_bot' ? renderSupplementaryBotName() : ''}
 
 
           {props.value.botType === 'official-bot' ? renderRecommendedBadge() : ''}
