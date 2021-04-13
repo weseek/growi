@@ -7,14 +7,10 @@ on:
       - tmp/**
     paths:
       - .github/workflows/ci-slackbot-proxy.yml
-      - packages/slack/*
-      - packages/slackbot-proxy/*
+      - packages/slack/**
+      - packages/slackbot-proxy/**
       - package.json
       - yarn.lock
-
-defaults:
-  run:
-    working-directory: packages/slackbot-proxy
 
 jobs:
 
@@ -36,7 +32,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('./yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn
@@ -46,21 +42,21 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('./yarn.lock') }}
+        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-${{ matrix.node-version }}-
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn --frozen-lockfile
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn lint
+    - name: yarn test
       run: |
-        yarn test
+        yarn lerna run test
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -101,7 +97,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: node_modules
-        key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('./yarn.lock') }}
+        key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       id: cache-yarn
@@ -111,19 +107,20 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn --frozen-lockfile
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
     - name: yarn dev:ci
+      working-directory: ./packages/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.local
         yarn dev:ci
@@ -191,12 +188,12 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('./yarn.lock') }}
+        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
     - name: Install dependencies
       run: |
-        yarn --frozen-lockfile
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -204,16 +201,17 @@ jobs:
         yarn list --depth=0
     - name: yarn build
       run: |
-        yarn build
+        yarn lerna run build
     - name: yarn install --production
       run: |
-        yarn install --production
+        yarn lerna exec "yarn install --production"
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --production --depth=0
     - name: yarn start:prod:ci
+      working-directory: ./packages/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.local
         yarn start:prod:ci

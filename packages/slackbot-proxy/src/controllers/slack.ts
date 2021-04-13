@@ -3,9 +3,11 @@ import {
 } from '@tsed/common';
 import { parse } from '@growi/slack/src/utils/slash-command-parser';
 import { Installation } from '~/entities/installation';
+import { Relation } from '~/entities/relation';
 import { Order } from '~/entities/order';
 
 import { InstallationRepository } from '~/repositories/installation';
+import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
@@ -19,6 +21,9 @@ export class SlackCtrl {
 
   @Inject()
   installationRepository: InstallationRepository;
+
+  @Inject()
+  relationRepository: RelationRepository;
 
   @Inject()
   orderRepository: OrderRepository;

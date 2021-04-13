@@ -1,12 +1,17 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "rootDir": "./src",
     "outDir": "dist",
     "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,
     "sourceMap": true,
     "noEmit": false,
-    "inlineSources": true
+    "inlineSources": true,
+    "baseUrl": "./src",
+    "paths": {
+      "~/*": ["./*"]
+    }
   }
 }

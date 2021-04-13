@@ -16,7 +16,7 @@ coverage
 /build
 
 # dist
-/dist/
+/packages/**/dist/
 /report/
 /public/static/js
 /public/static/styles

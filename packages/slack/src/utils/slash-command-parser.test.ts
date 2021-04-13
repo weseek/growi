@@ -1,13 +1,13 @@
 import { SlashCommand } from '@slack/bolt';
-import { InvalidGrowiCommandError } from '~/models/errors';
+import { InvalidGrowiCommandError } from '../models/errors';
 
-import { parse } from './slash-command-parser';
+import { parseSlashCommand } from './slash-command-parser';
 
 const SlashCommandMock = jest.fn<SlashCommand, [string]>().mockImplementation((text) => {
   return { text } as SlashCommand;
 });
 
-describe('parse SlashCommand', () => {
+describe('parseSlashCommand', () => {
 
   describe('without growiCommandType', () => {
     test('throws InvalidGrowiCommandError', () => {
@@ -17,7 +17,7 @@ describe('parse SlashCommand', () => {
 
       // when/then
       expect(() => {
-        parse(slashCommand);
+        parseSlashCommand(slashCommand);
       }).toThrowError(InvalidGrowiCommandError);
     });
   });
@@ -28,7 +28,7 @@ describe('parse SlashCommand', () => {
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
-    const result = parse(slashCommand);
+    const result = parseSlashCommand(slashCommand);
 
     // then
     expect(result.text).toBe(slashCommandText);
@@ -42,7 +42,7 @@ describe('parse SlashCommand', () => {
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
-    const result = parse(slashCommand);
+    const result = parseSlashCommand(slashCommand);
 
     // then
     expect(result.text).toBe(slashCommandText);
@@ -56,7 +56,7 @@ describe('parse SlashCommand', () => {
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
-    const result = parse(slashCommand);
+    const result = parseSlashCommand(slashCommand);
 
     // then
     expect(result.text).toBe(slashCommandText);
@@ -70,7 +70,7 @@ describe('parse SlashCommand', () => {
     const slashCommand = new SlashCommandMock(slashCommandText);
 
     // when
-    const result = parse(slashCommand);
+    const result = parseSlashCommand(slashCommand);
 
     // then
     expect(result.text).toBe(slashCommandText);

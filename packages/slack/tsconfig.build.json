@@ -1,12 +1,17 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "lib",
+    "rootDir": "./src",
+    "outDir": "dist",
     "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,
     "sourceMap": true,
     "noEmit": false,
-    "inlineSources": true
+    "inlineSources": true,
+
+    "baseUrl": ".",
+    "paths": {
+    }
   }
 }
