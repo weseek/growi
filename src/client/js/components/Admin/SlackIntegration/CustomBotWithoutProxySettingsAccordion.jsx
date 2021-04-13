@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
-import installYourAppIntroductionImage from '../../../../../../public/images/slack-integration/slack-bot-install-your-app-introduction.png';
-import installToWorkspaceImage from '../../../../../../public/images/slack-integration/slack-bot-install-to-workspace.png';
-import installYourAppTransitionDestinationImage from '../../../../../../public/images/slack-integration/slack-bot-install-your-app-transition-destination.png';
-import installYourAppCompleteImage from '../../../../../../public/images/slack-integration/slack-bot-install-your-app-complete.png';
-import workspaceJoinedBotImage from '../../../../../../public/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png';
-import introductionToChannelImage from '../../../../../../public/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png';
 
 const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
@@ -80,16 +74,16 @@ const CustomBotWithoutSettingsAccordion = () => {
           <div className="card-body py-5">
             <div className="container w-75">
               <p className="text-dark">1. Install your app をクリックします。</p>
-              <img src={installYourAppIntroductionImage} className="border border-light img-fluid mb-5" />
+              <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
               <p className="text-dark">2. Install to Workspace をクリックします。</p>
-              <img src={installToWorkspaceImage} className="border border-light img-fluid mb-5" />
+              <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
               <p className="text-dark">3. 遷移先の画面にて、Allowをクリックします。</p>
-              <img src={installYourAppTransitionDestinationImage} className="border border-light img-fluid mb-5" />
+              <img src="public/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
               <p className="text-dark">4. Install your app の右側に 緑色のチェックがつけばワークスペースへのインストール完了です。</p>
-              <img src={installYourAppCompleteImage} className="border border-light img-fluid mb-5" />
+              <img src="public/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
               <p className="text-dark">5. GROWI bot を使いたいチャンネルに @example を使用して招待します。</p>
-              <img src={workspaceJoinedBotImage} className="border border-light img-fluid mb-1" />
-              <img src={introductionToChannelImage} className="border border-light img-fluid" />
+              <img src="public/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
+              <img src="public/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
             </div>
           </div>
         </Collapse>
