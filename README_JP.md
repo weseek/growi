@@ -20,7 +20,7 @@
 [![devDependencies Status](https://david-dm.org/weseek/growi/dev-status.svg)](https://david-dm.org/weseek/growi?type=dev)
 [![docker pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/)
 
-|                                                         デモ                                                          |
+|                                                　デモンストレーション                                                 |
 | :-------------------------------------------------------------------------------------------------------------------: |
 | ![sample image](https://user-images.githubusercontent.com/42988650/70600974-6b29cc80-1c34-11ea-94ef-33c39c6a00dc.gif) |
 
@@ -37,7 +37,7 @@
 
 # 機能紹介
 
-- **機能紹介**
+- **主な機能**
   - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/en/guide/getting-started/five_minutes.html)。
   - HackMD(CodiMd)[https://hackmd.io/] と連携することで同時多人数編集が可能です。
     - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
