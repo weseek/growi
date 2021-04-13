@@ -1,6 +1,6 @@
-import { SectionBlock,InputBlock } from '@slack/types/dist/index'
+import { SectionBlock, InputBlock } from '@slack/types/dist/index';
 
-export const generateMarkdownSectionBlock = (blocks:string):SectionBlock  => {
+export const generateMarkdownSectionBlock = (blocks:string):SectionBlock => {
   return {
     type: 'section',
     text: {
