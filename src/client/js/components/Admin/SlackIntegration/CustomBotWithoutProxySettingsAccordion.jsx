@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import BotSettingsAccordion from './BotSettingsAccordion';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import BotSettingsAccordion from './BotSettingsAccordion';
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { appContainer } = props;
@@ -65,7 +65,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
               </p>
             </a>
           </div>
-
         </div>
       </BotSettingsAccordion.Item>
       <BotSettingsAccordion.Item
