@@ -9,6 +9,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
+  const [connectionErrorLog, setConnectionErrorLog] = useState();
 
   const onToggleAccordionHandler = (i) => {
     const accordionIndexes = new Set(openAccordionIndexes);
@@ -22,8 +23,12 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   };
 
   const onTestConnectionHandler = () => {
-    const connectionTestResponse = appContainer.apiv3.
-  }
+    const connectionTestResponse = appContainer.apiv3.post('/notification-test-to-slack-work-space', {
+      channel: 'testchannel',
+    });
+    setConnectionErrorLog(connectionTestResponse);
+    console.log(connectionTestResponse);
+  };
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -134,17 +139,21 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <div className="d-flex justify-content-center">
               <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={() => onTestConnectionHandler()}>Test</button>
             </div>
-            <div>
-              <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
-              <div className="row m-3 justify-content-center">
-                <div className="col-sm-5 slack-connection-error-log">
-                  <p className="border-info slack-connection-error-log-title text-secondary mb-1 pl-2">Logs</p>
-                  <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
-                    <p className="text-secondary m-0">Mon Apr 05 2021 20:24:11 GMT+0900 (Japan Standard Time) -Incorrect credentials.</p>
+            {connectionErrorLog
+              && (
+                <div>
+                  <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
+                  <div className="row m-3 justify-content-center">
+                    <div className="col-sm-5 slack-connection-error-log">
+                      <p className="border-info slack-connection-error-log-title text-secondary mb-1 pl-2">Logs</p>
+                      <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
+                        <p className="text-secondary m-0">{connectionErrorLog}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )
+            }
           </div>
         </Collapse>
       </div>
