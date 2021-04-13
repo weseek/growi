@@ -31,12 +31,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       });
     }
     catch (err) {
-      const errorCode = err[0].code;
-      const errorMessage = err[0].message;
       setConnectionErrorLog(prevState => ({
         ...prevState,
-        connectionErrorCode: errorCode,
-        connectionErrorMessage: errorMessage,
+        connectionErrorCode: err[0].code,
+        connectionErrorMessage: err[0].message,
       }));
     }
   };
