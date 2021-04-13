@@ -139,8 +139,8 @@ const SlackIntegration = (props) => {
       Object.entries(botTypes).map(([key, value]) => {
         return (
           <div
-            className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === `${key}` ? 'border-primary' : ''}`}
-            onClick={() => handleBotTypeSelect(`${key}`)}
+            className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === key ? 'border-primary' : ''}`}
+            onClick={() => handleBotTypeSelect(key)}
             role="button"
             key={key}
           >
