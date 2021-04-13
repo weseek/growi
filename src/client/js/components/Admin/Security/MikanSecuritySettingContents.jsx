@@ -92,7 +92,7 @@ class MikanSecuritySettingContents extends React.Component {
                   type="text"
                   name="mikanApiUrl"
                   defaultValue={adminMikanSecurityContainer.state.mikanApiUrl || ''}
-                  onChange={e => adminMikanSecurityContainer.changeServerUrl(e.target.value)}
+                  onChange={e => adminMikanSecurityContainer.changeMikanApiUrl(e.target.value)}
                 />
                 <small>
                   <p

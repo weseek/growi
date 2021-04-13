@@ -7004,24 +7004,24 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-growi-commons@^5.0.3:
+growi-commons@^5.0.2, growi-commons@^5.0.3:
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.3.tgz#8ec745dcb2d3d003e3acd7d6fbec85cf0967354b"
   integrity sha512-lV2jmqxWPiuzuVaetSY1uq7viwgRCNwLMnU78GaYix4jfXNcYzdrfedTlU3ZRiVIjLggSFb87EhYqtM/4RfjmA==
 
-growi-plugin-attachment-refs@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/growi-plugin-attachment-refs/-/growi-plugin-attachment-refs-1.0.7.tgz#0cc57ce1cd6cae0a8ec6bae4823825a011bc43f0"
-  integrity sha512-rqDVXj1c24sU9A7ocCN8ZGATcFm/mV5flFnoxPl8VF2cBRGclxhzmnfUDZn7RIvdoVN5eDprOOlGHHj7D8byKQ==
+growi-plugin-attachment-refs@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/growi-plugin-attachment-refs/-/growi-plugin-attachment-refs-2.0.1.tgz#118c4928a6df93afd0c5fab7a7eab569977dcd55"
+  integrity sha512-Kyi5YQoc/5cuan9ldEvnjzh9rYi9hKjKyy75xHn0/4BZZ3aMz9AzzUcln99rqldOGwig3fuobYCCH9YnW/voZw==
   dependencies:
-    growi-commons "^4.0.8"
+    growi-commons "^5.0.3"
 
-growi-plugin-lsx@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/growi-plugin-lsx/-/growi-plugin-lsx-3.1.1.tgz#4942074ec531ca7514149b43a26c9ca472e59607"
-  integrity sha512-fLJZzveq+ojcS7zy2TwKAOmchlaEB0cl7Emm4LA7m8VboePdCOEtEgWA8H93BCfjwI9QNibrE/PMOhP2Ts6nVg==
+growi-plugin-lsx@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/growi-plugin-lsx/-/growi-plugin-lsx-4.0.2.tgz#cdf9caf6bb74a50c2eae0a64ea7b413160c32057"
+  integrity sha512-qF3Yx5sbXnf5C9cZshrtd3irPjs4SC5K3CXEhFiQuo6SZN66+uqQ6twuIgMthkTrBw5boHSoevmIiVqfIUsdIw==
   dependencies:
-    growi-commons "^4.0.8"
+    growi-commons "^5.0.2"
     url "^0.11.0"
 
 growly@^1.3.0:
@@ -7071,7 +7071,7 @@ har-validator@~5.0.3:
     ajv "^5.1.0"
     har-schema "^2.0.0"
 
-har-validator@~5.1.0, har-validator@~5.1.3:
+har-validator@~5.1.3:
   version "5.1.3"
   resolved "https://registry.yarnpkg.com/har-validator/-/har-validator-5.1.3.tgz#1ef89ebd3e4996557675eed9893110dc350fa080"
   integrity sha512-sNvOCzEQNr/qrvJgc3UG/kD4QtlHycrzwS+6mfTrrSq97BvaYcPZZI1ZSqGSPR73Cxn4LKTD4PttRwfU7jWq5g==
@@ -13024,32 +13024,6 @@ request@^2.74.0:
     uuid "^3.1.0"
 
 request@^2.87.0, request@^2.88.0, request@^2.88.2:
-  version "2.88.2"
-  resolved "https://registry.yarnpkg.com/request/-/request-2.88.2.tgz#d73c918731cb5a87da047e207234146f664d12b3"
-  integrity sha512-MsvtOrfG9ZcrOwAW+Qi+F6HbD0CWXEh9ou77uOb7FM2WPhwT7smM833PzanhJLsgXjN89Ir6V2PczXNnMpwKhw==
-  dependencies:
-    aws-sign2 "~0.7.0"
-    aws4 "^1.8.0"
-    caseless "~0.12.0"
-    combined-stream "~1.0.6"
-    extend "~3.0.2"
-    forever-agent "~0.6.1"
-    form-data "~2.3.2"
-    har-validator "~5.1.3"
-    http-signature "~1.2.0"
-    is-typedarray "~1.0.0"
-    isstream "~0.1.2"
-    json-stringify-safe "~5.0.1"
-    mime-types "~2.1.19"
-    oauth-sign "~0.9.0"
-    performance-now "^2.1.0"
-    qs "~6.5.2"
-    safe-buffer "^5.1.2"
-    tough-cookie "~2.5.0"
-    tunnel-agent "^0.6.0"
-    uuid "^3.3.2"
-
-request@^2.88.2:
   version "2.88.2"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.2.tgz#d73c918731cb5a87da047e207234146f664d12b3"
   integrity sha512-MsvtOrfG9ZcrOwAW+Qi+F6HbD0CWXEh9ou77uOb7FM2WPhwT7smM833PzanhJLsgXjN89Ir6V2PczXNnMpwKhw==
