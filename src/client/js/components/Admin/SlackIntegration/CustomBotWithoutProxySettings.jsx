@@ -103,7 +103,8 @@ const CustomBotWithoutProxySettings = (props) => {
 
         {/* 破線 & 文字 */}
         <div className="text-center w-25">
-          <p className="text-secondary">連携は完了していません。下記の連携手順を進めてください。</p>
+          <p className="text-secondary m-0"><small>連携は完了していません。</small></p>
+          <p className="text-secondary"><small>下記の連携手順を進めてください。</small></p>
           <hr className="border-danger align-self-center" style={{ border: 'dashed' }}></hr>
         </div>
 
