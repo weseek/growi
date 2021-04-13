@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
+import AppContainer from '../../../services/AppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
-const CustomBotWithoutSettingsAccordion = () => {
+const CustomBotWithoutProxySettingsAccordion = (props) => {
+  const { appContainer } = props;
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
 
@@ -16,6 +20,10 @@ const CustomBotWithoutSettingsAccordion = () => {
     }
     setOpenAccordionIndexes(accordionIndexes);
   };
+
+  const onTestConnectionHandler = () => {
+    const connectionTestResponse = appContainer.apiv3.
+  }
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -124,7 +132,7 @@ const CustomBotWithoutSettingsAccordion = () => {
           <div className="card-body">
             <p className="text-secondary text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
             <div className="d-flex justify-content-center">
-              <button type="button" className="btn btn-info m-3 px-5 font-weight-bold">Test</button>
+              <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={() => onTestConnectionHandler()}>Test</button>
             </div>
             <div>
               <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
@@ -147,5 +155,10 @@ const CustomBotWithoutSettingsAccordion = () => {
 
 };
 
+const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer]);
 
-export default CustomBotWithoutSettingsAccordion;
+CustomBotWithoutProxySettingsAccordion.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default CustomBotWithoutProxySettingsAccordionWrapper;
