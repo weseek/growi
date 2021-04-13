@@ -160,7 +160,7 @@ const SlackIntegration = (props) => {
         <div className="row my-4">
           <div className="card-deck mx-auto">
             {Object.entries(botTypes).map(([key, value]) => {
-              return <BotTypeCard isActive={currentBotType === key} botType={value.id} selectedBotType={selectedBotType} value={value} handleBotTypeSelect={handleBotTypeSelect} />;
+              return <BotTypeCard isActive={currentBotType === key} botType={value.id} value={value} handleBotTypeSelect={handleBotTypeSelect} />;
             })}
           </div>
         </div>

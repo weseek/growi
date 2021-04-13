@@ -34,7 +34,6 @@ const BotTypeCard = (props) => {
           </span>
 
           {props.botType === 'official-bot' ? renderRecommendedBadge() : ''}
-          {console.log('props.key', props.botType)}
 
           {/* TODO: add an appropriate links by GW-5614 */}
           <i className={`fa fa-external-link btn-link ${props.isActive ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
