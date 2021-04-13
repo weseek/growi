@@ -64,7 +64,7 @@
 
 ### オンプレミスではじめる
 
-Crowi からの 移行は **[こちら](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))**。
+Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))**。
 
 - [GROWI Docs: Ubuntu Server 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/ubuntu-server.html)
 - [GROWI Docs: CentOS 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/centos.html)
@@ -88,7 +88,7 @@ Crowi からの 移行は **[こちら](https://docs.growi.org/en/admin-guide/mi
 
   <!-- 以下のリンクは存在しない -->
 
-  [確認済みのバージョン](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
+  [確定版](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
 
 ### オプションの依存関係
 
@@ -119,7 +119,7 @@ Crowi からの 移行は **[こちら](https://docs.growi.org/en/admin-guide/mi
 
 ## バグがありましたか？
 
-もし、ソースコード上でバグを発見したら、GitHub Repository 上で Issue を作成していただけると助かります。バグを修正して Pull requests を提出していただけるとさらに助かります。
+ソースコード上でバグを発見されたら、GitHub Repository 上で Issue を作成していただけると助かります。バグを修正して Pull requests を提出していただけるとさらに助かります！
 
 ## 機能が足りませんか？
 
@@ -142,7 +142,7 @@ Issue と Pull requests の作成は英語・日本語どちらでも受け付�
 # ライセンス
 
 - The MIT License (MIT)
-- [ライセンス](https://github.com/weseek/growi/blob/master/LICENSE) と[THIRD-PARTY-NOTICES.md](https://github.com/weseek/growi/blob/master/THIRD-PARTY-NOTICES.md) をご覧ください。
+- [ライセンス](https://github.com/weseek/growi/blob/master/LICENSE) と [THIRD-PARTY-NOTICES.md](https://github.com/weseek/growi/blob/master/THIRD-PARTY-NOTICES.md) をご覧ください。
 
   [crowi]: https://github.com/crowi/crowi
   [growi]: https://github.com/weseek/growi
