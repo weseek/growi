@@ -16,13 +16,13 @@ const BotTypeCard = (props) => {
   return (
     <div
       className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
-      onClick={() => props.handleBotTypeSelect(props.key)}
+      onClick={() => props.handleBotTypeSelect(props.botType)}
       role="button"
-      key={props.key}
+      key={props.botType}
     >
       <div>
         <h3 className={`card-header mb-0 py-3
-              ${props.key === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
+              ${props.botType === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
               ${props.isActive ? 'bg-primary text-light' : ''}`}
         >
           <span className="mr-2">
@@ -33,7 +33,9 @@ const BotTypeCard = (props) => {
             {props.value.supplementaryBotName}
           </span>
 
-          {props.key === 'officialBot' ? renderRecommendedBadge() : ''}
+          {props.botType === 'officialBot' ? renderRecommendedBadge() : ''}
+          {console.log('props.key', props.botType)}
+          {console.log('props.value', props.value)}
 
           {/* TODO: add an appropriate links by GW-5614 */}
           <i className={`fa fa-external-link btn-link ${props.isActive ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
@@ -66,12 +68,10 @@ const BotTypeCard = (props) => {
 };
 
 BotTypeCard.propTypes = {
-  // accessToken: PropTypes.string,
-  // onClickDiscardButton: PropTypes.func,
-  // onClickGenerateToken: PropTypes.func,
   isActive: PropTypes.bool,
-  key: PropTypes.string,
-  value: PropTypes.string,
+  botType: PropTypes.string,
+  key: PropTypes.object,
+  value: PropTypes.object,
   handleBotTypeSelect: PropTypes.func,
 };
 

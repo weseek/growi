@@ -106,12 +106,14 @@ const SlackIntegration = (props) => {
 
   const botTypes = {
     officialBot: {
+      id: 'official-bot',
       name: t('admin:slack_integration.selecting_bot_types.official_bot'),
       setUp: 'easy',
       multiWSIntegration: 'possible',
       securityControl: 'impossible',
     },
     customBotWithoutProxy: {
+      id: 'custom-bot-without-proxy',
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.without_proxy'),
       setUp: 'normal',
@@ -119,76 +121,13 @@ const SlackIntegration = (props) => {
       securityControl: 'possible',
     },
     customBotWithProxy: {
+      id: 'custom-bot-with-proxy',
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       setUp: 'hard',
       multiWSIntegration: 'possible',
       securityControl: 'possible',
     },
-  };
-
-  const renderRecommendedBadge = () => {
-    return (
-      <span className="badge badge-info mr-2">
-        {t('admin:slack_integration.selecting_bot_types.recommended')}
-      </span>
-    );
-  };
-
-  const BotTypeCardOld = () => {
-    return (
-      Object.entries(botTypes).map(([key, value]) => {
-        return (
-          <div
-            className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType ? 'border-primary' : ''}`}
-            onClick={() => handleBotTypeSelect(props.key)}
-            role="button"
-            key={key}
-          >
-            <div>
-              <h3 className={`card-header mb-0 py-3
-              ${key === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
-              ${currentBotType ? 'bg-primary text-light' : ''}`}
-              >
-                <span className="mr-2">
-                  {value.name}
-
-                </span>
-                <span className="supplementary-bot-name mr-2">
-                  {value.supplementaryBotName}
-                </span>
-
-                {key === 'officialBot' ? renderRecommendedBadge() : ''}
-
-                {/* TODO: add an appropriate links by GW-5614 */}
-                <i className={`fa fa-external-link btn-link ${currentBotType ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
-              </h3>
-            </div>
-            <div className="card-body p-4">
-              <div className="card-text">
-                <div className="my-2">
-                  <div className="d-flex justify-content-between mb-3">
-                    {/* TODO add image of difficulties by GW-5638 */}
-                    {/* <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span> */}
-                    {/* <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span> */}
-
-
-                  </div>
-                  <div className="d-flex justify-content-between mb-3">
-                    <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>
-                    <img className="bot-type-disc" src={`/images/slack-integration/${value.multiWSIntegration}.png`} alt="" />
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
-                    <img className="bot-type-disc" src={`/images/slack-integration/${value.securityControl}.png`} alt="" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })
-    );
   };
 
   return (
@@ -221,7 +160,7 @@ const SlackIntegration = (props) => {
         <div className="row my-4">
           <div className="card-deck mx-auto">
             {Object.entries(botTypes).map(([key, value]) => {
-              return <BotTypeCard isActive={currentBotType === key} key={key} value={value} />;
+              return <BotTypeCard isActive={currentBotType === key} botType={value.id} selectedBotType={selectedBotType} value={value} handleBotTypeSelect={handleBotTypeSelect} />;
             })}
           </div>
         </div>
