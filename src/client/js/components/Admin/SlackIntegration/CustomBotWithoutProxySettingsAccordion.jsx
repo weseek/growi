@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { appContainer } = props;
@@ -127,7 +128,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         </div>
         <Collapse isOpen={openAccordionIndexes.has(2)}>
           <div className="card-body">
-            BODY 3
+            <CustomBotWithoutProxySecretTokenSection />
           </div>
         </Collapse>
       </div>
