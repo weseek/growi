@@ -7,6 +7,7 @@ import qs from 'qs';
    */
 // TODO GW-5628 move this to slack package
 export default function verifyingIsSlackRequest(req, res, next):string {
+  console.log(req);
   // Temporary
   // req.signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
   req.signingSecret = 'dummy';
