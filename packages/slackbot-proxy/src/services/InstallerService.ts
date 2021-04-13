@@ -39,13 +39,13 @@ export class InstallerService {
 
           if (existedInstallation != null) {
             existedInstallation.setData(slackInstallation);
-            repository.save(existedInstallation);
+            await repository.save(existedInstallation);
             return;
           }
 
           const installation = new Installation();
           installation.setData(slackInstallation);
-          repository.save(installation);
+          await repository.save(installation);
           return;
         },
         fetchInstallation: async(installQuery: InstallationQuery<boolean>) => {
