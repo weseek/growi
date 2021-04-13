@@ -7,45 +7,52 @@ const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
 
-  // const onToggleAccordionHandler = (i) => {
-  //   const accordionIndexes = new Set(openAccordionIndexes);
-  //   if (accordionIndexes.has(i)) {
-  //     accordionIndexes.delete(i);
-  //   }
-  //   else {
-  //     accordionIndexes.add(i);
-  //   }
-  //   setOpenAccordionIndexes(accordionIndexes);
-  // };
-
-  const [isActive, setIsActive] = useState(false)
-
-  const onToggleAccordionHandler = () => {
-    setIsActive(prevState => !prevState);
-  }
+  const onToggleAccordionHandler = (i) => {
+    const accordionIndexes = new Set(openAccordionIndexes);
+    if (accordionIndexes.has(i)) {
+      accordionIndexes.delete(i);
+    }
+    else {
+      accordionIndexes.add(i);
+    }
+    setOpenAccordionIndexes(accordionIndexes);
+  };
 
   return (
     <>
-      <BotSettingsAccordion
-        isActive={isActive}
-        title="asdfasdfasdf"
-        onToggleAccordionHandler={onToggleAccordionHandler}
-      >
-        ボディー
-      </BotSettingsAccordion>
-      <BotSettingsAccordion
-        isActive={isActive}
-        title="asdfasdfasdf"
-        onToggleAccordionHandler={onToggleAccordionHandler}
-      >
-        ボディー
-      </BotSettingsAccordion>
-      <BotSettingsAccordion
-        isActive={isActive}
-        title="asdfasdfasdf"
-        onToggleAccordionHandler={onToggleAccordionHandler}
-      >
-        ボディー
+      <BotSettingsAccordion>
+        <BotSettingsAccordion.item
+          isActive={openAccordionIndexes.has(0)}
+          itemNumber="①"
+          title="asdfasdfasdf"
+          onToggleAccordionHandler={onToggleAccordionHandler(0)}
+        >
+          ボディー
+        </BotSettingsAccordion.item>
+        <BotSettingsAccordion.item
+          isActive={openAccordionIndexes.has(1)}
+          itemNumber="②"
+          title="asdfasdfasdf"
+          onToggleAccordionHandler={onToggleAccordionHandler(1)}
+        >
+          ボディー
+        </BotSettingsAccordion.item>
+        <BotSettingsAccordion.item
+          isActive={openAccordionIndexes.has(2)}
+          itemNumber="③"
+          title="asdfasdfasdf"
+          onToggleAccordionHandler={onToggleAccordionHandler(2)}
+        >
+          ボディー
+        </BotSettingsAccordion.item>
+        <BotSettingsAccordion.item
+          isActive={openAccordionIndexes.has(3)}
+          itemNumber="④"
+          title="asdfasdfasdf"
+          onToggleAccordionHandler={onToggleAccordionHandler(3)}
+        >
+          ボディー
+        </BotSettingsAccordion.item>
       </BotSettingsAccordion>
 
       <div className="card border-0 rounded-lg shadow overflow-hidden">

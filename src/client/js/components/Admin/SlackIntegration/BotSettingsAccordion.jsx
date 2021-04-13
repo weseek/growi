@@ -24,7 +24,7 @@ const BotSettingsAccordionItem = (props) => {
         role="button"
         onClick={onToggleAccordionHandler}
       >
-        <p className="mb-0 text-primary">{props.title}</p>
+        <p className="mb-0 text-primary"><span className="mr-2">{props.itemNumber}</span>{props.title}</p>
         {props.isActive
           ? <i className="fa fa-chevron-up" />
           : <i className="fa fa-chevron-down" />
@@ -43,9 +43,10 @@ BotSettingsAccordion.item = BotSettingsAccordionItem;
 
 BotSettingsAccordionItem.propTypes = {
   isActive: PropTypes.bool,
+  itemNumber: PropTypes.string,
   title: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
   onToggleAccordionHandler: PropTypes.func,
+  children: PropTypes.element.isRequired,
 };
 
 BotSettingsAccordion.propTypes = {
