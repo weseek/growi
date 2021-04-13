@@ -1,10 +1,10 @@
 import {
-  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne,Index
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, Index,
 } from 'typeorm';
 import { Installation } from './installation';
 
 @Entity()
-@Index(["installation", "growiUri"], { unique: true })
+@Index(['installation', 'growiUri'], { unique: true })
 export class Relation {
 
   @PrimaryGeneratedColumn()
