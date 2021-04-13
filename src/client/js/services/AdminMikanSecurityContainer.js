@@ -20,7 +20,7 @@ export default class AdminMikanSecurityContainer extends Container {
 
     this.state = {
       retrieveError: null,
-      mikanApiUrl: '',
+      mikanApiUrl: this.dummyApiUrl,
       mikanLoginUrl: '',
       mikanCookieName: '',
       isSameUsernameTreatedAsIdenticalUser: false,
