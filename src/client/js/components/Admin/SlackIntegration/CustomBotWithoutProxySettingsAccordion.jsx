@@ -21,27 +21,10 @@ const CustomBotWithoutSettingsAccordion = () => {
   return (
 
     <BotSettingsAccordion
-      currentlyOpenAccordionIndexes={currentlyOpenAccordionIndexes}
+      isActive={false}
+      title="asdfasdfasdf"
     >
-
-      <BotSettingsAccordion.Group>
-        <BotSettingsAccordion.Header>
-          ヘッダー0
-        </BotSettingsAccordion.Header>
-        <BotSettingsAccordion.Body>
-          ボディー0
-        </BotSettingsAccordion.Body>
-      </BotSettingsAccordion.Group>
-
-      <BotSettingsAccordion.Group>
-        <BotSettingsAccordion.Header>
-          ヘッダー1
-        </BotSettingsAccordion.Header>
-        <BotSettingsAccordion.Body>
-          ボディー1
-        </BotSettingsAccordion.Body>
-      </BotSettingsAccordion.Group>
-      
+      ボディー
     </BotSettingsAccordion>
 
     <div className="card border-0 rounded-lg shadow overflow-hidden">
