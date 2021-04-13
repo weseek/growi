@@ -38,25 +38,25 @@
 # 機能紹介
 
 - **主な機能**
-  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/en/guide/getting-started/five_minutes.html)。
+  - マークダウンを使用してページを階層構造で作成することが可能です。 -> 5 分間チュートリアルは[こちら](https://docs.growi.org/ja/guide/getting-started/five_minutes.html))。
   - HackMD(CodiMd)[https://hackmd.io/] と連携することで同時多人数編集が可能です。
-    - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
+    - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html)
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
   - SAML を用いた Single Sign On が可能です。
   - Slack / Mattermost, IFTTT と連携することが可能です。
-  - [GROWI Docs: 機能紹介](https://docs.growi.org/en/guide/features/page_layout.html)
+  - [GROWI Docs: 機能紹介](https://docs.growi.org/ja/guide/features/page_layout.html)
 - **プラグイン**
   - [npm](https://www.npmjs.com/browse/keyword/growi-plugin) または [github](https://github.com/search?q=topic%3Agrowi-plugin) から 便利なプラグインを見つけることができます。
 - **[Docker の準備][dockerhub]**
 - **[Docker Compose の準備][docker-compose]**
-  - [GROWI Docs: 複数の GROWI を起動](https://docs.growi.org/en/admin-guide/admin-cookbook/multi-app.html)
-  - [GROWI Docs: Let's Encrypt による HTTPS 運用](https://docs.growi.org/en/admin-guide/admin-cookbook/lets-encrypt.html)
+  - [GROWI Docs: 複数の GROWI を起動](https://docs.growi.org/ja/admin-guide/admin-cookbook/multi-app.html)
+  - [GROWI Docs: Let's Encrypt による HTTPS 運用](https://docs.growi.org/ja/admin-guide/admin-cookbook/lets-encrypt.html)
 
 # さっそくはじめてみる
 
 ### docker-compose を使ってはじめる
 
-- [GROWI Docs: docker-compose](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html))
+- [GROWI Docs: docker-compose](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html) ([en](https://docs.growi.org/en/admin-guide/getting-started/docker-compose.html)/[ja](https://docs.growi.org/ja/admin-guide/getting-started/docker-compose.html))
 
 ### Helm (Experimental) でデプロイする
 
@@ -66,16 +66,16 @@
 
 Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html) ([en](https://docs.growi.org/en/admin-guide/migration-guide/from-crowi-onpremise.html)/[ja](https://docs.growi.org/ja/admin-guide/migration-guide/from-crowi-onpremise.html))**。
 
-- [GROWI Docs: Ubuntu Server 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/ubuntu-server.html)
-- [GROWI Docs: CentOS 上でインストール](https://docs.growi.org/en/admin-guide/getting-started/centos.html)
+- [GROWI Docs: Ubuntu Server 上でインストール](https://docs.growi.org/ja/admin-guide/getting-started/ubuntu-server.html)
+- [GROWI Docs: CentOS 上でインストール](https://docs.growi.org/ja/admin-guide/getting-started/centos.html)
 
 ## 設定
 
-[GROWI Docs: 管理者ガイド](https://docs.growi.org/en/admin-guide/) ([en](https://docs.growi.org/en/admin-guide/)/[ja](https://docs.growi.org/ja/admin-guide/))をご覧ください。
+[GROWI Docs: 管理者ガイド](https://docs.growi.org/ja/admin-guide/) ([en](https://docs.growi.org/en/admin-guide/)/[ja](https://docs.growi.org/ja/admin-guide/))をご覧ください。
 
 ### 環境変数
 
-[GROWI Docs: 環境変数](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html) ([en](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)/[ja](https://docs.growi.org/ja/admin-guide/admin-cookbook/env-vars.html)) をご覧ください。
+[GROWI Docs: 環境変数](https://docs.growi.org/ja/admin-guide/admin-cookbook/env-vars.html) ([en](https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html)/[ja](https://docs.growi.org/ja/admin-guide/admin-cookbook/env-vars.html)) をご覧ください。
 
 # 開発環境
 
@@ -86,9 +86,9 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 - yarn
 - MongoDB 4.x
 
-  <!-- 以下のリンクは存在しない -->
+  <!-- 以下のリンクは存在しない (ja と en 両方) -->
 
-  [確定版](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
+  [確定版](https://docs.growi.org/ja/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
 
 ### オプションの依存関係
 
@@ -106,7 +106,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 | `yarn run server:prod` | サーバーを立ち上げます。                                         |
 | `yarn start`           | `yarn run build:prod` と `yarn run server:prod` を呼び出します。 |
 
-<!-- 以下のリンクは存在しない -->
+  <!-- 以下のリンクは存在しない (ja と en 両方) -->
 
 詳しくは [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands)をご覧ください。
 
