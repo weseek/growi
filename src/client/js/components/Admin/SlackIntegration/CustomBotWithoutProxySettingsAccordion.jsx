@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+
 import { Collapse } from 'reactstrap';
 
-const botInstallationStep = {
+export const botInstallationStep = {
   CREATE_BOT: 'create-bot',
   INSTALL_BOT: 'install-bot',
   REGISTER_SLACK_CONFIGURATION: 'register-slack-configuration',
   CONNECTION_TEST: 'connection-test',
 };
 
-const CustomBotWithoutSettingsAccordion = () => {
+const CustomBotWithoutSettingsAccordion = ({ activeStep }) => {
   const { t } = useTranslation('admin');
-  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
+
+  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
 
   const onToggleAccordionHandler = (installationStep) => {
     const accordionIndexes = new Set(openAccordionIndexes);
@@ -128,5 +131,9 @@ const CustomBotWithoutSettingsAccordion = () => {
 
 };
 
+
+CustomBotWithoutSettingsAccordion.propTypes = {
+  activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
+};
 
 export default CustomBotWithoutSettingsAccordion;
