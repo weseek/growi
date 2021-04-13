@@ -13,7 +13,7 @@ import MikanSecuritySettingContents from './MikanSecuritySettingContents';
 let retrieveErrors = null;
 function MikanSecuritySetting(props) {
   const { adminMikanSecurityContainer } = props;
-  if (adminMikanSecurityContainer.state.apiUrl === adminMikanSecurityContainer.dummyApiUrl) {
+  if (adminMikanSecurityContainer.state.mikanApiUrl === adminMikanSecurityContainer.dummyApiUrl) {
     throw (async() => {
       try {
         await adminMikanSecurityContainer.retrieveSecurityData();
@@ -22,12 +22,12 @@ function MikanSecuritySetting(props) {
         const errs = toArrayIfNot(err);
         toastError(errs);
         retrieveErrors = errs;
-        adminMikanSecurityContainer.setState({ serverUrl: adminMikanSecurityContainer.dummyApiUrlForError });
+        adminMikanSecurityContainer.setState({ mikanApiUrl: adminMikanSecurityContainer.dummyApiUrlForError });
       }
     })();
   }
 
-  if (adminMikanSecurityContainer.state.apiUrl === adminMikanSecurityContainer.dummyApiUrlForError) {
+  if (adminMikanSecurityContainer.state.mikanApiUrl === adminMikanSecurityContainer.dummyApiUrlForError) {
     throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
