@@ -299,7 +299,7 @@
       "how_to_create_a_bot": "How to create a bot"
     },
     "custom_bot_without_proxy_integration": "Custom bot without proxy integration",
-    "without_proxy_integration": {
+    "integration_sentence": {
       "integration_is_not_complete": "Integration is not complete.",
       "proceed_with_the_following_integration_procedure": "Proceed with the following integration procedure."
     }

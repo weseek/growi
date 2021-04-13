@@ -297,7 +297,7 @@
       "how_to_create_a_bot": "作成方法はこちら"
     },
     "custom_bot_without_proxy_integration": "Custom bot without proxy 連携",
-    "without_proxy_integration": {
+    "integration_sentence": {
       "integration_is_not_complete": "連携は完了していません。",
       "proceed_with_the_following_integration_procedure": "下記の連携手順を進めてください。"
     }
