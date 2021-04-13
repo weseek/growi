@@ -17,7 +17,7 @@
     "test:lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
-    "@growi/slack": "0.9.0-RC",
+    "@growi/slack": "^0.9.0-RC",
     "@slack/oauth": "^2.0.1",
     "@slack/web-api": "^6.1.0",
     "@tsed/common": "^6.34.3",
