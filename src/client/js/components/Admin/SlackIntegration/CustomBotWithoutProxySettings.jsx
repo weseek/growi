@@ -93,7 +93,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
         {/* カード１ */}
         <div className="card rounded-lg shadow border-0 w-50">
-          <h5 className="card-title m-3">Slack</h5>
+          <h5 className="card-title m-3"><b>Slack</b></h5>
           <div className="card-body p-5"></div>
         </div>
 
@@ -110,7 +110,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
         {/* カード２ */}
         <div className="card rounded-lg shadow border-0 w-50">
-          <h5 className="card-title m-3">GROWI App</h5>
+          <h5 className="card-title m-3"><b>GROWI App</b></h5>
           <div className="card-body p-5 text-center">
             <a className="btn btn-primary">WESEEK Inner brWiki</a>
           </div>
