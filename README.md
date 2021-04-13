@@ -1,4 +1,4 @@
-- [日本語](./README_JP.md)
+- [日本語 🇯🇵](./README_JP.md)
 
 <p align="center">
   <a href="https://growi.org">
