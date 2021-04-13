@@ -129,9 +129,9 @@ const CustomBotWithoutSettingsAccordion = () => {
             <div>
               <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
               <div className="row m-3 justify-content-center">
-                <div className="col-sm-5 error-log">
-                  <p className="border-info log-title text-secondary mb-1 pl-2">Logs</p>
-                  <div className="card border-info log-body rounded-lg px-5 py-4">
+                <div className="col-sm-5 slack-connection-error-log">
+                  <p className="border-info slack-connection-error-log-title text-secondary mb-1 pl-2">Logs</p>
+                  <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
                     <p className="text-secondary m-0">Mon Apr 05 2021 20:24:11 GMT+0900 (Japan Standard Time) -Incorrect credentials.</p>
                   </div>
                 </div>
