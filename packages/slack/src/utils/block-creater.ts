@@ -1,4 +1,6 @@
-export const generateMarkdownSectionBlock = (blocks:string) => {
+import { SectionBlock,InputBlock } from '@slack/types/dist/index'
+
+export const generateMarkdownSectionBlock = (blocks:string):SectionBlock  => {
   return {
     type: 'section',
     text: {
@@ -8,7 +10,7 @@ export const generateMarkdownSectionBlock = (blocks:string) => {
   };
 };
 
-export const generateInputSectionBlock = (blockId:string, labelText:string, actionId:string, isMultiline:boolean, placeholder:string) => {
+export const generateInputSectionBlock = (blockId:string, labelText:string, actionId:string, isMultiline:boolean, placeholder:string):InputBlock => {
   return {
     type: 'input',
     block_id: blockId,
