@@ -32,8 +32,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     catch (err) {
       setConnectionErrorLog({ connectionErrorCode: err[0].code, connectionErrorMessage: err[0].message });
     }
-
-
   };
 
   return (
