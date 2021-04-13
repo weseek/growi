@@ -13,13 +13,13 @@ const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
 
-  const onToggleAccordionHandler = (i) => {
+  const onToggleAccordionHandler = (installationStep) => {
     const accordionIndexes = new Set(openAccordionIndexes);
-    if (accordionIndexes.has(i)) {
-      accordionIndexes.delete(i);
+    if (accordionIndexes.has(installationStep)) {
+      accordionIndexes.delete(installationStep);
     }
     else {
-      accordionIndexes.add(i);
+      accordionIndexes.add(installationStep);
     }
     setOpenAccordionIndexes(accordionIndexes);
   };
