@@ -87,8 +87,8 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
-      <div className="d-flex justify-content-center mt-3">
-        <div className="card rounded-lg shadow border-0 w-50">
+      <div className="d-flex justify-content-center mt-3 bot-integration">
+        <div className="card rounded shadow border-0 w-50 admin-bot-card" style={{ radius: '8px'}}>
           <h5 className="card-title font-weight-bold m-3">Slack</h5>
           <div className="card-body p-5"></div>
         </div>
@@ -96,7 +96,7 @@ const CustomBotWithoutProxySettings = (props) => {
         <div className="text-center w-25 mt-5">
           <p className="text-secondary m-0"><small>{t('admin:slack_integration.integration_sentence.integration_is_not_complete')}</small></p>
           <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.proceed_with_the_following_integration_procedure')}</small></p>
-          <hr className="border-danger align-self-center" style={{ border: 'dashed' }}></hr>
+          <hr className="border-danger align-self-center admin-border"></hr>
         </div>
 
         <div className="card rounded-lg shadow border-0 w-50">
