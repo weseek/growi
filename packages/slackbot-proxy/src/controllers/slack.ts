@@ -1,7 +1,7 @@
 import {
   BodyParams, Controller, Get, Inject, Post, Req, Res,
 } from '@tsed/common';
-import { parseSlashCommand } from '@growi/slack/src/utils/slash-command-parser';
+import { parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
 import { Order } from '~/entities/order';
