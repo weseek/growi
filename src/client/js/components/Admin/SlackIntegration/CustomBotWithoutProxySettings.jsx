@@ -93,7 +93,7 @@ const CustomBotWithoutProxySettings = (props) => {
           <div className="card-body p-4"></div>
         </div>
 
-        <div className="text-center w-25 mt-5">
+        <div className="text-center w-25 mt-4">
           <p className="text-secondary m-0"><small>{t('admin:slack_integration.integration_sentence.integration_is_not_complete')}</small></p>
           <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.proceed_with_the_following_integration_procedure')}</small></p>
           <hr className="border-danger align-self-center admin-border"></hr>
@@ -102,7 +102,7 @@ const CustomBotWithoutProxySettings = (props) => {
         <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
           <h5 className="card-title font-weight-bold m-3">GROWI App</h5>
           <div className="card-body p-4 text-center">
-            <a className="btn btn-primary mb-3">WESEEK Inner Wiki</a>
+            <a className="btn btn-primary mb-5">WESEEK Inner Wiki</a>
           </div>
         </div>
       </div>
