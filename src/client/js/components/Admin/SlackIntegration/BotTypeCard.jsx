@@ -30,7 +30,7 @@ const BotTypeCard = (props) => {
 
           </span>
           <span className="supplementary-bot-name mr-2">
-            {props.value.supplementaryBotName}
+            {t(`admin:slack_integration.selecting_bot_types.${props.value.supplementaryBotName}`)}
           </span>
 
           {props.value.botType === 'official-bot' ? renderRecommendedBadge() : ''}
