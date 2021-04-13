@@ -119,7 +119,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 ## バグがありましたか？
 
-ソースコード上でバグを発見されたら、私たちの GitHub 上の Repository にて Issue を作成していただけると助かります。バグを修正して Pull requests を提出していただけるとさらに助かります！
+ソースコード上でバグを発見されたら、私たちの GitHub 上の Repository にて Issue を作成していただけると助かります。バグを修正して Pull requests を提出していただけるとさらに助かります。
 
 ## 機能が足りませんか？
 
@@ -136,7 +136,7 @@ Issue と Pull requests の作成は英語・日本語どちらでも受け付�
 
 ## GROWI について話し合いましょう！
 
-もし、質問や提案があれば、私たちの [Slack team](https://growi-slackin.weseek.co.jp/) にぜひご参加ください！
+質問や提案があれば、私たちの [Slack team](https://growi-slackin.weseek.co.jp/) にぜひご参加ください。
 いつでも、どこでも GROWI について議論しましょう！
 
 # ライセンス
