@@ -39,7 +39,7 @@ const BotSettingsAccordionItem = (props) => {
   );
 };
 
-BotSettingsAccordion.item = BotSettingsAccordionItem;
+BotSettingsAccordion.Item = BotSettingsAccordionItem;
 
 BotSettingsAccordionItem.propTypes = {
   isActive: PropTypes.bool,
