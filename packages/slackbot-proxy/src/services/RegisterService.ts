@@ -1,6 +1,6 @@
 import { Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
-import { generateInputSectionBlock } from '@growi/slack/src/utils/block-creater';
+import { generateInputSectionBlock } from '@growi/slack';
 import { GrowiCommandsMappings } from '../interfaces/growi-commands-mappings';
 
 @Service()
