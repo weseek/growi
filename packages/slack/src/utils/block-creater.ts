@@ -1,4 +1,4 @@
-export const generateMarkdownSectionBlock = (blocks) => {
+export const generateMarkdownSectionBlock = (blocks:string) => {
   return {
     type: 'section',
     text: {
@@ -8,7 +8,7 @@ export const generateMarkdownSectionBlock = (blocks) => {
   };
 };
 
-export const generateInputSectionBlock = (blockId, labelText, actionId, isMultiline, placeholder) => {
+export const generateInputSectionBlock = (blockId:string, labelText:string, actionId:string, isMultiline:boolean, placeholder:string) => {
   return {
     type: 'input',
     block_id: blockId,
