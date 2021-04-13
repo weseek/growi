@@ -9,6 +9,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:slack-bot');
 
 const router = express.Router();
+const { verifyingIsSlackRequest } = require('@growi/slack/');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
