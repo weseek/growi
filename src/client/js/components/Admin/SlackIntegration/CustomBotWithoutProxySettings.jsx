@@ -89,7 +89,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
-      <div className="d-flex justify-content-center my-4">
+      <div className="d-flex justify-content-center my-5">
 
         {/* カード１ */}
         <div className="card rounded-lg shadow border-0 w-50">
