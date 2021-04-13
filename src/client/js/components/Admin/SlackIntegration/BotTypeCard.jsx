@@ -5,6 +5,13 @@ import { useTranslation } from 'react-i18next';
 const BotTypeCard = (props) => {
   const { t } = useTranslation('admin');
 
+  const renderSupplementaryBotName = () => {
+    return (
+      <span className="supplementary-bot-name mr-2">
+        {t(`admin:slack_integration.selecting_bot_types.${props.value.supplementaryBotName}`)}
+      </span>
+    );
+  };
   const renderRecommendedBadge = () => {
     return (
       <span className="badge badge-info mr-2">
@@ -12,6 +19,7 @@ const BotTypeCard = (props) => {
       </span>
     );
   };
+
 
   return (
     <div
@@ -27,11 +35,10 @@ const BotTypeCard = (props) => {
         >
           <span className="mr-2">
             {t(`admin:slack_integration.selecting_bot_types.${props.value.name}`)}
+          </span>
 
-          </span>
-          <span className="supplementary-bot-name mr-2">
-            {t(`admin:slack_integration.selecting_bot_types.${props.value.supplementaryBotName}`)}
-          </span>
+          {props.value.name === 'custom_bot' ? renderSupplementaryBotName() : ''}
+
 
           {props.value.botType === 'official-bot' ? renderRecommendedBadge() : ''}
 
