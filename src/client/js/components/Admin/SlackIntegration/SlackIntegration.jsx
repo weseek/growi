@@ -106,14 +106,14 @@ const SlackIntegration = (props) => {
 
   const botTypes = {
     officialBot: {
-      id: 'official-bot',
+      botType: 'official-bot',
       name: t('admin:slack_integration.selecting_bot_types.official_bot'),
       setUp: 'easy',
       multiWSIntegration: 'possible',
       securityControl: 'impossible',
     },
     customBotWithoutProxy: {
-      id: 'custom-bot-without-proxy',
+      botType: 'custom-bot-without-proxy',
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.without_proxy'),
       setUp: 'normal',
@@ -121,7 +121,7 @@ const SlackIntegration = (props) => {
       securityControl: 'possible',
     },
     customBotWithProxy: {
-      id: 'custom-bot-with-proxy',
+      botType: 'custom-bot-with-proxy',
       name: t('admin:slack_integration.selecting_bot_types.custom_bot'),
       supplementaryBotName: t('admin:slack_integration.selecting_bot_types.with_proxy'),
       setUp: 'hard',
@@ -160,7 +160,7 @@ const SlackIntegration = (props) => {
         <div className="row my-4">
           <div className="card-deck mx-auto">
             {Object.entries(botTypes).map(([key, value]) => {
-              return <BotTypeCard isActive={currentBotType === key} botType={value.id} value={value} handleBotTypeSelect={handleBotTypeSelect} />;
+              return <BotTypeCard isActive={currentBotType === key} botType={value.botType} value={value} handleBotTypeSelect={handleBotTypeSelect} />;
             })}
           </div>
         </div>
