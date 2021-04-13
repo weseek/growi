@@ -26,7 +26,7 @@ const BotTypeCard = (props) => {
               ${props.isActive ? 'bg-primary text-light' : ''}`}
         >
           <span className="mr-2">
-            {props.value.name}
+            {t(`admin:slack_integration.selecting_bot_types.${props.value.name}`)}
 
           </span>
           <span className="supplementary-bot-name mr-2">
