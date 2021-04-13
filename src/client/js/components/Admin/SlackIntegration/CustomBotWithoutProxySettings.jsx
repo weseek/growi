@@ -85,26 +85,21 @@ const CustomBotWithoutProxySettings = (props) => {
   return (
     <>
 
-      {/* ----------------  start --------------- */}
-
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
       <div className="d-flex justify-content-center my-5">
 
-        {/* カード１ */}
         <div className="card rounded-lg shadow border-0 w-50">
           <h5 className="card-title m-3"><b>Slack</b></h5>
           <div className="card-body p-5"></div>
         </div>
 
-        {/* 破線 & 文字 */}
         <div className="text-center w-25 mt-5">
           <p className="text-secondary m-0"><small>連携は完了していません。</small></p>
           <p className="text-secondary"><small>下記の連携手順を進めてください。</small></p>
           <hr className="border-danger align-self-center" style={{ border: 'dashed' }}></hr>
         </div>
 
-        {/* カード２ */}
         <div className="card rounded-lg shadow border-0 w-50">
           <h5 className="card-title m-3"><b>GROWI App</b></h5>
           <div className="card-body p-5 text-center">
@@ -113,8 +108,6 @@ const CustomBotWithoutProxySettings = (props) => {
         </div>
 
       </div>
-
-      {/* ----------------   end  --------------- */}
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
       {/* temporarily put bellow component */}
