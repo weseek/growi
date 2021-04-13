@@ -4,12 +4,12 @@
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc",
-    "tsc": "tsc -b --verbose tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "tsc": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "tsc:w": "tsc -w",
     "dev:ci": "yarn dev --ci",
     "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
-    "start:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config ../../dist/slackbot-proxy/index.js",
+    "start:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config dist/index.js",
     "test": "yarn test:lint && yarn test:coverage",
     "test:unit": "cross-env NODE_ENV=test jest --passWithNoTests",
     "test:coverage": "yarn test:unit",
@@ -41,7 +41,7 @@
     "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.6",
-    "tsc-alias": "1.2.6",
+    "tsc-alias": "^1.2.9",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
   }
