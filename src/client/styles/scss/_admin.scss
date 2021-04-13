@@ -83,6 +83,38 @@
     }
   }
 
+  /*
+  Slack Integration
+  */
+  .selecting-bot-type {
+    .btn-link {
+      font-size: 1rem;
+    }
+    .supplementary-desc {
+      font-size: 1rem;
+    }
+    .badge-info {
+      font-size: 0.6rem;
+    }
+    .admin-bot-card {
+      min-width: 280px;
+      border-radius: 8px !important;
+    }
+    .border-primary {
+      border-width: 2px;
+    }
+  }
+  // TODO: change to utility class on Bootstrap 5
+  .slack-connection-error-log {
+    .slack-connection-error-log-title {
+      border-left: 2px solid;
+    }
+    .slack-connection-error-log-body {
+      min-height: 6rem;
+      border: 2px solid;
+    }
+  }
+
   //// TODO: migrate to Bootstrap 4
   //// omit all .btn-toggle and use Switches
   //// https://getbootstrap.com/docs/4.2/components/forms/#switches
