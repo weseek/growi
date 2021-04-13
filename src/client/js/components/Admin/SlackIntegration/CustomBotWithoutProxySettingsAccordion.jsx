@@ -73,17 +73,17 @@ const CustomBotWithoutSettingsAccordion = () => {
         <Collapse isOpen={openAccordionIndexes.has(1)}>
           <div className="card-body py-5">
             <div className="container w-75">
-              <p className="text-dark">1. Install your app をクリックします。</p>
+              <p className="text-secondary">1. Install your app をクリックします。</p>
               <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
-              <p className="text-dark">2. Install to Workspace をクリックします。</p>
+              <p className="text-secondary">2. Install to Workspace をクリックします。</p>
               <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
-              <p className="text-dark">3. 遷移先の画面にて、Allowをクリックします。</p>
-              <img src="public/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
-              <p className="text-dark">4. Install your app の右側に 緑色のチェックがつけばワークスペースへのインストール完了です。</p>
-              <img src="public/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
-              <p className="text-dark">5. GROWI bot を使いたいチャンネルに @example を使用して招待します。</p>
-              <img src="public/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
-              <img src="public/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
+              <p className="text-secondary">3. 遷移先の画面にて、Allowをクリックします。</p>
+              <img src="/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
+              <p className="text-secondary">4. Install your app の右側に 緑色のチェックがつけばワークスペースへのインストール完了です。</p>
+              <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
+              <p className="text-secondary">5. GROWI bot を使いたいチャンネルに @example を使用して招待します。</p>
+              <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
+              <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
             </div>
           </div>
         </Collapse>
@@ -122,19 +122,17 @@ const CustomBotWithoutSettingsAccordion = () => {
         </div>
         <Collapse isOpen={openAccordionIndexes.has(3)}>
           <div className="card-body">
-            <div className="container">
-              <p className="text-dark text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
-              <div className="d-flex justify-content-center">
-                <button type="button" className="btn btn-info m-3 px-5 font-weight-bold">Test</button>
-              </div>
-              <div>
-                <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
-                <div className="row m-3 justify-content-center">
-                  <div className="col-sm-6 error-log">
-                    <p className="border-info log-title text-dark mb-1 pl-2">Logs</p>
-                    <div className="card border-info log-body rounded-lg px-5 py-4">
-                      <p className="text-secondary m-0">Mon Apr 05 2021 20:24:11 GMT+0900 (Japan Standard Time) -Incorrect credentials.</p>
-                    </div>
+            <p className="text-secondary text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
+            <div className="d-flex justify-content-center">
+              <button type="button" className="btn btn-info m-3 px-5 font-weight-bold">Test</button>
+            </div>
+            <div>
+              <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
+              <div className="row m-3 justify-content-center">
+                <div className="col-sm-5 error-log">
+                  <p className="border-info log-title text-secondary mb-1 pl-2">Logs</p>
+                  <div className="card border-info log-body rounded-lg px-5 py-4">
+                    <p className="text-secondary m-0">Mon Apr 05 2021 20:24:11 GMT+0900 (Japan Standard Time) -Incorrect credentials.</p>
                   </div>
                 </div>
               </div>
