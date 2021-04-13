@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import BotSettingsAccordion from './BotSettingsAccordion';
+import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { appContainer } = props;
@@ -93,7 +94,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         title={t('slack_integration.without_proxy.register_secret_and_token')}
         onToggleAccordionHandler={() => onToggleAccordionHandler(2)}
       >
-        ボディー
+        <CustomBotWithoutProxySecretTokenSection />
       </BotSettingsAccordion.Item>
       <BotSettingsAccordion.Item
         isActive={openAccordionIndexes.has(3)}
