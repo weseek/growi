@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
+const botInstallationStep = {
+  CREATE_BOT: 'create-bot',
+  INSTALL_BOT: 'install-bot',
+  REGISTER_SLACK_CONFIGURATION: 'register-slack-configuration',
+  CONNECTION_TEST: 'connection-test',
+};
+
 const CustomBotWithoutSettingsAccordion = () => {
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
@@ -24,15 +31,15 @@ const CustomBotWithoutSettingsAccordion = () => {
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
           role="button"
-          onClick={() => onToggleAccordionHandler(0)}
+          onClick={() => onToggleAccordionHandler(botInstallationStep.CREATE_BOT)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</p>
-          {openAccordionIndexes.has(0)
+          {openAccordionIndexes.has(botInstallationStep.CREATE_BOT)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={openAccordionIndexes.has(0)}>
+        <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.CREATE_BOT)}>
           <div className="card-body">
 
             <div className="row my-5">
@@ -62,15 +69,15 @@ const CustomBotWithoutSettingsAccordion = () => {
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
           role="button"
-          onClick={() => onToggleAccordionHandler(1)}
+          onClick={() => onToggleAccordionHandler(botInstallationStep.INSTALL_BOT)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</p>
-          {openAccordionIndexes.has(1)
+          {openAccordionIndexes.has(botInstallationStep.INSTALL_BOT)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={openAccordionIndexes.has(1)}>
+        <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.INSTALL_BOT)}>
           <div className="card-body">
             BODY2
           </div>
@@ -81,15 +88,15 @@ const CustomBotWithoutSettingsAccordion = () => {
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
           role="button"
-          onClick={() => onToggleAccordionHandler(2)}
+          onClick={() => onToggleAccordionHandler(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}</p>
-          {openAccordionIndexes.has(2)
+          {openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={openAccordionIndexes.has(2)}>
+        <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}>
           <div className="card-body">
             BODY 3
           </div>
@@ -100,15 +107,15 @@ const CustomBotWithoutSettingsAccordion = () => {
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
           role="button"
-          onClick={() => onToggleAccordionHandler(3)}
+          onClick={() => onToggleAccordionHandler(botInstallationStep.CONNECTION_TEST)}
         >
           <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</p>
-          {openAccordionIndexes.has(3)
+          {openAccordionIndexes.has(botInstallationStep.CONNECTION_TEST)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={openAccordionIndexes.has(3)}>
+        <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.CONNECTION_TEST)}>
           <div className="card-body">
             BODY 4
           </div>
