@@ -54,7 +54,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   }
 
   return (
-    <>
+    <div className="card-body">
       <table className="table settings-table">
         <colgroup>
           <col className="item-name" />
@@ -62,7 +62,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <col className="from-env-vars" />
         </colgroup>
         <thead>
-          <tr><th></th><th>Database</th><th>Environment variables</th></tr>
+          <tr><th className="border-top-0"></th><th className="border-top-0">Database</th><th className="border-top-0">Environment variables</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -115,7 +115,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
       </table>
 
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
-    </>
+    </div>
   );
 };
 

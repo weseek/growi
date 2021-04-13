@@ -127,9 +127,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           }
         </div>
         <Collapse isOpen={openAccordionIndexes.has(2)}>
-          <div className="card-body">
-            <CustomBotWithoutProxySecretTokenSection />
-          </div>
+          <CustomBotWithoutProxySecretTokenSection />
         </Collapse>
       </div>
 
