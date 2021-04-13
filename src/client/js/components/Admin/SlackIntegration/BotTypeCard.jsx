@@ -22,7 +22,7 @@ const BotTypeCard = (props) => {
     >
       <div>
         <h3 className={`card-header mb-0 py-3
-              ${props.botType === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
+              ${props.botType === 'official-bot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
               ${props.isActive ? 'bg-primary text-light' : ''}`}
         >
           <span className="mr-2">
@@ -33,9 +33,8 @@ const BotTypeCard = (props) => {
             {props.value.supplementaryBotName}
           </span>
 
-          {props.botType === 'officialBot' ? renderRecommendedBadge() : ''}
+          {props.botType === 'official-bot' ? renderRecommendedBadge() : ''}
           {console.log('props.key', props.botType)}
-          {console.log('props.value', props.value)}
 
           {/* TODO: add an appropriate links by GW-5614 */}
           <i className={`fa fa-external-link btn-link ${props.isActive ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
