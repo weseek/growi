@@ -9,7 +9,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
-  const [connectionErrorLog, setConnectionErrorLog] = useState();
+  const [connectionErrorLog, setConnectionErrorLog] = useState({});
 
   const onToggleAccordionHandler = (i) => {
     const accordionIndexes = new Set(openAccordionIndexes);
@@ -23,6 +23,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   };
 
   const onTestConnectionHandler = async() => {
+    setConnectionErrorLog({ connectionErrorCode: null, connectionErrorMessage: null });
     try {
       await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
@@ -30,7 +31,18 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       });
     }
     catch (err) {
-      setConnectionErrorLog({ connectionErrorCode: err[0].code, connectionErrorMessage: err[0].message });
+      const errorCode = err[0].code;
+      const errorMessage = err[0].message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      setConnectionErrorLog(
+        prevState => ({
+          ...prevState,
+          connectionErrorCode: errorCode,
+          connectionErrorMessage: errorMessage,
+        })
+      );
+      console.log(connectionErrorLog);
     }
   };
 
@@ -143,30 +155,23 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <div className="d-flex justify-content-center">
               <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
             </div>
-            {connectionErrorLog != null
-              && (
-                <div>
-                  <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
-                  <div className="row m-3 justify-content-center">
-                    <div className="col-sm-5 slack-connection-error-log">
-                      <p className="border-info slack-connection-error-log-title mb-1 pl-2">Logs</p>
-                      <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
-                        <p className="m-0">Error code: {connectionErrorLog.connectionErrorCode}</p>
-                        <p className="m-0">{connectionErrorLog.connectionErrorMessage}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
+            {connectionErrorLog.connectionErrorMessage != null
+              && <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
             }
+            <div className="row m-3 justify-content-center">
+              <div className="col-sm-5 slack-connection-error-log">
+                <p className="border-info slack-connection-error-log-title mb-1 pl-2">Logs</p>
+                <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
+                  <p className="m-0">{connectionErrorLog.connectionErrorCode}</p>
+                  <p className="m-0">{connectionErrorLog.connectionErrorMessage}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </Collapse>
       </div>
-
     </div>
-
   );
-
 };
 
 const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer]);
