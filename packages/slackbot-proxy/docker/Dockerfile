@@ -12,6 +12,8 @@ WORKDIR ${appDir}
 COPY ./package.json ./
 COPY ./yarn.lock ./
 COPY ./lerna.json ./
+COPY ./packages/slack/package.json ./packages/slack/package.json
+COPY ./packages/slackbot-proxy/package.json ./packages/slackbot-proxy/package.json
 
 # setup
 RUN yarn config set network-timeout 300000
@@ -22,10 +24,23 @@ RUN npx lerna bootstrap
 ##
 ## deps-resolver-prod
 ##
-FROM deps-resolver AS deps-resolver-prod
+FROM node:14-slim AS deps-resolver-prod
+LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
-# shrink dependencies for production
-RUN yarn install --production
+ENV appDir /opt
+
+WORKDIR ${appDir}
+
+COPY ./package.json ./
+COPY ./yarn.lock ./
+COPY ./lerna.json ./
+COPY ./packages/slack/package.json ./packages/slack/package.json
+COPY ./packages/slackbot-proxy/package.json ./packages/slackbot-proxy/package.json
+
+# setup
+RUN yarn config set network-timeout 300000
+
+RUN npx lerna bootstrap -- --production
 
 
 
@@ -43,11 +58,12 @@ COPY --from=deps-resolver ${appDir}/node_modules ${appDir}/node_modules
 COPY packages ${appDir}/packages
 
 COPY ./package.json ./
-COPY ./yarn.lock ./
 COPY ./lerna.json ./
+COPY ./packages/slack ./packages/slack
+COPY ./packages/slackbot-proxy ./packages/slackbot-proxy
 
 # build
-RUN yarn lerna run --scope @growi/slack --scope @growi/slackbot-proxy build
+RUN npx lerna run build
 
 
 
@@ -59,16 +75,15 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt
 
-COPY --from=deps-resolver-prod \
-  ${appDir}/node_modules ${appDir}/node_modules
 COPY --from=builder \
   ${appDir}/packages/slack/dist ${appDir}/slack
 COPY --from=builder \
   ${appDir}/packages/slackbot-proxy/dist ${appDir}/slackbot-proxy
+COPY --from=deps-resolver-prod \
+  ${appDir}/node_modules ${appDir}/node_modules
 
-WORKDIR ${appDir}
+WORKDIR ${appDir}/slackbot-proxy
 
-VOLUME /data
-EXPOSE 3000
+EXPOSE 8080
 
-CMD ["yarn", "server:prod"]
+CMD ["-r", "dotenv-flow/config", "dist/index.js"]
