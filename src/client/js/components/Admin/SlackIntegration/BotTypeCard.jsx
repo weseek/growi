@@ -39,24 +39,6 @@ const BotTypeCard = (props) => {
       break;
   }
 
-  // let settingsComponent = null;
-
-  // switch (props.isActive) {
-  //   case 'official-bot':
-  //     settingsComponent = <OfficialBotSettings />;
-  //     break;
-  //   case 'custom-bot-without-proxy':
-  //     settingsComponent = (
-  //       <CustomBotWithoutProxySettings />
-  //     );
-  //     break;
-  //   case 'custom-bot-with-proxy':
-  //     settingsComponent = <CustomBotWithProxySettings />;
-  //     break;
-  // }
-
-  console.log(props.isActive);
-
   return (
     <div
       className={`card admin-bot-card rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
