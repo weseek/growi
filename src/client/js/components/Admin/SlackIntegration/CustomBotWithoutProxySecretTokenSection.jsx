@@ -1,55 +1,62 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
+// import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+// import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const CustomBotWithoutProxySecretTokenSection = (props) => {
-  const { appContainer, adminAppContainer } = props;
+  // const { appContainer, adminAppContainer } = props;
   const { t } = useTranslation();
 
-  const [slackSigningSecret, setSlackSigningSecret] = useState('');
-  const [slackBotToken, setSlackBotToken] = useState('');
-  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
-  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  const currentBotType = 'custom-bot-without-proxy';
+  // const [slackSigningSecret, setSlackSigningSecret] = useState('');
+  // const [slackBotToken, setSlackBotToken] = useState('');
+  // const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
+  // const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  // const currentBotType = 'custom-bot-without-proxy';
 
-  const fetchData = useCallback(async() => {
-    try {
-      await adminAppContainer.retrieveAppSettingsData();
-      const res = await appContainer.apiv3.get('/slack-integration/');
-      const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
-      } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
-      setSlackSigningSecret(slackSigningSecret);
-      setSlackBotToken(slackBotToken);
-      setSlackSigningSecretEnv(slackSigningSecretEnvVars);
-      setSlackBotTokenEnv(slackBotTokenEnvVars);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer, adminAppContainer]);
+  // const fetchData = useCallback(async() => {
+  //   try {
+  //     await adminAppContainer.retrieveAppSettingsData();
+  //     const res = await appContainer.apiv3.get('/slack-integration/');
+  //     const {
+  //       slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+  //     } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
+  //     setSlackSigningSecret(slackSigningSecret);
+  //     setSlackBotToken(slackBotToken);
+  //     setSlackSigningSecretEnv(slackSigningSecretEnvVars);
+  //     setSlackBotTokenEnv(slackBotTokenEnvVars);
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //   }
+  // }, [appContainer, adminAppContainer]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [fetchData]);
 
-  async function updateHandler() {
-    try {
-      await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
-        slackSigningSecret,
-        slackBotToken,
-        currentBotType,
-      });
-      fetchData();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
-    }
-    catch (err) {
-      toastError(err);
+  // async function updateHandler() {
+  //   try {
+  //     await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
+  //       slackSigningSecret,
+  //       slackBotToken,
+  //       currentBotType,
+  //     });
+  //     fetchData();
+  //     toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //   }
+  // }
+
+  const updateHandler = () => {
+    if (props.updateHandler != null){
+      props.updateHandler();
     }
   }
 
