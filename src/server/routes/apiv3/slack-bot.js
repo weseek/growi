@@ -14,16 +14,16 @@ module.exports = (crowi) => {
   this.app = crowi.express;
 
   // Check if the access token is correct
-  function verificationAccessToken(req, res, next) {
-    const slackBotAccessToken = req.body.slack_bot_access_token || null;
+  // function verificationAccessToken(req, res, next) {
+  //   const slackBotAccessToken = req.body.slack_bot_access_token || null;
 
-    if (slackBotAccessToken == null || slackBotAccessToken !== this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-      logger.error('slack_bot_access_token is invalid.');
-      return res.send('*Access token is inValid*');
-    }
+  //   if (slackBotAccessToken == null || slackBotAccessToken !== this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
+  //     logger.error('slack_bot_access_token is invalid.');
+  //     return res.send('*Access token is inValid*');
+  //   }
 
-    return next();
-  }
+  //   return next();
+  // }
 
   function verificationRequestUrl(req, res, next) {
     // for verification request URL on Event Subscriptions
@@ -68,7 +68,7 @@ module.exports = (crowi) => {
     return res.send('Verification failed');
   }
 
-  router.post('/', verificationRequestUrl, verifyingIsSlackRequest, verificationAccessToken, async(req, res) => {
+  router.post('/', verificationRequestUrl, verifyingIsSlackRequest async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
