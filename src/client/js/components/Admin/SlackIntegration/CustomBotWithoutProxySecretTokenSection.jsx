@@ -1,76 +1,28 @@
 import React from 'react';
-// import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const CustomBotWithoutProxySecretTokenSection = (props) => {
-  // const { appContainer, adminAppContainer } = props;
   const { t } = useTranslation();
 
-  // const [slackSigningSecret, setSlackSigningSecret] = useState('');
-  // const [slackBotToken, setSlackBotToken] = useState('');
-  // const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
-  // const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  // const currentBotType = 'custom-bot-without-proxy';
-
-  // const fetchData = useCallback(async() => {
-  //   try {
-  //     await adminAppContainer.retrieveAppSettingsData();
-  //     const res = await appContainer.apiv3.get('/slack-integration/');
-  //     const {
-  //       slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
-  //     } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
-  //     setSlackSigningSecret(slackSigningSecret);
-  //     setSlackBotToken(slackBotToken);
-  //     setSlackSigningSecretEnv(slackSigningSecretEnvVars);
-  //     setSlackBotTokenEnv(slackBotTokenEnvVars);
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // }, [appContainer, adminAppContainer]);
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, [fetchData]);
-
-  // async function updateHandler() {
-  //   try {
-  //     await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
-  //       slackSigningSecret,
-  //       slackBotToken,
-  //       currentBotType,
-  //     });
-  //     fetchData();
-  //     toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // }
-
   const updateSecretTokenHandler = () => {
-    if (props.updateSecretTokenHandler != null){
+    if (props.updateSecretTokenHandler != null) {
       props.updateSecretTokenHandler();
     }
-  }
+  };
 
   const onChangeSigningSecretHandler = (signingSecretInput) => {
     if (props.onChangeSigningSecretHandler != null) {
       props.onChangeSigningSecretHandler(signingSecretInput);
     }
-  }
+  };
 
   const onChangeBotTokenHandler = (botTokenInput) => {
     if (props.onChangeBotTokenHandler != null) {
       props.onChangeBotTokenHandler(botTokenInput);
     }
-  }
+  };
 
   return (
     <div className="card-body">
@@ -90,7 +42,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
               <input
                 className="form-control"
                 type="text"
-                value={slackSigningSecret || ''}
+                value={props.slackSigningSecret || ''}
                 onChange={e => onChangeSigningSecretHandler(e.target.value)}
               />
             </td>
@@ -98,7 +50,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
               <input
                 className="form-control"
                 type="text"
-                value={slackSigningSecretEnv || ''}
+                value={props.slackSigningSecretEnv || ''}
                 readOnly
               />
               <p className="form-text text-muted">
@@ -138,11 +90,15 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   );
 };
 
-const CustomBotWithoutProxySecretTokenSectionWrapper = withUnstatedContainers(CustomBotWithoutProxySecretTokenSection, [AppContainer, AdminAppContainer]);
-
 CustomBotWithoutProxySecretTokenSection.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
+  updateSecretTokenHandler: PropTypes.func,
+  onChangeSigningSecretHandler: PropTypes.func,
+  onChangeBotTokenHandler: PropTypes.func,
+  slackSigningSecret: PropTypes.string,
+  slackSigningSecretEnv: PropTypes.string,
+  slackBotToken: PropTypes.string,
+  slackBotTokenEnv: PropTypes.string,
+
 };
 
-export default CustomBotWithoutProxySecretTokenSectionWrapper;
+export default CustomBotWithoutProxySecretTokenSection;
