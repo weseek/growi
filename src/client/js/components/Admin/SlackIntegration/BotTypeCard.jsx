@@ -7,7 +7,7 @@ const BotTypeCard = (props) => {
 
   return (
     <div
-      className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
+      className={`card admin-bot-card rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
       onClick={() => props.handleBotTypeSelect(props.value.botType)}
       role="button"
       key={props.value.botType}
@@ -21,7 +21,7 @@ const BotTypeCard = (props) => {
             {t(`admin:slack_integration.selecting_bot_types.${props.value.botTypeCategory}`)}
           </span>
 
-          {/* official bot is shown recommended badge, Custom bots are shown supplementary bot name  */}
+          {/* official bot card is shown recommended badge, Custom bot cards are shown supplementary bot name  */}
           {props.value.botType === 'official-bot'
           ? (
             <span className="badge badge-info mr-2">
