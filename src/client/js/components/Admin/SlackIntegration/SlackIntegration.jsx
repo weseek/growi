@@ -45,6 +45,7 @@ const SlackIntegration = (props) => {
       return;
     }
     setSelectedBotType(clickedBotType);
+    console.log(clickedBotType);
   };
 
   const cancelBotChangeHandler = () => {
@@ -91,20 +92,22 @@ const SlackIntegration = (props) => {
   let settingsComponent = null;
 
   switch (currentBotType) {
-    case 'official-bot':
+    case 'officialBot':
       settingsComponent = <OfficialBotSettings />;
       break;
-    case 'custom-bot-without-proxy':
+    case 'customBotWithoutProxy':
       settingsComponent = (
         <CustomBotWithoutProxySettings />
       );
       break;
-    case 'custom-bot-with-proxy':
+    case 'customBotWithProxy':
       settingsComponent = <CustomBotWithProxySettings />;
       break;
   }
 
+
   const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
+  // const botTypes = ['official-bot', 'custom-bot-without-proxy', 'custom-bot-with-proxy'];
 
   return (
     <>

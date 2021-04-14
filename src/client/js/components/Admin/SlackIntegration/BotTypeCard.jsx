@@ -10,7 +10,7 @@ const BotTypeCard = (props) => {
   switch (props.botType) {
     case 'customBotWithoutProxy':
       botDetails = {
-        botType: 'custom-bot-without-proxy',
+        botType: 'customBotWithoutProxy',
         botTypeCategory: 'custom_bot',
         supplementaryBotName: 'without_proxy',
         setUp: 'normal',
@@ -20,7 +20,7 @@ const BotTypeCard = (props) => {
       break;
     case 'customBotWithProxy':
       botDetails = {
-        botType: 'custom-bot-with-proxy',
+        botType: 'customBotWithProxy',
         botTypeCategory: 'custom_bot',
         supplementaryBotName: 'with_proxy',
         setUp: 'hard',
@@ -30,7 +30,7 @@ const BotTypeCard = (props) => {
       break;
     default:
       botDetails = {
-        botType: 'official-bot',
+        botType: 'officialBot',
         botTypeCategory: 'official_bot',
         setUp: 'easy',
         multiWSIntegration: 'possible',
@@ -38,6 +38,24 @@ const BotTypeCard = (props) => {
       };
       break;
   }
+
+  // let settingsComponent = null;
+
+  // switch (props.isActive) {
+  //   case 'official-bot':
+  //     settingsComponent = <OfficialBotSettings />;
+  //     break;
+  //   case 'custom-bot-without-proxy':
+  //     settingsComponent = (
+  //       <CustomBotWithoutProxySettings />
+  //     );
+  //     break;
+  //   case 'custom-bot-with-proxy':
+  //     settingsComponent = <CustomBotWithProxySettings />;
+  //     break;
+  // }
+
+  console.log(props.isActive);
 
   return (
     <div
