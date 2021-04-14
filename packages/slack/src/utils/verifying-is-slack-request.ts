@@ -8,7 +8,6 @@ import { stringify } from 'qs';
 // TODO GW-5628 move this to slack package
 export const verifyingIsSlackRequest = (req, res, signingSecret):string => {
   // Temporary
-  // req.signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
   req.signingSecret = signingSecret;
 
   // take out slackSignature and timestamp from header
@@ -30,7 +29,8 @@ export const verifyingIsSlackRequest = (req, res, signingSecret):string => {
 
   // compare growiSignature and slackSignature
   if (timingSafeEqual(Buffer.from(growiSignature, 'utf8'), Buffer.from(slackSignature, 'utf8'))) {
-    return res.send('いけてるよ');
+    return;
+
   }
 
   return res.send('Verification failed');
