@@ -35,7 +35,13 @@ export class InstallerService {
       installationStore: {
         // upsert
         storeInstallation: async(slackInstallation: SlackInstallation<'v1' | 'v2', boolean>) => {
-          const existedInstallation = await repository.findByTeamIdOrEnterpriseId(slackInstallation.team?.id, slackInstallation.enterprise?.id);
+          const teamIdOrEnterpriseId = slackInstallation.team?.id || slackInstallation.enterprise?.id;
+
+          if (teamIdOrEnterpriseId == null) {
+            throw new Error('teamId or enterpriseId is required.');
+          }
+
+          const existedInstallation = await repository.findByTeamIdOrEnterpriseId(teamIdOrEnterpriseId);
 
           if (existedInstallation != null) {
             existedInstallation.setData(slackInstallation);
