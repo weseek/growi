@@ -7,7 +7,6 @@ import { stringify } from 'qs';
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
    */
 export const verifyingIsSlackRequest = (req, res, next):string => {
-  console.log('hoge')
 
   if (req.signingSecret == null) {
     return res.send('No signing secret.');
