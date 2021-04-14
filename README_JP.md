@@ -27,7 +27,7 @@
 ## 目次
 
 - [機能紹介](#機能紹介)
-- [さっそくはじめてみる](#さっそくはじめてみる)
+- [クイックスタート](#クイックスタート)
   - [docker-compose を使ってはじめる](#docker-compose-を使ってはじめる)
   - [Helm (Experimental) でデプロイする](#Helm-Experimental-でデプロイする)
   - [オンプレミス](#オンプレミスではじめる)
@@ -52,7 +52,7 @@
   - [GROWI Docs: 複数の GROWI を起動](https://docs.growi.org/ja/admin-guide/admin-cookbook/multi-app.html)
   - [GROWI Docs: Let's Encrypt による HTTPS 運用](https://docs.growi.org/ja/admin-guide/admin-cookbook/lets-encrypt.html)
 
-# さっそくはじめてみる
+# クイックスタート
 
 ### docker-compose を使ってはじめる
 
@@ -103,7 +103,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 | コマンド               | 説明                                                             |
 | ---------------------- | ---------------------------------------------------------------- |
 | `yarn run build:prod`  | クライアントをビルドします。                                     |
-| `yarn run server:prod` | サーバーを立ち上げます。                                         |
+| `yarn run server:prod` | サーバーを起動します。                                           |
 | `yarn start`           | `yarn run build:prod` と `yarn run server:prod` を呼び出します。 |
 
   <!-- 以下のリンクは存在しない (ja と en 両方) -->
