@@ -1,5 +1,5 @@
-import crypto from 'crypto';
-import qs from 'qs';
+import {createHmac,timingSafeEqual} from 'crypto';
+import {stringify}  from 'qs';
 
 /**
    * Verify if the request came from slack
@@ -23,14 +23,14 @@ export const verifyingIsSlackRequest = (req, res, next):string => {
   }
 
   // generate growi signature
-  const sigBaseString = `v0:${timestamp}:${qs.stringify(req.body, { format: 'RFC1738' })}`;
-  const hasher = crypto.createHmac('sha256', req.signingSecret);
+  const sigBaseString = `v0:${timestamp}:${stringify(req.body, { format: 'RFC1738' })}`;
+  const hasher = createHmac('sha256', req.signingSecret);
   hasher.update(sigBaseString, 'utf8');
   const hashedSigningSecret = hasher.digest('hex');
   const growiSignature = `v0=${hashedSigningSecret}`;
 
   // compare growiSignature and slackSignature
-  if (crypto.timingSafeEqual(Buffer.from(growiSignature, 'utf8'), Buffer.from(slackSignature, 'utf8'))) {
+  if (timingSafeEqual(Buffer.from(growiSignature, 'utf8'), Buffer.from(slackSignature, 'utf8'))) {
     return next();
   }
 console.log("ippo");
