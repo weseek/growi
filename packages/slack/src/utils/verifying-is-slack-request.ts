@@ -6,7 +6,7 @@ import qs from 'qs';
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
    */
 // TODO GW-5628 move this to slack package
-export default function verifyingIsSlackRequest(req, res, next):string {
+export const verifyingIsSlackRequest = (req, res, next):string => {
   console.log(req);
   // Temporary
   // req.signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
@@ -35,4 +35,4 @@ export default function verifyingIsSlackRequest(req, res, next):string {
   }
 
   return res.send('Verification failed');
-}
+};
