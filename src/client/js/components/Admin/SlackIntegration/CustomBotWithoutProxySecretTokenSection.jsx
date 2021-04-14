@@ -23,7 +23,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
       props.updateSecretTokenHandler();
     }
   };
-  
+
   return (
     <div className="card-body">
       <table className="table settings-table">
