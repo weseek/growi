@@ -6,9 +6,10 @@ import { stringify } from 'qs';
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
    */
 // TODO GW-5628 move this to slack package
-export const verifyingIsSlackRequest = (req, res, signingSecret):string => {
+export const verifyingIsSlackRequest = (req, res, next):string => {
   // Temporary
-  req.signingSecret = signingSecret;
+
+console.log(req.signingSecret);
 
   // take out slackSignature and timestamp from header
   const slackSignature = req.headers['x-slack-signature'];
@@ -29,7 +30,7 @@ export const verifyingIsSlackRequest = (req, res, signingSecret):string => {
 
   // compare growiSignature and slackSignature
   if (timingSafeEqual(Buffer.from(growiSignature, 'utf8'), Buffer.from(slackSignature, 'utf8'))) {
-    return;
+    return next();
 
   }
 
