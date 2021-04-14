@@ -133,7 +133,7 @@ const BotTypeCard = (props) => {
 
 BotTypeCard.propTypes = {
   isActive: PropTypes.bool,
-  botType: PropTypes.array,
+  botType: PropTypes.string,
   // value: PropTypes.object,
   handleBotTypeSelect: PropTypes.func,
 };
