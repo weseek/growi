@@ -36,15 +36,15 @@ const BotTypeCard = (props) => {
   let botDetails = {};
 
   switch (props.botType) {
-    case 'official-bot':
-      botDetails = {
-        botType: 'official-bot',
-        botTypeCategory: 'official_bot',
-        setUp: 'easy',
-        multiWSIntegration: 'possible',
-        securityControl: 'impossible',
-      };
-      break;
+    // case 'official-bot':
+    //   botDetails = {
+    //     botType: 'official-bot',
+    //     botTypeCategory: 'official_bot',
+    //     setUp: 'easy',
+    //     multiWSIntegration: 'possible',
+    //     securityControl: 'impossible',
+    //   };
+    //   break;
     case 'customBotWithoutProxy':
       botDetails = {
         botType: 'custom-bot-without-proxy',
@@ -67,6 +67,11 @@ const BotTypeCard = (props) => {
       break;
     default:
       botDetails = {
+        botType: 'official-bot',
+        botTypeCategory: 'official_bot',
+        setUp: 'easy',
+        multiWSIntegration: 'possible',
+        securityControl: 'impossible',
       };
       break;
   }
@@ -82,7 +87,7 @@ const BotTypeCard = (props) => {
     >
       <div>
         <h3 className={`card-header mb-0 py-3
-              ${props.botType === 'official-bot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
+              ${props.botType === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
               ${props.isActive ? 'bg-primary text-light' : ''}`}
         >
           <span className="mr-2">
@@ -90,7 +95,7 @@ const BotTypeCard = (props) => {
           </span>
 
           {/* official bot card is shown recommended badge, Custom bot cards are shown supplementary bot name  */}
-          {props.botType === 'official-bot'
+          {props.botType === 'officialBot'
           ? (
             <span className="badge badge-info mr-2">
               {t('admin:slack_integration.selecting_bot_types.recommended')}
