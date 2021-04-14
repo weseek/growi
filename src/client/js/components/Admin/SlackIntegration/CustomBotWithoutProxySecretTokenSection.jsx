@@ -54,9 +54,21 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   //   }
   // }
 
-  const updateHandler = () => {
-    if (props.updateHandler != null){
-      props.updateHandler();
+  const updateSecretTokenHandler = () => {
+    if (props.updateSecretTokenHandler != null){
+      props.updateSecretTokenHandler();
+    }
+  }
+
+  const onChangeSigningSecretHandler = (signingSecretInput) => {
+    if (props.onChangeSigningSecretHandler != null) {
+      props.onChangeSigningSecretHandler(signingSecretInput);
+    }
+  }
+
+  const onChangeBotTokenHandler = (botTokenInput) => {
+    if (props.onChangeBotTokenHandler != null) {
+      props.onChangeBotTokenHandler(botTokenInput);
     }
   }
 
@@ -79,7 +91,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
                 className="form-control"
                 type="text"
                 value={slackSigningSecret || ''}
-                onChange={e => setSlackSigningSecret(e.target.value)}
+                onChange={e => onChangeSigningSecretHandler(e.target.value)}
               />
             </td>
             <td>
@@ -101,15 +113,15 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
               <input
                 className="form-control"
                 type="text"
-                value={slackBotToken || ''}
-                onChange={e => setSlackBotToken(e.target.value)}
+                value={props.slackBotToken || ''}
+                onChange={e => onChangeBotTokenHandler(e.target.value)}
               />
             </td>
             <td>
               <input
                 className="form-control"
                 type="text"
-                value={slackBotTokenEnv || ''}
+                value={props.slackBotTokenEnv || ''}
                 readOnly
               />
               <p className="form-text text-muted">
@@ -121,7 +133,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
         </tbody>
       </table>
 
-      <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
+      <AdminUpdateButtonRow onClick={updateSecretTokenHandler} disabled={false} />
     </div>
   );
 };
