@@ -5,46 +5,9 @@ import { useTranslation } from 'react-i18next';
 const BotTypeCard = (props) => {
   const { t } = useTranslation('admin');
 
-  // const botTypes = {
-  //   officialBot: {
-  //     botType: 'official-bot',
-  //     botTypeCategory: 'official_bot',
-  //     setUp: 'easy',
-  //     multiWSIntegration: 'possible',
-  //     securityControl: 'impossible',
-  //   },
-  //   customBotWithoutProxy: {
-  //     botType: 'custom-bot-without-proxy',
-  //     botTypeCategory: 'custom_bot',
-  //     supplementaryBotName: 'without_proxy',
-  //     setUp: 'normal',
-  //     multiWSIntegration: 'impossible',
-  //     securityControl: 'possible',
-  //   },
-  //   customBotWithProxy: {
-  //     botType: 'custom-bot-with-proxy',
-  //     botTypeCategory: 'custom_bot',
-  //     supplementaryBotName: 'with_proxy',
-  //     setUp: 'hard',
-  //     multiWSIntegration: 'possible',
-  //     securityControl: 'possible',
-  //   },
-  // };
-
-  // async function switchBotDetails(botType) {
-
   let botDetails = {};
 
   switch (props.botType) {
-    // case 'official-bot':
-    //   botDetails = {
-    //     botType: 'official-bot',
-    //     botTypeCategory: 'official_bot',
-    //     setUp: 'easy',
-    //     multiWSIntegration: 'possible',
-    //     securityControl: 'impossible',
-    //   };
-    //   break;
     case 'customBotWithoutProxy':
       botDetails = {
         botType: 'custom-bot-without-proxy',
@@ -75,8 +38,6 @@ const BotTypeCard = (props) => {
       };
       break;
   }
-  // }
-  // }
 
   return (
     <div
@@ -139,7 +100,6 @@ const BotTypeCard = (props) => {
 BotTypeCard.propTypes = {
   isActive: PropTypes.bool,
   botType: PropTypes.string,
-  // value: PropTypes.object,
   handleBotTypeSelect: PropTypes.func,
 };
 
