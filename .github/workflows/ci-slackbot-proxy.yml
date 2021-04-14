@@ -198,7 +198,7 @@ jobs:
           yarn list --depth=0
       - name: yarn build
         run: |
-          yarn lerna run build --scope @growi/slackbot-proxy
+          yarn lerna run build
       - name: yarn install --production
         run: |
           yarn lerna exec "yarn install --production"
