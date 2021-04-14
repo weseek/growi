@@ -1,4 +1,3 @@
-
 const express = require('express');
 
 const loggerFactory = require('@alias/logger');
@@ -38,7 +37,6 @@ module.exports = (crowi) => {
   };
 
   router.post('/', verificationRequestUrl, slackBotSigningSecret, verifyingIsSlackRequest, verificationAccessToken, async(req, res) => {
-
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
