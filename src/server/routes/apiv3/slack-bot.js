@@ -69,8 +69,9 @@ module.exports = (crowi) => {
   //   return res.send('Verification failed');
   // }
 
-  router.post('/', /* verificationRequestUrl, */ verifyingIsSlackRequest, /* verificationAccessToken, */ async(req, res) => {
+  router.post('/', /* verificationRequestUrl, /* verificationAccessToken, */ async(req, res) => {
 
+    verifyingIsSlackRequest(req, res, crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'));
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
