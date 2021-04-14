@@ -37,7 +37,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  router.post('/', slackBotSigningSecret, verifyingIsSlackRequest, verificationRequestUrl, verificationAccessToken, async(req, res) => {
+  router.post('/', verificationRequestUrl, slackBotSigningSecret, verifyingIsSlackRequest, verificationAccessToken, async(req, res) => {
 
 
     // Send response immediately to avoid opelation_timeout error
