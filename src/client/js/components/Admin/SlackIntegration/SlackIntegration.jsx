@@ -107,7 +107,6 @@ const SlackIntegration = (props) => {
 
 
   const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
-  // const botTypes = ['official-bot', 'custom-bot-without-proxy', 'custom-bot-with-proxy'];
 
   return (
     <>
