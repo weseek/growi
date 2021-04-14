@@ -25,6 +25,8 @@ module.exports = (crowi) => {
     return next();
   }
 
+  console.log('hoge');
+
   function verificationRequestUrl(req, res, next) {
     // for verification request URL on Event Subscriptions
     if (req.body.type === 'url_verification') {
