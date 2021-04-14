@@ -23,7 +23,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     setOpenAccordionIndexes(accordionIndexes);
   };
 
-  const onTestConnectionHandler = async() => {
+  const onTestConnectionHandler = async () => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     try {
