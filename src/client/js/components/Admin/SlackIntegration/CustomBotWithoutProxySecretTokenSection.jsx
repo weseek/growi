@@ -6,12 +6,6 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 const CustomBotWithoutProxySecretTokenSection = (props) => {
   const { t } = useTranslation();
 
-  const updateSecretTokenHandler = () => {
-    if (props.updateSecretTokenHandler != null) {
-      props.updateSecretTokenHandler();
-    }
-  };
-
   const onChangeSigningSecretHandler = (signingSecretInput) => {
     if (props.onChangeSigningSecretHandler != null) {
       props.onChangeSigningSecretHandler(signingSecretInput);
@@ -24,6 +18,12 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
     }
   };
 
+  const updateSecretTokenHandler = () => {
+    if (props.updateSecretTokenHandler != null) {
+      props.updateSecretTokenHandler();
+    }
+  };
+  
   return (
     <div className="card-body">
       <table className="table settings-table">
