@@ -19,6 +19,8 @@ export const verifyingIsSlackRequest = (req, res, next):string => {
   // protect against replay attacks
   const time = Math.floor(new Date().getTime() / 1000);
   if (Math.abs(time - timestamp) > 300) {
+    console.log("math");
+
     return res.send('Verification failed.');
   }
 
