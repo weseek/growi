@@ -45,7 +45,6 @@ const SlackIntegration = (props) => {
       return;
     }
     setSelectedBotType(clickedBotType);
-    console.log(clickedBotType);
   };
 
   const cancelBotChangeHandler = () => {
