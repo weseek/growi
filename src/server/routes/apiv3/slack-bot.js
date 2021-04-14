@@ -69,10 +69,10 @@ module.exports = (crowi) => {
   //   return res.send('Verification failed');
   // }
 
-  router.post('/', /* verificationRequestUrl, */ verifyingIsSlackRequest, /* verificationAccessToken, */ async(req, res) => {
+  router.post('/', /* verificationRequestUrl, */ /* verifyingIsSlackRequest(), */ /* verificationAccessToken, */ async(req, res) => {
 
-    // const hoge = verifyingIsSlackRequest();
-    // console.log(hoge);
+    const hoge = verifyingIsSlackRequest();
+    console.log('slackbotapi', hoge);
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();

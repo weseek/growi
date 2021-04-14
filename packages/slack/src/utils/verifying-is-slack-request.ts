@@ -38,5 +38,5 @@
 // };
 
 export const verifyingIsSlackRequest = (req, res, next) => {
-return console.log("wimatu")
+return 'hoge'
 }
