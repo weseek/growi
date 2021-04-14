@@ -104,32 +104,6 @@ const SlackIntegration = (props) => {
       break;
   }
 
-  // const botTypes = {
-  //   officialBot: {
-  //     botType: 'official-bot',
-  //     botTypeCategory: 'official_bot',
-  //     setUp: 'easy',
-  //     multiWSIntegration: 'possible',
-  //     securityControl: 'impossible',
-  //   },
-  //   customBotWithoutProxy: {
-  //     botType: 'custom-bot-without-proxy',
-  //     botTypeCategory: 'custom_bot',
-  //     supplementaryBotName: 'without_proxy',
-  //     setUp: 'normal',
-  //     multiWSIntegration: 'impossible',
-  //     securityControl: 'possible',
-  //   },
-  //   customBotWithProxy: {
-  //     botType: 'custom-bot-with-proxy',
-  //     botTypeCategory: 'custom_bot',
-  //     supplementaryBotName: 'with_proxy',
-  //     setUp: 'hard',
-  //     multiWSIntegration: 'possible',
-  //     securityControl: 'possible',
-  //   },
-  // };
-
   const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
 
   return (
@@ -161,14 +135,12 @@ const SlackIntegration = (props) => {
 
         <div className="row my-4">
           <div className="card-deck mx-auto">
-            {/* {Object.entries(botTypes).map(([key, value]) => { */}
             {botTypes.map((botType) => {
               return (
                 <BotTypeCard
                   key={botType}
                   botType={botType}
                   isActive={currentBotType === botType}
-                  // value={value}
                   handleBotTypeSelect={handleBotTypeSelect}
                 />
               );
