@@ -10,7 +10,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
-  const [connectionErrorLog, setConnectionErrorLog] = useState({});
+  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
+  const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
 
   const onToggleAccordionHandler = (i) => {
     const accordionIndexes = new Set(openAccordionIndexes);
@@ -23,8 +24,9 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     setOpenAccordionIndexes(accordionIndexes);
   };
 
-  const onTestConnectionHandler = async() => {
-    setConnectionErrorLog({ connectionErrorCode: null, connectionErrorMessage: null });
+  const onTestConnectionHandler = async () => {
+    setConnectionErrorCode(null);
+    setConnectionErrorMessage(null);
     try {
       await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
@@ -32,13 +34,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       });
     }
     catch (err) {
-      const errorCode = err[0].code;
-      const errorMessage = err[0].message;
-      setConnectionErrorLog(prevState => ({
-        ...prevState,
-        connectionErrorCode: errorCode,
-        connectionErrorMessage: errorMessage,
-      }));
+      setConnectionErrorCode(err[0].code);
+      setConnectionErrorMessage(err[0].message);
     }
   };
 
@@ -149,15 +146,15 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <div className="d-flex justify-content-center">
               <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
             </div>
-            {connectionErrorLog.connectionErrorMessage != null
+            {connectionErrorMessage != null
               && <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
             }
             <div className="row m-3 justify-content-center">
               <div className="col-sm-5 slack-connection-error-log">
                 <p className="border-info slack-connection-error-log-title mb-1 pl-2">Logs</p>
                 <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
-                  <p className="m-0">{connectionErrorLog.connectionErrorCode}</p>
-                  <p className="m-0">{connectionErrorLog.connectionErrorMessage}</p>
+                  <p className="m-0">{connectionErrorCode}</p>
+                  <p className="m-0">{connectionErrorMessage}</p>
                 </div>
               </div>
             </div>
