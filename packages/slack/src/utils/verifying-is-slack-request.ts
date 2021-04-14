@@ -7,8 +7,8 @@ import { stringify } from 'qs';
    */
 export const verifyingIsSlackRequest = (req, res, next):string => {
 
-  if(req.signingSecret == null){
-    return res.send('No signing secret.')
+  if (req.signingSecret == null) {
+    return res.send('No signing secret.');
   }
   // take out slackSignature and timestamp from header
   const slackSignature = req.headers['x-slack-signature'];
