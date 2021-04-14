@@ -5,22 +5,6 @@ import { useTranslation } from 'react-i18next';
 const BotTypeCard = (props) => {
   const { t } = useTranslation('admin');
 
-  const renderSupplementaryBotName = () => {
-    return (
-      <span className="supplementary-bot-name mr-2">
-        {t(`admin:slack_integration.selecting_bot_types.${props.value.supplementaryBotName}`)}
-      </span>
-    );
-  };
-  const renderRecommendedBadge = () => {
-    return (
-      <span className="badge badge-info mr-2">
-        {t('admin:slack_integration.selecting_bot_types.recommended')}
-      </span>
-    );
-  };
-
-
   return (
     <div
       className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
@@ -37,10 +21,16 @@ const BotTypeCard = (props) => {
             {t(`admin:slack_integration.selecting_bot_types.${props.value.botTypeCategory}`)}
           </span>
 
-          {props.value.botTypeCategory === 'custom_bot' ? renderSupplementaryBotName() : ''}
-
-
-          {props.value.botType === 'official-bot' ? renderRecommendedBadge() : ''}
+          {props.value.botType === 'official-bot'
+          ? (
+            <span className="badge badge-info mr-2">
+              {t('admin:slack_integration.selecting_bot_types.recommended')}
+            </span>
+          ) : (
+            <span className="supplementary-bot-name mr-2">
+              {t(`admin:slack_integration.selecting_bot_types.${props.value.supplementaryBotName}`)}
+            </span>
+          )}
 
           {/* TODO: add an appropriate links by GW-5614 */}
           <i className={`fa fa-external-link btn-link ${props.isActive ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
