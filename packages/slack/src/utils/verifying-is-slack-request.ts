@@ -8,9 +8,9 @@ import { stringify } from 'qs';
 // TODO GW-5628 move this to slack package
 export const verifyingIsSlackRequest = (req, res, next):string => {
   // Temporary
-
-console.log(req.signingSecret);
-
+  if(req.signingSecret == null){
+    return res.send('No signing secret.')
+  }
   // take out slackSignature and timestamp from header
   const slackSignature = req.headers['x-slack-signature'];
   const timestamp = req.headers['x-slack-request-timestamp'];
