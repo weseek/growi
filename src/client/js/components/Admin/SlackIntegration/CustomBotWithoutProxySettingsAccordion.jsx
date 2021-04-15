@@ -151,7 +151,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
             <div className="d-flex justify-content-center">
               <form>
-                <input type="text" value={testChannel} onChange={e => inputTestChannelHandler(e.target.value)} />
+                <input type="text" value={testChannel} placeholder="Input channel invited bot" onChange={e => inputTestChannelHandler(e.target.value)} />
                 <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
               </form>
             </div>
