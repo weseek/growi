@@ -30,7 +30,7 @@ const CustomBotWithoutProxySettings = (props) => {
   const currentBotType = 'custom-bot-without-proxy';
 
 
-  const checkCredentials = () => {
+  const checkCredentials = useCallback(() => {
     if (slackBotToken && slackSigningSecret) {
       return setIsRgisterSlackCredentials(true);
     }
@@ -38,7 +38,7 @@ const CustomBotWithoutProxySettings = (props) => {
       return setIsRgisterSlackCredentials(true);
     }
     return setIsRgisterSlackCredentials(false);
-  };
+  }, [slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv]);
 
   const fetchData = useCallback(async() => {
     try {
@@ -54,7 +54,6 @@ const CustomBotWithoutProxySettings = (props) => {
       setSiteName(adminAppContainer.state.title);
       setIsSetupSlackBot(isSetupSlackBot);
       setIsConnectedToSlack(isConnectedToSlack);
-      checkCredentials;
     }
     catch (err) {
       toastError(err);
@@ -90,6 +89,7 @@ const CustomBotWithoutProxySettings = (props) => {
         currentBotType,
       });
       fetchData();
+      checkCredentials();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
