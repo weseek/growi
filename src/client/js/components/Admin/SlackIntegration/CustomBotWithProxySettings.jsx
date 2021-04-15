@@ -11,9 +11,11 @@ const CustomBotWithProxySettings = (props) => {
   const { t } = useTranslation();
 
   return (
-    <div className="row my-5">
-      <h1>With Proxy Component</h1>
-    </div>
+    <>
+
+      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
+      
+    </>
   );
 };
 
