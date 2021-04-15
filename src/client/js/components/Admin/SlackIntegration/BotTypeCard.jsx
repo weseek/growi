@@ -33,8 +33,6 @@ const botDetails = {
 const BotTypeCard = (props) => {
   const { t } = useTranslation('admin');
 
-  console.log('botDetails[props.botType]', botDetails.customBotWithProxy);
-
   return (
     <div
       className={`card admin-bot-card rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
@@ -97,10 +95,6 @@ BotTypeCard.propTypes = {
   isActive: PropTypes.bool,
   botType: PropTypes.string,
   handleBotTypeSelect: PropTypes.func,
-};
-
-BotTypeCard.defaultProps = {
-  botType: 'officialBot',
 };
 
 export default BotTypeCard;
