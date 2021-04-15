@@ -11,6 +11,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
+  const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
   const onToggleAccordionHandler = (i) => {
@@ -27,11 +28,14 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const onTestConnectionHandler = async() => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
+    setConnectionSuccessMessage(null);
     try {
-      await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
+      const res = await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
         channel: testChannel,
       });
+      console.log(res.data.message);
+      setConnectionSuccessMessage(res.data.message);
     }
     catch (err) {
       setConnectionErrorCode(err[0].code);
@@ -179,6 +183,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
                 <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
                   <p className="m-0">{connectionErrorCode}</p>
                   <p className="m-0">{connectionErrorMessage}</p>
+                  <p className="m-0">{connectionSuccessMessage}</p>
                 </div>
               </div>
             </div>
