@@ -1,10 +1,9 @@
 # syntax = docker/dockerfile:1.2
 
 ##
-## deps-resolver
+## deps-resolver-base
 ##
-FROM node:14-slim AS deps-resolver
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+FROM node:14-slim AS deps-resolver-base
 
 ENV appDir /opt
 
@@ -17,6 +16,13 @@ COPY ./packages/slackbot-proxy/package.json ./packages/slackbot-proxy/package.js
 
 # setup
 RUN yarn config set network-timeout 300000
+
+
+
+##
+## deps-resolver-dev
+##
+FROM deps-resolver-base AS deps-resolver-dev
 RUN npx lerna bootstrap
 
 
@@ -24,25 +30,9 @@ RUN npx lerna bootstrap
 ##
 ## deps-resolver-prod
 ##
-FROM node:14-slim AS deps-resolver-prod
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
-
-ENV appDir /opt
-
-WORKDIR ${appDir}
-
-COPY ./package.json ./
-COPY ./yarn.lock ./
-COPY ./lerna.json ./
-COPY ./packages/slack/package.json ./packages/slack/package.json
-COPY ./packages/slackbot-proxy/package.json ./packages/slackbot-proxy/package.json
-
-# setup
-RUN yarn config set network-timeout 300000
-
+FROM deps-resolver-base AS deps-resolver-prod
 RUN npx lerna bootstrap -- --production
-
-# make tar for keeping symlink
+# make artifacts
 RUN tar cf node_modules.tar node_modules
 
 
@@ -50,13 +40,12 @@ RUN tar cf node_modules.tar node_modules
 ## builder
 ##
 FROM node:14-slim AS builder
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt
 
 WORKDIR ${appDir}
 
-COPY --from=deps-resolver ${appDir}/node_modules node_modules
+COPY --from=deps-resolver-dev ${appDir}/node_modules node_modules
 
 # copy all related packages
 COPY packages/slack packages/slack
@@ -71,7 +60,7 @@ COPY ./packages/slackbot-proxy ./packages/slackbot-proxy
 # build
 RUN yarn lerna run build
 
-# make tar for filtering artifacts
+# make artifacts
 RUN tar cf packages.tar \
   packages/slack/package.json \
   packages/slack/dist \
