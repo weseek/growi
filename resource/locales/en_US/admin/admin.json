@@ -293,6 +293,7 @@
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) Settings",
     "without_proxy": {
       "create_bot": "Create Bot",
+      "how_to_create_a_bot": "How to create a bot",
       "install_bot_to_slack": "Install Bot To Slack",
       "select_install_your_app": "Select \"Install your app\".",
       "select_install_to_workspace": "Select \"Install to Workspace\".",
@@ -300,8 +301,7 @@
       "install_complete_if_checked": "Confirm that \"Install your app\" is checked.",
       "invite_bot_to_channel": "Invite GROWI bot to channel by calling @example.",
       "register_secret_and_token": "Set Signing Secret and Bot Token",
-      "test_connection": "Test Connection",
-      "how_to_create_a_bot": "How to create a bot"
+      "test_connection": "Test Connection"
     }
   },
   "user_management": {

@@ -291,15 +291,15 @@
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
     "without_proxy": {
       "create_bot": "Bot を作成する",
+      "how_to_create_a_bot": "作成方法はこちら",
       "install_bot_to_slack": "Bot を Slackにインストールする",
       "select_install_your_app": "Install your app をクリックします。",
       "select_install_to_workspace": "Install to Workspace をクリックします。",
       "click_allow": "遷移先の画面にて、Allowをクリックします。",
-      "install_complete_if_checked": "Install your app の右側に 緑色のチェックがつけばワークスペースへのインストール完了です。",
+      "install_complete_if_checked": "Install your app の右側に緑色のチェックがつけばワークスペースへのインストール完了です。",
       "invite_bot_to_channel": "GROWI bot を使いたいチャンネルに @example を使用して招待します。",
       "register_secret_and_token": "Signing Secret と Bot Token を登録する",
-      "test_connection": "連携状況のテストをする",
-      "how_to_create_a_bot": "作成方法はこちら"
+      "test_connection": "連携状況のテストをする"
     }
   },
   "user_management": {
