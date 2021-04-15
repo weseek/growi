@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from 'express';
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
    */
 
-export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string}, res: Response, next: NextFunction):Record<string, any> | void => {
+export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string}, res: Response, next: NextFunction):Record<string, any>| void => {
 
   if (req.signingSecret == null) {
     return res.send('No signing secret.');
