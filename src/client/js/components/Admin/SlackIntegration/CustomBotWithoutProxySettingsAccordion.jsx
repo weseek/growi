@@ -150,9 +150,24 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           <div className="card-body">
             <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
             <div className="d-flex justify-content-center">
-              <form>
-                <input type="text" value={testChannel} placeholder="Input channel invited bot" onChange={e => inputTestChannelHandler(e.target.value)} />
-                <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
+              <form className="form-row align-items-center w-25">
+                <div className="col-8">
+                  <input
+                    className="form-control"
+                    type="text"
+                    value={testChannel}
+                    placeholder="Input channel invited bot"
+                    onChange={e => inputTestChannelHandler(e.target.value)}
+                  />
+                </div>
+                <div className="col-4">
+                  <button
+                    type="button"
+                    className="btn btn-info m-3 font-weight-bold"
+                    onClick={onTestConnectionHandler}
+                  >Test
+                  </button>
+                </div>
               </form>
             </div>
             {connectionErrorMessage != null
