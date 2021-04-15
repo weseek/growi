@@ -28,7 +28,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     try {
       await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
-        channel: 'testchannel',
+        // channel: 'testchannel',
       });
     }
     catch (err) {
