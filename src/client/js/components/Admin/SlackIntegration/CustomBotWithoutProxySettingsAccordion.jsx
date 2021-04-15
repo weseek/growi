@@ -47,7 +47,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           role="button"
           onClick={() => onToggleAccordionHandler(0)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}<i className="ml-3 text-success fa fa-check"></i></p>
+          <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</p>
           {openAccordionIndexes.has(0)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
@@ -85,7 +85,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           role="button"
           onClick={() => onToggleAccordionHandler(1)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</p>
+          <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')} {}<i className="ml-3 text-success fa fa-check"></i></p>
           {openAccordionIndexes.has(1)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
@@ -116,7 +116,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           role="button"
           onClick={() => onToggleAccordionHandler(2)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}</p>
+          <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}{}<i className="ml-3 text-success fa fa-check"></i></p>
           {openAccordionIndexes.has(2)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
@@ -135,7 +135,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           role="button"
           onClick={() => onToggleAccordionHandler(3)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</p>
+          <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}{}<i className="ml-3 text-success fa fa-check"></i></p>
           {openAccordionIndexes.has(3)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
