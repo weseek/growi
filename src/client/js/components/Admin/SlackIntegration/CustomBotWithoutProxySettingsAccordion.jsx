@@ -5,7 +5,7 @@ import { Collapse } from 'reactstrap';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-
+// add check ci
 export const botInstallationStep = {
   CREATE_BOT: 'create-bot',
   INSTALL_BOT: 'install-bot',
