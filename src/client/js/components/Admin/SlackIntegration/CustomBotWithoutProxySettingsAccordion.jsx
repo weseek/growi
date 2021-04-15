@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
 import { Collapse } from 'reactstrap';
+import AppContainer from '../../../services/AppContainer';
 
 export const botInstallationStep = {
   CREATE_BOT: 'create-bot',
@@ -11,8 +13,12 @@ export const botInstallationStep = {
   CONNECTION_TEST: 'connection-test',
 };
 
-const CustomBotWithoutSettingsAccordion = ({ activeStep }) => {
+const CustomBotWithoutProxySettingsAccordion = (props) => {
+  const { appContainer } = props;
   const { t } = useTranslation('admin');
+  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
+  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
+  const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
 
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
 
@@ -25,6 +31,21 @@ const CustomBotWithoutSettingsAccordion = ({ activeStep }) => {
       accordionIndexes.add(installationStep);
     }
     setOpenAccordionIndexes(accordionIndexes);
+  };
+
+  const onTestConnectionHandler = async() => {
+    setConnectionErrorCode(null);
+    setConnectionErrorMessage(null);
+    try {
+      await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
+        // TODO put proper request
+        channel: 'testchannel',
+      });
+    }
+    catch (err) {
+      setConnectionErrorCode(err[0].code);
+      setConnectionErrorMessage(err[0].message);
+    }
   };
 
   return (
@@ -81,8 +102,20 @@ const CustomBotWithoutSettingsAccordion = ({ activeStep }) => {
           }
         </div>
         <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.INSTALL_BOT)}>
-          <div className="card-body">
-            BODY2
+          <div className="card-body py-5">
+            <div className="container w-75">
+              <p>1. Install your app をクリックします。</p>
+              <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
+              <p>2. Install to Workspace をクリックします。</p>
+              <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
+              <p>3. 遷移先の画面にて、Allowをクリックします。</p>
+              <img src="/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
+              <p>4. Install your app の右側に 緑色のチェックがつけばワークスペースへのインストール完了です。</p>
+              <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
+              <p>5. GROWI bot を使いたいチャンネルに @example を使用して招待します。</p>
+              <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
+              <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
+            </div>
           </div>
         </Collapse>
       </div>
@@ -120,20 +153,36 @@ const CustomBotWithoutSettingsAccordion = ({ activeStep }) => {
         </div>
         <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.CONNECTION_TEST)}>
           <div className="card-body">
-            BODY 4
+            <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
+            <div className="d-flex justify-content-center">
+              <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
+            </div>
+            {connectionErrorMessage != null
+              && <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
+            }
+            <div className="row m-3 justify-content-center">
+              <div className="col-sm-5 slack-connection-error-log">
+                <p className="border-info slack-connection-error-log-title mb-1 pl-2">Logs</p>
+                <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
+                  <p className="m-0">{connectionErrorCode}</p>
+                  <p className="m-0">{connectionErrorMessage}</p>
+                </div>
+              </div>
+            </div>
           </div>
         </Collapse>
       </div>
-
     </div>
-
   );
-
 };
 
+const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer]);
 
-CustomBotWithoutSettingsAccordion.propTypes = {
+CustomBotWithoutProxySettingsAccordion.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
+
 };
 
-export default CustomBotWithoutSettingsAccordion;
+export default CustomBotWithoutProxySettingsAccordionWrapper;
