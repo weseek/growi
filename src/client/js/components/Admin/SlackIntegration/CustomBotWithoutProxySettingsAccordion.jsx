@@ -38,6 +38,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     }
   };
 
+  const hoge = true;
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
 
@@ -47,7 +48,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           role="button"
           onClick={() => onToggleAccordionHandler(0)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</p>
+          <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}{hoge && 'input checkmark'}</p>
           {openAccordionIndexes.has(0)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
