@@ -110,7 +110,7 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
-    - name: Install dependencies
+    - name: lerna bootstrap
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npx lerna bootstrap
@@ -191,7 +191,7 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
-    - name: Install dependencies
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -199,12 +199,12 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build
+    - name: lerna run build
       run: |
         yarn lerna run build
-    - name: yarn install --production
+    - name: lerna bootstrap -- --production
       run: |
-        yarn lerna exec "yarn install --production"
+        yarn lerna bootstrap -- --production
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
