@@ -302,6 +302,11 @@
     "without_proxy": {
       "create_bot": "创建 Bot",
       "install_bot_to_slack": "将Bot安装到Slack",
+      "select_install_your_app": "选择 \"Install your app\"。",
+      "select_install_to_workspace": "选择 \"Install to Workspace\"。",
+      "click_allow": "选择 \"Allow\"。",
+      "install_complete_if_checked": "确认已选中\"Install your app\"。",
+      "invite_bot_to_channel": "通过调用@example邀请GROWI Bot进行频道。",
       "register_secret_and_token": "设置签名秘密和BOT令牌",
       "test_connection": "测试连接",
       "how_to_create_a_bot": "如何创建一个BOT"
