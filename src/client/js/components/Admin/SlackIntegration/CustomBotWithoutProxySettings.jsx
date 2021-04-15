@@ -30,16 +30,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const currentBotType = 'custom-bot-without-proxy';
 
 
-  const checkCredentials = useCallback(() => {
-    if (slackBotToken && slackSigningSecret) {
-      return setIsRgisterSlackCredentials(true);
-    }
-    if (slackBotTokenEnv && slackSigningSecretEnv) {
-      return setIsRgisterSlackCredentials(true);
-    }
-    return setIsRgisterSlackCredentials(false);
-  }, [slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv]);
-
   const fetchData = useCallback(async() => {
     try {
       await adminAppContainer.retrieveAppSettingsData();
@@ -54,11 +44,15 @@ const CustomBotWithoutProxySettings = (props) => {
       setSiteName(adminAppContainer.state.title);
       setIsSetupSlackBot(isSetupSlackBot);
       setIsConnectedToSlack(isConnectedToSlack);
+
+      if ((slackBotToken && slackSigningSecret) || (slackBotTokenEnv && slackSigningSecretEnv)) {
+        setIsRgisterSlackCredentials(true);
+      }
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer, adminAppContainer]);
+  }, [appContainer, adminAppContainer, slackSigningSecretEnv, slackBotTokenEnv]);
 
   useEffect(() => {
     const getSlackWorkSpaceName = async() => {
@@ -89,7 +83,6 @@ const CustomBotWithoutProxySettings = (props) => {
         currentBotType,
       });
       fetchData();
-      checkCredentials();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
