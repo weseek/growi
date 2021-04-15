@@ -12,7 +12,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
-  // const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
+  const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
   const onToggleAccordionHandler = (i) => {
@@ -35,6 +35,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         // TODO put proper request
         channel: testChannel,
       });
+      setConnectionSuccessMessage(res.data.message);
       toastSuccess(`Successfuly send message #${testChannel}.`);
     }
     catch (err) {
@@ -177,13 +178,26 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             {connectionErrorMessage != null
               && <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
             }
+            {connectionSuccessMessage != null
+              && <p className="text-info text-center m-4">Slack ワークスペースに送信しました。</p>
+            }
             <div className="row m-3 justify-content-center">
               <div className="col-sm-5 slack-connection-error-log">
                 <p className="border-info slack-connection-error-log-title mb-1 pl-2">Logs</p>
                 <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
-                  <p className="m-0">{connectionErrorCode}</p>
-                  <p className="m-0">{connectionErrorMessage}</p>
+                  {connectionErrorMessage != null && (
+                    <>
+                      <p className="m-0">{connectionErrorCode}</p>
+                      <p className="m-0">{connectionErrorMessage}</p>
+                    </>
+                  )}
+                  {connectionSuccessMessage != null && (
+                  <p className="m-0">{connectionSuccessMessage}</p>
+
+                )}
                 </div>
+
+
               </div>
             </div>
           </div>
