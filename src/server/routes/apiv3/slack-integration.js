@@ -301,7 +301,7 @@ module.exports = (crowi) => {
       logger.debug('SlackBot: setup is done');
 
       try {
-        this.client.chat.postMessage({
+        await this.client.chat.postMessage({
           channel: `#${channel}`,
           text: 'Your test was successful!',
         });
@@ -312,7 +312,7 @@ module.exports = (crowi) => {
         return res.apiv3({ message });
       }
       catch (error) {
-        const msg = 'Error occured in testing to notify slack work space';
+        const msg = `Error: ${error.data.error}. Needed:${error.data.needed}`;
         logger.error('Error', error);
         return res.apiv3Err(new ErrorV3(msg, 'notification-test-slack-work-space-failed'), 500);
       }
