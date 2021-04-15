@@ -113,6 +113,20 @@
       border-style : dashed;
       border-width : 2px;
     }
+    .circle-front {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      background: #092c58;
+      border-radius: 50%;
+    }
+    .circle-back {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      background: #d0d6de;
+      border-radius: 50%;
+    }
   }
 
   //// TODO: migrate to Bootstrap 4
