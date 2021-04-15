@@ -11,6 +11,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
+  const [isConnectedToSlack, setIsConnectToSlack] = useState(false);
 
   const onToggleAccordionHandler = (i) => {
     const accordionIndexes = new Set(openAccordionIndexes);
@@ -29,10 +30,12 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     try {
-      await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
+      const res = await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
         channel: 'testchannel',
       });
+      setIsConnectToSlack(true);
+
     }
     catch (err) {
       setConnectionErrorCode(err[0].code);
@@ -143,7 +146,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         >
           <p className="mb-0 text-primary">
             <span className="mr-2">④</span>
-            {t('slack_integration.without_proxy.test_connection')}{}<i className="ml-3 text-success fa fa-check"></i>
+            {t('slack_integration.without_proxy.test_connection')}
+            {isConnectedToSlack}<i className="ml-3 text-success fa fa-check"></i>
           </p>
           {openAccordionIndexes.has(3)
             ? <i className="fa fa-chevron-up" />
