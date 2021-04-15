@@ -35,7 +35,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v2
       with:
-        path: node_modules
+        path: '**/node_modules'
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
@@ -250,7 +250,7 @@ jobs:
     - name: Cache/Restore node_modules
       uses: actions/cache@v2
       with:
-        path: node_modules
+        path: '**/node_modules'
         key: ${{ runner.OS }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
         restore-keys: |
           ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
