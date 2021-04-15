@@ -29,23 +29,8 @@ const CustomBotWithoutProxySettings = (props) => {
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
   const currentBotType = 'custom-bot-without-proxy';
 
-  useEffect(() => {
-    const fetchData = async() => {
-      try {
-        const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
-        setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-      }
-      catch (err) {
-        toastError(err);
-      }
-    };
-    setSlackWSNameInWithoutProxy(null);
-    if (isConnectedToSlack) {
-      fetchData();
-    }
-  }, [appContainer, isConnectedToSlack]);
 
-  const checkCredentials = useCallback(() => {
+  const checkCredentials = () => {
     if (slackBotToken && slackSigningSecret) {
       return setIsRgisterSlackCredentials(true);
     }
@@ -53,7 +38,7 @@ const CustomBotWithoutProxySettings = (props) => {
       return setIsRgisterSlackCredentials(true);
     }
     return setIsRgisterSlackCredentials(false);
-  }, [slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv]);
+  };
 
   const fetchData = useCallback(async() => {
     try {
@@ -69,16 +54,33 @@ const CustomBotWithoutProxySettings = (props) => {
       setSiteName(adminAppContainer.state.title);
       setIsSetupSlackBot(isSetupSlackBot);
       setIsConnectedToSlack(isConnectedToSlack);
-      checkCredentials();
+      checkCredentials;
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer, adminAppContainer, checkCredentials]);
+  }, [appContainer, adminAppContainer]);
 
   useEffect(() => {
+    const getSlackWorkSpaceName = async() => {
+      try {
+        const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
+        setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+      }
+      catch (err) {
+        toastError(err);
+      }
+    };
+    setSlackWSNameInWithoutProxy(null);
+    if (isConnectedToSlack) {
+      getSlackWorkSpaceName();
+    }
     fetchData();
-  }, [fetchData]);
+  }, [appContainer, isConnectedToSlack, fetchData]);
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, [fetchData]);
 
   async function updateHandler() {
     try {
