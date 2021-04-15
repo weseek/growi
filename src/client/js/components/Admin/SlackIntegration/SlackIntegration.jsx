@@ -12,6 +12,7 @@ import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 import BotTypeCard from './BotTypeCard';
 
+const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
 
 const SlackIntegration = (props) => {
   const { appContainer } = props;
@@ -104,8 +105,6 @@ const SlackIntegration = (props) => {
       break;
   }
 
-
-  const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
 
   return (
     <>
