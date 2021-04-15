@@ -6,6 +6,5 @@
       "~/*": ["./src/*"],
       "@growi/*": ["../*/src"]
     },
-    "skipLibCheck": true
   },
 }
