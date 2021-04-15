@@ -44,7 +44,7 @@ const CustomBotWithoutProxySettings = (props) => {
       setSiteName(adminAppContainer.state.title);
       setIsSetupSlackBot(isSetupSlackBot);
       setIsConnectedToSlack(isConnectedToSlack);
-
+      setIsRgisterSlackCredentials(false);
       if ((slackBotToken && slackSigningSecret) || (slackBotTokenEnv && slackSigningSecretEnv)) {
         setIsRgisterSlackCredentials(true);
       }
