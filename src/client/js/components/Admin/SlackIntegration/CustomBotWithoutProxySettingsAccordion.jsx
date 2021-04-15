@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { appContainer } = props;
@@ -40,6 +40,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     catch (err) {
       setConnectionErrorCode(err[0].code);
       setConnectionErrorMessage(err[0].message);
+      toastError(err);
     }
   };
 
