@@ -181,7 +181,7 @@ const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(Cus
 
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  isRgisterSlackCredentials: PropTypes.string,
+  isRgisterSlackCredentials: PropTypes.bool,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;
