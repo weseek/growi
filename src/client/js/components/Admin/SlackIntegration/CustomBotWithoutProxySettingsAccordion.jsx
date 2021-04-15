@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { appContainer } = props;
@@ -35,12 +34,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         channel: testChannel,
       });
       setConnectionSuccessMessage(res.data.message);
-      toastSuccess(`Successfuly send message #${testChannel}.`);
     }
     catch (err) {
       setConnectionErrorCode(err[0].code);
       setConnectionErrorMessage(err[0].message);
-      toastError(err);
     }
   };
 
@@ -161,7 +158,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
                     className="form-control"
                     type="text"
                     value={testChannel}
-                    placeholder="Input channel invited bot"
+                    placeholder="eg. general"
                     onChange={e => inputTestChannelHandler(e.target.value)}
                   />
                 </div>
