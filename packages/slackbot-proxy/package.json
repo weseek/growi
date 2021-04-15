@@ -3,9 +3,9 @@
   "version": "0.9.0-RC",
   "license": "MIT",
   "scripts": {
-    "build": "yarn tsc",
-    "tsc": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "tsc:w": "tsc -w",
+    "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "tsc": "tsc -p tsconfig.build.json",
+    "tsc:w": "yarn tsc -w",
     "dev:ci": "yarn dev --ci",
     "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
