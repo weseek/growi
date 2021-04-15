@@ -20,7 +20,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
-  console.log(isRgisterSlackCredentials);
 
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
