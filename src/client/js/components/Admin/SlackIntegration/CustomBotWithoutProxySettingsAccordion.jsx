@@ -11,6 +11,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
+  const [testChannel, setTestChannel] = useState('');
 
   const onToggleAccordionHandler = (i) => {
     const accordionIndexes = new Set(openAccordionIndexes);
@@ -29,13 +30,17 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     try {
       await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
-        channel: 'testchannel',
+        channel: testChannel,
       });
     }
     catch (err) {
       setConnectionErrorCode(err[0].code);
       setConnectionErrorMessage(err[0].message);
     }
+  };
+
+  const inputTestChannelHandler = (channel) => {
+    setTestChannel(channel);
   };
 
   return (
@@ -145,7 +150,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           <div className="card-body">
             <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
             <div className="d-flex justify-content-center">
-              <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
+              <form>
+                <input type="text" value={testChannel} onChange={e => inputTestChannelHandler(e.target.value)} />
+                <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
+              </form>
             </div>
             {connectionErrorMessage != null
               && <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
