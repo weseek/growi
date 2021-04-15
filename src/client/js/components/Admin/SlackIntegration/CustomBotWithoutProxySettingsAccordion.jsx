@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
+import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
 
 export const botInstallationStep = {
   CREATE_BOT: 'create-bot',
@@ -15,8 +15,8 @@ export const botInstallationStep = {
 
 const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) => {
   const { t } = useTranslation('admin');
-
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
+
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
 
@@ -181,7 +181,6 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
-
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;
