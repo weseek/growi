@@ -27,6 +27,7 @@ const CustomBotWithoutProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
+  const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const currentBotType = 'custom-bot-without-proxy';
 
 
@@ -79,6 +80,7 @@ const CustomBotWithoutProxySettings = (props) => {
         currentBotType,
       });
       fetchData();
+      setIsSendTestMessage(false);
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -158,6 +160,8 @@ const CustomBotWithoutProxySettings = (props) => {
       <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion
           isRgisterSlackCredentials={isRgisterSlackCredentials}
+          isSendTestMessage={isSendTestMessage}
+          setIsSendTestMessage={setIsSendTestMessage}
         />
       </div>
 

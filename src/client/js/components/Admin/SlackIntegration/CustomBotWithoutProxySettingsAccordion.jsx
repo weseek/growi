@@ -6,7 +6,9 @@ import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
-  const { appContainer, isRgisterSlackCredentials } = props;
+  const {
+    appContainer, isRgisterSlackCredentials, isSendTestMessage,
+  } = props;
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
@@ -31,8 +33,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         // TODO put proper request
         channel: 'testchannel',
       });
+      props.setIsSendTestMessage(true);
     }
     catch (err) {
+      props.setIsSendTestMessage(false);
       setConnectionErrorCode(err[0].code);
       setConnectionErrorMessage(err[0].message);
     }
@@ -142,7 +146,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           <p className="mb-0 text-primary">
             <span className="mr-2">④</span>
             {t('slack_integration.without_proxy.test_connection')}
-            {/* {isRgisterSlackCredentials && isConnectedToSlack && <i className="ml-3 text-success fa fa-check"></i>} */}
+            {isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}
           </p>
           {openAccordionIndexes.has(3)
             ? <i className="fa fa-chevron-up" />
@@ -179,6 +183,8 @@ const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(Cus
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   isRgisterSlackCredentials: PropTypes.bool,
+  isSendTestMessage: PropTypes.bool,
+  setIsSendTestMessage: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;
