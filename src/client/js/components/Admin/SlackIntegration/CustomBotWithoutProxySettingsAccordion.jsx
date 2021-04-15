@@ -182,9 +182,9 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
               && <p className="text-info text-center m-4">Slack ワークスペースに送信しました。</p>
             }
             <div className="row m-3 justify-content-center">
-              <div className="col-sm-5 slack-connection-error-log">
-                <p className="border-info slack-connection-error-log-title mb-1 pl-2">Logs</p>
-                <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
+              <div className="col-sm-5 slack-connection-log">
+                <p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p>
+                <div className="card border-info slack-connection-log-body rounded-lg px-5 py-4">
                   {connectionErrorMessage != null && (
                     <>
                       <p className="m-0">{connectionErrorCode}</p>
