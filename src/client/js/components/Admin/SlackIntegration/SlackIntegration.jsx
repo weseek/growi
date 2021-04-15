@@ -161,7 +161,7 @@ const SlackIntegration = (props) => {
                 </h3>
               </div>
               <div className="card-body p-4">
-                <p className="card-text">
+                <span className="card-text">
                   <div className="text-center">
                     {showBotTypeLevel('for_beginners')}
                   </div>
@@ -179,7 +179,7 @@ const SlackIntegration = (props) => {
                       {showBotTypeDiscription('impossible')}
                     </div>
                   </div>
-                </p>
+                </span>
               </div>
             </div>
 
@@ -203,7 +203,7 @@ const SlackIntegration = (props) => {
                 </i>
               </h3>
               <div className="card-body p-4">
-                <p className="card-text">
+                <span className="card-text">
                   <div className="text-center">
                     {showBotTypeLevel('for_intermediate')}
                   </div>
@@ -221,7 +221,7 @@ const SlackIntegration = (props) => {
                       {showBotTypeDiscription('possible')}
                     </div>
                   </div>
-                </p>
+                </span>
               </div>
             </div>
 
@@ -245,7 +245,7 @@ const SlackIntegration = (props) => {
                 </i>
               </h3>
               <div className="card-body p-4">
-                <p className="card-text">
+                <span className="card-text">
                   <div className="text-center">
                     {showBotTypeLevel('for_advanced')}
                   </div>
@@ -263,7 +263,7 @@ const SlackIntegration = (props) => {
                       {showBotTypeDiscription('impossible')}
                     </div>
                   </div>
-                </p>
+                </span>
               </div>
             </div>
 
