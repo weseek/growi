@@ -2,47 +2,43 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
+
+const botDetails = {
+  officialBot: {
+    botType: 'officialBot',
+    botTypeCategory: 'official_bot',
+    setUp: 'easy',
+    multiWSIntegration: 'possible',
+    securityControl: 'impossible',
+  },
+  customBotWithoutProxy: {
+    botType: 'customBotWithoutProxy',
+    botTypeCategory: 'custom_bot',
+    supplementaryBotName: 'without_proxy',
+    setUp: 'normal',
+    multiWSIntegration: 'impossible',
+    securityControl: 'possible',
+  },
+  customBotWithProxy: {
+    botType: 'customBotWithProxy',
+    botTypeCategory: 'custom_bot',
+    supplementaryBotName: 'with_proxy',
+    setUp: 'hard',
+    multiWSIntegration: 'possible',
+    securityControl: 'possible',
+  },
+};
+
+
 const BotTypeCard = (props) => {
   const { t } = useTranslation('admin');
 
-  let botDetails = {};
-
-  switch (props.botType) {
-    case 'customBotWithoutProxy':
-      botDetails = {
-        botType: 'customBotWithoutProxy',
-        botTypeCategory: 'custom_bot',
-        supplementaryBotName: 'without_proxy',
-        setUp: 'normal',
-        multiWSIntegration: 'impossible',
-        securityControl: 'possible',
-      };
-      break;
-    case 'customBotWithProxy':
-      botDetails = {
-        botType: 'customBotWithProxy',
-        botTypeCategory: 'custom_bot',
-        supplementaryBotName: 'with_proxy',
-        setUp: 'hard',
-        multiWSIntegration: 'possible',
-        securityControl: 'possible',
-      };
-      break;
-    default:
-      botDetails = {
-        botType: 'officialBot',
-        botTypeCategory: 'official_bot',
-        setUp: 'easy',
-        multiWSIntegration: 'possible',
-        securityControl: 'impossible',
-      };
-      break;
-  }
+  console.log('botDetails[props.botType]', botDetails.customBotWithProxy);
 
   return (
     <div
       className={`card admin-bot-card rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
-      onClick={() => props.handleBotTypeSelect(botDetails.botType)}
+      onClick={() => props.handleBotTypeSelect(botDetails[props.botType].botType)}
       role="button"
       key={props.botType}
     >
@@ -52,7 +48,7 @@ const BotTypeCard = (props) => {
               ${props.isActive ? 'bg-primary text-light' : ''}`}
         >
           <span className="mr-2">
-            {t(`admin:slack_integration.selecting_bot_types.${botDetails.botTypeCategory}`)}
+            {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].botTypeCategory}`)}
           </span>
 
           {/*  A recommended badge is shown on official bot card, supplementary names are shown on Custom bot cards   */}
@@ -63,7 +59,7 @@ const BotTypeCard = (props) => {
             </span>
           ) : (
             <span className="supplementary-bot-name mr-2">
-              {t(`admin:slack_integration.selecting_bot_types.${botDetails.supplementaryBotName}`)}
+              {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].supplementaryBotName}`)}
             </span>
           )}
 
@@ -83,11 +79,11 @@ const BotTypeCard = (props) => {
             </div>
             <div className="d-flex justify-content-between mb-3">
               <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>
-              <img className="bot-type-disc" src={`/images/slack-integration/${botDetails.multiWSIntegration}.png`} alt="" />
+              <img className="bot-type-disc" src={`/images/slack-integration/${botDetails[props.botType].multiWSIntegration}.png`} alt="" />
             </div>
             <div className="d-flex justify-content-between">
               <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
-              <img className="bot-type-disc" src={`/images/slack-integration/${botDetails.securityControl}.png`} alt="" />
+              <img className="bot-type-disc" src={`/images/slack-integration/${botDetails[props.botType].securityControl}.png`} alt="" />
             </div>
           </div>
         </div>
@@ -101,6 +97,10 @@ BotTypeCard.propTypes = {
   isActive: PropTypes.bool,
   botType: PropTypes.string,
   handleBotTypeSelect: PropTypes.func,
+};
+
+BotTypeCard.defaultProps = {
+  botType: 'officialBot',
 };
 
 export default BotTypeCard;
