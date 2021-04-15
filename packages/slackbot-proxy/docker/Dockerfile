@@ -42,6 +42,9 @@ RUN yarn config set network-timeout 300000
 
 RUN npx lerna bootstrap -- --production
 
+# copy and resolve symlink
+RUN rm node_modules/@growi/slackbot-proxy
+RUN cp -r --dereference node_modules node_modules.dereferenced
 
 
 ##
@@ -73,8 +76,10 @@ RUN yarn lerna run build
 ##
 ## release
 ##
-FROM gcr.io/distroless/nodejs:14
+FROM node:14-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+
+ENV NODE_ENV production
 
 ENV appDir /opt
 
@@ -83,10 +88,10 @@ COPY --from=builder \
 COPY --from=builder \
   ${appDir}/packages/slackbot-proxy ${appDir}/slackbot-proxy
 COPY --from=deps-resolver-prod \
-  ${appDir}/node_modules ${appDir}/node_modules
+  ${appDir}/node_modules.dereferenced ${appDir}/node_modules
 
 WORKDIR ${appDir}/slackbot-proxy
 
 EXPOSE 8080
 
-CMD ["-r", "dotenv-flow/config", "dist/index.js"]
+CMD ["node", "-r", "dotenv-flow/config", "dist/index.js"]
