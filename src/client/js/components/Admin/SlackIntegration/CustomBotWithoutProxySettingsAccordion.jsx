@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
-
 import { Collapse } from 'reactstrap';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import AppContainer from '../../../services/AppContainer';
 
 export const botInstallationStep = {
@@ -13,14 +13,13 @@ export const botInstallationStep = {
   CONNECTION_TEST: 'connection-test',
 };
 
-const CustomBotWithoutProxySettingsAccordion = (props) => {
-  const { appContainer } = props;
+const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) => {
   const { t } = useTranslation('admin');
-  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
+
+  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
 
-  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
 
   const onToggleAccordionHandler = (installationStep) => {
     const accordionIndexes = new Set(openAccordionIndexes);
