@@ -29,7 +29,6 @@ const botDetails = {
   },
 };
 
-
 const BotTypeCard = (props) => {
   const { t } = useTranslation('admin');
 
@@ -92,9 +91,9 @@ const BotTypeCard = (props) => {
 };
 
 BotTypeCard.propTypes = {
-  isActive: PropTypes.bool,
-  botType: PropTypes.string,
-  handleBotTypeSelect: PropTypes.func,
+  isActive: PropTypes.bool.isRequired,
+  botType: PropTypes.string.isRequired,
+  handleBotTypeSelect: PropTypes.func.isRequired,
 };
 
 export default BotTypeCard;
