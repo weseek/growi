@@ -30,7 +30,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const currentBotType = 'custom-bot-without-proxy';
 
-
   const fetchData = useCallback(async() => {
     try {
       await adminAppContainer.retrieveAppSettingsData();
