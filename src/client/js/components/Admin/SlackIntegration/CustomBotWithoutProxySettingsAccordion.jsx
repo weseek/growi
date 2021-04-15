@@ -193,11 +193,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
                   )}
                   {connectionSuccessMessage != null && (
                   <p className="m-0">{connectionSuccessMessage}</p>
-
                 )}
                 </div>
-
-
               </div>
             </div>
           </div>
