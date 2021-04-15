@@ -10,3 +10,4 @@ export const supportedGrowiCommands: string[] = [
 export * from './interfaces/growi-command';
 export * from './models/errors';
 export * from './utils/slash-command-parser';
+export * from './utils/block-creater';

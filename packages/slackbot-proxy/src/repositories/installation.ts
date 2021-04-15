@@ -11,4 +11,13 @@ export class InstallationRepository extends Repository<Installation> {
     return this.findOne(id);
   }
 
+  async findByTeamIdOrEnterpriseId(teamIdOrEnterpriseId:string): Promise<Installation|undefined> {
+    return this.findOne({
+      where: [
+        { teamId: teamIdOrEnterpriseId },
+        { enterpriseId: teamIdOrEnterpriseId, isEnterpriseInstall: true },
+      ],
+    });
+  }
+
 }

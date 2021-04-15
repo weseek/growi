@@ -5,8 +5,9 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "yarn tsc",
-    "tsc": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "tsc": "tsc -p tsconfig.build.json",
+    "tsc:w": "yarn tsc -w",
     "test": "yarn test:lint && yarn test:coverage",
     "test:unit": "cross-env NODE_ENV=test jest --passWithNoTests",
     "test:coverage": "yarn test:unit",
