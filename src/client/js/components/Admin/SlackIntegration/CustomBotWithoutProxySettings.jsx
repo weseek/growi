@@ -19,6 +19,9 @@ const CustomBotWithoutProxySettings = (props) => {
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
+  const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
+  console.log(isRgisterSlackCredentials);
+
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
@@ -43,6 +46,16 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   }, [appContainer, isConnectedToSlack]);
 
+  const checkCredentials = useCallback(() => {
+    if (slackBotToken && slackSigningSecret) {
+      return setIsRgisterSlackCredentials(true);
+    }
+    if (slackBotTokenEnv && slackSigningSecretEnv) {
+      return setIsRgisterSlackCredentials(true);
+    }
+    return setIsRgisterSlackCredentials(false);
+  }, [slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv]);
+
   const fetchData = useCallback(async() => {
     try {
       await adminAppContainer.retrieveAppSettingsData();
@@ -57,11 +70,12 @@ const CustomBotWithoutProxySettings = (props) => {
       setSiteName(adminAppContainer.state.title);
       setIsSetupSlackBot(isSetupSlackBot);
       setIsConnectedToSlack(isConnectedToSlack);
+      checkCredentials();
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer, adminAppContainer]);
+  }, [appContainer, adminAppContainer, checkCredentials]);
 
   useEffect(() => {
     fetchData();
@@ -152,7 +166,9 @@ const CustomBotWithoutProxySettings = (props) => {
       <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
 
       <div className="my-5 mx-3">
-        <CustomBotWithoutProxySettingsAccordion />
+        <CustomBotWithoutProxySettingsAccordion
+          isRgisterSlackCredentials={isRgisterSlackCredentials}
+        />
       </div>
 
     </>

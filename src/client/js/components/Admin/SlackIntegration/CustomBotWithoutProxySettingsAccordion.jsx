@@ -6,7 +6,7 @@ import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
-  const { appContainer } = props;
+  const { appContainer, isRgisterSlackCredentials } = props;
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
@@ -22,6 +22,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     }
     setOpenAccordionIndexes(accordionIndexes);
   };
+
+  console.log(isRgisterSlackCredentials);
 
   const onTestConnectionHandler = async() => {
     setConnectionErrorCode(null);
@@ -85,7 +87,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           role="button"
           onClick={() => onToggleAccordionHandler(1)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')} {}<i className="ml-3 text-success fa fa-check"></i></p>
+          <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</p>
           {openAccordionIndexes.has(1)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
@@ -116,7 +118,11 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           role="button"
           onClick={() => onToggleAccordionHandler(2)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}{}<i className="ml-3 text-success fa fa-check"></i></p>
+          <p className="mb-0 text-primary">
+            <span className="mr-2">③</span>
+            {t('slack_integration.without_proxy.register_secret_and_token')}
+            {isRgisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}
+          </p>
           {openAccordionIndexes.has(2)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
@@ -135,7 +141,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           role="button"
           onClick={() => onToggleAccordionHandler(3)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}{}<i className="ml-3 text-success fa fa-check"></i></p>
+          <p className="mb-0 text-primary">
+            <span className="mr-2">④</span>
+            {t('slack_integration.without_proxy.test_connection')}{}<i className="ml-3 text-success fa fa-check"></i>
+          </p>
           {openAccordionIndexes.has(3)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
@@ -170,6 +179,7 @@ const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(Cus
 
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  isRgisterSlackCredentials: PropTypes.string,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;
