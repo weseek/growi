@@ -1,15 +1,12 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { stringify } from 'qs';
-import {Request, Response, NextFunction} from 'express'
+import { Request, Response, NextFunction } from 'express';
 /**
    * Verify if the request came from slack
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
    */
-interface signingSecret extends Request{
-  signingSecret: string
-}
 
-export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string}, res: Response, next: NextFunction) => {
+export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string}, res: Response, next: NextFunction):Record<string, any> | void => {
 
   if (req.signingSecret == null) {
     return res.send('No signing secret.');
