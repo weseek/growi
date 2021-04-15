@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { stringify } from 'qs';
-// import {Request, Response, NextFunction} from 'express'
+import {Request, Response, NextFunction} from 'express'
 /**
    * Verify if the request came from slack
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
@@ -9,14 +9,14 @@ interface signingSecret extends Request{
   signingSecret: string
 }
 
-export const verifyingIsSlackRequest = (req/* : Request & {signingSecret?:string} */, res/* : Response*/, next/* : NextFunction */) => {
+export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string}, res: Response, next: NextFunction) => {
 
   if (req.signingSecret == null) {
     return res.send('No signing secret.');
   }
   // take out slackSignature and timestamp from header
-  const slackSignature = req.headers['x-slack-signature'];
-  const timestamp = req.headers['x-slack-request-timestamp'];
+  const slackSignature:any = req.headers['x-slack-signature'];
+  const timestamp:any = req.headers['x-slack-request-timestamp'];
 
   // protect against replay attacks
   const time = Math.floor(new Date().getTime() / 1000);
