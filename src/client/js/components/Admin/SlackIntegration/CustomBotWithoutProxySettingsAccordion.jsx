@@ -35,7 +35,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         // TODO put proper request
         channel: testChannel,
       });
-      toastSuccess(res.data.message);
+      toastSuccess(`Successfuly send message #${testChannel}.`);
     }
     catch (err) {
       setConnectionErrorCode(err[0].code);
