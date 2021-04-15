@@ -301,7 +301,9 @@
       "install_complete_if_checked": "Confirm that \"Install your app\" is checked.",
       "invite_bot_to_channel": "Invite GROWI bot to channel by calling @example.",
       "register_secret_and_token": "Set Signing Secret and Bot Token",
-      "test_connection": "Test Connection"
+      "test_connection": "Test Connection",
+      "test_connection_by_pressing_button": "Press the button to test the connection",
+      "slack_integration.without_proxy.error_check_logs_below": "An error has occurred. Please check the logs below."
     }
   },
   "user_management": {

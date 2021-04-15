@@ -102,12 +102,12 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         title={t('slack_integration.without_proxy.test_connection')}
         onToggleAccordionHandler={() => onToggleAccordionHandler(3)}
       >
-        <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
+        <p className="text-center m-4">{t('slack_integration.without_proxy.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
           <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
         </div>
         {connectionErrorLog.connectionErrorMessage != null
-          && <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
+          && <p className="text-danger text-center m-4">{t('slack_integration.without_proxy.error_check_logs_below')}</p>
         }
         <div className="row m-3 justify-content-center">
           <div className="col-sm-5 slack-connection-error-log">
