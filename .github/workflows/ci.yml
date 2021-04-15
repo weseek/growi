@@ -100,7 +100,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v2
       with:
-        path: node_modules
+        path: '**/node_modules'
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
@@ -162,7 +162,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v2
       with:
-        path: node_modules
+        path: '**/node_modules'
         key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get Date
       id: date
