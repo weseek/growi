@@ -311,7 +311,7 @@
       "register_secret_and_token": "设置签名秘密和BOT令牌",
       "test_connection": "测试连接",
       "test_connection_by_pressing_button": "按下按钮以测试连接",
-      "slack_integration.without_proxy.error_check_logs_below": "发生了错误。请检查以下日志。"
+      "error_check_logs_below": "发生了错误。请检查以下日志。"
     }
   },
 	"user_management": {

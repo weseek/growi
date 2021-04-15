@@ -301,7 +301,7 @@
       "register_secret_and_token": "Signing Secret と Bot Token を登録する",
       "test_connection": "連携状況のテストをする",
       "test_connection_by_pressing_button": "以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう",
-      "slack_integration.without_proxy.error_check_logs_below": "エラーが発生しました。下記のログを確認してください。"
+      "error_check_logs_below": "エラーが発生しました。下記のログを確認してください。"
     }
   },
   "user_management": {

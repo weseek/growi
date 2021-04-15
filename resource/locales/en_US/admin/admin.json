@@ -303,7 +303,7 @@
       "register_secret_and_token": "Set Signing Secret and Bot Token",
       "test_connection": "Test Connection",
       "test_connection_by_pressing_button": "Press the button to test the connection",
-      "slack_integration.without_proxy.error_check_logs_below": "An error has occurred. Please check the logs below."
+      "error_check_logs_below": "An error has occurred. Please check the logs below."
     }
   },
   "user_management": {
