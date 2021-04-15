@@ -7,7 +7,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import SlackGrowiBridging from './SlackGrowiBridging';
-import CustomBotWithoutProxySettingsAccordion from './CustomBotWithoutProxySettingsAccordion';
+import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 
 const CustomBotWithoutProxySettings = (props) => {
@@ -159,6 +159,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion
+          activeStep={botInstallationStep.CREATE_BOT}
           isRgisterSlackCredentials={isRgisterSlackCredentials}
           isSendTestMessage={isSendTestMessage}
           setIsSendTestMessage={setIsSendTestMessage}
