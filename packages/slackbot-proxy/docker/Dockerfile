@@ -42,9 +42,8 @@ RUN yarn config set network-timeout 300000
 
 RUN npx lerna bootstrap -- --production
 
-# copy and resolve symlink
-RUN rm node_modules/@growi/slackbot-proxy
-RUN cp -r --dereference node_modules node_modules.dereferenced
+# make tar for keeping symlink
+RUN tar cf node_modules.tar node_modules
 
 
 ##
@@ -57,10 +56,11 @@ ENV appDir /opt
 
 WORKDIR ${appDir}
 
-COPY --from=deps-resolver ${appDir}/node_modules ${appDir}/node_modules
+COPY --from=deps-resolver ${appDir}/node_modules node_modules
 
-# copy all packages
-COPY packages ${appDir}/packages
+# copy all related packages
+COPY packages/slack packages/slack
+COPY packages/slackbot-proxy packages/slackbot-proxy
 
 COPY ./package.json ./
 COPY ./lerna.json ./
@@ -70,6 +70,13 @@ COPY ./packages/slackbot-proxy ./packages/slackbot-proxy
 
 # build
 RUN yarn lerna run build
+
+# make tar for filtering artifacts
+RUN tar cf packages.tar \
+  packages/slack/package.json \
+  packages/slack/dist \
+  packages/slackbot-proxy/package.json \
+  packages/slackbot-proxy/dist
 
 
 
@@ -83,14 +90,22 @@ ENV NODE_ENV production
 
 ENV appDir /opt
 
-COPY --from=builder \
-  ${appDir}/packages/slack ${appDir}/slack
-COPY --from=builder \
-  ${appDir}/packages/slackbot-proxy ${appDir}/slackbot-proxy
-COPY --from=deps-resolver-prod \
-  ${appDir}/node_modules.dereferenced ${appDir}/node_modules
+COPY --from=deps-resolver-prod --chown=node:node \
+  ${appDir}/node_modules.tar ${appDir}/
+COPY --from=builder --chown=node:node \
+  ${appDir}/packages.tar ${appDir}/
 
-WORKDIR ${appDir}/slackbot-proxy
+RUN chown node:node ${appDir}
+
+USER node
+
+# extract node_modules.tar
+WORKDIR ${appDir}
+RUN tar xf node_modules.tar
+RUN tar xf packages.tar
+RUN rm node_modules.tar packages.tar
+
+WORKDIR ${appDir}/packages/slackbot-proxy
 
 EXPOSE 8080
 
