@@ -71,10 +71,6 @@ const CustomBotWithoutProxySettings = (props) => {
     fetchData();
   }, [appContainer, isConnectedToSlack, fetchData]);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, [fetchData]);
-
   async function updateHandler() {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
