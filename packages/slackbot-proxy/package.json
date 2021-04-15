@@ -27,6 +27,7 @@
     "@tsed/typeorm": "^6.43.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
+    "cross-env": "^7.0.0",
     "dotenv-flow": "^3.2.0",
     "method-override": "^3.0.0",
     "mysql2": "^2.2.5",
