@@ -248,11 +248,11 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
                 <div className="form-group slack-connection-log w-25">
                   <label><p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p></label>
                   {connectionErrorMessage == null && connectionSuccessMessage == null && (
-                    <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" />
+                    <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-3" />
                   )}
                   {connectionErrorMessage != null && (
                     <textarea
-                      className="form-control card border-info slack-connection-log-body rounded-lg pl-2"
+                      className="form-control card border-info slack-connection-log-body rounded-lg pl-3"
                       multiple
                       value={[connectionErrorCode, connectionErrorMessage]}
                     />
