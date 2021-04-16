@@ -245,7 +245,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
             }
             <form>
               <div className="row m-3 justify-content-center">
-                <div className="form-group w-100">
+                <div className="form-group w-25">
                   <label><p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p></label>
                   {connectionErrorMessage == null && connectionSuccessMessage == null && (
                     <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" />
