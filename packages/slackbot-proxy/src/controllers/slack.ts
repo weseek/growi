@@ -110,7 +110,6 @@ export class SlackCtrl {
 
   @Get('/oauth_redirect')
   async handleOauthRedirect(@Req() req: Req, @Res() res: Res): Promise<void> {
-    console.log(req.query.state);
 
     // illegal state
     // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
@@ -122,7 +121,9 @@ export class SlackCtrl {
       // success: (installation, metadata, req, res) => {},
       failure: (error, installOptions, req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end('<html><body style="text-align:center; padding-top:20%;">'
+        res.end('<html><head>'
+        + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        + '</head><body style="text-align:center; padding-top:20%;">'
         + '<h1>GROWI Bot installation failed</h1>'
         + '<p>Please contact administrators of your workspace</p>'
         + 'Reference: <a href="https://slack.com/help/articles/222386767-Manage-app-installation-settings-for-your-workspace">'
