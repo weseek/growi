@@ -3,8 +3,6 @@ import {
 } from '@tsed/common';
 import { parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
-import { Relation } from '~/entities/relation';
-import { Order } from '~/entities/order';
 
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
@@ -101,9 +99,6 @@ export class SlackCtrl {
     if (order == null || order.isExpired()) {
       order = await this.orderRepository.save({ installation: installation.id });
     }
-
-    console.log('body', body);
-    console.log('order', order);
 
     return 'This action will be handled by bolt service.';
   }
