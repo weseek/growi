@@ -10,7 +10,9 @@ import OfficialBotSettings from './OfficialBotSettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
+import BotTypeCard from './BotTypeCard';
 
+const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
 
 const SlackIntegration = (props) => {
   const { appContainer } = props;
@@ -90,28 +92,19 @@ const SlackIntegration = (props) => {
   let settingsComponent = null;
 
   switch (currentBotType) {
-    case 'official-bot':
+    case 'officialBot':
       settingsComponent = <OfficialBotSettings />;
       break;
-    case 'custom-bot-without-proxy':
+    case 'customBotWithoutProxy':
       settingsComponent = (
         <CustomBotWithoutProxySettings />
       );
       break;
-    case 'custom-bot-with-proxy':
+    case 'customBotWithProxy':
       settingsComponent = <CustomBotWithProxySettings />;
       break;
   }
 
-  const showBotTypeLevel = (level) => {
-    return <span>{t(`admin:slack_integration.selecting_bot_types.${level}`)}</span>;
-  };
-  const showBotTypeLabel = (label) => {
-    return <span>{t(`admin:slack_integration.selecting_bot_types.${label}`)}</span>;
-  };
-  const showBotTypeDiscription = (desc) => {
-    return <span className={`bot-type-disc-${desc}`}>{t(`admin:slack_integration.selecting_bot_types.${desc}`)}</span>;
-  };
 
   return (
     <>
@@ -142,131 +135,16 @@ const SlackIntegration = (props) => {
 
         <div className="row my-4">
           <div className="card-deck mx-auto">
-
-            <div
-              className={`card admin-bot-card mx-3 rounded border-radius-sm shadow ${currentBotType === 'official-bot' ? 'border-primary' : ''}`}
-              onClick={() => handleBotTypeSelect('official-bot')}
-              role="button"
-            >
-              <div>
-                <h3 className={`card-header mb-0 py-3 text-center ${currentBotType === 'official-bot' ? 'bg-primary text-light' : ''}`}>
-                  <span className="mr-2">
-                    {t('admin:slack_integration.selecting_bot_types.official_bot')}
-                  </span>
-                  <span className="badge badge-info mr-2">
-                    {t('admin:slack_integration.selecting_bot_types.recommended')}
-                  </span>
-                  {/* TODO: add an appropriate link by GW-5614 */}
-                  <i className={`fa fa-external-link btn-link ${currentBotType === 'official-bot' ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
-                </h3>
-              </div>
-              <div className="card-body p-4">
-                <span className="card-text">
-                  <div className="text-center">
-                    {showBotTypeLevel('for_beginners')}
-                  </div>
-                  <div className="my-4">
-                    <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('set_up')}
-                      {showBotTypeDiscription('easy')}
-                    </div>
-                    <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('multiple_workspaces_integration')}
-                      {showBotTypeDiscription('possible')}
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      {showBotTypeLabel('security_control')}
-                      {showBotTypeDiscription('impossible')}
-                    </div>
-                  </div>
-                </span>
-              </div>
-            </div>
-
-            <div
-              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-without-proxy' ? 'border-primary' : ''}`}
-              onClick={() => handleBotTypeSelect('custom-bot-without-proxy')}
-              role="button"
-            >
-              <h3 className={`card-header mb-0 py-3 text-center text-nowrap  ${currentBotType === 'custom-bot-without-proxy' ? 'bg-primary text-light' : ''}`}>
-                <span className="mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.custom_bot')}
-                </span>
-                <span className="supplementary-desc mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.without_proxy')}
-                </span>
-                {/* TODO: add an appropriate link by GW-5614 */}
-                <i
-                  className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-without-proxy' ? 'bg-primary text-light' : ''}`}
-                  aria-hidden="true"
-                >
-                </i>
-              </h3>
-              <div className="card-body p-4">
-                <span className="card-text">
-                  <div className="text-center">
-                    {showBotTypeLevel('for_intermediate')}
-                  </div>
-                  <div className="my-4">
-                    <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('set_up')}
-                      {showBotTypeDiscription('normal')}
-                    </div>
-                    <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('multiple_workspaces_integration')}
-                      {showBotTypeDiscription('impossible')}
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      {showBotTypeLabel('security_control')}
-                      {showBotTypeDiscription('possible')}
-                    </div>
-                  </div>
-                </span>
-              </div>
-            </div>
-
-            <div
-              className={`card admin-bot-card mx-3 rounded shadow ${currentBotType === 'custom-bot-with-proxy' ? 'border-primary' : ''}`}
-              onClick={() => handleBotTypeSelect('custom-bot-with-proxy')}
-              role="button"
-            >
-              <h3 className={`card-header mb-0 py-3 text-center text-nowrap ${currentBotType === 'custom-bot-with-proxy' ? 'bg-primary text-light' : ''}`}>
-                <span className="mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.custom_bot')}
-                </span>
-                <span className="supplementary-desc mr-2">
-                  {t('admin:slack_integration.selecting_bot_types.with_proxy')}
-                </span>
-                {/* TODO: add an appropriate link by GW-5614 */}
-                <i
-                  className={`fa fa-external-link btn-link ${currentBotType === 'custom-bot-with-proxy' ? 'bg-primary text-light' : ''}`}
-                  aria-hidden="true"
-                >
-                </i>
-              </h3>
-              <div className="card-body p-4">
-                <span className="card-text">
-                  <div className="text-center">
-                    {showBotTypeLevel('for_advanced')}
-                  </div>
-                  <div className="my-4">
-                    <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('set_up')}
-                      {showBotTypeDiscription('hard')}
-                    </div>
-                    <div className="d-flex justify-content-between mb-2">
-                      {showBotTypeLabel('multiple_workspaces_integration')}
-                      {showBotTypeDiscription('possible')}
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      {showBotTypeLabel('security_control')}
-                      {showBotTypeDiscription('impossible')}
-                    </div>
-                  </div>
-                </span>
-              </div>
-            </div>
-
+            {botTypes.map((botType) => {
+              return (
+                <BotTypeCard
+                  key={botType}
+                  botType={botType}
+                  isActive={currentBotType === botType}
+                  handleBotTypeSelect={handleBotTypeSelect}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
