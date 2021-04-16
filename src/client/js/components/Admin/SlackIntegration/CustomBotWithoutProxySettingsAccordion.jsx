@@ -16,7 +16,8 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep, isRgisterSlackCredentials, isSendTestMessage, setIsSendTestMessage,
+  appContainer,
+  activeStep, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv, isRgisterSlackCredentials, isSendTestMessage, setIsSendTestMessage,
 }) => {
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
@@ -45,9 +46,9 @@ const CustomBotWithoutProxySettingsAccordion = ({
   //   }
   // }, [appContainer, adminAppContainer]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  // useEffect(() => {
+  //   fetchData();
+  // }, [fetchData]);
 
 
   const onToggleAccordionHandler = (installationStep) => {
