@@ -127,9 +127,9 @@ const SlackIntegration = (props) => {
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
           isConnectedToSlack={isConnectedToSlack}
-          slackBotTokenEnv={slackBotToken}
+          slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
-          slackSigningSecretEnv={slackSigningSecret}
+          slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
           setSlackSigningSecret={setSlackSigningSecret}
           setSlackBotToken={setSlackBotToken}
