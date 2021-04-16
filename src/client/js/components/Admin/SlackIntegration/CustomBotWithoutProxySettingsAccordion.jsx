@@ -26,7 +26,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const currentBotType = 'custom-bot-without-proxy';
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async() => {
     try {
       await adminAppContainer.retrieveAppSettingsData();
       const res = await appContainer.apiv3.get('/slack-integration/');
@@ -58,7 +58,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
     setOpenAccordionIndexes(accordionIndexes);
   };
 
-  const updateSecretTokenHandler = async () => {
+  const updateSecretTokenHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret,
@@ -81,7 +81,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
     setSlackBotToken(botTokenInput);
   };
 
-  const onTestConnectionHandler = async () => {
+  const onTestConnectionHandler = async() => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     try {
@@ -98,7 +98,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
-      <Accordion.Item
+      <Accordion
         isActive={openAccordionIndexes.has(botInstallationStep.CREATE_BOT)}
         title={[<span className="mr-2">①</span>, t('slack_integration.without_proxy.create_bot')]}
         onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.CREATE_BOT)}
@@ -122,8 +122,8 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
             </a>
           </div>
         </div>
-      </Accordion.Item>
-      <Accordion.Item
+      </Accordion>
+      <Accordion
         isActive={openAccordionIndexes.has(botInstallationStep.INSTALL_BOT)}
         title={[<span className="mr-2">②</span>, t('slack_integration.without_proxy.install_bot_to_slack')]}
         onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.INSTALL_BOT)}
@@ -141,8 +141,8 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
           <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
           <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
         </div>
-      </Accordion.Item>
-      <Accordion.Item
+      </Accordion>
+      <Accordion
         isActive={openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         title={[<span className="mr-2">③</span>, t('slack_integration.without_proxy.register_secret_and_token')]}
         onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
@@ -156,8 +156,8 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
           slackBotToken={slackBotToken}
           slackBotTokenEnv={slackBotTokenEnv}
         />
-      </Accordion.Item>
-      <Accordion.Item
+      </Accordion>
+      <Accordion
         isActive={openAccordionIndexes.has(botInstallationStep.CONNECTION_TEST)}
         title={[<span className="mr-2">④</span>, t('slack_integration.without_proxy.test_connection')]}
         onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.CONNECTION_TEST)}
@@ -178,7 +178,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
             </div>
           </div>
         </div>
-      </Accordion.Item>
+      </Accordion>
     </div>
   );
 };

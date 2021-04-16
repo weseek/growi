@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 const Accordion = (props) => {
   const [isActive, setIsActive] = useState(props.defaultIsActive);
-
   return (
     <div className="card border-0 rounded-lg mb-0">
       <div
