@@ -195,10 +195,18 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) =>
                     <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" />
                   )}
                   {connectionErrorMessage != null && (
-                    <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" multiple value={[connectionErrorCode, connectionErrorMessage]} />
+                    <textarea
+                      className="form-control card border-info slack-connection-log-body rounded-lg pl-2"
+                      multiple
+                      value={[connectionErrorCode, connectionErrorMessage]}
+                    />
                   )}
                   {connectionSuccessMessage != null && (
-                    <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" multiple value={connectionSuccessMessage} />
+                    <textarea
+                      className="form-control card border-info slack-connection-log-body rounded-lg pl-2"
+                      multiple
+                      value={connectionSuccessMessage}
+                    />
                   )}
 
                 </div>
