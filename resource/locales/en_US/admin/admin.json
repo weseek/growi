@@ -264,9 +264,6 @@
       "without_proxy": "without proxy",
       "with_proxy": "with proxy",
       "recommended": "Recommended",
-      "for_beginners": "- For beginners -",
-      "for_intermediate": "- For intermediates -",
-      "for_advanced": "- For advanced -",
       "set_up": "Set up",
       "multiple_workspaces_integration": "Multiple workspaces integration",
       "security_control": "Security control",
@@ -304,6 +301,11 @@
       "test_connection": "Test Connection",
       "test_connection_by_pressing_button": "Press the button to test the connection",
       "error_check_logs_below": "An error has occurred. Please check the logs below."
+    },
+    "custom_bot_without_proxy_integration": "Custom bot without proxy integration",
+    "integration_sentence": {
+      "integration_is_not_complete": "Integration is not complete.",
+      "proceed_with_the_following_integration_procedure": "Proceed with the following integration procedure."
     }
   },
   "user_management": {

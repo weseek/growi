@@ -90,7 +90,7 @@
     .btn-link {
       font-size: 1rem;
     }
-    .supplementary-desc {
+    .supplementary-bot-name {
       font-size: 1rem;
     }
     .badge-info {
@@ -112,6 +112,16 @@
     .slack-connection-error-log-body {
       min-height: 6rem;
       border: 2px solid;
+    }
+  }
+
+  .bot-integration {
+    .admin-bot-card {
+      border-radius: 8px !important;
+    }
+    .admin-border {
+      border-style : dashed;
+      border-width : 2px;
     }
   }
 
