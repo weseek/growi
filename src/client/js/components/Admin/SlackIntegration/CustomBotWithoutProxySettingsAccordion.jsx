@@ -202,46 +202,8 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) =>
                   )}
 
                 </div>
-                {/* <div className="form-group w-100 col-sm-5 slack-connection-log"> */}
-                {/* <label>
-                  <p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p>
-                  {connectionErrorMessage != null && (
-                    <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" multiple value={[connectionErrorCode, connectionErrorMessage]} />
-                  )}
-                  {connectionSuccessMessage != null && (
-                    <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" multiple value={connectionSuccessMessage} />
-                  )}
-                </label> */}
-
-                {/* <p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p>
-                <div className="card border-info slack-connection-log-body rounded-lg px-5 py-4">
-                  {connectionErrorMessage != null && (
-                    <>
-                      <p className="m-0">{connectionErrorCode}</p>
-                      <p className="m-0">{connectionErrorMessage}</p>
-                    </>
-                  )}
-                  {connectionSuccessMessage != null && (
-                  <p className="m-0">{connectionSuccessMessage}</p>
-                )}
-                </div> */}
-                {/* </div> */}
               </div>
             </form>
-            {/* <form>
-              <div className="row m-3 justify-content-center">
-
-                <div className="form-group w-100">
-                  <label><p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p></label>
-                  {connectionErrorMessage != null && (
-                  <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" multiple value={[connectionErrorCode, connectionErrorMessage]} />
-                  )}
-                  {connectionSuccessMessage != null && (
-                  <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-2" multiple value={connectionSuccessMessage} />
-                  )}
-                </div>
-              </div>
-            </form> */}
 
 
           </div>
