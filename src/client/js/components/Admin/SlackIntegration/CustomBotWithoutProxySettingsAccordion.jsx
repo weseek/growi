@@ -22,28 +22,28 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
-  const [slackSigningSecret, setSlackSigningSecret] = useState('');
-  const [slackBotToken, setSlackBotToken] = useState('');
-  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
-  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  // const [slackSigningSecret, setSlackSigningSecret] = useState('');
+  // const [slackBotToken, setSlackBotToken] = useState('');
+  // const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
+  // const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const currentBotType = 'custom-bot-without-proxy';
 
-  const fetchData = useCallback(async() => {
-    try {
-      await adminAppContainer.retrieveAppSettingsData();
-      const res = await appContainer.apiv3.get('/slack-integration/');
-      const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
-      } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
-      setSlackSigningSecret(slackSigningSecret);
-      setSlackBotToken(slackBotToken);
-      setSlackSigningSecretEnv(slackSigningSecretEnvVars);
-      setSlackBotTokenEnv(slackBotTokenEnvVars);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer, adminAppContainer]);
+  // const fetchData = useCallback(async() => {
+  //   try {
+  //     await adminAppContainer.retrieveAppSettingsData();
+  //     const res = await appContainer.apiv3.get('/slack-integration/');
+  //     const {
+  //       slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+  //     } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
+  //     setSlackSigningSecret(slackSigningSecret);
+  //     setSlackBotToken(slackBotToken);
+  //     setSlackSigningSecretEnv(slackSigningSecretEnvVars);
+  //     setSlackBotTokenEnv(slackBotTokenEnvVars);
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //   }
+  // }, [appContainer, adminAppContainer]);
 
   useEffect(() => {
     fetchData();

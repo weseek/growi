@@ -20,13 +20,25 @@ const SlackIntegration = (props) => {
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
   const [accessToken, setAccessToken] = useState('');
+  const [slackSigningSecret, setSlackSigningSecret] = useState('');
+  const [slackBotToken, setSlackBotToken] = useState('');
+  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
+  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
 
   const fetchData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
-      const { currentBotType, accessToken } = response.data.slackBotSettingParams;
+      const { currentBotType, customBotWithoutProxySettings, accessToken } = response.data.slackBotSettingParams;
+      const {
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+      } = customBotWithoutProxySettings;
+
       setCurrentBotType(currentBotType);
       setAccessToken(accessToken);
+      setSlackSigningSecret(slackSigningSecret);
+      setSlackBotToken(slackBotToken);
+      setSlackSigningSecretEnv(slackSigningSecretEnvVars);
+      setSlackBotTokenEnv(slackBotTokenEnvVars);
     }
     catch (err) {
       toastError(err);
@@ -97,7 +109,7 @@ const SlackIntegration = (props) => {
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
-        <CustomBotWithoutProxySettings />
+        <CustomBotWithoutProxySettings {...props} />
       );
       break;
     case 'customBotWithProxy':
