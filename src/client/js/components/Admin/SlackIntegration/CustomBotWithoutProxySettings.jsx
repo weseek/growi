@@ -4,20 +4,14 @@ import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import { toastError } from '../../../util/apiNotification';
 import SlackGrowiBridging from './SlackGrowiBridging';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
-
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, adminAppContainer } = props;
   const { t } = useTranslation();
 
-  const [slackSigningSecret, setSlackSigningSecret] = useState('');
-  const [slackBotToken, setSlackBotToken] = useState('');
-  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
-  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
@@ -25,7 +19,6 @@ const CustomBotWithoutProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
-  const currentBotType = 'custom-bot-without-proxy';
 
   useEffect(() => {
     const fetchData = async() => {
@@ -47,13 +40,7 @@ const CustomBotWithoutProxySettings = (props) => {
     try {
       await adminAppContainer.retrieveAppSettingsData();
       const res = await appContainer.apiv3.get('/slack-integration/');
-      const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot, isConnectedToSlack,
-      } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
-      setSlackSigningSecret(slackSigningSecret);
-      setSlackBotToken(slackBotToken);
-      setSlackSigningSecretEnv(slackSigningSecretEnvVars);
-      setSlackBotTokenEnv(slackBotTokenEnvVars);
+      const { isSetupSlackBot, isConnectedToSlack } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
       setSiteName(adminAppContainer.state.title);
       setIsSetupSlackBot(isSetupSlackBot);
       setIsConnectedToSlack(isConnectedToSlack);
@@ -67,89 +54,37 @@ const CustomBotWithoutProxySettings = (props) => {
     fetchData();
   }, [fetchData]);
 
-  async function updateHandler() {
-    try {
-      await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
-        slackSigningSecret,
-        slackBotToken,
-        currentBotType,
-      });
-      fetchData();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
   return (
     <>
+
+      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
+
+      <div className="d-flex justify-content-center my-5 bot-integration">
+        <div className="card rounded shadow border-0 w-50 admin-bot-card">
+          <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
+          <div className="card-body p-4"></div>
+        </div>
+
+        <div className="text-center w-25 mt-4">
+          <p className="text-secondary m-0"><small>{t('admin:slack_integration.integration_sentence.integration_is_not_complete')}</small></p>
+          <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.proceed_with_the_following_integration_procedure')}</small></p>
+          <hr className="border-danger align-self-center admin-border"></hr>
+        </div>
+
+        <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
+          <h5 className="card-title font-weight-bold mt-3 ml-4">GROWI App</h5>
+          <div className="card-body p-4 text-center">
+            <a className="btn btn-primary mb-5">WESEEK Inner Wiki</a>
+          </div>
+        </div>
+      </div>
+
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
       {/* temporarily put bellow component */}
       <SlackGrowiBridging
         siteName={siteName}
         slackWorkSpaceName={slackWSNameInWithoutProxy}
       />
-      <table className="table settings-table">
-        <colgroup>
-          <col className="item-name" />
-          <col className="from-db" />
-          <col className="from-env-vars" />
-        </colgroup>
-        <thead>
-          <tr><th></th><th>Database</th><th>Environment variables</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>Signing Secret</th>
-            <td>
-              <input
-                className="form-control"
-                type="text"
-                value={slackSigningSecret || ''}
-                onChange={e => setSlackSigningSecret(e.target.value)}
-              />
-            </td>
-            <td>
-              <input
-                className="form-control"
-                type="text"
-                value={slackSigningSecretEnv || ''}
-                readOnly
-              />
-              <p className="form-text text-muted">
-                {/* eslint-disable-next-line react/no-danger */}
-                <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
-              </p>
-            </td>
-          </tr>
-          <tr>
-            <th>Bot User OAuth Token</th>
-            <td>
-              <input
-                className="form-control"
-                type="text"
-                value={slackBotToken || ''}
-                onChange={e => setSlackBotToken(e.target.value)}
-              />
-            </td>
-            <td>
-              <input
-                className="form-control"
-                type="text"
-                value={slackBotTokenEnv || ''}
-                readOnly
-              />
-              <p className="form-text text-muted">
-                {/* eslint-disable-next-line react/no-danger */}
-                <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_BOT_TOKEN' }) }} />
-              </p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <AdminUpdateButtonRow onClick={updateHandler} disabled={false} />
 
       <div className="my-5 mx-3">
         {/* TODO GW-5644 active create bot step temporary */}
