@@ -6,19 +6,24 @@ import { Request, Response, NextFunction } from 'express';
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
    */
 
-export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string}, res: Response, next: NextFunction):Record<string, any>| void => {
+export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string; headers:{'x-slack-signature'?:string, 'x-slack-request-timestamp':number}}, res: Response, next: NextFunction):Record<string, any>| void => {
 
   if (req.signingSecret == null) {
     return res.send('No signing secret.');
   }
+
   // take out slackSignature and timestamp from header
-  const slackSignature:any = req.headers['x-slack-signature'];
+  const slackSignature = req.headers['x-slack-signature'];
   const timestamp = req.headers['x-slack-request-timestamp'];
-  const timestampNumber = Number(timestamp);
+
+  if (slackSignature == null || slackSignature == null) {
+    return res.send('Verification failed');
+  }
+  // const timestampNumber = Number(timestamp);
 
   // protect against replay attacks
   const time = Math.floor(new Date().getTime() / 1000);
-  if (Math.abs(time - timestampNumber) > 300) {
+  if (Math.abs(time - timestamp) > 300) {
     return res.send('Verification failed.');
   }
 
