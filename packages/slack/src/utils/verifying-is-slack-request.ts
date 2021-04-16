@@ -6,8 +6,16 @@ import { Request, Response, NextFunction } from 'express';
    * See: https://api.slack.com/authentication/verifying-requests-from-slack
    */
 
+interface verifyingIsSlackRequest{
+  (
+    req: Request & {signingSecret?:string; headers:{'x-slack-signature'?:string, 'x-slack-request-timestamp':number}},
+    res: Response,
+    next: NextFunction,
+  )
+}
+
 // eslint-disable-next-line max-len
-export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string; headers:{'x-slack-signature'?:string, 'x-slack-request-timestamp':number}}, res: Response, next: NextFunction):Record<string, any>| void => {
+export const verifyingIsSlackRequest:verifyingIsSlackRequest = (req, res, next):Record<string, any>| void => {
 
   if (req.signingSecret == null) {
     return res.send('No signing secret.');
