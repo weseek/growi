@@ -2,7 +2,7 @@ import React from 'react';
 import { Collapse } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-const BotSettingsAccordion = (props) => {
+const Accordion = (props) => {
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       {props.children}
@@ -10,7 +10,7 @@ const BotSettingsAccordion = (props) => {
   );
 };
 
-const BotSettingsAccordionItem = (props) => {
+const AccordionItem = (props) => {
   const onToggleAccordionHandler = () => {
     if (props.onToggleAccordionHandler != null) {
       props.onToggleAccordionHandler();
@@ -24,7 +24,7 @@ const BotSettingsAccordionItem = (props) => {
         role="button"
         onClick={onToggleAccordionHandler}
       >
-        <p className="mb-0 text-primary"><span className="mr-2">{props.itemNumber}</span>{props.title}</p>
+        <p className="mb-0 text-primary">{props.title}</p>
         {props.isActive
           ? <i className="fa fa-chevron-up" />
           : <i className="fa fa-chevron-down" />
@@ -39,18 +39,17 @@ const BotSettingsAccordionItem = (props) => {
   );
 };
 
-BotSettingsAccordion.Item = BotSettingsAccordionItem;
+Accordion.Item = AccordionItem;
 
-BotSettingsAccordionItem.propTypes = {
+AccordionItem.propTypes = {
   isActive: PropTypes.bool,
-  itemNumber: PropTypes.string,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.node.isRequired,
   onToggleAccordionHandler: PropTypes.func,
   children: PropTypes.node.isRequired,
 };
 
-BotSettingsAccordion.propTypes = {
+Accordion.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default BotSettingsAccordion;
+export default Accordion;
