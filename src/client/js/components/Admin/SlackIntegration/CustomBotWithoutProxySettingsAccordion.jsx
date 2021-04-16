@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState/* , useEffect, useCallback */ } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
@@ -17,7 +17,9 @@ export const botInstallationStep = {
 
 const CustomBotWithoutProxySettingsAccordion = ({
   appContainer,
-  activeStep, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv, isRgisterSlackCredentials, isSendTestMessage, setIsSendTestMessage,
+  activeStep, slackSigningSecret, slackSigningSecretEnv, slackBotToken,
+  slackBotTokenEnv, isRgisterSlackCredentials, isSendTestMessage,
+  setSlackSigningSecret, setSlackBotToken, setIsSendTestMessage,
 }) => {
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
@@ -69,7 +71,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
-      fetchData();
+      // fetchData();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -254,6 +256,8 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
+  setSlackSigningSecret: PropTypes.func,
+  setSlackBotToken: PropTypes.func,
   setIsSendTestMessage: PropTypes.func,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
