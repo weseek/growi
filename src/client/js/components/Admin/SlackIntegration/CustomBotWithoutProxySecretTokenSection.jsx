@@ -98,7 +98,6 @@ CustomBotWithoutProxySecretTokenSection.propTypes = {
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
-
 };
 
 export default CustomBotWithoutProxySecretTokenSection;
