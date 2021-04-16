@@ -21,7 +21,6 @@ const CustomBotWithoutProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
 
-
   useEffect(() => {
     const getSlackWorkSpaceName = async() => {
       try {

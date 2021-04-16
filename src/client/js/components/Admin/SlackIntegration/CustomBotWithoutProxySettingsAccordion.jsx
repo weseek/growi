@@ -55,6 +55,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
   };
 
   const onChangeSigningSecretHandler = (signingSecretInput) => {
+    console.log(slackSigningSecret);
+
     setSlackSigningSecret(signingSecretInput);
 
   };
@@ -231,8 +233,8 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
-  setSlackSigningSecret: PropTypes.func,
-  setSlackBotToken: PropTypes.func,
+  setSlackSigningSecret: PropTypes.string,
+  setSlackBotToken: PropTypes.string,
   setIsSendTestMessage: PropTypes.func,
   setIsRgisterSlackCredentials: PropTypes.func,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,

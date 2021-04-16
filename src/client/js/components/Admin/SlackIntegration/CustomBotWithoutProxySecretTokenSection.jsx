@@ -10,6 +10,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
     if (props.onChangeSigningSecretHandler != null) {
       props.onChangeSigningSecretHandler(signingSecretInput);
     }
+    return;
   };
 
   const onChangeBotTokenHandler = (botTokenInput) => {

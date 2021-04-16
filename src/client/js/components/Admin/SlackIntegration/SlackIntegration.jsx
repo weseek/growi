@@ -25,7 +25,7 @@ const SlackIntegration = (props) => {
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
-  const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
+  const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
 
 
@@ -46,7 +46,7 @@ const SlackIntegration = (props) => {
       setIsConnectedToSlack(isConnectedToSlack);
 
       if ((slackBotToken && slackSigningSecret) || (slackBotTokenEnv && slackSigningSecretEnv)) {
-        setIsRgisterSlackCredentials(true);
+        setIsRegisterSlackCredentials(true);
       }
 
     }
@@ -119,19 +119,19 @@ const SlackIntegration = (props) => {
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
-        <CustomBotWithoutProxySettings {
-          ...{
-                slackBotToken,
-                slackBotTokenEnv,
-                slackSigningSecret,
-                slackSigningSecretEnv,
-                isConnectedToSlack,
-                isRgisterSlackCredentials,
-                isSendTestMessage,
-                setIsSendTestMessage,
-                setIsRgisterSlackCredentials,
-              }
-            }
+        <CustomBotWithoutProxySettings
+          accessToken={accessToken}
+          isSendTestMessage={isSendTestMessage}
+          isRegisterSlackCredentials={isRegisterSlackCredentials}
+          isConnectedToSlack={isConnectedToSlack}
+          slackBotTokenEnv={slackBotToken}
+          slackBotToken={slackBotToken}
+          slackSigningSecretEnv={slackSigningSecret}
+          slackSigningSecret={slackSigningSecret}
+          setSlackSigningSecret={setSlackSigningSecret}
+          setSlackBotToken={setSlackBotToken}
+          setIsSendTestMessage={setIsSendTestMessage}
+          setIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
         />
       );
       break;
