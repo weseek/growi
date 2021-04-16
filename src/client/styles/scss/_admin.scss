@@ -114,18 +114,24 @@
       border-width : 2px;
     }
     .circle-front {
-      position: relative;
-      width: 60px;
-      height: 60px;
+      // position: relative;
+      width: 74px;
+      height: 74px;
+      margin: 0 auto;
       background: #092c58;
       border-radius: 50%;
     }
     .circle-back {
-      position: absolute;
-      width: 70px;
-      height: 70px;
+      // position: absolute;
+      width: 100px;
+      height: 100px;
       background: #d0d6de;
       border-radius: 50%;
+    }
+    .circle{
+      width: 100px;
+      height: 100px;
+      
     }
   }
 
