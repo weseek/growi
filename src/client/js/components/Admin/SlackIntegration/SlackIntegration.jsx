@@ -67,6 +67,9 @@ const SlackIntegration = (props) => {
       setCurrentBotType(clickedBotType);
       return;
     }
+    setIsRegisterSlackCredentials(false);
+    setSlackSigningSecret('');
+    setSlackBotToken('');
     setSelectedBotType(clickedBotType);
   };
 
