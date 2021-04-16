@@ -83,18 +83,6 @@ const injectableContainers = [
   adminUserGroupDetailContainer,
 ];
 
-// const [currentBotType, setCurrentBotType] = useState(null);
-// const [selectedBotType, setSelectedBotType] = useState(null);
-// const [accessToken, setAccessToken] = useState('');
-// const [slackSigningSecret, setSlackSigningSecret] = useState('');
-// const [slackBotToken, setSlackBotToken] = useState('');
-// const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
-// const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-
-// const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
-// const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
-// const [isSendTestMessage, setIsSendTestMessage] = useState(false);
-
 logger.info('unstated containers have been initialized');
 
 /**
