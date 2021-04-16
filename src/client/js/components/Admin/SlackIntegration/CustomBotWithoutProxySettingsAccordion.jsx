@@ -26,7 +26,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const currentBotType = 'custom-bot-without-proxy';
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async() => {
     try {
       await adminAppContainer.retrieveAppSettingsData();
       const res = await appContainer.apiv3.get('/slack-integration/');
