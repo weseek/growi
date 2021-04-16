@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import Accordion from '../common/Accordion';
+import Accordion from '../Common/Accordion';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 
@@ -100,7 +100,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
     <Accordion>
       <Accordion.Item
         isActive={openAccordionIndexes.has(botInstallationStep.CREATE_BOT)}
-        title={`<span className="mr-2">①</span>${t('slack_integration.without_proxy.create_bot')}`}
+        title={[<span className="mr-2">①</span>, t('slack_integration.without_proxy.create_bot')]}
         onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.CREATE_BOT)}
       >
         <div className="row my-5">
@@ -125,7 +125,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
       </Accordion.Item>
       <Accordion.Item
         isActive={openAccordionIndexes.has(botInstallationStep.INSTALL_BOT)}
-        title={`<span className="mr-2">②</span>${t('slack_integration.without_proxy.install_bot_to_slack')}`}
+        title={[<span className="mr-2">②</span>, t('slack_integration.without_proxy.install_bot_to_slack')]}
         onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.INSTALL_BOT)}
       >
         <div className="container w-75 py-5">
@@ -144,7 +144,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
       </Accordion.Item>
       <Accordion.Item
         isActive={openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
-        title={`<span className="mr-2">{③</span>${t('slack_integration.without_proxy.register_secret_and_token')}`}
+        title={[<span className="mr-2">③</span>, t('slack_integration.without_proxy.register_secret_and_token')]}
         onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
       >
         <CustomBotWithoutProxySecretTokenSection
@@ -159,7 +159,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
       </Accordion.Item>
       <Accordion.Item
         isActive={openAccordionIndexes.has(botInstallationStep.CONNECTION_TEST)}
-        title={`<span className="mr-2">④</span>${t('slack_integration.without_proxy.test_connection')}`}
+        title={[<span className="mr-2">④</span>, t('slack_integration.without_proxy.test_connection')]}
         onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.CONNECTION_TEST)}
       >
         <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
