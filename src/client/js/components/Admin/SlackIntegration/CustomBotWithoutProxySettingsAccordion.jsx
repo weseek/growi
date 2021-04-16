@@ -8,10 +8,16 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 
-const CustomBotWithoutProxySettingsAccordion = (props) => {
-  const { appContainer, adminAppContainer } = props;
-  const { t } = useTranslation();
-  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
+export const botInstallationStep = {
+  CREATE_BOT: 'create-bot',
+  INSTALL_BOT: 'install-bot',
+  REGISTER_SLACK_CONFIGURATION: 'register-slack-configuration',
+  CONNECTION_TEST: 'connection-test',
+};
+
+const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContainer, activeStep }) => {
+  const { t } = useTranslation('admin');
+  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [slackSigningSecret, setSlackSigningSecret] = useState('');
@@ -41,13 +47,14 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     fetchData();
   }, [fetchData]);
 
-  const onToggleAccordionHandler = (i) => {
+
+  const onToggleAccordionHandler = (installationStep) => {
     const accordionIndexes = new Set(openAccordionIndexes);
-    if (accordionIndexes.has(i)) {
-      accordionIndexes.delete(i);
+    if (accordionIndexes.has(installationStep)) {
+      accordionIndexes.delete(installationStep);
     }
     else {
-      accordionIndexes.add(i);
+      accordionIndexes.add(installationStep);
     }
     setOpenAccordionIndexes(accordionIndexes);
   };
@@ -93,20 +100,19 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
-
       <div className="card border-0 rounded-lg mb-0">
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
           role="button"
-          onClick={() => onToggleAccordionHandler(0)}
+          onClick={() => onToggleAccordionHandler(botInstallationStep.CREATE_BOT)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('admin:slack_integration.without_proxy.create_bot')}</p>
-          {openAccordionIndexes.has(0)
+          <p className="mb-0 text-primary"><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</p>
+          {openAccordionIndexes.has(botInstallationStep.CREATE_BOT)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={openAccordionIndexes.has(0)}>
+        <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.CREATE_BOT)}>
           <div className="card-body">
 
             <div className="row my-5">
@@ -136,15 +142,15 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
           role="button"
-          onClick={() => onToggleAccordionHandler(1)}
+          onClick={() => onToggleAccordionHandler(botInstallationStep.INSTALL_BOT)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('admin:slack_integration.without_proxy.install_bot_to_slack')}</p>
-          {openAccordionIndexes.has(1)
+          <p className="mb-0 text-primary"><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</p>
+          {openAccordionIndexes.has(botInstallationStep.INSTALL_BOT)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={openAccordionIndexes.has(1)}>
+        <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.INSTALL_BOT)}>
           <div className="card-body py-5">
             <div className="container w-75">
               <p>1. Install your app をクリックします。</p>
@@ -167,15 +173,16 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
           role="button"
-          onClick={() => onToggleAccordionHandler(2)}
+          onClick={() => onToggleAccordionHandler(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('admin:slack_integration.without_proxy.register_secret_and_token')}</p>
-          {openAccordionIndexes.has(2)
+          <p className="mb-0 text-primary"><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}</p>
+          {openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={openAccordionIndexes.has(2)}>
+
+        <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}>
           <CustomBotWithoutProxySecretTokenSection
             updateSecretTokenHandler={updateSecretTokenHandler}
             onChangeSigningSecretHandler={onChangeSigningSecretHandler}
@@ -192,15 +199,15 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
           role="button"
-          onClick={() => onToggleAccordionHandler(3)}
+          onClick={() => onToggleAccordionHandler(botInstallationStep.CONNECTION_TEST)}
         >
-          <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('admin:slack_integration.without_proxy.test_connection')}</p>
-          {openAccordionIndexes.has(3)
+          <p className="mb-0 text-primary"><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</p>
+          {openAccordionIndexes.has(botInstallationStep.CONNECTION_TEST)
             ? <i className="fa fa-chevron-up" />
             : <i className="fa fa-chevron-down" />
           }
         </div>
-        <Collapse isOpen={openAccordionIndexes.has(3)}>
+        <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.CONNECTION_TEST)}>
           <div className="card-body">
             <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
             <div className="d-flex justify-content-center">
@@ -230,6 +237,7 @@ const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(Cus
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
+  activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;
