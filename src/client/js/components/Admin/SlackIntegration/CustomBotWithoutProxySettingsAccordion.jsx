@@ -181,7 +181,6 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
             : <i className="fa fa-chevron-down" />
           }
         </div>
-
         <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}>
           <CustomBotWithoutProxySecretTokenSection
             updateSecretTokenHandler={updateSecretTokenHandler}
