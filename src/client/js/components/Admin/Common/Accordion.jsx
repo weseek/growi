@@ -9,7 +9,7 @@ const Accordion = (props) => {
       <div
         className="card-header font-weight-normal py-3 d-flex justify-content-between"
         role="button"
-        onClick={setIsActive(prevState => !prevState)}
+        onClick={() => setIsActive(prevState => !prevState)}
       >
         <p className="mb-0 text-primary">{props.title}</p>
         {isActive
