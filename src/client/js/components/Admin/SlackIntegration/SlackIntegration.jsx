@@ -129,6 +129,7 @@ const SlackIntegration = (props) => {
                 isRgisterSlackCredentials,
                 isSendTestMessage,
                 setIsSendTestMessage,
+                setIsRgisterSlackCredentials,
               }
             }
         />

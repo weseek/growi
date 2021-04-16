@@ -9,15 +9,10 @@ import SlackGrowiBridging from './SlackGrowiBridging';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const {
-    appContainer,
-    /*  adminAppContainer, */ /* slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv, */
-    isConnectedToSlack, /* , isRgisterSlackCredentials, */
-  } = props;
+  const { appContainer } = props;
   const { t } = useTranslation();
 
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
-  // const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
 
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
@@ -26,26 +21,6 @@ const CustomBotWithoutProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
 
-  // const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
-  // const [isSendTestMessage, setIsSendTestMessage] = useState(false);
-
-  // const fetchData = useCallback(async() => {
-  //   try {
-  //     await adminAppContainer.retrieveAppSettingsData();
-  //     const res = await appContainer.apiv3.get('/slack-integration/');
-  //     const { isSetupSlackBot, isConnectedToSlack } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
-  //     setSiteName(adminAppContainer.state.title);
-  //     setIsSetupSlackBot(isSetupSlackBot);
-  //     setIsConnectedToSlack(isConnectedToSlack);
-  //     setIsRgisterSlackCredentials(false);
-  //     if ((slackBotToken && slackSigningSecret) || (slackBotTokenEnv && slackSigningSecretEnv)) {
-  //       setIsRgisterSlackCredentials(true);
-  //     }
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // }, [appContainer, adminAppContainer, slackSigningSecretEnv, slackBotTokenEnv]);
 
   useEffect(() => {
     const getSlackWorkSpaceName = async() => {
@@ -58,11 +33,10 @@ const CustomBotWithoutProxySettings = (props) => {
       }
     };
     setSlackWSNameInWithoutProxy(null);
-    if (isConnectedToSlack) {
+    if (props.isConnectedToSlack) {
       getSlackWorkSpaceName();
     }
-    // fetchData();
-  }, [appContainer, isConnectedToSlack/* , fetchData */]);
+  }, [appContainer, props.isConnectedToSlack]);
 
   return (
     <>
@@ -98,11 +72,8 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion
-          activeStep={botInstallationStep.CREATE_BOT}
-          // isRgisterSlackCredentials={isRgisterSlackCredentials}
-          // isSendTestMessage={isSendTestMessage}
-          // setIsSendTestMessage={setIsSendTestMessage}
           {...props}
+          activeStep={botInstallationStep.CREATE_BOT}
         />
       </div>
 

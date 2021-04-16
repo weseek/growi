@@ -19,38 +19,13 @@ const CustomBotWithoutProxySettingsAccordion = ({
   appContainer,
   activeStep, slackSigningSecret, slackSigningSecretEnv, slackBotToken,
   slackBotTokenEnv, isRgisterSlackCredentials, isSendTestMessage,
-  setSlackSigningSecret, setSlackBotToken, setIsSendTestMessage,
+  setSlackSigningSecret, setSlackBotToken, setIsSendTestMessage, setIsRgisterSlackCredentials,
 }) => {
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
-  // const [slackSigningSecret, setSlackSigningSecret] = useState('');
-  // const [slackBotToken, setSlackBotToken] = useState('');
-  // const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
-  // const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const currentBotType = 'custom-bot-without-proxy';
-
-  // const fetchData = useCallback(async() => {
-  //   try {
-  //     await adminAppContainer.retrieveAppSettingsData();
-  //     const res = await appContainer.apiv3.get('/slack-integration/');
-  //     const {
-  //       slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
-  //     } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
-  //     setSlackSigningSecret(slackSigningSecret);
-  //     setSlackBotToken(slackBotToken);
-  //     setSlackSigningSecretEnv(slackSigningSecretEnvVars);
-  //     setSlackBotTokenEnv(slackBotTokenEnvVars);
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // }, [appContainer, adminAppContainer]);
-
-  // useEffect(() => {
-  //   fetchData();
-  // }, [fetchData]);
 
 
   const onToggleAccordionHandler = (installationStep) => {
@@ -71,7 +46,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
-      // fetchData();
+      setIsRgisterSlackCredentials(false);
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -259,6 +234,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   setSlackSigningSecret: PropTypes.func,
   setSlackBotToken: PropTypes.func,
   setIsSendTestMessage: PropTypes.func,
+  setIsRgisterSlackCredentials: PropTypes.func,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
