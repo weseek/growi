@@ -28,8 +28,8 @@ const CustomBotWithProxySettings = (props) => {
 
           <div className="row m-0">
             <hr className="border-danger align-self-center admin-border col"></hr>
-            <div className="circle text-center">
-              <p className="text-light font-weight-bold m-0 pt-3 mt-2 col">Proxy</p>
+            <div className="circle text-center bg-primary border-light">
+              <p className="text-light font-weight-bold m-0 pt-3">Proxy</p>
               <p className="text-light font-weight-bold">Server</p>
             </div>
             <hr className="border-danger align-self-center admin-border col"></hr>
