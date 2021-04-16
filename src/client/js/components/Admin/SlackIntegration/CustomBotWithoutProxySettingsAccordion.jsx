@@ -91,7 +91,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CREATE_BOT)}
-        title={[<span className="mr-2">①</span>, t('slack_integration.without_proxy.create_bot')]}
+        title={<><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</>}
       >
         <div className="row my-5">
           <div className="mx-auto">
@@ -115,7 +115,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.INSTALL_BOT)}
-        title={[<span className="mr-2">②</span>, t('slack_integration.without_proxy.install_bot_to_slack')]}
+        title={<><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</>}
       >
         <div className="container w-75 py-5">
           <p>1. Install your app をクリックします。</p>
@@ -133,7 +133,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
-        title={[<span className="mr-2">③</span>, t('slack_integration.without_proxy.register_secret_and_token')]}
+        title={<><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           updateSecretTokenHandler={updateSecretTokenHandler}
@@ -147,7 +147,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
-        title={[<span className="mr-2">④</span>, t('slack_integration.without_proxy.test_connection')]}
+        title={<><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</>}
       >
         <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
         <div className="d-flex justify-content-center">

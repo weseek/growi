@@ -3,21 +3,21 @@ import { Collapse } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 const Accordion = (props) => {
-  const [isActive, setIsActive] = useState(props.defaultIsActive);
+  const [isOpen, setIsOpen] = useState(props.isOpenDefault);
   return (
     <div className="card border-0 rounded-lg mb-0">
       <div
         className="card-header font-weight-normal py-3 d-flex justify-content-between"
         role="button"
-        onClick={() => setIsActive(prevState => !prevState)}
+        onClick={() => setIsOpen(prevState => !prevState)}
       >
         <p className="mb-0 text-primary">{props.title}</p>
-        {isActive
+        {isOpen
           ? <i className="fa fa-chevron-up" />
           : <i className="fa fa-chevron-down" />
         }
       </div>
-      <Collapse isOpen={isActive}>
+      <Collapse isOpen={isOpen}>
         <div className="card-body">
           {props.children}
         </div>
@@ -29,7 +29,7 @@ const Accordion = (props) => {
 Accordion.propTypes = {
   title: PropTypes.node.isRequired,
   children: PropTypes.node.isRequired,
-  defaultIsActive: PropTypes.bool,
+  isOpenDefault: PropTypes.bool,
 };
 
 export default Accordion;
