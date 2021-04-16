@@ -18,8 +18,8 @@ export const botInstallationStep = {
 const CustomBotWithoutProxySettingsAccordion = ({
   appContainer,
   activeStep, slackSigningSecret, slackSigningSecretEnv, slackBotToken,
-  slackBotTokenEnv, isRgisterSlackCredentials, isSendTestMessage,
-  setSlackSigningSecret, setSlackBotToken, setIsSendTestMessage, setIsRgisterSlackCredentials,
+  slackBotTokenEnv, isRegisterSlackCredentials, isSendTestMessage,
+  setSlackSigningSecret, setSlackBotToken, setIsSendTestMessage, setIsRegisterSlackCredentials,
 }) => {
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
@@ -46,7 +46,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
-      setIsRgisterSlackCredentials(false);
+      setIsRegisterSlackCredentials(false);
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -55,10 +55,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
   };
 
   const onChangeSigningSecretHandler = (signingSecretInput) => {
-    console.log(slackSigningSecret);
-
     setSlackSigningSecret(signingSecretInput);
-
   };
 
   const onChangeBotTokenHandler = (botTokenInput) => {
@@ -162,7 +159,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
           <p className="mb-0 text-primary">
             <span className="mr-2">③</span>
             {t('slack_integration.without_proxy.register_secret_and_token')}
-            {isRgisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}
+            {isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}
           </p>
 
           {openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)
@@ -231,12 +228,12 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
-  isRgisterSlackCredentials: PropTypes.bool,
+  isRegisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
   setSlackSigningSecret: PropTypes.string,
   setSlackBotToken: PropTypes.string,
   setIsSendTestMessage: PropTypes.func,
-  setIsRgisterSlackCredentials: PropTypes.func,
+  setIsRegisterSlackCredentials: PropTypes.func,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
