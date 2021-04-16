@@ -29,7 +29,7 @@ const Accordion = (props) => {
 Accordion.propTypes = {
   title: PropTypes.node.isRequired,
   children: PropTypes.node.isRequired,
-  isOpenDefault: PropTypes.bool,
+  isOpenDefault: PropTypes.bool.isRequired,
 };
 
 export default Accordion;
