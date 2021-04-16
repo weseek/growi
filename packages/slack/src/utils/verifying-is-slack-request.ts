@@ -12,12 +12,13 @@ export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string}, 
     return res.send('No signing secret.');
   }
   // take out slackSignature and timestamp from header
-  const slackSignature:any = req.headers['x-slack-signature'];
-  const timestamp:any = req.headers['x-slack-request-timestamp'];
+  const slackSignature = req.headers['x-slack-signature'];
+  const timestamp = req.headers['x-slack-request-timestamp'];
+  const timestampNumber = Number(timestamp);
 
   // protect against replay attacks
   const time = Math.floor(new Date().getTime() / 1000);
-  if (Math.abs(time - timestamp) > 300) {
+  if (Math.abs(time - timestampNumber) > 300) {
     return res.send('Verification failed.');
   }
 
