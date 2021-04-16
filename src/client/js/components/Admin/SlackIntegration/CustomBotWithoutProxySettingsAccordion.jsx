@@ -264,12 +264,9 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
                       value={connectionSuccessMessage}
                     />
                   )}
-
                 </div>
               </div>
             </form>
-
-
           </div>
         </Collapse>
       </div>
