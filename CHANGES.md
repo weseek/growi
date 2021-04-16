@@ -1,8 +1,30 @@
 # CHANGES
 
-## v4.2.13-RC
+## v4.2.15-EC
 
-* 
+*
+
+
+## v4.2.14
+
+* Feature: Add an option to restrict publishing email property for new users
+* Improvement: Invite modal in admin page without email server settings
+* Improvement: Global notification settings in admin page without email server settings
+* Fix: Can create pages on the share route
+    * Introduced by v4.2.8
+* Fix: Pages restrected by group are excluded for recurrence operation
+    * Introduced by v4.2.8
+* Fix: Rename and duplicate to descendants path does not work correctly
+    * Introduced by v4.2.8
+* Support: Update libs
+    * bunyan
+    * browser-bunyan
+
+## v4.2.13
+
+* Feature: Detect indent size automatically
+* Fix: Some API responses includes email unintentionally
+* Fix: An error always displayed in admin pages
 
 ## v4.2.12
 

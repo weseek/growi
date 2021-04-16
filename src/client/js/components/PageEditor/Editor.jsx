@@ -308,15 +308,15 @@ export default class Editor extends AbstractEditor {
                   // <Subscribe to={[EditorContainer]}>
                   //   { editorContainer => (
                       // eslint-disable-next-line arrow-body-style
-                <CodeMirrorEditor
-                  ref={(c) => { this.cmEditor = c }}
-                        // editorOptions={editorContainer.state.editorOptions}
-                  onPasteFiles={this.pasteFilesHandler}
-                  onDragEnter={this.dragEnterHandler}
-                  onMarkdownHelpButtonClicked={this.showMarkdownHelp}
-                  {...this.props}
-                />
-                  //   )}
+                  <CodeMirrorEditor
+                    ref={(c) => { this.cmEditor = c }}
+                    // indentSize={editorContainer.state.indentSize}
+                    // editorOptions={editorContainer.state.editorOptions}
+                    onPasteFiles={this.pasteFilesHandler}
+                    onDragEnter={this.dragEnterHandler}
+                    onMarkdownHelpButtonClicked={this.showMarkdownHelp}
+                    {...this.props}
+                  />
                   // </Subscribe>
                 )}
 

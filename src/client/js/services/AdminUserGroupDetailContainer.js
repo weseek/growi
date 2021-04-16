@@ -161,13 +161,7 @@ export default class AdminAdminUserGroupDetailContainer extends Container {
     // do not add users for ducaplicate
     if (res.data.userGroupRelation == null) { return }
 
-    const { userGroupRelation } = res.data;
-
-    this.setState((prevState) => {
-      return {
-        userGroupRelations: [...prevState.userGroupRelations, userGroupRelation],
-      };
-    });
+    this.init();
   }
 
   /**

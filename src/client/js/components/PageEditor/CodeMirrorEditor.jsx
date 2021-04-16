@@ -846,7 +846,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             // styleActiveLine: this.props.editorOptions.styleActiveLine,
             lineNumbers: this.props.lineNumbers,
             tabSize: 4,
-            indentUnit: 4,
+            indentUnit: this.props.indentSize,
             lineWrapping: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
             autoCloseTags: true,

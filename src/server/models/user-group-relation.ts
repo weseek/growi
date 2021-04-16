@@ -84,25 +84,6 @@ class UserGroupRelation extends Model {
   }
 
   /**
-   * find all user and group relation of UserGroup
-   *
-   * @static
-   * @param {UserGroup} userGroup
-   * @returns {Promise<UserGroupRelation[]>}
-   * @memberof UserGroupRelation
-   */
-  static findAllRelationForUserGroup(userGroup) {
-    // debug('findAllRelationForUserGroup is called', userGroup);
-    // return this
-    //   .find({ relatedGroup: userGroup })
-    //   .populate({
-    //     path: 'relatedUser',
-    //     select: USER_PUBLIC_FIELDS,
-    //   })
-    //   .exec();
-  }
-
-  /**
    * find all user and group relation of UserGroups
    *
    * @static

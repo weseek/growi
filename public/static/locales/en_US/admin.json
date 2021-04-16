@@ -1,4 +1,5 @@
 {
+  "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
   "admin_top": {
     "management_wiki": "Management Wiki",
     "system_information": "System information",
@@ -22,6 +23,7 @@
     "confidential_name": "Confidential name",
     "confidential_example": "ex): internal use only",
     "default_language": "Default language for new users",
+    "default_mail_visibility": "Disclose e-mail for new users",
     "file_uploading": "File uploading",
     "enable_files_except_image": "Enabling this option will allow upload of any file type. Without this option, only image file upload is supported.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
@@ -77,6 +79,14 @@
       "enable_lineBreak_desc": "Convert line break in the text page to<code>&lt;br&gt;</code>in HTML",
       "enable_lineBreak_for_comment": "Enable line break in comment",
       "enable_lineBreak_for_comment_desc": "Convert line break in comment to<code>&lt;br&gt;</code>in HTML"
+    },
+    "indent_header": "Indent setting",
+    "indent_desc": "You can change indent settings.",
+    "indent_options": {
+      "indentSize": "Default indent size",
+      "indentSize_desc": "Set the default indent size for the Markdown editor",
+      "disallow_indent_change": "Disallow change of indent size by users",
+      "disallow_indent_change_desc": "Force users to use ther default indent size."
     },
     "presentation_header": "Presentation setting",
     "presentation_desc": "You can change presentation settings.",
@@ -245,16 +255,20 @@
     "delete": "Delete"
   },
   "user_management": {
-    "invite_users": "Invite new users",
+    "invite_users": "Temporarily issue a new user",
     "click_twice_same_checkbox": "You should check at least one checkbox.",
     "invite_modal": {
-      "emails": "Emails (Possible to invite multiple people with new lines)",
+      "emails": "Emails (Possible to issue multiple people with new lines)",
+      "description1":"Temporarily issue new users by email addresses.",
+      "description2":"A temporary password will be generated for the first login.",
       "invite_thru_email": "Send invitation email",
+      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>",
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
       "send_new_password": "Please send the new password to the user.",
       "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
-      "existing_email": "The following emails already exist"
+      "existing_email": "The following emails already exist",
+      "issue": "Issue"
     },
     "user_table": {
       "administrator": "Administrator",

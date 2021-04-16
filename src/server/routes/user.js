@@ -58,16 +58,6 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
 
-  api.bookmarks = function(req, res) {
-    const options = {
-      skip: req.query.offset || 0,
-      limit: req.query.limit || 50,
-    };
-    Bookmark.findByUser(req.user, options, (err, bookmarks) => {
-      res.json(bookmarks);
-    });
-  };
-
   api.checkUsername = function(req, res) {
     throw new Error('DEPRECATED: Use /_api/v3/users/exists');
     // const username = req.query.username;

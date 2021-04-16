@@ -64,7 +64,7 @@ const restrictedPatternsToCreate: Array<RegExp> = [
   /\s+\/\s+/, // avoid miss in renaming
   /.+\/edit$/,
   /.+\.md$/,
-  /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags)(\/.*|$)/,
+  /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
 ];
 export const isCreatablePage = (path: string): boolean => {
   return !restrictedPatternsToCreate.some(pattern => path.match(pattern));

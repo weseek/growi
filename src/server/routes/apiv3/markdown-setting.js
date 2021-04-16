@@ -15,6 +15,10 @@ const validator = {
     body('isEnabledLinebreaks').isBoolean(),
     body('isEnabledLinebreaksInComments').isBoolean(),
   ],
+  indent: [
+    body('adminPreferredIndentSize').isIn([2, 4]),
+    body('isIndentSizeForced').isBoolean(),
+  ],
   presentationSetting: [
     body('pageBreakSeparator').isInt().not().isEmpty(),
   ],
@@ -110,6 +114,8 @@ module.exports = (crowi) => {
     const markdownParams = {
       isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+      adminPreferredIndentSize: await crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+      isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
       pageBreakSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakSeparator'),
       pageBreakCustomSeparator: await crowi.configManager.getConfig('markdown', 'markdown:presentation:pageBreakCustomSeparator'),
       isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
@@ -163,6 +169,29 @@ module.exports = (crowi) => {
       const msg = 'Error occurred in updating lineBreak';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-lineBreak-failed'));
+    }
+
+  });
+
+  router.put('/indent', loginRequiredStrictly, adminRequired, validator.indent, apiV3FormValidator, async(req, res) => {
+
+    const requestIndentParams = {
+      'markdown:adminPreferredIndentSize': req.body.adminPreferredIndentSize,
+      'markdown:isIndentSizeForced': req.body.isIndentSizeForced,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestIndentParams);
+      const indentParams = {
+        adminPreferredIndentSize: await crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
+        isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+      };
+      return res.apiv3({ indentParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating indent';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-indent-failed'));
     }
 
   });

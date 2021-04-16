@@ -7,6 +7,7 @@ const logger = loggerFactory('growi:routes:apiv3:pages');
 const express = require('express');
 
 const { query, param } = require('express-validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -126,12 +127,15 @@ module.exports = (crowi) => {
           page: selectedPage,
           limit,
           sort: { createdAt: -1 },
-          populate: {
-            path: 'author',
-            select: User.USER_PUBLIC_FIELDS,
-          },
+          populate: 'author',
         },
       );
+
+      paginateResult.docs.forEach((doc) => {
+        if (doc.author != null && doc.author instanceof User) {
+          doc.author = serializeUserSecurely(doc.author);
+        }
+      });
 
       return res.apiv3(paginateResult);
     }
@@ -179,7 +183,12 @@ module.exports = (crowi) => {
     }
 
     try {
-      const revision = await Revision.findById(revisionId).populate('author', User.USER_PUBLIC_FIELDS);
+      const revision = await Revision.findById(revisionId).populate('author');
+
+      if (revision.author != null && revision.author instanceof User) {
+        revision.author = serializeUserSecurely(revision.author);
+      }
+
       return res.apiv3({ revision });
     }
     catch (err) {

@@ -20,7 +20,7 @@ class UserGroupService {
     return UserGroupRelation.removeAllInvalidRelations();
   }
 
-  async removeCompletelyById(deleteGroupId, action, transferToUserGroupId) {
+  async removeCompletelyById(deleteGroupId, action, transferToUserGroupId, user) {
     const deletedGroup = await UserGroup.findByIdAndRemove(deleteGroupId);
 
     if (deletedGroup == null) {
@@ -30,7 +30,7 @@ class UserGroupService {
 
     await Promise.all([
       UserGroupRelation.removeAllByUserGroup(deletedGroup),
-      this.crowi.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId),
+      this.crowi.pageService.handlePrivatePagesForDeletedGroup(deletedGroup, action, transferToUserGroupId, user),
     ]);
 
     return deletedGroup;

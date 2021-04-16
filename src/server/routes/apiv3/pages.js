@@ -1,5 +1,4 @@
 import loggerFactory from '~/utils/logger';
-import PageTagRelation from '~/server/models/page-tag-relation';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
@@ -115,6 +114,8 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const Page = crowi.model('Page');
+  const User = crowi.model('User');
+  const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
@@ -122,6 +123,7 @@ module.exports = (crowi) => {
 
   const { serializePageSecurely } = require('../../models/serializers/page-serializer');
   const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
+  const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
   const validator = {
     createPage: [
@@ -312,6 +314,12 @@ module.exports = (crowi) => {
       if (result.pages.length > limit) {
         result.pages.pop();
       }
+
+      result.pages.forEach((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+      });
 
       return res.apiv3(result);
     }
@@ -574,6 +582,13 @@ module.exports = (crowi) => {
 
     try {
       const result = await Page.findListWithDescendants(path, req.user, queryOptions);
+
+      result.pages.forEach((page) => {
+        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
+          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
+        }
+      });
+
       return res.apiv3(result);
     }
     catch (err) {
@@ -620,7 +635,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
+  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, csrf, validator.duplicatePage, apiV3FormValidator, async(req, res) => {
     const { pageId, isRecursively } = req.body;
 
     const newPagePath = pathUtils.normalizePath(req.body.pageNameInput);

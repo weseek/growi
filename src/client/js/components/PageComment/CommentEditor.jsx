@@ -24,6 +24,7 @@ import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import Preview from '../PageEditor/Preview';
 import { useCurrentUser, useHasSlackConfig } from '~/stores/context';
 
+
 const navTabMapping = {
   comment_editor: {
     Icon: () => <i className="icon-settings" />,
@@ -268,6 +269,10 @@ class CommentEditor extends React.Component {
                 onUpload={this.uploadHandler}
                 onCtrlEnter={this.ctrlEnterHandler}
               />
+              {/*
+                Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
+                See a review comment in https://github.com/weseek/growi/pull/3473
+              */}
             </TabPane>
             <TabPane tabId="comment_preview">
               <div className="comment-form-preview">

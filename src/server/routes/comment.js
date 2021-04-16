@@ -2,6 +2,48 @@ import loggerFactory from '~/utils/logger';
 import Comment from '~/server/models/comment';
 
 const logger = loggerFactory('growi:routes:comment');
+/**
+ * @swagger
+ *  tags:
+ *    name: Comments
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Comment:
+ *        description: Comment
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: revision ID
+ *            example: 5e079a0a0afa6700170a75fb
+ *          __v:
+ *            type: number
+ *            description: DB record version
+ *            example: 0
+ *          page:
+ *            $ref: '#/components/schemas/Page/properties/_id'
+ *          creator:
+ *            $ref: '#/components/schemas/User/properties/_id'
+ *          revision:
+ *            $ref: '#/components/schemas/Revision/properties/_id'
+ *          comment:
+ *            type: string
+ *            description: comment
+ *            example: good
+ *          commentPosition:
+ *            type: number
+ *            description: comment position
+ *            example: 0
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
+ */
 
 module.exports = function(crowi, app) {
 
@@ -120,11 +162,6 @@ module.exports = function(crowi, app) {
     let createdComment;
     try {
       createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
-
-      await Comment.populate(createdComment, [
-        { path: 'creator', model: 'User', select: User.USER_PUBLIC_FIELDS },
-      ]);
-
     }
     catch (err) {
       logger.error(err);

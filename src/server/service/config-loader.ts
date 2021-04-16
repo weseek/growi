@@ -420,6 +420,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 7788,
   },
+  DEFAULT_EMAIL_PUBLISHED: {
+    ns:      'crowi',
+    key:     'customize:isEmailPublishedForNewUser',
+    type:    ValueType.BOOLEAN,
+    default: true,
+  },
 };
 
 

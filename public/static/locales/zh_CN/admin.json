@@ -1,4 +1,5 @@
 {
+  "mailer_setup_required":"<a href='/admin/app'>Email settings</a> are required to send.",
 	"admin_top": {
 		"management_wiki": "管理Wiki",
 		"system_information": "系统信息",
@@ -21,7 +22,8 @@
 		"siteurl_help": "网站完整URL起始于 <code>http://</code> or <code>https://</code>.",
 		"confidential_name": "内部名称",
 		"confidential_example": "ex）：仅供内部使用",
-    "default_language": "新用户的默认语言",
+		"default_language": "新用户的默认语言",
+		"default_mail_visibility": "新用户的默认电子邮件可见性",
 		"file_uploading": "文件上传",
 		"enable_files_except_image": "启用此选项将允许上传任何文件类型。如果没有此选项，则仅支持图像文件上载。",
 		"attach_enable": "如果启用此选项，则可以附加图像文件以外的文件。",
@@ -77,7 +79,15 @@
 			"enable_lineBreak_for_comment": "注释中启用换行符",
 			"enable_lineBreak_for_comment_desc": "HTML中将注释中的换行符转换为<code>&lt;br&gt;</code>"
 		},
-		"presentation_header": "演示文稿设置",
+    "indent_header": "缩进设置",
+    "indent_desc": "您可以更改缩进设置。",
+    "indent_options": {
+      "indentSize": "默认的缩进值",
+      "indentSize_desc": "您可以更改Markdown编辑器的默认的缩进值。",
+      "disallow_indent_change": "不允许用户更改缩进值",
+      "disallow_indent_change_desc": "您可以不允许用户更改缩进值。"
+    },
+    "presentation_header": "演示文稿设置",
 		"presentation_desc": "您可以更改演示文稿设置。",
 		"presentation_options": {
 			"page_break_setting": "分页设置",
@@ -253,16 +263,20 @@
 		"delete": "删除"
   },
 	"user_management": {
-		"invite_users": "邀请新用户",
+		"invite_users": "临时发布新用户",
 		"click_twice_same_checkbox": "您应该至少选中一个复选框。",
 		"invite_modal": {
 			"emails": "电子邮件",
-			"invite_thru_email": "发送邀请电子邮件",
+      "description1":"通过电子邮件地址临时发布新用户。",
+      "description2":"将为首次登录生成一个临时密码。",
+      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>",
 			"valid_email": "需要有效的电子邮件地址",
+			"invite_thru_email": "发送邀请电子邮件",
 			"temporary_password": "创建的用户具有临时密码",
 			"send_new_password": "请将新密码发送给用户。",
 			"send_temporary_password": "请确保复制此屏幕上的临时密码并将其发送给用户。",
-			"existing_email": "以下电子邮件已存在"
+			"existing_email": "以下电子邮件已存在",
+      "issue": "Issue"
 		},
 		"user_table": {
 			"administrator": "管理员",
