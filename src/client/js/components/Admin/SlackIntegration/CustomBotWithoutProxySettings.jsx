@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect/* , useCallback  */ } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
@@ -10,7 +10,9 @@ import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './C
 
 const CustomBotWithoutProxySettings = (props) => {
   const {
-    appContainer, adminAppContainer, slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv,
+    appContainer,
+    /*  adminAppContainer, */ /* slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv, */
+    isConnectedToSlack, isRgisterSlackCredentials,
   } = props;
   const { t } = useTranslation();
 
@@ -57,8 +59,8 @@ const CustomBotWithoutProxySettings = (props) => {
     if (isConnectedToSlack) {
       getSlackWorkSpaceName();
     }
-    fetchData();
-  }, [appContainer, isConnectedToSlack, fetchData]);
+    // fetchData();
+  }, [appContainer, isConnectedToSlack/* , fetchData */]);
 
   return (
     <>
@@ -98,6 +100,7 @@ const CustomBotWithoutProxySettings = (props) => {
           isRgisterSlackCredentials={isRgisterSlackCredentials}
           isSendTestMessage={isSendTestMessage}
           setIsSendTestMessage={setIsSendTestMessage}
+          {...props}
         />
       </div>
 
@@ -114,6 +117,8 @@ CustomBotWithoutProxySettings.propTypes = {
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
+  isRgisterSlackCredentials: PropTypes.bool,
+  isConnectedToSlack: PropTypes.bool,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
