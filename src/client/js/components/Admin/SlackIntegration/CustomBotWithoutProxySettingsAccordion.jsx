@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import Accordion from '../Common/Accordion';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
@@ -169,6 +170,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
   );
 };
 
+const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer, AdminAppContainer]);
 
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
@@ -176,4 +178,4 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
 
-export default CustomBotWithoutProxySettingsAccordion;
+export default CustomBotWithoutProxySettingsAccordionWrapper;
