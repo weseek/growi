@@ -89,7 +89,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <div className="d-flex justify-content-center my-5 bot-integration">
         <div className="card rounded shadow border-0 w-50 admin-bot-card">
-          <h5 className="card-title font-weight-bold mt-3">Slack</h5>
+          <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
           <div className="card-body p-4"></div>
         </div>
 
@@ -100,7 +100,7 @@ const CustomBotWithoutProxySettings = (props) => {
         </div>
 
         <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
-          <h5 className="card-title font-weight-bold m-3">GROWI App</h5>
+          <h5 className="card-title font-weight-bold mt-3 ml-4">GROWI App</h5>
           <div className="card-body p-4 text-center">
             <a className="btn btn-primary mb-5">WESEEK Inner Wiki</a>
           </div>
