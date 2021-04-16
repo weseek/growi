@@ -37,7 +37,12 @@ const CustomBotWithProxySettings = (props) => {
         </div>
 
         <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
-          <h5 className="card-title font-weight-bold mt-3 ml-4">GROWI App</h5>
+          <div className="row m-0">
+            <h5 className="card-title font-weight-bold mt-3 ml-4 col">GROWI App</h5>
+            <div className="pull-right mt-3">
+              <a className="icon-fw fa fa-repeat fa-2x"></a>
+            </div>
+          </div>
           <div className="card-body p-4 text-center">
             <a className="btn btn-primary mt-3">WESEEK Inner Wiki</a>
           </div>
