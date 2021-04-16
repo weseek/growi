@@ -11,7 +11,7 @@ const Accordion = (props) => {
         role="button"
         onClick={() => setIsOpen(prevState => !prevState)}
       >
-        <p className="mb-0 text-primary">{props.title}</p>
+        <p className="mb-0">{props.title}</p>
         {isOpen
           ? <i className="fa fa-chevron-up" />
           : <i className="fa fa-chevron-down" />
