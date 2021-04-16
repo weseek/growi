@@ -42,10 +42,14 @@ const AccordionItem = (props) => {
 Accordion.Item = AccordionItem;
 
 AccordionItem.propTypes = {
-  isActive: PropTypes.bool,
   title: PropTypes.node.isRequired,
   onToggleAccordionHandler: PropTypes.func,
   children: PropTypes.node.isRequired,
+  isActive: PropTypes.bool,
+};
+
+AccordionItem.defaultProps = {
+  isActive: true,
 };
 
 Accordion.propTypes = {
