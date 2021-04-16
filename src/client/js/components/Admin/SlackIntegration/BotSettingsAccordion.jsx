@@ -50,7 +50,7 @@ BotSettingsAccordionItem.propTypes = {
 };
 
 BotSettingsAccordion.propTypes = {
-  children: PropTypes.elementType.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default BotSettingsAccordion;
