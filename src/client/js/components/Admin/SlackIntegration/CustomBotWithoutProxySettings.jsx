@@ -12,7 +12,7 @@ const CustomBotWithoutProxySettings = (props) => {
   const {
     appContainer,
     /*  adminAppContainer, */ /* slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv, */
-    isConnectedToSlack, isRgisterSlackCredentials,
+    isConnectedToSlack, /* , isRgisterSlackCredentials, */
   } = props;
   const { t } = useTranslation();
 
@@ -22,10 +22,12 @@ const CustomBotWithoutProxySettings = (props) => {
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
+
   // eslint-disable-next-line no-unused-vars
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
+
   // const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
-  const [isSendTestMessage, setIsSendTestMessage] = useState(false);
+  // const [isSendTestMessage, setIsSendTestMessage] = useState(false);
 
   // const fetchData = useCallback(async() => {
   //   try {
@@ -97,9 +99,9 @@ const CustomBotWithoutProxySettings = (props) => {
       <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion
           activeStep={botInstallationStep.CREATE_BOT}
-          isRgisterSlackCredentials={isRgisterSlackCredentials}
-          isSendTestMessage={isSendTestMessage}
-          setIsSendTestMessage={setIsSendTestMessage}
+          // isRgisterSlackCredentials={isRgisterSlackCredentials}
+          // isSendTestMessage={isSendTestMessage}
+          // setIsSendTestMessage={setIsSendTestMessage}
           {...props}
         />
       </div>

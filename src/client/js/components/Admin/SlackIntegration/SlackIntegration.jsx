@@ -26,6 +26,7 @@ const SlackIntegration = (props) => {
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
   const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
+  const [isSendTestMessage, setIsSendTestMessage] = useState(false);
 
 
   const fetchData = useCallback(async() => {
@@ -126,6 +127,8 @@ const SlackIntegration = (props) => {
                 slackSigningSecretEnv,
                 isConnectedToSlack,
                 isRgisterSlackCredentials,
+                isSendTestMessage,
+                setIsSendTestMessage,
               }
             }
         />
