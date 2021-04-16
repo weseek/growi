@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 
 export const botInstallationStep = {
   CREATE_BOT: 'create-bot',
@@ -13,12 +15,37 @@ export const botInstallationStep = {
   CONNECTION_TEST: 'connection-test',
 };
 
-const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) => {
+const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContainer, activeStep }) => {
   const { t } = useTranslation('admin');
   const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
-
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
+  const [slackSigningSecret, setSlackSigningSecret] = useState('');
+  const [slackBotToken, setSlackBotToken] = useState('');
+  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
+  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  const currentBotType = 'custom-bot-without-proxy';
+
+  const fetchData = useCallback(async() => {
+    try {
+      await adminAppContainer.retrieveAppSettingsData();
+      const res = await appContainer.apiv3.get('/slack-integration/');
+      const {
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+      } = res.data.slackBotSettingParams.customBotWithoutProxySettings;
+      setSlackSigningSecret(slackSigningSecret);
+      setSlackBotToken(slackBotToken);
+      setSlackSigningSecretEnv(slackSigningSecretEnvVars);
+      setSlackBotTokenEnv(slackBotTokenEnvVars);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer, adminAppContainer]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
 
   const onToggleAccordionHandler = (installationStep) => {
@@ -32,11 +59,35 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) =>
     setOpenAccordionIndexes(accordionIndexes);
   };
 
+  const updateSecretTokenHandler = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
+        slackSigningSecret,
+        slackBotToken,
+        currentBotType,
+      });
+      fetchData();
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
+  const onChangeSigningSecretHandler = (signingSecretInput) => {
+    setSlackSigningSecret(signingSecretInput);
+
+  };
+
+  const onChangeBotTokenHandler = (botTokenInput) => {
+    setSlackBotToken(botTokenInput);
+  };
+
   const onTestConnectionHandler = async() => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     try {
-      await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
+      await appContainer.apiv3.post('admin:slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
         channel: 'testchannel',
       });
@@ -49,7 +100,6 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) =>
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
-
       <div className="card border-0 rounded-lg mb-0">
         <div
           className="card-header font-weight-normal py-3 d-flex justify-content-between"
@@ -69,7 +119,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) =>
               <div className="mx-auto">
                 <div>
                   <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-                    {t('slack_integration.without_proxy.create_bot')}
+                    {t('admin:slack_integration.without_proxy.create_bot')}
                     <i className="fa fa-external-link ml-2" aria-hidden="true" />
                   </button>
                 </div>
@@ -77,7 +127,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) =>
                 <a href="#">
                   <p className="text-center mt-1">
                     <small>
-                      {t('slack_integration.without_proxy.how_to_create_a_bot')}
+                      {t('admin:slack_integration.without_proxy.how_to_create_a_bot')}
                       <i className="fa fa-external-link ml-2" aria-hidden="true" />
                     </small>
                   </p>
@@ -132,9 +182,15 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) =>
           }
         </div>
         <Collapse isOpen={openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}>
-          <div className="card-body">
-            BODY 3
-          </div>
+          <CustomBotWithoutProxySecretTokenSection
+            updateSecretTokenHandler={updateSecretTokenHandler}
+            onChangeSigningSecretHandler={onChangeSigningSecretHandler}
+            onChangeBotTokenHandler={onChangeBotTokenHandler}
+            slackSigningSecret={slackSigningSecret}
+            slackSigningSecretEnv={slackSigningSecretEnv}
+            slackBotToken={slackBotToken}
+            slackBotTokenEnv={slackBotTokenEnv}
+          />
         </Collapse>
       </div>
 
@@ -175,11 +231,11 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) =>
   );
 };
 
-const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer]);
+const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer, AdminAppContainer]);
 
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
 
