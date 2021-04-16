@@ -6,25 +6,33 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import BotSettingsAccordion from './BotSettingsAccordion';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 
-const CustomBotWithoutProxySettingsAccordion = (props) => {
-  const { appContainer } = props;
-  const { t } = useTranslation('admin');
-  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set());
-  const [connectionErrorLog, setConnectionErrorLog] = useState({});
+export const botInstallationStep = {
+  CREATE_BOT: 'create-bot',
+  INSTALL_BOT: 'install-bot',
+  REGISTER_SLACK_CONFIGURATION: 'register-slack-configuration',
+  CONNECTION_TEST: 'connection-test',
+};
 
-  const onToggleAccordionHandler = (i) => {
+const CustomBotWithoutProxySettingsAccordion = ({ appContainer, activeStep }) => {
+  const { t } = useTranslation('admin');
+  const [openAccordionIndexes, setOpenAccordionIndexes] = useState(new Set([activeStep]));
+  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
+  const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
+
+  const onToggleAccordionHandler = (installationStep) => {
     const accordionIndexes = new Set(openAccordionIndexes);
-    if (accordionIndexes.has(i)) {
-      accordionIndexes.delete(i);
+    if (accordionIndexes.has(installationStep)) {
+      accordionIndexes.delete(installationStep);
     }
     else {
-      accordionIndexes.add(i);
+      accordionIndexes.add(installationStep);
     }
     setOpenAccordionIndexes(accordionIndexes);
   };
 
   const onTestConnectionHandler = async() => {
-    setConnectionErrorLog({ connectionErrorCode: null, connectionErrorMessage: null });
+    setConnectionErrorCode(null);
+    setConnectionErrorMessage(null);
     try {
       await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
@@ -32,21 +40,19 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       });
     }
     catch (err) {
-      setConnectionErrorLog(prevState => ({
-        ...prevState,
-        connectionErrorCode: err[0].code,
-        connectionErrorMessage: err[0].message,
-      }));
+      setConnectionErrorCode(err[0].code);
+      setConnectionErrorMessage(err[0].message);
     }
   };
 
   return (
+
     <BotSettingsAccordion>
       <BotSettingsAccordion.Item
-        isActive={openAccordionIndexes.has(0)}
+        isActive={openAccordionIndexes.has(botInstallationStep.CREATE_BOT)}
         itemNumber="①"
         title={t('slack_integration.without_proxy.create_bot')}
-        onToggleAccordionHandler={() => onToggleAccordionHandler(0)}
+        onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.CREATE_BOT)}
       >
         <div className="row my-5">
           <div className="mx-auto">
@@ -69,10 +75,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         </div>
       </BotSettingsAccordion.Item>
       <BotSettingsAccordion.Item
-        isActive={openAccordionIndexes.has(1)}
+        isActive={openAccordionIndexes.has(botInstallationStep.INSTALL_BOT)}
         itemNumber="②"
         title={t('slack_integration.without_proxy.install_bot_to_slack')}
-        onToggleAccordionHandler={() => onToggleAccordionHandler(1)}
+        onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.INSTALL_BOT)}
       >
         <div className="container w-75 py-5">
           <p>1. Install your app をクリックします。</p>
@@ -89,32 +95,32 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         </div>
       </BotSettingsAccordion.Item>
       <BotSettingsAccordion.Item
-        isActive={openAccordionIndexes.has(2)}
+        isActive={openAccordionIndexes.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         itemNumber="③"
         title={t('slack_integration.without_proxy.register_secret_and_token')}
-        onToggleAccordionHandler={() => onToggleAccordionHandler(2)}
+        onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
       >
         <CustomBotWithoutProxySecretTokenSection />
       </BotSettingsAccordion.Item>
       <BotSettingsAccordion.Item
-        isActive={openAccordionIndexes.has(3)}
+        isActive={openAccordionIndexes.has(botInstallationStep.CONNECTION_TEST)}
         itemNumber="④"
         title={t('slack_integration.without_proxy.test_connection')}
-        onToggleAccordionHandler={() => onToggleAccordionHandler(3)}
+        onToggleAccordionHandler={() => onToggleAccordionHandler(botInstallationStep.CONNECTION_TEST)}
       >
         <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
         <div className="d-flex justify-content-center">
           <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
         </div>
-        {connectionErrorLog.connectionErrorMessage != null
+        {connectionErrorMessage != null
           && <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
         }
         <div className="row m-3 justify-content-center">
           <div className="col-sm-5 slack-connection-error-log">
             <p className="border-info slack-connection-error-log-title mb-1 pl-2">Logs</p>
             <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
-              <p className="m-0">{connectionErrorLog.connectionErrorCode}</p>
-              <p className="m-0">{connectionErrorLog.connectionErrorMessage}</p>
+              <p className="m-0">{connectionErrorCode}</p>
+              <p className="m-0">{connectionErrorMessage}</p>
             </div>
           </div>
         </div>
@@ -127,6 +133,7 @@ const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(Cus
 
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;

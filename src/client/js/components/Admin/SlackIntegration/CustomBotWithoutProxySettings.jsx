@@ -6,7 +6,7 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import SlackGrowiBridging from './SlackGrowiBridging';
-import CustomBotWithoutProxySettingsAccordion from './CustomBotWithoutProxySettingsAccordion';
+import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, adminAppContainer } = props;
@@ -64,7 +64,8 @@ const CustomBotWithoutProxySettings = (props) => {
       />
 
       <div className="my-5 mx-3">
-        <CustomBotWithoutProxySettingsAccordion />
+        {/* TODO GW-5644 active create bot step temporary */}
+        <CustomBotWithoutProxySettingsAccordion activeStep={botInstallationStep.CREATE_BOT} />
       </div>
 
     </>
