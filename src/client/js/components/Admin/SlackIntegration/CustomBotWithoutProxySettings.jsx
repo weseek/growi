@@ -15,14 +15,14 @@ const CustomBotWithoutProxySettings = (props) => {
   const { t } = useTranslation();
 
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
-  const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
+  // const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
 
   // get site name from this GROWI
   // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
-  const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
+  // const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
 
   // const fetchData = useCallback(async() => {

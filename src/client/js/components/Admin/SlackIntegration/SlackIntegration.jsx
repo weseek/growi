@@ -24,6 +24,7 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState('');
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
   const [isRgisterSlackCredentials, setIsRgisterSlackCredentials] = useState(false);
 
 
@@ -41,9 +42,12 @@ const SlackIntegration = (props) => {
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
+      setIsConnectedToSlack(isConnectedToSlack);
+
       if ((slackBotToken && slackSigningSecret) || (slackBotTokenEnv && slackSigningSecretEnv)) {
         setIsRgisterSlackCredentials(true);
       }
+
     }
     catch (err) {
       toastError(err);
@@ -120,6 +124,7 @@ const SlackIntegration = (props) => {
                 slackBotTokenEnv,
                 slackSigningSecret,
                 slackSigningSecretEnv,
+                isConnectedToSlack,
                 isRgisterSlackCredentials,
               }
             }
