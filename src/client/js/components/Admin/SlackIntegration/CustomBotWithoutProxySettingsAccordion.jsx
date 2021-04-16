@@ -247,6 +247,10 @@ const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(Cus
 
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  slackSigningSecret: PropTypes.string,
+  slackSigningSecretEnv: PropTypes.string,
+  slackBotToken: PropTypes.string,
+  slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
   setIsSendTestMessage: PropTypes.func,

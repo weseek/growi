@@ -9,7 +9,9 @@ import SlackGrowiBridging from './SlackGrowiBridging';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, adminAppContainer } = props;
+  const {
+    appContainer, adminAppContainer, slackBotToken, slackBotTokenEnv, slackSigningSecret, slackSigningSecretEnv,
+  } = props;
   const { t } = useTranslation();
 
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
@@ -108,6 +110,10 @@ const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWit
 CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
+  slackSigningSecret: PropTypes.string,
+  slackSigningSecretEnv: PropTypes.string,
+  slackBotToken: PropTypes.string,
+  slackBotTokenEnv: PropTypes.string,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
