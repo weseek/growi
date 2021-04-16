@@ -46,11 +46,11 @@ BotSettingsAccordionItem.propTypes = {
   itemNumber: PropTypes.string,
   title: PropTypes.string.isRequired,
   onToggleAccordionHandler: PropTypes.func,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 BotSettingsAccordion.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 export default BotSettingsAccordion;
