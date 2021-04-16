@@ -12,7 +12,7 @@ export const verifyingIsSlackRequest = (req: Request & {signingSecret?:string}, 
     return res.send('No signing secret.');
   }
   // take out slackSignature and timestamp from header
-  const slackSignature = req.headers['x-slack-signature'];
+  const slackSignature:any = req.headers['x-slack-signature'];
   const timestamp = req.headers['x-slack-request-timestamp'];
   const timestampNumber = Number(timestamp);
 
