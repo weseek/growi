@@ -66,7 +66,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
         currentBotType,
       });
       fetchData();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -85,7 +85,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     try {
-      await appContainer.apiv3.post('admin:slack-integration/notification-test-to-slack-work-space', {
+      await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
         channel: 'testchannel',
       });
