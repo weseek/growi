@@ -1,7 +1,7 @@
 import {
   BodyParams, Controller, Get, Inject, Post, Req, Res,
 } from '@tsed/common';
-
+import { parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
 import { Order } from '~/entities/order';
@@ -10,7 +10,7 @@ import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
-import { ReceiveService } from '~/services/RecieveService';
+import { RegisterService } from '~/services/RegisterService';
 
 
 @Controller('/slack')
@@ -29,7 +29,11 @@ export class SlackCtrl {
   orderRepository: OrderRepository;
 
   @Inject()
-  receiveService: ReceiveService;
+  registerService: RegisterService;
+
+  growiCommandsMappings = {
+    register: async(body:{[key:string]:string}):Promise<void> => this.registerService.execSlashCommand(body),
+  };
 
   @Get('/testsave')
   testsave(): void {
@@ -75,8 +79,9 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
-    const slackInput = this.receiveService.receiveContentsFromSlack(body);
-    console.log('Controller/events', slackInput);
+    const parsedBody = parseSlashCommand(body);
+    const executeGrowiCommand = this.growiCommandsMappings[parsedBody.growiCommandType];
+    await executeGrowiCommand(body);
     res.send();
 
     const installation = await this.installationRepository.findByID('1');

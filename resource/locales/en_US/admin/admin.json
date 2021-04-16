@@ -264,9 +264,6 @@
       "without_proxy": "without proxy",
       "with_proxy": "with proxy",
       "recommended": "Recommended",
-      "for_beginners": "- For beginners -",
-      "for_intermediate": "- For intermediates -",
-      "for_advanced": "- For advanced -",
       "set_up": "Set up",
       "multiple_workspaces_integration": "Multiple workspaces integration",
       "security_control": "Security control",
@@ -297,6 +294,11 @@
       "register_secret_and_token": "Set Signing Secret and Bot Token",
       "test_connection": "Test Connection",
       "how_to_create_a_bot": "How to create a bot"
+    },
+    "custom_bot_without_proxy_integration": "Custom bot without proxy integration",
+    "integration_sentence": {
+      "integration_is_not_complete": "Integration is not complete.",
+      "proceed_with_the_following_integration_procedure": "Proceed with the following integration procedure."
     }
   },
   "user_management": {
