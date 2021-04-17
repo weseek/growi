@@ -65,6 +65,8 @@ type Props = CommonProps & {
   isEnabledStaleNotification: boolean,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
+  adminPreferredIndentSize: number,
+  isIndentSizeForced: boolean,
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -96,6 +98,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
     isEnabledLinebreaksInComments: props.isEnabledLinebreaksInComments,
+    adminPreferredIndentSize: props.adminPreferredIndentSize,
+    isIndentSizeForced: props.isIndentSizeForced,
   });
 
   const { data: editorMode } = useEditorMode();
@@ -258,6 +262,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
+  props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
+  props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
   return {
     props,
