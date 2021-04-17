@@ -7,6 +7,8 @@ on:
       - tmp/**
     paths:
       - .github/workflows/ci.yml
+      - packages/app/**
+      - packages/app-for-hoisting/**
       - .eslint*
       - .prettier*
       - .stylelint*
