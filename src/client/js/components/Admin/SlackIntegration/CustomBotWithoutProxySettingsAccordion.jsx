@@ -30,16 +30,16 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const currentBotType = 'custom-bot-without-proxy';
 
 
-  const onToggleAccordionHandler = (installationStep) => {
-    const accordionIndexes = new Set(openAccordionIndexes);
-    if (accordionIndexes.has(installationStep)) {
-      accordionIndexes.delete(installationStep);
-    }
-    else {
-      accordionIndexes.add(installationStep);
-    }
-    setOpenAccordionIndexes(accordionIndexes);
-  };
+  // const onToggleAccordionHandler = (installationStep) => {
+  //   const accordionIndexes = new Set(openAccordionIndexes);
+  //   if (accordionIndexes.has(installationStep)) {
+  //     accordionIndexes.delete(installationStep);
+  //   }
+  //   else {
+  //     accordionIndexes.add(installationStep);
+  //   }
+  //   setOpenAccordionIndexes(accordionIndexes);
+  // };
 
   const updateSecretTokenHandler = async() => {
     try {
@@ -128,6 +128,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
+        // eslint-disable-next-line max-len
         title={<><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}{isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
@@ -142,6 +143,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
+        // eslint-disable-next-line max-len
         title={<><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}{isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
