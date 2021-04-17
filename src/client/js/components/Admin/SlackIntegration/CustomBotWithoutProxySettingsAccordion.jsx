@@ -29,18 +29,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const currentBotType = 'custom-bot-without-proxy';
 
-
-  // const onToggleAccordionHandler = (installationStep) => {
-  //   const accordionIndexes = new Set(openAccordionIndexes);
-  //   if (accordionIndexes.has(installationStep)) {
-  //     accordionIndexes.delete(installationStep);
-  //   }
-  //   else {
-  //     accordionIndexes.add(installationStep);
-  //   }
-  //   setOpenAccordionIndexes(accordionIndexes);
-  // };
-
   const updateSecretTokenHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
