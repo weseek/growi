@@ -85,6 +85,10 @@ export class SlackCtrl {
 
     const parsedBody = parseSlashCommand(body);
     const executeGrowiCommand = this.growiCommandsMappings[parsedBody.growiCommandType];
+
+    if (executeGrowiCommand == null) {
+      return 'No executeGrowiCommand';
+    }
     await executeGrowiCommand(body);
     res.send();
 
