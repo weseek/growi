@@ -54,6 +54,10 @@ const CustomBotWithoutProxySettings = (props) => {
     fetchData();
   }, [fetchData]);
 
+  const reload  = (() => {
+    console.log('reload btn pusshed!!');
+  })
+
   return (
     <>
 
@@ -75,7 +79,7 @@ const CustomBotWithoutProxySettings = (props) => {
           <div className="row">
             <h5 className="card-title font-weight-bold mt-3 ml-4 col">GROWI App</h5>
             <div className="pull-right mt-3 mr-3">
-              <a className="icon-fw fa fa-repeat fa-2x"></a>
+              <a className="icon-fw fa fa-repeat fa-2x" onClick={ reload }></a>
             </div>
           </div>
           <div className="card-body p-4 text-center">
