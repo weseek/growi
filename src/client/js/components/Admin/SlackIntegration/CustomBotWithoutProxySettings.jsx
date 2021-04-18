@@ -74,7 +74,7 @@ const CustomBotWithoutProxySettings = (props) => {
         <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
           <h5 className="card-title font-weight-bold mt-3 ml-4">GROWI App</h5>
           <div className="card-body p-4 text-center">
-            <a className="btn btn-primary mb-5">WESEEK Inner Wiki</a>
+            <a className="btn btn-primary mb-5">{ slackWSNameInWithoutProxy }</a>
           </div>
         </div>
       </div>
