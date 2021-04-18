@@ -107,7 +107,7 @@ See [confirmed versions](https://docs.growi.org/en/admin-guide/getting-started/c
 
 <!-- The following links do not exist -->
 
-For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands).
+For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch-system.html#list-of-npm-commands).
 
 # Documentation
 

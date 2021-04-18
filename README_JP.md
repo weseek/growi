@@ -106,7 +106,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
   <!-- 以下のリンクは存在しない (ja と en 両方) -->
 
-詳しくは [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands)をご覧ください。
+詳しくは [GROWI Docs: List of npm Commands](https://docs.growi.org/ja/dev/startup-v2/launch-system.html#npm-コマンドリスト)をご覧ください。
 
 # ドキュメント
 
