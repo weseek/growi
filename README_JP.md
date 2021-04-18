@@ -86,9 +86,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 - yarn
 - MongoDB 4.x
 
-  <!-- 以下のリンクは存在しない (ja と en 両方) -->
-
-  [確定版](https://docs.growi.org/ja/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
+  [確定版](https://docs.growi.org/ja/admin-guide/getting-started/centos.html#概要) をご覧ください。
 
 ### オプションの依存関係
 

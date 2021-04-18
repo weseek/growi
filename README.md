@@ -87,9 +87,7 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 - yarn
 - MongoDB 4.x
 
-<!-- The following links do not exist -->
-
-See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment).
+See [confirmed versions](https://docs.growi.org/en/admin-guide/getting-started/centos.html#overview).
 
 ### Optional Dependencies
 
