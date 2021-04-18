@@ -87,8 +87,6 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 - yarn
 - MongoDB 4.x
 
-See [confirmed versions](https://docs.growi.org/en/admin-guide/getting-started/centos.html#overview).
-
 ### Optional Dependencies
 
 - Redis 3.x

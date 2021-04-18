@@ -86,8 +86,6 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 - yarn
 - MongoDB 4.x
 
-  [確定版](https://docs.growi.org/ja/admin-guide/getting-started/centos.html#概要) をご覧ください。
-
 ### オプションの依存関係
 
 - Redis 3.x
