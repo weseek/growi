@@ -177,7 +177,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         <form>
           <div className="row m-3 justify-content-center">
             <div className="form-group slack-connection-log w-25">
-              <label><p className="border-info slack-connection-log-title mb-1 mr-2 pl-2">Logs</p></label>
+              <label><p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p></label>
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg pl-3"
                 value={value}
