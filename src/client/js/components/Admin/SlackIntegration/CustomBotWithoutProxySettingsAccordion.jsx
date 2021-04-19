@@ -26,7 +26,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
   const [slackBotToken, setSlackBotToken] = useState('');
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  const currentBotType = 'custom-bot-without-proxy';
+  const currentBotType = 'customBotWithoutProxy';
 
   const fetchData = useCallback(async() => {
     try {
