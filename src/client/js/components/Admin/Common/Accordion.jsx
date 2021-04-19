@@ -29,7 +29,12 @@ const Accordion = (props) => {
 Accordion.propTypes = {
   title: PropTypes.node.isRequired,
   children: PropTypes.node.isRequired,
-  isOpenDefault: PropTypes.bool.isRequired,
+  isOpenDefault: PropTypes.bool,
+
+};
+
+Accordion.defaultProps = {
+  isOpenDefault: false,
 };
 
 export default Accordion;
