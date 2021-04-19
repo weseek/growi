@@ -1,11 +1,30 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { stringify } from 'qs';
+import { Request, Response, NextFunction } from 'express';
+/**
+   * Verify if the request came from slack
+   * See: https://api.slack.com/authentication/verifying-requests-from-slack
+   */
 
-export const protectReplyAttack = (req, res, next):Record<string, any>| void => {
-  // protect against replay attacks
+type signingSecretType = {
+  signingSecret?:string; headers:{'x-slack-signature'?:string, 'x-slack-request-timestamp':number}
+}
+
+// eslint-disable-next-line max-len
+export const verifyingIsSlackRequest = (req : Request & signingSecretType, res:Response, next:NextFunction):Record<string, any>| void => {
+  if (req.signingSecret == null) {
+    return res.send('No signing secret.');
+  }
+
   // take out slackSignature and timestamp from header
   const slackSignature = req.headers['x-slack-signature'];
   const timestamp = req.headers['x-slack-request-timestamp'];
+
+  if (slackSignature == null || slackSignature == null) {
+    return res.send('Verification failed');
+  }
+
+  // protect against replay attacks
   const time = Math.floor(new Date().getTime() / 1000);
   if (Math.abs(time - timestamp) > 300) {
     return res.send('Verification failed.');
@@ -21,5 +40,8 @@ export const protectReplyAttack = (req, res, next):Record<string, any>| void => 
   // compare growiSignature and slackSignature
   if (timingSafeEqual(Buffer.from(growiSignature, 'utf8'), Buffer.from(slackSignature, 'utf8'))) {
     return next();
+
   }
+
+  return res.send('Verification failed');
 };
