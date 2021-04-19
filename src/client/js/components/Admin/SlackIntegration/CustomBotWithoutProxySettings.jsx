@@ -18,9 +18,6 @@ const CustomBotWithoutProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
 
-  // eslint-disable-next-line no-unused-vars
-  const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
-
   const fetchSlackWorkSpaceName = async() => {
     try {
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
@@ -33,10 +30,10 @@ const CustomBotWithoutProxySettings = (props) => {
 
   useEffect(() => {
     setSlackWSNameInWithoutProxy(null);
-    if (isConnectedToSlack) {
+    if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
     }
-  }, [appContainer, props.isConnectedToSlack]);
+  }, [appContainer, props.isSetupSlackBot]);
 
   return (
     <>
@@ -96,6 +93,7 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
+  isSetupSlackBot: PropTypes.bool,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
