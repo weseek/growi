@@ -16,7 +16,7 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContainer, activeStep }) => {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
   // eslint-disable-next-line no-unused-vars
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
@@ -57,7 +57,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
         currentBotType,
       });
       fetchData();
-      toastSuccess(t('toaster.update_successed', { target: t('slack_integration.custom_bot_without_proxy_settings') }));
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
       toastError(err);
@@ -76,7 +76,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     try {
-      await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
+      await appContainer.apiv3.post('admin:slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
         // channel: 'testchannel',
       });
@@ -91,13 +91,13 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CREATE_BOT)}
-        title={<><span className="mr-2">①</span>{t('slack_integration.without_proxy.create_bot')}</>}
+        title={<><span className="mr-2">①</span>{t('admin:slack_integration.without_proxy.create_bot')}</>}
       >
         <div className="row my-5">
           <div className="mx-auto">
             <div>
               <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-                {t('slack_integration.without_proxy.create_bot')}
+                {t('admin:slack_integration.without_proxy.create_bot')}
                 <i className="fa fa-external-link ml-2" aria-hidden="true" />
               </button>
             </div>
@@ -105,7 +105,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
             <a href="#">
               <p className="text-center mt-1">
                 <small>
-                  {t('slack_integration.without_proxy.how_to_create_a_bot')}
+                  {t('admin:slack_integration.without_proxy.how_to_create_a_bot')}
                   <i className="fa fa-external-link ml-2" aria-hidden="true" />
                 </small>
               </p>
@@ -115,25 +115,25 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.INSTALL_BOT)}
-        title={<><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</>}
+        title={<><span className="mr-2">②</span>{t('admin:slack_integration.without_proxy.install_bot_to_slack')}</>}
       >
         <div className="container w-75 py-5">
-          <p>1. {t('slack_integration.without_proxy.select_install_your_app')}</p>
+          <p>1. {t('admin:slack_integration.without_proxy.select_install_your_app')}</p>
           <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
-          <p>2. {t('slack_integration.without_proxy.select_install_to_workspace')}</p>
+          <p>2. {t('admin:slack_integration.without_proxy.select_install_to_workspace')}</p>
           <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
-          <p>3. {t('slack_integration.without_proxy.click_allow')}</p>
+          <p>3. {t('admin:slack_integration.without_proxy.click_allow')}</p>
           <img src="/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
-          <p>4. {t('slack_integration.without_proxy.install_complete_if_checked')}</p>
+          <p>4. {t('admin:slack_integration.without_proxy.install_complete_if_checked')}</p>
           <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
-          <p>5. {t('slack_integration.without_proxy.invite_bot_to_channel')}</p>
+          <p>5. {t('admin:slack_integration.without_proxy.invite_bot_to_channel')}</p>
           <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
           <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
         </div>
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
-        title={<><span className="mr-2">③</span>{t('slack_integration.without_proxy.register_secret_and_token')}</>}
+        title={<><span className="mr-2">③</span>{t('admin:slack_integration.without_proxy.register_secret_and_token')}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           updateSecretTokenHandler={updateSecretTokenHandler}
@@ -147,14 +147,14 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
-        title={<><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</>}
+        title={<><span className="mr-2">④</span>{t('admin:slack_integration.without_proxy.test_connection')}</>}
       >
-        <p className="text-center m-4">{t('slack_integration.without_proxy.test_connection_by_pressing_button')}</p>
+        <p className="text-center m-4">{t('admin:slack_integration.without_proxy.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
           <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
         </div>
         {connectionErrorMessage != null
-          && <p className="text-danger text-center m-4">{t('slack_integration.without_proxy.error_check_logs_below')}</p>
+          && <p className="text-danger text-center m-4">{t('admin:slack_integration.without_proxy.error_check_logs_below')}</p>
         }
         <div className="row m-3 justify-content-center">
           <div className="col-sm-5 slack-connection-error-log">
