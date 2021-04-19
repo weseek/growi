@@ -295,17 +295,20 @@ jobs:
         echo ::set-output name=suffix::$(echo '${{ matrix.node-version }}' | sed s/\\.//)
     - name: yarn server:prod:ci
       run: |
-          npx lerna bootstrap -- --production
+          npx lerna bootstrap
           yarn lerna add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs --scope @growi/app --scope @growi/app-for-hoisting
           yarn lerna add -D react-images@1.0.0 react-motion --scope @growi/app --scope @growi/app-for-hoisting
+          yarn lerna run build --scope @growi/slack
+          yarn server:prod:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
     - name: yarn server:prod:ci with MongoDB 3.6
       run: |
-          npx lerna bootstrap -- --production
+          npx lerna bootstrap
           yarn lerna add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs --scope @growi/app --scope @growi/app-for-hoisting
           yarn lerna add -D react-images@1.0.0 react-motion --scope @growi/app --scope @growi/app-for-hoisting
-
+          yarn lerna run build --scope @growi/slack
+          yarn server:prod:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
     - name: Upload report as artifact
