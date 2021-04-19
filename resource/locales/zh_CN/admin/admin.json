@@ -290,7 +290,7 @@
       "cancel": "取消",
       "change": "改变"
     },
-    "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <cod>{{variable}}</code> 启用。",
+    "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <code>{{variable}}</code> 启用。",
     "access_token_settings": {
       "discard": "丢弃",
       "generate": "生成"
@@ -298,10 +298,17 @@
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 设置",
     "without_proxy": {
       "create_bot": "创建 Bot",
+      "how_to_create_a_bot": "如何创建一个BOT",
       "install_bot_to_slack": "将Bot安装到Slack",
+      "select_install_your_app": "选择 \"Install your app\"。",
+      "select_install_to_workspace": "选择 \"Install to Workspace\"。",
+      "click_allow": "选择 \"Allow\"。",
+      "install_complete_if_checked": "确认已选中 \"Install your app\"。",
+      "invite_bot_to_channel": "通过调用 @example 邀请 GROWI Bot 进行频道。",
       "register_secret_and_token": "设置签名秘密和BOT令牌",
       "test_connection": "测试连接",
-      "how_to_create_a_bot": "如何创建一个BOT"
+      "test_connection_by_pressing_button": "按下按钮以测试连接",
+      "error_check_logs_below": "发生了错误。请检查以下日志。"
     },
     "custom_bot_without_proxy_integration": "Custom bot without proxy 一体化",
     "integration_sentence": {
