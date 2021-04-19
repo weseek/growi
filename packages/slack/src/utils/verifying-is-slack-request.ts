@@ -20,7 +20,7 @@ export const verifyingIsSlackRequest = (req : Request & signingSecretType, res:R
   const slackSignature = req.headers['x-slack-signature'];
   const timestamp = req.headers['x-slack-request-timestamp'];
 
-  if (slackSignature == null || slackSignature == null) {
+  if (slackSignature == null || timestamp == null) {
     return res.send('Verification failed');
   }
 
