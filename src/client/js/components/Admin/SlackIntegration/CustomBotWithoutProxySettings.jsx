@@ -56,7 +56,7 @@ const CustomBotWithoutProxySettings = (props) => {
   }, [fetchData]);
 
   const reload  = (() => {
-    console.log('reload btn pusshed!!');
+    fetchSlackWorkSpaceName();
   })
 
   return (
