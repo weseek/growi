@@ -5,7 +5,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:slack-bot');
 
 const router = express.Router();
-const { verifyingIsSlackRequest } = require('@growi/slack');
+const { verificationSlackRequest } = require('@growi/slack');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
@@ -36,7 +36,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  router.post('/', verificationRequestUrl, addSlackBotSigningSecret, verifyingIsSlackRequest, verificationAccessToken, async(req, res) => {
+  router.post('/', verificationRequestUrl, addSlackBotSigningSecret, verificationSlackRequest, verificationAccessToken, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
@@ -98,7 +98,7 @@ module.exports = (crowi) => {
     }
   };
 
-  router.post('/interactive', verificationRequestUrl, addSlackBotSigningSecret, verifyingIsSlackRequest, async(req, res) => {
+  router.post('/interactive', verificationRequestUrl, addSlackBotSigningSecret, verificationSlackRequest, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events

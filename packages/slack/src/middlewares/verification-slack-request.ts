@@ -11,7 +11,7 @@ type signingSecretType = {
 }
 
 // eslint-disable-next-line max-len
-export const verifyingIsSlackRequest = (req : Request & signingSecretType, res:Response, next:NextFunction):Record<string, any>| void => {
+export const verificationSlackRequest = (req : Request & signingSecretType, res:Response, next:NextFunction):Record<string, any>| void => {
   if (req.signingSecret == null) {
     return res.send('No signing secret.');
   }
