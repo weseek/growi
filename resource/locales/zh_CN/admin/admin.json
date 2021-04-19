@@ -308,7 +308,8 @@
       "register_secret_and_token": "设置签名秘密和BOT令牌",
       "test_connection": "测试连接",
       "test_connection_by_pressing_button": "按下按钮以测试连接",
-      "error_check_logs_below": "发生了错误。请检查以下日志。"
+      "error_check_logs_below": "发生了错误。请检查以下日志。",
+      "send_message_to_slack_work_space": "发送到 Slack 工作区。"
     },
     "custom_bot_without_proxy_integration": "Custom bot without proxy 一体化",
     "integration_sentence": {
