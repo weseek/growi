@@ -20,18 +20,40 @@ const SlackIntegration = (props) => {
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
   const [accessToken, setAccessToken] = useState('');
+  const [slackSigningSecret, setSlackSigningSecret] = useState('');
+  const [slackBotToken, setSlackBotToken] = useState('');
+  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
+  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
+  const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
+  const [isSendTestMessage, setIsSendTestMessage] = useState(false);
+
 
   const fetchData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
-      const { currentBotType, accessToken } = response.data.slackBotSettingParams;
+      const { currentBotType, customBotWithoutProxySettings, accessToken } = response.data.slackBotSettingParams;
+      const {
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+      } = customBotWithoutProxySettings;
+
       setCurrentBotType(currentBotType);
       setAccessToken(accessToken);
+      setSlackSigningSecret(slackSigningSecret);
+      setSlackBotToken(slackBotToken);
+      setSlackSigningSecretEnv(slackSigningSecretEnvVars);
+      setSlackBotTokenEnv(slackBotTokenEnvVars);
+      setIsConnectedToSlack(isConnectedToSlack);
+
+      if ((slackBotToken && slackSigningSecret) || (slackBotTokenEnv && slackSigningSecretEnv)) {
+        setIsRegisterSlackCredentials(true);
+      }
+
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, isConnectedToSlack, slackBotTokenEnv, slackSigningSecretEnv]);
 
   useEffect(() => {
     fetchData();
@@ -45,6 +67,9 @@ const SlackIntegration = (props) => {
       setCurrentBotType(clickedBotType);
       return;
     }
+    setIsRegisterSlackCredentials(false);
+    setSlackSigningSecret('');
+    setSlackBotToken('');
     setSelectedBotType(clickedBotType);
   };
 
@@ -97,7 +122,20 @@ const SlackIntegration = (props) => {
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
-        <CustomBotWithoutProxySettings />
+        <CustomBotWithoutProxySettings
+          accessToken={accessToken}
+          isSendTestMessage={isSendTestMessage}
+          isRegisterSlackCredentials={isRegisterSlackCredentials}
+          isConnectedToSlack={isConnectedToSlack}
+          slackBotTokenEnv={slackBotTokenEnv}
+          slackBotToken={slackBotToken}
+          slackSigningSecretEnv={slackSigningSecretEnv}
+          slackSigningSecret={slackSigningSecret}
+          setSlackSigningSecret={setSlackSigningSecret}
+          setSlackBotToken={setSlackBotToken}
+          setIsSendTestMessage={setIsSendTestMessage}
+          setIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
+        />
       );
       break;
     case 'customBotWithProxy':
