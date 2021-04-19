@@ -78,7 +78,7 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
     try {
       await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
         // TODO put proper request
-        channel: 'testchannel',
+        // channel: 'testchannel',
       });
     }
     catch (err) {
@@ -118,15 +118,15 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
         title={<><span className="mr-2">②</span>{t('slack_integration.without_proxy.install_bot_to_slack')}</>}
       >
         <div className="container w-75 py-5">
-          <p>1. Install your app をクリックします。</p>
+          <p>1. {t('slack_integration.without_proxy.select_install_your_app')}</p>
           <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
-          <p>2. Install to Workspace をクリックします。</p>
+          <p>2. {t('slack_integration.without_proxy.select_install_to_workspace')}</p>
           <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
-          <p>3. 遷移先の画面にて、Allowをクリックします。</p>
+          <p>3. {t('slack_integration.without_proxy.click_allow')}</p>
           <img src="/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
-          <p>4. Install your app の右側に 緑色のチェックがつけばワークスペースへのインストール完了です。</p>
+          <p>4. {t('slack_integration.without_proxy.install_complete_if_checked')}</p>
           <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
-          <p>5. GROWI bot を使いたいチャンネルに @example を使用して招待します。</p>
+          <p>5. {t('slack_integration.without_proxy.invite_bot_to_channel')}</p>
           <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
           <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
         </div>
@@ -149,12 +149,12 @@ const CustomBotWithoutProxySettingsAccordion = ({ appContainer, adminAppContaine
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         title={<><span className="mr-2">④</span>{t('slack_integration.without_proxy.test_connection')}</>}
       >
-        <p className="text-center m-4">以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう</p>
+        <p className="text-center m-4">{t('slack_integration.without_proxy.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
           <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
         </div>
         {connectionErrorMessage != null
-          && <p className="text-danger text-center m-4">エラーが発生しました。下記のログを確認してください。</p>
+          && <p className="text-danger text-center m-4">{t('slack_integration.without_proxy.error_check_logs_below')}</p>
         }
         <div className="row m-3 justify-content-center">
           <div className="col-sm-5 slack-connection-error-log">
