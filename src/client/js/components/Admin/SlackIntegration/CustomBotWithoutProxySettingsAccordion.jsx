@@ -77,8 +77,13 @@ const CustomBotWithoutProxySettingsAccordion = ({
   };
 
   let value = '';
+  if (connectionErrorMessage != null) {
+    value = [connectionErrorCode, connectionErrorMessage];
+  }
+  if (connectionSuccessMessage != null) {
+    value = connectionSuccessMessage;
+  }
 
-  // eslint-disable-next-line no-return-assign
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       <Accordion
@@ -172,12 +177,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
         <form>
           <div className="row m-3 justify-content-center">
             <div className="form-group slack-connection-log w-25">
-              <label><p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p></label>
-              {connectionErrorMessage == null && connectionSuccessMessage == null && (value = '')}
-              {connectionErrorMessage != null && (value = [connectionErrorCode, connectionErrorMessage])}
-              {connectionSuccessMessage != null && (value = { connectionSuccessMessage })}
-              <textarea className="form-control card border-info slack-connection-log-body rounded-lg pl-3" value={value} />
-
+              <label><p className="border-info slack-connection-log-title mb-1 mr-2 pl-2">Logs</p></label>
+              <textarea
+                className="form-control card border-info slack-connection-log-body rounded-lg pl-3"
+                value={value}
+              />
             </div>
           </div>
         </form>
