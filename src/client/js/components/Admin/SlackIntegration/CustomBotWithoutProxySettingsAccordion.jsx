@@ -164,6 +164,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
               <button
                 type="button"
                 className="btn btn-info m-3 font-weight-bold"
+                disabled={testChannel.trim() === ''}
                 onClick={onTestConnectionHandler}
               >Test
               </button>
