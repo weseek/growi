@@ -304,7 +304,8 @@
     "integration_sentence": {
       "integration_is_not_complete": "連携は完了していません。",
       "proceed_with_the_following_integration_procedure": "下記の連携手順を進めてください。"
-    }
+    },
+    "custom_bot_with_proxy_integration": "Custom bot with proxy 連携"
   },
   "user_management": {
     "invite_users": "新規ユーザーの仮発行",
