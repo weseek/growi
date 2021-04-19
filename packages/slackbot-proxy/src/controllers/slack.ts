@@ -3,8 +3,6 @@ import {
 } from '@tsed/common';
 import { parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
-import { Relation } from '~/entities/relation';
-import { Order } from '~/entities/order';
 
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
@@ -110,27 +108,41 @@ export class SlackCtrl {
       order = await this.orderRepository.save({ installation: installation.id });
     }
 
-    console.log('body', body);
-    console.log('order', order);
-
     return 'This action will be handled by bolt service.';
   }
 
   @Get('/oauth_redirect')
   async handleOauthRedirect(@Req() req: Req, @Res() res: Res): Promise<void> {
+
     // illegal state
     // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
-    if (req.query.state === '') {
-      throw new Error('illegal state');
+    if (req.query.state !== 'init') {
+      res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end('<html>'
+      + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+      + '<body style="text-align:center; padding-top:20%;">'
+      + '<h1>Illegal state, try it again.</h1>'
+      + '<a href="/slack/install">'
+      + 'go to install page'
+      + '</a>'
+      + '</body></html>');
     }
 
-    return this.installerService.installer.handleCallback(req, res);
-
-    // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
-    // this.installer.handleCallback(req, res, {
-    //   success: (installation, metadata, req, res) => {},
-    //   failure: (error, installOptions, req, res) => {},
-    // });
+    this.installerService.installer.handleCallback(req, res, {
+      // success: (installation, metadata, req, res) => {},
+      failure: (error, installOptions, req, res) => {
+        res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end('<html>'
+        + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        + '<body style="text-align:center; padding-top:20%;">'
+        + '<h1>GROWI Bot installation failed</h1>'
+        + '<p>Please contact administrators of your workspace</p>'
+        + 'Reference: <a href="https://slack.com/help/articles/222386767-Manage-app-installation-settings-for-your-workspace">'
+        + 'Manage app installation settings for your workspace'
+        + '</a>'
+        + '</body></html>');
+      },
+    });
   }
 
 }
