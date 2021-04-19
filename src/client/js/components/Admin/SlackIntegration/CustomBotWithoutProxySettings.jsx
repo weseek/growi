@@ -20,13 +20,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(null);
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
 
-  useEffect(() => {
-    setSlackWSNameInWithoutProxy(null);
-    if (isConnectedToSlack) {
-      fetchSlackWorkSpaceName();
-    }
-  }, [appContainer, isConnectedToSlack]);
-
   const fetchSlackWorkSpaceName = async() => {
     try {
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
@@ -36,6 +29,13 @@ const CustomBotWithoutProxySettings = (props) => {
       toastError(err);
     }
   };
+
+  useEffect(() => {
+    setSlackWSNameInWithoutProxy(null);
+    if (isConnectedToSlack) {
+      fetchSlackWorkSpaceName();
+    }
+  }, [appContainer, isConnectedToSlack]);
 
   const fetchData = useCallback(async() => {
     try {
