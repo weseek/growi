@@ -283,7 +283,7 @@ jobs:
         yarn build:prod:analyze
     - name: lerna bootstrap --production
       run: |
-        npx lerna bootstrap --production
+        npx lerna bootstrap -- --production
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
