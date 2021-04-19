@@ -87,10 +87,6 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 - yarn
 - MongoDB 4.x
 
-<!-- The following links do not exist -->
-
-See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-up-node-js-environment).
-
 ### Optional Dependencies
 
 - Redis 3.x
@@ -109,7 +105,7 @@ See [confirmed versions](https://docs.growi.org/en/dev/startup/dev-env.html#set-
 
 <!-- The following links do not exist -->
 
-For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands).
+For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch-system.html#list-of-npm-commands).
 
 # Documentation
 
