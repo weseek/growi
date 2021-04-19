@@ -1,9 +1,8 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { stringify } from 'qs';
 
-export const protectReplyAttack = (req, res, next) => {
-// protect against replay attacks
-
+export const protectReplyAttack = (req, res, next):Record<string, any>| void => {
+  // protect against replay attacks
   // take out slackSignature and timestamp from header
   const slackSignature = req.headers['x-slack-signature'];
   const timestamp = req.headers['x-slack-request-timestamp'];
