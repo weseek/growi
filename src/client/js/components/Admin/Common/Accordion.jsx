@@ -30,7 +30,6 @@ Accordion.propTypes = {
   title: PropTypes.node.isRequired,
   children: PropTypes.node.isRequired,
   isOpenDefault: PropTypes.bool,
-
 };
 
 Accordion.defaultProps = {
