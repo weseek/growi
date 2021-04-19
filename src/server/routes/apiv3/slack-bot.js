@@ -31,12 +31,12 @@ module.exports = (crowi) => {
     return next();
   }
 
-  const slackBotSigningSecret = (req, res, next) => {
+  const addSlackBotSigningSecret = (req, res, next) => {
     req.signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
     return next();
   };
 
-  router.post('/', verificationRequestUrl, slackBotSigningSecret, verifyingIsSlackRequest, verificationAccessToken, async(req, res) => {
+  router.post('/', verificationRequestUrl, addSlackBotSigningSecret, verifyingIsSlackRequest, verificationAccessToken, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
@@ -98,7 +98,7 @@ module.exports = (crowi) => {
     }
   };
 
-  router.post('/interactive', verificationRequestUrl, slackBotSigningSecret, verifyingIsSlackRequest, async(req, res) => {
+  router.post('/interactive', verificationRequestUrl, addSlackBotSigningSecret, verifyingIsSlackRequest, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
