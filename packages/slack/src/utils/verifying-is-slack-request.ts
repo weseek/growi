@@ -23,7 +23,6 @@ export const verifyingIsSlackRequest = (req : Request & signingSecretType, res:R
   if (slackSignature == null || slackSignature == null) {
     return res.send('Verification failed');
   }
-  // const timestampNumber = Number(timestamp);
 
   // protect against replay attacks
   const time = Math.floor(new Date().getTime() / 1000);
