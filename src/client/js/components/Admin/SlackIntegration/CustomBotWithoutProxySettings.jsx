@@ -29,7 +29,18 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
+  const fetchSiteName = async() => {
+    try {
+      await adminAppContainer.retrieveAppSettingsData()
+      setSiteName(adminAppContainer.state.title);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
   useEffect(() => {
+    fetchSiteName();
     setSlackWSNameInWithoutProxy(null);
     if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
