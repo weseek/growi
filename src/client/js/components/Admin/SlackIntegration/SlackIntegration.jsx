@@ -27,6 +27,7 @@ const SlackIntegration = (props) => {
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
+  const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
 
 
   const fetchData = useCallback(async() => {
@@ -34,7 +35,7 @@ const SlackIntegration = (props) => {
       const response = await appContainer.apiv3.get('slack-integration/');
       const { currentBotType, customBotWithoutProxySettings, accessToken } = response.data.slackBotSettingParams;
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot,
       } = customBotWithoutProxySettings;
 
       setCurrentBotType(currentBotType);
@@ -44,6 +45,7 @@ const SlackIntegration = (props) => {
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setIsConnectedToSlack(isConnectedToSlack);
+      setIsSetupSlackBot(isSetupSlackBot);
 
       if ((slackBotToken && slackSigningSecret) || (slackBotTokenEnv && slackSigningSecretEnv)) {
         setIsRegisterSlackCredentials(true);
@@ -135,6 +137,7 @@ const SlackIntegration = (props) => {
           setSlackBotToken={setSlackBotToken}
           setIsSendTestMessage={setIsSendTestMessage}
           setIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
+          isSetupSlackBot={isSetupSlackBot}
         />
       );
       break;
