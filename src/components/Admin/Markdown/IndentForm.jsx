@@ -33,7 +33,7 @@ const IndentForm = (props) => {
   };
 
   const renderIndentSizeOption = (props) => {
-    // const { t, adminMarkDownContainer } = props;
+    const { t /* adminMarkDownContainer */ } = props;
     // const { adminPreferredIndentSize } = adminMarkDownContainer.state;
 
     return (
