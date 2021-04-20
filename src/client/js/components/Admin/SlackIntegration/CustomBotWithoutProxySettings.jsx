@@ -59,7 +59,8 @@ const CustomBotWithoutProxySettings = (props) => {
               <div className="icon-fw fa fa-repeat fa-2x" onClick={fetchSlackWorkSpaceName}></div>
             </div>
           </div>
-          <div className="card-body p-4 mb-5 text-center"> { slackWSNameInWithoutProxy && <div className="btn btn-primary">{ slackWSNameInWithoutProxy }</div> }
+          <div className="card-body p-4 mb-5 text-center">
+            <div className="btn btn-primary">WESEEK Inner Wiki</div>
           </div>
         </div>
       </div>
