@@ -43,13 +43,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <div className="d-flex justify-content-center my-5 bot-integration">
         <div className="card rounded shadow border-0 w-50 admin-bot-card">
-          <div className="row">
-            <h5 className="card-title font-weight-bold mt-3 ml-4 col">Slack</h5>
-            <div className="pull-right mt-3 mr-3">
-              <div className="icon-fw fa fa-repeat fa-2x" onClick={fetchSlackWorkSpaceName}></div>
-            </div>
-          </div>
-
+          <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
           <div className="card-body p-2 w-50 mx-auto">
             {slackWSNameInWithoutProxy && (
               <div className="card p-20 slack-work-space-name-card">
