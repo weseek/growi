@@ -3,6 +3,8 @@
 ## v4.2.15-EC
 
 * Improvement: toastr location for editing
+* Support: Upgrade libs
+    * reactstrap
 
 
 
