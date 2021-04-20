@@ -1,17 +1,15 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:convert-double-to-date');
+import mongoose from 'mongoose';
+import loggerFactory from '~/utils/logger';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import Page from '~/server/models/page';
+import config from '^/config/migrate';
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
+const logger = loggerFactory('growi:migrate:remove-crowi-lauout');
 
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Page = getModelSafely('Page') || require('@server/models/page')();
 
     const pages = await Page.find({ updatedAt: { $type: 'double' } });
 
