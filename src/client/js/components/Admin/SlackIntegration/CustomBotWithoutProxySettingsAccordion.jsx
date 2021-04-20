@@ -164,7 +164,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
             <div className="col-4">
               <button
                 type="button"
-                className="btn btn-info m-3 font-weight-bold"
+                className="btn btn-info mx-3 font-weight-bold"
                 disabled={testChannel.trim() === ''}
                 onClick={onTestConnectionHandler}
               >Test
@@ -173,15 +173,15 @@ const CustomBotWithoutProxySettingsAccordion = ({
           </form>
         </div>
         {connectionErrorMessage != null
-        && <p className="text-danger text-center m-4">{t('admin:slack_integration.without_proxy.error_check_logs_below')}</p>}
+        && <p className="text-danger text-center my-4">{t('admin:slack_integration.without_proxy.error_check_logs_below')}</p>}
         {connectionSuccessMessage != null
-         && <p className="text-info text-center m-4">{t('admin:slack_integration.without_proxy.send_message_to_slack_work_space')}</p>}
+         && <p className="text-info text-center my-4">{t('admin:slack_integration.without_proxy.send_message_to_slack_work_space')}</p>}
         <form>
-          <div className="row m-3 justify-content-center">
+          <div className="row my-3 justify-content-center">
             <div className="form-group slack-connection-log w-25">
-              <label><p className="border-info slack-connection-log-title mb-1 pl-2">Logs</p></label>
+              <label className="mb-1"><p className="border-info slack-connection-log-title pl-2">Logs</p></label>
               <textarea
-                className="form-control card border-info slack-connection-log-body rounded-lg pl-3"
+                className="form-control card border-info slack-connection-log-body rounded-lg"
                 value={value}
               />
             </div>
