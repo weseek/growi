@@ -103,7 +103,7 @@ class PageService {
       const revisionId = new mongoose.Types.ObjectId();
 
       if (updateMetadata) {
-        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: new Date() } });
+        unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $dateFromString: { dateString: Date.now() } } } });
       }
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
