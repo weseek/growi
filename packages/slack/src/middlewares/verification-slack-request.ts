@@ -21,7 +21,7 @@ export const verificationSlackRequest = (req : Request & signingSecretType, res:
   const timestamp = req.headers['x-slack-request-timestamp'];
 
   if (slackSignature == null || timestamp == null) {
-    return res.status(401).send({ message: 'Unauthorized. Enter from Slack workspace' });
+    return res.status(403).send({ message: 'Forbidden. Enter from Slack workspace' });
   }
 
   // protect against replay attacks
