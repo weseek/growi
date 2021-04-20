@@ -7,6 +7,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import SlackGrowiBridging from './SlackGrowiBridging';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
+import GrowiLogo from '../../Icons/GrowiLogo';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
@@ -47,7 +48,7 @@ const CustomBotWithoutProxySettings = (props) => {
             <div className="card bg-warning border-primary mx-xl-5">
               <div className="m-2 text-center">
                 <h5 className="">WESEEK WorkSpace</h5>
-                <div className="icon-fw fa fa-repeat"></div>
+                <GrowiLogo></GrowiLogo>
               </div>
             </div>
           </div>
