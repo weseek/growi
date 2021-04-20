@@ -1,3 +1,6 @@
+$slack-work-space-name-card-background: #fff5ff;
+$slack-work-space-name-card-border: #efc1f6;
+
 .admin-page {
   .title {
     padding-top: 1rem;
@@ -131,8 +134,8 @@
       border-radius: 50%;
     }
     .slack-work-space-name-card {
-      background-color: #fff5ff;
-      border: 1px solid #efc1f6;
+      background-color: $slack-work-space-name-card-background;
+      border: 1px solid $slack-work-space-name-card-border;
     }
   }
 
