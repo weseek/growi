@@ -39,7 +39,6 @@ const CustomBotWithoutProxySettings = (props) => {
 
   useEffect(() => {
     fetchSiteName();
-    setSlackWSNameInWithoutProxy(null);
     if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
     }
