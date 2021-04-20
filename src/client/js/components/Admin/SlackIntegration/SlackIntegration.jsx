@@ -72,6 +72,7 @@ const SlackIntegration = (props) => {
     setIsRegisterSlackCredentials(false);
     setSlackSigningSecret('');
     setSlackBotToken('');
+    setIsSendTestMessage('');
     setSelectedBotType(clickedBotType);
   };
 
