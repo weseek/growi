@@ -533,6 +533,8 @@ module.exports = function(crowi) {
       /\s+\/\s+/, // avoid miss in renaming
       /.+\/edit$/,
       /.+\.md$/,
+      /^(\.\.)$/, // see: https://github.com/weseek/growi/issues/3582
+      /(\/\.\.)\/?/, // see: https://github.com/weseek/growi/issues/3582
       /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
     ];
 
