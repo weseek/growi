@@ -13,6 +13,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
+// import { useIsMailerSetup } from '~/stores/context';
 
 class UserInviteModal extends React.Component {
 
@@ -78,8 +79,11 @@ class UserInviteModal extends React.Component {
   }
 
   renderModalFooter() {
-    const { t, appContainer } = this.props;
-    const { isMailerSetup } = appContainer.config;
+    const { t } = this.props;
+
+    // TODO GW-5729 enable useIsMailerSetup
+    // const { data: isMailerSetup } = useIsMailerSetup();
+    const isMailerSetup = false;
 
     return (
       <>

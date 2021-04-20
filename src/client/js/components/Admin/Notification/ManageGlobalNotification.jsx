@@ -10,6 +10,7 @@ import { toastError } from '../../../util/apiNotification';
 import TriggerEventCheckBox from './TriggerEventCheckBox';
 import AdminUpdateButtonRow from '~/components/Admin/Common/AdminUpdateButtonRow';
 import { apiv3Post, apiv3Put } from '~/utils/apiv3-client';
+// import { useIsMailerSetup } from '~/stores/context';
 
 const logger = loggerFactory('growi:manageGlobalNotification');
 
@@ -95,9 +96,10 @@ class ManageGlobalNotification extends React.Component {
 
 
   render() {
-    const { t, appContainer } = this.props;
-    const { isMailerSetup } = appContainer.config;
-
+    const { t } = this.props;
+    // TODO GW-5729 enable useIsMailerSetup
+    // const { data: isMailerSetup } = useIsMailerSetup();
+    const isMailerSetup = false;
     return (
       <React.Fragment>
 

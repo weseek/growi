@@ -28,7 +28,7 @@ import {
   useCurrentUser, useCurrentPagePath, useOwnerOfCurrentPage,
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
-  useSearchServiceConfigured, useSearchServiceReachable,
+  useSearchServiceConfigured, useSearchServiceReachable, useIsMailerSetup,
   useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
@@ -56,6 +56,7 @@ type Props = CommonProps & {
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
+  isMailerSetup: boolean,
   isAclEnabled: boolean,
   hasSlackConfig: boolean,
   drawioUri: string,
@@ -90,6 +91,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
+  useIsMailerSetup(props.isMailerSetup);
   useAclEnabled(props.isAclEnabled);
   useHasSlackConfig(props.hasSlackConfig);
   useDrawioUri(props.drawioUri);
@@ -227,7 +229,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService, configManager, aclService, slackNotificationService,
+    appService, searchService, configManager, aclService, slackNotificationService, mailService,
   } = crowi;
 
   const { user } = req;
@@ -253,6 +255,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.confidential = appService.getAppConfidential();
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
+  props.isMailerSetup = mailService.isSetup;
   props.isAclEnabled = aclService.isAclEnabled();
   props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
