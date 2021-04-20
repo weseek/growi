@@ -21,7 +21,7 @@ export const verificationSlackRequest = (req : Request & signingSecretType, res:
   const timestamp = req.headers['x-slack-request-timestamp'];
 
   if (slackSignature == null || timestamp == null) {
-    return res.send('Verification failed.');
+    throw new Error('Verification failed.');
   }
 
   // protect against replay attacks
