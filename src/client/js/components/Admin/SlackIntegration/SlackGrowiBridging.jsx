@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 const SlackGrowiBridging = (props) => {
   return (
     <>
-      {props.slackWorkSpaceName}{props.siteName}
     </>
   );
 };
