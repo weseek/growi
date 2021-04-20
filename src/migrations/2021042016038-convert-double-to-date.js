@@ -1,5 +1,5 @@
 require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:remove-deleteduser-from-relationgroup');
+const logger = require('@alias/logger')('growi:migrate:convert-double-to-date');
 
 const mongoose = require('mongoose');
 const config = require('@root/config/migrate');
@@ -13,9 +13,6 @@ module.exports = {
 
     const Page = getModelSafely('Page') || require('@server/models/page')();
 
-    // const pages = await Page.count({
-    //   updatedAt: { $type: 'double' },
-    // });
     const pages = await Page.aggregate(
       [{
         $match: {
@@ -30,17 +27,20 @@ module.exports = {
        }],
     );
 
-    console.log(pages, pages.length);
+    if (pages.length === 0) {
+      return logger.info('The target page did not exist.');
+    }
 
-    // await Page.bulkWrite([
-    //   {
-    //     updateMany:
-    //      {
-    //        filter: { updatedAt: { $type: 'double' } },
-    //        update: { updatedAt: { $convert: { input: 'updatedAt', to: 'date' } } },
-    //      },
-    //   },
-    // ]);
+    const operations = pages.map((page) => {
+      return {
+        updateMany: {
+          filter: { _id: page._id },
+          update: { updatedAt: page.convertedDate },
+        },
+      };
+    });
+
+    await Page.bulkWrite(operations);
 
     logger.info('Migration has successfully applied');
 
