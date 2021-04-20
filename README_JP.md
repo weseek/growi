@@ -86,10 +86,6 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 - yarn
 - MongoDB 4.x
 
-  <!-- 以下のリンクは存在しない (ja と en 両方) -->
-
-  [確定版](https://docs.growi.org/ja/dev/startup/dev-env.html#set-up-node-js-environment) をご覧ください。
-
 ### オプションの依存関係
 
 - Redis 3.x
@@ -108,7 +104,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
   <!-- 以下のリンクは存在しない (ja と en 両方) -->
 
-詳しくは [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch.html#list-of-npm-commands)をご覧ください。
+詳しくは [GROWI Docs: List of npm Commands](https://docs.growi.org/ja/dev/startup-v2/launch-system.html#npm-コマンドリスト)をご覧ください。
 
 # ドキュメント
 
@@ -128,7 +124,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 - **大規模な機能追加につきましては**、Issue を open にした上で、提案された概要を説明していただき、議論できる状態にします。
   議論を積み重ねることで、提案内容を双方向的に実装したい機能を整理することができ、実装の重複を防ぐことにもなります。これによって、GROWI への導入がスムーズになります。
 
-- **小規模な機能追加につきましては**、 Issue を作成し、直接 [Pull requests](pulls) を提出してください。
+- **小規模な機能追加につきましては**、 Issue を作成し、直接 [Pull requests][pulls] を提出してください。
 
 ## GitHub 上での言語について
 
