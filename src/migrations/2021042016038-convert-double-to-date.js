@@ -13,19 +13,7 @@ module.exports = {
 
     const Page = getModelSafely('Page') || require('@server/models/page')();
 
-    const pages = await Page.aggregate(
-      [{
-        $match: {
-          updatedAt: { $type: 'double' },
-        },
-
-      },
-       {
-         $addFields: {
-           convertedDate: { $toDate: '$updatedAt' },
-         },
-       }],
-    );
+    const pages = await Page.find({ updatedAt: { $type: 'double' } });
 
     if (pages.length === 0) {
       return logger.info('The target page did not exist.');
@@ -35,7 +23,7 @@ module.exports = {
       return {
         updateMany: {
           filter: { _id: page._id },
-          update: { updatedAt: page.convertedDate },
+          update: { updatedAt: new Date(page.updatedAt) },
         },
       };
     });
