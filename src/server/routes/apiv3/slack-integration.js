@@ -57,8 +57,7 @@ module.exports = (crowi) => {
         .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
     ],
     NotificationTestToSlackWorkSpace: [
-      body('channel').not().trim().isIn([''])
-        .isString(),
+      body('channel').trim().not().isEmpty(),
     ],
   };
 
