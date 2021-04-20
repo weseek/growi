@@ -4,6 +4,7 @@
 
 * Improvement: toastr location for editing
 * Improvement: Handsontable with static backdrop to prevent from closing when backdrop is clicked
+* Fix: Accept invalid page path like `..%2f`
 * Support: Upgrade libs
     * reactstrap
 
