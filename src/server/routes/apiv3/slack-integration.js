@@ -186,6 +186,7 @@ module.exports = (crowi) => {
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CustomBotWithoutProxy, apiV3FormValidator, async(req, res) => {
       const { slackSigningSecret, slackBotToken, currentBotType } = req.body;
 
+      console.log(req.params);
       const requestParams = {
         'slackbot:signingSecret': slackSigningSecret,
         'slackbot:token': slackBotToken,
