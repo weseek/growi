@@ -44,8 +44,8 @@ const CustomBotWithoutProxySettings = (props) => {
       <div className="d-flex justify-content-center my-5 bot-integration">
         <div className="card rounded shadow border-0 w-50 admin-bot-card">
           <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
-          <div className="card-body p-2"> { slackWSNameInWithoutProxy &&
-            <div className="card bg-warning border-primary mx-xl-5">
+          <div className="card-body p-2 w-50 mx-auto"> { slackWSNameInWithoutProxy &&
+            <div className="card bg-warning border-primary">
               <div className="m-2 text-center">
                 <h5 className="font-weight-bold">{ slackWSNameInWithoutProxy }</h5>
                 <GrowiLogo></GrowiLogo>
