@@ -273,6 +273,7 @@ jobs:
         npx lerna bootstrap
         yarn lerna add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs --scope @growi/app --scope @growi/app-for-hoisting
         yarn lerna add -D react-images@1.0.0 react-motion --scope @growi/app --scope @growi/app-for-hoisting
+        yarn lerna run build --scope @growi/slack
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
