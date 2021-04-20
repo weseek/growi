@@ -3,6 +3,7 @@
 ## v4.2.15-EC
 
 * Improvement: toastr location for editing
+* Improvement: Handsontable with static backdrop to prevent from closing when backdrop is clicked
 * Support: Upgrade libs
     * reactstrap
 
