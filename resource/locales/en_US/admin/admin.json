@@ -300,7 +300,8 @@
       "register_secret_and_token": "Set Signing Secret and Bot Token",
       "test_connection": "Test Connection",
       "test_connection_by_pressing_button": "Press the button to test the connection",
-      "error_check_logs_below": "An error has occurred. Please check the logs below."
+      "error_check_logs_below": "An error has occurred. Please check the logs below.",
+      "send_message_to_slack_work_space": "Send message to Slack work space."
     },
     "custom_bot_without_proxy_integration": "Custom bot without proxy integration",
     "integration_sentence": {

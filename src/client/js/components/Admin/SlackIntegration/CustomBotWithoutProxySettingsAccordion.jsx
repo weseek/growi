@@ -27,6 +27,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
+  const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
+  const [testChannel, setTestChannel] = useState('');
   const currentBotType = 'customBotWithoutProxy';
 
   const updateSecretTokenHandler = async() => {
@@ -55,11 +57,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const onTestConnectionHandler = async() => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
+    setConnectionSuccessMessage(null);
     try {
-      await appContainer.apiv3.post('admin:slack-integration/notification-test-to-slack-work-space', {
-        // TODO put proper request
-        // channel: 'testchannel',
+      const res = await appContainer.apiv3.post('slack-integration/notification-test-to-slack-work-space', {
+        channel: testChannel,
       });
+      setConnectionSuccessMessage(res.data.message);
       setIsSendTestMessage(true);
     }
     catch (err) {
@@ -68,6 +71,18 @@ const CustomBotWithoutProxySettingsAccordion = ({
       setConnectionErrorMessage(err[0].message);
     }
   };
+
+  const inputTestChannelHandler = (channel) => {
+    setTestChannel(channel);
+  };
+
+  let value = '';
+  if (connectionErrorMessage != null) {
+    value = [connectionErrorCode, connectionErrorMessage];
+  }
+  if (connectionSuccessMessage != null) {
+    value = connectionSuccessMessage;
+  }
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -135,20 +150,43 @@ const CustomBotWithoutProxySettingsAccordion = ({
       >
         <p className="text-center m-4">{t('admin:slack_integration.without_proxy.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
-          <button type="button" className="btn btn-info m-3 px-5 font-weight-bold" onClick={onTestConnectionHandler}>Test</button>
+          <form className="form-row align-items-center w-25">
+            <div className="col-8 input-group-prepend">
+              <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+              <input
+                className="form-control w-100"
+                type="text"
+                value={testChannel}
+                placeholder="Slack Channel"
+                onChange={e => inputTestChannelHandler(e.target.value)}
+              />
+            </div>
+            <div className="col-4">
+              <button
+                type="button"
+                className="btn btn-info mx-3 font-weight-bold"
+                disabled={testChannel.trim() === ''}
+                onClick={onTestConnectionHandler}
+              >Test
+              </button>
+            </div>
+          </form>
         </div>
         {connectionErrorMessage != null
-          && <p className="text-danger text-center m-4">{t('admin:slack_integration.without_proxy.error_check_logs_below')}</p>
-        }
-        <div className="row m-3 justify-content-center">
-          <div className="col-sm-5 slack-connection-error-log">
-            <p className="border-info slack-connection-error-log-title mb-1 pl-2">Logs</p>
-            <div className="card border-info slack-connection-error-log-body rounded-lg px-5 py-4">
-              <p className="m-0">{connectionErrorCode}</p>
-              <p className="m-0">{connectionErrorMessage}</p>
+        && <p className="text-danger text-center my-4">{t('admin:slack_integration.without_proxy.error_check_logs_below')}</p>}
+        {connectionSuccessMessage != null
+         && <p className="text-info text-center my-4">{t('admin:slack_integration.without_proxy.send_message_to_slack_work_space')}</p>}
+        <form>
+          <div className="row my-3 justify-content-center">
+            <div className="form-group slack-connection-log w-25">
+              <label className="mb-1"><p className="border-info slack-connection-log-title pl-2">Logs</p></label>
+              <textarea
+                className="form-control card border-info slack-connection-log-body rounded-lg"
+                value={value}
+              />
             </div>
           </div>
-        </div>
+        </form>
       </Accordion>
     </div>
   );
