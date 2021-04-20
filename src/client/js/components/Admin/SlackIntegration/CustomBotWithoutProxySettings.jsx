@@ -15,8 +15,6 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
 
-  // get site name from this GROWI
-  // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
 
   const fetchSlackWorkSpaceName = async() => {
