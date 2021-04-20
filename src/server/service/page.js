@@ -105,7 +105,7 @@ class PageService {
       if (updateMetadata) {
         unorderedBulkOp
           .find({ _id: page._id })
-          .update({ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: { $dateFromString: { dateString: Date.now() } } } });
+          .update({ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: Date.now().toISOString() } });
       }
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
@@ -635,9 +635,9 @@ class PageService {
       const toPath = Page.getRevertDeletedPageName(page.path);
 
       if (pathToPageMapping[toPath] != null) {
-      // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
-      // So, it's ok to delete the page
-      // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
+        // When the page is deleted, it will always be created with "redirectTo" in the path of the original page.
+        // So, it's ok to delete the page
+        // However, If a page exists that is not "redirectTo", something is wrong. (Data correction is needed).
         if (pathToPageMapping[toPath].redirectTo === page.path) {
           removePageBulkOp.find({ path: toPath }).remove();
         }
