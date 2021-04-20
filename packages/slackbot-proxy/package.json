@@ -14,7 +14,8 @@
     "test:unit": "cross-env NODE_ENV=test jest --passWithNoTests",
     "test:coverage": "yarn test:unit",
     "test:lint": "eslint src --ext .ts",
-    "test:lint:fix": "eslint src --ext .ts --fix"
+    "test:lint:fix": "eslint src --ext .ts --fix",
+    "version": "node -p \"require('./package.json').version\""
   },
   "dependencies": {
     "@growi/slack": "^0.9.0-RC",
