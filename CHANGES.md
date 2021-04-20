@@ -2,7 +2,8 @@
 
 ## v4.2.15-EC
 
-*
+* Improvement: toastr location for editing
+
 
 
 ## v4.2.14
