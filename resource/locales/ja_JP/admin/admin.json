@@ -298,7 +298,8 @@
       "register_secret_and_token": "Signing Secret と Bot Token を登録する",
       "test_connection": "連携状況のテストをする",
       "test_connection_by_pressing_button": "以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう",
-      "error_check_logs_below": "エラーが発生しました。下記のログを確認してください。"
+      "error_check_logs_below": "エラーが発生しました。下記のログを確認してください。",
+      "send_message_to_slack_work_space": "Slack ワークスペースに送信しました"
     },
     "custom_bot_without_proxy_integration": "Custom bot without proxy 連携",
     "integration_sentence": {
