@@ -31,7 +31,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const fetchSiteName = async() => {
     try {
-      await adminAppContainer.retrieveAppSettingsData()
+      await adminAppContainer.retrieveAppSettingsData();
       setSiteName(adminAppContainer.state.title);
     }
     catch (err) {
