@@ -1,6 +1,18 @@
 # CHANGES
 
-## v4.2.14-RC
+## v4.2.15-EC
+
+* Improvement: toastr location for editing
+* Improvement: Handsontable with static backdrop to prevent from closing when backdrop is clicked
+* Fix: Accept invalid page path like `..%2f`
+* Fix: Pages updated date is corrupted after recursive operation
+    * Introduced by v4.2.8
+* Support: Upgrade libs
+    * reactstrap
+
+
+
+## v4.2.14
 
 * Feature: Add an option to restrict publishing email property for new users
 * Improvement: Invite modal in admin page without email server settings
