@@ -18,8 +18,8 @@ export const botInstallationStep = {
 const CustomBotWithoutProxySettingsAccordion = ({
   appContainer,
   activeStep, slackSigningSecret, slackSigningSecretEnv, slackBotToken,
-  slackBotTokenEnv, isRegisterSlackCredentials, isSendTestMessage, isConnectedToSlack,
-  setSlackSigningSecret, setSlackBotToken, setIsSendTestMessage, setIsRegisterSlackCredentials, setSlackWSNameInWithoutProxy,
+  slackBotTokenEnv, isRegisterSlackCredentials, isSendTestMessage, isConnectedToSlack, isSetupSlackBot,
+  setSlackSigningSecret, setSlackBotToken, setIsSendTestMessage, setIsRegisterSlackCredentials, setSlackWSNameInWithoutProxy, fetchSlackWorkSpaceName,
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
@@ -152,6 +152,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackBotToken={slackBotToken}
           slackBotTokenEnv={slackBotTokenEnv}
+          fetchSlackWorkSpaceName={fetchSlackWorkSpaceName}
         />
       </Accordion>
       <Accordion
@@ -221,6 +222,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   setSlackWSNameInWithoutProxy: PropTypes.func,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
+  isSetupSlackBot: PropTypes.bool,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;

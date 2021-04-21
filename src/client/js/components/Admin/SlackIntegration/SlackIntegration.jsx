@@ -68,10 +68,7 @@ const SlackIntegration = (props) => {
 
   useEffect(() => {
     fetchData();
-    if (isSetupSlackBot) {
-      fetchSlackWorkSpaceName();
-    }
-  }, [fetchData, fetchSlackWorkSpaceName, isSetupSlackBot]);
+  }, [fetchData]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -131,6 +128,7 @@ const SlackIntegration = (props) => {
           setSlackWSNameInWithoutProxy={setSlackWSNameInWithoutProxy}
           isSetupSlackBot={isSetupSlackBot}
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
+          fetchSlackWorkSpaceName={fetchSlackWorkSpaceName}
         />
       );
       break;
