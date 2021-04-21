@@ -1,4 +1,6 @@
 /* eslint-disable no-unused-vars */
+import { advanceTo } from 'jest-date-mock';
+
 const mongoose = require('mongoose');
 
 const { getInstance } = require('../setup-crowi');
@@ -236,11 +238,12 @@ describe('PageService', () => {
   describe('rename page', () => {
     let pageEventSpy;
     let renameDescendantsWithStreamSpy;
-    const dateToUse = new Date('2000-01-01');
+    // mock new Date() and Date.now()
+    advanceTo(new Date(2000, 1, 1, 0, 0, 0));
+    const dateToUse = new Date();
     const socketClientId = null;
 
     beforeEach(async(done) => {
-      jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
       renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
       done();
