@@ -26,17 +26,18 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   }, [appContainer.apiv3]);
 
-  const fetchSiteName = useCallback(() => {
-    const siteName = appContainer.config.crowi.title;
-    setSiteName(siteName);
-  }, [appContainer.config.crowi.title]);
 
   useEffect(() => {
+    const fetchSiteName = () => {
+      const siteName = appContainer.config.crowi.title;
+      setSiteName(siteName);
+    };
+
     fetchSiteName();
     if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
     }
-  }, [appContainer, fetchSiteName, fetchSlackWorkSpaceName, props.isSetupSlackBot]);
+  }, [appContainer, fetchSlackWorkSpaceName, props.isSetupSlackBot]);
 
   return (
     <>
