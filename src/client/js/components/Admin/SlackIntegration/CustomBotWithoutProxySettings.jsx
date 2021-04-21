@@ -16,15 +16,6 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const [siteName, setSiteName] = useState('');
 
-  // const fetchSlackWorkSpaceName = useCallback(async() => {
-  //   try {
-  //     const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
-  //     setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // }, [appContainer.apiv3]);
 
   const fetchSiteName = useCallback(() => {
     const siteName = appContainer.config.crowi.title;
@@ -33,9 +24,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
   useEffect(() => {
     fetchSiteName();
-    // if (props.isSetupSlackBot) {
-    //   fetchSlackWorkSpaceName();
-    // }
+
   }, [appContainer, fetchSiteName]);
 
   return (
@@ -100,6 +89,8 @@ CustomBotWithoutProxySettings.propTypes = {
   isConnectedToSlack: PropTypes.bool,
   // isSetupSlackBot: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
+  // setSlackWSNameInWithoutProxy: PropTypes.func,
+  // fetchSlackWorkSpaceName: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;

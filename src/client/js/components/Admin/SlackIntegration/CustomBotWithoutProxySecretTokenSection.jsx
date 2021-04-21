@@ -21,6 +21,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   const updateSecretTokenHandler = () => {
     if (props.updateSecretTokenHandler != null) {
       props.updateSecretTokenHandler();
+      props.fetchSlackWorkSpaceName();
     }
   };
 
@@ -98,6 +99,7 @@ CustomBotWithoutProxySecretTokenSection.propTypes = {
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
+  fetchSlackWorkSpaceName: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySecretTokenSection;
