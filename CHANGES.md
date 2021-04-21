@@ -1,9 +1,20 @@
 # CHANGES
 
-## v4.2.15-EC
+## v4.2.16-RC
 
 * Support: Update libs
     * eslint-config-weseek
+
+## v4.2.15
+
+* Improvement: toastr location for editing
+* Improvement: Handsontable with static backdrop to prevent from closing when backdrop is clicked
+* Fix: Accept invalid page path like `..%2f`
+* Fix: Pages updated date is corrupted after recursive operation
+    * Introduced by v4.2.8
+* Support: Upgrade libs
+    * reactstrap
+
 
 ## v4.2.14
 
