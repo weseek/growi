@@ -27,14 +27,9 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
-  const fetchSiteName = async() => {
-    try {
-      await adminAppContainer.retrieveAppSettingsData();
-      setSiteName(adminAppContainer.state.title);
-    }
-    catch (err) {
-      toastError(err);
-    }
+  const fetchSiteName = () => {
+    const siteName = appContainer.getConfig().crowi.title;
+    setSiteName(siteName);
   };
 
   useEffect(() => {
