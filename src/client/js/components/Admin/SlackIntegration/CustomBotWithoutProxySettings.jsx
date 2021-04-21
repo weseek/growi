@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
@@ -16,7 +16,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const [siteName, setSiteName] = useState('');
 
-  const fetchSlackWorkSpaceName = async() => {
+  const fetchSlackWorkSpaceName = useCallback(async() => {
     try {
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
@@ -24,19 +24,19 @@ const CustomBotWithoutProxySettings = (props) => {
     catch (err) {
       toastError(err);
     }
-  };
+  }, [appContainer.apiv3]);
 
-  const fetchSiteName = () => {
+  const fetchSiteName = useCallback(() => {
     const siteName = appContainer.config.crowi.title;
     setSiteName(siteName);
-  };
+  }, [appContainer.config.crowi.title]);
 
   useEffect(() => {
     fetchSiteName();
     if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
     }
-  }, [appContainer, props.isSetupSlackBot]);
+  }, [appContainer, fetchSiteName, fetchSlackWorkSpaceName, props.isSetupSlackBot]);
 
   return (
     <>
