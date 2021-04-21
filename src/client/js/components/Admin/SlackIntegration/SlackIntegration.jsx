@@ -138,6 +138,7 @@ const SlackIntegration = (props) => {
             {/* TODO: add an appropriate link by GW-5614 */}
             <i className="fa fa-external-link" aria-hidden="true"></i>
           </a>
+
         </h2>
 
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
