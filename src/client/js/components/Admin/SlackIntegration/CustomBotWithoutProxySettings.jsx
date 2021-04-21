@@ -26,12 +26,10 @@ const CustomBotWithoutProxySettings = (props) => {
   }, [appContainer.apiv3]);
 
   useEffect(() => {
-    const fetchSiteName = () => {
-      const siteName = appContainer.config.crowi.title;
-      setSiteName(siteName);
-    };
 
-    fetchSiteName();
+    const siteName = appContainer.config.crowi.title;
+    setSiteName(siteName);
+
     if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
     }
