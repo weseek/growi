@@ -133,6 +133,19 @@
     border-top: 1px solid #e5e5e5;
   }
 
+  // When fading in the modal, animate it to slide down
+  .modal.fade .modal-dialog {
+    @include transition($modal-transition);
+    transform: $modal-fade-transform;
+  }
+  .modal.show .modal-dialog {
+    transform: $modal-show-transform;
+  }
+  // When trying to close, animate focus to scale
+  .modal.modal-static .modal-dialog {
+    transform: $modal-scale-transform;
+  }
+
   // col-form-label (substitute for control-label of bootstrap3)
   .col-form-label {
     text-align: right;
