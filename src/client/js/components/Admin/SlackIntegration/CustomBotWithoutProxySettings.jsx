@@ -10,7 +10,7 @@ import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './C
 import GrowiLogo from '../../Icons/GrowiLogo';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, adminAppContainer } = props;
+  const { appContainer } = props;
   const { t } = useTranslation();
 
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
