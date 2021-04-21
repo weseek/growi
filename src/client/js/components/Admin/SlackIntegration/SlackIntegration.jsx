@@ -5,7 +5,6 @@ import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
-import AccessTokenSettings from './AccessTokenSettings';
 import OfficialBotSettings from './OfficialBotSettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
@@ -19,7 +18,6 @@ const SlackIntegration = (props) => {
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
-  const [accessToken, setAccessToken] = useState('');
   const [slackSigningSecret, setSlackSigningSecret] = useState('');
   const [slackBotToken, setSlackBotToken] = useState('');
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
@@ -33,13 +31,12 @@ const SlackIntegration = (props) => {
   const fetchData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
-      const { currentBotType, customBotWithoutProxySettings, accessToken } = response.data.slackBotSettingParams;
+      const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot,
       } = customBotWithoutProxySettings;
 
       setCurrentBotType(currentBotType);
-      setAccessToken(accessToken);
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
@@ -95,27 +92,6 @@ const SlackIntegration = (props) => {
     }
   };
 
-  const generateTokenHandler = async() => {
-    try {
-      await appContainer.apiv3.put('slack-integration/access-token');
-      fetchData();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
-
-  const discardTokenHandler = async() => {
-    try {
-      await appContainer.apiv3.delete('slack-integration/access-token');
-      fetchData();
-      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
-
   let settingsComponent = null;
 
   switch (currentBotType) {
@@ -125,7 +101,6 @@ const SlackIntegration = (props) => {
     case 'customBotWithoutProxy':
       settingsComponent = (
         <CustomBotWithoutProxySettings
-          accessToken={accessToken}
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
           isConnectedToSlack={isConnectedToSlack}
@@ -153,12 +128,6 @@ const SlackIntegration = (props) => {
         isOpen={selectedBotType != null}
         onConfirmClick={changeCurrentBotSettingsHandler}
         onCancelClick={cancelBotChangeHandler}
-      />
-
-      <AccessTokenSettings
-        accessToken={accessToken}
-        onClickDiscardButton={discardTokenHandler}
-        onClickGenerateToken={generateTokenHandler}
       />
 
       <div className="selecting-bot-type my-5">
