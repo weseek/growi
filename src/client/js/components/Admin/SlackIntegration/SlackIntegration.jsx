@@ -133,13 +133,13 @@ const SlackIntegration = (props) => {
       <div className="selecting-bot-type my-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
-          <span className="ml-2 btn-link">
-            <span className="mr-1" role="button">{t('admin:slack_integration.selecting_bot_types.detailed_explanation')}</span>
+          <a className="ml-2 btn-link" href="#">
+            <span className="mr-1">{t('admin:slack_integration.selecting_bot_types.detailed_explanation')}</span>
             {/* TODO: add an appropriate link by GW-5614 */}
             <i className="fa fa-external-link" aria-hidden="true"></i>
-          </span>
-
+          </a>
         </h2>
+
 
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
