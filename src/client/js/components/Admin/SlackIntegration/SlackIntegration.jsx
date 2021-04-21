@@ -55,8 +55,6 @@ const SlackIntegration = (props) => {
     }
   }, [appContainer.apiv3, slackBotTokenEnv, slackSigningSecretEnv]);
 
-  console.log(slackWSNameInWithoutProxy);
-  console.log(isSetupSlackBot);
 
   const fetchSlackWorkSpaceName = useCallback(async() => {
     try {
