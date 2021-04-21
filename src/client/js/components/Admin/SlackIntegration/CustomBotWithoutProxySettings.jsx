@@ -69,7 +69,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
         <div className="text-center w-25 mt-5">
           <p className="text-success"><small className="fa fa-check"> {t('admin:slack_integration.integration_sentence.integration_sucessed')}</small></p>
-          <hr className="border-danger align-self-center admin-border"></hr>
+          <hr className="align-self-center admin-border-success"></hr>
         </div>
 
         {/* -----------------  end  ----------------- */}
