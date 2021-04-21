@@ -122,9 +122,14 @@ $slack-work-space-name-card-border: #efc1f6;
     .admin-bot-card {
       border-radius: 8px !important;
     }
-    .admin-border {
+    .admin-border-danger {
+      border: $danger;
       border-style : dashed;
       border-width : 2px;
+    }
+    .admin-border-success {
+      border-color: $success;
+      border-width : 3px;
     }
     .circle{
       width: 100px;
