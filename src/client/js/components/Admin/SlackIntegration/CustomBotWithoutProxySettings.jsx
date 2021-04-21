@@ -15,8 +15,6 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
 
-  // get site name from this GROWI
-  // eslint-disable-next-line no-unused-vars
   const [siteName, setSiteName] = useState('');
 
   const fetchSlackWorkSpaceName = async() => {
@@ -29,8 +27,13 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
+  const fetchSiteName = () => {
+    const siteName = appContainer.config.crowi.title;
+    setSiteName(siteName);
+  };
+
   useEffect(() => {
-    setSlackWSNameInWithoutProxy(null);
+    fetchSiteName();
     if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
     }
@@ -65,7 +68,7 @@ const CustomBotWithoutProxySettings = (props) => {
         <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
           <h5 className="card-title font-weight-bold mt-3 ml-4">GROWI App</h5>
           <div className="card-body p-4 mb-5 text-center">
-            <div className="btn btn-primary">WESEEK Inner Wiki</div>
+            <div className="btn btn-primary">{ siteName }</div>
           </div>
         </div>
       </div>
