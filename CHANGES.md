@@ -1,6 +1,10 @@
 # CHANGES
 
-## v4.2.15-EC
+## v4.2.16-RC
+
+* 
+
+## v4.2.15
 
 * Improvement: toastr location for editing
 * Improvement: Handsontable with static backdrop to prevent from closing when backdrop is clicked
