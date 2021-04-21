@@ -140,7 +140,6 @@ const SlackIntegration = (props) => {
           </a>
         </h2>
 
-
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
         <div className="row my-4">
