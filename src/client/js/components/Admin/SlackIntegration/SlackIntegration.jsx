@@ -44,8 +44,14 @@ const SlackIntegration = (props) => {
       setIsConnectedToSlack(isConnectedToSlack);
       setIsSetupSlackBot(isSetupSlackBot);
 
-      if ((isConnectedToSlack && slackBotToken && slackSigningSecret) || (isConnectedToSlack && slackBotTokenEnv && slackSigningSecretEnv)) {
+      if ((slackBotToken && slackSigningSecret)
+      || (slackBotTokenEnv && slackSigningSecretEnv)
+      || (slackBotToken && slackSigningSecretEnv)
+      || (slackBotTokenEnv && slackSigningSecret)) {
         setIsRegisterSlackCredentials(true);
+      }
+      if (isConnectedToSlack === false) {
+        setIsRegisterSlackCredentials(false);
       }
 
     }
