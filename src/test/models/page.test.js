@@ -193,6 +193,12 @@ describe('Page', () => {
 
       expect(Page.isCreatableName('/hoge/xx.md')).toBeFalsy();
 
+      // relative path
+      expect(Page.isCreatableName('/..')).toBeFalsy();
+      expect(Page.isCreatableName('/../page')).toBeFalsy();
+      expect(Page.isCreatableName('/page/..')).toBeFalsy();
+      expect(Page.isCreatableName('/page/../page')).toBeFalsy();
+
       // start with https?
       expect(Page.isCreatableName('/http://demo.growi.org/hoge')).toBeFalsy();
       expect(Page.isCreatableName('/https://demo.growi.org/hoge')).toBeFalsy();
