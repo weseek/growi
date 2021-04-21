@@ -78,6 +78,8 @@ const CustomBotWithoutProxySettings = (props) => {
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
+          slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
+          setSlackWSNameInWithoutProxy={setSlackWSNameInWithoutProxy}
         />
       </div>
 
