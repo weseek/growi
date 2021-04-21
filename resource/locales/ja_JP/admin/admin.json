@@ -304,7 +304,8 @@
     "custom_bot_without_proxy_integration": "Custom bot without proxy 連携",
     "integration_sentence": {
       "integration_is_not_complete": "連携は完了していません。",
-      "proceed_with_the_following_integration_procedure": "下記の連携手順を進めてください。"
+      "proceed_with_the_following_integration_procedure": "下記の連携手順を進めてください。",
+      "integration_sucessed": "連携が完了しました。"
     },
     "custom_bot_with_proxy_integration": "Custom bot with proxy 連携"
   },

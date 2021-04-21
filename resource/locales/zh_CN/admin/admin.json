@@ -314,7 +314,8 @@
     "custom_bot_without_proxy_integration": "Custom bot without proxy 一体化",
     "integration_sentence": {
       "integration_is_not_complete": "一体化未完成。",
-      "proceed_with_the_following_integration_procedure": "进行以下一体化程序。"
+      "proceed_with_the_following_integration_procedure": "进行以下一体化程序。",
+      "integration_sucessed": "一体化成功"
     },
     "custom_bot_with_proxy_integration": "Custom bot with proxy 一体化"
   },
