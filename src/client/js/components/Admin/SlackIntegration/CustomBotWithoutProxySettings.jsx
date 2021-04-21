@@ -51,7 +51,7 @@ const CustomBotWithoutProxySettings = (props) => {
               <div className="card p-20 slack-work-space-name-card">
                 <div className="m-2 text-center">
                   <h5 className="font-weight-bold">{ slackWSNameInWithoutProxy }</h5>
-                  <img src={GrowiBotKun} />
+                  <img className="growi-bot-kun" src={GrowiBotKun} />
                 </div>
               </div>
             )}
