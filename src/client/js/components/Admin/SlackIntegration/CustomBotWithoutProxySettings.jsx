@@ -26,7 +26,6 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   }, [appContainer.apiv3]);
 
-
   useEffect(() => {
     const fetchSiteName = () => {
       const siteName = appContainer.config.crowi.title;
