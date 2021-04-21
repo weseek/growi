@@ -26,7 +26,7 @@ const SlackIntegration = (props) => {
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
-  // const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
+  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
 
 
   const fetchData = useCallback(async() => {
@@ -55,9 +55,25 @@ const SlackIntegration = (props) => {
     }
   }, [appContainer.apiv3, slackBotTokenEnv, slackSigningSecretEnv]);
 
+  console.log(slackWSNameInWithoutProxy);
+  console.log(isSetupSlackBot);
+
+  const fetchSlackWorkSpaceName = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
+      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer.apiv3]);
+
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    if (isSetupSlackBot) {
+      fetchSlackWorkSpaceName();
+    }
+  }, [fetchData, fetchSlackWorkSpaceName, isSetupSlackBot]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -114,9 +130,9 @@ const SlackIntegration = (props) => {
           setSlackBotToken={setSlackBotToken}
           setIsSendTestMessage={setIsSendTestMessage}
           setIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
-          // setSlackWSNameInWithoutProxy={setSlackWSNameInWithoutProxy}
+          setSlackWSNameInWithoutProxy={setSlackWSNameInWithoutProxy}
           isSetupSlackBot={isSetupSlackBot}
-          // slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
+          slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
         />
       );
       break;
