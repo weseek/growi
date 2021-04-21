@@ -105,7 +105,7 @@ class PageService {
       if (updateMetadata) {
         unorderedBulkOp
           .find({ _id: page._id })
-          .update({ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: Date.now().toISOString() } });
+          .update({ $set: { path: newPagePath, lastUpdateUser: user._id, updatedAt: new Date() } });
       }
       else {
         unorderedBulkOp.find({ _id: page._id }).update({ $set: { path: newPagePath } });
