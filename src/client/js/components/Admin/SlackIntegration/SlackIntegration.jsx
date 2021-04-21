@@ -55,7 +55,7 @@ const SlackIntegration = (props) => {
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3, isConnectedToSlack, slackBotTokenEnv, slackSigningSecretEnv]);
+  }, [appContainer.apiv3, slackBotTokenEnv, slackSigningSecretEnv]);
 
   useEffect(() => {
     fetchData();
