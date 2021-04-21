@@ -54,11 +54,16 @@ const CustomBotWithoutProxySettingsAccordion = ({
   };
 
   const onChangeSigningSecretHandler = (signingSecretInput) => {
-    onSetSlackSigningSecret(signingSecretInput);
+    if (onSetSlackSigningSecret != null) {
+      onSetSlackSigningSecret(signingSecretInput);
+    }
   };
 
   const onChangeBotTokenHandler = (botTokenInput) => {
-    onSetSlackBotToken(botTokenInput);
+    if (onSetSlackBotToken != null) {
+      onSetSlackBotToken(botTokenInput);
+
+    }
   };
 
   const onTestConnectionHandler = async() => {
