@@ -5,7 +5,6 @@ import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
-import SlackGrowiBridging from './SlackGrowiBridging';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import GrowiLogo from '../../Icons/GrowiLogo';
 
@@ -77,11 +76,6 @@ const CustomBotWithoutProxySettings = (props) => {
       </div>
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
-      {/* temporarily put bellow component */}
-      <SlackGrowiBridging
-        siteName={siteName}
-        slackWorkSpaceName={slackWSNameInWithoutProxy}
-      />
 
       <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion
