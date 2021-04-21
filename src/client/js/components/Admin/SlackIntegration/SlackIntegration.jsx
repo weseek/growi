@@ -35,10 +35,9 @@ const SlackIntegration = (props) => {
       const response = await appContainer.apiv3.get('slack-integration/');
       const { currentBotType, customBotWithoutProxySettings, accessToken } = response.data.slackBotSettingParams;
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot, isConnectedToSlack,
       } = customBotWithoutProxySettings;
 
-      console.log(slackSigningSecret);
       setCurrentBotType(currentBotType);
       setAccessToken(accessToken);
       setSlackSigningSecret(slackSigningSecret);
@@ -48,7 +47,7 @@ const SlackIntegration = (props) => {
       setIsConnectedToSlack(isConnectedToSlack);
       setIsSetupSlackBot(isSetupSlackBot);
 
-      if ((slackBotToken && slackSigningSecret) || (slackBotTokenEnv && slackSigningSecretEnv)) {
+      if ((isConnectedToSlack && slackBotToken && slackSigningSecret) || (isConnectedToSlack && slackBotTokenEnv && slackSigningSecretEnv)) {
         setIsRegisterSlackCredentials(true);
       }
 
