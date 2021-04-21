@@ -6,7 +6,6 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
-import GrowiLogo from '../../Icons/GrowiLogo';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
@@ -51,7 +50,6 @@ const CustomBotWithoutProxySettings = (props) => {
               <div className="card p-20 slack-work-space-name-card">
                 <div className="m-2 text-center">
                   <h5 className="font-weight-bold">{ slackWSNameInWithoutProxy }</h5>
-                  <GrowiLogo></GrowiLogo>
                 </div>
               </div>
             )}
