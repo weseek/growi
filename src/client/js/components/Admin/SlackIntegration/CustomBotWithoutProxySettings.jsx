@@ -58,11 +58,21 @@ const CustomBotWithoutProxySettings = (props) => {
           </div>
         </div>
 
-        <div className="text-center w-25 mt-4">
-          <p className="text-secondary m-0"><small>{t('admin:slack_integration.integration_sentence.integration_is_not_complete')}</small></p>
-          <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.proceed_with_the_following_integration_procedure')}</small></p>
+        {/* <div className="text-center w-25 mt-4"> */}
+          {/* <p className="text-secondary m-0"><small>{t('admin:slack_integration.integration_sentence.integration_is_not_complete')}</small></p> */}
+          {/* <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.proceed_with_the_following_integration_procedure')}</small></p> */}
+          {/* <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.integration_sucessed')}</small></p> */}
+          {/* <hr className="border-danger align-self-center admin-border"></hr> */}
+        {/* </div> */}
+
+        {/* ----------------- start ----------------- */}
+
+        <div className="text-center w-25 mt-5">
+          <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.integration_sucessed')}</small></p>
           <hr className="border-danger align-self-center admin-border"></hr>
         </div>
+
+        {/* -----------------  end  ----------------- */}
 
         <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
           <h5 className="card-title font-weight-bold mt-3 ml-4">GROWI App</h5>
