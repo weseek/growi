@@ -190,7 +190,6 @@ module.exports = (crowi) => {
         'slackbot:token': slackBotToken,
         'slackbot:currentBotType': currentBotType,
       };
-
       try {
         await updateSlackBotSettings(requestParams);
 

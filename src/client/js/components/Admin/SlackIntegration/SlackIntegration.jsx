@@ -38,6 +38,7 @@ const SlackIntegration = (props) => {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot,
       } = customBotWithoutProxySettings;
 
+      console.log(slackSigningSecret);
       setCurrentBotType(currentBotType);
       setAccessToken(accessToken);
       setSlackSigningSecret(slackSigningSecret);
@@ -86,6 +87,9 @@ const SlackIntegration = (props) => {
       setCurrentBotType(res.data.customBotWithoutProxySettingParams.slackBotType);
       setSelectedBotType(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+      setIsRegisterSlackCredentials(false);
+      setSlackSigningSecret('');
+      setSlackBotToken('');
     }
     catch (err) {
       toastError(err);
