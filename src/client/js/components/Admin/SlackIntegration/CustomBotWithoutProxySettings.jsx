@@ -6,7 +6,7 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
-import CustomBotWithouProxySettomgSlackCard from './CustomBotWithouProxySettingsCard';
+import CustomBotWithouProxySettomgSlackCard from './CustomBotIntegrationCard';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
