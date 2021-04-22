@@ -78,13 +78,24 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
     const handleViewSubmission = async(inptValues) => {
-      console.log(inptValues);
+
+      // const { growiDomain, growiAccessToken, growiAccessToken } = inptValues;
+
+      const growiDomain = inptValues.growiDomain.contents_input.value;
+      const growiAccessToken = inptValues.growiAccessToken.contents_input.value;
+      const proxyToken = inptValues.proxyToken.contents_input.value;
+
+      // order = await this.orderRepository
+      // .update({ $set: { growiUrl: inptValues.hoge, growiAccessToken: inptValues.hoge, proxyAccessToken: inptValues.hoge } }, { multi: true });
+      console.log('growiDomain', growiDomain);
+      console.log(growiAccessToken);
+      console.log(proxyToken);
     };
+
     if (body.payload != null) {
       const payload = JSON.parse(body.payload);
       const { type } = payload;
       const inptValues = payload.view.state.values;
-      // console.log('inptValues', inptValues);
 
       try {
         switch (type) {
