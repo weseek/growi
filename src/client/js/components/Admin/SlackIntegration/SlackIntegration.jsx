@@ -87,8 +87,8 @@ const SlackIntegration = (props) => {
       setSelectedBotType(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
       setIsRegisterSlackCredentials(false);
-      setSlackSigningSecret('');
-      setSlackBotToken('');
+      setSlackSigningSecret(null);
+      setSlackBotToken(null);
       setIsSendTestMessage(false);
     }
     catch (err) {
