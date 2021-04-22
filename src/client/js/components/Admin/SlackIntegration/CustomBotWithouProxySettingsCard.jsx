@@ -8,7 +8,7 @@ const CustomBotWithouProxySettomgSlackCard = (props) => {
   <>
 
     <p>{props.currentBotType}</p>
-    <p>{props.slackWorkSpaceNameWithoutProxy}</p>
+    <p>{props.slackWSNameInWithoutProxy}</p>
     <p>{props.siteName}</p>
 
   </>
@@ -17,7 +17,7 @@ const CustomBotWithouProxySettomgSlackCard = (props) => {
 
 CustomBotWithouProxySettomgSlackCard.PropTypes = {
   currentBotType: PropTypes.string,
-  slackWorkSpaceNameWithoutProxy: PropTypes.string,
+  slackWSNameInWithoutProxy: PropTypes.string,
   siteName: PropTypes.string,
 }
 
