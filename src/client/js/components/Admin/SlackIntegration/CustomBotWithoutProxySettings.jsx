@@ -61,7 +61,7 @@ const CustomBotWithoutProxySettings = (props) => {
           {props.isSetupSlackBot && (
             <div className="mt-5">
               <p className="text-success"><small className="fa fa-check"> {t('admin:slack_integration.integration_sentence.integration_sucessed')}</small></p>
-              <hr className="align-self-center admin-border-success"></hr>
+              <hr className="align-self-center admin-border-success border-success"></hr>
             </div>
           )}
           {!props.isSetupSlackBot && (
@@ -69,7 +69,7 @@ const CustomBotWithoutProxySettings = (props) => {
               {t('admin:slack_integration.integration_sentence.integration_is_not_complete').split('\n').map((str) => {
                 return <p className="text-secondary m-0"><small>{str}</small></p>;
               })}
-              <hr className="align-self-center admin-border-danger"></hr>
+              <hr className="align-self-center admin-border-danger border-danger"></hr>
             </div>
           )}
         </div>
