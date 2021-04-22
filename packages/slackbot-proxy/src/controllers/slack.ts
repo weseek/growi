@@ -77,18 +77,19 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
-    const handleViewSubmission = async(payload) => {
-      console.log('submitted');
+    const handleViewSubmission = async(inptValues) => {
+      console.log(inptValues);
     };
     if (body.payload != null) {
       const payload = JSON.parse(body.payload);
       const { type } = payload;
-      console.log('type', type);
+      const inptValues = payload.view.state.values;
+      // console.log('inptValues', inptValues);
 
       try {
         switch (type) {
           case 'view_submission':
-            await handleViewSubmission(payload);
+            await handleViewSubmission(inptValues);
             break;
           default:
             break;
