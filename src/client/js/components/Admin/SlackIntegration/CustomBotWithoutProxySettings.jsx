@@ -12,14 +12,14 @@ const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
-  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
+  const [slackWorkSpaceName, setSlackWorkSpaceName] = useState(null);
 
   const [siteName, setSiteName] = useState('');
 
   const fetchSlackWorkSpaceName = useCallback(async() => {
     try {
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
-      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+      setSlackWorkSpaceName(res.data.slackWorkSpaceName);
     }
     catch (err) {
       toastError(err);
@@ -40,11 +40,11 @@ const CustomBotWithoutProxySettings = (props) => {
     <>
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
-      
+
       <CustomBotWithouProxySettomgSlackCard
         currentBotType={props.currentBotType}
         siteName={siteName}
-        slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
+        slackWorkSpaceName={slackWorkSpaceName}
         isSetupSlackBot={props.isSetupSlackBot}
       />
 
