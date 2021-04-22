@@ -74,8 +74,11 @@ export class SlackCtrl {
 
   @Post('/events')
   async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<string> {
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    // eslint-disable-next-line max-len
+    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
+    if (body.type === 'url_verification') {
+      return body.challenge;
+    }
 
     if (body.text == null) {
       return 'No text.';
@@ -87,8 +90,12 @@ export class SlackCtrl {
     if (executeGrowiCommand == null) {
       return 'No executeGrowiCommand';
     }
-    await executeGrowiCommand(body);
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
+
+    await executeGrowiCommand(body);
 
     const installation = await this.installationRepository.findByID('1');
     if (installation == null) {
