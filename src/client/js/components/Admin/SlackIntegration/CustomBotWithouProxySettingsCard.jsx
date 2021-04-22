@@ -7,6 +7,7 @@ const CustomBotWithouProxySettomgSlackCard = (props) => {
   return (
   <>
 
+    <p>{props.currentBotType}</p>
     <p>{props.slackWorkSpaceName}</p>
     <p>{props.siteName}</p>
 
@@ -15,9 +16,9 @@ const CustomBotWithouProxySettomgSlackCard = (props) => {
 };
 
 CustomBotWithouProxySettomgSlackCard.PropTypes = {
+  currentBotType: PropTypes.string,
   slackWorkSpaceName: PropTypes.string,
   siteName: PropTypes.string,
 }
-
 
 export default CustomBotWithouProxySettomgSlackCard;
