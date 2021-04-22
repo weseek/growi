@@ -59,6 +59,10 @@ const SlackIntegration = (props) => {
 
 
   const fetchSlackWorkSpaceName = useCallback(async() => {
+    if (!isConnectedToSlack) {
+      return null;
+    }
+
     try {
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
@@ -66,11 +70,12 @@ const SlackIntegration = (props) => {
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, isConnectedToSlack]);
 
   useEffect(() => {
+    fetchSlackWorkSpaceName();
     fetchData();
-  }, [fetchData]);
+  }, [fetchData, fetchSlackWorkSpaceName]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
