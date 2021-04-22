@@ -28,7 +28,7 @@ const SlackIntegration = (props) => {
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
 
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
@@ -76,7 +76,7 @@ const SlackIntegration = (props) => {
     setSelectedBotType(null);
   };
 
-  const changeCurrentBotSettingsHandler = async () => {
+  const changeCurrentBotSettingsHandler = async() => {
     try {
       const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
@@ -131,18 +131,14 @@ const SlackIntegration = (props) => {
       />
 
       <div className="selecting-bot-type my-5">
-        <span className="d-flex align-items-center">
-          <h2 className="admin-setting-header mb-4">
-            {t('admin:slack_integration.selecting_bot_types.slack_bot')}
-          </h2>
-
+        <h2 className="admin-setting-header mb-4">
+          {t('admin:slack_integration.selecting_bot_types.slack_bot')}
+          {/* TODO: add an appropriate link by GW-5614 */}
           <a className="ml-2 btn-link" href="#">
-            <span className="mr-1">{t('admin:slack_integration.selecting_bot_types.detailed_explanation')}</span>
-            {/* TODO: add an appropriate link by GW-5614 */}
-            <i className="fa fa-external-link" aria-hidden="true"></i>
+            {t('admin:slack_integration.selecting_bot_types.detailed_explanation')}
+            <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
           </a>
-        </span>
-
+        </h2>
 
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
