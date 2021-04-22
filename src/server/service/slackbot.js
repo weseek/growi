@@ -29,7 +29,7 @@ class SlackBotService extends S2sMessageHandlable {
 
   async initialize() {
     this.isSetupSlackBot = false;
-
+    this.isConnectedToSlack = false;
     const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
 
     if (token != null) {
@@ -82,8 +82,6 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async sendAuthTest() {
-    this.isConnectedToSlack = false;
-
     await this.client.api.test();
     this.isConnectedToSlack = true;
   }
