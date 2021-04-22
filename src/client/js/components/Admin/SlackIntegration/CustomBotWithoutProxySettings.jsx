@@ -57,10 +57,19 @@ const CustomBotWithoutProxySettings = (props) => {
           </div>
         </div>
 
-        <div className="text-center w-25 mt-4">
-          <p className="text-secondary m-0"><small>{t('admin:slack_integration.integration_sentence.integration_is_not_complete')}</small></p>
-          <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.proceed_with_the_following_integration_procedure')}</small></p>
-          <hr className="border-danger align-self-center admin-border"></hr>
+        <div className="text-center w-25">
+          {props.isSetupSlackBot && (
+            <div className="mt-5">
+              <p className="text-success"><small className="fa fa-check"> {t('admin:slack_integration.integration_sentence.integration_sucessed')}</small></p>
+              <hr className="align-self-center admin-border-success border-success"></hr>
+            </div>
+          )}
+          {!props.isSetupSlackBot && (
+            <div className="mt-4">
+              <small className="text-secondary m-0" dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }} />
+              <hr className="align-self-center admin-border-danger border-danger"></hr>
+            </div>
+          )}
         </div>
 
         <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
