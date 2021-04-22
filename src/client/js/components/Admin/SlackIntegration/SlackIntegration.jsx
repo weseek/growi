@@ -45,10 +45,12 @@ const SlackIntegration = (props) => {
       setIsConnectedToSlack(isConnectedToSlack);
       setIsSetupSlackBot(isSetupSlackBot);
 
-      if (!isConnectedToSlack) {
-        return setIsRegisterSlackCredentials(false);
+      if (isConnectedToSlack) {
+        setIsRegisterSlackCredentials(true);
       }
-      setIsRegisterSlackCredentials(true);
+      else {
+        setIsRegisterSlackCredentials(false);
+      }
 
     }
     catch (err) {
