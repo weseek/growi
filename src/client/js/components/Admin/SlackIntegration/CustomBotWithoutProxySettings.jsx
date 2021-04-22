@@ -66,8 +66,8 @@ const CustomBotWithoutProxySettings = (props) => {
           )}
           {!props.isSetupSlackBot && (
             <div className="mt-4">
-              {t('admin:slack_integration.integration_sentence.integration_is_not_complete').split('\n').map(str => {
-                return <p className="text-secondary m-0"><small>{str}</small></p>
+              {t('admin:slack_integration.integration_sentence.integration_is_not_complete').split('\n').map((str) => {
+                return <p className="text-secondary m-0"><small>{str}</small></p>;
               })}
               <hr className="align-self-center admin-border-danger"></hr>
             </div>
