@@ -39,7 +39,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         currentBotType,
       });
 
-      if (isConnectedToSlack === false) {
+      if (!isConnectedToSlack) {
         return (
           onSetIsRegisterSlackCredentials(false),
           onSetIsSendTestMessage(false)
