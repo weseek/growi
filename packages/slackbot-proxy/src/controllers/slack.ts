@@ -77,6 +77,13 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
+
+    if (body.payload != null) {
+      const payload = JSON.parse(body.payload);
+      const { type } = payload;
+      console.log('type', type);
+    }
+
     if (body.text == null) {
       return 'No text.';
     }
