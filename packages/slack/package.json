@@ -15,6 +15,7 @@
     "test:lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
+    "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
     "dotenv-flow": "^3.2.0",
     "universal-bunyan": "^0.9.2"

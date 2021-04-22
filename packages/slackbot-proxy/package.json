@@ -26,6 +26,7 @@
     "@tsed/platform-express": "^6.43.0",
     "@tsed/swagger": "^6.43.0",
     "@tsed/typeorm": "^6.43.0",
+    "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
