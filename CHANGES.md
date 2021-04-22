@@ -2,7 +2,8 @@
 
 ## v4.2.16-RC
 
-* 
+* Fix: "Only inside the group" causes an error
+    * Introduced by v4.2.15
 
 ## v4.2.15
 
