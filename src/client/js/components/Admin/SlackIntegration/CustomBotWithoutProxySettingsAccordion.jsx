@@ -39,6 +39,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
         currentBotType,
       });
 
+      console.log('update secret', isConnectedToSlack);
+
       if (isConnectedToSlack) {
         onSetIsRegisterSlackCredentials(true);
       }
