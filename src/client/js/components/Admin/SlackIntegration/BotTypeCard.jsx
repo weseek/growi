@@ -7,6 +7,7 @@ const botDetails = {
   officialBot: {
     botType: 'officialBot',
     botTypeCategory: 'official_bot',
+    difficultyLevelImage: '/images/slack-integration/slackbot-difficulty-level-easy.svg',
     setUp: 'easy',
     multiWSIntegration: 'possible',
     securityControl: 'impossible',
@@ -15,6 +16,7 @@ const botDetails = {
     botType: 'customBotWithoutProxy',
     botTypeCategory: 'custom_bot',
     supplementaryBotName: 'without_proxy',
+    difficultyLevelImage: '/images/slack-integration/slackbot-difficulty-level-normal.svg',
     setUp: 'normal',
     multiWSIntegration: 'impossible',
     securityControl: 'possible',
@@ -23,6 +25,7 @@ const botDetails = {
     botType: 'customBotWithProxy',
     botTypeCategory: 'custom_bot',
     supplementaryBotName: 'with_proxy',
+    difficultyLevelImage: '/images/slack-integration/slackbot-difficulty-level-hard.svg',
     setUp: 'hard',
     multiWSIntegration: 'possible',
     securityControl: 'possible',
@@ -68,11 +71,7 @@ const BotTypeCard = (props) => {
         <div className="card-text">
           <div className="my-2">
             <div className="d-flex justify-content-between mb-3">
-              {/* TODO add image of difficulties by GW-5638
-               <span>{t('admin:slack_integration.selecting_bot_types.set_up')}</span>
-               <span className={`bot-type-disc-${value.setUp}`}>{t(`admin:slack_integration.selecting_bot_types.${value.setUp}`)}</span>  */}
-
-
+              <img src={botDetails[props.botType].difficultyLevelImage}></img>
             </div>
             <div className="d-flex justify-content-between mb-3">
               <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>

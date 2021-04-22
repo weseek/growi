@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <defs>
+    <style>
+      .cls-1, .cls-4 {
+        fill: none;
+      }
+
+      .cls-1 {
+        stroke: #81d5b8;
+        stroke-width: 3px;
+      }
+
+      .cls-2 {
+        font-family: NotoSansCJKjp-Bold, Noto Sans CJK JP;
+        font-size: 16px;
+        font-weight: 700;
+        fill: #81d5b8;
+      }
+
+      .cls-3 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <g id="Group_4361" data-name="Group 4361" transform="translate(-71.69 -49.04)">
+    <g id="Group_4358" data-name="Group 4358">
+      <g id="Group_4357" data-name="Group 4357">
+        <g id="Ellipse_97" data-name="Ellipse 97" class="cls-1" transform="translate(71.69 49.04)">
+          <circle class="cls-3" cx="30" cy="30" r="30"/>
+          <circle class="cls-4" cx="30" cy="30" r="28.5"/>
+        </g>
+        <text id="EASY" class="cls-2" transform="translate(83.884 89.632) rotate(-11)"><tspan x="0" y="0">EASY</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
