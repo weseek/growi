@@ -77,19 +77,25 @@ export class SlackCtrl {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
 
-    const handleViewSubmission = async(inptValues) => {
+    const handleViewSubmission = async(inputValues) => {
 
       // const { growiDomain, growiAccessToken, growiAccessToken } = inptValues;
 
-      const growiDomain = inptValues.growiDomain.contents_input.value;
-      const growiAccessToken = inptValues.growiAccessToken.contents_input.value;
-      const proxyToken = inptValues.proxyToken.contents_input.value;
+      const newGrowiUrl = inputValues.growiDomain.contents_input.value;
+      const newGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
+      const newProxyAccessToken = inputValues.proxyToken.contents_input.value;
+      console.log('newGrowiUrl', newGrowiUrl);
+      console.log('newGrowiAccessToken', newGrowiAccessToken);
+      console.log('newAccessToken', newProxyAccessToken);
 
-      // order = await this.orderRepository
-      // .update({ $set: { growiUrl: inptValues.hoge, growiAccessToken: inptValues.hoge, proxyAccessToken: inptValues.hoge } }, { multi: true });
-      console.log('growiDomain', growiDomain);
-      console.log(growiAccessToken);
-      console.log(proxyToken);
+      const order = await this.orderRepository;
+
+      console.log('order', order);
+
+
+      // order.update({ growiUrl: order.growiUrl }, { growiUrl: newGrowiUrl });
+      // order.update({ growiAccessToken: order.growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
+      // order.update({ proxyAccessToken: order.growiAccessToken }, { proxyAccessToken: newProxyAccessToken });
     };
 
     if (body.payload != null) {
