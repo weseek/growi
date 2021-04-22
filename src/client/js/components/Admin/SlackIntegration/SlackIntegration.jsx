@@ -57,7 +57,7 @@ const SlackIntegration = (props) => {
   useEffect(() => {
     fetchData();
     setIsRegisterSlackCredentials(isConnectedToSlack);
-    console.log('hogehoge');
+    console.log('useEffect in slackintegration');
   }, [fetchData, isConnectedToSlack]);
 
   const handleBotTypeSelect = (clickedBotType) => {
