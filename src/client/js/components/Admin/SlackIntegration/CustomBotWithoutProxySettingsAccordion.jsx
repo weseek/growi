@@ -39,12 +39,13 @@ const CustomBotWithoutProxySettingsAccordion = ({
         currentBotType,
       });
 
-      if (isConnectedToSlack) {
+      if (isConnectedToSlack === false) {
         return (
-          onSetIsRegisterSlackCredentials(true),
-          onSetIsSendTestMessage(true)
+          onSetIsRegisterSlackCredentials(false),
+          onSetIsSendTestMessage(false)
         );
       }
+      onSetIsRegisterSlackCredentials(true);
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }

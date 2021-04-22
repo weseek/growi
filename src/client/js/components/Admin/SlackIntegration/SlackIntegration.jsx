@@ -37,8 +37,6 @@ const SlackIntegration = (props) => {
         isSetupSlackBot, isConnectedToSlack,
       } = customBotWithoutProxySettings;
 
-      console.log(isConnectedToSlack);
-
       setCurrentBotType(currentBotType);
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
@@ -47,11 +45,11 @@ const SlackIntegration = (props) => {
       setIsConnectedToSlack(isConnectedToSlack);
       setIsSetupSlackBot(isSetupSlackBot);
 
-      setIsRegisterSlackCredentials(false);
-
-      if (isConnectedToSlack) {
-        return setIsRegisterSlackCredentials(true);
+      if (isConnectedToSlack === false) {
+        return setIsRegisterSlackCredentials(false);
       }
+      setIsRegisterSlackCredentials(true);
+
     }
     catch (err) {
       toastError(err);
