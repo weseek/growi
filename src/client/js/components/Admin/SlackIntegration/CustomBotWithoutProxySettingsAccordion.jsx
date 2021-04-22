@@ -64,7 +64,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const onChangeBotTokenHandler = (botTokenInput) => {
     if (onSetSlackBotToken != null) {
       onSetSlackBotToken(botTokenInput);
-
     }
   };
 
