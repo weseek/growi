@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
@@ -6,7 +6,6 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 // import { toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
-import GrowiLogo from '../../Icons/GrowiLogo';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
@@ -17,19 +16,15 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
 
 
-  const fetchSiteName = useCallback(() => {
+  useEffect(() => {
+
     const siteName = appContainer.config.crowi.title;
     setSiteName(siteName);
-  }, [appContainer.config.crowi.title]);
 
-  useEffect(() => {
-    fetchSiteName();
-
-  }, [appContainer, fetchSiteName]);
+  }, [appContainer]);
 
   return (
     <>
-
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
       <div className="d-flex justify-content-center my-5 bot-integration">
@@ -40,7 +35,7 @@ const CustomBotWithoutProxySettings = (props) => {
               <div className="card p-20 slack-work-space-name-card">
                 <div className="m-2 text-center">
                   <h5 className="font-weight-bold">{ props.slackWSNameInWithoutProxy }</h5>
-                  <GrowiLogo></GrowiLogo>
+                  <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
                 </div>
               </div>
             )}
@@ -71,7 +66,6 @@ const CustomBotWithoutProxySettings = (props) => {
           // setSlackWSNameInWithoutProxy={setSlackWSNameInWithoutProxy}
         />
       </div>
-
     </>
   );
 };

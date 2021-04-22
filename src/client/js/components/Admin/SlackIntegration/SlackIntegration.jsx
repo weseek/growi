@@ -18,8 +18,8 @@ const SlackIntegration = (props) => {
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
   const [selectedBotType, setSelectedBotType] = useState(null);
-  const [slackSigningSecret, setSlackSigningSecret] = useState('');
-  const [slackBotToken, setSlackBotToken] = useState('');
+  const [slackSigningSecret, setSlackSigningSecret] = useState(null);
+  const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(null);
@@ -34,7 +34,8 @@ const SlackIntegration = (props) => {
       const response = await appContainer.apiv3.get('slack-integration/');
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, isSetupSlackBot, isConnectedToSlack,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+        isSetupSlackBot, isConnectedToSlack,
       } = customBotWithoutProxySettings;
 
       setCurrentBotType(currentBotType);
@@ -45,15 +46,16 @@ const SlackIntegration = (props) => {
       setIsConnectedToSlack(isConnectedToSlack);
       setIsSetupSlackBot(isSetupSlackBot);
 
-      if ((isConnectedToSlack && slackBotToken && slackSigningSecret) || (isConnectedToSlack && slackBotTokenEnv && slackSigningSecretEnv)) {
-        setIsRegisterSlackCredentials(true);
+      if (!isConnectedToSlack) {
+        return setIsRegisterSlackCredentials(false);
       }
+      setIsRegisterSlackCredentials(true);
 
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3, slackBotTokenEnv, slackSigningSecretEnv]);
+  }, [appContainer.apiv3]);
 
 
   const fetchSlackWorkSpaceName = useCallback(async() => {
@@ -96,8 +98,9 @@ const SlackIntegration = (props) => {
       setSelectedBotType(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
       setIsRegisterSlackCredentials(false);
-      setSlackSigningSecret('');
-      setSlackBotToken('');
+      setSlackSigningSecret(null);
+      setSlackBotToken(null);
+      setIsConnectedToSlack(null);
       setIsSendTestMessage(false);
     }
     catch (err) {
@@ -117,17 +120,16 @@ const SlackIntegration = (props) => {
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
           isConnectedToSlack={isConnectedToSlack}
+          isSetupSlackBot={isSetupSlackBot}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
-          setSlackSigningSecret={setSlackSigningSecret}
-          setSlackBotToken={setSlackBotToken}
-          setIsSendTestMessage={setIsSendTestMessage}
-          setIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
-          setSlackWSNameInWithoutProxy={setSlackWSNameInWithoutProxy}
-          isSetupSlackBot={isSetupSlackBot}
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
+          onSetSlackSigningSecret={setSlackSigningSecret}
+          onSetSlackBotToken={setSlackBotToken}
+          onSetIsSendTestMessage={setIsSendTestMessage}
+          onSetIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
           fetchSlackWorkSpaceName={fetchSlackWorkSpaceName}
         />
       );
@@ -149,12 +151,11 @@ const SlackIntegration = (props) => {
       <div className="selecting-bot-type my-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
-          <span className="ml-2 btn-link">
-            <span className="mr-1">{t('admin:slack_integration.selecting_bot_types.detailed_explanation')}</span>
-            {/* TODO: add an appropriate link by GW-5614 */}
-            <i className="fa fa-external-link" aria-hidden="true"></i>
-          </span>
-
+          {/* TODO: add an appropriate link by GW-5614 */}
+          <a className="ml-2 btn-link" href="#">
+            {t('admin:slack_integration.selecting_bot_types.detailed_explanation')}
+            <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
+          </a>
         </h2>
 
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}

@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.2.15-RC",
+  "version": "4.2.16-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -35,7 +35,8 @@
     "build:dev:app": "env-cmd -f config/env.dev.js webpack --config config/webpack.dev.js --progress",
     "build:dev:watch": "npm run build:dev:app:watch",
     "build:dev:watch:poll": "npm run build:dev:app:watch:poll",
-    "build:dev": "npm run build:dev:app",
+    "build:dev": "yarn build:dev:app",
+    "build:slack": "lerna run build --scope @growi/slack",
     "build:prod:analyze": "cross-env ANALYZE=1 npm run build:prod",
     "build:prod": "env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
     "build": "npm run build:dev:watch",
@@ -58,7 +59,7 @@
     "migrate:down": "migrate-mongo down -f config/migrate.js",
     "plugin:def": "node bin/generate-plugin-definitions-source.js",
     "prebuild:dev:watch": "npm run prebuild:dev",
-    "prebuild:dev": "npm run clean:app && env-cmd -f config/env.dev.js npm run plugin:def && env-cmd -f config/env.dev.js npm run resource",
+    "prebuild:dev": "npm run clean:app && env-cmd -f config/env.dev.js npm run plugin:def && env-cmd -f config/env.dev.js npm run resource && yarn build:slack",
     "prebuild:prod": "npm run clean && env-cmd -f config/env.prod.js npm run plugin:def && env-cmd -f config/env.prod.js npm run resource",
     "prelint:swagger2openapi": "npm run build:apiv3:jsdoc",
     "preserver:prod": "npm run migrate",
