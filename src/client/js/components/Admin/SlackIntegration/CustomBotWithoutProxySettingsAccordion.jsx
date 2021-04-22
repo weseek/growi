@@ -16,7 +16,7 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep,
+  appContainer, activeStep, fetchSlackWorkSpaceName,
   slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isSendTestMessage, isConnectedToSlack,
   onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage, onSetIsRegisterSlackCredentials,
@@ -38,7 +38,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
-
+      fetchSlackWorkSpaceName();
       if (!isConnectedToSlack) {
         return (
           onSetIsRegisterSlackCredentials(false),
@@ -223,6 +223,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   onSetIsSendTestMessage: PropTypes.func,
   onSetIsRegisterSlackCredentials: PropTypes.func,
   setSlackWSNameInWithoutProxy: PropTypes.func,
+
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
   isSetupSlackBot: PropTypes.bool,
