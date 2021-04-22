@@ -10,6 +10,9 @@ import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -121,22 +124,35 @@ export class SlackCtrl {
   @Get('/oauth_redirect')
   async handleOauthRedirect(@Req() req: Req, @Res() res: Res): Promise<void> {
 
-    // illegal state
-    // TODO: https://youtrack.weseek.co.jp/issue/GW-5543
-    if (req.query.state !== 'init') {
+    if (req.query.state === '') {
       res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end('<html>'
       + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
       + '<body style="text-align:center; padding-top:20%;">'
       + '<h1>Illegal state, try it again.</h1>'
       + '<a href="/slack/install">'
-      + 'go to install page'
+      + 'Go to install page'
       + '</a>'
       + '</body></html>');
     }
 
-    this.installerService.installer.handleCallback(req, res, {
-      // success: (installation, metadata, req, res) => {},
+    await this.installerService.installer.handleCallback(req, res, {
+      success: (installation, metadata, req, res) => {
+        logger.info('Success to install', { installation, metadata });
+
+        const appPageUrl = `https://slack.com/apps/${installation.appId}`;
+
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end('<html>'
+        + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        + '<body style="text-align:center; padding-top:20%;">'
+        + '<h1>Congratulations!</h1>'
+        + '<p>GROWI Bot installation has succeeded.</p>'
+        + `<a href="${appPageUrl}">`
+        + 'Access to Slack App detail page.'
+        + '</a>'
+        + '</body></html>');
+      },
       failure: (error, installOptions, req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end('<html>'
