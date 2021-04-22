@@ -56,7 +56,8 @@ const SlackIntegration = (props) => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    setIsRegisterSlackCredentials(isConnectedToSlack);
+  }, [fetchData, isConnectedToSlack]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -87,6 +88,7 @@ const SlackIntegration = (props) => {
       setSlackSigningSecret(null);
       setSlackBotToken(null);
       setIsSendTestMessage(false);
+      console.log('botchange', isConnectedToSlack);
     }
     catch (err) {
       toastError(err);
