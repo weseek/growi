@@ -56,9 +56,7 @@ const SlackIntegration = (props) => {
 
   useEffect(() => {
     fetchData();
-    setIsRegisterSlackCredentials(isConnectedToSlack);
-    console.log('useEffect in slackintegration');
-  }, [fetchData, isConnectedToSlack]);
+  }, [fetchData]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -86,10 +84,10 @@ const SlackIntegration = (props) => {
       setSelectedBotType(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
       setIsRegisterSlackCredentials(false);
+      setIsConnectedToSlack(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
       setIsSendTestMessage(false);
-      console.log('botchange', isConnectedToSlack);
     }
     catch (err) {
       toastError(err);

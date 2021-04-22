@@ -36,7 +36,6 @@ class SlackBotService extends S2sMessageHandlable {
       this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
       logger.debug('SlackBot: setup is done');
       this.isSetupSlackBot = true;
-      console.log(this.isConnectedToSlack);
       await this.sendAuthTest();
     }
 

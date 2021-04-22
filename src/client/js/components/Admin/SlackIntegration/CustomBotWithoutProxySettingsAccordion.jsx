@@ -33,13 +33,13 @@ const CustomBotWithoutProxySettingsAccordion = ({
 
   const updateSecretTokenHandler = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
+      const res = await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret,
         slackBotToken,
         currentBotType,
       });
 
-      console.log('update secret', isConnectedToSlack);
+      const { isConnectedToSlack } = res.data.customBotWithoutProxySettingParams;
 
       if (isConnectedToSlack) {
         onSetIsRegisterSlackCredentials(true);

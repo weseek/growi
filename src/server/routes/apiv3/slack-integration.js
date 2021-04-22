@@ -202,6 +202,7 @@ module.exports = (crowi) => {
           slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
           slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
           slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
+          isConnectedToSlack: crowi.slackBotService.isConnectedToSlack,
         };
         return res.apiv3({ customBotWithoutProxySettingParams });
       }
