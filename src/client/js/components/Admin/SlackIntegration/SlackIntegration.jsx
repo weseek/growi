@@ -47,18 +47,12 @@ const SlackIntegration = (props) => {
       if (isConnectedToSlack === false) {
         return setIsRegisterSlackCredentials(false);
       }
-
-      if ((slackBotToken && slackSigningSecret)
-      || (slackBotTokenEnv && slackSigningSecretEnv)
-      || (slackBotToken && slackSigningSecretEnv)
-      || (slackBotTokenEnv && slackSigningSecret)) {
-        setIsRegisterSlackCredentials(true);
-      }
+      setIsRegisterSlackCredentials(true);
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3, slackBotTokenEnv, slackSigningSecretEnv]);
+  }, [appContainer.apiv3]);
 
   useEffect(() => {
     fetchData();
