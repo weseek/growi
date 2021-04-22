@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 
 
 const CustomBotWithouProxySettomgSlackCard = (props) => {
+
+  const { t } = useTranslation();
+  
   return (
   <>
 
