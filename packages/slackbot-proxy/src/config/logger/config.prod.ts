@@ -9,7 +9,7 @@ const config: UniversalBunyanConfig = {
    * configure level for server
    */
   // 'express:*': 'debug',
-  // 'lunar:*': 'debug',
+  // 'slackbot-proxy:*': 'debug',
 
 };
 
