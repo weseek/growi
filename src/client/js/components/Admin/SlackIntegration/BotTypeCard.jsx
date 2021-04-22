@@ -70,9 +70,7 @@ const BotTypeCard = (props) => {
       <div className="card-body p-4">
         <div className="card-text">
           <div className="my-2">
-            <div className="d-flex justify-content-between mb-3">
-              <img src={botDetails[props.botType].difficultyLevelImage}></img>
-            </div>
+            <img className="d-block mx-auto mb-4" src={botDetails[props.botType].difficultyLevelImage}></img>
             <div className="d-flex justify-content-between mb-3">
               <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>
               <img className="bot-type-disc" src={`/images/slack-integration/${botDetails[props.botType].multiWSIntegration}.png`} alt="" />
