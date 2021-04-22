@@ -8,7 +8,7 @@ const CustomBotWithouProxySettomgSlackCard = (props) => {
   const { t } = useTranslation();
 
   return (
-  <>
+    <>
 
       <div className="d-flex justify-content-center my-5 bot-integration">
         <div className="card rounded shadow border-0 w-50 admin-bot-card">
@@ -47,7 +47,8 @@ const CustomBotWithouProxySettomgSlackCard = (props) => {
           </div>
         </div>
       </div>
-  </>
+
+    </>
   );
 };
 
