@@ -39,10 +39,9 @@ const CustomBotWithoutProxySettingsAccordion = ({
         currentBotType,
       });
 
-      fetchSlackWorkSpaceName();
-
       if (isConnectedToSlack) {
         onSetIsRegisterSlackCredentials(true);
+        fetchSlackWorkSpaceName();
       }
       else {
         onSetIsRegisterSlackCredentials(false);
