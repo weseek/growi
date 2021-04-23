@@ -1,14 +1,30 @@
-import { Service } from '@tsed/di';
+import { Inject, Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock } from '@growi/slack';
+import { InstallationQuery } from '@slack/oauth';
 import { GrowiCommandsMappings } from '../interfaces/growi-commands-mappings';
+import { InstallerService } from './InstallerService';
 
 @Service()
 export class RegisterService implements GrowiCommandsMappings {
 
+  @Inject()
+  private readonly installerService: InstallerService;
+
   async execSlashCommand(body:{[key:string]:string}):Promise<void> {
+
+    // create query from body
+    const query: InstallationQuery<boolean> = {
+      teamId: body.team_id,
+      enterpriseId: body.enterprize_id,
+      isEnterpriseInstall: body.is_enterprise_install === 'true',
+    };
+
+    const result = await this.installerService.installer.authorize(query);
+    const { botToken } = result;
+
     // tmp use process.env
-    const client = new WebClient(process.env.SLACK_BOT_USER_OAUTH_TOKEN, { logLevel: LogLevel.DEBUG });
+    const client = new WebClient(botToken, { logLevel: LogLevel.DEBUG });
     await client.views.open({
       trigger_id: body.trigger_id,
       view: {
