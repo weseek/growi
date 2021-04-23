@@ -61,9 +61,9 @@ const SlackIntegration = (props) => {
     // setSlackBotToken(slackBotToken);
     // setSlackSigningSecretEnv(slackSigningSecretEnvVars);
     // setSlackBotTokenEnv(slackBotTokenEnvVars);
-    setIsSetupSlackBot(isSetupSlackBot);
+    // setIsSetupSlackBot(isSetupSlackBot);
     setIsConnectedToSlack(isConnectedToSlack);
-  }, [fetchData, currentBotType, isConnectedToSlack, isSetupSlackBot]);
+  }, [fetchData, currentBotType, isConnectedToSlack]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
