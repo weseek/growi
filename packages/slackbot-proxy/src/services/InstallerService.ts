@@ -55,10 +55,10 @@ export class InstallerService {
           return;
         },
         fetchInstallation: async(installQuery: InstallationQuery<boolean>) => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const id = installQuery.enterpriseId || installQuery.teamId!;
+          const id = installQuery.enterpriseId || installQuery.teamId;
 
-          const installation = await repository.findByTeamIdOrEnterpriseId(id);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const installation = await repository.findByTeamIdOrEnterpriseId(id!);
 
           if (installation == null) {
             throw new Error('Failed fetching installation');
