@@ -2,7 +2,7 @@
 
 ## v4.2.17-RC
 
-*
+* Fix: No unsaved alert is displayed when updating using Modal in view mode
 
 ## v4.2.16-RC
 
