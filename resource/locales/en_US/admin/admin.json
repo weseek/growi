@@ -305,8 +305,9 @@
     },
     "custom_bot_without_proxy_integration": "Custom bot without proxy integration",
     "integration_sentence": {
-      "integration_is_not_complete": "Integration is not complete.",
-      "proceed_with_the_following_integration_procedure": "Proceed with the following integration procedure."
+      "integration_is_not_complete": "Integration is not complete.<br>Proceed with the following integration procedure.",
+      "proceed_with_the_following_integration_procedure": "Proceed with the following integration procedure.",
+      "integration_sucessed": "integration sucessed"
     },
     "custom_bot_with_proxy_integration": "Custom bot with proxy integration"
   },

@@ -38,15 +38,16 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
-      fetchSlackWorkSpaceName();
-      if (!isConnectedToSlack) {
-        return (
-          onSetIsRegisterSlackCredentials(false),
-          onSetIsSendTestMessage(false)
-        );
-      }
-      onSetIsRegisterSlackCredentials(true);
 
+      fetchSlackWorkSpaceName();
+
+      if (isConnectedToSlack) {
+        onSetIsRegisterSlackCredentials(true);
+      }
+      else {
+        onSetIsRegisterSlackCredentials(false);
+        onSetIsSendTestMessage(false);
+      }
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -64,7 +65,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const onChangeBotTokenHandler = (botTokenInput) => {
     if (onSetSlackBotToken != null) {
       onSetSlackBotToken(botTokenInput);
-
     }
   };
 
