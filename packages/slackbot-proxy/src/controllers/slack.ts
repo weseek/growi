@@ -94,7 +94,12 @@ export class SlackCtrl {
   }
 
   @Post('/interactions')
-  async handleInteraction(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+  // TODO: using new middleware (5789 blocking)
+  // ~~@UseBefore(AuthorizeMiddleware)~~
+  async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
+    const { body, authorizeResult } = req;
+    console.log('authorizeResult', authorizeResult);
+
     logger.info('receive interaction', body);
 
     const installation = await this.installationRepository.findByID('1');
@@ -149,7 +154,7 @@ export class SlackCtrl {
       return 'No text.';
     }
 
-    // Find the latest order by installationId
+    // Find the latest order by installationId and GROWIurl
     let order = await this.orderRepository.findOne({
       installation: installation.id,
     }, {
