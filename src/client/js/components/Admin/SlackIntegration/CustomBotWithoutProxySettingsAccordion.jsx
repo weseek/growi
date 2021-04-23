@@ -39,9 +39,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
-      fetchData();
 
-      // const { isConnectedToSlack } = res.data.customBotWithoutProxySettingParams;
+      fetchData();
 
       if (isConnectedToSlack) {
         onSetIsRegisterSlackCredentials(true);
@@ -219,6 +218,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   isRegisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
+  fetchData: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
   onSetIsSendTestMessage: PropTypes.func,
