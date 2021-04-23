@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-const CustomBotIntegrationCard = (props) => {
+const CustomBotWithoutProxyIntegrationCard = (props) => {
 
   const { t } = useTranslation();
 
@@ -55,10 +55,10 @@ const CustomBotIntegrationCard = (props) => {
   );
 };
 
-CustomBotIntegrationCard.propTypes = {
+CustomBotWithoutProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string,
   slackWSNameInWithoutProxy: PropTypes.string,
   isSetupSlackBot: PropTypes.bool,
 };
 
-export default CustomBotIntegrationCard;
+export default CustomBotWithoutProxyIntegrationCard;
