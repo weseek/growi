@@ -14,7 +14,7 @@ import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 
 import loggerFactory from '~/utils/logger';
-import { AuthorizeMiddleware } from '~/middlewares/authorizer';
+import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/authorizer';
 import { AuthedReq } from '~/interfaces/authorized-req';
 import { Relation } from '~/entities/relation';
 
@@ -78,7 +78,7 @@ export class SlackCtrl {
   }
 
   @Post('/commands')
-  @UseBefore(AuthorizeMiddleware)
+  @UseBefore(AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     const { body, authorizeResult } = req;
 
@@ -118,8 +118,10 @@ export class SlackCtrl {
   }
 
   @Post('/interactions')
-  async handleInteraction(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
-    logger.info('receive interaction', body);
+  @UseBefore(AuthorizeInteractionMiddleware)
+  async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
+    logger.info('receive interaction', req.body);
+    logger.info('receive interaction', req.authorizeResult);
     return;
   }
 
