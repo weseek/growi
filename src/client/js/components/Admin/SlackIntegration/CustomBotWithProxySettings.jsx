@@ -13,7 +13,6 @@ const CustomBotWithProxySettings = (props) => {
   return (
     <>
 
-      {/* TODO GW-5750  */}
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
       <div className="d-flex justify-content-center my-5 bot-integration">
