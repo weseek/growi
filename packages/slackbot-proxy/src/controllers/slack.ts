@@ -106,7 +106,7 @@ export class SlackCtrl {
       try {
         switch (type) {
           case 'view_submission':
-            await handleViewSubmission(inptValues);
+            await handleViewSubmission(inputValues);
             break;
           default:
             break;
