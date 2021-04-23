@@ -103,6 +103,7 @@ const SlackIntegration = (props) => {
       setIsRegisterSlackCredentials(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
+      setIsConnectedToSlack(false);
       setIsSendTestMessage(false);
     }
     catch (err) {
