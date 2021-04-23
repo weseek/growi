@@ -14,6 +14,7 @@ import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import EditorContainer from '../services/EditorContainer';
+import NavigationContainer from '../services/NavigationContainer';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -101,13 +102,19 @@ class PageEditor extends React.Component {
    * @param {string} value
    */
   onMarkdownChanged(value) {
+    const { editorMode } = this.props.navigationContainer.state;
+
     const { pageContainer, editorContainer } = this.props;
     this.setMarkdownStateWithDebounce(value);
     // only when the first time to edit
     if (!pageContainer.state.revisionId) {
       this.saveDraftWithDebounce();
     }
-    editorContainer.enableUnsavedWarning();
+
+    // If it's updated in the view mode, it is considered to have already been saved and no alert is displayed.
+    if (editorMode !== 'view') {
+      editorContainer.enableUnsavedWarning();
+    }
   }
 
   /**
@@ -337,12 +344,13 @@ class PageEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer, NavigationContainer]);
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default PageEditorWrapper;
