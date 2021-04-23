@@ -51,15 +51,15 @@ const CustomBotIntegrationCard = (props) => {
         </div>
       </div>
 
-  </>
+    </>
   );
 };
 
-CustomBotIntegrationCard.PropTypes = {
+CustomBotIntegrationCard.propTypes = {
   currentBotType: PropTypes.string,
   siteName: PropTypes.string,
   slackWSNameInWithoutProxy: PropTypes.string,
-  isSetupSlackBot: PropTypes.bool
-}
+  isSetupSlackBot: PropTypes.bool,
+};
 
 export default CustomBotIntegrationCard;
