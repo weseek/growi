@@ -32,7 +32,7 @@ const CustomBotWithoutProxySettings = (props) => {
     if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
     }
-  }, [appContainer, fetchSlackWorkSpaceName, props]);
+  }, [appContainer, fetchSlackWorkSpaceName, props.isSetupSlackBot]);
 
   return (
     <>
