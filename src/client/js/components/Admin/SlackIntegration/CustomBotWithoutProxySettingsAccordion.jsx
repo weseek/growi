@@ -16,10 +16,10 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep, fetchSlackWorkSpaceName,
+  appContainer, activeStep, fetchData,fetchSlackWorkSpaceName、
   slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
-  isRegisterSlackCredentials, isSendTestMessage, isConnectedToSlack,
-  onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage, onSetIsRegisterSlackCredentials,
+  isRegisterSlackCredentials, isSendTestMessage,
+  onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage,
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
@@ -31,6 +31,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const [testChannel, setTestChannel] = useState('');
   const currentBotType = 'customBotWithoutProxy';
 
+
   const updateSecretTokenHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
@@ -39,18 +40,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
         currentBotType,
       });
 
-      if (isConnectedToSlack) {
-        onSetIsRegisterSlackCredentials(true);
-        fetchSlackWorkSpaceName();
-      }
-      else {
-        onSetIsRegisterSlackCredentials(false);
-        onSetIsSendTestMessage(false);
-      }
+      fetchData();
+
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
-      onSetIsRegisterSlackCredentials(false);
       toastError(err);
     }
   };
@@ -217,6 +211,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   isRegisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
+  fetchData: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
   onSetIsSendTestMessage: PropTypes.func,
