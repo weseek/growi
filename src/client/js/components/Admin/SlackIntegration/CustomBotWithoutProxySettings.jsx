@@ -8,7 +8,7 @@ import { toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, onSetIsRegisterSlackCredentials, isConnectedToSlack } = props;
+  const { appContainer } = props;
   const { t } = useTranslation();
 
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
@@ -27,13 +27,12 @@ const CustomBotWithoutProxySettings = (props) => {
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
-    onSetIsRegisterSlackCredentials(isConnectedToSlack);
     setSiteName(siteName);
 
     if (props.isSetupSlackBot) {
       fetchSlackWorkSpaceName();
     }
-  }, [appContainer, fetchSlackWorkSpaceName, props, isConnectedToSlack, onSetIsRegisterSlackCredentials]);
+  }, [appContainer, fetchSlackWorkSpaceName, props]);
 
   return (
     <>
