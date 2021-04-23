@@ -137,6 +137,13 @@ export class SlackCtrl {
       return;
     }
 
+    return;
+  }
+
+  @Post('/interactions')
+  async handleInteraction(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+    logger.info('receive interaction', body);
+
     const installation = await this.installationRepository.findByID('1');
     if (installation == null) {
       throw new Error('installation is reqiured');
@@ -155,12 +162,6 @@ export class SlackCtrl {
       order = await this.orderRepository.save({ installation: installation.id });
     }
 
-    return;
-  }
-
-  @Post('/interactions')
-  async handleInteraction(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
-    logger.info('receive interaction', body);
     return;
   }
 
