@@ -21,7 +21,6 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   const updateSecretTokenHandler = () => {
     if (props.updateSecretTokenHandler != null) {
       props.updateSecretTokenHandler();
-      props.fetchSlackWorkSpaceName();
     }
   };
 

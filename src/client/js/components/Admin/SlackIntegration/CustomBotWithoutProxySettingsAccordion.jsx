@@ -16,7 +16,7 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep, fetchData,fetchSlackWorkSpaceName、
+  appContainer, activeStep, fetchData,
   slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isSendTestMessage,
   onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage,
@@ -148,7 +148,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackBotToken={slackBotToken}
           slackBotTokenEnv={slackBotTokenEnv}
-          fetchSlackWorkSpaceName={fetchSlackWorkSpaceName}
         />
       </Accordion>
       <Accordion
