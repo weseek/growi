@@ -78,6 +78,30 @@ export class SlackCtrl {
   async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     const { body, authorizeResult } = req;
 
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
+
+    const growiCommand = parseSlashCommand(body);
+
+    // register
+    if (growiCommand.growiCommandType === 'register') {
+      await this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
+      return;
+    }
+
+    return;
+  }
+
+  @Post('/interactions')
+  async handleInteraction(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+    logger.info('receive interaction', body);
+
+    const installation = await this.installationRepository.findByID('1');
+    if (installation == null) {
+      throw new Error('installation is reqiured');
+    }
+
     const handleViewSubmission = async(inputValues) => {
 
       const newGrowiUrl = inputValues.growiDomain.contents_input.value;
@@ -123,30 +147,6 @@ export class SlackCtrl {
     }
     if (body.text == null) {
       return 'No text.';
-    }
-
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
-
-    const growiCommand = parseSlashCommand(body);
-
-    // register
-    if (growiCommand.growiCommandType === 'register') {
-      await this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
-      return;
-    }
-
-    return;
-  }
-
-  @Post('/interactions')
-  async handleInteraction(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
-    logger.info('receive interaction', body);
-
-    const installation = await this.installationRepository.findByID('1');
-    if (installation == null) {
-      throw new Error('installation is reqiured');
     }
 
     // Find the latest order by installationId
