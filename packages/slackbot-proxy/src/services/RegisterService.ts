@@ -1,14 +1,19 @@
 import { Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
-import { generateInputSectionBlock } from '@growi/slack';
-import { GrowiCommandsMappings } from '../interfaces/growi-commands-mappings';
+import { generateInputSectionBlock, GrowiCommand } from '@growi/slack';
+import { AuthorizeResult } from '@slack/oauth';
+
+import { GrowiCommandProcessor } from '~/interfaces/growi-command-processor';
 
 @Service()
-export class RegisterService implements GrowiCommandsMappings {
+export class RegisterService implements GrowiCommandProcessor {
 
-  async execSlashCommand(body:{[key:string]:string}):Promise<void> {
+  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
+
+    const { botToken } = authorizeResult;
+
     // tmp use process.env
-    const client = new WebClient(process.env.SLACK_BOT_USER_OAUTH_TOKEN, { logLevel: LogLevel.DEBUG });
+    const client = new WebClient(botToken, { logLevel: LogLevel.DEBUG });
     await client.views.open({
       trigger_id: body.trigger_id,
       view: {

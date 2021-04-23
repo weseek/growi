@@ -16,10 +16,10 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer,
-  activeStep, slackSigningSecret, slackSigningSecretEnv, slackBotToken,
-  slackBotTokenEnv, isRegisterSlackCredentials, isSendTestMessage,
-  setSlackSigningSecret, setSlackBotToken, setIsSendTestMessage, setIsRegisterSlackCredentials,
+  appContainer, activeStep,
+  slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
+  isRegisterSlackCredentials, isSendTestMessage, isConnectedToSlack,
+  onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage, onSetIsRegisterSlackCredentials,
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
@@ -38,20 +38,32 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
+
+      if (isConnectedToSlack) {
+        onSetIsRegisterSlackCredentials(true);
+      }
+      else {
+        onSetIsRegisterSlackCredentials(false);
+        onSetIsSendTestMessage(false);
+      }
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
-      setIsRegisterSlackCredentials(false);
+      onSetIsRegisterSlackCredentials(false);
       toastError(err);
     }
   };
 
   const onChangeSigningSecretHandler = (signingSecretInput) => {
-    setSlackSigningSecret(signingSecretInput);
+    if (onSetSlackSigningSecret != null) {
+      onSetSlackSigningSecret(signingSecretInput);
+    }
   };
 
   const onChangeBotTokenHandler = (botTokenInput) => {
-    setSlackBotToken(botTokenInput);
+    if (onSetSlackBotToken != null) {
+      onSetSlackBotToken(botTokenInput);
+    }
   };
 
   const onTestConnectionHandler = async() => {
@@ -63,10 +75,10 @@ const CustomBotWithoutProxySettingsAccordion = ({
         channel: testChannel,
       });
       setConnectionSuccessMessage(res.data.message);
-      setIsSendTestMessage(true);
+      onSetIsSendTestMessage(true);
     }
     catch (err) {
-      setIsSendTestMessage(false);
+      onSetIsSendTestMessage(false);
       setConnectionErrorCode(err[0].code);
       setConnectionErrorMessage(err[0].message);
     }
@@ -202,10 +214,11 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRegisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
-  setSlackSigningSecret: PropTypes.string,
-  setSlackBotToken: PropTypes.string,
-  setIsSendTestMessage: PropTypes.func,
-  setIsRegisterSlackCredentials: PropTypes.func,
+  isConnectedToSlack: PropTypes.bool,
+  onSetSlackSigningSecret: PropTypes.func,
+  onSetSlackBotToken: PropTypes.func,
+  onSetIsSendTestMessage: PropTypes.func,
+  onSetIsRegisterSlackCredentials: PropTypes.func,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
