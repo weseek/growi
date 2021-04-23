@@ -75,14 +75,8 @@ export class SlackCtrl {
       + '</a>';
   }
 
-  @Post('/events')
-  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<string> {
-    // eslint-disable-next-line max-len
-    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
-    if (body.type === 'url_verification') {
-      return body.challenge;
-    }
-
+  @Post('/commands')
+  async handleCommand(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
     if (body.text == null) {
       return 'No text.';
     }
@@ -118,7 +112,26 @@ export class SlackCtrl {
       order = await this.orderRepository.save({ installation: installation.id });
     }
 
-    return 'This action will be handled by bolt service.';
+    return;
+  }
+
+  @Post('/interactions')
+  async handleInteraction(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+    logger.info('receive interaction', body);
+    return;
+  }
+
+  @Post('/events')
+  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+    // eslint-disable-next-line max-len
+    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
+    if (body.type === 'url_verification') {
+      return body.challenge;
+    }
+
+    logger.info('receive event', body);
+
+    return;
   }
 
   @Get('/oauth_redirect')
