@@ -79,24 +79,24 @@ export class SlackCtrl {
 
     const handleViewSubmission = async(inputValues) => {
 
-      // const newGrowiUrl = inputValues.growiDomain.contents_input.value;
-      // const newGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
-      // const newProxyAccessToken = inputValues.proxyToken.contents_input.value;
-      // console.log('newGrowiUrl', newGrowiUrl);
-      // console.log('newGrowiAccessToken', newGrowiAccessToken);
-      // console.log('newAccessToken', newProxyAccessToken);
+      const newGrowiUrl = inputValues.growiDomain.contents_input.value;
+      const newGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
+      const newProxyAccessToken = inputValues.proxyToken.contents_input.value;
+      console.log('newGrowiUrl', newGrowiUrl);
+      console.log('newGrowiAccessToken', newGrowiAccessToken);
+      console.log('newAccessToken', newProxyAccessToken);
 
-      // const order = await this.orderRepository;
+      const order = await this.orderRepository;
 
-      // const growiUrl = order.metadata.propertiesMap.growiUrl;
-      // const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
-      // const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
+      const growiUrl = order.metadata.propertiesMap.growiUrl;
+      const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
+      const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
 
-      // console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
+      console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
 
-      // order.update({ growiUrl }, { growiUrl: newGrowiUrl });
-      // order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
-      // order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
+      order.update({ growiUrl }, { growiUrl: newGrowiUrl });
+      order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
+      order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
       res.send();
 
     };
