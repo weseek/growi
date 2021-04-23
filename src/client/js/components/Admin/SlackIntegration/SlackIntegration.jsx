@@ -144,7 +144,7 @@ const SlackIntegration = (props) => {
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
         <div className="row my-4">
-          <div className="card-deck mx-auto">
+          <div className="card-deck mx-auto justify-content-center">
             {botTypes.map((botType) => {
               return (
                 <BotTypeCard
