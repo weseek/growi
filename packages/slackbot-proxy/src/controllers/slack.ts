@@ -101,7 +101,7 @@ export class SlackCtrl {
     if (body.payload != null) {
       const payload = JSON.parse(body.payload);
       const { type } = payload;
-      const inptValues = payload.view.state.values;
+      const inputValues = payload.view.state.values;
 
       try {
         switch (type) {
