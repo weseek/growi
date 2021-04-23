@@ -27,9 +27,9 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   return (
     <>
       <h3>Signing Secret</h3>
-      <div className="row row-cols-2">
+      <div className="row">
 
-        <div className="col">
+        <div className="col-sm">
           <p className="border-top-0">Database</p>
           <input
             className="form-control"
@@ -39,7 +39,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           />
         </div>
 
-        <div className="col">
+        <div className="col-sm">
           <p className="border-top-0">Environment variables</p>
           <input
             className="form-control"
@@ -56,9 +56,9 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
       </div>
 
       <h3>Bot User OAuth Token</h3>
-      <div className="row row-cols-2">
+      <div className="row">
 
-        <div className="col">
+        <div className="col-sm">
           <p className="border-top-0">Database</p>
           <input
             className="form-control"
@@ -68,7 +68,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           />
         </div>
 
-        <div className="col">
+        <div className="col-sm">
           <p className="border-top-0">Environment variables</p>
           <input
             className="form-control"
