@@ -1,6 +1,9 @@
 import {
   BodyParams, Controller, Get, Inject, Post, Req, Res, UseBefore,
 } from '@tsed/common';
+
+import axios from 'axios';
+
 import { parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
 
@@ -13,6 +16,7 @@ import { RegisterService } from '~/services/RegisterService';
 import loggerFactory from '~/utils/logger';
 import { AuthorizeMiddleware } from '~/middlewares/authorizer';
 import { AuthedReq } from '~/interfaces/authorized-req';
+import { Relation } from '~/entities/relation';
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
@@ -94,25 +98,23 @@ export class SlackCtrl {
       return;
     }
 
-    const installation = await this.installationRepository.findByID('1');
-    if (installation == null) {
-      throw new Error('installation is reqiured');
-    }
+    /*
+     * forward to GROWI server
+     */
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    const relations = await this.relationRepository.find({ installation: installation?.id });
 
-    // Find the latest order by installationId
-    let order = await this.orderRepository.findOne({
-      installation: installation.id,
-    }, {
-      order: {
-        createdAt: 'DESC',
-      },
+    await relations.map((relation: Relation) => {
+      // generate API URL
+      const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
+      return axios.post(url.toString(), {
+        ...body,
+        tokenPtoG: relation.tokenPtoG,
+        growiCommand,
+      });
     });
-
-    if (order == null || order.isExpired()) {
-      order = await this.orderRepository.save({ installation: installation.id });
-    }
-
-    return;
   }
 
   @Post('/interactions')
