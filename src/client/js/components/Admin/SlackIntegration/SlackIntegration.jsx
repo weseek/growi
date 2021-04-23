@@ -114,7 +114,6 @@ const SlackIntegration = (props) => {
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
           onSetIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
-          currentBotType={currentBotType}
         />
       );
       break;

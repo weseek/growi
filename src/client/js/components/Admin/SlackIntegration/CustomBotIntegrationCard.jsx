@@ -56,7 +56,6 @@ const CustomBotIntegrationCard = (props) => {
 };
 
 CustomBotIntegrationCard.propTypes = {
-  currentBotType: PropTypes.string,
   siteName: PropTypes.string,
   slackWSNameInWithoutProxy: PropTypes.string,
   isSetupSlackBot: PropTypes.bool,
