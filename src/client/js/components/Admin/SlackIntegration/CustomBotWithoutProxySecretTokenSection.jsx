@@ -25,12 +25,13 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   };
 
   return (
-    <>
+    <div className="w-75 d-flex">
+
       <h3>Signing Secret</h3>
       <div className="row">
 
         <div className="col-sm">
-          <p className="border-top-0">Database</p>
+          <p>Database</p>
           <input
             className="form-control"
             type="text"
@@ -40,7 +41,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
         </div>
 
         <div className="col-sm">
-          <p className="border-top-0">Environment variables</p>
+          <p>Environment variables</p>
           <input
             className="form-control"
             type="text"
@@ -59,7 +60,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
       <div className="row">
 
         <div className="col-sm">
-          <p className="border-top-0">Database</p>
+          <p>Database</p>
           <input
             className="form-control"
             type="text"
@@ -69,7 +70,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
         </div>
 
         <div className="col-sm">
-          <p className="border-top-0">Environment variables</p>
+          <p>Environment variables</p>
           <input
             className="form-control"
             type="text"
@@ -85,7 +86,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
       </div>
 
       <AdminUpdateButtonRow onClick={updateSecretTokenHandler} disabled={false} />
-    </>
+
+    </div>
   );
 };
 
