@@ -17,10 +17,8 @@ const CustomBotWithoutProxySettings = (props) => {
 
 
   useEffect(() => {
-
     const siteName = appContainer.config.crowi.title;
     setSiteName(siteName);
-
   }, [appContainer]);
 
   return (
