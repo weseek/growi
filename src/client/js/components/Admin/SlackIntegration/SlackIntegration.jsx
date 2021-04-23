@@ -28,6 +28,19 @@ const SlackIntegration = (props) => {
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
 
+  const fetchSlackWorkSpaceName = useCallback(async() => {
+    console.log('fetchname');
+    if (!isConnectedToSlack) {
+      return null;
+    }
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
+      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer.apiv3, isConnectedToSlack]);
 
   const fetchData = useCallback(async() => {
     try {
@@ -53,31 +66,18 @@ const SlackIntegration = (props) => {
         setIsRegisterSlackCredentials(false);
         setIsSendTestMessage(false);
       }
+
+      fetchSlackWorkSpaceName();
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, fetchSlackWorkSpaceName]);
 
-
-  const fetchSlackWorkSpaceName = useCallback(async() => {
-    if (!isConnectedToSlack) {
-      return null;
-    }
-
-    try {
-      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
-      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer.apiv3, isConnectedToSlack]);
 
   useEffect(() => {
-    fetchSlackWorkSpaceName();
     fetchData();
-  }, [fetchData, fetchSlackWorkSpaceName]);
+  }, [fetchData]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -110,6 +110,7 @@ const SlackIntegration = (props) => {
       setSlackBotToken(null);
       setIsConnectedToSlack(false);
       setIsSendTestMessage(false);
+      fetchSlackWorkSpaceName();
     }
     catch (err) {
       toastError(err);
