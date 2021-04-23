@@ -56,7 +56,14 @@ const SlackIntegration = (props) => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    setCurrentBotType(currentBotType);
+    // setSlackSigningSecret(slackSigningSecret);
+    // setSlackBotToken(slackBotToken);
+    // setSlackSigningSecretEnv(slackSigningSecretEnvVars);
+    // setSlackBotTokenEnv(slackBotTokenEnvVars);
+    setIsSetupSlackBot(isSetupSlackBot);
+    setIsConnectedToSlack(isConnectedToSlack);
+  }, [fetchData, currentBotType, isConnectedToSlack, isSetupSlackBot]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -111,6 +118,7 @@ const SlackIntegration = (props) => {
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
           isSetupSlackBot={isSetupSlackBot}
+          onSetIsConnectedToSlack={setIsConnectedToSlack}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
