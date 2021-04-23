@@ -48,6 +48,10 @@ const SlackIntegration = (props) => {
       if (isConnectedToSlack) {
         setIsRegisterSlackCredentials(true);
       }
+      else {
+        setIsRegisterSlackCredentials(false);
+        setIsSendTestMessage(false);
+      }
     }
     catch (err) {
       toastError(err);
@@ -114,7 +118,7 @@ const SlackIntegration = (props) => {
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
-          onSetIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
+          // onSetIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
           fetchData={fetchData}
         />
       );
