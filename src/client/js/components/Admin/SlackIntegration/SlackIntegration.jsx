@@ -118,7 +118,6 @@ const SlackIntegration = (props) => {
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
-          // onSetIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
           fetchData={fetchData}
         />
       );

@@ -45,7 +45,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
-      // onSetIsRegisterSlackCredentials(false);
       toastError(err);
     }
   };
