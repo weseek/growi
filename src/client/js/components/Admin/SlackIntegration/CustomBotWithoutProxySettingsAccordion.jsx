@@ -16,7 +16,7 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep,
+  appContainer, activeStep, fetchData,
   slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isSendTestMessage, isConnectedToSlack,
   onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage, onSetIsRegisterSlackCredentials,
@@ -31,15 +31,17 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const [testChannel, setTestChannel] = useState('');
   const currentBotType = 'customBotWithoutProxy';
 
+
   const updateSecretTokenHandler = async() => {
     try {
-      const res = await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
+      await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret,
         slackBotToken,
         currentBotType,
       });
+      fetchData();
 
-      const { isConnectedToSlack } = res.data.customBotWithoutProxySettingParams;
+      // const { isConnectedToSlack } = res.data.customBotWithoutProxySettingParams;
 
       if (isConnectedToSlack) {
         onSetIsRegisterSlackCredentials(true);
