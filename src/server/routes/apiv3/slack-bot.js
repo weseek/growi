@@ -36,7 +36,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  router.post('/', verificationRequestUrl, addSlackBotSigningSecret, verificationSlackRequest, verificationAccessToken, async(req, res) => {
+  router.post('/commands', verificationRequestUrl, addSlackBotSigningSecret, verificationSlackRequest, verificationAccessToken, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
@@ -98,7 +98,7 @@ module.exports = (crowi) => {
     }
   };
 
-  router.post('/interactive', verificationRequestUrl, addSlackBotSigningSecret, verificationSlackRequest, async(req, res) => {
+  router.post('/interactions', verificationRequestUrl, addSlackBotSigningSecret, verificationSlackRequest, async(req, res) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
