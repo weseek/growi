@@ -25,7 +25,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   };
 
   return (
-    <div className="w-75 d-flex">
+    <div className="w-75 d-flex flex-column">
 
       <h3>Signing Secret</h3>
       <div className="row">
