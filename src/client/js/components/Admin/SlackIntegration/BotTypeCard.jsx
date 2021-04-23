@@ -51,15 +51,15 @@ const BotTypeCard = (props) => {
 
           {/*  A recommended badge is shown on official bot card, supplementary names are shown on Custom bot cards   */}
           {props.botType === 'officialBot'
-            ? (
-              <span className="badge badge-info mr-2">
-                {t('admin:slack_integration.selecting_bot_types.recommended')}
-              </span>
-            ) : (
-              <span className="supplementary-bot-name mr-2">
-                {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].supplementaryBotName}`)}
-              </span>
-            )}
+          ? (
+            <span className="badge badge-info mr-2">
+              {t('admin:slack_integration.selecting_bot_types.recommended')}
+            </span>
+          ) : (
+            <span className="supplementary-bot-name mr-2">
+              {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].supplementaryBotName}`)}
+            </span>
+          )}
 
           {/* TODO: add an appropriate links by GW-5614 */}
           <i className={`fa fa-external-link btn-link ${props.isActive ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
@@ -81,8 +81,6 @@ const BotTypeCard = (props) => {
         </div>
       </div>
     </div>
-
-
   );
 
 };
