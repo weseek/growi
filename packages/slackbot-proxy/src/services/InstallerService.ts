@@ -55,16 +55,16 @@ export class InstallerService {
           return;
         },
         fetchInstallation: async(installQuery: InstallationQuery<boolean>) => {
-          const installation: SlackInstallation<'v1' | 'v2', boolean> = {
-            team: undefined,
-            enterprise: undefined,
-            user: {
-              id: '',
-              token: undefined,
-              scopes: undefined,
-            },
-          };
-          return installation;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const id = installQuery.enterpriseId || installQuery.teamId!;
+
+          const installation = await repository.findByTeamIdOrEnterpriseId(id);
+
+          if (installation == null) {
+            throw new Error('Failed fetching installation');
+          }
+
+          return installation.data;
         },
       },
     });
