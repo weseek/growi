@@ -31,9 +31,11 @@ const SlackIntegration = (props) => {
   const fetchSlackWorkSpaceName = useCallback(async() => {
     console.log('fetchname');
     if (!isConnectedToSlack) {
-      return null;
+      console.log('null 松');
+      return setSlackWSNameInWithoutProxy(null);
     }
     try {
+      console.log('hoge');
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
     }
@@ -59,15 +61,18 @@ const SlackIntegration = (props) => {
       setIsSetupSlackBot(isSetupSlackBot);
       setIsConnectedToSlack(isConnectedToSlack);
 
+      fetchSlackWorkSpaceName();
+
       if (isConnectedToSlack) {
         setIsRegisterSlackCredentials(true);
       }
       else {
         setIsRegisterSlackCredentials(false);
         setIsSendTestMessage(false);
+        console.log('must be null');
+        setSlackWSNameInWithoutProxy(null);
       }
 
-      fetchSlackWorkSpaceName();
     }
     catch (err) {
       toastError(err);
@@ -110,7 +115,7 @@ const SlackIntegration = (props) => {
       setSlackBotToken(null);
       setIsConnectedToSlack(false);
       setIsSendTestMessage(false);
-      fetchSlackWorkSpaceName();
+      setSlackWSNameInWithoutProxy(null);
     }
     catch (err) {
       toastError(err);
