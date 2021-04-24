@@ -66,7 +66,6 @@ const SlackIntegration = (props) => {
       else {
         setIsRegisterSlackCredentials(false);
         setIsSendTestMessage(false);
-        setSlackWSNameInWithoutProxy(null);
       }
 
     }
