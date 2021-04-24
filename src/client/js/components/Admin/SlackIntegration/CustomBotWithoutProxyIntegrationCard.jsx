@@ -14,7 +14,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
           <div className="card-body p-2 w-50 mx-auto">
             {props.slackWSNameInWithoutProxy && (
-              <div className="card p-20 slack-work-space-name-card">
+              <div className="card slack-work-space-name-card">
                 <div className="m-2 text-center">
                   <h5 className="font-weight-bold">{ props.slackWSNameInWithoutProxy }</h5>
                   <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
