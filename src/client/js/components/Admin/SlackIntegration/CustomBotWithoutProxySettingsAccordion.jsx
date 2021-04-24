@@ -16,7 +16,7 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep, fetchData,
+  appContainer, activeStep, fetchSlackIntegrationData,
   slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isSendTestMessage,
   onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage,
@@ -40,7 +40,10 @@ const CustomBotWithoutProxySettingsAccordion = ({
         currentBotType,
       });
 
-      fetchData();
+      if (fetchSlackIntegrationData != null) {
+        console.log('hoge');
+        fetchSlackIntegrationData();
+      }
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
@@ -210,7 +213,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   isRegisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
-  fetchData: PropTypes.func,
+  fetchSlackIntegrationData: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
   onSetIsSendTestMessage: PropTypes.func,
