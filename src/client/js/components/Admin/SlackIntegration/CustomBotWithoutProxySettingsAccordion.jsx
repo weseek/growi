@@ -217,8 +217,11 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   onSetSlackBotToken: PropTypes.func,
   onSetIsSendTestMessage: PropTypes.func,
   onSetIsRegisterSlackCredentials: PropTypes.func,
+  setSlackWSNameInWithoutProxy: PropTypes.func,
+
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
+  isSetupSlackBot: PropTypes.bool,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;

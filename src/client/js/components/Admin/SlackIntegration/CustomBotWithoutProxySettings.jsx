@@ -1,52 +1,34 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
-  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
-
   const [siteName, setSiteName] = useState('');
-
-  const fetchSlackWorkSpaceName = useCallback(async() => {
-    try {
-      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
-      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer.apiv3]);
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
     setSiteName(siteName);
-
-    if (props.isSetupSlackBot) {
-      fetchSlackWorkSpaceName();
-    }
-  }, [appContainer, fetchSlackWorkSpaceName, props.isSetupSlackBot]);
+  }, [appContainer]);
 
   return (
     <>
-
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
       <div className="d-flex justify-content-center my-5 bot-integration">
         <div className="card rounded shadow border-0 w-50 admin-bot-card">
           <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
           <div className="card-body p-2 w-50 mx-auto">
-            {slackWSNameInWithoutProxy && (
+            {props.slackWSNameInWithoutProxy && (
               <div className="card p-20 slack-work-space-name-card">
                 <div className="m-2 text-center">
-                  <h5 className="font-weight-bold">{ slackWSNameInWithoutProxy }</h5>
+                  <h5 className="font-weight-bold">{ props.slackWSNameInWithoutProxy }</h5>
                   <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
                 </div>
               </div>
@@ -89,7 +71,6 @@ const CustomBotWithoutProxySettings = (props) => {
           activeStep={botInstallationStep.CREATE_BOT}
         />
       </div>
-
     </>
   );
 };
@@ -106,6 +87,7 @@ CustomBotWithoutProxySettings.propTypes = {
   isRgisterSlackCredentials: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
   isSetupSlackBot: PropTypes.bool,
+  slackWSNameInWithoutProxy: PropTypes.string,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
