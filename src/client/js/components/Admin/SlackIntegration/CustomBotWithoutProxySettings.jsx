@@ -4,17 +4,13 @@ import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-// import { toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
-  // const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
-
   const [siteName, setSiteName] = useState('');
-
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -92,10 +88,8 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
-  // isSetupSlackBot: PropTypes.bool,
+  isSetupSlackBot: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
-  // setSlackWSNameInWithoutProxy: PropTypes.func,
-  // fetchSlackWorkSpaceName: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
