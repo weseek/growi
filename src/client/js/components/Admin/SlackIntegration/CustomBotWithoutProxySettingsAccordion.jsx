@@ -16,7 +16,7 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep, fetchData,
+  appContainer, activeStep, fetchSlackIntegrationData,
   slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isSendTestMessage,
   onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage,
@@ -31,12 +31,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const [testChannel, setTestChannel] = useState('');
   const currentBotType = 'customBotWithoutProxy';
 
-  function fetchSlackIntegrationData() {
-    if (fetchData == null) {
-      return;
-    }
-    fetchData();
-  }
 
   const updateSecretTokenHandler = async() => {
     try {
@@ -45,6 +39,10 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
+
+      if (fetchSlackIntegrationData == null) {
+        return null;
+      }
       fetchSlackIntegrationData();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
@@ -214,7 +212,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   isRegisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
-  fetchData: PropTypes.func,
+  fetchSlackIntegrationData: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
   onSetIsSendTestMessage: PropTypes.func,

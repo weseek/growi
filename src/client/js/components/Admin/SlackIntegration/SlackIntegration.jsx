@@ -140,7 +140,7 @@ const SlackIntegration = (props) => {
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
           fetchSlackWorkSpaceName={fetchSlackWorkSpaceName}
-          fetchData={fetchData}
+          fetchSlackIntegrationData={fetchData}
         />
       );
       break;
