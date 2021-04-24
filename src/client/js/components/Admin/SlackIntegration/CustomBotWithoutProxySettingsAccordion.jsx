@@ -31,6 +31,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const [testChannel, setTestChannel] = useState('');
   const currentBotType = 'customBotWithoutProxy';
 
+  function fetchSlackIntegrationData() {
+    if (fetchData == null) {
+      return;
+    }
+    fetchData();
+  }
 
   const updateSecretTokenHandler = async() => {
     try {
@@ -39,9 +45,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
-
-      fetchData();
-
+      fetchSlackIntegrationData();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {

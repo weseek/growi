@@ -1,6 +1,9 @@
 import {
-  BodyParams, Controller, Get, Inject, Post, Req, Res,
+  BodyParams, Controller, Get, Inject, Post, Req, Res, UseBefore,
 } from '@tsed/common';
+
+import axios from 'axios';
+
 import { parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
 
@@ -11,6 +14,9 @@ import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 
 import loggerFactory from '~/utils/logger';
+import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/authorizer';
+import { AuthedReq } from '~/interfaces/authorized-req';
+import { Relation } from '~/entities/relation';
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
@@ -31,10 +37,6 @@ export class SlackCtrl {
 
   @Inject()
   registerService: RegisterService;
-
-  growiCommandsMappings = {
-    register: async(body:{[key:string]:string}):Promise<void> => this.registerService.execSlashCommand(body),
-  };
 
   @Get('/testsave')
   testsave(): void {
@@ -75,50 +77,65 @@ export class SlackCtrl {
       + '</a>';
   }
 
-  @Post('/events')
-  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<string> {
-    // eslint-disable-next-line max-len
-    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
-    if (body.type === 'url_verification') {
-      return body.challenge;
-    }
+  @Post('/commands')
+  @UseBefore(AuthorizeCommandMiddleware)
+  async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
+    const { body, authorizeResult } = req;
 
     if (body.text == null) {
       return 'No text.';
-    }
-
-    const parsedBody = parseSlashCommand(body);
-    const executeGrowiCommand = this.growiCommandsMappings[parsedBody.growiCommandType];
-
-    if (executeGrowiCommand == null) {
-      return 'No executeGrowiCommand';
     }
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    await executeGrowiCommand(body);
+    const growiCommand = parseSlashCommand(body);
 
-    const installation = await this.installationRepository.findByID('1');
-    if (installation == null) {
-      throw new Error('installation is reqiured');
+    // register
+    if (growiCommand.growiCommandType === 'register') {
+      await this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
+      return;
     }
 
-    // Find the latest order by installationId
-    let order = await this.orderRepository.findOne({
-      installation: installation.id,
-    }, {
-      order: {
-        createdAt: 'DESC',
-      },
+    /*
+     * forward to GROWI server
+     */
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    const relations = await this.relationRepository.find({ installation: installation?.id });
+
+    await relations.map((relation: Relation) => {
+      // generate API URL
+      const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
+      return axios.post(url.toString(), {
+        ...body,
+        tokenPtoG: relation.tokenPtoG,
+        growiCommand,
+      });
     });
+  }
 
-    if (order == null || order.isExpired()) {
-      order = await this.orderRepository.save({ installation: installation.id });
+  @Post('/interactions')
+  @UseBefore(AuthorizeInteractionMiddleware)
+  async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
+    logger.info('receive interaction', req.body);
+    logger.info('receive interaction', req.authorizeResult);
+    return;
+  }
+
+  @Post('/events')
+  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+    // eslint-disable-next-line max-len
+    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
+    if (body.type === 'url_verification') {
+      return body.challenge;
     }
 
-    return 'This action will be handled by bolt service.';
+    logger.info('receive event', body);
+
+    return;
   }
 
   @Get('/oauth_redirect')
