@@ -48,6 +48,10 @@ const SlackIntegration = (props) => {
       if (isConnectedToSlack) {
         setIsRegisterSlackCredentials(true);
       }
+      else {
+        setIsRegisterSlackCredentials(false);
+        setIsSendTestMessage(false);
+      }
     }
     catch (err) {
       toastError(err);
@@ -84,6 +88,7 @@ const SlackIntegration = (props) => {
       setSelectedBotType(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
       setIsRegisterSlackCredentials(false);
+      setIsConnectedToSlack(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
       setIsSendTestMessage(false);
@@ -113,7 +118,7 @@ const SlackIntegration = (props) => {
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
-          onSetIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
+          fetchSlackIntegrationData={fetchData}
         />
       );
       break;
