@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+  <defs>
+    <style>
+      .cls-1, .cls-4 {
+        fill: none;
+      }
+
+      .cls-1 {
+        stroke: #ff8080;
+        stroke-width: 3px;
+      }
+
+      .cls-2 {
+        fill: #ff8080;
+        font-size: 16px;
+        font-family: NotoSansCJKjp-Bold, Noto Sans CJK JP;
+        font-weight: 700;
+      }
+
+      .cls-3 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <g id="Group_4360" data-name="Group 4360" transform="translate(-303.305 -23.039)">
+    <g id="Ellipse_99" data-name="Ellipse 99" class="cls-1" transform="translate(303.305 23.039)">
+      <circle class="cls-3" cx="30" cy="30" r="30"/>
+      <circle class="cls-4" cx="30" cy="30" r="28.5"/>
+    </g>
+    <text id="HARD" class="cls-2" transform="translate(312.93 64.277) rotate(-11)"><tspan x="0" y="0">HARD</tspan></text>
+  </g>
+</svg>
