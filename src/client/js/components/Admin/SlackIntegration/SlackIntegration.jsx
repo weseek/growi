@@ -41,7 +41,7 @@ const SlackIntegration = (props) => {
     }
   }, [appContainer.apiv3, isConnectedToSlack]);
 
-  const fetchData = useCallback(async() => {
+  const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
@@ -77,8 +77,8 @@ const SlackIntegration = (props) => {
 
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchSlackIntegrationData();
+  }, [fetchSlackIntegrationData]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -140,7 +140,7 @@ const SlackIntegration = (props) => {
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
           fetchSlackWorkSpaceName={fetchSlackWorkSpaceName}
-          fetchSlackIntegrationData={fetchData}
+          fetchSlackIntegrationData={fetchSlackIntegrationData}
         />
       );
       break;
