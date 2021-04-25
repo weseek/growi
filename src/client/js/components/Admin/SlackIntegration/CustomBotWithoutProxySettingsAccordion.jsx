@@ -63,7 +63,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const onTestConnectionHandler = async() => {
+  const testConnection = async() => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     setConnectionSuccessMessage(null);
@@ -79,6 +79,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
       setConnectionErrorCode(err[0].code);
       setConnectionErrorMessage(err[0].message);
     }
+  };
+
+  const submitForm = (e) => {
+    e.preventDefault();
+    testConnection();
   };
 
   const inputTestChannelHandler = (channel) => {
@@ -159,7 +164,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       >
         <p className="text-center m-4">{t('admin:slack_integration.without_proxy.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
-          <form className="form-row align-items-center w-25">
+          <form className="form-row align-items-center w-25" onSubmit={e => submitForm(e)}>
             <div className="col-8 input-group-prepend">
               <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
               <input
@@ -172,10 +177,9 @@ const CustomBotWithoutProxySettingsAccordion = ({
             </div>
             <div className="col-4">
               <button
-                type="button"
+                type="submit"
                 className="btn btn-info mx-3 font-weight-bold"
                 disabled={testChannel.trim() === ''}
-                onClick={onTestConnectionHandler}
               >Test
               </button>
             </div>
