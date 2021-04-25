@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegrationCard';
 
@@ -12,38 +11,20 @@ const CustomBotWithoutProxySettings = (props) => {
   const { appContainer } = props;
   const { t } = useTranslation();
 
-  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
-
   const [siteName, setSiteName] = useState('');
 
-  const fetchSlackWorkSpaceName = useCallback(async() => {
-    try {
-      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
-      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer.apiv3]);
-
   useEffect(() => {
-
     const siteName = appContainer.config.crowi.title;
     setSiteName(siteName);
-
-    if (props.isSetupSlackBot) {
-      fetchSlackWorkSpaceName();
-    }
-  }, [appContainer, fetchSlackWorkSpaceName, props.isSetupSlackBot]);
+  }, [appContainer]);
 
   return (
     <>
-
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
-        slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
+        slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
         isSetupSlackBot={props.isSetupSlackBot}
       />
 
@@ -55,7 +36,6 @@ const CustomBotWithoutProxySettings = (props) => {
           activeStep={botInstallationStep.CREATE_BOT}
         />
       </div>
-
     </>
   );
 };
@@ -72,6 +52,7 @@ CustomBotWithoutProxySettings.propTypes = {
   isRgisterSlackCredentials: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
   isSetupSlackBot: PropTypes.bool,
+  slackWSNameInWithoutProxy: PropTypes.string,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
