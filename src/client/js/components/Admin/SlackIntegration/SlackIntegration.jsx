@@ -156,7 +156,7 @@ const SlackIntegration = (props) => {
         onCancelClick={cancelBotChangeHandler}
       />
 
-      <div className="selecting-bot-type my-5">
+      <div className="selecting-bot-type mb-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
           {/* TODO: add an appropriate link by GW-5614 */}
@@ -168,7 +168,7 @@ const SlackIntegration = (props) => {
 
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
-        <div className="row my-4">
+        <div className="row my-5">
           <div className="card-deck mx-auto">
             {botTypes.map((botType) => {
               return (
