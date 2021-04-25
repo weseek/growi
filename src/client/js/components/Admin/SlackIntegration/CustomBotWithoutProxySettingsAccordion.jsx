@@ -63,6 +63,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
+  const submitForm = (e)=> {
+    e.preventDefault();
+    onTestConnectionHandler();
+  };
+
   const onTestConnectionHandler = async() => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
@@ -159,7 +164,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       >
         <p className="text-center m-4">{t('admin:slack_integration.without_proxy.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
-          <form className="form-row align-items-center w-25" onSubmit={(e) => { e.preventDefault(); onTestConnectionHandler() }}>
+          <form className="form-row align-items-center w-25" onSubmit={ e => { submitForm(e) }}>
             <div className="col-8 input-group-prepend">
               <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
               <input
