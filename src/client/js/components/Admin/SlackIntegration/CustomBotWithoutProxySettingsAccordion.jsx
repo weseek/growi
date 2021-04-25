@@ -159,7 +159,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       >
         <p className="text-center m-4">{t('admin:slack_integration.without_proxy.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
-          <form className="form-row align-items-center w-25" onSubmit={e => {e.preventDefault()}} >
+          <form className="form-row align-items-center w-25" onSubmit={e => {e.preventDefault(); onTestConnectionHandler();}} >
             <div className="col-8 input-group-prepend">
               <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
               <input
