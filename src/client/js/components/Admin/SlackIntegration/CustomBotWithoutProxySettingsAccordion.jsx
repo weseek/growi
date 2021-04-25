@@ -63,7 +63,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const onTestConnectionHandler = async() => {
+  const testConnection = async() => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     setConnectionSuccessMessage(null);
@@ -83,7 +83,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
 
   const submitForm = (e) => {
     e.preventDefault();
-    onTestConnectionHandler();
+    testConnection();
   };
 
   const inputTestChannelHandler = (channel) => {
