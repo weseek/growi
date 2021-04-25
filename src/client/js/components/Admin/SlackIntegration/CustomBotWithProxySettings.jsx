@@ -18,7 +18,7 @@ const CustomBotWithProxySettings = (props) => {
 
       <div className="d-flex justify-content-center my-5 bot-integration">
 
-        <div className="card rounded shadow border-0 w-50 admin-bot-card">
+        <div className="card rounded shadow border-0 w-50 admin-bot-card mb-0">
           <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
           <div className="card-body p-4"></div>
         </div>
@@ -37,7 +37,7 @@ const CustomBotWithProxySettings = (props) => {
           </div>
         </div>
 
-        <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
+        <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
           <div className="row m-0">
             <h5 className="card-title font-weight-bold mt-3 ml-4 col">GROWI App</h5>
             <div className="pull-right mt-3">
