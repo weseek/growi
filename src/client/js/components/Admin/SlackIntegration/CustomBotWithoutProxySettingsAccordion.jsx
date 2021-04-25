@@ -177,10 +177,9 @@ const CustomBotWithoutProxySettingsAccordion = ({
             </div>
             <div className="col-4">
               <button
-                type="button"
+                type="submit"
                 className="btn btn-info mx-3 font-weight-bold"
                 disabled={testChannel.trim() === ''}
-                onClick={onTestConnectionHandler}
               >Test
               </button>
             </div>
