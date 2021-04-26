@@ -98,7 +98,6 @@ export class SlackCtrl {
       return;
     }
 
-
     /*
      * forward to GROWI server
      */
@@ -116,8 +115,6 @@ export class SlackCtrl {
         growiCommand,
       });
     });
-
-    // return;
   }
 
   @Post('/interactions')
