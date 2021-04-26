@@ -102,17 +102,16 @@ class PageEditor extends React.Component {
    * @param {string} value
    */
   onMarkdownChanged(value) {
-    const { editorMode } = this.props.navigationContainer.state;
-
     const { pageContainer, editorContainer } = this.props;
+    const { revisionId } = pageContainer.state;
     this.setMarkdownStateWithDebounce(value);
+
     // only when the first time to edit
-    if (!pageContainer.state.revisionId) {
+    if (!revisionId) {
       this.saveDraftWithDebounce();
     }
 
-    // If it's updated in the view mode, it is considered to have already been saved and no alert is displayed.
-    if (editorMode !== 'view') {
+    if (pageContainer.state.markdown !== value) {
       editorContainer.enableUnsavedWarning();
     }
   }
