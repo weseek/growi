@@ -61,7 +61,7 @@ const BotTypeCard = (props) => {
           )}
 
           {/* TODO: add an appropriate links by GW-5614 */}
-          <i className={`fa fa-external-link btn-link ${props.isActive ? 'bg-primary grw-botcard-title-active' : ''}`} aria-hidden="true"></i>
+          <i className={`fa fa-external-link btn-link ${props.isActive ? 'grw-botcard-title-active' : ''}`} aria-hidden="true"></i>
         </h3>
       </div>
       <div className="card-body p-4">
