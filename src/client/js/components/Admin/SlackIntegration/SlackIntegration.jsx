@@ -28,7 +28,7 @@ const SlackIntegration = (props) => {
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
 
 
-  const fetchData = useCallback(async() => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
@@ -73,7 +73,7 @@ const SlackIntegration = (props) => {
     setSelectedBotType(null);
   };
 
-  const changeCurrentBotSettingsHandler = async() => {
+  const changeCurrentBotSettingsHandler = async () => {
     try {
       const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
@@ -143,20 +143,19 @@ const SlackIntegration = (props) => {
 
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
-          <div className="row my-4 flex-wrap-reverse justify-content-center">
-            {botTypes.map((botType) => {
-              return (
-                <div className="m-3">
-                  <BotTypeCard
-                    key={botType}
-                    botType={botType}
-                    isActive={currentBotType === botType}
-                    handleBotTypeSelect={handleBotTypeSelect}
-                  />
-                </div>
-              );
-            })}
-          </div>
+        <div className="row my-4 flex-wrap-reverse justify-content-center">
+          {botTypes.map((botType) => {
+            return (
+              <div className="m-3">
+                <BotTypeCard
+                  key={botType}
+                  botType={botType}
+                  isActive={currentBotType === botType}
+                  handleBotTypeSelect={handleBotTypeSelect}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
 
