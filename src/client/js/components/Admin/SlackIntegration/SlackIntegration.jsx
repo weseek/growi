@@ -37,7 +37,12 @@ const SlackIntegration = (props) => {
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
     }
     catch (err) {
-      toastError(err);
+      if (err === 'missing_scope') {
+        toastError(t('admin: slack_integration.set_scope'));
+      }
+      else {
+        toastError(err);
+      }
     }
   }, [appContainer.apiv3, isConnectedToSlack]);
 

@@ -283,6 +283,7 @@
     },
     "bot_reset_successful": "删除了BOT设置。",
     "copied_to_clipboard": "它已复制到剪贴板。",
+    "set_scope": "在Slack设置页面中配置Bot Token Scope。",
     "modal": {
       "warning": "警告",
       "sure_change_bot_type": "您确定要更改设置吗？",

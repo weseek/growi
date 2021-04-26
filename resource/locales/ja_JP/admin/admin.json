@@ -273,6 +273,7 @@
     },
     "bot_reset_successful": "Botの設定を消去しました。",
     "copied_to_clipboard": "クリップボードにコピーされました。",
+    "set_scope": "Slackの設定画面からBot Token Scopeを設定してください",
     "modal": {
       "warning": "注意",
       "sure_change_bot_type": "Botの種類を変更しますか?",
