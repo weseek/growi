@@ -16,8 +16,11 @@ const CustomBotWithProxyIntegrationCard = () => {
         </div>
 
         <div className="text-center w-25 mb-5">
-          <p className="text-secondary m-0"><small>{t('admin:slack_integration.integration_sentence.integration_is_not_complete')}</small></p>
-
+          <small
+            className="text-secondary m-0"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+          />
           <div className="row m-0">
             <hr className="border-danger align-self-center admin-border col"></hr>
             <div className="circle text-center bg-primary border-light">
