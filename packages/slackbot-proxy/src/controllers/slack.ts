@@ -81,6 +81,7 @@ export class SlackCtrl {
   @UseBefore(AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     const { body, authorizeResult } = req;
+
     if (body.text == null) {
       return 'No text.';
     }
