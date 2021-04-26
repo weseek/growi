@@ -28,7 +28,7 @@ const SlackIntegration = (props) => {
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
 
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
@@ -73,7 +73,7 @@ const SlackIntegration = (props) => {
     setSelectedBotType(null);
   };
 
-  const changeCurrentBotSettingsHandler = async () => {
+  const changeCurrentBotSettingsHandler = async() => {
     try {
       const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
@@ -121,7 +121,6 @@ const SlackIntegration = (props) => {
       settingsComponent = <CustomBotWithProxySettings />;
       break;
   }
-
 
   return (
     <>
