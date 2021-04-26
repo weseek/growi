@@ -23,9 +23,8 @@ const CustomBotWithProxyIntegrationCard = () => {
           />
           <div className="row m-0">
             <hr className="align-self-center admin-border-danger border-danger col"></hr>
-            <div className="circle text-center bg-primary border-light">
-              <p className="text-light font-weight-bold m-0 pt-3">Proxy</p>
-              <p className="text-light font-weight-bold">Server</p>
+            <div className="circle bg-primary border-light">
+              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
             </div>
             <hr className="align-self-center admin-border-danger border-danger col"></hr>
           </div>
