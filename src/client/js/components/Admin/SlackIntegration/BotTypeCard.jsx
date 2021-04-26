@@ -34,7 +34,7 @@ const BotTypeCard = (props) => {
 
   return (
     <div
-      className={`card m-3 admin-bot-card rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
+      className={`card admin-bot-card rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
       onClick={() => props.handleBotTypeSelect(botDetails[props.botType].botType)}
       role="button"
       key={props.botType}
