@@ -1,6 +1,9 @@
 import {
   BodyParams, Controller, Get, Inject, Post, Req, Res, UseBefore,
 } from '@tsed/common';
+
+import axios from 'axios';
+
 import { parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
 
@@ -11,8 +14,9 @@ import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 
 import loggerFactory from '~/utils/logger';
-import { AuthorizeMiddleware } from '~/middlewares/authorizer';
+import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/authorizer';
 import { AuthedReq } from '~/interfaces/authorized-req';
+import { Relation } from '~/entities/relation';
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
@@ -74,7 +78,7 @@ export class SlackCtrl {
   }
 
   @Post('/commands')
-  @UseBefore(AuthorizeMiddleware)
+  @UseBefore(AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     const { body, authorizeResult } = req;
 
@@ -90,85 +94,126 @@ export class SlackCtrl {
       return;
     }
 
-    return;
+    /*
+     * forward to GROWI server
+     */
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    const relations = await this.relationRepository.find({ installation: installation?.id });
+
+    await relations.map((relation: Relation) => {
+      // generate API URL
+      const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
+      return axios.post(url.toString(), {
+        ...body,
+        tokenPtoG: relation.tokenPtoG,
+        growiCommand,
+      });
+    });
+
+    // return;
   }
 
   @Post('/interactions')
   // TODO: using new middleware (5789 blocking)
   // ~~@UseBefore(AuthorizeMiddleware)~~
+  @UseBefore(AuthorizeInteractionMiddleware)
   async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
-    const { body, authorizeResult } = req;
-    console.log('authorizeResult', authorizeResult);
-
-    logger.info('receive interaction', body);
-
-    const installation = await this.installationRepository.findByID('1');
-    if (installation == null) {
-      throw new Error('installation is reqiured');
-    }
-
-    const handleViewSubmission = async(inputValues) => {
-
-      const newGrowiUrl = inputValues.growiDomain.contents_input.value;
-      const newGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
-      const newProxyAccessToken = inputValues.proxyToken.contents_input.value;
-      console.log('newGrowiUrl', newGrowiUrl);
-      console.log('newGrowiAccessToken', newGrowiAccessToken);
-      console.log('newAccessToken', newProxyAccessToken);
-
-      const order = await this.orderRepository;
-
-      const growiUrl = order.metadata.propertiesMap.growiUrl;
-      const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
-      const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
-
-      console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
-
-      order.update({ growiUrl }, { growiUrl: newGrowiUrl });
-      order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
-      order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
-      res.send();
-
-    };
-
-    if (body.payload != null) {
-      const payload = JSON.parse(body.payload);
-      const { type } = payload;
-      const inputValues = payload.view.state.values;
-
-      try {
-        switch (type) {
-          case 'view_submission':
-            await handleViewSubmission(inputValues);
-            break;
-          default:
-            break;
-        }
-      }
-      catch (error) {
-        throw new Error(error.message);
-      }
-
-    }
-    if (body.text == null) {
-      return 'No text.';
-    }
-
-    // Find the latest order by installationId and GROWIurl
-    let order = await this.orderRepository.findOne({
-      installation: installation.id,
-    }, {
-      order: {
-        createdAt: 'DESC',
-      },
-    });
-
-    if (order == null || order.isExpired()) {
-      order = await this.orderRepository.save({ installation: installation.id });
-    }
-
+    logger.info('receive interaction', req.body);
+    logger.info('receive interaction', req.authorizeResult);
     return;
   }
+
+  // const { body, authorizeResult } = req;
+  // console.log('authorizeResult', authorizeResult);
+  //   logger.info('receive interaction', body);
+
+  //   const installation = await this.installationRepository.findByID('1');
+  //   if (installation == null) {
+  //     throw new Error('installation is reqiured');
+  //   }
+
+  //   const handleViewSubmission = async(inputValues) => {
+
+  //     const newGrowiUrl = inputValues.growiDomain.contents_input.value;
+  //     const newGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
+  //     const newProxyAccessToken = inputValues.proxyToken.contents_input.value;
+  //     console.log('newGrowiUrl', newGrowiUrl);
+  //     console.log('newGrowiAccessToken', newGrowiAccessToken);
+  //     console.log('newAccessToken', newProxyAccessToken);
+
+  //     const order = await this.orderRepository;
+
+  //     const growiUrl = order.metadata.propertiesMap.growiUrl;
+  //     const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
+  //     const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
+
+  //     console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
+
+  //     order.update({ growiUrl }, { growiUrl: newGrowiUrl });
+  //     order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
+  //     order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
+  //     res.send();
+
+  //   };
+
+  //   if (body.payload != null) {
+  //     const payload = JSON.parse(body.payload);
+  //     const { type } = payload;
+  //     const inputValues = payload.view.state.values;
+
+  //     try {
+  //       switch (type) {
+  //         case 'view_submission':
+  //           await handleViewSubmission(inputValues);
+  //           break;
+  //         default:
+  //           break;
+  //       }
+  //     }
+  //     catch (error) {
+  //       throw new Error(error.message);
+  //     }
+
+  //   }
+  //   if (body.text == null) {
+  //     return 'No text.';
+  //   }
+
+  //   // Find the latest order by installationId and GROWIurl
+  //   let order = await this.orderRepository.findOne({
+  //     installation: installation.id,
+  //   }, {
+  //     order: {
+  //       createdAt: 'DESC',
+  //     },
+  /*
+     * forward to GROWI server
+     */
+  // const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+  // // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  // const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+  // const relations = await this.relationRepository.find({ installation: installation?.id });
+
+  // await relations.map((relation: Relation) => {
+  //   // generate API URL
+  //   const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
+  //   return axios.post(url.toString(), {
+  //     ...body,
+  //     tokenPtoG: relation.tokenPtoG,
+  //     growiCommand,
+  //   });
+  // });
+  // }
+
+  // @Post('/interactions')
+  // @UseBefore(AuthorizeInteractionMiddleware)
+  // async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
+  //   logger.info('receive interaction', req.body);
+  //   logger.info('receive interaction', req.authorizeResult);
+  //   return;
+  // }
 
   @Post('/events')
   async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {

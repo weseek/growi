@@ -26,9 +26,22 @@ const SlackIntegration = (props) => {
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
+  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
 
+  const fetchSlackWorkSpaceNameInWithoutProxy = useCallback(async() => {
+    if (!isConnectedToSlack) {
+      return setSlackWSNameInWithoutProxy(null);
+    }
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
+      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer.apiv3, isConnectedToSlack]);
 
-  const fetchData = useCallback(async() => {
+  const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('slack-integration/');
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
@@ -45,18 +58,26 @@ const SlackIntegration = (props) => {
       setIsSetupSlackBot(isSetupSlackBot);
       setIsConnectedToSlack(isConnectedToSlack);
 
+      fetchSlackWorkSpaceNameInWithoutProxy();
+
       if (isConnectedToSlack) {
         setIsRegisterSlackCredentials(true);
       }
+      else {
+        setIsRegisterSlackCredentials(false);
+        setIsSendTestMessage(false);
+      }
+
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, fetchSlackWorkSpaceNameInWithoutProxy]);
+
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    fetchSlackIntegrationData();
+  }, [fetchSlackIntegrationData]);
 
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
@@ -84,9 +105,12 @@ const SlackIntegration = (props) => {
       setSelectedBotType(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
       setIsRegisterSlackCredentials(false);
+      setIsConnectedToSlack(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
+      setIsConnectedToSlack(false);
       setIsSendTestMessage(false);
+      setSlackWSNameInWithoutProxy(null);
     }
     catch (err) {
       toastError(err);
@@ -105,15 +129,16 @@ const SlackIntegration = (props) => {
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
           isConnectedToSlack={isConnectedToSlack}
+          isSetupSlackBot={isSetupSlackBot}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
-          isSetupSlackBot={isSetupSlackBot}
+          slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
-          onSetIsRegisterSlackCredentials={setIsRegisterSlackCredentials}
+          fetchSlackIntegrationData={fetchSlackIntegrationData}
         />
       );
       break;
