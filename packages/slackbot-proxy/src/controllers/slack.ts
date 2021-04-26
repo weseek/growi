@@ -81,7 +81,7 @@ export class SlackCtrl {
   @UseBefore(AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     const { body, authorizeResult } = req;
-
+    console.log('authorizeResult(commands)', authorizeResult);
     if (body.text == null) {
       return 'No text.';
     }
@@ -97,6 +97,7 @@ export class SlackCtrl {
       await this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
       return;
     }
+
 
     /*
      * forward to GROWI server
@@ -129,12 +130,22 @@ export class SlackCtrl {
     // return;
 
     const { body, authorizeResult } = req;
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    const relations = await this.relationRepository.find({ installation: installation?.id });
     console.log('authorizeResult', authorizeResult);
 
-    const installation = await this.installationRepository.findByID('1');
-    if (installation == null) {
-      throw new Error('installation is reqiured');
-    }
+    // Find the latest order by installationId and GROWIurl
+    await this.orderRepository.findOne({
+      installation: installation?.id,
+      // growiUrl
+    }, {
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
 
     const handleViewSubmission = async(inputValues) => {
 
@@ -180,15 +191,6 @@ export class SlackCtrl {
 
     }
 
-
-    //   // Find the latest order by installationId and GROWIurl
-    const order = await this.orderRepository.findOne({
-      installation: installation.id,
-    }, {
-      order: {
-        createdAt: 'DESC',
-      },
-    });
   }
 
   @Post('/events')
