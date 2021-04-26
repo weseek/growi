@@ -151,24 +151,21 @@ export class SlackCtrl {
 
     };
 
-    if (body.payload != null) {
-      const payload = JSON.parse(body.payload);
-      const { type } = payload;
-      const inputValues = payload.view.state.values;
+    const payload = JSON.parse(body.payload);
+    const { type } = payload;
+    const inputValues = payload.view.state.values;
 
-      try {
-        switch (type) {
-          case 'view_submission':
-            await handleViewSubmission(inputValues);
-            break;
-          default:
-            break;
-        }
+    try {
+      switch (type) {
+        case 'view_submission':
+          await handleViewSubmission(inputValues);
+          break;
+        default:
+          break;
       }
-      catch (error) {
-        throw new Error(error.message);
-      }
-
+    }
+    catch (error) {
+      res.send(error.message);
     }
 
   }
