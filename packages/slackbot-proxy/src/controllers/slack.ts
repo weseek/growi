@@ -165,14 +165,31 @@ export class SlackCtrl {
       //   { installation: installation?.id, growiUrl: 'hoge' },
       //   { growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
       // );
-      await this.orderRepository.save(
-        {
-          installation: installation?.id,
-          growiUrl: inputGrowiUrl,
-          growiAccessToken: inputGrowiAccessToken,
-          proxyAccessToken: inputProxyAccessToken,
-        },
-      );
+      // await this.orderRepository.save(
+      //   {
+      //     installation: installation?.id,
+      //     growiUrl: inputGrowiUrl,
+      //     growiAccessToken: inputGrowiAccessToken,
+      //     proxyAccessToken: inputProxyAccessToken,
+      //   },
+      // );
+
+
+      const order = await this.orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
+      if (order) {
+        console.log('updateしよう');
+        this.orderRepository.update(
+          { installation: installation?.id, growiUrl: inputGrowiUrl },
+          { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
+        );
+      }
+      else {
+        console.log('saveしよう');
+        this.orderRepository.save({
+          installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
+        });
+      }
+
       res.send();
 
     };
