@@ -117,13 +117,10 @@ export class SlackCtrl {
   }
 
   @Post('/interactions')
-  // TODO: using new middleware (5789 blocking)
-  // ~~@UseBefore(AuthorizeMiddleware)~~
   @UseBefore(AuthorizeInteractionMiddleware)
   async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
-    // return;
 
     const { body, authorizeResult } = req;
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
