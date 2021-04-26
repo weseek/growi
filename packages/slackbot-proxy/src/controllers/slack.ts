@@ -188,32 +188,6 @@ export class SlackCtrl {
   //     order: {
   //       createdAt: 'DESC',
   //     },
-  /*
-     * forward to GROWI server
-     */
-  // const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
-  // // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  // const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-  // const relations = await this.relationRepository.find({ installation: installation?.id });
-
-  // await relations.map((relation: Relation) => {
-  //   // generate API URL
-  //   const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
-  //   return axios.post(url.toString(), {
-  //     ...body,
-  //     tokenPtoG: relation.tokenPtoG,
-  //     growiCommand,
-  //   });
-  // });
-  // }
-
-  // @Post('/interactions')
-  // @UseBefore(AuthorizeInteractionMiddleware)
-  // async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
-  //   logger.info('receive interaction', req.body);
-  //   logger.info('receive interaction', req.authorizeResult);
-  //   return;
-  // }
 
   @Post('/events')
   async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
