@@ -38,8 +38,8 @@ const CustomBotWithProxyIntegrationCard = () => {
               <a className="icon-fw fa fa-repeat fa-2x"></a>
             </div>
           </div>
-          <div className="card-body p-4 text-center">
-            <a className="btn btn-primary mt-3">WESEEK Inner Wiki</a>
+          <div className="card-body p-4 mb-5 text-center">
+            <a className="btn btn-primary">WESEEK Inner Wiki</a>
           </div>
         </div>
 
