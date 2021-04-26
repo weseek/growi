@@ -44,7 +44,7 @@ const SlackIntegration = (props) => {
         toastError(err);
       }
     }
-  }, [appContainer.apiv3, isConnectedToSlack]);
+  }, [appContainer.apiv3, isConnectedToSlack, t]);
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
