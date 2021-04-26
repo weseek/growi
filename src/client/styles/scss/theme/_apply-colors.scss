@@ -364,6 +364,12 @@ ul.pagination {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
+.admin-bot-card {
+  .grw-botcard-title-active {
+    color: $gray-200;
+  }
+}
+
 /*
  * Form Slider
  */

@@ -144,8 +144,17 @@ html[dark] {
     background-color: $bgcolor-global;
   }
 
+  /*
+    Cards
+  */
   .card-timeline > .card-header {
     background-color: $third-main-color;
+  }
+
+  .admin-bot-card {
+    .grw-botcard-title-active {
+      color: $color-reversal;
+    }
   }
 
   h1,
