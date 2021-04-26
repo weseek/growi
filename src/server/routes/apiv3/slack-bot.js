@@ -13,7 +13,6 @@ module.exports = (crowi) => {
   // Check if the access token is correct
   function verificationAccessToken(req, res, next) {
     const botType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-    console.log(botType);
     if (botType === 'customBotWithoutProxy') {
       return next();
     }
