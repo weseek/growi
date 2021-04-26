@@ -133,36 +133,46 @@ export class SlackCtrl {
     console.log('authorizeResult', authorizeResult);
 
     // Find the latest order by installationId and GROWIurl
-    await this.orderRepository.findOne({
-      installation: installation?.id,
-      // growiUrl
-    }, {
-      order: {
-        createdAt: 'DESC',
-      },
-    });
+    // await this.orderRepository.findOne({
+    //   installation: installation?.id,
+    //   // growiUrl
+    // }, {
+    //   order: {
+    //     createdAt: 'DESC',
+    //   },
+    // });
 
 
     const handleViewSubmission = async(inputValues) => {
 
-      const newGrowiUrl = inputValues.growiDomain.contents_input.value;
-      const newGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
-      const newProxyAccessToken = inputValues.proxyToken.contents_input.value;
-      console.log('newGrowiUrl', newGrowiUrl);
-      console.log('newGrowiAccessToken', newGrowiAccessToken);
-      console.log('newAccessToken', newProxyAccessToken);
-
-      const order = await this.orderRepository;
+      const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
+      const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
+      const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
+      console.log('inputGrowiUrl', inputGrowiUrl);
+      console.log('inputGrowiAccessToken', inputGrowiAccessToken);
+      console.log('newAccessToken', inputProxyAccessToken);
 
       // const growiUrl = order.metadata.propertiesMap.growiUrl;
       // const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
       // const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
 
       // console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
-
-      // order.update({ growiUrl }, { growiUrl: newGrowiUrl });
-      // order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
-      // order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
+      // this.orderRepository.update(
+      //   { installation: installation?.id, growiUrl: 'hoge' },
+      //   { growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
+      // );
+      // await this.orderRepository.save(
+      //   { installation: installation?.id, growiUrl: 'hoge' },
+      //   { growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
+      // );
+      await this.orderRepository.save(
+        {
+          installation: installation?.id,
+          growiUrl: inputGrowiUrl,
+          growiAccessToken: inputGrowiAccessToken,
+          proxyAccessToken: inputProxyAccessToken,
+        },
+      );
       res.send();
 
     };
