@@ -103,11 +103,9 @@ class PageEditor extends React.Component {
    */
   onMarkdownChanged(value) {
     const { pageContainer } = this.props;
-    const { revisionId } = pageContainer.state;
     this.setMarkdownStateWithDebounce(value);
-
     // only when the first time to edit
-    if (!revisionId) {
+    if (!pageContainer.state.revisionId) {
       this.saveDraftWithDebounce();
     }
   }
