@@ -18,26 +18,30 @@ const CustomBotWithProxySettings = (props) => {
 
       <div className="d-flex justify-content-center my-5 bot-integration">
 
-        <div className="card rounded shadow border-0 w-50 admin-bot-card">
+        <div className="card rounded shadow border-0 w-50 admin-bot-card mb-0">
           <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
           <div className="card-body p-4"></div>
         </div>
 
         <div className="text-center w-25 mb-5">
-          <p className="text-secondary m-0"><small>{t('admin:slack_integration.integration_sentence.integration_is_not_complete')}</small></p>
-          <p className="text-secondary"><small>{t('admin:slack_integration.integration_sentence.proceed_with_the_following_integration_procedure')}</small></p>
-
-          <div className="row m-0">
-            <hr className="border-danger align-self-center admin-border col"></hr>
-            <div className="circle text-center bg-primary border-light">
-              <p className="text-light font-weight-bold m-0 pt-3">Proxy</p>
-              <p className="text-light font-weight-bold">Server</p>
+          <div className="mt-4">
+            <small
+              className="text-secondary m-0"
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+            />
+            <div className="row m-0">
+              <hr className="border-danger align-self-center admin-border col"></hr>
+              <div className="circle text-center bg-primary border-light">
+                <p className="text-light font-weight-bold m-0 pt-3">Proxy</p>
+                <p className="text-light font-weight-bold">Server</p>
+              </div>
+              <hr className="border-danger align-self-center admin-border col"></hr>
             </div>
-            <hr className="border-danger align-self-center admin-border col"></hr>
           </div>
         </div>
 
-        <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
+        <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
           <div className="row m-0">
             <h5 className="card-title font-weight-bold mt-3 ml-4 col">GROWI App</h5>
             <div className="pull-right mt-3">
