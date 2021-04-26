@@ -27,6 +27,7 @@ const SlackIntegration = (props) => {
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
+  const [isSlackScopeSet, setIsSlackScopeSet] = useState(false);
 
   const fetchSlackWorkSpaceNameInWithoutProxy = useCallback(async() => {
     if (!isConnectedToSlack) {
@@ -38,6 +39,7 @@ const SlackIntegration = (props) => {
     }
     catch (err) {
       if (err[0].message === 'missing_scope') {
+        setIsSlackScopeSet(false);
         toastError(err, t('admin:slack_integration.set_scope'));
       }
       else {
