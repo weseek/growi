@@ -232,7 +232,10 @@ module.exports = (crowi) => {
       return res.apiv3({ slackWorkSpaceName });
     }
     catch (error) {
-      const msg = 'Error occured in slack_bot_token';
+      let msg = 'Error occured in slack_bot_token';
+      if (error.data.ok === false && error.data.error === 'missing_scope') {
+        msg = 'Please set Scope for Slack';
+      }
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
     }
