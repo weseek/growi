@@ -82,6 +82,10 @@ export class SlackCtrl {
   async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     const { body, authorizeResult } = req;
 
+    if (body.text == null) {
+      return 'No text.';
+    }
+
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
@@ -122,72 +126,71 @@ export class SlackCtrl {
   async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
-    return;
+    // return;
+
+    const { body, authorizeResult } = req;
+    console.log('authorizeResult', authorizeResult);
+    logger.info('receive interaction', body);
+
+    const installation = await this.installationRepository.findByID('1');
+    if (installation == null) {
+      throw new Error('installation is reqiured');
+    }
+
+    const handleViewSubmission = async(inputValues) => {
+
+      const newGrowiUrl = inputValues.growiDomain.contents_input.value;
+      const newGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
+      const newProxyAccessToken = inputValues.proxyToken.contents_input.value;
+      console.log('newGrowiUrl', newGrowiUrl);
+      console.log('newGrowiAccessToken', newGrowiAccessToken);
+      console.log('newAccessToken', newProxyAccessToken);
+
+      const order = await this.orderRepository;
+
+      const growiUrl = order.metadata.propertiesMap.growiUrl;
+      const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
+      const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
+
+      console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
+
+      order.update({ growiUrl }, { growiUrl: newGrowiUrl });
+      order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
+      order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
+      res.send();
+
+    };
+
+    if (body.payload != null) {
+      const payload = JSON.parse(body.payload);
+      const { type } = payload;
+      const inputValues = payload.view.state.values;
+
+      try {
+        switch (type) {
+          case 'view_submission':
+            await handleViewSubmission(inputValues);
+            break;
+          default:
+            break;
+        }
+      }
+      catch (error) {
+        throw new Error(error.message);
+      }
+
+    }
+
+
+    //   // Find the latest order by installationId and GROWIurl
+    const order = await this.orderRepository.findOne({
+      installation: installation.id,
+    }, {
+      order: {
+        createdAt: 'DESC',
+      },
+    });
   }
-
-  // const { body, authorizeResult } = req;
-  // console.log('authorizeResult', authorizeResult);
-  //   logger.info('receive interaction', body);
-
-  //   const installation = await this.installationRepository.findByID('1');
-  //   if (installation == null) {
-  //     throw new Error('installation is reqiured');
-  //   }
-
-  //   const handleViewSubmission = async(inputValues) => {
-
-  //     const newGrowiUrl = inputValues.growiDomain.contents_input.value;
-  //     const newGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
-  //     const newProxyAccessToken = inputValues.proxyToken.contents_input.value;
-  //     console.log('newGrowiUrl', newGrowiUrl);
-  //     console.log('newGrowiAccessToken', newGrowiAccessToken);
-  //     console.log('newAccessToken', newProxyAccessToken);
-
-  //     const order = await this.orderRepository;
-
-  //     const growiUrl = order.metadata.propertiesMap.growiUrl;
-  //     const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
-  //     const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
-
-  //     console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
-
-  //     order.update({ growiUrl }, { growiUrl: newGrowiUrl });
-  //     order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
-  //     order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
-  //     res.send();
-
-  //   };
-
-  //   if (body.payload != null) {
-  //     const payload = JSON.parse(body.payload);
-  //     const { type } = payload;
-  //     const inputValues = payload.view.state.values;
-
-  //     try {
-  //       switch (type) {
-  //         case 'view_submission':
-  //           await handleViewSubmission(inputValues);
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //     }
-  //     catch (error) {
-  //       throw new Error(error.message);
-  //     }
-
-  //   }
-  //   if (body.text == null) {
-  //     return 'No text.';
-  //   }
-
-  //   // Find the latest order by installationId and GROWIurl
-  //   let order = await this.orderRepository.findOne({
-  //     installation: installation.id,
-  //   }, {
-  //     order: {
-  //       createdAt: 'DESC',
-  //     },
 
   @Post('/events')
   async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
