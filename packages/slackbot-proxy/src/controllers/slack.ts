@@ -130,7 +130,6 @@ export class SlackCtrl {
 
     const { body, authorizeResult } = req;
     console.log('authorizeResult', authorizeResult);
-    logger.info('receive interaction', body);
 
     const installation = await this.installationRepository.findByID('1');
     if (installation == null) {
@@ -148,15 +147,15 @@ export class SlackCtrl {
 
       const order = await this.orderRepository;
 
-      const growiUrl = order.metadata.propertiesMap.growiUrl;
-      const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
-      const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
+      // const growiUrl = order.metadata.propertiesMap.growiUrl;
+      // const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
+      // const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
 
-      console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
+      // console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
 
-      order.update({ growiUrl }, { growiUrl: newGrowiUrl });
-      order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
-      order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
+      // order.update({ growiUrl }, { growiUrl: newGrowiUrl });
+      // order.update({ growiAccessToken }, { growiAccessToken: newGrowiAccessToken });
+      // order.update({ proxyAccessToken }, { proxyAccessToken: newProxyAccessToken });
       res.send();
 
     };
