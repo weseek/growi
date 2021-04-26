@@ -42,7 +42,7 @@ const BotTypeCard = (props) => {
       <div>
         <h3 className={`card-header mb-0 py-3
               ${props.botType === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
-              ${props.isActive ? 'bg-primary text-light' : ''}`}
+              ${props.isActive ? 'bg-primary grw-botcard-title-active' : ''}`}
         >
           <span className="mr-2">
             {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].botTypeCategory}`)}
@@ -61,7 +61,7 @@ const BotTypeCard = (props) => {
           )}
 
           {/* TODO: add an appropriate links by GW-5614 */}
-          <i className={`fa fa-external-link btn-link ${props.isActive ? 'bg-primary text-light' : ''}`} aria-hidden="true"></i>
+          <i className={`fa fa-external-link btn-link ${props.isActive ? 'bg-primary grw-botcard-title-active' : ''}`} aria-hidden="true"></i>
         </h3>
       </div>
       <div className="card-body p-4">
