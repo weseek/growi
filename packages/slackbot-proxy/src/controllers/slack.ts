@@ -129,62 +129,21 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationRepository.find({ installation: installation?.id });
-    console.log('authorizeResult', authorizeResult);
-
-    // Find the latest order by installationId and GROWIurl
-    // await this.orderRepository.findOne({
-    //   installation: installation?.id,
-    //   // growiUrl
-    // }, {
-    //   order: {
-    //     createdAt: 'DESC',
-    //   },
-    // });
-
 
     const handleViewSubmission = async(inputValues) => {
 
       const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
       const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
       const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
-      console.log('inputGrowiUrl', inputGrowiUrl);
-      console.log('inputGrowiAccessToken', inputGrowiAccessToken);
-      console.log('newAccessToken', inputProxyAccessToken);
-
-      // const growiUrl = order.metadata.propertiesMap.growiUrl;
-      // const growiAccessToken = order.metadata.propertiesMap.growiAccessToken;
-      // const proxyAccessToken = order.metadata.propertiesMap.proxyAccessToken;
-
-      // console.log('order.metadata.propertiesMap', order.metadata.propertiesMap);
-      // this.orderRepository.update(
-      //   { installation: installation?.id, growiUrl: 'hoge' },
-      //   { growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
-      // );
-      // await this.orderRepository.save(
-      //   { installation: installation?.id, growiUrl: 'hoge' },
-      //   { growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
-      // );
-      // await this.orderRepository.save(
-      //   {
-      //     installation: installation?.id,
-      //     growiUrl: inputGrowiUrl,
-      //     growiAccessToken: inputGrowiAccessToken,
-      //     proxyAccessToken: inputProxyAccessToken,
-      //   },
-      // );
-
 
       const order = await this.orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
       if (order) {
-        console.log('updateしよう');
         this.orderRepository.update(
           { installation: installation?.id, growiUrl: inputGrowiUrl },
           { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
         );
       }
       else {
-        console.log('saveしよう');
         this.orderRepository.save({
           installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
         });
