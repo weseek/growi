@@ -147,7 +147,6 @@ const SlackIntegration = (props) => {
       break;
   }
 
-
   return (
     <>
       <ConfirmBotChangeModal
@@ -168,19 +167,19 @@ const SlackIntegration = (props) => {
 
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
-        <div className="row my-5">
-          <div className="card-deck mx-auto">
-            {botTypes.map((botType) => {
-              return (
+        <div className="row my-5 flex-wrap-reverse justify-content-center">
+          {botTypes.map((botType) => {
+            return (
+              <div className="m-3">
                 <BotTypeCard
                   key={botType}
                   botType={botType}
                   isActive={currentBotType === botType}
                   handleBotTypeSelect={handleBotTypeSelect}
                 />
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
