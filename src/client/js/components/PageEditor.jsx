@@ -14,7 +14,6 @@ import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import EditorContainer from '../services/EditorContainer';
-import NavigationContainer from '../services/NavigationContainer';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -348,13 +347,12 @@ class PageEditor extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer, NavigationContainer]);
+const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
 
 PageEditor.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
 };
 
 export default PageEditorWrapper;
