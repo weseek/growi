@@ -2,6 +2,7 @@
 
 ## v4.2.17-RC
 
+* Improvement: Hide Sidebar at shared pages
 * Fix: No unsaved alert is displayed without difference the latest markdown and editor value
 
 ## v4.2.16-RC
