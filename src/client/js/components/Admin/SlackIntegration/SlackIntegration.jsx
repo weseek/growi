@@ -138,6 +138,7 @@ const SlackIntegration = (props) => {
           isRegisterSlackCredentials={isRegisterSlackCredentials}
           isConnectedToSlack={isConnectedToSlack}
           isSetupSlackBot={isSetupSlackBot}
+          isSlackScopeSet={isSlackScopeSet}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}

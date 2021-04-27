@@ -25,7 +25,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
         </div>
 
         <div className="text-center w-25">
-          {props.isSetupSlackBot && (
+          {props.isSetupSlackBot && props.isSlackScopeSet && (
             <div className="mt-5">
               <p className="text-success"><small className="fa fa-check"> {t('admin:slack_integration.integration_sentence.integration_successful')}</small></p>
               <hr className="align-self-center admin-border-success border-success"></hr>
