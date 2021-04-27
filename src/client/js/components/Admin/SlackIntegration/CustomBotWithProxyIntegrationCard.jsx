@@ -22,8 +22,8 @@ const CustomBotWithProxyIntegrationCard = () => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
           />
           <div className="pt-2">
-            <div className="saturn mt-5">
-              <div className="circle bg-primary border-light">
+            <div className="position-relative mt-5">
+              <div className="circle position-absolute bg-primary border-light">
                 <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
               </div>
               <hr className="align-self-center admin-border-danger border-danger"></hr>
