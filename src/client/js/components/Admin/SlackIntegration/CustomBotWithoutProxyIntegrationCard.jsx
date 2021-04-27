@@ -25,13 +25,13 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
         </div>
 
         <div className="text-center w-25">
-          {props.isSetupSlackBot && props.isSlackScopeSet && (
+          {props.isSlackScopeSet && (
             <div className="mt-5">
               <p className="text-success"><small className="fa fa-check"> {t('admin:slack_integration.integration_sentence.integration_successful')}</small></p>
               <hr className="align-self-center admin-border-success border-success"></hr>
             </div>
           )}
-          {!props.isSetupSlackBot && (
+          {!props.isSlackScopeSet && (
             <div className="mt-4">
               <small
                 className="text-secondary m-0"
@@ -58,7 +58,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 CustomBotWithoutProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   slackWSNameInWithoutProxy: PropTypes,
-  isSetupSlackBot: PropTypes.bool.isRequired,
+  isSlackScopeSet: PropTypes.bool.isRequired,
 };
 
 export default CustomBotWithoutProxyIntegrationCard;
