@@ -147,7 +147,6 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const customizeParams = {
-      layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
