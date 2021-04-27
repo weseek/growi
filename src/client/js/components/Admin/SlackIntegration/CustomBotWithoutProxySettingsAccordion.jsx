@@ -225,7 +225,6 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
 
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
-  isSetupSlackBot: PropTypes.bool,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;

@@ -25,7 +25,6 @@ const CustomBotWithoutProxySettings = (props) => {
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
         slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
-        isSetupSlackBot={props.isSetupSlackBot}
         isSlackScopeSet={props.isSlackScopeSet}
       />
 
@@ -52,7 +51,6 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
-  isSetupSlackBot: PropTypes.bool,
   isSlackScopeSet: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
 };
