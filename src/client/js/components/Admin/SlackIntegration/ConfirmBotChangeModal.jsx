@@ -22,7 +22,10 @@ const ConfirmBotChangeModal = (props) => {
 
   return (
     <Modal isOpen={props.isOpen} centered>
-      <ModalHeader toggle={handleCancelButton}>
+      <ModalHeader
+        toggle={handleCancelButton}
+        className="bg-danger"
+      >
         {t('slack_integration.modal.warning')}
       </ModalHeader>
       <ModalBody>
@@ -37,7 +40,7 @@ const ConfirmBotChangeModal = (props) => {
         <button type="button" className="btn btn-secondary" onClick={handleCancelButton}>
           {t('slack_integration.modal.cancel')}
         </button>
-        <button type="button" className="btn btn-primary" onClick={handleChangeButton}>
+        <button type="button" className="btn btn-danger" onClick={handleChangeButton}>
           {t('slack_integration.modal.change')}
         </button>
       </ModalFooter>
