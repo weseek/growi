@@ -64,7 +64,7 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setIsConnectedToSlack(isConnectedToSlack);
 
-      await fetchSlackWorkSpaceNameInWithoutProxy();
+      fetchSlackWorkSpaceNameInWithoutProxy();
 
       if (isConnectedToSlack) {
         setIsRegisterSlackCredentials(true);
@@ -117,6 +117,7 @@ const SlackIntegration = (props) => {
       setIsConnectedToSlack(false);
       setIsSendTestMessage(false);
       setSlackWSNameInWithoutProxy(null);
+      setIsSlackScopeSet(false);
     }
     catch (err) {
       toastError(err);
