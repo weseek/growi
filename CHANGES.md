@@ -1,9 +1,15 @@
 # CHANGES
 
-## v4.2.16-RC
+## v4.2.17-RC
 
+* Fix: No unsaved alert is displayed without difference the latest markdown and editor value
 * Support: Update libs
     * eslint-config-weseek
+
+## v4.2.16
+
+* Fix: "Only inside the group" causes an error
+    * Introduced by v4.2.15
 
 ## v4.2.15
 
