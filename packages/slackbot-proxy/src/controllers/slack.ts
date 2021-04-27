@@ -135,7 +135,7 @@ export class SlackCtrl {
       const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
 
       const order = await this.orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
-      if (order) {
+      if (order != null) {
         this.orderRepository.update(
           { installation: installation?.id, growiUrl: inputGrowiUrl },
           { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
