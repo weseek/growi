@@ -6,12 +6,14 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegrationCard';
+import DeleteSlackCredentialsModal from './DeleteSlackCredentialsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, isSetupSlackBot } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
+
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -43,6 +45,7 @@ const CustomBotWithoutProxySettings = (props) => {
           activeStep={botInstallationStep.CREATE_BOT}
         />
       </div>
+      <DeleteSlackCredentialsModal />
     </>
   );
 };
