@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegrationCard';
 import DeleteSlackCredentialsModal from './DeleteSlackCredentialsModal';
@@ -15,6 +16,16 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
+  async function deleteSlackCredentialsHandler() {
+    try {
+      const res = await appContainer.apiv3Delete('');
+      const { deletedCount } = res.data;
+      toastSuccess(t('toaster.remove_share_link', { count: deletedCount }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -50,6 +61,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <DeleteSlackCredentialsModal
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
+        onClickDeleteButton={() => deleteSlackCredentialsHandler}
       />
     </>
   );
