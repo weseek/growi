@@ -16,16 +16,20 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
-  async function deleteSlackCredentialsHandler() {
+  const deleteSlackCredentialsHandler = async() => {
     try {
-      const res = await appContainer.apiv3Delete('');
-      const { deletedCount } = res.data;
-      toastSuccess(t('toaster.remove_share_link', { count: deletedCount }));
+      await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
+        slackSigningSecret: '',
+        slackBotToken: '',
+        currentBotType: 'customBotWithoutProxy',
+      });
+      props.fetchSlackIntegrationData();
+      toastSuccess('成功');
     }
     catch (err) {
       toastError(err);
     }
-  }
+  };
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -61,7 +65,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <DeleteSlackCredentialsModal
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={() => deleteSlackCredentialsHandler}
+        onClickDeleteButton={deleteSlackCredentialsHandler}
       />
     </>
   );
@@ -80,6 +84,7 @@ CustomBotWithoutProxySettings.propTypes = {
   isConnectedToSlack: PropTypes.bool,
   isSetupSlackBot: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
+  fetchSlackIntegrationData: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;

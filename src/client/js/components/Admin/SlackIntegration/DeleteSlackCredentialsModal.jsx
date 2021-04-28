@@ -22,7 +22,6 @@ const DeleteSlackCredentialsModal = React.memo((props) => {
     if (props.onClickDeleteButton == null) {
       return;
     }
-
     props.onClickDeleteButton();
 
     closeModal();
