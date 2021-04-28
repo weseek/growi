@@ -18,7 +18,7 @@ const DeleteSlackCredentialsModal = React.memo((props) => {
     props.onClose();
   }
 
-  function deleteAllLinkHandler() {
+  function deleteSlackCredentialsHandler() {
     if (props.onClickDeleteButton == null) {
       return;
     }
@@ -45,7 +45,7 @@ const DeleteSlackCredentialsModal = React.memo((props) => {
       </ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
-        <Button color="danger" onClick={deleteAllLinkHandler}>
+        <Button color="danger" onClick={deleteSlackCredentialsHandler}>
           <i className="icon icon-fire"></i>
           {t('Delete')}
         </Button>
