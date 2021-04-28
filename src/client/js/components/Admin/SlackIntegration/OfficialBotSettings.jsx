@@ -1,11 +1,19 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import OfficialBotSettingsAccordion from './CustomBotWithoutProxySettingsAccordion';
 
 const OfficialBotSettings = () => {
+  const { t } = useTranslation();
 
   return (
-    <div className="row my-5">
-      <h1>Official Bot Settings Component</h1>
-    </div>
+    <>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_settings')}</h2>
+
+      <div className="my-5 mx-3">
+        <OfficialBotSettingsAccordion />
+      </div>
+    </>
+
   );
 };
 
