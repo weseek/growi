@@ -5,7 +5,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
-import CustomBotWithProxySettingsAccordion from './CustomBotWithProxySettingsAccordion.jsx'
+import CustomBotWithProxySettingsAccordion from './CustomBotWithProxySettingsAccordion';
 
 const CustomBotWithProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
