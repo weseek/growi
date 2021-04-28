@@ -13,6 +13,7 @@ const CustomBotWithoutProxySettings = (props) => {
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
+  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
 
   useEffect(() => {
@@ -33,11 +34,12 @@ const CustomBotWithoutProxySettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
 
       {isSetupSlackBot && (
-      <btn
+      <button
         className="pull-right btn text-danger border-danger"
         type="button"
+        onClick={() => setIsDeleteConfirmModalShown(true)}
       >リセット
-      </btn>
+      </button>
       ) }
       <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion
@@ -45,7 +47,10 @@ const CustomBotWithoutProxySettings = (props) => {
           activeStep={botInstallationStep.CREATE_BOT}
         />
       </div>
-      <DeleteSlackCredentialsModal />
+      <DeleteSlackCredentialsModal
+        isOpen={isDeleteConfirmModalShown}
+        onClose={() => setIsDeleteConfirmModalShown(false)}
+      />
     </>
   );
 };
