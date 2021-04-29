@@ -27,8 +27,4 @@ const OfficialBotSettingsAccordion = () => {
   );
 };
 
-OfficialBotSettingsAccordion.propTypes = {
-
-};
-
 export default OfficialBotSettingsAccordion;
