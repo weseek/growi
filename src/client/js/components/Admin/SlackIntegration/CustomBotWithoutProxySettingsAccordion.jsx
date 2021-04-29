@@ -15,7 +15,7 @@ export const botInstallationStep = {
   CONNECTION_TEST: 'connection-test',
 };
 
-const OfficialBotSettingsAccordion = ({
+const CustomBotWithoutProxySettingsAccordion = ({
   appContainer, activeStep, fetchSlackIntegrationData,
   slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isSendTestMessage,
@@ -206,9 +206,9 @@ const OfficialBotSettingsAccordion = ({
   );
 };
 
-const OfficialBotSettingsAccordionWrapper = withUnstatedContainers(OfficialBotSettingsAccordion, [AppContainer, AdminAppContainer]);
+const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer, AdminAppContainer]);
 
-OfficialBotSettingsAccordion.propTypes = {
+CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
@@ -229,4 +229,4 @@ OfficialBotSettingsAccordion.propTypes = {
   isSetupSlackBot: PropTypes.bool,
 };
 
-export default OfficialBotSettingsAccordionWrapper;
+export default CustomBotWithoutProxySettingsAccordionWrapper;
