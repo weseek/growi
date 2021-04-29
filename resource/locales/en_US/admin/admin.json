@@ -295,6 +295,8 @@
       "install_bot_to_slack": "Install Bot To Slack",
       "select_install_your_app": "Select \"Install your app\".",
       "select_install_to_workspace": "Select \"Install to Workspace\".",
+      "register_official_bot_proxy_service": "Issue Access Token / Register GROWI Official Bot Proxy Service",
+      "register_proxy_url": "Proxy の URLをGROWIに登録する",
       "click_allow": "Select \"Allow\".",
       "install_complete_if_checked": "Confirm that \"Install your app\" is checked.",
       "invite_bot_to_channel": "Invite GROWI bot to channel by calling @example.",

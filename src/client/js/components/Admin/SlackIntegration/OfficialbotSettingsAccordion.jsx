@@ -31,11 +31,11 @@ const OfficialBotSettingsAccordion = ({
       >
       </Accordion>
       <Accordion
-        title={<><span className="mr-2">②</span>{t('admin:slack_integration.accordion.install_bot_to_slack')}</>}
+        title={<><span className="mr-2">②</span>{t('admin:slack_integration.accordion.register_official_bot_proxy_service')}</>}
       >
       </Accordion>
       <Accordion
-        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.install_bot_to_slack')}</>}
+        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_proxy_url')}</>}
       >
       </Accordion>
       <Accordion
