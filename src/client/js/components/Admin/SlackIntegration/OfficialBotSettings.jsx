@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import OfficialBotSettingsAccordion from './CustomBotWithoutProxySettingsAccordion';
+import OfficialBotSettingsAccordion from './OfficialbotSettingsAccordion';
 
 const OfficialBotSettings = () => {
   const { t } = useTranslation();

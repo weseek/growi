@@ -15,7 +15,7 @@ export const botInstallationStep = {
   CONNECTION_TEST: 'connection-test',
 };
 
-const CustomBotWithoutProxySettingsAccordion = ({
+const OfficialBotSettingsAccordion = ({
   appContainer, activeStep, fetchSlackIntegrationData,
   slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isSendTestMessage,
@@ -102,7 +102,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CREATE_BOT)}
-        title={<><span className="mr-2">①</span>{t('admin:slack_integration.without_proxy.create_bot')}</>}
+        title={<><span className="mr-2">①</span>{t('admin:slack_integration.without_proxy.install_bot_to_slack')}</>}
       >
         <div className="row my-5">
           <div className="mx-auto">
@@ -129,7 +129,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         title={<><span className="mr-2">②</span>{t('admin:slack_integration.without_proxy.install_bot_to_slack')}</>}
       >
         <div className="container w-75 py-5">
-          <p>1. {t('admin:slack_integration.without_proxy.select_install_your_app')}</p>
+          {/* <p>1. {t('admin:slack_integration.without_proxy.select_install_your_app')}</p>
           <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
           <p>2. {t('admin:slack_integration.without_proxy.select_install_to_workspace')}</p>
           <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
@@ -139,7 +139,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
           <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
           <p>5. {t('admin:slack_integration.without_proxy.invite_bot_to_channel')}</p>
           <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
-          <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
+          <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" /> */}
         </div>
       </Accordion>
       <Accordion
@@ -206,9 +206,9 @@ const CustomBotWithoutProxySettingsAccordion = ({
   );
 };
 
-const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer, AdminAppContainer]);
+const OfficialBotSettingsAccordionWrapper = withUnstatedContainers(OfficialBotSettingsAccordion, [AppContainer, AdminAppContainer]);
 
-CustomBotWithoutProxySettingsAccordion.propTypes = {
+OfficialBotSettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
@@ -229,4 +229,4 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   isSetupSlackBot: PropTypes.bool,
 };
 
-export default CustomBotWithoutProxySettingsAccordionWrapper;
+export default OfficialBotSettingsAccordionWrapper;
