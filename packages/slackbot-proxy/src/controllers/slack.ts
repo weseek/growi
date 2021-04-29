@@ -124,6 +124,11 @@ export class SlackCtrl {
     logger.info('receive interaction', req.authorizeResult);
 
     const { body, authorizeResult } = req;
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
+
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -146,9 +151,6 @@ export class SlackCtrl {
           installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
         });
       }
-
-      res.send();
-
     };
 
     const payload = JSON.parse(body.payload);
@@ -165,7 +167,7 @@ export class SlackCtrl {
       }
     }
     catch (error) {
-      res.send(error.message);
+      logger.error(error);
     }
 
   }
