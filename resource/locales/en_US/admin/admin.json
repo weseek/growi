@@ -289,7 +289,7 @@
     },
     "official_bot_settings": "Official bot Settings",
     "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
-    "without_proxy": {
+    "accordion": {
       "create_bot": "Create Bot",
       "how_to_create_a_bot": "How to create a bot",
       "install_bot_to_slack": "Install Bot To Slack",

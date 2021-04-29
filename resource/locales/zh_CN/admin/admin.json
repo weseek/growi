@@ -296,7 +296,7 @@
       "generate": "生成"
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 设置",
-    "without_proxy": {
+    "accordion": {
       "create_bot": "创建 Bot",
       "how_to_create_a_bot": "如何创建一个BOT",
       "install_bot_to_slack": "将Bot安装到Slack",

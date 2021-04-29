@@ -286,7 +286,7 @@
       "generate": "発行"
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
-    "without_proxy": {
+    "accordion": {
       "create_bot": "Bot を作成する",
       "how_to_create_a_bot": "作成方法はこちら",
       "install_bot_to_slack": "Bot を Slackにインストールする",
