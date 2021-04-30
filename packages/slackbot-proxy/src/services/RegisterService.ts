@@ -1,6 +1,6 @@
 import { Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
-import { generateInputSectionBlock, GrowiCommand } from '@growi/slack';
+import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 
 import { GrowiCommandProcessor } from '~/interfaces/growi-command-processor';
@@ -40,6 +40,22 @@ export class RegisterService implements GrowiCommandProcessor {
         ],
       },
     });
+  }
+
+  async sendProxyURL(authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
+
+    const { botToken } = authorizeResult;
+
+    // tmp use process.env
+    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+    // await client.chat.postEphemeral({
+    //   channel: body.channel_id,
+    //   user: body.user_id,
+    //   blocks: [
+    //     this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
+    //   ],
+    // });
+    // return;
   }
 
 }

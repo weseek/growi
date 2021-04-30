@@ -156,6 +156,11 @@ export class SlackCtrl {
           installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
         });
       }
+
+      await this.registerService.sendProxyURL(authorizeResult, body as {[key:string]:string});
+
+
+      res.send();
     };
 
     const payload = JSON.parse(body.payload);
