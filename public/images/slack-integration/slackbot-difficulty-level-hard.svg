@@ -1,32 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
   <defs>
     <style>
-      .cls-1, .cls-4 {
-        fill: none;
-      }
-
       .cls-1 {
+        fill: #fff;
         stroke: #ff8080;
         stroke-width: 3px;
       }
 
       .cls-2 {
         fill: #ff8080;
-        font-size: 16px;
-        font-family: NotoSansCJKjp-Bold, Noto Sans CJK JP;
-        font-weight: 700;
       }
 
       .cls-3 {
         stroke: none;
       }
+
+      .cls-4 {
+        fill: none;
+      }
     </style>
   </defs>
-  <g id="Group_4360" data-name="Group 4360" transform="translate(-303.305 -23.039)">
-    <g id="Ellipse_99" data-name="Ellipse 99" class="cls-1" transform="translate(303.305 23.039)">
+  <g id="Group_4364" data-name="Group 4364" transform="translate(-782.69 -44.039)">
+    <g id="Ellipse_103" data-name="Ellipse 103" class="cls-1" transform="translate(782.69 44.039)">
       <circle class="cls-3" cx="30" cy="30" r="30"/>
       <circle class="cls-4" cx="30" cy="30" r="28.5"/>
     </g>
-    <text id="HARD" class="cls-2" transform="translate(312.93 64.277) rotate(-11)"><tspan x="0" y="0">HARD</tspan></text>
+    <path id="Path_710" data-name="Path 710" class="cls-2" d="M1.456,0H3.824V-5.12H8.3V0h2.352V-11.84H8.3v4.656H3.824V-11.84H1.456ZM15.792-4.88l.352-1.3c.352-1.232.7-2.576,1.008-3.872h.064c.352,1.28.672,2.64,1.04,3.872l.352,1.3ZM19.952,0h2.48L18.624-11.84H15.84L12.048,0h2.4l.832-3.04h3.84Zm6.24-9.968h1.536c1.52,0,2.352.432,2.352,1.712,0,1.264-.832,1.9-2.352,1.9H26.192ZM32.912,0,30.144-4.848A3.389,3.389,0,0,0,32.4-8.256c0-2.72-1.968-3.584-4.448-3.584H23.824V0h2.368V-4.48H27.84L30.272,0Zm1.824,0h3.376C41.6,0,43.84-1.984,43.84-5.968c0-4-2.24-5.872-5.856-5.872H34.736ZM37.1-1.9V-9.952h.736c2.208,0,3.584,1.088,3.584,3.984,0,2.88-1.376,4.064-3.584,4.064Z" transform="translate(792.315 85.277) rotate(-11)"/>
   </g>
 </svg>
