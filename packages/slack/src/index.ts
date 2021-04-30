@@ -9,6 +9,7 @@ export const supportedGrowiCommands: string[] = [
 
 export * from './interfaces/growi-command';
 export * from './models/errors';
-export * from './utils/slash-command-parser';
 export * from './middlewares/verification-slack-request';
 export * from './utils/block-creater';
+export * from './utils/slash-command-parser';
+export * from './utils/webclient-factory';
