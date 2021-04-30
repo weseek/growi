@@ -102,12 +102,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CREATE_BOT)}
-        title={(
-          <>
-            <span className="mr-2">①</span>
-            {t('admin:slack_integration.accordion.create_bot')}
-          </>
-        )}
+        title={<><span className="mr-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
       >
         <div className="row my-5">
           <div className="mx-auto">
@@ -149,7 +144,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
-        // eslint-disable-next-line max-len
+          // eslint-disable-next-line max-len
         title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
@@ -164,7 +159,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
-        // eslint-disable-next-line max-len
+          // eslint-disable-next-line max-len
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>

@@ -12,27 +12,27 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
         <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
         <div className="card-body p-2 w-50 mx-auto">
           {props.slackWSNameInWithoutProxy != null && (
-            <div className="card slack-work-space-name-card">
-              <div className="m-2 text-center">
-                <h5 className="font-weight-bold">{props.slackWSNameInWithoutProxy}</h5>
-                <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
-              </div>
+          <div className="card slack-work-space-name-card">
+            <div className="m-2 text-center">
+              <h5 className="font-weight-bold">{props.slackWSNameInWithoutProxy}</h5>
+              <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
             </div>
+          </div>
           )}
         </div>
       </div>
 
       <div className="text-center w-25">
         {props.isSetupSlackBot && (
-          <div className="mt-5">
-            <p className="text-success">
-              <small>
-                <i className="fa fa-check mr-1" />
-                {t('admin:slack_integration.integration_sentence.integration_successful')}
-              </small>
-            </p>
-            <hr className="align-self-center admin-border-success border-success"></hr>
-          </div>
+        <div className="mt-5">
+          <p className="text-success">
+            <small>
+              <i className="fa fa-check mr-1" />
+              {t('admin:slack_integration.integration_sentence.integration_successful')}
+            </small>
+          </p>
+          <hr className="align-self-center admin-border-success border-success"></hr>
+        </div>
         )}
         {!props.isSetupSlackBot && (
         <div className="mt-4">
