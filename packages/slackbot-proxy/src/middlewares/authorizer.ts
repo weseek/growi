@@ -50,13 +50,14 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
       result = await this.installerService.installer.authorize(query);
 
       if (result.botToken == null) {
-        throw new Error(`The installation for the team(${teamId || enterpriseId}) has no botToken`);
+        res.writeHead(403, `The installation for the team(${teamId || enterpriseId}) has no botToken`);
+        return res.end();
       }
     }
     catch (e) {
       this.logger.error(e.message);
 
-      res.writeHead(403, e.message);
+      res.writeHead(500, e.message);
       return res.end();
     }
 
@@ -109,13 +110,14 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
       result = await this.installerService.installer.authorize(query);
 
       if (result.botToken == null) {
-        throw new Error(`The installation for the team(${teamId || enterpriseId}) has no botToken`);
+        res.writeHead(403, `The installation for the team(${teamId || enterpriseId}) has no botToken`);
+        return res.end();
       }
     }
     catch (e) {
       this.logger.error(e.message);
 
-      res.writeHead(403, e.message);
+      res.writeHead(500, e.message);
       return res.end();
     }
 
