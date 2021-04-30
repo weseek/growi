@@ -35,14 +35,14 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           </div>
         )}
         {!props.isSetupSlackBot && (
-          <div className="mt-4">
-            <small
-              className="text-secondary m-0"
+        <div className="mt-4">
+          <small
+            className="text-secondary m-0"
               // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
-            />
-            <hr className="align-self-center admin-border-danger border-danger"></hr>
-          </div>
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+          />
+          <hr className="align-self-center admin-border-danger border-danger"></hr>
+        </div>
         )}
       </div>
 
