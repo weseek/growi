@@ -122,7 +122,54 @@ export class SlackCtrl {
   async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
-    return;
+
+    const { body, authorizeResult } = req;
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
+
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+
+    const handleViewSubmission = async(inputValues) => {
+
+      const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
+      const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
+      const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
+
+      const order = await this.orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
+      if (order != null) {
+        this.orderRepository.update(
+          { installation: installation?.id, growiUrl: inputGrowiUrl },
+          { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
+        );
+      }
+      else {
+        this.orderRepository.save({
+          installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
+        });
+      }
+    };
+
+    const payload = JSON.parse(body.payload);
+    const { type } = payload;
+    const inputValues = payload.view.state.values;
+
+    try {
+      switch (type) {
+        case 'view_submission':
+          await handleViewSubmission(inputValues);
+          break;
+        default:
+          break;
+      }
+    }
+    catch (error) {
+      logger.error(error);
+    }
+
   }
 
   @Post('/events')
