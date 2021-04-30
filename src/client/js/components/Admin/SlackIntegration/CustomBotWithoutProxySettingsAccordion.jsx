@@ -131,12 +131,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.INSTALL_BOT)}
-        title={(
-          <>
-            <span className="mr-2">②</span>
-            {t('admin:slack_integration.accordion.install_bot_to_slack')}
-          </>
-        )}
+        title={<><span className="mr-2">②</span>{t('admin:slack_integration.accordion.install_bot_to_slack')}</>}
       >
         <div className="container w-75 py-5">
           <p>1. {t('admin:slack_integration.accordion.select_install_your_app')}</p>
@@ -154,13 +149,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
-        title={(
-          <>
-            <span className="mr-2">③</span>
-            {t('admin:slack_integration.accordion.register_secret_and_token')}
-            {isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}
-          </>
-        )}
+        // eslint-disable-next-line max-len
+        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           updateSecretTokenHandler={updateSecretTokenHandler}
@@ -174,13 +164,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
-        title={(
-          <>
-            <span className="mr-2">④</span>
-            {t('admin:slack_integration.accordion.test_connection')}
-            {isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}
-          </>
-        )}
+        // eslint-disable-next-line max-len
+        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
