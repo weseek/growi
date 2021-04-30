@@ -159,7 +159,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
-          // eslint-disable-next-line max-len
+        // eslint-disable-next-line max-len
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
@@ -186,9 +186,9 @@ const CustomBotWithoutProxySettingsAccordion = ({
           </form>
         </div>
         {connectionErrorMessage != null
-          && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
+        && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
         {connectionSuccessMessage != null
-          && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
+        && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
         <form>
           <div className="row my-3 justify-content-center">
             <div className="form-group slack-connection-log w-25">

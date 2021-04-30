@@ -33,7 +33,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           </p>
           <hr className="align-self-center admin-border-success border-success"></hr>
         </div>
-        )}
+          )}
         {!props.isSetupSlackBot && (
         <div className="mt-4">
           <small
@@ -43,13 +43,13 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           />
           <hr className="align-self-center admin-border-danger border-danger"></hr>
         </div>
-        )}
+          )}
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
         <h5 className="card-title font-weight-bold mt-3 ml-4">GROWI App</h5>
         <div className="card-body p-4 mb-5 text-center">
-          <div className="btn btn-primary">{props.siteName}</div>
+          <div className="btn btn-primary">{ props.siteName }</div>
         </div>
       </div>
     </div>
