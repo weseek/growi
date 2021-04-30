@@ -297,12 +297,14 @@
       "generate": "生成"
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 设置",
-    "without_proxy": {
+    "accordion": {
       "create_bot": "创建 Bot",
-      "how_to_create_a_bot": "如何创建一个BOT",
-      "install_bot_to_slack": "将Bot安装到Slack",
+      "how_to_create_a_bot": "如何创建一个 Bot",
+      "install_bot_to_slack": "将 Bot 安装到 Slack",
       "select_install_your_app": "选择 \"Install your app\"。",
       "select_install_to_workspace": "选择 \"Install to Workspace\"。",
+      "register_official_bot_proxy_service": "发行访问令牌 / 注册 GROWI 官方 Bot 代理服务",
+      "register_proxy_url": "向 GROWI 注册代理 URL",
       "click_allow": "选择 \"Allow\"。",
       "install_complete_if_checked": "确认已选中 \"Install your app\"。",
       "invite_bot_to_channel": "通过调用 @example 邀请 GROWI Bot 进行频道。",
