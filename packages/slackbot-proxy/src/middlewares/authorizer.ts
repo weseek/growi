@@ -86,6 +86,12 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
   async use(@Req() req: AuthedReq, @Res() res: Res): Promise<void> {
     const { body } = req;
 
+    if (body.payload == null) {
+      // do nothing
+      this.logger.info('body does not have payload');
+      return;
+    }
+
     const payload = JSON.parse(body.payload);
 
     // extract id from body
