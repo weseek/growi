@@ -32,7 +32,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const currentBotType = 'customBotWithoutProxy';
 
 
-  const updateSecretTokenHandler = async() => {
+  const updateSecretTokenHandler = async () => {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret,
@@ -63,7 +63,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const testConnection = async() => {
+  const testConnection = async () => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     setConnectionSuccessMessage(null);
@@ -102,7 +102,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CREATE_BOT)}
-        title={<><span className="mr-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
+        title={(
+          <>
+            <span className="mr-2">①</span>
+            {t('admin:slack_integration.accordion.create_bot')}
+          </>
+        )}
       >
         <div className="row my-5">
           <div className="mx-auto">
@@ -126,7 +131,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.INSTALL_BOT)}
-        title={<><span className="mr-2">②</span>{t('admin:slack_integration.accordion.install_bot_to_slack')}</>}
+        title={(
+          <>
+            <span className="mr-2">②</span>
+            {t('admin:slack_integration.accordion.install_bot_to_slack')}
+          </>
+        )}
       >
         <div className="container w-75 py-5">
           <p>1. {t('admin:slack_integration.accordion.select_install_your_app')}</p>
@@ -144,8 +154,13 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
-        // eslint-disable-next-line max-len
-        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={(
+          <>
+            <span className="mr-2">③</span>
+            {t('admin:slack_integration.accordion.register_secret_and_token')}
+            {isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}
+          </>
+        )}
       >
         <CustomBotWithoutProxySecretTokenSection
           updateSecretTokenHandler={updateSecretTokenHandler}
@@ -159,8 +174,13 @@ const CustomBotWithoutProxySettingsAccordion = ({
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
-        // eslint-disable-next-line max-len
-        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={(
+          <>
+            <span className="mr-2">④</span>
+            {t('admin:slack_integration.accordion.test_connection')}
+            {isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}
+          </>
+        )}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
@@ -186,9 +206,9 @@ const CustomBotWithoutProxySettingsAccordion = ({
           </form>
         </div>
         {connectionErrorMessage != null
-        && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
+          && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
         {connectionSuccessMessage != null
-         && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
+          && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
         <form>
           <div className="row my-3 justify-content-center">
             <div className="form-group slack-connection-log w-25">
