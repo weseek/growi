@@ -48,14 +48,16 @@ export class RegisterService implements GrowiCommandProcessor {
 
     // tmp use process.env
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
-    // await client.chat.postEphemeral({
-    //   channel: body.channel_id,
-    //   user: body.user_id,
-    //   blocks: [
-    //     this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
-    //   ],
-    // });
-    // return;
+    await client.chat.postEphemeral({
+      channel: body.channel_id,
+      user: body.user_id,
+      text: 'Hello world',
+      blocks: [
+        generateMarkdownSectionBlock('hoge1'),
+        generateMarkdownSectionBlock('hoge2'),
+      ],
+    });
+    return;
   }
 
 }
