@@ -1,5 +1,11 @@
 # CHANGES
 
+## v4.2.17-RC
+
+* Improvement: Invoke garbage collection when reindex all pages by elasticsearch
+* Improvement: Hide Sidebar at shared pages
+* Fix: No unsaved alert is displayed without difference the latest markdown and editor value
+
 ## v4.2.16-RC
 
 * Fix: "Only inside the group" causes an error
@@ -102,6 +108,7 @@
 ## v4.2.5
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
+    * Turned out not working -- 2021.05.01
 * Fix: MathJax rendering does not work
 
 ## v4.2.4
