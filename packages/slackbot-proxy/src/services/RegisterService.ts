@@ -38,17 +38,17 @@ export class RegisterService implements GrowiCommandProcessor {
           generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
           generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
           {
+            block_id: 'channel_to_post_proxy_url',
             type: 'input',
-            block_id: 'current_channel',
-            element: {
-              type: 'conversations_select',
-              action_id: 'input',
-              response_url_enabled: true,
-              default_to_current_conversation: true,
-            },
             label: {
               type: 'plain_text',
-              text: '起動したチャンネル',
+              text: 'Select a channel to post the proxy URL on',
+            },
+            element: {
+              action_id: 'post_proxy_url_id',
+              type: 'conversations_select',
+              response_url_enabled: true,
+              default_to_current_conversation: true,
             },
           },
         ],
