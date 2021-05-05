@@ -62,13 +62,14 @@ export class RegisterService implements GrowiCommandProcessor {
 
     const { botToken } = authorizeResult;
 
-    // tmp use process.env
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
     await client.chat.postEphemeral({
       channel: payload.response_urls[0].channel_id,
       user: payload.user.id,
-      text: 'Hello world',
+      // Recommended to include text to provide a fallback when using blocks
+      // https://api.slack.com/methods/chat.postEphemeral#text_usage
+      text: 'Proxy URL',
       blocks: [
         generateMarkdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
         generateMarkdownSectionBlock(`Proxy URL: ${proxyURL}`),
