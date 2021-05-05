@@ -185,8 +185,6 @@ export class SlackCtrl {
       }
 
       await this.registerService.showProxyURL(authorizeResult, payload);
-
-      res.send();
     };
 
     const payload = JSON.parse(body.payload);
