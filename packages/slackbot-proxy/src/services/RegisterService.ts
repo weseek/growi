@@ -37,20 +37,35 @@ export class RegisterService implements GrowiCommandProcessor {
           generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', false, 'https://example.com'),
           generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
           generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
+          {
+            type: 'input',
+            block_id: 'current_channel',
+            element: {
+              type: 'conversations_select',
+              action_id: 'input',
+              response_url_enabled: true,
+              default_to_current_conversation: true,
+            },
+            label: {
+              type: 'plain_text',
+              text: '起動したチャンネル',
+            },
+          },
         ],
       },
     });
   }
 
-  async sendProxyURL(authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
+  async sendProxyURL(authorizeResult: AuthorizeResult, body: any): Promise<void> {
 
     const { botToken } = authorizeResult;
+    console.log('body', body);
 
     // tmp use process.env
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
     await client.chat.postEphemeral({
       channel: body.channel_id,
-      user: body.user_id,
+      user: body.user.id,
       text: 'Hello world',
       blocks: [
         generateMarkdownSectionBlock('hoge1'),
