@@ -138,8 +138,9 @@ export class SlackCtrl {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
-    const handleViewSubmission = async(inputValues) => {
+    const handleViewSubmission = async(payload) => {
 
+      const inputValues = payload.view.state.values;
       const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
       const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
       const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
@@ -165,12 +166,11 @@ export class SlackCtrl {
 
     const payload = JSON.parse(body.payload);
     const { type } = payload;
-    const inputValues = payload.view.state.values;
 
     try {
       switch (type) {
         case 'view_submission':
-          await handleViewSubmission(inputValues);
+          await handleViewSubmission(payload);
           break;
         default:
           break;
