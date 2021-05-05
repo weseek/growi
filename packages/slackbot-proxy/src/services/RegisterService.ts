@@ -2,7 +2,6 @@ import { Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
-
 import { GrowiCommandProcessor } from '~/interfaces/growi-command-processor';
 
 
@@ -12,7 +11,6 @@ const isProduction = process.env.NODE_ENV === 'production';
 export class RegisterService implements GrowiCommandProcessor {
 
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
-
     const { botToken } = authorizeResult;
 
     // tmp use process.env
@@ -56,20 +54,24 @@ export class RegisterService implements GrowiCommandProcessor {
     });
   }
 
-  async sendProxyURL(authorizeResult: AuthorizeResult, body: any): Promise<void> {
+  async sendProxyURL(authorizeResult: AuthorizeResult, payload :any): Promise<void> {
+    let proxyURL;
+    if (process.env.PROXY_URL != null) {
+      proxyURL = process.env.PROXY_URL;
+    }
 
     const { botToken } = authorizeResult;
-    console.log('body', body);
 
     // tmp use process.env
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+
     await client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user.id,
+      channel: payload.response_urls[0].channel_id,
+      user: payload.user.id,
       text: 'Hello world',
       blocks: [
-        generateMarkdownSectionBlock('hoge1'),
-        generateMarkdownSectionBlock('hoge2'),
+        generateMarkdownSectionBlock('Please enter the following Proxy URL to your GROWI slack bot setting form'),
+        generateMarkdownSectionBlock(`Proxy URL: ${proxyURL}`),
       ],
     });
     return;
