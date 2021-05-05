@@ -54,7 +54,7 @@ export class RegisterService implements GrowiCommandProcessor {
     });
   }
 
-  async sendProxyURL(authorizeResult: AuthorizeResult, payload :any): Promise<void> {
+  async showProxyURL(authorizeResult: AuthorizeResult, payload: any): Promise<void> {
     let proxyURL;
     if (process.env.PROXY_URL != null) {
       proxyURL = process.env.PROXY_URL;

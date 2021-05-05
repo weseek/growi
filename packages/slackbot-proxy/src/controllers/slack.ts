@@ -158,7 +158,7 @@ export class SlackCtrl {
         });
       }
 
-      await this.registerService.sendProxyURL(authorizeResult, payload);
+      await this.registerService.showProxyURL(authorizeResult, payload);
 
 
       res.send();
