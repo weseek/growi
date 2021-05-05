@@ -70,7 +70,7 @@ export class RegisterService implements GrowiCommandProcessor {
       user: payload.user.id,
       text: 'Hello world',
       blocks: [
-        generateMarkdownSectionBlock('Please enter the following Proxy URL to your GROWI slack bot setting form'),
+        generateMarkdownSectionBlock('Please enter and update the following Proxy URL to your GROWI slack bot setting form'),
         generateMarkdownSectionBlock(`Proxy URL: ${proxyURL}`),
       ],
     });
