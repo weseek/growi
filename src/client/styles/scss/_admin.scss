@@ -131,11 +131,22 @@ $slack-work-space-name-card-border: #efc1f6;
       border-width: 3px;
     }
     .circle {
+      top: 50%;
+      left: 50%;
       width: 100px;
       height: 100px;
-      // background: #092c58;
       border: 13px solid;
       border-radius: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+    .circle-inner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
     }
     .slack-work-space-name-card {
       background-color: $slack-work-space-name-card-background;

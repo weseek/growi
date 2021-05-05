@@ -4,7 +4,7 @@ import {
 
 import axios from 'axios';
 
-import { parseSlashCommand } from '@growi/slack';
+import { generateMarkdownSectionBlock, generateWebClient, parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
 
 import { InstallationRepository } from '~/repositories/installation';
@@ -106,7 +106,7 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.find({ installation: installation?.id });
 
-    await relations.map((relation: Relation) => {
+    const promises = relations.map((relation: Relation) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
       return axios.post(url.toString(), {
@@ -115,6 +115,32 @@ export class SlackCtrl {
         growiCommand,
       });
     });
+
+    // pickup PromiseRejectedResult only
+    const results = await Promise.allSettled(promises);
+    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+
+    if (rejectedResults.length > 0) {
+      const botToken = installation?.data.bot?.token;
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(botToken!);
+
+      try {
+        client.chat.postEphemeral({
+          text: 'Error occured.',
+          channel: body.channel_id,
+          user: body.user_id,
+          blocks: [
+            generateMarkdownSectionBlock('*Error occured:*'),
+            ...rejectedResults.map(result => generateMarkdownSectionBlock(result.reason.toString())),
+          ],
+        });
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
   }
 
   @Post('/interactions')
@@ -122,7 +148,59 @@ export class SlackCtrl {
   async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
-    return;
+
+    const { body, authorizeResult } = req;
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
+
+    // pass
+    if (body.ssl_check != null) {
+      return;
+    }
+
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+
+    const handleViewSubmission = async(inputValues) => {
+
+      const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
+      const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
+      const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
+
+      const order = await this.orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
+      if (order != null) {
+        this.orderRepository.update(
+          { installation: installation?.id, growiUrl: inputGrowiUrl },
+          { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
+        );
+      }
+      else {
+        this.orderRepository.save({
+          installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
+        });
+      }
+    };
+
+    const payload = JSON.parse(body.payload);
+    const { type } = payload;
+    const inputValues = payload.view.state.values;
+
+    try {
+      switch (type) {
+        case 'view_submission':
+          await handleViewSubmission(inputValues);
+          break;
+        default:
+          break;
+      }
+    }
+    catch (error) {
+      logger.error(error);
+    }
+
   }
 
   @Post('/events')

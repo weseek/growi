@@ -178,9 +178,8 @@ const SlackIntegration = (props) => {
         <div className="row my-5 flex-wrap-reverse justify-content-center">
           {botTypes.map((botType) => {
             return (
-              <div className="m-3">
+              <div key={botType} className="m-3">
                 <BotTypeCard
-                  key={botType}
                   botType={botType}
                   isActive={currentBotType === botType}
                   handleBotTypeSelect={handleBotTypeSelect}
