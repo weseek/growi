@@ -4,7 +4,7 @@ import {
 
 import axios from 'axios';
 
-import { parseSlashCommand } from '@growi/slack';
+import { generateMarkdownSectionBlock, generateWebClient, parseSlashCommand } from '@growi/slack';
 import { Installation } from '~/entities/installation';
 
 import { InstallationRepository } from '~/repositories/installation';
@@ -106,7 +106,7 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.find({ installation: installation?.id });
 
-    await relations.map((relation: Relation) => {
+    const promises = relations.map((relation: Relation) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
       return axios.post(url.toString(), {
@@ -115,6 +115,32 @@ export class SlackCtrl {
         growiCommand,
       });
     });
+
+    // pickup PromiseRejectedResult only
+    const results = await Promise.allSettled(promises);
+    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+
+    if (rejectedResults.length > 0) {
+      const botToken = installation?.data.bot?.token;
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(botToken!);
+
+      try {
+        client.chat.postEphemeral({
+          text: 'Error occured.',
+          channel: body.channel_id,
+          user: body.user_id,
+          blocks: [
+            generateMarkdownSectionBlock('*Error occured:*'),
+            ...rejectedResults.map(result => generateMarkdownSectionBlock(result.reason.toString())),
+          ],
+        });
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
   }
 
   @Post('/interactions')
