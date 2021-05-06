@@ -90,8 +90,11 @@ export class SlackCtrl {
 
     // register
     if (growiCommand.growiCommandType === 'register') {
-      await this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
-      return res.send();
+      // Send response immediately to avoid opelation_timeout error
+      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+      res.send();
+
+      return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
     /*
