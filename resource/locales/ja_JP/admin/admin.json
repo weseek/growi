@@ -290,7 +290,9 @@
     "accordion": {
       "create_bot": "Bot を作成する",
       "how_to_create_a_bot": "作成方法はこちら",
+      "how_to_install": "インストール方法はこちら",
       "install_bot_to_slack": "Bot を Slack にインストールする",
+      "install_now": "今すぐインストール",
       "select_install_your_app": "Install your app をクリックします。",
       "select_install_to_workspace": "Install to Workspace をクリックします。",
       "register_official_bot_proxy_service": "アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録",
