@@ -10,7 +10,7 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackCredentialsModal from './DeleteSlackCredentialsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, isSlackScopeSet, isSetupSlackBot } = props;
+  const { appContainer, isSlackScopeSet } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
@@ -23,7 +23,7 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken: '',
         currentBotType: 'customBotWithoutProxy',
       });
-      // props.onSetIsSetupSlackBot(false);
+      props.onSetIsSlackScopeSet(false);
       props.fetchSlackIntegrationData();
       toastSuccess('success');
     }
@@ -87,6 +87,7 @@ CustomBotWithoutProxySettings.propTypes = {
   isSetupSlackBot: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
   onSetIsSetupSlackBot: PropTypes.func,
+  onSetIsSlackScopeSet: PropTypes.func,
   fetchSlackIntegrationData: PropTypes.func,
 };
 

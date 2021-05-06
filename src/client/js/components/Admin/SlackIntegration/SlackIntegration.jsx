@@ -67,8 +67,7 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setIsConnectedToSlack(isConnectedToSlack);
       setIsSetupSlackBot(isSetupSlackBot);
-      setIsSlackScopeSet(isSlackScopeSet);
-
+      // setIsSlackScopeSet(isSlackScopeSet);
       fetchSlackWorkSpaceNameInWithoutProxy();
 
       if (isConnectedToSlack) {
@@ -83,7 +82,7 @@ const SlackIntegration = (props) => {
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3, fetchSlackWorkSpaceNameInWithoutProxy, isSlackScopeSet]);
+  }, [appContainer.apiv3, fetchSlackWorkSpaceNameInWithoutProxy]);
 
 
   useEffect(() => {
@@ -149,7 +148,7 @@ const SlackIntegration = (props) => {
           slackSigningSecret={slackSigningSecret}
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
           onSetIsSetupSlackBot={setIsSetupSlackBot}
-          // onSetIsSlackScopeSet={setIsSlackScopeSet}
+          onSetIsSlackScopeSet={setIsSlackScopeSet}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
