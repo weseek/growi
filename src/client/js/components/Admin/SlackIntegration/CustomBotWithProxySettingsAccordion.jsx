@@ -75,7 +75,7 @@ const CustomBotWithProxySettingsAccordion = () => {
         title={<><span className="mr-2">③</span>アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録</>}
       >
         <div className="p-4">
-          <h3>1. Access Tokenの発行</h3>
+          <p>1. Access Tokenの発行</p>
           <div className="form-group row">
             <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
             <div className="col-md-6">
@@ -97,11 +97,16 @@ const CustomBotWithProxySettingsAccordion = () => {
 
           <div className="row my-3">
             <div className="mx-auto">
-              <button type="button" className="btn btn-outline-secondary">破棄</button>
-              <button type="button" className="btn btn-primary">{ t('Update') }</button>
-
+              <button type="button" className="btn btn-outline-secondary mx-2">破棄</button>
+              <button type="button" className="btn btn-primary mx-2">{ t('Update') }</button>
             </div>
           </div>
+          <p>2. GROWI Official Bot Proxy サービスへの登録</p>
+          <ol>
+            <li>Slack上で`/growi register`と打つ</li>
+            <li><b>GROWI URL</b>には`http://localhost:3000/`<i className="fa fa-clipboard" aria-hidden="true"></i>を貼り付ける</li>
+            <li>上記で発行した<b>Access Token for GROWI と Access Token for Proxy</b>を入れる</li>
+          </ol>
 
         </div>
       </Accordion>
