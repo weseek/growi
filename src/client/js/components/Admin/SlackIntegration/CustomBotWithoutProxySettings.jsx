@@ -62,7 +62,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
 
-      {isSlackScopeSet && isSetupSlackBot && (
+      {isSetupSlackBot && isSlackScopeSet && (
       <button
         className="pull-right btn text-danger border-danger"
         type="button"
