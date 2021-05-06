@@ -29,7 +29,7 @@ module.exports = (crowi) => {
     }
   }
 
-  const addSlackBotSigningSecretToReq = (req, res, next) => {
+  const addSigningSecretToReq = (req, res, next) => {
     req.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
     return next();
   };
@@ -62,7 +62,7 @@ module.exports = (crowi) => {
     }
   }
 
-  router.post('/commands', addSlackBotSigningSecretToReq, verifySlackRequest, async(req, res) => {
+  router.post('/commands', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
     return handleCommands(req, res);
   });
 
@@ -140,7 +140,7 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/interactions', addSlackBotSigningSecretToReq, verifySlackRequest, async(req, res) => {
+  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
     return handleInteractions(req, res);
   });
 
