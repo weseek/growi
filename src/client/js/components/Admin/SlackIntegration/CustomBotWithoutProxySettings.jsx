@@ -16,11 +16,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
-  const fetchSlackIntegrationData = () => {
-    if (props.fetchSlackIntegrationData != null) {
-      props.fetchSlackIntegrationData();
-    }
-  };
 
   const onSetIsSetupSlackBot = () => {
     if (props.onSetIsSetupSlackBot != null) {
@@ -36,7 +31,6 @@ const CustomBotWithoutProxySettings = (props) => {
         currentBotType: '',
       });
       onSetIsSetupSlackBot(false);
-      fetchSlackIntegrationData();
       toastSuccess('success');
     }
     catch (err) {
@@ -101,7 +95,6 @@ CustomBotWithoutProxySettings.propTypes = {
   isSetupSlackBot: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
   onSetIsSetupSlackBot: PropTypes.func,
-  fetchSlackIntegrationData: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
