@@ -1,25 +1,37 @@
 import {
-  BodyParams, Controller, Get, Inject, Post, Req, Res, UseBefore,
+  BodyParams, Controller, Get, Inject, Next, Post, Req, Res, UseBefore,
 } from '@tsed/common';
 
 import axios from 'axios';
 
 import {
-  generateMarkdownSectionBlock, parseSlashCommand, postEphemeralErrors,
+  generateMarkdownSectionBlock, parseSlashCommand, postEphemeralErrors, RequestFromSlack, verifySlackRequest,
 } from '@growi/slack';
 
+import { Relation } from '~/entities/relation';
+import { AuthedReq } from '~/interfaces/authorized-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
+import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/authorizer';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
-
 import loggerFactory from '~/utils/logger';
-import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/authorizer';
-import { AuthedReq } from '~/interfaces/authorized-req';
-import { Relation } from '~/entities/relation';
+
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
+
+
+/**
+ * Middleware to pass verifySlackRequest
+ * @param req
+ * @param res
+ * @param next
+ */
+const addSigningSecretToReq = (req: Req & RequestFromSlack, res: Res, next: Next): void => {
+  req.slackSigningSecret = process.env.SLACK_SIGNING_SECRET;
+  next();
+};
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -60,7 +72,7 @@ export class SlackCtrl {
   }
 
   @Post('/commands')
-  @UseBefore(AuthorizeCommandMiddleware)
+  @UseBefore(addSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string|Res> {
     const { body, authorizeResult } = req;
 
