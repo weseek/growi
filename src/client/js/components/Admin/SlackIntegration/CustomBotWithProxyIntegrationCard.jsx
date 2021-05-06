@@ -16,11 +16,19 @@ const CustomBotWithProxyIntegrationCard = (props) => {
         </div>
 
         <div className="text-center w-25">
-          <small
-            className="text-secondary"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
-          />
+          {props.isSlackScopeSet && (
+            <p className="text-success small">
+              <i className="fa fa-check mr-1" />
+              {t('admin:slack_integration.integration_sentence.integration_successful')}
+            </p>
+          )}
+          {!props.isSlackScopeSet && (
+            <small
+              className="text-secondary"
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+            />
+          )}
           <div className="pt-2">
             <div className="position-relative mt-5">
               <div className="circle position-absolute bg-primary border-light">
