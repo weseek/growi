@@ -58,7 +58,6 @@ CustomBotWithoutProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   slackWSNameInWithoutProxy: PropTypes.string,
   isSlackScopeSet: PropTypes.bool.isRequired,
-  isSetupSlackBot: PropTypes.bool.isRequired,
 };
 
 export default CustomBotWithoutProxyIntegrationCard;
