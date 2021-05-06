@@ -23,7 +23,7 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken: '',
         currentBotType: 'customBotWithoutProxy',
       });
-      props.onSetIsSlackScopeSet(false);
+      props.onSetIsSetupSlackBot(false);
       props.fetchSlackIntegrationData();
       toastSuccess('success');
     }
