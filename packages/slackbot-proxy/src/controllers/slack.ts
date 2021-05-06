@@ -164,29 +164,6 @@ export class SlackCtrl {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
-    const handleViewSubmission = async(payload) => {
-
-      const inputValues = payload.view.state.values;
-      const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
-      const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
-      const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
-
-      const order = await this.orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
-      if (order != null) {
-        this.orderRepository.update(
-          { installation: installation?.id, growiUrl: inputGrowiUrl },
-          { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
-        );
-      }
-      else {
-        this.orderRepository.save({
-          installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
-        });
-      }
-
-      await this.registerService.showProxyURL(authorizeResult, payload);
-    };
-
     const payload = JSON.parse(body.payload);
     const { type } = payload;
 
@@ -194,7 +171,8 @@ export class SlackCtrl {
       if (type === 'view_submission') {
         switch (payload.response_urls[0].action_id) {
           case 'show_proxy_url':
-            await handleViewSubmission(payload);
+            await this.registerService.upsertOrderRecord(payload, this.orderRepository, installation);
+            await this.registerService.showProxyURL(authorizeResult, payload);
             break;
           default:
             break;
