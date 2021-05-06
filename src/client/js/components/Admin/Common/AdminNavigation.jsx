@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
+import { pathUtils } from 'growi-commons';
 
 const AdminNavigation = (props) => {
   const { t } = props;
@@ -49,7 +50,13 @@ const AdminNavigation = (props) => {
   };
 
   const isActiveMenu = (path) => {
-    return (pathname.startsWith(urljoin('/admin', path)));
+    const basisPath = pathUtils.normalizePath(urljoin('/admin', path));
+    const basisParentPath = pathUtils.addTrailingSlash(basisPath);
+
+    return (
+      pathname === basisPath
+      || pathname.startsWith(basisParentPath)
+    );
   };
 
   const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
