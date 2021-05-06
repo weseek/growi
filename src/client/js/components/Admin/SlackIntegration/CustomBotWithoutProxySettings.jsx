@@ -16,6 +16,18 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
+  const fetchSlackIntegrationData = () => {
+    if (props.fetchSlackIntegrationData != null) {
+      props.fetchSlackIntegrationData();
+    }
+  };
+
+  const onSetIsSetupSlackBot = () => {
+    if (props.onSetIsSetupSlackBot != null) {
+      props.onSetIsSetupSlackBot();
+    }
+  };
+
   const deleteSlackCredentialsHandler = async() => {
     try {
       await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
@@ -23,8 +35,8 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken: '',
         currentBotType: 'customBotWithoutProxy',
       });
-      props.onSetIsSetupSlackBot(false);
-      props.fetchSlackIntegrationData();
+      onSetIsSetupSlackBot(false);
+      fetchSlackIntegrationData();
       toastSuccess('success');
     }
     catch (err) {
