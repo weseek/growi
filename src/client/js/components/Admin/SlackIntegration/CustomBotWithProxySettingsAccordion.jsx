@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import Accordion from '../Common/Accordion';
 
 const CustomBotWithProxySettingsAccordion = () => {
@@ -78,10 +79,10 @@ const CustomBotWithProxySettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">④</span>ProxyのURLをGROWIに登録する</>}
       >
-        <div className="p-4 text-center">
-          <p>Slack上に通知された<b>Proxy URL</b>を入力し、更新してください。</p>
+        <div className="p-4">
+          <p className="text-center">Slack上に通知された<b>Proxy URL</b>を入力し、更新してください。</p>
           <div className="form-group row">
-            <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
+            <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
             <div className="col-md-6">
               <input
                 className="form-control"
@@ -89,11 +90,13 @@ const CustomBotWithProxySettingsAccordion = () => {
               />
             </div>
           </div>
+          <AdminUpdateButtonRow />
         </div>
       </Accordion>
       <Accordion
         title={<><span className="mr-2">⑤</span>連携状況のテストをする</>}
       >
+        {/* TODO: Responsive */}
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
           <form className="form-row align-items-center w-25" onSubmit={e => submitForm(e)}>
