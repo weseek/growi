@@ -21,7 +21,8 @@ const CustomBotWithProxyIntegrationCard = (props) => {
                       <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
                     </div>
                   </div>
-              )})}
+                );
+              })}
             </>
           )}
         </div>
@@ -66,7 +67,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
         <div className="card-body p-4 mb-5 text-center">
           <div className="btn-group-vertical">
             {props.siteNames.map((siteName) => {
-              return <button key={siteName} className="btn btn-primary mb-3">{siteName}</button>
+              return <a key={siteName} className="btn btn-primary mb-3">{siteName}</a>
             })}
           </div>
         </div>
