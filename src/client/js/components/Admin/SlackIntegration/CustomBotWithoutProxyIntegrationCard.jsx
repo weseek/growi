@@ -23,7 +23,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        {props.isSlackScopeSet && (
+        {props.isSlackScopeSet && props.isSetupSlackBot && (
         <div className="mt-5">
           <p className="text-success small">
             <i className="fa fa-check mr-1" />
@@ -32,7 +32,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           <hr className="align-self-center admin-border-success border-success"></hr>
         </div>
           )}
-        {!props.isSlackScopeSet && (
+        {(!props.isSlackScopeSet || !props.isSetupSlackBot) && (
         <div className="mt-4">
           <small
             className="text-secondary m-0"
