@@ -120,7 +120,7 @@ export class SlackCtrl {
 
     const promises = relations.map((relation: Relation) => {
       // generate API URL
-      const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
+      const url = new URL('/_api/v3/slack-integration/commands', relation.growiUri);
       return axios.post(url.toString(), {
         ...body,
         tokenPtoG: relation.tokenPtoG,

@@ -2,7 +2,7 @@ const express = require('express');
 
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:slack-bot');
+const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 
 const router = express.Router();
 const { verificationSlackRequest } = require('@growi/slack');
