@@ -34,13 +34,11 @@ const CustomBotWithProxySettingsAccordion = () => {
       >
         <div className="row my-5">
           <div className="mx-auto">
-            <div>
-              {/* TODO: Insert install link */}
-              <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-                {t('admin:slack_integration.accordion.install_now')}
-                <i className="fa fa-external-link ml-2" aria-hidden="true" />
-              </button>
-            </div>
+            {/* TODO: Insert install link */}
+            <button type="button" className="btn btn-primary text-nowrap text-center" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+              {t('admin:slack_integration.accordion.install_now')}
+              <i className="fa fa-external-link ml-2" aria-hidden="true" />
+            </button>
             {/* TODO: Insert DOCS link */}
             <a href="#">
               <p className="text-center mt-1">
