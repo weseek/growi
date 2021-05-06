@@ -78,7 +78,18 @@ const CustomBotWithProxySettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">④</span>ProxyのURLをGROWIに登録する</>}
       >
-        4
+        <div className="p-4">
+          <p>Slack上に通知された<b>Proxy URL</b>を以下のInputに入れる</p>
+          <div className="form-group row">
+            <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.site_name')}</label>
+            <div className="col-md-6">
+              <input
+                className="form-control"
+                type="text"
+              />
+            </div>
+          </div>
+        </div>
       </Accordion>
       <Accordion
         title={<><span className="mr-2">⑤</span>連携状況のテストをする</>}
