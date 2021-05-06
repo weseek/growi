@@ -165,42 +165,20 @@ export class SlackCtrl {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
-    const handleViewSubmission = async(inputValues) => {
-
-      const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
-      const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
-      const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
-
-      const order = await this.orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
-      if (order != null) {
-        this.orderRepository.update(
-          { installation: installation?.id, growiUrl: inputGrowiUrl },
-          { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
-        );
-      }
-      else {
-        this.orderRepository.save({
-          installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
-        });
-      }
-    };
-
     const payload = JSON.parse(body.payload);
     const { type } = payload;
-    const inputValues = payload.view.state.values;
 
-    try {
-      switch (type) {
-        case 'view_submission':
-          await handleViewSubmission(inputValues);
-          break;
-        default:
-          break;
-      }
+    // register
+    if (type === 'view_submission' && payload.response_urls[0].action_id === 'submit_growi_url_and_access_tokens') {
+      await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
+      await this.registerService.showProxyUrl(authorizeResult, payload);
+      return;
     }
-    catch (error) {
-      logger.error(error);
-    }
+
+    /*
+     * forward to GROWI server
+     */
+    // TODO: forward to GROWI server by GW-5866
 
   }
 
