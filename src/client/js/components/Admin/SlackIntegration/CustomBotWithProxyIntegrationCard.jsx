@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
-const CustomBotWithProxyIntegrationCard = () => {
-
+const CustomBotWithProxyIntegrationCard = (props) => {
   const { t } = useTranslation();
 
   return (
@@ -47,6 +47,10 @@ const CustomBotWithProxyIntegrationCard = () => {
 
     </>
   );
+};
+
+CustomBotWithProxyIntegrationCard.propTypes = {
+  isSlackScopeSet: PropTypes.bool.isRequired,
 };
 
 export default CustomBotWithProxyIntegrationCard;
