@@ -79,23 +79,19 @@ export class SlackCtrl {
 
   @Post('/commands')
   @UseBefore(AuthorizeCommandMiddleware)
-  async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
+  async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string|Res> {
     const { body, authorizeResult } = req;
 
     if (body.text == null) {
       return 'No text.';
     }
 
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
-
     const growiCommand = parseSlashCommand(body);
 
     // register
     if (growiCommand.growiCommandType === 'register') {
       await this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
-      return;
+      return res.send();
     }
 
     /*
@@ -105,6 +101,19 @@ export class SlackCtrl {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.find({ installation: installation?.id });
+
+    if (relations.length === 0) {
+      return res.json({
+        blocks: [
+          generateMarkdownSectionBlock('*No relation found.*'),
+          generateMarkdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
+    }
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
 
     const promises = relations.map((relation: Relation) => {
       // generate API URL
