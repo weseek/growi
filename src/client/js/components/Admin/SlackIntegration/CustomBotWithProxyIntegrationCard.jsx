@@ -26,7 +26,12 @@ const CustomBotWithProxyIntegrationCard = (props) => {
               <div className="circle position-absolute bg-primary border-light">
                 <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
               </div>
-              <hr className="align-self-center admin-border-danger border-danger"></hr>
+              {props.isSlackScopeSet && (
+                <hr className="align-self-center border-success admin-border-success"></hr>
+              )}
+              {!props.isSlackScopeSet && (
+                <hr className="align-self-center border-danger admin-border-danger"></hr>
+              )}
             </div>
           </div>
         </div>
