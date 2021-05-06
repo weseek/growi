@@ -23,8 +23,13 @@ export const postEphemeralErrors = async(
         ...rejectedResults.map((rejectedResult) => {
           const reason = rejectedResult.reason.toString();
           const resData = rejectedResult.reason.response?.data;
-          const resDataMessage = resData?.message || resData.toString();
-          const errorMessage = `${reason} (${resDataMessage})`;
+          const resDataMessage = resData?.message || resData?.toString();
+
+          let errorMessage = reason;
+          if (resDataMessage != null) {
+            errorMessage += ` (${resDataMessage})`;
+          }
+
           return generateMarkdownSectionBlock(errorMessage);
         }),
       ],
