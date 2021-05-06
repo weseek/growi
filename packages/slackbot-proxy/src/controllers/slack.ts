@@ -7,7 +7,6 @@ import axios from 'axios';
 import {
   generateMarkdownSectionBlock, parseSlashCommand, postEphemeralErrors,
 } from '@growi/slack';
-import { Installation } from '~/entities/installation';
 
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
@@ -39,25 +38,6 @@ export class SlackCtrl {
 
   @Inject()
   registerService: RegisterService;
-
-  @Get('/testsave')
-  testsave(): void {
-    const installation = new Installation();
-    installation.data = {
-      team: undefined,
-      enterprise: undefined,
-      user: {
-        id: '',
-        token: undefined,
-        scopes: undefined,
-      },
-    };
-
-    // const installationRepository = getRepository(Installation);
-
-    this.installationRepository.save(installation);
-  }
-
 
   @Get('/install')
   async install(): Promise<string> {
