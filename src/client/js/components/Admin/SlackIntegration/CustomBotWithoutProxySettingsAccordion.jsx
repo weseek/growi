@@ -32,7 +32,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const currentBotType = 'customBotWithoutProxy';
 
 
-  const updateSecretTokenHandler = async () => {
+  const updateSecretTokenHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret,
@@ -63,7 +63,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const testConnection = async () => {
+  const testConnection = async() => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     setConnectionSuccessMessage(null);
