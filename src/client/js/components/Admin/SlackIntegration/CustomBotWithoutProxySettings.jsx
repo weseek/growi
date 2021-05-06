@@ -55,7 +55,7 @@ const CustomBotWithoutProxySettings = (props) => {
         className="pull-right btn text-danger border-danger"
         type="button"
         onClick={() => setIsDeleteConfirmModalShown(true)}
-      >リセット
+      >{t('admin:slack_integration.reset')}
       </button>
       ) }
 
