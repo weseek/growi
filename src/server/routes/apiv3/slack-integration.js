@@ -27,6 +27,8 @@ module.exports = (crowi) => {
     if (tokenPtoG == null || tokenPtoG !== correctToken) {
       return res.status(403).send({ message: 'The access token that identifies the request source is slackbot-proxy is invalid.' });
     }
+
+    next();
   }
 
   const addSigningSecretToReq = (req, res, next) => {
