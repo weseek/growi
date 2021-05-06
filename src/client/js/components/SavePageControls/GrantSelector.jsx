@@ -200,7 +200,6 @@ class GrantSelector extends React.Component {
     return (
       <Modal
         className="select-grant-group"
-        container={this}
         isOpen={this.state.isSelectGroupModalShown}
         toggle={this.hideSelectGroupModal}
       >

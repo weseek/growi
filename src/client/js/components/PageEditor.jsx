@@ -101,13 +101,25 @@ class PageEditor extends React.Component {
    * @param {string} value
    */
   onMarkdownChanged(value) {
-    // const { pageContainer, editorContainer } = this.props;
-    this.setMarkdownStateWithDebounce(value);
-    // only when the first time to edit
+    // TODO GW-5862 display alert
+    // const { pageContainer } = this.props;
+    // this.setMarkdownStateWithDebounce(value);
+    // // only when the first time to edit
     // if (!pageContainer.state.revisionId) {
     //   this.saveDraftWithDebounce();
     // }
-    // editorContainer.enableUnsavedWarning();
+  }
+
+  // Displays an alert if there is a difference with pageContainer's markdown
+  componentDidUpdate(prevProps, prevState) {
+    // TODO GW-5862 display alert
+    // const { pageContainer, editorContainer } = this.props;
+
+    // if (this.state.markdown !== prevState.markdown) {
+    //   if (pageContainer.state.markdown !== this.state.markdown) {
+    //     editorContainer.enableUnsavedWarning();
+    //   }
+    // }
   }
 
   /**
