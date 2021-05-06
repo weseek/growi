@@ -4,6 +4,8 @@ import {
 
 import axios from 'axios';
 
+import { WebAPICallResult } from '@slack/web-api';
+
 import {
   generateMarkdownSectionBlock, parseSlashCommand, postEphemeralErrors, RequestFromSlack, verifySlackRequest,
 } from '@growi/slack';
@@ -73,7 +75,7 @@ export class SlackCtrl {
 
   @Post('/commands')
   @UseBefore(addSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
-  async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string|Res> {
+  async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
     if (body.text == null) {
@@ -129,7 +131,7 @@ export class SlackCtrl {
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
+      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
     }
     catch (err) {
       logger.error(err);
