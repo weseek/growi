@@ -33,6 +33,7 @@ const SlackIntegration = (props) => {
     if (!isConnectedToSlack || !isSetupSlackBot) {
       return setSlackWSNameInWithoutProxy(null);
     }
+
     try {
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
@@ -66,7 +67,6 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setIsConnectedToSlack(isConnectedToSlack);
       setIsSetupSlackBot(isSetupSlackBot);
-      // setIsSlackScopeSet(isSlackScopeSet);
       fetchSlackWorkSpaceNameInWithoutProxy();
 
       if (isConnectedToSlack) {

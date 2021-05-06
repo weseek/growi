@@ -11,7 +11,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       <div className="card rounded shadow border-0 w-50 admin-bot-card mb-0">
         <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
         <div className="card-body p-2 w-50 mx-auto">
-          {props.slackWSNameInWithoutProxy != null && (
+          {props.isSetupSlackBot && props.slackWSNameInWithoutProxy != null && (
           <div className="card slack-work-space-name-card">
             <div className="m-2 text-center">
               <h5 className="font-weight-bold">{props.slackWSNameInWithoutProxy}</h5>
@@ -23,7 +23,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        {props.isSlackScopeSet && props.isSetupSlackBot && (
+        {props.isSetupSlackBot && props.isSlackScopeSet && (
         <div className="mt-5">
           <p className="text-success small">
             <i className="fa fa-check mr-1" />
@@ -32,7 +32,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           <hr className="align-self-center admin-border-success border-success"></hr>
         </div>
           )}
-        {(!props.isSlackScopeSet || !props.isSetupSlackBot) && (
+        {(!props.isSetupSlackBot || !props.isSlackScopeSet) && (
         <div className="mt-4">
           <small
             className="text-secondary m-0"
@@ -58,6 +58,7 @@ CustomBotWithoutProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   slackWSNameInWithoutProxy: PropTypes.string,
   isSlackScopeSet: PropTypes.bool.isRequired,
+  isSetupSlackBot: PropTypes.bool.isRequired,
 };
 
 export default CustomBotWithoutProxyIntegrationCard;
