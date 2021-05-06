@@ -272,6 +272,8 @@
       "impossible": "不可"
     },
     "reset":"リセット",
+    "delete_credentials": "Signing Secret と Bot Token をリセットする",
+    "credentials_notice": "Signing Secret と Bot Token をリセットします",
     "bot_reset_successful": "Botの設定を消去しました。",
     "copied_to_clipboard": "クリップボードにコピーされました。",
     "set_scope": "Slackの設定画面からBot Token Scopeを設定してください",

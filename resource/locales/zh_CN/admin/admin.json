@@ -282,6 +282,8 @@
       "impossible": "不可能"
     },
     "reset":"重置",
+    "delete_credentials": "删除签名秘密和令牌",
+    "credentials_notice": "移除签名秘密和机器人令牌。",
     "bot_reset_successful": "删除了BOT设置。",
     "copied_to_clipboard": "它已复制到剪贴板。",
     "set_scope": "在Slack设置页面中配置Bot Token Scope。",

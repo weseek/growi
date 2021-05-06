@@ -36,11 +36,11 @@ const DeleteSlackCredentialsModal = React.memo((props) => {
       <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
         <span>
           <i className="icon-fw icon-fire"></i>
-          {t('share_links.delete_all_share_links')}
+          {t('admin:slack_integration.delete_credentials')}
         </span>
       </ModalHeader>
       <ModalBody>
-        { t('share_links.share_link_notice')}
+        {t('admin:slack_integration.credentials_notice')}
       </ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
