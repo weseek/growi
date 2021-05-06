@@ -300,7 +300,9 @@
     "accordion": {
       "create_bot": "创建 Bot",
       "how_to_create_a_bot": "如何创建一个 Bot",
+      "how_to_install": "点击这里查看安装说明",
       "install_bot_to_slack": "将 Bot 安装到 Slack",
+      "install_now": "现在安装",
       "select_install_your_app": "选择 \"Install your app\"。",
       "select_install_to_workspace": "选择 \"Install to Workspace\"。",
       "register_official_bot_proxy_service": "发行访问令牌 / 注册 GROWI 官方 Bot 代理服务",

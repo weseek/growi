@@ -293,7 +293,9 @@
     "accordion": {
       "create_bot": "Create Bot",
       "how_to_create_a_bot": "How to create a bot",
+      "how_to_install": "How to install",
       "install_bot_to_slack": "Install Bot To Slack",
+      "install_now": "Install now",
       "select_install_your_app": "Select \"Install your app\".",
       "select_install_to_workspace": "Select \"Install to Workspace\".",
       "register_official_bot_proxy_service": "Issue Access Token / Register GROWI Official Bot Proxy Service",
