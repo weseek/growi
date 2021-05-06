@@ -33,10 +33,11 @@ const SlackIntegration = (props) => {
     if (!isConnectedToSlack) {
       return setSlackWSNameInWithoutProxy(null);
     }
+
     try {
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-      setIsSlackScopeSet(true);
+      // setIsSlackScopeSet(true);
     }
     catch (err) {
       if (err[0].message === 'missing_scope') {
@@ -66,6 +67,7 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setIsConnectedToSlack(isConnectedToSlack);
       setIsSetupSlackBot(isSetupSlackBot);
+      setIsSlackScopeSet(isSlackScopeSet);
 
       fetchSlackWorkSpaceNameInWithoutProxy();
 
@@ -81,7 +83,7 @@ const SlackIntegration = (props) => {
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3, fetchSlackWorkSpaceNameInWithoutProxy]);
+  }, [appContainer.apiv3, fetchSlackWorkSpaceNameInWithoutProxy, isSlackScopeSet]);
 
 
   useEffect(() => {
@@ -147,6 +149,7 @@ const SlackIntegration = (props) => {
           slackSigningSecret={slackSigningSecret}
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
           onSetIsSetupSlackBot={setIsSetupSlackBot}
+          // onSetIsSlackScopeSet={setIsSlackScopeSet}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
