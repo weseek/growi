@@ -2,46 +2,39 @@ const express = require('express');
 
 const loggerFactory = require('@alias/logger');
 
-const logger = loggerFactory('growi:routes:apiv3:slack-integration');
+const { verifySlackRequest } = require('@growi/slack');
 
+const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
-const { verificationSlackRequest } = require('@growi/slack');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
 
+  const { configManager } = crowi;
+
   // Check if the access token is correct
-  function verificationAccessToken(req, res, next) {
-    const botType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-    if (botType === 'customBotWithoutProxy') {
-      return next();
-    }
-    const slackBotAccessToken = req.body.slack_bot_access_token || null;
+  function verifyAccessTokenFromProxy(req, res, next) {
+    const { body } = req;
+    const { tokenPtoG } = body;
 
-    if (slackBotAccessToken == null || slackBotAccessToken !== this.crowi.configManager.getConfig('crowi', 'slackbot:access-token')) {
-      logger.error('slack_bot_access_token is invalid.');
-      return res.send('*Access token is inValid*');
-    }
+    const correctToken = configManager.getConfig('crowi', 'slackbot:access-token');
 
-    return next();
+    logger.debug('verifyAccessTokenFromProxy', {
+      tokenPtoG,
+      correctToken,
+    });
+
+    if (tokenPtoG == null || tokenPtoG !== correctToken) {
+      return res.status(403).send({ message: 'The access token that identifies the request source is slackbot-proxy is invalid.' });
+    }
   }
 
-  function verificationRequestUrl(req, res, next) {
-    // for verification request URL on Event Subscriptions
-    if (req.body.type === 'url_verification') {
-      return res.send(req.body);
-    }
-
-    return next();
-  }
-
-  const addSlackBotSigningSecret = (req, res, next) => {
-    req.signingSecret = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+  const addSlackBotSigningSecretToReq = (req, res, next) => {
+    req.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
     return next();
   };
 
-  router.post('/commands', verificationRequestUrl, addSlackBotSigningSecret, verificationSlackRequest, verificationAccessToken, async(req, res) => {
-
+  async function handleCommands(req, res) {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
@@ -67,7 +60,24 @@ module.exports = (crowi) => {
       logger.error(error);
       return res.send(error.message);
     }
+  }
+
+  router.post('/commands', addSlackBotSigningSecretToReq, verifySlackRequest, async(req, res) => {
+    return handleCommands(req, res);
   });
+
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, async(req, res) => {
+    const { body } = req;
+
+    // eslint-disable-next-line max-len
+    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
+    if (body.type === 'url_verification') {
+      return body.challenge;
+    }
+
+    return handleCommands(req, res);
+  });
+
 
   const handleBlockActions = async(payload) => {
     const { action_id: actionId } = payload.actions[0];
@@ -102,7 +112,7 @@ module.exports = (crowi) => {
     }
   };
 
-  router.post('/interactions', verificationRequestUrl, addSlackBotSigningSecret, verificationSlackRequest, async(req, res) => {
+  async function handleInteractions(req, res) {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
@@ -128,8 +138,15 @@ module.exports = (crowi) => {
       return res.send(error.message);
     }
 
+  }
+
+  router.post('/interactions', addSlackBotSigningSecretToReq, verifySlackRequest, async(req, res) => {
+    return handleInteractions(req, res);
   });
 
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, async(req, res) => {
+    return handleInteractions(req, res);
+  });
 
   return router;
 };

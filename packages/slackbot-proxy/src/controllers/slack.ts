@@ -120,7 +120,7 @@ export class SlackCtrl {
 
     const promises = relations.map((relation: Relation) => {
       // generate API URL
-      const url = new URL('/_api/v3/slack-integration/commands', relation.growiUri);
+      const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
       return axios.post(url.toString(), {
         ...body,
         tokenPtoG: relation.tokenPtoG,
@@ -145,7 +145,13 @@ export class SlackCtrl {
           user: body.user_id,
           blocks: [
             generateMarkdownSectionBlock('*Error occured:*'),
-            ...rejectedResults.map(result => generateMarkdownSectionBlock(result.reason.toString())),
+            ...rejectedResults.map((rejectedResult) => {
+              const reason = rejectedResult.reason.toString();
+              const resData = rejectedResult.reason.response?.data;
+              const resDataMessage = resData?.message || resData.toString();
+              const errorMessage = `${reason} (${resDataMessage})`;
+              return generateMarkdownSectionBlock(errorMessage);
+            }),
           ],
         });
       }
