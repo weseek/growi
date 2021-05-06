@@ -24,7 +24,7 @@ const CustomBotWithoutProxySettings = (props) => {
         currentBotType: 'customBotWithoutProxy',
       });
       props.fetchSlackIntegrationData();
-      toastSuccess('成功');
+      toastSuccess('success');
     }
     catch (err) {
       toastError(err);
