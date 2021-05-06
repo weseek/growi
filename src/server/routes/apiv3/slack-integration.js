@@ -105,7 +105,6 @@ module.exports = (crowi) => {
         slackBotTokenEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
-        isSetupSlackBot: crowi.slackBotService.isSetupSlackBot,
         isConnectedToSlack: crowi.slackBotService.isConnectedToSlack,
       },
       // TODO imple when creating with proxy
@@ -232,7 +231,10 @@ module.exports = (crowi) => {
       return res.apiv3({ slackWorkSpaceName });
     }
     catch (error) {
-      const msg = 'Error occured in slack_bot_token';
+      let msg = 'Error occured in slack_bot_token';
+      if (error.data.error === 'missing_scope') {
+        msg = 'missing_scope';
+      }
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
     }

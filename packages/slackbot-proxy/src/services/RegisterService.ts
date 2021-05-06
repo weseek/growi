@@ -5,6 +5,9 @@ import { AuthorizeResult } from '@slack/oauth';
 
 import { GrowiCommandProcessor } from '~/interfaces/growi-command-processor';
 
+
+const isProduction = process.env.NODE_ENV === 'production';
+
 @Service()
 export class RegisterService implements GrowiCommandProcessor {
 
@@ -13,7 +16,7 @@ export class RegisterService implements GrowiCommandProcessor {
     const { botToken } = authorizeResult;
 
     // tmp use process.env
-    const client = new WebClient(botToken, { logLevel: LogLevel.DEBUG });
+    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
     await client.views.open({
       trigger_id: body.trigger_id,
       view: {
@@ -33,7 +36,7 @@ export class RegisterService implements GrowiCommandProcessor {
         blocks: [
           generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', false, 'https://example.com'),
           generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
-          generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEM', 'contents_input', false, 'jBMZvpk.....'),
+          generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
         ],
       },
     });
