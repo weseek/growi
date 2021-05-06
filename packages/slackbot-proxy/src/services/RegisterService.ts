@@ -54,6 +54,7 @@ export class RegisterService implements GrowiCommandProcessor {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async showProxyURL(authorizeResult: AuthorizeResult, payload: any): Promise<void> {
     let proxyURL;
     if (process.env.PROXY_URL != null) {
