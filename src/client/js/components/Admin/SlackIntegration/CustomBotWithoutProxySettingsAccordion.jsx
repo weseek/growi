@@ -32,7 +32,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const currentBotType = 'customBotWithoutProxy';
 
 
-  const updateSecretTokenHandler = async() => {
+  const updateSecretTokenHandler = async () => {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret,
@@ -63,7 +63,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const testConnection = async() => {
+  const testConnection = async () => {
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     setConnectionSuccessMessage(null);
@@ -104,24 +104,20 @@ const CustomBotWithoutProxySettingsAccordion = ({
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CREATE_BOT)}
         title={<><span className="mr-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
       >
-        <div className="row my-5">
-          <div className="mx-auto">
-            <div>
-              <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-                {t('admin:slack_integration.accordion.create_bot')}
+        <div className="my-5 d-flex flex-column align-items-center">
+          <button type="button" className="btn btn-primary text-nowrap mx-1" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+            {t('admin:slack_integration.accordion.create_bot')}
+            <i className="fa fa-external-link ml-2" aria-hidden="true" />
+          </button>
+          {/* TODO: Insert DOCS link */}
+          <a href="#">
+            <p className="text-center mt-1">
+              <small>
+                {t('admin:slack_integration.accordion.how_to_create_a_bot')}
                 <i className="fa fa-external-link ml-2" aria-hidden="true" />
-              </button>
-            </div>
-            {/* TODO: Insert DOCS link */}
-            <a href="#">
-              <p className="text-center mt-1">
-                <small>
-                  {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-                  <i className="fa fa-external-link ml-2" aria-hidden="true" />
-                </small>
-              </p>
-            </a>
-          </div>
+              </small>
+            </p>
+          </a>
         </div>
       </Accordion>
       <Accordion
@@ -186,9 +182,9 @@ const CustomBotWithoutProxySettingsAccordion = ({
           </form>
         </div>
         {connectionErrorMessage != null
-        && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
+          && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
         {connectionSuccessMessage != null
-        && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
+          && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
         <form>
           <div className="row my-3 justify-content-center">
             <div className="form-group slack-connection-log w-25">
