@@ -23,6 +23,7 @@ const SlackIntegration = (props) => {
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [isConnectedToSlack, setIsConnectedToSlack] = useState(false);
+  const [isSetupSlackBot, setIsSetupSlackBot] = useState(false);
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
@@ -55,7 +56,7 @@ const SlackIntegration = (props) => {
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
-        isConnectedToSlack,
+        isConnectedToSlack, isSetupSlackBot,
       } = customBotWithoutProxySettings;
 
       setCurrentBotType(currentBotType);
@@ -64,6 +65,7 @@ const SlackIntegration = (props) => {
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setIsConnectedToSlack(isConnectedToSlack);
+      setIsSetupSlackBot(isSetupSlackBot);
 
       fetchSlackWorkSpaceNameInWithoutProxy();
 
@@ -137,12 +139,14 @@ const SlackIntegration = (props) => {
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
           isConnectedToSlack={isConnectedToSlack}
+          isSetupSlackBot={isSetupSlackBot}
           isSlackScopeSet={isSlackScopeSet}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
+          onSetIsSetupSlackBot={setIsSetupSlackBot}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
