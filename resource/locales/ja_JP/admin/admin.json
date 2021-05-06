@@ -269,7 +269,8 @@
       "normal": "ふつう",
       "hard": "むずかしい",
       "possible": "可能",
-      "impossible": "不可"
+      "impossible": "不可",
+      "reset":"リセット"
     },
     "bot_reset_successful": "Botの設定を消去しました。",
     "copied_to_clipboard": "クリップボードにコピーされました。",
