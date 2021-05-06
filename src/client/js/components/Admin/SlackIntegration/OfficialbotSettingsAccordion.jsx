@@ -30,7 +30,7 @@ const OfficialBotSettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">②</span>{t('admin:slack_integration.accordion.register_official_bot_proxy_service')}</>}
       >
-
+        {/* TODO: GW-5824 add accordion contents  */}
         hoge
       </Accordion>
       <Accordion
@@ -42,8 +42,37 @@ const OfficialBotSettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}</>}
       >
-        {/* TODO: GW-5824 add accordion contents  */}
-        hoge
+        <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
+        <div className="d-flex justify-content-center">
+          <form className="form-row align-items-center w-25">
+            <div className="col-8 input-group-prepend">
+              <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+              <input
+                className="form-control w-100"
+                type="text"
+                placeholder="Slack Channel"
+              />
+            </div>
+            <div className="col-4">
+              <button
+                type="submit"
+                className="btn btn-info mx-3 font-weight-bold"
+              >Test
+              </button>
+            </div>
+          </form>
+        </div>
+        <form>
+          <div className="row my-3 justify-content-center">
+            <div className="form-group slack-connection-log w-25">
+              <label className="mb-1"><p className="border-info slack-connection-log-title pl-2">Logs</p></label>
+              <textarea
+                className="form-control card border-info slack-connection-log-body rounded-lg"
+                readOnly
+              />
+            </div>
+          </div>
+        </form>
       </Accordion>
     </div>
   );
