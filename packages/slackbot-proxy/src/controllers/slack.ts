@@ -167,21 +167,16 @@ export class SlackCtrl {
     const payload = JSON.parse(body.payload);
     const { type } = payload;
 
-    try {
-      if (type === 'view_submission') {
-        switch (payload.response_urls[0].action_id) {
-          case 'show_proxy_url':
-            await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
-            await this.registerService.showProxyURL(authorizeResult, payload);
-            break;
-          default:
-            break;
-        }
-      }
+    // register
+    if (type === 'view_submission' && payload.response_urls[0].action_id === 'show_proxy_url') {
+      await this.registerService.upsertOrderRecord(authorizeResult, this.orderRepository, installation, payload);
+      return;
     }
-    catch (error) {
-      logger.error(error);
-    }
+
+    /*
+     * forward to GROWI server
+     */
+    // TODO: forward to GROWI server by GW-5866
 
   }
 
