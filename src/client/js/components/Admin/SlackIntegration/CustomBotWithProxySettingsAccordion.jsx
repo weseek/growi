@@ -74,8 +74,8 @@ const CustomBotWithProxySettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">③</span>アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録</>}
       >
-        <div className="p-4">
-          <p>1. Access Tokenの発行</p>
+        <div className="py-4 px-5">
+          <p className="font-weight-bold">1. Access Tokenの発行</p>
           <div className="form-group row">
             <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
             <div className="col-md-6">
@@ -101,7 +101,7 @@ const CustomBotWithProxySettingsAccordion = () => {
               <button type="button" className="btn btn-primary mx-2">{ t('Update') }</button>
             </div>
           </div>
-          <p>2. GROWI Official Bot Proxy サービスへの登録</p>
+          <p className="font-weight-bold">2. GROWI Official Bot Proxy サービスへの登録</p>
           <div className="d-flex flex-column align-items-center">
             <ol className="p-0">
               <li><p className="ml-2">Slack上で`/growi register`と打つ</p></li>
