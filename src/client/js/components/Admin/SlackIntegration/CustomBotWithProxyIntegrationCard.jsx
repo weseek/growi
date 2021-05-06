@@ -64,7 +64,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
           </div>
         </div>
         <div className="card-body p-4 mb-5 text-center">
-          <a className="btn btn-primary">{props.siteName[0]}</a>
+          <a className="btn btn-primary">{props.siteNames[0]}</a>
         </div>
       </div>
     </div>
