@@ -15,10 +15,11 @@ const CustomBotWithProxySettings = (props) => {
   return (
     <>
 
-      {/* TODO: GW-5768 */}
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
-      <CustomBotWithProxyIntegrationCard />
+      <CustomBotWithProxyIntegrationCard
+        isSlackScopeSet
+      />
 
       <div className="my-5 mx-3">
         <CustomBotWithProxySettingsAccordion />
