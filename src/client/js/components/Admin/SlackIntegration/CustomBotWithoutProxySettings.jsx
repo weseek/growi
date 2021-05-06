@@ -30,7 +30,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const deleteSlackCredentialsHandler = async() => {
     try {
-      await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
+      await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
         slackBotToken: '',
         currentBotType: 'customBotWithoutProxy',
@@ -101,7 +101,6 @@ CustomBotWithoutProxySettings.propTypes = {
   isSetupSlackBot: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
   onSetIsSetupSlackBot: PropTypes.func,
-  onSetIsSlackScopeSet: PropTypes.func,
   fetchSlackIntegrationData: PropTypes.func,
 };
 
