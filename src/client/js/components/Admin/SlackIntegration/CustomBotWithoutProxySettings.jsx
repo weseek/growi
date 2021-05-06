@@ -7,7 +7,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegrationCard';
-import DeleteSlackCredentialsModal from './DeleteSlackCredentialsModal';
+import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, isSlackScopeSet, isSetupSlackBot } = props;
@@ -77,7 +77,7 @@ const CustomBotWithoutProxySettings = (props) => {
           activeStep={botInstallationStep.CREATE_BOT}
         />
       </div>
-      <DeleteSlackCredentialsModal
+      <DeleteSlackBotSettingsModal
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
         onClickDeleteButton={deleteSlackCredentialsHandler}

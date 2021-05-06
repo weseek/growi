@@ -7,7 +7,7 @@ import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-const DeleteSlackCredentialsModal = React.memo((props) => {
+const DeleteSlackBotSettingsModal = React.memo((props) => {
   const { t } = props;
 
   function closeModal() {
@@ -54,7 +54,7 @@ const DeleteSlackCredentialsModal = React.memo((props) => {
 
 });
 
-DeleteSlackCredentialsModal.propTypes = {
+DeleteSlackBotSettingsModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   isOpen: PropTypes.bool.isRequired,
@@ -62,4 +62,4 @@ DeleteSlackCredentialsModal.propTypes = {
   onClickDeleteButton: PropTypes.func,
 };
 
-export default withTranslation()(DeleteSlackCredentialsModal);
+export default withTranslation()(DeleteSlackBotSettingsModal);
