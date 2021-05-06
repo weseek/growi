@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Accordion from '../Common/Accordion';
 
 const CustomBotWithProxySettingsAccordion = () => {
+  const [testChannel, setTestChannel] = useState('');
+  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
+  const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
+  const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
+
   const { t } = useTranslation();
-  
-  // TODO: Handle Test button
+
+  // TODO: Handle test button
   const submitForm = (e) => {
     e.preventDefault();
     console.log('Form Submitted');
   };
+
+  const inputTestChannelHandler = (channel) => {
+    setTestChannel(channel);
+  };
+
+  // TODO: Show test logs
+  let value = '';
+  if (connectionErrorMessage != null) {
+    value = [connectionErrorCode, connectionErrorMessage];
+  }
+  if (connectionSuccessMessage != null) {
+    value = connectionSuccessMessage;
+  }
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -55,7 +73,7 @@ const CustomBotWithProxySettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">③</span>アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録</>}
       >
-
+        3
       </Accordion>
       <Accordion
         title={<><span className="mr-2">④</span>ProxyのURLをGROWIに登録する</>}
@@ -65,7 +83,7 @@ const CustomBotWithProxySettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">⑤</span>連携状況のテストをする</>}
       >
-         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
+        <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
           <form className="form-row align-items-center w-25" onSubmit={e => submitForm(e)}>
             <div className="col-8 input-group-prepend">
@@ -75,6 +93,7 @@ const CustomBotWithProxySettingsAccordion = () => {
                 type="text"
                 value={testChannel}
                 placeholder="Slack Channel"
+                // TODO: Handle test button
                 onChange={e => inputTestChannelHandler(e.target.value)}
               />
             </div>
@@ -98,14 +117,13 @@ const CustomBotWithProxySettingsAccordion = () => {
               <label className="mb-1"><p className="border-info slack-connection-log-title pl-2">Logs</p></label>
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
+                // TODO: Show test logs
                 value={value}
                 readOnly
               />
             </div>
           </div>
         </form>
-      </Accordion>
-    </div>
       </Accordion>
     </div>
   );
