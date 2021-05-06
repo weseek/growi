@@ -30,14 +30,16 @@ const SlackIntegration = (props) => {
   const [isSlackScopeSet, setIsSlackScopeSet] = useState(false);
 
   const fetchSlackWorkSpaceNameInWithoutProxy = useCallback(async() => {
-    if (!isConnectedToSlack) {
+    if (!isConnectedToSlack || !isSlackScopeSet) {
       return setSlackWSNameInWithoutProxy(null);
     }
 
+    console.log(isSlackScopeSet);
     try {
+      console.log('try');
       const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-      // setIsSlackScopeSet(true);
+      setIsSlackScopeSet(true);
     }
     catch (err) {
       if (err[0].message === 'missing_scope') {
@@ -49,7 +51,7 @@ const SlackIntegration = (props) => {
         toastError(err);
       }
     }
-  }, [appContainer.apiv3, isConnectedToSlack, t]);
+  }, [appContainer.apiv3, isConnectedToSlack, isSlackScopeSet, t]);
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
