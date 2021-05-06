@@ -171,7 +171,7 @@ export class SlackCtrl {
       if (type === 'view_submission') {
         switch (payload.response_urls[0].action_id) {
           case 'show_proxy_url':
-            await this.registerService.upsertOrderRecord(payload, this.orderRepository, installation);
+            await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
             await this.registerService.showProxyURL(authorizeResult, payload);
             break;
           default:

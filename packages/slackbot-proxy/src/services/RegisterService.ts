@@ -3,6 +3,8 @@ import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/growi-command-processor';
+import { OrderRepository } from '~/repositories/order';
+import { Installation } from '~/entities/installation';
 
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -55,7 +57,7 @@ export class RegisterService implements GrowiCommandProcessor {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async upsertOrderRecord(payload: any, orderRepository, installation): Promise<void> {
+  async upsertOrderRecord(orderRepository: OrderRepository, installation: Installation | undefined, payload: any): Promise<void> {
     const inputValues = payload.view.state.values;
     const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
     const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
@@ -77,6 +79,7 @@ export class RegisterService implements GrowiCommandProcessor {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async showProxyURL(authorizeResult: AuthorizeResult, payload: any): Promise<void> {
+
     // TODO: implement for when proxy URL is undefined by GW-5834
     let proxyURL;
     if (process.env.PROXY_URL != null) {
