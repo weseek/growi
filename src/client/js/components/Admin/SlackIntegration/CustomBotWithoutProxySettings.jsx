@@ -23,6 +23,12 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
+  const onSetIsSlackScopeSet = () => {
+    if (props.onSetIsSlackScopeSet != null) {
+      props.onSetIsSlackScopeSet();
+    }
+  };
+
   const deleteSlackCredentialsHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
@@ -31,6 +37,7 @@ const CustomBotWithoutProxySettings = (props) => {
         currentBotType: '',
       });
       onSetIsSetupSlackBot(false);
+      onSetIsSlackScopeSet(false);
       toastSuccess('success');
     }
     catch (err) {
@@ -95,6 +102,7 @@ CustomBotWithoutProxySettings.propTypes = {
   isSetupSlackBot: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
   onSetIsSetupSlackBot: PropTypes.func,
+  onSetIsSlackScopeSet: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
