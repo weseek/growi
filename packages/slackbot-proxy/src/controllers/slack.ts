@@ -191,12 +191,14 @@ export class SlackCtrl {
     const { type } = payload;
 
     try {
-      switch (type) {
-        case 'view_submission':
-          await handleViewSubmission(payload);
-          break;
-        default:
-          break;
+      if (type === 'view_submission') {
+        switch (payload.response_urls[0].action_id) {
+          case 'show_proxy_url':
+            await handleViewSubmission(payload);
+            break;
+          default:
+            break;
+        }
       }
     }
     catch (error) {

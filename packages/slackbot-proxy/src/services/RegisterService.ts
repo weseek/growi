@@ -43,7 +43,7 @@ export class RegisterService implements GrowiCommandProcessor {
               text: 'Select a channel to post the proxy URL on',
             },
             element: {
-              action_id: 'post_proxy_url_id',
+              action_id: 'show_proxy_url',
               type: 'conversations_select',
               response_url_enabled: true,
               default_to_current_conversation: true,
