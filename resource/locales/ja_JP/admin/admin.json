@@ -271,9 +271,6 @@
       "possible": "可能",
       "impossible": "不可"
     },
-    "reset":"リセット",
-    "delete_credentials": "Signing Secret と Bot Token をリセットする",
-    "credentials_notice": "Signing Secret と Bot Token をリセットします",
     "bot_reset_successful": "Botの設定を消去しました。",
     "copied_to_clipboard": "クリップボードにコピーされました。",
     "set_scope": "Slackの設定画面からBot Token Scopeを設定してください",
@@ -290,6 +287,9 @@
       "generate": "発行"
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
+    "reset":"リセット",
+    "delete_credentials": "Signing Secret と Bot Token をリセットする",
+    "credentials_notice": "Signing Secret と Bot Token をリセットします",
     "accordion": {
       "create_bot": "Bot を作成する",
       "how_to_create_a_bot": "作成方法はこちら",
