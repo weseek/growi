@@ -103,9 +103,12 @@ const CustomBotWithProxySettingsAccordion = () => {
           </div>
           <p>2. GROWI Official Bot Proxy サービスへの登録</p>
           <ol>
-            <li>Slack上で`/growi register`と打つ</li>
-            <li><b>GROWI URL</b>には`http://localhost:3000/`<i className="fa fa-clipboard" aria-hidden="true"></i>を貼り付ける</li>
-            <li>上記で発行した<b>Access Token for GROWI と Access Token for Proxy</b>を入れる</li>
+            <li className="mx-auto"><p className="ml-2">Slack上で`/growi register`と打つ</p></li>
+            {/* TODO: Copy to clipboard on click */}
+            <li className="mx-auto"><p className="ml-2">
+              <b>GROWI URL</b>には`http://localhost:3000/`<i className="fa fa-clipboard mx-1 text-secondary" aria-hidden="true"></i>を貼り付ける</p>
+            </li>
+            <li className="mx-auto"><p className="ml-2">上記で発行した<b>Access Token for GROWI と Access Token for Proxy</b>を入れる</p></li>
           </ol>
 
         </div>
