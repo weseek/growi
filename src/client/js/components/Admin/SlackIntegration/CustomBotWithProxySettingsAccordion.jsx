@@ -74,14 +74,43 @@ const CustomBotWithProxySettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">③</span>アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録</>}
       >
-        3
+        <div className="p-4">
+          <h3>1. Access Tokenの発行</h3>
+          <div className="form-group row">
+            <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
+            <div className="col-md-6">
+              <input
+                className="form-control"
+                type="text"
+              />
+            </div>
+          </div>
+          <div className="form-group row">
+            <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
+            <div className="col-md-6">
+              <input
+                className="form-control"
+                type="text"
+              />
+            </div>
+          </div>
+
+          <div className="row my-3">
+            <div className="mx-auto">
+              <button type="button" className="btn btn-outline-secondary">破棄</button>
+              <button type="button" className="btn btn-primary">{ t('Update') }</button>
+
+            </div>
+          </div>
+
+        </div>
       </Accordion>
       <Accordion
         title={<><span className="mr-2">④</span>ProxyのURLをGROWIに登録する</>}
       >
         <div className="p-4">
           <p className="text-center">Slack上に通知された<b>Proxy URL</b>を入力し、更新してください。</p>
-          <div className="form-group row">
+          <div className="form-group row my-4">
             <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
             <div className="col-md-6">
               <input
@@ -90,7 +119,11 @@ const CustomBotWithProxySettingsAccordion = () => {
               />
             </div>
           </div>
-          <AdminUpdateButtonRow />
+          <AdminUpdateButtonRow
+            disabled={false}
+            // TODO: Add Proxy URL submit logic
+            onClick={() => console.log('Update')}
+          />
         </div>
       </Accordion>
       <Accordion
