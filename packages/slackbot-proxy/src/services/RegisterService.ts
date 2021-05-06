@@ -45,7 +45,7 @@ export class RegisterService implements GrowiCommandProcessor {
               text: 'Select a channel to post the proxy URL on',
             },
             element: {
-              action_id: 'show_proxy_url',
+              action_id: 'submit_growi_url_and_access_tokens',
               type: 'conversations_select',
               response_url_enabled: true,
               default_to_current_conversation: true,
@@ -58,7 +58,7 @@ export class RegisterService implements GrowiCommandProcessor {
 
   async upsertOrderRecord(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      authorizeResult:AuthorizeResult, orderRepository: OrderRepository, installation: Installation | undefined, payload: any,
+      orderRepository: OrderRepository, installation: Installation | undefined, payload: any,
   ): Promise<void> {
     const inputValues = payload.view.state.values;
     const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
@@ -77,6 +77,12 @@ export class RegisterService implements GrowiCommandProcessor {
         installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
       });
     }
+  }
+
+  async showProxyUrl(
+      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+      authorizeResult:AuthorizeResult, payload: any,
+  ): Promise<void> {
 
     // TODO: implement for when proxy URL is undefined by GW-5834
     let proxyURL;
