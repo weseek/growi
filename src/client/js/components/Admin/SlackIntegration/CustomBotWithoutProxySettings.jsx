@@ -10,7 +10,7 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, isSlackScopeSet, isSetupSlackBot } = props;
+  const { appContainer, errors } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
@@ -23,11 +23,11 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
-  const onSetIsSlackScopeSet = () => {
-    if (props.onSetIsSlackScopeSet != null) {
-      props.onSetIsSlackScopeSet();
-    }
-  };
+  // const onSetIsSlackScopeSet = () => {
+  //   if (props.onSetIsSlackScopeSet != null) {
+  //     props.onSetIsSlackScopeSet();
+  //   }
+  // };
 
   const deleteSlackCredentialsHandler = async() => {
     try {
@@ -37,7 +37,7 @@ const CustomBotWithoutProxySettings = (props) => {
         currentBotType: '',
       });
       onSetIsSetupSlackBot(false);
-      onSetIsSlackScopeSet(false);
+      // onSetIsSlackScopeSet(false);
       toastSuccess('success');
     }
     catch (err) {
@@ -57,13 +57,14 @@ const CustomBotWithoutProxySettings = (props) => {
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
         slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
-        isSlackScopeSet={props.isSlackScopeSet}
-        isSetupSlackBot={props.isSetupSlackBot}
+        errors={errors}
+        // isSlackScopeSet={errors.isSlackScopeSet}
+        // isSetupSlackBot={errors.isSetupSlackBot}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
 
-      {isSetupSlackBot && isSlackScopeSet && (
+      {!errors.includes(false) && (
       <button
         className="pull-right btn text-danger border-danger"
         type="button"
@@ -98,8 +99,9 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   isConnectedToSlack: PropTypes.bool,
-  isSlackScopeSet: PropTypes.bool,
-  isSetupSlackBot: PropTypes.bool,
+  // isSlackScopeSet: PropTypes.bool,
+  // isSetupSlackBot: PropTypes.bool,
+  errors: PropTypes.array,
   slackWSNameInWithoutProxy: PropTypes.string,
   onSetIsSetupSlackBot: PropTypes.func,
   onSetIsSlackScopeSet: PropTypes.func,
