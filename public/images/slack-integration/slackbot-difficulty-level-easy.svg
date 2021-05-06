@@ -1,36 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
   <defs>
     <style>
-      .cls-1, .cls-4 {
-        fill: none;
-      }
-
       .cls-1 {
+        fill: #fff;
         stroke: #81d5b8;
         stroke-width: 3px;
       }
 
       .cls-2 {
-        font-family: NotoSansCJKjp-Bold, Noto Sans CJK JP;
-        font-size: 16px;
-        font-weight: 700;
         fill: #81d5b8;
       }
 
       .cls-3 {
         stroke: none;
       }
+
+      .cls-4 {
+        fill: none;
+      }
     </style>
   </defs>
-  <g id="Group_4361" data-name="Group 4361" transform="translate(-71.69 -49.04)">
-    <g id="Group_4358" data-name="Group 4358">
-      <g id="Group_4357" data-name="Group 4357">
-        <g id="Ellipse_97" data-name="Ellipse 97" class="cls-1" transform="translate(71.69 49.04)">
-          <circle class="cls-3" cx="30" cy="30" r="30"/>
-          <circle class="cls-4" cx="30" cy="30" r="28.5"/>
-        </g>
-        <text id="EASY" class="cls-2" transform="translate(83.884 89.632) rotate(-11)"><tspan x="0" y="0">EASY</tspan></text>
-      </g>
+  <g id="Group_4362" data-name="Group 4362" transform="translate(-538 -44)">
+    <g id="Ellipse_101" data-name="Ellipse 101" class="cls-1" transform="translate(538 44)">
+      <circle class="cls-3" cx="30" cy="30" r="30"/>
+      <circle class="cls-4" cx="30" cy="30" r="28.5"/>
     </g>
+    <path id="Path_708" data-name="Path 708" class="cls-2" d="M1.456,0H8.9V-1.984H3.824V-5.152h4.16V-7.136H3.824V-9.872h4.9V-11.84H1.456ZM13.52-4.88l.352-1.3c.352-1.232.7-2.576,1.008-3.872h.064c.352,1.28.672,2.64,1.04,3.872l.352,1.3ZM17.68,0h2.48L16.352-11.84H13.568L9.776,0h2.4l.832-3.04h3.84Zm7.408.224c2.736,0,4.352-1.648,4.352-3.584a3.271,3.271,0,0,0-2.384-3.216L25.5-7.232c-1.008-.4-1.856-.7-1.856-1.552,0-.784.672-1.248,1.712-1.248a3.777,3.777,0,0,1,2.512.976l1.2-1.488a5.254,5.254,0,0,0-3.712-1.52c-2.4,0-4.1,1.488-4.1,3.424a3.43,3.43,0,0,0,2.4,3.184l1.584.672c1.056.448,1.776.72,1.776,1.6,0,.832-.656,1.36-1.888,1.36a4.658,4.658,0,0,1-3.008-1.312L20.768-1.5A6.309,6.309,0,0,0,25.088.224ZM33.232,0H35.6V-4.336l3.568-7.5H36.7L35.52-8.96c-.336.88-.688,1.712-1.056,2.624H34.4c-.368-.912-.688-1.744-1.024-2.624l-1.184-2.88H29.68l3.552,7.5Z" transform="translate(549.872 85.316) rotate(-11)"/>
   </g>
 </svg>
