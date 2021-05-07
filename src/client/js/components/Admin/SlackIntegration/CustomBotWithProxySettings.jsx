@@ -19,7 +19,7 @@ const CustomBotWithProxySettings = (props) => {
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
-        siteNames={['siteName1', 'siteName2']}
+        siteNames={['siteName1', 'siteName2', 'siteName3']}
         slackWSNameInWithProxy={['wsName1', 'wsName2']}
         isSlackScopeSet
       />
