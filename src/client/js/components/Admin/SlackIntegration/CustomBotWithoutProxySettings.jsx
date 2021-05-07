@@ -29,7 +29,7 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
-  const deleteSlackCredentialsHandler = async() => {
+  const deleteSlackSettingsHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration/custom-bot-without-proxy', {
         slackSigningSecret: '',
@@ -80,7 +80,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <DeleteSlackBotSettingsModal
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={deleteSlackCredentialsHandler}
+        onClickDeleteButton={deleteSlackSettingsHandler}
       />
     </>
   );
