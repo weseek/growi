@@ -296,6 +296,8 @@
       "how_to_install": "How to install",
       "install_bot_to_slack": "Install Bot To Slack",
       "install_now": "Install now",
+      "generate_access_token": "Generate Access Token",
+      "register_for_growi_official_bot_proxy_service": "Register for GROWI Official Bot Proxy Service",
       "select_install_your_app": "Select \"Install your app\".",
       "select_install_to_workspace": "Select \"Install to Workspace\".",
       "register_official_bot_proxy_service": "Issue Access Token / Register GROWI Official Bot Proxy Service",
