@@ -97,8 +97,8 @@ const CustomBotWithProxySettingsAccordion = () => {
 
           <div className="row my-3">
             <div className="mx-auto">
-              <button type="button" className="btn btn-outline-secondary mx-2">破棄</button>
-              <button type="button" className="btn btn-primary mx-2">{ t('Update') }</button>
+              <button type="button" className="btn btn-outline-secondary mx-2">{ t('admin:slack_integration.access_token_settings.discard') }</button>
+              <button type="button" className="btn btn-primary mx-2">{ t('admin:slack_integration.access_token_settings.generate') }</button>
             </div>
           </div>
           <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
