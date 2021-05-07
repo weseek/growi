@@ -139,9 +139,6 @@ const SlackIntegration = (props) => {
         <CustomBotWithoutProxySettings
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
-          // isConnectedToSlack={isConnectedToSlack}
-          // isSetupSlackBot={isSetupSlackBot}
-          // isSlackScopeSet={isSlackScopeSet}
           slackSettingsErrors={slackSettingsErrors}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
