@@ -291,8 +291,8 @@
     "official_bot_settings": "Official bot Settings",
     "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
     "reset": "Reset",
-    "delete_credentials": "Delete Signing Secret and Bot Token",
-    "credentials_notice": "Remove Signing Secret and Bot Token",
+    "delete_slackbot_settings": "Delete Signing Secret and Bot Token",
+    "slackbot_settings_notice": "Remove Signing Secret and Bot Token",
     "accordion": {
       "create_bot": "Create Bot",
       "how_to_create_a_bot": "How to create a bot",

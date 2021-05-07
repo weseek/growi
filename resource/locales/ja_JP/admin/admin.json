@@ -288,8 +288,8 @@
     },
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
     "reset":"リセット",
-    "delete_credentials": "Signing Secret と Bot Token をリセットする",
-    "credentials_notice": "Signing Secret と Bot Token をリセットします",
+    "delete_slackbot_settings": "Signing Secret と Bot Token をリセットする",
+    "slackbot_settings_notice": "Signing Secret と Bot Token をリセットします",
     "accordion": {
       "create_bot": "Bot を作成する",
       "how_to_create_a_bot": "作成方法はこちら",

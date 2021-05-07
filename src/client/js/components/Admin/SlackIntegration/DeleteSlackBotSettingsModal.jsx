@@ -36,11 +36,11 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
       <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
         <span>
           <i className="icon-fw icon-fire"></i>
-          {t('admin:slack_integration.delete_credentials')}
+          {t('admin:slack_integration.delete_slackbot_settings')}
         </span>
       </ModalHeader>
       <ModalBody>
-        {t('admin:slack_integration.credentials_notice')}
+        {t('admin:slack_integration.slackbot_settings_notice')}
       </ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
