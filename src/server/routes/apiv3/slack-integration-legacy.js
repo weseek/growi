@@ -106,6 +106,7 @@ module.exports = (crowi) => {
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
         isConnectedToSlack: crowi.slackBotService.isConnectedToSlack,
+        isSetupSlackBot: crowi.slackBotService.isSetupSlackBot,
       },
       // TODO imple when creating with proxy
       customBotWithProxySettings: {
