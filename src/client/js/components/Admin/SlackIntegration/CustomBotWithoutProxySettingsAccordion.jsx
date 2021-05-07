@@ -68,7 +68,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setConnectionErrorMessage(null);
     setConnectionSuccessMessage(null);
     try {
-      const res = await appContainer.apiv3.post('slack-integration-legacy/notification-test-to-slack-work-space', {
+      const res = await appContainer.apiv3.post('/slack-integration-legacy/notification-test-to-slack-work-space', {
         channel: testChannel,
       });
       setConnectionSuccessMessage(res.data.message);
