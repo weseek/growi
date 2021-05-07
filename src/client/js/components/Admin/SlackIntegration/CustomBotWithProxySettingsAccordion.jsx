@@ -8,8 +8,6 @@ const CustomBotWithProxySettingsAccordion = () => {
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
-  // TODO: get url
-  const [url, setUrl] = useState('http://localhost:3000/');
 
   const { t } = useTranslation();
 
@@ -107,14 +105,23 @@ const CustomBotWithProxySettingsAccordion = () => {
           <div className="d-flex flex-column align-items-center">
             <ol className="p-0">
               <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_growi_register_on_slack')}</p></li>
-              {/* TODO: Copy to clipboard on click */}
               <li>
                 <p
                   className="ml-2"
+                  // TODO: Add dynamic link
+                  // TODO: Copy to clipboard on click
+                  // TODO: Add logo
+                  // eslint-disable-next-line react/no-danger
                   dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
                 />
               </li>
-              <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy')}</p></li>
+              <li>
+                <p
+                  className="ml-2"
+                  // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
+                />
+              </li>
             </ol>
             {/* TODO: Insert photo */}
             <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
@@ -127,7 +134,10 @@ const CustomBotWithProxySettingsAccordion = () => {
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.set_proxy_url_on_growi')}</>}
       >
         <div className="p-4">
-          <p className="text-center">{t('admin:slack_integration.accordion.enter_proxy_url_and_update')}</p>
+          <p
+            className="text-center"
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+          />
           <div className="form-group row my-4">
             <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
             <div className="col-md-6">
