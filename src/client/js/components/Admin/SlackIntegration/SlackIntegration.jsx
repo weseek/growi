@@ -28,7 +28,7 @@ const SlackIntegration = (props) => {
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isSlackScopeSet, setIsSlackScopeSet] = useState(false);
-  const slackSettingErrors = [isSetupSlackBot, isConnectedToSlack, isSlackScopeSet];
+  const slackSettingsErrors = [isSetupSlackBot, isConnectedToSlack, isSlackScopeSet];
 
 
   const fetchSlackWorkSpaceNameInWithoutProxy = useCallback(async() => {
@@ -142,7 +142,7 @@ const SlackIntegration = (props) => {
           // isConnectedToSlack={isConnectedToSlack}
           // isSetupSlackBot={isSetupSlackBot}
           // isSlackScopeSet={isSlackScopeSet}
-          slackSettingErrors={slackSettingErrors}
+          slackSettingsErrors={slackSettingsErrors}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
