@@ -314,7 +314,8 @@
       "integration_is_not_complete": "Integration is not complete.<br>Proceed with the following integration procedure.",
       "integration_successful": "Integration successful"
     },
-    "custom_bot_with_proxy_integration": "Custom bot with proxy integration"
+    "custom_bot_with_proxy_integration": "Custom bot with proxy integration",
+    "official_bot_integration": "Official bot integration"
   },
   "user_management": {
     "invite_users": "Temporarily issue a new user",
