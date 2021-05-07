@@ -1,19 +1,18 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { stringify } from 'qs';
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+
+import { RequestFromSlack } from '../interfaces/request-from-slack';
+
 /**
-   * Verify if the request came from slack
-   * See: https://api.slack.com/authentication/verifying-requests-from-slack
-   */
+ * Verify if the request came from slack
+ * See: https://api.slack.com/authentication/verifying-requests-from-slack
+ */
+export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: NextFunction): Record<string, any> | void => {
+  const signingSecret = req.slackSigningSecret;
 
-type signingSecretType = {
-  signingSecret?:string; headers:{'x-slack-signature'?:string, 'x-slack-request-timestamp':number}
-}
-
-// eslint-disable-next-line max-len
-export const verificationSlackRequest = (req : Request & signingSecretType, res:Response, next:NextFunction):Record<string, any>| void => {
-  if (req.signingSecret == null) {
-    return res.send('No signing secret.');
+  if (signingSecret == null) {
+    return res.status(400).send({ message: 'No signing secret.' });
   }
 
   // take out slackSignature and timestamp from header
@@ -32,7 +31,7 @@ export const verificationSlackRequest = (req : Request & signingSecretType, res:
 
   // generate growi signature
   const sigBaseString = `v0:${timestamp}:${stringify(req.body, { format: 'RFC1738' })}`;
-  const hasher = createHmac('sha256', req.signingSecret);
+  const hasher = createHmac('sha256', signingSecret);
   hasher.update(sigBaseString, 'utf8');
   const hashedSigningSecret = hasher.digest('hex');
   const growiSignature = `v0=${hashedSigningSecret}`;
@@ -40,7 +39,6 @@ export const verificationSlackRequest = (req : Request & signingSecretType, res:
   // compare growiSignature and slackSignature
   if (timingSafeEqual(Buffer.from(growiSignature, 'utf8'), Buffer.from(slackSignature, 'utf8'))) {
     return next();
-
   }
 
   return res.send('Verification failed.');
