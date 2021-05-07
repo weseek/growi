@@ -119,7 +119,6 @@ const SlackIntegration = (props) => {
       setIsConnectedToSlack(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
-      setIsConnectedToSlack(false);
       setIsSendTestMessage(false);
       setSlackWSNameInWithoutProxy(null);
       setIsSlackScopeSet(false);
@@ -140,7 +139,7 @@ const SlackIntegration = (props) => {
         <CustomBotWithoutProxySettings
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
-          isConnectedToSlack={isConnectedToSlack}
+          // isConnectedToSlack={isConnectedToSlack}
           // isSetupSlackBot={isSetupSlackBot}
           // isSlackScopeSet={isSlackScopeSet}
           slackSettingErrors={slackSettingErrors}
