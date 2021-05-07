@@ -300,7 +300,7 @@
       "register_for_growi_official_bot_proxy_service": "Register for GROWI Official Bot Proxy Service",
       "enter_growi_register_on_slack": "Enter `/growi register` on slack",
       "paste_growi_url": "Enter `http://localhost:3000` for <b>GROWI URL</b>",
-      "enter_access_token_for_growi_and_proxy": "Enter Access Token for GROWI and Access Token for Proxy",
+      "enter_access_token_for_growi_and_proxy": "Enter <b>Access Token for GROWI</b> and <b>Access Token for Proxy</b>",
       "set_proxy_url_on_growi": "Set Proxy URL on GROWI",
       "enter_proxy_url_and_update": "Enter <b>Proxy URL</b> shown on Slack and click Update",
       "select_install_your_app": "Select \"Install your app\".",
