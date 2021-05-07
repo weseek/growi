@@ -64,7 +64,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       {!slackSettingsErrors.includes(false) && (
       <button
-        className="pull-right btn text-danger border-danger"
+        className="mx-3 pull-right btn text-danger border-danger"
         type="button"
         onClick={() => setIsDeleteConfirmModalShown(true)}
       >{t('admin:slack_integration.reset')}
