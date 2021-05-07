@@ -223,9 +223,9 @@ module.exports = function(crowi, app) {
     return res.render('admin/external-accounts');
   };
 
-  actions.legacySlackIntegration = {};
-  actions.legacySlackIntegration = function(req, res) {
-    return res.render('admin/legacy-slack-integration');
+  actions.slackIntegrationLegacy = {};
+  actions.slackIntegrationLegacy = function(req, res) {
+    return res.render('admin/slack-integration-legacy');
   };
 
   actions.slackIntegration = {};

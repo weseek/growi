@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
+import { pathUtils } from 'growi-commons';
 
 const AdminNavigation = (props) => {
   const { t } = props;
@@ -21,7 +22,7 @@ const AdminNavigation = (props) => {
       case 'importer':                 return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
       case 'export':                   return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
       case 'notification':             return <><i className="icon-fw icon-bell"></i>            { t('External_Notification')}</>;
-      case 'legacy-slack-integration': return <><i className="fa fa-slack mr-2"></i>             { t('Legacy_Slack_Integration')}</>;
+      case 'slack-integration-legacy': return <><i className="fa fa-slack mr-2"></i>             { t('Legacy_Slack_Integration')}</>;
       case 'slack-integration':        return <><i className="fa fa-slack mr-2"></i>             { t('slack_integration') }</>;
       case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
@@ -49,7 +50,13 @@ const AdminNavigation = (props) => {
   };
 
   const isActiveMenu = (path) => {
-    return (pathname.startsWith(urljoin('/admin', path)));
+    const basisPath = pathUtils.normalizePath(urljoin('/admin', path));
+    const basisParentPath = pathUtils.addTrailingSlash(basisPath);
+
+    return (
+      pathname === basisPath
+      || pathname.startsWith(basisParentPath)
+    );
   };
 
   const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
@@ -64,7 +71,7 @@ const AdminNavigation = (props) => {
         <MenuLink menu="export"       isListGroupItems isActive={isActiveMenu('/export')} />
         <MenuLink menu="notification" isListGroupItems isActive={isActiveMenu('/notification') || isActiveMenu('/global-notification')} />
         <MenuLink menu="slack-integration" isListGroupItems isActive={isActiveMenu('/slack-integration')} />
-        <MenuLink menu="legacy-slack-integration" isListGroupItems isActive={isActiveMenu('/legacy-slack-integration')} />
+        <MenuLink menu="slack-integration-legacy" isListGroupItems isActive={isActiveMenu('/slack-integration-legacy')} />
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />

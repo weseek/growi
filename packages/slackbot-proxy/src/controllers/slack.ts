@@ -4,21 +4,26 @@ import {
 
 import axios from 'axios';
 
-import { generateMarkdownSectionBlock, generateWebClient, parseSlashCommand } from '@growi/slack';
-import { Installation } from '~/entities/installation';
+import { WebAPICallResult } from '@slack/web-api';
 
+import {
+  generateMarkdownSectionBlock, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+} from '@growi/slack';
+
+import { Relation } from '~/entities/relation';
+import { AuthedReq } from '~/interfaces/authorized-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
+import { AddSigningSecretToReq } from '~/middlewares/add-signing-secret-to-req';
+import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/authorizer';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
-
 import loggerFactory from '~/utils/logger';
-import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/authorizer';
-import { AuthedReq } from '~/interfaces/authorized-req';
-import { Relation } from '~/entities/relation';
+
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
+
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -37,25 +42,6 @@ export class SlackCtrl {
 
   @Inject()
   registerService: RegisterService;
-
-  @Get('/testsave')
-  testsave(): void {
-    const installation = new Installation();
-    installation.data = {
-      team: undefined,
-      enterprise: undefined,
-      user: {
-        id: '',
-        token: undefined,
-        scopes: undefined,
-      },
-    };
-
-    // const installationRepository = getRepository(Installation);
-
-    this.installationRepository.save(installation);
-  }
-
 
   @Get('/install')
   async install(): Promise<string> {
@@ -78,24 +64,23 @@ export class SlackCtrl {
   }
 
   @Post('/commands')
-  @UseBefore(AuthorizeCommandMiddleware)
-  async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
+  async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
     if (body.text == null) {
       return 'No text.';
     }
 
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
-
     const growiCommand = parseSlashCommand(body);
 
     // register
     if (growiCommand.growiCommandType === 'register') {
-      await this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
-      return;
+      // Send response immediately to avoid opelation_timeout error
+      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+      res.send();
+
+      return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
     /*
@@ -106,9 +91,22 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
     const relations = await this.relationRepository.find({ installation: installation?.id });
 
+    if (relations.length === 0) {
+      return res.json({
+        blocks: [
+          generateMarkdownSectionBlock('*No relation found.*'),
+          generateMarkdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
+    }
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
+
     const promises = relations.map((relation: Relation) => {
       // generate API URL
-      const url = new URL('/_api/v3/slack-bot/commands', relation.growiUri);
+      const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
       return axios.post(url.toString(), {
         ...body,
         tokenPtoG: relation.tokenPtoG,
@@ -119,27 +117,14 @@ export class SlackCtrl {
     // pickup PromiseRejectedResult only
     const results = await Promise.allSettled(promises);
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+    const botToken = installation?.data.bot?.token;
 
-    if (rejectedResults.length > 0) {
-      const botToken = installation?.data.bot?.token;
-
+    try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(botToken!);
-
-      try {
-        client.chat.postEphemeral({
-          text: 'Error occured.',
-          channel: body.channel_id,
-          user: body.user_id,
-          blocks: [
-            generateMarkdownSectionBlock('*Error occured:*'),
-            ...rejectedResults.map(result => generateMarkdownSectionBlock(result.reason.toString())),
-          ],
-        });
-      }
-      catch (err) {
-        logger.error(err);
-      }
+      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
+    }
+    catch (err) {
+      logger.error(err);
     }
   }
 
@@ -164,42 +149,20 @@ export class SlackCtrl {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
-    const handleViewSubmission = async(inputValues) => {
-
-      const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
-      const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
-      const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
-
-      const order = await this.orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
-      if (order != null) {
-        this.orderRepository.update(
-          { installation: installation?.id, growiUrl: inputGrowiUrl },
-          { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
-        );
-      }
-      else {
-        this.orderRepository.save({
-          installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
-        });
-      }
-    };
-
     const payload = JSON.parse(body.payload);
     const { type } = payload;
-    const inputValues = payload.view.state.values;
 
-    try {
-      switch (type) {
-        case 'view_submission':
-          await handleViewSubmission(inputValues);
-          break;
-        default:
-          break;
-      }
+    // register
+    if (type === 'view_submission' && payload.response_urls[0].action_id === 'submit_growi_url_and_access_tokens') {
+      await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
+      await this.registerService.showProxyUrl(authorizeResult, payload);
+      return;
     }
-    catch (error) {
-      logger.error(error);
-    }
+
+    /*
+     * forward to GROWI server
+     */
+    // TODO: forward to GROWI server by GW-5866
 
   }
 
