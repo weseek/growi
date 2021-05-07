@@ -37,7 +37,7 @@ const SlackIntegration = (props) => {
     }
 
     try {
-      const res = await appContainer.apiv3.get('/slack-integration/custom-bot-without-proxy/slack-workspace-name');
+      const res = await appContainer.apiv3.get('/slack-integration-legacy/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
       setIsSlackScopeSet(true);
     }
@@ -55,7 +55,7 @@ const SlackIntegration = (props) => {
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
-      const response = await appContainer.apiv3.get('slack-integration/');
+      const response = await appContainer.apiv3.get('/slack-integration-legacy/');
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
@@ -107,7 +107,7 @@ const SlackIntegration = (props) => {
 
   const changeCurrentBotSettingsHandler = async() => {
     try {
-      const res = await appContainer.apiv3.put('slack-integration/custom-bot-without-proxy', {
+      const res = await appContainer.apiv3.put('/slack-integration-legacy/custom-bot-without-proxy', {
         slackSigningSecret: '',
         slackBotToken: '',
         currentBotType: selectedBotType,
