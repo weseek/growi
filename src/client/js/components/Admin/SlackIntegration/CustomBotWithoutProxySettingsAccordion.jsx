@@ -181,9 +181,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
             </div>
           </form>
         </div>
-        {connectionErrorMessage != null
+        {/* {connectionErrorMessage != null */}
+        {connectionErrorMessage == null
           && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
-        {connectionSuccessMessage != null
+        {/* {connectionSuccessMessage != null */}
+        {connectionSuccessMessage == null
           && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
         <form>
           <div className="row my-3 justify-content-center">
