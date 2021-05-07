@@ -62,13 +62,16 @@ const OfficialBotSettingsAccordion = () => {
           <div className="d-flex flex-column align-items-center">
             <ol className="p-0">
               <li><p className="ml-2">Slack上で`/growi register`と打つ</p></li>
-              {/* TODO: Copy to clipboard on click */}
+              {/* TODO: Copy to clipboard on click by GW5856 */}
               <li>
-                <p className="ml-2"><b>GROWI URL</b>には`http://localhost:3000/`<i className="fa fa-clipboard mx-1 text-secondary" aria-hidden="true"></i>を貼り付ける</p>
+                <p className="ml-2"><b>GROWI URL</b>には`http://localhost:3000/`
+                  <i className="fa fa-clipboard mx-1 text-secondary" aria-hidden="true"></i>
+                  を貼り付ける
+                </p>
               </li>
               <li><p className="ml-2">上記で発行した<b>Access Token for GROWI と Access Token for Proxy</b>を入れる</p></li>
             </ol>
-            {/* TODO: Insert photo */}
+            {/* TODO: Insert photo by GW5857 */}
             <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
               <h1 className="text-muted">参考画像</h1>
             </div>
