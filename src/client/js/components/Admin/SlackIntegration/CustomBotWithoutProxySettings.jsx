@@ -23,11 +23,11 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
-  // const onSetIsSlackScopeSet = () => {
-  //   if (props.onSetIsSlackScopeSet != null) {
-  //     props.onSetIsSlackScopeSet();
-  //   }
-  // };
+  const onSetIsSlackScopeSet = () => {
+    if (props.onSetIsSlackScopeSet != null) {
+      props.onSetIsSlackScopeSet();
+    }
+  };
 
   const deleteSlackCredentialsHandler = async() => {
     try {
@@ -37,7 +37,7 @@ const CustomBotWithoutProxySettings = (props) => {
         currentBotType: '',
       });
       onSetIsSetupSlackBot(false);
-      // onSetIsSlackScopeSet(false);
+      onSetIsSlackScopeSet(false);
       toastSuccess('success');
     }
     catch (err) {
@@ -58,8 +58,6 @@ const CustomBotWithoutProxySettings = (props) => {
         siteName={siteName}
         slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
         slackSettingsErrors={slackSettingsErrors}
-        // isSlackScopeSet={slackSettingsErrors.isSlackScopeSet}
-        // isSetupSlackBot={slackSettingsErrors.isSetupSlackBot}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
@@ -98,9 +96,6 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
-  // isConnectedToSlack: PropTypes.bool,
-  // isSlackScopeSet: PropTypes.bool,
-  // isSetupSlackBot: PropTypes.bool,
   slackSettingsErrors: PropTypes.array,
   slackWSNameInWithoutProxy: PropTypes.string,
   onSetIsSetupSlackBot: PropTypes.func,
