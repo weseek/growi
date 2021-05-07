@@ -189,8 +189,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
           && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
         <form>
           <div className="row my-3 justify-content-center">
-            <div className="form-group slack-connection-log w-25">
-              <label className="mb-1"><p className="border-info slack-connection-log-title pl-2">Logs</p></label>
+            <div className="form-group slack-connection-log">
+              <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 mb-1">Logs</p></label>
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
                 value={value}
