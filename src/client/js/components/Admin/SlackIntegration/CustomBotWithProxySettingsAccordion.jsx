@@ -136,6 +136,7 @@ const CustomBotWithProxySettingsAccordion = () => {
         <div className="p-4">
           <p
             className="text-center"
+            // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
           />
           <div className="form-group row my-4">
@@ -150,6 +151,7 @@ const CustomBotWithProxySettingsAccordion = () => {
           <AdminUpdateButtonRow
             disabled={false}
             // TODO: Add Proxy URL submit logic
+            // eslint-disable-next-line no-console
             onClick={() => console.log('Update')}
           />
         </div>
