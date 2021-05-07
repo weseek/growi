@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import Accordion from '../Common/Accordion';
 
+const growiURL = window.location.host;
+
 const CustomBotWithProxySettingsAccordion = () => {
   const [testChannel, setTestChannel] = useState('');
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
-  // TODO: get url
-  const [url, setUrl] = useState('http://localhost:3000/');
 
   const { t } = useTranslation();
 
@@ -109,10 +109,10 @@ const CustomBotWithProxySettingsAccordion = () => {
               <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_growi_register_on_slack')}</p></li>
               {/* TODO: Copy to clipboard on click */}
               <li>
-                <p
-                  className="ml-2"
-                  dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
-                />
+                <p className="ml-2"><b>GROWI URL</b>には {growiURL}
+                  <i className="fa fa-clipboard mx-1 text-secondary" aria-hidden="true"></i>
+                  を貼り付ける
+                </p>
               </li>
               <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy')}</p></li>
             </ol>
