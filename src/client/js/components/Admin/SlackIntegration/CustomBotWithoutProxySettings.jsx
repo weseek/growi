@@ -10,7 +10,7 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, errors } = props;
+  const { appContainer, slackSettingErrors } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
@@ -57,14 +57,14 @@ const CustomBotWithoutProxySettings = (props) => {
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
         slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
-        errors={errors}
-        // isSlackScopeSet={errors.isSlackScopeSet}
-        // isSetupSlackBot={errors.isSetupSlackBot}
+        slackSettingErrors={slackSettingErrors}
+        // isSlackScopeSet={slackSettingErrors.isSlackScopeSet}
+        // isSetupSlackBot={slackSettingErrors.isSetupSlackBot}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
 
-      {!errors.includes(false) && (
+      {!slackSettingErrors.includes(false) && (
       <button
         className="pull-right btn text-danger border-danger"
         type="button"
@@ -101,7 +101,7 @@ CustomBotWithoutProxySettings.propTypes = {
   isConnectedToSlack: PropTypes.bool,
   // isSlackScopeSet: PropTypes.bool,
   // isSetupSlackBot: PropTypes.bool,
-  errors: PropTypes.array,
+  slackSettingErrors: PropTypes.array,
   slackWSNameInWithoutProxy: PropTypes.string,
   onSetIsSetupSlackBot: PropTypes.func,
   onSetIsSlackScopeSet: PropTypes.func,
