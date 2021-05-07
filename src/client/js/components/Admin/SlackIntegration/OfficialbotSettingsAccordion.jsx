@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import Accordion from '../Common/Accordion';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
+const growiURL = window.location.host;
+
 const OfficialBotSettingsAccordion = () => {
   const { t } = useTranslation();
 
@@ -64,7 +66,7 @@ const OfficialBotSettingsAccordion = () => {
               <li><p className="ml-2">Slack上で`/growi register`と打つ</p></li>
               {/* TODO: Copy to clipboard on click by GW5856 */}
               <li>
-                <p className="ml-2"><b>GROWI URL</b>には`http://localhost:3000/`
+                <p className="ml-2"><b>GROWI URL</b>には {growiURL}
                   <i className="fa fa-clipboard mx-1 text-secondary" aria-hidden="true"></i>
                   を貼り付ける
                 </p>
