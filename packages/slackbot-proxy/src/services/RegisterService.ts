@@ -8,10 +8,7 @@ import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
-
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 @Service()
