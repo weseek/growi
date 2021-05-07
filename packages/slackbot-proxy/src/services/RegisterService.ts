@@ -84,15 +84,27 @@ export class RegisterService implements GrowiCommandProcessor {
       authorizeResult:AuthorizeResult, payload: any,
   ): Promise<void> {
 
-    // TODO: implement for when proxy URL is undefined by GW-5834
-    let proxyURL;
-    if (process.env.PROXY_URL != null) {
-      proxyURL = process.env.PROXY_URL;
-    }
 
     const { botToken } = authorizeResult;
 
+    const proxyURL = process.env.PROXY_URL;
+
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+
+    // when proxy URL is undefined
+    if (process.env.PROXY_URL == null) {
+      await client.chat.postEphemeral({
+        channel: payload.response_urls[0].channel_id,
+        user: payload.user.id,
+        // Recommended including 'text' to provide a fallback when using blocks
+        // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
+        text: 'Proxy URL',
+        blocks: [
+          generateMarkdownSectionBlock('Proxy URL is undefined. Please set it as an environment variable.'),
+        ],
+      });
+      return;
+    }
 
     await client.chat.postEphemeral({
       channel: payload.response_urls[0].channel_id,
