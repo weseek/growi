@@ -5,6 +5,10 @@ import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
+import loggerFactory from '~/utils/logger';
+
+
+const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -98,11 +102,12 @@ export class RegisterService implements GrowiCommandProcessor {
         user: payload.user.id,
         // Recommended including 'text' to provide a fallback when using blocks
         // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-        text: 'Proxy URL',
+        text: 'Proxy URL is undefined',
         blocks: [
           generateMarkdownSectionBlock('Proxy URL is undefined. Please set it as an environment variable.'),
         ],
       });
+      logger.error('Proxy URL is undefined');
       return;
     }
 
