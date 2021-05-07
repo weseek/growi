@@ -11,20 +11,16 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       <div className="card rounded shadow border-0 w-50 admin-bot-card">
         <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
         <div className="card-body px-5">
-          {props.slackWSNameInWithProxy.length !== 0 && (
-            <>
-              {props.slackWSNameInWithProxy.map((slackWorkSpaceName) => {
-                return (
-                  <div key={slackWorkSpaceName} className="card slack-work-space-name-card">
-                    <div className="m-2 text-center">
-                      <h5 className="font-weight-bold">{slackWorkSpaceName}</h5>
-                      <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
-                    </div>
-                  </div>
-                );
-              })}
-            </>
-          )}
+          {props.slackWSNameInWithProxy.map((slackWorkSpaceName) => {
+            return (
+              <div key={slackWorkSpaceName} className="card slack-work-space-name-card">
+                <div className="m-2 text-center">
+                  <h5 className="font-weight-bold">{slackWorkSpaceName}</h5>
+                  <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
