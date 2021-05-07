@@ -95,33 +95,60 @@ export class RegisterService implements GrowiCommandProcessor {
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
-    // when proxy URL is undefined
-    if (process.env.PROXY_URL == null) {
+    const postEphemeral = async(text: string, text2?: string) => {
+      let blocks:any = [];
+      if (text2 != null) {
+        blocks = [
+          generateMarkdownSectionBlock(text),
+          generateMarkdownSectionBlock(text2),
+        ];
+      }
+      else {
+        blocks = [generateMarkdownSectionBlock(text)];
+      }
+
+
       await client.chat.postEphemeral({
         channel: payload.response_urls[0].channel_id,
         user: payload.user.id,
         // Recommended including 'text' to provide a fallback when using blocks
         // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-        text: 'Proxy URL is undefined',
-        blocks: [
-          generateMarkdownSectionBlock('Proxy URL is undefined. Please set it as an environment variable.'),
-        ],
+        text,
+        blocks,
       });
+    };
+
+
+    // when proxy URL is undefined
+    if (process.env.PROXY_URL == null) {
+      // await client.chat.postEphemeral({
+      //   channel: payload.response_urls[0].channel_id,
+      //   user: payload.user.id,
+      //   // Recommended including 'text' to provide a fallback when using blocks
+      //   // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
+      //   text: 'Proxy URL is undefined',
+      //   blocks: [
+      //     generateMarkdownSectionBlock('Proxy URL is undefined. Please set it as an environment variable.'),
+      //   ],
+      // });
+      // postEphemeral('Proxy URL is undefined. Please set it as an environment variable.');
       logger.error('Proxy URL is undefined');
       return;
     }
 
-    await client.chat.postEphemeral({
-      channel: payload.response_urls[0].channel_id,
-      user: payload.user.id,
-      // Recommended including 'text' to provide a fallback when using blocks
-      // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-      text: 'Proxy URL',
-      blocks: [
-        generateMarkdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
-        generateMarkdownSectionBlock(`Proxy URL: ${proxyURL}`),
-      ],
-    });
+    // await client.chat.postEphemeral({
+    //   channel: payload.response_urls[0].channel_id,
+    //   user: payload.user.id,
+    //   // Recommended including 'text' to provide a fallback when using blocks
+    //   // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
+    //   text: 'Proxy URL',
+    //   blocks: [
+    //     generateMarkdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
+    //     generateMarkdownSectionBlock(`Proxy URL: ${proxyURL}`),
+    //   ],
+    // });
+    postEphemeral('Please enter and update the following Proxy URL to slack bot setting form in your GROWI', `Proxy URL: ${proxyURL}`);
+    // postEphemeral(`Proxy URL: ${proxyURL}`);
     return;
   }
 
