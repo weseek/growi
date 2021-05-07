@@ -216,7 +216,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRegisterSlackCredentials: PropTypes.bool,
   isSendTestMessage: PropTypes.bool,
-  isConnectedToSlack: PropTypes.bool,
+  // isConnectedToSlack: PropTypes.bool,
   fetchSlackIntegrationData: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
