@@ -32,7 +32,7 @@ const SlackIntegration = (props) => {
 
 
   const fetchSlackWorkSpaceNameInWithoutProxy = useCallback(async() => {
-    if (!isConnectedToSlack || !isSetupSlackBot) {
+    if (!isSetupSlackBot || !isConnectedToSlack) {
       return setSlackWSNameInWithoutProxy(null);
     }
 
