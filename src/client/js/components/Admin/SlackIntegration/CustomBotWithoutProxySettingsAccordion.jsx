@@ -192,7 +192,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
             <div className="form-group slack-connection-log">
               <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 mb-1">Logs</p></label>
               <textarea
-                className="form-control card border-info slack-connection-log-body rounded-lg"
+                className="col-md form-control card border-info slack-connection-log-body rounded-lg"
                 value={value}
                 readOnly
               />
