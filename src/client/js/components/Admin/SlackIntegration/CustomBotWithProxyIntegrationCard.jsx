@@ -68,7 +68,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
         <div className="card-body p-4 mb-5 text-center">
           <div className="btn-group-vertical">
             {props.siteNames.map((siteName) => {
-              return <a key={siteName} className="btn btn-primary mb-3">{siteName}</a>
+              return <a key={siteName} className="btn btn-primary mb-3">{siteName}</a>;
             })}
           </div>
         </div>
