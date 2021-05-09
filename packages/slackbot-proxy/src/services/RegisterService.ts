@@ -78,14 +78,14 @@ export class RegisterService implements GrowiCommandProcessor {
     }
   }
 
-  async showServerURI(
+  async notifyServerUriToSlack(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult:AuthorizeResult, payload: any,
   ): Promise<void> {
 
     const { botToken } = authorizeResult;
 
-    const serverURI = process.env.SERVER_URI;
+    const serverUri = process.env.SERVER_URI;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
@@ -97,7 +97,7 @@ export class RegisterService implements GrowiCommandProcessor {
       text: 'Proxy URL',
       blocks: [
         generateMarkdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
-        generateMarkdownSectionBlock(`Proxy URL: ${serverURI}`),
+        generateMarkdownSectionBlock(`Proxy URL: ${serverUri}`),
       ],
     });
 
