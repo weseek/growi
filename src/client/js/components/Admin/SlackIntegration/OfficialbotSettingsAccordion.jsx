@@ -71,7 +71,7 @@ const OfficialBotSettingsAccordion = () => {
                   <b> GROWI URL</b>には
                   <div className="input-group-prepend mx-1">
                     <input className="form-control" type="text" value={growiUrl} readOnly />
-                    <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('slack_integration.copied_to_clipboard'))}>
+                    <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
                       <div className="btn input-group-text">
                         <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
                       </div>
