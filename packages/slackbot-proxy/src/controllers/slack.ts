@@ -155,7 +155,7 @@ export class SlackCtrl {
     // register
     if (type === 'view_submission' && payload.response_urls[0].action_id === 'submit_growi_url_and_access_tokens') {
       await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
-      await this.registerService.showProxyUrl(authorizeResult, payload);
+      await this.registerService.showServerURI(authorizeResult, payload);
       return;
     }
 
