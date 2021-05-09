@@ -67,8 +67,8 @@ const OfficialBotSettingsAccordion = () => {
             <ol className="p-0">
               <li><p className="ml-2">Slack上で`/growi register`と打つ</p></li>
               <li>
-                <div className="input-group">
-                  <b>GROWI URL</b>には
+                <div className="input-group align-items-center ml-2 mb-3">
+                  <b> GROWI URL</b>には
                   <div className="input-group-prepend mx-1">
                     <input className="form-control" type="text" value={growiUrl} readOnly />
                     <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('slack_integration.copied_to_clipboard'))}>
