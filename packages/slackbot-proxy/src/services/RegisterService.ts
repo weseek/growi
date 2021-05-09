@@ -100,7 +100,6 @@ export class RegisterService implements GrowiCommandProcessor {
         generateMarkdownSectionBlock(`Proxy URL: ${serverUri}`),
       ],
     });
-
     return;
   }
 
