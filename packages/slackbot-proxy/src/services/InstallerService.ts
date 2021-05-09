@@ -18,12 +18,16 @@ export class InstallerService {
     const clientId = process.env.SLACK_CLIENT_ID;
     const clientSecret = process.env.SLACK_CLIENT_SECRET;
     const stateSecret = process.env.SLACK_INSTALLPROVIDER_STATE_SECRET;
+    const serverURI = process.env.SERVER_URI;
 
     if (clientId === undefined) {
       throw new Error('The environment variable \'SLACK_CLIENT_ID\' must be defined.');
     }
     if (clientSecret === undefined) {
       throw new Error('The environment variable \'SLACK_CLIENT_SECRET\' must be defined.');
+    }
+    if (serverURI === undefined) {
+      throw new Error('The environment variable \'SERVER_URI\' must be defined.');
     }
 
     const { repository } = this;
