@@ -14,7 +14,6 @@ const CustomBotWithProxySettings = (props) => {
 
   return (
     <>
-
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
       {/* TODO delete tmp props */}
@@ -26,6 +25,14 @@ const CustomBotWithProxySettings = (props) => {
 
       <div className="my-5 mx-3">
         <CustomBotWithProxySettingsAccordion />
+      </div>
+
+      {/* TODO: No accordion by default */}
+      {/* TODO: Change color when integration is incomplete */}
+      <div className="row">
+        <button className="btn btn-outline-primary">
+        + Slackワークスペースを追加
+        </button>
       </div>
     </>
   );
