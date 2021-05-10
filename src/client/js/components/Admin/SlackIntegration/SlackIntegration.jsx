@@ -189,6 +189,7 @@ const SlackIntegration = (props) => {
           })}
         </div>
       </div>
+
       {settingsComponent}
     </>
   );
