@@ -23,7 +23,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        {props.slackSettingsErrors.includes(false) ? (
+        {!props.isSlackScopeSet ? (
           <div className="mt-4">
             <small
               className="text-secondary m-0"
@@ -56,7 +56,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 CustomBotWithoutProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   slackWSNameInWithoutProxy: PropTypes.string,
-  slackSettingsErrors: PropTypes.array,
+  isSlackScopeSet: PropTypes.bool,
 };
 
 export default CustomBotWithoutProxyIntegrationCard;

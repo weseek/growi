@@ -10,24 +10,11 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, slackSettingsErrors } = props;
+  const { appContainer, isSlackScopeSet } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
-
-
-  const onSetIsSetupSlackBot = () => {
-    if (props.onSetIsSetupSlackBot != null) {
-      props.onSetIsSetupSlackBot();
-    }
-  };
-
-  const onSetIsSlackScopeSet = () => {
-    if (props.onSetIsSlackScopeSet != null) {
-      props.onSetIsSlackScopeSet();
-    }
-  };
 
   const deleteSlackSettingsHandler = async() => {
     try {
@@ -36,8 +23,6 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken: '',
         currentBotType: '',
       });
-      onSetIsSetupSlackBot(false);
-      onSetIsSlackScopeSet(false);
       toastSuccess('success');
     }
     catch (err) {
@@ -57,12 +42,12 @@ const CustomBotWithoutProxySettings = (props) => {
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
         slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
-        slackSettingsErrors={slackSettingsErrors}
+        isSlackScopeSet={isSlackScopeSet}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
 
-      {!slackSettingsErrors.includes(false) && (
+      {props.isSlackScopeSet && (
       <button
         className="mx-3 pull-right btn text-danger border-danger"
         type="button"
@@ -96,10 +81,8 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
-  slackSettingsErrors: PropTypes.array,
+  isSlackScopeSet: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
-  onSetIsSetupSlackBot: PropTypes.func,
-  onSetIsSlackScopeSet: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
