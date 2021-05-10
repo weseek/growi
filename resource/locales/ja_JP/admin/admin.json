@@ -286,6 +286,8 @@
       "discard": "破棄",
       "generate": "発行"
     },
+    "delete": "削除",
+    "cooperation_procedure": "連携手順",
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
     "accordion": {
       "create_bot": "Bot を作成する",
