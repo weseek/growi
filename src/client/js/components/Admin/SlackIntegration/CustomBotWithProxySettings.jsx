@@ -13,9 +13,9 @@ const CustomBotWithProxySettings = (props) => {
   const { t } = useTranslation();
 
   // TODO: Multiple accordion logic
-  const [accordionComponentsArray, setAccordionComponentArray] = useState(0);
+  const [accordionComponentsArray, setAccordionComponentsArray] = useState(0);
   const addAccordionHandler = () => {
-    setAccordionComponentArray(
+    setAccordionComponentsArray(
       prevState => prevState + 1,
     );
   };
@@ -30,13 +30,13 @@ const CustomBotWithProxySettings = (props) => {
         slackWSNameInWithProxy="SlackWorkSpaceName"
         isSlackScopeSet
       />
-      {accordionComponentsArray.map(() => (
-        <div className="my-5 mx-3">
+
+      {/* // TODO: Multiple accordion logic */}
+      {Array(...Array(accordionComponentsArray)).map(i => (
+        <div className="my-5 mx-3" key={i}>
           <CustomBotWithProxySettingsAccordion />
         </div>
-      ))
-
-      }
+      ))}
 
       {/* TODO: Disable when integration is incomplete */}
       <div className="row justify-content-center my-5">
