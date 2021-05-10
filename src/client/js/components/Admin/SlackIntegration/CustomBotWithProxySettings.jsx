@@ -30,7 +30,6 @@ const CustomBotWithProxySettings = (props) => {
         slackWSNameInWithProxy="SlackWorkSpaceName"
         isSlackScopeSet
       />
-
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
       <div className="mx-3">
         <div className="d-flex flex-column pull-right">
