@@ -75,7 +75,7 @@ export const RevisionComparer:VFC<Props> = (props:Props) => {
           >
             <i className="ti-clipboard"></i>
           </DropdownToggle>
-          <DropdownMenu positionFixed right modifiers={{ preventOverflow: { boundariesElement: null } }}>
+          <DropdownMenu positionFixed right>
             {/* Page path URL */}
             <CopyToClipboard text={pagePathUrl}>
               <DropdownItem className="px-3">
