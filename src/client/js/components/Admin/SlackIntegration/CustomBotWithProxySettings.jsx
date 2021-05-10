@@ -29,7 +29,7 @@ const CustomBotWithProxySettings = (props) => {
 
       {/* TODO: No accordion by default */}
       {/* TODO: Change color when integration is incomplete */}
-      <div className="row my-5 mx-3">
+      <div className="row my-5 mx-auto">
         <button
           type="button"
           className="btn btn-outline-primary"
