@@ -6,10 +6,11 @@ import Accordion from '../Common/Accordion';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import AppContainer from '../../../services/AppContainer';
 
+
 const OfficialBotSettingsAccordion = (props) => {
   const { t } = useTranslation();
   const { appContainer } = props;
-  const siteUrl = appContainer.config.crowi.url;
+  const growiUrl = appContainer.config.crowi.url;
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -68,7 +69,7 @@ const OfficialBotSettingsAccordion = (props) => {
               <li><p className="ml-2">Slack上で`/growi register`と打つ</p></li>
               {/* TODO: Copy to clipboard on click by GW5856 */}
               <li>
-                <p className="ml-2"><b>GROWI URL</b>には{siteUrl}
+                <p className="ml-2"><b>GROWI URL</b>には{growiUrl}
                   <i className="fa fa-clipboard mx-1 text-secondary" aria-hidden="true"></i>
                   を貼り付ける
                 </p>
