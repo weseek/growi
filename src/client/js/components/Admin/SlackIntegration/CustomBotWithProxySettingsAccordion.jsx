@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -6,6 +5,8 @@ import Accordion from '../Common/Accordion';
 
 const CustomBotWithProxySettingsAccordion = () => {
   const [testChannel, setTestChannel] = useState('');
+  /* eslint-disable no-unused-vars */
+  // TODO: Add connection Logs
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
