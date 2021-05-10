@@ -173,8 +173,10 @@ const CustomBotWithProxySettingsAccordion = () => {
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
           <form className="form-row align-items-center w-25" onSubmit={e => submitForm(e)}>
-            <div className="col-8 input-group-prepend">
-              <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+            <div className="col-8">
+              <div className="input-group-prepend">
+                <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+              </div>
               <input
                 className="form-control w-100"
                 type="text"
@@ -184,14 +186,13 @@ const CustomBotWithProxySettingsAccordion = () => {
                 onChange={e => inputTestChannelHandler(e.target.value)}
               />
             </div>
-            <div className="col-4">
-              <button
-                type="submit"
-                className="btn btn-info mx-3 font-weight-bold"
-                disabled={testChannel.trim() === ''}
-              >Test
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="btn btn-info mx-3 font-weight-bold"
+              disabled={testChannel.trim() === ''}
+            >Test
+            </button>
+
           </form>
         </div>
         {connectionErrorMessage == null
