@@ -34,7 +34,7 @@ const CustomBotWithProxySettings = (props) => {
       {/* // TODO: Multiple accordion logic */}
       {Array(...Array(accordionComponentsArray)).map(i => (
         <div className="my-5 mx-3">
-          <CustomBotWithProxySettingsAccordion key={i.toString()} />
+          <CustomBotWithProxySettingsAccordion key={i} />
         </div>
       ))}
 
