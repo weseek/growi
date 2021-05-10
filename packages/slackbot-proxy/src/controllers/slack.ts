@@ -153,6 +153,7 @@ export class SlackCtrl {
     const { type } = payload;
 
     // register
+    // response_urls is an array but the element included is only one.
     if (type === 'view_submission' && payload.response_urls[0].action_id === 'submit_growi_url_and_access_tokens') {
       await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
       await this.registerService.notifyServerUriToSlack(authorizeResult, payload);

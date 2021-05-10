@@ -36,6 +36,8 @@ export class RegisterService implements GrowiCommandProcessor {
           generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', false, 'https://example.com'),
           generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
           generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
+          // added an input block to make response_url enabled and get info (block_id, action_id, channel_id, response_url)
+          // refer to https://api.slack.com/surfaces/modals/using#modal_response_url
           {
             block_id: 'channel_to_post_proxy_url',
             type: 'input',
