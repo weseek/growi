@@ -29,8 +29,11 @@ const CustomBotWithProxySettings = (props) => {
 
       {/* TODO: No accordion by default */}
       {/* TODO: Change color when integration is incomplete */}
-      <div className="row">
-        <button className="btn btn-outline-primary">
+      <div className="row my-5 mx-3">
+        <button
+          type="button"
+          className="btn btn-outline-primary"
+        >
         + Slackワークスペースを追加
         </button>
       </div>
