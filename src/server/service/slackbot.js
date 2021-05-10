@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
 
-const { WebClient, LogLevel } = require('@slack/web-api');
+const { generateWebClient } = require('@growi/slack');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -28,10 +28,19 @@ class SlackBotService extends S2sMessageHandlable {
 
   async initialize() {
     this.isConnectedToSlack = false;
-    const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
+    const currentBotType = this.crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
-    if (token != null) {
-      this.client = new WebClient(token, { logLevel: LogLevel.DEBUG });
+    if (currentBotType != null) {
+      // determine connection to proxy or direct
+      let serverUri;
+      if (currentBotType !== 'customBotWithoutProxy') {
+        // TODO: https://youtrack.weseek.co.jp/issue/GW-5896
+        serverUri = 'http://localhost:8080/slack-api-proxy/';
+      }
+
+      const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
+
+      this.client = generateWebClient(token, serverUri);
       logger.debug('SlackBot: setup is done');
       await this.sendAuthTest();
     }
