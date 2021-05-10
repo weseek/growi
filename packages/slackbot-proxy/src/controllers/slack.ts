@@ -170,7 +170,6 @@ export class SlackCtrl {
       return axios.post(url.toString(), {
         ...body,
         tokenPtoG: relation.tokenPtoG,
-        payload,
       });
     });
 
