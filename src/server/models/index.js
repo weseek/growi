@@ -18,5 +18,5 @@ module.exports = {
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
   GlobalNotificationSlackSetting: require('./GlobalNotificationSetting/GlobalNotificationSlackSetting'),
   ShareLink: require('./share-link'),
-  SlackbotAccessToken: require('./slackbot-access-token'),
+  SlackAppIntegration: require('./slack-app-integration'),
 };
