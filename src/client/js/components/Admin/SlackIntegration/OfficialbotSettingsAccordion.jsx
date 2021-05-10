@@ -1,10 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import Accordion from '../Common/Accordion';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AppContainer from '../../../services/AppContainer';
 
-const OfficialBotSettingsAccordion = () => {
+
+const OfficialBotSettingsAccordion = (props) => {
   const { t } = useTranslation();
+  const { appContainer } = props;
+  const growiUrl = appContainer.config.crowi.url;
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -63,7 +69,7 @@ const OfficialBotSettingsAccordion = () => {
               <li><p className="ml-2">Slack上で`/growi register`と打つ</p></li>
               {/* TODO: Copy to clipboard on click by GW5856 */}
               <li>
-                <p className="ml-2"><b>GROWI URL</b>には`http://localhost:3000/`
+                <p className="ml-2"><b>GROWI URL</b>には{growiUrl}
                   <i className="fa fa-clipboard mx-1 text-secondary" aria-hidden="true"></i>
                   を貼り付ける
                 </p>
@@ -138,4 +144,13 @@ const OfficialBotSettingsAccordion = () => {
   );
 };
 
-export default OfficialBotSettingsAccordion;
+/**
+ * Wrapper component for using unstated
+ */
+const OfficialBotSettingsAccordionWrapper = withUnstatedContainers(OfficialBotSettingsAccordion, [AppContainer]);
+
+OfficialBotSettingsAccordion.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default OfficialBotSettingsAccordionWrapper;
