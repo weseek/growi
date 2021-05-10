@@ -204,6 +204,7 @@ const CustomBotWithProxySettingsAccordion = () => {
               <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 m-0">Logs</p></label>
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
+                rows="5"
                 // TODO: Show test logs
                 value={value}
                 readOnly
