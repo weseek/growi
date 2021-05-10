@@ -94,6 +94,7 @@ const OfficialBotSettingsAccordion = () => {
           <AdminUpdateButtonRow
             disabled={false}
             // TODO: Add Proxy URL submit logic
+            // eslint-disable-next-line no-console
             onClick={() => console.log('Update')}
           />
         </div>
