@@ -164,15 +164,6 @@ export class SlackCtrl {
      */
     const relations = await this.relationRepository.find({ installation: installation?.id });
 
-    if (relations.length === 0) {
-      return res.json({
-        blocks: [
-          generateMarkdownSectionBlock('*No relation found.*'),
-          generateMarkdownSectionBlock('Run `/growi register` first.'),
-        ],
-      });
-    }
-
     const promises = relations.map((relation: Relation) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
