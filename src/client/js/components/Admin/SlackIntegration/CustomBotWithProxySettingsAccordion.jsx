@@ -172,14 +172,14 @@ const CustomBotWithProxySettingsAccordion = () => {
         {/* TODO: Responsive */}
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
-          <form className="form-row align-items-center" onSubmit={e => submitForm(e)}>
+          <form className="form-row justify-content-center" onSubmit={e => submitForm(e)}>
             <div className="input-group col-8">
 
               <div className="input-group-prepend">
                 <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
               </div>
               <input
-                className="form-control w-100"
+                className="form-control"
                 type="text"
                 value={testChannel}
                 placeholder="Slack Channel"
