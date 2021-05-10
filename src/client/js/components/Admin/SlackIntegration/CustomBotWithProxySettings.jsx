@@ -38,7 +38,7 @@ const CustomBotWithProxySettings = (props) => {
         </div>
       ))}
 
-      {/* TODO: Disable when integration is incomplete */}
+      {/* TODO: Disable button when integration is incomplete */}
       {/* TODO: i18n */}
       <div className="row justify-content-center my-5">
         <button
