@@ -42,19 +42,16 @@ const CustomBotWithoutProxySettings = (props) => {
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
         slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
-        isSlackScopeSet={props.isSlackScopeSet}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
 
-      {props.isSlackScopeSet && (
       <button
         className="mx-3 pull-right btn text-danger border-danger"
         type="button"
         onClick={() => setIsDeleteConfirmModalShown(true)}
       >{t('admin:slack_integration.reset')}
       </button>
-      ) }
 
       <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion
@@ -81,7 +78,6 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
-  isSlackScopeSet: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
 };
 
