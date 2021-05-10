@@ -6,7 +6,6 @@ import { GrowiCommandProcessor } from '~/interfaces/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
 
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 @Service()
@@ -79,18 +78,14 @@ export class RegisterService implements GrowiCommandProcessor {
     }
   }
 
-  async showProxyUrl(
+  async notifyServerUriToSlack(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult:AuthorizeResult, payload: any,
   ): Promise<void> {
 
-    // TODO: implement for when proxy URL is undefined by GW-5834
-    let proxyURL;
-    if (process.env.PROXY_URL != null) {
-      proxyURL = process.env.PROXY_URL;
-    }
-
     const { botToken } = authorizeResult;
+
+    const serverUri = process.env.SERVER_URI;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
@@ -102,7 +97,7 @@ export class RegisterService implements GrowiCommandProcessor {
       text: 'Proxy URL',
       blocks: [
         generateMarkdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
-        generateMarkdownSectionBlock(`Proxy URL: ${proxyURL}`),
+        generateMarkdownSectionBlock(`Proxy URL: ${serverUri}`),
       ],
     });
     return;
