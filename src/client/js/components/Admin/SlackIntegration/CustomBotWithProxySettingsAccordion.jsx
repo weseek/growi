@@ -174,7 +174,6 @@ const CustomBotWithProxySettingsAccordion = () => {
         <div className="d-flex justify-content-center">
           <form className="form-row justify-content-center" onSubmit={e => submitForm(e)}>
             <div className="input-group col-8">
-
               <div className="input-group-prepend">
                 <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
               </div>
@@ -186,7 +185,6 @@ const CustomBotWithProxySettingsAccordion = () => {
                 // TODO: Handle test button
                 onChange={e => inputTestChannelHandler(e.target.value)}
               />
-
             </div>
             <button
               type="submit"
@@ -194,22 +192,20 @@ const CustomBotWithProxySettingsAccordion = () => {
               disabled={testChannel.trim() === ''}
             >Test
             </button>
-
           </form>
         </div>
-        {connectionErrorMessage == null
+        {connectionErrorMessage != null
           && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
-        {connectionSuccessMessage == null
+        {connectionSuccessMessage != null
           && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
         <form>
           <div className="row my-3 justify-content-center">
-            <div className="form-group slack-connection-log col-sm-4">
+            <div className="form-group slack-connection-log col-md-4">
               <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 m-0">Logs</p></label>
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
                 // TODO: Show test logs
-                value="Test Error Message"
-                // value={value}
+                value={value}
                 readOnly
               />
             </div>

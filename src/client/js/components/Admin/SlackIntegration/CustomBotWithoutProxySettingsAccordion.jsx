@@ -161,38 +161,36 @@ const CustomBotWithoutProxySettingsAccordion = ({
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
           <form className="form-row align-items-center" onSubmit={e => submitForm(e)}>
-            <div className="col-8 input-group-prepend">
-              <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+            <div className="input-group col-8">
+              <div className="input-group-prepend">
+                <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+              </div>
               <input
-                className="form-control w-100"
+                className="form-control"
                 type="text"
                 value={testChannel}
                 placeholder="Slack Channel"
                 onChange={e => inputTestChannelHandler(e.target.value)}
               />
             </div>
-            <div className="col-4">
-              <button
-                type="submit"
-                className="btn btn-info mx-3 font-weight-bold"
-                disabled={testChannel.trim() === ''}
-              >Test
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="btn btn-info mx-3 font-weight-bold"
+              disabled={testChannel.trim() === ''}
+            >Test
+            </button>
           </form>
         </div>
-        {/* {connectionErrorMessage != null */}
-        {connectionErrorMessage == null
+        {connectionErrorMessage != null
           && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
-        {/* {connectionSuccessMessage != null */}
-        {connectionSuccessMessage == null
+        {connectionSuccessMessage != null
           && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
         <form>
           <div className="row my-3 justify-content-center">
-            <div className="form-group slack-connection-log">
-              <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 mb-1">Logs</p></label>
+            <div className="form-group slack-connection-log col-md-4">
+              <label className="mb-1"><p className="border-info slack-connection-log-title pl-2 m-0">Logs</p></label>
               <textarea
-                className="col-md form-control card border-info slack-connection-log-body rounded-lg"
+                className="form-control card border-info slack-connection-log-body rounded-lg"
                 value={value}
                 readOnly
               />
