@@ -288,6 +288,7 @@
       "discard": "Discard",
       "generate": "Generate"
     },
+    "delete": "Delete",
     "cooperation_method": "Cooperation method",
     "official_bot_settings": "Official bot Settings",
     "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
