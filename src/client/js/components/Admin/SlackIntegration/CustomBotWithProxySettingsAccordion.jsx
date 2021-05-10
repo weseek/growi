@@ -76,9 +76,11 @@ const CustomBotWithProxySettingsAccordion = () => {
       </Accordion>
       <Accordion
         title={(
-          <><span className="mr-2">③</span>
+          <>
+            <span className="mr-2">③</span>
             {t('admin:slack_integration.accordion.generate_access_token')}
-            / {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}
+            {' / '}
+            {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}
           </>
         )}
       >
