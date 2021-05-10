@@ -31,14 +31,18 @@ class SlackBotService extends S2sMessageHandlable {
     const currentBotType = this.crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
     if (currentBotType != null) {
-      // determine connection to proxy or direct
       let serverUri;
+      let token;
+
+      // connect to proxy
       if (currentBotType !== 'customBotWithoutProxy') {
         // TODO: https://youtrack.weseek.co.jp/issue/GW-5896
         serverUri = 'http://localhost:8080/slack-api-proxy/';
       }
-
-      const token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
+      // connect directly
+      else {
+        token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
+      }
 
       this.client = generateWebClient(token, serverUri);
       logger.debug('SlackBot: setup is done');
