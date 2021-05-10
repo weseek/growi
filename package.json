@@ -31,7 +31,7 @@
     "resource": "dotenv-flow yarn ts-node bin/download-cdn-resources.ts",
     "ts-node": "ts-node --project tsconfig.server.json -r tsconfig-paths/register --",
     "start:ci": "yarn start --ci",
-    "start": "cross-env NODE_ENV=production node dist/src/server/app.js",
+    "start": "cross-env NODE_ENV=production node --expose_gc dist/src/server/app.js",
     "test": "jest --config=config/jest.config.js --passWithNoTests -- ",
     "migrate": "npm run migrate:up",
     "migrate:create": "ts-node --project tsconfig.server.json -r tsconfig-paths/register node_modules/.bin/migrate-mongo create -f config/migrate.js -- ",
