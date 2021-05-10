@@ -5,6 +5,8 @@ import Accordion from '../Common/Accordion';
 
 const CustomBotWithProxySettingsAccordion = () => {
   const [testChannel, setTestChannel] = useState('');
+  /* eslint-disable no-unused-vars */
+  // TODO: Add connection Logs
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
@@ -14,6 +16,7 @@ const CustomBotWithProxySettingsAccordion = () => {
   // TODO: Handle test button
   const submitForm = (e) => {
     e.preventDefault();
+    // eslint-disable-next-line no-console
     console.log('Form Submitted');
   };
 
@@ -72,7 +75,14 @@ const CustomBotWithProxySettingsAccordion = () => {
         </div>
       </Accordion>
       <Accordion
-        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.generate_access_token')} / {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</>}
+        title={(
+          <>
+            <span className="mr-2">③</span>
+            {t('admin:slack_integration.accordion.generate_access_token')}
+            {' / '}
+            {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}
+          </>
+        )}
       >
         <div className="py-4 px-5">
           <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>

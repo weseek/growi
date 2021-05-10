@@ -75,6 +75,14 @@ export class Server {
   @Inject()
   injector: InjectorService;
 
+  $onInit(): Promise<any> | void {
+    const serverUri = process.env.SERVER_URI;
+
+    if (serverUri === undefined) {
+      throw new Error('The environment variable \'SERVER_URI\' must be defined.');
+    }
+  }
+
   $beforeRoutesInit(): void {
     this.app
       .use(cookieParser())
