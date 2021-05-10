@@ -51,7 +51,6 @@ const OfficialBotSettingsAccordion = () => {
               />
             </div>
           </div>
-
           <div className="row my-3">
             <div className="mx-auto">
               <button type="button" className="btn btn-outline-secondary mx-2">破棄</button>
@@ -95,6 +94,7 @@ const OfficialBotSettingsAccordion = () => {
           <AdminUpdateButtonRow
             disabled={false}
             // TODO: Add Proxy URL submit logic
+            // eslint-disable-next-line no-console
             onClick={() => console.log('Update')}
           />
         </div>
