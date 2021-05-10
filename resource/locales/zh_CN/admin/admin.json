@@ -296,6 +296,7 @@
       "discard": "丢弃",
       "generate": "生成"
     },
+    "cooperation_method": "协作程序",
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 设置",
     "accordion": {
       "create_bot": "创建 Bot",
