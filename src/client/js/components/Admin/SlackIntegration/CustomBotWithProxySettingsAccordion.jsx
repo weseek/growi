@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -14,6 +15,7 @@ const CustomBotWithProxySettingsAccordion = () => {
   // TODO: Handle test button
   const submitForm = (e) => {
     e.preventDefault();
+    // eslint-disable-next-line no-console
     console.log('Form Submitted');
   };
 
