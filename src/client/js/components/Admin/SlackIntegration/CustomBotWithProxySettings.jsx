@@ -22,7 +22,7 @@ const CustomBotWithProxySettings = (props) => {
 
   return (
     <>
-      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
+      <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
@@ -31,23 +31,34 @@ const CustomBotWithProxySettings = (props) => {
         isSlackScopeSet
       />
 
-      {/* // TODO: Multiple accordion logic */}
-      {Array(...Array(accordionComponentsArray)).map(i => (
-        <div className="my-5 mx-3">
-          <CustomBotWithProxySettingsAccordion key={i} />
+      <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
+      <div className="mx-3">
+        <div className="d-flex flex-column pull-right">
+          <button
+            className="my-3 btn btn-outline-danger"
+            type="button"
+          ><i className="icon-trash mr-1" />{t('admin:slack_integration.delete')}
+          </button>
         </div>
-      ))}
 
-      {/* TODO: Disable button when integration is incomplete */}
-      {/* TODO: i18n */}
-      <div className="row justify-content-center my-5">
-        <button
-          type="button"
-          className="btn btn-outline-primary"
-          onClick={addAccordionHandler}
-        >
-          + Slackワークスペースを追加
-        </button>
+        {/* // TODO: Multiple accordion logic */}
+        {Array(...Array(accordionComponentsArray)).map(i => (
+          <div className="d-flex flex-column my-5 w-100">
+            <CustomBotWithProxySettingsAccordion />
+          </div>
+        ))}
+
+        {/* TODO: Disable button when integration is incomplete */}
+        {/* TODO: i18n */}
+        <div className="row justify-content-center my-5">
+          <button
+            type="button"
+            className="btn btn-outline-primary"
+            onClick={addAccordionHandler}
+          >
+            + Slackワークスペースを追加
+          </button>
+        </div>
       </div>
     </>
   );
