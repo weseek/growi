@@ -26,7 +26,7 @@ const CustomBotWithProxySettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_method')}</h2>
 
       <button
-        className="mx-3 pull-right btn text-danger border-danger"
+        className="mx-3 pull-right btn btn-outline-danger"
         type="button"
       ><i className="icon-trash mr-1" />{t('admin:slack_integration.delete')}
       </button>
