@@ -143,8 +143,6 @@ const SlackIntegration = (props) => {
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
-          onSetIsSetupSlackBot={setIsSetupSlackBot}
-          onSetIsSlackScopeSet={setIsSlackScopeSet}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
