@@ -23,25 +23,24 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        {props.isSlackScopeSet && (
-          <div className="mt-5">
-            <p className="text-success small">
-              <i className="fa fa-check mr-1" />
-              {t('admin:slack_integration.integration_sentence.integration_successful')}
-            </p>
-            <hr className="align-self-center admin-border-success border-success"></hr>
-          </div>
-        )}
-        {!props.isSlackScopeSet && (
-          <div className="mt-4">
-            <small
-              className="text-secondary m-0"
-                  // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
-            />
-            <hr className="align-self-center admin-border-danger border-danger"></hr>
-          </div>
-        )}
+        {/* TODO apply correct condition GW-5895 */}
+        <div className="mt-4">
+          <small
+            className="text-secondary m-0"
+                // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+          />
+          <hr className="align-self-center admin-border-danger border-danger"></hr>
+        </div>
+
+        <div className="mt-5">
+          <p className="text-success small">
+            <i className="fa fa-check mr-1" />
+            {t('admin:slack_integration.integration_sentence.integration_successful')}
+          </p>
+          <hr className="align-self-center admin-border-success border-success"></hr>
+        </div>
+
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
@@ -57,7 +56,6 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 CustomBotWithoutProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   slackWSNameInWithoutProxy: PropTypes.string,
-  isSlackScopeSet: PropTypes.bool.isRequired,
 };
 
 export default CustomBotWithoutProxyIntegrationCard;
