@@ -28,7 +28,7 @@ const CustomBotWithProxySettings = (props) => {
       <button
         className="mx-3 pull-right btn text-danger border-danger"
         type="button"
-      >{t('admin:slack_integration.delete')}
+      ><i className="icon-trash mr-1" />{t('admin:slack_integration.delete')}
       </button>
       <div className="my-5 mx-3">
         <CustomBotWithProxySettingsAccordion />
