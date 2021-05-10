@@ -286,6 +286,8 @@
       "discard": "破棄",
       "generate": "発行"
     },
+    "delete": "削除",
+    "cooperation_procedure": "連携手順",
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
     "accordion": {
       "create_bot": "Bot を作成する",
@@ -293,6 +295,13 @@
       "how_to_install": "インストール方法はこちら",
       "install_bot_to_slack": "Bot を Slack にインストールする",
       "install_now": "今すぐインストール",
+      "generate_access_token": "Access Tokenの発行",
+      "register_for_growi_official_bot_proxy_service": "GROWI Official Bot Proxy サービスへの登録",
+      "enter_growi_register_on_slack": "Slack上で `/growi register` と打つ",
+      "paste_growi_url": "<b>GROWI URL</b>には`http://localhost:3000`を貼り付ける",
+      "enter_access_token_for_growi_and_proxy": "上記で発行した<b>Access Token for GROWI</b> と <b>Access Token for Proxy</b>を入れる",
+      "set_proxy_url_on_growi": "ProxyのURLをGROWIに登録する",
+      "enter_proxy_url_and_update": "Slack上に通知された<b>Proxy URL</b>を入力し、更新してください。",
       "select_install_your_app": "Install your app をクリックします。",
       "select_install_to_workspace": "Install to Workspace をクリックします。",
       "register_official_bot_proxy_service": "アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録",

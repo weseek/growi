@@ -1,15 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Accordion from '../Common/Accordion';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { toastSuccess } from '../../../util/apiNotification';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 
-const growiUrl = window.location.host;
 
-const OfficialBotSettingsAccordion = () => {
+const OfficialBotSettingsAccordion = (props) => {
   // TODO: apply i18n by GW-5878
   const { t } = useTranslation();
+  const { appContainer } = props;
+  const growiUrl = appContainer.config.crowi.url;
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -106,6 +110,7 @@ const OfficialBotSettingsAccordion = () => {
           <AdminUpdateButtonRow
             disabled={false}
             // TODO: Add Proxy URL submit logic
+            // eslint-disable-next-line no-console
             onClick={() => console.log('Update')}
           />
         </div>
@@ -149,4 +154,13 @@ const OfficialBotSettingsAccordion = () => {
   );
 };
 
-export default OfficialBotSettingsAccordion;
+/**
+ * Wrapper component for using unstated
+ */
+const OfficialBotSettingsAccordionWrapper = withUnstatedContainers(OfficialBotSettingsAccordion, [AppContainer]);
+
+OfficialBotSettingsAccordion.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default OfficialBotSettingsAccordionWrapper;
