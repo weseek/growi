@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
@@ -12,9 +12,16 @@ const CustomBotWithProxySettings = (props) => {
   const { appContainer, adminAppContainer } = props;
   const { t } = useTranslation();
 
+  // TODO: Multiple accordion logic
+  const [accordionComponentsArray, setAccordionComponentsArray] = useState(0);
+  const addAccordionHandler = () => {
+    setAccordionComponentsArray(
+      prevState => prevState + 1,
+    );
+  };
+
   return (
     <>
-
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
       {/* TODO delete tmp props */}
@@ -24,8 +31,23 @@ const CustomBotWithProxySettings = (props) => {
         isSlackScopeSet
       />
 
-      <div className="my-5 mx-3">
-        <CustomBotWithProxySettingsAccordion />
+      {/* // TODO: Multiple accordion logic */}
+      {Array(...Array(accordionComponentsArray)).map(i => (
+        <div className="my-5 mx-3">
+          <CustomBotWithProxySettingsAccordion key={i} />
+        </div>
+      ))}
+
+      {/* TODO: Disable button when integration is incomplete */}
+      {/* TODO: i18n */}
+      <div className="row justify-content-center my-5">
+        <button
+          type="button"
+          className="btn btn-outline-primary"
+          onClick={addAccordionHandler}
+        >
+          + Slackワークスペースを追加
+        </button>
       </div>
     </>
   );
