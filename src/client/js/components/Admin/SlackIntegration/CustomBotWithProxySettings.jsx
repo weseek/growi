@@ -39,7 +39,7 @@ const CustomBotWithProxySettings = (props) => {
             { name: 'siteName3', active: false },
           ]
         }
-        slackWorkSpaceNames={
+        slackWorkSpaces={
           [
             { name: 'wsName1', active: true },
             { name: 'wsName2', active: false },

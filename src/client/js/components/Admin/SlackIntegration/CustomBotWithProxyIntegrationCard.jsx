@@ -11,7 +11,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       <div className="card rounded shadow border-0 w-50 admin-bot-card">
         <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
         <div className="card-body px-5">
-          {props.slackWorkSpaceNames.map((slackWorkSpaceName) => {
+          {props.slackWorkSpaces.map((slackWorkSpaceName) => {
             return (
               <div key={slackWorkSpaceName.name} className={slackWorkSpaceName.active ? 'card slack-work-space-name-card' : ''}>
                 <div className="m-2 text-center">
@@ -75,8 +75,8 @@ const CustomBotWithProxyIntegrationCard = (props) => {
 };
 
 CustomBotWithProxyIntegrationCard.propTypes = {
-  siteNames: PropTypes.array,
-  slackWorkSpaceNames: PropTypes.array,
+  siteNames: PropTypes.array.isRequired,
+  slackWorkSpaces: PropTypes.array,
   isSlackScopeSet: PropTypes.bool,
 };
 
