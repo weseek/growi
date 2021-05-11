@@ -205,11 +205,15 @@ module.exports = (crowi) => {
         return res.apiv3({ customBotWithoutProxySettingParams });
       }
       catch (error) {
-        // const msg = 'Error occured in updating Custom bot setting';
-        // logger.error('Error', error);
-        // return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
-        console.log(error.data);
-        return res.error;
+        if (error.data.error === 'invalid_auth') {
+          msg = 'Invalid Secret or Token';
+          logger.error('Error', error);
+          return res.apiv3Err(new ErrorV3(msg, 'invalid_auth'), 400);
+        }
+
+        const msg = 'Error occured in updating Custom bot setting';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
       }
     });
 
