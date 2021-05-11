@@ -13,16 +13,22 @@ const CustomBotWithProxySettings = (props) => {
   const { t } = useTranslation();
 
   // TODO: Multiple accordion logic
-  const [accordionComponentsArray, setAccordionComponentsArray] = useState(0);
+  const [accordionComponentsCount, setAccordionComponentsCount] = useState(0);
   const addAccordionHandler = () => {
-    setAccordionComponentsArray(
+    setAccordionComponentsCount(
       prevState => prevState + 1,
+    );
+  };
+  // TODO: Delete accordion logic
+  const deleteAccordionHandler = () => {
+    setAccordionComponentsCount(
+      prevState => prevState - 1,
     );
   };
 
   return (
     <>
-      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
+      <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
@@ -30,24 +36,37 @@ const CustomBotWithProxySettings = (props) => {
         slackWSNameInWithProxy="SlackWorkSpaceName"
         isSlackScopeSet
       />
+      <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
+      <div className="mx-3">
 
-      {/* // TODO: Multiple accordion logic */}
-      {Array(...Array(accordionComponentsArray)).map(i => (
-        <div className="my-5 mx-3">
-          <CustomBotWithProxySettingsAccordion key={i} />
+        {/* // TODO: Multiple accordion logic */}
+        {Array(...Array(accordionComponentsCount)).map(i => (
+          <>
+            <div className="d-flex justify-content-end">
+              <button
+                className="my-3 btn btn-outline-danger"
+                type="button"
+                onClick={deleteAccordionHandler}
+              >
+                <i className="icon-trash mr-1" />
+                {t('admin:slack_integration.delete')}
+              </button>
+            </div>
+            <CustomBotWithProxySettingsAccordion key={i} />
+          </>
+        ))}
+
+        {/* TODO: Disable button when integration is incomplete */}
+        {/* TODO: i18n */}
+        <div className="row justify-content-center my-5">
+          <button
+            type="button"
+            className="btn btn-outline-primary"
+            onClick={addAccordionHandler}
+          >
+            + Slackワークスペースを追加
+          </button>
         </div>
-      ))}
-
-      {/* TODO: Disable button when integration is incomplete */}
-      {/* TODO: i18n */}
-      <div className="row justify-content-center my-5">
-        <button
-          type="button"
-          className="btn btn-outline-primary"
-          onClick={addAccordionHandler}
-        >
-          + Slackワークスペースを追加
-        </button>
       </div>
     </>
   );

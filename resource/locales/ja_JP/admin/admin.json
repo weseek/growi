@@ -286,7 +286,12 @@
       "discard": "破棄",
       "generate": "発行"
     },
+    "delete": "削除",
+    "cooperation_procedure": "連携手順",
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
+    "reset":"リセット",
+    "delete_slackbot_settings": "Slack Bot 設定をリセットする",
+    "slackbot_settings_notice": "リセットします",
     "accordion": {
       "create_bot": "Bot を作成する",
       "how_to_create_a_bot": "作成方法はこちら",
