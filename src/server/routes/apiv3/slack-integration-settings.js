@@ -193,8 +193,9 @@ module.exports = (crowi) => {
         await updateSlackBotSettings(requestParams);
 
         // initialize slack service
-        await crowi.slackBotService.initialize();
+        const response = await crowi.slackBotService.initialize();
         crowi.slackBotService.publishUpdatedMessage();
+        console.log(response);
 
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
         const customBotWithoutProxySettingParams = {
@@ -205,9 +206,11 @@ module.exports = (crowi) => {
         return res.apiv3({ customBotWithoutProxySettingParams });
       }
       catch (error) {
-        const msg = 'Error occured in updating Custom bot setting';
-        logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+        // const msg = 'Error occured in updating Custom bot setting';
+        // logger.error('Error', error);
+        console.log(error);
+        return res.error;
+        // return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
       }
     });
 
