@@ -244,38 +244,6 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/access-token:
-   *      put:
-   *        tags: [SlackIntegration]
-   *        operationId: getCustomBotSetting
-   *        summary: /slack-integration
-   *        description: Generate accessToken
-   *        responses:
-   *          200:
-   *            description: Succeeded to update access token for slack
-   */
-  router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-
-    try {
-      const accessToken = generateAccessToken(req.user);
-      await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
-
-      // initialize slack service
-      await crowi.slackBotService.initialize();
-      crowi.slackBotService.publishUpdatedMessage();
-
-      return res.apiv3({ accessToken });
-    }
-    catch (error) {
-      const msg = 'Error occured in updating access token for access token';
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'), 500);
-    }
-  });
-
-  /**
-   * @swagger
-   *
    *    /slack-integration/test-notification-to-slack-work-space:
    *      post:
    *        tags: [SlackTestToWorkSpace]
