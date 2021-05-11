@@ -256,8 +256,8 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access token for slack
    */
-  router.put('/access-token', async(req, res) => {
-    // TODO imple generate tokens at GW-5859
+  router.put('/access-tokens', async(req, res) => {
+    // TODO imple generate tokens at GW-5859. The following req.body is temporary.
     const { tokenGtoP, tokenPtoG } = req.body;
     try {
       const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
