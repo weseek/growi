@@ -63,9 +63,9 @@ const CustomBotWithProxyIntegrationCard = (props) => {
         </div>
         <div className="card-body p-4 mb-5 text-center">
           <div className="btn-group-vertical w-50">
-            {props.siteNames.map((siteName) => {
+            {props.growiApps.map((growiApp) => {
               // eslint-disable-next-line max-len
-              return <button type="button" key={siteName.name} className={siteName.active ? 'btn btn-primary mb-3' : 'btn btn-outline-primary mb-3'}>{siteName.name}</button>;
+              return <button type="button" key={growiApp.name} className={growiApp.active ? 'btn btn-primary mb-3' : 'btn btn-outline-primary mb-3'}>{growiApp.name}</button>;
             })}
           </div>
         </div>
@@ -75,7 +75,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
 };
 
 CustomBotWithProxyIntegrationCard.propTypes = {
-  siteNames: PropTypes.array.isRequired,
+  growiApps: PropTypes.array.isRequired,
   slackWorkSpaces: PropTypes.array,
   isSlackScopeSet: PropTypes.bool,
 };

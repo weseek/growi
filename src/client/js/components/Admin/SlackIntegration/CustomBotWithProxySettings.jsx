@@ -32,7 +32,7 @@ const CustomBotWithProxySettings = (props) => {
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
-        siteNames={
+        growiApps={
           [
             { name: 'siteName1', active: true },
             { name: 'siteName2', active: false },
