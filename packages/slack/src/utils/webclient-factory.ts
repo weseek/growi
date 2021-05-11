@@ -2,6 +2,11 @@ import { LogLevel, WebClient } from '@slack/web-api';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-export const generateWebClient = (botToken: string): WebClient => {
-  return new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+/**
+ * Generate WebClilent instance
+ * @param token Slack Bot Token or Proxy Server URI
+ * @returns
+ */
+export const generateWebClient = (token: string, serverUri?: string): WebClient => {
+  return new WebClient(token, { slackApiUrl: serverUri, logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 };

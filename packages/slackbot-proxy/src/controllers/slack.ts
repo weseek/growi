@@ -130,7 +130,7 @@ export class SlackCtrl {
 
   @Post('/interactions')
   @UseBefore(AuthorizeInteractionMiddleware)
-  async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string> {
+  async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
 
@@ -153,17 +153,39 @@ export class SlackCtrl {
     const { type } = payload;
 
     // register
+    // response_urls is an array but the element included is only one.
     if (type === 'view_submission' && payload.response_urls[0].action_id === 'submit_growi_url_and_access_tokens') {
       await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
-      await this.registerService.showProxyUrl(authorizeResult, payload);
+      await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
       return;
     }
 
     /*
      * forward to GROWI server
      */
-    // TODO: forward to GROWI server by GW-5866
+    const relations = await this.relationRepository.find({ installation: installation?.id });
 
+    const promises = relations.map((relation: Relation) => {
+      // generate API URL
+      const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
+      return axios.post(url.toString(), {
+        ...body,
+        tokenPtoG: relation.tokenPtoG,
+      });
+    });
+
+    // pickup PromiseRejectedResult only
+    const results = await Promise.allSettled(promises);
+    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+    const botToken = installation?.data.bot?.token;
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
+    }
+    catch (err) {
+      logger.error(err);
+    }
   }
 
   @Post('/events')

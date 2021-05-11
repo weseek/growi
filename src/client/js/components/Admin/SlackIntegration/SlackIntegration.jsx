@@ -22,40 +22,33 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  const [isConnectedToSlack, setIsConnectedToSlack] = useState(false);
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
-  const [isSlackScopeSet, setIsSlackScopeSet] = useState(false);
 
   const fetchSlackWorkSpaceNameInWithoutProxy = useCallback(async() => {
-    if (!isConnectedToSlack) {
-      return setSlackWSNameInWithoutProxy(null);
-    }
+
     try {
-      const res = await appContainer.apiv3.get('/slack-integration-legacy/custom-bot-without-proxy/slack-workspace-name');
+      const res = await appContainer.apiv3.get('/slack-integration-settings/custom-bot-without-proxy/slack-workspace-name');
       setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-      setIsSlackScopeSet(true);
     }
     catch (err) {
       if (err[0].message === 'missing_scope') {
         setSlackWSNameInWithoutProxy(null);
-        setIsSlackScopeSet(false);
         toastError(err, t('admin:slack_integration.set_scope'));
       }
       else {
         toastError(err);
       }
     }
-  }, [appContainer.apiv3, isConnectedToSlack, t]);
+  }, [appContainer.apiv3, t]);
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
-      const response = await appContainer.apiv3.get('/slack-integration-legacy/');
+      const response = await appContainer.apiv3.get('/slack-integration-settings');
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
-        isConnectedToSlack,
       } = customBotWithoutProxySettings;
 
       setCurrentBotType(currentBotType);
@@ -63,18 +56,7 @@ const SlackIntegration = (props) => {
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
-      setIsConnectedToSlack(isConnectedToSlack);
-
       fetchSlackWorkSpaceNameInWithoutProxy();
-
-      if (isConnectedToSlack) {
-        setIsRegisterSlackCredentials(true);
-      }
-      else {
-        setIsRegisterSlackCredentials(false);
-        setIsSendTestMessage(false);
-      }
-
     }
     catch (err) {
       toastError(err);
@@ -103,7 +85,7 @@ const SlackIntegration = (props) => {
 
   const changeCurrentBotSettingsHandler = async() => {
     try {
-      const res = await appContainer.apiv3.put('/slack-integration-legacy/custom-bot-without-proxy', {
+      const res = await appContainer.apiv3.put('/slack-integration-settings/custom-bot-without-proxy', {
         slackSigningSecret: '',
         slackBotToken: '',
         currentBotType: selectedBotType,
@@ -112,13 +94,10 @@ const SlackIntegration = (props) => {
       setSelectedBotType(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
       setIsRegisterSlackCredentials(false);
-      setIsConnectedToSlack(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
-      setIsConnectedToSlack(false);
       setIsSendTestMessage(false);
       setSlackWSNameInWithoutProxy(null);
-      setIsSlackScopeSet(false);
     }
     catch (err) {
       toastError(err);
@@ -136,8 +115,6 @@ const SlackIntegration = (props) => {
         <CustomBotWithoutProxySettings
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
-          isConnectedToSlack={isConnectedToSlack}
-          isSlackScopeSet={isSlackScopeSet}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}

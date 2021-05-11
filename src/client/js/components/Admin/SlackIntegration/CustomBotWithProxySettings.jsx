@@ -15,7 +15,7 @@ const CustomBotWithProxySettings = (props) => {
   return (
     <>
 
-      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
+      <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
@@ -23,9 +23,19 @@ const CustomBotWithProxySettings = (props) => {
         slackWorkSpaceNames={['wsName1', 'wsName2']}
         isSlackScopeSet
       />
+      <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
+      <div className="mx-3">
+        <div className="d-flex flex-column pull-right">
+          <button
+            className="my-3 btn btn-outline-danger"
+            type="button"
+          ><i className="icon-trash mr-1" />{t('admin:slack_integration.delete')}
+          </button>
+        </div>
 
-      <div className="my-5 mx-3">
-        <CustomBotWithProxySettingsAccordion />
+        <div className="d-flex flex-column my-5 w-100">
+          <CustomBotWithProxySettingsAccordion />
+        </div>
       </div>
     </>
   );
