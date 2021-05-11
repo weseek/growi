@@ -288,8 +288,13 @@
       "discard": "Discard",
       "generate": "Generate"
     },
+    "delete": "Delete",
+    "cooperation_procedure": "Cooperation procedure",
     "official_bot_settings": "Official bot Settings",
     "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
+    "reset": "Reset",
+    "delete_slackbot_settings": "Reset Slack Bot settings",
+    "slackbot_settings_notice": "Reset",
     "accordion": {
       "create_bot": "Create Bot",
       "how_to_create_a_bot": "How to create a bot",
