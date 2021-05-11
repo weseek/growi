@@ -13,14 +13,15 @@ const CustomBotWithProxySettings = (props) => {
   const { t } = useTranslation();
 
   // TODO: Multiple accordion logic
-  const [accordionComponentsArray, setAccordionComponentsArray] = useState(0);
+  const [accordionComponentsCount, setAccordionComponentsCount] = useState(0);
   const addAccordionHandler = () => {
-    setAccordionComponentsArray(
+    setAccordionComponentsCount(
       prevState => prevState + 1,
     );
   };
+  // TODO: Delete accordion logic
   const deleteAccordionHandler = () => {
-    setAccordionComponentsArray(
+    setAccordionComponentsCount(
       prevState => prevState - 1,
     );
   };
@@ -39,7 +40,7 @@ const CustomBotWithProxySettings = (props) => {
       <div className="mx-3">
 
         {/* // TODO: Multiple accordion logic */}
-        {Array(...Array(accordionComponentsArray)).map(i => (
+        {Array(...Array(accordionComponentsCount)).map(i => (
           <>
             <div className="d-flex justify-content-end">
               <button
