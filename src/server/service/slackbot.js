@@ -89,7 +89,6 @@ class SlackBotService extends S2sMessageHandlable {
 
   async sendAuthTest() {
     await this.client.api.test();
-    this.isConnectedToSlack = true;
   }
 
   notCommand(body) {

@@ -234,51 +234,5 @@ module.exports = (crowi) => {
 
   });
 
-  /**
-   * @swagger
-   *
-   *    /slack-integration/test-notification-to-slack-work-space:
-   *      post:
-   *        tags: [SlackTestToWorkSpace]
-   *        operationId: postSlackMessageToSlackWorkSpace
-   *        summary: test to send message to slack work space
-   *        description: post message to slack work space
-   *        responses:
-   *          200:
-   *            description: Succeeded to send a message to slack work space
-   */
-  // eslint-disable-next-line max-len
-  router.post('/notification-test-to-slack-work-space', loginRequiredStrictly, adminRequired, csrf, validator.NotificationTestToSlackWorkSpace, apiV3FormValidator, async(req, res) => {
-    const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
-    const { channel } = req.body;
-
-    if (isConnectedToSlack === false) {
-      const msg = 'Bot User OAuth Token is not setup.';
-      logger.error('Error', msg);
-      return res.apiv3Err(new ErrorV3(msg, 'not-setup-slack-bot-token', 400));
-    }
-
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-    this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
-    logger.debug('SlackBot: setup is done');
-
-    try {
-      await this.client.chat.postMessage({
-        channel: `#${channel}`,
-        text: 'Your test was successful!',
-      });
-      logger.info(`SlackTest: send success massage to slack work space at #${channel}.`);
-      logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
-      // eslint-disable-next-line max-len
-      const message = `Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #${channel} channel.`;
-      return res.apiv3({ message });
-    }
-    catch (error) {
-      const msg = `Error: ${error.data.error}. Needed:${error.data.needed}`;
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'notification-test-slack-work-space-failed'), 500);
-    }
-  });
-
   return router;
 };
