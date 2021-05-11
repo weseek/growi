@@ -45,6 +45,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  const SlackAppIntegration = crowi.model('SlackAppIntegration');
 
   const validator = {
     CustomBotWithoutProxy: [
@@ -69,6 +70,7 @@ module.exports = (crowi) => {
   }
 
 
+  // eslint-disable-next-line no-unused-vars
   function generateAccessToken(user) {
     const hasher = crypto.createHash('sha512');
     hasher.update(new Date().getTime() + user._id);
@@ -247,29 +249,24 @@ module.exports = (crowi) => {
    *    /slack-integration/access-token:
    *      put:
    *        tags: [SlackIntegration]
-   *        operationId: getCustomBotSetting
+   *        operationId:
    *        summary: /slack-integration
    *        description: Generate accessToken
    *        responses:
    *          200:
    *            description: Succeeded to update access token for slack
    */
-  router.put('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-
+  router.put('/access-token', async(req, res) => {
+    // TODO imple generate tokens at GW-5859
+    const { tokenGtoP, tokenPtoG } = req.body;
     try {
-      const accessToken = generateAccessToken(req.user);
-      await updateSlackBotSettings({ 'slackbot:access-token': accessToken });
-
-      // initialize slack service
-      await crowi.slackBotService.initialize();
-      crowi.slackBotService.publishUpdatedMessage();
-
-      return res.apiv3({ accessToken });
+      const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
+      return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
-      const msg = 'Error occured in updating access token for access token';
+      const msg = 'Error occured in updating access token for slack app tokens';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-accessToken-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
     }
   });
 
