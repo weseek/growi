@@ -40,7 +40,11 @@ const CustomBotWithProxySettings = (props) => {
           ]
         }
         slackWorkSpaceNames={
-          ['wsName1', 'wsName2']}
+          [
+            { name: 'wsName1', active: true },
+            { name: 'wsName2', active: false },
+          ]
+        }
         isSlackScopeSet
       />
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
