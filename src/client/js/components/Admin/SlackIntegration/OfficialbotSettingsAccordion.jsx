@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { withUnstatedContainers } from '../../UnstatedUtils';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Accordion from '../Common/Accordion';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import { toastSuccess } from '../../../util/apiNotification';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
 
 const OfficialBotSettingsAccordion = (props) => {
+  // TODO: apply i18n by GW-5878
   const { t } = useTranslation();
   const { appContainer } = props;
   const growiUrl = appContainer.config.crowi.url;
@@ -67,12 +70,19 @@ const OfficialBotSettingsAccordion = (props) => {
           <div className="d-flex flex-column align-items-center">
             <ol className="p-0">
               <li><p className="ml-2">Slack上で`/growi register`と打つ</p></li>
-              {/* TODO: Copy to clipboard on click by GW5856 */}
               <li>
-                <p className="ml-2"><b>GROWI URL</b>には{growiUrl}
-                  <i className="fa fa-clipboard mx-1 text-secondary" aria-hidden="true"></i>
-                  を貼り付ける
-                </p>
+                <div className="input-group align-items-center ml-2 mb-3">
+                  <b> GROWI URL</b>には
+                  <div className="input-group-prepend mx-1">
+                    <input className="form-control" type="text" value={growiUrl} readOnly />
+                    <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+                      <div className="btn input-group-text">
+                        <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+                      </div>
+                    </CopyToClipboard>
+                  </div>
+                    を貼り付ける
+                </div>
               </li>
               <li><p className="ml-2">上記で発行した<b>Access Token for GROWI と Access Token for Proxy</b>を入れる</p></li>
             </ol>
