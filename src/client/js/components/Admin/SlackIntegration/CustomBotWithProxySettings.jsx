@@ -75,7 +75,7 @@ const CustomBotWithProxySettings = (props) => {
             className="btn btn-outline-primary"
             onClick={addAccordionHandler}
           >
-            + Slackワークスペースを追加
+            {`+ ${t('admin:slack_integration.accordion.add_slack_workspace')}`}
           </button>
         </div>
       </div>
