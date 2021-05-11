@@ -32,19 +32,23 @@ const CustomBotWithProxySettings = (props) => {
       />
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
       <div className="mx-3">
-        <div className="d-flex flex-column pull-right">
-          <button
-            className="my-3 btn btn-outline-danger"
-            type="button"
-          ><i className="icon-trash mr-1" />{t('admin:slack_integration.delete')}
-          </button>
-        </div>
 
         {/* // TODO: Multiple accordion logic */}
         {Array(...Array(accordionComponentsArray)).map(i => (
-          <div className="d-flex flex-column my-5 w-100">
-            <CustomBotWithProxySettingsAccordion />
-          </div>
+          <>
+            <div>
+              <button
+                className="my-3 btn btn-outline-danger"
+                type="button"
+              >
+                <i className="icon-trash mr-1" />
+                {t('admin:slack_integration.delete')}
+              </button>
+            </div>
+            <div>
+              <CustomBotWithProxySettingsAccordion key={i} />
+            </div>
+          </>
         ))}
 
         {/* TODO: Disable button when integration is incomplete */}
