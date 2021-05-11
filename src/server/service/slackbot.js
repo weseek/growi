@@ -1,9 +1,9 @@
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 
-const PAGINGLIMIT = 10;
-
 const { generateWebClient } = require('@growi/slack');
+
+const PAGINGLIMIT = 10;
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -16,40 +16,36 @@ class SlackBotService extends S2sMessageHandlable {
     this.crowi = crowi;
     this.s2sMessagingService = crowi.s2sMessagingService;
 
-    this.client = null;
-    this.searchService = null;
-
-    this.isConnectedToSlack = false;
-
     this.lastLoadedAt = null;
 
     this.initialize();
   }
 
-  async initialize() {
-    this.isConnectedToSlack = false;
+  initialize() {
+    this.lastLoadedAt = new Date();
+  }
+
+  get client() {
     const currentBotType = this.crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
-    if (currentBotType != null) {
-      let serverUri;
-      let token;
-
-      // connect to proxy
-      if (currentBotType !== 'customBotWithoutProxy') {
-        // TODO: https://youtrack.weseek.co.jp/issue/GW-5896
-        serverUri = 'http://localhost:8080/slack-api-proxy/';
-      }
-      // connect directly
-      else {
-        token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
-      }
-
-      this.client = generateWebClient(token, serverUri);
-      logger.debug('SlackBot: setup is done');
-      await this.sendAuthTest();
+    if (currentBotType == null) {
+      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
     }
 
-    this.lastLoadedAt = new Date();
+    let serverUri;
+    let token;
+
+    // connect to proxy
+    if (currentBotType !== 'customBotWithoutProxy') {
+      // TODO: https://youtrack.weseek.co.jp/issue/GW-5896
+      serverUri = 'http://localhost:8080/slack-api-proxy/';
+    }
+    // connect directly
+    else {
+      token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
+    }
+
+    return generateWebClient(token, serverUri);
   }
 
   /**
