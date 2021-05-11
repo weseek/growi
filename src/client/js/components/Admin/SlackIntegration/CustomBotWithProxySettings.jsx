@@ -19,6 +19,11 @@ const CustomBotWithProxySettings = (props) => {
       prevState => prevState + 1,
     );
   };
+  const deleteAccordionHandler = () => {
+    setAccordionComponentsArray(
+      prevState => prevState - 1,
+    );
+  };
 
   return (
     <>
@@ -40,6 +45,7 @@ const CustomBotWithProxySettings = (props) => {
               <button
                 className="my-3 btn btn-outline-danger"
                 type="button"
+                onClick={deleteAccordionHandler}
               >
                 <i className="icon-trash mr-1" />
                 {t('admin:slack_integration.delete')}
