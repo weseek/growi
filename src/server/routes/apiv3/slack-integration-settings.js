@@ -177,7 +177,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
-  router.put('/custom-bot-without-proxy',
+  router.put('/bot-type',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CustomBotWithoutProxy, apiV3FormValidator, async(req, res) => {
       const { slackSigningSecret, slackBotToken, currentBotType } = req.body;
       const requestParams = {
