@@ -15,4 +15,5 @@ export * from './utils/block-creater';
 export * from './utils/check-communicable-to-api-server';
 export * from './utils/post-ephemeral-errors';
 export * from './utils/slash-command-parser';
+export * from './utils/test-slack-api';
 export * from './utils/webclient-factory';
