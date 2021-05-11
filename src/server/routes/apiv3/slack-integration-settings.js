@@ -254,8 +254,8 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to send a message to slack work space
    */
-  router.post('/notification-test-to-slack-work-space',
-    loginRequiredStrictly, adminRequired, csrf, validator.NotificationTestToSlackWorkSpace, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.post('/notification-test-to-slack-work-space', loginRequiredStrictly, adminRequired, csrf, validator.NotificationTestToSlackWorkSpace, apiV3FormValidator, async(req, res) => {
       const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
       const { channel } = req.body;
 
@@ -286,37 +286,6 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'notification-test-slack-work-space-failed'), 500);
       }
     });
-
-  /**
-   * @swagger
-   *
-   *    /slack-integration/access-token:
-   *      delete:
-   *        tags: [SlackIntegration]
-   *        operationId: deleteAccessTokenForSlackBot
-   *        summary: /slack-integration
-   *        description: Delete accessToken
-   *        responses:
-   *          200:
-   *            description: Succeeded to delete accessToken
-   */
-  router.delete('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-
-    try {
-      await updateSlackBotSettings({ 'slackbot:access-token': null });
-
-      // initialize slack service
-      await crowi.slackBotService.initialize();
-      crowi.slackBotService.publishUpdatedMessage();
-
-      return res.apiv3({});
-    }
-    catch (error) {
-      const msg = 'Error occured in discard of slackbotAccessToken';
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'discard-slackbotAccessToken-failed'), 500);
-    }
-  });
 
   return router;
 };
