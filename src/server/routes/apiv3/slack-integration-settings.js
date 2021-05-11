@@ -249,9 +249,19 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access token for slack
    */
-  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/access-tokens', /*  loginRequiredStrictly, adminRequired, csrf, */ async(req, res) => {
     // TODO imple generate tokens at GW-5859. The following req.body is temporary.
     const { tokenGtoP, tokenPtoG } = req.body;
+
+    const searchTokenGtoP = await SlackAppIntegration.find({ tokenGtoP });
+    const searchTokenPtoG = await SlackAppIntegration.find({ tokenPtoG });
+
+    if (searchTokenGtoP || searchTokenPtoG) {
+      // regenerate tokens
+      const msg = 'Exist slack app tokens';
+      return res.apiv3(new ErrorV3(msg, 'exist-SlackAppTokens'), 409);
+    }
+
     try {
       const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
       return res.apiv3(slackAppTokens, 200);
