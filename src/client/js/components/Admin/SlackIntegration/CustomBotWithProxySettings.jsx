@@ -36,7 +36,7 @@ const CustomBotWithProxySettings = (props) => {
         {/* // TODO: Multiple accordion logic */}
         {Array(...Array(accordionComponentsArray)).map(i => (
           <>
-            <div>
+            <div className="d-flex justify-content-end">
               <button
                 className="my-3 btn btn-outline-danger"
                 type="button"
@@ -45,9 +45,7 @@ const CustomBotWithProxySettings = (props) => {
                 {t('admin:slack_integration.delete')}
               </button>
             </div>
-            <div>
-              <CustomBotWithProxySettingsAccordion key={i} />
-            </div>
+            <CustomBotWithProxySettingsAccordion key={i} />
           </>
         ))}
 
