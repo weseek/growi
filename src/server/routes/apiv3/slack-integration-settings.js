@@ -206,9 +206,8 @@ module.exports = (crowi) => {
       }
       catch (error) {
         if (error.data.error === 'invalid_auth') {
-          const msg = 'Invalid Secret or Token';
           logger.error('Error', error);
-          return res.apiv3Err(new ErrorV3(msg, 'invalid_auth'), 400);
+          return res.apiv3Err(new ErrorV3('Invalid Secret or Token', 'invalid_auth'), 400);
         }
 
         const msg = 'Error occured in updating Custom bot setting';
