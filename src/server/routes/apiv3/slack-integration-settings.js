@@ -1,10 +1,11 @@
 const loggerFactory = require('@alias/logger');
 
+const { getConnectionStatuses } = require('@growi/slack');
+
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
 const crypto = require('crypto');
-const { WebClient, LogLevel } = require('@slack/web-api');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -84,35 +85,40 @@ module.exports = (crowi) => {
    *        tags: [SlackBotSettingParams]
    *        operationId: getSlackBotSettingParams
    *        summary: get /slack-integration
-   *        description: Get slackBot setting params.
+   *        description: Get current settings and connection statuses.
    *        responses:
    *          200:
-   *            description: Succeeded to get slackBot setting params.
+   *            description: Succeeded to get info.
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
-    const slackBotSettingParams = {
-      accessToken: crowi.configManager.getConfig('crowi', 'slackbot:access-token'),
-      currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
-      // TODO impl when creating official bot
-      officialBotSettings: {
-        // TODO impl this after GW-4939
-        // AccessToken: "tempaccessdatahogehoge",
-      },
-      customBotWithoutProxySettings: {
-        // TODO impl this after GW-4939
-        // AccessToken: "tempaccessdatahogehoge",
-        slackSigningSecretEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret'),
-        slackBotTokenEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
-        slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
-      },
-      // TODO imple when creating with proxy
-      customBotWithProxySettings: {
-        // TODO impl this after GW-4939
-        // AccessToken: "tempaccessdatahogehoge",
-      },
-    };
-    return res.apiv3({ slackBotSettingParams });
+    const { configManager } = crowi;
+    const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    // retrieve settings
+    const settings = {};
+    if (currentBotType === 'customBotWithoutProxy') {
+      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
+      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
+      settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
+      settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
+    }
+    else {
+      // settings.proxyUriEnvVars = ;
+      // settings.proxyUri = ;
+      // settings.tokenPtoG = ;
+      // settings.tokenGtoP = ;
+    }
+
+    // retrieve connection statuses
+    let connectionStatuses;
+    if (currentBotType === 'customBotWithoutProxy') {
+      connectionStatuses = Object.fromEntries(await getConnectionStatuses([settings.slackBotToken]));
+    }
+    else {
+      // connectionStatuses = getConnectionStatusesFromProxy();
+    }
+
+    return res.apiv3({ currentBotType, settings, connectionStatuses });
   });
 
   /**
