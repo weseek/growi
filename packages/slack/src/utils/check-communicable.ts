@@ -62,22 +62,27 @@ const retrieveWorkspaceName = async(client: WebClient): Promise<string> => {
  */
 export const getConnectionStatuses = async(tokens: string[]): Promise<Map<string, ConnectionStatus>> => {
   return tokens
-    .reduce<Promise<Map<string, ConnectionStatus>>>(async(acc, token) => {
-      const client = generateWebClient(token);
+    .reduce<Promise<Map<string, ConnectionStatus>>>(
+      async(acc, token) => {
+        const client = generateWebClient(token);
 
-      // try to connect
-      const status: ConnectionStatus = {};
-      try {
-        await testSlackApiServer(client);
-        status.workspaceName = await retrieveWorkspaceName(client);
-      }
-      catch (err) {
-        status.error = err;
-      }
+        const status: ConnectionStatus = {};
+        try {
+          // try to connect
+          await testSlackApiServer(client);
+          // retrieve workspace name
+          status.workspaceName = await retrieveWorkspaceName(client);
+        }
+        catch (err) {
+          status.error = err;
+        }
 
-      (await acc).set(token, status);
+        (await acc).set(token, status);
 
-      return acc;
+        return acc;
 
-    }, Promise.resolve(new Map<string, ConnectionStatus>()));
+      },
+      // define initial accumulator
+      Promise.resolve(new Map<string, ConnectionStatus>()),
+    );
 };
