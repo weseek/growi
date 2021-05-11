@@ -107,7 +107,6 @@ module.exports = (crowi) => {
         slackBotTokenEnvVars: crowi.configManager.getConfigFromEnvVars('crowi', 'slackbot:token'),
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
-        isConnectedToSlack: crowi.slackBotService.isConnectedToSlack,
       },
       // TODO imple when creating with proxy
       customBotWithProxySettings: {
@@ -147,9 +146,6 @@ module.exports = (crowi) => {
 
       try {
         await updateSlackBotSettings(requestParams);
-
-        // initialize slack service
-        await crowi.slackBotService.initialize();
         crowi.slackBotService.publishUpdatedMessage();
 
         const slackIntegrationSettingsParams = {
@@ -193,9 +189,6 @@ module.exports = (crowi) => {
       };
       try {
         await updateSlackBotSettings(requestParams);
-
-        // initialize slack service
-        await crowi.slackBotService.initialize();
         crowi.slackBotService.publishUpdatedMessage();
 
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
@@ -267,83 +260,6 @@ module.exports = (crowi) => {
       const msg = 'Error occured in updating access token for slack app tokens';
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /slack-integration/test-notification-to-slack-work-space:
-   *      post:
-   *        tags: [SlackTestToWorkSpace]
-   *        operationId: postSlackMessageToSlackWorkSpace
-   *        summary: test to send message to slack work space
-   *        description: post message to slack work space
-   *        responses:
-   *          200:
-   *            description: Succeeded to send a message to slack work space
-   */
-  router.post('/notification-test-to-slack-work-space',
-    loginRequiredStrictly, adminRequired, csrf, validator.NotificationTestToSlackWorkSpace, apiV3FormValidator, async(req, res) => {
-      const isConnectedToSlack = crowi.slackBotService.isConnectedToSlack;
-      const { channel } = req.body;
-
-      if (isConnectedToSlack === false) {
-        const msg = 'Bot User OAuth Token is not setup.';
-        logger.error('Error', msg);
-        return res.apiv3Err(new ErrorV3(msg, 'not-setup-slack-bot-token', 400));
-      }
-
-      const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-      this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
-      logger.debug('SlackBot: setup is done');
-
-      try {
-        await this.client.chat.postMessage({
-          channel: `#${channel}`,
-          text: 'Your test was successful!',
-        });
-        logger.info(`SlackTest: send success massage to slack work space at #${channel}.`);
-        logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
-        // eslint-disable-next-line max-len
-        const message = `Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #${channel} channel.`;
-        return res.apiv3({ message });
-      }
-      catch (error) {
-        const msg = `Error: ${error.data.error}. Needed:${error.data.needed}`;
-        logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'notification-test-slack-work-space-failed'), 500);
-      }
-    });
-
-  /**
-   * @swagger
-   *
-   *    /slack-integration/access-token:
-   *      delete:
-   *        tags: [SlackIntegration]
-   *        operationId: deleteAccessTokenForSlackBot
-   *        summary: /slack-integration
-   *        description: Delete accessToken
-   *        responses:
-   *          200:
-   *            description: Succeeded to delete accessToken
-   */
-  router.delete('/access-token', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-
-    try {
-      await updateSlackBotSettings({ 'slackbot:access-token': null });
-
-      // initialize slack service
-      await crowi.slackBotService.initialize();
-      crowi.slackBotService.publishUpdatedMessage();
-
-      return res.apiv3({});
-    }
-    catch (error) {
-      const msg = 'Error occured in discard of slackbotAccessToken';
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'discard-slackbotAccessToken-failed'), 500);
     }
   });
 
