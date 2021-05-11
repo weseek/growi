@@ -75,7 +75,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
 };
 
 CustomBotWithProxyIntegrationCard.propTypes = {
-  siteNames: PropTypes.array,
+  siteNames: PropTypes.array.isRequired,
   slackWorkSpaceNames: PropTypes.array,
   isSlackScopeSet: PropTypes.bool,
 };
