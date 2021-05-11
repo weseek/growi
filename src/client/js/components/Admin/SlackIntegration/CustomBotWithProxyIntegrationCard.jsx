@@ -13,7 +13,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
         <div className="card-body px-5">
           {props.slackWorkSpaceNames.map((slackWorkSpaceName) => {
             return (
-              <div key={slackWorkSpaceName.name} className={slackWorkSpaceName.active && 'card slack-work-space-name-card'}>
+              <div key={slackWorkSpaceName.name} className={slackWorkSpaceName.active ? 'card slack-work-space-name-card' : ''}>
                 <div className="m-2 text-center">
                   <h5 className="font-weight-bold">{slackWorkSpaceName.name}</h5>
                   <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
