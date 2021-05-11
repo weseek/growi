@@ -32,8 +32,15 @@ const CustomBotWithProxySettings = (props) => {
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
-        siteNames={['siteName1', 'siteName2', 'siteName3']}
-        slackWorkSpaceNames={['wsName1', 'wsName2']}
+        siteNames={
+          [
+            { name: 'siteName1', active: true },
+            { name: 'siteName2', active: false },
+            { name: 'siteName3', active: false },
+          ]
+        }
+        slackWorkSpaceNames={
+          ['wsName1', 'wsName2']}
         isSlackScopeSet
       />
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
