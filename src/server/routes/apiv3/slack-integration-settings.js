@@ -236,10 +236,19 @@ module.exports = (crowi) => {
       return res.apiv3({ slackWorkSpaceName });
     }
     catch (error) {
-      let msg = 'Error occured in slack_bot_token';
-      if (error.data.error === 'missing_scope') {
-        msg = 'missing_scope';
+      // if (error.data.error === 'missing_scope') {
+      //   logger.error('Error', error);
+      //   return res.apiv3Err(new ErrorV3('Missing scope', 'get-SlackWorkSpaceName-failed'), 400);
+      // }
+      // if (error.data.error === 'invalid_auth') {
+      //   logger.error('Error', error);
+      //   return res.apiv3Err(new ErrorV3('Invalid Secret or Token', 'get-SlackWorkSpaceName-failed'), 400);
+      // }
+      if (error.code === 'slack_webapi_platform_error') {
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3('Invalid Secret or Token', 'get-SlackWorkSpaceName-failed'), 400);
       }
+      const msg = 'Error occured in slack_bot_token';
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
     }
