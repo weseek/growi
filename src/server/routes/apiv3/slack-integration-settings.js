@@ -248,7 +248,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access token for slack
    */
-  router.put('/access-tokens', /*  loginRequiredStrictly, adminRequired, csrf, */ async(req, res) => {
+  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     // TODO imple generate tokens at GW-5859. The following req.body is temporary.
     let { tokenGtoP, tokenPtoG } = req.body;
     let searchTokenGtoP = await SlackAppIntegration.findOne({ tokenGtoP }, { tokenGtoP: 1, _id: 0 });
@@ -258,14 +258,13 @@ module.exports = (crowi) => {
     let regenerateTokenPtoG;
     while (searchTokenGtoP || searchTokenPtoG) {
       // regenerate tokens
-      regenerateTokenGtoP = 'never duplicate GtoP v3';
-      regenerateTokenPtoG = 'never duplicate PtoG v3';
-
+      regenerateTokenGtoP = 'never duplicate GtoP v6';
+      regenerateTokenPtoG = 'never duplicate PtoG v6';
       /* eslint-disable no-await-in-loop */
-      searchTokenGtoP = await SlackAppIntegration.findOne({ regenerateTokenGtoP }, { tokenGtoP: 1, _id: 0 });
-      searchTokenPtoG = await SlackAppIntegration.findOne({ regenerateTokenPtoG }, { tokenPtoG: 1, _id: 0 });
+      searchTokenGtoP = await SlackAppIntegration.findOne({ tokenGtoP: regenerateTokenGtoP }, { tokenGtoP: 1, _id: 0 });
+      searchTokenPtoG = await SlackAppIntegration.findOne({ tokenPtoG: regenerateTokenPtoG }, { tokenPtoG: 1, _id: 0 });
 
-      if (regenerateTokenGtoP !== searchTokenGtoP && regenerateTokenPtoG !== searchTokenPtoG) {
+      if (searchTokenGtoP == null && searchTokenPtoG == null) {
         tokenGtoP = regenerateTokenGtoP;
         tokenPtoG = regenerateTokenPtoG;
       }
