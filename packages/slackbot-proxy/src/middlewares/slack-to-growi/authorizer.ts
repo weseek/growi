@@ -5,7 +5,7 @@ import {
 
 import Logger from 'bunyan';
 
-import { AuthedReq } from '~/interfaces/authorized-req';
+import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
@@ -25,7 +25,7 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeCommandMiddleware');
   }
 
-  async use(@Req() req: AuthedReq, @Res() res: Res): Promise<void> {
+  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
     const { body } = req;
 
     // extract id from body
@@ -83,7 +83,7 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeInteractionMiddleware');
   }
 
-  async use(@Req() req: AuthedReq, @Res() res: Res): Promise<void> {
+  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
     const { body } = req;
 
     if (body.payload == null) {

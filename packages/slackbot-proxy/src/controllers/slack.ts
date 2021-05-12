@@ -11,12 +11,12 @@ import {
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
-import { AuthedReq } from '~/interfaces/authorized-req';
+import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
-import { AddSigningSecretToReq } from '~/middlewares/add-signing-secret-to-req';
-import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/authorizer';
+import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
+import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 import loggerFactory from '~/utils/logger';
@@ -65,7 +65,7 @@ export class SlackCtrl {
 
   @Post('/commands')
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
-  async handleCommand(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+  async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
     if (body.text == null) {
@@ -130,7 +130,7 @@ export class SlackCtrl {
 
   @Post('/interactions')
   @UseBefore(AuthorizeInteractionMiddleware)
-  async handleInteraction(@Req() req: AuthedReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+  async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
 
