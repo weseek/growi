@@ -10,7 +10,7 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer } = props;
+  const { appContainer, fetchSlackIntegrationData } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
@@ -23,6 +23,7 @@ const CustomBotWithoutProxySettings = (props) => {
         slackBotToken: '',
         currentBotType: '',
       });
+      fetchSlackIntegrationData();
       toastSuccess('success');
     }
     catch (err) {
@@ -46,12 +47,14 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
 
+      {(props.slackSigningSecret || props.slackBotToken) && (
       <button
         className="mx-3 pull-right btn text-danger border-danger"
         type="button"
         onClick={() => setIsDeleteConfirmModalShown(true)}
       >{t('admin:slack_integration.reset')}
       </button>
+      )}
 
       <div className="my-5 mx-3">
         <CustomBotWithoutProxySettingsAccordion
@@ -79,6 +82,7 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
+  fetchSlackIntegrationData: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
