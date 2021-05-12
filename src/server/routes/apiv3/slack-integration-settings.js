@@ -180,11 +180,15 @@ module.exports = (crowi) => {
   router.put('/bot-type',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CustomBotWithoutProxy, apiV3FormValidator, async(req, res) => {
       const { slackSigningSecret, slackBotToken, currentBotType } = req.body;
-      const requestParams = {
-        'slackbot:signingSecret': slackSigningSecret,
-        'slackbot:token': slackBotToken,
-        'slackbot:currentBotType': currentBotType,
-      };
+
+      const requestParams = { 'slackbot:currentBotType': currentBotType };
+      if (currentBotType === 'customBotWithoutProxy') {
+        requestParams['slackbot:signingSecret'] = slackSigningSecret;
+        requestParams['slackbot:token'] = slackBotToken;
+      }
+
+      console.log('requestParams', requestParams);
+
       try {
         await updateSlackBotSettings(requestParams);
         crowi.slackBotService.publishUpdatedMessage();
