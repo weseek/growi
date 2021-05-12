@@ -4,7 +4,6 @@ const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 const express = require('express');
 const { body } = require('express-validator');
 const crypto = require('crypto');
-const { WebClient, LogLevel } = require('@slack/web-api');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -259,8 +258,8 @@ module.exports = (crowi) => {
     let regenerateTokenPtoG;
     while (searchTokenGtoP || searchTokenPtoG) {
       // regenerate tokens
-      regenerateTokenGtoP = 'never duplicate GtoP v2';
-      regenerateTokenPtoG = 'never duplicate PtoG v2';
+      regenerateTokenGtoP = 'never duplicate GtoP v3';
+      regenerateTokenPtoG = 'never duplicate PtoG v3';
 
       /* eslint-disable no-await-in-loop */
       searchTokenGtoP = await SlackAppIntegration.findOne({ regenerateTokenGtoP }, { tokenGtoP: 1, _id: 0 });
