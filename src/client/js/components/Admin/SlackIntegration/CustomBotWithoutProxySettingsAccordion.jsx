@@ -68,16 +68,14 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setConnectionErrorMessage(null);
     setConnectionSuccessMessage(null);
     try {
-      const res = await appContainer.apiv3.post('/slack-integration-settings/notification-test-to-slack-work-space', {
-        channel: testChannel,
-      });
-      setConnectionSuccessMessage(res.data.message);
-      onSetIsSendTestMessage(true);
+      // TODO: 5921 Add new Test endpoint
+      // eslint-disable-next-line no-console
+      console.log('Test');
     }
     catch (err) {
       onSetIsSendTestMessage(false);
-      setConnectionErrorCode(err[0].code);
-      setConnectionErrorMessage(err[0].message);
+      setConnectionErrorCode('dummy-error-code');
+      setConnectionErrorMessage('This is a sample error message');
     }
   };
 

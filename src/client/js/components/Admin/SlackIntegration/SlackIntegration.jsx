@@ -26,9 +26,27 @@ const SlackIntegration = (props) => {
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
 
+  const fetchSlackWorkSpaceNameInWithoutProxy = useCallback(async() => {
+
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration-settings/custom-bot-without-proxy/slack-workspace-name');
+      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+    }
+    catch (err) {
+      if (err[0].message === 'missing_scope') {
+        setSlackWSNameInWithoutProxy(null);
+        toastError(err, t('admin:slack_integration.set_scope'));
+      }
+      else {
+        toastError(err);
+      }
+    }
+  }, [appContainer.apiv3, t]);
+
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('/slack-integration-settings');
+      console.log(response);
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
@@ -39,11 +57,12 @@ const SlackIntegration = (props) => {
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
+      fetchSlackWorkSpaceNameInWithoutProxy();
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, fetchSlackWorkSpaceNameInWithoutProxy]);
 
 
   useEffect(() => {
