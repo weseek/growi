@@ -251,22 +251,20 @@ module.exports = (crowi) => {
   router.put('/access-tokens', /*  loginRequiredStrictly, adminRequired, csrf, */ async(req, res) => {
     // TODO imple generate tokens at GW-5859. The following req.body is temporary.
     let { tokenGtoP, tokenPtoG } = req.body;
-    let seachExistTokens = await SlackAppIntegration.findOne({ tokenGtoP }, { tokenPtoG });
-
+    let searchExistTokens;
     let regenerateTokenGtoP;
     let regenerateTokenPtoG;
-    while (seachExistTokens) {
-      // regenerate tokens
-      regenerateTokenGtoP = 'never duplicate GtoP v7';
-      regenerateTokenPtoG = 'never duplicate PtoG v7';
-      /* eslint-disable no-await-in-loop */
-      seachExistTokens = await SlackAppIntegration.findOne({ tokenGtoP: regenerateTokenGtoP }, { tokenPtoG: regenerateTokenPtoG });
-
-      if (seachExistTokens == null) {
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      searchExistTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
+      if (searchExistTokens !== null) {
+        // regenerate tokens. The following regenerateTokens is temporary.
+        regenerateTokenGtoP = 'never duplicate GtoP v15';
+        regenerateTokenPtoG = 'never duplicate PtoG v15';
         tokenGtoP = regenerateTokenGtoP;
         tokenPtoG = regenerateTokenPtoG;
       }
-    }
+    } while (searchExistTokens);
 
     try {
       const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
