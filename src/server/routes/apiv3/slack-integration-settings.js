@@ -62,12 +62,22 @@ module.exports = (crowi) => {
     ],
   };
 
-  async function updateSlackBotSettings(params) {
+  async function resetAllBotSettings() {
+    const params = {
+      'slackbot:currentBotType': '',
+      'slackbot:signingSecret': '',
+      'slackbot:token': '',
+    };
     const { configManager } = crowi;
     // update config without publishing S2sMessage
     return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
   }
 
+  async function updateSlackBotSettings(params) {
+    const { configManager } = crowi;
+    // update config without publishing S2sMessage
+    return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+  }
 
   function generateAccessToken(user) {
     const hasher = crypto.createHash('sha512');
@@ -179,13 +189,10 @@ module.exports = (crowi) => {
    */
   router.put('/bot-type',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CustomBotWithoutProxy, apiV3FormValidator, async(req, res) => {
-      const { slackSigningSecret, slackBotToken, currentBotType } = req.body;
+      const { currentBotType } = req.body;
 
+      await resetAllBotSettings();
       const requestParams = { 'slackbot:currentBotType': currentBotType };
-      if (currentBotType === 'customBotWithoutProxy') {
-        requestParams['slackbot:signingSecret'] = slackSigningSecret;
-        requestParams['slackbot:token'] = slackBotToken;
-      }
 
       try {
         await updateSlackBotSettings(requestParams);
