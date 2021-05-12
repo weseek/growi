@@ -166,6 +166,27 @@ module.exports = (crowi) => {
       }
     });
 
+  router.put('/defaults',
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+
+      await resetAllBotSettings();
+      const params = { 'slackbot:currentBotType': '' };
+
+      try {
+        await updateSlackBotSettings(params);
+        crowi.slackBotService.publishUpdatedMessage();
+
+        // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
+        const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
+        return res.apiv3({ slackBotTypeParam });
+      }
+      catch (error) {
+        const msg = 'Error occured in updating Custom bot setting';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+      }
+    });
+
   /**
    * @swagger
    *
