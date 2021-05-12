@@ -256,10 +256,8 @@ module.exports = (crowi) => {
     const searchTokenGtoP = await SlackAppIntegration.find({ tokenGtoP });
     const searchTokenPtoG = await SlackAppIntegration.find({ tokenPtoG });
 
-    if (searchTokenGtoP || searchTokenPtoG) {
+    while (searchTokenGtoP || searchTokenPtoG) {
       // regenerate tokens
-      const msg = 'Exist slack app tokens';
-      return res.apiv3(new ErrorV3(msg, 'exist-SlackAppTokens'), 409);
     }
 
     try {
