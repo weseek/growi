@@ -47,9 +47,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
-    CustomBotWithoutProxy: [
-      body('slackSigningSecret').isString(),
-      body('slackBotToken').isString(),
+    BotType: [
       body('currentBotType').isString(),
     ],
     SlackIntegration: [
@@ -188,7 +186,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
   router.put('/bot-type',
-    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CustomBotWithoutProxy, apiV3FormValidator, async(req, res) => {
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.BotType, apiV3FormValidator, async(req, res) => {
       const { currentBotType } = req.body;
 
       await resetAllBotSettings();
