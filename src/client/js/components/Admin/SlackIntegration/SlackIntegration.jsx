@@ -28,18 +28,21 @@ const SlackIntegration = (props) => {
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
-      const { response: { data } } = await appContainer.apiv3.get('/slack-integration-settings');
+      const { data } = await appContainer.apiv3.get('/slack-integration-settings');
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
       } = data.settings;
 
-      // const { workspaceName } = response.data.connectionStatuses[slackBotToken];
+      if (data.connectionStatuses[slackBotToken] !== null) {
+        const { workspaceName } = data.connectionStatuses[slackBotToken];
+        setSlackWSNameInWithoutProxy(workspaceName);
+      }
+
       setCurrentBotType(currentBotType);
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
-      // setSlackWSNameInWithoutProxy(workspaceName);
     }
     catch (err) {
       toastError(err);
