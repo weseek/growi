@@ -46,11 +46,11 @@ const SlackIntegration = (props) => {
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const response = await appContainer.apiv3.get('/slack-integration-settings');
-      console.log(response);
       const { currentBotType, customBotWithoutProxySettings } = response.data.slackBotSettingParams;
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
       } = customBotWithoutProxySettings;
+      console.log(customBotWithoutProxySettings);
 
       setCurrentBotType(currentBotType);
       setSlackSigningSecret(slackSigningSecret);
