@@ -214,35 +214,5 @@ module.exports = (crowi) => {
       }
     });
 
-  /**
-   * @swagger
-   *
-   *    /slack-integration/custom-bot-without-proxy/slack-workspace-name:
-   *      get:
-   *        tags: [slackWorkSpaceName]
-   *        operationId: getSlackWorkSpaceName
-   *        summary: Get slack work space name for custom bot without proxy
-   *        description: get slack WS name in custom bot without proxy
-   *        responses:
-   *          200:
-   *            description: Succeeded to get slack ws name for custom bot without proxy
-   */
-  router.get('/custom-bot-without-proxy/slack-workspace-name', loginRequiredStrictly, adminRequired, async(req, res) => {
-
-    try {
-      const slackWorkSpaceName = await crowi.slackBotService.getSlackChannelName();
-      return res.apiv3({ slackWorkSpaceName });
-    }
-    catch (error) {
-      let msg = 'Error occured in slack_bot_token';
-      if (error.data.error === 'missing_scope') {
-        msg = 'missing_scope';
-      }
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
-    }
-
-  });
-
   return router;
 };
