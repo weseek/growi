@@ -32,8 +32,19 @@ const CustomBotWithProxySettings = (props) => {
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
-        siteName="GROWI"
-        slackWSNameInWithProxy="SlackWorkSpaceName"
+        growiApps={
+          [
+            { name: 'siteName1', active: true },
+            { name: 'siteName2', active: false },
+            { name: 'siteName3', active: false },
+          ]
+        }
+        slackWorkSpaces={
+          [
+            { name: 'wsName1', active: true },
+            { name: 'wsName2', active: false },
+          ]
+        }
         isSlackScopeSet
       />
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
@@ -64,7 +75,7 @@ const CustomBotWithProxySettings = (props) => {
             className="btn btn-outline-primary"
             onClick={addAccordionHandler}
           >
-            + Slackワークスペースを追加
+            {`+ ${t('admin:slack_integration.accordion.add_slack_workspace')}`}
           </button>
         </div>
       </div>

@@ -319,14 +319,16 @@
       "test_connection": "Test Connection",
       "test_connection_by_pressing_button": "Press the button to test the connection",
       "error_check_logs_below": "An error has occurred. Please check the logs below.",
-      "send_message_to_slack_work_space": "Send message to Slack work space."
+      "send_message_to_slack_work_space": "Send message to Slack work space.",
+      "add_slack_workspace": "Add a Slack Workspace"
     },
     "custom_bot_without_proxy_integration": "Custom bot without proxy integration",
     "integration_sentence": {
       "integration_is_not_complete": "Integration is not complete.<br>Proceed with the following integration procedure.",
       "integration_successful": "Integration successful"
     },
-    "custom_bot_with_proxy_integration": "Custom bot with proxy integration"
+    "custom_bot_with_proxy_integration": "Custom bot with proxy integration",
+    "official_bot_integration": "Official bot integration"
   },
   "user_management": {
     "invite_users": "Temporarily issue a new user",

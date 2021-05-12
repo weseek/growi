@@ -11,18 +11,20 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       <div className="card rounded shadow border-0 w-50 admin-bot-card">
         <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
         <div className="card-body px-5">
-          {props.slackWSNameInWithProxy != null && (
-            <div className="card slack-work-space-name-card">
-              <div className="m-2 text-center">
-                <h5 className="font-weight-bold">{props.slackWSNameInWithProxy}</h5>
-                <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
+          {props.slackWorkSpaces.map((slackWorkSpaceName) => {
+            return (
+              <div key={slackWorkSpaceName.name} className={slackWorkSpaceName.active ? 'card slack-work-space-name-card' : ''}>
+                <div className="m-2 text-center">
+                  <h5 className="font-weight-bold">{slackWorkSpaceName.name}</h5>
+                  <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })}
         </div>
       </div>
 
-      <div className="text-center w-25">
+      <div className="text-center w-25 mt-5">
         {props.isSlackScopeSet && (
           <p className="text-success small">
             <i className="fa fa-check mr-1" />
@@ -36,6 +38,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
           />
         )}
+
         <div className="pt-2">
           <div className="position-relative mt-5">
             <div className="circle position-absolute bg-primary border-light">
@@ -59,7 +62,18 @@ const CustomBotWithProxyIntegrationCard = (props) => {
           </div>
         </div>
         <div className="card-body p-4 mb-5 text-center">
-          <a className="btn btn-primary">{props.siteName}</a>
+          <div className="btn-group-vertical w-50">
+            {props.growiApps.map((growiApp) => {
+              return (
+                <button
+                  type="button"
+                  key={growiApp.name}
+                  className={growiApp.active ? 'btn btn-primary mb-3' : 'btn btn-outline-primary mb-3'}
+                >{growiApp.name}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -67,9 +81,9 @@ const CustomBotWithProxyIntegrationCard = (props) => {
 };
 
 CustomBotWithProxyIntegrationCard.propTypes = {
-  siteName: PropTypes.string.isRequired,
-  slackWSNameInWithProxy: PropTypes.string,
-  isSlackScopeSet: PropTypes.bool.isRequired,
+  growiApps: PropTypes.array.isRequired,
+  slackWorkSpaces: PropTypes.array,
+  isSlackScopeSet: PropTypes.bool,
 };
 
 export default CustomBotWithProxyIntegrationCard;
