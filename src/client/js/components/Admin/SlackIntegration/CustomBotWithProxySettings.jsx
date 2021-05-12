@@ -4,12 +4,16 @@ import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
 import CustomBotWithProxySettingsAccordion from './CustomBotWithProxySettingsAccordion';
+import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const { appContainer, adminAppContainer } = props;
+  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
+
   const { t } = useTranslation();
 
   // TODO: Multiple accordion logic
@@ -24,6 +28,19 @@ const CustomBotWithProxySettings = (props) => {
     setAccordionComponentsCount(
       prevState => prevState - 1,
     );
+  };
+
+  const deleteSlackSettingsHandler = async() => {
+    try {
+      // TODO imple delete PtoG and GtoP accessToken
+      await appContainer.apiv3.put('/slack-integration-settings/custom-bot-with-proxy', {
+      });
+      deleteAccordionHandler();
+      toastSuccess('success');
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   return (
@@ -57,7 +74,7 @@ const CustomBotWithProxySettings = (props) => {
               <button
                 className="my-3 btn btn-outline-danger"
                 type="button"
-                onClick={deleteAccordionHandler}
+                onClick={() => setIsDeleteConfirmModalShown(true)}
               >
                 <i className="icon-trash mr-1" />
                 {t('admin:slack_integration.delete')}
@@ -79,6 +96,11 @@ const CustomBotWithProxySettings = (props) => {
           </button>
         </div>
       </div>
+      <DeleteSlackBotSettingsModal
+        isOpen={isDeleteConfirmModalShown}
+        onClose={() => setIsDeleteConfirmModalShown(false)}
+        onClickDeleteButton={deleteSlackSettingsHandler}
+      />
     </>
   );
 };
