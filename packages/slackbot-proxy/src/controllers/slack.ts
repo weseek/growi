@@ -89,7 +89,7 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationRepository.find({ installation: installation?.id });
+    const relations = await this.relationRepository.find({ installation });
 
     if (relations.length === 0) {
       return res.json({
@@ -163,7 +163,7 @@ export class SlackCtrl {
     /*
      * forward to GROWI server
      */
-    const relations = await this.relationRepository.find({ installation: installation?.id });
+    const relations = await this.relationRepository.find({ installation });
 
     const promises = relations.map((relation: Relation) => {
       // generate API URL
