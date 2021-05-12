@@ -30,7 +30,7 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
 
     // extract id from body
     const teamId = body.team_id;
-    const enterpriseId = body.enterprize_id;
+    const enterpriseId = body.enterprise_id;
     const isEnterpriseInstall = body.is_enterprise_install === 'true';
 
     if (teamId == null && enterpriseId == null) {
