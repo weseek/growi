@@ -259,17 +259,15 @@ module.exports = (crowi) => {
    *            description: Succeeded to update access token for slack
    */
   router.put('/access-tokens', /*  loginRequiredStrictly, adminRequired, csrf, */ async(req, res) => {
-    // TODO imple generate tokens at GW-5859. The following req.body is temporary.
-    let { tokenGtoP, tokenPtoG } = req.body;
     let checkTokens;
+    let tokenGtoP;
+    let tokenPtoG;
     do {
+      // TODO imple generate tokens at GW-5859. The following tokens is temporary.
+      tokenGtoP = 'first';
+      tokenPtoG = 'first';
       // eslint-disable-next-line no-await-in-loop
       checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
-      if (checkTokens !== null) {
-        // regenerate tokens. The following regenerateTokens is temporary.
-        tokenGtoP = 'never duplicate GtoP v15';
-        tokenPtoG = 'never duplicate PtoG v15';
-      }
     } while (checkTokens);
 
     try {
