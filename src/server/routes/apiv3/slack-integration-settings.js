@@ -80,6 +80,19 @@ module.exports = (crowi) => {
     return hasher.digest('base64');
   }
 
+  async function getConnectionStatusesFromProxy(tokens) {
+    const csv = tokens.join(',');
+
+    // TODO: retrieve proxy url from configManager
+    const result = await axios.get('http://localhost:8080/g2s/connection-status', {
+      headers: {
+        'x-growi-gtop-tokens': csv,
+      },
+    });
+
+    return result.data;
+  }
+
   /**
    * @swagger
    *
@@ -112,6 +125,8 @@ module.exports = (crowi) => {
       // settings.tokenGtoP = ;
     }
 
+    // TODO: try-catch
+
     // retrieve connection statuses
     let connectionStatuses;
     if (currentBotType === 'customBotWithoutProxy') {
@@ -122,7 +137,9 @@ module.exports = (crowi) => {
       }
     }
     else {
-      // connectionStatuses = getConnectionStatusesFromProxy();
+      // TODO: retrieve tokenGtoPs from DB
+      const tokenGtoPs = ['gtop1'];
+      connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
     }
 
     return res.apiv3({ currentBotType, settings, connectionStatuses });
