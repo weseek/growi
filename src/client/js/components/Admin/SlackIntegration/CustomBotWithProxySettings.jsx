@@ -32,7 +32,7 @@ const CustomBotWithProxySettings = (props) => {
 
   const deleteSlackSettingsHandler = async() => {
     try {
-      // TODO imple delete PtoG and GtoP accessToken
+      // TODO imple delete PtoG and GtoP Token at GW 5861
       await appContainer.apiv3.put('/slack-integration-settings/custom-bot-with-proxy', {
       });
       deleteAccordionHandler();
