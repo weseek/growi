@@ -28,19 +28,19 @@ const SlackIntegration = (props) => {
 
   const fetchSlackWorkSpaceNameInWithoutProxy = useCallback(async() => {
 
-    try {
-      const res = await appContainer.apiv3.get('/slack-integration-settings/custom-bot-without-proxy/slack-workspace-name');
-      setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
-    }
-    catch (err) {
-      if (err[0].message === 'missing_scope') {
-        setSlackWSNameInWithoutProxy(null);
-        toastError(err, t('admin:slack_integration.set_scope'));
-      }
-      else {
-        toastError(err);
-      }
-    }
+    // try {
+    //   const res = await appContainer.apiv3.get('/slack-integration-settings/custom-bot-without-proxy/slack-workspace-name');
+    //   setSlackWSNameInWithoutProxy(res.data.slackWorkSpaceName);
+    // }
+    // catch (err) {
+    //   if (err[0].message === 'missing_scope') {
+    //     setSlackWSNameInWithoutProxy(null);
+    //     toastError(err, t('admin:slack_integration.set_scope'));
+    //   }
+    //   else {
+    //     toastError(err);
+    //   }
+    // }
   }, [appContainer.apiv3, t]);
 
   const fetchSlackIntegrationData = useCallback(async() => {
