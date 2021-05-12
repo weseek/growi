@@ -70,6 +70,7 @@ module.exports = (crowi) => {
   }
 
 
+  // eslint-disable-next-line no-unused-vars
   function generateAccessToken(user) {
     const hasher = crypto.createHash('sha512');
     hasher.update(new Date().getTime() + user._id);
