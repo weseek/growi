@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const loggerFactory = require('@alias/logger');
 
 const { getConnectionStatuses } = require('@growi/slack');
@@ -46,7 +47,6 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-  const SlackAppIntegration = crowi.model('SlackAppIntegration');
 
   const validator = {
     CustomBotWithoutProxy: [
@@ -259,6 +259,8 @@ module.exports = (crowi) => {
    *            description: Succeeded to update access token for slack
    */
   router.put('/access-tokens', /*  loginRequiredStrictly, adminRequired, csrf, */ async(req, res) => {
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+
     let checkTokens;
     let tokenGtoP;
     let tokenPtoG;
