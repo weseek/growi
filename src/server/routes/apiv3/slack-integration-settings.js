@@ -115,7 +115,7 @@ module.exports = (crowi) => {
       const token = settings.slackBotToken;
       // check the token is not null
       if (token != null) {
-        connectionStatuses = Object.fromEntries(await getConnectionStatuses([]));
+        connectionStatuses = Object.fromEntries(await getConnectionStatuses([token]));
       }
     }
     else {
