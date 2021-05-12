@@ -252,17 +252,13 @@ module.exports = (crowi) => {
     // TODO imple generate tokens at GW-5859. The following req.body is temporary.
     let { tokenGtoP, tokenPtoG } = req.body;
     let searchExistTokens;
-    let regenerateTokenGtoP;
-    let regenerateTokenPtoG;
     do {
       // eslint-disable-next-line no-await-in-loop
       searchExistTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
       if (searchExistTokens !== null) {
         // regenerate tokens. The following regenerateTokens is temporary.
-        regenerateTokenGtoP = 'never duplicate GtoP v15';
-        regenerateTokenPtoG = 'never duplicate PtoG v15';
-        tokenGtoP = regenerateTokenGtoP;
-        tokenPtoG = regenerateTokenPtoG;
+        tokenGtoP = 'never duplicate GtoP v15';
+        tokenPtoG = 'never duplicate PtoG v15';
       }
     } while (searchExistTokens);
 
