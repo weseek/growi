@@ -15,6 +15,13 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
+  const resetWithoutProxySettings = () => {
+    if (onResetAllSettings == null) {
+      return;
+    }
+    onResetAllSettings();
+  };
+
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -50,7 +57,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <DeleteSlackBotSettingsModal
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={onResetAllSettings}
+        onClickDeleteButton={resetWithoutProxySettings}
       />
     </>
   );
