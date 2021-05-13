@@ -258,7 +258,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access token for slack
    */
-  router.put('/access-tokens', /*  loginRequiredStrictly, adminRequired, csrf, */ async(req, res) => {
+  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 
     let checkTokens;
@@ -266,8 +266,8 @@ module.exports = (crowi) => {
     let tokenPtoG;
     do {
       // TODO imple generate tokens at GW-5859. The following tokens is temporary.
-      tokenGtoP = 'first';
-      tokenPtoG = 'first';
+      tokenGtoP = 'v2';
+      tokenPtoG = 'v2';
       // eslint-disable-next-line no-await-in-loop
       checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
     } while (checkTokens);
