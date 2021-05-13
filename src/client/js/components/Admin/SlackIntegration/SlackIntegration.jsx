@@ -54,6 +54,7 @@ const SlackIntegration = (props) => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
+
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
       return;
@@ -68,6 +69,21 @@ const SlackIntegration = (props) => {
   const cancelBotChangeHandler = () => {
     setSelectedBotType(null);
   };
+
+  const resetAllSettings = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/custom-bot-without-proxy', {
+        slackSigningSecret: '',
+        slackBotToken: '',
+        currentBotType: '',
+      });
+      toastSuccess('success');
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
 
   const changeCurrentBotSettingsHandler = async() => {
     try {
@@ -109,7 +125,7 @@ const SlackIntegration = (props) => {
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
-          fetchSlackIntegrationData={fetchSlackIntegrationData}
+          onResetAllSettings={resetAllSettings}
         />
       );
       break;

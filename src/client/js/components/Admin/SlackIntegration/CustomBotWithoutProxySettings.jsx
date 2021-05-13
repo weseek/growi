@@ -4,32 +4,17 @@ import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegrationCard';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, fetchSlackIntegrationData } = props;
+  const { appContainer, resetAllSettings } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
-  const deleteSlackSettingsHandler = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/custom-bot-without-proxy', {
-        slackSigningSecret: '',
-        slackBotToken: '',
-        currentBotType: '',
-      });
-      fetchSlackIntegrationData();
-      toastSuccess('success');
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -65,7 +50,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <DeleteSlackBotSettingsModal
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={deleteSlackSettingsHandler}
+        onClickDeleteButton={resetAllSettings}
       />
     </>
   );
@@ -82,7 +67,7 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
-  fetchSlackIntegrationData: PropTypes.func,
+  resetAllSettings: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
