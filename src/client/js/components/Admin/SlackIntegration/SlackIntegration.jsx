@@ -29,8 +29,6 @@ const SlackIntegration = (props) => {
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
-      console.log(data);
-
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
       } = data.settings;
@@ -45,7 +43,6 @@ const SlackIntegration = (props) => {
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
-      console.log(data.currentBotType);
     }
     catch (err) {
       toastError(err);
@@ -59,7 +56,6 @@ const SlackIntegration = (props) => {
         slackBotToken: '',
         currentBotType: '',
       });
-      console.log('hoge');
       fetchSlackIntegrationData();
       toastSuccess('success');
     }
@@ -173,7 +169,6 @@ const SlackIntegration = (props) => {
           })}
         </div>
       </div>
-
       {settingsComponent}
     </>
   );
