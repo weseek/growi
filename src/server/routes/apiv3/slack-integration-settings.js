@@ -112,10 +112,7 @@ module.exports = (crowi) => {
 
     // retrieve settings
     const settings = {};
-    console.log('express');
     if (currentBotType === 'customBotWithoutProxy') {
-      console.log('without');
-
       settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
       settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
