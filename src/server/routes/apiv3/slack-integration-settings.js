@@ -259,7 +259,7 @@ module.exports = (crowi) => {
       tokenPtoG = 'v2';
       // eslint-disable-next-line no-await-in-loop
       checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
-    } while (checkTokens);
+    } while (checkTokens != null);
 
     try {
       const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
