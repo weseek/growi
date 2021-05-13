@@ -1,13 +1,16 @@
 const mongoose = require('mongoose');
+const express = require('express');
+const { body } = require('express-validator');
+const axios = require('axios');
+const crypto = require('crypto');
+
 const loggerFactory = require('@alias/logger');
 
 const { getConnectionStatuses } = require('@growi/slack');
 
-const logger = loggerFactory('growi:routes:apiv3:notification-setting');
-const express = require('express');
-const { body } = require('express-validator');
-const crypto = require('crypto');
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
+const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 
 const router = express.Router();
 
@@ -78,6 +81,19 @@ module.exports = (crowi) => {
     return hasher.digest('base64');
   }
 
+  async function getConnectionStatusesFromProxy(tokens) {
+    const csv = tokens.join(',');
+
+    // TODO: retrieve proxy url from configManager
+    const result = await axios.get('http://localhost:8080/g2s/connection-status', {
+      headers: {
+        'x-growi-gtop-tokens': csv,
+      },
+    });
+
+    return result.data;
+  }
+
   /**
    * @swagger
    *
@@ -110,17 +126,21 @@ module.exports = (crowi) => {
       // settings.tokenGtoP = ;
     }
 
+    // TODO: try-catch
+
     // retrieve connection statuses
     let connectionStatuses;
     if (currentBotType === 'customBotWithoutProxy') {
       const token = settings.slackBotToken;
       // check the token is not null
       if (token != null) {
-        connectionStatuses = Object.fromEntries(await getConnectionStatuses([token]));
+        connectionStatuses = await getConnectionStatuses([token]);
       }
     }
     else {
-      // connectionStatuses = getConnectionStatusesFromProxy();
+      // TODO: retrieve tokenGtoPs from DB
+      const tokenGtoPs = ['gtop1'];
+      connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
     }
 
     return res.apiv3({ currentBotType, settings, connectionStatuses });
@@ -214,36 +234,6 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
       }
     });
-
-  /**
-   * @swagger
-   *
-   *    /slack-integration/custom-bot-without-proxy/slack-workspace-name:
-   *      get:
-   *        tags: [slackWorkSpaceName]
-   *        operationId: getSlackWorkSpaceName
-   *        summary: Get slack work space name for custom bot without proxy
-   *        description: get slack WS name in custom bot without proxy
-   *        responses:
-   *          200:
-   *            description: Succeeded to get slack ws name for custom bot without proxy
-   */
-  router.get('/custom-bot-without-proxy/slack-workspace-name', loginRequiredStrictly, adminRequired, async(req, res) => {
-
-    try {
-      const slackWorkSpaceName = await crowi.slackBotService.getSlackChannelName();
-      return res.apiv3({ slackWorkSpaceName });
-    }
-    catch (error) {
-      let msg = 'Error occured in slack_bot_token';
-      if (error.data.error === 'missing_scope') {
-        msg = 'missing_scope';
-      }
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'get-SlackWorkSpaceName-failed'), 500);
-    }
-
-  });
 
   /**
    * @swagger

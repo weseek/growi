@@ -2,7 +2,7 @@ import { Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
-import { GrowiCommandProcessor } from '~/interfaces/growi-command-processor';
+import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
 
