@@ -127,6 +127,7 @@ const SlackIntegration = (props) => {
       />
 
       <DeleteSlackBotSettingsModal
+        resetAll
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
       />

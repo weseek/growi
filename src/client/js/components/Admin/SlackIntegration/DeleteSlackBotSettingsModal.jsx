@@ -56,7 +56,7 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
 
 DeleteSlackBotSettingsModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
+  resetAll: PropTypes.bool,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func,
   onClickDeleteButton: PropTypes.func,
