@@ -134,15 +134,17 @@ const SlackIntegration = (props) => {
           </a>
         </h2>
 
-        <div className="d-flex">
-          {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
+        <div className="d-flex justify-content">
+          <div className="mr-auto">
+            {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
+          </div>
 
           {(currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy') && (
-          <button
-            className="mx-3 btn text-danger border-danger"
-            type="button"
-          >{t('admin:slack_integration.reset_all_settings')}
-          </button>
+            <button
+              className="mx-3 btn text-danger border-danger flex-end"
+              type="button"
+            >{t('admin:slack_integration.reset_all_settings')}
+            </button>
           )}
         </div>
 
