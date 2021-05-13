@@ -60,7 +60,6 @@ const SlackIntegration = (props) => {
     }
   };
 
-
   useEffect(() => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
@@ -95,7 +94,6 @@ const SlackIntegration = (props) => {
       setIsSendTestMessage(false);
       setSlackWSNameInWithoutProxy(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
-
     }
     catch (err) {
       toastError(err);
