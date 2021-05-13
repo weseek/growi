@@ -9,7 +9,7 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, resetAllSettings } = props;
+  const { appContainer, onResetAllSettings } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
@@ -50,7 +50,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <DeleteSlackBotSettingsModal
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={resetAllSettings}
+        onClickDeleteButton={onResetAllSettings}
       />
     </>
   );
@@ -67,7 +67,7 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
-  resetAllSettings: PropTypes.func,
+  onResetAllSettings: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
