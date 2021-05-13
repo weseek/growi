@@ -53,7 +53,7 @@ const SlackIntegration = (props) => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType });
       fetchSlackIntegrationData();
-      toastSuccess('success');
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
     catch (error) {
       toastError(error);
