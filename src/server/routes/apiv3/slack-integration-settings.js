@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const express = require('express');
 const { body } = require('express-validator');
 const axios = require('axios');
@@ -263,6 +264,43 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
       }
     });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration/access-token:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId:
+   *        summary: /slack-integration
+   *        description: Generate accessToken
+   *        responses:
+   *          200:
+   *            description: Succeeded to update access token for slack
+   */
+  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+    let checkTokens;
+    let tokenGtoP;
+    let tokenPtoG;
+    do {
+      // TODO imple generate tokens at GW-5859. The following tokens is temporary.
+      tokenGtoP = 'v2';
+      tokenPtoG = 'v2';
+      // eslint-disable-next-line no-await-in-loop
+      checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
+    } while (checkTokens != null);
+
+    try {
+      const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
+      return res.apiv3(slackAppTokens, 200);
+    }
+    catch (error) {
+      const msg = 'Error occured in updating access token for slack app tokens';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
+    }
+  });
 
   return router;
 };
