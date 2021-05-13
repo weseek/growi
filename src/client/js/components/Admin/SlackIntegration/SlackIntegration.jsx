@@ -10,6 +10,7 @@ import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 import BotTypeCard from './BotTypeCard';
+import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
 
@@ -122,6 +123,10 @@ const SlackIntegration = (props) => {
         isOpen={selectedBotType != null}
         onConfirmClick={changeCurrentBotSettingsHandler}
         onCancelClick={cancelBotChangeHandler}
+      />
+
+      <DeleteSlackBotSettingsModal
+        isOpen
       />
 
       <div className="selecting-bot-type mb-5">
