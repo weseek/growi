@@ -16,19 +16,19 @@ const CustomBotWithoutProxySettings = (props) => {
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
 
-  const deleteSlackSettingsHandler = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-        slackSigningSecret: null,
-        slackBotToken: null,
-        currentBotType: null,
-      });
-      toastSuccess('success');
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
+  // const deleteSlackSettingsHandler = async() => {
+  //   try {
+  //     await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
+  //       slackSigningSecret: null,
+  //       slackBotToken: null,
+  //       currentBotType: null,
+  //     });
+  //     toastSuccess('success');
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //   }
+  // };
 
   const resetWithoutProxySettings = () => {
     if (onResetAllSettings == null) {
