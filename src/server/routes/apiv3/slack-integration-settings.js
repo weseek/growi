@@ -107,6 +107,8 @@ module.exports = (crowi) => {
    *            description: Succeeded to get info.
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    console.log(req.user);
     const { configManager } = crowi;
     const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
 
