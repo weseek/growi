@@ -10,9 +10,9 @@ class SlackAppIntegration {
   static generateAccessToken(user) {
     const hasher1 = crypto.createHash('sha512');
     const hasher2 = crypto.createHash('sha512');
-    const growi = hasher1.update(new Date().getTime() + user._id);
-    const proxy = hasher2.update(new Date().getTime() + user.username);
-    return [growi.digest('base64'), proxy.digest('base64')];
+    const tokenGtoP = hasher1.update(new Date().getTime() + user._id).digest('base64');
+    const tokenPtoG = hasher2.update(new Date().getTime() + user.username).digest('base64');
+    return [tokenGtoP, tokenPtoG];
   }
 
 }
