@@ -80,7 +80,6 @@ const SlackIntegration = (props) => {
     setSelectedBotType(null);
   };
 
-
   const changeCurrentBotSettingsHandler = async() => {
     try {
       const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
@@ -111,7 +110,6 @@ const SlackIntegration = (props) => {
         <CustomBotWithoutProxySettings
           isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
-          currentBotType={currentBotType}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
