@@ -18,5 +18,6 @@ class SlackAppIntegration {
 }
 
 module.exports = function(crowi) {
+  SlackAppIntegration.crowi = crowi;
   return mongoose.model('SlackAppIntegration', schema);
 };
