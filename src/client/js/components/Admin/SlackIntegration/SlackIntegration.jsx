@@ -50,9 +50,14 @@ const SlackIntegration = (props) => {
   }, [appContainer.apiv3]);
 
   const resetSettings = async() => {
-    await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType });
-    fetchSlackIntegrationData();
-    toastSuccess('success');
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType });
+      fetchSlackIntegrationData();
+      toastSuccess('success');
+    }
+    catch (error) {
+      toastError(error);
+    }
   };
 
 
@@ -117,7 +122,6 @@ const SlackIntegration = (props) => {
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
-          onSetCurrentBotType={setCurrentBotType}
           onResetSettings={resetSettings}
         />
       );
