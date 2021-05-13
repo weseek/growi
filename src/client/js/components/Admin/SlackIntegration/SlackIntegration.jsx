@@ -26,6 +26,7 @@ const SlackIntegration = (props) => {
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
+  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
@@ -126,7 +127,8 @@ const SlackIntegration = (props) => {
       />
 
       <DeleteSlackBotSettingsModal
-        isOpen
+        isOpen={isDeleteConfirmModalShown}
+        onClose={() => setIsDeleteConfirmModalShown(false)}
       />
 
       <div className="selecting-bot-type mb-5">
