@@ -134,7 +134,7 @@ const SlackIntegration = (props) => {
           </a>
         </h2>
 
-        <div>
+        <div className="d-flex">
           {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
           {(currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy') && (
