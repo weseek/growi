@@ -124,14 +124,6 @@ const SlackIntegration = (props) => {
         onCancelClick={cancelBotChangeHandler}
       />
 
-      {(currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy') && (
-        <button
-          className="mx-3 pull-right btn text-danger border-danger"
-          type="button"
-        >{t('admin:slack_integration.reset_all_settings')}
-        </button>
-      )}
-
       <div className="selecting-bot-type mb-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
@@ -141,6 +133,14 @@ const SlackIntegration = (props) => {
             <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
           </a>
         </h2>
+
+        {(currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy') && (
+          <button
+            className="mx-3 pull-right btn text-danger border-danger"
+            type="button"
+          >{t('admin:slack_integration.reset_all_settings')}
+          </button>
+        )}
 
         {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
 
