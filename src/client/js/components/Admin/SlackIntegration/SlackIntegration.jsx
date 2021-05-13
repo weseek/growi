@@ -49,15 +49,10 @@ const SlackIntegration = (props) => {
     }
   }, [appContainer.apiv3]);
 
-  const resetAllSettings = async() => {
-    try {
-      await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
-      fetchSlackIntegrationData();
-      toastSuccess('success');
-    }
-    catch (err) {
-      toastError(err);
-    }
+  const resetWithoutProxySettings = async() => {
+    await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType });
+    fetchSlackIntegrationData();
+    toastSuccess('success');
   };
 
 
@@ -123,6 +118,7 @@ const SlackIntegration = (props) => {
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
           onSetCurrentBotType={setCurrentBotType}
+          onResetWithoutProxySettings={resetWithoutProxySettings}
         />
       );
       break;

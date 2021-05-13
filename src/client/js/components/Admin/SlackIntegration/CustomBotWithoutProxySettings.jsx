@@ -9,34 +9,18 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, onResetAllSettings } = props;
+  const { appContainer, onResetWithoutProxySettings } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
-
-  // const deleteSlackSettingsHandler = async() => {
-  //   try {
-  //     await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-  //       slackSigningSecret: null,
-  //       slackBotToken: null,
-  //       currentBotType: null,
-  //     });
-  //     toastSuccess('success');
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //   }
-  // };
-
-  const resetWithoutProxySettings = () => {
-    if (onResetAllSettings == null) {
+  const resetSettings = async() => {
+    if (onResetWithoutProxySettings == null) {
       return;
     }
-    onResetAllSettings();
+    onResetWithoutProxySettings();
   };
-
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -72,7 +56,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <DeleteSlackBotSettingsModal
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={resetWithoutProxySettings}
+        onClickDeleteButton={resetSettings}
       />
     </>
   );
@@ -89,7 +73,7 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
-  onResetAllSettings: PropTypes.func,
+  onResetWithoutProxySettings: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
