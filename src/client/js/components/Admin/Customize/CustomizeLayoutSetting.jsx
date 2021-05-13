@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
@@ -7,8 +7,18 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 const CustomizeLayoutSetting = (props) => {
   const { t } = props;
 
-  const onClickSubmit = () => {};
+  const [isContainerFluid, setIsContainerFluid] = useState(false);
 
+  useEffect(() => {
+    const fetchData = () => {
+      // TODO implement
+      console.log('fetchData');
+    };
+    fetchData();
+  }, []);
+
+  const onClickSubmit = () => {};
+  console.log(isContainerFluid);
   return (
     <React.Fragment>
       <div className="row">
@@ -17,13 +27,13 @@ const CustomizeLayoutSetting = (props) => {
 
           <div className="d-flex justify-content-around mt-5">
             <div className="card-deck">
-              <div className="card">
+              <div className="card" onClick={() => setIsContainerFluid(true)} role="button">
                 <img src="https://via.placeholder.com/350x150" />
                 <div className="card-body text-center">
                   {t('admin:customize_setting.layout_options.default')}
                 </div>
               </div>
-              <div className="card">
+              <div className="card" onClick={() => setIsContainerFluid(false)} role="button">
                 <img src="https://via.placeholder.com/350x150" />
                 <div className="card-body  text-center">
                   {t('admin:customize_setting.layout_options.expanded')}
