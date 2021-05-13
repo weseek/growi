@@ -51,9 +51,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
-    CustomBotWithoutProxy: [
-      body('slackSigningSecret').isString(),
-      body('slackBotToken').isString(),
+    BotType: [
       body('currentBotType').isString(),
     ],
     SlackIntegration: [
@@ -65,6 +63,17 @@ module.exports = (crowi) => {
         .isString(),
     ],
   };
+
+  async function resetAllBotSettings() {
+    const params = {
+      'slackbot:currentBotType': null,
+      'slackbot:signingSecret': null,
+      'slackbot:token': null,
+    };
+    const { configManager } = crowi;
+    // update config without publishing S2sMessage
+    return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+  }
 
   async function updateSlackBotSettings(params) {
     const { configManager } = crowi;
@@ -198,6 +207,7 @@ module.exports = (crowi) => {
       }
     });
 
+
   /**
    * @swagger
    *
@@ -217,25 +227,45 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
-  router.put('/custom-bot-without-proxy',
-    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.CustomBotWithoutProxy, apiV3FormValidator, async(req, res) => {
-      const { slackSigningSecret, slackBotToken, currentBotType } = req.body;
-      const requestParams = {
-        'slackbot:signingSecret': slackSigningSecret,
-        'slackbot:token': slackBotToken,
-        'slackbot:currentBotType': currentBotType,
-      };
+  router.put('/bot-type',
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.BotType, apiV3FormValidator, async(req, res) => {
+      const { currentBotType } = req.body;
+
+      await resetAllBotSettings();
+      const requestParams = { 'slackbot:currentBotType': currentBotType };
+
       try {
         await updateSlackBotSettings(requestParams);
         crowi.slackBotService.publishUpdatedMessage();
 
         // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
-        const customBotWithoutProxySettingParams = {
-          slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-          slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
-          slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
-        };
-        return res.apiv3({ customBotWithoutProxySettingParams });
+        const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
+        return res.apiv3({ slackBotTypeParam });
+      }
+      catch (error) {
+        const msg = 'Error occured in updating Custom bot setting';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+      }
+    });
+
+  /*
+    TODO: add swagger by GW-5930
+  */
+
+  router.delete('/bot-type',
+    accessTokenParser, loginRequiredStrictly, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
+
+      await resetAllBotSettings();
+      const params = { 'slackbot:currentBotType': null };
+
+      try {
+        await updateSlackBotSettings(params);
+        crowi.slackBotService.publishUpdatedMessage();
+
+        // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
+        const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
+        return res.apiv3({ slackBotTypeParam });
       }
       catch (error) {
         const msg = 'Error occured in updating Custom bot setting';
