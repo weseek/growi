@@ -60,8 +60,8 @@ const retrieveWorkspaceName = async(client: WebClient): Promise<string> => {
  * @param tokens Array of bot OAuth token
  * @returns
  */
-export const getConnectionStatuses = async(tokens: string[]): Promise<Map<string, ConnectionStatus>> => {
-  return tokens
+export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: string]: ConnectionStatus}> => {
+  const map = tokens
     .reduce<Promise<Map<string, ConnectionStatus>>>(
       async(acc, token) => {
         const client = generateWebClient(token);
@@ -85,4 +85,7 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<Map<string
       // define initial accumulator
       Promise.resolve(new Map<string, ConnectionStatus>()),
     );
+
+  // convert to object
+  return Object.fromEntries(await map);
 };
