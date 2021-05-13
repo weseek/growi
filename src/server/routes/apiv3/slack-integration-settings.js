@@ -145,7 +145,7 @@ module.exports = (crowi) => {
 
     // retrieve connection statuses
     let connectionStatuses;
-    if (currentBotType === null) {
+    if (currentBotType == null) {
       // TODO imple null action
     }
     else if (currentBotType === 'customBotWithoutProxy') {
