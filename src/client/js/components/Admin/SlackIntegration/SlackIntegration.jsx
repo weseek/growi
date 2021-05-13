@@ -49,10 +49,25 @@ const SlackIntegration = (props) => {
     }
   }, [appContainer.apiv3, currentBotType]);
 
+  const resetAllSettings = useCallback(async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/custom-bot-without-proxy', {
+        slackSigningSecret: '',
+        slackBotToken: '',
+        currentBotType: '',
+      });
+      toastSuccess('success');
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [appContainer.apiv3]);
+
 
   useEffect(() => {
     fetchSlackIntegrationData();
-  }, [fetchSlackIntegrationData]);
+    resetAllSettings();
+  }, [fetchSlackIntegrationData, resetAllSettings]);
 
 
   const handleBotTypeSelect = (clickedBotType) => {
@@ -68,20 +83,6 @@ const SlackIntegration = (props) => {
 
   const cancelBotChangeHandler = () => {
     setSelectedBotType(null);
-  };
-
-  const resetAllSettings = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/custom-bot-without-proxy', {
-        slackSigningSecret: '',
-        slackBotToken: '',
-        currentBotType: '',
-      });
-      toastSuccess('success');
-    }
-    catch (err) {
-      toastError(err);
-    }
   };
 
 
