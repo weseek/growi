@@ -150,6 +150,7 @@ const SlackIntegration = (props) => {
             <button
               className="mx-3 btn btn-outline-danger flex-end"
               type="button"
+              onClick={() => setIsDeleteConfirmModalShown(true)}
             >{t('admin:slack_integration.reset_all_settings')}
             </button>
           )}
