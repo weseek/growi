@@ -124,6 +124,12 @@ const SlackIntegration = (props) => {
         onCancelClick={cancelBotChangeHandler}
       />
 
+      <button
+        className="mx-3 pull-right btn text-danger border-danger"
+        type="button"
+      >{t('admin:slack_integration.reset_all_settings')}
+      </button>
+
       <div className="selecting-bot-type mb-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
