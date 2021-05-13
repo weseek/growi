@@ -290,6 +290,7 @@
     "cooperation_procedure": "連携手順",
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",
     "reset": "リセット",
+    "reset_all_settings": "全ての設定をリセット",
     "delete_slackbot_settings": "Slack Bot 設定をリセットする",
     "slackbot_settings_notice": "リセットします",
     "accordion": {
