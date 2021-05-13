@@ -126,6 +126,7 @@ const SlackIntegration = (props) => {
         onCancelClick={cancelBotChangeHandler}
       />
 
+      {/* TODO add onClickDeleteButton */}
       <DeleteSlackBotSettingsModal
         resetAll
         isOpen={isDeleteConfirmModalShown}
