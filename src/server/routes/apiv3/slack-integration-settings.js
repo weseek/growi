@@ -260,7 +260,6 @@ module.exports = (crowi) => {
    */
   router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-
     let checkTokens;
     let tokenGtoP;
     let tokenPtoG;
