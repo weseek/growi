@@ -36,7 +36,16 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
       <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
         <span>
           <i className="icon-fw icon-fire"></i>
-          {t('admin:slack_integration.delete_slackbot_settings')}
+          {props.resetAll && (
+            <>
+              {t('admin:slack_integration.reset_all_settings')}
+            </>
+          )}
+          {!props.resetAll && (
+            <>
+              {t('admin:slack_integration.delete_slackbot_settings')}
+            </>
+          )}
         </span>
       </ModalHeader>
       <ModalBody>
