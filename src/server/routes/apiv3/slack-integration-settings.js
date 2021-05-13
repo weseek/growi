@@ -112,11 +112,20 @@ module.exports = (crowi) => {
 
     // retrieve settings
     const settings = {};
+    console.log('express');
     if (currentBotType === 'customBotWithoutProxy') {
+      console.log('without');
+
       settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
       settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
+    }
+    else if (currentBotType === null) {
+      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
+      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
+      settings.slackSigningSecret = null;
+      settings.slackBotToken = null;
     }
     else {
       // settings.proxyUriEnvVars = ;
@@ -130,11 +139,15 @@ module.exports = (crowi) => {
     // retrieve connection statuses
     let connectionStatuses;
     if (currentBotType === 'customBotWithoutProxy') {
+
       const token = settings.slackBotToken;
       // check the token is not null
       if (token != null) {
         connectionStatuses = await getConnectionStatuses([token]);
       }
+    }
+    else if (currentBotType === null) {
+      console.log('currentBotType === null');
     }
     else {
       // TODO: retrieve tokenGtoPs from DB
