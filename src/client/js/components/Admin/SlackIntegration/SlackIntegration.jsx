@@ -71,12 +71,10 @@ const SlackIntegration = (props) => {
 
   const changeCurrentBotSettingsHandler = async() => {
     try {
-      const res = await appContainer.apiv3.put('/slack-integration-settings/custom-bot-without-proxy', {
-        slackSigningSecret: '',
-        slackBotToken: '',
+      const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
         currentBotType: selectedBotType,
       });
-      setCurrentBotType(res.data.customBotWithoutProxySettingParams.slackBotType);
+      setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
       setIsRegisterSlackCredentials(false);
