@@ -120,6 +120,7 @@ const SlackIntegration = (props) => {
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
           onResetSettings={resetWithOutSettings}
+          fetchSlackIntegrationData={fetchSlackIntegrationData}
         />
       );
       break;
