@@ -29,6 +29,8 @@ const SlackIntegration = (props) => {
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
+      console.log(data);
+
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
       } = data.settings;
@@ -38,36 +40,38 @@ const SlackIntegration = (props) => {
         setSlackWSNameInWithoutProxy(workspaceName);
       }
 
-      setCurrentBotType(currentBotType);
+      setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [appContainer.apiv3, currentBotType]);
-
-  const resetAllSettings = useCallback(async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/custom-bot-without-proxy', {
-        slackSigningSecret: '',
-        slackBotToken: '',
-        currentBotType: '',
-      });
-      toastSuccess('success');
+      console.log(data.currentBotType);
     }
     catch (err) {
       toastError(err);
     }
   }, [appContainer.apiv3]);
 
+  const resetAllSettings = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/custom-bot-without-proxy', {
+        slackSigningSecret: '',
+        slackBotToken: '',
+        currentBotType: '',
+      });
+      console.log('hoge');
+      fetchSlackIntegrationData();
+      toastSuccess('success');
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
 
   useEffect(() => {
     fetchSlackIntegrationData();
-    resetAllSettings();
-  }, [fetchSlackIntegrationData, resetAllSettings]);
+  }, [fetchSlackIntegrationData]);
 
 
   const handleBotTypeSelect = (clickedBotType) => {
