@@ -8,10 +8,13 @@ export const supportedGrowiCommands: string[] = [
 ];
 
 export * from './interfaces/growi-command';
+export * from './interfaces/request-between-growi-and-proxy';
 export * from './interfaces/request-from-slack';
 export * from './models/errors';
+export * from './middlewares/verify-growi-to-slack-request';
 export * from './middlewares/verify-slack-request';
 export * from './utils/block-creater';
+export * from './utils/check-communicable';
 export * from './utils/post-ephemeral-errors';
 export * from './utils/slash-command-parser';
 export * from './utils/webclient-factory';
