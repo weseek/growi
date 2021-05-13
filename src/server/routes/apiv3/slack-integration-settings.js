@@ -62,9 +62,9 @@ module.exports = (crowi) => {
 
   async function resetAllBotSettings() {
     const params = {
-      'slackbot:currentBotType': '',
-      'slackbot:signingSecret': '',
-      'slackbot:token': '',
+      'slackbot:currentBotType': null,
+      'slackbot:signingSecret': null,
+      'slackbot:token': null,
     };
     const { configManager } = crowi;
     // update config without publishing S2sMessage
@@ -170,7 +170,7 @@ module.exports = (crowi) => {
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
 
       await resetAllBotSettings();
-      const params = { 'slackbot:currentBotType': '' };
+      const params = { 'slackbot:currentBotType': null };
 
       try {
         await updateSlackBotSettings(params);

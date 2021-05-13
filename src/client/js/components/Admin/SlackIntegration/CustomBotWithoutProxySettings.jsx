@@ -19,9 +19,9 @@ const CustomBotWithoutProxySettings = (props) => {
   const deleteSlackSettingsHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-        slackSigningSecret: '',
-        slackBotToken: '',
-        currentBotType: '',
+        slackSigningSecret: null,
+        slackBotToken: null,
+        currentBotType: null,
       });
       toastSuccess('success');
     }
