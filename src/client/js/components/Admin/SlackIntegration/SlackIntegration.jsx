@@ -141,7 +141,7 @@ const SlackIntegration = (props) => {
 
           {(currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy') && (
             <button
-              className="mx-3 btn text-danger border-danger flex-end"
+              className="mx-3 btn btn-outline-danger flex-end"
               type="button"
             >{t('admin:slack_integration.reset_all_settings')}
             </button>
