@@ -65,7 +65,6 @@ const SlackIntegration = (props) => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-
   const handleBotTypeSelect = (clickedBotType) => {
     if (clickedBotType === currentBotType) {
       return;
