@@ -67,11 +67,6 @@ const CustomBotWithProxySettings = (props) => {
       />
 
       <div className="p-4">
-        <p
-          className="text-center"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-        />
         <div className="form-group row my-4">
           <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
           <div className="col-md-6">
