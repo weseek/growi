@@ -8,6 +8,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
 import CustomBotWithProxySettingsAccordion from './CustomBotWithProxySettingsAccordion';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const CustomBotWithProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
@@ -64,6 +65,30 @@ const CustomBotWithProxySettings = (props) => {
         }
         isSlackScopeSet
       />
+
+      <div className="p-4">
+        <p
+          className="text-center"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+        />
+        <div className="form-group row my-4">
+          <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
+          <div className="col-md-6">
+            <input
+              className="form-control"
+              type="text"
+            />
+          </div>
+        </div>
+        <AdminUpdateButtonRow
+          disabled={false}
+          // TODO: Add Proxy URL submit logic
+          // eslint-disable-next-line no-console
+          onClick={() => console.log('Update')}
+        />
+      </div>
+
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
       <div className="mx-3">
 
