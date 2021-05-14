@@ -122,13 +122,7 @@ module.exports = (crowi) => {
 
     // retrieve settings
     const settings = {};
-    if (currentBotType == null) {
-      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
-      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
-      settings.slackSigningSecret = null;
-      settings.slackBotToken = null;
-    }
-    else if (currentBotType === 'customBotWithoutProxy') {
+    if (currentBotType === 'customBotWithoutProxy') {
       settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
       settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
