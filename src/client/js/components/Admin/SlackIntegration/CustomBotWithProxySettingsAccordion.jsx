@@ -144,8 +144,7 @@ const CustomBotWithProxySettingsAccordion = () => {
       >
         <div className="p-4 d-flex flex-column align-items-center">
           <div className="w-50">
-            <p
-              className="m-0"
+            <span
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
             />
