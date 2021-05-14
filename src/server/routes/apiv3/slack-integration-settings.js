@@ -281,7 +281,6 @@ module.exports = (crowi) => {
     const requestParams = {
       'slackbot:signingSecret': slackSigningSecret,
       'slackbot:token': slackBotToken,
-      'slackbot:currentBotType': currentBotType,
     };
     try {
       await updateSlackBotSettings(requestParams);
