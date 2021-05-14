@@ -303,9 +303,11 @@ module.exports = (crowi) => {
   });
 
   router.delete('/with-proxy-settings', async(req, res) => {
-    const { tokenGtoP, tokenPtoG } = req.body;
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-    const tokens = await SlackAppIntegration.findOne({ tokenGtoP, tokenPtoG });
+
+    const { tokenGtoP, tokenPtoG } = req.body;
+    await SlackAppIntegration.deleteOne({ tokenGtoP, tokenPtoG });
+    console.log(tokenGtoP);
 
   });
 
