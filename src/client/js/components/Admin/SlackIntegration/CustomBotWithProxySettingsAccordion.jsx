@@ -141,6 +141,11 @@ const CustomBotWithProxySettingsAccordion = () => {
       </Accordion>
       <Accordion
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.set_proxy_url_on_growi')}</>}
+
+        //  --------------  start  --------------
+
+
+        // ---------------   end   ---------------
       >
       </Accordion>
       <Accordion
