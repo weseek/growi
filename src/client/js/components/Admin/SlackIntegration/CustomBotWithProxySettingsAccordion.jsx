@@ -145,12 +145,14 @@ const CustomBotWithProxySettingsAccordion = () => {
         {/* ---------------  start  --------------- */}
 
         <div className="p-4 d-flex flex-column align-items-center">
-          <p
-            className="ml-2"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-          />
-          <p className="text-danger ml-2">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+          <div className="w-50">
+            <p
+              // className="ml-2"
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+            />
+            <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+          </div>
           <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
             <h1 className="text-muted">参考画像</h1>
           </div>
