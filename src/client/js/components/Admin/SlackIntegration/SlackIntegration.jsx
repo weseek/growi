@@ -51,7 +51,6 @@ const SlackIntegration = (props) => {
 
   const resetWithOutSettings = async() => {
     try {
-      await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
       await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
       fetchSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
