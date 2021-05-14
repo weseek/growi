@@ -5,6 +5,10 @@ import { withTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { isDarkMode as isDarkModeByUtil } from '../../../util/color-scheme';
+
+const isDarkMode = isDarkModeByUtil();
+const colorText = isDarkMode ? 'dark' : 'light';
 
 const CustomizeLayoutSetting = (props) => {
   const { t, appContainer } = props;
@@ -46,14 +50,14 @@ const CustomizeLayoutSetting = (props) => {
 
           <div className="d-flex justify-content-around mt-5">
             <div className="card-deck">
-              <div className={`card ${isContainerFluid ? 'border border-info' : ''}`} onClick={() => setIsContainerFluid(true)} role="button">
-                <img src="https://via.placeholder.com/350x150" />
+              <div className={`card ${!isContainerFluid ? 'border border-primary' : ''}`} onClick={() => setIsContainerFluid(false)} role="button">
+                <img src={`/images/customize-settings/default-${colorText}.svg`} />
                 <div className="card-body text-center">
                   {t('admin:customize_setting.layout_options.default')}
                 </div>
               </div>
-              <div className={`card ${!isContainerFluid ? 'border border-info' : ''}`} onClick={() => setIsContainerFluid(false)} role="button">
-                <img src="https://via.placeholder.com/350x150" />
+              <div className={`card ${isContainerFluid ? 'border border-primary' : ''}`} onClick={() => setIsContainerFluid(true)} role="button">
+                <img src={`/images/customize-settings/fluid-${colorText}.svg`} />
                 <div className="card-body  text-center">
                   {t('admin:customize_setting.layout_options.expanded')}
                 </div>
