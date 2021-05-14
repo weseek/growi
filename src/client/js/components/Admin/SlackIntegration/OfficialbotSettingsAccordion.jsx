@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -15,9 +15,11 @@ const OfficialBotSettingsAccordion = (props) => {
   // TODO: apply i18n by GW-5878
   const { t } = useTranslation();
   const { appContainer } = props;
+  const [proxyUri, setProxyUri] = useState(null);
+
   const growiUrl = appContainer.config.crowi.url;
 
-  const updateProxyUrl = async(proxyUri) => {
+  const updateProxyUri = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
         proxyUri,
@@ -119,13 +121,13 @@ const OfficialBotSettingsAccordion = (props) => {
               <input
                 className="form-control"
                 type="text"
+                onChange={(e) => { setProxyUri(e.target.value) }}
               />
             </div>
           </div>
           <AdminUpdateButtonRow
             disabled={false}
-            // TODO: Add Proxy URL submit logic
-            onClick={() => updateProxyUrl('https://www.google.com/')}
+            onClick={() => updateProxyUri()}
           />
         </div>
       </Accordion>
