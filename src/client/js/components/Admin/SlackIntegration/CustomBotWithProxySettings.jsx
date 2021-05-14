@@ -66,23 +66,23 @@ const CustomBotWithProxySettings = (props) => {
         isSlackScopeSet
       />
 
-      <div className="p-4">
-        <div className="form-group row my-4">
-          <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
-          <div className="col-md-6">
-            <input
-              className="form-control"
-              type="text"
-            />
-          </div>
-          <AdminUpdateButtonRow
-            disabled={false}
-            // TODO: Add Proxy URL submit logic
-            // eslint-disable-next-line no-console
-            onClick={() => console.log('Update')}
+
+      <div className="form-group row my-4">
+        <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
+        <div className="col-md-6">
+          <input
+            className="form-control"
+            type="text"
           />
         </div>
+        <AdminUpdateButtonRow
+          disabled={false}
+          // TODO: Add Proxy URL submit logic
+          // eslint-disable-next-line no-console
+          onClick={() => console.log('Update')}
+        />
       </div>
+
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
       <div className="mx-3">
