@@ -181,6 +181,36 @@ module.exports = (crowi) => {
    * @swagger
    *
    *    /customize-setting/layout:
+   *      get:
+   *        tags: [CustomizeSetting]
+   *        operationId: getLayoutCustomizeSetting
+   *        summary: /customize-setting/layout
+   *        description: Get layout
+   *        responses:
+   *          200:
+   *            description: Succeeded to get layout
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeLayout'
+   */
+  router.get('/layout', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    try {
+      const isContainerFluid = await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
+      return res.apiv3({ isContainerFluid });
+    }
+    catch (err) {
+      const msg = 'Error occurred in getting layout';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-layout-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/layout:
    *      put:
    *        tags: [CustomizeSetting]
    *        operationId: updateLayoutCustomizeSetting
