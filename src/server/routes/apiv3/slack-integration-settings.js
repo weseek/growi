@@ -275,8 +275,9 @@ module.exports = (crowi) => {
     let checkTokens;
     let tokenGtoP;
     let tokenPtoG;
+    let generateTokens;
     do {
-      const generateTokens = SlackAppIntegration.generateAccessToken();
+      generateTokens = SlackAppIntegration.generateAccessToken();
       tokenGtoP = generateTokens[0];
       tokenPtoG = generateTokens[1];
       // eslint-disable-next-line no-await-in-loop
