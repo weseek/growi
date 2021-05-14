@@ -16,16 +16,13 @@ const OfficialBotSettingsAccordion = (props) => {
   const { t } = useTranslation();
   const { appContainer } = props;
   const growiUrl = appContainer.config.crowi.url;
-  const currentBotType = 'customBotWithoutProxy';
+  // const currentBotType = 'customBotWithoutProxy';
 
   const updateProxyUrl = async(proxyUri) => {
     try {
-      const res = await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
         proxyUri,
-        currentBotType,
       });
-      console.log('res', res);
-      // const { siteUrlSettingParams } = res.data;
       toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
     }
     catch (err) {
@@ -129,7 +126,7 @@ const OfficialBotSettingsAccordion = (props) => {
           <AdminUpdateButtonRow
             disabled={false}
             // TODO: Add Proxy URL submit logic
-            onClick={() => updateProxyUrl('ProxyUrl')}
+            onClick={() => updateProxyUrl('https://www.google.com/')}
           />
         </div>
       </Accordion>
