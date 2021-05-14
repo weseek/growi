@@ -260,15 +260,15 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/access-token:
+   *    /slack-integration/access-tokens:
    *      put:
    *        tags: [SlackIntegration]
-   *        operationId: putAccessToken
+   *        operationId: putAccessTokens
    *        summary: /slack-integration
-   *        description: Generate accessToken
+   *        description: Generate accessTokens
    *        responses:
    *          200:
-   *            description: Succeeded to update access token for slack
+   *            description: Succeeded to update access tokens for slack
    */
   router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
