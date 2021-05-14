@@ -274,7 +274,6 @@ module.exports = (crowi) => {
       }
     });
 
-
   /**
    * @swagger
    *
