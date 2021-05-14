@@ -261,6 +261,50 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /slack-integration/without-proxy/update-settings/:
+   *      put:
+   *        tags: [UpdateWithoutProxySettings]
+   *        operationId: putWithoutProxySettings
+   *        summary: update customBotWithoutProxy settings
+   *        description: Update customBotWithoutProxy setting.
+   *        responses:
+   *           200:
+   *             description: Succeeded to put CustomBotWithoutProxy setting.
+   */
+  router.put('/without-proxy/update-settings', async(req, res) => {
+    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    if (currentBotType !== 'customBotWithoutProxy') {
+      const msg = 'Not CustomBotWithoutProxy';
+      return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
+    }
+    const { slackSigningSecret, slackBotToken } = req.body;
+    const requestParams = {
+      'slackbot:signingSecret': slackSigningSecret,
+      'slackbot:token': slackBotToken,
+    };
+    try {
+      await updateSlackBotSettings(requestParams);
+      crowi.slackBotService.publishUpdatedMessage();
+
+      const customBotWithoutProxySettingParams = {
+        slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
+        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
+      };
+      return res.apiv3({ customBotWithoutProxySettingParams });
+    }
+    catch (error) {
+      const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+    }
+
+
+  });
+
+
+  /**
+   * @swagger
+   *
    *    /slack-integration/access-tokens:
    *      put:
    *        tags: [SlackIntegration]
