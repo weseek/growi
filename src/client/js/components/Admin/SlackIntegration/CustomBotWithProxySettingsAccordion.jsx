@@ -143,28 +143,6 @@ const CustomBotWithProxySettingsAccordion = () => {
       <Accordion
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.set_proxy_url_on_growi')}</>}
       >
-        <div className="p-4">
-          <p
-            className="text-center"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-          />
-          <div className="form-group row my-4">
-            <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
-            <div className="col-md-6">
-              <input
-                className="form-control"
-                type="text"
-              />
-            </div>
-          </div>
-          <AdminUpdateButtonRow
-            disabled={false}
-            // TODO: Add Proxy URL submit logic
-            // eslint-disable-next-line no-console
-            onClick={() => console.log('Update')}
-          />
-        </div>
       </Accordion>
       <Accordion
         title={<><span className="mr-2">⑤</span>{t('admin:slack_integration.accordion.test_connection')}</>}
