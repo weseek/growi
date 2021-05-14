@@ -10,6 +10,7 @@ import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 import BotTypeCard from './BotTypeCard';
+import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
 
@@ -25,6 +26,7 @@ const SlackIntegration = (props) => {
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
+  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
@@ -124,6 +126,13 @@ const SlackIntegration = (props) => {
         onCancelClick={cancelBotChangeHandler}
       />
 
+      {/* TODO add onClickDeleteButton */}
+      <DeleteSlackBotSettingsModal
+        isResetAll
+        isOpen={isDeleteConfirmModalShown}
+        onClose={() => setIsDeleteConfirmModalShown(false)}
+      />
+
       <div className="selecting-bot-type mb-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
@@ -143,6 +152,7 @@ const SlackIntegration = (props) => {
             <button
               className="mx-3 btn btn-outline-danger flex-end"
               type="button"
+              onClick={() => setIsDeleteConfirmModalShown(true)}
             >{t('admin:slack_integration.reset_all_settings')}
             </button>
           )}
