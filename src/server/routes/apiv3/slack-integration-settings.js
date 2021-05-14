@@ -272,34 +272,35 @@ module.exports = (crowi) => {
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
   router.put('/without-proxy/update-settings', async(req, res) => {
-    if (req.body.currentBotType === 'customBotWithoutProxy') {
-      const { slackSigningSecret, slackBotToken, currentBotType } = req.body;
-      const requestParams = {
-        'slackbot:signingSecret': slackSigningSecret,
-        'slackbot:token': slackBotToken,
-        'slackbot:currentBotType': currentBotType,
-      };
-      try {
-        await updateSlackBotSettings(requestParams);
-        crowi.slackBotService.publishUpdatedMessage();
+    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:signingSecret');
+    if (currentBotType !== 'customBotWithoutProxy') {
+      const msg = 'Not CustomBotWithoutProxy';
+      return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
+    }
+    const { slackSigningSecret, slackBotToken } = req.body;
+    const requestParams = {
+      'slackbot:signingSecret': slackSigningSecret,
+      'slackbot:token': slackBotToken,
+      'slackbot:currentBotType': currentBotType,
+    };
+    try {
+      await updateSlackBotSettings(requestParams);
+      crowi.slackBotService.publishUpdatedMessage();
 
-        // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
-        const customBotWithoutProxySettingParams = {
-          slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
-          slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
-          slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
-        };
-        return res.apiv3({ customBotWithoutProxySettingParams });
-      }
-      catch (error) {
-        const msg = 'Error occured in updating Custom bot setting';
-        logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
-      }
+      // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
+      const customBotWithoutProxySettingParams = {
+        slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
+        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
+      };
+      return res.apiv3({ customBotWithoutProxySettingParams });
     }
-    else {
-      // TODO imple other botType action
+    catch (error) {
+      const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
     }
+
+
   });
 
 
