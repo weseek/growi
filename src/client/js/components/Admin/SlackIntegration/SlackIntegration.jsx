@@ -40,7 +40,7 @@ const SlackIntegration = (props) => {
         setSlackWSNameInWithoutProxy(workspaceName);
       }
 
-      setCurrentBotType(currentBotType);
+      setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
@@ -49,7 +49,7 @@ const SlackIntegration = (props) => {
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3, currentBotType]);
+  }, [appContainer.apiv3]);
 
 
   useEffect(() => {
