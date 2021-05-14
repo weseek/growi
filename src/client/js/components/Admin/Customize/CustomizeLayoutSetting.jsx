@@ -1,29 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import AppContainer from '../../../services/AppContainer';
 
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const CustomizeLayoutSetting = (props) => {
   const { t, appContainer } = props;
 
   const [isContainerFluid, setIsContainerFluid] = useState(false);
+  const [retrieveError, setRetrieveError] = useState();
 
-  useEffect(() => {
-    const fetchData = async() => {
+  const retrieveData = useCallback(async() => {
+    try {
       const res = await appContainer.apiv3Get('/customize-setting/layout');
       setIsContainerFluid(res.data.isContainerFluid);
-    };
-    fetchData();
-  }, []);
+    }
+    catch (err) {
+      setRetrieveError(err);
+      toastError(err);
+    }
+  }, [appContainer]);
+
+  useEffect(() => {
+    retrieveData();
+  }, [retrieveData]);
 
   const onClickSubmit = async() => {
     try {
       await appContainer.apiv3Put('/customize-setting/layout', { isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
+      retrieveData();
     }
     catch (err) {
       toastError(err);
@@ -53,7 +61,11 @@ const CustomizeLayoutSetting = (props) => {
             </div>
           </div>
 
-          <AdminUpdateButtonRow onClick={onClickSubmit} />
+          <div className="row my-3">
+            <div className="mx-auto">
+              <button type="button" className="btn btn-primary" onClick={onClickSubmit} disabled={retrieveError != null}>{ t('Update') }</button>
+            </div>
+          </div>
         </div>
       </div>
     </React.Fragment>
