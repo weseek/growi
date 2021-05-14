@@ -75,13 +75,13 @@ const CustomBotWithProxySettings = (props) => {
               type="text"
             />
           </div>
+          <AdminUpdateButtonRow
+            disabled={false}
+            // TODO: Add Proxy URL submit logic
+            // eslint-disable-next-line no-console
+            onClick={() => console.log('Update')}
+          />
         </div>
-        <AdminUpdateButtonRow
-          disabled={false}
-          // TODO: Add Proxy URL submit logic
-          // eslint-disable-next-line no-console
-          onClick={() => console.log('Update')}
-        />
       </div>
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
