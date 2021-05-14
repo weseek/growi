@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const express = require('express');
 const { body } = require('express-validator');
 const axios = require('axios');
-const crypto = require('crypto');
-
 const loggerFactory = require('@alias/logger');
 
 const { getConnectionStatuses } = require('@growi/slack');
