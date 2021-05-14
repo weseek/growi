@@ -66,7 +66,6 @@ const CustomBotWithProxySettings = (props) => {
         isSlackScopeSet
       />
 
-
       <div className="form-group row my-4">
         <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
         <div className="col-md-6">
@@ -82,7 +81,6 @@ const CustomBotWithProxySettings = (props) => {
           onClick={() => console.log('Update')}
         />
       </div>
-
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
       <div className="mx-3">
