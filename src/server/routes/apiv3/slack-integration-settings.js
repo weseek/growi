@@ -265,7 +265,20 @@ module.exports = (crowi) => {
       }
     });
 
-  router.put('/update-settings', async(req, res) => {
+  /**
+   * @swagger
+   *
+   *    /slack-integration/without-proxy/update-settings/:
+   *      put:
+   *        tags: [UpdateWithoutProxySettings]
+   *        operationId: putWithoutProxySettings
+   *        summary: update customBotWithoutProxy settings
+   *        description: Update customBotWithoutProxy setting.
+   *        responses:
+   *           200:
+   *             description: Succeeded to put CustomBotWithoutProxy setting.
+   */
+  router.put('/without-proxy/update-settings', async(req, res) => {
     if (req.body.currentBotType === 'customBotWithoutProxy') {
       const { slackSigningSecret, slackBotToken, currentBotType } = req.body;
       const requestParams = {
