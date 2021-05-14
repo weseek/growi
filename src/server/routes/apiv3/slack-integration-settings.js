@@ -82,14 +82,6 @@ module.exports = (crowi) => {
     return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
   }
 
-  // eslint-disable-next-line no-unused-vars
-  function generateAccessToken(user) {
-    const hasher = crypto.createHash('sha512');
-    hasher.update(new Date().getTime() + user._id);
-
-    return hasher.digest('base64');
-  }
-
   async function getConnectionStatusesFromProxy(tokens) {
     const csv = tokens.join(',');
 
