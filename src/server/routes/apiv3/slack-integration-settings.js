@@ -313,15 +313,15 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/without-proxy/update-settings/:
+   *    /slack-integration/access-tokens:
    *      put:
-   *        tags: [UpdateWithoutProxySettings]
-   *        operationId: putWithoutProxySettings
-   *        summary: update customBotWithoutProxy settings
-   *        description: Update customBotWithoutProxy setting.
+   *        tags: [SlackIntegration]
+   *        operationId: putAccessTokens
+   *        summary: /slack-integration
+   *        description: Generate accessTokens
    *        responses:
-   *           200:
-   *             description: Succeeded to put CustomBotWithoutProxy setting.
+   *          200:
+   *            description: Succeeded to update access tokens for slack
    */
   router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
