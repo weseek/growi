@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import Accordion from '../Common/Accordion';
 
 const CustomBotWithProxySettingsAccordion = () => {
