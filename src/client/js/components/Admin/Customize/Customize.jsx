@@ -18,12 +18,13 @@ import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
+import AppContainer from '../../../services/AppContainer';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
 let retrieveErrors = null;
 function Customize(props) {
-  const { adminCustomizeContainer } = props;
+  const { appContainer, adminCustomizeContainer } = props;
 
   if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
     throw (async() => {
@@ -47,7 +48,7 @@ function Customize(props) {
   return (
     <Fragment>
       <div className="mb-5">
-        <CustomizeLayoutSetting />
+        <CustomizeLayoutSetting appContainer={appContainer} />
       </div>
       <div className="mb-5">
         <CustomizeThemeSetting />
@@ -74,9 +75,10 @@ function Customize(props) {
   );
 }
 
-const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AdminCustomizeContainer]);
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AppContainer, AdminCustomizeContainer]);
 
 Customize.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
