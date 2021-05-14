@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import loggerFactory from '@alias/logger';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import AppContainer from '../../../services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
@@ -18,7 +19,6 @@ import CustomizeCssSetting from './CustomizeCssSetting';
 import CustomizeScriptSetting from './CustomizeScriptSetting';
 import CustomizeHeaderSetting from './CustomizeHeaderSetting';
 import CustomizeTitle from './CustomizeTitle';
-import AppContainer from '../../../services/AppContainer';
 
 const logger = loggerFactory('growi:services:AdminCustomizePage');
 
