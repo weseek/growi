@@ -129,8 +129,8 @@ module.exports = (crowi) => {
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
     }
     else {
-      settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:serverUri');
-      settings.proxyUri = configManager.getConfig('crowi', 'slackbot:serverUri');
+      // settings.proxyUriEnvVars = ;
+      // settings.proxyUri = ;
       // settings.tokenPtoG = ;
       // settings.tokenGtoP = ;
     }
