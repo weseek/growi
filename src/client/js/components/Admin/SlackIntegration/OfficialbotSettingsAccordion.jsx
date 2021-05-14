@@ -16,7 +16,6 @@ const OfficialBotSettingsAccordion = (props) => {
   const { t } = useTranslation();
   const { appContainer } = props;
   const growiUrl = appContainer.config.crowi.url;
-  // const currentBotType = 'customBotWithoutProxy';
 
   const updateProxyUrl = async(proxyUri) => {
     try {
