@@ -15,6 +15,12 @@ class SlackAppIntegration {
     return [tokenGtoP, tokenPtoG];
   }
 
+  // static deleteAccessToken(tokenGtop, tokenPtoG) {
+  //   // TODO
+  //   deleteOne({ tokenGtop, tokenPtoG });
+
+  // }
+
 }
 
 module.exports = function(crowi) {
