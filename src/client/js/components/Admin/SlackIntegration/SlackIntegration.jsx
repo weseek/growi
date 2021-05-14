@@ -175,4 +175,23 @@ const SlackIntegration = (props) => {
               <div key={botType} className="m-3">
                 <BotTypeCard
                   botType={botType}
-                  isActive={currentBotType === botTy
+                  isActive={currentBotType === botType}
+                  handleBotTypeSelect={handleBotTypeSelect}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {settingsComponent}
+    </>
+  );
+};
+
+const SlackIntegrationWrapper = withUnstatedContainers(SlackIntegration, [AppContainer]);
+
+SlackIntegration.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default SlackIntegrationWrapper;
