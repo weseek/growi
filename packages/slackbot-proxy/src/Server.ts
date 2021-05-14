@@ -75,7 +75,7 @@ export class Server {
   @Inject()
   injector: InjectorService;
 
-  $onInit(): Promise<any> | void {
+  $beforeInit(): Promise<any> | void {
     const serverUri = process.env.SERVER_URI;
 
     if (serverUri === undefined) {
