@@ -1,19 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import loggerFactory from '@alias/logger';
 import Accordion from '../Common/Accordion';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import { toastSuccess } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 
+const logger = loggerFactory('growi:SlackBotSettings'); //
 
 const OfficialBotSettingsAccordion = (props) => {
   // TODO: apply i18n by GW-5878
   const { t } = useTranslation();
   const { appContainer } = props;
+  const [proxyUri, setProxyUri] = useState(null);
+
   const growiUrl = appContainer.config.crowi.url;
+
+  const updateProxyUri = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+        proxyUri,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  };
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -104,14 +121,13 @@ const OfficialBotSettingsAccordion = (props) => {
               <input
                 className="form-control"
                 type="text"
+                onChange={(e) => { setProxyUri(e.target.value) }}
               />
             </div>
           </div>
           <AdminUpdateButtonRow
             disabled={false}
-            // TODO: Add Proxy URL submit logic
-            // eslint-disable-next-line no-console
-            onClick={() => console.log('Update')}
+            onClick={() => updateProxyUri()}
           />
         </div>
       </Accordion>
