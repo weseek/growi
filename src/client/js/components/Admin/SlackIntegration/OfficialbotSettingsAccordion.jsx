@@ -20,7 +20,7 @@ const OfficialBotSettingsAccordion = (props) => {
 
   const updateProxyUrl = async(proxyUri) => {
     try {
-      const res = await appContainer.apiv3.put('/slack-integration-settings', {
+      const res = await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
         proxyUri,
         currentBotType,
       });

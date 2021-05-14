@@ -302,5 +302,11 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    console.log(req.body.proxyUri);
+    return;
+
+  });
+
   return router;
 };
