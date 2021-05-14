@@ -24,4 +24,6 @@ module.exports = {
   // PROMSTER_ENABLED: true,
   // SLACK_SIGNING_SECRET: '',
   // SLACK_BOT_TOKEN: '',
+  SALT_FOR_GTOP_TOKEN: 'proxy',
+  SALT_FOR_PTOG_TOKEN: 'growi',
 };
