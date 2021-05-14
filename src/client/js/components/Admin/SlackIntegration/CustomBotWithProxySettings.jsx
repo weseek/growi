@@ -97,6 +97,7 @@ const CustomBotWithProxySettings = (props) => {
         </div>
       </div>
       <DeleteSlackBotSettingsModal
+        isResetAll={false}
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
         onClickDeleteButton={deleteSlackSettingsHandler}
