@@ -305,7 +305,14 @@ module.exports = (crowi) => {
   router.delete('/with-proxy-settings', async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { tokenGtoP, tokenPtoG } = req.body;
-    await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
+    try {
+      await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
+    }
+    catch (error) {
+      const msg = 'Error occured in deleting access token for slack app tokens';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
+    }
   });
 
   return router;
