@@ -1,13 +1,46 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import AppContainer from '../../../services/AppContainer';
+
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { isDarkMode as isDarkModeByUtil } from '../../../util/color-scheme';
+
+const isDarkMode = isDarkModeByUtil();
+const colorText = isDarkMode ? 'dark' : 'light';
 
 const CustomizeLayoutSetting = (props) => {
-  const { t } = props;
+  const { t, appContainer } = props;
 
-  const onClickSubmit = () => {};
+  const [isContainerFluid, setIsContainerFluid] = useState(false);
+  const [retrieveError, setRetrieveError] = useState();
+
+  const retrieveData = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3Get('/customize-setting/layout');
+      setIsContainerFluid(res.data.isContainerFluid);
+    }
+    catch (err) {
+      setRetrieveError(err);
+      toastError(err);
+    }
+  }, [appContainer]);
+
+  useEffect(() => {
+    retrieveData();
+  }, [retrieveData]);
+
+  const onClickSubmit = async() => {
+    try {
+      await appContainer.apiv3Put('/customize-setting/layout', { isContainerFluid });
+      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
+      retrieveData();
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -16,15 +49,23 @@ const CustomizeLayoutSetting = (props) => {
           <h2 className="admin-setting-header">{t('admin:customize_setting.layout')}</h2>
 
           <div className="d-flex justify-content-around mt-5">
-            <div className="card-deck">
-              <div className="card">
-                <img src="https://via.placeholder.com/350x150" />
+            <div id="layoutOptions" className="card-deck">
+              <div
+                className={`card customize-layout-card ${!isContainerFluid ? 'border-active' : ''}`}
+                onClick={() => setIsContainerFluid(false)}
+                role="button"
+              >
+                <img src={`/images/customize-settings/default-${colorText}.svg`} />
                 <div className="card-body text-center">
                   {t('admin:customize_setting.layout_options.default')}
                 </div>
               </div>
-              <div className="card">
-                <img src="https://via.placeholder.com/350x150" />
+              <div
+                className={`card customize-layout-card ${isContainerFluid ? 'border-active' : ''}`}
+                onClick={() => setIsContainerFluid(true)}
+                role="button"
+              >
+                <img src={`/images/customize-settings/fluid-${colorText}.svg`} />
                 <div className="card-body  text-center">
                   {t('admin:customize_setting.layout_options.expanded')}
                 </div>
@@ -32,7 +73,11 @@ const CustomizeLayoutSetting = (props) => {
             </div>
           </div>
 
-          <AdminUpdateButtonRow onClick={onClickSubmit} />
+          <div className="row my-3">
+            <div className="mx-auto">
+              <button type="button" className="btn btn-primary" onClick={onClickSubmit} disabled={retrieveError != null}>{ t('Update') }</button>
+            </div>
+          </div>
         </div>
       </div>
     </React.Fragment>
@@ -41,6 +86,8 @@ const CustomizeLayoutSetting = (props) => {
 
 CustomizeLayoutSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
+
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
 export default withTranslation()(CustomizeLayoutSetting);
