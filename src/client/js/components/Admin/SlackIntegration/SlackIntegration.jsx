@@ -51,6 +51,16 @@ const SlackIntegration = (props) => {
     }
   }, [appContainer.apiv3]);
 
+  const resetWithOutSettings = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
+      fetchSlackIntegrationData();
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+    }
+    catch (error) {
+      toastError(error);
+    }
+  };
 
   useEffect(() => {
     fetchSlackIntegrationData();
@@ -78,12 +88,12 @@ const SlackIntegration = (props) => {
       });
       setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
-      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
       setIsRegisterSlackCredentials(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
       setIsSendTestMessage(false);
       setSlackWSNameInWithoutProxy(null);
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
     catch (err) {
       toastError(err);
@@ -109,6 +119,7 @@ const SlackIntegration = (props) => {
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onSetIsSendTestMessage={setIsSendTestMessage}
+          onResetSettings={resetWithOutSettings}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
         />
       );

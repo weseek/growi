@@ -129,7 +129,10 @@ module.exports = (crowi) => {
 
     // retrieve connection statuses
     let connectionStatuses;
-    if (currentBotType === 'customBotWithoutProxy') {
+    if (currentBotType == null) {
+      // TODO imple null action
+    }
+    else if (currentBotType === 'customBotWithoutProxy') {
       const token = settings.slackBotToken;
       // check the token is not null
       if (token != null) {
