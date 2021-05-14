@@ -276,7 +276,6 @@ module.exports = (crowi) => {
     let tokenGtoP;
     let tokenPtoG;
     do {
-      // TODO imple generate tokens at GW-5859. The following tokens is temporary.
       const generateTokens = SlackAppIntegration.generateAccessToken();
       tokenGtoP = generateTokens[0];
       tokenPtoG = generateTokens[1];
