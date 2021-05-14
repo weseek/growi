@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const express = require('express');
 const { body } = require('express-validator');
 const axios = require('axios');
-const crypto = require('crypto');
-
 const loggerFactory = require('@alias/logger');
 
 const { getConnectionStatuses } = require('@growi/slack');
@@ -80,14 +78,6 @@ module.exports = (crowi) => {
     const { configManager } = crowi;
     // update config without publishing S2sMessage
     return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  function generateAccessToken(user) {
-    const hasher = crypto.createHash('sha512');
-    hasher.update(new Date().getTime() + user._id);
-
-    return hasher.digest('base64');
   }
 
   async function getConnectionStatusesFromProxy(tokens) {
@@ -328,14 +318,14 @@ module.exports = (crowi) => {
     let checkTokens;
     let tokenGtoP;
     let tokenPtoG;
+    let generateTokens;
     do {
-      // TODO imple generate tokens at GW-5859. The following tokens is temporary.
-      tokenGtoP = 'v2';
-      tokenPtoG = 'v2';
+      generateTokens = SlackAppIntegration.generateAccessToken();
+      tokenGtoP = generateTokens[0];
+      tokenPtoG = generateTokens[1];
       // eslint-disable-next-line no-await-in-loop
       checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
     } while (checkTokens != null);
-
     try {
       const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
       return res.apiv3(slackAppTokens, 200);
@@ -345,6 +335,25 @@ module.exports = (crowi) => {
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
     }
+  });
+
+  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { proxyUri } = req.body;
+    console.log('proxyUri', proxyUri);
+
+    const requestParams = { 'slackbot:serverUri': proxyUri };
+
+    try {
+      await updateSlackBotSettings(requestParams);
+      crowi.slackBotService.publishUpdatedMessage();
+      return res.apiv3({});
+    }
+    catch (error) {
+      const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+    }
+
   });
 
   return router;
