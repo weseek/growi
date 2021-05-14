@@ -151,6 +151,7 @@ const CustomBotWithProxySettingsAccordion = () => {
             />
             <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
           </div>
+          {/* TODO: Insert photo */}
           <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
             <h1 className="text-muted">参考画像</h1>
           </div>
