@@ -286,7 +286,6 @@ module.exports = (crowi) => {
       await updateSlackBotSettings(requestParams);
       crowi.slackBotService.publishUpdatedMessage();
 
-      // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
       const customBotWithoutProxySettingParams = {
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
