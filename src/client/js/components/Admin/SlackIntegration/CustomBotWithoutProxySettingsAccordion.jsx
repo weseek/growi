@@ -34,7 +34,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
 
   const updateSecretTokenHandler = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
+      await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
         slackSigningSecret,
         slackBotToken,
         currentBotType,
