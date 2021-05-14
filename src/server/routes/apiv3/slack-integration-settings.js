@@ -303,8 +303,21 @@ module.exports = (crowi) => {
   });
 
   router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    console.log(req.body.proxyUri);
-    return;
+    const { proxyUri } = req.body;
+    console.log('proxyUri', proxyUri);
+
+    const requestParams = { 'slackbot:serverUri': proxyUri };
+
+    try {
+      await updateSlackBotSettings(requestParams);
+      crowi.slackBotService.publishUpdatedMessage();
+      return res.apiv3({});
+    }
+    catch (error) {
+      const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+    }
 
   });
 
