@@ -49,14 +49,22 @@ const CustomizeLayoutSetting = (props) => {
           <h2 className="admin-setting-header">{t('admin:customize_setting.layout')}</h2>
 
           <div className="d-flex justify-content-around mt-5">
-            <div className="card-deck">
-              <div className={`card ${!isContainerFluid ? 'border border-primary' : ''}`} onClick={() => setIsContainerFluid(false)} role="button">
+            <div id="layoutOptions" className="card-deck">
+              <div
+                className={`card customize-layout-card ${!isContainerFluid ? 'border-active' : ''}`}
+                onClick={() => setIsContainerFluid(false)}
+                role="button"
+              >
                 <img src={`/images/customize-settings/default-${colorText}.svg`} />
                 <div className="card-body text-center">
                   {t('admin:customize_setting.layout_options.default')}
                 </div>
               </div>
-              <div className={`card ${isContainerFluid ? 'border border-primary' : ''}`} onClick={() => setIsContainerFluid(true)} role="button">
+              <div
+                className={`card customize-layout-card ${isContainerFluid ? 'border-active' : ''}`}
+                onClick={() => setIsContainerFluid(true)}
+                role="button"
+              >
                 <img src={`/images/customize-settings/fluid-${colorText}.svg`} />
                 <div className="card-body  text-center">
                   {t('admin:customize_setting.layout_options.expanded')}

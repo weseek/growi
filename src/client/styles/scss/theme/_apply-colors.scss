@@ -553,9 +553,17 @@ mark.rbt-highlight-text {
 }
 
 /*
- * GROWI admin page #themeOptions
+ * GROWI admin page #layoutOptions #themeOptions
  */
 .admin-page {
+  #layoutOptions {
+    .customize-layout-card {
+      &.border-active {
+        border-color: $color-theme-color-box;
+      }
+    }
+  }
+
   #themeOptions {
     .theme-option-container.active {
       .theme-option-name {
