@@ -143,9 +143,9 @@ const CustomBotWithProxySettingsAccordion = () => {
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.set_proxy_url_on_growi')}</>}
       >
         <div className="p-4 d-flex flex-column align-items-center">
-          <div className="w-50">
+          <div>
             <span
-              // eslint-disable-next-line react/no-danger
+                // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
             />
             <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
