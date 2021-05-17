@@ -339,7 +339,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.delete('/with-proxy-settings', async(req, res) => {
+  router.delete('/access-tokens', async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { tokenGtoP, tokenPtoG } = req.body;
     try {
