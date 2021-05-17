@@ -271,7 +271,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
-  router.put('/without-proxy/update-settings', async(req, res) => {
+  router.put('/without-proxy/update-settings', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Not CustomBotWithoutProxy';
