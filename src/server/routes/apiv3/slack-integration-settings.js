@@ -135,15 +135,32 @@ module.exports = (crowi) => {
       const token = settings.slackBotToken;
       // check the token is not null
       if (token != null) {
-        connectionStatuses = await getConnectionStatuses([token]);
+        try {
+          connectionStatuses = await getConnectionStatuses([token]);
+        }
+        catch (error) {
+          const msg = 'Error occured in getting connection statuses';
+          logger.error('Error', error);
+          return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
+        }
       }
     }
     else {
-      const slackAppIntegrations = await SlackAppIntegration.find();
-      settings.slackAppIntegrations = slackAppIntegrations;
 
-      const tokenGtoPs = slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
-      connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
+      try {
+        const slackAppIntegrations = await SlackAppIntegration.find();
+        settings.slackAppIntegrations = slackAppIntegrations;
+
+        if (slackAppIntegrations.length > 0) {
+          const tokenGtoPs = slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
+          connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
+        }
+      }
+      catch (error) {
+        const msg = 'Error occured in getting connection statuses';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
+      }
     }
 
     return res.apiv3({ currentBotType, settings, connectionStatuses });
