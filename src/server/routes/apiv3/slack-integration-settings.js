@@ -342,7 +342,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/access-tokens:
+   *    /slack-integration-settings/access-tokens:
    *      delete:
    *        tags: [SlackIntegration]
    *        operationId: deleteAccessTokens
