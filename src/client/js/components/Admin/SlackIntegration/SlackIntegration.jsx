@@ -27,7 +27,6 @@ const SlackIntegration = (props) => {
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
-  const [isResetAll, setIsResetAll] = useState(false);
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
@@ -56,7 +55,6 @@ const SlackIntegration = (props) => {
   const resetAllSettings = async() => {
     try {
       await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
-      setIsResetAll(true);
       fetchSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.bot_all_reset_successful'));
     }
@@ -152,7 +150,7 @@ const SlackIntegration = (props) => {
       />
 
       <DeleteSlackBotSettingsModal
-        isResetAll={isResetAll}
+        isResetAll
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
         onClickDeleteButton={resetAllSettings}
