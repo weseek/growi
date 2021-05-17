@@ -15,7 +15,7 @@ const router = express.Router();
 /**
  * @swagger
  *  tags:
- *    name: SlackIntegration
+ *    name: SlackIntegrationSettings
  */
 
 /**
@@ -96,7 +96,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/:
+   *    /slack-integration-settings/:
    *      get:
    *        tags: [SlackBotSettingParams]
    *        operationId: getSlackBotSettingParams
@@ -151,7 +151,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/:
+   *    /slack-integration-settings/:
    *      put:
    *        tags: [SlackIntegration]
    *        operationId: putSlackIntegration
@@ -195,7 +195,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/custom-bot-without-proxy/:
+   *    /slack-integration-settings/custom-bot-without-proxy/:
    *      put:
    *        tags: [CustomBotWithoutProxy]
    *        operationId: putCustomBotWithoutProxy
@@ -261,7 +261,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/without-proxy/update-settings/:
+   *    /slack-integration-settings/without-proxy/update-settings/:
    *      put:
    *        tags: [UpdateWithoutProxySettings]
    *        operationId: putWithoutProxySettings
@@ -305,7 +305,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/access-tokens:
+   *    /slack-integration-settings/access-tokens:
    *      put:
    *        tags: [SlackIntegration]
    *        operationId: putAccessTokens
