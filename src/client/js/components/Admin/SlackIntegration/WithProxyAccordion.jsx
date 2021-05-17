@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+import AppContainer from '../../../services/AppContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import Accordion from '../Common/Accordion';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
+const logger = loggerFactory('growi:SlackBotSettings');
 
 const WithProxyAccordion = (props) => {
   const [testChannel, setTestChannel] = useState('');
@@ -11,14 +17,29 @@ const WithProxyAccordion = (props) => {
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
+  const [proxyUri, setProxyUri] = useState(null);
 
   const { t } = useTranslation();
+  const { appContainer } = props;
 
   // TODO: Handle test button
   const submitForm = (e) => {
     e.preventDefault();
     // eslint-disable-next-line no-console
     console.log('Form Submitted');
+  };
+
+  const updateProxyUri = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+        proxyUri,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   };
 
   const inputTestChannelHandler = (channel) => {
@@ -161,14 +182,13 @@ const WithProxyAccordion = (props) => {
               <input
                 className="form-control"
                 type="text"
+                onChange={(e) => { setProxyUri(e.target.value) }}
               />
             </div>
           </div>
           <AdminUpdateButtonRow
             disabled={false}
-            // TODO: Add Proxy URL submit logic
-            // eslint-disable-next-line no-console
-            onClick={() => console.log('Update')}
+            onClick={() => updateProxyUri()}
           />
         </div>
       </Accordion>
@@ -223,8 +243,15 @@ const WithProxyAccordion = (props) => {
   );
 };
 
+
+/**
+ * Wrapper component for using unstated
+ */
+
+const OfficialBotSettingsAccordionWrapper = withUnstatedContainers(WithProxyAccordion, [AppContainer]);
 WithProxyAccordion.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
 };
 
-export default WithProxyAccordion;
+export default OfficialBotSettingsAccordionWrapper;
