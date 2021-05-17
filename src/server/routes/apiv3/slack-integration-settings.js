@@ -339,6 +339,19 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /slack-integration/access-tokens:
+   *      delete:
+   *        tags: [SlackIntegration]
+   *        operationId: deleteAccessTokens
+   *        summary: delete accessTokens
+   *        description: Delete accessTokens
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete access tokens for slack
+   */
   router.delete('/access-tokens', async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { tokenGtoP, tokenPtoG } = req.body;
