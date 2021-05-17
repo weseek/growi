@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import Accordion from '../Common/Accordion';
 
-const WithProxyAccordion = () => {
+const WithProxyAccordion = (props) => {
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
   // TODO: Add connection Logs
@@ -35,6 +36,8 @@ const WithProxyAccordion = () => {
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
+      {props.botType === 'customBotWithProxy'
+      && (
       <Accordion
         title={<><span className="mr-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
       >
@@ -54,6 +57,9 @@ const WithProxyAccordion = () => {
           </a>
         </div>
       </Accordion>
+      )
+      }
+
       <Accordion
         title={<><span className="mr-2">②</span>{t('admin:slack_integration.accordion.install_bot_to_slack')}</>}
       >
@@ -215,6 +221,10 @@ const WithProxyAccordion = () => {
       </Accordion>
     </div>
   );
+};
+
+WithProxyAccordion.propTypes = {
+  botType: PropTypes.string.isRequired,
 };
 
 export default WithProxyAccordion;

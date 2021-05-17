@@ -80,7 +80,7 @@ const CustomBotWithProxySettings = (props) => {
                 {t('admin:slack_integration.delete')}
               </button>
             </div>
-            <WithProxyAccordion key={i} />
+            <WithProxyAccordion botType="customBotWithProxy" key={i} />
           </>
         ))}
 
