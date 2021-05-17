@@ -67,8 +67,8 @@ const CustomBotWithProxySettings = (props) => {
       />
 
       <div className="form-group row my-4">
-        <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
-        <div className="col-md-6">
+        <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
+        <div className="col-md-6 mr-3 mt-3">
           <input
             className="form-control"
             type="text"
