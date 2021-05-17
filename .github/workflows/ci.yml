@@ -14,7 +14,7 @@ on:
       - .stylelint*
       - config
       - resource
-      - src
+      - src/
       - package.json
       - yarn.lock
 
