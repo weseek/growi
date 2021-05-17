@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -8,11 +9,15 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
 import WithProxyAccordion from './WithProxyAccordion';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+
+const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const { appContainer, adminAppContainer } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
+  const [proxyUri, setProxyUri] = useState(null);
 
   const { t } = useTranslation();
 
@@ -43,6 +48,19 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
+  const updateProxyUri = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+        proxyUri,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  };
+
   return (
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
@@ -64,6 +82,22 @@ const CustomBotWithProxySettings = (props) => {
         }
         isSlackScopeSet
       />
+
+      <div className="form-group row my-4">
+        <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
+        <div className="col-md-6 mr-3 mt-3">
+          <input
+            className="form-control"
+            type="text"
+            onChange={(e) => { setProxyUri(e.target.value) }}
+          />
+        </div>
+        <AdminUpdateButtonRow
+          disabled={false}
+          onClick={() => updateProxyUri()}
+        />
+      </div>
+
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
       <div className="mx-3">
 

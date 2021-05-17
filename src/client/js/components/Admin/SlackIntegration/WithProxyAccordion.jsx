@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastSuccess } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import Accordion from '../Common/Accordion';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
-
-const logger = loggerFactory('growi:SlackBotSettings');
 
 const WithProxyAccordion = (props) => {
   const [testChannel, setTestChannel] = useState('');
@@ -30,19 +26,6 @@ const WithProxyAccordion = (props) => {
     e.preventDefault();
     // eslint-disable-next-line no-console
     console.log('Form Submitted');
-  };
-
-  const updateProxyUri = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-        proxyUri,
-      });
-      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
   };
 
   const inputTestChannelHandler = (channel) => {
@@ -193,26 +176,18 @@ const WithProxyAccordion = (props) => {
           </>
         )}
       >
-        <div className="p-4">
-          <p
-            className="text-center"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-          />
-          <div className="form-group row my-4">
-            <label className="text-left text-md-right col-md-3 col-form-label">Proxy URL</label>
-            <div className="col-md-6">
-              <input
-                className="form-control"
-                type="text"
-                onChange={(e) => { setProxyUri(e.target.value) }}
-              />
-            </div>
+        <div className="p-4 d-flex flex-column align-items-center">
+          <div>
+            <span
+                // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+            />
+            <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
           </div>
-          <AdminUpdateButtonRow
-            disabled={false}
-            onClick={() => updateProxyUri()}
-          />
+          {/* TODO: Insert photo */}
+          <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
+            <h1 className="text-muted">参考画像</h1>
+          </div>
         </div>
       </Accordion>
       <Accordion
