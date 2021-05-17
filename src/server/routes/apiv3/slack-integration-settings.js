@@ -195,21 +195,21 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/custom-bot-without-proxy/:
+   *    /slack-integration/bot-type/:
    *      put:
-   *        tags: [CustomBotWithoutProxy]
-   *        operationId: putCustomBotWithoutProxy
-   *        summary: /slack-integration/custom-bot-without-proxy
-   *        description: Put customBotWithoutProxy setting.
+   *        tags: [botType]
+   *        operationId: putBotType
+   *        summary: /slack-integration/bot-type
+   *        description: Put botType setting.
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/CustomBotWithoutProxy'
+   *                $ref: '#/components/schemas/botType'
    *        responses:
    *           200:
-   *             description: Succeeded to put CustomBotWithoutProxy setting.
+   *             description: Succeeded to put botType setting.
    */
   router.put('/bot-type',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.BotType, apiV3FormValidator, async(req, res) => {
@@ -233,10 +233,24 @@ module.exports = (crowi) => {
       }
     });
 
-  /*
-    TODO: add swagger by GW-5930
-  */
-
+  /**
+   * @swagger
+   *
+   *    /slack-integration/bot-type/:
+   *      delete:
+   *        tags: [botType]
+   *        operationId: deleteBotType
+   *        summary: /slack-integration/bot-type
+   *        description: Delete botType setting.
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/botType'
+   *        responses:
+   *           200:
+   *             description: Succeeded to delete botType setting.
+   */
   router.delete('/bot-type',
     accessTokenParser, loginRequiredStrictly, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
 
