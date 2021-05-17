@@ -34,6 +34,11 @@ const router = express.Router();
  *            type: string
  *          currentBotType:
  *            type: string
+ *      BotType:
+ *        description: CustomBotWithoutProxy
+ *        properties:
+ *          currentBotType:
+ *            type: string
  *      SlackIntegration:
  *        description: SlackIntegration
  *        type: object
@@ -227,7 +232,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/botType'
+   *                $ref: '#/components/schemas/BotType'
    *        responses:
    *           200:
    *             description: Succeeded to put botType setting.
@@ -266,7 +271,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/botType'
+   *                $ref: '#/components/schemas/BotType'
    *        responses:
    *           200:
    *             description: Succeeded to delete botType setting.
