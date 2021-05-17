@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const { body } = require('express-validator');
 const axios = require('axios');
+const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
 const { getConnectionStatuses } = require('@growi/slack');
@@ -82,9 +83,9 @@ module.exports = (crowi) => {
 
   async function getConnectionStatusesFromProxy(tokens) {
     const csv = tokens.join(',');
+    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
 
-    // TODO: retrieve proxy url from configManager
-    const result = await axios.get('http://localhost:8080/g2s/connection-status', {
+    const result = await axios.get(urljoin(proxyUri, '/g2s/connection-status'), {
       headers: {
         'x-growi-gtop-tokens': csv,
       },
