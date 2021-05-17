@@ -275,7 +275,6 @@
     },
     "bot_reset_successful": "Bot settings have been reset.",
     "bot_all_reset_successful": "Reset all bot settings.",
-
     "copied_to_clipboard": "Copied to clipboard",
     "set_scope": "Please set up Bot Token Scopes from Slack settings",
     "modal": {
