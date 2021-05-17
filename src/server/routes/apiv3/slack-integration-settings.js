@@ -352,7 +352,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to delete access tokens for slack
    */
-  router.delete('/access-tokens', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.delete('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { tokenGtoP, tokenPtoG } = req.body;
     try {
