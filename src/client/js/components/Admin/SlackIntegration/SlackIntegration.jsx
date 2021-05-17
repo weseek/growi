@@ -52,8 +52,14 @@ const SlackIntegration = (props) => {
   }, [appContainer.apiv3]);
 
   const resetAllSettings = async() => {
-    await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
-    return toastSuccess('成功');
+    try {
+      await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
+      fetchSlackIntegrationData();
+      toastSuccess(t('admin:slack_integration.bot_all_reset_successful'));
+    }
+    catch (error) {
+      toastError(error);
+    }
   };
 
   const resetWithOutSettings = async() => {
