@@ -151,6 +151,62 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /slack-integration/test-connection:
+   *      get:
+   *        tags: [SlackBotSettingParams]
+   *        operationId: getSlackBotSettingParams
+   *        summary: get /slack-integration
+   *        description: Get current settings and connection statuses.
+   *        responses:
+   *          200:
+   *            description: Succeeded to get info.
+   */
+  router.get('/test-connection', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+    const { configManager } = crowi;
+    const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    // retrieve settings
+    const settings = {};
+    if (currentBotType === 'customBotWithoutProxy') {
+      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
+      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
+      settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
+      settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
+    }
+    else {
+      // settings.proxyUriEnvVars = ;
+      // settings.proxyUri = ;
+      // settings.tokenPtoG = ;
+      // settings.tokenGtoP = ;
+    }
+
+    // TODO: try-catch
+
+    // retrieve connection statuses
+    let connectionStatuses;
+    if (currentBotType == null) {
+      // TODO imple null action
+    }
+    else if (currentBotType === 'customBotWithoutProxy') {
+      const token = settings.slackBotToken;
+      // check the token is not null
+      if (token != null) {
+        connectionStatuses = await getConnectionStatuses([token]);
+      }
+    }
+    else {
+      // TODO: retrieve tokenGtoPs from DB
+      const tokenGtoPs = ['gtop1'];
+      connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
+    }
+
+    return res.apiv3({ currentBotType, settings, connectionStatuses });
+  });
+
+
+  /**
+   * @swagger
+   *
    *    /slack-integration/:
    *      put:
    *        tags: [SlackIntegration]
