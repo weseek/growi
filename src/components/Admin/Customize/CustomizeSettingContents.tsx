@@ -2,13 +2,14 @@ import React from 'react';
 
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 
+import CustomizeLayoutSetting from '~/client/js/components/Admin/Customize/CustomizeLayoutSetting';
 import { CustomizeThemeSetting } from '~/components/Admin/Customize/CustomizeThemeSetting';
 import { CustomizeFunctionSetting } from '~/components/Admin/Customize/CustomizeFunctionSetting';
 import { CustomizeHighlightSetting } from '~/components/Admin/Customize/CustomizeHighlightSetting';
 import { CustomizeTitle } from '~/components/Admin/Customize/CustomizeTitle';
-import CustomizeHeaderSetting from '~/client/js/components/Admin/Customize/CustomizeHeaderSetting';
-import CustomizeCssSetting from '~/client/js/components/Admin/Customize/CustomizeCssSetting';
-import CustomizeScriptSetting from '~/client/js/components/Admin/Customize/CustomizeScriptSetting';
+// import CustomizeHeaderSetting from '~/client/js/components/Admin/Customize/CustomizeHeaderSetting';
+// import CustomizeCssSetting from '~/client/js/components/Admin/Customize/CustomizeCssSetting';
+// import CustomizeScriptSetting from '~/client/js/components/Admin/Customize/CustomizeScriptSetting';
 
 const CustomizeSettingContents = (): JSX.Element => {
   const { error, data } = useCustomizeSettingsSWR();
@@ -28,6 +29,9 @@ const CustomizeSettingContents = (): JSX.Element => {
 
   return (
     <React.Fragment>
+      <div className="mb-5">
+        <CustomizeLayoutSetting />
+      </div>
       <div className="mb-5">
         <CustomizeThemeSetting />
       </div>

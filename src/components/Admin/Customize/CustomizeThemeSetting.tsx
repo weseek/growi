@@ -49,7 +49,7 @@ export const CustomizeThemeSetting:FC = () => {
           <h2 className="admin-setting-header">{t('admin:customize_setting.theme')}</h2>
           {process.env.NODE_ENV === 'development' && (
           <div className="alert alert-warning">
-            <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+            <strong>DEBUG MESSAGE:</strong> Live preview for theme is disabled in development mode.
           </div>
         )}
           <CustomizeThemeOptions />

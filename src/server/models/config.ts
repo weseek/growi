@@ -120,7 +120,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
   'customize:theme' : 'default',
-  'customize:layout' : 'growi',
+  'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
   'customize:isSavedStatesOfTabChanges' : true,
   'customize:isEnabledAttachTitleHeader' : false,
