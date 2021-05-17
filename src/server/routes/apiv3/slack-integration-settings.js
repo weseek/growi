@@ -50,6 +50,8 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
+  const { SlackAppIntegration } = crowi.models;
+
   const validator = {
     BotType: [
       body('currentBotType').isString(),
@@ -108,6 +110,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to get info.
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+
     const { configManager } = crowi;
     const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
 
@@ -141,8 +144,8 @@ module.exports = (crowi) => {
       }
     }
     else {
-      // TODO: retrieve tokenGtoPs from DB
-      const tokenGtoPs = ['gtop1'];
+      const slackAppIntegrations = await SlackAppIntegration.find();
+      const tokenGtoPs = slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
       connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
     }
 
@@ -317,7 +320,6 @@ module.exports = (crowi) => {
    *            description: Succeeded to update access tokens for slack
    */
   router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     let checkTokens;
     let tokenGtoP;
     let tokenPtoG;
