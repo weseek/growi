@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 
-import CustomizeLayoutSetting from '~/client/js/components/Admin/Customize/CustomizeLayoutSetting';
+// import CustomizeLayoutSetting from '~/client/js/components/Admin/Customize/CustomizeLayoutSetting';
 import { CustomizeThemeSetting } from '~/components/Admin/Customize/CustomizeThemeSetting';
 import { CustomizeFunctionSetting } from '~/components/Admin/Customize/CustomizeFunctionSetting';
 import { CustomizeHighlightSetting } from '~/components/Admin/Customize/CustomizeHighlightSetting';
@@ -29,9 +29,9 @@ const CustomizeSettingContents = (): JSX.Element => {
 
   return (
     <React.Fragment>
-      <div className="mb-5">
+      {/* <div className="mb-5">
         <CustomizeLayoutSetting />
-      </div>
+      </div> */}
       <div className="mb-5">
         <CustomizeThemeSetting />
       </div>
