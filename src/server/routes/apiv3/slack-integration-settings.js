@@ -24,18 +24,8 @@ const router = express.Router();
  *
  *  components:
  *    schemas:
- *      CustomBotWithoutProxy:
- *        description: CustomBotWithoutProxy
- *        type: object
- *        properties:
- *          slackSigningSecret:
- *            type: string
- *          slackBotToken:
- *            type: string
- *          currentBotType:
- *            type: string
  *      BotType:
- *        description: CustomBotWithoutProxy
+ *        description: BotType
  *        properties:
  *          currentBotType:
  *            type: string
