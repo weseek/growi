@@ -12,8 +12,8 @@ on:
       - .eslint*
       - .prettier*
       - .stylelint*
-      - config
-      - resource
+      - config/
+      - resource/
       - src/
       - package.json
       - yarn.lock
