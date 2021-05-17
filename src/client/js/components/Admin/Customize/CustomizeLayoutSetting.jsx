@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../../../services/AppContainer';
-
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { isDarkMode as isDarkModeByUtil } from '../../../util/color-scheme';
 
@@ -11,21 +9,21 @@ const isDarkMode = isDarkModeByUtil();
 const colorText = isDarkMode ? 'dark' : 'light';
 
 const CustomizeLayoutSetting = (props) => {
-  const { t, appContainer } = props;
+  const { t } = props;
 
   const [isContainerFluid, setIsContainerFluid] = useState(false);
   const [retrieveError, setRetrieveError] = useState();
 
   const retrieveData = useCallback(async() => {
     try {
-      const res = await appContainer.apiv3Get('/customize-setting/layout');
-      setIsContainerFluid(res.data.isContainerFluid);
+      // const res = await appContainer.apiv3Get('/customize-setting/layout');
+      // setIsContainerFluid(res.data.isContainerFluid);
     }
     catch (err) {
       setRetrieveError(err);
       toastError(err);
     }
-  }, [appContainer]);
+  }, []);
 
   useEffect(() => {
     retrieveData();
@@ -33,7 +31,7 @@ const CustomizeLayoutSetting = (props) => {
 
   const onClickSubmit = async() => {
     try {
-      await appContainer.apiv3Put('/customize-setting/layout', { isContainerFluid });
+      // await appContainer.apiv3Put('/customize-setting/layout', { isContainerFluid });
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_setting.layout') }));
       retrieveData();
     }
@@ -86,8 +84,6 @@ const CustomizeLayoutSetting = (props) => {
 
 CustomizeLayoutSetting.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
 export default withTranslation()(CustomizeLayoutSetting);
