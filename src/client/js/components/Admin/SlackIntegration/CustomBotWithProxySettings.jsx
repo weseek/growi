@@ -12,7 +12,7 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const CustomBotWithProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
-  const { appContainer, adminAppContainer } = props;
+  const { appContainer } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
   const { t } = useTranslation();
@@ -128,7 +128,6 @@ const CustomBotWithProxySettingsWrapper = withUnstatedContainers(CustomBotWithPr
 
 CustomBotWithProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default CustomBotWithProxySettingsWrapper;
