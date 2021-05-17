@@ -1,5 +1,7 @@
 # CHANGES
 
+## v4.2.18
+* Feature: Cobvertible page contents width.
 ## v4.2.17-RC
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
