@@ -122,13 +122,9 @@ module.exports = (crowi) => {
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
     }
     else {
-      // settings.proxyUriEnvVars = ;
-      // settings.proxyUri = ;
-      // settings.tokenPtoG = ;
-      // settings.tokenGtoP = ;
+      settings.proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
+      settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:serverUri');
     }
-
-    // TODO: try-catch
 
     // retrieve connection statuses
     let connectionStatuses;
@@ -144,6 +140,8 @@ module.exports = (crowi) => {
     }
     else {
       const slackAppIntegrations = await SlackAppIntegration.find();
+      settings.slackAppIntegrations = slackAppIntegrations;
+
       const tokenGtoPs = slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
       connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
     }
