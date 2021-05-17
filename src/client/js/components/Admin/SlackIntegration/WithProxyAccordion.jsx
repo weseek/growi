@@ -85,7 +85,12 @@ const WithProxyAccordion = (props) => {
       }
 
       <Accordion
-        title={<><span className="mr-2">②</span>{t('admin:slack_integration.accordion.install_bot_to_slack')}</>}
+        title={(
+          <>
+            <span className="mr-2">{props.botType === 'customBotWithProxy' ? '②' : '①'}</span>
+            {t('admin:slack_integration.accordion.install_bot_to_slack')}
+          </>
+        )}
       >
         <div className="my-5 d-flex flex-column align-items-center">
           {/* TODO: Insert install link */}
@@ -107,7 +112,7 @@ const WithProxyAccordion = (props) => {
       <Accordion
         title={(
           <>
-            <span className="mr-2">③</span>
+            <span className="mr-2">{props.botType === 'customBotWithProxy' ? '③' : '②'}</span>
             {t('admin:slack_integration.accordion.generate_access_token')}
             {' / '}
             {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}
@@ -182,7 +187,11 @@ const WithProxyAccordion = (props) => {
         </div>
       </Accordion>
       <Accordion
-        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.set_proxy_url_on_growi')}</>}
+        title={(
+          <><span className="mr-2">{props.botType === 'customBotWithProxy' ? '④' : '③'}</span>
+            {t('admin:slack_integration.accordion.set_proxy_url_on_growi')}
+          </>
+        )}
       >
         <div className="p-4">
           <p
@@ -207,7 +216,11 @@ const WithProxyAccordion = (props) => {
         </div>
       </Accordion>
       <Accordion
-        title={<><span className="mr-2">⑤</span>{t('admin:slack_integration.accordion.test_connection')}</>}
+        title={(
+          <><span className="mr-2">{props.botType === 'customBotWithProxy' ? '⑤' : '④'}</span>
+            {t('admin:slack_integration.accordion.test_connection')}
+          </>
+        )}
       >
         {/* TODO: Responsive */}
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
