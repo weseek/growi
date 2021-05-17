@@ -154,6 +154,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
           <div className="row">
             <div className="col grw-page-content-container">
+              {/* TODO GW-5990 change width by customize:isContainerFluid */}
               <div id="content-main" className="content-main container">
                 <PageAlerts />
                 <DisplaySwitcher />
