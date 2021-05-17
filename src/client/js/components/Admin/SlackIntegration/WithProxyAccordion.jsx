@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -21,6 +22,8 @@ const WithProxyAccordion = (props) => {
 
   const { t } = useTranslation();
   const { appContainer } = props;
+
+  const growiUrl = appContainer.config.crowi.url;
 
   // TODO: Handle test button
   const submitForm = (e) => {
@@ -151,6 +154,17 @@ const WithProxyAccordion = (props) => {
                   // eslint-disable-next-line react/no-danger
                   dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
                 />
+                <div className="input-group align-items-center ml-2 mb-3">
+                  <div className="input-group-prepend mx-1">
+                    <input className="form-control" type="text" value={growiUrl} readOnly />
+                    <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+                      <div className="btn input-group-text">
+                        <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+                      </div>
+                    </CopyToClipboard>
+                  </div>
+                </div>
+
               </li>
               <li>
                 <p
