@@ -13,7 +13,7 @@ on:
       - .prettier*
       - .stylelint*
       - config/**
-      - resource**
+      - resource/**
       - src/**
       - package.json
       - yarn.lock
