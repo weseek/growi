@@ -61,10 +61,6 @@ module.exports = (crowi) => {
       body('channel').trim().not().isEmpty()
         .isString(),
     ],
-    Credentials: [
-      body('slackSigningSecret').isString().not().isEmpty(),
-      body('slackBotToken').isString().not().isEmpty(),
-    ],
   };
 
   async function resetAllBotSettings() {
@@ -318,7 +314,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access tokens for slack
    */
-  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, validator.Credentials, apiV3FormValidator, async(req, res) => {
+  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     let checkTokens;
     let tokenGtoP;
