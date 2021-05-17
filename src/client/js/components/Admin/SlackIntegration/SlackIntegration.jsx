@@ -51,6 +51,11 @@ const SlackIntegration = (props) => {
     }
   }, [appContainer.apiv3]);
 
+  const resetAllSettings = async() => {
+    await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
+    return toastSuccess('成功');
+  };
+
   const resetWithOutSettings = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
@@ -137,11 +142,11 @@ const SlackIntegration = (props) => {
         onCancelClick={cancelBotChangeHandler}
       />
 
-      {/* TODO add onClickDeleteButton */}
       <DeleteSlackBotSettingsModal
-        isResetAll
+        isResetAll={false}
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
+        onClickDeleteButton={resetAllSettings}
       />
 
       <div className="selecting-bot-type mb-5">
