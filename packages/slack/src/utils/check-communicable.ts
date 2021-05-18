@@ -94,7 +94,8 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
  * @param token bot OAuth token
  * @returns
  */
-export const aurhTestByToken = async(token:string): Promise<void> => {
+export const authTestByToken = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
+  // TODO GW-6002 fire chat.postMessage
   await testSlackApiServer(client);
 };

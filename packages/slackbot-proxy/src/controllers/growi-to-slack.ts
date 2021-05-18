@@ -4,7 +4,7 @@ import {
 
 import { WebAPICallResult } from '@slack/web-api';
 
-import { verifyGrowiToSlackRequest, getConnectionStatuses } from '@growi/slack';
+import { verifyGrowiToSlackRequest, getConnectionStatuses, authTestByToken } from '@growi/slack';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
@@ -60,36 +60,63 @@ export class GrowiToSlackCtrl {
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
-    const { tokenGtoPs } = req;
+    const { tokenGtoP } = req;
+
+    // retrieve relation with Installation
+    const relation = await this.relationRepository.createQueryBuilder('relation')
+      .where('tokenGtoP = :token', { token: tokenGtoP })
+      .leftJoinAndSelect('relation.installation', 'installation')
+      .getOne();
+
+    if (relation != null) {
+      const token = relation.installation.data.bot?.token;
+      if (token == null) {
+        return res.status(400).send({ message: 'installation is invalid' });
+      }
+      try {
+        await authTestByToken(token);
+      }
+      catch (error) {
+        return res.status(500).send({ message: 'installation is invalid' });
+      }
+    }
 
     // retrieve latest Order with Installation
     const order = await this.orderRepository.createQueryBuilder('order')
       .orderBy('order.createdAt', 'DESC')
-      .where('growiAccessToken = :token', { token: tokenGtoPs })
+      .where('growiAccessToken = :token', { token: tokenGtoP })
       .leftJoinAndSelect('order.installation', 'installation')
       .getOne();
 
-    if (order == null || order.isExpired()) {
-      return 'order has expired or does not exist.';
-    }
+    console.log(order);
 
-    logger.debug('order found', order);
 
-    const token = order.installation?.data?.bot?.token;
-    if (token == null) {
-      return 'token does not exist.';
-    }
+    // if (order == null || order.isExpired()) {
+    //   return 'order has expired or does not exist.';
+    // }
 
-    const connectionStatuses = await getConnectionStatuses([token]);
-    if (connectionStatuses[token].workspaceName == null) {
-      return 'connection test failed.';
-    }
+    // logger.debug('order found', order);
 
-    logger.debug('retrieve WS name', connectionStatuses[token].workspaceName);
+    // const token = order.installation?.data?.bot?.token;
+    // if (token == null) {
+    //   return 'token does not exist.';
+    // }
+
+    // const connectionStatuses = await getConnectionStatuses([token]);
+    // if (connectionStatuses[token].workspaceName == null) {
+    //   return 'connection test failed.';
+    // }
+
+    // logger.debug('retrieve WS name', connectionStatuses[token].workspaceName);
 
     // TODO GW-5864 issue relation
-
-    return res.send({ connectionStatuses });
+    // try {
+    //   await authTestByToken(token);
+    // }
+    // catch (error) {
+    //   console.log(error);
+    // }
+    return res.send({ tokenGtoP });
   }
 
 }
