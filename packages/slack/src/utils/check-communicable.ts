@@ -89,3 +89,16 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
   // convert to object
   return Object.fromEntries(await map);
 };
+
+/**
+ * Test Slack auth
+ * @param client
+ * @returns
+ */
+export const testSlackAuth = async(client: WebClient): Promise<void> => {
+  const result = await client.auth.test();
+
+  if (!result.ok) {
+    throw new Error(result.error);
+  }
+};
