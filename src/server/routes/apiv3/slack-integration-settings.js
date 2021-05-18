@@ -438,7 +438,7 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/with-proxy/relation-test:
    *      post:
    *        tags: [botType]
-   *        operationId: deleteBotType
+   *        operationId: postRelationTest
    *        summary: /slack-integration/bot-type
    *        description: Delete botType setting.
    *        requestBody:
