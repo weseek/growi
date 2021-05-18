@@ -69,6 +69,85 @@ export const RegisteringProxyUrlProcess = () => {
   );
 };
 
+export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
+  const { t } = useTranslation();
+  const growiUrl = props.appContainer.config.crowi.url;
+  return (
+    <div className="py-4 px-5">
+      <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
+      <div className="form-group row">
+        <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
+        <div className="col-md-6">
+          <input
+            className="form-control"
+            type="text"
+          />
+        </div>
+      </div>
+      <div className="form-group row">
+        <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
+        <div className="col-md-6">
+          <input
+            className="form-control"
+            type="text"
+          />
+        </div>
+      </div>
+
+      <div className="row my-3">
+        <div className="mx-auto">
+          <button type="button" className="btn btn-outline-secondary mx-2">{ t('admin:slack_integration.access_token_settings.discard') }</button>
+          <button type="button" className="btn btn-primary mx-2">{ t('admin:slack_integration.access_token_settings.generate') }</button>
+        </div>
+      </div>
+      <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
+      <div className="d-flex flex-column align-items-center">
+        <ol className="p-0">
+          <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_growi_register_on_slack')}</p></li>
+          <li>
+            <p
+              className="ml-2"
+                // TODO: Add dynamic link
+                // TODO: Copy to clipboard on click
+                // TODO: Add logo
+                // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
+            />
+            <div className="input-group align-items-center ml-2 mb-3">
+              <div className="input-group-prepend mx-1">
+                <input className="form-control" type="text" value={growiUrl} readOnly />
+                <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+                  <div className="btn input-group-text">
+                    <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+                  </div>
+                </CopyToClipboard>
+              </div>
+            </div>
+
+          </li>
+          <li>
+            <p
+              className="ml-2"
+                // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
+            />
+          </li>
+        </ol>
+        {/* TODO: Insert photo */}
+        <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
+          <h1 className="text-muted">参考画像</h1>
+        </div>
+      </div>
+    </div>
+
+  );
+}, [AppContainer]);
+
+GenelatingTokensAndRegisteringProxyServiceProcess.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+
 const WithProxyAccordions = (props) => {
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
@@ -100,78 +179,6 @@ const WithProxyAccordions = (props) => {
   if (connectionSuccessMessage != null) {
     value = connectionSuccessMessage;
   }
-
-  const genelatingTokensAndRegisteringProxyServiceProcess = () => {
-    return (
-      <div className="py-4 px-5">
-        <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
-        <div className="form-group row">
-          <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
-          <div className="col-md-6">
-            <input
-              className="form-control"
-              type="text"
-            />
-          </div>
-        </div>
-        <div className="form-group row">
-          <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
-          <div className="col-md-6">
-            <input
-              className="form-control"
-              type="text"
-            />
-          </div>
-        </div>
-
-        <div className="row my-3">
-          <div className="mx-auto">
-            <button type="button" className="btn btn-outline-secondary mx-2">{ t('admin:slack_integration.access_token_settings.discard') }</button>
-            <button type="button" className="btn btn-primary mx-2">{ t('admin:slack_integration.access_token_settings.generate') }</button>
-          </div>
-        </div>
-        <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
-        <div className="d-flex flex-column align-items-center">
-          <ol className="p-0">
-            <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_growi_register_on_slack')}</p></li>
-            <li>
-              <p
-                className="ml-2"
-                  // TODO: Add dynamic link
-                  // TODO: Copy to clipboard on click
-                  // TODO: Add logo
-                  // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
-              />
-              <div className="input-group align-items-center ml-2 mb-3">
-                <div className="input-group-prepend mx-1">
-                  <input className="form-control" type="text" value={growiUrl} readOnly />
-                  <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
-                    <div className="btn input-group-text">
-                      <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
-                    </div>
-                  </CopyToClipboard>
-                </div>
-              </div>
-
-            </li>
-            <li>
-              <p
-                className="ml-2"
-                  // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
-              />
-            </li>
-          </ol>
-          {/* TODO: Insert photo */}
-          <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-            <h1 className="text-muted">参考画像</h1>
-          </div>
-        </div>
-      </div>
-
-    );
-  };
 
   const testProcess = () => {
     return (
@@ -233,7 +240,7 @@ const WithProxyAccordions = (props) => {
     },
     '③': {
       title: t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service'),
-      content: genelatingTokensAndRegisteringProxyServiceProcess(),
+      content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
     },
     '④': {
       title: t('admin:slack_integration.accordion.set_proxy_url_on_growi'),
@@ -252,7 +259,7 @@ const WithProxyAccordions = (props) => {
     },
     '②': {
       title: t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service'),
-      content: genelatingTokensAndRegisteringProxyServiceProcess(),
+      content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
     },
     '③': {
       title: t('admin:slack_integration.accordion.set_proxy_url_on_growi'),
