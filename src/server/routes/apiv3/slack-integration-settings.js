@@ -264,7 +264,7 @@ module.exports = (crowi) => {
         console.log(response);
       }
       catch (error) {
-        console.log(error);
+        // console.log(error);
         // const errorMessage = error.data.error;
         // const errorCode = error.code;
         // logger.error('Error', error);
