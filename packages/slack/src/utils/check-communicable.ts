@@ -89,3 +89,12 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
   // convert to object
   return Object.fromEntries(await map);
 };
+
+/**
+ * @param token bot OAuth token
+ * @returns
+ */
+export const aurhTestByToken = async(token:string): Promise<void> => {
+  const client = generateWebClient(token);
+  await testSlackApiServer(client);
+};
