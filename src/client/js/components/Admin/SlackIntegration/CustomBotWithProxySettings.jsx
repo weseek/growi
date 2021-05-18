@@ -1,20 +1,42 @@
-import React, { useState } from 'react';
+import React, {
+  useState, useEffect, useCallback,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
-import CustomBotWithProxySettingsAccordion from './CustomBotWithProxySettingsAccordion';
+import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
-import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+
+const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
   const { appContainer } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
+  const [proxyUri, setProxyUri] = useState(null);
 
   const { t } = useTranslation();
+
+  const retrieveProxyUri = useCallback(async() => {
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration-settings');
+      const { proxyUri } = res.data.settings;
+      setProxyUri(proxyUri);
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  }, [appContainer.apiv3]);
+
+  useEffect(() => {
+    retrieveProxyUri();
+  }, [retrieveProxyUri]);
+
 
   // TODO: Multiple accordion logic
   const [accordionComponentsCount, setAccordionComponentsCount] = useState(0);
@@ -43,6 +65,19 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
+  const updateProxyUri = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+        proxyUri,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  };
+
   return (
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
@@ -67,18 +102,18 @@ const CustomBotWithProxySettings = (props) => {
 
       <div className="form-group row my-4">
         <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
-        <div className="col-md-6 mr-3 mt-3">
+        <div className="col-md-6 mt-3">
           <input
             className="form-control"
             type="text"
+            name="settingForm[proxyUrl]"
+            defaultValue={proxyUri}
+            onChange={(e) => { setProxyUri(e.target.value) }}
           />
         </div>
-        <AdminUpdateButtonRow
-          disabled={false}
-          // TODO: Add Proxy URL submit logic
-          // eslint-disable-next-line no-console
-          onClick={() => console.log('Update')}
-        />
+        <div className="col-md-2 mt-3 text-center text-md-left">
+          <button type="button" className="btn btn-primary" onClick={updateProxyUri} disabled={false}>{ t('Update') }</button>
+        </div>
       </div>
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
@@ -97,7 +132,7 @@ const CustomBotWithProxySettings = (props) => {
                 {t('admin:slack_integration.delete')}
               </button>
             </div>
-            <CustomBotWithProxySettingsAccordion key={i} />
+            <WithProxyAccordions botType="customBotWithProxy" key={i} />
           </>
         ))}
 
