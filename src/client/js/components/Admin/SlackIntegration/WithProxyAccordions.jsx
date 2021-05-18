@@ -226,61 +226,60 @@ export const TestProcess = () => {
   );
 };
 
+const CustomBotCooperationProcedure = {
+  '①': {
+    title: 'create_bot',
+    content: <BotCreateProcess />,
+  },
+  '②': {
+    title: 'install_bot_to_slack',
+    content: <BotInstallProcess />,
+  },
+  '③': {
+    title: 'register_for_growi_official_bot_proxy_service',
+    content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
+  },
+  '④': {
+    title: 'set_proxy_url_on_growi',
+    content: <RegisteringProxyUrlProcess />,
+  },
+  '⑤': {
+    title: 'test_connection',
+    content: <TestProcess />,
+  },
+};
+
+const officialBotCooperationProcedure = {
+  '①': {
+    title: 'install_bot_to_slack',
+    content: <BotInstallProcess />,
+  },
+  '②': {
+    title: 'register_for_growi_official_bot_proxy_service',
+    content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
+  },
+  '③': {
+    title: 'set_proxy_url_on_growi',
+    content: <RegisteringProxyUrlProcess />,
+  },
+  '④': {
+    title: 'test_connection',
+    content: <TestProcess />,
+  },
+};
+
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
+  const cooperationProcedureMapping = props.botType === 'officialBot' ? officialBotCooperationProcedure : CustomBotCooperationProcedure;
 
-
-  const customBotCooperationProcedure = {
-    '①': {
-      title: t('admin:slack_integration.accordion.create_bot'),
-      content: <BotCreateProcess />,
-    },
-    '②': {
-      title: t('admin:slack_integration.accordion.install_bot_to_slack'),
-      content: <BotInstallProcess />,
-    },
-    '③': {
-      title: t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service'),
-      content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
-    },
-    '④': {
-      title: t('admin:slack_integration.accordion.set_proxy_url_on_growi'),
-      content: <RegisteringProxyUrlProcess />,
-    },
-    '⑤': {
-      title: t('admin:slack_integration.accordion.test_connection'),
-      content: <TestProcess />,
-    },
-  };
-
-  const officialBotCooperationProcedure = {
-    '①': {
-      title: t('admin:slack_integration.accordion.install_bot_to_slack'),
-      content: <BotInstallProcess />,
-    },
-    '②': {
-      title: t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service'),
-      content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
-    },
-    '③': {
-      title: t('admin:slack_integration.accordion.set_proxy_url_on_growi'),
-      content: <RegisteringProxyUrlProcess />,
-    },
-    '④': {
-      title: t('admin:slack_integration.accordion.test_connection'),
-      content: <TestProcess />,
-    },
-  };
-
-  const cooperationProcedureMapping = props.botType === 'officialBot' ? officialBotCooperationProcedure : customBotCooperationProcedure;
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
       {Object.entries(cooperationProcedureMapping).map(([key, value]) => {
         return (
           <Accordion
-            title={<><span className="mr-2">{key}</span>{value.title}</>}
+            title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
             key={key}
           >
             {value.content}
