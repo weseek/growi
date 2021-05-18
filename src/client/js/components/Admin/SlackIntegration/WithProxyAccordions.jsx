@@ -219,85 +219,40 @@ const WithProxyAccordions = (props) => {
   };
 
   const customBotCooperationProcedure = {
-    contents: [BotCreateProcess, BotInstallProcess, genelatingTokensAndRegisteringProxyServiceProcess, registeringProxyUrlProcess, testProcess],
-    i18n: ['create_bot', 'install_bot_to_slack', 'register_for_growi_official_bot_proxy_service', 'set_proxy_url_on_growi', 'accordion.test_connection'],
-  };
-
-  const officialBotCooperationProcedure = {
-    create_bot: BotInstallProcess(),
-    install_bot_to_slack: BotInstallProcess(),
-    register_for_growi_official_bot_proxy_service: genelatingTokensAndRegisteringProxyServiceProcess(),
-    set_proxy_url_on_growi:  registeringProxyUrlProcess(),
-    test_connection: testProcess(),
+    '①': {
+      title: 'create_bot',
+      contents: BotCreateProcess(),
+    },
+    '②': {
+      title: 'register_for_growi_official_bot_proxy_service',
+      contents: BotInstallProcess(),
+    },
+    '③': {
+      title: 'create_bot',
+      contents: genelatingTokensAndRegisteringProxyServiceProcess(),
+    },
+    '④': {
+      title: 'set_proxy_url_on_growi',
+      contents: registeringProxyUrlProcess(),
+    },
+    '⑤': {
+      title: 'test_connection',
+      contents: testProcess(),
+    },
   };
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
-      {Object.entries(officialBotCooperationProcedure).map(([key, value]) => {
+      {Object.entries(customBotCooperationProcedure).map(([key, value]) => {
         return (
           <Accordion
-            title={<><span className="mr-2">1</span>{t(`admin:slack_integration.accordion.${key}`)}</>}
+            title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
             key={key}
           >
-            {/* {BotCreateProcess()} */}
-            {value}
+            {value.contents}
           </Accordion>
         );
       })}
-      {/* <Accordion
-        title={<><span className="mr-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
-      >
-        {BotCreateProcess()}
-      </Accordion> */}
-      {/* {props.botType === 'customBotWithProxy'
-      && (
-        <Accordion
-          title={<><span className="mr-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
-        >
-          {BotCreateProcess()}
-        </Accordion>
-      )}
-
-      <Accordion
-        title={(
-          <>
-            <span className="mr-2">{props.botType === 'customBotWithProxy' ? '②' : '①'}</span>
-            {t('admin:slack_integration.accordion.install_bot_to_slack')}
-          </>
-        )}
-      >
-        {BotInstallProcess()}
-      </Accordion>
-      <Accordion
-        title={(
-          <>
-            <span className="mr-2">{props.botType === 'customBotWithProxy' ? '③' : '②'}</span>
-            {t('admin:slack_integration.accordion.generate_access_token')}
-            {' / '}
-            {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}
-          </>
-        )}
-      >
-        {genelatingTokensAndRegisteringProxyServiceProcess()}
-      </Accordion>
-      <Accordion
-        title={(
-          <><span className="mr-2">{props.botType === 'customBotWithProxy' ? '④' : '③'}</span>
-            {t('admin:slack_integration.accordion.set_proxy_url_on_growi')}
-          </>
-        )}
-      >
-        {registeringProxyUrlProcess()}
-      </Accordion>
-      <Accordion
-        title={(
-          <><span className="mr-2">{props.botType === 'customBotWithProxy' ? '⑤' : '④'}</span>
-            {t('admin:slack_integration.accordion.test_connection')}
-          </>
-        )}
-      >
-        {testProcess()}
-      </Accordion> */}
     </div>
   );
 };
