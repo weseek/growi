@@ -69,10 +69,10 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setConnectionSuccessMessage(null);
     // TODO: 5921 Add new Test endpoint
     try {
-
-      const res = await appContainer.apiv3.post('/slack-integration-settings/notification-test-to-slack-work-space', {
+      const res = await appContainer.apiv3.post('/slack-integration-settings/test-connection', {
         channel: testChannel,
       });
+      console.log(res);
       setConnectionSuccessMessage(res.data.message);
       onSetIsSendTestMessage(true);
     }
@@ -83,7 +83,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const submitForm = (e) => {
+  const submitTestForm = (e) => {
     e.preventDefault();
     testConnection();
   };
@@ -162,7 +162,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
-          <form className="form-row align-items-center" onSubmit={e => submitForm(e)}>
+          <form className="form-row align-items-center" onSubmit={e => submitTestForm(e)}>
             <div className="input-group col-8">
               <div className="input-group-prepend">
                 <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>

@@ -165,42 +165,48 @@ module.exports = (crowi) => {
     const { configManager } = crowi;
     const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
 
-    // retrieve settings
-    const settings = {};
-    if (currentBotType === 'customBotWithoutProxy') {
-      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
-      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
-      settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
-      settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
-    }
-    else {
-      // settings.proxyUriEnvVars = ;
-      // settings.proxyUri = ;
-      // settings.tokenPtoG = ;
-      // settings.tokenGtoP = ;
-    }
-
-    // TODO: try-catch
-
-    // retrieve connection statuses
-    let connectionStatuses;
-    if (currentBotType == null) {
-      // TODO imple null action
-    }
-    else if (currentBotType === 'customBotWithoutProxy') {
-      const token = settings.slackBotToken;
-      // check the token is not null
-      if (token != null) {
-        connectionStatuses = await getConnectionStatuses([token]);
+    try {
+      // retrieve settings
+      const settings = {};
+      if (currentBotType === 'customBotWithoutProxy') {
+        settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
+        settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
+        settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
+        settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
       }
-    }
-    else {
-      // TODO: retrieve tokenGtoPs from DB
-      const tokenGtoPs = ['gtop1'];
-      connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
-    }
+      else {
+        // settings.proxyUriEnvVars = ;
+        // settings.proxyUri = ;
+        // settings.tokenPtoG = ;
+        // settings.tokenGtoP = ;
+      }
 
-    return res.apiv3({ currentBotType, settings, connectionStatuses });
+
+      // retrieve connection statuses
+      let connectionStatuses;
+      if (currentBotType == null) {
+        // TODO imple null action
+      }
+      else if (currentBotType === 'customBotWithoutProxy') {
+        const token = settings.slackBotToken;
+        // check the token is not null
+        if (token != null) {
+          connectionStatuses = await getConnectionStatuses([token]);
+        }
+      }
+      else {
+        // TODO: retrieve tokenGtoPs from DB
+        const tokenGtoPs = ['gtop1'];
+        connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
+      }
+
+      return res.apiv3({ currentBotType, settings, connectionStatuses });
+    }
+    catch (error) {
+      const msg = 'Error occured in testing Slack bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'), 500);
+    }
   });
 
 
