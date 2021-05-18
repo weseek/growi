@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
@@ -19,6 +19,23 @@ const CustomBotWithProxySettings = (props) => {
   const [proxyUri, setProxyUri] = useState(null);
 
   const { t } = useTranslation();
+
+  const retrieveProxyUri = async() => {
+    try {
+      const res = await appContainer.apiv3.get('/slack-integration-settings');
+      const { proxyUri } = res.data.settings;
+      setProxyUri(proxyUri);
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  };
+
+  useEffect(() => {
+    retrieveProxyUri();
+  }, []);
+
 
   // TODO: Multiple accordion logic
   const [accordionComponentsCount, setAccordionComponentsCount] = useState(0);
@@ -88,6 +105,8 @@ const CustomBotWithProxySettings = (props) => {
           <input
             className="form-control"
             type="text"
+            name="settingForm[proxyUrl]"
+            defaultValue={proxyUri}
             onChange={(e) => { setProxyUri(e.target.value) }}
           />
         </div>
