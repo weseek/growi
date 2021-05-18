@@ -220,42 +220,42 @@ const WithProxyAccordions = (props) => {
 
   const customBotCooperationProcedure = {
     '①': {
-      title: 'create_bot',
+      title: t('admin:slack_integration.accordion.create_bot'),
       content: BotCreateProcess(),
     },
     '②': {
-      title: 'install_bot_to_slack',
+      title: t('admin:slack_integration.accordion.install_bot_to_slack'),
       content: BotInstallProcess(),
     },
     '③': {
-      title: 'register_for_growi_official_bot_proxy_service',
+      title: t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service'),
       content: genelatingTokensAndRegisteringProxyServiceProcess(),
     },
     '④': {
-      title: 'set_proxy_url_on_growi',
+      title: t('admin:slack_integration.accordion.set_proxy_url_on_growi'),
       content: registeringProxyUrlProcess(),
     },
     '⑤': {
-      title: 'test_connection',
+      title: t('admin:slack_integration.accordion.test_connection'),
       content: testProcess(),
     },
   };
 
   const officialBotCooperationProcedure = {
     '①': {
-      title: 'install_bot_to_slack',
+      title: t('admin:slack_integration.accordion.install_bot_to_slack'),
       content: BotInstallProcess(),
     },
     '②': {
-      title: 'register_for_growi_official_bot_proxy_service',
+      title: t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service'),
       content: genelatingTokensAndRegisteringProxyServiceProcess(),
     },
     '③': {
-      title: 'set_proxy_url_on_growi',
+      title: t('admin:slack_integration.accordion.set_proxy_url_on_growi'),
       content: registeringProxyUrlProcess(),
     },
     '④': {
-      title: 'test_connection',
+      title: t('admin:slack_integration.accordion.test_connection'),
       content: testProcess(),
     },
   };
@@ -267,7 +267,7 @@ const WithProxyAccordions = (props) => {
       {Object.entries(cooperationProcedureMapping).map(([key, value]) => {
         return (
           <Accordion
-            title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
+            title={<><span className="mr-2">{key}</span>{value.title}</>}
             key={key}
           >
             {value.content}
