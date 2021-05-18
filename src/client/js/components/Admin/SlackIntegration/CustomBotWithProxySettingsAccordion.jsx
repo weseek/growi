@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import AppContainer from '../../../services/AppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import Accordion from '../Common/Accordion';
 
-const CustomBotWithProxySettingsAccordion = () => {
+const CustomBotWithProxySettingsAccordion = ({ appContainer }) => {
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
   // TODO: Add connection Logs
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
+  const [accessTokenForGROWI, setAccessTokenForGROWI] = useState('');
+  const [accessTokenForProxy, setAccessTokenForProxy] = useState('');
+
+  const discardTokenHandler = () => {
+    setAccessTokenForGROWI('');
+    setAccessTokenForProxy('');
+  };
+
+  const generateTokenHandler = async() => {
+    const response = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+    console.log(response);
+    setAccessTokenForGROWI('setAccessTokenForProxy');
+    setAccessTokenForProxy('tokenForProxy');
+  };
 
   const { t } = useTranslation();
 
@@ -91,6 +109,8 @@ const CustomBotWithProxySettingsAccordion = () => {
               <input
                 className="form-control"
                 type="text"
+                value={accessTokenForGROWI}
+                readOnly
               />
             </div>
           </div>
@@ -100,14 +120,28 @@ const CustomBotWithProxySettingsAccordion = () => {
               <input
                 className="form-control"
                 type="text"
+                value={accessTokenForProxy}
+                readOnly
               />
             </div>
           </div>
 
           <div className="row my-3">
             <div className="mx-auto">
-              <button type="button" className="btn btn-outline-secondary mx-2">{ t('admin:slack_integration.access_token_settings.discard') }</button>
-              <button type="button" className="btn btn-primary mx-2">{ t('admin:slack_integration.access_token_settings.generate') }</button>
+              <button
+                type="button"
+                className="btn btn-outline-secondary mx-2"
+                onClick={discardTokenHandler}
+              >
+                { t('admin:slack_integration.access_token_settings.discard') }
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary mx-2"
+                onClick={generateTokenHandler}
+              >
+                { t('admin:slack_integration.access_token_settings.generate') }
+              </button>
             </div>
           </div>
           <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
@@ -207,4 +241,11 @@ const CustomBotWithProxySettingsAccordion = () => {
   );
 };
 
-export default CustomBotWithProxySettingsAccordion;
+
+const CustomBotWithProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithProxySettingsAccordion, [AppContainer]);
+
+CustomBotWithProxySettingsAccordion.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+};
+
+export default CustomBotWithProxySettingsAccordionWrapper;
