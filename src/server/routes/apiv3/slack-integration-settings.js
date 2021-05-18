@@ -445,7 +445,6 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                description: slack app integration id for test
    *                properties:
    *                  slackappintegrationsId:
    *                    type: string
