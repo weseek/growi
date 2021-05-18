@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, useCallback,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
@@ -20,7 +22,7 @@ const CustomBotWithProxySettings = (props) => {
 
   const { t } = useTranslation();
 
-  const retrieveProxyUri = async() => {
+  const retrieveProxyUri = useCallback(async() => {
     try {
       const res = await appContainer.apiv3.get('/slack-integration-settings');
       const { proxyUri } = res.data.settings;
@@ -30,11 +32,11 @@ const CustomBotWithProxySettings = (props) => {
       toastError(err);
       logger.error(err);
     }
-  };
+  }, [appContainer.apiv3]);
 
   useEffect(() => {
     retrieveProxyUri();
-  }, []);
+  }, [retrieveProxyUri]);
 
 
   // TODO: Multiple accordion logic
