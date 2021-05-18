@@ -93,7 +93,7 @@ export class GrowiToSlackCtrl {
       }
       catch (error) {
         logger.error(error);
-        return res.status(500).send({ message: 'relation test is failure' });
+        return res.status(500).send({ message: error.message });
       }
     }
 
@@ -136,9 +136,11 @@ export class GrowiToSlackCtrl {
     }
     catch (error) {
       logger.error(error);
-      return res.status(500).send({ message: 'relation test is failure' });
+      return res.status(500).send({ message: error.message });
     }
 
+    // return order temporary
+    // TODO return new relation
     return res.send({ order });
   }
 
