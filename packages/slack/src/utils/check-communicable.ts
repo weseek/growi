@@ -103,5 +103,5 @@ export const testSlackAuth = async(token: string): Promise<WebAPICallResult> => 
     throw new Error(result.error);
   }
 
-  return result as any;
+  return result;
 };
