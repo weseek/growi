@@ -97,6 +97,14 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
  */
 export const testSlackAuth = async(token: string): Promise<WebAPICallResult> => {
   const client = generateWebClient(token);
-  const result = await client.auth.test();
-  return result;
+
+  try {
+    const result = await client.auth.test();
+    console.log(result);
+    return result;
+  }
+  catch (err) {
+    console.log(result);
+  }
+
 };
