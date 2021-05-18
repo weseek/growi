@@ -84,17 +84,16 @@ const CustomBotWithProxySettings = (props) => {
 
       <div className="form-group row my-4">
         <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
-        <div className="col-md-6 mr-3 mt-3">
+        <div className="col-md-6 mt-3">
           <input
             className="form-control"
             type="text"
             onChange={(e) => { setProxyUri(e.target.value) }}
           />
         </div>
-        <AdminUpdateButtonRow
-          disabled={false}
-          onClick={() => updateProxyUri()}
-        />
+        <div className="col-md-2 mt-3 text-center text-md-left">
+          <button type="button" className="btn btn-primary" onClick={() => updateProxyUri} disabled={false}>{ t('Update') }</button>
+        </div>
       </div>
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
