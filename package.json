@@ -75,7 +75,7 @@
       "check-node-version: see https://github.com/parshap/check-node-version/issues/35",
       "openid-client: Node.js 12 or higher is required for openid-client@3 and above."
     ],
-    "@google-cloud/storage": "^3.3.0",
+    "@google-cloud/storage": "^5.8.5",
     "@kobalab/socket.io-session": "^1.0.3",
     "@promster/express": "^5.0.1",
     "@promster/server": "^6.0.0",
