@@ -211,7 +211,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/test-connection:
+   *    /slack-integration/without-proxy/test-connection:
    *      get:
    *        tags: [SlackBotSettingParams]
    *        operationId: getSlackBotSettingParams
@@ -221,7 +221,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get info.
    */
-  router.post('/test-connection', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.TestConnection, apiV3FormValidator,
+  router.post('/without-proxy/test-connection', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.TestConnection, apiV3FormValidator,
     async(req, res) => {
       // const { configManager } = crowi;
       // const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
@@ -230,69 +230,40 @@ module.exports = (crowi) => {
       this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
       logger.debug('SlackBot: setup is done');
 
-      try {
-        await this.client.chat.postMessage({
-          channel: `#${channel}`,
-          text: 'Your test was successful!',
-        });
-        logger.info(`SlackTest: send success massage to slack work space at #${channel}.`);
-        logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
-        // eslint-disable-next-line max-len
-        const message = `Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #${channel} channel.`;
-        return res.apiv3({ message });
-      }
-      catch (error) {
-        const errorMessage = error.data.error;
-        const errorCode = error.code;
-        logger.error('Error', error);
-        if (error.code === ErrorCode.PlatformError) {
-          return res.apiv3Err(new ErrorV3(errorMessage, errorCode), 400);
-        }
-        return res.apiv3Err(new ErrorV3('Error occured in testing Slack bot settings', 'notification-test-slack-work-space-failed'), 500);
-      }
-
       // try {
-      //   // retrieve settings
-      //   const settings = {};
-      //   if (currentBotType === 'customBotWithoutProxy') {
-      //     settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
-      //     settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
-      //     settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
-      //     settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
-      //   }
-      //   else {
-      //     // settings.proxyUriEnvVars = ;
-      //     // settings.proxyUri = ;
-      //     // settings.tokenPtoG = ;
-      //     // settings.tokenGtoP = ;
-      //   }
-
-
-      //   // retrieve connection statuses
-      //   let connectionStatuses;
-      //   if (currentBotType == null) {
-      //     // TODO imple null action
-      //   }
-      //   else if (currentBotType === 'customBotWithoutProxy') {
-      //     const token = settings.slackBotToken;
-      //     // check the token is not null
-      //     if (token != null) {
-      //       connectionStatuses = await getConnectionStatuses([token]);
-      //     }
-      //   }
-      //   else {
-      //     // TODO: retrieve tokenGtoPs from DB
-      //     const tokenGtoPs = ['gtop1'];
-      //     connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
-      //   }
-
-      //   return res.apiv3({ currentBotType, settings, connectionStatuses });
+      //   await this.client.chat.postMessage({
+      //     channel: `#${channel}`,
+      //     text: 'Your test was successful!',
+      //   });
+      //   logger.info(`SlackTest: send success massage to slack work space at #${channel}.`);
+      //   logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
+      //   // eslint-disable-next-line max-len
+      //   const message = `Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #${channel} channel.`;
+      //   return res.apiv3({ message });
       // }
       // catch (error) {
-      //   const msg = 'Error occured in testing Slack bot setting';
+      //   const errorMessage = error.data.error;
+      //   const errorCode = error.code;
       //   logger.error('Error', error);
-      //   return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'), 500);
+      //   if (error.code === ErrorCode.PlatformError) {
+      //     return res.apiv3Err(new ErrorV3(errorMessage, errorCode), 400);
+      //   }
+      //   return res.apiv3Err(new ErrorV3('Error occured in testing Slack bot settings', 'notification-test-slack-work-space-failed'), 500);
       // }
+
+      try {
+        const response = await this.client.auth.test();
+        console.log(response);
+      }
+      catch (error) {
+        // const errorMessage = error.data.error;
+        // const errorCode = error.code;
+        // logger.error('Error', error);
+        // if (error.code === ErrorCode.PlatformError) {
+        //   return res.apiv3Err(new ErrorV3(errorMessage, errorCode), 400);
+        // }
+        return res.apiv3Err(new ErrorV3('Error occured in testing Slack bot settings', 'notification-test-slack-work-space-failed'), 500);
+      }
     });
 
   /**

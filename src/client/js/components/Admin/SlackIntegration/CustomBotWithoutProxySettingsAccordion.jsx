@@ -69,7 +69,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setConnectionSuccessMessage(null);
     // TODO: 5921 Add new Test endpoint
     try {
-      const res = await appContainer.apiv3.post('/slack-integration-settings/test-connection', {
+      const res = await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test-connection', {
         channel: testChannel,
       });
       setConnectionSuccessMessage(res.data.message);
@@ -94,7 +94,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
 
   let logBoxValue = '';
   if (connectionErrorMessage != null) {
-    logBoxValue = `${connectionErrorCode}\n${connectionErrorMessage}`;
+    logBoxValue = `Error Code: ${connectionErrorCode}\n\nError Message: ${connectionErrorMessage}`;
   }
   if (connectionSuccessMessage != null) {
     logBoxValue = connectionSuccessMessage;
