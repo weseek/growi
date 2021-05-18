@@ -79,7 +79,6 @@ const SlackIntegration = (props) => {
   }, [fetchSlackIntegrationData]);
 
   const handleBotTypeSelect = async(clickedBotType) => {
-    console.log('handleBot');
     if (clickedBotType === currentBotType) {
       return;
     }
@@ -90,11 +89,9 @@ const SlackIntegration = (props) => {
         });
       }
       catch (error) {
-        console.log(error);
+        toastError(error);
       }
-      setCurrentBotType(clickedBotType);
-
-      return;
+      return setCurrentBotType(clickedBotType);
     }
 
     setSelectedBotType(clickedBotType);
