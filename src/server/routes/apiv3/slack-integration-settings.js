@@ -469,7 +469,7 @@ module.exports = (crowi) => {
       }
       const response = await postRelationTest(slackAppIntegration.tokenGtoP);
 
-      return res.apiv3({ connectionStatuses: response.connectionStatuses });
+      return res.apiv3({ response });
     }
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';

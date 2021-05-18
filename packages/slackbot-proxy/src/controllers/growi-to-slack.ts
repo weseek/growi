@@ -4,7 +4,7 @@ import {
 
 import { WebAPICallResult } from '@slack/web-api';
 
-import { verifyGrowiToSlackRequest, getConnectionStatuses, authTestByToken } from '@growi/slack';
+import { verifyGrowiToSlackRequest, getConnectionStatuses, relationTestToSlack } from '@growi/slack';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
@@ -59,7 +59,7 @@ export class GrowiToSlackCtrl {
   @Get('/relation-test')
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
-    // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
+    // check validation by verifyGrowiToSlackRequest
     const { tokenGtoP } = req;
 
     // retrieve relation with Installation
@@ -74,7 +74,8 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: 'installation is invalid' });
       }
       try {
-        await authTestByToken(token);
+        await relationTestToSlack(token);
+        return res.send({ relation });
       }
       catch (error) {
         return res.status(500).send({ message: 'installation is invalid' });
@@ -111,7 +112,7 @@ export class GrowiToSlackCtrl {
 
     // TODO GW-5864 issue relation
     // try {
-    //   await authTestByToken(token);
+    //   await relationTestToSlack(token);
     // }
     // catch (error) {
     //   console.log(error);
