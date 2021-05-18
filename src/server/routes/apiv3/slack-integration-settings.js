@@ -105,7 +105,7 @@ module.exports = (crowi) => {
   async function postRelationTest(token) {
     const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
 
-    const result = await axios.get(urljoin(proxyUri, '/g2s/relations-test'), {
+    const result = await axios.get(urljoin(proxyUri, '/g2s/relation-test'), {
       headers: {
         'x-growi-gtop-tokens': token,
       },

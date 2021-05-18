@@ -56,7 +56,7 @@ export class GrowiToSlackCtrl {
     return res.send({ connectionStatuses });
   }
 
-  @Get('/relations-test')
+  @Get('/relation-test')
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
