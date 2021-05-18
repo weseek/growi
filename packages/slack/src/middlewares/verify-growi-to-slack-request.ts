@@ -10,6 +10,13 @@ const logger = loggerFactory('@growi/slack:middlewares:verify-slack-request');
  * See: https://api.slack.com/authentication/verifying-requests-from-slack
  */
 export const verifyGrowiToSlackRequest = (req: RequestFromGrowi, res: Response, next: NextFunction): Record<string, any> | void => {
+  // If it is single, set it and next.
+  const token = req.headers['x-growi-gtop-token'];
+  if (token != null) {
+    req.tokenGtoP = token as string;
+    return next();
+  }
+
   const str = req.headers['x-growi-gtop-tokens'];
 
   if (str == null) {
