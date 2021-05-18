@@ -225,6 +225,9 @@ module.exports = (crowi) => {
       // const { configManager } = crowi;
       // const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
       const { channel } = req.body;
+      const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+      this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
+      logger.debug('SlackBot: setup is done');
 
       try {
         const response = await this.client.chat.postMessage({

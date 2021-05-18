@@ -72,7 +72,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
       const res = await appContainer.apiv3.post('/slack-integration-settings/test-connection', {
         channel: testChannel,
       });
-      console.log(res);
       setConnectionSuccessMessage(res.data.message);
       onSetIsSendTestMessage(true);
     }
