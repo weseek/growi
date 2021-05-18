@@ -62,8 +62,7 @@ const WithProxyAccordions = (props) => {
           </a>
         </div>
       </Accordion>
-      )
-      }
+      )}
 
       <Accordion
         title={(
