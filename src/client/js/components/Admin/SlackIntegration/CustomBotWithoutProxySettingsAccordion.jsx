@@ -69,22 +69,21 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setConnectionSuccessMessage(null);
     // TODO: 5921 Add new Test endpoint
     try {
-      // eslint-disable-next-line no-console
-      console.log('Test');
-      // const res = await appContainer.apiv3.post('/slack-integration-settings/notification-test-to-slack-work-space', {
-      //   channel: testChannel,
-      // });
-      // setConnectionSuccessMessage(res.data.message);
-      // onSetIsSendTestMessage(true);
+      const res = await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test-connection', {
+        channel: testChannel,
+      });
+      setConnectionSuccessMessage(res.data.message);
+      onSetIsSendTestMessage(true);
     }
     catch (err) {
+      const { code, message } = err[0];
       onSetIsSendTestMessage(false);
-      setConnectionErrorCode('dummy-error-code');
-      setConnectionErrorMessage('This is a sample error message');
+      setConnectionErrorCode(code);
+      setConnectionErrorMessage(message);
     }
   };
 
-  const submitForm = (e) => {
+  const submitTestForm = (e) => {
     e.preventDefault();
     testConnection();
   };
@@ -93,12 +92,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setTestChannel(channel);
   };
 
-  let value = '';
+  let logBoxValue = '';
   if (connectionErrorMessage != null) {
-    value = [connectionErrorCode, connectionErrorMessage];
+    logBoxValue = `Error Code: ${connectionErrorCode}\n\nError Message: ${connectionErrorMessage}`;
   }
   if (connectionSuccessMessage != null) {
-    value = connectionSuccessMessage;
+    logBoxValue = connectionSuccessMessage;
   }
 
   return (
@@ -163,7 +162,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
-          <form className="form-row align-items-center" onSubmit={e => submitForm(e)}>
+          <form className="form-row align-items-center" onSubmit={e => submitTestForm(e)}>
             <div className="input-group col-8">
               <div className="input-group-prepend">
                 <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
@@ -195,7 +194,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
                 rows="5"
-                value={value}
+                value={logBoxValue}
                 readOnly
               />
             </div>
