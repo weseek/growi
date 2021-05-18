@@ -17,9 +17,7 @@ const WithProxyAccordions = (props) => {
   const [proxyUri, setProxyUri] = useState(null);
 
   const { t } = useTranslation();
-  const { appContainer } = props;
-
-  const growiUrl = appContainer.config.crowi.url;
+  const growiUrl = props.appContainer.config.crowi.url;
 
   // TODO: Handle test button
   const submitForm = (e) => {
