@@ -6,6 +6,7 @@ const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
 const { getConnectionStatuses } = require('@growi/slack');
+const { WebClient, ErrorCode, LogLevel } = require('@slack/web-api');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -230,7 +231,7 @@ module.exports = (crowi) => {
       logger.debug('SlackBot: setup is done');
 
       try {
-        const response = await this.client.chat.postMessage({
+        await this.client.chat.postMessage({
           channel: `#${channel}`,
           text: 'Your test was successful!',
         });
@@ -238,12 +239,16 @@ module.exports = (crowi) => {
         logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
         // eslint-disable-next-line max-len
         const message = `Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #${channel} channel.`;
-        console.log(response);
         return res.apiv3({ message });
       }
       catch (error) {
-        const msg = 'ERROR';
-        return res.apiv3Err(new ErrorV3(msg, 'notification-test-slack-work-space-failed'), 500);
+
+        if (error.code === ErrorCode.PlatformError) {
+          console.log(error.data);
+        } else {
+          const msg = 'Error occured in testing Slack bot settings';
+          logger.error('Error', error);
+          return res.apiv3Err(new ErrorV3(msg, 'notification-test-slack-work-space-failed'), 500);
       }
 
       // try {
