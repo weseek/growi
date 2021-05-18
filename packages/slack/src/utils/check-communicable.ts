@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-import { WebClient } from '@slack/web-api';
+import { WebClient, WebAPICallResult } from '@slack/web-api';
 
 import { generateWebClient } from './webclient-factory';
 import { ConnectionStatus } from '../interfaces/connection-status';
@@ -91,14 +91,12 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
 };
 
 /**
- * Test Slack auth
- * @param client
+ * Test Slack Auth
+ * @param token A bot OAuth token
  * @returns
  */
-export const testSlackAuth = async(client: WebClient): Promise<void> => {
-  const result = await client.auth.test();
-
-  if (!result.ok) {
-    throw new Error(result.error);
-  }
+export const testSlackAuth = async(token: string): Promise<WebAPICallResult> => {
+  const client = generateWebClient(token);
+  const result = await client.api.test();
+  return result;
 };

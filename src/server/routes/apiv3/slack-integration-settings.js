@@ -233,10 +233,10 @@ module.exports = (crowi) => {
     async(req, res) => {
       // const { configManager } = crowi;
       // const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
-      const { channel } = req.body;
+      // const { channel } = req.body;
       const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-      this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
-      logger.debug('SlackBot: setup is done');
+      // this.client = new WebClient(slackBotToken, { logLevel: LogLevel.DEBUG });
+      // logger.debug('SlackBot: setup is done');
 
       // try {
       //   await this.client.chat.postMessage({
@@ -260,7 +260,7 @@ module.exports = (crowi) => {
       // }
 
       try {
-        const response = await this.client.auth.test();
+        const response = await testSlackAuth(slackBotToken);
         console.log(response);
       }
       catch (error) {
