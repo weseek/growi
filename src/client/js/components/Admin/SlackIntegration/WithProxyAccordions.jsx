@@ -39,162 +39,139 @@ const WithProxyAccordions = (props) => {
     value = connectionSuccessMessage;
   }
 
-  return (
-    <div className="card border-0 rounded-lg shadow overflow-hidden">
-      {props.botType === 'customBotWithProxy'
-      && (
-        <Accordion
-          title={<><span className="mr-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
-        >
-          <div className="my-5 d-flex flex-column align-items-center">
-            <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-              {t('admin:slack_integration.accordion.create_bot')}
+  const BotCreateProcess = () => {
+    return (
+      <div className="my-5 d-flex flex-column align-items-center">
+        <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+          {t('admin:slack_integration.accordion.create_bot')}
+          <i className="fa fa-external-link ml-2" aria-hidden="true" />
+        </button>
+        {/* TODO: Insert DOCS link */}
+        <a href="#">
+          <p className="text-center mt-1">
+            <small>
+              {t('admin:slack_integration.accordion.how_to_create_a_bot')}
               <i className="fa fa-external-link ml-2" aria-hidden="true" />
-            </button>
-            {/* TODO: Insert DOCS link */}
-            <a href="#">
-              <p className="text-center mt-1">
-                <small>
-                  {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-                  <i className="fa fa-external-link ml-2" aria-hidden="true" />
-                </small>
-              </p>
-            </a>
-          </div>
-        </Accordion>
-      )}
+            </small>
+          </p>
+        </a>
+      </div>
+    );
+  };
 
-      <Accordion
-        title={(
-          <>
-            <span className="mr-2">{props.botType === 'customBotWithProxy' ? '②' : '①'}</span>
-            {t('admin:slack_integration.accordion.install_bot_to_slack')}
-          </>
-        )}
-      >
-        <div className="my-5 d-flex flex-column align-items-center">
-          {/* TODO: Insert install link */}
-          <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-            {t('admin:slack_integration.accordion.install_now')}
-            <i className="fa fa-external-link ml-2" aria-hidden="true" />
-          </button>
-          {/* TODO: Insert DOCS link */}
-          <a href="#">
-            <p className="text-center mt-1">
-              <small>
-                {t('admin:slack_integration.accordion.how_to_install')}
-                <i className="fa fa-external-link ml-2" aria-hidden="true" />
-              </small>
-            </p>
-          </a>
+  const BotInstallProcess = () => {
+    return (
+      <div className="my-5 d-flex flex-column align-items-center">
+        {/* TODO: Insert install link */}
+        <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+          {t('admin:slack_integration.accordion.install_now')}
+          <i className="fa fa-external-link ml-2" aria-hidden="true" />
+        </button>
+        {/* TODO: Insert DOCS link */}
+        <a href="#">
+          <p className="text-center mt-1">
+            <small>
+              {t('admin:slack_integration.accordion.how_to_install')}
+              <i className="fa fa-external-link ml-2" aria-hidden="true" />
+            </small>
+          </p>
+        </a>
+      </div>
+    );
+  };
+
+  const genelatingTokensAndRegisteringProxyServiceProcess = () => {
+    return (
+      <div className="py-4 px-5">
+        <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
+        <div className="form-group row">
+          <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
+          <div className="col-md-6">
+            <input
+              className="form-control"
+              type="text"
+            />
+          </div>
         </div>
-      </Accordion>
-      <Accordion
-        title={(
-          <>
-            <span className="mr-2">{props.botType === 'customBotWithProxy' ? '③' : '②'}</span>
-            {t('admin:slack_integration.accordion.generate_access_token')}
-            {' / '}
-            {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}
-          </>
-        )}
-      >
-        <div className="py-4 px-5">
-          <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
-          <div className="form-group row">
-            <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
-            <div className="col-md-6">
-              <input
-                className="form-control"
-                type="text"
-              />
-            </div>
+        <div className="form-group row">
+          <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
+          <div className="col-md-6">
+            <input
+              className="form-control"
+              type="text"
+            />
           </div>
-          <div className="form-group row">
-            <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
-            <div className="col-md-6">
-              <input
-                className="form-control"
-                type="text"
-              />
-            </div>
-          </div>
+        </div>
 
-          <div className="row my-3">
-            <div className="mx-auto">
-              <button type="button" className="btn btn-outline-secondary mx-2">{ t('admin:slack_integration.access_token_settings.discard') }</button>
-              <button type="button" className="btn btn-primary mx-2">{ t('admin:slack_integration.access_token_settings.generate') }</button>
-            </div>
+        <div className="row my-3">
+          <div className="mx-auto">
+            <button type="button" className="btn btn-outline-secondary mx-2">{ t('admin:slack_integration.access_token_settings.discard') }</button>
+            <button type="button" className="btn btn-primary mx-2">{ t('admin:slack_integration.access_token_settings.generate') }</button>
           </div>
-          <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
-          <div className="d-flex flex-column align-items-center">
-            <ol className="p-0">
-              <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_growi_register_on_slack')}</p></li>
-              <li>
-                <p
-                  className="ml-2"
+        </div>
+        <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
+        <div className="d-flex flex-column align-items-center">
+          <ol className="p-0">
+            <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_growi_register_on_slack')}</p></li>
+            <li>
+              <p
+                className="ml-2"
                   // TODO: Add dynamic link
                   // TODO: Copy to clipboard on click
                   // TODO: Add logo
                   // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
-                />
-                <div className="input-group align-items-center ml-2 mb-3">
-                  <div className="input-group-prepend mx-1">
-                    <input className="form-control" type="text" value={growiUrl} readOnly />
-                    <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
-                      <div className="btn input-group-text">
-                        <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
-                      </div>
-                    </CopyToClipboard>
-                  </div>
+                dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
+              />
+              <div className="input-group align-items-center ml-2 mb-3">
+                <div className="input-group-prepend mx-1">
+                  <input className="form-control" type="text" value={growiUrl} readOnly />
+                  <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+                    <div className="btn input-group-text">
+                      <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+                    </div>
+                  </CopyToClipboard>
                 </div>
+              </div>
 
-              </li>
-              <li>
-                <p
-                  className="ml-2"
+            </li>
+            <li>
+              <p
+                className="ml-2"
                   // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
-                />
-              </li>
-            </ol>
-            {/* TODO: Insert photo */}
-            <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-              <h1 className="text-muted">参考画像</h1>
-            </div>
-          </div>
-        </div>
-      </Accordion>
-      <Accordion
-        title={(
-          <><span className="mr-2">{props.botType === 'customBotWithProxy' ? '④' : '③'}</span>
-            {t('admin:slack_integration.accordion.set_proxy_url_on_growi')}
-          </>
-        )}
-      >
-        <div className="p-4 d-flex flex-column align-items-center">
-          <div>
-            <span
-                // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-            />
-            <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-          </div>
+                dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
+              />
+            </li>
+          </ol>
           {/* TODO: Insert photo */}
           <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
             <h1 className="text-muted">参考画像</h1>
           </div>
         </div>
-      </Accordion>
-      <Accordion
-        title={(
-          <><span className="mr-2">{props.botType === 'customBotWithProxy' ? '⑤' : '④'}</span>
-            {t('admin:slack_integration.accordion.test_connection')}
-          </>
-        )}
-      >
-        {/* TODO: Responsive */}
+      </div>
+
+    );
+  };
+
+  const registeringProxyUrlProcess = () => {
+    return (
+      <div className="p-4 d-flex flex-column align-items-center">
+        <div>
+          <span
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+          />
+          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+        </div>
+        <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
+          <h1 className="text-muted">参考画像</h1>
+        </div>
+      </div>
+    );
+  };
+
+  const testProcess = () => {
+    return (
+      <>
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
           <form className="form-row justify-content-center" onSubmit={e => submitForm(e)}>
@@ -207,7 +184,7 @@ const WithProxyAccordions = (props) => {
                 type="text"
                 value={testChannel}
                 placeholder="Slack Channel"
-                // TODO: Handle test button
+              // TODO: Handle test button
                 onChange={e => inputTestChannelHandler(e.target.value)}
               />
             </div>
@@ -220,9 +197,9 @@ const WithProxyAccordions = (props) => {
           </form>
         </div>
         {connectionErrorMessage != null
-          && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
+        && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
         {connectionSuccessMessage != null
-          && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
+        && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
         <form>
           <div className="row my-3 justify-content-center">
             <div className="form-group slack-connection-log col-md-4">
@@ -230,13 +207,76 @@ const WithProxyAccordions = (props) => {
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
                 rows="5"
-                // TODO: Show test logs
+              // TODO: Show test logs
                 value={value}
                 readOnly
               />
             </div>
           </div>
         </form>
+      </>
+    );
+  };
+
+
+  const customBotCooperationProcedure = [
+    BotCreateProcess, BotInstallProcess, genelatingTokensAndRegisteringProxyServiceProcess, registeringProxyUrlProcess, testProcess,
+  ];
+
+  const officialBotCooperationProcedure = [
+    BotInstallProcess, genelatingTokensAndRegisteringProxyServiceProcess, registeringProxyUrlProcess, testProcess,
+  ];
+
+  return (
+    <div className="card border-0 rounded-lg shadow overflow-hidden">
+      {props.botType === 'customBotWithProxy'
+      && (
+        <Accordion
+          title={<><span className="mr-2">①</span>{t('admin:slack_integration.accordion.create_bot')}</>}
+        >
+          {BotCreateProcess()}
+        </Accordion>
+      )}
+
+      <Accordion
+        title={(
+          <>
+            <span className="mr-2">{props.botType === 'customBotWithProxy' ? '②' : '①'}</span>
+            {t('admin:slack_integration.accordion.install_bot_to_slack')}
+          </>
+        )}
+      >
+        {BotInstallProcess()}
+      </Accordion>
+      <Accordion
+        title={(
+          <>
+            <span className="mr-2">{props.botType === 'customBotWithProxy' ? '③' : '②'}</span>
+            {t('admin:slack_integration.accordion.generate_access_token')}
+            {' / '}
+            {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}
+          </>
+        )}
+      >
+        {genelatingTokensAndRegisteringProxyServiceProcess()}
+      </Accordion>
+      <Accordion
+        title={(
+          <><span className="mr-2">{props.botType === 'customBotWithProxy' ? '④' : '③'}</span>
+            {t('admin:slack_integration.accordion.set_proxy_url_on_growi')}
+          </>
+        )}
+      >
+        {registeringProxyUrlProcess()}
+      </Accordion>
+      <Accordion
+        title={(
+          <><span className="mr-2">{props.botType === 'customBotWithProxy' ? '⑤' : '④'}</span>
+            {t('admin:slack_integration.accordion.test_connection')}
+          </>
+        )}
+      >
+        {testProcess()}
       </Accordion>
     </div>
   );
