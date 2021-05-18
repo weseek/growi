@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
 import CustomBotWithProxySettingsAccordion from './CustomBotWithProxySettingsAccordion';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const CustomBotWithProxySettings = (props) => {
   // eslint-disable-next-line no-unused-vars
-  const { appContainer, adminAppContainer } = props;
+  const { appContainer } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
   const { t } = useTranslation();
@@ -64,6 +64,23 @@ const CustomBotWithProxySettings = (props) => {
         }
         isSlackScopeSet
       />
+
+      <div className="form-group row my-4">
+        <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
+        <div className="col-md-6 mr-3 mt-3">
+          <input
+            className="form-control"
+            type="text"
+          />
+        </div>
+        <AdminUpdateButtonRow
+          disabled={false}
+          // TODO: Add Proxy URL submit logic
+          // eslint-disable-next-line no-console
+          onClick={() => console.log('Update')}
+        />
+      </div>
+
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
       <div className="mx-3">
 
@@ -106,11 +123,10 @@ const CustomBotWithProxySettings = (props) => {
   );
 };
 
-const CustomBotWithProxySettingsWrapper = withUnstatedContainers(CustomBotWithProxySettings, [AppContainer, AdminAppContainer]);
+const CustomBotWithProxySettingsWrapper = withUnstatedContainers(CustomBotWithProxySettings, [AppContainer]);
 
 CustomBotWithProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default CustomBotWithProxySettingsWrapper;

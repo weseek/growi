@@ -28,6 +28,7 @@ const SlackIntegration = (props) => {
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
+
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
@@ -50,6 +51,17 @@ const SlackIntegration = (props) => {
       toastError(err);
     }
   }, [appContainer.apiv3]);
+
+  const resetAllSettings = async() => {
+    try {
+      await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
+      fetchSlackIntegrationData();
+      toastSuccess(t('admin:slack_integration.bot_all_reset_successful'));
+    }
+    catch (error) {
+      toastError(error);
+    }
+  };
 
   const resetWithOutSettings = async() => {
     try {
@@ -137,11 +149,11 @@ const SlackIntegration = (props) => {
         onCancelClick={cancelBotChangeHandler}
       />
 
-      {/* TODO add onClickDeleteButton */}
       <DeleteSlackBotSettingsModal
         isResetAll
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
+        onClickDeleteButton={resetAllSettings}
       />
 
       <div className="selecting-bot-type mb-5">

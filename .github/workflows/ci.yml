@@ -12,9 +12,9 @@ on:
       - .eslint*
       - .prettier*
       - .stylelint*
-      - config
-      - resource
-      - src
+      - config/**
+      - resource/**
+      - src/**
       - package.json
       - yarn.lock
 

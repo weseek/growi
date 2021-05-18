@@ -272,6 +272,7 @@
       "impossible": "不可"
     },
     "bot_reset_successful": "Botの設定を消去しました。",
+    "bot_all_reset_successful": "全ての Bot の設定を消去しました。",
     "copied_to_clipboard": "クリップボードにコピーされました。",
     "set_scope": "Slackの設定画面からBot Token Scopeを設定してください",
     "modal": {
@@ -305,7 +306,8 @@
       "paste_growi_url": "<b>GROWI URL</b>には`http://localhost:3000`を貼り付ける",
       "enter_access_token_for_growi_and_proxy": "上記で発行した<b>Access Token for GROWI</b> と <b>Access Token for Proxy</b>を入れる",
       "set_proxy_url_on_growi": "ProxyのURLをGROWIに登録する",
-      "enter_proxy_url_and_update": "Slack上に通知された<b>Proxy URL</b>を入力し、更新してください。",
+      "enter_proxy_url_and_update": "1. 連携手順③でコピーしたProxy URLを、このページの<b>Custom bot with proxy 連携</b>の<b>Proxy URL</b>に入力、更新します。",
+      "dont_need_update": "※既に値が入っている場合は更新する必要はありません",
       "select_install_your_app": "Install your app をクリックします。",
       "select_install_to_workspace": "Install to Workspace をクリックします。",
       "register_official_bot_proxy_service": "アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録",
