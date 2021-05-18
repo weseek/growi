@@ -7,7 +7,7 @@ import { toastSuccess } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 
-const WithProxyAccordion = (props) => {
+const WithProxyAccordions = (props) => {
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
   // TODO: Add connection Logs
@@ -250,10 +250,10 @@ const WithProxyAccordion = (props) => {
  * Wrapper component for using unstated
  */
 
-const OfficialBotSettingsAccordionWrapper = withUnstatedContainers(WithProxyAccordion, [AppContainer]);
-WithProxyAccordion.propTypes = {
+const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
+WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
 };
 
-export default OfficialBotSettingsAccordionWrapper;
+export default OfficialBotSettingsAccordionsWrapper;

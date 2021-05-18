@@ -6,7 +6,7 @@ import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
-import WithProxyAccordion from './WithProxyAccordion';
+import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -113,7 +113,7 @@ const CustomBotWithProxySettings = (props) => {
                 {t('admin:slack_integration.delete')}
               </button>
             </div>
-            <WithProxyAccordion botType="customBotWithProxy" key={i} />
+            <WithProxyAccordions botType="customBotWithProxy" key={i} />
           </>
         ))}
 
