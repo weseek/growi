@@ -221,35 +221,56 @@ const WithProxyAccordions = (props) => {
   const customBotCooperationProcedure = {
     '①': {
       title: 'create_bot',
-      contents: BotCreateProcess(),
+      content: BotCreateProcess(),
     },
     '②': {
-      title: 'register_for_growi_official_bot_proxy_service',
-      contents: BotInstallProcess(),
+      title: 'install_bot_to_slack',
+      content: BotInstallProcess(),
     },
     '③': {
-      title: 'create_bot',
-      contents: genelatingTokensAndRegisteringProxyServiceProcess(),
+      title: 'register_for_growi_official_bot_proxy_service',
+      content: genelatingTokensAndRegisteringProxyServiceProcess(),
     },
     '④': {
       title: 'set_proxy_url_on_growi',
-      contents: registeringProxyUrlProcess(),
+      content: registeringProxyUrlProcess(),
     },
     '⑤': {
       title: 'test_connection',
-      contents: testProcess(),
+      content: testProcess(),
     },
   };
 
+  const officialBotCooperationProcedure = {
+    '①': {
+      title: 'install_bot_to_slack',
+      content: BotInstallProcess(),
+    },
+    '②': {
+      title: 'register_for_growi_official_bot_proxy_service',
+      content: genelatingTokensAndRegisteringProxyServiceProcess(),
+    },
+    '③': {
+      title: 'set_proxy_url_on_growi',
+      content: registeringProxyUrlProcess(),
+    },
+    '④': {
+      title: 'test_connection',
+      content: testProcess(),
+    },
+  };
+
+  const cooperationProcedureMapping = props.botType === 'officialBot' ? officialBotCooperationProcedure : customBotCooperationProcedure;
+
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
-      {Object.entries(customBotCooperationProcedure).map(([key, value]) => {
+      {Object.entries(cooperationProcedureMapping).map(([key, value]) => {
         return (
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
             key={key}
           >
-            {value.contents}
+            {value.content}
           </Accordion>
         );
       })}
