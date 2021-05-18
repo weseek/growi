@@ -107,7 +107,7 @@ module.exports = (crowi) => {
 
     const result = await axios.get(urljoin(proxyUri, '/g2s/relation-test'), {
       headers: {
-        'x-growi-gtop-tokens': token,
+        'x-growi-gtop-token': token,
       },
     });
 
