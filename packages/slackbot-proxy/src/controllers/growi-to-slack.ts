@@ -126,7 +126,7 @@ export class GrowiToSlackCtrl {
     }
     catch (error) {
       logger.error(error);
-      return res.status(500).send({ message: 'relation test is failure' });
+      return res.status(500).send({ message: error.message });
     }
 
     logger.debug('relation test is success', order);
@@ -136,7 +136,7 @@ export class GrowiToSlackCtrl {
     }
     catch (error) {
       logger.error(error);
-      return res.status(500).send({ message: error.message });
+      return res.status(500).send({ message: 'issue relation is failure' });
     }
 
     // return order temporary
