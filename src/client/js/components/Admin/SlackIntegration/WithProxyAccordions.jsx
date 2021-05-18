@@ -7,6 +7,68 @@ import { toastSuccess } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 
+
+export const BotCreateProcess = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="my-5 d-flex flex-column align-items-center">
+      <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+        {t('admin:slack_integration.accordion.create_bot')}
+        <i className="fa fa-external-link ml-2" aria-hidden="true" />
+      </button>
+      {/* TODO: Insert DOCS link */}
+      <a href="#">
+        <p className="text-center mt-1">
+          <small>
+            {t('admin:slack_integration.accordion.how_to_create_a_bot')}
+            <i className="fa fa-external-link ml-2" aria-hidden="true" />
+          </small>
+        </p>
+      </a>
+    </div>
+  );
+};
+
+export const BotInstallProcess = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="my-5 d-flex flex-column align-items-center">
+      {/* TODO: Insert install link */}
+      <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+        {t('admin:slack_integration.accordion.install_now')}
+        <i className="fa fa-external-link ml-2" aria-hidden="true" />
+      </button>
+      {/* TODO: Insert DOCS link */}
+      <a href="#">
+        <p className="text-center mt-1">
+          <small>
+            {t('admin:slack_integration.accordion.how_to_install')}
+            <i className="fa fa-external-link ml-2" aria-hidden="true" />
+          </small>
+        </p>
+      </a>
+    </div>
+  );
+};
+
+export const RegisteringProxyUrlProcess = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="p-4 d-flex flex-column align-items-center">
+      <div>
+        <span
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+        />
+        <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+      </div>
+      <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
+        <h1 className="text-muted">参考画像</h1>
+      </div>
+    </div>
+  );
+};
+
 const WithProxyAccordions = (props) => {
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
@@ -38,47 +100,6 @@ const WithProxyAccordions = (props) => {
   if (connectionSuccessMessage != null) {
     value = connectionSuccessMessage;
   }
-
-  const BotCreateProcess = () => {
-    return (
-      <div className="my-5 d-flex flex-column align-items-center">
-        <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-          {t('admin:slack_integration.accordion.create_bot')}
-          <i className="fa fa-external-link ml-2" aria-hidden="true" />
-        </button>
-        {/* TODO: Insert DOCS link */}
-        <a href="#">
-          <p className="text-center mt-1">
-            <small>
-              {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-              <i className="fa fa-external-link ml-2" aria-hidden="true" />
-            </small>
-          </p>
-        </a>
-      </div>
-    );
-  };
-
-  const BotInstallProcess = () => {
-    return (
-      <div className="my-5 d-flex flex-column align-items-center">
-        {/* TODO: Insert install link */}
-        <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-          {t('admin:slack_integration.accordion.install_now')}
-          <i className="fa fa-external-link ml-2" aria-hidden="true" />
-        </button>
-        {/* TODO: Insert DOCS link */}
-        <a href="#">
-          <p className="text-center mt-1">
-            <small>
-              {t('admin:slack_integration.accordion.how_to_install')}
-              <i className="fa fa-external-link ml-2" aria-hidden="true" />
-            </small>
-          </p>
-        </a>
-      </div>
-    );
-  };
 
   const genelatingTokensAndRegisteringProxyServiceProcess = () => {
     return (
@@ -152,23 +173,6 @@ const WithProxyAccordions = (props) => {
     );
   };
 
-  const registeringProxyUrlProcess = () => {
-    return (
-      <div className="p-4 d-flex flex-column align-items-center">
-        <div>
-          <span
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-          />
-          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-        </div>
-        <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-          <h1 className="text-muted">参考画像</h1>
-        </div>
-      </div>
-    );
-  };
-
   const testProcess = () => {
     return (
       <>
@@ -221,11 +225,11 @@ const WithProxyAccordions = (props) => {
   const customBotCooperationProcedure = {
     '①': {
       title: t('admin:slack_integration.accordion.create_bot'),
-      content: BotCreateProcess(),
+      content: <BotCreateProcess />,
     },
     '②': {
       title: t('admin:slack_integration.accordion.install_bot_to_slack'),
-      content: BotInstallProcess(),
+      content: <BotInstallProcess />,
     },
     '③': {
       title: t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service'),
@@ -233,7 +237,7 @@ const WithProxyAccordions = (props) => {
     },
     '④': {
       title: t('admin:slack_integration.accordion.set_proxy_url_on_growi'),
-      content: registeringProxyUrlProcess(),
+      content: <RegisteringProxyUrlProcess />,
     },
     '⑤': {
       title: t('admin:slack_integration.accordion.test_connection'),
@@ -244,7 +248,7 @@ const WithProxyAccordions = (props) => {
   const officialBotCooperationProcedure = {
     '①': {
       title: t('admin:slack_integration.accordion.install_bot_to_slack'),
-      content: BotInstallProcess(),
+      content: <BotInstallProcess />,
     },
     '②': {
       title: t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service'),
@@ -252,7 +256,7 @@ const WithProxyAccordions = (props) => {
     },
     '③': {
       title: t('admin:slack_integration.accordion.set_proxy_url_on_growi'),
-      content: registeringProxyUrlProcess(),
+      content: <RegisteringProxyUrlProcess />,
     },
     '④': {
       title: t('admin:slack_integration.accordion.test_connection'),
