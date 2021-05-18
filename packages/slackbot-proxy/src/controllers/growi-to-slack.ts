@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Inject, Req, Res, UseBefore, Post,
+  Controller, Get, Inject, Req, Res, UseBefore,
 } from '@tsed/common';
 
 import { WebAPICallResult } from '@slack/web-api';
@@ -73,10 +73,23 @@ export class GrowiToSlackCtrl {
       return 'order has expired or does not exist.';
     }
 
-    console.log(order);
     logger.debug('order found', order);
 
-    return res.send({ order });
+    const token = order.installation?.data?.bot?.token;
+    if (token == null) {
+      return 'token does not exist.';
+    }
+
+    const connectionStatuses = await getConnectionStatuses([token]);
+    if (connectionStatuses[token].workspaceName == null) {
+      return 'connection test failed.';
+    }
+
+    logger.debug('retrieve WS name', connectionStatuses[token].workspaceName);
+
+    // TODO GW-5864 issue relation
+
+    return res.send({ connectionStatuses });
   }
 
 }
