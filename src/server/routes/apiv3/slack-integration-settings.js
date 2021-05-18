@@ -8,6 +8,7 @@ const loggerFactory = require('@alias/logger');
 const { getConnectionStatuses } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+const apiv3FormValidator = require('../../middlewares/apiv3-form-validator');
 
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 
@@ -58,6 +59,10 @@ module.exports = (crowi) => {
     NotificationTestToSlackWorkSpace: [
       body('channel').trim().not().isEmpty()
         .isString(),
+    ],
+    Tokens: [
+      body('tokenGtoP').not().isEmpty().isString(),
+      body('tokenPtoG').not().isEmpty().isString(),
     ],
   };
 
@@ -378,7 +383,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to delete access tokens for slack
    */
-  router.delete('/slack-app-integration', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.delete('/slack-app-integration', loginRequiredStrictly, adminRequired, csrf, validator.Tokens, apiv3FormValidator, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { tokenGtoP, tokenPtoG } = req.body;
     try {
