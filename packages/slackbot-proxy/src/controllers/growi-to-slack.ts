@@ -63,7 +63,7 @@ export class GrowiToSlackCtrl {
   @Get('/relation-test')
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
-    // check validation by verifyGrowiToSlackRequest
+    // asserted tokenGtoP is string by verifyGrowiToSlackRequest
     const { tokenGtoP } = req;
 
     let relation: Relation|undefined;
