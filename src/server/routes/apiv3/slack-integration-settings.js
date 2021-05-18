@@ -59,6 +59,14 @@ module.exports = (crowi) => {
       body('channel').trim().not().isEmpty()
         .isString(),
     ],
+    AccessTokens: [
+      body('tokenGtoP').trim().not().isEmpty()
+        .isString()
+        .isLength({ min: 1 }),
+      body('tokenPtoG').trim().not().isEmpty()
+        .isString()
+        .isLength({ min: 1 }),
+    ],
     RelationTest: [
       body('slackappintegrationsId').isMongoId(),
     ],
@@ -375,6 +383,32 @@ module.exports = (crowi) => {
     }
     catch (error) {
       const msg = 'Error occured in updating access token for slack app tokens';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/slack-app-integration:
+   *      delete:
+   *        tags: [SlackIntegration]
+   *        operationId: deleteAccessTokens
+   *        summary: delete accessTokens
+   *        description: Delete accessTokens
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete access tokens for slack
+   */
+  router.delete('/slack-app-integration', validator.AccessTokens, apiV3FormValidator, async(req, res) => {
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+    const { tokenGtoP, tokenPtoG } = req.body;
+    try {
+      await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
+    }
+    catch (error) {
+      const msg = 'Error occured in deleting access token for slack app tokens';
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
     }

@@ -62,7 +62,7 @@ export class GrowiToSlackCtrl {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
 
-    // const order = await this.orderRepository.findOne({
+    // retrieve Order with Installation
     const order = await this.orderRepository.createQueryBuilder('order')
       .orderBy('order.createdAt', 'DESC')
       .where('growiAccessToken = :token', { token: tokenGtoPs })
