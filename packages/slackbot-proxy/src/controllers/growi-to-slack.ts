@@ -68,6 +68,7 @@ export class GrowiToSlackCtrl {
       .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
 
+    // Returns the result of the test if it already exists
     if (relation != null) {
       const token = relation.installation.data.bot?.token;
       if (token == null) {
@@ -78,7 +79,7 @@ export class GrowiToSlackCtrl {
         return res.send({ relation });
       }
       catch (error) {
-        return res.status(500).send({ message: 'installation is invalid' });
+        return res.status(500).send({ message: 'relation test is failure' });
       }
     }
 
