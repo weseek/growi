@@ -242,13 +242,13 @@ module.exports = (crowi) => {
         return res.apiv3({ message });
       }
       catch (error) {
-
+        const errorMessage = error.data.error;
+        const errorCode = error.code;
+        logger.error('Error', error);
         if (error.code === ErrorCode.PlatformError) {
-          console.log(error.data);
-        } else {
-          const msg = 'Error occured in testing Slack bot settings';
-          logger.error('Error', error);
-          return res.apiv3Err(new ErrorV3(msg, 'notification-test-slack-work-space-failed'), 500);
+          return res.apiv3Err(new ErrorV3(errorMessage, errorCode), 400);
+        }
+        return res.apiv3Err(new ErrorV3('Error occured in testing Slack bot settings', 'notification-test-slack-work-space-failed'), 500);
       }
 
       // try {

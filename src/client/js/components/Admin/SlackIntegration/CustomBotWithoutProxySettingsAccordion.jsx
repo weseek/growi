@@ -76,9 +76,10 @@ const CustomBotWithoutProxySettingsAccordion = ({
       onSetIsSendTestMessage(true);
     }
     catch (err) {
+      const { code, message } = err[0];
       onSetIsSendTestMessage(false);
-      setConnectionErrorCode('dummy-error-code');
-      setConnectionErrorMessage('This is a sample error message');
+      setConnectionErrorCode(code);
+      setConnectionErrorMessage(message);
     }
   };
 
@@ -91,12 +92,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setTestChannel(channel);
   };
 
-  let value = '';
+  let logBoxValue = '';
   if (connectionErrorMessage != null) {
-    value = [connectionErrorCode, connectionErrorMessage];
+    logBoxValue = `${connectionErrorCode}\n${connectionErrorMessage}`;
   }
   if (connectionSuccessMessage != null) {
-    value = connectionSuccessMessage;
+    logBoxValue = connectionSuccessMessage;
   }
 
   return (
@@ -193,7 +194,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
                 rows="5"
-                value={value}
+                value={logBoxValue}
                 readOnly
               />
             </div>
