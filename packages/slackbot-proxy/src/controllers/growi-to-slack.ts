@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Inject, Req, Res, UseBefore,
+  Controller, Get, Inject, Req, Res, UseBefore, Post,
 } from '@tsed/common';
 
 import { WebAPICallResult } from '@slack/web-api';
@@ -9,6 +9,7 @@ import { verifyGrowiToSlackRequest, getConnectionStatuses } from '@growi/slack';
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
+import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
@@ -27,6 +28,9 @@ export class GrowiToSlackCtrl {
 
   @Inject()
   relationRepository: RelationRepository;
+
+  @Inject()
+  orderRepository: OrderRepository;
 
   @Get('/connection-status')
   @UseBefore(verifyGrowiToSlackRequest)
@@ -50,6 +54,29 @@ export class GrowiToSlackCtrl {
     const connectionStatuses = await getConnectionStatuses(tokens);
 
     return res.send({ connectionStatuses });
+  }
+
+  @Get('/relations-test')
+  @UseBefore(verifyGrowiToSlackRequest)
+  async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+    // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
+    const { tokenGtoPs } = req;
+
+    // const order = await this.orderRepository.findOne({
+    const order = await this.orderRepository.createQueryBuilder('order')
+      .orderBy('order.createdAt', 'DESC')
+      .where('growiAccessToken = :token', { token: tokenGtoPs })
+      .leftJoinAndSelect('order.installation', 'installation')
+      .getOne();
+
+    if (order == null || order.isExpired()) {
+      return 'order has expired or does not exist.';
+    }
+
+    console.log(order);
+    logger.debug('order found', order);
+
+    return res.send({ order });
   }
 
 }
