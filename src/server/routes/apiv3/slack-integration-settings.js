@@ -222,12 +222,12 @@ module.exports = (crowi) => {
    */
   router.post('/test-connection', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.TestConnection, apiV3FormValidator,
     async(req, res) => {
-      const { configManager } = crowi;
+      // const { configManager } = crowi;
       // const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
       const { channel } = req.body;
 
       try {
-        await this.client.chat.postMessage({
+        const response = await this.client.chat.postMessage({
           channel: `#${channel}`,
           text: 'Your test was successful!',
         });
@@ -235,11 +235,11 @@ module.exports = (crowi) => {
         logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
         // eslint-disable-next-line max-len
         const message = `Successfully send message to Slack work space. See #general channel. If you do not receive a message, you may not have invited the bot to the #${channel} channel.`;
+        console.log(response);
         return res.apiv3({ message });
       }
       catch (error) {
-        const msg = `Error: ${error.data.error}. Needed:${error.data.needed}`;
-        logger.error('Error', error);
+        const msg = 'ERROR';
         return res.apiv3Err(new ErrorV3(msg, 'notification-test-slack-work-space-failed'), 500);
       }
 
