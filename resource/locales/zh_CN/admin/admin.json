@@ -282,6 +282,7 @@
       "impossible": "不可能"
     },
     "bot_reset_successful": "删除了BOT设置。",
+    "bot_all_reset_successful": "所有的 Bot 设置都被清除了。",
     "copied_to_clipboard": "它已复制到剪贴板。",
     "set_scope": "在Slack设置页面中配置Bot Token Scope。",
     "modal": {
@@ -315,7 +316,8 @@
       "paste_growi_url": "将`http://localhost:3000`粘贴到 <b>GROWI URL</b> 网址中",
       "enter_access_token_for_growi_and_proxy": "插入上面发出的 <b>Access Token for GROWI</b> 和 <b>Access Token for Proxy</b>。",
       "set_proxy_url_on_growi": "向GROWI注册Proxy的URL",
-      "enter_proxy_url_and_update": "按照Slack上的通知输入并更新你的 <b>Proxy URL</b>。",
+      "enter_proxy_url_and_update": "1. 输入并更新你在步骤③中复制的ProxyURL到本页的<b>Custom bot with proxy 一体化</b>的<b>ProxyURL</b>。",
+      "dont_need_update": "※如果值已经在里面了，就不需要再更新。",
       "select_install_your_app": "选择 \"Install your app\"。",
       "select_install_to_workspace": "选择 \"Install to Workspace\"。",
       "register_official_bot_proxy_service": "发行访问令牌 / 注册 GROWI 官方 Bot 代理服务",
