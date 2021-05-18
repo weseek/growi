@@ -5,7 +5,7 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
-const { getConnectionStatuses } = require('@growi/slack');
+const { getConnectionStatuses, testSlackAuth } = require('@growi/slack');
 const { WebClient, ErrorCode, LogLevel } = require('@slack/web-api');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
