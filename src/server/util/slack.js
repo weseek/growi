@@ -31,19 +31,17 @@ module.exports = function(crowi) {
 
   const postWithIwh = (messageObj) => {
     return new Promise(async(resolve, reject) => {
-      try {
-        const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
-        await webhook.send(messageObj);
-        resolve();
-      }
-      catch (err) {
-        console.log(
-          `ERROR ++++++++++++++++++++++++++++++++++++++++++
-          ${err}
-          +++++++++++++++++++++++++++++++++++++++++++++++++`,
-        );
-        reject(err);
-      }
+
+
+      const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
+      await webhook.send(messageObj, (err, res) => {
+        if (err) {
+          debug('Post error', err, res);
+          debug('Sent data to slack is:', messageObj);
+          return reject(err);
+        }
+        resolve(res);
+      });
     });
   };
 
