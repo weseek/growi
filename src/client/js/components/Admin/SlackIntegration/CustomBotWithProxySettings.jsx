@@ -54,13 +54,13 @@ const CustomBotWithProxySettings = (props) => {
   };
 
   const discardTokenHandler = async() => {
-    const response = await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration',
-      { tokenGtoP, tokenPtoG });
+    // const response = await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration',
+    //   { tokenGtoP, tokenPtoG });
     console.log('asdfasdf');
   };
 
   const generateTokenHandler = async() => {
-    const response = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+    // const response = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
     console.log(response);
     setTokenGtoP('setAccessTokenForProxy');
     setTokenPtoG('tokenForProxy');
@@ -130,13 +130,16 @@ const CustomBotWithProxySettings = (props) => {
         </div>
       </div>
 
-      <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
       <div className="mx-3">
 
         {/* // TODO: Multiple accordion logic */}
         {Array(...Array(accordionComponentsCount)).map(i => (
           <>
-            <div className="d-flex justify-content-end">
+            <div
+              className="d-flex justify-content-end"
+              key={i}
+            >
               <button
                 className="my-3 btn btn-outline-danger"
                 type="button"
@@ -153,7 +156,6 @@ const CustomBotWithProxySettings = (props) => {
               // TODO: Multiple accordion logic
               tokenPtoG={tokenPtoG}
               tokenGtoP={tokenGtoP}
-              key={i}
             />
           </>
         ))}

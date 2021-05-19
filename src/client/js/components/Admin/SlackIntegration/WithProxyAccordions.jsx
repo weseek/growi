@@ -317,14 +317,13 @@ const officialBotIntegrationProcedure = (props) => {
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
-  const cooperationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
+  const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
   return (
     <div
       className="card border-0 rounded-lg shadow overflow-hidden"
-      key={props.key}
     >
-      {Object.entries(cooperationProcedureMapping).map(([key, value]) => {
+      {Object.entries(integrationProcedureMapping).map(([key, value]) => {
         return (
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
@@ -348,7 +347,7 @@ const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAcc
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
-  key: PropTypes.number,
+  key: PropTypes.string,
   discardTokenHandler: PropTypes.func.isRequired,
   generateTokenHandler: PropTypes.func.isRequired,
   tokenPtoG: PropTypes.string,

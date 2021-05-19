@@ -290,7 +290,7 @@
       "generate": "Generate"
     },
     "delete": "Delete",
-    "cooperation_procedure": "Cooperation procedure",
+    "integration_procedure": "Integration procedure",
     "official_bot_settings": "Official bot Settings",
     "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
     "reset": "Reset",
