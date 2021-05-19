@@ -2,15 +2,15 @@ body {
   overflow-y: scroll !important;
 }
 
-body:not(.growi-layout-fluid) .grw-container-convertible {
+.wrapper:not(.growi-layout-fluid) .grw-container-convertible {
   @extend .container-lg;
 }
 
-body.not-found-page .grw-container-convertible {
+.wrapper.not-found-page .grw-container-convertible {
   @extend .container-lg;
 }
 
-body.growi-layout-fluid .grw-container-convertible {
+.wrapper.growi-layout-fluid .grw-container-convertible {
   @extend .container-fluid;
 }
 

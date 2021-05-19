@@ -63,6 +63,7 @@ type Props = CommonProps & {
   hackmdUri: string,
   highlightJsStyle: string,
   isAllReplyShown: boolean,
+  isContainerFluid: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
@@ -112,15 +113,22 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   }
   useCurrentPageSWR(page);
 
-  let className = '';
+  const classNames: string[] = [];
   switch (editorMode) {
     case EditorMode.Editor:
-      className = 'on-edit builtin-editor';
+      classNames.push('on-edit', 'builtin-editor');
       break;
     case EditorMode.HackMD:
-      className = 'on-edit hackmd';
+      classNames.push('on-edit', 'hackmd');
       break;
   }
+  if (props.isContainerFluid) {
+    classNames.push('growi-layout-fluid');
+  }
+  if (page == null) {
+    classNames.push('not-found-page');
+  }
+
 
   // Rewrite browser url by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -139,7 +147,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
         {renderScriptTagByName('highlight-addons')}
         {renderHighlightJsStyleTag(props.highlightJsStyle)}
       </Head>
-      <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={className}>
+      <BasicLayout title={useCustomTitle(props, t('GROWI'))} className={classNames.join(' ')}>
         <header className="py-0">
           <GrowiSubNavigation />
         </header>
@@ -154,8 +162,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
           <div className="row">
             <div className="col grw-page-content-container">
-              {/* TODO GW-5990 change width by customize:isContainerFluid */}
-              <div id="content-main" className="content-main container">
+              <div id="content-main" className="content-main grw-container-convertible">
                 <PageAlerts />
                 <DisplaySwitcher />
                 <div id="page-editor-navbar-bottom-container" className="d-none d-edit-block"></div>
@@ -263,6 +270,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
+  props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');

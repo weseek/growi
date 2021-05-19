@@ -299,7 +299,7 @@
   }
 }
 
-body.on-edit {
+.wrapper.on-edit {
   &:not(.growi-layout-fluid) .page-editor-preview-body {
     .wiki {
       max-width: 980px;
