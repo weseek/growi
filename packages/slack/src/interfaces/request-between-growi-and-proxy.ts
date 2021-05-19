@@ -6,8 +6,6 @@ export type RequestFromGrowi = Request & {
 
   // will be extracted from header
   tokenGtoPs: string[],
-
-  tokenGtoP: string,
 };
 
 export type RequestFromProxy = Request & {

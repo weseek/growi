@@ -107,7 +107,7 @@ module.exports = (crowi) => {
 
     const result = await axios.get(urljoin(proxyUri, '/g2s/relation-test'), {
       headers: {
-        'x-growi-gtop-token': token,
+        'x-growi-gtop-tokens': token,
       },
     });
 
@@ -452,7 +452,8 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to delete botType setting.
    */
-  router.post('/with-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.RelationTest, apiV3FormValidator, async(req, res) => {
+  //  loginRequiredStrictly, adminRequired, csrf, validator.RelationTest, apiV3FormValidator,
+  router.post('/with-proxy/relation-test', async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType === 'customBotWithoutProxy') {
       const msg = 'Not Proxy Type';
