@@ -151,11 +151,11 @@ const CustomBotWithProxySettings = (props) => {
             </div>
             <WithProxyAccordions
               botType="customBotWithProxy"
-              discardTokenHandler={discardTokenHandler}
-              generateTokenHandler={generateTokenHandler}
-              // TODO: Multiple accordion logic
-              tokenPtoG={tokenPtoG}
-              tokenGtoP={tokenGtoP}
+              // discardTokenHandler={discardTokenHandler}
+              // generateTokenHandler={generateTokenHandler}
+              // // TODO: Multiple accordion logic
+              // tokenPtoG={tokenPtoG}
+              // tokenGtoP={tokenGtoP}
             />
           </>
         ))}

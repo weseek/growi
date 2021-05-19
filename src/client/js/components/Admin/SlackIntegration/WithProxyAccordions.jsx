@@ -8,7 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 
 
-export const BotCreateProcess = () => {
+const BotCreateProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="my-5 d-flex flex-column align-items-center">
@@ -29,7 +29,7 @@ export const BotCreateProcess = () => {
   );
 };
 
-export const BotInstallProcess = () => {
+const BotInstallProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="my-5 d-flex flex-column align-items-center">
@@ -51,7 +51,7 @@ export const BotInstallProcess = () => {
   );
 };
 
-export const RegisteringProxyUrlProcess = () => {
+const RegisteringProxyUrlProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="p-4 d-flex flex-column align-items-center">
@@ -69,7 +69,7 @@ export const RegisteringProxyUrlProcess = () => {
   );
 };
 
-export const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
+const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
   const growiUrl = props.appContainer.config.crowi.url;
 
@@ -178,7 +178,7 @@ GeneratingTokensAndRegisteringProxyServiceProcess.propTypes = {
 };
 
 
-export const TestProcess = () => {
+const TestProcess = () => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
@@ -287,35 +287,35 @@ const CustomBotIntegrationProcedure = (props) => {
   });
 };
 
-const officialBotIntegrationProcedure = (props) => {
-  return ({
-    '①': {
-      title: 'install_bot_to_slack',
-      content: <BotInstallProcess />,
-    },
-    '②': {
-      title: 'register_for_growi_official_bot_proxy_service',
-      content: <GeneratingTokensAndRegisteringProxyServiceProcess
-        discardTokenHandler={props.discardTokenHandler}
-        generateTokenHandler={props.generateTokenHandler}
-        // TODO: Multiple accordion logic
-        tokenPtoG={props.tokenPtoG}
-        tokenGtoP={props.tokenGtoP}
-      />,
-    },
-    '③': {
-      title: 'set_proxy_url_on_growi',
-      content: <RegisteringProxyUrlProcess />,
-    },
-    '④': {
-      title: 'test_connection',
-      content: <TestProcess />,
-    },
-  });
-};
+// const officialBotIntegrationProcedure = (props) => {
+//   return ({
+//     '①': {
+//       title: 'install_bot_to_slack',
+//       content: <BotInstallProcess />,
+//     },
+//     '②': {
+//       title: 'register_for_growi_official_bot_proxy_service',
+//       content: <GeneratingTokensAndRegisteringProxyServiceProcess
+//         discardTokenHandler={props.discardTokenHandler}
+//         generateTokenHandler={props.generateTokenHandler}
+//         // TODO: Multiple accordion logic
+//         tokenPtoG={props.tokenPtoG}
+//         tokenGtoP={props.tokenGtoP}
+//       />,
+//     },
+//     '③': {
+//       title: 'set_proxy_url_on_growi',
+//       content: <RegisteringProxyUrlProcess />,
+//     },
+//     '④': {
+//       title: 'test_connection',
+//       content: <TestProcess />,
+//     },
+//   });
+// };
 
 
-const WithProxyAccordions = (props) => {
+export WithProxyAccordions = (props) => {
   const { t } = useTranslation();
   const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
@@ -324,6 +324,7 @@ const WithProxyAccordions = (props) => {
       className="card border-0 rounded-lg shadow overflow-hidden"
     >
       {Object.entries(integrationProcedureMapping).map(([key, value]) => {
+        console.log(value) 
         return (
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
