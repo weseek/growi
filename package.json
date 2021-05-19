@@ -79,6 +79,7 @@
     "@kobalab/socket.io-session": "^1.0.3",
     "@promster/express": "^5.0.1",
     "@promster/server": "^6.0.0",
+    "@slack/webhook": "^6.0.0",
     "JSONStream": "^1.3.5",
     "archiver": "^3.1.1",
     "array.prototype.flatmap": "^1.2.2",
