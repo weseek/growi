@@ -6,6 +6,10 @@ body:not(.growi-layout-fluid) .grw-container-convertible {
   @extend .container-lg;
 }
 
+body.not-found-page .grw-container-convertible {
+  @extend .container-lg;
+}
+
 body.growi-layout-fluid .grw-container-convertible {
   @extend .container-fluid;
 }
