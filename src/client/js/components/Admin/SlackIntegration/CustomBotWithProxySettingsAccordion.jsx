@@ -1,34 +1,30 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import AppContainer from '../../../services/AppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import Accordion from '../Common/Accordion';
 
-const CustomBotWithProxySettingsAccordion = ({ appContainer }) => {
+const CustomBotWithProxySettingsAccordion = (props) => {
   const [testChannel, setTestChannel] = useState('');
-  /* eslint-disable no-unused-vars */
   // TODO: Add connection Logs
+  // eslint-disable no-unused-vars
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
-  const [accessTokenForGROWI, setAccessTokenForGROWI] = useState('');
-  const [accessTokenForProxy, setAccessTokenForProxy] = useState('');
-
-  const discardTokenHandler = () => {
-    setAccessTokenForGROWI('');
-    setAccessTokenForProxy('');
-  };
-
-  const generateTokenHandler = async() => {
-    const response = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
-    console.log(response);
-    setAccessTokenForGROWI('setAccessTokenForProxy');
-    setAccessTokenForProxy('tokenForProxy');
-  };
-
   const { t } = useTranslation();
+
+  const discardTokenHandler = props.discardTokenHandler;
+  const generateTokenHandler = props.generateTokenHandler;
+
+  let tokenGtoP;
+  if (props.tokenGtoP != null) {
+    tokenGtoP = props.tokenGtoP;
+  }
+
+  let tokenPtoG;
+  if (props.tokenPtoG != null) {
+    tokenPtoG = props.tokenPtoG;
+  }
 
   // TODO: Handle test button
   const submitForm = (e) => {
@@ -109,7 +105,7 @@ const CustomBotWithProxySettingsAccordion = ({ appContainer }) => {
               <input
                 className="form-control"
                 type="text"
-                value={accessTokenForGROWI}
+                value={tokenGtoP}
                 readOnly
               />
             </div>
@@ -120,7 +116,7 @@ const CustomBotWithProxySettingsAccordion = ({ appContainer }) => {
               <input
                 className="form-control"
                 type="text"
-                value={accessTokenForProxy}
+                value={tokenPtoG}
                 readOnly
               />
             </div>
@@ -241,11 +237,11 @@ const CustomBotWithProxySettingsAccordion = ({ appContainer }) => {
   );
 };
 
-
-const CustomBotWithProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithProxySettingsAccordion, [AppContainer]);
-
 CustomBotWithProxySettingsAccordion.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  discardTokenHandler: PropTypes.func.isRequired,
+  generateTokenHandler: PropTypes.func.isRequired,
+  tokenPtoG: PropTypes.string,
+  tokenGtoP: PropTypes.string,
 };
 
-export default CustomBotWithProxySettingsAccordionWrapper;
+export default CustomBotWithProxySettingsAccordion;

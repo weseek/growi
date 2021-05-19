@@ -14,12 +14,13 @@ import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
-  // eslint-disable-next-line no-unused-vars
   const { appContainer } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [proxyUri, setProxyUri] = useState(null);
-
   const { t } = useTranslation();
+  // TODO: Multiple accordion logic
+  const [tokenPtoG, setTokenPtoG] = useState('');
+  const [tokenGtoP, setTokenGtoP] = useState('');
 
   const retrieveProxyUri = useCallback(async() => {
     try {
@@ -50,6 +51,19 @@ const CustomBotWithProxySettings = (props) => {
     setAccordionComponentsCount(
       prevState => prevState - 1,
     );
+  };
+
+  const discardTokenHandler = async() => {
+    const response = await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration',
+      { tokenGtoP, tokenPtoG });
+    console.log('asdfasdf');
+  };
+
+  const generateTokenHandler = async() => {
+    const response = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+    console.log(response);
+    setTokenGtoP('setAccessTokenForProxy');
+    setTokenPtoG('tokenForProxy');
   };
 
   const deleteSlackSettingsHandler = async() => {
@@ -132,7 +146,15 @@ const CustomBotWithProxySettings = (props) => {
                 {t('admin:slack_integration.delete')}
               </button>
             </div>
-            <WithProxyAccordions botType="customBotWithProxy" key={i} />
+            <WithProxyAccordions
+              botType="customBotWithProxy"
+              discardTokenHandler={discardTokenHandler}
+              generateTokenHandler={generateTokenHandler}
+              // TODO: Multiple accordion logic
+              tokenPtoG={tokenPtoG}
+              tokenGtoP={tokenGtoP}
+              key={i}
+            />
           </>
         ))}
 
