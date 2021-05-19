@@ -69,9 +69,29 @@ export const RegisteringProxyUrlProcess = () => {
   );
 };
 
-export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
+export const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
   const growiUrl = props.appContainer.config.crowi.url;
+
+  let discardTokenHandler;
+  if (props.discardTokenHandler != null) {
+    discardTokenHandler = props.discardTokenHandler;
+  }
+  let generateTokenHandler;
+  if (props.generateTokenHandler != null) {
+    generateTokenHandler = props.generateTokenHandler;
+  }
+
+  let tokenGtoP;
+  if (props.tokenGtoP != null) {
+    tokenGtoP = props.tokenGtoP;
+  }
+
+  let tokenPtoG;
+  if (props.tokenPtoG != null) {
+    tokenPtoG = props.tokenPtoG;
+  }
+
   return (
     <div className="py-4 px-5">
       <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
@@ -81,6 +101,8 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
           <input
             className="form-control"
             type="text"
+            value={tokenGtoP}
+            readOnly
           />
         </div>
       </div>
@@ -90,14 +112,28 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
           <input
             className="form-control"
             type="text"
+            value={tokenPtoG}
+            readOnly
           />
         </div>
       </div>
 
       <div className="row my-3">
         <div className="mx-auto">
-          <button type="button" className="btn btn-outline-secondary mx-2">{ t('admin:slack_integration.access_token_settings.discard') }</button>
-          <button type="button" className="btn btn-primary mx-2">{ t('admin:slack_integration.access_token_settings.generate') }</button>
+          <button
+            type="button"
+            className="btn btn-outline-secondary mx-2"
+            onClick={discardTokenHandler}
+          >
+            { t('admin:slack_integration.access_token_settings.discard') }
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary mx-2"
+            onClick={generateTokenHandler}
+          >
+            { t('admin:slack_integration.access_token_settings.generate') }
+          </button>
         </div>
       </div>
       <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
@@ -237,7 +273,7 @@ const CustomBotCooperationProcedure = {
   },
   '③': {
     title: 'register_for_growi_official_bot_proxy_service',
-    content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
+    content: <GeneratingTokensAndRegisteringProxyServiceProcess />,
   },
   '④': {
     title: 'set_proxy_url_on_growi',
@@ -299,6 +335,10 @@ const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAcc
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
+  discardTokenHandler: PropTypes.func.isRequired,
+  generateTokenHandler: PropTypes.func.isRequired,
+  tokenPtoG: PropTypes.string,
+  tokenGtoP: PropTypes.string,
 };
 
 export default OfficialBotSettingsAccordionsWrapper;
