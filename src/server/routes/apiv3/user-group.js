@@ -289,10 +289,7 @@ module.exports = (crowi) => {
       const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
 
       const users = userGroupRelations.map((userGroupRelation) => {
-        if (userGroupRelation.relatedUser != null && userGroupRelation.relatedUser instanceof User) {
-          return serializeUserSecurely(userGroupRelation.relatedUser);
-        }
-        return userGroupRelation.relatedUser;
+        return serializeUserSecurely(userGroupRelation.relatedUser);
       });
 
       return res.apiv3({ users });
@@ -597,9 +594,7 @@ module.exports = (crowi) => {
       const current = offset / limit + 1;
 
       const pages = docs.map((doc) => {
-        if (doc.lastUpdateUser != null && doc.lastUpdateUser instanceof User) {
-          doc.lastUpdateUser = serializeUserSecurely(doc.lastUpdateUser);
-        }
+        doc.lastUpdateUser = serializeUserSecurely(doc.lastUpdateUser);
         return doc;
       });
 
