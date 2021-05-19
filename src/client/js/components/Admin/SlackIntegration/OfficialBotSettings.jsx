@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import OfficialBotSettingsAccordion from './OfficialbotSettingsAccordion';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
+import WithProxyAccordions from './WithProxyAccordions';
 
 const OfficialBotSettings = () => {
   const { t } = useTranslation();
@@ -30,7 +30,7 @@ const OfficialBotSettings = () => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_settings')}</h2>
 
       <div className="my-5 mx-3">
-        <OfficialBotSettingsAccordion />
+        <WithProxyAccordions botType="officialBot" />
       </div>
     </>
 
