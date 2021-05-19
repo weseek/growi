@@ -113,11 +113,8 @@ export const useCurrentPageDeleted = (): responseInterface<boolean, Error> => {
   if (currentPagePath == null) {
     throw new Error('currentPagePath should not be null.');
   }
-  if (currentPage == null) {
-    throw new Error('currentPage should not be null.');
-  }
 
-  const isDeleted = isTrashPage(currentPagePath) || (currentPage != null && currentPage.status === 'deleted');
+  const isDeleted = currentPage != null && (isTrashPage(currentPagePath) || currentPage.status === 'deleted');
 
   return useStaticSWR('currentPageDeleted', isDeleted);
 };

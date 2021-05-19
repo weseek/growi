@@ -159,6 +159,10 @@ const Page = (props) => {
   const { data: isMobile } = useIsMobile();
   const { data: viewRenderer } = useViewRenderer();
 
+  if (currentPage == null) {
+    return null;
+  }
+
   return (
     <div className={`${isMobile && 'page-mobile'}`}>
       <RevisionRenderer renderer={viewRenderer} markdown={currentPage.revision.body} />
