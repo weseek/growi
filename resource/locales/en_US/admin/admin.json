@@ -115,6 +115,11 @@
     }
   },
   "customize_setting": {
+    "layout": "Layout",
+    "layout_options": {
+      "default": "Default content width",
+      "expanded": "Content width 100%"
+    },
     "theme": "Theme",
     "theme_desc": {
       "light_and_dark": "Light and dark modes",

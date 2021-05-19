@@ -1,6 +1,9 @@
 # CHANGES
 
-## v4.2.17-RC
+## v4.2.18-RC
+* Feature: Cobvertible page contents width.
+
+## v4.2.17
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
 * Improvement: Hide Sidebar at shared pages
