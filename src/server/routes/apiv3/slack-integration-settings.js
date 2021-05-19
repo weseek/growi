@@ -452,8 +452,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to delete botType setting.
    */
-  //  loginRequiredStrictly, adminRequired, csrf, validator.RelationTest, apiV3FormValidator,
-  router.post('/with-proxy/relation-test', async(req, res) => {
+  router.post('/with-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.RelationTest, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType === 'customBotWithoutProxy') {
       const msg = 'Not Proxy Type';
