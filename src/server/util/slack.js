@@ -14,7 +14,7 @@ module.exports = function(crowi) {
 
   const slack = {};
 
-  // const postWithIwh = function (messageObj) {
+  // const postWithIwh = function(messageObj) {
   //   return new Promise((resolve, reject) => {
   //     const client = new Slack();
   //     client.setWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
@@ -29,16 +29,20 @@ module.exports = function(crowi) {
   //   });
   // };
 
-  const postWithIwh = function(messageObj) {
-    return new Promise((resolve, reject) => {
-      const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
-
-      const response = async() => {
+  const postWithIwh = (messageObj) => {
+    return new Promise(async(resolve, reject) => {
+      try {
+        const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
         await webhook.send(messageObj);
-      };
-      console.log(response);
+        resolve();
+      }
+      catch (err) {
+        console.log(err);
+        reject(err);
+      }
     });
   };
+
 
   const postWithWebApi = function(messageObj) {
     return new Promise((resolve, reject) => {
@@ -229,7 +233,7 @@ module.exports = function(crowi) {
     return text;
   };
 
-  // slack.post = function (channel, message, opts) {
+  // slack.post = function(channel, message, opts) {
   slack.postPage = (page, user, channel, updateType, previousRevision) => {
     const messageObj = prepareSlackMessageForPage(page, user, channel, updateType, previousRevision);
 
