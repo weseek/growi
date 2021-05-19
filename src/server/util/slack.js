@@ -37,7 +37,11 @@ module.exports = function(crowi) {
         resolve();
       }
       catch (err) {
-        console.log(err);
+        console.log(
+          `ERROR ++++++++++++++++++++++++++++++++++++++++++
+          ${err}
+          +++++++++++++++++++++++++++++++++++++++++++++++++`,
+        );
         reject(err);
       }
     });
