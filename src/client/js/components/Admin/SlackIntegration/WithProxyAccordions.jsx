@@ -73,14 +73,8 @@ export const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
   const { t } = useTranslation();
   const growiUrl = props.appContainer.config.crowi.url;
 
-  let discardTokenHandler;
-  if (props.discardTokenHandler != null) {
-    discardTokenHandler = props.discardTokenHandler;
-  }
-  let generateTokenHandler;
-  if (props.generateTokenHandler != null) {
-    generateTokenHandler = props.generateTokenHandler;
-  }
+  const discardTokenHandler = props.discardTokenHandler;
+  const generateTokenHandler = props.generateTokenHandler;
 
   let tokenGtoP;
   if (props.tokenGtoP != null) {
@@ -262,61 +256,80 @@ export const TestProcess = () => {
   );
 };
 
-const CustomBotCooperationProcedure = {
-  '①': {
-    title: 'create_bot',
-    content: <BotCreateProcess />,
-  },
-  '②': {
-    title: 'install_bot_to_slack',
-    content: <BotInstallProcess />,
-  },
-  '③': {
-    title: 'register_for_growi_official_bot_proxy_service',
-    content: <GeneratingTokensAndRegisteringProxyServiceProcess />,
-  },
-  '④': {
-    title: 'set_proxy_url_on_growi',
-    content: <RegisteringProxyUrlProcess />,
-  },
-  '⑤': {
-    title: 'test_connection',
-    content: <TestProcess />,
-  },
+const CustomBotIntegrationProcedure = (props) => {
+  return ({
+    '①': {
+      title: 'create_bot',
+      content: <BotCreateProcess />,
+    },
+    '②': {
+      title: 'install_bot_to_slack',
+      content: <BotInstallProcess />,
+    },
+    '③': {
+      title: 'register_for_growi_official_bot_proxy_service',
+      content: <GeneratingTokensAndRegisteringProxyServiceProcess
+        discardTokenHandler={props.discardTokenHandler}
+        generateTokenHandler={props.generateTokenHandler}
+      // TODO: Multiple accordion logic
+        tokenPtoG={props.tokenPtoG}
+        tokenGtoP={props.tokenGtoP}
+      />,
+    },
+    '④': {
+      title: 'set_proxy_url_on_growi',
+      content: <RegisteringProxyUrlProcess />,
+    },
+    '⑤': {
+      title: 'test_connection',
+      content: <TestProcess />,
+    },
+  });
 };
 
-const officialBotCooperationProcedure = {
-  '①': {
-    title: 'install_bot_to_slack',
-    content: <BotInstallProcess />,
-  },
-  '②': {
-    title: 'register_for_growi_official_bot_proxy_service',
-    content: <GeneratingTokensAndRegisteringProxyServiceProcess />,
-  },
-  '③': {
-    title: 'set_proxy_url_on_growi',
-    content: <RegisteringProxyUrlProcess />,
-  },
-  '④': {
-    title: 'test_connection',
-    content: <TestProcess />,
-  },
+const officialBotIntegrationProcedure = (props) => {
+  return ({
+    '①': {
+      title: 'install_bot_to_slack',
+      content: <BotInstallProcess />,
+    },
+    '②': {
+      title: 'register_for_growi_official_bot_proxy_service',
+      content: <GeneratingTokensAndRegisteringProxyServiceProcess
+        discardTokenHandler={props.discardTokenHandler}
+        generateTokenHandler={props.generateTokenHandler}
+        // TODO: Multiple accordion logic
+        tokenPtoG={props.tokenPtoG}
+        tokenGtoP={props.tokenGtoP}
+      />,
+    },
+    '③': {
+      title: 'set_proxy_url_on_growi',
+      content: <RegisteringProxyUrlProcess />,
+    },
+    '④': {
+      title: 'test_connection',
+      content: <TestProcess />,
+    },
+  });
 };
 
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
-  const cooperationProcedureMapping = props.botType === 'officialBot' ? officialBotCooperationProcedure : CustomBotCooperationProcedure;
-
+  const cooperationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
   return (
-    <div className="card border-0 rounded-lg shadow overflow-hidden">
+    <div
+      className="card border-0 rounded-lg shadow overflow-hidden"
+      key={props.key}
+    >
       {Object.entries(cooperationProcedureMapping).map(([key, value]) => {
         return (
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
             key={key}
+            props={props}
           >
             {value.content}
           </Accordion>
@@ -335,6 +348,7 @@ const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAcc
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
+  key: PropTypes.number,
   discardTokenHandler: PropTypes.func.isRequired,
   generateTokenHandler: PropTypes.func.isRequired,
   tokenPtoG: PropTypes.string,
