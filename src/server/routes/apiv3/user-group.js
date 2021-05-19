@@ -594,7 +594,9 @@ module.exports = (crowi) => {
       const current = offset / limit + 1;
 
       const pages = docs.map((doc) => {
-        doc.lastUpdateUser = serializeUserSecurely(doc.lastUpdateUser);
+        if (doc.lastUpdateUser != null && doc.lastUpdateUser instanceof User) {
+          doc.lastUpdateUser = serializeUserSecurely(doc.lastUpdateUser);
+        }
         return doc;
       });
 
