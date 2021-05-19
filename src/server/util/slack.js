@@ -7,13 +7,14 @@ const urljoin = require('url-join');
 
 /* eslint-disable no-use-before-define */
 
-module.exports = function(crowi) {
+module.exports = function (crowi) {
+  const { IncomingWebhook } = require('@slack/webhook');
   const Slack = require('slack-node');
   const { configManager } = crowi;
 
   const slack = {};
 
-  const postWithIwh = function(messageObj) {
+  const postWithIwh = function (messageObj) {
     return new Promise((resolve, reject) => {
       const client = new Slack();
       client.setWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
@@ -28,7 +29,24 @@ module.exports = function(crowi) {
     });
   };
 
-  const postWithWebApi = function(messageObj) {
+  const postWithIwh = function (messageObj) {
+    return new Promise((resolve, reject) => {
+      const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
+      try {
+        const response = async () => { await webhook.send(messageObj) }
+        resolve(response);
+      }
+      catch (err) {
+        debug('Post error', err, res);
+        debug('Sent data to slack is:', messageObj);
+        return reject(err);
+      }
+
+
+    });
+  };
+
+  const postWithWebApi = function (messageObj) {
     return new Promise((resolve, reject) => {
       const client = new Slack(configManager.getConfig('notification', 'slack:token'));
       // stringify attachments
@@ -46,7 +64,7 @@ module.exports = function(crowi) {
     });
   };
 
-  const convertMarkdownToMarkdown = function(body) {
+  const convertMarkdownToMarkdown = function (body) {
     const url = crowi.appService.getSiteUrl();
 
     return body
@@ -56,7 +74,7 @@ module.exports = function(crowi) {
       .replace(/(\[(.+)\]\((\/.+)\))/g, `<${url}$3|$2>`);
   };
 
-  const prepareAttachmentTextForCreate = function(page, user) {
+  const prepareAttachmentTextForCreate = function (page, user) {
     let body = page.revision.body;
     if (body.length > 2000) {
       body = `${body.substr(0, 2000)}...`;
@@ -65,7 +83,7 @@ module.exports = function(crowi) {
     return convertMarkdownToMarkdown(body);
   };
 
-  const prepareAttachmentTextForUpdate = function(page, user, previousRevision) {
+  const prepareAttachmentTextForUpdate = function (page, user, previousRevision) {
     const diff = require('diff');
     let diffText = '';
 
@@ -92,7 +110,7 @@ module.exports = function(crowi) {
     return diffText;
   };
 
-  const prepareAttachmentTextForComment = function(comment) {
+  const prepareAttachmentTextForComment = function (comment) {
     let body = comment.comment;
     if (body.length > 2000) {
       body = `${body.substr(0, 2000)}...`;
@@ -105,7 +123,7 @@ module.exports = function(crowi) {
     return body;
   };
 
-  const prepareSlackMessageForPage = function(page, user, channel, updateType, previousRevision) {
+  const prepareSlackMessageForPage = function (page, user, channel, updateType, previousRevision) {
     const appTitle = crowi.appService.getAppTitle();
     const url = crowi.appService.getSiteUrl();
     let body = page.revision.body;
@@ -141,7 +159,7 @@ module.exports = function(crowi) {
     return message;
   };
 
-  const prepareSlackMessageForComment = function(comment, user, channel, path) {
+  const prepareSlackMessageForComment = function (comment, user, channel, path) {
     const appTitle = crowi.appService.getAppTitle();
     const url = crowi.appService.getSiteUrl();
     const body = prepareAttachmentTextForComment(comment);
@@ -175,7 +193,7 @@ module.exports = function(crowi) {
    * @param {string} attachmentBody
    * @param {string} slackChannel
   */
-  const prepareSlackMessageForGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
+  const prepareSlackMessageForGlobalNotification = async (messageBody, attachmentBody, slackChannel) => {
     const appTitle = crowi.appService.getAppTitle();
 
     const attachment = {
@@ -194,7 +212,7 @@ module.exports = function(crowi) {
     return message;
   };
 
-  const getSlackMessageTextForPage = function(path, pageId, user, updateType) {
+  const getSlackMessageTextForPage = function (path, pageId, user, updateType) {
     let text;
     const url = crowi.appService.getSiteUrl();
 
@@ -209,7 +227,7 @@ module.exports = function(crowi) {
     return text;
   };
 
-  const getSlackMessageTextForComment = function(path, pageId, user) {
+  const getSlackMessageTextForComment = function (path, pageId, user) {
     const url = crowi.appService.getSiteUrl();
     const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
     const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
@@ -230,7 +248,7 @@ module.exports = function(crowi) {
     return slackPost(messageObj);
   };
 
-  slack.sendGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
+  slack.sendGlobalNotification = async (messageBody, attachmentBody, slackChannel) => {
     const messageObj = await prepareSlackMessageForGlobalNotification(messageBody, attachmentBody, slackChannel);
 
     return slackPost(messageObj);
