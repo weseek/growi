@@ -315,16 +315,17 @@ const CustomBotIntegrationProcedure = (props) => {
 // };
 
 
-export WithProxyAccordions = (props) => {
+export const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
   const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
-
+  console.log(CustomBotIntegrationProcedure);
   return (
+
     <div
       className="card border-0 rounded-lg shadow overflow-hidden"
     >
-      {Object.entries(integrationProcedureMapping).map(([key, value]) => {
-        console.log(value) 
+      {/* {Object.entries(integrationProcedureMapping).map(([key, value]) => {
+
         return (
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
@@ -334,7 +335,7 @@ export WithProxyAccordions = (props) => {
             {value.content}
           </Accordion>
         );
-      })}
+      })} */}
     </div>
   );
 };
