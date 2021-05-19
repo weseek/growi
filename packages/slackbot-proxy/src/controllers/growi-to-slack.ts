@@ -63,21 +63,19 @@ export class GrowiToSlackCtrl {
   @Get('/relation-test')
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
-    // asserted tokenGtoP is string by verifyGrowiToSlackRequest
-    const { tokenGtoP } = req;
+    const { tokenGtoPs } = req;
 
-    let relation: Relation|undefined;
-    try {
-      // retrieve relation with Installation
-      relation = await this.relationRepository.createQueryBuilder('relation')
-        .where('tokenGtoP = :token', { token: tokenGtoP })
-        .leftJoinAndSelect('relation.installation', 'installation')
-        .getOne();
+    if (tokenGtoPs.length !== 1) {
+      return res.status(400).send({ message: 'installation is invalid' });
     }
-    catch (error) {
-      logger.error(error);
-      return res.status(500).send({ message: 'find relation is failure' });
-    }
+
+    const tokenGtoP = tokenGtoPs[0];
+
+    // retrieve relation with Installation
+    const relation = await this.relationRepository.createQueryBuilder('relation')
+      .where('tokenGtoP = :token', { token: tokenGtoP })
+      .leftJoinAndSelect('relation.installation', 'installation')
+      .getOne();
 
     // Returns the result of the test if it already exists
     if (relation != null) {
@@ -87,29 +85,17 @@ export class GrowiToSlackCtrl {
       if (token == null) {
         return res.status(400).send({ message: 'installation is invalid' });
       }
-      try {
-        await relationTestToSlack(token);
-        return res.send({ relation });
-      }
-      catch (error) {
-        logger.error(error);
-        return res.status(500).send({ message: error.message });
-      }
+
+      await relationTestToSlack(token);
+      return res.send({ relation });
     }
 
-    let order: Order|undefined;
-    try {
     // retrieve latest Order with Installation
-      order = await this.orderRepository.createQueryBuilder('order')
-        .orderBy('order.createdAt', 'DESC')
-        .where('growiAccessToken = :token', { token: tokenGtoP })
-        .leftJoinAndSelect('order.installation', 'installation')
-        .getOne();
-    }
-    catch (error) {
-      logger.error(error);
-      return res.status(500).send({ message: 'find order is failure' });
-    }
+    const order = await this.orderRepository.createQueryBuilder('order')
+      .orderBy('order.createdAt', 'DESC')
+      .where('growiAccessToken = :token', { token: tokenGtoP })
+      .leftJoinAndSelect('order.installation', 'installation')
+      .getOne();
 
     if (order == null || order.isExpired()) {
       return res.status(400).send({ message: 'order has expired or does not exist.' });
@@ -121,23 +107,12 @@ export class GrowiToSlackCtrl {
     if (token == null) {
       return res.status(400).send({ message: 'installation is invalid' });
     }
-    try {
-      await relationTestToSlack(token);
-    }
-    catch (error) {
-      logger.error(error);
-      return res.status(500).send({ message: error.message });
-    }
+
+    await relationTestToSlack(token);
 
     logger.debug('relation test is success', order);
 
-    try {
-      // TODO GW-5864 issue relation
-    }
-    catch (error) {
-      logger.error(error);
-      return res.status(500).send({ message: 'issue relation is failure' });
-    }
+    // TODO GW-5864 issue relation
 
     // return order temporary
     // TODO return new relation
