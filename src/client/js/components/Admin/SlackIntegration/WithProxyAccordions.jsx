@@ -179,7 +179,7 @@ export const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
   );
 }, [AppContainer]);
 
-GenelatingTokensAndRegisteringProxyServiceProcess.propTypes = {
+GeneratingTokensAndRegisteringProxyServiceProcess.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
@@ -292,7 +292,7 @@ const officialBotCooperationProcedure = {
   },
   '②': {
     title: 'register_for_growi_official_bot_proxy_service',
-    content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
+    content: <GeneratingTokensAndRegisteringProxyServiceProcess />,
   },
   '③': {
     title: 'set_proxy_url_on_growi',
