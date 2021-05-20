@@ -5,7 +5,7 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
-const { getConnectionStatuses, relationTestToSlack } = require('@growi/slack');
+const { getConnectionStatuses, pingSlack } = require('@growi/slack');
 const { WebClient, ErrorCode } = require('@slack/web-api');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -252,7 +252,7 @@ module.exports = (crowi) => {
       logger.debug('SlackBot: setup is done');
 
       try {
-        await relationTestToSlack(slackBotToken, channel);
+        await pingSlack(slackBotToken, channel);
         logger.info(`SlackTest: send success massage to slack work space at #${channel}.`);
         logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
         // eslint-disable-next-line max-len
