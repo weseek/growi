@@ -94,19 +94,20 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
 * Test Slack Auth
 * @param client
 */
-const testSlackAuth = async(client: WebClient): Promise<WebAPICallResult> => {
+export const testSlackAuth = async(client: WebClient): Promise<WebAPICallResult> => {
   const result = await client.auth.test();
   if (!result.ok) {
     throw new Error(result.error);
   }
+  console.log(result);
   return result;
-}
+};
 
 /**
 * Post Message to Slack
 * @param client
 */
-const postMessage = async (client: WebClient, channel: string, text: string): Promise<WebAPICallResult> => {
+export const postMessage = async(client: WebClient, channel: string, text: string): Promise<WebAPICallResult> => {
   const result = await client.chat.postMessage({
       channel: `#${channel}`,
       text,
@@ -114,6 +115,7 @@ const postMessage = async (client: WebClient, channel: string, text: string): Pr
   if (!result.ok) {
     throw new Error(result.error);
   }
+  console.log(result);
   return result;
 }
 
@@ -122,12 +124,12 @@ const postMessage = async (client: WebClient, channel: string, text: string): Pr
  * @param token bot OAuth token
  * @returns
  */
-export const relationTestToSlack = async (token: string, channel: string): Promise<{a: WebAPICallResult, b:WebAPICallResult }> => {
+export const relationTestToSlack = async(token: string, channel: string): Promise<{testSlackAuthResponse: WebAPICallResult, postMessageResponse:WebAPICallResult }> => {
   const client = generateWebClient(token);
   const text = 'Your test was successful!';
-  const a = await testSlackAuth(client);
-  const b = await postMessage(client, channel, text);
-  console.log(a);
-  console.log(b);
-  return { a, b };
+  const testSlackAuthResponse = await testSlackAuth(client);
+  const postMessageResponse = await postMessage(client, channel, text);
+  console.log(testSlackAuthResponse);
+  console.log(postMessageResponse);
+  return { testSlackAuthResponse, postMessageResponse };
 };
