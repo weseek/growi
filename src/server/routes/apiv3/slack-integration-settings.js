@@ -487,7 +487,7 @@ module.exports = (crowi) => {
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
       await relationTestToSlack(slackBotToken);
-      // TODO impl return response after imple  5996 6002
+      // TODO impl return response after imple 5996, 6002
     }
     catch (error) {
       const msg = 'Error occured in sending test message';
