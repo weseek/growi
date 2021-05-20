@@ -78,10 +78,10 @@ const SlackIntegration = (props) => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-  const changeCurrentBotSettings = async(clickedBotType) => {
+  const changeCurrentBotSettings = async(botType) => {
     try {
       const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-        currentBotType: selectedBotType || clickedBotType,
+        currentBotType: selectedBotType || botType,
       });
       setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
@@ -96,14 +96,14 @@ const SlackIntegration = (props) => {
     }
   };
 
-  const botTypeSelectHandler = async(clickedBotType) => {
-    if (clickedBotType === currentBotType) {
+  const botTypeSelectHandler = async(botType) => {
+    if (botType === currentBotType) {
       return;
     }
     if (currentBotType == null) {
-      return changeCurrentBotSettings(clickedBotType);
+      return changeCurrentBotSettings(botType);
     }
-    setSelectedBotType(clickedBotType);
+    setSelectedBotType(botType);
   };
 
   const changeCurrentBotSettingsHandler = async() => {
