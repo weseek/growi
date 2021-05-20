@@ -60,7 +60,7 @@ const retrieveWorkspaceName = async(client: WebClient): Promise<string> => {
  * @param tokens Array of bot OAuth token
  * @returns
  */
-export const getConnectionStatuses = async(tokens: string[]): Promise<{ [key: string]: ConnectionStatus }> => {
+export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: string]: ConnectionStatus}> => {
   const map = tokens
     .reduce<Promise<Map<string, ConnectionStatus>>>(
       async(acc, token) => {
