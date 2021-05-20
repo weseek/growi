@@ -6,6 +6,7 @@ import {
 import { useTranslation } from '~/i18n';
 import { Revision as IRevision } from '~/interfaces/page';
 import RevisionDiff from '~/client/js/components/PageHistory/RevisionDiff';
+import { encodeSpaces } from '~/utils/path-utils';
 
 /* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (
@@ -16,14 +17,6 @@ const DropdownItemContents = ({ title, contents }) => (
 );
 /* eslint-enable react/prop-types */
 
-function encodeSpaces(str) {
-  if (str == null) {
-    return null;
-  }
-
-  // Encode SPACE and IDEOGRAPHIC SPACE
-  return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
-}
 
 type Props = {
   path?: string,

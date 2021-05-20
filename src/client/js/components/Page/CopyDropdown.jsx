@@ -12,15 +12,7 @@ import {
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-function encodeSpaces(str) {
-  if (str == null) {
-    return null;
-  }
-
-  // Encode SPACE and IDEOGRAPHIC SPACE
-  return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
-}
-
+import { encodeSpaces } from '~/utils/path-utils';
 
 /* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (

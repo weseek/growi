@@ -12,6 +12,7 @@ const urljoin = require('url-join');
 
 module.exports = function(crowi) {
   const Slack = require('slack-node');
+  const { WebClient } = require('@slack/web-api');
   const { configManager } = crowi;
 
   const slack = {};
@@ -31,22 +32,20 @@ module.exports = function(crowi) {
     });
   };
 
-  const postWithWebApi = function(messageObj) {
-    return new Promise((resolve, reject) => {
-      const client = new Slack(configManager.getConfig('notification', 'slack:token'));
-      // stringify attachments
-      if (messageObj.attachments != null) {
-        messageObj.attachments = JSON.stringify(messageObj.attachments);
-      }
-      client.api('chat.postMessage', messageObj, (err, res) => {
-        if (err) {
-          logger.debug('Post error', err, res);
-          logger.debug('Sent data to slack is:', messageObj);
-          return reject(err);
-        }
-        resolve(res);
-      });
-    });
+  const postWithWebApi = async(messageObj) => {
+    const client = new WebClient(configManager.getConfig('notification', 'slack:token'));
+    // stringify attachments
+    if (messageObj.attachments != null) {
+      messageObj.attachments = JSON.stringify(messageObj.attachments);
+    }
+    try {
+      await client.chat.postMessage(messageObj);
+    }
+    catch (error) {
+      logger.debug('Post error', error);
+      logger.debug('Sent data to slack is:', messageObj);
+      throw error;
+    }
   };
 
   const convertMarkdownToMarkdown = function(body) {

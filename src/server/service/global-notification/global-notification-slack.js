@@ -5,6 +5,8 @@ const logger = loggerFactory('growi:service:GlobalNotificationSlackService');
 
 const urljoin = require('url-join');
 
+const { encodeSpaces } = require('~/utils/path-utils');
+
 /**
  * sub service class of GlobalNotificationSetting
  */
@@ -17,22 +19,24 @@ class GlobalNotificationSlackService {
     this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
 
+
   /**
    * send slack global notification
    *
    * @memberof GlobalNotificationSlackService
    *
    * @param {string} event
+   * @param {string} id
    * @param {string} path
    * @param {User} triggeredBy user who triggered the event
    * @param {{ comment: Comment, oldPath: string }} _ event specific vars
    */
-  async fire(event, path, triggeredBy, vars) {
+  async fire(event, id, path, triggeredBy, vars) {
     const GlobalNotification = this.crowi.model('GlobalNotificationSetting');
     const notifications = await GlobalNotification.findSettingByPathAndEvent(event, path, this.type);
 
-    const messageBody = this.generateMessageBody(event, path, triggeredBy, vars);
-    const attachmentBody = this.generateAttachmentBody(event, path, triggeredBy, vars);
+    const messageBody = this.generateMessageBody(event, id, path, triggeredBy, vars);
+    const attachmentBody = this.generateAttachmentBody(event, id, path, triggeredBy, vars);
 
     await Promise.all(notifications.map((notification) => {
       return this.slack.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels);
@@ -45,26 +49,29 @@ class GlobalNotificationSlackService {
    * @memberof GlobalNotificationSlackService
    *
    * @param {string} event event name triggered
+   * @param {string} id page id
    * @param {string} path path triggered the event
    * @param {User} triggeredBy user triggered the event
    * @param {{ comment: Comment, oldPath: string }} _ event specific vars
    *
    * @return  {string} slack message body
    */
-  generateMessageBody(event, path, triggeredBy, { comment, oldPath }) {
-    const pageUrl = `<${urljoin(this.crowi.appService.getSiteUrl(), path)}|${path}>`;
-    const username = `<${urljoin(this.crowi.appService.getSiteUrl(), 'user', triggeredBy.username)}|${triggeredBy.username}>`;
+  generateMessageBody(event, id, path, triggeredBy, { comment, oldPath }) {
+    const siteUrl = this.crowi.appService.getSiteUrl();
+    const parmaLink = `<${urljoin(siteUrl, id)}|${path}>`;
+    const pathLink = `<${urljoin(siteUrl, encodeSpaces(path))}|${path}>`;
+    const username = `<${urljoin(siteUrl, 'user', triggeredBy.username)}|${triggeredBy.username}>`;
     let messageBody;
 
     switch (event) {
       case this.event.PAGE_CREATE:
-        messageBody = `:bell: ${username} created ${pageUrl}`;
+        messageBody = `:bell: ${username} created ${parmaLink}`;
         break;
       case this.event.PAGE_EDIT:
-        messageBody = `:bell: ${username} edited ${pageUrl}`;
+        messageBody = `:bell: ${username} edited ${parmaLink}`;
         break;
       case this.event.PAGE_DELETE:
-        messageBody = `:bell: ${username} deleted ${pageUrl}`;
+        messageBody = `:bell: ${username} deleted ${pathLink}`;
         break;
       case this.event.PAGE_MOVE:
         // validate for page move
@@ -72,18 +79,17 @@ class GlobalNotificationSlackService {
           throw new Error(`invalid vars supplied to GlobalNotificationSlackService.generateOption for event ${event}`);
         }
         // eslint-disable-next-line no-case-declarations
-        const oldPageUrl = `<${urljoin(this.crowi.appService.getSiteUrl(), oldPath)}|${oldPath}>`;
-        messageBody = `:bell: ${username} moved ${oldPageUrl} to ${pageUrl}`;
+        messageBody = `:bell: ${username} moved ${oldPath} to ${parmaLink}`;
         break;
       case this.event.PAGE_LIKE:
-        messageBody = `:bell: ${username} liked ${pageUrl}`;
+        messageBody = `:bell: ${username} liked ${parmaLink}`;
         break;
       case this.event.COMMENT:
         // validate for comment
         if (comment == null) {
           throw new Error(`invalid vars supplied to GlobalNotificationSlackService.generateOption for event ${event}`);
         }
-        messageBody = `:bell: ${username} commented on ${pageUrl}`;
+        messageBody = `:bell: ${username} commented on ${parmaLink}`;
         break;
       default:
         throw new Error(`unknown global notificaiton event: ${event}`);
@@ -98,13 +104,14 @@ class GlobalNotificationSlackService {
    * @memberof GlobalNotificationSlackService
    *
    * @param {string} event event name triggered
+   * @param {string} id page id
    * @param {string} path path triggered the event
    * @param {User} triggeredBy user triggered the event
    * @param {{ comment: Comment, oldPath: string }} _ event specific vars
    *
    * @return  {string} slack attachment body
    */
-  generateAttachmentBody(event, path, triggeredBy, { comment, oldPath }) {
+  generateAttachmentBody(event, id, path, triggeredBy, { comment, oldPath }) {
     const attachmentBody = '';
 
     // TODO: create attachment
