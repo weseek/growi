@@ -10,6 +10,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import ProxyUrlForm from './ProxyUrlForm';
 
 const logger = loggerFactory('growi:SlackBotSettings');
 
@@ -99,6 +100,8 @@ const CustomBotWithProxySettings = (props) => {
         }
         isSlackScopeSet
       />
+
+      <ProxyUrlForm />
 
       <div className="form-group row my-4">
         <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
