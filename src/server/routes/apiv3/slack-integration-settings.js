@@ -55,10 +55,6 @@ module.exports = (crowi) => {
       body('currentBotType')
         .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
     ],
-    NotificationTestToSlackWorkSpace: [
-      body('channel').trim().not().isEmpty()
-        .isString(),
-    ],
     AccessTokens: [
       body('tokenGtoP').trim().not().isEmpty()
         .isString()
@@ -69,6 +65,10 @@ module.exports = (crowi) => {
     ],
     RelationTest: [
       body('slackappintegrationsId').isMongoId(),
+    ],
+    Channel: [
+      body('channel').trim().not().isEmpty()
+        .isString(),
     ],
   };
 
@@ -498,7 +498,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to connect to slack work space.
    */
-  router.post('/without-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.post('/without-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.Channel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Select Without Proxy Type';
