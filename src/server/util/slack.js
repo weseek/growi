@@ -38,6 +38,11 @@ module.exports = function(crowi) {
         resolve();
       }
       catch (err) {
+        console.log(`
+        ===========================================
+        ${err}
+        ===========================================
+        `);
         debug('Post error', err);
         debug('Sent data to slack is:', messageObj);
         return reject(err);
