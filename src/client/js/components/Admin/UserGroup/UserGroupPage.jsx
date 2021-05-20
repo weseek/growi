@@ -1,7 +1,5 @@
 import React, { Fragment } from 'react';
 
-import { PaginationWrapper } from '~/components/PaginationWrapper';
-
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
@@ -16,17 +14,13 @@ class UserGroupPage extends React.Component {
 
     this.state = {
       userGroups: [],
-      userGroupRelations: {},
+      userGroupRelations: [],
       selectedUserGroup: undefined, // not null but undefined (to use defaultProps in UserGroupDeleteModal)
       isDeleteModalShow: false,
-      activePage: 1,
-      totalUserGroups: 0,
-      pagingLimit: Infinity,
     };
 
     this.xss = window.xss;
 
-    this.handlePage = this.handlePage.bind(this);
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
     this.addUserGroup = this.addUserGroup.bind(this);
@@ -100,35 +94,14 @@ class UserGroupPage extends React.Component {
     }
   }
 
-  async handlePage(selectedPage) {
-    await this.setState({ activePage: selectedPage });
-    await this.syncUserGroupAndRelations();
-  }
-
   async syncUserGroupAndRelations() {
-    let userGroups = [];
-    let userGroupRelations = {};
-    let totalUserGroups = 0;
-    let pagingLimit = Infinity;
-
     try {
-      const params = { page: this.state.activePage };
-      const responses = await Promise.all([
-        apiv3Get('/user-groups', params),
-        apiv3Get('/user-group-relations', params),
-      ]);
-
-      const [userGroupsRes, userGroupRelationsRes] = responses;
-      userGroups = userGroupsRes.data.userGroups;
-      totalUserGroups = userGroupsRes.data.totalUserGroups;
-      pagingLimit = userGroupsRes.data.pagingLimit;
-      userGroupRelations = userGroupRelationsRes.data.userGroupRelations;
+      const userGroupsRes = await apiv3Get('/user-groups', { pagination: false });
+      const userGroupRelationsRes = await apiv3Get('/user-group-relations');
 
       this.setState({
-        userGroups,
-        userGroupRelations,
-        totalUserGroups,
-        pagingLimit,
+        userGroups: userGroupsRes.data.userGroups,
+        userGroupRelations: userGroupRelationsRes.data.userGroupRelations,
       });
     }
     catch (err) {
@@ -153,17 +126,6 @@ class UserGroupPage extends React.Component {
           onDelete={this.showDeleteModal}
           userGroupRelations={this.state.userGroupRelations}
         />
-        {this.state.userGroups.length === 0
-        ? <p>No groups yet</p> : (
-          <PaginationWrapper
-            activePage={this.state.activePage}
-            changePage={this.handlePage}
-            totalItemsCount={this.state.totalUserGroups}
-            pagingLimit={this.state.pagingLimit}
-            align="center"
-            size="sm"
-          />
-        )}
         <UserGroupDeleteModal
           userGroups={this.state.userGroups}
           deleteUserGroup={this.state.selectedUserGroup}

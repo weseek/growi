@@ -1,14 +1,13 @@
 import loggerFactory from '~/utils/logger';
 
-import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
+const { serializeUserGroupRelationSecurely } = require('../../models/serializers/user-group-relation-serializer');
 
 const router = express.Router();
 
@@ -43,26 +42,12 @@ module.exports = (crowi) => {
    *                      description: contains arrays user objects related
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    // TODO: filter with querystring? or body
     try {
-      const page = parseInt(req.query.page) || 1;
-      const result = await UserGroup.findUserGroupsWithPagination({ page });
-      // const pager = createPager(result.total, result.limit, result.page, result.pages, MAX_PAGE_LIST);
-      const userGroups = result.docs;
+      const relations = await UserGroupRelation.find().populate('relatedUser');
 
-      const userGroupRelationsObj = {};
-      await Promise.all(userGroups.map(async(userGroup) => {
-        const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
-        userGroupRelationsObj[userGroup._id] = userGroupRelations.map((userGroupRelation) => {
-          return serializeUserSecurely(userGroupRelation.relatedUser);
-        });
-      }));
+      const serialized = relations.map(relation => serializeUserGroupRelationSecurely(relation));
 
-      const data = {
-        userGroupRelations: userGroupRelationsObj,
-      };
-
-      return res.apiv3(data);
+      return res.apiv3({ userGroupRelations: serialized });
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group relations';

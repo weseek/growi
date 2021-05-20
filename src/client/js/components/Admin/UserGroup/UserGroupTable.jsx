@@ -12,17 +12,41 @@ class UserGroupTable extends React.Component {
 
     this.state = {
       userGroups: this.props.userGroups,
-      userGroupRelations: this.props.userGroupRelations,
+      userGroupMap: {},
     };
 
+    this.generateUserGroupMap = this.generateUserGroupMap.bind(this);
     this.onDelete = this.onDelete.bind(this);
   }
 
+  componentWillMount() {
+    const userGroupMap = this.generateUserGroupMap(this.props.userGroups, this.props.userGroupRelations);
+    this.setState({ userGroupMap });
+  }
+
   componentWillReceiveProps(nextProps) {
+    const { userGroups, userGroupRelations } = nextProps;
+    const userGroupMap = this.generateUserGroupMap(userGroups, userGroupRelations);
+
     this.setState({
-      userGroups: nextProps.userGroups,
-      userGroupRelations: nextProps.userGroupRelations,
+      userGroups,
+      userGroupMap,
     });
+  }
+
+  generateUserGroupMap(userGroups, userGroupRelations) {
+    const userGroupMap = {};
+    userGroupRelations.forEach((relation) => {
+      const group = relation.relatedGroup;
+
+      const users = userGroupMap[group] || [];
+      users.push(relation.relatedUser);
+
+      // register
+      userGroupMap[group] = users;
+    });
+
+    return userGroupMap;
   }
 
   onDelete(e) {
@@ -53,6 +77,8 @@ class UserGroupTable extends React.Component {
           </thead>
           <tbody>
             {this.state.userGroups.map((group) => {
+              const users = this.state.userGroupMap[group._id];
+
               return (
                 <tr key={group._id}>
                   {this.props.isAclEnabled
@@ -65,7 +91,7 @@ class UserGroupTable extends React.Component {
                   }
                   <td>
                     <ul className="list-inline">
-                      {this.state.userGroupRelations[group._id].map((user) => {
+                      {users != null && users.map((user) => {
                         return <li key={user._id} className="list-inline-item badge badge-pill badge-warning">{this.xss.process(user.username)}</li>;
                       })}
                     </ul>
@@ -113,7 +139,7 @@ UserGroupTable.propTypes = {
   t: PropTypes.func.isRequired, // i18next
 
   userGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
-  userGroupRelations: PropTypes.object.isRequired,
+  userGroupRelations: PropTypes.arrayOf(PropTypes.object).isRequired,
   isAclEnabled: PropTypes.bool.isRequired,
   onDelete: PropTypes.func.isRequired,
 };

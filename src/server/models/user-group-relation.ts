@@ -134,33 +134,6 @@ class UserGroupRelation extends Model {
   }
 
   /**
-   * find all entities with pagination
-   *
-   * @see https://github.com/edwardhotchkiss/mongoose-paginate
-   *
-   * @static
-   * @param {UserGroup} userGroup
-   * @param {any} opts mongoose-paginate options object
-   * @returns {Promise<any>} mongoose-paginate result object
-   * @memberof UserGroupRelation
-   */
-  static findUserGroupRelationsWithPagination(userGroup, opts) {
-    const query = { relatedGroup: userGroup };
-    const options = Object.assign({}, opts);
-    if (options.page == null) {
-      options.page = 1;
-    }
-    if (options.limit == null) {
-      options.limit = UserGroupRelation.PAGE_ITEMS;
-    }
-
-    return this.paginate(query, options)
-      .catch((err) => {
-        debug('Error on pagination:', err);
-      });
-  }
-
-  /**
    * count by related group id and related user
    *
    * @static
