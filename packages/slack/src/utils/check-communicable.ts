@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-import { WebClient } from '@slack/web-api';
+import { WebClient, WebAPICallResult } from '@slack/web-api';
 
 import { generateWebClient } from './webclient-factory';
 import { ConnectionStatus } from '../interfaces/connection-status';
@@ -40,20 +40,6 @@ const testSlackApiServer = async(client: WebClient): Promise<void> => {
     throw new Error(result.error);
   }
 };
-
-/**
-* Test Slack Auth
-* @param token A bot OAuth token
-*/
-const testSlackAuth = async(client: WebClient): Promise<void> => {
-  const result = await client.auth.test();
-
-  if (!result.ok) {
-    throw new Error(result.error);
-  }
-
-  return result;
-}
 
 /**
  * Retrieve Slack workspace name
@@ -104,16 +90,44 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
   return Object.fromEntries(await map);
 };
 
-
+/**
+* Test Slack Auth
+* @param client
+*/
+const testSlackAuth = async(client: WebClient): Promise<WebAPICallResult> => {
+  const result = await client.auth.test();
+  if (!result.ok) {
+    throw new Error(result.error);
+  }
+  return result;
+}
 
 /**
+* Post Message to Slack
+* @param client
+*/
+const postMessage = async (client: WebClient, channel: string, text: string): Promise<WebAPICallResult> => {
+  const result = await client.chat.postMessage({
+      channel: `#${channel}`,
+      text,
+    })
+  if (!result.ok) {
+    throw new Error(result.error);
+  }
+  return result;
+}
+
+/**
+ * Test Slack Bot Connection
  * @param token bot OAuth token
  * @returns
  */
-export const relationTestToSlack = async(token:string): Promise<void> => {
+export const relationTestToSlack = async (token: string, channel: string): Promise<{a: WebAPICallResult, b:WebAPICallResult }> => {
   const client = generateWebClient(token);
-  // TODO GW-6002 fire chat.postMessage
-  await testSlackApiServer(client);
+  const text = 'Your test was successful!';
+  const a = await testSlackAuth(client);
+  const b = await postMessage(client, channel, text);
+  console.log(a);
+  console.log(b);
+  return { a, b };
 };
-
-
