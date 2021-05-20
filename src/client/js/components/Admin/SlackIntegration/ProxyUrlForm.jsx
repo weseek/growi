@@ -26,7 +26,6 @@ const ProxyUrlFrom = (props) => {
   );
 };
 
-
 ProxyUrlFrom.propTypes = {
   proxyUri: PropTypes.string,
   setProxyUri: PropTypes.func.isRequired,
