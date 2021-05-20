@@ -112,11 +112,11 @@ export class GrowiToSlackCtrl {
 
     logger.debug('relation test is success', order);
 
-    // TODO GW-5864 issue relation
+    const createdRelation = await this.relationRepository.save({
+      installation: order.installation, tokenGtoP: order.growiAccessToken, tokenPtoG: order.proxyAccessToken, growiUri: order.growiUrl,
+    });
 
-    // return order temporary
-    // TODO return new relation
-    return res.send({ order });
+    return res.send({ relation: createdRelation });
   }
 
 }
