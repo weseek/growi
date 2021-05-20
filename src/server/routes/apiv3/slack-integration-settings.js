@@ -68,6 +68,9 @@ module.exports = (crowi) => {
         .isString()
         .isLength({ min: 1 }),
     ],
+    RelationTest: [
+      body('slackappintegrationsId').isMongoId(),
+    ],
   };
 
   async function resetAllBotSettings() {
@@ -94,6 +97,18 @@ module.exports = (crowi) => {
     const result = await axios.get(urljoin(proxyUri, '/g2s/connection-status'), {
       headers: {
         'x-growi-gtop-tokens': csv,
+      },
+    });
+
+    return result.data;
+  }
+
+  async function postRelationTest(token) {
+    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
+
+    const result = await axios.get(urljoin(proxyUri, '/g2s/relation-test'), {
+      headers: {
+        'x-growi-gtop-tokens': token,
       },
     });
 
@@ -473,6 +488,52 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
     }
 
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/with-proxy/relation-test:
+   *      post:
+   *        tags: [botType]
+   *        operationId: postRelationTest
+   *        summary: /slack-integration/bot-type
+   *        description: Delete botType setting.
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  slackappintegrationsId:
+   *                    type: string
+   *        responses:
+   *           200:
+   *             description: Succeeded to delete botType setting.
+   */
+  router.post('/with-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.RelationTest, apiV3FormValidator, async(req, res) => {
+    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    if (currentBotType === 'customBotWithoutProxy') {
+      const msg = 'Not Proxy Type';
+      return res.apiv3Err(new ErrorV3(msg, 'not-proxy-type'), 400);
+    }
+
+    const { slackappintegrationsId } = req.body;
+
+    try {
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackappintegrationsId });
+      if (slackAppIntegration == null) {
+        const msg = 'Could not find SlackAppIntegration by id';
+        return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
+      }
+      const response = await postRelationTest(slackAppIntegration.tokenGtoP);
+
+      return res.apiv3({ response });
+    }
+    catch (error) {
+      const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+    }
   });
 
   return router;

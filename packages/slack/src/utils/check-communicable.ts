@@ -91,17 +91,11 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
 };
 
 /**
- * Test Slack Auth
- * @param token A bot OAuth token
+ * @param token bot OAuth token
  * @returns
  */
-export const testSlackAuth = async(token: string): Promise<WebAPICallResult> => {
+export const relationTestToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
-  const result = await client.auth.test();
-
-  if (!result.ok) {
-    throw new Error(result.error);
-  }
-
-  return result;
+  // TODO GW-6002 fire chat.postMessage
+  await testSlackApiServer(client);
 };
