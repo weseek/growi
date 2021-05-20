@@ -19,7 +19,7 @@ const ProxyUrlFrom = (props) => {
         />
       </div>
       <div className="col-md-2 mt-3 text-center text-md-left">
-        <button type="button" className="btn btn-primary" onClick={props.updateProxyUri} disabled={false}>{ t('Update') }</button>
+        <button type="button" className="btn btn-primary" onClick={props.updateProxyUri}>{ t('Update') }</button>
       </div>
     </div>
   );
