@@ -199,7 +199,7 @@ const SlackIntegration = (props) => {
                 <BotTypeCard
                   botType={botType}
                   isActive={currentBotType === botType}
-                  botTypeSelectHandler={botTypeSelectHandler}
+                  onBotTypeSelectHandler={botTypeSelectHandler}
                 />
               </div>
             );

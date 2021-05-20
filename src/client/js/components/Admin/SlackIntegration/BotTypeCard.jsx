@@ -35,7 +35,7 @@ const BotTypeCard = (props) => {
   return (
     <div
       className={`card admin-bot-card rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
-      onClick={() => props.botTypeSelectHandler(botDetails[props.botType].botType)}
+      onClick={() => props.onBotTypeSelectHandler(botDetails[props.botType].botType)}
       role="button"
       key={props.botType}
     >
@@ -87,7 +87,7 @@ const BotTypeCard = (props) => {
 BotTypeCard.propTypes = {
   isActive: PropTypes.bool.isRequired,
   botType: PropTypes.string.isRequired,
-  botTypeSelectHandler: PropTypes.func.isRequired,
+  onBotTypeSelectHandler: PropTypes.func.isRequired,
 };
 
 export default BotTypeCard;
