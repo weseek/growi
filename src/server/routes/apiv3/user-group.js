@@ -279,9 +279,10 @@ module.exports = (crowi) => {
       const userGroup = await UserGroup.findById(id);
       const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
 
-      const users = userGroupRelations.map((userGroupRelation) => {
+      const serializeUsers = userGroupRelations.map((userGroupRelation) => {
         return serializeUserSecurely(userGroupRelation.relatedUser);
       });
+      const users = serializeUsers.filter(user => user != null);
 
       return res.apiv3({ users });
     }
