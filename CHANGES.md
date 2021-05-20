@@ -1,7 +1,10 @@
 # CHANGES
 
 ## v4.2.18-RC
+
 * Feature: Cobvertible page contents width.
+* Support: Upgrade libs
+    * @google-cloud/storage
 
 ## v4.2.17
 
@@ -60,7 +63,7 @@
 
 ## v4.2.10
 
-* Feature: Staff Credits for apps on GROWI.cloud 
+* Feature: Staff Credits for apps on GROWI.cloud
 * Improvement: Hackmd button behavior when disabled
 * Improvement: Layout of comparing revisions
 * Fix: Empty trash is not working
