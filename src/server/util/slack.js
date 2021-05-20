@@ -29,22 +29,20 @@ module.exports = function(crowi) {
     });
   };
 
-  const postWithWebApi = function(messageObj) {
-    return new Promise((resolve, reject) => {
-      const client = new WebClient(configManager.getConfig('notification', 'slack:token'));
-      // stringify attachments
-      if (messageObj.attachments != null) {
-        messageObj.attachments = JSON.stringify(messageObj.attachments);
-      }
-      client.chat.postMessage(messageObj, (err, res) => {
-        if (err) {
-          debug('Post error', err, res);
-          debug('Sent data to slack is:', messageObj);
-          return reject(err);
-        }
-        resolve(res);
-      });
-    });
+  const postWithWebApi = async(messageObj) => {
+    const client = new WebClient(configManager.getConfig('notification', 'slack:token'));
+    // stringify attachments
+    if (messageObj.attachments != null) {
+      messageObj.attachments = JSON.stringify(messageObj.attachments);
+    }
+    try {
+      await client.chat.postMessage(messageObj);
+    }
+    catch (error) {
+      debug('Post error', error);
+      debug('Sent data to slack is:', messageObj);
+      throw error;
+    }
   };
 
   const convertMarkdownToMarkdown = function(body) {
