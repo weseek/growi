@@ -78,25 +78,10 @@ const SlackIntegration = (props) => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-  const handleBotTypeSelect = (clickedBotType) => {
-    if (clickedBotType === currentBotType) {
-      return;
-    }
-    if (currentBotType === null) {
-      setCurrentBotType(clickedBotType);
-      return;
-    }
-    setSelectedBotType(clickedBotType);
-  };
-
-  const cancelBotChangeHandler = () => {
-    setSelectedBotType(null);
-  };
-
-  const changeCurrentBotSettingsHandler = async() => {
+  const changeCurrentBotSettings = async(botType) => {
     try {
       const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-        currentBotType: selectedBotType,
+        currentBotType: botType,
       });
       setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
@@ -105,11 +90,29 @@ const SlackIntegration = (props) => {
       setSlackBotToken(null);
       setIsSendTestMessage(false);
       setSlackWSNameInWithoutProxy(null);
-      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
     catch (err) {
       toastError(err);
     }
+  };
+
+  const botTypeSelectHandler = async(botType) => {
+    if (botType === currentBotType) {
+      return;
+    }
+    if (currentBotType == null) {
+      return changeCurrentBotSettings(botType);
+    }
+    setSelectedBotType(botType);
+  };
+
+  const changeCurrentBotSettingsHandler = async() => {
+    changeCurrentBotSettings(selectedBotType);
+    toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+  };
+
+  const cancelBotChangeHandler = () => {
+    setSelectedBotType(null);
   };
 
   let settingsComponent = null;
@@ -188,7 +191,7 @@ const SlackIntegration = (props) => {
                 <BotTypeCard
                   botType={botType}
                   isActive={currentBotType === botType}
-                  handleBotTypeSelect={handleBotTypeSelect}
+                  onBotTypeSelectHandler={botTypeSelectHandler}
                 />
               </div>
             );
