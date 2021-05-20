@@ -78,10 +78,10 @@ const SlackIntegration = (props) => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-  const changeCurrentBotSettings = async() => {
+  const changeCurrentBotSettings = async(clickedBotType) => {
     try {
       const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-        currentBotType: selectedBotType,
+        currentBotType: selectedBotType || clickedBotType,
       });
       setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
@@ -90,7 +90,6 @@ const SlackIntegration = (props) => {
       setSlackBotToken(null);
       setIsSendTestMessage(false);
       setSlackWSNameInWithoutProxy(null);
-      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
     catch (err) {
       toastError(err);
@@ -101,22 +100,15 @@ const SlackIntegration = (props) => {
     if (clickedBotType === currentBotType) {
       return;
     }
-    if (currentBotType === null) {
-      try {
-        await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-          currentBotType: clickedBotType,
-        });
-      }
-      catch (error) {
-        toastError(error);
-      }
-      return setCurrentBotType(clickedBotType);
+    if (currentBotType == null) {
+      return changeCurrentBotSettings(clickedBotType);
     }
     setSelectedBotType(clickedBotType);
   };
 
   const changeCurrentBotSettingsHandler = async() => {
     changeCurrentBotSettings();
+    toastSuccess(t('admin:slack_integration.bot_reset_successful'));
   };
 
   const cancelBotChangeHandler = () => {
