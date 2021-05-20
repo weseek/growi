@@ -108,16 +108,16 @@ const testSlackAuth = async(client: WebClient): Promise<WebAPICallResult> => {
 * @param channel channel name
 * @param text message to send to Slack channel
 */
-const postMessage = async(client: WebClient, channel: string, text: string): Promise<WebAPICallResult> => {
+const postMessage = async (client: WebClient, channel: string, text: string): Promise<WebAPICallResult> => {
   const result = await client.chat.postMessage({
     channel: `#${channel}`,
     text,
   });
   if (!result.ok) {
     throw new Error(result.error);
-  };
+  }
   return result;
-}
+};
 
 /**
  * Test Slack Bot Connection
@@ -125,7 +125,7 @@ const postMessage = async(client: WebClient, channel: string, text: string): Pro
  * @param channel channel name
  * @returns
  */
- export const relationTestToSlack = async(token:string): Promise<void> => {
+export const relationTestToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
   await testSlackApiServer(client);
 };
@@ -136,11 +136,10 @@ const postMessage = async(client: WebClient, channel: string, text: string): Pro
  * @param channel channel name
  * @returns
  */
-export const pingSlack =
-  async(token: string, channel: string): Promise<{testSlackAuthResponse: WebAPICallResult, postMessageResponse: WebAPICallResult}> => {
-    const client = generateWebClient(token);
-    const text = 'Your test was successful!';
-    const testSlackAuthResponse = await testSlackAuth(client);
-    const postMessageResponse = await postMessage(client, channel, text);
-    return { testSlackAuthResponse, postMessageResponse };
-  };
+export const pingSlack = async(token: string, channel: string): Promise<{testSlackAuthResponse: WebAPICallResult, postMessageResponse: WebAPICallResult}> => {
+  const client = generateWebClient(token);
+  const text = 'Your test was successful!';
+  const testSlackAuthResponse = await testSlackAuth(client);
+  const postMessageResponse = await postMessage(client, channel, text);
+  return { testSlackAuthResponse, postMessageResponse };
+};
