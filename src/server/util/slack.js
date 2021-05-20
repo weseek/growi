@@ -1,4 +1,4 @@
-chanconst debug = require('debug')('growi:util:slack');
+const debug = require('debug')('growi:util:slack');
 const urljoin = require('url-join');
 
 /**
