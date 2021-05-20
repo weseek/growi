@@ -78,30 +78,7 @@ const SlackIntegration = (props) => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-  const handleBotTypeSelect = async(clickedBotType) => {
-    if (clickedBotType === currentBotType) {
-      return;
-    }
-    if (currentBotType === null) {
-      try {
-        await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-          currentBotType: clickedBotType,
-        });
-      }
-      catch (error) {
-        toastError(error);
-      }
-      return setCurrentBotType(clickedBotType);
-    }
-
-    setSelectedBotType(clickedBotType);
-  };
-
-  const cancelBotChangeHandler = () => {
-    setSelectedBotType(null);
-  };
-
-  const changeCurrentBotSettingsHandler = async() => {
+  const changeCurrentBotSettings = async() => {
     try {
       const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
         currentBotType: selectedBotType,
@@ -118,6 +95,32 @@ const SlackIntegration = (props) => {
     catch (err) {
       toastError(err);
     }
+  };
+
+  const botTypeSelectHandler = async(clickedBotType) => {
+    if (clickedBotType === currentBotType) {
+      return;
+    }
+    if (currentBotType === null) {
+      try {
+        await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
+          currentBotType: clickedBotType,
+        });
+      }
+      catch (error) {
+        toastError(error);
+      }
+      return setCurrentBotType(clickedBotType);
+    }
+    setSelectedBotType(clickedBotType);
+  };
+
+  const changeCurrentBotSettingsHandler = async(clickedBotType) => {
+    changeCurrentBotSettings(clickedBotType);
+  };
+
+  const cancelBotChangeHandler = () => {
+    setSelectedBotType(null);
   };
 
   let settingsComponent = null;
@@ -196,7 +199,7 @@ const SlackIntegration = (props) => {
                 <BotTypeCard
                   botType={botType}
                   isActive={currentBotType === botType}
-                  handleBotTypeSelect={handleBotTypeSelect}
+                  botTypeSelectHandler={botTypeSelectHandler}
                 />
               </div>
             );
