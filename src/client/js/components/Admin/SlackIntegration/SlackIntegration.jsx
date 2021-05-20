@@ -115,8 +115,8 @@ const SlackIntegration = (props) => {
     setSelectedBotType(clickedBotType);
   };
 
-  const changeCurrentBotSettingsHandler = async(clickedBotType) => {
-    changeCurrentBotSettings(clickedBotType);
+  const changeCurrentBotSettingsHandler = async() => {
+    changeCurrentBotSettings();
   };
 
   const cancelBotChangeHandler = () => {
