@@ -1,6 +1,7 @@
 import {
   Controller, Get, Inject, Req, Res, UseBefore,
 } from '@tsed/common';
+import axios from 'axios';
 
 import { WebAPICallResult } from '@slack/web-api';
 
@@ -96,6 +97,16 @@ export class GrowiToSlackCtrl {
 
     if (order == null || order.isExpired()) {
       return res.status(400).send({ message: 'order has expired or does not exist.' });
+    }
+
+    try {
+      const url = new URL('/_api/v3/slack-integration/proxied/commands', order.growiUrl);
+      await axios.post(url.toString(), {
+        tokenPtoG: order.growiAccessToken,
+      });
+    }
+    catch (err) {
+      logger.error(err);
     }
 
     logger.debug('order found', order);
