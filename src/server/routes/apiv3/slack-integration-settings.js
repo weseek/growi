@@ -6,7 +6,7 @@ const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
 const { getConnectionStatuses, relationTestToSlack } = require('@growi/slack');
-const { WebClient, ErrorCode, LogLevel } = require('@slack/web-api');
+const { WebClient, ErrorCode } = require('@slack/web-api');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -246,16 +246,13 @@ module.exports = (crowi) => {
    */
   router.post('/without-proxy/test-connection', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.TestConnection, apiV3FormValidator,
     async(req, res) => {
-      // const { configManager } = crowi;
-      // const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
       const { channel } = req.body;
       const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
       this.client = new WebClient(slackBotToken);
       logger.debug('SlackBot: setup is done');
 
       try {
-        const response = await relationTestToSlack(slackBotToken, channel);
-        console.log(response);
+        await relationTestToSlack(slackBotToken, channel);
         logger.info(`SlackTest: send success massage to slack work space at #${channel}.`);
         logger.info(`If you do not receive a message, you may not have invited the bot to the #${channel} channel.`);
         // eslint-disable-next-line max-len
@@ -263,7 +260,6 @@ module.exports = (crowi) => {
         return res.apiv3({ message });
       }
       catch (error) {
-        console.log(error);
         const errorMessage = error.data.error;
         const errorCode = error.code;
         logger.error('Error', error);
