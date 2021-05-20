@@ -1,4 +1,4 @@
-const debug = require('debug')('growi:util:slack');
+chanconst debug = require('debug')('growi:util:slack');
 const urljoin = require('url-join');
 
 /**
@@ -14,42 +14,18 @@ module.exports = function(crowi) {
 
   const slack = {};
 
-  // const postWithIwh = function(messageObj) {
-  //   return new Promise((resolve, reject) => {
-  //     const client = new Slack();
-  //     client.setWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
-  //     client.webhook(messageObj, (err, res) => {
-  //       if (err) {
-  //         debug('Post error', err, res);
-  //         debug('Sent data to slack is:', messageObj);
-  //         return reject(err);
-  //       }
-  //       resolve(res);
-  //     });
-  //   });
-  // };
-
-  const postWithIwh = (messageObj) => {
-    return new Promise(async(resolve, reject) => {
-
-      const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
-      try {
-        await webhook.send(messageObj);
-        resolve();
-      }
-      catch (err) {
-        console.log(`
-        ===========================================
-        ${err}
-        ===========================================
-        `);
-        debug('Post error', err);
-        debug('Sent data to slack is:', messageObj);
-        return reject(err);
-      }
-    });
+  const postWithIwh = async(messageObj) => {
+    const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
+    try {
+      await webhook.send(messageObj);
+      return { status: 'ok' };
+    }
+    catch (error) {
+      debug('Post error', error);
+      debug('Sent data to slack is:', messageObj);
+      throw error;
+    }
   };
-
 
   const postWithWebApi = function(messageObj) {
     return new Promise((resolve, reject) => {
