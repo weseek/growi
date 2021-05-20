@@ -106,6 +106,8 @@ export const testSlackAuth = async(client: WebClient): Promise<WebAPICallResult>
 /**
 * Post Message to Slack
 * @param client
+* @param channel channel name
+* @param text message to send to Slack channel
 */
 export const postMessage = async(client: WebClient, channel: string, text: string): Promise<WebAPICallResult> => {
   const result = await client.chat.postMessage({
@@ -122,6 +124,7 @@ export const postMessage = async(client: WebClient, channel: string, text: strin
 /**
  * Test Slack Bot Connection
  * @param token bot OAuth token
+ * @param channel channel name
  * @returns
  */
 export const relationTestToSlack = async(token: string, channel: string): Promise<{testSlackAuthResponse: WebAPICallResult, postMessageResponse:WebAPICallResult }> => {
