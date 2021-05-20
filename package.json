@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.2.17-RC",
+  "version": "4.2.18-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -80,6 +80,7 @@
     "@promster/express": "^5.0.1",
     "@promster/server": "^6.0.0",
     "@slack/webhook": "^6.0.0",
+    "@slack/web-api": "^6.2.3",
     "JSONStream": "^1.3.5",
     "archiver": "^3.1.1",
     "array.prototype.flatmap": "^1.2.2",

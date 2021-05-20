@@ -1,14 +1,15 @@
 # CHANGES
 
-## v4.2.18
+## v4.2.18-RC
 * Feature: Cobvertible page contents width.
-## v4.2.17-RC
+
+## v4.2.17
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
 * Improvement: Hide Sidebar at shared pages
 * Fix: No unsaved alert is displayed without difference the latest markdown and editor value
 
-## v4.2.16-RC
+## v4.2.16
 
 * Fix: "Only inside the group" causes an error
     * Introduced by v4.2.15
@@ -59,7 +60,7 @@
 
 ## v4.2.10
 
-* Feature: Staff Credits for apps on GROWI.cloud 
+* Feature: Staff Credits for apps on GROWI.cloud
 * Improvement: Hackmd button behavior when disabled
 * Improvement: Layout of comparing revisions
 * Fix: Empty trash is not working
