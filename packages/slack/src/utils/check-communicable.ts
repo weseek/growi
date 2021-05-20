@@ -11,7 +11,7 @@ import { ConnectionStatus } from '../interfaces/connection-status';
  * @param serverUri Server URI to connect
  * @returns AxiosError when error is occured
  */
-export const connectToHttpServer = async(serverUri: string): Promise<void | AxiosError> => {
+export const connectToHttpServer = async(serverUri: string): Promise<void|AxiosError> => {
   try {
     await axios.get(serverUri, { maxRedirects: 0, timeout: 3000 });
   }
@@ -25,7 +25,7 @@ export const connectToHttpServer = async(serverUri: string): Promise<void | Axio
  *
  * @returns AxiosError when error is occured
  */
-export const connectToSlackApiServer = async(): Promise<void | AxiosError> => {
+export const connectToSlackApiServer = async(): Promise<void|AxiosError> => {
   return connectToHttpServer('https://slack.com/api/');
 };
 
