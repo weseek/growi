@@ -81,7 +81,7 @@ const SlackIntegration = (props) => {
   const changeCurrentBotSettings = async(botType) => {
     try {
       const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
-        currentBotType: selectedBotType || botType,
+        currentBotType: botType,
       });
       setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
@@ -107,7 +107,7 @@ const SlackIntegration = (props) => {
   };
 
   const changeCurrentBotSettingsHandler = async() => {
-    changeCurrentBotSettings();
+    changeCurrentBotSettings(selectedBotType);
     toastSuccess(t('admin:slack_integration.bot_reset_successful'));
   };
 
