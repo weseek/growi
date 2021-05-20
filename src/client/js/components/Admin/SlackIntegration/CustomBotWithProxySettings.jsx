@@ -66,6 +66,19 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
+  const updateProxyUri = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+        proxyUri,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  };
+
   return (
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
@@ -91,6 +104,7 @@ const CustomBotWithProxySettings = (props) => {
       <ProxyUrlForm
         proxyUri={proxyUri}
         setProxyUri={setProxyUri}
+        updateProxyUri={updateProxyUri}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
