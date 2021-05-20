@@ -115,6 +115,11 @@
     }
   },
   "customize_setting": {
+    "layout": "レイアウト",
+    "layout_options": {
+      "default": "デフォルトのコンテンツ幅",
+      "expanded": "コンテンツ幅 100%"
+    },
     "theme": "テーマ",
     "theme_desc": {
       "light_and_dark": "Light/Dark モード選択あり",

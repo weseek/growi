@@ -16,7 +16,7 @@ export class Order {
   readonly updatedAt: Date;
 
   @ManyToOne(() => Installation)
-  readonly installation: number;
+  readonly installation: Installation;
 
   @Column({ nullable: true, default: false })
   isCompleted?: boolean;

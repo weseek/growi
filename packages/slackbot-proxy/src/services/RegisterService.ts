@@ -66,16 +66,16 @@ export class RegisterService implements GrowiCommandProcessor {
     const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
     const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
 
-    const order = await orderRepository.findOne({ installation: installation?.id, growiUrl: inputGrowiUrl });
+    const order = await orderRepository.findOne({ installation, growiUrl: inputGrowiUrl });
     if (order != null) {
       orderRepository.update(
-        { installation: installation?.id, growiUrl: inputGrowiUrl },
+        { installation, growiUrl: inputGrowiUrl },
         { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
       );
     }
     else {
       orderRepository.save({
-        installation: installation?.id, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
+        installation, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
       });
     }
   }

@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 
 import loggerFactory from '@alias/logger';
 import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import AppContainer from '../../../services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastError } from '../../../util/apiNotification';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import CustomizeLayoutSetting from './CustomizeThemeSetting';
+import CustomizeLayoutSetting from './CustomizeLayoutSetting';
+import CustomizeThemeSetting from './CustomizeThemeSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeHighlightSetting from './CustomizeHighlightSetting';
 import CustomizeCssSetting from './CustomizeCssSetting';
@@ -22,7 +24,7 @@ const logger = loggerFactory('growi:services:AdminCustomizePage');
 
 let retrieveErrors = null;
 function Customize(props) {
-  const { adminCustomizeContainer } = props;
+  const { appContainer, adminCustomizeContainer } = props;
 
   if (adminCustomizeContainer.state.currentTheme === adminCustomizeContainer.dummyCurrentTheme) {
     throw (async() => {
@@ -46,7 +48,10 @@ function Customize(props) {
   return (
     <Fragment>
       <div className="mb-5">
-        <CustomizeLayoutSetting />
+        <CustomizeLayoutSetting appContainer={appContainer} />
+      </div>
+      <div className="mb-5">
+        <CustomizeThemeSetting />
       </div>
       <div className="mb-5">
         <CustomizeFunctionSetting />
@@ -70,9 +75,10 @@ function Customize(props) {
   );
 }
 
-const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AdminCustomizeContainer]);
+const CustomizePageWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(Customize), [AppContainer, AdminCustomizeContainer]);
 
 Customize.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminCustomizeContainer: PropTypes.instanceOf(AdminCustomizeContainer).isRequired,
 };
 
