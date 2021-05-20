@@ -18,7 +18,6 @@ module.exports = function(crowi) {
     const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
     try {
       await webhook.send(messageObj);
-      return { status: 'ok' };
     }
     catch (error) {
       debug('Post error', error);
