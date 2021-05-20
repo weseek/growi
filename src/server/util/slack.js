@@ -8,25 +8,22 @@ const urljoin = require('url-join');
 /* eslint-disable no-use-before-define */
 
 module.exports = function(crowi) {
-  const Slack = require('slack-node');
+  const { IncomingWebhook } = require('@slack/webhook');
   const { WebClient } = require('@slack/web-api');
   const { configManager } = crowi;
 
   const slack = {};
 
-  const postWithIwh = function(messageObj) {
-    return new Promise((resolve, reject) => {
-      const client = new Slack();
-      client.setWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
-      client.webhook(messageObj, (err, res) => {
-        if (err) {
-          debug('Post error', err, res);
-          debug('Sent data to slack is:', messageObj);
-          return reject(err);
-        }
-        resolve(res);
-      });
-    });
+  const postWithIwh = async(messageObj) => {
+    const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
+    try {
+      await webhook.send(messageObj);
+    }
+    catch (error) {
+      debug('Post error', error);
+      debug('Sent data to slack is:', messageObj);
+      throw error;
+    }
   };
 
   const postWithWebApi = async(messageObj) => {
