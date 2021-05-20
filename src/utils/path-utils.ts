@@ -109,4 +109,4 @@ export const encodeSpaces = (path?:string): string | undefined => {
 
   // Encode SPACE and IDEOGRAPHIC SPACE
   return path.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
-}
+};
