@@ -112,6 +112,7 @@ export class GrowiToSlackCtrl {
 
     logger.debug('relation test is success', order);
 
+    // Transaction is not considered because it is used infrequently,
     const createdRelation = await this.relationRepository.save({
       installation: order.installation, tokenGtoP: order.growiAccessToken, tokenPtoG: order.proxyAccessToken, growiUri: order.growiUrl,
     });
