@@ -60,7 +60,7 @@
 
 ## v4.2.10
 
-* Feature: Staff Credits for apps on GROWI.cloud 
+* Feature: Staff Credits for apps on GROWI.cloud
 * Improvement: Hackmd button behavior when disabled
 * Improvement: Layout of comparing revisions
 * Fix: Empty trash is not working
