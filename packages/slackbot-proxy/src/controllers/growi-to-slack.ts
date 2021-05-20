@@ -103,6 +103,8 @@ export class GrowiToSlackCtrl {
       const url = new URL('/_api/v3/slack-integration/proxied/commands', order.growiUrl);
       await axios.post(url.toString(), {
         tokenPtoG: order.growiAccessToken,
+        type: 'url_verification',
+        challenge: 'url verification is successful',
       });
     }
     catch (err) {
