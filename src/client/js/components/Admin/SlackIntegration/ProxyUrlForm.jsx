@@ -1,9 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import loggerFactory from '@alias/logger';
 import { useTranslation } from 'react-i18next';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AppContainer from '../../../services/AppContainer';
 
 const ProxyUrlFrom = (props) => {
+  const { appContainer } = props;
   const { t } = useTranslation();
+  const logger = loggerFactory('growi:SlackBotSettings');
+
+  const updateProxyUri = async() => {
+    const proxyUri = props.proxyUri;
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+        proxyUri,
+      });
+      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  };
 
   return (
     <>
@@ -19,7 +38,7 @@ const ProxyUrlFrom = (props) => {
           />
         </div>
         <div className="col-md-2 mt-3 text-center text-md-left">
-          <button type="button" className="btn btn-primary" onClick={props.updateProxyUri} disabled={false}>{ t('Update') }</button>
+          <button type="button" className="btn btn-primary" onClick={updateProxyUri} disabled={false}>{ t('Update') }</button>
         </div>
       </div>
     </>
@@ -27,9 +46,9 @@ const ProxyUrlFrom = (props) => {
 };
 
 ProxyUrlFrom.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   proxyUri: PropTypes.string,
   setProxyUri: PropTypes.func.isRequired,
-  updateProxyUri: PropTypes.func.isRequired,
 };
 
 export default ProxyUrlFrom;
