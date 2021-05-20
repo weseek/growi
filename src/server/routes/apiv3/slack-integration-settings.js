@@ -438,7 +438,7 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/with-proxy/relation-test:
    *      post:
    *        tags: [botType]
-   *        operationId: postRelationTest
+   *        operationId: postRelationTestWithProxy
    *        summary: /slack-integration/bot-type
    *        description: Delete botType setting.
    *        requestBody:
@@ -484,7 +484,7 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/without-proxy/relation-test:
    *      post:
    *        tags: [botType]
-   *        operationId: postRelationTest
+   *        operationId: postRelationTestWithoutProxy
    *        summary: test the connection
    *        description: Test the connection with slack work space.
    *        requestBody:
