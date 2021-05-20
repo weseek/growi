@@ -55,7 +55,7 @@ module.exports = (crowi) => {
       body('currentBotType')
         .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
     ],
-    TestConnection: [
+    NotificationTestToSlackWorkSpace: [
       body('channel').trim().not().isEmpty()
         .isString(),
     ],
@@ -191,7 +191,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration/:
+   *    /slack-integration-settings/:
    *      put:
    *        tags: [SlackIntegration]
    *        operationId: putSlackIntegration
@@ -229,6 +229,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'), 500);
     }
   });
+
 
   /**
    * @swagger
