@@ -478,12 +478,33 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/without-proxy/relation-test:
+   *      post:
+   *        tags: [botType]
+   *        operationId: postRelationTest
+   *        summary: test the connection
+   *        description: Test the connection with slack work space.
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  testChannel:
+   *                    type: string
+   *        responses:
+   *           200:
+   *             description: Succeeded to connect to slack work space.
+   */
   router.post('/without-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
     }
+
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
       await relationTestToSlack(slackBotToken);
