@@ -76,6 +76,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       // });
       // setConnectionSuccessMessage(res.data.message);
       // onSetIsSendTestMessage(true);
+    }
     catch (err) {
       onSetIsSendTestMessage(false);
       setConnectionErrorCode('dummy-error-code');
