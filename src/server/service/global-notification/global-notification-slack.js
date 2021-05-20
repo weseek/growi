@@ -1,6 +1,8 @@
 const logger = require('@alias/logger')('growi:service:GlobalNotificationSlackService'); // eslint-disable-line no-unused-vars
 const urljoin = require('url-join');
 
+const { encodeSpaces } = require('@commons/util/path-utils');
+
 /**
  * sub service class of GlobalNotificationSetting
  */
@@ -13,14 +15,6 @@ class GlobalNotificationSlackService {
     this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
 
-  encodeSpaces(str) {
-    if (str == null) {
-      return null;
-    }
-
-    // Encode SPACE and IDEOGRAPHIC SPACE
-    return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
-  }
 
   /**
    * send slack global notification
@@ -61,7 +55,7 @@ class GlobalNotificationSlackService {
   generateMessageBody(event, id, path, triggeredBy, { comment, oldPath }) {
     const siteUrl = this.crowi.appService.getSiteUrl();
     const parmaLink = `<${urljoin(siteUrl, id)}|${path}>`;
-    const pathLink = `<${urljoin(siteUrl, this.encodeSpaces(path))}|${path}>`;
+    const pathLink = `<${urljoin(siteUrl, encodeSpaces(path))}|${path}>`;
     const username = `<${urljoin(siteUrl, 'user', triggeredBy.username)}|${triggeredBy.username}>`;
     let messageBody;
 
