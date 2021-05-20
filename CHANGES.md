@@ -1,7 +1,10 @@
 # CHANGES
 
 ## v4.2.18-RC
+
 * Feature: Cobvertible page contents width.
+* Support: Upgrade libs
+    * @google-cloud/storage
 
 ## v4.2.17
 
