@@ -4,7 +4,6 @@ const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslin
 
 const express = require('express');
 
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -19,7 +18,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
 
-  const { UserGroup, UserGroupRelation } = crowi.models;
+  const { UserGroupRelation } = crowi.models;
 
   /**
    * @swagger
