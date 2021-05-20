@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 const ProxyUrlFrom = (props) => {
+  const { t } = useTranslation();
+
   return (
     <>
       <div className="form-group row my-4">
