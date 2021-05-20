@@ -14,9 +14,6 @@ import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
-import { Relation } from '~/entities/relation';
-import { Order } from '~/entities/order';
-
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
 
