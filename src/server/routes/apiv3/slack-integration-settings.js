@@ -5,7 +5,7 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
-const { getConnectionStatuses } = require('@growi/slack');
+const { getConnectionStatuses, relationTestToSlack } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -483,6 +483,16 @@ module.exports = (crowi) => {
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
+    }
+
+    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+    try {
+      await relationTestToSlack(slackBotToken);
+    }
+    catch (error) {
+      const msg = 'Error occured in sending test message';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'send-message-to-slack-failed'), 500);
     }
   });
 
