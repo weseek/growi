@@ -5,6 +5,7 @@ const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslin
 const express = require('express');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
+const { serializeUserGroupRelationSecurely } = require('../../models/serializers/user-group-relation-serializer');
 
 const router = express.Router();
 
@@ -42,9 +43,11 @@ module.exports = (crowi) => {
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
-      const userGroupRelations = await UserGroupRelation.find().populate('relatedUser');
+      const relations = await UserGroupRelation.find().populate('relatedUser');
 
-      return res.apiv3({ userGroupRelations });
+      const serialized = relations.map(relation => serializeUserGroupRelationSecurely(relation));
+
+      return res.apiv3({ userGroupRelations: serialized });
     }
     catch (err) {
       const msg = 'Error occurred in fetching user group relations';
