@@ -478,5 +478,13 @@ module.exports = (crowi) => {
     }
   });
 
+  router.post('/without-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    if (currentBotType !== 'customBotWithoutProxy') {
+      const msg = 'Select Without Proxy Type';
+      return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
+    }
+  });
+
   return router;
 };
