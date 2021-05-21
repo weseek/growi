@@ -13,7 +13,7 @@ export class RegisterService implements GrowiCommandProcessor {
 
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
     const { botToken } = authorizeResult;
-
+    console.log(body.channel_name);
     // tmp use process.env
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
     await client.views.open({
@@ -32,6 +32,7 @@ export class RegisterService implements GrowiCommandProcessor {
           type: 'plain_text',
           text: 'Close',
         },
+        private_metadata: body.channel_name,
         blocks: [
           generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', false, 'https://example.com'),
           generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
@@ -39,7 +40,6 @@ export class RegisterService implements GrowiCommandProcessor {
           // added an input block to make response_url enabled and get info (block_id, action_id, channel_id, response_url)
           // refer to https://api.slack.com/surfaces/modals/using#modal_response_url
           // {
-          //   block_id: 'channel_to_post_proxy_url',
           //   type: 'input',
           //   label: {
           //     type: 'plain_text',
@@ -86,13 +86,15 @@ export class RegisterService implements GrowiCommandProcessor {
   ): Promise<void> {
 
     const { botToken } = authorizeResult;
+    console.log((payload.view.private_metadata));
+
 
     const serverUri = process.env.SERVER_URI;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
     await client.chat.postEphemeral({
-      channel: payload.response_urls[0].channel_id,
+      channel: payload.view.private_metadata,
       user: payload.user.id,
       // Recommended including 'text' to provide a fallback when using blocks
       // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
