@@ -14,9 +14,6 @@ import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
-import { Relation } from '~/entities/relation';
-import { Order } from '~/entities/order';
-
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
 
@@ -112,11 +109,12 @@ export class GrowiToSlackCtrl {
 
     logger.debug('relation test is success', order);
 
-    // TODO GW-5864 issue relation
+    // Transaction is not considered because it is used infrequently,
+    const createdRelation = await this.relationRepository.save({
+      installation: order.installation, tokenGtoP: order.growiAccessToken, tokenPtoG: order.proxyAccessToken, growiUri: order.growiUrl,
+    });
 
-    // return order temporary
-    // TODO return new relation
-    return res.send({ order });
+    return res.send({ relation: createdRelation });
   }
 
 }
