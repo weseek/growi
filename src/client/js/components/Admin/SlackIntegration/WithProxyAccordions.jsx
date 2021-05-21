@@ -90,19 +90,29 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
         <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-          />
+          <div className="input-group-prepend mx-1">
+            {/* TODO: show tokenPtoG GW-5899 */}
+            <input className="form-control" type="text" value="tokenPtoG" readOnly />
+            <CopyToClipboard text="tokenPtoG" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+              <div className="btn input-group-text">
+                <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+              </div>
+            </CopyToClipboard>
+          </div>
         </div>
       </div>
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
         <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-          />
+          <div className="input-group-prepend mx-1">
+            {/* TODO: show tokenGtoP GW-5899 */}
+            <input className="form-control" type="text" value="tokenGtoP" readOnly />
+            <CopyToClipboard text="tokenGtoP" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+              <div className="btn input-group-text">
+                <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+              </div>
+            </CopyToClipboard>
+          </div>
         </div>
       </div>
 
