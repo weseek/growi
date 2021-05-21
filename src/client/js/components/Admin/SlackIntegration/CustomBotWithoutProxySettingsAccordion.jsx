@@ -23,7 +23,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
-  // eslint-disable-next-line no-unused-vars
+  /* eslint-disable no-unused-vars */
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
