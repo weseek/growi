@@ -384,13 +384,10 @@ class ImportForm extends React.Component {
                 insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
                 modifiedCount={collectionProgress ? collectionProgress.modifiedCount : 0}
                 errorsCount={errors ? errors.length : 0}
-
                 collectionName={collectionName}
                 isSelected={selectedCollections.has(collectionName)}
                 option={optionsMap[collectionName]}
-
                 isConfigButtonAvailable={isConfigButtonAvailable}
-
                 onChange={this.toggleCheckbox}
                 onOptionChange={this.updateOption}
                 onConfigButtonClicked={this.openConfigurationModal}
