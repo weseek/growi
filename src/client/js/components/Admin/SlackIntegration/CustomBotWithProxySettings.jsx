@@ -54,13 +54,13 @@ const CustomBotWithProxySettings = (props) => {
   };
 
   const discardTokenHandler = async() => {
-    // const response = await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration',
-    //   { tokenGtoP, tokenPtoG });
-    console.log('asdfasdf');
+    const response = await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration',
+      { tokenGtoP, tokenPtoG });
+    console.log(response);
   };
 
   const generateTokenHandler = async() => {
-    // const response = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+    const response = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
     console.log(response);
     setTokenGtoP('setAccessTokenForProxy');
     setTokenPtoG('tokenForProxy');
@@ -153,7 +153,6 @@ const CustomBotWithProxySettings = (props) => {
               botType="customBotWithProxy"
               discardTokenHandler={discardTokenHandler}
               generateTokenHandler={generateTokenHandler}
-              // TODO: Multiple accordion logic
               tokenPtoG={tokenPtoG}
               tokenGtoP={tokenGtoP}
             />

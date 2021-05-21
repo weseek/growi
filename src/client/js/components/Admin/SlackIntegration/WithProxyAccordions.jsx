@@ -268,6 +268,7 @@ export const WithProxyAccordions = (props) => {
     '②': {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
+        appContainer={props.appContainer}
         discardTokenHandler={props.discardTokenHandler}
         generateTokenHandler={props.generateTokenHandler}
         tokenPtoG={props.tokenPtoG}
@@ -296,6 +297,7 @@ export const WithProxyAccordions = (props) => {
     '③': {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
+        appContainer={props.appContainer}
         discardTokenHandler={props.discardTokenHandler}
         generateTokenHandler={props.generateTokenHandler}
         tokenPtoG={props.tokenPtoG}
@@ -311,6 +313,7 @@ export const WithProxyAccordions = (props) => {
       content: <TestProcess />,
     },
   };
+
   const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
   return (
     <div
@@ -336,7 +339,6 @@ export const WithProxyAccordions = (props) => {
 /**
  * Wrapper component for using unstated
  */
-
 const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
