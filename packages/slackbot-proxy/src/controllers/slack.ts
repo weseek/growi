@@ -151,7 +151,6 @@ export class SlackCtrl {
 
     const payload = JSON.parse(body.payload);
     const { type } = payload;
-    console.log('payloadmatu', payload);
 
     // register
     // response_urls is an array but the element included is only one.
