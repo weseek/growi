@@ -118,6 +118,12 @@
   //   }
   // }
 
+  #layoutOptions {
+    .customize-layout-card {
+      border: 4px solid $border-color;
+    }
+  }
+
   // theme selector
   #themeOptions {
     // layout

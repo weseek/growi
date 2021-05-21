@@ -21,6 +21,12 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *
  *  components:
  *    schemas:
+ *      CustomizeLayout:
+ *        description: CustomizeLayout
+ *        type: object
+ *        properties:
+ *          isContainerFluid:
+ *            type: boolean
  *      CustomizeTheme:
  *        description: CustomizeTheme
  *        type: object
@@ -87,6 +93,9 @@ module.exports = (crowi) => {
   const { customizeService } = crowi;
 
   const validator = {
+    layout: [
+      body('isContainerFluid').isBoolean(),
+    ],
     themeAssetPath: [
       query('themeName').isString(),
     ],
@@ -147,7 +156,6 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const customizeParams = {
-      layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
       themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
       isSavedStatesOfTabChanges: await crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
@@ -167,6 +175,78 @@ module.exports = (crowi) => {
     };
 
     return res.apiv3({ customizeParams });
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/layout:
+   *      get:
+   *        tags: [CustomizeSetting]
+   *        operationId: getLayoutCustomizeSetting
+   *        summary: /customize-setting/layout
+   *        description: Get layout
+   *        responses:
+   *          200:
+   *            description: Succeeded to get layout
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeLayout'
+   */
+  router.get('/layout', loginRequiredStrictly, adminRequired, async(req, res) => {
+
+    try {
+      const isContainerFluid = await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
+      return res.apiv3({ isContainerFluid });
+    }
+    catch (err) {
+      const msg = 'Error occurred in getting layout';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'get-layout-failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /customize-setting/layout:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        operationId: updateLayoutCustomizeSetting
+   *        summary: /customize-setting/layout
+   *        description: Update layout
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/CustomizeLayout'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update layout
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeLayout'
+   */
+  router.put('/layout', loginRequiredStrictly, adminRequired, csrf, validator.layout, apiV3FormValidator, async(req, res) => {
+    const requestParams = {
+      'customize:isContainerFluid': req.body.isContainerFluid,
+    };
+
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      const customizedParams = {
+        isContainerFluid: await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid'),
+      };
+      return res.apiv3({ customizedParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating layout';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-layout-failed'));
+    }
   });
 
   /**
