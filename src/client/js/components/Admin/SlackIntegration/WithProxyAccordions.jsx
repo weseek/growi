@@ -257,7 +257,7 @@ const TestProcess = () => {
 };
 
 
-export const WithProxyAccordions = (props) => {
+const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
 
   const officialBotIntegrationProcedure = {
@@ -315,6 +315,7 @@ export const WithProxyAccordions = (props) => {
   };
 
   const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
+
   return (
     <div
       className="card border-0 rounded-lg shadow overflow-hidden"

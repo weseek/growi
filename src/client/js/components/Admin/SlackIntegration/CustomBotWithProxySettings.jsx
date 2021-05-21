@@ -135,11 +135,8 @@ const CustomBotWithProxySettings = (props) => {
 
         {/* // TODO: Multiple accordion logic */}
         {Array(...Array(accordionComponentsCount)).map(i => (
-          <>
-            <div
-              className="d-flex justify-content-end"
-              key={i}
-            >
+          <React.Fragment key={i}>
+            <div className="d-flex justify-content-end">
               <button
                 className="my-3 btn btn-outline-danger"
                 type="button"
@@ -156,7 +153,7 @@ const CustomBotWithProxySettings = (props) => {
               tokenPtoG={tokenPtoG}
               tokenGtoP={tokenGtoP}
             />
-          </>
+          </React.Fragment>
         ))}
 
         {/* TODO: Disable button when integration is incomplete */}
