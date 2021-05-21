@@ -133,10 +133,10 @@ const CustomBotWithProxySettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
       <div className="mx-3">
 
-        {/* // TODO: Multiple accordion logic */}
+        {/* TODO: Multiple accordion logic */}
+        {/* TODO: Undefined key fix */}
         {Array(...Array(accordionComponentsCount)).map(i => (
           <React.Fragment key={i}>
-            {console.log(i)}
             <div className="d-flex justify-content-end">
               <button
                 className="my-3 btn btn-outline-danger"
