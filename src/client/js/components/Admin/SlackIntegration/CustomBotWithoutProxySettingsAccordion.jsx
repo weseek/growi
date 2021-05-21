@@ -31,7 +31,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const [testChannel, setTestChannel] = useState('');
   const currentBotType = 'customBotWithoutProxy';
 
-
   const updateSecretTokenHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
