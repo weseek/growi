@@ -504,7 +504,7 @@ module.exports = (crowi) => {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
     }
-    // TODO impl bellow GW-5998
+    // TODO impl req.body at GW-5998
     // const { channel } = req.body;
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
