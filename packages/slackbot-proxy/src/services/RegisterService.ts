@@ -66,18 +66,9 @@ export class RegisterService implements GrowiCommandProcessor {
     const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
     const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
 
-    const order = await orderRepository.findOne({ installation, growiUrl: inputGrowiUrl });
-    if (order != null) {
-      orderRepository.update(
-        { installation, growiUrl: inputGrowiUrl },
-        { growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken },
-      );
-    }
-    else {
-      orderRepository.save({
-        installation, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
-      });
-    }
+    orderRepository.save({
+      installation, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
+    });
   }
 
   async notifyServerUriToSlack(

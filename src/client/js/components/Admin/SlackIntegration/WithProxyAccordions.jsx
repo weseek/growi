@@ -55,16 +55,28 @@ const RegisteringProxyUrlProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="p-4 d-flex flex-column align-items-center">
-      <div>
-        <span
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-        />
-        <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-      </div>
-      <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-        <h1 className="text-muted">参考画像</h1>
-      </div>
+      <ol>
+        <li>
+          <p
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+          />
+          <div className="rounded border d-flex mb-5 justify-content-center align-items-center" style={{ height: '10rem' }}>
+            <h1 className="text-muted">参考画像</h1>
+          </div>
+        </li>
+
+        <li>
+          <span
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+          />
+          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+          <div className="rounded border d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
+            <h1 className="text-muted">参考画像</h1>
+          </div>
+        </li>
+      </ol>
     </div>
   );
 };
@@ -99,23 +111,29 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
         <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            value={tokenGtoP}
-            readOnly
-          />
+          <div className="input-group-prepend mx-1">
+            {/* TODO: show tokenPtoG GW-5899 */}
+            <input className="form-control" type="text" value={tokenPtoG} readOnly />
+            <CopyToClipboard text="tokenPtoG" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+              <div className="btn input-group-text">
+                <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+              </div>
+            </CopyToClipboard>
+          </div>
         </div>
       </div>
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
         <div className="col-md-6">
-          <input
-            className="form-control"
-            type="text"
-            value={tokenPtoG}
-            readOnly
-          />
+          <div className="input-group-prepend mx-1">
+            {/* TODO: show tokenGtoP GW-5899 */}
+            <input className="form-control" type="text" value={tokenGtoP} readOnly />
+            <CopyToClipboard text="tokenGtoP" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+              <div className="btn input-group-text">
+                <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+              </div>
+            </CopyToClipboard>
+          </div>
         </div>
       </div>
 

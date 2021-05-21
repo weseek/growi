@@ -77,6 +77,7 @@ module.exports = (crowi) => {
       'slackbot:currentBotType': null,
       'slackbot:signingSecret': null,
       'slackbot:token': null,
+      'slackbot:serverUri': null,
     };
     const { configManager } = crowi;
     // update config without publishing S2sMessage
