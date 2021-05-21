@@ -73,9 +73,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   const { t } = useTranslation();
   const growiUrl = props.appContainer.config.crowi.url;
 
-  const discardTokenHandler = props.discardTokenHandler;
-  const generateTokenHandler = props.generateTokenHandler;
-
   let tokenGtoP;
   if (props.tokenGtoP != null) {
     tokenGtoP = props.tokenGtoP;
@@ -84,6 +81,16 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   let tokenPtoG;
   if (props.tokenPtoG != null) {
     tokenPtoG = props.tokenPtoG;
+  }
+
+  let discardTokenHandler;
+  if (props.discardTokenHandler != null) {
+    discardTokenHandler = props.discardTokenHandler;
+  }
+
+  let generateTokenHandler;
+  if (props.generateTokenHandler != null) {
+    generateTokenHandler = props.generateTokenHandler;
   }
 
   return (
@@ -118,6 +125,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
             type="button"
             className="btn btn-outline-secondary mx-2"
             onClick={discardTokenHandler}
+            disabled={!tokenGtoP || !tokenPtoG}
           >
             { t('admin:slack_integration.access_token_settings.discard') }
           </button>
@@ -326,7 +334,6 @@ const WithProxyAccordions = (props) => {
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
             key={key}
-            props={props}
           >
             {value.content}
           </Accordion>

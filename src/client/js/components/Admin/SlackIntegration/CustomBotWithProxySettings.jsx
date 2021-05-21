@@ -54,16 +54,28 @@ const CustomBotWithProxySettings = (props) => {
   };
 
   const discardTokenHandler = async() => {
-    const response = await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration',
-      { tokenGtoP, tokenPtoG });
-    console.log(response);
+    try {
+      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { tokenGtoP, tokenPtoG });
+      setTokenGtoP('');
+      setTokenPtoG('');
+    }
+    catch (err) {
+      toastError(err);
+      logger(err);
+    }
   };
 
   const generateTokenHandler = async() => {
-    const response = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
-    console.log(response);
-    setTokenGtoP('setAccessTokenForProxy');
-    setTokenPtoG('tokenForProxy');
+    try {
+      const { data: { tokenGtoP, tokenPtoG } } = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+      setTokenGtoP(tokenGtoP);
+      setTokenPtoG(tokenPtoG);
+    }
+    catch (err) {
+      toastError(err);
+      logger(err);
+    }
+
   };
 
   const deleteSlackSettingsHandler = async() => {

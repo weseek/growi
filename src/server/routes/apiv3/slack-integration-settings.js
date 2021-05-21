@@ -401,11 +401,12 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to delete access tokens for slack
    */
-  router.delete('/slack-app-integration', validator.AccessTokens, apiV3FormValidator, async(req, res) => {
+  router.delete('/slack-app-integration', validator.AccessTokens, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-    const { tokenGtoP, tokenPtoG } = req.body;
+    const { tokenGtoP, tokenPtoG } = req.query;
     try {
-      await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
+      const response = await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
+      return res.apiv3({ response });
     }
     catch (error) {
       const msg = 'Error occured in deleting access token for slack app tokens';
