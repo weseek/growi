@@ -55,16 +55,50 @@ export const RegisteringProxyUrlProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="p-4 d-flex flex-column align-items-center">
-      <div>
-        <span
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-        />
-        <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-      </div>
-      <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
+
+      <ol>
+        <li>
+          <p
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+          />
+          <div className="rounded border d-flex mb-5 justify-content-center align-items-center" style={{ height: '10rem' }}>
+            <h1 className="text-muted">参考画像</h1>
+          </div>
+        </li>
+
+        <li>
+          <span
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+          />
+          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+          <div className="rounded border d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
+            <h1 className="text-muted">参考画像</h1>
+          </div>
+        </li>
+      </ol>
+
+
+      {/* <p
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+      />
+
+      <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '10rem' }}>
         <h1 className="text-muted">参考画像</h1>
       </div>
+
+      <span
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+      />
+
+      <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+
+      <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
+        <h1 className="text-muted">参考画像</h1>
+      </div> */}
     </div>
   );
 };
