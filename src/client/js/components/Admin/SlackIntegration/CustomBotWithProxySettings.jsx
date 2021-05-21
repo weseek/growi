@@ -136,6 +136,7 @@ const CustomBotWithProxySettings = (props) => {
         {/* // TODO: Multiple accordion logic */}
         {Array(...Array(accordionComponentsCount)).map(i => (
           <React.Fragment key={i}>
+            {console.log(i)}
             <div className="d-flex justify-content-end">
               <button
                 className="my-3 btn btn-outline-danger"
