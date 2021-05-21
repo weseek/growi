@@ -17,6 +17,7 @@ const CustomBotWithProxySettings = (props) => {
   const { appContainer } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [proxyUri, setProxyUri] = useState(null);
+
   const { t } = useTranslation();
   // TODO: Multiple accordion logic
   const [tokenPtoG, setTokenPtoG] = useState('');
