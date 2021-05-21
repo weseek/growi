@@ -188,6 +188,12 @@ $slack-work-space-name-card-border: #efc1f6;
   //   }
   // }
 
+  #layoutOptions {
+    .customize-layout-card {
+      border: 4px solid $border-color;
+    }
+  }
+
   // theme selector
   #themeOptions {
     // layout

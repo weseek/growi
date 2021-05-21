@@ -2,7 +2,7 @@ import {
   Required,
 } from '@tsed/schema';
 import {
-  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, OneToMany,
+  Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn,
 } from 'typeorm';
 
 import { Installation as SlackInstallation } from '@slack/oauth';

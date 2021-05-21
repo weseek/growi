@@ -243,11 +243,6 @@ body.on-edit {
       overflow-y: scroll;
     }
 
-    .wiki {
-      max-width: 980px;
-      margin: 0 auto;
-    }
-
     .grw-editor-configuration-dropdown {
       .icon-container {
         width: 20px;
@@ -300,6 +295,20 @@ body.on-edit {
     .btn-view-outdated-draft {
       text-decoration: underline;
       vertical-align: unset;
+    }
+  }
+}
+
+body.on-edit {
+  &:not(.growi-layout-fluid) .page-editor-preview-body {
+    .wiki {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+  }
+  &.growi-layout-fluid .page-editor-preview-body {
+    .wiki {
+      margin: 0 auto;
     }
   }
 }
