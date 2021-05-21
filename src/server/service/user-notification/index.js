@@ -46,9 +46,6 @@ class UserNotificationService {
       else {
         res = await slack.postPage(page, user, chan, mode, previousRevision);
       }
-      if (res.status !== 'ok') {
-        throw new Error(`fail to send slack notification to #${chan} channel`);
-      }
       return res;
     });
 
