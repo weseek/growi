@@ -31,7 +31,8 @@ export class RegisterService implements GrowiCommandProcessor {
           type: 'plain_text',
           text: 'Close',
         },
-        private_metadata: body.channel_name,
+        private_metadata: JSON.stringify({ channel: body.channel_name }),
+
         blocks: [
           generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', false, 'https://example.com'),
           generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
@@ -70,13 +71,14 @@ export class RegisterService implements GrowiCommandProcessor {
   ): Promise<void> {
 
     const { botToken } = authorizeResult;
+    const { channel } = JSON.parse(payload.view.private_metadata);
 
     const serverUri = process.env.SERVER_URI;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
     await client.chat.postEphemeral({
-      channel: payload.view.private_metadata,
+      channel,
       user: payload.user.id,
       // Recommended including 'text' to provide a fallback when using blocks
       // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
