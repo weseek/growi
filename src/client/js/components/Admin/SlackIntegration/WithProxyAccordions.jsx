@@ -256,8 +256,35 @@ const TestProcess = () => {
   );
 };
 
-const CustomBotIntegrationProcedure = (props) => {
-  return ({
+
+export const WithProxyAccordions = (props) => {
+  const { t } = useTranslation();
+
+  const officialBotIntegrationProcedure = {
+    '①': {
+      title: 'install_bot_to_slack',
+      content: <BotInstallProcess />,
+    },
+    '②': {
+      title: 'register_for_growi_official_bot_proxy_service',
+      content: <GeneratingTokensAndRegisteringProxyServiceProcess
+        discardTokenHandler={props.discardTokenHandler}
+        generateTokenHandler={props.generateTokenHandler}
+        tokenPtoG={props.tokenPtoG}
+        tokenGtoP={props.tokenGtoP}
+      />,
+    },
+    '③': {
+      title: 'set_proxy_url_on_growi',
+      content: <RegisteringProxyUrlProcess />,
+    },
+    '④': {
+      title: 'test_connection',
+      content: <TestProcess />,
+    },
+  };
+
+  const CustomBotIntegrationProcedure = {
     '①': {
       title: 'create_bot',
       content: <BotCreateProcess />,
@@ -271,7 +298,6 @@ const CustomBotIntegrationProcedure = (props) => {
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         discardTokenHandler={props.discardTokenHandler}
         generateTokenHandler={props.generateTokenHandler}
-      // TODO: Multiple accordion logic
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
@@ -284,47 +310,13 @@ const CustomBotIntegrationProcedure = (props) => {
       title: 'test_connection',
       content: <TestProcess />,
     },
-  });
-};
-
-// const officialBotIntegrationProcedure = (props) => {
-//   return ({
-//     '①': {
-//       title: 'install_bot_to_slack',
-//       content: <BotInstallProcess />,
-//     },
-//     '②': {
-//       title: 'register_for_growi_official_bot_proxy_service',
-//       content: <GeneratingTokensAndRegisteringProxyServiceProcess
-//         discardTokenHandler={props.discardTokenHandler}
-//         generateTokenHandler={props.generateTokenHandler}
-//         // TODO: Multiple accordion logic
-//         tokenPtoG={props.tokenPtoG}
-//         tokenGtoP={props.tokenGtoP}
-//       />,
-//     },
-//     '③': {
-//       title: 'set_proxy_url_on_growi',
-//       content: <RegisteringProxyUrlProcess />,
-//     },
-//     '④': {
-//       title: 'test_connection',
-//       content: <TestProcess />,
-//     },
-//   });
-// };
-
-
-export const WithProxyAccordions = (props) => {
-  const { t } = useTranslation();
+  };
   const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
-  console.log(CustomBotIntegrationProcedure);
   return (
-
     <div
       className="card border-0 rounded-lg shadow overflow-hidden"
     >
-      {/* {Object.entries(integrationProcedureMapping).map(([key, value]) => {
+      {Object.entries(integrationProcedureMapping).map(([key, value]) => {
 
         return (
           <Accordion
@@ -335,7 +327,7 @@ export const WithProxyAccordions = (props) => {
             {value.content}
           </Accordion>
         );
-      })} */}
+      })}
     </div>
   );
 };
