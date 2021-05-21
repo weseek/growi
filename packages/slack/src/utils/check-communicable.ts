@@ -120,23 +120,12 @@ const postMessage = async (client: WebClient, channel: string, text: string): Pr
 };
 
 /**
- * Test Slack Bot Connection
- * @param token bot OAuth token
- * @param channel channel name
- * @returns
- */
-export const relationTestToSlack = async(token:string): Promise<void> => {
-  const client = generateWebClient(token);
-  await testSlackApiServer(client);
-};
-
-/**
  * Test Slack Bot Connection and Send Test Message
  * @param token bot OAuth token
  * @param channel channel name
  * @returns
  */
-export const pingSlack = async(token: string, channel: string): Promise<{testSlackAuthResponse: WebAPICallResult, postMessageResponse: WebAPICallResult}> => {
+export const relationTestToSlack = async(token: string, channel: string): Promise<{testSlackAuthResponse: WebAPICallResult, postMessageResponse: WebAPICallResult}> => {
   const client = generateWebClient(token);
   const text = 'Your test was successful!';
   const testSlackAuthResponse = await testSlackAuth(client);
