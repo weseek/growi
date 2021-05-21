@@ -138,11 +138,10 @@ export const relationTestToSlack = async(token:string): Promise<void> => {
  * @param channel channel name
  * @returns
  */
-export const newRelationTestToSlack =
-  async (token: string, channel: string): Promise<{ testSlackAuthResponse: WebAPICallResult, postMessageResponse: WebAPICallResult }> => {
-    const client = generateWebClient(token);
-    const text = 'Your test was successful!';
-    const testSlackAuthResponse = await testSlackAuth(client);
-    const postMessageResponse = await postMessage(client, channel, text);
-    return { testSlackAuthResponse, postMessageResponse };
-  };
+export const newRelationTestToSlack = async(token: string, channel: string): Promise<{ authResponse: WebAPICallResult, postResponse: WebAPICallResult }> => {
+  const client = generateWebClient(token);
+  const text = 'Your test was successful!';
+  const authResponse = await testSlackAuth(client);
+  const postResponse = await postMessage(client, channel, text);
+  return { authResponse, postResponse };
+};
