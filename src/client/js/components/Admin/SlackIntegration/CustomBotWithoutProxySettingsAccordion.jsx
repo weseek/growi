@@ -23,10 +23,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
-  const [defaultOpenAccordionKeys] = useState(new Set([activeStep]));
-  const [connectionErrorCode] = useState(null);
-  const [connectionErrorMessage] = useState(null);
-  const [connectionSuccessMessage] = useState(null);
+  /* eslint-disable no-unused-vars */
+  const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
+  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
+  const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
+  const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
   const [testChannel, setTestChannel] = useState('');
   const currentBotType = 'customBotWithoutProxy';
 
