@@ -314,6 +314,7 @@
       "paste_growi_url": "Since a modal is displayed, enter the following URL in <b>GROWI URL</b>.",
       "enter_access_token_for_growi_and_proxy": "Enter <b>Access Token for GROWI</b> and <b>Access Token for Proxy</b>",
       "set_proxy_url_on_growi": "Set Proxy URL on GROWI",
+      "copy_proxy_url": "1. When the above step ② are completed successfully, the Proxy URL will be displayed in the Slack Channel you selected in the modal, so copy it.",
       "enter_proxy_url_and_update": "1. Enter and update the Proxy URL that you copied in step ③ in the <b>Proxy URL</b>  of the <b>Custom bot with proxy integration</b> on this page.",
       "dont_need_update": "※If the value is already in there, there is no need to update it.",
       "select_install_your_app": "Select \"Install your app\".",
