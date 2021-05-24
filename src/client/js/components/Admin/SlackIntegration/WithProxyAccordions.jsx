@@ -54,29 +54,18 @@ export const BotInstallProcess = () => {
 export const RegisteringProxyUrlProcess = () => {
   const { t } = useTranslation();
   return (
-    <div className="p-4 d-flex flex-column align-items-center">
-      <ol>
-        <li>
-          <p
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
-          />
-          <div className="rounded border d-flex mb-5 justify-content-center align-items-center" style={{ height: '10rem' }}>
-            <h1 className="text-muted">参考画像</h1>
-          </div>
-        </li>
-
-        <li>
-          <span
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-          />
-          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-          <div className="rounded border d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-            <h1 className="text-muted">参考画像</h1>
-          </div>
-        </li>
-      </ol>
+    <div className="container w-75 py-5">
+      <p
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+      />
+      <img className="mb-5 border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
+      <span
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+      />
+      <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+      <img className="mb-3 border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
     </div>
   );
 };
@@ -150,15 +139,12 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
           <li>
             <p
               className="ml-2"
-                // eslint-disable-next-line react/no-danger
+              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
             />
           </li>
         </ol>
-        {/* TODO: Insert photo */}
-        <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-          <h1 className="text-muted">参考画像</h1>
-        </div>
+        <img className="mb-3 border border-light img-fluid" width={500} src="/images/slack-integration/growi-register-modal.png" />
       </div>
     </div>
 
