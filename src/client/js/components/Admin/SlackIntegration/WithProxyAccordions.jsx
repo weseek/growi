@@ -144,7 +144,6 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
             />
           </li>
         </ol>
-        {/* TODO: Insert photo */}
         <img className="mb-3 border border-light img-fluid" width={500} src="/images/slack-integration/growi-register-modal.png" />
       </div>
     </div>
