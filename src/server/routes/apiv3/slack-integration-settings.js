@@ -508,7 +508,7 @@ module.exports = (crowi) => {
     const { channel } = req.body;
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
-      const res = await testToSlack(slackBotToken, channel);
+      const res = await testToSlack(slackBotToken);
       console.log(res);
     }
     catch (error) {

@@ -39,6 +39,7 @@ const testSlackApiServer = async(client: WebClient): Promise<void> => {
   if (!result.ok) {
     throw new Error(result.error);
   }
+  console.log(result);
 };
 
 /**
@@ -94,14 +95,10 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
  * @param token bot OAuth token
  * @returns
  */
-export const testToSlack = async(token:string, channel:string): Promise<void> => {
+export const testToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
   try {
     await testSlackApiServer(client);
-    await client.chat.postMessage({
-      channel,
-      text: 'Your test was successful!',
-    });
   }
   catch (error) {
     console.log(error);
