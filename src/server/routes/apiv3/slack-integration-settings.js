@@ -512,9 +512,8 @@ module.exports = (crowi) => {
       // TODO impl return response after imple 5996, 6002
     }
     catch (error) {
-      const msg = 'Error occured while sending a test message';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'send-message-to-slack-failed'), 500);
+      return res.apiv3Err(new ErrorV3(error, 'send-message-to-slack-failed'));
     }
   });
 
