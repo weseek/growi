@@ -2,7 +2,8 @@
 
 ## v4.2.19-RC
 
-* 
+* Support: Upgrade libs
+    * string-width
 
 ## v4.2.18
 
