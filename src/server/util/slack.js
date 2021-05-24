@@ -8,25 +8,25 @@ const urljoin = require('url-join');
 /* eslint-disable no-use-before-define */
 
 module.exports = function(crowi) {
-  const { WebClient, LogLevel } = require('@slack/web-api');
+  const { WebClient } = require('@slack/web-api');
 
   const { configManager } = crowi;
   const slack = {};
 
-  const postWithSlackBot = function(messageObj) {
-    return new Promise((resolve, reject) => {
-      const client = new WebClient(configManager.getConfig('crowi', 'slackbot:token'), {
-        logLevel: LogLevel.DEBUG,
-      });
-      client.chat.postMessage(messageObj, (err, res) => {
-        if (err) {
-          debug('Post error', err, res);
-          debug('Sent data to slack is:', messageObj);
-          return reject(err);
-        }
-        resolve(res);
-      });
-    });
+  const postWithWebApi = async(messageObj) => {
+    const client = new WebClient(configManager.getConfig('notification', 'slack:token'));
+    // stringify attachments
+    if (messageObj.attachments != null) {
+      messageObj.attachments = JSON.stringify(messageObj.attachments);
+    }
+    try {
+      await client.chat.postMessage(messageObj);
+    }
+    catch (error) {
+      debug('Post error', error);
+      debug('Sent data to slack is:', messageObj);
+      throw error;
+    }
   };
 
   const convertMarkdownToMarkdown = function(body) {
@@ -218,7 +218,7 @@ module.exports = function(crowi) {
   };
 
   const slackPost = (messageObj) => {
-    return postWithSlackBot(messageObj);
+    return postWithWebApi(messageObj);
   };
 
   return slack;
