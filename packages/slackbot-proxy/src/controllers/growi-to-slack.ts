@@ -97,7 +97,14 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: 'installation is invalid' });
       }
 
-      await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
+      try {
+        await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
+      }
+
       await relationTestToSlack(token);
       return res.send({ relation });
     }
@@ -119,7 +126,7 @@ export class GrowiToSlackCtrl {
     }
     catch (err) {
       logger.error(err);
-      return res.status(400).send({ message: 'growiAccessToken is invalid' });
+      return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
     }
 
     logger.debug('order found', order);
