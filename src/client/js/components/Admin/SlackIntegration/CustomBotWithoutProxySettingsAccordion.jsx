@@ -69,16 +69,16 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setConnectionSuccessMessage(null);
     // TODO: 5921 Add new Test endpoint
     try {
-      const res = await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', {
+      await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', {
         channel: testChannel,
       });
-      setConnectionSuccessMessage(res.data.message);
+      setConnectionSuccessMessage('Send to message to slack ws.');
       onSetIsSendTestMessage(true);
     }
     catch (err) {
       onSetIsSendTestMessage(false);
-      setConnectionErrorCode('dummy-error-code');
-      setConnectionErrorMessage('This is a sample error message');
+      setConnectionErrorCode(err[0].code);
+      setConnectionErrorMessage(err[0].message);
     }
   };
 
