@@ -300,7 +300,7 @@
     "slackbot_settings_notice": "リセットします",
     "accordion": {
       "create_bot": "Bot を作成する",
-      "how_to_create_a_bot": "作成方法はこちら",
+      "how_to_create_a_bot": "作成手順はこちら",
       "how_to_install": "インストール方法はこちら",
       "install_bot_to_slack": "Bot を Slack にインストールする",
       "install_now": "今すぐインストール",
