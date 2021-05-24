@@ -28,10 +28,10 @@ const SlackIntegration = (props) => {
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
+
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
-      console.log(data);
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
       } = data.settings;

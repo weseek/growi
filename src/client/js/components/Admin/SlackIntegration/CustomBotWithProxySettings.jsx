@@ -20,8 +20,8 @@ const CustomBotWithProxySettings = (props) => {
 
   const { t } = useTranslation();
   // TODO: Multiple accordion logic
-  const [tokenPtoG, setTokenPtoG] = useState('');
-  const [tokenGtoP, setTokenGtoP] = useState('');
+  const [tokenPtoG, setTokenPtoG] = useState(null);
+  const [tokenGtoP, setTokenGtoP] = useState(null);
 
   const retrieveProxyUri = useCallback(async() => {
     try {
@@ -56,8 +56,8 @@ const CustomBotWithProxySettings = (props) => {
   const discardTokenHandler = async() => {
     try {
       await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { tokenGtoP, tokenPtoG });
-      setTokenGtoP('');
-      setTokenPtoG('');
+      setTokenGtoP(null);
+      setTokenPtoG(null);
     }
     catch (err) {
       toastError(err);
