@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
@@ -60,8 +60,12 @@ module.exports = (crowi) => {
         .isString(),
     ],
     AccessTokens: [
-      body('tokenGtoP').trim().not().isEmpty(),
-      body('tokenPtoG').trim().not().isEmpty(),
+      query('tokenGtoP').trim().not().isEmpty()
+        .isString()
+        .isLength({ min: 1 }),
+      query('tokenPtoG').trim().not().isEmpty()
+        .isString()
+        .isLength({ min: 1 }),
     ],
     RelationTest: [
       body('slackappintegrationsId').isMongoId(),
