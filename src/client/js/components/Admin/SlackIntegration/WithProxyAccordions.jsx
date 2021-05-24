@@ -114,12 +114,17 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
       <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
       <div className="d-flex flex-column align-items-center">
         <ol className="p-0">
-          <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_growi_register_on_slack')}</p></li>
+          <li>
+            <p
+              className="ml-2"
+                // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_growi_register_on_slack') }}
+            />
+          </li>
           <li>
             <p
               className="ml-2"
                 // TODO: Add dynamic link
-                // TODO: Copy to clipboard on click
                 // TODO: Add logo
                 // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
