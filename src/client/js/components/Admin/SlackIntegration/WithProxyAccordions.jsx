@@ -361,9 +361,8 @@ const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAcc
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
-  key: PropTypes.string,
-  discardTokenHandler: PropTypes.func.isRequired,
-  generateTokenHandler: PropTypes.func.isRequired,
+  discardTokenHandler: PropTypes.func,
+  generateTokenHandler: PropTypes.func,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };
