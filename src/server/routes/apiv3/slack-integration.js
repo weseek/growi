@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 
 const loggerFactory = require('@alias/logger');
 
@@ -6,6 +7,7 @@ const { verifySlackRequest } = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
+const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
@@ -22,14 +24,13 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const correctToken = configManager.getConfig('crowi', 'slackbot:access-token');
+    const slackAppIntegration = await SlackAppIntegration.find({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
-      correctToken,
     });
 
-    if (tokenPtoG == null || tokenPtoG !== correctToken) {
+    if (slackAppIntegration == null) {
       return res.status(403).send({
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`?',
       });
