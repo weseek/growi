@@ -34,10 +34,7 @@ export class GrowiToSlackCtrl {
   @Inject()
   orderRepository: OrderRepository;
 
-  async requestToGrowi(growiUrl?:string, proxyAccessToken?:string):Promise<void> {
-    if (growiUrl == null || proxyAccessToken == null) {
-      throw new Error('url and token is required');
-    }
+  async requestToGrowi(growiUrl:string, proxyAccessToken:string):Promise<void> {
     const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
     await axios.post(url.toString(), {
       type: 'url_verification',
