@@ -31,8 +31,10 @@ export class Order {
   proxyAccessToken?: string;
 
   isExpired():boolean {
-    // TODO GW-5555 implement this
-    return false;
+    const now = Date.now();
+    const expiredAt = this.createdAt.getTime() + 600000;
+
+    return expiredAt < now;
   }
 
 }
