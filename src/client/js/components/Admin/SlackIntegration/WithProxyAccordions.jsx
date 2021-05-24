@@ -139,7 +139,7 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
           <li>
             <p
               className="ml-2"
-                // eslint-disable-next-line react/no-danger
+              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
             />
           </li>
