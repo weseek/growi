@@ -61,7 +61,7 @@ export const i18nFactory = (userLocaleId) => {
 
       fallbackLng: 'en_US',
       detection: {
-        order: ['userSettingDetector', 'userBrowserDetector'],
+        order: ['userSettingDetector', 'userBrowserDetector', 'querystring'],
       },
 
       interpolation: {
