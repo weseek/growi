@@ -296,6 +296,7 @@
     },
     "delete": "Delete",
     "integration_procedure": "Integration Procedure",
+    "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
     "official_bot_settings": "Official bot Settings",
     "reset": "Reset",
     "reset_all_settings": "Reset all settings",
