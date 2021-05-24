@@ -42,6 +42,20 @@ const testSlackApiServer = async(client: WebClient): Promise<void> => {
 };
 
 /**
+* Test Slack Auth
+* @param token
+*/
+export const testSlackAuth = async(token: string): Promise<WebAPICallResult> => {
+  const client = generateWebClient(token);
+  const result = await client.auth.test();
+
+  if (!result.ok) {
+    throw new Error(result.error);
+  }
+  return result;
+};
+
+/**
  * Retrieve Slack workspace name
  * @param client
  */
@@ -90,35 +104,6 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
   return Object.fromEntries(await map);
 };
 
-/**
-* Test Slack Auth
-* @param client
-*/
-const testSlackAuth = async(client: WebClient): Promise<WebAPICallResult> => {
-  const result = await client.auth.test();
-  if (!result.ok) {
-    throw new Error(result.error);
-  }
-  return result;
-};
-
-/**
-* Post Message to Slack
-* @param client
-* @param channel channel name
-* @param text message to send to Slack channel
-*/
-const postMessage = async(client: WebClient, channel: string, text: string): Promise<WebAPICallResult> => {
-  const result = await client.chat.postMessage({
-    channel: `#${channel}`,
-    text,
-  });
-  if (!result.ok) {
-    throw new Error(result.error);
-  }
-  return result;
-};
-
 // TODO: Migrate to newRelationTestToSlack
 /**
  * Test Slack Bot Connection
@@ -129,19 +114,4 @@ const postMessage = async(client: WebClient, channel: string, text: string): Pro
 export const relationTestToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
   await testSlackApiServer(client);
-};
-
-// TODO: Rename to relationTestToSlack when migrating
-/**
- * Test Slack Bot Connection and Send Test Message
- * @param token bot OAuth token
- * @param channel channel name
- * @returns
- */
-export const newRelationTestToSlack = async(token: string, channel: string): Promise<{ authResponse: WebAPICallResult, postResponse: WebAPICallResult }> => {
-  const client = generateWebClient(token);
-  const text = 'Your test was successful!';
-  const authResponse = await testSlackAuth(client);
-  const postResponse = await postMessage(client, channel, text);
-  return { authResponse, postResponse };
 };
