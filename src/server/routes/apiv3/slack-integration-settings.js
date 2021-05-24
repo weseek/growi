@@ -510,7 +510,7 @@ module.exports = (crowi) => {
     try {
       await testToSlack(slackBotToken);
       const client = generateWebClient(slackBotToken);
-      client.chat.postMessage({
+      await client.chat.postMessage({
         channel,
         text: 'Your test was successful!',
       });
