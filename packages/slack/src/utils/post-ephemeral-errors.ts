@@ -27,7 +27,7 @@ export const postEphemeralErrors = async(
 
           let errorMessage = reason;
           if (resDataMessage != null) {
-            errorMessage += ` (${resDataMessage})`;
+            errorMessage += `\n  Cause: ${resDataMessage}`;
           }
 
           return generateMarkdownSectionBlock(errorMessage);
