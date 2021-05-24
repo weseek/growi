@@ -60,19 +60,8 @@ module.exports = (crowi) => {
         .isString(),
     ],
     AccessTokens: [
-      body('tokenGtoP')
-        .trim()
-        .isString()
-        .isLength({ min: 1 })
-        .not()
-        .isEmpty(),
-
-      body('tokenPtoG')
-        .trim()
-        .isString()
-        .isLength({ min: 1 })
-        .not()
-        .isEmpty(),
+      body('tokenGtoP').trim().not().isEmpty(),
+      body('tokenPtoG').trim().not().isEmpty(),
     ],
     RelationTest: [
       body('slackappintegrationsId').isMongoId(),
