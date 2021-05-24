@@ -438,7 +438,7 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/with-proxy/relation-test:
    *      post:
    *        tags: [botType]
-   *        operationId: postRelationTestWithProxy
+   *        operationId: postRelationTest
    *        summary: /slack-integration/bot-type
    *        description: Delete botType setting.
    *        requestBody:
@@ -481,10 +481,10 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/without-proxy/relation-test:
+   *    /slack-integration-settings/without-proxy/test:
    *      post:
    *        tags: [botType]
-   *        operationId: postRelationTestWithoutProxy
+   *        operationId: postTest
    *        summary: test the connection
    *        description: Test the connection with slack work space.
    *        requestBody:
@@ -498,7 +498,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to connect to slack work space.
    */
-  router.post('/without-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.SlackChannel, apiV3FormValidator, async(req, res) => {
+  router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.SlackChannel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Select Without Proxy Type';
