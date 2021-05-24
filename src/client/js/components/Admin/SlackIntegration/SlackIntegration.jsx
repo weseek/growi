@@ -174,7 +174,7 @@ const SlackIntegration = (props) => {
             {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
           </div>
 
-          {(currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy') && (
+          {(currentBotType != null) && (
             <button
               className="mx-3 btn btn-outline-danger flex-end"
               type="button"
