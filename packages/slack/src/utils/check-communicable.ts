@@ -43,12 +43,15 @@ const testSlackApiServer = async(client: WebClient): Promise<any> => {
   return result;
 };
 
-const checkSlackScope = (result: any) => {
-  const slackScope = result.response_metadata.scopes;
+const checkSlackScopes = (result: any) => {
+  const slackScopes = result.response_metadata.scopes;
+  const correctScopes = ['commands', 'team:read', 'chat:write'];
 
-  if (!slackScope.includes('commands', 'team:read', 'chat:write')) {
-    throw new Error('Scope error');
+  if (correctScopes.every(e => slackScopes.includes(e))) {
+    return;
   }
+
+  throw new Error('Scope error');
 };
 
 /**
@@ -79,8 +82,7 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
         const status: ConnectionStatus = {};
         try {
           // try to connect
-          const res = await testSlackApiServer(client);
-          await checkSlackScope(res);
+          await testSlackApiServer(client);
           // retrieve workspace name
           status.workspaceName = await retrieveWorkspaceName(client);
         }
@@ -108,5 +110,5 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
 export const testToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
   const res = await testSlackApiServer(client);
-  await checkSlackScope(res);
+  await checkSlackScopes(res);
 };
