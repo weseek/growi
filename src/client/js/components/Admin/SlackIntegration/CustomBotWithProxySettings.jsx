@@ -14,12 +14,14 @@ import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
-  // eslint-disable-next-line no-unused-vars
   const { appContainer } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [proxyUri, setProxyUri] = useState(null);
 
   const { t } = useTranslation();
+  // TODO: Multiple accordion logic
+  const [tokenPtoG, setTokenPtoG] = useState(null);
+  const [tokenGtoP, setTokenGtoP] = useState(null);
 
   const retrieveProxyUri = useCallback(async() => {
     try {
@@ -37,7 +39,6 @@ const CustomBotWithProxySettings = (props) => {
     retrieveProxyUri();
   }, [retrieveProxyUri]);
 
-
   // TODO: Multiple accordion logic
   const [accordionComponentsCount, setAccordionComponentsCount] = useState(0);
   const addAccordionHandler = () => {
@@ -50,6 +51,31 @@ const CustomBotWithProxySettings = (props) => {
     setAccordionComponentsCount(
       prevState => prevState - 1,
     );
+  };
+
+  const discardTokenHandler = async() => {
+    try {
+      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { tokenGtoP, tokenPtoG });
+      setTokenGtoP(null);
+      setTokenPtoG(null);
+    }
+    catch (err) {
+      toastError(err);
+      logger(err);
+    }
+  };
+
+  const generateTokenHandler = async() => {
+    try {
+      const { data: { tokenGtoP, tokenPtoG } } = await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+      setTokenGtoP(tokenGtoP);
+      setTokenPtoG(tokenPtoG);
+    }
+    catch (err) {
+      toastError(err);
+      logger(err);
+    }
+
   };
 
   const deleteSlackSettingsHandler = async() => {
@@ -116,12 +142,13 @@ const CustomBotWithProxySettings = (props) => {
         </div>
       </div>
 
-      <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
       <div className="mx-3">
 
-        {/* // TODO: Multiple accordion logic */}
+        {/* TODO: Multiple accordion logic */}
+        {/* TODO: Undefined key fix */}
         {Array(...Array(accordionComponentsCount)).map(i => (
-          <>
+          <React.Fragment key={i}>
             <div className="d-flex justify-content-end">
               <button
                 className="my-3 btn btn-outline-danger"
@@ -132,8 +159,14 @@ const CustomBotWithProxySettings = (props) => {
                 {t('admin:slack_integration.delete')}
               </button>
             </div>
-            <WithProxyAccordions botType="customBotWithProxy" key={i} />
-          </>
+            <WithProxyAccordions
+              botType="customBotWithProxy"
+              discardTokenHandler={discardTokenHandler}
+              generateTokenHandler={generateTokenHandler}
+              tokenPtoG={tokenPtoG}
+              tokenGtoP={tokenGtoP}
+            />
+          </React.Fragment>
         ))}
 
         {/* TODO: Disable button when integration is incomplete */}
