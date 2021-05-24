@@ -60,12 +60,19 @@ module.exports = (crowi) => {
         .isString(),
     ],
     AccessTokens: [
-      body('tokenGtoP').trim().not().isEmpty()
+      body('tokenGtoP')
+        .trim()
         .isString()
-        .isLength({ min: 1 }),
-      body('tokenPtoG').trim().not().isEmpty()
+        .isLength({ min: 1 })
+        .not()
+        .isEmpty(),
+
+      body('tokenPtoG')
+        .trim()
         .isString()
-        .isLength({ min: 1 }),
+        .isLength({ min: 1 })
+        .not()
+        .isEmpty(),
     ],
     RelationTest: [
       body('slackappintegrationsId').isMongoId(),
@@ -402,7 +409,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to delete access tokens for slack
    */
-  router.delete('/slack-app-integration', validator.AccessTokens, async(req, res) => {
+  router.delete('/slack-app-integration', validator.AccessTokens, apiV3FormValidator, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { tokenGtoP, tokenPtoG } = req.query;
     try {
