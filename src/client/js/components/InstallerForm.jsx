@@ -22,7 +22,8 @@ class InstallerForm extends React.Component {
   }
 
   componentWillMount() {
-    this.changeLanguage(localeMetadatas[0]);
+    const meta = localeMetadatas.find(v => v.id === this.props.defaultLanguage);
+    this.setState({ selectedLang: meta });
   }
 
   // checkUserName(event) {
@@ -198,6 +199,7 @@ InstallerForm.propTypes = {
   name: PropTypes.string,
   email: PropTypes.string,
   csrf: PropTypes.string,
+  defaultLanguage: PropTypes.string,
 };
 
 export default withTranslation()(InstallerForm);

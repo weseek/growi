@@ -21,7 +21,7 @@ if (installerFormElem) {
   const csrf = installerFormElem.dataset.csrf;
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <InstallerForm userName={userName} name={name} email={email} csrf={csrf} />
+      <InstallerForm userName={userName} name={name} email={email} csrf={csrf} defaultLanguage={i18n.language} />
     </I18nextProvider>,
     installerFormElem,
   );
