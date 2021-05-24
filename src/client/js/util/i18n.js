@@ -15,7 +15,38 @@ export const i18nFactory = (userLocaleId) => {
     lookup(options) {
       return userLocaleId;
     },
-    cacheUserlanguage(lng, options) {
+  });
+  // Defined detection from the browser to convert id
+  // See Reference: https://github.com/i18next/i18next-browser-languageDetector/blob/master/src/browserLookups/navigator.js
+  langDetector.addDetector({
+    name: 'userBrowserDetector',
+    lookup(options) {
+      const found = [];
+
+      if (typeof navigator !== 'undefined') {
+        if (navigator.languages) { // chrome only; not an array, so can't use .push.apply instead of iterating
+          for (let i = 0; i < navigator.languages.length; i++) {
+            found.push(navigator.languages[i]);
+          }
+        }
+        if (navigator.userLanguage) {
+          found.push(navigator.userLanguage);
+        }
+        if (navigator.language) {
+          found.push(navigator.language);
+        }
+      }
+
+      if (found.length === 0) {
+        return undefined;
+      }
+
+      // detect id from browserLanguageId
+      const foundedLanguage = localeMetadatas.find(v => v.browserLanguageId === found[0]);
+      if (foundedLanguage == null) {
+        return undefined;
+      }
+      return foundedLanguage.id;
     },
   });
 
@@ -29,7 +60,7 @@ export const i18nFactory = (userLocaleId) => {
 
       fallbackLng: 'en_US',
       detection: {
-        order: ['userSettingDetector', 'querystring', 'localStorage'],
+        order: ['userSettingDetector', 'userBrowserDetector'],
       },
 
       interpolation: {
