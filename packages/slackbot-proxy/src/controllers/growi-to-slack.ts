@@ -34,6 +34,22 @@ export class GrowiToSlackCtrl {
   @Inject()
   orderRepository: OrderRepository;
 
+  async requestToGrowi(growiUrl?:string, proxyAccessToken?:string):Promise<void> {
+    if (growiUrl == null || proxyAccessToken == null) {
+      throw new Error('url and token is required');
+    }
+    const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
+    await axios.post(url.toString(), {
+      type: 'url_verification',
+      challenge: 'this_is_my_challenge_token',
+    },
+    {
+      headers: {
+        'x-growi-ptog-tokens': proxyAccessToken,
+      },
+    });
+  }
+
   @Get('/connection-status')
   @UseBefore(verifyGrowiToSlackRequest)
   async getConnectionStatuses(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
@@ -84,6 +100,7 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: 'installation is invalid' });
       }
 
+      await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
       await relationTestToSlack(token);
       return res.send({ relation });
     }
@@ -101,16 +118,7 @@ export class GrowiToSlackCtrl {
 
     // Access the GROWI URL saved in the Order record and check if the GtoP token is valid.
     try {
-      const url = new URL('/_api/v3/slack-integration/proxied/commands', order.growiUrl);
-      await axios.post(url.toString(), {
-        type: 'url_verification',
-        challenge: 'this_is_my_challenge_token',
-      },
-      {
-        headers: {
-          'x-growi-ptog-tokens': order.proxyAccessToken,
-        },
-      });
+      await this.requestToGrowi(order.growiUrl, order.proxyAccessToken);
     }
     catch (err) {
       logger.error(err);
