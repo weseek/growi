@@ -36,7 +36,7 @@ const CustomBotWithoutProxySettings = (props) => {
         slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
       />
 
-      <h2 className="admin-setting-header">{t('admin:slack_integration.cooperation_procedure')}</h2>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
 
       {(props.slackSigningSecret || props.slackBotToken) && (
       <button
