@@ -9,7 +9,7 @@ const { getConnectionStatuses, relationTestToSlack } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-const logger = loggerFactory('growi:routes:apiv3:notification-setting');
+const logger = loggerFactory('growi:routes:apiv3:slack-integration-settings');
 
 const router = express.Router();
 
