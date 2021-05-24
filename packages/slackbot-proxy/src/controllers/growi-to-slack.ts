@@ -108,7 +108,7 @@ export class GrowiToSlackCtrl {
       },
       {
         headers: {
-          'x-growi-ptog-tokens': order.growiAccessToken,
+          'x-growi-ptog-tokens': order.proxyAccessToken,
         },
       });
     }
