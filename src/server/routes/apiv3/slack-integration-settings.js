@@ -513,7 +513,7 @@ module.exports = (crowi) => {
     }
     catch (error) {
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(error.message, 'test-failed'));
+      return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
     }
   });
 
