@@ -85,15 +85,17 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   const { t } = useTranslation();
   const growiUrl = props.appContainer.config.crowi.url;
 
-  let discardTokenHandler;
-  if (props.discardTokenHandler != null) {
-    discardTokenHandler = props.discardTokenHandler;
-  }
+  const generateTokenHandler = () => {
+    if (props.generateTokenHandler != null) {
+      props.generateTokenHandler();
+    }
+  };
 
-  let generateTokenHandler;
-  if (props.generateTokenHandler != null) {
-    generateTokenHandler = props.generateTokenHandler;
-  }
+  const discardTokenHandler = () => {
+    if (props.discardTokenHandler != null) {
+      props.discardTokenHandler();
+    }
+  };
 
   return (
     <div className="py-4 px-5">
@@ -133,7 +135,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
             type="button"
             className="btn btn-outline-secondary mx-2"
             onClick={discardTokenHandler}
-            disabled={!tokenGtoP || !tokenPtoG}
+            disabled={props.tokenGtoP == null || props.tokenPtoG == null}
           >
             { t('admin:slack_integration.access_token_settings.discard') }
           </button>

@@ -39,7 +39,6 @@ const CustomBotWithProxySettings = (props) => {
     retrieveProxyUri();
   }, [retrieveProxyUri]);
 
-
   // TODO: Multiple accordion logic
   const [accordionComponentsCount, setAccordionComponentsCount] = useState(0);
   const addAccordionHandler = () => {
