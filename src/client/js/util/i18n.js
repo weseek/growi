@@ -7,6 +7,12 @@ import locales from '@root/resource/locales';
 // extract metadata list from 'resource/locales/${locale}/meta.json'
 export const localeMetadatas = Object.values(locales).map(locale => locale.meta);
 
+const browserLanguageIdMapping = {
+  zh: 'zh_CN',
+  ja: 'ja_JP',
+  en: 'en_US',
+};
+
 export const i18nFactory = (userLocaleId) => {
   // setup LanguageDetector
   const langDetector = new LanguageDetector();
@@ -40,13 +46,8 @@ export const i18nFactory = (userLocaleId) => {
       if (found.length === 0) {
         return undefined;
       }
-
-      // detect id from browserLanguageId
-      const foundedLanguage = localeMetadatas.find(v => v.browserLanguageId === found[0]);
-      if (foundedLanguage == null) {
-        return undefined;
-      }
-      return foundedLanguage.id;
+      // detect id from browserLanguageIdMapping
+      return browserLanguageIdMapping[found.find(v => Object.keys(browserLanguageIdMapping).includes(v))];
     },
   });
 
