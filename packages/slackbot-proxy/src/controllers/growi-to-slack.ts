@@ -99,13 +99,13 @@ export class GrowiToSlackCtrl {
       return res.status(400).send({ message: 'order has expired or does not exist.' });
     }
 
-    // Try to access the GROWI registered in the Order record and check if the GtoP token is valid.
+    // Access the GROWI URL saved in the Order record and check if the GtoP token is valid.
     try {
       const url = new URL('/_api/v3/slack-integration/proxied/commands', order.growiUrl);
       await axios.post(url.toString(), {
-        tokenPtoG: order.growiAccessToken,
         type: 'url_verification',
-        challenge: 'url verification is successful',
+        tokenPtoG: order.growiAccessToken,
+        message: 'url verification was successful',
       });
     }
     catch (err) {
