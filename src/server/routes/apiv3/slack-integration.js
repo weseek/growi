@@ -14,16 +14,13 @@ module.exports = (crowi) => {
 
   // Check if the access token is correct
   async function verifyAccessTokenFromProxy(req, res, next) {
-    const token = req.headers['x-growi-ptog-tokens'];
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
-    if (token == null) {
+    if (tokenPtoG == null) {
       const message = 'The value of header \'x-growi-ptog-tokens\' must not be empty.';
       logger.warn(message, { body: req.body });
       return res.status(400).send({ message });
     }
-
-    const { body } = req;
-    const { tokenPtoG } = body;
 
     const correctToken = configManager.getConfig('crowi', 'slackbot:access-token');
 
