@@ -1,8 +1,9 @@
 # CHANGES
 
 ## v4.2.18-RC
-\* Fix: Group selector of User Group Delete Modal does not show all groups
-* Fix: Global notification to Slack does not encode spaces of page path
+
+* Feature: Cobvertible page contents width.
+* Fix: Group selector of User Group Delete Modal does not show all groups* Fix: Global notification to Slack does not encode spaces of page path
 * Support: Upgrade libs
     * @google-cloud/storage
 
