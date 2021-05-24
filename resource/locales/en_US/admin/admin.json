@@ -297,7 +297,6 @@
     "delete": "Delete",
     "cooperation_procedure": "Cooperation procedure",
     "official_bot_settings": "Official bot Settings",
-    "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
     "reset": "Reset",
     "reset_all_settings": "Reset all settings",
     "delete_slackbot_settings": "Reset Slack Bot settings",

@@ -304,7 +304,6 @@
     },
     "delete": "取消",
     "cooperation_procedure": "协作程序",
-    "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 设置",
     "reset":"重置",
     "reset_all_settings": "重置所有设置",
     "delete_slackbot_settings": "重置 Slack Bot 设置",
