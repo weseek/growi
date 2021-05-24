@@ -295,7 +295,7 @@
       "generate": "Generate"
     },
     "delete": "Delete",
-    "cooperation_procedure": "Cooperation procedure",
+    "integration_procedure": "Integration Procedure",
     "official_bot_settings": "Official bot Settings",
     "reset": "Reset",
     "reset_all_settings": "Reset all settings",
@@ -330,12 +330,12 @@
       "send_message_to_slack_work_space": "Send message to Slack work space.",
       "add_slack_workspace": "Add a Slack Workspace"
     },
-    "custom_bot_without_proxy_integration": "Custom bot without proxy integration",
+    "custom_bot_without_proxy_integration": "Custom Bot Without Proxy Integration",
     "integration_sentence": {
       "integration_is_not_complete": "Integration is not complete.<br>Proceed with the following integration procedure.",
       "integration_successful": "Integration successful"
     },
-    "custom_bot_with_proxy_integration": "Custom bot with proxy integration",
+    "custom_bot_with_proxy_integration": "Custom Bot With Proxy Integration",
     "official_bot_integration": "Official bot integration"
   },
   "user_management": {
