@@ -62,10 +62,18 @@ module.exports = (crowi) => {
    *                      description: a result of `UserGroup.find`
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const { query } = req;
+
     // TODO: filter with querystring
     try {
-      const page = parseInt(req.query.page) || 1;
-      const result = await UserGroup.findUserGroupsWithPagination({ page });
+      const page = query.page != null ? parseInt(query.page) : undefined;
+      const limit = query.limit != null ? parseInt(query.limit) : undefined;
+      const offset = query.offset != null ? parseInt(query.offset) : undefined;
+      const pagination = query.pagination != null ? query.pagination !== 'false' : undefined;
+
+      const result = await UserGroup.findUserGroupsWithPagination({
+        page, limit, offset, pagination,
+      });
       const { docs: userGroups, totalDocs: totalUserGroups, limit: pagingLimit } = result;
       return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
     }
@@ -288,9 +296,10 @@ module.exports = (crowi) => {
       const userGroup = await UserGroup.findById(id);
       const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
 
-      const users = userGroupRelations.map((userGroupRelation) => {
+      const serializeUsers = userGroupRelations.map((userGroupRelation) => {
         return serializeUserSecurely(userGroupRelation.relatedUser);
       });
+      const users = serializeUsers.filter(user => user != null);
 
       return res.apiv3({ users });
     }

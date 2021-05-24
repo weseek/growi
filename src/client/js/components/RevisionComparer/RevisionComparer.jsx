@@ -6,6 +6,8 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
+import { encodeSpaces } from '@commons/util/path-utils';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionComparerContainer from '../../services/RevisionComparerContainer';
@@ -21,14 +23,6 @@ const DropdownItemContents = ({ title, contents }) => (
 );
 /* eslint-enable react/prop-types */
 
-function encodeSpaces(str) {
-  if (str == null) {
-    return null;
-  }
-
-  // Encode SPACE and IDEOGRAPHIC SPACE
-  return str.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
-}
 
 const RevisionComparer = (props) => {
 
