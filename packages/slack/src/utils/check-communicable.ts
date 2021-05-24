@@ -42,20 +42,6 @@ const testSlackApiServer = async(client: WebClient): Promise<void> => {
 };
 
 /**
-* Test Slack Auth
-* @param token
-*/
-export const testSlackAuth = async(token: string): Promise<WebAPICallResult> => {
-  const client = generateWebClient(token);
-  const result = await client.auth.test();
-
-  if (!result.ok) {
-    throw new Error(result.error);
-  }
-  return result;
-};
-
-/**
  * Retrieve Slack workspace name
  * @param client
  */
@@ -114,4 +100,18 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
 export const relationTestToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
   await testSlackApiServer(client);
+};
+
+/**
+* Test Slack Auth
+* @param token
+*/
+export const newRelationTestToSlack = async(token: string): Promise<WebAPICallResult> => {
+  const client = generateWebClient(token);
+  const result = await client.auth.test();
+
+  if (!result.ok) {
+    throw new Error(result.error);
+  }
+  return result;
 };
