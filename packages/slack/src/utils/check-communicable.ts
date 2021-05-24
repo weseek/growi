@@ -33,13 +33,22 @@ export const connectToSlackApiServer = async(): Promise<void|AxiosError> => {
  * Test Slack API
  * @param client
  */
-const testSlackApiServer = async(client: WebClient): Promise<void> => {
+const testSlackApiServer = async(client: WebClient): Promise<any> => {
   const result = await client.api.test();
 
   if (!result.ok) {
     throw new Error(result.error);
   }
-  console.log(result);
+
+  return result;
+};
+
+const checkSlackScope = (result: any) => {
+  const slackScope = result.response_metadata.scopes;
+
+  if (!slackScope.includes('commands', 'team:read', 'chat:write')) {
+    throw new Error('Scope error');
+  }
 };
 
 /**
@@ -70,7 +79,8 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
         const status: ConnectionStatus = {};
         try {
           // try to connect
-          await testSlackApiServer(client);
+          const res = await testSlackApiServer(client);
+          await checkSlackScope(res);
           // retrieve workspace name
           status.workspaceName = await retrieveWorkspaceName(client);
         }
@@ -97,11 +107,6 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
  */
 export const testToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
-  try {
-    await testSlackApiServer(client);
-  }
-  catch (error) {
-    console.log(error);
-  }
-
+  const res = await testSlackApiServer(client);
+  await checkSlackScope(res);
 };
