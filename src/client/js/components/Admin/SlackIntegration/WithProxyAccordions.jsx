@@ -61,7 +61,7 @@ export const RegisteringProxyUrlProcess = () => {
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
           />
-          <img className="mb-3" width={700} height="auto" src="/images/slack-integration/growi-register-sentence.png" />
+          <img className="mb-3 border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
         </li>
 
         <li>
@@ -70,7 +70,7 @@ export const RegisteringProxyUrlProcess = () => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
           />
           <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-          <img width={700} height="auto" src="/images/slack-integration/growi-set-proxy-url.png" />
+          <img className="mb-3 w-75 border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
         </li>
       </ol>
     </div>
@@ -152,7 +152,7 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
           </li>
         </ol>
         {/* TODO: Insert photo */}
-        <img width={500} height="auto" src="/images/slack-integration/growi-register-modal.png" />
+        <img className="mb-3 border border-light img-fluid" width={500} src="/images/slack-integration/growi-register-modal.png" />
       </div>
     </div>
 
