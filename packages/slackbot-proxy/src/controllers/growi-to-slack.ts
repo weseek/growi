@@ -105,7 +105,7 @@ export class GrowiToSlackCtrl {
       await axios.post(url.toString(), {
         type: 'url_verification',
         tokenPtoG: order.growiAccessToken,
-        message: 'url verification was successful',
+        challenge: 'this_is_my_challenge_token',
       });
     }
     catch (err) {
