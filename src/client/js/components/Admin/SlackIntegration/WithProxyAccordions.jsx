@@ -83,7 +83,6 @@ const RegisteringProxyUrlProcess = () => {
 
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
-  const growiUrl = props.appContainer.config.crowi.url;
 
   const generateTokenHandler = () => {
     if (props.generateTokenHandler != null) {
@@ -163,8 +162,8 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
             />
             <div className="input-group align-items-center ml-2 mb-3">
               <div className="input-group-prepend mx-1">
-                <input className="form-control" type="text" value={growiUrl} readOnly />
-                <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+                <input className="form-control" type="text" value={props.growiUrl} readOnly />
+                <CopyToClipboard text={props.growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
                   <div className="btn input-group-text">
                     <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
                   </div>
@@ -190,11 +189,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 
   );
 }, [AppContainer]);
-
-GeneratingTokensAndRegisteringProxyServiceProcess.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
 
 const TestProcess = () => {
   const { t } = useTranslation();
@@ -286,7 +280,7 @@ const WithProxyAccordions = (props) => {
     '②': {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
-        appContainer={props.appContainer}
+        growiUrl={props.appContainer.config.crowi.url}
         discardTokenHandler={props.discardTokenHandler}
         generateTokenHandler={props.generateTokenHandler}
         tokenPtoG={props.tokenPtoG}
@@ -315,7 +309,7 @@ const WithProxyAccordions = (props) => {
     '③': {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
-        appContainer={props.appContainer}
+        growiUrl={props.appContainer.config.crowi.url}
         discardTokenHandler={props.discardTokenHandler}
         generateTokenHandler={props.generateTokenHandler}
         tokenPtoG={props.tokenPtoG}
