@@ -31,10 +31,10 @@ export class Order {
   proxyAccessToken?: string;
 
   isExpired():boolean {
-    const currentTime = (new Date()).getTime();
+    const now = Date.now();
     const expiredAt = this.createdAt.getTime() + 600000;
 
-    return expiredAt < currentTime;
+    return expiredAt < now;
   }
 
 }
