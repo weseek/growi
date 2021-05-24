@@ -67,7 +67,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
     setConnectionErrorCode(null);
     setConnectionErrorMessage(null);
     setConnectionSuccessMessage(null);
-    // TODO: 5921 Add new Test endpoint
     try {
       await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', {
         channel: testChannel,
