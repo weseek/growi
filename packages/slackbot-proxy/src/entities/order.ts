@@ -31,7 +31,15 @@ export class Order {
   proxyAccessToken?: string;
 
   isExpired():boolean {
-    // TODO GW-5555 implement this
+    const createdTime = (new Date(this.createdAt)).getTime();
+    const currentTime = (new Date()).getTime();
+    console.log('createdTime', createdTime);
+    console.log('currentTime', currentTime);
+    if (this.createdAt != null && currentTime < createdTime + 600000) {
+      console.log('isExpiredです');
+      return true;
+    }
+    console.log('isNotExpiredです');
     return false;
   }
 
