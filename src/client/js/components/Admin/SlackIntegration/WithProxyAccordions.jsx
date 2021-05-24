@@ -85,16 +85,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   const { t } = useTranslation();
   const growiUrl = props.appContainer.config.crowi.url;
 
-  let tokenGtoP;
-  if (props.tokenGtoP != null) {
-    tokenGtoP = props.tokenGtoP;
-  }
-
-  let tokenPtoG;
-  if (props.tokenPtoG != null) {
-    tokenPtoG = props.tokenPtoG;
-  }
-
   let discardTokenHandler;
   if (props.discardTokenHandler != null) {
     discardTokenHandler = props.discardTokenHandler;
@@ -113,7 +103,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             {/* TODO: show tokenPtoG GW-5899 */}
-            <input className="form-control" type="text" value={tokenPtoG} readOnly />
+            <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
             <CopyToClipboard text="tokenPtoG" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
                 <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
@@ -127,7 +117,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             {/* TODO: show tokenGtoP GW-5899 */}
-            <input className="form-control" type="text" value={tokenGtoP} readOnly />
+            <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
             <CopyToClipboard text="tokenGtoP" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
                 <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
