@@ -31,16 +31,10 @@ export class Order {
   proxyAccessToken?: string;
 
   isExpired():boolean {
-    const createdTime = (new Date(this.createdAt)).getTime();
     const currentTime = (new Date()).getTime();
-    console.log('createdTime', createdTime);
-    console.log('currentTime', currentTime);
-    if (this.createdAt != null && currentTime < createdTime + 600000) {
-      console.log('isExpiredです');
-      return true;
-    }
-    console.log('isNotExpiredです');
-    return false;
+    const expiredAt = this.createdAt.getTime() + 600000;
+
+    return expiredAt < currentTime;
   }
 
 }

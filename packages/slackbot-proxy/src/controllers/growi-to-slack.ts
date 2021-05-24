@@ -90,7 +90,7 @@ export class GrowiToSlackCtrl {
     // retrieve latest Order with Installation
     const order = await this.orderRepository.createQueryBuilder('order')
       .orderBy('order.createdAt', 'DESC')
-      .where('growiAccessToken = :token', { token: tokenGtoP })
+      .where('proxyAccessToken = :token', { token: tokenGtoP })
       .leftJoinAndSelect('order.installation', 'installation')
       .getOne();
 
