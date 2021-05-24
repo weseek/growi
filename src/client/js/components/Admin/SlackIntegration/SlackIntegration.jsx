@@ -25,6 +25,7 @@ const SlackIntegration = (props) => {
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
+  const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
@@ -136,6 +137,8 @@ const SlackIntegration = (props) => {
           onSetIsSendTestMessage={setIsSendTestMessage}
           onResetSettings={resetWithOutSettings}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
+          isIntegrationSuccess={isIntegrationSuccess}
+          onSetIsIntegrationSuccess={setIsIntegrationSuccess}
         />
       );
       break;
