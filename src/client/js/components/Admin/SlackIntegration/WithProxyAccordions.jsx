@@ -61,9 +61,7 @@ export const RegisteringProxyUrlProcess = () => {
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
           />
-          <div className="rounded border d-flex mb-5 justify-content-center align-items-center" style={{ height: '10rem' }}>
-            <h1 className="text-muted">参考画像</h1>
-          </div>
+          <img className="mb-3" width={700} height="auto" src="/images/slack-integration/growi-register-sentence.png" />
         </li>
 
         <li>
@@ -72,9 +70,7 @@ export const RegisteringProxyUrlProcess = () => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
           />
           <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-          <div className="rounded border d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-            <h1 className="text-muted">参考画像</h1>
-          </div>
+          <img width={700} height="auto" src="/images/slack-integration/growi-set-proxy-url.png" />
         </li>
       </ol>
     </div>
@@ -156,9 +152,7 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
           </li>
         </ol>
         {/* TODO: Insert photo */}
-        <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-          <h1 className="text-muted">参考画像</h1>
-        </div>
+        <img width={500} height="auto" src="/images/slack-integration/growi-register-modal.png" />
       </div>
     </div>
 
