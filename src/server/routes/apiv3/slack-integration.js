@@ -13,7 +13,15 @@ module.exports = (crowi) => {
   const { configManager } = crowi;
 
   // Check if the access token is correct
-  function verifyAccessTokenFromProxy(req, res, next) {
+  async function verifyAccessTokenFromProxy(req, res, next) {
+    const token = req.headers['x-growi-ptog-tokens'];
+
+    if (token == null) {
+      const message = 'The value of header \'x-growi-ptog-tokens\' must not be empty.';
+      logger.warn(message, { body: req.body });
+      return res.status(400).send({ message });
+    }
+
     const { body } = req;
     const { tokenPtoG } = body;
 

@@ -104,12 +104,17 @@ export class GrowiToSlackCtrl {
       const url = new URL('/_api/v3/slack-integration/proxied/commands', order.growiUrl);
       await axios.post(url.toString(), {
         type: 'url_verification',
-        tokenPtoG: order.growiAccessToken,
         challenge: 'this_is_my_challenge_token',
+      },
+      {
+        headers: {
+          'x-growi-ptog-tokens': order.growiAccessToken,
+        },
       });
     }
     catch (err) {
       logger.error(err);
+      return res.status(400).send({ message: 'growiAccessToken is invalid' });
     }
 
     logger.debug('order found', order);
