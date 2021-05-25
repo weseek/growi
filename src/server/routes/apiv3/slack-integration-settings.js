@@ -55,6 +55,9 @@ module.exports = (crowi) => {
       body('currentBotType')
         .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
     ],
+    proxyUri: [
+      body('proxyUri').trim().matches(/^(https?:\/\/)/).isURL({ require_tld: false }),
+    ],
     AccessTokens: [
       query('tokenGtoP').trim().not().isEmpty()
         .isString()
@@ -416,7 +419,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, validator.proxyUri, apiV3FormValidator, async(req, res) => {
     const { proxyUri } = req.body;
 
     const requestParams = { 'slackbot:serverUri': proxyUri };
