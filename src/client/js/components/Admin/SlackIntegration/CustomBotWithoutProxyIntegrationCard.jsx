@@ -27,7 +27,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       <div className="text-center w-25">
 
         <div className="d-none d-lg-block">
-
+          {/* TODO GW-6078 switching logic */}
           {/* <p className="text-success small mt-5">
             <i className="fa fa-check mr-1" />
             {t('admin:slack_integration.integration_sentence.integration_successful')}
@@ -42,11 +42,13 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           </p>
         </div>
 
+        {/* TODO GW-6078 */}
         <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
           {/* <i className="fa fa-check mr-1 text-success" /> */}
           <i className="icon-info text-danger" />
         </div>
 
+        {/* TODO GW-6078 */}
         {/* <hr className="align-self-center admin-border-success border-success"></hr> */}
         <hr className="align-self-center admin-border-danger border-danger"></hr>
       </div>
@@ -59,10 +61,10 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
+        {/* TODO GW-6078 */}
         {/* <small>
           {t('admin:slack_integration.integration_sentence.integration_successful')}
         </small> */}
-
         <small
           className="m-0"
           // eslint-disable-next-line react/no-danger
