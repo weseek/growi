@@ -35,7 +35,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 
           <p className="mt-4">
             <small
-              className="text-warning m-0"
+              className="text-danger m-0"
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
             />
