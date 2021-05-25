@@ -76,10 +76,10 @@ export class Server {
   injector: InjectorService;
 
   $beforeInit(): Promise<any> | void {
-    const serverUri = process.env.SERVER_URI;
+    const serverUri = process.env.PROXY_SERVER_URI;
 
     if (serverUri === undefined) {
-      throw new Error('The environment variable \'SERVER_URI\' must be defined.');
+      throw new Error('The environment variable \'PROXY_SERVER_URI\' must be defined.');
     }
   }
 
