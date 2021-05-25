@@ -57,7 +57,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
         </div>
       </div>
 
-      <UncontrolledTooltip placement="top" fade={false} target="integration-line">
+      <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
         <small
           className="m-0"
           // eslint-disable-next-line react/no-danger
