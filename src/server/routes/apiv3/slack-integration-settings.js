@@ -360,7 +360,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/access-tokens:
+   *    /slack-integration-settings/slack-app-integrations:
    *      put:
    *        tags: [SlackIntegration]
    *        operationId: putAccessTokens
@@ -370,7 +370,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update access tokens for slack
    */
-  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     let checkTokens;
     let tokenGtoP;
     let tokenPtoG;

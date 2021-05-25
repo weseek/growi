@@ -25,7 +25,13 @@ const OfficialBotSettings = (props) => {
   }, [proxyServerUri]);
 
   const addSlackAppIntegrationHandler = async() => {
-    // TODO GW-6067 implement
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
+    }
+    catch (err) {
+      toastError(err);
+      logger(err);
+    }
   };
 
   const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
@@ -42,7 +48,7 @@ const OfficialBotSettings = (props) => {
   const generateTokenHandler = async() => {
     try {
       // GW-6068 set new value after this
-      await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
     }
     catch (err) {
       toastError(err);
