@@ -52,7 +52,11 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <UncontrolledTooltip placement="top" fade={false} target="integration-line">
-       Hello Tooltip!!
+        <small
+          className="m-0"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+        />
       </UncontrolledTooltip>
     </div>
   );
