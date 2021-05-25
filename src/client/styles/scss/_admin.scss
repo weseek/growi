@@ -129,16 +129,19 @@ $slack-work-space-name-card-border: #efc1f6;
     .admin-border-success {
       border-width: 3px;
     }
-    .circle {
+    @mixin circle {
       top: 50%;
       left: 50%;
-      width: 100px;
-      height: 100px;
-      border: 13px solid;
       border-radius: 50%;
       -webkit-transform: translate(-50%, -50%);
       -ms-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
+    }
+    .circle-default {
+      @include circle;
+      width: 100px;
+      height: 100px;
+      border: 13px solid;
     }
     .circle-inner {
       position: absolute;
