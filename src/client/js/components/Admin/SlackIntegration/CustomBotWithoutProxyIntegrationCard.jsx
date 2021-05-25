@@ -28,27 +28,27 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 
         <div className="d-none d-lg-block">
 
-          <p className="text-success small mt-5">
+          {/* <p className="text-success small mt-5">
             <i className="fa fa-check mr-1" />
             {t('admin:slack_integration.integration_sentence.integration_successful')}
-          </p>
+          </p> */}
 
-          {/* <p className="mt-4">
+          <p className="mt-4">
             <small
               className="text-warning m-0"
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
             />
-          </p> */}
+          </p>
         </div>
 
         <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
-          <i className="fa fa-check mr-1 text-success" />
-          {/* <i className="icon-info text-danger" /> */}
+          {/* <i className="fa fa-check mr-1 text-success" /> */}
+          <i className="icon-info text-danger" />
         </div>
 
-        <hr className="align-self-center admin-border-success border-success"></hr>
-        {/* <hr className="align-self-center admin-border-danger border-danger"></hr> */}
+        {/* <hr className="align-self-center admin-border-success border-success"></hr> */}
+        <hr className="align-self-center admin-border-danger border-danger"></hr>
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
@@ -59,14 +59,15 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
-        <small>
+        {/* <small>
           {t('admin:slack_integration.integration_sentence.integration_successful')}
-        </small>
-        {/* <small
+        </small> */}
+
+        <small
           className="m-0"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
-        /> */}
+        />
       </UncontrolledTooltip>
     </div>
   );
