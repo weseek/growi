@@ -170,7 +170,10 @@ export class SlackCtrl {
       const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
       return axios.post(url.toString(), {
         ...body,
-        tokenPtoG: relation.tokenPtoG,
+      }, {
+        headers: {
+          'x-growi-ptog-tokens': relation.tokenPtoG,
+        },
       });
     });
 

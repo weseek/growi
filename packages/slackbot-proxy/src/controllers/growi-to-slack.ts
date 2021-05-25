@@ -34,6 +34,19 @@ export class GrowiToSlackCtrl {
   @Inject()
   orderRepository: OrderRepository;
 
+  async requestToGrowi(growiUrl:string, proxyAccessToken:string):Promise<void> {
+    const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
+    await axios.post(url.toString(), {
+      type: 'url_verification',
+      challenge: 'this_is_my_challenge_token',
+    },
+    {
+      headers: {
+        'x-growi-ptog-tokens': proxyAccessToken,
+      },
+    });
+  }
+
   @Get('/connection-status')
   @UseBefore(verifyGrowiToSlackRequest)
   async getConnectionStatuses(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
@@ -84,6 +97,14 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: 'installation is invalid' });
       }
 
+      try {
+        await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
+      }
+
       await relationTestToSlack(token);
       return res.send({ relation });
     }
@@ -91,7 +112,7 @@ export class GrowiToSlackCtrl {
     // retrieve latest Order with Installation
     const order = await this.orderRepository.createQueryBuilder('order')
       .orderBy('order.createdAt', 'DESC')
-      .where('growiAccessToken = :token', { token: tokenGtoP })
+      .where('proxyAccessToken = :token', { token: tokenGtoP })
       .leftJoinAndSelect('order.installation', 'installation')
       .getOne();
 
@@ -101,15 +122,11 @@ export class GrowiToSlackCtrl {
 
     // Access the GROWI URL saved in the Order record and check if the GtoP token is valid.
     try {
-      const url = new URL('/_api/v3/slack-integration/proxied/commands', order.growiUrl);
-      await axios.post(url.toString(), {
-        type: 'url_verification',
-        tokenPtoG: order.growiAccessToken,
-        challenge: 'this_is_my_challenge_token',
-      });
+      await this.requestToGrowi(order.growiUrl, order.proxyAccessToken);
     }
     catch (err) {
       logger.error(err);
+      return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
     }
 
     logger.debug('order found', order);

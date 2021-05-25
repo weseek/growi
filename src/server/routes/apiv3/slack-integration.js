@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 
 const loggerFactory = require('@alias/logger');
 
@@ -6,6 +7,7 @@ const { verifySlackRequest } = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
+const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
@@ -13,19 +15,25 @@ module.exports = (crowi) => {
   const { configManager } = crowi;
 
   // Check if the access token is correct
-  function verifyAccessTokenFromProxy(req, res, next) {
-    const { body } = req;
-    const { tokenPtoG } = body;
+  async function verifyAccessTokenFromProxy(req, res, next) {
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
-    const correctToken = configManager.getConfig('crowi', 'slackbot:access-token');
+    if (tokenPtoG == null) {
+      const message = 'The value of header \'x-growi-ptog-tokens\' must not be empty.';
+      logger.warn(message, { body: req.body });
+      return res.status(400).send({ message });
+    }
+
+    const slackAppIntegration = await SlackAppIntegration.estimatedDocumentCount({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
-      correctToken,
     });
 
-    if (tokenPtoG == null || tokenPtoG !== correctToken) {
-      return res.status(403).send({ message: 'The access token that identifies the request source is slackbot-proxy is invalid.' });
+    if (slackAppIntegration === 0) {
+      return res.status(403).send({
+        message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`?',
+      });
     }
 
     next();
