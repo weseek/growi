@@ -44,7 +44,6 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
             </div>
           )
         }
-
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
