@@ -30,6 +30,7 @@ const OfficialBotSettings = (props) => {
 
   const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
     try {
+      // GW-6068 set new value after this
       await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { tokenGtoP, tokenPtoG });
     }
     catch (err) {
@@ -40,6 +41,7 @@ const OfficialBotSettings = (props) => {
 
   const generateTokenHandler = async() => {
     try {
+      // GW-6068 set new value after this
       await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
     }
     catch (err) {
