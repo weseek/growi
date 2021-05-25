@@ -67,7 +67,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
 
 
   let value = '';
-  if (connectionMessage === 'Send message to slack ws.' || connectionMessage == null) {
+  if (connectionMessage === 'Send a message to slack ws.' || connectionMessage == null) {
     value = connectionMessage;
   }
   else {
@@ -161,7 +161,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
           ? <p></p>
           : (
             <>
-              {connectionMessage === 'Send message to slack ws.'
+              {connectionMessage === 'Send a message to slack ws.'
                 ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
                 : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
               }
