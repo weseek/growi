@@ -475,9 +475,8 @@ module.exports = (crowi) => {
       return res.apiv3({ response });
     }
     catch (error) {
-      const msg = 'Error occured in updating Custom bot setting';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+      return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
     }
   });
 
