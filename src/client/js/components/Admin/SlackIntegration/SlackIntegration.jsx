@@ -37,8 +37,9 @@ const SlackIntegration = (props) => {
       } = data.settings;
 
       if (data.connectionStatuses != null) {
-        const { workspaceName } = data.connectionStatuses[slackBotToken];
-        setSlackWSNameInWithoutProxy(workspaceName);
+        // TODO fix
+        // const { workspaceName } = data.connectionStatuses[slackBotToken];
+        // setSlackWSNameInWithoutProxy(workspaceName);
       }
 
       setCurrentBotType(data.currentBotType);
