@@ -14,6 +14,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
+  const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
 
   const resetSettings = async() => {
     if (onResetSettings == null) {
