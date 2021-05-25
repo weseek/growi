@@ -9,7 +9,7 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, onResetSettings, isIntegrationSuccess } = props;
+  const { appContainer, onResetSettings } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
@@ -21,6 +21,24 @@ const CustomBotWithoutProxySettings = (props) => {
       return;
     }
     onResetSettings();
+  };
+
+  const testConnection = async() => {
+    setConnectionErrorCode(null);
+    setConnectionErrorMessage(null);
+    setConnectionSuccessMessage(null);
+    try {
+      await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
+      setConnectionSuccessMessage('Send to message to slack ws.');
+      onSetIsSendTestMessage(true);
+      onSetIsIntegrationSuccess(true);
+    }
+    catch (err) {
+      setConnectionErrorCode(err[0].code);
+      setConnectionErrorMessage(err[0].message);
+      onSetIsSendTestMessage(false);
+      onSetIsIntegrationSuccess(false);
+    }
   };
 
   useEffect(() => {
