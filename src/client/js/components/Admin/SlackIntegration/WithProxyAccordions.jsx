@@ -208,11 +208,12 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
     setConnectionSuccessMessage(null);
 
     try {
-      const response = await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
-      console.log(response);
+      await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+      setConnectionSuccessMessage('Success to relation test!');
     }
     catch (error) {
-      toastError(error);
+      setConnectionErrorCode(error[0].code);
+      setConnectionErrorMessage(error[0].message);
       logger.error(error);
     }
   };
@@ -254,7 +255,6 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-lg"
               rows="5"
-            // TODO: Show test logs
               value={value}
               readOnly
             />
