@@ -25,10 +25,10 @@ export class Order {
   growiUrl: string;
 
   @Column()
-  tokenPtoG: string;
+  tokenGtoP: string;
 
   @Column()
-  tokenGtoP: string;
+  tokenPtoG: string;
 
   isExpired():boolean {
     const now = Date.now();
