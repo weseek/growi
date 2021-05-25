@@ -43,6 +43,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
         </div>
 
         <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
+          <i className="fa fa-check mr-1 text-success" />
           {/* <i className="icon-info text-danger" /> */}
         </div>
 
@@ -58,6 +59,9 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
+        <small>
+          {t('admin:slack_integration.integration_sentence.integration_successful')}
+        </small>
         {/* <small
           className="m-0"
           // eslint-disable-next-line react/no-danger
