@@ -25,7 +25,6 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div id="integration-line" className="text-center w-25">
-        {/* TODO apply correct condition GW-5895 */}
         <div className="mt-4">
           <small
             className="text-warning m-0"
