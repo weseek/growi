@@ -2,6 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
+import { UncontrolledTooltip } from 'reactstrap';
+
 const CustomBotWithoutProxyIntegrationCard = (props) => {
 
   const { t } = useTranslation();
@@ -23,27 +25,47 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        {props.isIntegrationSuccess
-          ? (
-            <div className="mt-5">
-              <p className="text-success small">
+
+        <div className="d-none d-lg-block">
+          {props.isIntegrationSuccess ? (
+            <>
+              <p className="text-success small mt-5">
                 <i className="fa fa-check mr-1" />
                 {t('admin:slack_integration.integration_sentence.integration_successful')}
               </p>
               <hr className="align-self-center admin-border-success border-success"></hr>
-            </div>
+            </>
           )
           : (
-            <div className="mt-4">
-              <small
-                className="text-secondary m-0"
-                  // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
-              />
+            <>
+              <p className="mt-4">
+                <small
+                  className="text-danger m-0"
+            // eslint-disable-next-line react/no-danger
+                  dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+                />
+              </p>
               <hr className="align-self-center admin-border-danger border-danger"></hr>
-            </div>
-          )
-        }
+            </>
+            )
+          }
+        </div>
+
+        <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
+          {props.isIntegrationSuccess ? (
+            <>
+              <i className="fa fa-check mr-1 text-success" />
+              <hr className="align-self-center admin-border-success border-success"></hr>
+            </>
+            )
+            : (
+              <>
+                <i className="icon-info text-danger" />
+                <hr className="align-self-center admin-border-danger border-danger"></hr>
+              </>
+            )
+          }
+        </div>
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
@@ -52,6 +74,24 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           <div className="btn btn-primary">{ props.siteName }</div>
         </div>
       </div>
+
+      <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
+        {props.isIntegrationSuccess ? (
+          <small>
+            {t('admin:slack_integration.integration_sentence.integration_successful')}
+          </small>
+          )
+          : (
+            <small
+              className="m-0"
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+            />
+          )
+        }
+
+
+      </UncontrolledTooltip>
     </div>
   );
 };
