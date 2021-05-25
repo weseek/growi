@@ -1,16 +1,24 @@
 import { Configuration, Inject, InjectorService } from '@tsed/di';
 import { PlatformApplication } from '@tsed/common';
 import '@tsed/platform-express'; // /!\ keep this import
+
 import bodyParser from 'body-parser';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
+import helmet from 'helmet';
+
 import '@tsed/swagger';
 import { TypeORMService } from '@tsed/typeorm';
+
 import { ConnectionOptions } from 'typeorm';
+
+import swaggerSettingsForDev from '~/config/swagger/config.dev';
+import swaggerSettingsForProd from '~/config/swagger/config.prod';
 
 
 export const rootDir = __dirname;
+const isProduction = process.env.NODE_ENV === 'production';
 
 const connectionOptions: ConnectionOptions = {
   // The 'name' property must be set. Otherwise, the 'name' will be '0' and won't work well. -- 2021.04.05 Yuki Takei
@@ -25,6 +33,17 @@ const connectionOptions: ConnectionOptions = {
   synchronize: true,
 } as ConnectionOptions;
 
+const swaggerSettings = isProduction ? swaggerSettingsForProd : swaggerSettingsForDev;
+const helmetOptions = isProduction ? {} : {
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ['\'self\''],
+      styleSrc: ['\'self\'', '\'unsafe-inline\''],
+      imgSrc: ['\'self\'', 'data:', 'validator.swagger.io'],
+      scriptSrc: ['\'self\'', 'https: \'unsafe-inline\''],
+    },
+  },
+};
 
 @Configuration({
   rootDir,
@@ -37,6 +56,9 @@ const connectionOptions: ConnectionOptions = {
       `${rootDir}/middlewares/*.ts`,
     ],
   },
+  middlewares: [
+    helmet(helmetOptions),
+  ],
   componentsScan: [
     `${rootDir}/services/*.ts`,
   ],
@@ -54,12 +76,7 @@ const connectionOptions: ConnectionOptions = {
       ],
     } as ConnectionOptions,
   ],
-  swagger: [
-    {
-      path: '/docs',
-      specVersion: '3.0.1',
-    },
-  ],
+  swagger: swaggerSettings,
   exclude: [
     '**/*.spec.ts',
   ],
