@@ -56,7 +56,8 @@ module.exports = (crowi) => {
         .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
     ],
     proxyUri: [
-      body('proxyUri').trim().matches(/^(https?:\/\/)/).isURL({ require_tld: false }),
+      body('proxyUri').if(value => value !== '').trim().matches(/^(https?:\/\/)/)
+        .isURL({ require_tld: false }),
     ],
     AccessTokens: [
       query('tokenGtoP').trim().not().isEmpty()
