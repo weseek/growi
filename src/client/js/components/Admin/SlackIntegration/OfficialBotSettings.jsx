@@ -26,7 +26,7 @@ const OfficialBotSettings = (props) => {
 
   const addSlackAppIntegrationHandler = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/accordion', {});
+      await appContainer.apiv3.put('/slack-integration-settings/accordion');
     }
     catch (err) {
       toastError(err);
