@@ -2,6 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
+import { UncontrolledTooltip } from 'reactstrap';
+
 const CustomBotWithoutProxyIntegrationCard = (props) => {
 
   const { t } = useTranslation();
@@ -49,6 +51,10 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           <div className="btn btn-primary">{ props.siteName }</div>
         </div>
       </div>
+
+      <UncontrolledTooltip placement="top" fade={false} target="integration-line">
+       Hello Tooltip!!
+      </UncontrolledTooltip>
     </div>
   );
 };
