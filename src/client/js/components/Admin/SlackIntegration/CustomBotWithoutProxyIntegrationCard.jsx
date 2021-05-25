@@ -33,13 +33,13 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           <hr className="align-self-center admin-border-danger border-danger"></hr>
         </div>
 
-        <div className="mt-5">
+        {/* <div className="mt-5">
           <p className="text-success small">
             <i className="fa fa-check mr-1" />
             {t('admin:slack_integration.integration_sentence.integration_successful')}
           </p>
           <hr className="align-self-center admin-border-success border-success"></hr>
-        </div>
+        </div> */}
 
       </div>
 
