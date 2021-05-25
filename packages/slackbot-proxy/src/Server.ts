@@ -1,15 +1,14 @@
 import { Configuration, Inject, InjectorService } from '@tsed/di';
 import { PlatformApplication } from '@tsed/common';
-import '@tsed/platform-express'; // /!\ keep this import
+import '@tsed/platform-express'; // !! DO NOT MODIFY !!
+import '@tsed/typeorm'; // !! DO NOT MODIFY !! -- https://github.com/tsedio/tsed/issues/1332#issuecomment-837840612
+import '@tsed/swagger';
 
 import bodyParser from 'body-parser';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 import helmet from 'helmet';
-
-import '@tsed/swagger';
-import { TypeORMService } from '@tsed/typeorm';
 
 import { ConnectionOptions } from 'typeorm';
 
@@ -109,11 +108,6 @@ export class Server {
       .use(bodyParser.urlencoded({
         extended: true,
       }));
-  }
-
-  async $onReady(): Promise<void> {
-    // for synchromizing when boot
-    this.injector.get<TypeORMService>(TypeORMService);
   }
 
 }
