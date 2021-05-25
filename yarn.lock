@@ -7878,12 +7878,12 @@ express-form@~0.12.0:
     object-additions "^0.5.1"
     validator "^2.1.0"
 
-express-graceful-exit@^0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/express-graceful-exit/-/express-graceful-exit-0.5.2.tgz#5623f0d8dfd2c8e0011e1c6d12349987adbe6bff"
-  integrity sha512-qBk0zo/2MMFJiodZAfaAMXqaNTVb83/893m34gOCuoySIrzbh0eReBNYXe2LJ7qDJI/JMCnPvvMYeq+Q0ncYJQ==
+express-graceful-exit@=0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/express-graceful-exit/-/express-graceful-exit-0.5.0.tgz#fcde6495af84f361e66f119bf0e3eca69955f9f1"
+  integrity sha512-gZkxdmgYz6VVHjZiMTaO59N875ugmBnzopF95q8Fzmws86JLNWMwGjLVG4i+99WO4v9L5wl6vKYFyGoHKoNJ7A==
   dependencies:
-    underscore "^1.12.1"
+    underscore "^1.4.4"
 
 express-session@^1.16.1:
   version "1.16.1"
@@ -18758,7 +18758,7 @@ umask@^1.1.0:
   resolved "https://registry.yarnpkg.com/umask/-/umask-1.1.0.tgz#f29cebf01df517912bb58ff9c4e50fde8e33320d"
   integrity sha1-8pzr8B31F5ErtY/5xOUP3o4zMg0=
 
-underscore@^1.12.1:
+underscore@^1.4.4:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.13.1.tgz#0c1c6bd2df54b6b69f2314066d65b6cde6fcf9d1"
   integrity sha512-hzSoAVtJF+3ZtiFX0VgfFPHEDRm7Y/QPjGyNo4TVdnDTdft3tr8hEkD25a1jC+TjTuE7tkHGKkhwCgs9dgBB2g==
