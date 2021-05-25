@@ -35,8 +35,8 @@ export class RegisterService implements GrowiCommandProcessor {
 
         blocks: [
           generateInputSectionBlock('growiUrl', 'GROWI domain', 'contents_input', false, 'https://example.com'),
-          generateInputSectionBlock('tokenPtoG', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
-          generateInputSectionBlock('tokenGtoP', 'PROXY ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
+          generateInputSectionBlock('tokenPtoG', 'Access Token PROXY to GROWI', 'contents_input', false, 'jBMZvpk.....'),
+          generateInputSectionBlock('tokenGtoP', 'Access Token GROWI to PROXY', 'contents_input', false, 'sdg15av.....'),
         ],
       },
     });
