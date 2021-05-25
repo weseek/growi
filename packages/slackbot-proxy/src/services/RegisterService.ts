@@ -34,9 +34,9 @@ export class RegisterService implements GrowiCommandProcessor {
         private_metadata: JSON.stringify({ channel: body.channel_name }),
 
         blocks: [
-          generateInputSectionBlock('growiDomain', 'GROWI domain', 'contents_input', false, 'https://example.com'),
-          generateInputSectionBlock('growiAccessToken', 'GROWI ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
-          generateInputSectionBlock('proxyToken', 'PROXY ACCESS_TOKEN', 'contents_input', false, 'jBMZvpk.....'),
+          generateInputSectionBlock('growiUrl', 'GROWI domain', 'contents_input', false, 'https://example.com'),
+          generateInputSectionBlock('tokenPtoG', 'Access Token Proxy to GROWI', 'contents_input', false, 'jBMZvpk.....'),
+          generateInputSectionBlock('tokenGtoP', 'Access Token GROWI to Proxy', 'contents_input', false, 'sdg15av.....'),
         ],
       },
     });
@@ -47,12 +47,12 @@ export class RegisterService implements GrowiCommandProcessor {
       orderRepository: OrderRepository, installation: Installation | undefined, payload: any,
   ): Promise<void> {
     const inputValues = payload.view.state.values;
-    const inputGrowiUrl = inputValues.growiDomain.contents_input.value;
-    const inputGrowiAccessToken = inputValues.growiAccessToken.contents_input.value;
-    const inputProxyAccessToken = inputValues.proxyToken.contents_input.value;
+    const growiUrl = inputValues.growiUrl.contents_input.value;
+    const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
+    const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
 
     orderRepository.save({
-      installation, growiUrl: inputGrowiUrl, growiAccessToken: inputGrowiAccessToken, proxyAccessToken: inputProxyAccessToken,
+      installation, growiUrl, tokenPtoG, tokenGtoP,
     });
   }
 

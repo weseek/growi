@@ -319,7 +319,7 @@
       "register_for_growi_official_bot_proxy_service": "注册 GROWI Official Bot Proxy Service",
       "enter_growi_register_on_slack": "在Slack中，输入 <b>/growi register</b>",
       "paste_growi_url": "由于显示了模式，请在 <b>GROWI URL</b> 中输入以下URL",
-      "enter_access_token_for_growi_and_proxy": "插入上面发出的 <b>Access Token for GROWI</b> 和 <b>Access Token for Proxy</b>。",
+      "enter_access_token_for_growi_and_proxy": "插入上面发出的 <b>Access Token Proxy to GROWI</b> 和 <b>Access Token GROWI to Proxy</b>。",
       "set_proxy_url_on_growi": "向GROWI注册Proxy的URL",
       "copy_proxy_url": "1. 当上述步骤②成功完成后，Proxy URL将显示在你在模版中选择的Slack频道中，所以请复制它。",
       "enter_proxy_url_and_update": "2. 输入并更新你在步骤③中复制的ProxyURL到本页的<b>Custom bot with proxy 一体化</b>的<b>ProxyURL</b>。",

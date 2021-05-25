@@ -89,7 +89,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
     <div className="py-4 px-5">
       <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
       <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
+        <label className="text-left text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             {/* TODO: show tokenPtoG GW-5899 */}
@@ -103,7 +103,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         </div>
       </div>
       <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
+        <label className="text-left text-md-right col-md-3 col-form-label">Access Token GROWI to Proxy</label>
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             {/* TODO: show tokenGtoP GW-5899 */}
