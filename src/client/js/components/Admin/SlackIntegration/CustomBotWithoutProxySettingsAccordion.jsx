@@ -71,7 +71,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
     try {
       // eslint-disable-next-line no-console
       console.log('Test');
-      // const res = await appContainer.apiv3.post('/slack-integration-settings/notification-test-to-slack-work-space', {
+      // const res = await appContainer.apiv3.post('/slack-integration-settings//without-proxy/test', {
       //   channel: testChannel,
       // });
       // setConnectionSuccessMessage(res.data.message);

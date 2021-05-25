@@ -8,7 +8,7 @@ import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 
 
-export const BotCreateProcess = () => {
+const BotCreateProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="my-5 d-flex flex-column align-items-center">
@@ -29,7 +29,7 @@ export const BotCreateProcess = () => {
   );
 };
 
-export const BotInstallProcess = () => {
+const BotInstallProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="my-5 d-flex flex-column align-items-center">
@@ -51,39 +51,40 @@ export const BotInstallProcess = () => {
   );
 };
 
-export const RegisteringProxyUrlProcess = () => {
+const RegisteringProxyUrlProcess = () => {
   const { t } = useTranslation();
   return (
-    <div className="p-4 d-flex flex-column align-items-center">
-      <ol>
-        <li>
-          <p
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
-          />
-          <div className="rounded border d-flex mb-5 justify-content-center align-items-center" style={{ height: '10rem' }}>
-            <h1 className="text-muted">参考画像</h1>
-          </div>
-        </li>
-
-        <li>
-          <span
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-          />
-          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-          <div className="rounded border d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-            <h1 className="text-muted">参考画像</h1>
-          </div>
-        </li>
-      </ol>
+    <div className="container w-75 py-5">
+      <p
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+      />
+      <img className="mb-5 border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
+      <span
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+      />
+      <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+      <img className="mb-3 border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
     </div>
   );
 };
 
-export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
+const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
-  const growiUrl = props.appContainer.config.crowi.url;
+
+  const generateTokenHandler = () => {
+    if (props.generateTokenHandler != null) {
+      props.generateTokenHandler();
+    }
+  };
+
+  const discardTokenHandler = () => {
+    if (props.discardTokenHandler != null) {
+      props.discardTokenHandler();
+    }
+  };
+
   return (
     <div className="py-4 px-5">
       <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
@@ -92,7 +93,7 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             {/* TODO: show tokenPtoG GW-5899 */}
-            <input className="form-control" type="text" value="tokenPtoG" readOnly />
+            <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
             <CopyToClipboard text="tokenPtoG" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
                 <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
@@ -106,7 +107,7 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             {/* TODO: show tokenGtoP GW-5899 */}
-            <input className="form-control" type="text" value="tokenGtoP" readOnly />
+            <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
             <CopyToClipboard text="tokenGtoP" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
                 <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
@@ -118,27 +119,45 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
 
       <div className="row my-3">
         <div className="mx-auto">
-          <button type="button" className="btn btn-outline-secondary mx-2">{ t('admin:slack_integration.access_token_settings.discard') }</button>
-          <button type="button" className="btn btn-primary mx-2">{ t('admin:slack_integration.access_token_settings.generate') }</button>
+          <button
+            type="button"
+            className="btn btn-outline-secondary mx-2"
+            onClick={discardTokenHandler}
+            disabled={props.tokenGtoP == null || props.tokenPtoG == null}
+          >
+            { t('admin:slack_integration.access_token_settings.discard') }
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary mx-2"
+            onClick={generateTokenHandler}
+          >
+            { t('admin:slack_integration.access_token_settings.generate') }
+          </button>
         </div>
       </div>
       <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
       <div className="d-flex flex-column align-items-center">
         <ol className="p-0">
-          <li><p className="ml-2">{t('admin:slack_integration.accordion.enter_growi_register_on_slack')}</p></li>
+          <li>
+            <p
+              className="ml-2"
+                // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_growi_register_on_slack') }}
+            />
+          </li>
           <li>
             <p
               className="ml-2"
                 // TODO: Add dynamic link
-                // TODO: Copy to clipboard on click
                 // TODO: Add logo
                 // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
             />
             <div className="input-group align-items-center ml-2 mb-3">
               <div className="input-group-prepend mx-1">
-                <input className="form-control" type="text" value={growiUrl} readOnly />
-                <CopyToClipboard text={growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+                <input className="form-control" type="text" value={props.growiUrl} readOnly />
+                <CopyToClipboard text={props.growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
                   <div className="btn input-group-text">
                     <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
                   </div>
@@ -150,27 +169,19 @@ export const GenelatingTokensAndRegisteringProxyServiceProcess = withUnstatedCon
           <li>
             <p
               className="ml-2"
-                // eslint-disable-next-line react/no-danger
+              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
             />
           </li>
         </ol>
-        {/* TODO: Insert photo */}
-        <div className="rounded border w-50 d-flex justify-content-center align-items-center" style={{ height: '15rem' }}>
-          <h1 className="text-muted">参考画像</h1>
-        </div>
+        <img className="mb-3 border border-light img-fluid" width={500} src="/images/slack-integration/growi-register-modal.png" />
       </div>
     </div>
 
   );
 }, [AppContainer]);
 
-GenelatingTokensAndRegisteringProxyServiceProcess.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-};
-
-
-export const TestProcess = () => {
+const TestProcess = () => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
@@ -248,57 +259,72 @@ export const TestProcess = () => {
   );
 };
 
-const CustomBotCooperationProcedure = {
-  '①': {
-    title: 'create_bot',
-    content: <BotCreateProcess />,
-  },
-  '②': {
-    title: 'install_bot_to_slack',
-    content: <BotInstallProcess />,
-  },
-  '③': {
-    title: 'register_for_growi_official_bot_proxy_service',
-    content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
-  },
-  '④': {
-    title: 'set_proxy_url_on_growi',
-    content: <RegisteringProxyUrlProcess />,
-  },
-  '⑤': {
-    title: 'test_connection',
-    content: <TestProcess />,
-  },
-};
-
-const officialBotCooperationProcedure = {
-  '①': {
-    title: 'install_bot_to_slack',
-    content: <BotInstallProcess />,
-  },
-  '②': {
-    title: 'register_for_growi_official_bot_proxy_service',
-    content: <GenelatingTokensAndRegisteringProxyServiceProcess />,
-  },
-  '③': {
-    title: 'set_proxy_url_on_growi',
-    content: <RegisteringProxyUrlProcess />,
-  },
-  '④': {
-    title: 'test_connection',
-    content: <TestProcess />,
-  },
-};
-
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
-  const cooperationProcedureMapping = props.botType === 'officialBot' ? officialBotCooperationProcedure : CustomBotCooperationProcedure;
 
+  const officialBotIntegrationProcedure = {
+    '①': {
+      title: 'install_bot_to_slack',
+      content: <BotInstallProcess />,
+    },
+    '②': {
+      title: 'register_for_growi_official_bot_proxy_service',
+      content: <GeneratingTokensAndRegisteringProxyServiceProcess
+        growiUrl={props.appContainer.config.crowi.url}
+        discardTokenHandler={props.discardTokenHandler}
+        generateTokenHandler={props.generateTokenHandler}
+        tokenPtoG={props.tokenPtoG}
+        tokenGtoP={props.tokenGtoP}
+      />,
+    },
+    '③': {
+      title: 'set_proxy_url_on_growi',
+      content: <RegisteringProxyUrlProcess />,
+    },
+    '④': {
+      title: 'test_connection',
+      content: <TestProcess />,
+    },
+  };
+
+  const CustomBotIntegrationProcedure = {
+    '①': {
+      title: 'create_bot',
+      content: <BotCreateProcess />,
+    },
+    '②': {
+      title: 'install_bot_to_slack',
+      content: <BotInstallProcess />,
+    },
+    '③': {
+      title: 'register_for_growi_official_bot_proxy_service',
+      content: <GeneratingTokensAndRegisteringProxyServiceProcess
+        growiUrl={props.appContainer.config.crowi.url}
+        discardTokenHandler={props.discardTokenHandler}
+        generateTokenHandler={props.generateTokenHandler}
+        tokenPtoG={props.tokenPtoG}
+        tokenGtoP={props.tokenGtoP}
+      />,
+    },
+    '④': {
+      title: 'set_proxy_url_on_growi',
+      content: <RegisteringProxyUrlProcess />,
+    },
+    '⑤': {
+      title: 'test_connection',
+      content: <TestProcess />,
+    },
+  };
+
+  const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
   return (
-    <div className="card border-0 rounded-lg shadow overflow-hidden">
-      {Object.entries(cooperationProcedureMapping).map(([key, value]) => {
+    <div
+      className="card border-0 rounded-lg shadow overflow-hidden"
+    >
+      {Object.entries(integrationProcedureMapping).map(([key, value]) => {
+
         return (
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
@@ -316,11 +342,14 @@ const WithProxyAccordions = (props) => {
 /**
  * Wrapper component for using unstated
  */
-
 const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
+  discardTokenHandler: PropTypes.func,
+  generateTokenHandler: PropTypes.func,
+  tokenPtoG: PropTypes.string,
+  tokenGtoP: PropTypes.string,
 };
 
 export default OfficialBotSettingsAccordionsWrapper;

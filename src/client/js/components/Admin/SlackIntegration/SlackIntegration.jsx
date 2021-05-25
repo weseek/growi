@@ -27,13 +27,15 @@ const SlackIntegration = (props) => {
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
+  const [slackAppIntegrations, setSlackAppIntegrations] = useState();
+  const [proxyServerUri, setProxyServerUri] = useState();
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
       } = data.settings;
 
       if (data.connectionStatuses != null) {
@@ -46,6 +48,8 @@ const SlackIntegration = (props) => {
       setSlackBotToken(slackBotToken);
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
+      setSlackAppIntegrations(slackAppIntegrations);
+      setProxyServerUri(proxyServerUri);
     }
     catch (err) {
       toastError(err);
@@ -119,7 +123,7 @@ const SlackIntegration = (props) => {
 
   switch (currentBotType) {
     case 'officialBot':
-      settingsComponent = <OfficialBotSettings />;
+      settingsComponent = <OfficialBotSettings slackAppIntegrations={slackAppIntegrations} proxyServerUri={proxyServerUri} />;
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
@@ -140,7 +144,7 @@ const SlackIntegration = (props) => {
       );
       break;
     case 'customBotWithProxy':
-      settingsComponent = <CustomBotWithProxySettings />;
+      settingsComponent = <CustomBotWithProxySettings slackAppIntegrations={slackAppIntegrations} proxyServerUri={proxyServerUri} />;
       break;
   }
 
@@ -174,7 +178,7 @@ const SlackIntegration = (props) => {
             {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
           </div>
 
-          {(currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy') && (
+          {(currentBotType != null) && (
             <button
               className="mx-3 btn btn-outline-danger flex-end"
               type="button"
