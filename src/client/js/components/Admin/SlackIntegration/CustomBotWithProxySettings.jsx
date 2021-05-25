@@ -26,7 +26,6 @@ const CustomBotWithProxySettings = (props) => {
 
   const addSlackAppIntegrationHandler = async() => {
     try {
-      // GW-6068 set new value after this
       await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
     }
     catch (err) {
