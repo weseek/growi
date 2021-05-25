@@ -24,7 +24,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
         </div>
       </div>
 
-      <div id="integration-line" className="text-center w-25">
+      <div className="text-center w-25">
 
         <div className="d-none d-lg-block mt-4">
           <small
@@ -34,7 +34,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           />
         </div>
 
-        <div className="d-block d-lg-none mt-5">
+        <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
           <i className="fa fa-info-circle text-danger" />
         </div>
 
