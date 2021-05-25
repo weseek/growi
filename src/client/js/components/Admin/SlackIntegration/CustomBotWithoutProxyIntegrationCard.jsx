@@ -26,22 +26,19 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 
       <div id="integration-line" className="text-center w-25">
 
-        <div className="d-none d-lg-block">
-          <p>pc-size</p>
-        </div>
-
-        <div className="d-block d-lg-none">
-          <p>smartPhone size</p>
-        </div>
-
-        <div className="mt-4">
+        <div className="d-none d-lg-block mt-4">
           <small
             className="text-warning m-0"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
           />
-          <hr className="align-self-center admin-border-danger border-danger"></hr>
         </div>
+
+        {/* <div className="d-block d-lg-none">
+          <p>smartPhone size</p>
+        </div> */}
+
+        <hr className="align-self-center admin-border-danger border-danger"></hr>
 
         {/* <div className="mt-5">
           <p className="text-success small">
