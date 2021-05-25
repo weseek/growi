@@ -132,6 +132,7 @@ const CustomBotWithProxySettings = (props) => {
                 botType="customBotWithProxy"
                 discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
                 generateTokenHandler={generateTokenHandler}
+                slackAppIntegrationId={slackAppIntegration._id}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />

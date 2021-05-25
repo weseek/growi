@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -181,7 +182,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   );
 }, [AppContainer]);
 
-const TestProcess = () => {
+const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
@@ -199,12 +200,10 @@ const TestProcess = () => {
     value = connectionSuccessMessage;
   }
 
-
-  // TODO: Handle test button
-  const submitForm = (e) => {
+  const submitForm = async(e) => {
     e.preventDefault();
-    // eslint-disable-next-line no-console
-    console.log('Form Submitted');
+    const response = await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+    console.log(response);
   };
 
   const inputTestChannelHandler = (channel) => {
@@ -233,7 +232,8 @@ const TestProcess = () => {
             type="submit"
             className="btn btn-info mx-3 font-weight-bold"
             disabled={testChannel.trim() === ''}
-          >Test
+          >
+            Test
           </button>
         </form>
       </div>
@@ -313,7 +313,7 @@ const WithProxyAccordions = (props) => {
     },
     '⑤': {
       title: 'test_connection',
-      content: <TestProcess />,
+      content: <TestProcess appContainer={props.appContainer} slackAppIntegrationId={props.slackAppIntegrationId} />,
     },
   };
 
@@ -348,6 +348,8 @@ WithProxyAccordions.propTypes = {
   botType: PropTypes.string.isRequired,
   discardTokenHandler: PropTypes.func,
   generateTokenHandler: PropTypes.func,
+
+  slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };
