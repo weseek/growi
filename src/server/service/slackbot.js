@@ -1,3 +1,4 @@
+const urljoin = require('url-join');
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 
@@ -37,8 +38,8 @@ class SlackBotService extends S2sMessageHandlable {
 
     // connect to proxy
     if (currentBotType !== 'customBotWithoutProxy') {
-      // TODO: https://youtrack.weseek.co.jp/issue/GW-5896
-      serverUri = 'http://localhost:8080/slack-api-proxy/';
+      const proxyServerUri = this.crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+      serverUri = urljoin(proxyServerUri, '/g2s');
     }
     // connect directly
     else {
