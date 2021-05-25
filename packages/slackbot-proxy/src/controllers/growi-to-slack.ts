@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Inject, Req, Res, UseBefore,
+  Controller, Get, Post, Inject, Req, Res, UseBefore,
 } from '@tsed/common';
 import axios from 'axios';
 
@@ -146,6 +146,14 @@ export class GrowiToSlackCtrl {
     });
 
     return res.send({ relation: createdRelation });
+  }
+
+  @Post('/*')
+  @UseBefore(verifyGrowiToSlackRequest)
+  async postResult(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+    const { tokenGtoPs } = req;
+    console.log(tokenGtoPs);
+
   }
 
 }
