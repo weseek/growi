@@ -43,10 +43,6 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
-  const inputTestChannelHandler = (channel) => {
-    setTestChannel(channel);
-  };
-
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
     setSiteName(siteName);
@@ -77,11 +73,12 @@ const CustomBotWithoutProxySettings = (props) => {
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
-          onTestConnection={testConnection}
-          onInputTestChannelHandler={inputTestChannelHandler}
           connectionMessage={connectionMessage}
           connectionErrorCode={connectionErrorCode}
           testChannel={testChannel}
+          onTestConnection={testConnection}
+          onSetTestChannel={setTestChannel}
+
         />
       </div>
       <DeleteSlackBotSettingsModal
