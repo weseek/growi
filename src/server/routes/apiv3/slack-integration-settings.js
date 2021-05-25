@@ -515,7 +515,7 @@ module.exports = (crowi) => {
         channel,
         text: 'Your test was successful!',
       });
-      return res.apiv3({ });
+      return res.apiv3();
     }
     catch (error) {
       logger.error('Error', error);
