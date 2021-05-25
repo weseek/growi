@@ -2,6 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
+import { UncontrolledTooltip } from 'reactstrap';
+
 const CustomBotWithProxyIntegrationCard = (props) => {
   const { t } = useTranslation();
 
@@ -49,7 +51,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
               <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
             </div>
 
-            <div className="circle-mini position-absolute bg-primary border-light d-block d-lg-none p pb-2" />
+            <div id="integration-circle-for-tooltip" className="circle-mini position-absolute bg-primary border-light d-block d-lg-none p pb-2" />
 
             {props.isSlackScopeSet && (
               <hr className="align-self-center border-success admin-border-success"></hr>
@@ -83,6 +85,10 @@ const CustomBotWithProxyIntegrationCard = (props) => {
           </div>
         </div>
       </div>
+
+      <UncontrolledTooltip placement="top" fade={false} target="integration-circle-for-tooltip">
+        <span>Hello tooltip!</span>
+      </UncontrolledTooltip>
     </div>
   );
 };
