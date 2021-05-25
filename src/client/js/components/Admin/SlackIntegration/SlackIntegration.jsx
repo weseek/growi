@@ -27,14 +27,15 @@ const SlackIntegration = (props) => {
   const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
-  const [slackAppIntegrations, setSlackAppIntegrations] = useState([]);
+  const [slackAppIntegrations, setSlackAppIntegrations] = useState();
+  const [proxyServerUri, setProxyServerUri] = useState();
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
       } = data.settings;
 
       if (data.connectionStatuses != null) {
@@ -49,6 +50,7 @@ const SlackIntegration = (props) => {
       setSlackSigningSecretEnv(slackSigningSecretEnvVars);
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
+      setProxyServerUri(proxyServerUri);
     }
     catch (err) {
       toastError(err);
@@ -122,7 +124,7 @@ const SlackIntegration = (props) => {
 
   switch (currentBotType) {
     case 'officialBot':
-      settingsComponent = <OfficialBotSettings slackAppIntegrations={slackAppIntegrations} />;
+      settingsComponent = <OfficialBotSettings slackAppIntegrations={slackAppIntegrations} proxyServerUri={proxyServerUri} />;
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
@@ -143,7 +145,7 @@ const SlackIntegration = (props) => {
       );
       break;
     case 'customBotWithProxy':
-      settingsComponent = <CustomBotWithProxySettings slackAppIntegrations={slackAppIntegrations} />;
+      settingsComponent = <CustomBotWithProxySettings slackAppIntegrations={slackAppIntegrations} proxyServerUri={proxyServerUri} />;
       break;
   }
 

@@ -1,6 +1,4 @@
-import React, {
-  useState, useEffect, useCallback,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
@@ -14,27 +12,17 @@ import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
-  const { appContainer, slackAppIntegrations } = props;
+  const { appContainer, slackAppIntegrations, proxyServerUri } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
-  const [proxyUri, setProxyUri] = useState(null);
-
   const { t } = useTranslation();
 
-  const retrieveProxyUri = useCallback(async() => {
-    try {
-      const res = await appContainer.apiv3.get('/slack-integration-settings');
-      const { proxyUri } = res.data.settings;
-      setProxyUri(proxyUri);
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  }, [appContainer.apiv3]);
+  const [newProxyServerUri, setNewProxyServerUri] = useState();
 
   useEffect(() => {
-    retrieveProxyUri();
-  }, [retrieveProxyUri]);
+    if (proxyServerUri != null) {
+      setNewProxyServerUri(proxyServerUri);
+    }
+  }, [proxyServerUri]);
 
   const addSlackAppIntegrationHandler = async() => {
     // TODO implement
@@ -58,7 +46,6 @@ const CustomBotWithProxySettings = (props) => {
       toastError(err);
       logger(err);
     }
-
   };
 
   const deleteSlackSettingsHandler = async() => {
@@ -75,7 +62,7 @@ const CustomBotWithProxySettings = (props) => {
   const updateProxyUri = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-        proxyUri,
+        newProxyServerUri,
       });
       toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
     }
@@ -114,8 +101,8 @@ const CustomBotWithProxySettings = (props) => {
             className="form-control"
             type="text"
             name="settingForm[proxyUrl]"
-            defaultValue={proxyUri}
-            onChange={(e) => { setProxyUri(e.target.value) }}
+            defaultValue={newProxyServerUri}
+            onChange={(e) => { setNewProxyServerUri(e.target.value) }}
           />
         </div>
         <div className="col-md-2 mt-3 text-center text-md-left">
@@ -147,9 +134,8 @@ const CustomBotWithProxySettings = (props) => {
                 tokenPtoG={tokenPtoG}
               />
             </React.Fragment>
-        );
-          })}
-
+          );
+        })}
         <div className="row justify-content-center my-5">
           <button
             type="button"
@@ -172,10 +158,15 @@ const CustomBotWithProxySettings = (props) => {
 
 const CustomBotWithProxySettingsWrapper = withUnstatedContainers(CustomBotWithProxySettings, [AppContainer]);
 
+CustomBotWithProxySettings.defaultProps = {
+  slackAppIntegrations: [],
+};
+
 CustomBotWithProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
-  slackAppIntegrations: PropTypes.array.isRequired,
+  slackAppIntegrations: PropTypes.array,
+  proxyServerUri: PropTypes.string,
 };
 
 export default CustomBotWithProxySettingsWrapper;
