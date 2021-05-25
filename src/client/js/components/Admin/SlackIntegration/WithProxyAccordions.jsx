@@ -188,13 +188,11 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
-  /* eslint-disable no-unused-vars */
-  // TODO: Add connection Logs
+
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
   const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
 
-  // TODO: Show test logs
   let value = '';
   if (connectionErrorMessage != null) {
     value = [connectionErrorCode, connectionErrorMessage];
@@ -205,6 +203,10 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
 
   const submitForm = async(e) => {
     e.preventDefault();
+    setConnectionErrorCode(null);
+    setConnectionErrorMessage(null);
+    setConnectionSuccessMessage(null);
+
     try {
       const response = await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
       console.log(response);
@@ -213,10 +215,6 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
       toastError(error);
       logger.error(error);
     }
-  };
-
-  const inputTestChannelHandler = (channel) => {
-    setTestChannel(channel);
   };
 
   return (
@@ -233,8 +231,7 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
               type="text"
               value={testChannel}
               placeholder="Slack Channel"
-            // TODO: Handle test button
-              onChange={e => inputTestChannelHandler(e.target.value)}
+              onChange={e => setTestChannel(e.target.value)}
             />
           </div>
           <button
