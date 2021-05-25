@@ -3,11 +3,14 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import loggerFactory from '@alias/logger';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess } from '../../../util/apiNotification';
+import { toastError, toastSuccess } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 
+const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
 const BotCreateProcess = () => {
   const { t } = useTranslation();
@@ -202,8 +205,14 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
 
   const submitForm = async(e) => {
     e.preventDefault();
-    const response = await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
-    console.log(response);
+    try {
+      const response = await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+      console.log(response);
+    }
+    catch (error) {
+      toastError(error);
+      logger.error(error);
+    }
   };
 
   const inputTestChannelHandler = (channel) => {
@@ -342,7 +351,7 @@ const WithProxyAccordions = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
+const WithProxyAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
@@ -354,4 +363,4 @@ WithProxyAccordions.propTypes = {
   tokenGtoP: PropTypes.string,
 };
 
-export default OfficialBotSettingsAccordionsWrapper;
+export default WithProxyAccordionsWrapper;
