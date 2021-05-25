@@ -21,18 +21,20 @@ export class Order {
   @Column({ nullable: true, default: false })
   isCompleted?: boolean;
 
-  @Column({ nullable: true })
-  growiUrl?: string;
+  @Column()
+  growiUrl: string;
 
-  @Column({ nullable: true })
-  growiAccessToken?: string;
+  @Column()
+  growiAccessToken: string;
 
-  @Column({ nullable: true })
-  proxyAccessToken?: string;
+  @Column()
+  proxyAccessToken: string;
 
   isExpired():boolean {
-    // TODO GW-5555 implement this
-    return false;
+    const now = Date.now();
+    const expiredAt = this.createdAt.getTime() + 600000;
+
+    return expiredAt < now;
   }
 
 }

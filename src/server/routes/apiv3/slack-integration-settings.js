@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
@@ -9,7 +9,7 @@ const { getConnectionStatuses, testToSlack, generateWebClient } = require('@grow
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-const logger = loggerFactory('growi:routes:apiv3:notification-setting');
+const logger = loggerFactory('growi:routes:apiv3:slack-integration-settings');
 
 const router = express.Router();
 
@@ -56,10 +56,10 @@ module.exports = (crowi) => {
         .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
     ],
     AccessTokens: [
-      body('tokenGtoP').trim().not().isEmpty()
+      query('tokenGtoP').trim().not().isEmpty()
         .isString()
         .isLength({ min: 1 }),
-      body('tokenPtoG').trim().not().isEmpty()
+      query('tokenPtoG').trim().not().isEmpty()
         .isString()
         .isLength({ min: 1 }),
     ],
@@ -404,9 +404,10 @@ module.exports = (crowi) => {
    */
   router.delete('/slack-app-integration', validator.AccessTokens, apiV3FormValidator, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-    const { tokenGtoP, tokenPtoG } = req.body;
+    const { tokenGtoP, tokenPtoG } = req.query;
     try {
-      await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
+      const response = await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
+      return res.apiv3({ response });
     }
     catch (error) {
       const msg = 'Error occured in deleting access token for slack app tokens';

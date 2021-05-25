@@ -37,7 +37,7 @@ const CustomBotWithoutProxySettings = (props) => {
         isIntegrationSuccess={isIntegrationSuccess}
       />
 
-      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_settings')}</h2>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
 
       {(props.slackSigningSecret || props.slackBotToken) && (
       <button
