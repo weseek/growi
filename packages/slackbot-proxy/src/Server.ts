@@ -9,12 +9,13 @@ import compress from 'compression';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 import helmet from 'helmet';
+import expressBunyanLogger from 'express-bunyan-logger';
 
 import { ConnectionOptions } from 'typeorm';
 
 import swaggerSettingsForDev from '~/config/swagger/config.dev';
 import swaggerSettingsForProd from '~/config/swagger/config.prod';
-
+import loggerFactory from '~/utils/logger';
 
 export const rootDir = __dirname;
 const isProduction = process.env.NODE_ENV === 'production';
@@ -49,6 +50,8 @@ const helmetOptions = isProduction ? {} : {
   acceptMimes: ['application/json'],
   httpPort: process.env.PORT || 8080,
   httpsPort: false, // CHANGE
+  // disable RequestLogger of @tsed/logger
+  logger: { logRequest: false },
   mount: {
     '/': [
       `${rootDir}/controllers/*.ts`,
@@ -108,6 +111,30 @@ export class Server {
       .use(bodyParser.urlencoded({
         extended: true,
       }));
+
+    this.setupLogger();
+  }
+
+
+  /**
+   * Setup logger for requests
+   */
+  private setupLogger(): void {
+    // use bunyan
+    if (isProduction) {
+      const logger = loggerFactory('express');
+
+      this.app.use(expressBunyanLogger({
+        logger,
+        excludes: ['*'],
+      }));
+    }
+    // use morgan
+    else {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const morgan = require('morgan');
+      this.app.use(morgan('dev'));
+    }
   }
 
 }
