@@ -34,7 +34,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           />
         </div>
 
-        <div className="d-block d-lg-none">
+        <div className="d-block d-lg-none mt-5">
           <i className="fa fa-info-circle text-danger" />
         </div>
 
