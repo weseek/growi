@@ -142,7 +142,7 @@ module.exports = (crowi) => {
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
     }
     else {
-      settings.proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
+      settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
       settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:serverUri');
     }
 
@@ -166,9 +166,9 @@ module.exports = (crowi) => {
       }
     }
     else {
-      const proxyUri = settings.proxyUri;
+      const proxyServerUri = settings.proxyServerUri;
 
-      if (proxyUri != null) {
+      if (proxyServerUri != null) {
         try {
           const slackAppIntegrations = await SlackAppIntegration.find();
           settings.slackAppIntegrations = slackAppIntegrations;
