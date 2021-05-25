@@ -27,8 +27,8 @@ const CustomBotWithoutProxySettings = (props) => {
   };
 
   const testConnection = async() => {
-    setConnectionMessage(null);
     setConnectionErrorCode(null);
+    setConnectionMessage(null);
     try {
       await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
       setConnectionMessage('Send the message to slack ws.');
