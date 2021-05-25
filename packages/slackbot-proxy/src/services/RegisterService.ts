@@ -64,7 +64,7 @@ export class RegisterService implements GrowiCommandProcessor {
     const { botToken } = authorizeResult;
     const { channel } = JSON.parse(payload.view.private_metadata);
 
-    const serverUri = process.env.PROXY_SERVER_URI;
+    const serverUri = process.env.SERVER_URI;
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
