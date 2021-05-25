@@ -92,7 +92,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
-            {/* TODO: show tokenPtoG GW-5899 */}
             <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
             <CopyToClipboard text={props.tokenPtoG || ''} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
@@ -106,7 +105,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token GROWI to Proxy</label>
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
-            {/* TODO: show tokenGtoP GW-5899 */}
             <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
             <CopyToClipboard text={props.tokenGtoP || ''} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
