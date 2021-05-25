@@ -7,6 +7,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
 import WithProxyAccordions from './WithProxyAccordions';
+import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const logger = loggerFactory('growi:SlackBotSettings');
 
@@ -24,7 +25,7 @@ const OfficialBotSettings = (props) => {
   }, [proxyServerUri]);
 
   const addSlackAppIntegrationHandler = async() => {
-    // TODO implement
+    // TODO GW-6067 implement
   };
 
   const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
@@ -47,10 +48,10 @@ const OfficialBotSettings = (props) => {
     }
   };
 
-  const deleteSlackSettingsHandler = async() => {
+  const deleteSlackAppIntegrationHandler = async() => {
     try {
-      // TODO imple delete PtoG and GtoP Token at GW 5861
-      await appContainer.apiv3.put('/slack-integration-settings/custom-bot-with-proxy');
+      // TODO GW-5923 delete SlackAppIntegration
+      // await appContainer.apiv3.put('/slack-integration-settings/custom-bot-with-proxy');
       toastSuccess('success');
     }
     catch (err) {
@@ -149,7 +150,7 @@ const OfficialBotSettings = (props) => {
         isResetAll={false}
         isOpen={isDeleteConfirmModalShown}
         onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={deleteSlackSettingsHandler}
+        onClickDeleteButton={deleteSlackAppIntegrationHandler}
       />
     </>
 
