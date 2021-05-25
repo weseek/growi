@@ -34,9 +34,9 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
           />
         </div>
 
-        {/* <div className="d-block d-lg-none">
-          <p>smartPhone size</p>
-        </div> */}
+        <div className="d-block d-lg-none">
+          <i className="fa fa-info-circle text-danger" />
+        </div>
 
         <hr className="align-self-center admin-border-danger border-danger"></hr>
 
