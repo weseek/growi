@@ -2,8 +2,8 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 const schema = new mongoose.Schema({
-  tokenGtoP: { type: String, required: true, unique: true },
-  tokenPtoG: { type: String, required: true, unique: true },
+  tokenGtoP: { type: String, required: false, unique: true },
+  tokenPtoG: { type: String, required: false, unique: true },
 });
 class SlackAppIntegration {
 

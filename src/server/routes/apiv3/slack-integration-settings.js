@@ -356,6 +356,19 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/accordion', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    try {
+      await SlackAppIntegration.create({ tokenGtoP: null, tokenPtoG: null });
+
+      return res.apiv3();
+    }
+    catch (error) {
+      const msg = 'Error occured in creating slack integration accordion';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'generating-accordion-failed'), 500);
+    }
+  });
+
 
   /**
    * @swagger

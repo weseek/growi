@@ -25,7 +25,13 @@ const CustomBotWithProxySettings = (props) => {
   }, [proxyServerUri]);
 
   const addSlackAppIntegrationHandler = async() => {
-    // TODO GW-6067 implement
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/accordion', {});
+    }
+    catch (err) {
+      toastError(err);
+      logger(err);
+    }
   };
 
   const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
