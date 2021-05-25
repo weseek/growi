@@ -96,6 +96,5 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
  */
 export const relationTestToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
-  // TODO GW-6002 fire chat.postMessage
   await testSlackApiServer(client);
 };
