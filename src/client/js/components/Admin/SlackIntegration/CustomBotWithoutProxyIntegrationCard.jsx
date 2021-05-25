@@ -25,7 +25,6 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-
         <div className="d-none d-lg-block">
           {props.isIntegrationSuccess ? (
             <>
@@ -89,8 +88,6 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
             />
           )
         }
-
-
       </UncontrolledTooltip>
     </div>
   );
