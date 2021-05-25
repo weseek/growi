@@ -61,7 +61,7 @@ const OfficialBotSettings = (props) => {
   const updateProxyUri = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-        newProxyServerUri,
+        proxyUri: newProxyServerUri,
       });
       toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
     }
