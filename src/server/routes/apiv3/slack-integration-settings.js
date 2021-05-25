@@ -64,7 +64,8 @@ module.exports = (crowi) => {
         .isLength({ min: 1 }),
     ],
     RelationTest: [
-      body('slackappintegrationsId').isMongoId(),
+      body('slackAppIntegrationId').isMongoId(),
+      body('channel').trim().isString(),
     ],
     SlackChannel: [
       body('channel').trim().not().isEmpty()
@@ -448,7 +449,7 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  slackappintegrationsId:
+   *                  slackAppIntegrationId:
    *                    type: string
    *        responses:
    *           200:
@@ -461,10 +462,10 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'not-proxy-type'), 400);
     }
 
-    const { slackappintegrationsId } = req.body;
+    const { slackAppIntegrationId } = req.body;
 
     try {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackappintegrationsId });
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
