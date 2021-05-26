@@ -28,7 +28,7 @@ const CustomBotWithProxySettings = (props) => {
     // TODO GW-6067 implement
   };
 
-  const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
+  const deleteSlackAppIntegrationHandler = async(tokenGtoP, tokenPtoG) => {
     try {
       // GW-6068 set new value after this
       await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { tokenGtoP, tokenPtoG });
@@ -47,20 +47,6 @@ const CustomBotWithProxySettings = (props) => {
     catch (err) {
       toastError(err);
       logger(err);
-    }
-  };
-
-  const deleteSlackAppIntegrationHandler = async() => {
-    try {
-      // TODO GW-5923 delete SlackAppIntegration
-      await appContainer.apiv3.delete('/slack-integration-settings', {
-        tokenGtoP,
-        tokenPtoG,
-      });
-      toastSuccess('success');
-    }
-    catch (err) {
-      toastError(err);
     }
   };
 
@@ -133,7 +119,6 @@ const CustomBotWithProxySettings = (props) => {
               </div>
               <WithProxyAccordions
                 botType="customBotWithProxy"
-                discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
                 generateTokenHandler={generateTokenHandler}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
@@ -169,7 +154,6 @@ CustomBotWithProxySettings.defaultProps = {
 
 CustomBotWithProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
 };
