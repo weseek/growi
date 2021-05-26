@@ -26,7 +26,7 @@ class SlackBotService extends S2sMessageHandlable {
     this.lastLoadedAt = new Date();
   }
 
-  get client() {
+  async generateClient(body) {
     const currentBotType = this.crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
     if (currentBotType == null) {
@@ -37,16 +37,18 @@ class SlackBotService extends S2sMessageHandlable {
     let token;
 
     // connect to proxy
-    if (currentBotType !== 'customBotWithoutProxy') {
-      const proxyServerUri = this.crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
-      serverUri = urljoin(proxyServerUri, '/g2s');
-    }
-    // connect directly
-    else {
+    if (currentBotType === 'customBotWithoutProxy') {
+      // connect directly
       token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
+      return generateWebClient(token, serverUri);
     }
 
-    return generateWebClient(token, serverUri);
+    const proxyServerUri = this.crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    serverUri = urljoin(proxyServerUri, '/g2s');
+    const headers = {
+      'x-growi-gtop-tokens': body.tokenGtoP,
+    };
+    return generateWebClient(token, serverUri, headers);
   }
 
   /**
@@ -88,13 +90,10 @@ class SlackBotService extends S2sMessageHandlable {
     }
   }
 
-  async sendAuthTest() {
-    await this.client.api.test();
-  }
-
-  notCommand(body) {
+  async notCommand(body) {
     logger.error('Invalid first argument');
-    this.client.chat.postEphemeral({
+    const client = await this.generateClient(body);
+    client.chat.postEphemeral({
       channel: body.channel_id,
       user: body.user_id,
       blocks: [
@@ -111,9 +110,10 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async getSearchResultPaths(body, args, offset = 0) {
+    const client = this.generateClient(body);
     const firstKeyword = args[1];
     if (firstKeyword == null) {
-      this.client.chat.postEphemeral({
+      client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
         blocks: [
@@ -133,7 +133,7 @@ class SlackBotService extends S2sMessageHandlable {
     // no search results
     if (results.data.length === 0) {
       logger.info(`No page found with "${keywords}"`);
-      this.client.chat.postEphemeral({
+      client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
         blocks: [
@@ -167,13 +167,9 @@ class SlackBotService extends S2sMessageHandlable {
     };
   }
 
-  async getSlackChannelName() {
-    const slackTeamInfo = await this.client.team.info();
-    return slackTeamInfo.team.name;
-  }
-
-  shareSearchResults(payload) {
-    this.client.chat.postMessage({
+  async shareSearchResults(payload) {
+    const client = await this.generateClient();
+    client.chat.postMessage({
       channel: payload.channel.id,
       text: payload.actions[0].value,
     });
@@ -183,6 +179,7 @@ class SlackBotService extends S2sMessageHandlable {
     const {
       resultPaths, offset, resultsTotal,
     } = await this.getSearchResultPaths(body, args, offsetNum);
+    const client = await this.generateClient(body);
 
     const keywords = this.getKeywords(args);
 
@@ -247,7 +244,7 @@ class SlackBotService extends S2sMessageHandlable {
           },
         );
       }
-      await this.client.chat.postEphemeral({
+      await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
         blocks: [
@@ -259,7 +256,7 @@ class SlackBotService extends S2sMessageHandlable {
     }
     catch {
       logger.error('Failed to get search results.');
-      await this.client.chat.postEphemeral({
+      await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
         blocks: [
@@ -271,8 +268,10 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async createModal(body) {
+    const client = await this.generateClient(body);
+
     try {
-      await this.client.views.open({
+      await client.views.open({
         trigger_id: body.trigger_id,
 
         view: {
@@ -300,7 +299,7 @@ class SlackBotService extends S2sMessageHandlable {
     }
     catch (err) {
       logger.error('Failed to create a page.');
-      await this.client.chat.postEphemeral({
+      await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
         blocks: [
@@ -317,6 +316,7 @@ class SlackBotService extends S2sMessageHandlable {
     const pathUtils = require('growi-commons').pathUtils;
 
     const contentsBody = payload.view.state.values.contents.contents_input.value;
+    const client = await this.generateClient();
 
     try {
       let path = payload.view.state.values.path.path_input.value;
@@ -329,7 +329,7 @@ class SlackBotService extends S2sMessageHandlable {
       await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
     }
     catch (err) {
-      this.client.chat.postMessage({
+      client.chat.postMessage({
         channel: payload.user.id,
         blocks: [
           this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],

@@ -17,24 +17,26 @@ module.exports = (crowi) => {
   // Check if the access token is correct
   async function verifyAccessTokenFromProxy(req, res, next) {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-
     if (tokenPtoG == null) {
       const message = 'The value of header \'x-growi-ptog-tokens\' must not be empty.';
       logger.warn(message, { body: req.body });
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegration = await SlackAppIntegration.estimatedDocumentCount({ tokenPtoG });
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
     });
 
-    if (slackAppIntegration === 0) {
+    if (slackAppIntegration == null) {
       return res.status(403).send({
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`?',
       });
     }
+
+    // set tokenGtoP for repsponse
+    req.body.tokenGtoP = slackAppIntegration.tokenGtoP;
 
     next();
   }
