@@ -170,9 +170,9 @@ module.exports = (crowi) => {
       }
     }
     else {
-      // const proxyServerUri = settings.proxyServerUri;
+      const proxyServerUri = settings.proxyServerUri;
 
-      // if (proxyServerUri != null) {
+      if (proxyServerUri != null) {
       try {
         const slackAppIntegrations = await SlackAppIntegration.find();
         settings.slackAppIntegrations = slackAppIntegrations;
