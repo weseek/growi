@@ -46,12 +46,11 @@ const testSlackApiServer = async(client: WebClient): Promise<any> => {
 const checkSlackScopes = (resultTestSlackApiServer: any) => {
   const slackScopes = resultTestSlackApiServer.response_metadata.scopes;
   const correctScopes = ['commands', 'team:read', 'chat:write'];
+  const isPassedScopeCheck = correctScopes.every(e => slackScopes.includes(e));
 
-  if (correctScopes.every(e => slackScopes.includes(e))) {
-    return;
+  if (!isPassedScopeCheck) {
+    throw new Error('Scope error');
   }
-
-  throw new Error('Scope error');
 };
 
 /**
