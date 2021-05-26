@@ -128,12 +128,12 @@ module.exports = (crowi) => {
   });
 
 
-  const handleBlockActions = async(payload) => {
+  const handleBlockActions = async(client, payload) => {
     const { action_id: actionId } = payload.actions[0];
 
     switch (actionId) {
       case 'shareSearchResults': {
-        await crowi.slackBotService.shareSearchResults(payload);
+        await crowi.slackBotService.shareSearchResults(client, payload);
         break;
       }
       case 'showNextResults': {
@@ -141,7 +141,7 @@ module.exports = (crowi) => {
 
         const { body, args, offset } = parsedValue;
         const newOffset = offset + 10;
-        await crowi.slackBotService.showEphemeralSearchResults(body, args, newOffset);
+        await crowi.slackBotService.showEphemeralSearchResults(client, body, args, newOffset);
         break;
       }
       default:
