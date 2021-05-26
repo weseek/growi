@@ -24,7 +24,6 @@ const SlackIntegration = (props) => {
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
-  const [isSendTestMessage, setIsSendTestMessage] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
@@ -95,7 +94,6 @@ const SlackIntegration = (props) => {
       setIsRegisterSlackCredentials(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
-      setIsSendTestMessage(false);
       setSlackWSNameInWithoutProxy(null);
     }
     catch (err) {
@@ -131,7 +129,6 @@ const SlackIntegration = (props) => {
     case 'customBotWithoutProxy':
       settingsComponent = (
         <CustomBotWithoutProxySettings
-          isSendTestMessage={isSendTestMessage}
           isRegisterSlackCredentials={isRegisterSlackCredentials}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
@@ -140,7 +137,6 @@ const SlackIntegration = (props) => {
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
-          onSetIsSendTestMessage={setIsSendTestMessage}
           onResetSettings={resetWithOutSettings}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
         />

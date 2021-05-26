@@ -16,10 +16,11 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep, fetchSlackIntegrationData, connectionMessage, connectionErrorCode, testChannel,
-  slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
-  isRegisterSlackCredentials, isSendTestMessage,
-  onSetSlackSigningSecret, onSetSlackBotToken, onTestConnection, onSetTestChannel,
+  appContainer, activeStep,
+  connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
+  isRegisterSlackCredentials, isIntegrationSuccess,
+  fetchSlackIntegrationData, testConnection, inputTestChannelHandler,
+  onSetSlackSigningSecret, onSetSlackBotToken,
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
@@ -59,24 +60,18 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const inputTestChannelHandler = (channel) => {
-    if (onSetTestChannel != null) {
-      onSetTestChannel(channel);
-    }
-  };
-
   const submitForm = (e) => {
     e.preventDefault();
 
-    if (onTestConnection == null) {
+    if (testConnection == null) {
       return;
     }
-    onTestConnection();
+    testConnection();
   };
 
 
   let value = '';
-  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage == null) {
+  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
     value = connectionMessage;
   }
   else {
@@ -141,7 +136,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isIntegrationSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
@@ -205,12 +200,12 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotTokenEnv: PropTypes.string,
   testChannel: PropTypes.string,
   isRegisterSlackCredentials: PropTypes.bool,
-  isSendTestMessage: PropTypes.bool,
+  isIntegrationSuccess: PropTypes.bool,
   fetchSlackIntegrationData: PropTypes.func,
+  testConnection: PropTypes.func,
+  inputTestChannelHandler: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
-  onTestConnection: PropTypes.func,
-  onSetTestChannel:  PropTypes.func,
   connectionMessage: PropTypes.string,
   connectionErrorCode: PropTypes.string,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,

@@ -9,13 +9,13 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, onResetSettings, onSetIsSendTestMessage } = props;
+  const { appContainer, onResetSettings } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
-  const [connectionMessage, setConnectionMessage] = useState(null);
+  const [connectionMessage, setConnectionMessage] = useState('');
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
@@ -32,15 +32,17 @@ const CustomBotWithoutProxySettings = (props) => {
     try {
       await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
       setConnectionMessage('Send the message to slack work space.');
-      onSetIsSendTestMessage(true);
       setIsIntegrationSuccess(true);
     }
     catch (err) {
       setConnectionErrorCode(err[0].code);
       setConnectionMessage(err[0].message);
-      onSetIsSendTestMessage(false);
       setIsIntegrationSuccess(false);
     }
+  };
+
+  const inputTestChannelHandler = (channel) => {
+    setTestChannel(channel);
   };
 
   useEffect(() => {
@@ -75,9 +77,10 @@ const CustomBotWithoutProxySettings = (props) => {
           activeStep={botInstallationStep.CREATE_BOT}
           connectionMessage={connectionMessage}
           connectionErrorCode={connectionErrorCode}
+          isIntegrationSuccess={isIntegrationSuccess}
           testChannel={testChannel}
-          onTestConnection={testConnection}
-          onSetTestChannel={setTestChannel}
+          testConnection={testConnection}
+          inputTestChannelHandler={inputTestChannelHandler}
 
         />
       </div>
@@ -104,7 +107,6 @@ CustomBotWithoutProxySettings.propTypes = {
   isIntegrationSuccess: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
   onResetSettings: PropTypes.func,
-  onSetIsSendTestMessage: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
