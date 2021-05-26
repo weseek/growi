@@ -302,6 +302,7 @@
     "reset_all_settings": "Reset all settings",
     "delete_slackbot_settings": "Reset Slack Bot settings",
     "slackbot_settings_notice": "Reset",
+    "all_settings_of_the_bot_will_be_reset": "All settings of the Bot will be reset.<br>Are you sure?",
     "accordion": {
       "create_bot": "Create Bot",
       "how_to_create_a_bot": "How to create a bot",
