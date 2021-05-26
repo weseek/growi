@@ -393,6 +393,28 @@ module.exports = (crowi) => {
     }
   });
 
+  // TODO: add swagger
+  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+
+    const { id } = req.body;
+
+    try {
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: id });
+
+      const generateTokens = SlackAppIntegration.generateAccessToken();
+      const newTokenGtoP = generateTokens[0];
+      const newTokenPtoG = generateTokens[1];
+
+      await SlackAppIntegration.update({ tokenGtoP: newTokenGtoP, tokenPtoG: newTokenPtoG });
+      return res.apiv3({});
+    }
+    catch (error) {
+      const msg = 'Error occured in updating access token for slack app tokens';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
+    }
+  });
+
   /**
    * @swagger
    *
