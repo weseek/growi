@@ -111,7 +111,7 @@ const OfficialBotSettings = (props) => {
         </div>
       </div>
 
-      <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_settings')}</h2>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
 
       <div className="mx-3">
         {slackAppIntegrations.map((slackAppIntegration) => {
