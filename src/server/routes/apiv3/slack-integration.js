@@ -37,8 +37,6 @@ module.exports = (crowi) => {
       });
     }
 
-    req.shareSearchResults = slackAppIntegration.tokenGtoP;
-
     next();
   }
 
@@ -47,7 +45,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  const generateClientForResponse = (req, res, next) => {
+  const generateClientForResponse = (shareSearchResults) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
     if (currentBotType == null) {
@@ -57,25 +55,23 @@ module.exports = (crowi) => {
     let token;
 
     // connect directly
-    if (req.shareSearchResults == null) {
+    if (shareSearchResults == null) {
       token = crowi.configManager.getConfig('crowi', 'slackbot:token');
-      req.client = generateWebClient(token);
-      return next();
+      return generateWebClient(token);
     }
 
     // connect to proxy
     const proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
     const serverUri = urljoin(proxyServerUri, '/g2s');
     const headers = {
-      'x-growi-gtop-tokens': req.shareSearchResults,
+      'x-growi-gtop-tokens': shareSearchResults,
     };
 
-    req.client = generateWebClient(token, serverUri, headers);
-    return next();
+    return generateWebClient(token, serverUri, headers);
   };
 
   async function handleCommands(req, res) {
-    const { client, body } = req;
+    const { body } = req;
 
     if (body.text == null) {
       return 'No text.';
@@ -88,6 +84,18 @@ module.exports = (crowi) => {
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
+
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+
+    // generate client
+    let client;
+    if (tokenPtoG == null) {
+      client = generateClientForResponse();
+    }
+    else {
+      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+      client = generateClientForResponse(slackAppIntegration.tokenGtoP);
+    }
 
     const args = body.text.split(' ');
     const command = args[0];
@@ -111,11 +119,11 @@ module.exports = (crowi) => {
     }
   }
 
-  router.post('/commands', addSigningSecretToReq, verifySlackRequest, generateClientForResponse, async(req, res) => {
+  router.post('/commands', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
     return handleCommands(req, res);
   });
 
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, generateClientForResponse, async(req, res) => {
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, async(req, res) => {
     const { body } = req;
 
     // eslint-disable-next-line max-len
@@ -167,7 +175,18 @@ module.exports = (crowi) => {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    const { client } = req;
+
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    // generate client
+    let client;
+    if (tokenPtoG == null) {
+      client = generateClientForResponse();
+    }
+    else {
+      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+      client = generateClientForResponse(slackAppIntegration.tokenGtoP);
+    }
+
     const payload = JSON.parse(req.body.payload);
     const { type } = payload;
 
