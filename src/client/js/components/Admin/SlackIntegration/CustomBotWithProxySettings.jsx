@@ -17,17 +17,17 @@ const CustomBotWithProxySettings = (props) => {
   const [deleteTokenObject, setDeleteTokenObject] = useState(null);
   const { t } = useTranslation();
 
-  const fetchSlackIntegrationData = () => {
-    if (props.fetchSlackIntegrationData != null) {
-      fetchSlackIntegrationData();
-    }
-  };
-
   useEffect(() => {
     if (proxyServerUri != null) {
       setNewProxyServerUri(proxyServerUri);
     }
   }, [proxyServerUri]);
+
+  const fetchSlackIntegrationData = () => {
+    if (props.fetchSlackIntegrationData != null) {
+      props.fetchSlackIntegrationData();
+    }
+  };
 
   const addSlackAppIntegrationHandler = async() => {
     // TODO GW-6067 implement
@@ -38,7 +38,7 @@ const CustomBotWithProxySettings = (props) => {
       // GW-6068 set new value after this
       await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', deleteTokenObject);
       fetchSlackIntegrationData();
-      toastSuccess(t('toaster.update_successed', { target: 'Successfully deleted workspace connection' }));
+      toastSuccess(t('toaster.update_successed'));
     }
     catch (err) {
       toastError(err);
