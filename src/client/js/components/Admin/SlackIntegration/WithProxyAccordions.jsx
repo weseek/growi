@@ -79,12 +79,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
     }
   };
 
-  const discardTokenHandler = () => {
-    if (props.discardTokenHandler != null) {
-      props.discardTokenHandler();
-    }
-  };
-
   return (
     <div className="py-4 px-5">
       <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
@@ -116,23 +110,13 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
       </div>
 
       <div className="row my-3">
-        <div className="mx-auto">
-          <button
-            type="button"
-            className="btn btn-outline-secondary mx-2"
-            onClick={discardTokenHandler}
-            disabled={props.tokenGtoP == null || props.tokenPtoG == null}
-          >
-            { t('admin:slack_integration.access_token_settings.discard') }
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary mx-2"
-            onClick={generateTokenHandler}
-          >
-            { t('admin:slack_integration.access_token_settings.generate') }
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn btn-primary mx-auto"
+          onClick={generateTokenHandler}
+        >
+          { t('admin:slack_integration.access_token_settings.regenerate') }
+        </button>
       </div>
       <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
       <div className="d-flex flex-column align-items-center">
@@ -270,7 +254,6 @@ const WithProxyAccordions = (props) => {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
-        discardTokenHandler={props.discardTokenHandler}
         generateTokenHandler={props.generateTokenHandler}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
@@ -299,7 +282,6 @@ const WithProxyAccordions = (props) => {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
-        discardTokenHandler={props.discardTokenHandler}
         generateTokenHandler={props.generateTokenHandler}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}

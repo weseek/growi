@@ -53,7 +53,10 @@ const CustomBotWithProxySettings = (props) => {
   const deleteSlackAppIntegrationHandler = async() => {
     try {
       // TODO GW-5923 delete SlackAppIntegration
-      // await appContainer.apiv3.put('/slack-integration-settings/custom-bot-with-proxy');
+      await appContainer.apiv3.delete('/slack-integration-settings', {
+        tokenGtoP,
+        tokenPtoG,
+      });
       toastSuccess('success');
     }
     catch (err) {

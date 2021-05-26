@@ -299,8 +299,7 @@
     },
     "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <code>{{variable}}</code> 启用。",
     "access_token_settings": {
-      "discard": "丢弃",
-      "generate": "生成"
+      "regenerate": "再生"
     },
     "delete": "取消",
     "integration_procedure": "协作程序",

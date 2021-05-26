@@ -291,8 +291,7 @@
     },
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
     "access_token_settings": {
-      "discard": "Discard",
-      "generate": "Generate"
+      "regenerate": "Regenerate"
     },
     "delete": "Delete",
     "integration_procedure": "Integration Procedure",
