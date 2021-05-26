@@ -33,7 +33,6 @@ const OfficialBotSettings = (props) => {
       if (fetchSlackIntegrationData == null) {
         return;
       }
-      console.log('hige');
       fetchSlackIntegrationData();
     }
     catch (err) {
