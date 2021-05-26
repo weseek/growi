@@ -64,7 +64,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
         <div className="card-body p-4 mb-5 text-center">
           {props.growiApps.map((growiApp) => {
             return (
-              <div className="mb-3 bg-primary text-light p-2 mx-3">
+              <div className={growiApp.active ? 'mb-3 bg-primary text-light p-2 mx-3' : 'mb-3 text-primary p-2 mx-3'}>
                 {growiApp.name}
               </div>
             );
