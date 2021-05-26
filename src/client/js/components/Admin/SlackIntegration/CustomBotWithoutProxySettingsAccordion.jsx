@@ -19,8 +19,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
   appContainer, activeStep,
   connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isSendTestMessage,
-  fetchSlackIntegrationData, testConnection,
-  onSetSlackSigningSecret, onSetSlackBotToken, onSetTestChannel,
+  fetchSlackIntegrationData, testConnection, inputTestChannelHandler,
+  onSetSlackSigningSecret, onSetSlackBotToken,
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
@@ -57,12 +57,6 @@ const CustomBotWithoutProxySettingsAccordion = ({
   const onChangeBotTokenHandler = (botTokenInput) => {
     if (onSetSlackBotToken != null) {
       onSetSlackBotToken(botTokenInput);
-    }
-  };
-
-  const inputTestChannelHandler = (channel) => {
-    if (onSetTestChannel != null) {
-      onSetTestChannel(channel);
     }
   };
 
@@ -209,9 +203,9 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   isSendTestMessage: PropTypes.bool,
   fetchSlackIntegrationData: PropTypes.func,
   testConnection: PropTypes.func,
+  inputTestChannelHandler: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
-  onSetTestChannel:  PropTypes.func,
   connectionMessage: PropTypes.string,
   connectionErrorCode: PropTypes.string,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,

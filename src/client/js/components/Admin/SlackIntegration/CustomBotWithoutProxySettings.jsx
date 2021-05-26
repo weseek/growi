@@ -43,6 +43,10 @@ const CustomBotWithoutProxySettings = (props) => {
     }
   };
 
+  const inputTestChannelHandler = (channel) => {
+    setTestChannel(channel);
+  };
+
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
     setSiteName(siteName);
@@ -77,7 +81,7 @@ const CustomBotWithoutProxySettings = (props) => {
           connectionErrorCode={connectionErrorCode}
           testChannel={testChannel}
           testConnection={testConnection}
-          onSetTestChannel={setTestChannel}
+          inputTestChannelHandler={inputTestChannelHandler}
 
         />
       </div>
