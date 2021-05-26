@@ -502,23 +502,30 @@ module.exports = (crowi) => {
    */
   router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.SlackChannel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
-
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
     }
-    const { channel } = req.body;
+
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
       await testToSlack(slackBotToken);
-      await sendSuccessMessage(slackBotToken, channel, appSiteURL);
-      return res.apiv3();
     }
     catch (error) {
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
     }
+
+    const { channel } = req.body;
+    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    try {
+      await sendSuccessMessage(slackBotToken, channel, appSiteURL);
+    }
+    catch (error) {
+      return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
+    }
+
+    return res.apiv3();
   });
 
   return router;
