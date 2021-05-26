@@ -49,7 +49,7 @@ const checkSlackScopes = (resultTestSlackApiServer: any) => {
   const isPassedScopeCheck = correctScopes.every(e => slackScopes.includes(e));
 
   if (!isPassedScopeCheck) {
-    throw new Error('Scope error');
+    throw new Error('The scopes is not appropriate. Required scopes is [Rcommands], [team:read], and [chat:write].');
   }
 };
 
