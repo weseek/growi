@@ -32,6 +32,7 @@ const SlackIntegration = (props) => {
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
+    console.log('nka');
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
       const {
@@ -40,8 +41,9 @@ const SlackIntegration = (props) => {
 
       if (data.connectionStatuses != null) {
         // TODO fix
-        // const { workspaceName } = data.connectionStatuses[slackBotToken];
-        // setSlackWSNameInWithoutProxy(workspaceName);
+        const { workspaceName } = data.connectionStatuses[slackBotToken];
+        console.log(workspaceName);
+        setSlackWSNameInWithoutProxy(workspaceName);
       }
 
       setCurrentBotType(data.currentBotType);
