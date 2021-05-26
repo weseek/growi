@@ -38,7 +38,7 @@ const CustomBotWithProxySettings = (props) => {
       // GW-6068 set new value after this
       await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', deleteTokenObject);
       fetchSlackIntegrationData();
-      toastSuccess(t('toaster.update_successed'));
+      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
     catch (err) {
       toastError(err);
@@ -62,7 +62,7 @@ const CustomBotWithProxySettings = (props) => {
       await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
         proxyUri: newProxyServerUri,
       });
-      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+      toastSuccess(t('toaster.update_successed', { target: 'Proxy URL' }));
     }
     catch (err) {
       toastError(err);
