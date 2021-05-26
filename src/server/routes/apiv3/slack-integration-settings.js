@@ -5,7 +5,7 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
-const { getConnectionStatuses, testToSlack, generateWebClient } = require('@growi/slack');
+const { getConnectionStatuses, testToSlack, sendSuccessMessage } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -502,7 +502,7 @@ module.exports = (crowi) => {
    */
   router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.SlackChannel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-    // const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
 
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Select Without Proxy Type';
@@ -512,11 +512,7 @@ module.exports = (crowi) => {
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
       await testToSlack(slackBotToken);
-      const client = generateWebClient(slackBotToken);
-      await client.chat.postMessage({
-        channel,
-        text: 'Your test was successful!',
-      });
+      await sendSuccessMessage(slackBotToken, channel, appSiteURL);
       return res.apiv3();
     }
     catch (error) {
