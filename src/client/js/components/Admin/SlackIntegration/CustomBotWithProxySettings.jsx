@@ -35,7 +35,7 @@ const CustomBotWithProxySettings = (props) => {
     }
     catch (err) {
       toastError(err);
-      logger(err);
+      logger.error(err);
     }
   };
 
@@ -46,7 +46,7 @@ const CustomBotWithProxySettings = (props) => {
     }
     catch (err) {
       toastError(err);
-      logger(err);
+      logger.error(err);
     }
   };
 
