@@ -61,19 +61,14 @@ const CustomBotWithProxyIntegrationCard = (props) => {
             <a className="icon-fw fa fa-repeat fa-2x"></a>
           </div>
         </div>
-        <div className="card-body p-4 mb-5 text-center">
-          <div className="btn-group-vertical w-50">
-            {props.growiApps.map((growiApp) => {
-              return (
-                <button
-                  type="button"
-                  key={growiApp.name}
-                  className={growiApp.active ? 'btn btn-primary mb-3' : 'btn btn-outline-primary mb-3'}
-                >{growiApp.name}
-                </button>
-              );
-            })}
-          </div>
+        <div className="card-body p-4 mb-5 text-center enter-block">
+          {props.growiApps.map((growiApp) => {
+            return (
+              <div className="mb-3 bg-primary text-light p-2 mx-3">
+                {growiApp.name}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
