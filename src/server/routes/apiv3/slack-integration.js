@@ -209,11 +209,11 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, generateClientForResponse, async(req, res) => {
+  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
     return handleInteractions(req, res);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, generateClientForResponse, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, async(req, res) => {
     return handleInteractions(req, res);
   });
 
