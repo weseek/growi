@@ -104,7 +104,15 @@ export class GrowiToSlackCtrl {
         logger.error(err);
         return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
       }
-      await testToSlack(token);
+
+      try {
+        await testToSlack(token);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+      }
+
       return res.send({ relation });
     }
 
@@ -135,7 +143,13 @@ export class GrowiToSlackCtrl {
       return res.status(400).send({ message: 'installation is invalid' });
     }
 
-    await testToSlack(token);
+    try {
+      await testToSlack(token);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+    }
 
     logger.debug('relation test is success', order);
 
