@@ -25,10 +25,10 @@ export class Order {
   growiUrl: string;
 
   @Column()
-  growiAccessToken: string;
+  tokenGtoP: string;
 
   @Column()
-  proxyAccessToken: string;
+  tokenPtoG: string;
 
   isExpired():boolean {
     const now = Date.now();

@@ -109,8 +109,11 @@ export class SlackCtrl {
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
       return axios.post(url.toString(), {
         ...body,
-        tokenPtoG: relation.tokenPtoG,
         growiCommand,
+      }, {
+        headers: {
+          'x-growi-ptog-tokens': relation.tokenPtoG,
+        },
       });
     });
 

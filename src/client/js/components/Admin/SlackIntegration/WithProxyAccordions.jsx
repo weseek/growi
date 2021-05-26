@@ -93,12 +93,11 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
     <div className="py-4 px-5">
       <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
       <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">Access Token for GROWI</label>
+        <label className="text-left text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
-            {/* TODO: show tokenPtoG GW-5899 */}
             <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
-            <CopyToClipboard text="tokenPtoG" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+            <CopyToClipboard text={props.tokenPtoG || ''} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
                 <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
               </div>
@@ -107,12 +106,11 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         </div>
       </div>
       <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">Access Token for Proxy</label>
+        <label className="text-left text-md-right col-md-3 col-form-label">Access Token GROWI to Proxy</label>
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
-            {/* TODO: show tokenGtoP GW-5899 */}
             <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
-            <CopyToClipboard text="tokenGtoP" onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+            <CopyToClipboard text={props.tokenGtoP || ''} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
                 <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
               </div>

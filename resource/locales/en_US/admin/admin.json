@@ -302,6 +302,7 @@
     "reset_all_settings": "Reset all settings",
     "delete_slackbot_settings": "Reset Slack Bot settings",
     "slackbot_settings_notice": "Reset",
+    "all_settings_of_the_bot_will_be_reset": "All settings of the Bot will be reset.<br>Are you sure?",
     "accordion": {
       "create_bot": "Create Bot",
       "how_to_create_a_bot": "How to create a bot",
@@ -312,7 +313,7 @@
       "register_for_growi_official_bot_proxy_service": "Register for GROWI Official Bot Proxy Service",
       "enter_growi_register_on_slack": "Enter <b>/growi register</b> on slack",
       "paste_growi_url": "Since a modal is displayed, enter the following URL in <b>GROWI URL</b>.",
-      "enter_access_token_for_growi_and_proxy": "Enter <b>Access Token for GROWI</b> and <b>Access Token for Proxy</b>",
+      "enter_access_token_for_growi_and_proxy": "Enter <b>Access Token Proxy to GROWI</b> and <b>Access Token GROWI to Proxy</b>",
       "set_proxy_url_on_growi": "Set Proxy URL on GROWI",
       "copy_proxy_url": "1. When the above step ② are completed successfully, the Proxy URL will be displayed in the Slack Channel you selected in the modal, so copy it.",
       "enter_proxy_url_and_update": "2. Enter and update the Proxy URL that you copied in step ③ in the <b>Proxy URL</b>  of the <b>Custom bot with proxy integration</b> on this page.",
