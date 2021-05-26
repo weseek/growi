@@ -36,13 +36,13 @@ class SlackBotService extends S2sMessageHandlable {
     let serverUri;
     let token;
 
-    // connect to proxy
+    // connect directly
     if (currentBotType === 'customBotWithoutProxy') {
-      // connect directly
       token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
       return generateWebClient(token, serverUri);
     }
 
+    // connect to proxy
     const proxyServerUri = this.crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
     serverUri = urljoin(proxyServerUri, '/g2s');
     const headers = {
