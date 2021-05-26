@@ -410,9 +410,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  SERVER_URI: {
+  SLACK_INTEGRATION_PROXY_URI: {
     ns:      'crowi',
-    key:     'slackbot:serverUri',
+    key:     'slackbot:proxyServerUri',
     type:    TYPES.STRING,
     default: null,
   },

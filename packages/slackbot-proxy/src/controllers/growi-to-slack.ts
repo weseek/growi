@@ -34,7 +34,7 @@ export class GrowiToSlackCtrl {
   @Inject()
   orderRepository: OrderRepository;
 
-  async requestToGrowi(growiUrl:string, proxyAccessToken:string):Promise<void> {
+  async requestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
     const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
     await axios.post(url.toString(), {
       type: 'url_verification',
@@ -42,7 +42,7 @@ export class GrowiToSlackCtrl {
     },
     {
       headers: {
-        'x-growi-ptog-tokens': proxyAccessToken,
+        'x-growi-ptog-tokens': tokenPtoG,
       },
     });
   }
@@ -119,7 +119,7 @@ export class GrowiToSlackCtrl {
     // retrieve latest Order with Installation
     const order = await this.orderRepository.createQueryBuilder('order')
       .orderBy('order.createdAt', 'DESC')
-      .where('proxyAccessToken = :token', { token: tokenGtoP })
+      .where('tokenGtoP = :token', { token: tokenGtoP })
       .leftJoinAndSelect('order.installation', 'installation')
       .getOne();
 
@@ -129,7 +129,7 @@ export class GrowiToSlackCtrl {
 
     // Access the GROWI URL saved in the Order record and check if the GtoP token is valid.
     try {
-      await this.requestToGrowi(order.growiUrl, order.proxyAccessToken);
+      await this.requestToGrowi(order.growiUrl, order.tokenPtoG);
     }
     catch (err) {
       logger.error(err);
@@ -155,7 +155,7 @@ export class GrowiToSlackCtrl {
 
     // Transaction is not considered because it is used infrequently,
     const createdRelation = await this.relationRepository.save({
-      installation: order.installation, tokenGtoP: order.growiAccessToken, tokenPtoG: order.proxyAccessToken, growiUri: order.growiUrl,
+      installation: order.installation, tokenGtoP: order.tokenGtoP, tokenPtoG: order.tokenPtoG, growiUri: order.growiUrl,
     });
 
     return res.send({ relation: createdRelation });
