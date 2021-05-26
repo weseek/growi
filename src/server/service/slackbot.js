@@ -1,8 +1,5 @@
-const urljoin = require('url-join');
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
-
-const { generateWebClient } = require('@growi/slack');
 
 const PAGINGLIMIT = 10;
 
@@ -24,31 +21,6 @@ class SlackBotService extends S2sMessageHandlable {
 
   initialize() {
     this.lastLoadedAt = new Date();
-  }
-
-  async generateClient(body) {
-    const currentBotType = this.crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-
-    if (currentBotType == null) {
-      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
-    }
-
-    let serverUri;
-    let token;
-
-    // connect directly
-    if (currentBotType === 'customBotWithoutProxy') {
-      token = this.crowi.configManager.getConfig('crowi', 'slackbot:token');
-      return generateWebClient(token, serverUri);
-    }
-
-    // connect to proxy
-    const proxyServerUri = this.crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
-    serverUri = urljoin(proxyServerUri, '/g2s');
-    const headers = {
-      'x-growi-gtop-tokens': body.tokenGtoP,
-    };
-    return generateWebClient(token, serverUri, headers);
   }
 
   /**
@@ -90,9 +62,8 @@ class SlackBotService extends S2sMessageHandlable {
     }
   }
 
-  async notCommand(body) {
+  async notCommand(client, body) {
     logger.error('Invalid first argument');
-    const client = await this.generateClient(body);
     client.chat.postEphemeral({
       channel: body.channel_id,
       user: body.user_id,
@@ -109,8 +80,7 @@ class SlackBotService extends S2sMessageHandlable {
     return keywords;
   }
 
-  async getSearchResultPaths(body, args, offset = 0) {
-    const client = this.generateClient(body);
+  async getSearchResultPaths(client, body, args, offset = 0) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
       client.chat.postEphemeral({
@@ -167,19 +137,17 @@ class SlackBotService extends S2sMessageHandlable {
     };
   }
 
-  async shareSearchResults(payload) {
-    const client = await this.generateClient();
+  async shareSearchResults(client, payload) {
     client.chat.postMessage({
       channel: payload.channel.id,
       text: payload.actions[0].value,
     });
   }
 
-  async showEphemeralSearchResults(body, args, offsetNum) {
+  async showEphemeralSearchResults(client, body, args, offsetNum) {
     const {
       resultPaths, offset, resultsTotal,
-    } = await this.getSearchResultPaths(body, args, offsetNum);
-    const client = await this.generateClient(body);
+    } = await this.getSearchResultPaths(client, body, args, offsetNum);
 
     const keywords = this.getKeywords(args);
 
@@ -267,9 +235,7 @@ class SlackBotService extends S2sMessageHandlable {
     }
   }
 
-  async createModal(body) {
-    const client = await this.generateClient(body);
-
+  async createModal(client, body) {
     try {
       await client.views.open({
         trigger_id: body.trigger_id,
@@ -311,12 +277,11 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   // Submit action in create Modal
-  async createPageInGrowi(payload) {
+  async createPageInGrowi(client, payload) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
 
     const contentsBody = payload.view.state.values.contents.contents_input.value;
-    const client = await this.generateClient();
 
     try {
       let path = payload.view.state.values.path.path_input.value;

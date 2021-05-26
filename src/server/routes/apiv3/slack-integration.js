@@ -1,9 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const urljoin = require('url-join');
 
 const loggerFactory = require('@alias/logger');
 
-const { verifySlackRequest } = require('@growi/slack');
+const { verifySlackRequest, generateWebClient } = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -24,17 +25,19 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegration.estimatedDocumentCount({ tokenPtoG });
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
     });
 
-    if (slackAppIntegrationCount === 0) {
+    if (slackAppIntegration == null) {
       return res.status(403).send({
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`?',
       });
     }
+
+    req.shareSearchResults = slackAppIntegration.tokenGtoP;
 
     next();
   }
@@ -44,8 +47,35 @@ module.exports = (crowi) => {
     return next();
   };
 
+  const generateClientForResponse = (req, res, next) => {
+    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    if (currentBotType == null) {
+      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
+    }
+
+    let token;
+
+    // connect directly
+    if (req.shareSearchResults == null) {
+      token = crowi.configManager.getConfig('crowi', 'slackbot:token');
+      req.client = generateWebClient(token);
+      return next();
+    }
+
+    // connect to proxy
+    const proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    const serverUri = urljoin(proxyServerUri, '/g2s');
+    const headers = {
+      'x-growi-gtop-tokens': req.shareSearchResults,
+    };
+
+    req.client = generateWebClient(token, serverUri, headers);
+    return next();
+  };
+
   async function handleCommands(req, res) {
-    const { body } = req;
+    const { client, body } = req;
 
     if (body.text == null) {
       return 'No text.';
@@ -65,13 +95,13 @@ module.exports = (crowi) => {
     try {
       switch (command) {
         case 'search':
-          await crowi.slackBotService.showEphemeralSearchResults(body, args);
+          await crowi.slackBotService.showEphemeralSearchResults(client, body, args);
           break;
         case 'create':
-          await crowi.slackBotService.createModal(body);
+          await crowi.slackBotService.createModal(client, body);
           break;
         default:
-          await crowi.slackBotService.notCommand(body);
+          await crowi.slackBotService.notCommand(client, body);
           break;
       }
     }
@@ -81,11 +111,11 @@ module.exports = (crowi) => {
     }
   }
 
-  router.post('/commands', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
+  router.post('/commands', addSigningSecretToReq, verifySlackRequest, generateClientForResponse, async(req, res) => {
     return handleCommands(req, res);
   });
 
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, async(req, res) => {
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, generateClientForResponse, async(req, res) => {
     const { body } = req;
 
     // eslint-disable-next-line max-len
@@ -137,16 +167,17 @@ module.exports = (crowi) => {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
+    const { client } = req;
     const payload = JSON.parse(req.body.payload);
     const { type } = payload;
 
     try {
       switch (type) {
         case 'block_actions':
-          await handleBlockActions(payload);
+          await handleBlockActions(client, payload);
           break;
         case 'view_submission':
-          await handleViewSubmission(payload);
+          await handleViewSubmission(client, payload);
           break;
         default:
           break;
@@ -159,11 +190,11 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
+  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, generateClientForResponse, async(req, res) => {
     return handleInteractions(req, res);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, generateClientForResponse, async(req, res) => {
     return handleInteractions(req, res);
   });
 
