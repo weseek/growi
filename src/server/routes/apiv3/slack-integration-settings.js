@@ -55,6 +55,10 @@ module.exports = (crowi) => {
       body('currentBotType')
         .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
     ],
+    proxyUri: [
+      body('proxyUri').if(value => value !== '').trim().matches(/^(https?:\/\/)/)
+        .isURL({ require_tld: false }),
+    ],
     AccessTokens: [
       query('tokenGtoP').trim().not().isEmpty()
         .isString()
@@ -77,7 +81,7 @@ module.exports = (crowi) => {
       'slackbot:currentBotType': null,
       'slackbot:signingSecret': null,
       'slackbot:token': null,
-      'slackbot:serverUri': null,
+      'slackbot:proxyServerUri': null,
     };
     const { configManager } = crowi;
     // update config without publishing S2sMessage
@@ -92,7 +96,7 @@ module.exports = (crowi) => {
 
   async function getConnectionStatusesFromProxy(tokens) {
     const csv = tokens.join(',');
-    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
+    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
 
     const result = await axios.get(urljoin(proxyUri, '/g2s/connection-status'), {
       headers: {
@@ -104,7 +108,7 @@ module.exports = (crowi) => {
   }
 
   async function postRelationTest(token) {
-    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
+    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
 
     const result = await axios.get(urljoin(proxyUri, '/g2s/relation-test'), {
       headers: {
@@ -142,8 +146,8 @@ module.exports = (crowi) => {
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
     }
     else {
-      settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:serverUri');
-      settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:serverUri');
+      settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+      settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:proxyServerUri');
     }
 
     // retrieve connection statuses
@@ -416,10 +420,10 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, validator.proxyUri, apiV3FormValidator, async(req, res) => {
     const { proxyUri } = req.body;
 
-    const requestParams = { 'slackbot:serverUri': proxyUri };
+    const requestParams = { 'slackbot:proxyServerUri': proxyUri };
 
     try {
       await updateSlackBotSettings(requestParams);
