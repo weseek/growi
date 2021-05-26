@@ -25,13 +25,13 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    const slackAppIntegrationCount = await SlackAppIntegration.estimatedDocumentCount({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
     });
 
-    if (slackAppIntegration == null) {
+    if (slackAppIntegrationCount === 0) {
       return res.status(403).send({
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`?',
       });
