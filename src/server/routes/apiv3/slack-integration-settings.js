@@ -409,7 +409,7 @@ module.exports = (crowi) => {
   router.delete('/slack-app-integration', validator.AccessTokens, apiV3FormValidator, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { tokenGtoP, tokenPtoG } = req.query;
-    console.log(tokenGtoP, tokenPtoG);
+
     try {
       const response = await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
       return res.apiv3({ response });
