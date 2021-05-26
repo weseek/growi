@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 
 import path from 'path';
-import validator from 'validator';
+import { isMongoId } from 'validator';
 import { withTranslation } from 'react-i18next';
 import PreviewWithSuspense from './PreviewWithSuspense';
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
@@ -157,7 +157,7 @@ class LinkEditModal extends React.PureComponent {
 
     if (path.startsWith('/')) {
       const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
-      const isPermanentLink = validator.isMongoId(pathWithoutFragment.slice(1));
+      const isPermanentLink = isMongoId(pathWithoutFragment.slice(1));
       const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
       try {

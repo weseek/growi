@@ -4,6 +4,7 @@
 
 * Support: Upgrade libs
     * string-width
+    * validator
 
 ## v4.2.18
 
