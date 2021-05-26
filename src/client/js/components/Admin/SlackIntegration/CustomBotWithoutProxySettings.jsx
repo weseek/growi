@@ -15,7 +15,7 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
-  const [connectionMessage, setConnectionMessage] = useState(null);
+  const [connectionMessage, setConnectionMessage] = useState('');
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 

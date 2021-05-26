@@ -77,7 +77,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
 
 
   let value = '';
-  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage == null) {
+  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
     value = connectionMessage;
   }
   else {
