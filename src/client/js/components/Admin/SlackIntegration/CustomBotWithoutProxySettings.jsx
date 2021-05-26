@@ -76,7 +76,7 @@ const CustomBotWithoutProxySettings = (props) => {
           connectionMessage={connectionMessage}
           connectionErrorCode={connectionErrorCode}
           testChannel={testChannel}
-          onTestConnection={testConnection}
+          testConnection={testConnection}
           onSetTestChannel={setTestChannel}
 
         />
