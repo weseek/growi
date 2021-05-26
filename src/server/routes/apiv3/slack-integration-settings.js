@@ -502,6 +502,8 @@ module.exports = (crowi) => {
    */
   router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.SlackChannel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    // const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);

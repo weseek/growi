@@ -111,3 +111,11 @@ export const testToSlack = async(token:string): Promise<void> => {
   const res = await testSlackApiServer(client);
   await checkSlackScopes(res);
 };
+
+export const sendSuccessMessage = async(token:string, channel:string, appSiteUrl:string): Promise<void> => {
+  const client = generateWebClient(token);
+  await client.chat.postMessage({
+    channel,
+    text: `Successfully tested with ${appSiteUrl}.`,
+  });
+};
