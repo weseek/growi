@@ -187,31 +187,29 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
 
+  const [connectionMessage, setConnectionMessage] = useState('');
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
-  const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
-  const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
 
   let value = '';
-  if (connectionErrorMessage != null) {
-    value = [connectionErrorCode, connectionErrorMessage];
+  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
+    value = connectionMessage;
   }
-  if (connectionSuccessMessage != null) {
-    value = connectionSuccessMessage;
+  else {
+    value = [connectionErrorCode, connectionMessage];
   }
 
   const submitForm = async(e) => {
     e.preventDefault();
     setConnectionErrorCode(null);
-    setConnectionErrorMessage(null);
-    setConnectionSuccessMessage(null);
+    setConnectionMessage(null);
 
     try {
       await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
-      setConnectionSuccessMessage('Success to relation test!');
+      setConnectionMessage('Send the message to slack work space.');
     }
     catch (error) {
       setConnectionErrorCode(error[0].code);
-      setConnectionErrorMessage(error[0].message);
+      setConnectionMessage(error[0].message);
       logger.error(error);
     }
   };
@@ -242,10 +240,16 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
           </button>
         </form>
       </div>
-      {connectionErrorMessage != null
-      && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
-      {connectionSuccessMessage != null
-      && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
+      {connectionMessage === '' ? <p></p>
+        : (
+          <>
+            {connectionMessage === 'Send the message to slack work space.'
+              ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
+              : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
+            }
+          </>
+        )
+      }
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
@@ -328,7 +332,6 @@ const WithProxyAccordions = (props) => {
       className="card border-0 rounded-lg shadow overflow-hidden"
     >
       {Object.entries(integrationProcedureMapping).map(([key, value]) => {
-
         return (
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
