@@ -45,8 +45,7 @@ const OfficialBotSettings = (props) => {
 
   const generateTokenHandler = async() => {
     try {
-      // GW-6068 set new value after this
-      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
+      //  TODO: imprement regenerating tokens by GW-6068
     }
     catch (err) {
       toastError(err);
