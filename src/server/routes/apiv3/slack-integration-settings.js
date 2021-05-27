@@ -396,16 +396,15 @@ module.exports = (crowi) => {
   // TODO: add swagger
   router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
-    const { id } = req.body;
+    const { tokenGtoP, tokenPtoG } = req.body;
 
     try {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: id });
-
       const generateTokens = SlackAppIntegration.generateAccessToken();
       const newTokenGtoP = generateTokens[0];
       const newTokenPtoG = generateTokens[1];
+      await SlackAppIntegration.findOneAndUpdate({ tokenGtoP: newTokenGtoP, tokenPtoG: newTokenPtoG });
 
-      await SlackAppIntegration.update({ tokenGtoP: newTokenGtoP, tokenPtoG: newTokenPtoG });
+
       return res.apiv3({});
     }
     catch (error) {
