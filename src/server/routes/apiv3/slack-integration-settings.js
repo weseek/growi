@@ -71,7 +71,7 @@ module.exports = (crowi) => {
       body('slackappintegrationsId').isMongoId(),
     ],
     deleteIntegration: [
-      query('integrationIdToDelete').isMongoId(),
+      query('integrationIdToDelete').isMongoId().not().isEmpty(),
     ],
     SlackChannel: [
       body('channel').trim().not().isEmpty()
