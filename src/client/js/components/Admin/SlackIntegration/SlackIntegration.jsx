@@ -122,7 +122,12 @@ const SlackIntegration = (props) => {
 
   switch (currentBotType) {
     case 'officialBot':
-      settingsComponent = <OfficialBotSettings slackAppIntegrations={slackAppIntegrations} proxyServerUri={proxyServerUri} />;
+      settingsComponent = (
+        <OfficialBotSettings
+          slackAppIntegrations={slackAppIntegrations}
+          proxyServerUri={proxyServerUri}
+        />
+      );
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
