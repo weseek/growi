@@ -131,7 +131,7 @@ const CustomBotWithProxySettings = (props) => {
                   {t('admin:slack_integration.delete')}
                 </button>
               </div>
-              <div>No.{i + 1} {workspaceNames[i] == null && <span className="text-danger">連携に失敗しました</span>}</div>
+              <div>No.{i + 1} {workspaceNames[i] == null && <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span>}</div>
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}
