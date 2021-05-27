@@ -129,6 +129,7 @@ const SlackIntegration = (props) => {
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
+          onUpdateSecretTokenHandlerInvoked={setIsRegisterSlackCredentials}
         />
       );
       break;

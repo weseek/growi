@@ -19,14 +19,13 @@ const CustomBotWithoutProxySettingsAccordion = ({
   appContainer, activeStep,
   connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isCheckIntegrationTest,
-  fetchSlackIntegrationData, inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken,
+  inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken, onUpdateSecretTokenHandlerInvoked,
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
   // eslint-disable-next-line no-unused-vars
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
   const currentBotType = 'customBotWithoutProxy';
-
 
   const updateSecretTokenHandler = async() => {
     try {
@@ -36,9 +35,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
         currentBotType,
       });
 
-      if (fetchSlackIntegrationData == null) {
+      if (onUpdateSecretTokenHandlerInvoked == null) {
         return null;
       }
+      onUpdateSecretTokenHandlerInvoked(true);
+
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -199,9 +200,9 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   testChannel: PropTypes.string,
   isRegisterSlackCredentials: PropTypes.bool,
   isCheckIntegrationTest: PropTypes.bool,
-  fetchSlackIntegrationData: PropTypes.func,
   inputTestChannelHandler: PropTypes.func,
   onTestFormSubmitted: PropTypes.func,
+  onUpdateSecretTokenHandlerInvoked: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
   connectionMessage: PropTypes.string,
