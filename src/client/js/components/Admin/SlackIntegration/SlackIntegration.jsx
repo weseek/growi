@@ -78,6 +78,17 @@ const SlackIntegration = (props) => {
     }
   };
 
+  const createSlackIntegrationData = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
+      fetchSlackIntegrationData();
+      toastSuccess(t('admin:slack_integration.adding_slack_ws_integration_settings_successful'));
+    }
+    catch (error) {
+      toastError(error);
+    }
+  };
+
   useEffect(() => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
@@ -122,7 +133,13 @@ const SlackIntegration = (props) => {
 
   switch (currentBotType) {
     case 'officialBot':
-      settingsComponent = <OfficialBotSettings slackAppIntegrations={slackAppIntegrations} proxyServerUri={proxyServerUri} />;
+      settingsComponent = (
+        <OfficialBotSettings
+          slackAppIntegrations={slackAppIntegrations}
+          proxyServerUri={proxyServerUri}
+          onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+        />
+      );
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
@@ -145,6 +162,7 @@ const SlackIntegration = (props) => {
         <CustomBotWithProxySettings
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
+          onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
         />
       );

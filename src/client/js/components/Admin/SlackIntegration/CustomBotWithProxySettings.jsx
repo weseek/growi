@@ -12,7 +12,9 @@ import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
-  const { appContainer, slackAppIntegrations, proxyServerUri } = props;
+  const {
+    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn,
+  } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
@@ -30,7 +32,9 @@ const CustomBotWithProxySettings = (props) => {
   };
 
   const addSlackAppIntegrationHandler = async() => {
-    // TODO GW-6067 implement
+    if (onClickAddSlackWorkspaceBtn != null) {
+      onClickAddSlackWorkspaceBtn();
+    }
   };
 
   const deleteSlackAppIntegrationHandler = async() => {
@@ -48,8 +52,7 @@ const CustomBotWithProxySettings = (props) => {
 
   const generateAccessTokens = async() => {
     try {
-      // GW-6068 set new value after this
-      await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+      //  TODO: imprement regenerating tokens by GW-6068
     }
     catch (err) {
       toastError(err);
@@ -164,6 +167,7 @@ CustomBotWithProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
+  onClickAddSlackWorkspaceBtn: PropTypes.func,
   fetchSlackIntegrationData: PropTypes.func,
 };
 
