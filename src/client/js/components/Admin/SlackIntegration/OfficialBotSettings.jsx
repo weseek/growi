@@ -52,7 +52,7 @@ const OfficialBotSettings = (props) => {
     }
   };
 
-  const generateTokenHandler = async(tokenGtoP, tokenPtoG) => {
+  const regenerateTokensHandler = async(tokenGtoP, tokenPtoG) => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { tokenGtoP, tokenPtoG });
     }
@@ -143,7 +143,7 @@ const OfficialBotSettings = (props) => {
               <WithProxyAccordions
                 botType="officialBot"
                 discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
-                onClickRegenerateTokens={generateTokenHandler(tokenGtoP, tokenPtoG)}
+                onClickRegenerateTokens={regenerateTokensHandler(tokenGtoP, tokenPtoG)}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
