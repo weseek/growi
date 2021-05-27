@@ -19,8 +19,8 @@ const CustomBotWithProxySettings = (props) => {
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
 
-  const workspaceNamesArray = Object.values(connectionStatuses);
-  const workspaceNames = workspaceNamesArray.map((w) => {
+  const workspaceNameObjects = Object.values(connectionStatuses);
+  const workspaceNames = workspaceNameObjects.map((w) => {
     return w.workspaceName;
   });
 
