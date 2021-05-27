@@ -73,9 +73,9 @@ const RegisteringProxyUrlProcess = () => {
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
 
-  const generateTokenHandler = () => {
+  const regenerateTokensHandler = () => {
     if (props.generateTokenHandler != null) {
-      props.generateTokenHandler();
+      props.onClickRegenerateTokens();
     }
   };
 
@@ -128,7 +128,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
           <button
             type="button"
             className="btn btn-primary mx-2"
-            onClick={generateTokenHandler}
+            onClick={regenerateTokensHandler}
           >
             { t('admin:slack_integration.access_token_settings.generate') }
           </button>
