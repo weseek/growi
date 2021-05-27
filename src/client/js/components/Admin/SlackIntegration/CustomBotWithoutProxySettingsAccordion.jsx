@@ -161,7 +161,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
             </button>
           </form>
         </div>
-        {connectionMessage == null
+        {connectionMessage === ''
           ? <p></p>
           : (
             <>
