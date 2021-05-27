@@ -137,7 +137,7 @@ const SlackIntegration = (props) => {
         <OfficialBotSettings
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
-          onClickAddSlackWorkspaceBtn={fetchSlackIntegrationData}
+          onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
         />
       );
       break;

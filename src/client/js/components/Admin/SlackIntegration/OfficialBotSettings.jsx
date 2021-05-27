@@ -27,17 +27,8 @@ const OfficialBotSettings = (props) => {
   }, [proxyServerUri, slackAppIntegrations]);
 
   const addSlackAppIntegrationHandler = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
-
-      if (onClickAddSlackWorkspaceBtn == null) {
-        return;
-      }
+    if (onClickAddSlackWorkspaceBtn != null) {
       onClickAddSlackWorkspaceBtn();
-    }
-    catch (err) {
-      toastError(err);
-      logger(err);
     }
   };
 
