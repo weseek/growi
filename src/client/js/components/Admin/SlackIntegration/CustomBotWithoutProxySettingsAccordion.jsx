@@ -16,19 +16,15 @@ export const botInstallationStep = {
 };
 
 const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep, fetchSlackIntegrationData,
-  slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
-  isRegisterSlackCredentials, isSendTestMessage,
-  onSetSlackSigningSecret, onSetSlackBotToken, onSetIsSendTestMessage,
+  appContainer, activeStep,
+  connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
+  isRegisterSlackCredentials, isIntegrationSuccess,
+  fetchSlackIntegrationData, inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken,
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
   // eslint-disable-next-line no-unused-vars
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
-  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
-  const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
-  const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
-  const [testChannel, setTestChannel] = useState('');
   const currentBotType = 'customBotWithoutProxy';
 
 
@@ -63,42 +59,22 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const testConnection = async() => {
-    setConnectionErrorCode(null);
-    setConnectionErrorMessage(null);
-    setConnectionSuccessMessage(null);
-    // TODO: 5921 Add new Test endpoint
-    try {
-      // eslint-disable-next-line no-console
-      console.log('Test');
-      // const res = await appContainer.apiv3.post('/slack-integration-settings//without-proxy/test', {
-      //   channel: testChannel,
-      // });
-      // setConnectionSuccessMessage(res.data.message);
-      // onSetIsSendTestMessage(true);
-    }
-    catch (err) {
-      onSetIsSendTestMessage(false);
-      setConnectionErrorCode('dummy-error-code');
-      setConnectionErrorMessage('This is a sample error message');
-    }
-  };
-
   const submitForm = (e) => {
     e.preventDefault();
-    testConnection();
+
+    if (onTestFormSubmitted == null) {
+      return;
+    }
+    onTestFormSubmitted();
   };
 
-  const inputTestChannelHandler = (channel) => {
-    setTestChannel(channel);
-  };
 
   let value = '';
-  if (connectionErrorMessage != null) {
-    value = [connectionErrorCode, connectionErrorMessage];
+  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
+    value = connectionMessage;
   }
-  if (connectionSuccessMessage != null) {
-    value = connectionSuccessMessage;
+  else {
+    value = [connectionErrorCode, connectionMessage];
   }
 
   return (
@@ -159,7 +135,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isSendTestMessage && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isIntegrationSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
@@ -184,10 +160,17 @@ const CustomBotWithoutProxySettingsAccordion = ({
             </button>
           </form>
         </div>
-        {connectionErrorMessage != null
-          && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
-        {connectionSuccessMessage != null
-          && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
+        {connectionMessage === ''
+          ? <p></p>
+          : (
+            <>
+              {connectionMessage === 'Send the message to slack work space.'
+                ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
+                : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
+              }
+            </>
+          )
+        }
         <form>
           <div className="row my-3 justify-content-center">
             <div className="form-group slack-connection-log col-md-4">
@@ -214,15 +197,16 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
+  testChannel: PropTypes.string,
   isRegisterSlackCredentials: PropTypes.bool,
-  isSendTestMessage: PropTypes.bool,
+  isIntegrationSuccess: PropTypes.bool,
   fetchSlackIntegrationData: PropTypes.func,
+  inputTestChannelHandler: PropTypes.func,
+  onTestFormSubmitted: PropTypes.func,
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
-  onSetIsSendTestMessage: PropTypes.func,
-  onSetIsRegisterSlackCredentials: PropTypes.func,
-  setSlackWSNameInWithoutProxy: PropTypes.func,
-
+  connectionMessage: PropTypes.string,
+  connectionErrorCode: PropTypes.string,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };

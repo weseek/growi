@@ -33,11 +33,23 @@ export const connectToSlackApiServer = async(): Promise<void|AxiosError> => {
  * Test Slack API
  * @param client
  */
-const testSlackApiServer = async(client: WebClient): Promise<void> => {
+const testSlackApiServer = async(client: WebClient): Promise<any> => {
   const result = await client.api.test();
 
   if (!result.ok) {
     throw new Error(result.error);
+  }
+
+  return result;
+};
+
+const checkSlackScopes = (resultTestSlackApiServer: any) => {
+  const slackScopes = resultTestSlackApiServer.response_metadata.scopes;
+  const correctScopes = ['commands', 'team:read', 'chat:write'];
+  const isPassedScopeCheck = correctScopes.every(e => slackScopes.includes(e));
+
+  if (!isPassedScopeCheck) {
+    throw new Error('The scopes is not appropriate. Required scopes is [\'commands\', \'team:read\', \'chat:write\']');
   }
 };
 
@@ -94,7 +106,16 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
  * @param token bot OAuth token
  * @returns
  */
-export const relationTestToSlack = async(token:string): Promise<void> => {
+export const testToSlack = async(token:string): Promise<void> => {
   const client = generateWebClient(token);
-  await testSlackApiServer(client);
+  const res = await testSlackApiServer(client);
+  await checkSlackScopes(res);
+};
+
+export const sendSuccessMessage = async(token:string, channel:string, appSiteUrl:string): Promise<void> => {
+  const client = generateWebClient(token);
+  await client.chat.postMessage({
+    channel,
+    text: `Successfully tested with ${appSiteUrl}.`,
+  });
 };

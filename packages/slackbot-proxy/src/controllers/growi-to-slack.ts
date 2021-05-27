@@ -1,11 +1,13 @@
 import {
-  Controller, Get, Inject, Req, Res, UseBefore,
+  Controller, Get, Post, Inject, Req, Res, UseBefore,
 } from '@tsed/common';
 import axios from 'axios';
 
 import { WebAPICallResult } from '@slack/web-api';
 
-import { verifyGrowiToSlackRequest, getConnectionStatuses, relationTestToSlack } from '@growi/slack';
+import {
+  verifyGrowiToSlackRequest, getConnectionStatuses, testToSlack, generateWebClient,
+} from '@growi/slack';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
@@ -105,7 +107,14 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
       }
 
-      await relationTestToSlack(token);
+      try {
+        await testToSlack(token);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+      }
+
       return res.send({ relation });
     }
 
@@ -136,7 +145,13 @@ export class GrowiToSlackCtrl {
       return res.status(400).send({ message: 'installation is invalid' });
     }
 
-    await relationTestToSlack(token);
+    try {
+      await testToSlack(token);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+    }
 
     logger.debug('relation test is success', order);
 
@@ -146,6 +161,43 @@ export class GrowiToSlackCtrl {
     });
 
     return res.send({ relation: createdRelation });
+  }
+
+  @Post('/*')
+  @UseBefore(verifyGrowiToSlackRequest)
+  async postResult(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+    const { tokenGtoPs } = req;
+
+    if (tokenGtoPs.length !== 1) {
+      return res.status(400).send({ message: 'tokenGtoPs is invalid' });
+    }
+
+    const tokenGtoP = tokenGtoPs[0];
+
+    // retrieve relation with Installation
+    const relation = await this.relationRepository.createQueryBuilder('relation')
+      .where('tokenGtoP = :token', { token: tokenGtoP })
+      .leftJoinAndSelect('relation.installation', 'installation')
+      .getOne();
+
+    if (relation == null) {
+      return res.status(400).send({ message: 'relation is invalid' });
+    }
+
+    const token = relation.installation.data.bot?.token;
+    if (token == null) {
+      return res.status(400).send({ message: 'installation is invalid' });
+    }
+
+    const client = generateWebClient(token);
+    await client.chat.postMessage({
+      channel: req.body.channel,
+      blocks: req.body.blocks,
+    });
+
+    logger.debug('postMessage is success');
+
+    return res.end();
   }
 
 }
