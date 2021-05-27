@@ -46,7 +46,7 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
-  const onClickGenerateTokenBtn = async() => {
+  const generateAccessTokens = async() => {
     try {
       // GW-6068 set new value after this
       await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
@@ -126,7 +126,7 @@ const CustomBotWithProxySettings = (props) => {
               </div>
               <WithProxyAccordions
                 botType="customBotWithProxy"
-                onClickGenerateTokenBtn={onClickGenerateTokenBtn}
+                onClickGenerateTokenBtn={generateAccessTokens}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
