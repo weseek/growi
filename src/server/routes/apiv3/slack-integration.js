@@ -45,7 +45,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  const generateClientForResponse = (shareSearchResults) => {
+  const generateClientForResponse = (tokenGtoP) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
     if (currentBotType == null) {
@@ -55,7 +55,7 @@ module.exports = (crowi) => {
     let token;
 
     // connect directly
-    if (shareSearchResults == null) {
+    if (tokenGtoP == null) {
       token = crowi.configManager.getConfig('crowi', 'slackbot:token');
       return generateWebClient(token);
     }
@@ -64,7 +64,7 @@ module.exports = (crowi) => {
     const proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
     const serverUri = urljoin(proxyServerUri, '/g2s');
     const headers = {
-      'x-growi-gtop-tokens': shareSearchResults,
+      'x-growi-gtop-tokens': tokenGtoP,
     };
 
     return generateWebClient(token, serverUri, headers);
