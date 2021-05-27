@@ -82,7 +82,7 @@ const SlackIntegration = (props) => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
       fetchSlackIntegrationData();
-      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+      toastSuccess(t('admin:slack_integration.adding_slack_ws_integration_settings_successful'));
     }
     catch (error) {
       toastError(error);
