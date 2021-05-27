@@ -167,7 +167,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   );
 }, [AppContainer]);
 
-const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
+const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   const [connectionError, setConnectionError] = useState(null);
@@ -182,7 +182,7 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
     setConnectionError(null);
 
     try {
-      await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+      await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
     }
     catch (error) {
       setConnectionError(error[0]);
@@ -289,7 +289,7 @@ const WithProxyAccordions = (props) => {
     },
     '⑤': {
       title: 'test_connection',
-      content: <TestProcess appContainer={props.appContainer} slackAppIntegrationId={props.slackAppIntegrationId} />,
+      content: <TestProcess apiv3Post={props.appContainer.apiv3.post} slackAppIntegrationId={props.slackAppIntegrationId} />,
     },
   };
 
