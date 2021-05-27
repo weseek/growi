@@ -59,16 +59,11 @@ module.exports = (crowi) => {
       body('proxyUri').if(value => value !== '').trim().matches(/^(https?:\/\/)/)
         .isURL({ require_tld: false }),
     ],
-    AccessTokens: [
-      query('tokenGtoP').trim().not().isEmpty()
-        .isString()
-        .isLength({ min: 1 }),
-      query('tokenPtoG').trim().not().isEmpty()
-        .isString()
-        .isLength({ min: 1 }),
-    ],
     RelationTest: [
       body('slackappintegrationsId').isMongoId(),
+    ],
+    deleteIntegration: [
+      query('integrationIdToDelete').isMongoId(),
     ],
     SlackChannel: [
       body('channel').trim().not().isEmpty()
@@ -412,11 +407,11 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to delete access tokens for slack
    */
-  router.delete('/slack-app-integration', validator.AccessTokens, apiV3FormValidator, async(req, res) => {
+  router.delete('/slack-app-integration', validator.deleteIntegration, apiV3FormValidator, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-    const { tokenGtoP, tokenPtoG } = req.query;
+    const { integrationIdToDelete } = req.query;
     try {
-      const response = await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
+      const response = await SlackAppIntegration.findOneAndDelete({ _id: integrationIdToDelete });
       return res.apiv3({ response });
     }
     catch (error) {
