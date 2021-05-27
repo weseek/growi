@@ -277,6 +277,7 @@
       "impossible": "不可"
     },
     "bot_reset_successful": "Botの設定を消去しました。",
+    "adding_slack_ws_integration_settings_successful": "Slack ワークスペースとの連携設定を追加しました。",
     "bot_all_reset_successful": "全ての Bot の設定を消去しました。",
     "copied_to_clipboard": "クリップボードにコピーされました。",
     "set_scope": "Slackの設定画面からBot Token Scopeを設定してください",
@@ -289,8 +290,7 @@
     },
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
     "access_token_settings": {
-      "discard": "破棄",
-      "generate": "発行"
+      "regenerate": "再発行"
     },
     "delete": "削除",
     "integration_procedure": "連携手順",
@@ -299,6 +299,7 @@
     "reset_all_settings": "全ての設定をリセット",
     "delete_slackbot_settings": "Slack Bot 設定をリセットする",
     "slackbot_settings_notice": "リセットします",
+    "all_settings_of_the_bot_will_be_reset": "Botの全ての設定がリセットされます。<br>よろしいですか？",
     "accordion": {
       "create_bot": "Bot を作成する",
       "how_to_create_a_bot": "作成手順はこちら",
