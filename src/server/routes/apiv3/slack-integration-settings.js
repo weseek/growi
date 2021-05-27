@@ -408,9 +408,9 @@ module.exports = (crowi) => {
    */
   router.delete('/slack-app-integration', validator.AccessTokens, apiV3FormValidator, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-    const { integrationIdToBeDeleted } = req.query;
+    const { tokenGtoP, tokenPtoG } = req.query;
     try {
-      const response = await SlackAppIntegration.findOneAndDelete({ id: integrationIdToBeDeleted });
+      const response = await SlackAppIntegration.findOneAndDelete({ tokenGtoP, tokenPtoG });
       return res.apiv3({ response });
     }
     catch (error) {
@@ -468,7 +468,7 @@ module.exports = (crowi) => {
     const { slackappintegrationsId } = req.body;
 
     try {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ _id });
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackappintegrationsId });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
