@@ -179,7 +179,7 @@ module.exports = (crowi) => {
 
           if (slackAppIntegrations.length > 0) {
             const tokenGtoPs = slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
-            connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
+            connectionStatuses = (await getConnectionStatuses(tokenGtoPs)).connectionStatuses;
           }
         }
         catch (error) {
