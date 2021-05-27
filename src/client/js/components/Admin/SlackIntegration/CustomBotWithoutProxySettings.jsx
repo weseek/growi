@@ -12,7 +12,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const CustomBotWithoutProxySettings = (props) => {
   const {
-    appContainer, slackWSNameInWithoutProxy, fetchSlackIntegrationData, isIntegrationSuccess,
+    appContainer, slackWSNameInWithoutProxy, fetchSlackIntegrationData,
   } = props;
   const { t } = useTranslation();
 
@@ -66,7 +66,6 @@ const CustomBotWithoutProxySettings = (props) => {
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
         slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
-        isIntegrationSuccess={isIntegrationSuccess}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
@@ -113,7 +112,6 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
-  isIntegrationSuccess: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
   onResetSettings: PropTypes.func,
   fetchSlackIntegrationData: PropTypes.func,

@@ -82,7 +82,6 @@ module.exports = (crowi) => {
       'slackbot:signingSecret': null,
       'slackbot:token': null,
       'slackbot:proxyServerUri': null,
-      'slackbot:isIntegration': null,
     };
     const { configManager } = crowi;
     // update config without publishing S2sMessage
@@ -150,7 +149,6 @@ module.exports = (crowi) => {
       settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
       settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:proxyServerUri');
     }
-    settings.isIntegrationToSlack = configManager.getConfig('crowi', 'slackbot:isIntegration');
 
     // retrieve connection statuses
     let connectionStatuses;
@@ -178,9 +176,6 @@ module.exports = (crowi) => {
           logger.error('Error', error);
           return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
         }
-
-        await updateSlackBotSettings({ 'slackbot:isIntegration': true });
-        crowi.slackBotService.publishUpdatedMessage();
       }
     }
     else {
@@ -542,8 +537,7 @@ module.exports = (crowi) => {
     catch (error) {
       return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
     }
-    await updateSlackBotSettings({ 'slackbot:isIntegration': true });
-    crowi.slackBotService.publishUpdatedMessage();
+
     return res.apiv3();
   });
 
