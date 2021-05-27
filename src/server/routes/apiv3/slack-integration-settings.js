@@ -151,6 +151,7 @@ module.exports = (crowi) => {
       // TODO imple null action
     }
     else if (currentBotType === 'customBotWithoutProxy') {
+      connectionStatuses = null;
       const token = settings.slackBotToken;
       // check the token is not null
       if (token != null) {
@@ -163,6 +164,15 @@ module.exports = (crowi) => {
           return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
         }
       }
+
+      try {
+        await testToSlack(token);
+      }
+      catch (error) {
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
+      }
+
     }
     else {
       try {
