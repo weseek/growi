@@ -467,21 +467,34 @@ module.exports = (crowi) => {
     }
 
     const { slackAppIntegrationId } = req.body;
-
+    let slackBotToken;
     try {
       const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
-      const response = await postRelationTest(slackAppIntegration.tokenGtoP);
-
-      return res.apiv3({ response });
+      const result = await postRelationTest(slackAppIntegration.tokenGtoP);
+      slackBotToken = result.relation?.installation?.data?.bot?.token;
+      if (slackBotToken == null) {
+        const msg = 'Could not find slackBotToken by relation';
+        return res.apiv3Err(new ErrorV3(msg, 'find-slackBotToken-failed'), 400);
+      }
     }
     catch (error) {
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
     }
+
+    const { channel } = req.body;
+    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    try {
+      await sendSuccessMessage(slackBotToken, channel, appSiteURL);
+    }
+    catch (error) {
+      return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
+    }
+
   });
 
   /**
