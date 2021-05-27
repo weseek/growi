@@ -28,23 +28,22 @@ const SlackIntegration = (props) => {
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
+  const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
-    console.log('nka');
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri, isIntegrationToSlack,
       } = data.settings;
+      setIsIntegrationSuccess(isIntegrationToSlack);
 
       if (data.connectionStatuses != null) {
         // TODO fix
         const { workspaceName } = data.connectionStatuses[slackBotToken];
-        console.log(workspaceName);
         setSlackWSNameInWithoutProxy(workspaceName);
       }
-
       setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
@@ -68,17 +67,6 @@ const SlackIntegration = (props) => {
       toastError(error);
     }
   };
-
-  // const resetWithoutSettings = async() => {
-  //   try {
-  //     await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
-  //     fetchSlackIntegrationData();
-  //     toastSuccess(t('admin:slack_integration.bot_reset_successful'));
-  //   }
-  //   catch (error) {
-  //     toastError(error);
-  //   }
-  // };
 
   useEffect(() => {
     fetchSlackIntegrationData();
@@ -137,8 +125,8 @@ const SlackIntegration = (props) => {
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
-          // onResetSettings={resetWithoutSettings}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
+          isIntegrationSuccess={isIntegrationSuccess}
         />
       );
       break;
