@@ -170,30 +170,22 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
-
-  const [connectionMessage, setConnectionMessage] = useState('');
-  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
+  const [connectionError, setConnectionError] = useState(null);
 
   let value = '';
-  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
-    value = connectionMessage;
-  }
-  else {
-    value = [connectionErrorCode, connectionMessage];
+  if (connectionError != null) {
+    value = [connectionError.code, connectionError.message];
   }
 
   const submitForm = async(e) => {
     e.preventDefault();
-    setConnectionErrorCode(null);
-    setConnectionMessage(null);
+    setConnectionError(null);
 
     try {
       await appContainer.apiv3.post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
-      setConnectionMessage('Send the message to slack work space.');
     }
     catch (error) {
-      setConnectionErrorCode(error[0].code);
-      setConnectionMessage(error[0].message);
+      setConnectionError(error[0]);
       logger.error(error);
     }
   };
@@ -224,15 +216,9 @@ const TestProcess = ({ appContainer, slackAppIntegrationId }) => {
           </button>
         </form>
       </div>
-      {connectionMessage === '' ? <p></p>
-        : (
-          <>
-            {connectionMessage === 'Send the message to slack work space.'
-              ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
-              : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
-            }
-          </>
-        )
+      {connectionError == null
+        ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
+        : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
       }
       <form>
         <div className="row my-3 justify-content-center">
