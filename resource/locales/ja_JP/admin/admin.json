@@ -288,9 +288,7 @@
       "change": "変更する"
     },
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
-    "access_token_settings": {
-      "regenerate": "再発行"
-    },
+    "regenerate": "再発行",
     "delete": "削除",
     "integration_procedure": "連携手順",
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 設定",

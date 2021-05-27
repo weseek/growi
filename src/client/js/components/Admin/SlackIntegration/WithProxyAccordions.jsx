@@ -9,18 +9,18 @@ import Accordion from '../Common/Accordion';
 
 
 const BotCreateProcess = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return (
     <div className="my-5 d-flex flex-column align-items-center">
       <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-        {t('admin:slack_integration.accordion.create_bot')}
+        {t('slack_integration.accordion.create_bot')}
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
       {/* TODO: Insert DOCS link */}
       <a href="#">
         <p className="text-center mt-1">
           <small>
-            {t('admin:slack_integration.accordion.how_to_create_a_bot')}
+            {t('slack_integration.accordion.how_to_create_a_bot')}
             <i className="fa fa-external-link ml-2" aria-hidden="true" />
           </small>
         </p>
@@ -30,19 +30,19 @@ const BotCreateProcess = () => {
 };
 
 const BotInstallProcess = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return (
     <div className="my-5 d-flex flex-column align-items-center">
       {/* TODO: Insert install link */}
       <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
-        {t('admin:slack_integration.accordion.install_now')}
+        {t('slack_integration.accordion.install_now')}
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
       {/* TODO: Insert DOCS link */}
       <a href="#">
         <p className="text-center mt-1">
           <small>
-            {t('admin:slack_integration.accordion.how_to_install')}
+            {t('slack_integration.accordion.how_to_install')}
             <i className="fa fa-external-link ml-2" aria-hidden="true" />
           </small>
         </p>
@@ -52,26 +52,26 @@ const BotInstallProcess = () => {
 };
 
 const RegisteringProxyUrlProcess = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   return (
     <div className="container w-75 py-5">
       <p
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+        dangerouslySetInnerHTML={{ __html: t('slack_integration.accordion.copy_proxy_url') }}
       />
       <img className="mb-5 border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
       <span
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+        dangerouslySetInnerHTML={{ __html: t('slack_integration.accordion.enter_proxy_url_and_update') }}
       />
-      <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+      <p className="text-danger">{t('slack_integration.accordion.dont_need_update')}</p>
       <img className="mb-3 border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
     </div>
   );
 };
 
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const onClickGenerateTokenBtn = () => {
     if (props.onClickGenerateTokenBtn != null) {
@@ -81,13 +81,13 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 
   return (
     <div className="py-4 px-5">
-      <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
+      <p className="font-weight-bold">1. {t('slack_integration.accordion.generate_access_token')}</p>
       <div className="form-group row">
         <label className="text-left text-md-right col-md-3 col-form-label">Access Token Proxy to GROWI</label>
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             <input className="form-control" type="text" value={props.tokenPtoG || ''} readOnly />
-            <CopyToClipboard text={props.tokenPtoG || ''} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+            <CopyToClipboard text={props.tokenPtoG || ''} onCopy={() => toastSuccess(t('slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
                 <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
               </div>
@@ -100,7 +100,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <div className="col-md-6">
           <div className="input-group-prepend mx-1">
             <input className="form-control" type="text" value={props.tokenGtoP || ''} readOnly />
-            <CopyToClipboard text={props.tokenGtoP || ''} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+            <CopyToClipboard text={props.tokenGtoP || ''} onCopy={() => toastSuccess(t('slack_integration.copied_to_clipboard'))}>
               <div className="btn input-group-text">
                 <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
               </div>
@@ -115,17 +115,17 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
           className="btn btn-primary mx-auto"
           onClick={onClickGenerateTokenBtn}
         >
-          { t('admin:slack_integration.access_token_settings.regenerate') }
+          { t('slack_integration.regenerate') }
         </button>
       </div>
-      <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
+      <p className="font-weight-bold">2. {t('slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
       <div className="d-flex flex-column align-items-center">
         <ol className="p-0">
           <li>
             <p
               className="ml-2"
                 // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_growi_register_on_slack') }}
+              dangerouslySetInnerHTML={{ __html: t('slack_integration.accordion.enter_growi_register_on_slack') }}
             />
           </li>
           <li>
@@ -134,12 +134,12 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
                 // TODO: Add dynamic link
                 // TODO: Add logo
                 // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
+              dangerouslySetInnerHTML={{ __html: t('slack_integration.accordion.paste_growi_url') }}
             />
             <div className="input-group align-items-center ml-2 mb-3">
               <div className="input-group-prepend mx-1">
                 <input className="form-control" type="text" value={props.growiUrl} readOnly />
-                <CopyToClipboard text={props.growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
+                <CopyToClipboard text={props.growiUrl} onCopy={() => toastSuccess(t('slack_integration.copied_to_clipboard'))}>
                   <div className="btn input-group-text">
                     <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
                   </div>
@@ -152,7 +152,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
             <p
               className="ml-2"
               // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
+              dangerouslySetInnerHTML={{ __html: t('slack_integration.accordion.enter_access_token_for_growi_and_proxy') }}
             />
           </li>
         </ol>
@@ -164,7 +164,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 }, [AppContainer]);
 
 const TestProcess = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
   const [testChannel, setTestChannel] = useState('');
   /* eslint-disable no-unused-vars */
   // TODO: Add connection Logs
@@ -195,7 +195,7 @@ const TestProcess = () => {
 
   return (
     <>
-      <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
+      <p className="text-center m-4">{t('slack_integration.accordion.test_connection_by_pressing_button')}</p>
       <div className="d-flex justify-content-center">
         <form className="form-row justify-content-center" onSubmit={e => submitForm(e)}>
           <div className="input-group col-8">
@@ -220,9 +220,9 @@ const TestProcess = () => {
         </form>
       </div>
       {connectionErrorMessage != null
-      && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
+      && <p className="text-danger text-center my-4">{t('slack_integration.accordion.error_check_logs_below')}</p>}
       {connectionSuccessMessage != null
-      && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
+      && <p className="text-info text-center my-4">{t('slack_integration.accordion.send_message_to_slack_work_space')}</p>}
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
@@ -243,7 +243,7 @@ const TestProcess = () => {
 
 
 const WithProxyAccordions = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('admin');
 
   const officialBotIntegrationProcedure = {
     '①': {

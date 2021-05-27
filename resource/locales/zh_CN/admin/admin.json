@@ -298,9 +298,7 @@
       "change": "改变"
     },
     "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <code>{{variable}}</code> 启用。",
-    "access_token_settings": {
-      "regenerate": "再生"
-    },
+    "regenerate": "再生",
     "delete": "取消",
     "integration_procedure": "协作程序",
     "custom_bot_without_proxy_settings": "Custom Bot (Without-Proxy) 设置",
