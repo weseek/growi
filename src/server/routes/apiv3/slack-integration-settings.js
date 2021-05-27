@@ -470,7 +470,7 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
       const result = await postRelationTest(slackAppIntegration.tokenGtoP);
-      slackBotToken = result.relation?.installation?.data?.bot?.token;
+      slackBotToken = result.relation.installation.data.bot.token;
       if (slackBotToken == null) {
         const msg = 'Could not find slackBotToken by relation';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackBotToken-failed'), 400);
