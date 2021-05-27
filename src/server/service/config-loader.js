@@ -422,12 +422,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
-  SLACK_IS_INTEGRATION: {
-    ns:      'crowi',
-    key:     'slackbot:isIntegration',
-    type:    TYPES.BOOLEAN,
-    default: null,
-  },
   DEFAULT_EMAIL_PUBLISHED: {
     ns:      'crowi',
     key:     'customize:isEmailPublishedForNewUser',
