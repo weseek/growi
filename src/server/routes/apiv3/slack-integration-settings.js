@@ -60,7 +60,8 @@ module.exports = (crowi) => {
         .isURL({ require_tld: false }),
     ],
     RelationTest: [
-      body('slackappintegrationsId').isMongoId(),
+      body('slackAppIntegrationId').isMongoId(),
+      body('channel').trim().isString(),
     ],
     deleteIntegration: [
       query('integrationIdToDelete').isMongoId(),
@@ -165,26 +166,20 @@ module.exports = (crowi) => {
       }
     }
     else {
-      try {
-        const slackAppIntegrations = await SlackAppIntegration.find();
-        settings.slackAppIntegrations = slackAppIntegrations;
-      }
-      catch (error) {
-        const msg = 'Error occured in getting connection statuses';
-        logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
-      }
-
       const proxyServerUri = settings.proxyServerUri;
+
       if (proxyServerUri != null) {
         try {
-          if (settings.slackAppIntegrations.length > 0) {
-            const tokenGtoPs = settings.slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
+          const slackAppIntegrations = await SlackAppIntegration.find();
+          settings.slackAppIntegrations = slackAppIntegrations;
+
+          if (slackAppIntegrations.length > 0) {
+            const tokenGtoPs = slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
             connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
           }
         }
         catch (error) {
-          const msg = 'Error occured in testing connection statuses';
+          const msg = 'Error occured in getting connection statuses';
           logger.error('Error', error);
           return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
         }
@@ -453,7 +448,7 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  slackappintegrationsId:
+   *                  slackAppIntegrationId:
    *                    type: string
    *        responses:
    *           200:
@@ -466,23 +461,35 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'not-proxy-type'), 400);
     }
 
-    const { slackappintegrationsId } = req.body;
-
+    const { slackAppIntegrationId } = req.body;
+    let slackBotToken;
     try {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackappintegrationsId });
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
-      const response = await postRelationTest(slackAppIntegration.tokenGtoP);
-
-      return res.apiv3({ response });
+      const result = await postRelationTest(slackAppIntegration.tokenGtoP);
+      slackBotToken = result.slackBotToken;
+      if (slackBotToken == null) {
+        const msg = 'Could not find slackBotToken by relation';
+        return res.apiv3Err(new ErrorV3(msg, 'find-slackBotToken-failed'), 400);
+      }
     }
     catch (error) {
-      const msg = 'Error occured in updating Custom bot setting';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+      return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
     }
+
+    const { channel } = req.body;
+    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    try {
+      await sendSuccessMessage(slackBotToken, channel, appSiteURL);
+    }
+    catch (error) {
+      return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
+    }
+
   });
 
   /**

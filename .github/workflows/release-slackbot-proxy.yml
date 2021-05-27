@@ -1,9 +1,9 @@
-name: Release Docker Image for growi-slackbot
+name: Release Docker Image for @growi/slackbot-proxy
 
 on:
   push:
     branches:
-      - release/slackbot/**
+      - release/slackbot-proxy/**
 
 jobs:
 

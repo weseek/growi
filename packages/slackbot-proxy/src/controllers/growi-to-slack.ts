@@ -3,7 +3,7 @@ import {
 } from '@tsed/common';
 import axios from 'axios';
 
-import { WebAPICallResult } from '@slack/web-api';
+import { WebAPICallOptions, WebAPICallResult } from '@slack/web-api';
 
 import {
   verifyGrowiToSlackRequest, getConnectionStatuses, testToSlack, generateWebClient,
@@ -115,7 +115,7 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: `failed to test. err: ${err.message}` });
       }
 
-      return res.send({ relation });
+      return res.send({ relation, slackBotToken: token });
     }
 
     // retrieve latest Order with Installation
@@ -160,7 +160,7 @@ export class GrowiToSlackCtrl {
       installation: order.installation, tokenGtoP: order.tokenGtoP, tokenPtoG: order.tokenPtoG, growiUri: order.growiUrl,
     });
 
-    return res.send({ relation: createdRelation });
+    return res.send({ relation: createdRelation, slackBotToken: token });
   }
 
   @Post('/*')
@@ -190,10 +190,17 @@ export class GrowiToSlackCtrl {
     }
 
     const client = generateWebClient(token);
-    await client.chat.postMessage({
-      channel: req.body.channel,
-      blocks: req.body.blocks,
-    });
+
+    try {
+      // TODO: GW-6133
+      const opt = req.body as WebAPICallOptions;
+      await client.apiCall('put', opt);
+    }
+    catch (err) {
+      // TODO: GW-6133
+      // logger.error()
+      return res.status(500).send({ message: err.message });
+    }
 
     logger.debug('postMessage is success');
 
