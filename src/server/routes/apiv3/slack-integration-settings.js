@@ -5,7 +5,7 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
-const { getConnectionStatuses, relationTestToSlack } = require('@growi/slack');
+const { getConnectionStatuses, testToSlack, sendSuccessMessage } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -516,17 +516,26 @@ module.exports = (crowi) => {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
     }
-    // TODO impl req.body at GW-5998
-    // const { channel } = req.body;
+
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
-      await relationTestToSlack(slackBotToken);
-      // TODO impl return response after imple 5996, 6002
+      await testToSlack(slackBotToken);
     }
     catch (error) {
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
     }
+
+    const { channel } = req.body;
+    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    try {
+      await sendSuccessMessage(slackBotToken, channel, appSiteURL);
+    }
+    catch (error) {
+      return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
+    }
+
+    return res.apiv3();
   });
 
   return router;
