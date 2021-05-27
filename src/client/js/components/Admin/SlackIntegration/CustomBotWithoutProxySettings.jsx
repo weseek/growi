@@ -7,6 +7,8 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegrationCard';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
+
 
 const CustomBotWithoutProxySettings = (props) => {
   const {
@@ -19,6 +21,7 @@ const CustomBotWithoutProxySettings = (props) => {
   const [connectionMessage, setConnectionMessage] = useState('');
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
+  const [isCheckIntegrationTest, setIsCheckIntegrationTest] = useState(false);
 
   const resetSettings = async() => {
     try {
@@ -26,19 +29,19 @@ const CustomBotWithoutProxySettings = (props) => {
       setTestChannel('');
       setConnectionMessage('');
       fetchSlackIntegrationData();
-      // toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
     catch (error) {
-      // toastError(error);
+      toastError(error);
     }
   };
 
   const testConnection = async() => {
-    setConnectionErrorCode(null);
-    setConnectionMessage(null);
     try {
       await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
       setConnectionMessage('Send the message to slack work space.');
+      setIsCheckIntegrationTest(true);
+
       fetchSlackIntegrationData();
     }
     catch (err) {
@@ -83,7 +86,7 @@ const CustomBotWithoutProxySettings = (props) => {
           activeStep={botInstallationStep.CREATE_BOT}
           connectionMessage={connectionMessage}
           connectionErrorCode={connectionErrorCode}
-          isIntegrationSuccess={isIntegrationSuccess}
+          isCheckIntegrationTest={isCheckIntegrationTest}
           testChannel={testChannel}
           onTestFormSubmitted={testConnection}
           inputTestChannelHandler={inputTestChannelHandler}
