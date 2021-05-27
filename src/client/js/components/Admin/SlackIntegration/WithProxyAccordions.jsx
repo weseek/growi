@@ -1,12 +1,16 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import loggerFactory from '@alias/logger';
+
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 
+const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
 const BotCreateProcess = () => {
   const { t } = useTranslation();
@@ -163,34 +167,27 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   );
 }, [AppContainer]);
 
-const TestProcess = () => {
+const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
-  /* eslint-disable no-unused-vars */
-  // TODO: Add connection Logs
-  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
-  const [connectionErrorMessage, setConnectionErrorMessage] = useState(null);
-  const [connectionSuccessMessage, setConnectionSuccessMessage] = useState(null);
+  const [connectionError, setConnectionError] = useState(null);
 
-  // TODO: Show test logs
   let value = '';
-  if (connectionErrorMessage != null) {
-    value = [connectionErrorCode, connectionErrorMessage];
-  }
-  if (connectionSuccessMessage != null) {
-    value = connectionSuccessMessage;
+  if (connectionError != null) {
+    value = [connectionError.code, connectionError.message];
   }
 
-
-  // TODO: Handle test button
-  const submitForm = (e) => {
+  const submitForm = async(e) => {
     e.preventDefault();
-    // eslint-disable-next-line no-console
-    console.log('Form Submitted');
-  };
+    setConnectionError(null);
 
-  const inputTestChannelHandler = (channel) => {
-    setTestChannel(channel);
+    try {
+      await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+    }
+    catch (error) {
+      setConnectionError(error[0]);
+      logger.error(error);
+    }
   };
 
   return (
@@ -207,22 +204,22 @@ const TestProcess = () => {
               type="text"
               value={testChannel}
               placeholder="Slack Channel"
-            // TODO: Handle test button
-              onChange={e => inputTestChannelHandler(e.target.value)}
+              onChange={e => setTestChannel(e.target.value)}
             />
           </div>
           <button
             type="submit"
             className="btn btn-info mx-3 font-weight-bold"
             disabled={testChannel.trim() === ''}
-          >Test
+          >
+            Test
           </button>
         </form>
       </div>
-      {connectionErrorMessage != null
-      && <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>}
-      {connectionSuccessMessage != null
-      && <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>}
+      {connectionError == null
+        ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
+        : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
+      }
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
@@ -230,7 +227,6 @@ const TestProcess = () => {
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-lg"
               rows="5"
-            // TODO: Show test logs
               value={value}
               readOnly
             />
@@ -293,7 +289,7 @@ const WithProxyAccordions = (props) => {
     },
     '⑤': {
       title: 'test_connection',
-      content: <TestProcess />,
+      content: <TestProcess apiv3Post={props.appContainer.apiv3.post} slackAppIntegrationId={props.slackAppIntegrationId} />,
     },
   };
 
@@ -304,7 +300,6 @@ const WithProxyAccordions = (props) => {
       className="card border-0 rounded-lg shadow overflow-hidden"
     >
       {Object.entries(integrationProcedureMapping).map(([key, value]) => {
-
         return (
           <Accordion
             title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
@@ -322,13 +317,15 @@ const WithProxyAccordions = (props) => {
 /**
  * Wrapper component for using unstated
  */
-const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
+const WithProxyAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
+
+  slackAppIntegrationId: PropTypes.string.isRequired,
   onClickGenerateTokenBtn: PropTypes.func,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };
 
-export default OfficialBotSettingsAccordionsWrapper;
+export default WithProxyAccordionsWrapper;

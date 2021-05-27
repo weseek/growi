@@ -115,7 +115,7 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: `failed to test. err: ${err.message}` });
       }
 
-      return res.send({ relation });
+      return res.send({ relation, slackBotToken: token });
     }
 
     // retrieve latest Order with Installation
@@ -160,7 +160,7 @@ export class GrowiToSlackCtrl {
       installation: order.installation, tokenGtoP: order.tokenGtoP, tokenPtoG: order.tokenPtoG, growiUri: order.growiUrl,
     });
 
-    return res.send({ relation: createdRelation });
+    return res.send({ relation: createdRelation, slackBotToken: token });
   }
 
   @Post('/*')
