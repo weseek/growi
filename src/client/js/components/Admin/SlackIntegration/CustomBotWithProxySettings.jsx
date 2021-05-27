@@ -37,16 +37,6 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
-  const regenerateTokensHandler = async(tokenGtoP, tokenPtoG) => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { tokenGtoP, tokenPtoG });
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  };
-
   const deleteSlackAppIntegrationHandler = async() => {
     try {
       // GW-6068 set new value after this
@@ -60,9 +50,9 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
-  const generateAccessTokens = async() => {
+  const regenerateTokensHandler = async(tokenGtoP, tokenPtoG) => {
     try {
-      //  TODO: imprement regenerating tokens by GW-6068
+      await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { tokenGtoP, tokenPtoG });
     }
     catch (err) {
       toastError(err);
@@ -140,7 +130,6 @@ const CustomBotWithProxySettings = (props) => {
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}
-                onClickGenerateTokenBtn={generateAccessTokens}
                 onClickRegenerateTokens={() => regenerateTokensHandler(tokenGtoP, tokenPtoG)}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}

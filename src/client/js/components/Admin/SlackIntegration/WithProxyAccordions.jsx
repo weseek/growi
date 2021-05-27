@@ -83,12 +83,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
     }
   };
 
-  // const onClickGenerateTokenBtn = () => {
-  //   if (props.onClickGenerateTokenBtn != null) {
-  //     props.onClickGenerateTokenBtn();
-  //   }
-  // };
-
   return (
     <div className="py-4 px-5">
       <p className="font-weight-bold">1. {t('admin:slack_integration.accordion.generate_access_token')}</p>
@@ -257,7 +251,6 @@ const WithProxyAccordions = (props) => {
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         onClickRegenerateTokens={() => props.onClickRegenerateTokens}
-        onClickGenerateTokenBtn={props.onClickGenerateTokenBtn}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
@@ -286,7 +279,6 @@ const WithProxyAccordions = (props) => {
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         onClickRegenerateTokens={() => props.onClickRegenerateTokens}
-        onClickGenerateTokenBtn={props.onClickGenerateTokenBtn}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
