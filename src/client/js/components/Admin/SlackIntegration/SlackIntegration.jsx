@@ -69,16 +69,16 @@ const SlackIntegration = (props) => {
     }
   };
 
-  const resetWithoutSettings = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
-      fetchSlackIntegrationData();
-      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
-    }
-    catch (error) {
-      toastError(error);
-    }
-  };
+  // const resetWithoutSettings = async() => {
+  //   try {
+  //     await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
+  //     fetchSlackIntegrationData();
+  //     toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+  //   }
+  //   catch (error) {
+  //     toastError(error);
+  //   }
+  // };
 
   useEffect(() => {
     fetchSlackIntegrationData();
@@ -137,7 +137,7 @@ const SlackIntegration = (props) => {
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
-          onResetSettings={resetWithoutSettings}
+          // onResetSettings={resetWithoutSettings}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
         />
       );
