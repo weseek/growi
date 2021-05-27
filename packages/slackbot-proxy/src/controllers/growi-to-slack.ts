@@ -6,7 +6,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, relationTestToSlack, generateWebClient,
+  verifyGrowiToSlackRequest, getConnectionStatuses, testToSlack, generateWebClient,
 } from '@growi/slack';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
@@ -107,7 +107,14 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
       }
 
-      await relationTestToSlack(token);
+      try {
+        await testToSlack(token);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+      }
+
       return res.send({ relation });
     }
 
@@ -138,7 +145,13 @@ export class GrowiToSlackCtrl {
       return res.status(400).send({ message: 'installation is invalid' });
     }
 
-    await relationTestToSlack(token);
+    try {
+      await testToSlack(token);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+    }
 
     logger.debug('relation test is success', order);
 
