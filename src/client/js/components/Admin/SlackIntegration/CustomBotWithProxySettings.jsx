@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri, onClickAddAccordionBtn,
+    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn,
   } = props;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const { t } = useTranslation();
@@ -30,10 +30,10 @@ const CustomBotWithProxySettings = (props) => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
 
-      if (onClickAddAccordionBtn == null) {
+      if (onClickAddSlackWorkspaceBtn == null) {
         return;
       }
-      onClickAddAccordionBtn();
+      onClickAddSlackWorkspaceBtn();
     }
     catch (err) {
       toastError(err);
@@ -180,7 +180,7 @@ CustomBotWithProxySettings.propTypes = {
 
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
-  onClickAddAccordionBtn: PropTypes.func,
+  onClickAddSlackWorkspaceBtn: PropTypes.func,
 };
 
 export default CustomBotWithProxySettingsWrapper;
