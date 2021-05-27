@@ -9,7 +9,7 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, onResetSettings } = props;
+  const { appContainer, onResetSettings, slackWSNameInWithoutProxy } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
@@ -56,7 +56,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
-        slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
+        slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
         isIntegrationSuccess={isIntegrationSuccess}
       />
 
