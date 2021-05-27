@@ -170,20 +170,26 @@ module.exports = (crowi) => {
       }
     }
     else {
-      const proxyServerUri = settings.proxyServerUri;
+      try {
+        const slackAppIntegrations = await SlackAppIntegration.find();
+        settings.slackAppIntegrations = slackAppIntegrations;
+      }
+      catch (error) {
+        const msg = 'Error occured in getting connection statuses';
+        logger.error('Error', error);
+        return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
+      }
 
+      const proxyServerUri = settings.proxyServerUri;
       if (proxyServerUri != null) {
         try {
-          const slackAppIntegrations = await SlackAppIntegration.find();
-          settings.slackAppIntegrations = slackAppIntegrations;
-
-          if (slackAppIntegrations.length > 0) {
-            const tokenGtoPs = slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
-            connectionStatuses = (await getConnectionStatuses(tokenGtoPs)).connectionStatuses;
+          if (settings.slackAppIntegrations.length > 0) {
+            const tokenGtoPs = settings.slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
+            connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
           }
         }
         catch (error) {
-          const msg = 'Error occured in getting connection statuses';
+          const msg = 'Error occured in testing connection statuses';
           logger.error('Error', error);
           return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
         }
