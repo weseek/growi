@@ -12,7 +12,9 @@ import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
-  const { appContainer, slackAppIntegrations, proxyServerUri } = props;
+  const {
+    appContainer, slackAppIntegrations, proxyServerUri, connectionStatuses,
+  } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
@@ -110,7 +112,7 @@ const CustomBotWithProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
       <div className="mx-3">
-        {slackAppIntegrations.map((slackAppIntegration) => {
+        {slackAppIntegrations.map((slackAppIntegration, i) => {
           const { tokenGtoP, tokenPtoG } = slackAppIntegration;
           return (
             <React.Fragment key={slackAppIntegration._id}>
@@ -124,6 +126,7 @@ const CustomBotWithProxySettings = (props) => {
                   {t('admin:slack_integration.delete')}
                 </button>
               </div>
+              <div>No.{i + 1}</div>
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}

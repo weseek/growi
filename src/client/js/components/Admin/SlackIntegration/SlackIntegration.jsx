@@ -28,6 +28,7 @@ const SlackIntegration = (props) => {
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
+  const [connectionStatuses, setConnectionStatuses] = useState(null);
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
@@ -41,6 +42,8 @@ const SlackIntegration = (props) => {
         // TODO fix
         // const { workspaceName } = data.connectionStatuses[slackBotToken];
         // setSlackWSNameInWithoutProxy(workspaceName);
+        setConnectionStatuses(data.connectionStatuses);
+
       }
 
       setCurrentBotType(data.currentBotType);
@@ -146,6 +149,7 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
+          connectionStatuses={connectionStatuses}
         />
       );
       break;
