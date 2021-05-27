@@ -178,6 +178,9 @@ module.exports = (crowi) => {
           logger.error('Error', error);
           return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
         }
+
+        await updateSlackBotSettings({ 'slackbot:isIntegration': true });
+        crowi.slackBotService.publishUpdatedMessage();
       }
     }
     else {
