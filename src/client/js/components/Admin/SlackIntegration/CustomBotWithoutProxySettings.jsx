@@ -79,7 +79,7 @@ const CustomBotWithoutProxySettings = (props) => {
           connectionErrorCode={connectionErrorCode}
           isIntegrationSuccess={isIntegrationSuccess}
           testChannel={testChannel}
-          testConnection={testConnection}
+          onTestFormSubmitted={testConnection}
           inputTestChannelHandler={inputTestChannelHandler}
 
         />
