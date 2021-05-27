@@ -364,7 +364,7 @@ module.exports = (crowi) => {
    *        description: Generate SlackAppIntegrations
    *        responses:
    *          200:
-   *            description: Succeeded to create new slack app integration
+   *            description: Succeeded to create slack app integration
    */
   router.put('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     let checkTokens;
