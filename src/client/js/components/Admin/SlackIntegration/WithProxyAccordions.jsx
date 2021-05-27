@@ -74,7 +74,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   const { t } = useTranslation();
 
   const regenerateTokensHandler = () => {
-    if (props.generateTokenHandler != null) {
+    if (props.onClickRegenerateTokens != null) {
       props.onClickRegenerateTokens();
     }
   };
