@@ -21,8 +21,8 @@ const SlackIntegration = (props) => {
   const [selectedBotType, setSelectedBotType] = useState(null);
   const [slackSigningSecret, setSlackSigningSecret] = useState(null);
   const [slackBotToken, setSlackBotToken] = useState(null);
-  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
-  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState(null);
+  const [slackBotTokenEnv, setSlackBotTokenEnv] = useState(null);
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
@@ -51,6 +51,11 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+
+      setIsRegisterSlackCredentials(false);
+      if ((slackSigningSecret != null && slackBotToken != null) || (slackBotTokenEnvVars != null && slackSigningSecretEnvVars != null)) {
+        setIsRegisterSlackCredentials(true);
+      }
     }
     catch (err) {
       toastError(err);
@@ -82,7 +87,6 @@ const SlackIntegration = (props) => {
       setIsRegisterSlackCredentials(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
-      setSlackWSNameInWithoutProxy(null);
     }
     catch (err) {
       toastError(err);
