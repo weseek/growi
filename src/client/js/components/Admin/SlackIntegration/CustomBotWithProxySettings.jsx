@@ -51,9 +51,9 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
-  const generateTokenHandler = async() => {
+  const generateTokenHandler = async(tokenGtoP, tokenPtoG) => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
+      await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { tokenGtoP, tokenPtoG });
     }
     catch (err) {
       toastError(err);
@@ -142,7 +142,7 @@ const CustomBotWithProxySettings = (props) => {
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
-                generateTokenHandler={generateTokenHandler}
+                onClickRegenerateTokens={generateTokenHandler(tokenGtoP, tokenPtoG)}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
