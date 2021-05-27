@@ -271,7 +271,7 @@ const WithProxyAccordions = (props) => {
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         discardTokenHandler={props.discardTokenHandler}
-        generateTokenHandler={props.generateTokenHandler}
+        onClickRegenerateTokens={props.onClickRegenerateTokens}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
@@ -300,7 +300,7 @@ const WithProxyAccordions = (props) => {
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         discardTokenHandler={props.discardTokenHandler}
-        generateTokenHandler={props.generateTokenHandler}
+        onClickRegenerateTokens={props.onClickRegenerateTokens}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
@@ -345,7 +345,7 @@ WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
   discardTokenHandler: PropTypes.func,
-  generateTokenHandler: PropTypes.func,
+  onClickRegenerateTokens: PropTypes.func,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };
