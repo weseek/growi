@@ -9,7 +9,7 @@ import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegra
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, onResetSettings, slackWSNameInWithoutProxy } = props;
+  const { appContainer, slackWSNameInWithoutProxy, fetchSlackIntegrationData } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
@@ -20,10 +20,17 @@ const CustomBotWithoutProxySettings = (props) => {
   const [testChannel, setTestChannel] = useState('');
 
   const resetSettings = async() => {
-    if (onResetSettings == null) {
-      return;
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
+      setTestChannel('');
+      setIsIntegrationSuccess(false);
+      setConnectionMessage('');
+      fetchSlackIntegrationData();
+      // toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
-    onResetSettings();
+    catch (error) {
+      // toastError(error);
+    }
   };
 
   const testConnection = async() => {
