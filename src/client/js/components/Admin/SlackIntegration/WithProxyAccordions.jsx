@@ -6,7 +6,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 
@@ -76,10 +76,17 @@ const RegisteringProxyUrlProcess = () => {
 
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
+  const { appContainer, slackAppIntegrationId, fetchSlackIntegrationData } = props;
 
-  const regenerateTokensHandler = () => {
-    if (props.onClickRegenerateTokensBtn != null) {
-      props.onClickRegenerateTokensBtn();
+  const regenerateTokensHandler = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { slackAppIntegrationId });
+      // fetchSlackIntegrationData();
+      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
     }
   };
 
@@ -251,6 +258,7 @@ const WithProxyAccordions = (props) => {
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         onClickRegenerateTokensBtn={() => props.onClickRegenerateTokensBtn}
+        slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,

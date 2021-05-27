@@ -17,6 +17,7 @@ const CustomBotWithProxySettings = (props) => {
   } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
+  // const [integrationIdToRegenerateTokens, setIntegrationIdToRegenerateTokens] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -50,15 +51,18 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
-  const regenerateTokensHandler = async(tokenGtoP, tokenPtoG) => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { tokenGtoP, tokenPtoG });
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  };
+  // const regenerateTokensHandler = async(integrationId) => {
+  //   console.log('regenerateTokensHandler in cbwp');
+  //   try {
+  //     await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { integrationId });
+  //     fetchSlackIntegrationData();
+  //     toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+  //   }
+  //   catch (err) {
+  //     toastError(err);
+  //     logger.error(err);
+  //   }
+  // };
 
   const updateProxyUri = async() => {
     try {
@@ -130,7 +134,8 @@ const CustomBotWithProxySettings = (props) => {
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}
-                onClickRegenerateTokensBtn={() => regenerateTokensHandler(tokenGtoP, tokenPtoG)}
+                // onClickRegenerateTokensBtn={regenerateTokensHandler(slackAppIntegration._id)}
+                fetchSlackIntegrationData={fetchSlackIntegrationData}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
