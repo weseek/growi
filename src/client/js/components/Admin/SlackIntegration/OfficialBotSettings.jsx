@@ -43,16 +43,6 @@ const OfficialBotSettings = (props) => {
     }
   };
 
-  const regenerateTokensHandler = async(tokenGtoP, tokenPtoG) => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { tokenGtoP, tokenPtoG });
-    }
-    catch (err) {
-      toastError(err);
-      logger(err);
-    }
-  };
-
   const deleteSlackAppIntegrationHandler = async() => {
     try {
       // TODO GW-5923 delete SlackAppIntegration
@@ -133,8 +123,8 @@ const OfficialBotSettings = (props) => {
               </div>
               <WithProxyAccordions
                 botType="officialBot"
+                slackAppIntegrationId={slackAppIntegration._id}
                 discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
-                onClickRegenerateTokensBtn={() => regenerateTokensHandler(tokenGtoP, tokenPtoG)}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />

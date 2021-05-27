@@ -51,19 +51,6 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
-  // const regenerateTokensHandler = async(integrationId) => {
-  //   console.log('regenerateTokensHandler in cbwp');
-  //   try {
-  //     await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { integrationId });
-  //     fetchSlackIntegrationData();
-  //     toastSuccess(t('toaster.update_successed', { target: 'Token' }));
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //     logger.error(err);
-  //   }
-  // };
-
   const updateProxyUri = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
