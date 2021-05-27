@@ -28,6 +28,7 @@ const CustomBotWithoutProxySettings = (props) => {
       await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
       setTestChannel('');
       setConnectionMessage('');
+      setIsCheckIntegrationTest(false);
       fetchSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.bot_reset_successful'));
     }
