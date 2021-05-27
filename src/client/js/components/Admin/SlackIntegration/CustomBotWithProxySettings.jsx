@@ -14,7 +14,7 @@ const logger = loggerFactory('growi:SlackBotSettings');
 const CustomBotWithProxySettings = (props) => {
   const { appContainer, slackAppIntegrations, proxyServerUri } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
-  const [integrationIdToBeDeleted, setIntegrationIdToBeDeleted] = useState(null);
+  const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const CustomBotWithProxySettings = (props) => {
   const deleteSlackAppIntegrationHandler = async() => {
     try {
       // GW-6068 set new value after this
-      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', integrationIdToBeDeleted);
+      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { _id: integrationIdToDelete });
       fetchSlackIntegrationData();
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
@@ -113,12 +113,12 @@ const CustomBotWithProxySettings = (props) => {
         {slackAppIntegrations.map((slackAppIntegration) => {
           const { tokenGtoP, tokenPtoG } = slackAppIntegration;
           return (
-            <React.Fragment key={slackAppIntegration.id}>
+            <React.Fragment key={slackAppIntegration._id}>
               <div className="d-flex justify-content-end">
                 <button
                   className="my-3 btn btn-outline-danger"
                   type="button"
-                  onClick={() => setIntegrationIdToBeDeleted(slackAppIntegration.id)}
+                  onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
                 >
                   <i className="icon-trash mr-1" />
                   {t('admin:slack_integration.delete')}
@@ -145,8 +145,8 @@ const CustomBotWithProxySettings = (props) => {
       </div>
       <DeleteSlackBotSettingsModal
         isResetAll={false}
-        isOpen={integrationIdToBeDeleted != null}
-        onClose={() => setIntegrationIdToBeDeleted(null)}
+        isOpen={integrationIdToDelete != null}
+        onClose={() => setIntegrationIdToDelete(null)}
         onClickDeleteButton={deleteSlackAppIntegrationHandler}
       />
     </>
