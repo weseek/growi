@@ -134,7 +134,7 @@ const OfficialBotSettings = (props) => {
               <WithProxyAccordions
                 botType="officialBot"
                 discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
-                onClickRegenerateTokens={() => regenerateTokensHandler(tokenGtoP, tokenPtoG)}
+                onClickRegenerateTokensBtn={() => regenerateTokensHandler(tokenGtoP, tokenPtoG)}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />

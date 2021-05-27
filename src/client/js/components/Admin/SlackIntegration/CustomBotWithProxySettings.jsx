@@ -130,7 +130,7 @@ const CustomBotWithProxySettings = (props) => {
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}
-                onClickRegenerateTokens={() => regenerateTokensHandler(tokenGtoP, tokenPtoG)}
+                onClickRegenerateTokensBtn={() => regenerateTokensHandler(tokenGtoP, tokenPtoG)}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
