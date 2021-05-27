@@ -81,7 +81,7 @@ ENV appDir /opt
 
 # copy artifacts
 COPY --from=deps-resolver-prod --chown=node:node \
-  ${appDir}/node_modules.tar ${appDir}/
+  ${appDir}/dependencies.tar ${appDir}/
 COPY --from=builder --chown=node:node \
   ${appDir}/packages.tar ${appDir}/
 
