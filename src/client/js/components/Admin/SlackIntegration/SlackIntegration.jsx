@@ -37,12 +37,13 @@ const SlackIntegration = (props) => {
       const {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri, isIntegrationToSlack,
       } = data.settings;
-      setIsIntegrationSuccess(isIntegrationToSlack);
 
       if (data.connectionStatuses != null) {
         // TODO fix
-        const { workspaceName } = data.connectionStatuses[slackBotToken];
-        setSlackWSNameInWithoutProxy(workspaceName);
+        if (data.currentBotType === 'customBotWithoutProxy') {
+          const { workspaceName } = data.connectionStatuses[slackBotToken];
+          setSlackWSNameInWithoutProxy(workspaceName);
+        }
       }
       setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
@@ -51,6 +52,8 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+      setIsIntegrationSuccess(isIntegrationToSlack);
+
 
       setIsRegisterSlackCredentials(false);
       if ((slackSigningSecret != null && slackBotToken != null) || (slackBotTokenEnvVars != null && slackSigningSecretEnvVars != null)) {
@@ -84,9 +87,7 @@ const SlackIntegration = (props) => {
       });
       setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
-      setIsRegisterSlackCredentials(false);
-      setSlackSigningSecret(null);
-      setSlackBotToken(null);
+      fetchSlackIntegrationData();
     }
     catch (err) {
       toastError(err);
