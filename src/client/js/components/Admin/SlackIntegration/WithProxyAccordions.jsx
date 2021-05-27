@@ -73,9 +73,9 @@ const RegisteringProxyUrlProcess = () => {
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
 
-  const generateTokenHandler = () => {
-    if (props.generateTokenHandler != null) {
-      props.generateTokenHandler();
+  const onClickGenerateTokenBtn = () => {
+    if (props.onClickGenerateTokenBtn != null) {
+      props.onClickGenerateTokenBtn();
     }
   };
 
@@ -113,7 +113,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <button
           type="button"
           className="btn btn-primary mx-auto"
-          onClick={generateTokenHandler}
+          onClick={onClickGenerateTokenBtn}
         >
           { t('admin:slack_integration.access_token_settings.regenerate') }
         </button>
@@ -254,7 +254,7 @@ const WithProxyAccordions = (props) => {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
-        generateTokenHandler={props.generateTokenHandler}
+        onClickGenerateTokenBtn={props.onClickGenerateTokenBtn}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
@@ -282,7 +282,7 @@ const WithProxyAccordions = (props) => {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
-        generateTokenHandler={props.generateTokenHandler}
+        onClickGenerateTokenBtn={props.onClickGenerateTokenBtn}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
@@ -326,7 +326,7 @@ const OfficialBotSettingsAccordionsWrapper = withUnstatedContainers(WithProxyAcc
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
-  generateTokenHandler: PropTypes.func,
+  onClickGenerateTokenBtn: PropTypes.func,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };

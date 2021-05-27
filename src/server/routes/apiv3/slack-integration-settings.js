@@ -59,19 +59,11 @@ module.exports = (crowi) => {
       body('proxyUri').if(value => value !== '').trim().matches(/^(https?:\/\/)/)
         .isURL({ require_tld: false }),
     ],
-    AccessTokens: [
-      query('tokenGtoP').trim().not().isEmpty()
-        .isString()
-        .isLength({ min: 1 }),
-      query('tokenPtoG').trim().not().isEmpty()
-        .isString()
-        .isLength({ min: 1 }),
-    ],
     RelationTest: [
       body('slackappintegrationsId').isMongoId(),
     ],
     deleteIntegration: [
-      query('integrationIdToDelete').isMongoId().not().isEmpty(),
+      query('integrationIdToDelete').isMongoId(),
     ],
     SlackChannel: [
       body('channel').trim().not().isEmpty()
