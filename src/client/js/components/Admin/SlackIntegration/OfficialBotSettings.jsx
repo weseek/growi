@@ -54,8 +54,7 @@ const OfficialBotSettings = (props) => {
 
   const generateTokenHandler = async() => {
     try {
-      // GW-6068 set new value after this
-      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
+      await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
     }
     catch (err) {
       toastError(err);

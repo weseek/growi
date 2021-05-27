@@ -53,7 +53,7 @@ const CustomBotWithProxySettings = (props) => {
 
   const generateTokenHandler = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
+      await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
     }
     catch (err) {
       toastError(err);
