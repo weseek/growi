@@ -78,6 +78,17 @@ const SlackIntegration = (props) => {
     }
   };
 
+  const createSlackIntegrationData = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
+      fetchSlackIntegrationData();
+      // toastSuccess(t('admin:slack_integration.bot_reset_successful'));
+    }
+    catch (error) {
+      toastError(error);
+    }
+  };
+
   useEffect(() => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
@@ -151,7 +162,7 @@ const SlackIntegration = (props) => {
         <CustomBotWithProxySettings
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
-          onClickAddSlackWorkspaceBtn={fetchSlackIntegrationData}
+          onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
         />
       );
