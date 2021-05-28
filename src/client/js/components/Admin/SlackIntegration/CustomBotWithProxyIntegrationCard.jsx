@@ -62,11 +62,9 @@ const CustomBotWithProxyIntegrationCard = (props) => {
           </div>
         </div>
         <div className="card-body text-center">
-          {Object.keys(props.growiApp).length > 0 && (
-            <div className={`mt-5 border p-2 mx-3 ${props.growiApp.active ? 'bg-primary text-light' : 'border text-primary'}`}>
-              {props.growiApp.name}
-            </div>
-          )}
+          <div className="mt-5 border p-2 mx-3 bg-primary text-light">
+            {props.siteName}
+          </div>
         </div>
       </div>
     </div>
@@ -74,7 +72,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
 };
 
 CustomBotWithProxyIntegrationCard.propTypes = {
-  growiApp: PropTypes.object,
+  siteName: PropTypes.string.isRequired,
   slackWorkSpaces: PropTypes.array,
   isSlackScopeSet: PropTypes.bool,
 };
