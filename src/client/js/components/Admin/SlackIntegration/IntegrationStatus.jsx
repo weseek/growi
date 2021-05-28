@@ -86,7 +86,7 @@ IntegrationFailed.propTypes = {
 };
 
 
-const SomeWorkSpaceNotIntegration = (props) => {
+const SomeWorkSpacesNotIntegration = (props) => {
   const { t } = useTranslation();
   const { conductionStatus } = props;
 
@@ -124,7 +124,7 @@ const SomeWorkSpaceNotIntegration = (props) => {
   );
 };
 
-SomeWorkSpaceNotIntegration.propTypes = {
+SomeWorkSpacesNotIntegration.propTypes = {
   conductionStatus: PropTypes.string.isRequired,
 };
 
@@ -154,7 +154,7 @@ const IntegrationStatus = (props) => {
     <>
       {conductionStatus === 'green' && <IntegrationSuccess conductionStatus={conductionStatus} />}
       {conductionStatus === 'red' && <IntegrationFailed conductionStatus={conductionStatus} />}
-      {conductionStatus === 'yellow' && <SomeWorkSpaceNotIntegration conductionStatus={conductionStatus} />}
+      {conductionStatus === 'yellow' && <SomeWorkSpacesNotIntegration conductionStatus={conductionStatus} />}
     </>
   );
 };
