@@ -197,9 +197,8 @@ export class GrowiToSlackCtrl {
       await client.apiCall('put', opt);
     }
     catch (err) {
-      // TODO: GW-6133
-      // logger.error()
-      return res.status(500).send({ message: err.message });
+      logger.error(err);
+      return res.status(400).send({ message: `failed to send to slack. err: ${err.message}` });
     }
 
     logger.debug('postMessage is success');
