@@ -19,13 +19,10 @@ const CustomBotWithProxySettings = (props) => {
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
 
-  let workspaceNames;
-  if (connectionStatuses != null) {
-    const workspaceNameObjects = Object.values(connectionStatuses);
-    workspaceNames = workspaceNameObjects.map((w) => {
-      return w.workspaceName;
-    });
-  }
+  const workspaceNameObjects = Object.values(connectionStatuses);
+  const workspaceNames = workspaceNameObjects.map((w) => {
+    return w.workspaceName;
+  });
 
   useEffect(() => {
     if (proxyServerUri != null) {
@@ -135,7 +132,8 @@ const CustomBotWithProxySettings = (props) => {
                   {t('admin:slack_integration.delete')}
                 </button>
               </div>
-              {workspaceNames[i] == null && (<>Settings #{i + 1} <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)}
+              {proxyServerUri != null && workspaceNames[i] == null
+              && (<>Settings #{i + 1} <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)}
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}
@@ -170,7 +168,6 @@ const CustomBotWithProxySettingsWrapper = withUnstatedContainers(CustomBotWithPr
 
 CustomBotWithProxySettings.defaultProps = {
   slackAppIntegrations: [],
-  connectionStatuses: null,
 };
 
 CustomBotWithProxySettings.propTypes = {
@@ -179,7 +176,7 @@ CustomBotWithProxySettings.propTypes = {
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
   fetchSlackIntegrationData: PropTypes.func,
-  connectionStatuses: PropTypes.object,
+  connectionStatuses: PropTypes.object.isRequired,
 };
 
 export default CustomBotWithProxySettingsWrapper;
