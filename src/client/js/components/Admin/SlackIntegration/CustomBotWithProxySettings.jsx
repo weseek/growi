@@ -23,8 +23,6 @@ const CustomBotWithProxySettings = (props) => {
   const workspaceNames = workspaceNameObjects.map((w) => {
     return w.workspaceName;
   });
-  console.log(connectionStatuses);
-  console.log(workspaceNames[0]);
 
   useEffect(() => {
     if (proxyServerUri != null) {
@@ -134,7 +132,7 @@ const CustomBotWithProxySettings = (props) => {
                   {t('admin:slack_integration.delete')}
                 </button>
               </div>
-              {workspaceNames[i] == null
+              {proxyServerUri != null && workspaceNames[i] == null
               && (<>Settings #{i + 1} <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)}
               <WithProxyAccordions
                 botType="customBotWithProxy"
