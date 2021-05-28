@@ -12,7 +12,7 @@ const IntegrationSuccess = (props) => {
   return (
     <>
       <div className="d-none d-lg-block">
-        <p className="text-success small mt-5">
+        <p className="text-success small">
           <i className="fa fa-check mr-1" />
           {t('admin:slack_integration.integration_sentence.integration_successful')}
         </p>
