@@ -61,8 +61,6 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
-        // slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
-        // isIntegrationSuccess={isIntegrationSuccess}
         workspaceNames={workspaceNames}
       />
 
