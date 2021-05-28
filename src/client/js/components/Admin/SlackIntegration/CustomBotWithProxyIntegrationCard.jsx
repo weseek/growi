@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 
 const CustomBotWithProxyIntegrationCard = (props) => {
   const { t } = useTranslation();
+  // const { workspaceNames } = props;
+  // console.log(workspaceNames);
 
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
