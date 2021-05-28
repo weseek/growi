@@ -41,10 +41,9 @@ jobs:
 
     - name: Build and push
       uses: docker/build-push-action@v2
-      working-directory: ./packages/slackbot-proxy
       with:
         context: .
-        file: ./docker/Dockerfile
+        file: ./packages/slackbot-proxy/docker/Dockerfile
         platforms: linux/amd64
         push: true
         tags: |
@@ -57,9 +56,8 @@ jobs:
 
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
-      working-directory: ./packages/slackbot-proxy
       with:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         repository: weseek/growi-slackbot-proxy
-        readme-filepath: ./docker/README.md
+        readme-filepath: ./packages/slackbot-proxy/docker/README.md
