@@ -396,7 +396,7 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO: add swagger
+  // TODO: add swagger by GW-6161
   router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     const { slackAppIntegrationId } = req.body;
