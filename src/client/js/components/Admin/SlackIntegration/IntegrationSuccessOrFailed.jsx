@@ -1,11 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-const IntegrationSuccess = () => {
+import ConductionStatusHr from './ConductionStatusHr';
+
+const IntegrationSuccess = (props) => {
   const { t } = useTranslation();
+  const { conductionStatus } = props;
 
   return (
     <>
@@ -14,11 +17,11 @@ const IntegrationSuccess = () => {
           <i className="fa fa-check mr-1" />
           {t('admin:slack_integration.integration_sentence.integration_successful')}
         </p>
-        <hr className="align-self-center admin-border-success border-success"></hr>
+        <ConductionStatusHr conductionStatus={conductionStatus} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
         <i className="fa fa-check mr-1 text-success" />
-        <hr className="align-self-center admin-border-success border-success"></hr>
+        <ConductionStatusHr conductionStatus={conductionStatus} />
       </div>
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
         <small>
@@ -29,8 +32,9 @@ const IntegrationSuccess = () => {
   );
 };
 
-const IntegrationFailed = () => {
+const IntegrationFailed = (props) => {
   const { t } = useTranslation();
+  const { conductionStatus } = props;
 
   return (
     <>
@@ -42,12 +46,12 @@ const IntegrationFailed = () => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
           />
         </p>
-        <hr className="align-self-center admin-border-danger border-danger"></hr>
+        <ConductionStatusHr conductionStatus={conductionStatus} />
 
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
         <i className="icon-info text-danger" />
-        <hr className="align-self-center admin-border-danger border-danger"></hr>
+        <ConductionStatusHr conductionStatus={conductionStatus} />
       </div>
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
         <small
@@ -60,8 +64,9 @@ const IntegrationFailed = () => {
   );
 };
 
-const SomeWorkSpaceNotIntegration = () => {
+const SomeWorkSpaceNotIntegration = (props) => {
   const { t } = useTranslation();
+  const { conductionStatus } = props;
 
   return (
     <>
@@ -73,8 +78,7 @@ const SomeWorkSpaceNotIntegration = () => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete') }}
           />
         </p>
-        <hr className="align-self-center admin-border-danger border-danger"></hr>
-
+        <ConductionStatusHr conductionStatus={conductionStatus} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
         <i className="icon-info text-danger" />
@@ -93,15 +97,18 @@ const SomeWorkSpaceNotIntegration = () => {
 
 
 const IntegrationSuccessOrFailed = (props) => {
+  const { conductionStatus } = props;
 
   return (
     <>
-      <IntegrationSuccess />
-      <IntegrationFailed />
-      <SomeWorkSpaceNotIntegration />
+      {conductionStatus === 'green' && <IntegrationSuccess />}
+      {conductionStatus === 'red' && <IntegrationFailed />}
+      {conductionStatus === 'yellow' && <SomeWorkSpaceNotIntegration />}
     </>
   );
-
 };
 
+IntegrationSuccessOrFailed.propTypes = {
+  conductionStatus: PropTypes.string.isRequired,
+};
 export default IntegrationSuccessOrFailed;
