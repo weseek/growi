@@ -21,7 +21,6 @@ const CustomBotWithProxyIntegrationCard = (props) => {
   else {
     conductionStatus = 'yellow';
   }
-  console.log(conductionStatus);
 
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
@@ -43,18 +42,25 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25 mt-5">
-        {props.isSlackScopeSet && (
+        {conductionStatus === 'green' && (
           <p className="text-success small">
             <i className="fa fa-check mr-1" />
             {t('admin:slack_integration.integration_sentence.integration_successful')}
           </p>
         )}
-        {!props.isSlackScopeSet && (
+        {conductionStatus === 'red' && (
           <small
             className="text-secondary"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
           />
+        )}
+        {conductionStatus === 'yellow' && (
+        <small
+          className="text-secondary"
+            // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+        />
         )}
 
         <div className="pt-2">
@@ -62,11 +68,14 @@ const CustomBotWithProxyIntegrationCard = (props) => {
             <div className="circle position-absolute bg-primary border-light">
               <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
             </div>
-            {props.isSlackScopeSet && (
+            {conductionStatus === 'green' && (
               <hr className="align-self-center border-success admin-border-success"></hr>
             )}
-            {!props.isSlackScopeSet && (
+            {conductionStatus === 'red' && (
               <hr className="align-self-center border-danger admin-border-danger"></hr>
+            )}
+            {conductionStatus === 'yellow' && (
+            <hr className="align-self-center border-warning admin-border-danger"></hr>
             )}
           </div>
         </div>
