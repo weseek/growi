@@ -67,8 +67,18 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
         <Button color="danger" onClick={deleteSlackCredentialsHandler}>
-          <i className="icon icon-fire"></i>
-          {t('admin:slack_integration.reset')}
+          {props.isResetAll && (
+            <>
+              <i className="icon icon-fire"></i>
+              {t('admin:slack_integration.reset')}
+            </>
+          )}
+          {!props.isResetAll && (
+            <>
+              <i className="icon-trash mr-1" />
+              {t('admin:slack_integration.delete')}
+            </>
+          )}
         </Button>
       </ModalFooter>
     </Modal>
