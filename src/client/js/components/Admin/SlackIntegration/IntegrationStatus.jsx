@@ -40,7 +40,7 @@ const IntegrationSuccess = (props) => {
 
 IntegrationSuccess.propTypes = {
   errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.array.isRequired,
+  totalCount: PropTypes.number.isRequired,
 };
 
 
@@ -84,7 +84,7 @@ const IntegrationFailed = (props) => {
 
 IntegrationFailed.propTypes = {
   errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.array.isRequired,
+  totalCount: PropTypes.number.isRequired,
 
 };
 
@@ -129,7 +129,7 @@ const SomeWorkSpacesNotIntegration = (props) => {
 
 SomeWorkSpacesNotIntegration.propTypes = {
   errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.array.isRequired,
+  totalCount: PropTypes.number.isRequired,
 
 };
 
