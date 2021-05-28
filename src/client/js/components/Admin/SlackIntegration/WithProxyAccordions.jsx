@@ -287,6 +287,7 @@ const WithProxyAccordions = (props) => {
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         onClickRegenerateTokensBtn={() => props.onClickRegenerateTokensBtn}
+        slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
