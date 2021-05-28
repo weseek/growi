@@ -1,28 +1,28 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import ConductionStatusHr from './ConductionStatusHr';
 
 const CustomBotWithProxyIntegrationCard = (props) => {
   const { t } = useTranslation();
-  const { workspaceNames } = props;
 
-  let errorCount = 0;
-  workspaceNames.forEach((w) => {
-    if (w == null) {
-      errorCount++;
-    }
-  });
+  // let errorCount = 0;
+  // workspaceNames.forEach((w) => {
+  //   if (w == null) {
+  //     errorCount++;
+  //   }
+  // });
 
-  let conductionStatus;
-  if (errorCount === 0 && workspaceNames.length !== 0) {
-    conductionStatus = 'green';
-  }
-  else if (errorCount === workspaceNames.length) {
-    conductionStatus = 'red';
-  }
-  else {
-    conductionStatus = 'yellow';
-  }
+  // let conductionStatus;
+  // if (errorCount === 0 && workspaceNames.length !== 0) {
+  //   conductionStatus = 'green';
+  // }
+  // else if (errorCount === workspaceNames.length) {
+  //   conductionStatus = 'red';
+  // }
+  // else {
+  //   conductionStatus = 'yellow';
+  // }
 
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
@@ -44,7 +44,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25 mt-5">
-        {conductionStatus === 'green' && (
+        {/* {conductionStatus === 'green' && (
           <p className="text-success small">
             <i className="fa fa-check mr-1" />
             {t('admin:slack_integration.integration_sentence.integration_successful')}
@@ -63,22 +63,14 @@ const CustomBotWithProxyIntegrationCard = (props) => {
             // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete') }}
         />
-        )}
+        )} */}
 
         <div className="pt-2">
           <div className="position-relative mt-5">
             <div className="circle position-absolute bg-primary border-light">
               <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
             </div>
-            {conductionStatus === 'green' && (
-              <hr className="align-self-center border-success admin-border-success"></hr>
-            )}
-            {conductionStatus === 'red' && (
-              <hr className="align-self-center border-danger admin-border-danger"></hr>
-            )}
-            {conductionStatus === 'yellow' && (
-            <hr className="align-self-center border-warning admin-border-danger"></hr>
-            )}
+            <ConductionStatusHr workspaceNames={props.workspaceNames} />
           </div>
         </div>
       </div>
