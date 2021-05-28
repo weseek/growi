@@ -3,25 +3,9 @@ import PropTypes from 'prop-types';
 
 
 const ConductionStatusHr = (props) => {
-  const { workspaceNames } = props;
+  const { conductionStatus } = props;
 
-  let errorCount = 0;
-  workspaceNames.forEach((w) => {
-    if (w == null) {
-      errorCount++;
-    }
-  });
 
-  let conductionStatus;
-  if (errorCount === 0 && workspaceNames.length !== 0) {
-    conductionStatus = 'green';
-  }
-  else if (errorCount === workspaceNames.length) {
-    conductionStatus = 'red';
-  }
-  else {
-    conductionStatus = 'yellow';
-  }
   return (
     <>
       {conductionStatus === 'green' && (
@@ -38,7 +22,7 @@ const ConductionStatusHr = (props) => {
 };
 
 ConductionStatusHr.propTypes = {
-  workspaceNames: PropTypes.array.isRequired,
+  conductionStatus: PropTypes.string.isRequired,
 };
 
 export default ConductionStatusHr;

@@ -1,11 +1,29 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import ConductionStatusHr from './ConductionStatusHr';
 
 const CustomBotWithProxyIntegrationCard = (props) => {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
+  const { workspaceNames } = props;
 
+  let errorCount = 0;
+  workspaceNames.forEach((w) => {
+    if (w == null) {
+      errorCount++;
+    }
+  });
+
+  let conductionStatus;
+  if (errorCount === 0 && workspaceNames.length !== 0) {
+    conductionStatus = 'green';
+  }
+  else if (errorCount === workspaceNames.length) {
+    conductionStatus = 'red';
+  }
+  else {
+    conductionStatus = 'yellow';
+  }
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
 
@@ -52,7 +70,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
             <div className="circle position-absolute bg-primary border-light">
               <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
             </div>
-            <ConductionStatusHr workspaceNames={props.workspaceNames} />
+            <ConductionStatusHr conductionStatus={conductionStatus} />
           </div>
         </div>
       </div>
