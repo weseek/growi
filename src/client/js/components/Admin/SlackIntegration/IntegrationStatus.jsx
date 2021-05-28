@@ -7,22 +7,31 @@ import ConductionStatusHr from './ConductionStatusHr';
 
 const IntegrationSuccess = (props) => {
   const { t } = useTranslation();
-  const { errorCount, totalCount } = props;
+  const { errorCount, totalCount, isWithoutProxy } = props;
 
   return (
     <>
       <div className="d-none d-lg-block">
-        <p className="text-success small">
-          <i className="fa fa-check mr-1" />
-          {t('admin:slack_integration.integration_sentence.integration_successful')}
-        </p>
-        <div className="pt-2">
-          <div className="position-relative mt-5">
-            <div className="circle position-absolute bg-primary border-light">
-              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
-            </div>
-          </div>
-        </div>
+        {isWithoutProxy ? (
+          <p className="text-success small mt-5">
+            <i className="fa fa-check mr-1" />
+            {t('admin:slack_integration.integration_sentence.integration_successful')}
+          </p>
+          ) : (
+            <>
+              <p className="text-success small">
+                <i className="fa fa-check mr-1" />
+                {t('admin:slack_integration.integration_sentence.integration_successful')}
+              </p>
+              <div className="pt-2">
+                <div className="position-relative mt-5">
+                  <div className="circle position-absolute bg-primary border-light">
+                    <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+                  </div>
+                </div>
+              </div>
+            </>
+         )}
         <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
@@ -41,12 +50,13 @@ const IntegrationSuccess = (props) => {
 IntegrationSuccess.propTypes = {
   errorCount: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
+  isWithoutProxy: PropTypes.bool,
 };
 
 
 const IntegrationFailed = (props) => {
   const { t } = useTranslation();
-  const { errorCount, totalCount } = props;
+  const { errorCount, totalCount, isWithoutProxy } = props;
 
   return (
     <>
@@ -58,13 +68,18 @@ const IntegrationFailed = (props) => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
           />
         </p>
-        <div className="pt-2">
-          <div className="position-relative mt-5">
-            <div className="circle position-absolute bg-primary border-light">
-              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+        {!isWithoutProxy && (
+        <>
+          <div className="pt-2">
+            <div className="position-relative mt-5">
+              <div className="circle position-absolute bg-primary border-light">
+                <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+              </div>
             </div>
           </div>
-        </div>
+        </>
+        )}
+
         <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
@@ -85,7 +100,7 @@ const IntegrationFailed = (props) => {
 IntegrationFailed.propTypes = {
   errorCount: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
-
+  isWithoutProxy: PropTypes.bool,
 };
 
 
@@ -135,7 +150,8 @@ SomeWorkSpacesNotIntegration.propTypes = {
 
 
 const IntegrationStatus = (props) => {
-  const { workspaceNames } = props;
+  const { workspaceNames, isWithoutProxy } = props;
+  console.log(isWithoutProxy);
 
   let errorCount = 0;
   workspaceNames.forEach((w) => {
@@ -150,12 +166,14 @@ const IntegrationStatus = (props) => {
       <IntegrationSuccess
         errorCount={errorCount}
         totalCount={workspaceNames.length}
+        isWithoutProxy={isWithoutProxy}
       />
       )}
       {errorCount === workspaceNames.length && (
       <IntegrationFailed
         errorCount={errorCount}
         totalCount={workspaceNames.length}
+        isWithoutProxy={isWithoutProxy}
       />
       )}
 
@@ -169,8 +187,13 @@ const IntegrationStatus = (props) => {
   );
 };
 
+IntegrationStatus.defaultProps = {
+  isWithoutProxy: false,
+};
+
 IntegrationStatus.propTypes = {
   workspaceNames: PropTypes.array.isRequired,
+  isWithoutProxy: PropTypes.bool,
 };
 
 export default IntegrationStatus;

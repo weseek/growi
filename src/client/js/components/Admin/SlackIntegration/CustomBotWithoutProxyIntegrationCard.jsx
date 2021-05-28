@@ -4,6 +4,8 @@ import IntegrationStatus from './IntegrationStatus';
 
 const CustomBotWithoutProxyIntegrationCard = (props) => {
   const { siteName, workspaceNames } = props;
+  // const isWithoutProxy = true;
+
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
       <div className="card rounded shadow border-0 w-50 admin-bot-card mb-0">
@@ -22,7 +24,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 
       <div className="text-center w-25">
         {/* {props.isIntegrationSuccess ? <IntegrationSuccess /> : <IntegrationFailed />} */}
-        <IntegrationStatus workspaceNames={workspaceNames} />
+        <IntegrationStatus workspaceNames={workspaceNames} isWithoutProxy />
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
