@@ -129,7 +129,7 @@ SomeWorkSpaceNotIntegration.propTypes = {
 };
 
 
-const IntegrationSuccessOrFailed = (props) => {
+const IntegrationStatus = (props) => {
   const { workspaceNames } = props;
 
   let errorCount = 0;
@@ -159,8 +159,8 @@ const IntegrationSuccessOrFailed = (props) => {
   );
 };
 
-IntegrationSuccessOrFailed.propTypes = {
+IntegrationStatus.propTypes = {
   workspaceNames: PropTypes.array.isRequired,
 };
 
-export default IntegrationSuccessOrFailed;
+export default IntegrationStatus;

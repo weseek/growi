@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import IntegrationSuccessOrFailed from './IntegrationSuccessOrFailed';
+import IntegrationStatus from './IntegrationStatus';
 
 const CustomBotWithProxyIntegrationCard = (props) => {
   const { workspaceNames } = props;
@@ -25,7 +25,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25 mt-5">
-        <IntegrationSuccessOrFailed workspaceNames={workspaceNames} />
+        <IntegrationStatus workspaceNames={workspaceNames} />
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
