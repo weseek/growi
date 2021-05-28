@@ -13,13 +13,18 @@ const logger = loggerFactory('growi:SlackBotSettings');
 
 const OfficialBotSettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn,
+    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses,
   } = props;
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const { t } = useTranslation();
 
   const [newProxyServerUri, setNewProxyServerUri] = useState();
+
+  const workspaceNameObjects = Object.values(connectionStatuses);
+  const workspaceNames = workspaceNameObjects.map((w) => {
+    return w.workspaceName;
+  });
 
   useEffect(() => {
     if (proxyServerUri != null) {
@@ -95,7 +100,7 @@ const OfficialBotSettings = (props) => {
             { name: 'wsName2', active: false },
           ]
         }
-        isSlackScopeSet
+        workspaceNames={workspaceNames}
       />
 
       <div className="form-group row my-4">
@@ -174,6 +179,8 @@ OfficialBotSettings.propTypes = {
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
+  connectionStatuses: PropTypes.object.isRequired,
+
 };
 
 export default OfficialBotSettingsWrapper;

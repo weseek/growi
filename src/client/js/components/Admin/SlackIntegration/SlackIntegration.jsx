@@ -143,6 +143,7 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+          connectionStatuses={connectionStatuses}
         />
       );
       break;
