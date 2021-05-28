@@ -7,7 +7,7 @@ import ConductionStatusHr from './ConductionStatusHr';
 
 const IntegrationSuccess = (props) => {
   const { t } = useTranslation();
-  const { conductionStatus } = props;
+  const { errorCount, workspaceNames } = props;
 
   return (
     <>
@@ -23,11 +23,11 @@ const IntegrationSuccess = (props) => {
             </div>
           </div>
         </div>
-        <ConductionStatusHr conductionStatus={conductionStatus} />
+        <ConductionStatusHr errorCount={errorCount} workspaceNames={workspaceNames} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
         <i className="fa fa-check mr-1 text-success" />
-        <ConductionStatusHr conductionStatus={conductionStatus} />
+        <ConductionStatusHr errorCount={errorCount} workspaceNames={workspaceNames} />
       </div>
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
         <small>
@@ -39,13 +39,14 @@ const IntegrationSuccess = (props) => {
 };
 
 IntegrationSuccess.propTypes = {
-  conductionStatus: PropTypes.string.isRequired,
+  errorCount: PropTypes.number.isRequired,
+  workspaceNames: PropTypes.array.isRequired,
 };
 
 
 const IntegrationFailed = (props) => {
   const { t } = useTranslation();
-  const { conductionStatus } = props;
+  const { conductionStatus, workspaceNames } = props;
 
   return (
     <>
@@ -83,12 +84,14 @@ const IntegrationFailed = (props) => {
 
 IntegrationFailed.propTypes = {
   conductionStatus: PropTypes.string.isRequired,
+  workspaceNames: PropTypes.array.isRequired,
+
 };
 
 
 const SomeWorkSpacesNotIntegration = (props) => {
   const { t } = useTranslation();
-  const { conductionStatus } = props;
+  const { conductionStatus, workspaceNames } = props;
 
   return (
     <>
@@ -126,11 +129,15 @@ const SomeWorkSpacesNotIntegration = (props) => {
 
 SomeWorkSpacesNotIntegration.propTypes = {
   conductionStatus: PropTypes.string.isRequired,
+  workspaceNames: PropTypes.array.isRequired,
+
 };
 
 
 const IntegrationStatus = (props) => {
   const { workspaceNames } = props;
+
+  console.log(workspaceNames);
 
   let errorCount = 0;
   workspaceNames.forEach((w) => {
@@ -139,22 +146,27 @@ const IntegrationStatus = (props) => {
     }
   });
 
-  let conductionStatus;
-  if (errorCount === 0 && workspaceNames.length !== 0) {
-    conductionStatus = 'green';
-  }
-  else if (errorCount === workspaceNames.length) {
-    conductionStatus = 'red';
-  }
-  else {
-    conductionStatus = 'yellow';
-  }
-
   return (
     <>
-      {conductionStatus === 'green' && <IntegrationSuccess conductionStatus={conductionStatus} />}
-      {conductionStatus === 'red' && <IntegrationFailed conductionStatus={conductionStatus} />}
-      {conductionStatus === 'yellow' && <SomeWorkSpacesNotIntegration conductionStatus={conductionStatus} />}
+      {errorCount === 0 && workspaceNames.length !== 0 && (
+      <IntegrationSuccess
+        errorCount={errorCount}
+        workspaceNames={workspaceNames}
+      />
+      )}
+      {errorCount === workspaceNames.length && (
+      <IntegrationFailed
+        errorCount={errorCount}
+        workspaceNames={workspaceNames}
+      />
+      )}
+
+      {errorCount >= 1 && errorCount < workspaceNames.length && (
+      <SomeWorkSpacesNotIntegration
+        errorCount={errorCount}
+        workspaceNames={workspaceNames}
+      />
+      )}
     </>
   );
 };
