@@ -51,8 +51,8 @@ jobs:
           weseek/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
           ghcr.io/weseek/growi-slackbot-proxy:latest
           ghcr.io/weseek/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
-          asia.gcr.io/${{ env.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy:latest
-          asia.gcr.io/${{ env.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
+          asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy:latest
+          asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
 
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
