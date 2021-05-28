@@ -186,9 +186,9 @@ module.exports = (crowi) => {
           }
         }
         catch (error) {
-          const msg = 'Error occured in testing connection statuses';
+          const msg = 'Incorrect Proxy URL';
           logger.error('Error', error);
-          return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
+          return res.apiv3Err(new ErrorV3(msg, 'test-connection-failed'), 400);
         }
       }
     }
