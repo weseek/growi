@@ -42,7 +42,7 @@ jobs:
 
     - name: Configure docker for gcloud
       run: |
-        gcloud auth configure-docker
+        gcloud auth configure-docker --quiet
 
     - name: Build and push
       uses: docker/build-push-action@v2
