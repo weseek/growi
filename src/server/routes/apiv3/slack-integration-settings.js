@@ -73,7 +73,7 @@ module.exports = (crowi) => {
   };
 
   async function resetAllBotSettings() {
-    await SlackAppIntegration.collection.deleteMany();
+    await SlackAppIntegration.deleteMany();
 
     const params = {
       'slackbot:currentBotType': null,
