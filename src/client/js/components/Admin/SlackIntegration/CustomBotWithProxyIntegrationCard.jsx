@@ -24,7 +24,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
         </div>
       </div>
 
-      <div className="text-center w-25 mt-5">
+      <div className="text-center w-25 mt-3">
         {props.isSlackScopeSet && (
           <p className="text-success small">
             <i className="fa fa-check mr-1" />
