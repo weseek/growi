@@ -7,12 +7,14 @@ const CustomBotWithProxyIntegrationCard = (props) => {
   const { workspaceNames } = props;
 
   let errorCount = 0;
-  for (let i = 0; i < workspaceNames.length; ++i) {
-    if (workspaceNames[i] == null) { errorCount++ }
-  }
+  workspaceNames.forEach((w) => {
+    if (w == null) {
+      errorCount++;
+    }
+  });
 
   let conductionStatus;
-  if (errorCount === 0) {
+  if (errorCount === 0 && workspaceNames.length !== 0) {
     conductionStatus = 'green';
   }
   else if (errorCount === workspaceNames.length) {
