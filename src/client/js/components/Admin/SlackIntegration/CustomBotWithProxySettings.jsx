@@ -12,11 +12,20 @@ import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
-  const { appContainer, slackAppIntegrations, proxyServerUri } = props;
-  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
+  const {
+    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses,
+  } = props;
+  const [newProxyServerUri, setNewProxyServerUri] = useState();
+  const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
 
-  const [newProxyServerUri, setNewProxyServerUri] = useState();
+  let workspaceNames;
+  if (connectionStatuses != null) {
+    const workspaceNameObjects = Object.values(connectionStatuses);
+    workspaceNames = workspaceNameObjects.map((w) => {
+      return w.workspaceName;
+    });
+  }
 
   useEffect(() => {
     if (proxyServerUri != null) {
@@ -24,40 +33,38 @@ const CustomBotWithProxySettings = (props) => {
     }
   }, [proxyServerUri]);
 
+  const fetchSlackIntegrationData = () => {
+    if (props.fetchSlackIntegrationData != null) {
+      props.fetchSlackIntegrationData();
+    }
+  };
+
   const addSlackAppIntegrationHandler = async() => {
-    // TODO GW-6067 implement
-  };
-
-  const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
-    try {
-      // GW-6068 set new value after this
-      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { tokenGtoP, tokenPtoG });
-    }
-    catch (err) {
-      toastError(err);
-      logger(err);
-    }
-  };
-
-  const generateTokenHandler = async() => {
-    try {
-      // GW-6068 set new value after this
-      await appContainer.apiv3.put('/slack-integration-settings/access-tokens');
-    }
-    catch (err) {
-      toastError(err);
-      logger(err);
+    if (onClickAddSlackWorkspaceBtn != null) {
+      onClickAddSlackWorkspaceBtn();
     }
   };
 
   const deleteSlackAppIntegrationHandler = async() => {
     try {
-      // TODO GW-5923 delete SlackAppIntegration
-      // await appContainer.apiv3.put('/slack-integration-settings/custom-bot-with-proxy');
-      toastSuccess('success');
+      // GW-6068 set new value after this
+      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { integrationIdToDelete });
+      fetchSlackIntegrationData();
+      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
     catch (err) {
       toastError(err);
+      logger.error(err);
+    }
+  };
+
+  const generateAccessTokens = async() => {
+    try {
+      //  TODO: imprement regenerating tokens by GW-6068
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
     }
   };
 
@@ -66,7 +73,7 @@ const CustomBotWithProxySettings = (props) => {
       await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
         proxyUri: newProxyServerUri,
       });
-      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+      toastSuccess(t('toaster.update_successed', { target: 'Proxy URL' }));
     }
     catch (err) {
       toastError(err);
@@ -114,24 +121,25 @@ const CustomBotWithProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
       <div className="mx-3">
-        {slackAppIntegrations.map((slackAppIntegration) => {
+        {slackAppIntegrations.map((slackAppIntegration, i) => {
           const { tokenGtoP, tokenPtoG } = slackAppIntegration;
           return (
-            <React.Fragment key={slackAppIntegration.id}>
+            <React.Fragment key={slackAppIntegration._id}>
               <div className="d-flex justify-content-end">
                 <button
                   className="my-3 btn btn-outline-danger"
                   type="button"
-                  onClick={() => setIsDeleteConfirmModalShown(true)}
+                  onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
                 >
                   <i className="icon-trash mr-1" />
                   {t('admin:slack_integration.delete')}
                 </button>
               </div>
+              {workspaceNames[i] == null && (<>Settings #{i + 1} <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)}
               <WithProxyAccordions
                 botType="customBotWithProxy"
-                discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
-                generateTokenHandler={generateTokenHandler}
+                slackAppIntegrationId={slackAppIntegration._id}
+                onClickGenerateTokenBtn={generateAccessTokens}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
@@ -150,8 +158,8 @@ const CustomBotWithProxySettings = (props) => {
       </div>
       <DeleteSlackBotSettingsModal
         isResetAll={false}
-        isOpen={isDeleteConfirmModalShown}
-        onClose={() => setIsDeleteConfirmModalShown(false)}
+        isOpen={integrationIdToDelete != null}
+        onClose={() => setIntegrationIdToDelete(null)}
         onClickDeleteButton={deleteSlackAppIntegrationHandler}
       />
     </>
@@ -162,13 +170,16 @@ const CustomBotWithProxySettingsWrapper = withUnstatedContainers(CustomBotWithPr
 
 CustomBotWithProxySettings.defaultProps = {
   slackAppIntegrations: [],
+  connectionStatuses: null,
 };
 
 CustomBotWithProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
+  onClickAddSlackWorkspaceBtn: PropTypes.func,
+  fetchSlackIntegrationData: PropTypes.func,
+  connectionStatuses: PropTypes.object,
 };
 
 export default CustomBotWithProxySettingsWrapper;

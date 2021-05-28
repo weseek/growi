@@ -14,12 +14,35 @@ const CustomBotWithoutProxySettings = (props) => {
 
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
+  const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
+  const [connectionMessage, setConnectionMessage] = useState('');
+  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
+  const [testChannel, setTestChannel] = useState('');
 
   const resetSettings = async() => {
     if (onResetSettings == null) {
       return;
     }
     onResetSettings();
+  };
+
+  const testConnection = async() => {
+    setConnectionErrorCode(null);
+    setConnectionMessage(null);
+    try {
+      await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
+      setConnectionMessage('Send the message to slack work space.');
+      setIsIntegrationSuccess(true);
+    }
+    catch (err) {
+      setConnectionErrorCode(err[0].code);
+      setConnectionMessage(err[0].message);
+      setIsIntegrationSuccess(false);
+    }
+  };
+
+  const inputTestChannelHandler = (channel) => {
+    setTestChannel(channel);
   };
 
   useEffect(() => {
@@ -34,6 +57,7 @@ const CustomBotWithoutProxySettings = (props) => {
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
         slackWSNameInWithoutProxy={props.slackWSNameInWithoutProxy}
+        isIntegrationSuccess={isIntegrationSuccess}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
@@ -51,6 +75,13 @@ const CustomBotWithoutProxySettings = (props) => {
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
+          connectionMessage={connectionMessage}
+          connectionErrorCode={connectionErrorCode}
+          isIntegrationSuccess={isIntegrationSuccess}
+          testChannel={testChannel}
+          onTestFormSubmitted={testConnection}
+          inputTestChannelHandler={inputTestChannelHandler}
+
         />
       </div>
       <DeleteSlackBotSettingsModal
@@ -73,6 +104,7 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
   isRgisterSlackCredentials: PropTypes.bool,
+  isIntegrationSuccess: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
   onResetSettings: PropTypes.func,
 };

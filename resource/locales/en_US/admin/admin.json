@@ -279,6 +279,7 @@
       "impossible": "Impossible"
     },
     "bot_reset_successful": "Bot settings have been reset.",
+    "adding_slack_ws_integration_settings_successful": "Slack workspace integration settings have been added",
     "bot_all_reset_successful": "All Bot settings have been reset.",
     "copied_to_clipboard": "Copied to clipboard",
     "set_scope": "Please set up Bot Token Scopes from Slack settings",
@@ -291,17 +292,18 @@
     },
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
     "access_token_settings": {
-      "discard": "Discard",
-      "generate": "Generate"
+      "regenerate": "Regenerate"
     },
     "delete": "Delete",
     "integration_procedure": "Integration Procedure",
     "custom_bot_without_proxy_settings": "Custom Bot without proxy Settings",
+    "integration_failed":"Integration failed",
     "official_bot_settings": "Official bot Settings",
     "reset": "Reset",
     "reset_all_settings": "Reset all settings",
     "delete_slackbot_settings": "Reset Slack Bot settings",
     "slackbot_settings_notice": "Reset",
+    "all_settings_of_the_bot_will_be_reset": "All settings of the Bot will be reset.<br>Are you sure?",
     "accordion": {
       "create_bot": "Create Bot",
       "how_to_create_a_bot": "How to create a bot",

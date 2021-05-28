@@ -33,7 +33,7 @@ RUN npx lerna bootstrap
 FROM deps-resolver-base AS deps-resolver-prod
 RUN npx lerna bootstrap -- --production
 # make artifacts
-RUN tar cf node_modules.tar node_modules
+RUN tar cf dependencies.tar node_modules packages/slackbot-proxy/node_modules
 
 
 ##
@@ -79,8 +79,9 @@ ENV NODE_ENV production
 
 ENV appDir /opt
 
+# copy artifacts
 COPY --from=deps-resolver-prod --chown=node:node \
-  ${appDir}/node_modules.tar ${appDir}/
+  ${appDir}/dependencies.tar ${appDir}/
 COPY --from=builder --chown=node:node \
   ${appDir}/packages.tar ${appDir}/
 
@@ -88,11 +89,11 @@ RUN chown node:node ${appDir}
 
 USER node
 
-# extract node_modules.tar
+# extract artifacts
 WORKDIR ${appDir}
-RUN tar xf node_modules.tar
+RUN tar xf dependencies.tar
 RUN tar xf packages.tar
-RUN rm node_modules.tar packages.tar
+RUN rm dependencies.tar packages.tar
 
 WORKDIR ${appDir}/packages/slackbot-proxy
 
