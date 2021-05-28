@@ -16,7 +16,7 @@ const ConductionStatusHr = (props) => {
 
 ConductionStatusHr.propTypes = {
   errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.array.isRequired,
+  totalCount: PropTypes.number.isRequired,
 };
 
 export default ConductionStatusHr;
