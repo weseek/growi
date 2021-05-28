@@ -76,7 +76,7 @@ const RegisteringProxyUrlProcess = () => {
 
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
-  const { appContainer, slackAppIntegrationId, fetchSlackIntegrationData } = props;
+  const { appContainer, slackAppIntegrationId /* , fetchSlackIntegrationData */ } = props;
 
   const regenerateTokensHandler = async() => {
     try {
