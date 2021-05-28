@@ -80,7 +80,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
           </div>
         </div>
         <div className="card-body text-center">
-          <div className="mt-5 border p-2 mx-3 bg-primary text-light">
+          <div className="mt-5 border p-2 mx-5 bg-primary text-light">
             {props.siteName}
           </div>
         </div>
