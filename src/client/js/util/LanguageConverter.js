@@ -8,6 +8,6 @@ class LanguageConverter {
 
 }
 
-LanguageConverter.type = 'languageConverter';
+LanguageConverter.type = '3rdParty';
 
 export default LanguageConverter;
