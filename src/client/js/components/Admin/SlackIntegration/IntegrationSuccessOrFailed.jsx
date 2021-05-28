@@ -32,6 +32,11 @@ const IntegrationSuccess = (props) => {
   );
 };
 
+IntegrationSuccess.propTypes = {
+  conductionStatus: PropTypes.string.isRequired,
+};
+
+
 const IntegrationFailed = (props) => {
   const { t } = useTranslation();
   const { conductionStatus } = props;
@@ -64,6 +69,11 @@ const IntegrationFailed = (props) => {
   );
 };
 
+IntegrationFailed.propTypes = {
+  conductionStatus: PropTypes.string.isRequired,
+};
+
+
 const SomeWorkSpaceNotIntegration = (props) => {
   const { t } = useTranslation();
   const { conductionStatus } = props;
@@ -93,6 +103,10 @@ const SomeWorkSpaceNotIntegration = (props) => {
       </UncontrolledTooltip>
     </>
   );
+};
+
+SomeWorkSpaceNotIntegration.propTypes = {
+  conductionStatus: PropTypes.string.isRequired,
 };
 
 
