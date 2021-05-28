@@ -4,7 +4,6 @@ import IntegrationStatus from './IntegrationStatus';
 
 const CustomBotWithoutProxyIntegrationCard = (props) => {
   const { siteName, workspaceNames } = props;
-  // const isWithoutProxy = true;
 
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
@@ -23,7 +22,6 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        {/* {props.isIntegrationSuccess ? <IntegrationSuccess /> : <IntegrationFailed />} */}
         <IntegrationStatus workspaceNames={workspaceNames} isWithoutProxy />
       </div>
 
@@ -42,8 +40,6 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 CustomBotWithoutProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   workspaceNames: PropTypes.array.isRequired,
-  // slackWSNameInWithoutProxy: PropTypes.string,
-  // isIntegrationSuccess: PropTypes.bool,
 };
 
 export default CustomBotWithoutProxyIntegrationCard;

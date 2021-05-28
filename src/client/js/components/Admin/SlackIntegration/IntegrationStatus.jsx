@@ -79,7 +79,6 @@ const IntegrationFailed = (props) => {
           </div>
         </>
         )}
-
         <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
@@ -145,13 +144,11 @@ const SomeWorkSpacesNotIntegration = (props) => {
 SomeWorkSpacesNotIntegration.propTypes = {
   errorCount: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
-
 };
 
 
 const IntegrationStatus = (props) => {
   const { workspaceNames, isWithoutProxy } = props;
-  console.log(isWithoutProxy);
 
   let errorCount = 0;
   workspaceNames.forEach((w) => {
