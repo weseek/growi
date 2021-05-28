@@ -15,7 +15,7 @@
 // $light: #;
 // $dark: #;
 
-$themecolor: #eaab20; //反映確認のため変更
+$themecolor: #eaab20; // changed to confirm　refrection
 $themelight: #fff0f5;
 $subthemecolor: #67a856;
 $third-main-color: antiquewhite;
@@ -33,7 +33,7 @@ html[dark] {
   $secondary: $accentcolor;
 
   // Background colors
-  $bgcolor-global: white;
+  $bgcolor-global: rgb(255, 0, 0); // changed to confirm　refrection
   $bgcolor-inline-code: $gray-100; //optional
   $bgcolor-card: $gray-50;
   $bgcolor-highlighted: rgba($primary, 0.5);
