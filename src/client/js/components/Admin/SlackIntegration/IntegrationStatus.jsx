@@ -50,7 +50,7 @@ const IntegrationSuccess = (props) => {
 IntegrationSuccess.propTypes = {
   errorCount: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
-  isWithoutProxy: PropTypes.bool,
+  isWithoutProxy: PropTypes.bool.isRequired,
 };
 
 
@@ -99,7 +99,7 @@ const IntegrationFailed = (props) => {
 IntegrationFailed.propTypes = {
   errorCount: PropTypes.number.isRequired,
   totalCount: PropTypes.number.isRequired,
-  isWithoutProxy: PropTypes.bool,
+  isWithoutProxy: PropTypes.bool.isRequired,
 };
 
 
