@@ -115,6 +115,7 @@
     "graceful-fs": "^4.1.11",
     "growi-commons": "^5.0.3",
     "helmet": "^3.13.0",
+    "i18next": "^20.3.0",
     "i18next-express-middleware": "^1.4.1",
     "i18next-node-fs-backend": "^2.1.0",
     "i18next-sprintf-postprocessor": "^0.2.2",
