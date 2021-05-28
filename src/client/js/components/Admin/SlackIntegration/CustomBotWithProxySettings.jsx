@@ -17,6 +17,7 @@ const CustomBotWithProxySettings = (props) => {
   } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
+  const [siteName, setSiteName] = useState('');
   const { t } = useTranslation();
 
   const workspaceNameObjects = Object.values(connectionStatuses);
@@ -78,13 +79,18 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
+  useEffect(() => {
+    const siteName = appContainer.config.crowi.title;
+    setSiteName(siteName);
+  }, [appContainer]);
+
   return (
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
-        siteName="siteName"
+        siteName={siteName}
         slackWorkSpaces={
           [
             { name: 'wsName1', active: true },
