@@ -15,6 +15,7 @@ const OfficialBotSettings = (props) => {
   const {
     appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn,
   } = props;
+  const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const { t } = useTranslation();
 
@@ -77,12 +78,17 @@ const OfficialBotSettings = (props) => {
     }
   };
 
+  useEffect(() => {
+    const siteName = appContainer.config.crowi.title;
+    setSiteName(siteName);
+  }, [appContainer]);
+
   return (
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}</h2>
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
-        siteName="siteName"
+        siteName={siteName}
         slackWorkSpaces={
           [
             { name: 'wsName1', active: true },
