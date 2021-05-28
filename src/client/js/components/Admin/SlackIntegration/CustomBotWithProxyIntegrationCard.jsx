@@ -4,8 +4,24 @@ import PropTypes from 'prop-types';
 
 const CustomBotWithProxyIntegrationCard = (props) => {
   const { t } = useTranslation();
-  // const { workspaceNames } = props;
-  // console.log(workspaceNames);
+  const { workspaceNames } = props;
+
+  let errorCount = 0;
+  for (let i = 0; i < workspaceNames.length; ++i) {
+    if (workspaceNames[i] == null) { errorCount++ }
+  }
+
+  let conductionStatus;
+  if (errorCount === 0) {
+    conductionStatus = 'green';
+  }
+  else if (errorCount === workspaceNames.length) {
+    conductionStatus = 'red';
+  }
+  else {
+    conductionStatus = 'yellow';
+  }
+  console.log(conductionStatus);
 
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
@@ -86,6 +102,7 @@ CustomBotWithProxyIntegrationCard.propTypes = {
   growiApps: PropTypes.array.isRequired,
   slackWorkSpaces: PropTypes.array,
   isSlackScopeSet: PropTypes.bool,
+  workspaceNames: PropTypes.object,
 };
 
 export default CustomBotWithProxyIntegrationCard;
