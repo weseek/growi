@@ -3,26 +3,7 @@ import PropTypes from 'prop-types';
 import IntegrationSuccessOrFailed from './IntegrationSuccessOrFailed';
 
 const CustomBotWithProxyIntegrationCard = (props) => {
-  // const { t } = useTranslation();
   const { workspaceNames } = props;
-
-  let errorCount = 0;
-  workspaceNames.forEach((w) => {
-    if (w == null) {
-      errorCount++;
-    }
-  });
-
-  let conductionStatus;
-  if (errorCount === 0 && workspaceNames.length !== 0) {
-    conductionStatus = 'green';
-  }
-  else if (errorCount === workspaceNames.length) {
-    conductionStatus = 'red';
-  }
-  else {
-    conductionStatus = 'yellow';
-  }
 
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
@@ -44,7 +25,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25 mt-5">
-        <IntegrationSuccessOrFailed conductionStatus={conductionStatus} />
+        <IntegrationSuccessOrFailed workspaceNames={workspaceNames} />
         <div className="pt-2">
           <div className="position-relative mt-5">
             <div className="circle position-absolute bg-primary border-light">

@@ -111,18 +111,37 @@ SomeWorkSpaceNotIntegration.propTypes = {
 
 
 const IntegrationSuccessOrFailed = (props) => {
-  const { conductionStatus } = props;
+  const { workspaceNames } = props;
+
+  let errorCount = 0;
+  workspaceNames.forEach((w) => {
+    if (w == null) {
+      errorCount++;
+    }
+  });
+
+  let conductionStatus;
+  if (errorCount === 0 && workspaceNames.length !== 0) {
+    conductionStatus = 'green';
+  }
+  else if (errorCount === workspaceNames.length) {
+    conductionStatus = 'red';
+  }
+  else {
+    conductionStatus = 'yellow';
+  }
 
   return (
     <>
-      {conductionStatus === 'green' && <IntegrationSuccess />}
-      {conductionStatus === 'red' && <IntegrationFailed />}
-      {conductionStatus === 'yellow' && <SomeWorkSpaceNotIntegration />}
+      {conductionStatus === 'green' && <IntegrationSuccess conductionStatus={conductionStatus} />}
+      {conductionStatus === 'red' && <IntegrationFailed conductionStatus={conductionStatus} />}
+      {conductionStatus === 'yellow' && <SomeWorkSpaceNotIntegration conductionStatus={conductionStatus} />}
     </>
   );
 };
 
 IntegrationSuccessOrFailed.propTypes = {
-  conductionStatus: PropTypes.string.isRequired,
+  workspaceNames: PropTypes.array.isRequired,
 };
+
 export default IntegrationSuccessOrFailed;
