@@ -37,7 +37,7 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
         <span>
           {props.isResetAll && (
             <>
-              <i className="icon-fw icon-fire"></i>
+              <i className="icon-fw icon-fire" />
               {t('admin:slack_integration.reset_all_settings')}
             </>
           )}
