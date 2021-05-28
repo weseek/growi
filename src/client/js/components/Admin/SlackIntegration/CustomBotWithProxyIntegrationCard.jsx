@@ -1,9 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import IntegrationStatus from './IntegrationStatus';
 
 const CustomBotWithProxyIntegrationCard = (props) => {
-  const { t } = useTranslation();
+  const { workspaceNames } = props;
 
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
@@ -25,33 +25,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25 mt-3">
-        {props.isSlackScopeSet && (
-          <p className="text-success small">
-            <i className="fa fa-check mr-1" />
-            {t('admin:slack_integration.integration_sentence.integration_successful')}
-          </p>
-        )}
-        {!props.isSlackScopeSet && (
-          <small
-            className="text-danger"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
-          />
-        )}
-
-        <div className="pt-2">
-          <div className="position-relative mt-5">
-            <div className="circle position-absolute bg-primary border-light">
-              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
-            </div>
-            {props.isSlackScopeSet && (
-              <hr className="align-self-center border-success admin-border-success"></hr>
-            )}
-            {!props.isSlackScopeSet && (
-              <hr className="align-self-center border-danger admin-border-danger"></hr>
-            )}
-          </div>
-        </div>
+        <IntegrationStatus workspaceNames={workspaceNames} />
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
@@ -75,6 +49,7 @@ CustomBotWithProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string.isRequired,
   slackWorkSpaces: PropTypes.array,
   isSlackScopeSet: PropTypes.bool,
+  workspaceNames: PropTypes.array.isRequired,
 };
 
 export default CustomBotWithProxyIntegrationCard;

@@ -97,7 +97,7 @@ const CustomBotWithProxySettings = (props) => {
             { name: 'wsName2', active: false },
           ]
         }
-        isSlackScopeSet
+        workspaceNames={workspaceNames}
       />
 
       <div className="form-group row my-4">
