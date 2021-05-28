@@ -23,7 +23,6 @@ const CustomBotWithProxySettings = (props) => {
   const workspaceNames = workspaceNameObjects.map((w) => {
     return w.workspaceName;
   });
-  console.log(workspaceNames);
 
   useEffect(() => {
     if (proxyServerUri != null) {
