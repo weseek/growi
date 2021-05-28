@@ -337,7 +337,7 @@
     "integration_sentence": {
       "integration_is_not_complete": "Integration is not complete.<br>Proceed with the following integration procedure.",
       "integration_successful": "Integration successful",
-      "integration_some_ws_is_not_linked": "Some work spaces is not linked"
+      "integration_some_ws_is_not_complete": "Some work spaces is not linked"
     },
     "custom_bot_with_proxy_integration": "Custom Bot With Proxy Integration",
     "official_bot_integration": "Official bot integration"
