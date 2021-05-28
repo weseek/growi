@@ -257,7 +257,6 @@ const WithProxyAccordions = (props) => {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
-        onClickRegenerateTokensBtn={() => props.onClickRegenerateTokensBtn}
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
@@ -286,7 +285,6 @@ const WithProxyAccordions = (props) => {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
-        onClickRegenerateTokensBtn={() => props.onClickRegenerateTokensBtn}
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
@@ -331,7 +329,6 @@ WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
   slackAppIntegrationId: PropTypes.string.isRequired,
-  onClickRegenerateTokensBtn: PropTypes.func,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };
