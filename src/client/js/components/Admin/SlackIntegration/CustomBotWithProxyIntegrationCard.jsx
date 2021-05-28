@@ -74,18 +74,9 @@ const CustomBotWithProxyIntegrationCard = (props) => {
             <a className="icon-fw fa fa-repeat fa-2x"></a>
           </div>
         </div>
-        <div className="card-body p-4 mb-5 text-center">
-          <div className="btn-group-vertical w-50">
-            {props.growiApps.map((growiApp) => {
-              return (
-                <button
-                  type="button"
-                  key={growiApp.name}
-                  className={growiApp.active ? 'btn btn-primary mb-3' : 'btn btn-outline-primary mb-3'}
-                >{growiApp.name}
-                </button>
-              );
-            })}
+        <div className="card-body text-center">
+          <div className="mt-5 border p-2 mx-3 bg-primary text-light">
+            {props.siteName}
           </div>
         </div>
       </div>
@@ -98,7 +89,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
 };
 
 CustomBotWithProxyIntegrationCard.propTypes = {
-  growiApps: PropTypes.array.isRequired,
+  siteName: PropTypes.string.isRequired,
   slackWorkSpaces: PropTypes.array,
   isSlackScopeSet: PropTypes.bool,
 };

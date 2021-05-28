@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Inject, Req, Res, UseBefore,
+  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams,
 } from '@tsed/common';
 import axios from 'axios';
 
@@ -163,9 +163,9 @@ export class GrowiToSlackCtrl {
     return res.send({ relation: createdRelation, slackBotToken: token });
   }
 
-  @Post('/*')
+  @Post('/:method')
   @UseBefore(verifyGrowiToSlackRequest)
-  async postResult(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+  async postResult(@PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
 
     if (tokenGtoPs.length !== 1) {
@@ -192,14 +192,13 @@ export class GrowiToSlackCtrl {
     const client = generateWebClient(token);
 
     try {
-      // TODO: GW-6133
       const opt = req.body as WebAPICallOptions;
-      await client.apiCall('put', opt);
+      opt.headers = req.headers;
+      await client.apiCall(method, opt);
     }
     catch (err) {
-      // TODO: GW-6133
-      // logger.error()
-      return res.status(500).send({ message: err.message });
+      logger.error(err);
+      return res.status(400).send({ message: `failed to send to slack. err: ${err.message}` });
     }
 
     logger.debug('postMessage is success');

@@ -38,14 +38,16 @@ const SlackIntegration = (props) => {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
       } = data.settings;
 
-      if (data.connectionStatuses != null) {
-        // TODO fix
-        // const { workspaceName } = data.connectionStatuses[slackBotToken];
-        // setSlackWSNameInWithoutProxy(workspaceName);
-        setConnectionStatuses(data.connectionStatuses);
-
+      if (data.connectionStatuses == null) {
+        data.connectionStatuses = {};
       }
-
+      // if (data.connectionStatuses != null) {
+      // TODO fix
+      // const { workspaceName } = data.connectionStatuses[slackBotToken];
+      // setSlackWSNameInWithoutProxy(workspaceName);
+      // setConnectionStatuses(data.connectionStatuses);
+      // }
+      setConnectionStatuses(data.connectionStatuses);
       setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
       setSlackBotToken(slackBotToken);
