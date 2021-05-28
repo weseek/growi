@@ -80,12 +80,11 @@ const CustomBotWithProxySettings = (props) => {
 
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
-        growiApps={
-          [
-            { name: 'siteName1', active: true },
-            { name: 'siteName2', active: false },
-            { name: 'siteName3', active: false },
-          ]
+        growiApp={
+          {
+            name: 'siteName',
+            active: true,
+          }
         }
         slackWorkSpaces={
           [

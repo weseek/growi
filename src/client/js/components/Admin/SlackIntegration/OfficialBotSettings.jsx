@@ -79,12 +79,11 @@ const OfficialBotSettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}</h2>
       {/* TODO delete tmp props */}
       <CustomBotWithProxyIntegrationCard
-        growiApps={
-          [
-            { name: 'siteName1', active: true },
-            { name: 'siteName2', active: false },
-            { name: 'siteName3', active: false },
-          ]
+        growiApp={
+          {
+            name: 'siteName',
+            active: true,
+          }
         }
         slackWorkSpaces={
           [
