@@ -17,6 +17,13 @@ const IntegrationSuccess = (props) => {
           <i className="fa fa-check mr-1" />
           {t('admin:slack_integration.integration_sentence.integration_successful')}
         </p>
+        <div className="pt-2">
+          <div className="position-relative mt-5">
+            <div className="circle position-absolute bg-primary border-light">
+              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+            </div>
+          </div>
+        </div>
         <ConductionStatusHr conductionStatus={conductionStatus} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
@@ -51,8 +58,14 @@ const IntegrationFailed = (props) => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
           />
         </p>
+        <div className="pt-2">
+          <div className="position-relative mt-5">
+            <div className="circle position-absolute bg-primary border-light">
+              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+            </div>
+          </div>
+        </div>
         <ConductionStatusHr conductionStatus={conductionStatus} />
-
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
         <i className="icon-info text-danger" />
@@ -88,6 +101,13 @@ const SomeWorkSpaceNotIntegration = (props) => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete') }}
           />
         </p>
+        <div className="pt-2">
+          <div className="position-relative mt-5">
+            <div className="circle position-absolute bg-primary border-light">
+              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+            </div>
+          </div>
+        </div>
         <ConductionStatusHr conductionStatus={conductionStatus} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">

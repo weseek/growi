@@ -26,13 +26,6 @@ const CustomBotWithProxyIntegrationCard = (props) => {
 
       <div className="text-center w-25 mt-5">
         <IntegrationSuccessOrFailed workspaceNames={workspaceNames} />
-        <div className="pt-2">
-          <div className="position-relative mt-5">
-            <div className="circle position-absolute bg-primary border-light">
-              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
