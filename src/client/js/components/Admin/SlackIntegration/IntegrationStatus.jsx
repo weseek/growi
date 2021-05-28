@@ -7,7 +7,7 @@ import ConductionStatusHr from './ConductionStatusHr';
 
 const IntegrationSuccess = (props) => {
   const { t } = useTranslation();
-  const { errorCount, workspaceNames } = props;
+  const { errorCount, totalCount } = props;
 
   return (
     <>
@@ -23,11 +23,11 @@ const IntegrationSuccess = (props) => {
             </div>
           </div>
         </div>
-        <ConductionStatusHr errorCount={errorCount} workspaceNames={workspaceNames} />
+        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
         <i className="fa fa-check mr-1 text-success" />
-        <ConductionStatusHr errorCount={errorCount} workspaceNames={workspaceNames} />
+        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
         <small>
@@ -40,13 +40,13 @@ const IntegrationSuccess = (props) => {
 
 IntegrationSuccess.propTypes = {
   errorCount: PropTypes.number.isRequired,
-  workspaceNames: PropTypes.array.isRequired,
+  totalCount: PropTypes.array.isRequired,
 };
 
 
 const IntegrationFailed = (props) => {
   const { t } = useTranslation();
-  const { conductionStatus, workspaceNames } = props;
+  const { errorCount, totalCount } = props;
 
   return (
     <>
@@ -65,11 +65,11 @@ const IntegrationFailed = (props) => {
             </div>
           </div>
         </div>
-        <ConductionStatusHr conductionStatus={conductionStatus} />
+        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
         <i className="icon-info text-danger" />
-        <ConductionStatusHr conductionStatus={conductionStatus} />
+        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
         <small
@@ -83,15 +83,15 @@ const IntegrationFailed = (props) => {
 };
 
 IntegrationFailed.propTypes = {
-  conductionStatus: PropTypes.string.isRequired,
-  workspaceNames: PropTypes.array.isRequired,
+  errorCount: PropTypes.number.isRequired,
+  totalCount: PropTypes.array.isRequired,
 
 };
 
 
 const SomeWorkSpacesNotIntegration = (props) => {
   const { t } = useTranslation();
-  const { conductionStatus, workspaceNames } = props;
+  const { errorCount, totalCount } = props;
 
   return (
     <>
@@ -110,11 +110,11 @@ const SomeWorkSpacesNotIntegration = (props) => {
             </div>
           </div>
         </div>
-        <ConductionStatusHr conductionStatus={conductionStatus} />
+        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
         <i className="icon-info text-danger" />
-        <hr className="align-self-center admin-border-danger border-danger"></hr>
+        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
         <small
@@ -128,16 +128,14 @@ const SomeWorkSpacesNotIntegration = (props) => {
 };
 
 SomeWorkSpacesNotIntegration.propTypes = {
-  conductionStatus: PropTypes.string.isRequired,
-  workspaceNames: PropTypes.array.isRequired,
+  errorCount: PropTypes.number.isRequired,
+  totalCount: PropTypes.array.isRequired,
 
 };
 
 
 const IntegrationStatus = (props) => {
   const { workspaceNames } = props;
-
-  console.log(workspaceNames);
 
   let errorCount = 0;
   workspaceNames.forEach((w) => {
@@ -151,20 +149,20 @@ const IntegrationStatus = (props) => {
       {errorCount === 0 && workspaceNames.length !== 0 && (
       <IntegrationSuccess
         errorCount={errorCount}
-        workspaceNames={workspaceNames}
+        totalCount={workspaceNames.length}
       />
       )}
       {errorCount === workspaceNames.length && (
       <IntegrationFailed
         errorCount={errorCount}
-        workspaceNames={workspaceNames}
+        totalCount={workspaceNames.length}
       />
       )}
 
       {errorCount >= 1 && errorCount < workspaceNames.length && (
       <SomeWorkSpacesNotIntegration
         errorCount={errorCount}
-        workspaceNames={workspaceNames}
+        totalCount={workspaceNames.length}
       />
       )}
     </>
