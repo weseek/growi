@@ -33,7 +33,7 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
-    -name: Setup gcloud
+    - name: Setup gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
         service_account_key: ${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}
