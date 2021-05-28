@@ -17,7 +17,6 @@ const CustomBotWithProxySettings = (props) => {
   } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
-  // const [integrationIdToRegenerateTokens, setIntegrationIdToRegenerateTokens] = useState(null);
   const { t } = useTranslation();
 
   const workspaceNameObjects = Object.values(connectionStatuses);
@@ -128,7 +127,6 @@ const CustomBotWithProxySettings = (props) => {
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}
-                fetchSlackIntegrationData={fetchSlackIntegrationData}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />

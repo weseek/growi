@@ -76,12 +76,12 @@ const RegisteringProxyUrlProcess = () => {
 
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
-  const { appContainer, slackAppIntegrationId /* , fetchSlackIntegrationData */ } = props;
+  const { appContainer, slackAppIntegrationId } = props;
 
   const regenerateTokensHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { slackAppIntegrationId });
-      // fetchSlackIntegrationData();
+      // TODO: fetch data by GW-6160
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
     catch (err) {
