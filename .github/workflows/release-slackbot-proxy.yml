@@ -34,8 +34,9 @@ jobs:
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
     - name: Setup gcloud
-      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      uses: google-github-actions/setup-gcloud@master
       with:
+        project_id: ${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}
         service_account_key: ${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}
         export_default_credentials: true
 
