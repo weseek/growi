@@ -23,6 +23,7 @@ const CustomBotWithProxySettings = (props) => {
   const workspaceNames = workspaceNameObjects.map((w) => {
     return w.workspaceName;
   });
+  console.log(workspaceNames);
 
   useEffect(() => {
     if (proxyServerUri != null) {
@@ -97,8 +98,6 @@ const CustomBotWithProxySettings = (props) => {
             { name: 'wsName2', active: false },
           ]
         }
-        isSlackScopeSet
-        connectionStatuses={connectionStatuses}
         workspaceNames={workspaceNames}
       />
 

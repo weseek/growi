@@ -113,7 +113,7 @@ CustomBotWithProxyIntegrationCard.propTypes = {
   growiApps: PropTypes.array.isRequired,
   slackWorkSpaces: PropTypes.array,
   isSlackScopeSet: PropTypes.bool,
-  workspaceNames: PropTypes.array,
+  workspaceNames: PropTypes.array.isRequired,
 };
 
 export default CustomBotWithProxyIntegrationCard;
