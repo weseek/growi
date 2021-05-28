@@ -374,6 +374,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create slack app integration
    */
   router.put('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    // TODO: refactering generateAccessTokens by GW-6100
     let checkTokens;
     let tokenGtoP;
     let tokenPtoG;
@@ -397,6 +398,7 @@ module.exports = (crowi) => {
   });
 
   // TODO: add swagger by GW-6161
+  // TODO: refactering generateAccessTokens by GW-6100
   router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     const { slackAppIntegrationId } = req.body;
