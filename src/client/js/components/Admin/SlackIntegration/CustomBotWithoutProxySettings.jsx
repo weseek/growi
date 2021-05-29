@@ -85,7 +85,6 @@ const CustomBotWithoutProxySettings = (props) => {
           testChannel={testChannel}
           onTestFormSubmitted={testConnection}
           inputTestChannelHandler={inputTestChannelHandler}
-
         />
       </div>
       <DeleteSlackBotSettingsModal
