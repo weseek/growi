@@ -3,142 +3,54 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import ConductionStatusHr from './ConductionStatusHr';
+const ProxyCircle = () => (
+  <div className="grw-bridge-proxy-circle position-absolute bg-primary border-light">
+    <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+  </div>
+);
 
-const ProxyCircle = () => {
+const Bridge = (props) => {
+  const {
+    description, iconClass, hrClass, withProxy,
+  } = props;
+
   return (
-    <div className="pt-2">
-      <div className="position-relative mt-5">
-        <div className="circle position-absolute bg-primary border-light">
-          <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+    <>
+      <div id="grw-bridge-container" className={`grw-bridge-container ${withProxy ? 'with-proxy' : ''}`}>
+        <p className="label">
+          <i className={iconClass} />
+          <small
+            className="ml-2 d-none d-lg-inline"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
+        </p>
+        <div className="hr-container">
+          { withProxy && <ProxyCircle /> }
+          <hr className={`align-self-center ${hrClass}`} />
         </div>
       </div>
-    </div>
-  );
-};
-
-const IntegrationSuccess = (props) => {
-  const { t } = useTranslation();
-  const { errorCount, totalCount, isWithoutProxy } = props;
-
-  return (
-    <>
-      <div className="d-none d-lg-block">
-        {isWithoutProxy ? (
-          <p className="text-success small mt-5">
-            <i className="fa fa-check mr-1" />
-            {t('admin:slack_integration.integration_sentence.integration_successful')}
-          </p>
-          ) : (
-            <>
-              <p className="text-success small">
-                <i className="fa fa-check mr-1" />
-                {t('admin:slack_integration.integration_sentence.integration_successful')}
-              </p>
-              <ProxyCircle />
-            </>
-         )}
-        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
-      </div>
-      <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
-        <i className="fa fa-check mr-1 text-success" />
-        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
-      </div>
-      <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
-        <small>
-          {t('admin:slack_integration.integration_sentence.integration_successful')}
-        </small>
-      </UncontrolledTooltip>
-    </>
-  );
-};
-
-IntegrationSuccess.propTypes = {
-  errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  isWithoutProxy: PropTypes.bool.isRequired,
-};
-
-
-const IntegrationFailed = (props) => {
-  const { t } = useTranslation();
-  const { errorCount, totalCount, isWithoutProxy } = props;
-
-  return (
-    <>
-      <div className="d-none d-lg-block">
-        <p className="mt-4">
-          <small
-            className="text-danger m-0"
-          // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
-          />
-        </p>
-        {!isWithoutProxy && (<ProxyCircle />)}
-        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
-      </div>
-      <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
-        <i className="icon-info text-danger" />
-        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
-      </div>
-      <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
+      <UncontrolledTooltip placement="top" fade={false} target="grw-bridge-container" className="d-block d-lg-none">
         <small
-          className="m-0"
-        // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: description }}
         />
       </UncontrolledTooltip>
     </>
   );
 };
 
-IntegrationFailed.propTypes = {
-  errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  isWithoutProxy: PropTypes.bool.isRequired,
-};
-
-
-const SomeWorkSpacesNotIntegration = (props) => {
-  const { t } = useTranslation();
-  const { errorCount, totalCount } = props;
-
-  return (
-    <>
-      <div className="d-none d-lg-block">
-        <p className="mt-4">
-          <small
-            className="text-danger m-0"
-          // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete') }}
-          />
-        </p>
-        <ProxyCircle />
-        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
-      </div>
-      <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
-        <i className="icon-info text-danger" />
-        <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
-      </div>
-      <UncontrolledTooltip placement="top" fade={false} target="integration-line-for-tooltip">
-        <small
-          className="m-0"
-        // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete') }}
-        />
-      </UncontrolledTooltip>
-    </>
-  );
-};
-
-SomeWorkSpacesNotIntegration.propTypes = {
-  errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
+Bridge.propTypes = {
+  description: PropTypes.string.isRequired,
+  iconClass: PropTypes.string.isRequired,
+  hrClass: PropTypes.string.isRequired,
+  withProxy: PropTypes.bool.isRequired,
 };
 
 
 const IntegrationStatus = (props) => {
-  const { workspaceNames, isWithoutProxy } = props;
+  const { t } = useTranslation();
+  const { workspaceNames, withProxy } = props;
 
   let errorCount = 0;
   workspaceNames.forEach((w) => {
@@ -146,41 +58,47 @@ const IntegrationStatus = (props) => {
       errorCount++;
     }
   });
+  // TODO: inject from props
+  const totalCount = workspaceNames.length;
+
+  let description;
+  let iconClass;
+  let hrClass;
+
+  // empty or all failed
+  if (totalCount === 0 || errorCount === totalCount) {
+    description = t('admin:slack_integration.integration_sentence.integration_is_not_complete');
+    iconClass = 'icon-info text-danger';
+    hrClass = 'border-danger admin-border-failed';
+  }
+  // all green
+  else if (errorCount === 0) {
+    description = t('admin:slack_integration.integration_sentence.integration_successful');
+    iconClass = 'fa fa-check text-success';
+    hrClass = 'border-success admin-border-success';
+  }
+  // some of them failed
+  else {
+    description = t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete');
+    iconClass = 'fa fa-check text-warning';
+    hrClass = 'border-warning admin-border-failed';
+  }
 
   return (
     <>
-      {errorCount === 0 && workspaceNames.length !== 0 && (
-      <IntegrationSuccess
-        errorCount={errorCount}
-        totalCount={workspaceNames.length}
-        isWithoutProxy={isWithoutProxy}
+      <Bridge
+        description={description}
+        iconClass={iconClass}
+        hrClass={hrClass}
+        withProxy={withProxy}
       />
-      )}
-      {errorCount === workspaceNames.length && (
-      <IntegrationFailed
-        errorCount={errorCount}
-        totalCount={workspaceNames.length}
-        isWithoutProxy={isWithoutProxy}
-      />
-      )}
-
-      {errorCount >= 1 && errorCount < workspaceNames.length && (
-      <SomeWorkSpacesNotIntegration
-        errorCount={errorCount}
-        totalCount={workspaceNames.length}
-      />
-      )}
     </>
   );
 };
 
-IntegrationStatus.defaultProps = {
-  isWithoutProxy: false,
-};
-
 IntegrationStatus.propTypes = {
   workspaceNames: PropTypes.array.isRequired,
-  isWithoutProxy: PropTypes.bool,
+  withProxy: PropTypes.bool,
 };
 
 export default IntegrationStatus;

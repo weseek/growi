@@ -30,7 +30,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        <IntegrationStatus workspaceNames={[workspaceName]} isWithoutProxy />
+        <IntegrationStatus workspaceNames={[workspaceName]} />
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">

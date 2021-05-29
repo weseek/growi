@@ -122,31 +122,47 @@ $slack-work-space-name-card-border: #efc1f6;
     .admin-bot-card {
       border-radius: 8px !important;
     }
-    .admin-border-danger {
+    .admin-border-failed {
       border-style: dashed;
       border-width: 2px;
     }
     .admin-border-success {
       border-width: 3px;
     }
-    .circle {
-      top: 50%;
+
+    .grw-bridge-proxy-circle {
       left: 50%;
       width: 100px;
       height: 100px;
       border: 13px solid;
       border-radius: 50%;
-      -webkit-transform: translate(-50%, -50%);
-      -ms-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
+
+      .circle-inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
-    .circle-inner {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -webkit-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
+
+    // switch layout for Bridge component
+    .grw-bridge-container {
+      .label {
+        @extend .mt-5;
+      }
+
+      // with ProxyCircle
+      &.with-proxy {
+        .label {
+          @extend .mt-0;
+        }
+        .hr-container {
+          margin-top: 65px;
+        }
+      }
     }
+
     .slack-work-space-name-card {
       background-color: $slack-work-space-name-card-background;
       border: 1px solid $slack-work-space-name-card-border;
