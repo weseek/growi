@@ -22,7 +22,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const connectionStatusValues = Object.values(connectionStatuses);
   const isConnectedFailed = connectionStatusValues.some(e => e.error);
 
-
   const resetSettings = async() => {
     if (onResetSettings == null) {
       return;
