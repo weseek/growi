@@ -9,7 +9,7 @@ const ProxyCircle = () => (
   </div>
 );
 
-const Bridge = (props) => {
+const BridgeCore = (props) => {
   const {
     description, iconClass, hrClass, withProxy,
   } = props;
@@ -40,7 +40,7 @@ const Bridge = (props) => {
   );
 };
 
-Bridge.propTypes = {
+BridgeCore.propTypes = {
   description: PropTypes.string.isRequired,
   iconClass: PropTypes.string.isRequired,
   hrClass: PropTypes.string.isRequired,
@@ -48,7 +48,7 @@ Bridge.propTypes = {
 };
 
 
-const IntegrationStatus = (props) => {
+const Bridge = (props) => {
   const { t } = useTranslation();
   const { workspaceNames, withProxy } = props;
 
@@ -85,20 +85,18 @@ const IntegrationStatus = (props) => {
   }
 
   return (
-    <>
-      <Bridge
-        description={description}
-        iconClass={iconClass}
-        hrClass={hrClass}
-        withProxy={withProxy}
-      />
-    </>
+    <BridgeCore
+      description={description}
+      iconClass={iconClass}
+      hrClass={hrClass}
+      withProxy={withProxy}
+    />
   );
 };
 
-IntegrationStatus.propTypes = {
+Bridge.propTypes = {
   workspaceNames: PropTypes.array.isRequired,
   withProxy: PropTypes.bool,
 };
 
-export default IntegrationStatus;
+export default Bridge;

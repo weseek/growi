@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import IntegrationStatus from './IntegrationStatus';
+import Bridge from './Bridge';
 
 const CustomBotWithoutProxyIntegrationCard = (props) => {
   const { siteName, connectionStatusValues, isConnectedFailed } = props;
@@ -30,7 +30,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        <IntegrationStatus workspaceNames={[workspaceName]} />
+        <Bridge workspaceNames={[workspaceName]} />
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
