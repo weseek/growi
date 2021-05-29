@@ -19,8 +19,8 @@ const CustomBotWithoutProxySettings = (props) => {
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
-  const connectionStatusArray = Object.values(connectionStatuses);
-  const isConnectedFailed = connectionStatusArray.some(e => e.error);
+  const connectionStatusValues = Object.values(connectionStatuses);
+  const isConnectedFailed = connectionStatusValues.some(e => e.error);
 
 
   const resetSettings = async() => {
@@ -60,7 +60,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
-        connectionStatusArray={connectionStatusArray}
+        connectionStatusValues={connectionStatusValues}
         isConnectedFailed={isConnectedFailed}
       />
 
