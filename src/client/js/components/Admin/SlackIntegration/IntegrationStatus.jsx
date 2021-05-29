@@ -5,6 +5,18 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import ConductionStatusHr from './ConductionStatusHr';
 
+const ProxyCircle = () => {
+  return (
+    <div className="pt-2">
+      <div className="position-relative mt-5">
+        <div className="circle position-absolute bg-primary border-light">
+          <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const IntegrationSuccess = (props) => {
   const { t } = useTranslation();
   const { errorCount, totalCount, isWithoutProxy } = props;
@@ -23,13 +35,7 @@ const IntegrationSuccess = (props) => {
                 <i className="fa fa-check mr-1" />
                 {t('admin:slack_integration.integration_sentence.integration_successful')}
               </p>
-              <div className="pt-2">
-                <div className="position-relative mt-5">
-                  <div className="circle position-absolute bg-primary border-light">
-                    <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
-                  </div>
-                </div>
-              </div>
+              <ProxyCircle />
             </>
          )}
         <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
@@ -68,17 +74,7 @@ const IntegrationFailed = (props) => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_is_not_complete') }}
           />
         </p>
-        {!isWithoutProxy && (
-        <>
-          <div className="pt-2">
-            <div className="position-relative mt-5">
-              <div className="circle position-absolute bg-primary border-light">
-                <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
-              </div>
-            </div>
-          </div>
-        </>
-        )}
+        {!isWithoutProxy && (<ProxyCircle />)}
         <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
@@ -117,13 +113,7 @@ const SomeWorkSpacesNotIntegration = (props) => {
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete') }}
           />
         </p>
-        <div className="pt-2">
-          <div className="position-relative mt-5">
-            <div className="circle position-absolute bg-primary border-light">
-              <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
-            </div>
-          </div>
-        </div>
+        <ProxyCircle />
         <ConductionStatusHr errorCount={errorCount} totalCount={totalCount} />
       </div>
       <div id="integration-line-for-tooltip" className="d-block d-lg-none mt-5">
