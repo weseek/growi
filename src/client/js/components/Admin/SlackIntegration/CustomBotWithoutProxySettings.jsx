@@ -19,10 +19,9 @@ const CustomBotWithoutProxySettings = (props) => {
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
-  const workspaceNameObjects = Object.values(connectionStatuses);
-  const workspaceNames = workspaceNameObjects.map((w) => {
-    return w.workspaceName;
-  });
+  const connectionStatusArray = Object.values(connectionStatuses);
+  const isConnectedFailed = connectionStatusArray.some(e => e.error);
+
 
   const resetSettings = async() => {
     if (onResetSettings == null) {
@@ -61,7 +60,8 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
-        workspaceNames={workspaceNames}
+        connectionStatusArray={connectionStatusArray}
+        isConnectedFailed={isConnectedFailed}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
@@ -74,8 +74,8 @@ const CustomBotWithoutProxySettings = (props) => {
       >{t('admin:slack_integration.reset')}
       </button>
       )}
-
       <div className="my-5 mx-3">
+        {isConnectedFailed && (<>Settings #1 <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)}
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
