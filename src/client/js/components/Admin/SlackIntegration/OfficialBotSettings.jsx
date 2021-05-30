@@ -113,7 +113,7 @@ const OfficialBotSettings = (props) => {
         {slackAppIntegrations.map((slackAppIntegration) => {
           const { tokenGtoP, tokenPtoG } = slackAppIntegration;
           return (
-            <React.Fragment key={slackAppIntegration.id}>
+            <React.Fragment key={slackAppIntegration._id}>
               <div className="d-flex justify-content-end">
                 <button
                   className="my-3 btn btn-outline-danger"
