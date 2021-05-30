@@ -2,8 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Bridge from './Bridge';
 
-const CustomBotWithProxyIntegrationCard = (props) => {
-  const { workspaceNames } = props;
+const CustomBotWithProxyConnectionStatus = (props) => {
+  const { siteName, connectionStatuses } = props;
+
+  const connectionStatusValues = Object.values(connectionStatuses); // type: ConnectionStatus[]
+
+  const totalCount = connectionStatusValues.length;
+  const errorCount = connectionStatusValues.filter(connectionStatus => connectionStatusValues.error != null).length;
 
   return (
     <div className="d-flex justify-content-center my-5 bot-integration">
@@ -11,11 +16,13 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       <div className="card rounded shadow border-0 w-50 admin-bot-card">
         <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
         <div className="card-body px-5">
-          {props.slackWorkSpaces.map((slackWorkSpaceName) => {
+          {connectionStatusValues.map((connectionStatus, i) => {
+            const workspaceName = connectionStatus.workspaceName || `Settings #${i}`;
+
             return (
-              <div key={slackWorkSpaceName.name} className={slackWorkSpaceName.active ? 'card slack-work-space-name-card' : ''}>
+              <div key={workspaceName} className="card slack-work-space-name-card">
                 <div className="m-2 text-center">
-                  <h5 className="font-weight-bold">{slackWorkSpaceName.name}</h5>
+                  <h5 className="font-weight-bold">{workspaceName}</h5>
                   <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
                 </div>
               </div>
@@ -25,7 +32,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25 mt-3">
-        <Bridge workspaceNames={workspaceNames} withProxy />
+        <Bridge errorCount={errorCount} totalCount={totalCount} withProxy />
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
@@ -37,7 +44,7 @@ const CustomBotWithProxyIntegrationCard = (props) => {
         </div>
         <div className="card-body text-center">
           <div className="mt-5 border p-2 mx-3 bg-primary text-light">
-            {props.siteName}
+            {siteName}
           </div>
         </div>
       </div>
@@ -45,11 +52,9 @@ const CustomBotWithProxyIntegrationCard = (props) => {
   );
 };
 
-CustomBotWithProxyIntegrationCard.propTypes = {
+CustomBotWithProxyConnectionStatus.propTypes = {
   siteName: PropTypes.string.isRequired,
-  slackWorkSpaces: PropTypes.array,
-  isSlackScopeSet: PropTypes.bool,
-  workspaceNames: PropTypes.array.isRequired,
+  connectionStatuses: PropTypes.object.isRequired,
 };
 
-export default CustomBotWithProxyIntegrationCard;
+export default CustomBotWithProxyConnectionStatus;
