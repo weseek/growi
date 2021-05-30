@@ -44,7 +44,7 @@ BridgeCore.propTypes = {
   description: PropTypes.string.isRequired,
   iconClass: PropTypes.string.isRequired,
   hrClass: PropTypes.string.isRequired,
-  withProxy: PropTypes.bool.isRequired,
+  withProxy: PropTypes.bool,
 };
 
 
