@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
-import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
+import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
@@ -20,11 +20,6 @@ const OfficialBotSettings = (props) => {
   const { t } = useTranslation();
 
   const [newProxyServerUri, setNewProxyServerUri] = useState();
-
-  const workspaceNameObjects = Object.values(connectionStatuses);
-  const workspaceNames = workspaceNameObjects.map((w) => {
-    return w.workspaceName;
-  });
 
   useEffect(() => {
     if (proxyServerUri != null) {
@@ -91,16 +86,9 @@ const OfficialBotSettings = (props) => {
   return (
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}</h2>
-      {/* TODO delete tmp props */}
-      <CustomBotWithProxyIntegrationCard
+      <CustomBotWithProxyConnectionStatus
         siteName={siteName}
-        slackWorkSpaces={
-          [
-            { name: 'wsName1', active: true },
-            { name: 'wsName2', active: false },
-          ]
-        }
-        workspaceNames={workspaceNames}
+        connectionStatuses={connectionStatuses}
       />
 
       <div className="form-group row my-4">
@@ -138,8 +126,9 @@ const OfficialBotSettings = (props) => {
               </div>
               <WithProxyAccordions
                 botType="officialBot"
-                discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
-                generateTokenHandler={generateTokenHandler}
+
+                slackAppIntegrationId={slackAppIntegration._id}
+                onClickGenerateTokenBtn={generateTokenHandler}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
