@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 import Bridge from './Bridge';
 
 const CustomBotWithoutProxyIntegrationCard = (props) => {
-  const { siteName, connectionStatusValues, isConnectedFailed } = props;
-  const isEmptyconnectionStatusValues = (connectionStatusValues.length === 0);
+  const { siteName, connectionStatuses } = props;
+
+  const connectionStatusValues = Object.values(connectionStatuses); // type: ConnectionStatus[]
+
+  const totalCount = connectionStatusValues.length;
+  const errorCount = connectionStatusValues.filter(connectionStatus => connectionStatusValues.error != null).length;
 
   let workspaceName;
-  if (!isEmptyconnectionStatusValues) {
+  if (totalCount > 0) {
     workspaceName = connectionStatusValues[0].workspaceName;
   }
 
@@ -16,11 +20,11 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       <div className="card rounded shadow border-0 w-50 admin-bot-card mb-0">
         <h5 className="card-title font-weight-bold mt-3 ml-4">Slack</h5>
         <div className="card-body p-2 w-50 mx-auto">
-          {isEmptyconnectionStatusValues ? '' : (
+          {totalCount > 0 ? '' : (
             <div className="card slack-work-space-name-card">
               <div className="m-2 text-center">
                 <h5 className="font-weight-bold">
-                  {isConnectedFailed ? 'Settings #1' : workspaceName}
+                  {workspaceName != null ? workspaceName : 'Settings #1'}
                 </h5>
                 <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
               </div>
@@ -30,7 +34,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
       </div>
 
       <div className="text-center w-25">
-        <Bridge workspaceNames={[workspaceName]} />
+        <Bridge errorCount={errorCount} totalCount={totalCount} />
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card mb-0">
@@ -47,8 +51,7 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
 
 CustomBotWithoutProxyIntegrationCard.propTypes = {
   siteName: PropTypes.string.isRequired,
-  connectionStatusValues: PropTypes.array.isRequired,
-  isConnectedFailed: PropTypes.bool.isRequired,
+  connectionStatuses: PropTypes.object.isRequired,
 };
 
 export default CustomBotWithoutProxyIntegrationCard;

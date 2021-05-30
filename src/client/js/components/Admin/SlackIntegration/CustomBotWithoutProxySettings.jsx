@@ -19,9 +19,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
-  const connectionStatusValues = Object.values(connectionStatuses);
-  const isConnectedFailed = connectionStatusValues.some(e => e.error);
-
   const resetSettings = async() => {
     if (onResetSettings == null) {
       return;
@@ -59,8 +56,7 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <CustomBotWithoutProxyIntegrationCard
         siteName={siteName}
-        connectionStatusValues={connectionStatusValues}
-        isConnectedFailed={isConnectedFailed}
+        connectionStatuses={connectionStatuses}
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
@@ -74,7 +70,7 @@ const CustomBotWithoutProxySettings = (props) => {
       </button>
       )}
       <div className="my-5 mx-3">
-        {isConnectedFailed && (<>Settings #1 <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)}
+        {/* {isConnectedFailed && (<>Settings #1 <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)} */}
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
@@ -101,10 +97,12 @@ const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWit
 CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
+
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
+
   isRgisterSlackCredentials: PropTypes.bool,
   isIntegrationSuccess: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,

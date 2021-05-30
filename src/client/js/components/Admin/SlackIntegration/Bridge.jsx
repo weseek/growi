@@ -50,16 +50,7 @@ BridgeCore.propTypes = {
 
 const Bridge = (props) => {
   const { t } = useTranslation();
-  const { workspaceNames, withProxy } = props;
-
-  let errorCount = 0;
-  workspaceNames.forEach((w) => {
-    if (w == null) {
-      errorCount++;
-    }
-  });
-  // TODO: inject from props
-  const totalCount = workspaceNames.length;
+  const { errorCount, totalCount, withProxy } = props;
 
   let description;
   let iconClass;
@@ -95,7 +86,8 @@ const Bridge = (props) => {
 };
 
 Bridge.propTypes = {
-  workspaceNames: PropTypes.array.isRequired,
+  errorCount: PropTypes.number.isRequired,
+  totalCount: PropTypes.number.isRequired,
   withProxy: PropTypes.bool,
 };
 
