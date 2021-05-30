@@ -261,7 +261,6 @@
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
       "detailed_explanation": "詳しい説明はこちら",
-      "selecting_bot_type": "・Botタイプを選択する",
       "official_bot": "Official bot",
       "custom_bot": "Custom bot",
       "without_proxy": "without proxy",
