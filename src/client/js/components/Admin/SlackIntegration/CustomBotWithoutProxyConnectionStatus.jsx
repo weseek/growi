@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Bridge from './Bridge';
 
-const CustomBotWithoutProxyIntegrationCard = (props) => {
+const CustomBotWithoutProxyConnectionStatus = (props) => {
   const { siteName, connectionStatuses } = props;
 
   const connectionStatusValues = Object.values(connectionStatuses); // type: ConnectionStatus[]
@@ -49,9 +49,9 @@ const CustomBotWithoutProxyIntegrationCard = (props) => {
   );
 };
 
-CustomBotWithoutProxyIntegrationCard.propTypes = {
+CustomBotWithoutProxyConnectionStatus.propTypes = {
   siteName: PropTypes.string.isRequired,
   connectionStatuses: PropTypes.object.isRequired,
 };
 
-export default CustomBotWithoutProxyIntegrationCard;
+export default CustomBotWithoutProxyConnectionStatus;

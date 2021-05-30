@@ -5,7 +5,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
-import CustomBotWithoutProxyIntegrationCard from './CustomBotWithoutProxyIntegrationCard';
+import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
@@ -54,7 +54,7 @@ const CustomBotWithoutProxySettings = (props) => {
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
-      <CustomBotWithoutProxyIntegrationCard
+      <CustomBotWithoutProxyConnectionStatus
         siteName={siteName}
         connectionStatuses={connectionStatuses}
       />
