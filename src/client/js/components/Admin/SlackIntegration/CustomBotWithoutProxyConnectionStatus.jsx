@@ -8,7 +8,7 @@ const CustomBotWithoutProxyConnectionStatus = (props) => {
   const connectionStatusValues = Object.values(connectionStatuses); // type: ConnectionStatus[]
 
   const totalCount = connectionStatusValues.length;
-  const errorCount = connectionStatusValues.filter(connectionStatusValue => connectionStatusValue.error != null).length;
+  const errorCount = connectionStatusValues.filter(connectionStatus => connectionStatus.error != null).length;
 
   let workspaceName;
   if (totalCount > 0) {
