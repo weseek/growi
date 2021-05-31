@@ -16,7 +16,8 @@ export const i18nFactory = (userLocaleId) => {
       return userLocaleId;
     },
   });
-  // Defined detection from the browser to convert id
+
+  // Wrapper to convert lang after detected
   const languageDetectorWrapper = new LanguageDetectorWrapper(langDetector);
 
   i18n
