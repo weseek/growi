@@ -4,6 +4,7 @@
 
 * Support: Upgrade libs
     * string-width
+    * archiver
 
 ## v4.2.18
 
