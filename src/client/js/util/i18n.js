@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import locales from '@root/resource/locales';
-import LanguageConverter from './LanguageConverter';
+import LanguageDetectorWrapper from './LanguageDetectorWrapper';
 
 // extract metadata list from 'resource/locales/${locale}/meta.json'
 export const localeMetadatas = Object.values(locales).map(locale => locale.meta);
@@ -17,11 +17,10 @@ export const i18nFactory = (userLocaleId) => {
     },
   });
   // Defined detection from the browser to convert id
-  // See Reference: https://github.com/i18next/i18next-browser-languageDetector/blob/master/src/browserLookups/navigator.js
-  const languageConverter = new LanguageConverter(langDetector);
+  const languageDetectorWrapper = new LanguageDetectorWrapper(langDetector);
 
   i18n
-    .use(languageConverter)
+    .use(languageDetectorWrapper)
     .use(initReactI18next) // if not using I18nextProvider
     .init({
       debug: (process.env.NODE_ENV !== 'production'),
@@ -29,7 +28,7 @@ export const i18nFactory = (userLocaleId) => {
       load: 'currentOnly',
 
       fallbackLng: 'en_US',
-      detection: 'languageConverter',
+      detection: 'languageDetectorWrapper',
 
       interpolation: {
         escapeValue: false, // not needed for react!!

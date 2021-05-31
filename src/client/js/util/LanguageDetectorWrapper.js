@@ -1,9 +1,9 @@
 import locales from '@root/resource/locales';
 
-class LanguageConverter {
+class LanguageDetectorWrapper {
 
   constructor(langDetector) {
-    this.name = 'languageConverter';
+    this.name = 'languageDetectorWrapper';
     this.type = 'languageDetector';
 
     this.langDetector = langDetector;
@@ -39,4 +39,4 @@ class LanguageConverter {
 
 }
 
-export default LanguageConverter;
+export default LanguageDetectorWrapper;
