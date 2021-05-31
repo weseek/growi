@@ -19,6 +19,7 @@ export class RegisterService implements GrowiCommandProcessor {
       trigger_id: body.trigger_id,
       view: {
         type: 'modal',
+        callback_id: 'register',
         title: {
           type: 'plain_text',
           text: 'Register Credentials',
