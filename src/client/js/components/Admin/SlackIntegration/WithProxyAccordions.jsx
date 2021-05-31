@@ -80,7 +80,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 
   const regenerateTokensHandler = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/access-tokens', { slackAppIntegrationId });
+      await appContainer.apiv3.put('/slack-integration-settings/regenerate-tokens', { slackAppIntegrationId });
       // TODO: fetch data by GW-6160
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }

@@ -399,7 +399,7 @@ module.exports = (crowi) => {
 
   // TODO: add swagger by GW-6161
   // TODO: refactering generateAccessTokens by GW-6100
-  router.put('/access-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.put('/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     const { slackAppIntegrationId } = req.body;
 
