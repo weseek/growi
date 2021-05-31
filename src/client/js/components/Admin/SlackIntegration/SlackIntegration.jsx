@@ -107,7 +107,6 @@ const SlackIntegration = (props) => {
       setIsSlackCredentials(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
-      setSlackWSNameInWithoutProxy(null);
     }
     catch (err) {
       toastError(err);
