@@ -157,12 +157,12 @@ module.exports = (crowi) => {
     }
   };
 
-  const handleViewSubmission = async(payload) => {
+  const handleViewSubmission = async(client, payload) => {
     const { callback_id: callbackId } = payload.view;
 
     switch (callbackId) {
       case 'createPage':
-        await crowi.slackBotService.createPageInGrowi(payload);
+        await crowi.slackBotService.createPageInGrowi(client, payload);
         break;
       default:
         break;
