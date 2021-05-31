@@ -1,3 +1,5 @@
+import locales from '@root/resource/locales';
+
 class LanguageConverter {
 
   constructor(langDetector) {
@@ -6,18 +8,22 @@ class LanguageConverter {
 
     this.langDetector = langDetector;
   }
-  //  browserLanguageIdMapping = {
-  //   zh: 'zh_CN',
-  //   ja: 'ja_JP',
-  //   en: 'en_US',
-  // };
 
   detect() {
-    const lang = this.langDetector.detect(['userSettingDetector', 'querystring']);
-    // detect id from browserLanguageIdMapping
-    // return browserLanguageIdMapping[found.find(v => Object.keys(browserLanguageIdMapping).includes(v))];
+    const lang = this.langDetector.detect(['userSettingDetector', 'navigator', 'querystring']);
 
-    return lang;
+    if (lang == null) {
+      return;
+    }
+
+    const browserLanguageIdMapping = {};
+    Object.values(locales).forEach((locale) => {
+      browserLanguageIdMapping[locale.meta.browserLanguageId] = locale.meta.id;
+    });
+    if (Object.values(browserLanguageIdMapping).includes(lang)) {
+      return lang;
+    }
+    return browserLanguageIdMapping[lang];
   }
 
   init(services, options = {}, i18nOptions = {}) {
