@@ -399,7 +399,19 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO: add swagger by GW-6161
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/regenerate-tokens:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: putRegenerateTokens
+   *        summary: /slack-integration
+   *        description: Regenerate SlackAppTokens
+   *        responses:
+   *          200:
+   *            description: Succeeded to regenerate slack app tokens
+   */
   // TODO: refactering generateAccessTokens by GW-6100
   router.put('/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
