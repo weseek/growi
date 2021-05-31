@@ -407,9 +407,9 @@ module.exports = (crowi) => {
       const generateTokens = SlackAppIntegration.generateAccessToken();
       const newTokenGtoP = generateTokens[0];
       const newTokenPtoG = generateTokens[1];
-      await SlackAppIntegration.findOneAndUpdate({ _id: slackAppIntegrationId }, { tokenGtoP: newTokenGtoP, tokenPtoG: newTokenPtoG });
+      const slackAppTokens = await SlackAppIntegration.findOneAndUpdate({ _id: slackAppIntegrationId }, { tokenGtoP: newTokenGtoP, tokenPtoG: newTokenPtoG });
 
-      return res.apiv3({});
+      return res.apiv3(slackAppTokens, 400);
     }
     catch (error) {
       const msg = 'Error occured in updating access token for slack app tokens';
