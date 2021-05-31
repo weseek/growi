@@ -7,12 +7,6 @@ import LanguageConverter from './LanguageConverter';
 // extract metadata list from 'resource/locales/${locale}/meta.json'
 export const localeMetadatas = Object.values(locales).map(locale => locale.meta);
 
-const browserLanguageIdMapping = {
-  zh: 'zh_CN',
-  ja: 'ja_JP',
-  en: 'en_US',
-};
-
 export const i18nFactory = (userLocaleId) => {
   // setup LanguageDetector
   const langDetector = new LanguageDetector();
@@ -24,37 +18,9 @@ export const i18nFactory = (userLocaleId) => {
   });
   // Defined detection from the browser to convert id
   // See Reference: https://github.com/i18next/i18next-browser-languageDetector/blob/master/src/browserLookups/navigator.js
-  langDetector.addDetector({
-    name: 'userBrowserDetector',
-    lookup(options) {
-      const found = [];
-
-      if (typeof navigator !== 'undefined') {
-        if (navigator.languages) { // chrome only; not an array, so can't use .push.apply instead of iterating
-          for (let i = 0; i < navigator.languages.length; i++) {
-            found.push(navigator.languages[i]);
-          }
-        }
-        if (navigator.userLanguage) {
-          found.push(navigator.userLanguage);
-        }
-        if (navigator.language) {
-          found.push(navigator.language);
-        }
-      }
-
-      if (found.length === 0) {
-        return undefined;
-      }
-      // detect id from browserLanguageIdMapping
-      return browserLanguageIdMapping[found.find(v => Object.keys(browserLanguageIdMapping).includes(v))];
-    },
-  });
-
-  const languageConverter = new LanguageConverter();
+  const languageConverter = new LanguageConverter(langDetector);
 
   i18n
-    .use(langDetector)
     .use(languageConverter)
     .use(initReactI18next) // if not using I18nextProvider
     .init({
@@ -63,9 +29,7 @@ export const i18nFactory = (userLocaleId) => {
       load: 'currentOnly',
 
       fallbackLng: 'en_US',
-      detection: {
-        order: ['userSettingDetector', 'userBrowserDetector', 'querystring'],
-      },
+      detection: 'languageConverter',
 
       interpolation: {
         escapeValue: false, // not needed for react!!
