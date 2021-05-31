@@ -33,6 +33,7 @@ const OfficialBotSettings = (props) => {
     }
   };
 
+  /* commented out to ignore lint error -- 2021.05.31 Yuki Takei
   const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
     try {
       // GW-6068 set new value after this
@@ -43,6 +44,7 @@ const OfficialBotSettings = (props) => {
       logger(err);
     }
   };
+  */
 
   const generateTokenHandler = async() => {
     try {
