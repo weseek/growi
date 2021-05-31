@@ -119,7 +119,6 @@ const OfficialBotSettings = (props) => {
               <WithProxyAccordions
                 botType="officialBot"
                 slackAppIntegrationId={slackAppIntegration._id}
-                onClickGenerateTokenBtn={generateTokenHandler}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
