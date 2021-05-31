@@ -376,11 +376,18 @@ module.exports = (crowi) => {
    *            description: Succeeded to create slack app integration
    */
   router.put('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    // TODO: refactering generateAccessTokens by GW-6100
+    const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
+    if (SlackAppIntegrationRecordsNum >= 10) {
+      const msg = 'Not be able to create more than 10 slack workspace integration settings';
+      logger.error('Error', msg);
+      return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
+    }
+
     let checkTokens;
     let tokenGtoP;
     let tokenPtoG;
     let generateTokens;
+    // TODO: refactering generateAccessTokens by GW-6100
     do {
       generateTokens = SlackAppIntegration.generateAccessToken();
       tokenGtoP = generateTokens[0];

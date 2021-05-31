@@ -67,6 +67,7 @@ class SlackBotService extends S2sMessageHandlable {
     client.chat.postEphemeral({
       channel: body.channel_id,
       user: body.user_id,
+      text: 'No command',
       blocks: [
         this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
@@ -86,6 +87,7 @@ class SlackBotService extends S2sMessageHandlable {
       client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: 'Input keywords',
         blocks: [
           this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
@@ -106,6 +108,7 @@ class SlackBotService extends S2sMessageHandlable {
       client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: `No page found with "${keywords}"`,
         blocks: [
           this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
           this.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
@@ -215,6 +218,7 @@ class SlackBotService extends S2sMessageHandlable {
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: 'Successed To Search',
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
@@ -227,6 +231,7 @@ class SlackBotService extends S2sMessageHandlable {
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: 'Failed To Search',
         blocks: [
           this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
@@ -268,6 +273,7 @@ class SlackBotService extends S2sMessageHandlable {
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: 'Failed To Create',
         blocks: [
           this.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
         ],
