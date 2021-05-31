@@ -201,9 +201,10 @@ export class GrowiToSlackCtrl {
       return res.status(400).send({ message: `failed to send to slack. err: ${err.message}` });
     }
 
-    logger.debug('postMessage is success');
+    logger.debug('send to slack is success');
 
-    return res.end();
+    // required to return ok for apiCall
+    return res.send({ ok: true });
   }
 
 }
