@@ -23,7 +23,7 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
+  const [isSlackCredentials, setIsSlackCredentials] = useState(false);
   const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
@@ -50,11 +50,16 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+
+      setIsSlackCredentials(false);
+      if ((slackBotToken != null && slackSigningSecret != null) || (slackBotTokenEnv != null && slackSigningSecretEnv != null)) {
+        setIsSlackCredentials(true);
+      }
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, slackBotTokenEnv, slackSigningSecretEnv]);
 
   const resetAllSettings = async() => {
     try {
@@ -100,7 +105,7 @@ const SlackIntegration = (props) => {
       });
       setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
-      setIsRegisterSlackCredentials(false);
+      // setIsRegisterSlackCredentials(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
       setSlackWSNameInWithoutProxy(null);
@@ -145,7 +150,7 @@ const SlackIntegration = (props) => {
     case 'customBotWithoutProxy':
       settingsComponent = (
         <CustomBotWithoutProxySettings
-          isRegisterSlackCredentials={isRegisterSlackCredentials}
+          isSlackCredentials={isSlackCredentials}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
@@ -154,6 +159,7 @@ const SlackIntegration = (props) => {
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onResetSettings={resetWithOutSettings}
+          onUpdatedSecretToken={setIsSlackCredentials}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
         />

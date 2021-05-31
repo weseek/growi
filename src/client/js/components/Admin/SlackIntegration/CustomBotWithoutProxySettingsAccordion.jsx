@@ -18,8 +18,8 @@ export const botInstallationStep = {
 const CustomBotWithoutProxySettingsAccordion = ({
   appContainer, activeStep,
   connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
-  isRegisterSlackCredentials, isIntegrationSuccess,
-  fetchSlackIntegrationData, inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken,
+  isRegisterSlackCredentials, isIntegrationSuccess, isSlackCredentials,
+  fetchSlackIntegrationData, inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken, onUpdatedSecretToken,
 }) => {
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
@@ -35,14 +35,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
         slackBotToken,
         currentBotType,
       });
+      onUpdatedSecretToken(true);
 
-      if (fetchSlackIntegrationData == null) {
-        return null;
-      }
-      fetchSlackIntegrationData();
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
+      onUpdatedSecretToken(false);
       toastError(err);
     }
   };
@@ -120,7 +118,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           updateSecretTokenHandler={updateSecretTokenHandler}
