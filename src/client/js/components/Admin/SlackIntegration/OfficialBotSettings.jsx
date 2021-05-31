@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
-import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
+import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
@@ -13,8 +13,9 @@ const logger = loggerFactory('growi:SlackBotSettings');
 
 const OfficialBotSettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn,
+    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses,
   } = props;
+  const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const { t } = useTranslation();
 
@@ -32,6 +33,7 @@ const OfficialBotSettings = (props) => {
     }
   };
 
+  /* commented out to ignore lint error -- 2021.05.31 Yuki Takei
   const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
     try {
       // GW-6068 set new value after this
@@ -42,6 +44,7 @@ const OfficialBotSettings = (props) => {
       logger(err);
     }
   };
+  */
 
   const deleteSlackAppIntegrationHandler = async() => {
     try {
@@ -67,25 +70,17 @@ const OfficialBotSettings = (props) => {
     }
   };
 
+  useEffect(() => {
+    const siteName = appContainer.config.crowi.title;
+    setSiteName(siteName);
+  }, [appContainer]);
+
   return (
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}</h2>
-      {/* TODO delete tmp props */}
-      <CustomBotWithProxyIntegrationCard
-        growiApps={
-          [
-            { name: 'siteName1', active: true },
-            { name: 'siteName2', active: false },
-            { name: 'siteName3', active: false },
-          ]
-        }
-        slackWorkSpaces={
-          [
-            { name: 'wsName1', active: true },
-            { name: 'wsName2', active: false },
-          ]
-        }
-        isSlackScopeSet
+      <CustomBotWithProxyConnectionStatus
+        siteName={siteName}
+        connectionStatuses={connectionStatuses}
       />
 
       <div className="form-group row my-4">
@@ -110,7 +105,7 @@ const OfficialBotSettings = (props) => {
         {slackAppIntegrations.map((slackAppIntegration) => {
           const { tokenGtoP, tokenPtoG } = slackAppIntegration;
           return (
-            <React.Fragment key={slackAppIntegration.id}>
+            <React.Fragment key={slackAppIntegration._id}>
               <div className="d-flex justify-content-end">
                 <button
                   className="my-3 btn btn-outline-danger"
@@ -124,7 +119,7 @@ const OfficialBotSettings = (props) => {
               <WithProxyAccordions
                 botType="officialBot"
                 slackAppIntegrationId={slackAppIntegration._id}
-                discardTokenHandler={() => discardTokenHandler(tokenGtoP, tokenPtoG)}
+                onClickGenerateTokenBtn={generateTokenHandler}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
@@ -164,6 +159,8 @@ OfficialBotSettings.propTypes = {
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
+  connectionStatuses: PropTypes.object.isRequired,
+
 };
 
 export default OfficialBotSettingsWrapper;

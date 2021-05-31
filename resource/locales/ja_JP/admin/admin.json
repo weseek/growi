@@ -261,7 +261,6 @@
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
       "detailed_explanation": "詳しい説明はこちら",
-      "selecting_bot_type": "・Botタイプを選択する",
       "official_bot": "Official bot",
       "custom_bot": "Custom bot",
       "without_proxy": "without proxy",
@@ -298,8 +297,8 @@
     "integration_failed":"連携に失敗しました",
     "reset": "リセット",
     "reset_all_settings": "全ての設定をリセット",
-    "delete_slackbot_settings": "Slack Bot 設定をリセットする",
-    "slackbot_settings_notice": "リセットします",
+    "delete_slackbot_settings": "Slack Bot 設定を削除する",
+    "slackbot_settings_notice": "削除します",
     "all_settings_of_the_bot_will_be_reset": "Botの全ての設定がリセットされます。<br>よろしいですか？",
     "accordion": {
       "create_bot": "Bot を作成する",
@@ -333,7 +332,9 @@
     "custom_bot_without_proxy_integration": "Custom bot without proxy 連携",
     "integration_sentence": {
       "integration_is_not_complete": "連携は完了していません。<br>下記の連携手順を進めてください。",
-      "integration_successful": "連携は完了しています。"
+      "integration_successful": "連携は完了しています。",
+      "integration_some_ws_is_not_complete": "連携に失敗している ワークスペースがあります。"
+
     },
     "custom_bot_with_proxy_integration": "Custom bot with proxy 連携",
     "official_bot_integration": "Official bot 連携"

@@ -263,7 +263,6 @@
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
       "detailed_explanation": "Detailed explanation",
-      "selecting_bot_type": "・Select bot type",
       "official_bot": "Official bot",
       "custom_bot": "Custom bot",
       "without_proxy": "without proxy",
@@ -301,8 +300,8 @@
     "official_bot_settings": "Official bot Settings",
     "reset": "Reset",
     "reset_all_settings": "Reset all settings",
-    "delete_slackbot_settings": "Reset Slack Bot settings",
-    "slackbot_settings_notice": "Reset",
+    "delete_slackbot_settings": "Delete Slack Bot settings",
+    "slackbot_settings_notice": "Delete",
     "all_settings_of_the_bot_will_be_reset": "All settings of the Bot will be reset.<br>Are you sure?",
     "accordion": {
       "create_bot": "Create Bot",
@@ -336,7 +335,8 @@
     "custom_bot_without_proxy_integration": "Custom Bot Without Proxy Integration",
     "integration_sentence": {
       "integration_is_not_complete": "Integration is not complete.<br>Proceed with the following integration procedure.",
-      "integration_successful": "Integration successful"
+      "integration_successful": "Integration successful",
+      "integration_some_ws_is_not_complete": "Some work spaces is not linked"
     },
     "custom_bot_with_proxy_integration": "Custom Bot With Proxy Integration",
     "official_bot_integration": "Official bot integration"

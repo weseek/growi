@@ -41,12 +41,7 @@ const SlackIntegration = (props) => {
       if (data.connectionStatuses == null) {
         data.connectionStatuses = {};
       }
-      // if (data.connectionStatuses != null) {
-      // TODO fix
-      // const { workspaceName } = data.connectionStatuses[slackBotToken];
-      // setSlackWSNameInWithoutProxy(workspaceName);
-      // setConnectionStatuses(data.connectionStatuses);
-      // }
+
       setConnectionStatuses(data.connectionStatuses);
       setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
@@ -143,6 +138,7 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+          connectionStatuses={connectionStatuses}
         />
       );
       break;
@@ -159,6 +155,7 @@ const SlackIntegration = (props) => {
           onSetSlackBotToken={setSlackBotToken}
           onResetSettings={resetWithOutSettings}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
+          connectionStatuses={connectionStatuses}
         />
       );
       break;
@@ -200,19 +197,13 @@ const SlackIntegration = (props) => {
           </a>
         </h2>
 
-        <div className="d-flex justify-content">
-          <div className="mr-auto">
-            {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
-          </div>
-
-          {(currentBotType != null) && (
-            <button
-              className="mx-3 btn btn-outline-danger flex-end"
-              type="button"
-              onClick={() => setIsDeleteConfirmModalShown(true)}
-            >{t('admin:slack_integration.reset_all_settings')}
-            </button>
-          )}
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn btn-outline-danger"
+            type="button"
+            onClick={() => setIsDeleteConfirmModalShown(true)}
+          >{t('admin:slack_integration.reset_all_settings')}
+          </button>
         </div>
 
         <div className="row my-5 flex-wrap-reverse justify-content-center">

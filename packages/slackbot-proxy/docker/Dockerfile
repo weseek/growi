@@ -65,6 +65,7 @@ RUN tar cf packages.tar \
   packages/slack/package.json \
   packages/slack/dist \
   packages/slackbot-proxy/package.json \
+  packages/slackbot-proxy/.env \
   packages/slackbot-proxy/dist
 
 

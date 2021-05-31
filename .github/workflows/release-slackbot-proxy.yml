@@ -33,12 +33,22 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
+    - name: Setup gcloud
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: ${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}
+        service_account_key: ${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}
+        export_default_credentials: true
+
+    - name: Configure docker for gcloud
+      run: |
+        gcloud auth configure-docker --quiet
+
     - name: Build and push
       uses: docker/build-push-action@v2
-      working-directory: ./packages/slackbot-proxy
       with:
         context: .
-        file: ./docker/Dockerfile
+        file: ./packages/slackbot-proxy/docker/Dockerfile
         platforms: linux/amd64
         push: true
         tags: |
@@ -46,12 +56,13 @@ jobs:
           weseek/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
           ghcr.io/weseek/growi-slackbot-proxy:latest
           ghcr.io/weseek/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
+          asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy:latest
+          asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
 
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v2
-      working-directory: ./packages/slackbot-proxy
       with:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         repository: weseek/growi-slackbot-proxy
-        readme-filepath: ./docker/README.md
+        readme-filepath: ./packages/slackbot-proxy/docker/README.md

@@ -5,7 +5,7 @@ import loggerFactory from '@alias/logger';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
-import CustomBotWithProxyIntegrationCard from './CustomBotWithProxyIntegrationCard';
+import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
@@ -17,12 +17,8 @@ const CustomBotWithProxySettings = (props) => {
   } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
+  const [siteName, setSiteName] = useState('');
   const { t } = useTranslation();
-
-  const workspaceNameObjects = Object.values(connectionStatuses);
-  const workspaceNames = workspaceNameObjects.map((w) => {
-    return w.workspaceName;
-  });
 
   useEffect(() => {
     if (proxyServerUri != null) {
@@ -68,26 +64,19 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
+  useEffect(() => {
+    const siteName = appContainer.config.crowi.title;
+    setSiteName(siteName);
+  }, [appContainer]);
+
   return (
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
       {/* TODO delete tmp props */}
-      <CustomBotWithProxyIntegrationCard
-        growiApps={
-          [
-            { name: 'siteName1', active: true },
-            { name: 'siteName2', active: false },
-            { name: 'siteName3', active: false },
-          ]
-        }
-        slackWorkSpaces={
-          [
-            { name: 'wsName1', active: true },
-            { name: 'wsName2', active: false },
-          ]
-        }
-        isSlackScopeSet
+      <CustomBotWithProxyConnectionStatus
+        siteName={siteName}
+        connectionStatuses={connectionStatuses}
       />
 
       <div className="form-group row my-4">
@@ -122,8 +111,6 @@ const CustomBotWithProxySettings = (props) => {
                   {t('admin:slack_integration.delete')}
                 </button>
               </div>
-              {proxyServerUri != null && workspaceNames[i] == null
-              && (<>Settings #{i + 1} <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)}
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}
