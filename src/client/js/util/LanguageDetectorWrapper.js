@@ -10,8 +10,7 @@ class LanguageDetectorWrapper {
   }
 
   detect() {
-    const lang = this.langDetector.detect(['userSettingDetector', 'navigator', 'querystring']);
-
+    const lang = this.langDetector.detect();
     if (lang == null) {
       return;
     }
@@ -30,7 +29,7 @@ class LanguageDetectorWrapper {
     this.services = services;
     this.i18nOptions = i18nOptions;
 
-    this.langDetector.init(services);
+    this.langDetector.init(services, { order: ['userSettingDetector', 'navigator', 'querystring'] });
   }
 
   cacheUserLanguage(lng, caches) {
