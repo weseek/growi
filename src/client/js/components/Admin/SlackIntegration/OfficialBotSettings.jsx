@@ -46,16 +46,6 @@ const OfficialBotSettings = (props) => {
   };
   */
 
-  const generateTokenHandler = async() => {
-    try {
-      //  TODO: imprement regenerating tokens by GW-6068
-    }
-    catch (err) {
-      toastError(err);
-      logger(err);
-    }
-  };
-
   const deleteSlackAppIntegrationHandler = async() => {
     try {
       // TODO GW-5923 delete SlackAppIntegration
@@ -128,9 +118,7 @@ const OfficialBotSettings = (props) => {
               </div>
               <WithProxyAccordions
                 botType="officialBot"
-
                 slackAppIntegrationId={slackAppIntegration._id}
-                onClickGenerateTokenBtn={generateTokenHandler}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />

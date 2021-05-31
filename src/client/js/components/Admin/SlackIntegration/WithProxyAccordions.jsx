@@ -6,7 +6,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 
@@ -76,10 +76,17 @@ const RegisteringProxyUrlProcess = () => {
 
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
+  const { appContainer, slackAppIntegrationId } = props;
 
-  const onClickGenerateTokenBtn = () => {
-    if (props.onClickGenerateTokenBtn != null) {
-      props.onClickGenerateTokenBtn();
+  const regenerateTokensHandler = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/regenerate-tokens', { slackAppIntegrationId });
+      // TODO: fetch data by GW-6160
+      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
     }
   };
 
@@ -117,7 +124,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
         <button
           type="button"
           className="btn btn-primary mx-auto"
-          onClick={onClickGenerateTokenBtn}
+          onClick={regenerateTokensHandler}
         >
           { t('admin:slack_integration.access_token_settings.regenerate') }
         </button>
@@ -250,7 +257,7 @@ const WithProxyAccordions = (props) => {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
-        onClickGenerateTokenBtn={props.onClickGenerateTokenBtn}
+        slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
@@ -278,7 +285,7 @@ const WithProxyAccordions = (props) => {
       title: 'register_for_growi_official_bot_proxy_service',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
-        onClickGenerateTokenBtn={props.onClickGenerateTokenBtn}
+        slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
       />,
@@ -321,9 +328,7 @@ const WithProxyAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
-
   slackAppIntegrationId: PropTypes.string.isRequired,
-  onClickGenerateTokenBtn: PropTypes.func,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };

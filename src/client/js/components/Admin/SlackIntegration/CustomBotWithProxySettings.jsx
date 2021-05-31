@@ -51,16 +51,6 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
-  const generateAccessTokens = async() => {
-    try {
-      //  TODO: imprement regenerating tokens by GW-6068
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  };
-
   const updateProxyUri = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
@@ -124,7 +114,6 @@ const CustomBotWithProxySettings = (props) => {
               <WithProxyAccordions
                 botType="customBotWithProxy"
                 slackAppIntegrationId={slackAppIntegration._id}
-                onClickGenerateTokenBtn={generateAccessTokens}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
               />
