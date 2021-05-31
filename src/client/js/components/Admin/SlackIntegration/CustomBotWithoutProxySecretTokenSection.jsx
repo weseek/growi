@@ -1,9 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import AppContainer from '../../../services/AppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const CustomBotWithoutProxySecretTokenSection = (props) => {
+  const {
+    appContainer, slackSigningSecret, slackBotToken, onUpdateSecretTokenHandler,
+  } = props;
   const { t } = useTranslation();
 
   const onChangeSigningSecretHandler = (signingSecretInput) => {
@@ -18,9 +25,20 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
     }
   };
 
-  const updateSecretTokenHandler = () => {
-    if (props.updateSecretTokenHandler != null) {
-      props.updateSecretTokenHandler();
+  const currentBotType = 'customBotWithoutProxy';
+  const updateSecretTokenHandler = async() => {
+    try {
+      await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
+        slackSigningSecret,
+        slackBotToken,
+        currentBotType,
+      });
+      onUpdateSecretTokenHandler(true);
+      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
+    }
+    catch (err) {
+      onUpdateSecretTokenHandler(false);
+      toastError(err);
     }
   };
 
@@ -91,8 +109,11 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   );
 };
 
+const CustomBotWithoutProxySecretTokenSectionWrapper = withUnstatedContainers(CustomBotWithoutProxySecretTokenSection, [AppContainer]);
+
 CustomBotWithoutProxySecretTokenSection.propTypes = {
-  updateSecretTokenHandler: PropTypes.func,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  onUpdateSecretTokenHandler: PropTypes.func,
   onChangeSigningSecretHandler: PropTypes.func,
   onChangeBotTokenHandler: PropTypes.func,
   slackSigningSecret: PropTypes.string,
@@ -101,4 +122,4 @@ CustomBotWithoutProxySecretTokenSection.propTypes = {
   slackBotTokenEnv: PropTypes.string,
 };
 
-export default CustomBotWithoutProxySecretTokenSection;
+export default CustomBotWithoutProxySecretTokenSectionWrapper;

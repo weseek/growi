@@ -145,11 +145,11 @@ const SlackIntegration = (props) => {
     case 'customBotWithoutProxy':
       settingsComponent = (
         <CustomBotWithoutProxySettings
-          isSlackCredentials={isSlackCredentials}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
+          isSlackCredentials={isSlackCredentials}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
           onResetSettings={resetWithOutSettings}
