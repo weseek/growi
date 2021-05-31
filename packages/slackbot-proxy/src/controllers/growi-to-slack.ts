@@ -203,7 +203,8 @@ export class GrowiToSlackCtrl {
 
     logger.debug('postMessage is success');
 
-    return res.end();
+    // required to return ok for apiCall
+    return res.send({ ok: true });
   }
 
 }
