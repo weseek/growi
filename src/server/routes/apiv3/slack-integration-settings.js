@@ -386,7 +386,7 @@ module.exports = (crowi) => {
       checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
     } while (checkTokens != null);
     try {
-      const SlackAppIntegrationRecordsNum = await SlackAppIntegration.count();
+      const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
       if (SlackAppIntegrationRecordsNum >= 10) {
         const msg = 'Not be able to create more than 10 slack workspace integration settings';
         logger.error('Error', msg);
