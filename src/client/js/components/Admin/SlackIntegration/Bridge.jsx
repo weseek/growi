@@ -4,8 +4,11 @@ import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 const ProxyCircle = () => (
-  <div className="grw-bridge-proxy-circle position-absolute bg-primary border-light">
-    <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+  <div className="grw-bridge-proxy-circle">
+    <div className="circle-default position-absolute bg-primary border-light d-none d-lg-inline">
+      <p className="circle-inner text-light font-weight-bold">Proxy Server</p>
+    </div>
+    <div className="circle-mini position-absolute bg-primary border-light d-block d-lg-none" />
   </div>
 );
 
