@@ -11,18 +11,20 @@ import { useSecuritySettingGeneralSWR } from '~/stores/admin';
 import { apiv3Put } from '~/utils/apiv3-client';
 
 
+const sessionMaxAge = 'sessionMaxAge';
 const restrictGuestMode = 'restrictGuestMode';
 const pageCompleteDeletionAuthority = 'pageCompleteDeletionAuthority';
 const hideRestrictedByOwner = 'hideRestrictedByOwner';
 const hideRestrictedByGroup = 'hideRestrictedByGroup';
 const wikiMode = 'wikiMode';
 
-type FormValues ={
-[restrictGuestMode]: string,
-[pageCompleteDeletionAuthority]: string,
-[hideRestrictedByOwner]: string,
-[hideRestrictedByGroup]: string,
-[wikiMode]: string,
+type FormValues = {
+  [sessionMaxAge]: string,
+  [restrictGuestMode]: string,
+  [pageCompleteDeletionAuthority]: string,
+  [hideRestrictedByOwner]: string,
+  [hideRestrictedByGroup]: string,
+  [wikiMode]: string,
 };
 
 
@@ -33,6 +35,7 @@ export const SecuritySetting: FC = () => {
     register, control, handleSubmit, setValue, watch,
   } = useForm({
     defaultValues: {
+      [sessionMaxAge]: data?.[sessionMaxAge] || null,
       [restrictGuestMode]: data?.[restrictGuestMode] || null,
       [pageCompleteDeletionAuthority]: data?.[pageCompleteDeletionAuthority] || null,
       [hideRestrictedByOwner]: data?.[hideRestrictedByOwner],
@@ -46,6 +49,7 @@ export const SecuritySetting: FC = () => {
   const submitHandler: SubmitHandler<FormValues> = async(formValues) => {
     try {
       await apiv3Put('/security-setting/general-setting', {
+        [sessionMaxAge]: formValues[sessionMaxAge],
         [restrictGuestMode]: formValues[restrictGuestMode],
         [pageCompleteDeletionAuthority]: formValues[pageCompleteDeletionAuthority],
         [hideRestrictedByOwner]: formValues[hideRestrictedByOwner],
@@ -60,12 +64,14 @@ export const SecuritySetting: FC = () => {
   };
 
   useEffect(() => {
+    setValue(sessionMaxAge, data?.[sessionMaxAge]);
     setValue(restrictGuestMode, data?.[restrictGuestMode]);
     setValue(pageCompleteDeletionAuthority, data?.[pageCompleteDeletionAuthority]);
     setValue(hideRestrictedByOwner, data?.[hideRestrictedByOwner]);
     setValue(hideRestrictedByGroup, data?.[hideRestrictedByGroup]);
     setValue(wikiMode, data?.[wikiMode]);
   }, [
+    data?.[sessionMaxAge],
     data?.[restrictGuestMode],
     data?.[pageCompleteDeletionAuthority],
     data?.[hideRestrictedByOwner],
@@ -251,12 +257,10 @@ export const SecuritySetting: FC = () => {
           <div className="col-md-6">
             <input
               className="form-control col-md-3"
+              name={sessionMaxAge}
               type="text"
-              defaultValue={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
-              onChange={(e) => {
-                adminGeneralSecurityContainer.setSessionMaxAge(e.target.value);
-              }}
               placeholder="2592000000"
+              ref={register}
             />
             {/* eslint-disable-next-line react/no-danger */}
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_setting.max_age_desc') }} />
