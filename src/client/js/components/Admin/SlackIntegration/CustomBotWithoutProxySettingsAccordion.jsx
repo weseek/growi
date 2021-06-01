@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
-import { withUnstatedContainers } from '../../UnstatedUtils';
 import Accordion from '../Common/Accordion';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 
 export const botInstallationStep = {
@@ -17,37 +13,16 @@ export const botInstallationStep = {
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
-    appContainer, activeStep,
-    connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
-    isRegisterSlackCredentials, isIntegrationSuccess,
-    fetchSlackIntegrationData, inputTestChannelHandler, onTestFormSubmitted,
+    activeStep, connectionMessage, connectionErrorCode, testChannel,
+    slackSigningSecret, slackBotToken, /* slackSigningSecretEnv, slackBotTokenEnv, */
+    isIntegrationSuccess,
+    inputTestChannelHandler, onTestFormSubmitted,
   } = props;
 
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
   // eslint-disable-next-line no-unused-vars
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
-  const currentBotType = 'customBotWithoutProxy';
-
-
-  const updateSecretTokenHandler = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
-        slackSigningSecret,
-        slackBotToken,
-        currentBotType,
-      });
-
-      if (fetchSlackIntegrationData == null) {
-        return null;
-      }
-      fetchSlackIntegrationData();
-      toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -110,15 +85,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{slackSigningSecret != null && slackBotToken != null && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           {...props}
-          updateSecretTokenHandler={updateSecretTokenHandler}
-          slackSigningSecret={slackSigningSecret}
-          slackSigningSecretEnv={slackSigningSecretEnv}
-          slackBotToken={slackBotToken}
-          slackBotTokenEnv={slackBotTokenEnv}
         />
       </Accordion>
       <Accordion
@@ -178,10 +148,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   );
 };
 
-const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer, AdminAppContainer]);
 
 CustomBotWithoutProxySettingsAccordion.propTypes = {
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
@@ -194,8 +162,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   onTestFormSubmitted: PropTypes.func,
   connectionMessage: PropTypes.string,
   connectionErrorCode: PropTypes.string,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
 
-export default CustomBotWithoutProxySettingsAccordionWrapper;
+export default CustomBotWithoutProxySettingsAccordion;
