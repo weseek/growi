@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -11,19 +11,17 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   const {
     appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onUpdatedSecretToken,
   } = props;
-  console.log('slackSigning', slackSigningSecret);
   const [inputSigningSecret, setInputSigningSecret] = useState(slackSigningSecret);
-  console.log(inputSigningSecret);
   const [inputBotToken, setBotToken] = useState(slackBotToken);
-
+  console.log(slackSigningSecret);
   const { t } = useTranslation();
 
   const currentBotType = 'customBotWithoutProxy';
   const updatedSecretToken = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
-        slackSigningSecret,
-        slackBotToken,
+        inputSigningSecret,
+        inputBotToken,
         currentBotType,
       });
 
@@ -38,6 +36,10 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
     }
   };
 
+  useEffect(() => {
+    setInputSigningSecret(slackSigningSecret);
+    setBotToken(slackBotToken);
+  }, [slackSigningSecret, slackBotToken]);
   return (
     <div className="w-75 mx-auto">
 
@@ -50,7 +52,6 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
             className="form-control"
             type="text"
             value={inputSigningSecret || ''}
-            placeholder={slackSigningSecret}
             onChange={(e) => { setInputSigningSecret(e.target.value) }}
           />
         </div>
