@@ -2,7 +2,13 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import locales from '@root/resource/locales';
-import AliasToLocaleMapper from './AliasToLocaleMapper';
+
+const aliasesMapping = {};
+Object.values(locales).forEach((locale) => {
+  locale.meta.aliases.forEach((aliase) => {
+    aliasesMapping[aliase] = locale.meta.id;
+  });
+});
 
 // extract metadata list from 'resource/locales/${locale}/meta.json'
 export const localeMetadatas = Object.values(locales).map(locale => locale.meta);
@@ -16,12 +22,26 @@ export const i18nFactory = (userLocaleId) => {
       return userLocaleId;
     },
   });
+  // Wrapper to convert lang after detected from browser
+  langDetector.addDetector({
+    name: 'navigatorWrapperToConvertByAlias',
+    lookup(options) {
+      const results = langDetector.detectors.navigator.lookup(options);
+      const lang = results[0];
+      if (lang == null) {
+        return;
+      }
 
-  // Wrapper to convert lang after detected
-  const aliasToLocaleMapper = new AliasToLocaleMapper(langDetector);
+      if (Object.values(aliasesMapping).includes(lang)) {
+        return lang;
+      }
+
+      return aliasesMapping[lang];
+    },
+  });
 
   i18n
-    .use(aliasToLocaleMapper)
+    .use(langDetector)
     .use(initReactI18next) // if not using I18nextProvider
     .init({
       debug: (process.env.NODE_ENV !== 'production'),
@@ -29,7 +49,9 @@ export const i18nFactory = (userLocaleId) => {
       load: 'currentOnly',
 
       fallbackLng: 'en_US',
-      detection: 'aliasToLocaleMapper',
+      detection: {
+        order: ['userSettingDetector', 'navigatorWrapperToConvertByAlias', 'querystring'],
+      },
 
       interpolation: {
         escapeValue: false, // not needed for react!!
