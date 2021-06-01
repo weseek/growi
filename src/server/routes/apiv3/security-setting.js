@@ -14,6 +14,7 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
   generalSetting: [
+    body('sessionMaxAge').optional({ checkFalsy: true }).trim().isInt(),
     body('restrictGuestMode').if(value => value != null).isString().isIn([
       'Deny', 'Readonly',
     ]),
@@ -363,6 +364,7 @@ module.exports = (crowi) => {
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
+        sessionMaxAge: await crowi.configManager.getConfig('crowi', 'security:sessionMaxAge'),
       },
       localSetting: {
         useOnlyEnvVarsForSomeOptions: await crowi.configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
@@ -568,7 +570,8 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/GeneralSetting'
    */
   router.put('/general-setting', loginRequiredStrictly, adminRequired, validator.generalSetting, apiV3FormValidator, async(req, res) => {
-    const requestParams = {
+    const updateData = {
+      'security:sessionMaxAge': parseInt(req.body.sessionMaxAge),
       'security:restrictGuestMode': req.body.restrictGuestMode,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
@@ -577,11 +580,12 @@ module.exports = (crowi) => {
     const wikiMode = await crowi.configManager.getConfig('crowi', 'security:wikiMode');
     if (wikiMode === 'private' || wikiMode === 'public') {
       logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
-      delete requestParams['security:restrictGuestMode'];
+      delete updateData['security:restrictGuestMode'];
     }
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', updateData);
       const securitySettingParams = {
+        sessionMaxAge: await crowi.configManager.getConfig('crowi', 'security:sessionMaxAge'),
         restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),

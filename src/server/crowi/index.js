@@ -83,9 +83,9 @@ function Crowi() {
 
 Crowi.prototype.init = async function() {
   await this.setupDatabase();
-  await this.setupSessionConfig();
   await this.setupModels();
   await this.setupConfigManager();
+  await this.setupSessionConfig();
 
   // // setup messaging services
   await this.setupS2sMessagingService();
@@ -221,7 +221,7 @@ Crowi.prototype.setupDatabase = function() {
 
 Crowi.prototype.setupSessionConfig = async function() {
   const session = require('express-session');
-  const sessionAge = (1000 * 3600 * 24 * 30);
+  const sessionMaxAge = this.configManager.getConfig('crowi', 'security:sessionMaxAge') || 2592000000; // default: 30days
   const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
   const uid = require('uid-safe').sync;
 
@@ -234,7 +234,7 @@ Crowi.prototype.setupSessionConfig = async function() {
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: sessionAge,
+      maxAge: sessionMaxAge,
     },
     genid(req) {
       // return pre-defined uid when healthcheck

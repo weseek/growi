@@ -18,6 +18,7 @@ export default class AdminGeneralSecurityContainer extends Container {
 
     this.state = {
       retrieveError: null,
+      sessionMaxAge: null,
       wikiMode: '',
       // set dummy value tile for using suspense
       currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
@@ -51,6 +52,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
+      sessionMaxAge: generalSetting.sessionMaxAge,
       wikiMode: generalSetting.wikiMode,
       isLocalEnabled: generalAuth.isLocalEnabled,
       isLdapEnabled: generalAuth.isLdapEnabled,
@@ -77,6 +79,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   get isWikiModeForced() {
     return this.state.wikiMode === 'public' || this.state.wikiMode === 'private';
+  }
+
+  /**
+   * setter for sessionMaxAge
+   */
+  setSessionMaxAge(sessionMaxAge) {
+    this.setState({ sessionMaxAge });
   }
 
   /**
@@ -115,6 +124,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   async updateGeneralSecuritySetting() {
 
     let requestParams = {
+      sessionMaxAge: this.state.sessionMaxAge,
       restrictGuestMode: this.state.currentRestrictGuestMode,
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,

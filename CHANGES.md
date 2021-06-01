@@ -2,7 +2,9 @@
 
 ## v4.2.19-RC
 
-* Improvement: Changed to redirect to the top page at the first installation
+* Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
+* Feature: Set max-age of the user's cookie in admin page
+* Improvement: Change the first accessing page after installation to the top page
 * Support: Upgrade libs
     * string-width
 
