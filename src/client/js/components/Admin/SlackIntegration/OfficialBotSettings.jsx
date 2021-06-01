@@ -102,13 +102,17 @@ const OfficialBotSettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
 
       <div className="mx-3">
-        {slackAppIntegrations.map((slackAppIntegration) => {
-          const { tokenGtoP, tokenPtoG } = slackAppIntegration;
+        {slackAppIntegrations.map((slackAppIntegration, i) => {
+          const { tokenGtoP, tokenPtoG, slackBotToken } = slackAppIntegration;
+          const workspaceName = connectionStatuses[slackBotToken]?.workspaceName;
           return (
             <React.Fragment key={slackAppIntegration._id}>
-              <div className="d-flex justify-content-end">
+              <div className="my-3 d-flex align-items-center justify-content-between">
+                <h2 id={slackBotToken || `settings-#${i}`}>
+                  {(workspaceName != null) ? `${workspaceName} Work Space` : `Settings #${i}`}
+                </h2>
                 <button
-                  className="my-3 btn btn-outline-danger"
+                  className="btn btn-outline-danger"
                   type="button"
                   onClick={() => setIsDeleteConfirmModalShown(true)}
                 >
