@@ -153,19 +153,20 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
 
 
 CustomBotWithoutProxySettingsAccordion.propTypes = {
+  activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
+
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
-  testChannel: PropTypes.string,
-  isRegisterSlackCredentials: PropTypes.bool,
-  isIntegrationSuccess: PropTypes.bool,
-  fetchSlackIntegrationData: PropTypes.func,
-  inputTestChannelHandler: PropTypes.func,
-  onTestFormSubmitted: PropTypes.func,
+
   connectionMessage: PropTypes.string,
   connectionErrorCode: PropTypes.string,
-  activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
+  testChannel: PropTypes.string,
+  isIntegrationSuccess: PropTypes.bool,
+  inputTestChannelHandler: PropTypes.func,
+  onTestFormSubmitted: PropTypes.func,
+
 };
 
 export default CustomBotWithoutProxySettingsAccordion;
