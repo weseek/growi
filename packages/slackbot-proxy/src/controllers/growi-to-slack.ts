@@ -6,7 +6,7 @@ import axios from 'axios';
 import { WebAPICallOptions, WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, testToSlack, generateWebClient,
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient,
 } from '@growi/slack';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
@@ -108,7 +108,7 @@ export class GrowiToSlackCtrl {
       }
 
       try {
-        await testToSlack(token);
+        await getConnectionStatus(token);
       }
       catch (err) {
         logger.error(err);
@@ -146,7 +146,7 @@ export class GrowiToSlackCtrl {
     }
 
     try {
-      await testToSlack(token);
+      await getConnectionStatus(token);
     }
     catch (err) {
       logger.error(err);
