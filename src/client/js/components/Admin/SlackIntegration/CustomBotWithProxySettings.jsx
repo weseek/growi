@@ -69,6 +69,8 @@ const CustomBotWithProxySettings = (props) => {
     setSiteName(siteName);
   }, [appContainer]);
 
+  console.log(connectionStatuses);
+
   return (
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
@@ -98,10 +100,14 @@ const CustomBotWithProxySettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
       <div className="mx-3">
         {slackAppIntegrations.map((slackAppIntegration, i) => {
-          const { tokenGtoP, tokenPtoG } = slackAppIntegration;
+          const { tokenGtoP, tokenPtoG, slackBotToken } = slackAppIntegration;
+          const workspaceName = connectionStatuses[slackBotToken]?.workspaceName;
           return (
             <React.Fragment key={slackAppIntegration._id}>
-              <div className="d-flex justify-content-end">
+              <div className="d-flex justify-content-between">
+                <h2 id={slackBotToken}>
+                  {(workspaceName != null) ? workspaceName : `Settings #${i}`}
+                </h2>
                 <button
                   className="my-3 btn btn-outline-danger"
                   type="button"
