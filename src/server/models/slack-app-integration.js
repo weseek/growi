@@ -7,7 +7,7 @@ const schema = new mongoose.Schema({
 });
 class SlackAppIntegration {
 
-  static generateAccessToken() {
+  static generateAccessTokens() {
     const hasher1 = crypto.createHash('sha512');
     const hasher2 = crypto.createHash('sha512');
     const tokenGtoP = hasher1.update(new Date().getTime().toString() + process.env.SALT_FOR_GTOP_TOKEN);
@@ -16,7 +16,7 @@ class SlackAppIntegration {
   }
 
   static generateUniqueAccessTokens() {
-    const generateTokens = this.generateAccessToken();
+    const generateTokens = this.generateAccessTokens();
     const tokenGtoP = generateTokens[0];
     const tokenPtoG = generateTokens[1];
 
