@@ -72,7 +72,6 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
             <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
           </p>
         </div>
-
       </div>
 
       <h3>Bot User OAuth Token</h3>

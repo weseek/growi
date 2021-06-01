@@ -23,7 +23,6 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  const [isSlackCredentials, setIsSlackCredentials] = useState(false);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
@@ -149,7 +148,6 @@ const SlackIntegration = (props) => {
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
-          isSlackCredentials={isSlackCredentials}
           onSigningSecretChanged={setSlackSigningSecret}
           onBotTokenChanged={setSlackBotToken}
           onResetSettings={resetWithOutSettings}
