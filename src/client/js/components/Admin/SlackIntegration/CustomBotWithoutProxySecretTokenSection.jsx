@@ -12,7 +12,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
     appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onUpdatedSecretToken,
   } = props;
   const [inputSigningSecret, setInputSigningSecret] = useState(slackSigningSecret);
-  const [inputBotToken, setBotToken] = useState(slackBotToken);
+  const [inputBotToken, setInputBotToken] = useState(slackBotToken);
   const { t } = useTranslation();
 
   const updatedSecretToken = async() => {
@@ -35,7 +35,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
 
   useEffect(() => {
     setInputSigningSecret(slackSigningSecret);
-    setBotToken(slackBotToken);
+    setInputBotToken(slackBotToken);
   }, [slackSigningSecret, slackBotToken]);
 
 
@@ -80,7 +80,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
             className="form-control"
             type="text"
             value={inputBotToken || ''}
-            onChange={(e) => { setBotToken(e.target.value) }}
+            onChange={(e) => { setInputBotToken(e.target.value) }}
           />
         </div>
 
