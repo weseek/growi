@@ -2,6 +2,7 @@
 
 ## v4.2.19-RC
 
+* Improvement: Changed to redirect to the top page at the first installation
 * Support: Upgrade libs
     * string-width
 
