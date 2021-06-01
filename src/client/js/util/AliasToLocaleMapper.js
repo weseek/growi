@@ -1,9 +1,9 @@
 import locales from '@root/resource/locales';
 
-const browserLanguageIdMapping = {};
+const aliasesMapping = {};
 Object.values(locales).forEach((locale) => {
   locale.meta.aliases.forEach((aliase) => {
-    browserLanguageIdMapping[aliase] = locale.meta.id;
+    aliasesMapping[aliase] = locale.meta.id;
   });
 });
 
@@ -22,11 +22,11 @@ class AliasToLocaleMapper {
       return;
     }
 
-    if (Object.values(browserLanguageIdMapping).includes(lang)) {
+    if (Object.values(aliasesMapping).includes(lang)) {
       return lang;
     }
 
-    return browserLanguageIdMapping[lang];
+    return aliasesMapping[lang];
   }
 
   init(services, options = {}, i18nOptions = {}) {
