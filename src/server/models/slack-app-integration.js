@@ -15,6 +15,13 @@ class SlackAppIntegration {
     return [tokenGtoP.digest('base64'), tokenPtoG.digest('base64')];
   }
 
+  static generateUniqueAccessTokens() {
+    const accessTokens = this.generateAccessToken();
+    const tokenGtoP = accessTokens[0];
+    const tokenPtoG = accessTokens[1];
+    return { tokenGtoP, tokenPtoG };
+  }
+
 }
 
 module.exports = function(crowi) {
