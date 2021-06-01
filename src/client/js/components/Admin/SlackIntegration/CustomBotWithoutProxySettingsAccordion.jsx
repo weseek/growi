@@ -15,12 +15,14 @@ export const botInstallationStep = {
   CONNECTION_TEST: 'connection-test',
 };
 
-const CustomBotWithoutProxySettingsAccordion = ({
-  appContainer, activeStep,
-  connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
-  isRegisterSlackCredentials, isIntegrationSuccess,
-  fetchSlackIntegrationData, inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken,
-}) => {
+const CustomBotWithoutProxySettingsAccordion = (props) => {
+  const {
+    appContainer, activeStep,
+    connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
+    isRegisterSlackCredentials, isIntegrationSuccess,
+    fetchSlackIntegrationData, inputTestChannelHandler, onTestFormSubmitted,
+  } = props;
+
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
   // eslint-disable-next-line no-unused-vars
@@ -47,17 +49,17 @@ const CustomBotWithoutProxySettingsAccordion = ({
     }
   };
 
-  const onChangeSigningSecretHandler = (signingSecretInput) => {
-    if (onSetSlackSigningSecret != null) {
-      onSetSlackSigningSecret(signingSecretInput);
-    }
-  };
+  // const onChangeSigningSecretHandler = (signingSecretInput) => {
+  //   if (onSetSlackSigningSecret != null) {
+  //     onSetSlackSigningSecret(signingSecretInput);
+  //   }
+  // };
 
-  const onChangeBotTokenHandler = (botTokenInput) => {
-    if (onSetSlackBotToken != null) {
-      onSetSlackBotToken(botTokenInput);
-    }
-  };
+  // const onChangeBotTokenHandler = (botTokenInput) => {
+  //   if (onSetSlackBotToken != null) {
+  //     onSetSlackBotToken(botTokenInput);
+  //   }
+  // };
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -123,9 +125,10 @@ const CustomBotWithoutProxySettingsAccordion = ({
         title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isRegisterSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
+          {...props}
           updateSecretTokenHandler={updateSecretTokenHandler}
-          onChangeSigningSecretHandler={onChangeSigningSecretHandler}
-          onChangeBotTokenHandler={onChangeBotTokenHandler}
+          // onChangeSigningSecretHandler={onChangeSigningSecretHandler}
+          // onChangeBotTokenHandler={onChangeBotTokenHandler}
           slackSigningSecret={slackSigningSecret}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackBotToken={slackBotToken}
