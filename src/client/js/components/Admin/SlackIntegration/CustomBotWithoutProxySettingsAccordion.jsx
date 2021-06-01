@@ -14,7 +14,7 @@ export const botInstallationStep = {
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
     activeStep, connectionMessage, connectionErrorCode, testChannel,
-    slackSigningSecret, slackBotToken, /* slackSigningSecretEnv, slackBotTokenEnv, */
+    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
     isIntegrationSuccess,
     inputTestChannelHandler, onTestFormSubmitted,
   } = props;
@@ -40,6 +40,11 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   }
   else {
     value = [connectionErrorCode, connectionMessage];
+  }
+
+  let isEnterdSecretAndToken = false;
+  if ((slackSigningSecret != null && slackBotToken != null) || (slackSigningSecretEnv != null && slackBotTokenEnv != null)) {
+    isEnterdSecretAndToken = true;
   }
 
   return (
@@ -85,7 +90,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{slackSigningSecret != null && slackBotToken != null && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           {...props}
