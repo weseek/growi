@@ -73,7 +73,6 @@ const CustomBotWithProxySettings = (props) => {
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
-      {/* TODO delete tmp props */}
       <CustomBotWithProxyConnectionStatus
         siteName={siteName}
         connectionStatuses={connectionStatuses}
