@@ -1,5 +1,5 @@
 {
   "id": "en_US",
   "displayName": "English",
-  "browserLanguageId":"en"
+  "browserLanguageId": ["en"]
 }

@@ -1,9 +1,16 @@
 import locales from '@root/resource/locales';
 
-class LanguageDetectorWrapper {
+const browserLanguageIdMapping = {};
+Object.values(locales).forEach((locale) => {
+  locale.meta.aliases.forEach((aliase) => {
+    browserLanguageIdMapping[aliase] = locale.meta.id;
+  });
+});
+
+class AliasToLocaleMapper {
 
   constructor(langDetector) {
-    this.name = 'languageDetectorWrapper';
+    this.name = 'aliasToLocaleMapper';
     this.type = 'languageDetector';
 
     this.langDetector = langDetector;
@@ -15,13 +22,10 @@ class LanguageDetectorWrapper {
       return;
     }
 
-    const browserLanguageIdMapping = {};
-    Object.values(locales).forEach((locale) => {
-      browserLanguageIdMapping[locale.meta.browserLanguageId] = locale.meta.id;
-    });
     if (Object.values(browserLanguageIdMapping).includes(lang)) {
       return lang;
     }
+
     return browserLanguageIdMapping[lang];
   }
 
@@ -38,4 +42,4 @@ class LanguageDetectorWrapper {
 
 }
 
-export default LanguageDetectorWrapper;
+export default AliasToLocaleMapper;
