@@ -69,13 +69,10 @@ const CustomBotWithProxySettings = (props) => {
     setSiteName(siteName);
   }, [appContainer]);
 
-  console.log(connectionStatuses);
-
   return (
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
 
-      {/* TODO delete tmp props */}
       <CustomBotWithProxyConnectionStatus
         siteName={siteName}
         connectionStatuses={connectionStatuses}
@@ -104,12 +101,12 @@ const CustomBotWithProxySettings = (props) => {
           const workspaceName = connectionStatuses[slackBotToken]?.workspaceName;
           return (
             <React.Fragment key={slackAppIntegration._id}>
-              <div className="d-flex justify-content-between">
+              <div className="my-3 d-flex align-items-center justify-content-between">
                 <h2 id={slackBotToken}>
                   {(workspaceName != null) ? workspaceName : `Settings #${i}`}
                 </h2>
                 <button
-                  className="my-3 btn btn-outline-danger"
+                  className="btn btn-outline-danger"
                   type="button"
                   onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
                 >
