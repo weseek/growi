@@ -19,8 +19,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   const updatedSecretToken = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
-        inputSigningSecret,
-        inputBotToken,
+        slackSigningSecret: inputSigningSecret,
+        slackBotToken: inputBotToken,
         currentBotType,
       });
 
