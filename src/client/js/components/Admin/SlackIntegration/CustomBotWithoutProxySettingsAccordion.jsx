@@ -49,18 +49,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     }
   };
 
-  // const onChangeSigningSecretHandler = (signingSecretInput) => {
-  //   if (onSetSlackSigningSecret != null) {
-  //     onSetSlackSigningSecret(signingSecretInput);
-  //   }
-  // };
-
-  // const onChangeBotTokenHandler = (botTokenInput) => {
-  //   if (onSetSlackBotToken != null) {
-  //     onSetSlackBotToken(botTokenInput);
-  //   }
-  // };
-
   const submitForm = (e) => {
     e.preventDefault();
 
@@ -127,8 +115,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <CustomBotWithoutProxySecretTokenSection
           {...props}
           updateSecretTokenHandler={updateSecretTokenHandler}
-          // onChangeSigningSecretHandler={onChangeSigningSecretHandler}
-          // onChangeBotTokenHandler={onChangeBotTokenHandler}
           slackSigningSecret={slackSigningSecret}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackBotToken={slackBotToken}
@@ -206,8 +192,6 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   fetchSlackIntegrationData: PropTypes.func,
   inputTestChannelHandler: PropTypes.func,
   onTestFormSubmitted: PropTypes.func,
-  onSetSlackSigningSecret: PropTypes.func,
-  onSetSlackBotToken: PropTypes.func,
   connectionMessage: PropTypes.string,
   connectionErrorCode: PropTypes.string,
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
