@@ -383,25 +383,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
     }
 
-    // TODO: refactering generateAccessTokens by GW-6100
-    let checkTokens;
-    let tokenGtoP;
-    let tokenPtoG;
-    let generateTokens;
-    do {
-      generateTokens = SlackAppIntegration.generateAccessToken();
-      tokenGtoP = generateTokens[0];
-      tokenPtoG = generateTokens[1];
-      // eslint-disable-next-line no-await-in-loop
-      checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
-    } while (checkTokens != null);
-
-    // const accessTokens = await SlackAppIntegration.generateUniqueAccessTokens();
-    // checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
-
-    // console.log('accessTokenshoges', accessTokens);
-    // console.log('tokenGtoP', accessTokens.tokenGtoP);
-    // console.log('tokenPtoG', accessTokens.tokenPtoG);
+    const { tokenGtoP, tokenPtoG } = SlackAppIntegration.generateUniqueAccessTokens();
 
     try {
       const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
