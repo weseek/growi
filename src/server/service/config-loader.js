@@ -246,7 +246,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'security:sessionMaxAge',
     type:    TYPES.NUMBER,
-    default: 2592000000, // 30days
+    default: undefined,
   },
   USER_UPPER_LIMIT: {
     ns:      'crowi',

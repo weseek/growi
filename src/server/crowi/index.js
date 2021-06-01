@@ -217,7 +217,7 @@ Crowi.prototype.setupDatabase = function() {
 
 Crowi.prototype.setupSessionConfig = async function() {
   const session = require('express-session');
-  const sessionMaxAge = this.configManager.getConfig('crowi', 'security:sessionMaxAge');
+  const sessionMaxAge = this.configManager.getConfig('crowi', 'security:sessionMaxAge') || 2592000000; // default: 30days
   const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
   const uid = require('uid-safe').sync;
 
