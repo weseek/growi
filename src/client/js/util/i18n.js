@@ -5,8 +5,11 @@ import locales from '@root/resource/locales';
 
 const aliasesMapping = {};
 Object.values(locales).forEach((locale) => {
-  locale.meta.aliases.forEach((aliase) => {
-    aliasesMapping[aliase] = locale.meta.id;
+  if (locale.meta.aliases == null) {
+    return;
+  }
+  locale.meta.aliases.forEach((alias) => {
+    aliasesMapping[alias] = locale.meta.id;
   });
 });
 
@@ -32,11 +35,7 @@ export const i18nFactory = (userLocaleId) => {
         return;
       }
 
-      if (Object.values(aliasesMapping).includes(lang)) {
-        return lang;
-      }
-
-      return aliasesMapping[lang];
+      return aliasesMapping[lang] || lang;
     },
   });
 
