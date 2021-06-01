@@ -513,8 +513,9 @@ module.exports = (crowi) => {
 
     const { slackAppIntegrationId } = req.body;
     let slackBotToken;
+    let slackAppIntegration;
     try {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
+      slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
@@ -529,6 +530,17 @@ module.exports = (crowi) => {
     catch (error) {
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
+    }
+
+    try {
+      slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(slackAppIntegrationId, { slackBotToken });
+    }
+    catch (error) {
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(
+        `Error occured while updationg slackAppIntegration. Cause: ${error.message}`,
+        'update-slackAppIntegration-failed', error.stack,
+      ));
     }
 
     const { channel } = req.body;
