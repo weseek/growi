@@ -293,7 +293,7 @@
     },
     "delete": "削除",
     "integration_procedure": "連携手順",
-    "custom_bot_without_proxy_settings": "Custom Bot Without Proxy 設定",
+    "custom_bot_without_proxy_settings": "Custom Bot without proxy 設定",
     "integration_failed":"連携に失敗しました",
     "reset": "リセット",
     "reset_all_settings": "全ての設定をリセット",
