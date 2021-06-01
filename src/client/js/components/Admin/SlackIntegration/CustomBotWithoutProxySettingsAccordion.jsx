@@ -22,7 +22,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
 
-
   const submitForm = (e) => {
     e.preventDefault();
 
@@ -31,7 +30,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     }
     onTestFormSubmitted();
   };
-
 
   let value = '';
   if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
