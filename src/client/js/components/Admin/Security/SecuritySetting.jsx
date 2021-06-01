@@ -37,15 +37,14 @@ class SecuritySetting extends React.Component {
         <h2 className="alert-anchor border-bottom">
           {t('security_settings')}
         </h2>
-        {adminGeneralSecurityContainer.retrieveError != null && (
-        <div className="alert alert-danger">
-          <p>{t('Error occurred')} : {adminGeneralSecurityContainer.retrieveError}</p>
-        </div>
-          )}
 
-        <h4 className="mt-4">
-          { t('page_list_and_search_results') }
-        </h4>
+        {adminGeneralSecurityContainer.retrieveError != null && (
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {adminGeneralSecurityContainer.retrieveError}</p>
+          </div>
+        )}
+
+        <h4 className="mt-4">{ t('security_setting.page_list_and_search_results') }</h4>
         <table className="table table-bordered col-lg-9 mb-5">
           <thead>
             <tr>
@@ -98,7 +97,8 @@ class SecuritySetting extends React.Component {
             </tr>
           </tbody>
         </table>
-        <h4>{t('page_access_and_delete_rights')}</h4>
+
+        <h4>{t('security_setting.page_access_and_delete_rights')}</h4>
         <div className="row mb-4">
           <div className="col-md-3 text-md-right py-2">
             <strong>{t('security_setting.Guest Users Access')}</strong>
@@ -142,7 +142,6 @@ class SecuritySetting extends React.Component {
             )}
           </div>
         </div>
-
         <div className="row mb-4">
           <div className="col-md-3 text-md-right mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
@@ -189,6 +188,30 @@ class SecuritySetting extends React.Component {
             </div>
           </div>
         </div>
+
+        <h4>{t('security_setting.session')}</h4>
+        <div className="form-group row">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.max_age')}</label>
+          <div className="col-md-6">
+            <input
+              className="form-control col-md-3"
+              type="text"
+              defaultValue={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
+              onChange={(e) => {
+                adminGeneralSecurityContainer.setSessionMaxAge(e.target.value);
+              }}
+              placeholder="2592000000"
+            />
+            {/* eslint-disable-next-line react/no-danger */}
+            <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_setting.max_age_desc') }} />
+            <p className="card well">
+              <span className="text-warning">
+                <i className="icon-info"></i> {t('security_setting.max_age_caution')}
+              </span>
+            </p>
+          </div>
+        </div>
+
         <div className="row my-3">
           <div className="text-center text-md-left offset-md-3 col-md-5">
             <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putSecuritySetting}>
