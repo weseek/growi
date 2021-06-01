@@ -44,30 +44,7 @@ class SecuritySetting extends React.Component {
           </div>
         )}
 
-        <h4 className="mt-4">{t('security_setting.session')}</h4>
-        <div className="form-group row">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.max_age')}</label>
-          <div className="col-md-6">
-            <input
-              className="form-control col-md-3"
-              type="text"
-              defaultValue={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
-              onChange={(e) => {
-                adminGeneralSecurityContainer.setSessionMaxAge(e.target.value);
-              }}
-              placeholder="2592000000"
-            />
-            {/* eslint-disable-next-line react/no-danger */}
-            <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_setting.max_age_desc') }} />
-            <p className="card well">
-              <span className="text-warning">
-                <i className="icon-info"></i> {t('security_setting.max_age_caution')}
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <h4>{ t('security_setting.page_list_and_search_results') }</h4>
+        <h4 className="mt-4">{ t('security_setting.page_list_and_search_results') }</h4>
         <table className="table table-bordered col-lg-9 mb-5">
           <thead>
             <tr>
@@ -209,6 +186,29 @@ class SecuritySetting extends React.Component {
                 {t('security_setting.complete_deletion_explain')}
               </p>
             </div>
+          </div>
+        </div>
+
+        <h4>{t('security_setting.session')}</h4>
+        <div className="form-group row">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.max_age')}</label>
+          <div className="col-md-6">
+            <input
+              className="form-control col-md-3"
+              type="text"
+              defaultValue={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
+              onChange={(e) => {
+                adminGeneralSecurityContainer.setSessionMaxAge(e.target.value);
+              }}
+              placeholder="2592000000"
+            />
+            {/* eslint-disable-next-line react/no-danger */}
+            <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_setting.max_age_desc') }} />
+            <p className="card well">
+              <span className="text-warning">
+                <i className="icon-info"></i> {t('security_setting.max_age_caution')}
+              </span>
+            </p>
           </div>
         </div>
 
