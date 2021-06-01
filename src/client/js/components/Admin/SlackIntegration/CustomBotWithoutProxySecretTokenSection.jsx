@@ -51,7 +51,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
             className="form-control"
             type="text"
             value={inputSigningSecret || ''}
-            onChange={(e) => { setInputSigningSecret(e.target.value) }}
+            onChange={e => setInputSigningSecret(e.target.value)}
           />
         </div>
 
@@ -80,7 +80,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
             className="form-control"
             type="text"
             value={inputBotToken || ''}
-            onChange={(e) => { setInputBotToken(e.target.value) }}
+            onChange={e => setInputBotToken(e.target.value)}
           />
         </div>
 
