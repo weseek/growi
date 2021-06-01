@@ -71,7 +71,10 @@ const CustomBotWithProxySettings = (props) => {
 
   return (
     <>
-      <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}</h2>
+      <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}
+        {/* TODO: add an appropriate links by GW-5614 */}
+        <i className="fa fa-external-link btn-link ml-2" aria-hidden="true"></i>
+      </h2>
 
       {slackAppIntegrations.length !== 0 && (
         <>
