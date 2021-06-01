@@ -9,10 +9,11 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const CustomBotWithoutProxySecretTokenSection = (props) => {
   const {
-    appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
+    appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onUpdatedSecretToken,
   } = props;
-
-  const [inputSingingSecret, setInputSigningSecret] = useState(slackSigningSecret);
+  console.log('slackSigning', slackSigningSecret);
+  const [inputSigningSecret, setInputSigningSecret] = useState(slackSigningSecret);
+  console.log(inputSigningSecret);
   const [inputBotToken, setBotToken] = useState(slackBotToken);
 
   const { t } = useTranslation();
@@ -25,6 +26,11 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
         slackBotToken,
         currentBotType,
       });
+
+      if (onUpdatedSecretToken == null) {
+        return;
+      }
+      onUpdatedSecretToken(inputSigningSecret, inputBotToken);
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -43,7 +49,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={inputSingingSecret || ''}
+            value={inputSigningSecret || ''}
+            placeholder={slackSigningSecret}
             onChange={(e) => { setInputSigningSecret(e.target.value) }}
           />
         </div>
@@ -103,8 +110,7 @@ const CustomBotWithoutProxySecretTokenSectionWrapper = withUnstatedContainers(Cu
 
 CustomBotWithoutProxySecretTokenSection.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  onChangeSigningSecretHandler: PropTypes.func,
-  onChangeBotTokenHandler: PropTypes.func,
+  onUpdatedSecretToken: PropTypes.func,
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
