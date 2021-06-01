@@ -23,6 +23,7 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  const [isEnteredSlackCredentials, setIsEnteredSlackCredentials] = useState(false);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
@@ -48,11 +49,16 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+
+      setIsEnteredSlackCredentials(false);
+      if ((slackBotToken != null && slackSigningSecret != null) || (slackBotTokenEnv != null && slackSigningSecretEnv != null)) {
+        setIsEnteredSlackCredentials(true);
+      }
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, slackBotTokenEnv, slackSigningSecretEnv]);
 
   const resetAllSettings = async() => {
     try {
@@ -143,9 +149,11 @@ const SlackIntegration = (props) => {
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
+          isEnteredSlackCredentials={isEnteredSlackCredentials}
           onSigningSecretChanged={setSlackSigningSecret}
           onBotTokenChanged={setSlackBotToken}
           onResetSettings={resetWithOutSettings}
+          onUpdatedSecretToken={setIsEnteredSlackCredentials}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
         />

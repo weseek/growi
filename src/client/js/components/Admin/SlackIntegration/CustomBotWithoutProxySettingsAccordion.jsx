@@ -13,7 +13,7 @@ export const botInstallationStep = {
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
-    activeStep, isSlackCredentials, isIntegrationSuccess,
+    activeStep, isEnteredSlackCredentials, isIntegrationSuccess,
     connectionMessage, connectionErrorCode, testChannel,
     inputTestChannelHandler, onTestFormSubmitted,
   } = props;
@@ -82,7 +82,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnteredSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection {...props} />
       </Accordion>
@@ -150,7 +150,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
   testChannel: PropTypes.string,
-  isSlackCredentials: PropTypes.bool,
+  isEnteredSlackCredentials: PropTypes.bool,
   isIntegrationSuccess: PropTypes.bool,
   onUpdatedSecretToken: PropTypes.func,
   inputTestChannelHandler: PropTypes.func,
