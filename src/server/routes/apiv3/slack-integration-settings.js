@@ -409,16 +409,13 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to regenerate slack app tokens
    */
-  // TODO: refactering generateAccessTokens by GW-6100
   router.put('/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     const { slackAppIntegrationId } = req.body;
 
     try {
-      const generateTokens = SlackAppIntegration.generateAccessToken();
-      const newTokenGtoP = generateTokens[0];
-      const newTokenPtoG = generateTokens[1];
-      const slackAppTokens = await SlackAppIntegration.findOneAndUpdate({ _id: slackAppIntegrationId }, { tokenGtoP: newTokenGtoP, tokenPtoG: newTokenPtoG });
+      const { tokenGtoP, tokenPtoG } = SlackAppIntegration.generateUniqueAccessTokens();
+      const slackAppTokens = await SlackAppIntegration.findOneAndUpdate({ _id: slackAppIntegrationId }, { tokenGtoP, tokenPtoG });
 
       return res.apiv3(slackAppTokens, 200);
     }
