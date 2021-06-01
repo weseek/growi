@@ -78,7 +78,7 @@ const OfficialBotSettings = (props) => {
   return (
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}
-        <i className="fa fa-external-link btn-link" aria-hidden="true"></i>
+        <i className="fa fa-external-link btn-link ml-2" aria-hidden="true"></i>
       </h2>
       <CustomBotWithProxyConnectionStatus
         siteName={siteName}
