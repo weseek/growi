@@ -11,8 +11,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   const {
     appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onUpdatedSecretToken,
   } = props;
-  const [inputSigningSecret, setInputSigningSecret] = useState(slackSigningSecret);
-  const [inputBotToken, setInputBotToken] = useState(slackBotToken);
+  const [inputSigningSecret, setInputSigningSecret] = useState(null);
+  const [inputBotToken, setInputBotToken] = useState(null);
   const { t } = useTranslation();
 
   const updatedSecretToken = async() => {
