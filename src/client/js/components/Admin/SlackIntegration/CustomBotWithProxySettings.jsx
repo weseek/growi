@@ -103,7 +103,7 @@ const CustomBotWithProxySettings = (props) => {
             <React.Fragment key={slackAppIntegration._id}>
               <div className="my-3 d-flex align-items-center justify-content-between">
                 <h2 id={slackBotToken}>
-                  {(workspaceName != null) ? workspaceName : `Settings #${i}`}
+                  {(workspaceName != null) ? `${workspaceName} Work Space` : `Settings #${i}`}
                 </h2>
                 <button
                   className="btn btn-outline-danger"
