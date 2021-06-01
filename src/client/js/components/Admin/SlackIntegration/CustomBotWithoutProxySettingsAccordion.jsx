@@ -92,9 +92,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         // eslint-disable-next-line max-len
         title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
-        <CustomBotWithoutProxySecretTokenSection
-          {...props}
-        />
+        <CustomBotWithoutProxySecretTokenSection {...props} />
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
