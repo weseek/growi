@@ -90,9 +90,7 @@ const SlackIntegration = (props) => {
   };
 
   const changeSecretAndToken = (secret, token) => {
-    console.log(secret); //
     setSlackSigningSecret(secret);
-    console.log(slackSigningSecret); // null
     setSlackBotToken(token);
   };
 
