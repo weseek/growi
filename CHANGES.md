@@ -1,12 +1,20 @@
 # CHANGES
 
-## v4.2.18-RC
+## v4.2.19-RC
 
-* Feature: Cobvertible page contents width.
+* Improvement: Changed to redirect to the top page at the first installation
+* Support: Upgrade libs
+    * string-width
+
+## v4.2.18
+
+* Feature: Convertible page contents width
 * Fix: Group selector of User Group Delete Modal does not show all groups
 * Fix: Global notification to Slack does not encode spaces of page path
 * Support: Upgrade libs
     * @google-cloud/storage
+    * @slack/web-api
+    * @slack/webhook
 
 ## v4.2.17
 

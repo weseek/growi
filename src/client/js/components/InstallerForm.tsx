@@ -70,7 +70,7 @@ const InstallerForm = (): JSX.Element => {
       const { isLoggedIn } = data;
 
       if (isLoggedIn) {
-        router.replace('/admin');
+        router.replace('/');
       }
       else {
         router.replace('/login');

@@ -8,6 +8,7 @@ const nextI18Next = new NextI18Next({
   localePath: path.resolve('./public/static/locales'),
   shallowRender: true,
   // TODO: GW-3581
+  // In master, uses alias to detect the browser setting language for the guest user .
   // detection: {
   //   order: ['cookie', 'header', 'querystring'],
   // },

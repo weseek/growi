@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.2.18-RC",
+  "version": "4.2.19-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -76,7 +76,8 @@
   "dependencies": {
     "//": [
       "check-node-version: see https://github.com/parshap/check-node-version/issues/35",
-      "openid-client: Node.js 12 or higher is required for openid-client@3 and above."
+      "openid-client: Node.js 12 or higher is required for openid-client@3 and above.",
+      "string-width: 5.0.0 or above uses ESM."
     ],
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "@google-cloud/storage": "^5.8.5",
@@ -169,7 +170,7 @@
     "sass": "^1.26.10",
     "socket.io": "^2.3.0",
     "stream-to-promise": "^2.2.0",
-    "string-width": "^4.1.0",
+    "string-width": "=4.2.2",
     "swig-templates": "^2.0.2",
     "tsconfig-paths": "^3.9.0",
     "uglifycss": "^0.0.29",
