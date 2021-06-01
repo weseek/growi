@@ -13,7 +13,6 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   } = props;
   const [inputSigningSecret, setInputSigningSecret] = useState(slackSigningSecret);
   const [inputBotToken, setBotToken] = useState(slackBotToken);
-  console.log(slackSigningSecret);
   const { t } = useTranslation();
 
   const currentBotType = 'customBotWithoutProxy';
