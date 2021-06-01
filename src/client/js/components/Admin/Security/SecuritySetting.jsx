@@ -37,15 +37,32 @@ class SecuritySetting extends React.Component {
         <h2 className="alert-anchor border-bottom">
           {t('security_settings')}
         </h2>
-        {adminGeneralSecurityContainer.retrieveError != null && (
-        <div className="alert alert-danger">
-          <p>{t('Error occurred')} : {adminGeneralSecurityContainer.retrieveError}</p>
-        </div>
-          )}
 
-        <h4 className="mt-4">
-          { t('page_list_and_search_results') }
-        </h4>
+        {adminGeneralSecurityContainer.retrieveError != null && (
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {adminGeneralSecurityContainer.retrieveError}</p>
+          </div>
+        )}
+
+        <h4 className="mt-4">{t('security_setting.session')}</h4>
+        <div className="form-group row">
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.max_age')}</label>
+          <div className="col-md-6">
+            <input
+              className="form-control col-md-3"
+              type="text"
+              defaultValue={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
+              onChange={(e) => {
+                adminGeneralSecurityContainer.setSessionMaxAge(e.target.value);
+              }}
+              placeholder="2592000000"
+            />
+            {/* eslint-disable-next-line react/no-danger */}
+            <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_setting.max_age_desc') }} />
+          </div>
+        </div>
+
+        <h4>{ t('security_setting.page_list_and_search_results') }</h4>
         <table className="table table-bordered col-lg-9 mb-5">
           <thead>
             <tr>
