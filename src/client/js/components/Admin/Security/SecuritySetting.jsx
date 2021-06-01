@@ -98,7 +98,8 @@ class SecuritySetting extends React.Component {
             </tr>
           </tbody>
         </table>
-        <h4>{t('page_access_and_delete_rights')}</h4>
+
+        <h4>{t('security_setting.page_access_and_delete_rights')}</h4>
         <div className="row mb-4">
           <div className="col-md-3 text-md-right py-2">
             <strong>{t('security_setting.Guest Users Access')}</strong>
@@ -142,7 +143,6 @@ class SecuritySetting extends React.Component {
             )}
           </div>
         </div>
-
         <div className="row mb-4">
           <div className="col-md-3 text-md-right mb-2">
             <strong>{t('security_setting.complete_deletion')}</strong>
@@ -189,6 +189,7 @@ class SecuritySetting extends React.Component {
             </div>
           </div>
         </div>
+
         <div className="row my-3">
           <div className="text-center text-md-left offset-md-3 col-md-5">
             <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putSecuritySetting}>
