@@ -48,16 +48,11 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
-
-      setIsSlackCredentials(false);
-      if ((slackBotToken != null && slackSigningSecret != null) || (slackBotTokenEnv != null && slackSigningSecretEnv != null)) {
-        setIsSlackCredentials(true);
-      }
     }
     catch (err) {
       toastError(err);
     }
-  }, [appContainer.apiv3, slackBotTokenEnv, slackSigningSecretEnv]);
+  }, [appContainer.apiv3]);
 
   const resetAllSettings = async() => {
     try {
@@ -151,7 +146,6 @@ const SlackIntegration = (props) => {
           onSigningSecretChanged={setSlackSigningSecret}
           onBotTokenChanged={setSlackBotToken}
           onResetSettings={resetWithOutSettings}
-          onUpdatedSecretToken={setIsSlackCredentials}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
         />
