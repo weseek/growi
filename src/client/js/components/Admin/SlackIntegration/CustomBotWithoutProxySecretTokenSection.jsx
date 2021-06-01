@@ -15,13 +15,11 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   const [inputBotToken, setBotToken] = useState(slackBotToken);
   const { t } = useTranslation();
 
-  const currentBotType = 'customBotWithoutProxy';
   const updatedSecretToken = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
         slackSigningSecret: inputSigningSecret,
         slackBotToken: inputBotToken,
-        currentBotType,
       });
 
       if (onUpdatedSecretToken == null) {
@@ -39,6 +37,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
     setInputSigningSecret(slackSigningSecret);
     setBotToken(slackBotToken);
   }, [slackSigningSecret, slackBotToken]);
+
+
   return (
     <div className="w-75 mx-auto">
 
