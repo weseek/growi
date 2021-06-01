@@ -59,6 +59,11 @@ class SecuritySetting extends React.Component {
             />
             {/* eslint-disable-next-line react/no-danger */}
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_setting.max_age_desc') }} />
+            <p className="card well">
+              <span className="text-warning">
+                <i className="icon-info"></i> {t('security_setting.max_age_caution')}
+              </span>
+            </p>
           </div>
         </div>
 

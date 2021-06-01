@@ -553,6 +553,7 @@
     "session": "セッション",
     "max_age": "有効期間 (ミリ秒)",
     "max_age_desc": "ユーザーのセッション情報の有効期間をミリ秒で指定できます。<br>デフォルト値: 2592000000 (30日間)",
+    "max_age_caution": "この値を変更した後は、サーバーを再起動する必要があります。",
     "Authentication mechanism settings": "認証機構設定",
     "setup_is_not_yet_complete":"セットアップはまだ完了してません",
     "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
