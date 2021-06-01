@@ -11,27 +11,17 @@ export const botInstallationStep = {
   CONNECTION_TEST: 'connection-test',
 };
 
-const CustomBotWithoutProxySettingsAccordion = ({
-  activeStep, isSlackCredentials, isIntegrationSuccess,
-  connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
-  inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken, onUpdatedSecretToken,
-}) => {
+const CustomBotWithoutProxySettingsAccordion = (props) => {
+  const {
+    activeStep, isSlackCredentials, isIntegrationSuccess,
+    connectionMessage, connectionErrorCode, testChannel,
+    inputTestChannelHandler, onTestFormSubmitted,
+  } = props;
   const { t } = useTranslation();
   // TODO: GW-5644 Store default open accordion
   // eslint-disable-next-line no-unused-vars
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
 
-  const onChangeSigningSecretHandler = (signingSecretInput) => {
-    if (onSetSlackSigningSecret != null) {
-      onSetSlackSigningSecret(signingSecretInput);
-    }
-  };
-
-  const onChangeBotTokenHandler = (botTokenInput) => {
-    if (onSetSlackBotToken != null) {
-      onSetSlackBotToken(botTokenInput);
-    }
-  };
 
   const submitForm = (e) => {
     e.preventDefault();
@@ -96,15 +86,7 @@ const CustomBotWithoutProxySettingsAccordion = ({
         // eslint-disable-next-line max-len
         title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isSlackCredentials && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
-        <CustomBotWithoutProxySecretTokenSection
-          onUpdateSecretTokenHandler={onUpdatedSecretToken}
-          onChangeSigningSecretHandler={onChangeSigningSecretHandler}
-          onChangeBotTokenHandler={onChangeBotTokenHandler}
-          slackSigningSecret={slackSigningSecret}
-          slackSigningSecretEnv={slackSigningSecretEnv}
-          slackBotToken={slackBotToken}
-          slackBotTokenEnv={slackBotTokenEnv}
-        />
+        <CustomBotWithoutProxySecretTokenSection {...props} />
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
