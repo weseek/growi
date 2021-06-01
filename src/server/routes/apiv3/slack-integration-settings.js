@@ -5,7 +5,7 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
-const { getConnectionStatuses, testToSlack, sendSuccessMessage } = require('@growi/slack');
+const { getConnectionStatus, getConnectionStatuses, sendSuccessMessage } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -537,7 +537,7 @@ module.exports = (crowi) => {
 
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     try {
-      await testToSlack(slackBotToken);
+      await getConnectionStatus(slackBotToken);
     }
     catch (error) {
       logger.error('Error', error);

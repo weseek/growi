@@ -71,7 +71,7 @@ const retrieveWorkspaceName = async(client: WebClient): Promise<string> => {
  * @param token bot OAuth token
  * @returns
  */
-export const testToSlack = async(token:string): Promise<ConnectionStatus> => {
+export const getConnectionStatus = async(token:string): Promise<ConnectionStatus> => {
   const client = generateWebClient(token);
   const status: ConnectionStatus = {};
 
@@ -99,7 +99,7 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
   const map = tokens
     .reduce<Promise<Map<string, ConnectionStatus>>>(
       async(acc, token) => {
-        const status: ConnectionStatus = await testToSlack(token);
+        const status: ConnectionStatus = await getConnectionStatus(token);
 
         (await acc).set(token, status);
         return acc;
