@@ -9,7 +9,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const CustomBotWithoutProxySecretTokenSection = (props) => {
   const {
-    appContainer, slackSigningSecret, slackBotToken, onUpdateSecretTokenHandler,
+    appContainer, slackSigningSecret, slackBotToken, onUpdatedSecretToken,
   } = props;
   const { t } = useTranslation();
 
@@ -26,18 +26,18 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   };
 
   const currentBotType = 'customBotWithoutProxy';
-  const updateSecretTokenHandler = async() => {
+  const updatedSecretToken = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
         slackSigningSecret,
         slackBotToken,
         currentBotType,
       });
-      onUpdateSecretTokenHandler(true);
+      onUpdatedSecretToken(true);
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
-      onUpdateSecretTokenHandler(false);
+      onUpdatedSecretToken(false);
       toastError(err);
     }
   };
@@ -102,9 +102,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
         </div>
 
       </div>
-
-      <AdminUpdateButtonRow onClick={updateSecretTokenHandler} disabled={false} />
-
+      <AdminUpdateButtonRow onClick={updatedSecretToken} disabled={false} />
     </div>
   );
 };
@@ -113,7 +111,7 @@ const CustomBotWithoutProxySecretTokenSectionWrapper = withUnstatedContainers(Cu
 
 CustomBotWithoutProxySecretTokenSection.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  onUpdateSecretTokenHandler: PropTypes.func,
+  onUpdatedSecretToken: PropTypes.func,
   onChangeSigningSecretHandler: PropTypes.func,
   onChangeBotTokenHandler: PropTypes.func,
   slackSigningSecret: PropTypes.string,
