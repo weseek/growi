@@ -11,7 +11,9 @@ const ProxyCircle = () => (
     </div>
 
     {/* responsive */}
-    <div className="circle-mini position-absolute bg-primary border-light d-block d-lg-none" />
+    <div className="circle-mini position-absolute bg-primary border-light d-block d-lg-none">
+      <p className="circle-inner mt-5">ProxyServer</p>
+    </div>
   </div>
 );
 
