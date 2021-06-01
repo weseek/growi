@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -6,25 +6,20 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 const CustomBotWithoutProxySecretTokenSection = (props) => {
   const {
     slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
-    onSigningSecretChanged, onBotTokenChanged,
+    onSigningSecretChanged, onBotTokenChanged, onUpdatedSecretToken,
   } = props;
+  console.log(slackSigningSecret);
+  const [inputSingingSecret, setInputSigningSecret] = useState(slackSigningSecret);
+  const [inputBotToken, setBotToken] = useState(slackBotToken);
+
   const { t } = useTranslation();
 
-  const signingSecretChanged = (signingSecretInput) => {
-    if (onSigningSecretChanged != null) {
-      onSigningSecretChanged(signingSecretInput);
-    }
-  };
 
-  const botTokenChanged = (botTokenInput) => {
-    if (onBotTokenChanged != null) {
-      onBotTokenChanged(botTokenInput);
-    }
-  };
-
-  const updateSecretTokenHandler = () => {
+  const updateSecretTokenHandler = (inputSingingSecret, inputBotToken) => {
     if (props.updateSecretTokenHandler != null) {
       props.updateSecretTokenHandler();
+      props.onUpdatedSecretToken(inputSingingSecret, inputBotToken);
+      console.log(slackSigningSecret);
     }
   };
 
@@ -39,8 +34,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={slackSigningSecret || ''}
-            onChange={e => signingSecretChanged(e.target.value)}
+            value={inputSingingSecret || ''}
+            onChange={(e) => { setInputSigningSecret(e.target.value) }}
           />
         </div>
 
@@ -68,8 +63,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={slackBotToken || ''}
-            onChange={e => botTokenChanged(e.target.value)}
+            value={inputBotToken || ''}
+            onChange={(e) => { setBotToken(e.target.value) }}
           />
         </div>
 
