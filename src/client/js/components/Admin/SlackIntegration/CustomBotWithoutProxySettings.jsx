@@ -48,7 +48,10 @@ const CustomBotWithoutProxySettings = (props) => {
     setSiteName(siteName);
   }, [appContainer]);
 
+  const workspaceName = connectionStatuses[props.slackBotToken]?.workspaceName;
+
   return (
+
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
 
@@ -59,16 +62,20 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
 
-      {(props.slackSigningSecret || props.slackBotToken) && (
-      <button
-        className="mx-3 pull-right btn text-danger border-danger"
-        type="button"
-        onClick={() => setIsDeleteConfirmModalShown(true)}
-      >{t('admin:slack_integration.reset')}
-      </button>
-      )}
       <div className="my-5 mx-3">
-        {/* {isConnectedFailed && (<>Settings #1 <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)} */}
+        {(props.slackSigningSecret || props.slackBotToken) && (
+          <div className="my-3 d-flex align-items-center justify-content-between">
+            <h2 id={props.slackBotToken || 'settings-accordions'}>
+              {(workspaceName != null) ? `${workspaceName} Work Space` : 'Settings'}
+            </h2>
+            <button
+              className="btn btn-outline-danger"
+              type="button"
+              onClick={() => setIsDeleteConfirmModalShown(true)}
+            >{t('admin:slack_integration.reset')}
+            </button>
+          </div>
+        )}
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
