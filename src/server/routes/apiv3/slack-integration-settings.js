@@ -536,13 +536,7 @@ module.exports = (crowi) => {
     }
 
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-    try {
-      await getConnectionStatus(slackBotToken);
-    }
-    catch (error) {
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
-    }
+    await getConnectionStatus(slackBotToken);
 
     const { channel } = req.body;
     const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
