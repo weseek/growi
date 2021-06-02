@@ -15,10 +15,20 @@ class SlackAppIntegration {
     return [tokenGtoP.digest('base64'), tokenPtoG.digest('base64')];
   }
 
-  static generateUniqueAccessTokens() {
-    const generateTokens = this.generateAccessTokens();
-    const tokenGtoP = generateTokens[0];
-    const tokenPtoG = generateTokens[1];
+  static async generateUniqueAccessTokens() {
+    let duplicateTokens;
+    let tokenGtoP;
+    let tokenPtoG;
+    let generateTokens;
+
+    do {
+      generateTokens = this.generateAccessTokens();
+      tokenGtoP = generateTokens[0];
+      tokenPtoG = generateTokens[1];
+      // eslint-disable-next-line no-await-in-loop
+      duplicateTokens = await this.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
+    } while (duplicateTokens != null);
+
 
     return { tokenGtoP, tokenPtoG };
   }
