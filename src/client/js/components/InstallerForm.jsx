@@ -23,6 +23,9 @@ class InstallerForm extends React.Component {
 
   componentWillMount() {
     const meta = localeMetadatas.find(v => v.id === i18next.language);
+    if (meta == null) {
+      return this.setState({ selectedLang: localeMetadatas[0] });
+    }
     this.setState({ selectedLang: meta });
   }
 
