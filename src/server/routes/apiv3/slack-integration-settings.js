@@ -532,17 +532,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
     }
 
-    try {
-      slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(slackAppIntegrationId, { slackBotToken });
-    }
-    catch (error) {
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(
-        `Error occured while updationg slackAppIntegration. Cause: ${error.message}`,
-        'update-slackAppIntegration-failed', error.stack,
-      ));
-    }
-
     const { channel } = req.body;
     const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
     try {
