@@ -383,26 +383,16 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
     }
 
-    let checkTokens;
-    let tokenGtoP;
-    let tokenPtoG;
-    let generateTokens;
-    // TODO: refactering generateAccessTokens by GW-6100
-    do {
-      generateTokens = SlackAppIntegration.generateAccessToken();
-      tokenGtoP = generateTokens[0];
-      tokenPtoG = generateTokens[1];
-      // eslint-disable-next-line no-await-in-loop
-      checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
-    } while (checkTokens != null);
+    const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+
     try {
       const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
-      const msg = 'Error occured in updating access token for slack app tokens';
+      const msg = 'Error occurred during creating slack integration settings procedure';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'creating-slack-integration-settings-procedure-failed'), 500);
     }
   });
 
@@ -419,23 +409,20 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to regenerate slack app tokens
    */
-  // TODO: refactering generateAccessTokens by GW-6100
   router.put('/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
 
     const { slackAppIntegrationId } = req.body;
 
     try {
-      const generateTokens = SlackAppIntegration.generateAccessToken();
-      const newTokenGtoP = generateTokens[0];
-      const newTokenPtoG = generateTokens[1];
-      const slackAppTokens = await SlackAppIntegration.findOneAndUpdate({ _id: slackAppIntegrationId }, { tokenGtoP: newTokenGtoP, tokenPtoG: newTokenPtoG });
+      const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+      const slackAppTokens = await SlackAppIntegration.findOneAndUpdate({ _id: slackAppIntegrationId }, { tokenGtoP, tokenPtoG });
 
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
-      const msg = 'Error occured in updating access token for slack app tokens';
+      const msg = 'Error occurred during regenerating slack app tokens';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'regenerating-slackAppTokens-failed'), 500);
     }
   });
 
