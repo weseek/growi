@@ -390,9 +390,9 @@ module.exports = (crowi) => {
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
-      const msg = 'Error occurred in creating slack app integration';
+      const msg = 'Error occurred while creating slack integration settings procedure';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'creating-slack-app-integration-settings-procedure-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'creating-slack-integration-settings-procedure-failed'), 500);
     }
   });
 
@@ -420,7 +420,7 @@ module.exports = (crowi) => {
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
-      const msg = 'Error occurred in regenerating slack app tokens';
+      const msg = 'Error occurred while regenerating slack app tokens';
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'regenerating-slackAppTokens-failed'), 500);
     }
