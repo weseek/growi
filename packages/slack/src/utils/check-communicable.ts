@@ -106,7 +106,7 @@ export const getConnectionStatuses = async(keys: string[], botTokenResolver?: (k
         }
         const status: ConnectionStatus = await getConnectionStatus(token);
 
-        (await acc).set(token, status);
+        (await acc).set(key, status);
         return acc;
       },
       // define initial accumulator
