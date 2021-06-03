@@ -107,12 +107,9 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
       }
 
-      try {
-        await getConnectionStatus(token);
-      }
-      catch (err) {
-        logger.error(err);
-        return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+      const status = await getConnectionStatus(token);
+      if(status.error != null){
+        return res.status(400).send({message: `failed to get onnection. err: ${status.error}`})
       }
 
       return res.send({ relation, slackBotToken: token });
@@ -145,12 +142,9 @@ export class GrowiToSlackCtrl {
       return res.status(400).send({ message: 'installation is invalid' });
     }
 
-    try {
-      await getConnectionStatus(token);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+    const status = await getConnectionStatus(token);
+    if(status.error != null){
+      return res.status(400).send({message: `failed to get onnection. err: ${status.error}`})
     }
 
     logger.debug('relation test is success', order);
