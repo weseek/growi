@@ -61,9 +61,9 @@ const CustomBotWithoutProxySettings = (props) => {
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
-      <div className="px-3 my-5">
+      <div className={(props.slackSigningSecret != null || props.slackBotToken != null) ? 'px-3 mb-5' : 'px-3 my-5'}>
         {(props.slackSigningSecret != null || props.slackBotToken != null) && (
-          <div className="d-flex justify-content-end　my-3">
+          <div className="d-flex justify-content-end my-3">
             <button
               className="pull-right btn text-danger border-danger"
               type="button"
