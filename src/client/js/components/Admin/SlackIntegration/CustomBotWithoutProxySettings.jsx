@@ -61,16 +61,17 @@ const CustomBotWithoutProxySettings = (props) => {
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
-
-      {(props.slackSigningSecret || props.slackBotToken) && (
-      <button
-        className="mx-3 pull-right btn text-danger border-danger"
-        type="button"
-        onClick={() => setIsDeleteConfirmModalShown(true)}
-      >{t('admin:slack_integration.reset')}
-      </button>
-      )}
-      <div className="my-5 mx-3">
+      <div className={(props.slackSigningSecret != null || props.slackBotToken != null) ? 'px-3 mb-5' : 'px-3 my-5'}>
+        <div className="d-flex justify-content-end">
+          {(props.slackSigningSecret != null || props.slackBotToken != null) && (
+            <button
+              className="btn text-danger border-danger my-4"
+              type="button"
+              onClick={() => setIsDeleteConfirmModalShown(true)}
+            >{t('admin:slack_integration.reset')}
+            </button>
+          )}
+        </div>
         {/* {isConnectedFailed && (<>Settings #1 <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)} */}
         <CustomBotWithoutProxySettingsAccordion
           {...props}
