@@ -9,7 +9,6 @@ const { query } = require('express-validator');
 const { isCreatablePage } = require('@commons/util/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
-
 const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
