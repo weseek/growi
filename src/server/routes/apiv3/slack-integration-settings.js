@@ -537,7 +537,6 @@ module.exports = (crowi) => {
 
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
     const status = await getConnectionStatus(slackBotToken);
-    // console.log('status', status);
     if (status.error != null) {
       return res.apiv3Err(new ErrorV3(`Error occured while getting connection. Cause: ${status.error}`, 'send-message-failed'));
     }
