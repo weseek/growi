@@ -183,15 +183,13 @@ module.exports = (crowi) => {
       if (proxyServerUri != null) {
         try {
           if (settings.slackAppIntegrations.length > 0) {
-            const slackAppIntegrationsIds = [];
-            const tokenGtoPs = [];
+            const tokenGtoPToSlackAppIntegrationId = {};
             settings.slackAppIntegrations.forEach((slackAppIntegration) => {
-              slackAppIntegrationsIds.push(slackAppIntegration._id);
-              tokenGtoPs.push(slackAppIntegration.tokenGtoP);
+              tokenGtoPToSlackAppIntegrationId[slackAppIntegration.tokenGtoP] = slackAppIntegration._id;
             });
-            const result = await getConnectionStatusesFromProxy(tokenGtoPs);
-            Object.values(result.connectionStatuses).forEach((connectionStatus, i) => {
-              connectionStatuses[slackAppIntegrationsIds[i]] = connectionStatus;
+            const result = (await getConnectionStatusesFromProxy(Object.keys(tokenGtoPToSlackAppIntegrationId)));
+            Object.entries(result.connectionStatuses).forEach(([tokenGtoP, connectionStatus]) => {
+              connectionStatuses[tokenGtoPToSlackAppIntegrationId[tokenGtoP]] = connectionStatus;
             });
           }
         }
