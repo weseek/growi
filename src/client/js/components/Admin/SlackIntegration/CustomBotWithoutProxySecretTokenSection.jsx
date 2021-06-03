@@ -22,10 +22,10 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
         slackBotToken: inputBotToken,
       });
 
-      if (onUpdatedSecretToken == null) {
-        return;
+      if (onUpdatedSecretToken != null) {
+        onUpdatedSecretToken(inputSigningSecret, inputBotToken);
       }
-      onUpdatedSecretToken(inputSigningSecret, inputBotToken);
+
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
