@@ -61,11 +61,11 @@ const CustomBotWithoutProxySettings = (props) => {
       />
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
-      <div className="my-5 mx-3">
+      <div className="mb-5 mx-3">
         <div className="d-flex justify-content-end">
           {(props.slackSigningSecret || props.slackBotToken) && (
             <button
-              className="mb-3 pull-right btn text-danger border-danger"
+              className="my-3 pull-right btn text-danger border-danger"
               type="button"
               onClick={() => setIsDeleteConfirmModalShown(true)}
             >{t('admin:slack_integration.reset')}
