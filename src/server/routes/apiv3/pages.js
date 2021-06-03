@@ -6,7 +6,9 @@ const pathUtils = require('growi-commons').pathUtils;
 
 const { body } = require('express-validator');
 const { query } = require('express-validator');
+const { isCreatablePage } = require('@commons/util/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
 
 const router = express.Router();
 
@@ -378,7 +380,7 @@ module.exports = (crowi) => {
       socketClientId: +req.body.socketClientId || undefined,
     };
 
-    if (!Page.isCreatableName(newPagePath)) {
+    if (!isCreatablePage(newPagePath)) {
       return res.apiv3Err(new ErrorV3(`Could not use the path '${newPagePath})'`, 'invalid_path'), 409);
     }
 

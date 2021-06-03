@@ -1,3 +1,4 @@
+const { isCreatablePage } = require('@commons/util/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
@@ -478,12 +479,10 @@ module.exports = function(crowi, app) {
   actions.notFound = async function(req, res) {
     const path = getPathFromRequest(req);
 
-    const isCreatable = Page.isCreatableName(path);
-
     let view;
     const renderVars = { path };
 
-    if (!isCreatable) {
+    if (!isCreatablePage(path)) {
       view = 'layout-growi/not_creatable';
     }
     else if (req.isForbidden) {
