@@ -63,7 +63,7 @@ export class GrowiToSlackCtrl {
 
     logger.debug(`${relations.length} relations found`, relations);
 
-    // extract bot token
+    // key: tokenGtoP, value:botToken
     const botTokenResolverMapping: {[tokenGtoP:string]:string} = {};
 
     relations.forEach((relation) => {
