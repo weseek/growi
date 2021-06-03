@@ -65,20 +65,20 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
 
-      <div className="my-5 mx-3">
-        {(props.slackSigningSecret != null || props.slackBotToken != null) && (
-          <div className="my-3 d-flex align-items-center justify-content-between">
-            <h2 id={props.slackBotToken || 'settings-accordions'}>
-              {(workspaceName != null) ? `${workspaceName} Work Space` : 'Settings'}
-            </h2>
+      <div className="px-3">
+        <div className="my-3 d-flex align-items-center justify-content-between">
+          <h2 id={props.slackBotToken || 'settings-accordions'}>
+            {(workspaceName != null) ? `${workspaceName} Work Space` : 'Settings'}
+          </h2>
+          {(props.slackSigningSecret != null || props.slackBotToken != null) && (
             <button
               className="btn btn-outline-danger"
               type="button"
               onClick={() => setIsDeleteConfirmModalShown(true)}
             >{t('admin:slack_integration.reset')}
             </button>
-          </div>
-        )}
+          )}
+        </div>
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
