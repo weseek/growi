@@ -183,7 +183,7 @@ module.exports = (crowi) => {
       if (proxyServerUri != null) {
         try {
           if (settings.slackAppIntegrations.length > 0) {
-            // key: slackAppIntegration.tokenGtoP, value:slackAppIntegration._id
+            // key: slackAppIntegration.tokenGtoP, value: slackAppIntegration._id
             const tokenGtoPToSlackAppIntegrationId = {};
             settings.slackAppIntegrations.forEach((slackAppIntegration) => {
               tokenGtoPToSlackAppIntegrationId[slackAppIntegration.tokenGtoP] = slackAppIntegration._id;
