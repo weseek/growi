@@ -5,7 +5,7 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
-const { getConnectionStatuses, testToSlack, sendSuccessMessage } = require('@growi/slack');
+const { getConnectionStatus, getConnectionStatuses, sendSuccessMessage } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -557,12 +557,9 @@ module.exports = (crowi) => {
     }
 
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-    try {
-      await testToSlack(slackBotToken);
-    }
-    catch (error) {
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
+    const status = await getConnectionStatus(slackBotToken);
+    if (status.error != null) {
+      return res.apiv3Err(new ErrorV3(`Error occured while getting connection. ${status.error}`, 'send-message-failed'));
     }
 
     const { channel } = req.body;
