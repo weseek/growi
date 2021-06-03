@@ -43,7 +43,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   }
 
   let isEnterdSecretAndToken = false;
-  if ((slackSigningSecret != null && slackBotToken != null) || (slackSigningSecretEnv != null && slackBotTokenEnv != null)) {
+  if ((slackSigningSecret != null || slackSigningSecretEnv != null) && (slackBotToken != null || slackBotTokenEnv != null)) {
     isEnterdSecretAndToken = true;
   }
 
