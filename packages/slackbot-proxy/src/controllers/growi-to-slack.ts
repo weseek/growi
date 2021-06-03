@@ -108,8 +108,8 @@ export class GrowiToSlackCtrl {
       }
 
       const status = await getConnectionStatus(token);
-      if(status.error != null){
-        return res.status(400).send({message: `failed to get onnection. err: ${status.error}`})
+      if (status.error != null){
+        return res.status(400).send({ message: `failed to get connection. err: ${status.error}` })
       }
 
       return res.send({ relation, slackBotToken: token });
@@ -143,8 +143,8 @@ export class GrowiToSlackCtrl {
     }
 
     const status = await getConnectionStatus(token);
-    if(status.error != null){
-      return res.status(400).send({message: `failed to get onnection. err: ${status.error}`})
+    if (status.error != null){
+      return res.status(400).send({ message: `failed to get connection. err: ${status.error}` })
     }
 
     logger.debug('relation test is success', order);
