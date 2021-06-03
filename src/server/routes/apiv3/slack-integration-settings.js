@@ -508,9 +508,8 @@ module.exports = (crowi) => {
 
     const { slackAppIntegrationId } = req.body;
     let slackBotToken;
-    let slackAppIntegration;
     try {
-      slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
