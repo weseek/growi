@@ -92,16 +92,21 @@ export const getConnectionStatus = async(token:string): Promise<ConnectionStatus
 
 /**
  * Get token string to ConnectionStatus map
- * @param tokens Array of bot OAuth token
+ * @param keys Array of bot OAuth token or specific key
+ * @param botTokenResolver function to convert from key to token
  * @returns
  */
-export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: string]: ConnectionStatus}> => {
-  const map = tokens
+export const getConnectionStatuses = async(keys: string[], botTokenResolver?: (key: string) => string): Promise<{[key: string]: ConnectionStatus}> => {
+  const map = keys
     .reduce<Promise<Map<string, ConnectionStatus>>>(
-      async(acc, token) => {
+      async(acc, key) => {
+        let token = key;
+        if (botTokenResolver != null) {
+          token = botTokenResolver(key);
+        }
         const status: ConnectionStatus = await getConnectionStatus(token);
 
-        (await acc).set(token, status);
+        (await acc).set(key, status);
         return acc;
       },
       // define initial accumulator

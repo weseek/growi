@@ -63,13 +63,17 @@ export class GrowiToSlackCtrl {
 
     logger.debug(`${relations.length} relations found`, relations);
 
-    // extract bot token
-    const tokens: string[] = relations
-      .map(relation => relation.installation?.data?.bot?.token)
-      .filter((v): v is string => v != null); // filter out null values
+    // key: tokenGtoP, value: botToken
+    const botTokenResolverMapping: {[tokenGtoP:string]:string} = {};
 
-    const connectionStatuses = await getConnectionStatuses(tokens);
+    relations.forEach((relation) => {
+      const botToken = relation.installation?.data?.bot?.token;
+      if (botToken != null) {
+        botTokenResolverMapping[relation.tokenGtoP] = botToken;
+      }
+    });
 
+    const connectionStatuses = await getConnectionStatuses(Object.keys(botTokenResolverMapping), (tokenGtoP:string) => botTokenResolverMapping[tokenGtoP]);
     return res.send({ connectionStatuses });
   }
 

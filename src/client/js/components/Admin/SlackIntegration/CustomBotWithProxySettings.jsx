@@ -105,12 +105,16 @@ const CustomBotWithProxySettings = (props) => {
 
       <div className="mx-3">
         {slackAppIntegrations.map((slackAppIntegration, i) => {
-          const { tokenGtoP, tokenPtoG } = slackAppIntegration;
+          const { tokenGtoP, tokenPtoG, _id } = slackAppIntegration;
+          const workspaceName = connectionStatuses[_id]?.workspaceName;
           return (
             <React.Fragment key={slackAppIntegration._id}>
-              <div className="d-flex justify-content-end">
+              <div className="my-3 d-flex align-items-center justify-content-between">
+                <h2 id={_id || `settings-accordions-${i}`}>
+                  {(workspaceName != null) ? `${workspaceName} Work Space` : `Settings #${i}`}
+                </h2>
                 <button
-                  className="my-3 btn btn-outline-danger"
+                  className="btn btn-outline-danger"
                   type="button"
                   onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
                 >

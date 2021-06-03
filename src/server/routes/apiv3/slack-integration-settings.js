@@ -149,7 +149,7 @@ module.exports = (crowi) => {
     }
 
     // retrieve connection statuses
-    let connectionStatuses;
+    let connectionStatuses = {};
     if (currentBotType == null) {
       // TODO imple null action
     }
@@ -183,8 +183,15 @@ module.exports = (crowi) => {
       if (proxyServerUri != null) {
         try {
           if (settings.slackAppIntegrations.length > 0) {
-            const tokenGtoPs = settings.slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
-            connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
+            // key: slackAppIntegration.tokenGtoP, value: slackAppIntegration._id
+            const tokenGtoPToSlackAppIntegrationId = {};
+            settings.slackAppIntegrations.forEach((slackAppIntegration) => {
+              tokenGtoPToSlackAppIntegrationId[slackAppIntegration.tokenGtoP] = slackAppIntegration._id;
+            });
+            const result = (await getConnectionStatusesFromProxy(Object.keys(tokenGtoPToSlackAppIntegrationId)));
+            Object.entries(result.connectionStatuses).forEach(([tokenGtoP, connectionStatus]) => {
+              connectionStatuses[tokenGtoPToSlackAppIntegrationId[tokenGtoP]] = connectionStatus;
+            });
           }
         }
         catch (error) {
