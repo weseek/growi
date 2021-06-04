@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -9,31 +9,32 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 const CustomBotWithoutProxySecretTokenSection = (props) => {
   const {
-    appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
+    appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onUpdatedSecretToken,
   } = props;
   const { t } = useTranslation();
 
-  const onChangeSigningSecretHandler = (signingSecretInput) => {
-    if (props.onChangeSigningSecretHandler != null) {
-      props.onChangeSigningSecretHandler(signingSecretInput);
-    }
-  };
+  const [inputSigningSecret, setInputSigningSecret] = useState(slackSigningSecret || '');
+  const [inputBotToken, setInputBotToken] = useState(slackBotToken || '');
 
-  const onChangeBotTokenHandler = (botTokenInput) => {
-    if (props.onChangeBotTokenHandler != null) {
-      props.onChangeBotTokenHandler(botTokenInput);
-    }
-  };
+  // update states when props are updated
+  useEffect(() => {
+    setInputSigningSecret(slackSigningSecret || '');
+  }, [slackSigningSecret]);
+  useEffect(() => {
+    setInputBotToken(slackBotToken || '');
+  }, [slackBotToken]);
 
-
-  const currentBotType = 'customBotWithoutProxy';
   const updatedSecretToken = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/without-proxy/update-settings', {
-        slackSigningSecret,
-        slackBotToken,
-        currentBotType,
+        slackSigningSecret: inputSigningSecret,
+        slackBotToken: inputBotToken,
       });
+
+      if (onUpdatedSecretToken != null) {
+        onUpdatedSecretToken(inputSigningSecret, inputBotToken);
+      }
+
       toastSuccess(t('toaster.update_successed', { target: t('admin:slack_integration.custom_bot_without_proxy_settings') }));
     }
     catch (err) {
@@ -52,8 +53,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={slackSigningSecret || ''}
-            onChange={e => onChangeSigningSecretHandler(e.target.value)}
+            value={inputSigningSecret}
+            onChange={e => setInputSigningSecret(e.target.value)}
           />
         </div>
 
@@ -62,7 +63,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={slackSigningSecretEnv || ''}
+            defaultValue={slackSigningSecretEnv}
             readOnly
           />
           <p className="form-text text-muted">
@@ -81,8 +82,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={slackBotToken || ''}
-            onChange={e => onChangeBotTokenHandler(e.target.value)}
+            value={inputBotToken}
+            onChange={e => setInputBotToken(e.target.value)}
           />
         </div>
 
@@ -91,7 +92,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={slackBotTokenEnv || ''}
+            defaultValue={slackBotTokenEnv}
             readOnly
           />
           <p className="form-text text-muted">
@@ -112,8 +113,8 @@ const CustomBotWithoutProxySecretTokenSectionWrapper = withUnstatedContainers(Cu
 
 CustomBotWithoutProxySecretTokenSection.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  onChangeSigningSecretHandler: PropTypes.func,
-  onChangeBotTokenHandler: PropTypes.func,
+
+  onUpdatedSecretToken: PropTypes.func,
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,

@@ -78,6 +78,11 @@ const SlackIntegration = (props) => {
     }
   };
 
+  const changeSecretAndToken = (secret, token) => {
+    setSlackSigningSecret(secret);
+    setSlackBotToken(token);
+  };
+
   useEffect(() => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
@@ -140,9 +145,8 @@ const SlackIntegration = (props) => {
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
-          onSetSlackSigningSecret={setSlackSigningSecret}
-          onSetSlackBotToken={setSlackBotToken}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
+          onUpdatedSecretToken={changeSecretAndToken}
           connectionStatuses={connectionStatuses}
         />
       );

@@ -85,9 +85,7 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
 
-  isRgisterSlackCredentials: PropTypes.bool,
   isIntegrationSuccess: PropTypes.bool,
-  slackWSNameInWithoutProxy: PropTypes.string,
   connectionStatuses: PropTypes.object.isRequired,
 };
 
