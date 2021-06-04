@@ -1,10 +1,7 @@
 {% extends '../layout/admin.html' %}
 
-{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('Import Data')) }}{% endblock %}
-
-{% block content_header %}
-<h1 class="title">{{ t('not_found_page.page_not_exist') }}</h1>
-{% endblock %}
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('not_found_page.page_not_exist')) }}{% endblock %}
 
 {% block content_main %}
+<h1 class="title">{{ t('not_found_page.page_not_exist') }}</h1>
 {% endblock content_main %}
