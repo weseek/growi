@@ -7,6 +7,7 @@
 * Improvement: Change the first accessing page after installation to the top page
 * Support: Upgrade libs
     * string-width
+    * archiver
 
 ## v4.2.18
 
