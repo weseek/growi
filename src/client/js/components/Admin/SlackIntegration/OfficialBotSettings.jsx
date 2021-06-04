@@ -77,7 +77,10 @@ const OfficialBotSettings = (props) => {
 
   return (
     <>
-      <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}</h2>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}
+        {/* TODO: add an appropriate links by GW-5614 */}
+        <i className="fa fa-external-link btn-link ml-2" aria-hidden="true"></i>
+      </h2>
       <CustomBotWithProxyConnectionStatus
         siteName={siteName}
         connectionStatuses={connectionStatuses}
@@ -102,13 +105,17 @@ const OfficialBotSettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
 
       <div className="mx-3">
-        {slackAppIntegrations.map((slackAppIntegration) => {
-          const { tokenGtoP, tokenPtoG } = slackAppIntegration;
+        {slackAppIntegrations.map((slackAppIntegration, i) => {
+          const { tokenGtoP, tokenPtoG, _id } = slackAppIntegration;
+          const workspaceName = connectionStatuses[_id]?.workspaceName;
           return (
             <React.Fragment key={slackAppIntegration._id}>
-              <div className="d-flex justify-content-end">
+              <div className="my-3 d-flex align-items-center justify-content-between">
+                <h2 id={_id || `settings-accordions-${i}`}>
+                  {(workspaceName != null) ? `${workspaceName} Work Space` : `Settings #${i}`}
+                </h2>
                 <button
-                  className="my-3 btn btn-outline-danger"
+                  className="btn btn-outline-danger"
                   type="button"
                   onClick={() => setIsDeleteConfirmModalShown(true)}
                 >

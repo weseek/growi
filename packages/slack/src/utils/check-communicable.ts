@@ -68,31 +68,46 @@ const retrieveWorkspaceName = async(client: WebClient): Promise<string> => {
 };
 
 /**
- * Get token string to ConnectionStatus map
- * @param tokens Array of bot OAuth token
+ * @param token bot OAuth token
  * @returns
  */
-export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: string]: ConnectionStatus}> => {
-  const map = tokens
+export const getConnectionStatus = async(token:string): Promise<ConnectionStatus> => {
+  const client = generateWebClient(token);
+  const status: ConnectionStatus = {};
+
+  try {
+    // try to connect
+    const resultTestSlackApiServer = await testSlackApiServer(client);
+    // check scope
+    await checkSlackScopes(resultTestSlackApiServer);
+    // retrieve workspace name
+    status.workspaceName = await retrieveWorkspaceName(client);
+  }
+  catch (err) {
+    status.error = err;
+  }
+
+  return status;
+};
+
+/**
+ * Get token string to ConnectionStatus map
+ * @param keys Array of bot OAuth token or specific key
+ * @param botTokenResolver function to convert from key to token
+ * @returns
+ */
+export const getConnectionStatuses = async(keys: string[], botTokenResolver?: (key: string) => string): Promise<{[key: string]: ConnectionStatus}> => {
+  const map = keys
     .reduce<Promise<Map<string, ConnectionStatus>>>(
-      async(acc, token) => {
-        const client = generateWebClient(token);
-
-        const status: ConnectionStatus = {};
-        try {
-          // try to connect
-          await testSlackApiServer(client);
-          // retrieve workspace name
-          status.workspaceName = await retrieveWorkspaceName(client);
+      async(acc, key) => {
+        let token = key;
+        if (botTokenResolver != null) {
+          token = botTokenResolver(key);
         }
-        catch (err) {
-          status.error = err;
-        }
+        const status: ConnectionStatus = await getConnectionStatus(token);
 
-        (await acc).set(token, status);
-
+        (await acc).set(key, status);
         return acc;
-
       },
       // define initial accumulator
       Promise.resolve(new Map<string, ConnectionStatus>()),
@@ -100,16 +115,6 @@ export const getConnectionStatuses = async(tokens: string[]): Promise<{[key: str
 
   // convert to object
   return Object.fromEntries(await map);
-};
-
-/**
- * @param token bot OAuth token
- * @returns
- */
-export const testToSlack = async(token:string): Promise<void> => {
-  const client = generateWebClient(token);
-  const res = await testSlackApiServer(client);
-  await checkSlackScopes(res);
 };
 
 export const sendSuccessMessage = async(token:string, channel:string, appSiteUrl:string): Promise<void> => {

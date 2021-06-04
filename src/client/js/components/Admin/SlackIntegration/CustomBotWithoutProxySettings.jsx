@@ -6,35 +6,24 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
-import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, onResetSettings, connectionStatuses } = props;
+  const { appContainer, connectionStatuses } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
-  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
-  const [connectionMessage, setConnectionMessage] = useState('');
-  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
+  const [connectionMessage, setConnectionMessage] = useState(null);
   const [testChannel, setTestChannel] = useState('');
-
-  const resetSettings = async() => {
-    if (onResetSettings == null) {
-      return;
-    }
-    onResetSettings();
-  };
 
   const testConnection = async() => {
     try {
       await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
-      setConnectionMessage('Send the message to slack work space.');
+      setConnectionMessage('');
       setIsIntegrationSuccess(true);
     }
     catch (err) {
-      setConnectionErrorCode(err[0].code);
-      setConnectionMessage(err[0].message);
+      setConnectionMessage(err[0]);
       setIsIntegrationSuccess(false);
     }
   };
@@ -48,9 +37,15 @@ const CustomBotWithoutProxySettings = (props) => {
     setSiteName(siteName);
   }, [appContainer]);
 
+  const workspaceName = connectionStatuses[props.slackBotToken]?.workspaceName;
+
   return (
+
     <>
-      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}</h2>
+      <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}
+        {/* TODO: add an appropriate links by GW-5614 */}
+        <i className="fa fa-external-link btn-link ml-2" aria-hidden="true"></i>
+      </h2>
 
       <CustomBotWithoutProxyConnectionStatus
         siteName={siteName}
@@ -59,33 +54,22 @@ const CustomBotWithoutProxySettings = (props) => {
 
       <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
 
-      {(props.slackSigningSecret || props.slackBotToken) && (
-      <button
-        className="mx-3 pull-right btn text-danger border-danger"
-        type="button"
-        onClick={() => setIsDeleteConfirmModalShown(true)}
-      >{t('admin:slack_integration.reset')}
-      </button>
-      )}
-      <div className="my-5 mx-3">
-        {/* {isConnectedFailed && (<>Settings #1 <span className="text-danger">{t('admin:slack_integration.integration_failed')}</span></>)} */}
+      <div className="px-3">
+        <div className="my-3 d-flex align-items-center justify-content-between">
+          <h2 id={props.slackBotToken || 'settings-accordions'}>
+            {(workspaceName != null) ? `${workspaceName} Work Space` : 'Settings'}
+          </h2>
+        </div>
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
           connectionMessage={connectionMessage}
-          connectionErrorCode={connectionErrorCode}
           isIntegrationSuccess={isIntegrationSuccess}
           testChannel={testChannel}
           onTestFormSubmitted={testConnection}
           inputTestChannelHandler={inputTestChannelHandler}
         />
       </div>
-      <DeleteSlackBotSettingsModal
-        isResetAll={false}
-        isOpen={isDeleteConfirmModalShown}
-        onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={resetSettings}
-      />
     </>
   );
 };
@@ -102,7 +86,6 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
 
   isIntegrationSuccess: PropTypes.bool,
-  onResetSettings: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
 };
 

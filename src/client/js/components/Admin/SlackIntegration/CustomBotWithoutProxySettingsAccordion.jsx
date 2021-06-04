@@ -13,7 +13,7 @@ export const botInstallationStep = {
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
-    activeStep, connectionMessage, connectionErrorCode, testChannel,
+    activeStep, connectionMessage, testChannel,
     slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
     isIntegrationSuccess,
     inputTestChannelHandler, onTestFormSubmitted,
@@ -33,13 +33,12 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     onTestFormSubmitted();
   };
 
-
   let value = '';
-  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
-    value = connectionMessage;
+  if (connectionMessage === '' || connectionMessage == null) {
+    value = '';
   }
   else {
-    value = [connectionErrorCode, connectionMessage];
+    value = [connectionMessage.code, connectionMessage.message];
   }
 
   let isEnterdSecretAndToken = false;
@@ -122,11 +121,11 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             </button>
           </form>
         </div>
-        {connectionMessage === ''
+        {connectionMessage == null
           ? <p></p>
           : (
             <>
-              {connectionMessage === 'Send the message to slack work space.'
+              {connectionMessage === ''
                 ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
                 : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
               }
@@ -166,7 +165,6 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   isIntegrationSuccess: PropTypes.bool,
   inputTestChannelHandler: PropTypes.func,
   onTestFormSubmitted: PropTypes.func,
-
 };
 
 export default CustomBotWithoutProxySettingsAccordion;
