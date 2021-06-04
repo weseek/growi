@@ -95,10 +95,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       >
         <CustomBotWithoutProxySecretTokenSection
           onUpdatedSecretToken={props.onUpdatedSecretToken}
-          slackSigningSecret={props.slackSigningSecret}
-          slackSigningSecretEnv={props.slackSigningSecretEnv}
-          slackBotToken={props.slackBotToken}
-          slackBotTokenEnv={props.slackBotTokenEnv}
+          slackSigningSecret={slackSigningSecret}
+          slackSigningSecretEnv={slackSigningSecretEnv}
+          slackBotToken={slackBotToken}
+          slackBotTokenEnv={slackBotTokenEnv}
         />
       </Accordion>
       <Accordion
