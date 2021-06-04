@@ -129,7 +129,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
           { t('admin:slack_integration.access_token_settings.regenerate') }
         </button>
       </div>
-      <p className="font-weight-bold">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
+      <p className="font-weight-bold mt-5">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
       <div className="d-flex flex-column align-items-center">
         <ol className="p-0">
           <li>
