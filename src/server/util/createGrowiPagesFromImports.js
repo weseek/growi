@@ -1,3 +1,5 @@
+const { isCreatablePage } = require('~/utils/path-utils');
+
 module.exports = (crowi) => {
   const Page = crowi.model('Page');
 
@@ -18,7 +20,7 @@ module.exports = (crowi) => {
       const path = page.path;
       const user = page.user;
       const body = page.body;
-      const isCreatableName = await Page.isCreatableName(path);
+      const isCreatableName = isCreatablePage(path);
       const isPageNameTaken = await Page.findByPathAndViewer(path, user);
 
       if (isCreatableName && !isPageNameTaken) {

@@ -512,10 +512,6 @@ module.exports = function(crowi) {
     logger.warn('THIS METHOD IS DEPRECATED. Use isDeletablePage method of path-utils instead.');
   };
 
-  pageSchema.statics.isCreatableName = function() {
-    logger.warn('THIS METHOD IS DEPRECATED. Use isCreatablePage method of path-utils instead.');
-  };
-
   pageSchema.statics.fixToCreatableName = function(path) {
     return path
       .replace(/\/\//g, '/');

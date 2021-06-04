@@ -11,7 +11,7 @@ import { pathUtils } from 'growi-commons';
 import { useTranslation } from '~/i18n';
 import { useCurrentUser, useSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModalOpened } from '~/stores/ui';
-import { userPageRoot } from '~/utils/path-utils';
+import { userPageRoot, isCreatablePage } from '~/utils/path-utils';
 
 import { PagePathAutoComplete } from '~/components/PagePathAutoComplete';
 
@@ -24,12 +24,12 @@ const PageCreateModal = () => {
 
   const pathname = decodeURI(window.location.pathname);
   const userPageRootPath = userPageRoot(currentUser);
-  const parentPath = pathUtils.addTrailingSlash(pathname);
+  const pageNameInputInitialValue = isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
-  const [pageNameInput, setPageNameInput] = useState(parentPath);
+  const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
 
   const closeModal = useCallback(() => mutateModal(false), [mutateModal]);
@@ -164,7 +164,7 @@ const PageCreateModal = () => {
               {isReachable
                 ? (
                   <PagePathAutoComplete
-                    initializedPath={pathname}
+                    initializedPath={pageNameInput}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}
