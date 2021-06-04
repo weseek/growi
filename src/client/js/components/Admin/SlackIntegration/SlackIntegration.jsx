@@ -67,17 +67,6 @@ const SlackIntegration = (props) => {
     }
   };
 
-  const resetWithOutSettings = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
-      fetchSlackIntegrationData();
-      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
-    }
-    catch (error) {
-      toastError(error);
-    }
-  };
-
   const createSlackIntegrationData = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
@@ -153,7 +142,6 @@ const SlackIntegration = (props) => {
           slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
           onSetSlackSigningSecret={setSlackSigningSecret}
           onSetSlackBotToken={setSlackBotToken}
-          onResetSettings={resetWithOutSettings}
           fetchSlackIntegrationData={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
         />
