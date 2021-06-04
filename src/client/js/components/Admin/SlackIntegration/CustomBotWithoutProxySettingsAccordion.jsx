@@ -13,7 +13,7 @@ export const botInstallationStep = {
 
 const CustomBotWithoutProxySettingsAccordion = ({
   activeStep,
-  connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
+  connectionMessage, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isIntegrationSuccess,
   inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken,
 }) => {
@@ -43,13 +43,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
     onTestFormSubmitted();
   };
 
-
   let value = '';
   if (connectionMessage === '' || connectionMessage == null) {
     value = '';
   }
   else {
-    value = [connectionErrorCode, connectionMessage];
+    value = [connectionMessage.code, connectionMessage.message];
   }
 
   return (
@@ -178,7 +177,6 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
   connectionMessage: PropTypes.string,
-  connectionErrorCode: PropTypes.string,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
 
