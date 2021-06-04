@@ -6,25 +6,16 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
-import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, onResetSettings, connectionStatuses } = props;
+  const { appContainer, connectionStatuses } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
-  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
   const [connectionMessage, setConnectionMessage] = useState('');
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
-
-  const resetSettings = async() => {
-    if (onResetSettings == null) {
-      return;
-    }
-    onResetSettings();
-  };
 
   const testConnection = async() => {
     try {
@@ -70,14 +61,6 @@ const CustomBotWithoutProxySettings = (props) => {
           <h2 id={props.slackBotToken || 'settings-accordions'}>
             {(workspaceName != null) ? `${workspaceName} Work Space` : 'Settings'}
           </h2>
-          {(props.slackSigningSecret != null || props.slackBotToken != null) && (
-            <button
-              className="btn btn-outline-danger"
-              type="button"
-              onClick={() => setIsDeleteConfirmModalShown(true)}
-            >{t('admin:slack_integration.reset')}
-            </button>
-          )}
         </div>
         <CustomBotWithoutProxySettingsAccordion
           {...props}
@@ -90,12 +73,6 @@ const CustomBotWithoutProxySettings = (props) => {
           inputTestChannelHandler={inputTestChannelHandler}
         />
       </div>
-      <DeleteSlackBotSettingsModal
-        isResetAll={false}
-        isOpen={isDeleteConfirmModalShown}
-        onClose={() => setIsDeleteConfirmModalShown(false)}
-        onClickDeleteButton={resetSettings}
-      />
     </>
   );
 };
@@ -114,7 +91,6 @@ CustomBotWithoutProxySettings.propTypes = {
   isRgisterSlackCredentials: PropTypes.bool,
   isIntegrationSuccess: PropTypes.bool,
   slackWSNameInWithoutProxy: PropTypes.string,
-  onResetSettings: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
 };
 
