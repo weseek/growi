@@ -93,7 +93,13 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         // eslint-disable-next-line max-len
         title={<><span className="mr-2">③</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
-        <CustomBotWithoutProxySecretTokenSection {...props} />
+        <CustomBotWithoutProxySecretTokenSection
+          onUpdatedSecretToken={props.onUpdatedSecretToken}
+          slackSigningSecret={props.slackSigningSecret}
+          slackSigningSecretEnv={props.slackSigningSecretEnv}
+          slackBotToken={props.slackBotToken}
+          slackBotTokenEnv={props.slackBotTokenEnv}
+        />
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
@@ -156,6 +162,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 
+  onUpdatedSecretToken: PropTypes.func,
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,

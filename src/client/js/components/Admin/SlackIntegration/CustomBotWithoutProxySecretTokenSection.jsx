@@ -113,8 +113,8 @@ const CustomBotWithoutProxySecretTokenSectionWrapper = withUnstatedContainers(Cu
 
 CustomBotWithoutProxySecretTokenSection.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  onUpdatedSecretToken: PropTypes.func,
 
+  onUpdatedSecretToken: PropTypes.func,
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
