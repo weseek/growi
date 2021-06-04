@@ -11,9 +11,18 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
   const {
     appContainer, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onUpdatedSecretToken,
   } = props;
-  const [inputSigningSecret, setInputSigningSecret] = useState(null);
-  const [inputBotToken, setInputBotToken] = useState(null);
   const { t } = useTranslation();
+
+  const [inputSigningSecret, setInputSigningSecret] = useState(slackSigningSecret || '');
+  const [inputBotToken, setInputBotToken] = useState(slackBotToken || '');
+
+  // update states when props are updated
+  useEffect(() => {
+    setInputSigningSecret(slackSigningSecret || '');
+  }, [slackSigningSecret]);
+  useEffect(() => {
+    setInputBotToken(slackBotToken || '');
+  }, [slackBotToken]);
 
   const updatedSecretToken = async() => {
     try {
@@ -33,12 +42,6 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
     }
   };
 
-  useEffect(() => {
-    setInputSigningSecret(slackSigningSecret);
-    setInputBotToken(slackBotToken);
-  }, [slackSigningSecret, slackBotToken]);
-
-
   return (
     <div className="w-75 mx-auto">
 
@@ -50,7 +53,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={inputSigningSecret || ''}
+            value={inputSigningSecret}
             onChange={e => setInputSigningSecret(e.target.value)}
           />
         </div>
@@ -60,7 +63,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={slackSigningSecretEnv || ''}
+            defaultValue={slackSigningSecretEnv}
             readOnly
           />
           <p className="form-text text-muted">
@@ -79,7 +82,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={inputBotToken || ''}
+            value={inputBotToken}
             onChange={e => setInputBotToken(e.target.value)}
           />
         </div>
@@ -89,7 +92,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           <input
             className="form-control"
             type="text"
-            value={slackBotTokenEnv || ''}
+            defaultValue={slackBotTokenEnv}
             readOnly
           />
           <p className="form-text text-muted">
