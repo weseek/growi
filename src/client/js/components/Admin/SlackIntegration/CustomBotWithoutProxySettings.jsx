@@ -11,8 +11,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, connectionStatuses } = props;
   const { t } = useTranslation();
 
-  console.log(connectionStatuses);
-
   const [siteName, setSiteName] = useState('');
   const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
   const [connectionMessage, setConnectionMessage] = useState('');
