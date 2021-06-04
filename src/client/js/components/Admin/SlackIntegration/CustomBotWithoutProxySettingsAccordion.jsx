@@ -45,8 +45,8 @@ const CustomBotWithoutProxySettingsAccordion = ({
 
 
   let value = '';
-  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
-    value = connectionMessage;
+  if (connectionMessage === '' || connectionMessage == null) {
+    value = '';
   }
   else {
     value = [connectionErrorCode, connectionMessage];
@@ -134,11 +134,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
             </button>
           </form>
         </div>
-        {connectionMessage === ''
+        {connectionMessage == null
           ? <p></p>
           : (
             <>
-              {connectionMessage === 'Send the message to slack work space.'
+              {connectionMessage === ''
                 ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
                 : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
               }

@@ -15,7 +15,7 @@ const CustomBotWithoutProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
-  const [connectionMessage, setConnectionMessage] = useState('');
+  const [connectionMessage, setConnectionMessage] = useState(null);
   const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
@@ -29,7 +29,7 @@ const CustomBotWithoutProxySettings = (props) => {
   const testConnection = async() => {
     try {
       await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
-      setConnectionMessage('Send the message to slack work space.');
+      setConnectionMessage('');
       setIsIntegrationSuccess(true);
     }
     catch (err) {
