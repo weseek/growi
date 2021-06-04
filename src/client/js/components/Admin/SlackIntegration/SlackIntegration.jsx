@@ -142,7 +142,7 @@ const SlackIntegration = (props) => {
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
-          onTestConnectionInvoked={setConnectionStatuses}
+          onTestConnectionInvoked={fetchSlackIntegrationData}
           onUpdatedSecretToken={changeSecretAndToken}
           connectionStatuses={connectionStatuses}
         />
