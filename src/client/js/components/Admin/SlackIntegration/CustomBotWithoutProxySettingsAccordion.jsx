@@ -41,10 +41,12 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     value = [connectionMessage.code, connectionMessage.message];
   }
 
-  let isEnterdSecretAndToken = false;
-  if ((slackSigningSecret != null || slackSigningSecretEnv != null) && (slackBotToken != null || slackBotTokenEnv != null)) {
-    isEnterdSecretAndToken = true;
-  }
+  const slackSigningSecretCombined = slackSigningSecret || slackSigningSecretEnv;
+  const slackBotTokenCombined = slackBotToken || slackBotTokenEnv;
+  const isEnterdSecretAndToken = (
+    (slackSigningSecretCombined != null && slackSigningSecretCombined.length > 0)
+    && (slackBotTokenCombined != null && slackBotTokenCombined.length > 0)
+  );
 
   return (
     <div className="card border-0 rounded-lg shadow overflow-hidden">
@@ -116,7 +118,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <button
               type="submit"
               className="btn btn-info mx-3 font-weight-bold"
-              disabled={testChannel.trim() === ''}
+              disabled={testChannel.trim().length === 0}
             >Test
             </button>
           </form>
