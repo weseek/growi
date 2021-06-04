@@ -1,12 +1,18 @@
 # CHANGES
 
-## v4.2.19-RC
+## v4.2.20-RC
+
+* 
+
+## v4.2.19
 
 * Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
 * Feature: Set max-age of the user's cookie in admin page
 * Improvement: Change the first accessing page after installation to the top page
 * Support: Upgrade libs
     * string-width
+    * diff
+    * archiver
 
 ## v4.2.18
 
