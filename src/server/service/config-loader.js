@@ -242,6 +242,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: undefined,
   },
+  SESSION_MAX_AGE: {
+    ns:      'crowi',
+    key:     'security:sessionMaxAge',
+    type:    TYPES.NUMBER,
+    default: undefined,
+  },
   USER_UPPER_LIMIT: {
     ns:      'crowi',
     key:     'security:userUpperLimit',
