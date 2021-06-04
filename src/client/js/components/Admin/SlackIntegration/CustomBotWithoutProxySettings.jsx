@@ -16,7 +16,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
   const [connectionMessage, setConnectionMessage] = useState(null);
-  const [connectionErrorCode, setConnectionErrorCode] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
   const resetSettings = async() => {
@@ -33,8 +32,7 @@ const CustomBotWithoutProxySettings = (props) => {
       setIsIntegrationSuccess(true);
     }
     catch (err) {
-      setConnectionErrorCode(err[0].code);
-      setConnectionMessage(err[0].message);
+      setConnectionMessage(err[0]);
       setIsIntegrationSuccess(false);
     }
   };
@@ -83,7 +81,6 @@ const CustomBotWithoutProxySettings = (props) => {
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
           connectionMessage={connectionMessage}
-          connectionErrorCode={connectionErrorCode}
           isIntegrationSuccess={isIntegrationSuccess}
           testChannel={testChannel}
           onTestFormSubmitted={testConnection}
