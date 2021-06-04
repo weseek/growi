@@ -13,7 +13,7 @@ export const botInstallationStep = {
 
 const CustomBotWithoutProxySettingsAccordion = ({
   activeStep,
-  connectionMessage, connectionErrorCode, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
+  connectionMessage, testChannel, slackSigningSecret, slackSigningSecretEnv, slackBotToken, slackBotTokenEnv,
   isRegisterSlackCredentials, isIntegrationSuccess,
   inputTestChannelHandler, onTestFormSubmitted, onSetSlackSigningSecret, onSetSlackBotToken,
 }) => {
@@ -43,13 +43,12 @@ const CustomBotWithoutProxySettingsAccordion = ({
     onTestFormSubmitted();
   };
 
-
   let value = '';
-  if (connectionMessage === 'Send the message to slack work space.' || connectionMessage === '') {
-    value = connectionMessage;
+  if (connectionMessage === '' || connectionMessage == null) {
+    value = '';
   }
   else {
-    value = [connectionErrorCode, connectionMessage];
+    value = [connectionMessage.code, connectionMessage.message];
   }
 
   return (
@@ -134,11 +133,11 @@ const CustomBotWithoutProxySettingsAccordion = ({
             </button>
           </form>
         </div>
-        {connectionMessage === ''
+        {connectionMessage == null
           ? <p></p>
           : (
             <>
-              {connectionMessage === 'Send the message to slack work space.'
+              {connectionMessage === ''
                 ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
                 : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
               }
@@ -178,7 +177,6 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   onSetSlackSigningSecret: PropTypes.func,
   onSetSlackBotToken: PropTypes.func,
   connectionMessage: PropTypes.string,
-  connectionErrorCode: PropTypes.string,
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
 };
 
