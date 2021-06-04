@@ -109,7 +109,7 @@ html[light] {
     // add background-image
     #page-wrapper,
     .page-editor-preview-container {
-      background-image: url('/images/themes/spring/spring02.svg');
+      background-image: url('/images/themes/hufflepuff/badger-light3.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -120,7 +120,7 @@ html[light] {
   .nologin {
     #page-wrapper {
       background-color: $themelight;
-      background-image: url('/images/themes/spring/spring.svg');
+      background-image: url('/images/themes/hufflepuff/badger-light.png');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
@@ -272,6 +272,17 @@ html[dark] {
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
       @include btn-page-editor-mode-manager(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
+    }
+  }
+
+  .growi:not(.login-page) {
+    // add background-image
+    #page-wrapper,
+    .page-editor-preview-container {
+      background-image: url('/images/themes/hufflepuff/badger-dark5.png');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
     }
   }
 }
