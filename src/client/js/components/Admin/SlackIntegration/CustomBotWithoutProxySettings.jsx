@@ -17,7 +17,7 @@ const CustomBotWithoutProxySettings = (props) => {
   const [testChannel, setTestChannel] = useState('');
 
   const addLogs = (log) => {
-    const newLog = `${log.code} ${log.message}\n\n`;
+    const newLog = `${new Date()} - ${log.code}, ${log.message}\n\n`;
     if (connectionMessage == null) {
       return setConnectionMessage(newLog);
     }
