@@ -40,10 +40,9 @@ const CustomBotWithProxySettings = (props) => {
 
   const deleteSlackAppIntegrationHandler = async() => {
     try {
-      // GW-6068 set new value after this
       await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { integrationIdToDelete });
       fetchSlackIntegrationData();
-      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+      toastSuccess(t('toaster.delete_slack_integration_procedure'));
     }
     catch (err) {
       toastError(err);
