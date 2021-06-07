@@ -24,7 +24,6 @@ const SlackIntegration = (props) => {
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
   const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
-  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
@@ -97,7 +96,6 @@ const SlackIntegration = (props) => {
       setIsRegisterSlackCredentials(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
-      setSlackWSNameInWithoutProxy(null);
     }
     catch (err) {
       toastError(err);
@@ -144,8 +142,7 @@ const SlackIntegration = (props) => {
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
-          slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
-          fetchSlackIntegrationData={fetchSlackIntegrationData}
+          onTestConnectionInvoked={fetchSlackIntegrationData}
           onUpdatedSecretToken={changeSecretAndToken}
           connectionStatuses={connectionStatuses}
         />
