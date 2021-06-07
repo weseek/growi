@@ -126,6 +126,12 @@ module.exports = (crowi) => {
     }
   });
 
+
+  validator.deleteShareLinks = [
+    // validate the page id is null
+    body('relatedPage').not().isEmpty().withMessage('Page Id is null'),
+  ];
+
   /**
   * @swagger
   *
@@ -145,7 +151,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete o all share links related one page
   */
-  router.delete('/', loginRequired, csrf, async(req, res) => {
+  router.delete('/', loginRequired, csrf, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
 
     try {
