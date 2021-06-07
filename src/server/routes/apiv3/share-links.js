@@ -8,7 +8,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -129,7 +129,7 @@ module.exports = (crowi) => {
 
   validator.deleteShareLinks = [
     // validate the page id is null
-    body('relatedPage').not().isEmpty().withMessage('Page Id is null'),
+    query('relatedPage').not().isEmpty().withMessage('Page Id is null'),
   ];
 
   /**
