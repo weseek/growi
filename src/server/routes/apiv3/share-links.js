@@ -154,6 +154,14 @@ module.exports = (crowi) => {
   router.delete('/', loginRequired, csrf, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
 
+    const page = await Page.findByIdAndViewer(relatedPage, req.user);
+
+    if (page == null) {
+      const msg = 'Page is not found or forbidden';
+      logger.error('Error', msg);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-shareLinks-for-page-failed'));
+    }
+
     try {
       const deletedShareLink = await ShareLink.remove({ relatedPage });
       return res.apiv3(deletedShareLink);
@@ -208,11 +216,22 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', loginRequired, csrf, async(req, res) => {
+  router.delete('/:id', /* loginRequired, csrf, */ async(req, res) => {
     const { id } = req.params;
 
     try {
-      const deletedShareLink = await ShareLink.findOneAndRemove({ _id: id });
+      const deletedShareLink = await ShareLink.findOne({ _id: id });
+
+      // check permission
+      const page = await Page.findByIdAndViewer(deletedShareLink.relatedPage, req.user);
+      if (page == null) {
+        const msg = 'Page is not found or forbidden';
+        logger.error('Error', msg);
+        return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
+      }
+
+      // remove
+      await deletedShareLink.remove();
       return res.apiv3({ deletedShareLink });
     }
     catch (err) {
