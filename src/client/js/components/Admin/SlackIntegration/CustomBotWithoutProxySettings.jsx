@@ -6,6 +6,7 @@ import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
+import { addLogs } from './slak-integration-util';
 
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, connectionStatuses, onTestConnectionInvoked } = props;
@@ -16,13 +17,13 @@ const CustomBotWithoutProxySettings = (props) => {
   const [connectionMessage, setConnectionMessage] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
-  const addLogs = (log) => {
-    const newLog = `${new Date()} - ${log.code}, ${log.message}\n\n`;
-    if (connectionMessage == null) {
-      return setConnectionMessage(newLog);
-    }
-    setConnectionMessage(`${newLog}${connectionMessage}`);
-  };
+  // const addLogs = (log) => {
+  //   const newLog = `${new Date()} - ${log.code}, ${log.message}\n\n`;
+  //   if (connectionMessage == null) {
+  //     return setConnectionMessage(newLog);
+  //   }
+  //   setConnectionMessage(`${newLog}${connectionMessage}`);
+  // };
 
   const testConnection = async() => {
     try {
@@ -35,7 +36,7 @@ const CustomBotWithoutProxySettings = (props) => {
       }
     }
     catch (err) {
-      addLogs(err[0]);
+      addLogs(err[0], connectionMessage, setConnectionMessage);
       setIsIntegrationSuccess(false);
     }
   };
