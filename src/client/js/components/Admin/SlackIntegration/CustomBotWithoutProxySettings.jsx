@@ -16,6 +16,14 @@ const CustomBotWithoutProxySettings = (props) => {
   const [connectionMessage, setConnectionMessage] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
+  const addLogs = (log) => {
+    const newLog = `${log.code} ${log.message}\n\n`;
+    if (connectionMessage == null) {
+      return setConnectionMessage(newLog);
+    }
+    setConnectionMessage(`${newLog}${connectionMessage}`);
+  };
+
   const testConnection = async() => {
     try {
       await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
@@ -27,7 +35,7 @@ const CustomBotWithoutProxySettings = (props) => {
       }
     }
     catch (err) {
-      setConnectionMessage(err[0]);
+      addLogs(err[0]);
       setIsIntegrationSuccess(false);
     }
   };
