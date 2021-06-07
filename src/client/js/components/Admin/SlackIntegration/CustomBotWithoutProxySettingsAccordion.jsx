@@ -15,7 +15,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
     activeStep, connectionMessage, testChannel,
     slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
-    isIntegrationSuccess,
     inputTestChannelHandler, onTestFormSubmitted,
   } = props;
 
@@ -104,7 +103,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isIntegrationSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{connectionMessage === '' && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
@@ -171,7 +170,6 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   connectionMessage: PropTypes.string,
   connectionErrorCode: PropTypes.string,
   testChannel: PropTypes.string,
-  isIntegrationSuccess: PropTypes.bool,
   inputTestChannelHandler: PropTypes.func,
   onTestFormSubmitted: PropTypes.func,
 };
