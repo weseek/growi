@@ -233,14 +233,15 @@ window.addEventListener('hashchange', (e) => {
 
 
   // hash on page
-  if (window.location.hash) {
-    if (window.location.hash === '#edit') {
-      navigationContainer.setEditorMode('edit');
-      Crowi.setCaretLineAndFocusToEditor();
-    }
-    else if (window.location.hash === '#hackmd') {
-      navigationContainer.setEditorMode('hackmd');
-    }
+  if (window.location.hash === '#edit') {
+    navigationContainer.setEditorMode('edit');
+    Crowi.setCaretLineAndFocusToEditor();
+  }
+  else if (window.location.hash === '#hackmd') {
+    navigationContainer.setEditorMode('hackmd');
+  }
+  else {
+    navigationContainer.setEditorMode('view');
   }
 });
 

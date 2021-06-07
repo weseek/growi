@@ -110,7 +110,10 @@ export default class NavigationContainer extends Container {
       $('body').removeClass('builtin-editor');
       $('body').removeClass('hackmd');
       $('body').removeClass('pathname-sidebar');
-      window.history.replaceState(null, '', window.location.pathname);
+      // remove the hash if it exists
+      if (window.location.hash) {
+        window.history.pushState(null, null, window.location.pathname + window.location.search);
+      }
     }
 
     if (editorMode === 'edit') {
