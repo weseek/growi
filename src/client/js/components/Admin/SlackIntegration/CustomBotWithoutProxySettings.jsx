@@ -66,7 +66,6 @@ const CustomBotWithoutProxySettings = (props) => {
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
           connectionMessage={connectionMessage}
-          // isIntegrationSuccess={isIntegrationSuccess}
           testChannel={testChannel}
           onTestFormSubmitted={testConnection}
           inputTestChannelHandler={inputTestChannelHandler}
@@ -87,7 +86,6 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
 
-  isIntegrationSuccess: PropTypes.bool,
   connectionStatuses: PropTypes.object.isRequired,
   onTestConnectionInvoked: PropTypes.func,
 };
