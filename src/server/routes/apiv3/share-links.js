@@ -28,6 +28,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const ShareLink = crowi.model('ShareLink');
+  const Page = crowi.model('Page');
 
 
   /**
@@ -35,7 +36,7 @@ module.exports = (crowi) => {
    *
    *  paths:
    *    /share-links/:
-   *      post:
+   *      get:
    *        tags: [ShareLink]
    *        description: get share links
    *        parameters:
@@ -103,6 +104,15 @@ module.exports = (crowi) => {
 
   router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
+
+    const page = await Page.findByIdAndViewer(relatedPage, req.user);
+
+    if (page == null) {
+      const msg = 'Page is not found or forbidden';
+      logger.error('Error', msg);
+      return res.apiv3Err(new ErrorV3(msg, 'get-shareLink-failed'));
+    }
+
     const ShareLink = crowi.model('ShareLink');
 
     try {
