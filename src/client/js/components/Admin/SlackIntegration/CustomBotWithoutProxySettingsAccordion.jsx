@@ -38,7 +38,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     value = '';
   }
   else {
-    value = [connectionMessage.code, connectionMessage.message];
+    value = connectionMessage;
   }
 
   const slackSigningSecretCombined = slackSigningSecret || slackSigningSecretEnv;
