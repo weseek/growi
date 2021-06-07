@@ -17,7 +17,6 @@ const OfficialBotSettings = (props) => {
   } = props;
   const [siteName, setSiteName] = useState('');
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
-  const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const { t } = useTranslation();
 
   const [newProxyServerUri, setNewProxyServerUri] = useState();
