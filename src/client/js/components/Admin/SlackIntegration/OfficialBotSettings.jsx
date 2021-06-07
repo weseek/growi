@@ -16,6 +16,7 @@ const OfficialBotSettings = (props) => {
     appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses,
   } = props;
   const [siteName, setSiteName] = useState('');
+  const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const { t } = useTranslation();
 
@@ -27,33 +28,28 @@ const OfficialBotSettings = (props) => {
     }
   }, [proxyServerUri, slackAppIntegrations]);
 
+  const fetchSlackIntegrationData = () => {
+    if (props.fetchSlackIntegrationData != null) {
+      props.fetchSlackIntegrationData();
+    }
+  };
+
   const addSlackAppIntegrationHandler = async() => {
     if (onClickAddSlackWorkspaceBtn != null) {
       onClickAddSlackWorkspaceBtn();
     }
   };
 
-  /* commented out to ignore lint error -- 2021.05.31 Yuki Takei
-  const discardTokenHandler = async(tokenGtoP, tokenPtoG) => {
-    try {
-      // GW-6068 set new value after this
-      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { tokenGtoP, tokenPtoG });
-    }
-    catch (err) {
-      toastError(err);
-      logger(err);
-    }
-  };
-  */
-
   const deleteSlackAppIntegrationHandler = async() => {
     try {
-      // TODO GW-5923 delete SlackAppIntegration
-      // await appContainer.apiv3.put('/slack-integration-settings/custom-bot-with-proxy');
-      toastSuccess('success');
+      // GW-6068 set new value after this
+      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { integrationIdToDelete });
+      fetchSlackIntegrationData();
+      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
     catch (err) {
       toastError(err);
+      logger.error(err);
     }
   };
 
@@ -117,7 +113,7 @@ const OfficialBotSettings = (props) => {
                 <button
                   className="btn btn-outline-danger"
                   type="button"
-                  onClick={() => setIsDeleteConfirmModalShown(true)}
+                  onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
                 >
                   <i className="icon-trash mr-1" />
                   {t('admin:slack_integration.delete')}
@@ -144,8 +140,8 @@ const OfficialBotSettings = (props) => {
       </div>
       <DeleteSlackBotSettingsModal
         isResetAll={false}
-        isOpen={isDeleteConfirmModalShown}
-        onClose={() => setIsDeleteConfirmModalShown(false)}
+        isOpen={integrationIdToDelete != null}
+        onClose={() => setIntegrationIdToDelete(null)}
         onClickDeleteButton={deleteSlackAppIntegrationHandler}
       />
     </>
@@ -165,8 +161,8 @@ OfficialBotSettings.propTypes = {
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
+  fetchSlackIntegrationData: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
-
 };
 
 export default OfficialBotSettingsWrapper;
