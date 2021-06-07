@@ -168,7 +168,6 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotTokenEnv: PropTypes.string,
 
   connectionMessage: PropTypes.string,
-  connectionErrorCode: PropTypes.string,
   testChannel: PropTypes.string,
   inputTestChannelHandler: PropTypes.func,
   onTestFormSubmitted: PropTypes.func,
