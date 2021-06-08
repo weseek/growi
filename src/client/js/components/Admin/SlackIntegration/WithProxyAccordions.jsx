@@ -192,6 +192,7 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
       setIsLatestConnectionSuccess(true);
     }
     catch (error) {
+      setIsLatestConnectionSuccess(false);
       setLatestConnectionMessage(error[0]);
       logger.error(error);
     }
@@ -224,15 +225,16 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
         </form>
       </div>
       {isLatestConnectionSuccess
-        ? (
+        ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
+        : (
           <>
             {latestConnectionMessage == null
-              ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
+              ? <p></p>
               : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
             }
           </>
         )
-        : <p></p>}
+      }
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
