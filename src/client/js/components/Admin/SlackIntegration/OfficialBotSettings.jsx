@@ -27,12 +27,6 @@ const OfficialBotSettings = (props) => {
     }
   }, [proxyServerUri, slackAppIntegrations]);
 
-  const fetchSlackIntegrationData = () => {
-    if (props.onClickDeleteSlackAppIntegrationBtn != null) {
-      props.onClickDeleteSlackAppIntegrationBtn();
-    }
-  };
-
   const addSlackAppIntegrationHandler = async() => {
     if (onClickAddSlackWorkspaceBtn != null) {
       onClickAddSlackWorkspaceBtn();
@@ -42,7 +36,9 @@ const OfficialBotSettings = (props) => {
   const deleteSlackAppIntegrationHandler = async() => {
     try {
       await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { integrationIdToDelete });
-      fetchSlackIntegrationData();
+      if (props.onDeleteSlackAppIntegration != null) {
+        props.onDeleteSlackAppIntegration();
+      }
       toastSuccess(t('toaster.delete_slack_integration_procedure'));
     }
     catch (err) {
@@ -159,7 +155,7 @@ OfficialBotSettings.propTypes = {
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
-  onClickDeleteSlackAppIntegrationBtn: PropTypes.func,
+  onDeleteSlackAppIntegration: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
 };
 
