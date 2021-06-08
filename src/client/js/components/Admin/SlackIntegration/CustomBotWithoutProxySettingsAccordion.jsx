@@ -11,9 +11,29 @@ export const botInstallationStep = {
   CONNECTION_TEST: 'connection-test',
 };
 
+const MessageBasedOnConnection = (props) => {
+  const { isLatestConnectionSuccess, latestConnectionMessage } = props;
+  const { t } = useTranslation();
+  if (isLatestConnectionSuccess) {
+    return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
+  }
+
+  if (latestConnectionMessage == null) {
+    return <p></p>;
+  }
+
+  return <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>;
+};
+
+MessageBasedOnConnection.propTypes = {
+  isLatestConnectionSuccess: PropTypes.bool,
+  latestConnectionMessage: PropTypes.string,
+};
+
+
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
-    activeStep, connectionMessage, testChannel,
+    activeStep, latestConnectionMessage, isLatestConnectionSuccess, testChannel,
     slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
     inputTestChannelHandler, onTestFormSubmitted,
   } = props;
@@ -32,12 +52,10 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     onTestFormSubmitted();
   };
 
-  let value = '';
-  if (connectionMessage === '' || connectionMessage == null) {
-    value = '';
-  }
-  else {
-    value = connectionMessage;
+  let logsValue = null;
+
+  if (latestConnectionMessage != null) {
+    logsValue = latestConnectionMessage;
   }
 
   const slackSigningSecretCombined = slackSigningSecret || slackSigningSecretEnv;
@@ -103,7 +121,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{connectionMessage === '' && <i className="ml-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <div className="d-flex justify-content-center">
@@ -128,17 +146,9 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             </button>
           </form>
         </div>
-        {connectionMessage == null
-          ? <p></p>
-          : (
-            <>
-              {connectionMessage === ''
-                ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
-                : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
-              }
-            </>
-          )
-        }
+
+        <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} latestConnectionMessage={latestConnectionMessage} />
+
         <form>
           <div className="row my-3 justify-content-center">
             <div className="form-group slack-connection-log col-md-4">
@@ -146,7 +156,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
                 rows="5"
-                value={value}
+                value={logsValue}
                 readOnly
               />
             </div>
@@ -167,7 +177,8 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
 
-  connectionMessage: PropTypes.string,
+  isLatestConnectionSuccess: PropTypes.bool,
+  latestConnectionMessage: PropTypes.string,
   testChannel: PropTypes.string,
   inputTestChannelHandler: PropTypes.func,
   onTestFormSubmitted: PropTypes.func,
