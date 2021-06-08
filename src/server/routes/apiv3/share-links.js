@@ -32,7 +32,7 @@ module.exports = (crowi) => {
 
   validator.getShareLinks = [
     // validate the page id is MongoId
-    body('relatedPage').isMongoId().withMessage('Page Id is required'),
+    query('relatedPage').isMongoId().withMessage('Page Id is required'),
   ];
 
   /**
