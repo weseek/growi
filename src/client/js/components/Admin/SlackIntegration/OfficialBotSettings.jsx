@@ -28,8 +28,8 @@ const OfficialBotSettings = (props) => {
   }, [proxyServerUri, slackAppIntegrations]);
 
   const fetchSlackIntegrationData = () => {
-    if (props.fetchSlackIntegrationData != null) {
-      props.fetchSlackIntegrationData();
+    if (props.onDeleteSlackIntegration != null) {
+      props.onDeleteSlackIntegration();
     }
   };
 
@@ -159,7 +159,7 @@ OfficialBotSettings.propTypes = {
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
-  fetchSlackIntegrationData: PropTypes.func,
+  onDeleteSlackIntegration: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
 };
 
