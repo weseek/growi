@@ -83,4 +83,12 @@ export class RegisterService implements GrowiCommandProcessor {
     return;
   }
 
+  async unregister(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
+    const { botToken } = authorizeResult;
+
+    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+    console.log(growiCommand)
+  }
+
+
 }

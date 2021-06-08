@@ -83,6 +83,16 @@ export class SlackCtrl {
       return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
+
+    // unregister
+    if (growiCommand.growiCommandType === 'unregister') {
+      // Send response immediately to avoid opelation_timeout error
+      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+      res.send();
+
+      return this.registerService.unregister(growiCommand, authorizeResult, body as {[key:string]:string});
+    }
+
     /*
      * forward to GROWI server
      */
