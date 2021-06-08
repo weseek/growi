@@ -216,7 +216,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', /* loginRequired, csrf, */ async(req, res) => {
+  router.delete('/:id', loginRequired, csrf, async(req, res) => {
     const { id } = req.params;
 
     try {
