@@ -30,6 +30,10 @@ module.exports = (crowi) => {
   const ShareLink = crowi.model('ShareLink');
   const Page = crowi.model('Page');
 
+  validator.getShareLinks = [
+    // validate the page id is MongoId
+    body('relatedPage').isMongoId().withMessage('Page Id is required'),
+  ];
 
   /**
    * @swagger
@@ -50,10 +54,19 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', loginRequired, async(req, res) => {
+  router.get('/', loginRequired, validator.getShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
+
+    const page = await Page.findByIdAndViewer(relatedPage, req.user);
+
+    if (page == null) {
+      const msg = 'Page is not found or forbidden';
+      logger.error('Error', msg);
+      return res.apiv3Err(new ErrorV3(msg, 'get-shareLink-failed'));
+    }
+
     try {
-      const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } }).populate({ path: 'relatedPage', select: 'path' });
+      const shareLinksResult = await ShareLink.find({ relatedPage }).populate({ path: 'relatedPage', select: 'path' });
       return res.apiv3({ shareLinksResult });
     }
     catch (err) {
@@ -110,7 +123,7 @@ module.exports = (crowi) => {
     if (page == null) {
       const msg = 'Page is not found or forbidden';
       logger.error('Error', msg);
-      return res.apiv3Err(new ErrorV3(msg, 'get-shareLink-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'post-shareLink-failed'));
     }
 
     const ShareLink = crowi.model('ShareLink');
