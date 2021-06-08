@@ -224,17 +224,7 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
           </button>
         </form>
       </div>
-      {isLatestConnectionSuccess
-        ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
-        : (
-          <>
-            {latestConnectionMessage == null
-              ? <p></p>
-              : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
-            }
-          </>
-        )
-      }
+      <ConnectionMessage isLatestConnectionSuccess={isLatestConnectionSuccess} latestConnectionMessage={latestConnectionMessage} />
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
@@ -252,6 +242,20 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   );
 };
 
+
+const ConnectionMessage = (props) => {
+  const { isLatestConnectionSuccess, latestConnectionMessage } = props;
+  const { t } = useTranslation();
+  if (isLatestConnectionSuccess) {
+    return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
+  }
+
+  if (latestConnectionMessage == null) {
+    return <p></p>;
+  }
+
+  return <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>;
+};
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
