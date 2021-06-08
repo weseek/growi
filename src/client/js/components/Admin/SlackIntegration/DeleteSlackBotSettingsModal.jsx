@@ -51,17 +51,16 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
       </ModalHeader>
       <ModalBody>
         {props.isResetAll && (
-          <>
-            <span
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.all_settings_of_the_bot_will_be_reset') }}
-            />
-          </>
+          <span
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.all_settings_of_the_bot_will_be_reset') }}
+          />
         )}
         {!props.isResetAll && (
-          <>
-            {t('admin:slack_integration.slackbot_settings_notice')}
-          </>
+          <span
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.slackbot_settings_notice') }}
+          />
         )}
       </ModalBody>
       <ModalFooter>
