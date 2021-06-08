@@ -179,8 +179,11 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const [testChannel, setTestChannel] = useState('');
   const [connectionMessage, setConnectionMessage] = useState(null);
 
-  let value = '';
-  if (connectionMessage != null) {
+  let value;
+  if (connectionMessage == null || connectionMessage === '') {
+    value = '';
+  }
+  else {
     value = [connectionMessage.code, connectionMessage.message];
   }
 
@@ -225,10 +228,11 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
       {connectionMessage == null
         ? <p></p>
         : (
-          <>{connectionMessage === ''
-            ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
-            : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
-          }
+          <>
+            {connectionMessage === ''
+              ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
+              : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
+            }
           </>
         )}
       <form>
