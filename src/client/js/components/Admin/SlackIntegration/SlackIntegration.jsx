@@ -127,7 +127,7 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
-          onDeleteSlackIntegration={fetchSlackIntegrationData}
+          onClickDeleteSlackAppIntegrationBtn={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
         />
       );
@@ -152,7 +152,7 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
-          onDeleteSlackIntegration={fetchSlackIntegrationData}
+          onClickDeleteSlackAppIntegrationBtn={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
         />
       );
