@@ -19,7 +19,7 @@
     * string-width
     * diff
     * archiver
-    
+
 ## v4.2.18
 
 * Feature: Convertible page contents width
