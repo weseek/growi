@@ -13,8 +13,8 @@ const CustomBotWithoutProxySettings = (props) => {
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
-  const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
+  const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
   const [testChannel, setTestChannel] = useState('');
 
   const testConnection = async() => {
