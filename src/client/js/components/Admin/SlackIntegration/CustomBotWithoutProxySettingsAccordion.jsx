@@ -53,9 +53,11 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   };
 
   let logsValue = null;
-
   if (latestConnectionMessage != null) {
     logsValue = latestConnectionMessage;
+  }
+  if (isLatestConnectionSuccess) {
+    logsValue = null;
   }
 
   const slackSigningSecretCombined = slackSigningSecret || slackSigningSecretEnv;
@@ -156,7 +158,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
                 rows="5"
-                value={logsValue}
+                value={logsValue || ''}
                 readOnly
               />
             </div>
