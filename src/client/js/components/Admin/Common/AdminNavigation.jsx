@@ -5,6 +5,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
+import AppContainer from '../../../services/AppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
 const AdminNavigation = (props) => {
@@ -111,10 +113,11 @@ const AdminNavigation = (props) => {
   );
 };
 
+const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
 
 AdminNavigation.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(AdminNavigation);
+export default withTranslation()(AdminNavigationWrapper);
