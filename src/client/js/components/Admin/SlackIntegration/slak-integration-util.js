@@ -11,7 +11,6 @@ const addLogs = (log, newLogMessage, newLogCode = undefined) => {
   if (log == null) {
     return newLog;
   }
-
   return `${newLog}${log}`;
 };
 
