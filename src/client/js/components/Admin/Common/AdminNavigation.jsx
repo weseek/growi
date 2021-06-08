@@ -5,12 +5,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
-import AppContainer from '../../../services/AppContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
 const AdminNavigation = (props) => {
-  const { t } = props;
+  const { t, adminAppContainer } = props;
   const pathname = window.location.pathname;
 
   // eslint-disable-next-line react/prop-types
@@ -67,7 +67,7 @@ const AdminNavigation = (props) => {
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
-        <MenuLink menu="cloud"        isListGroupItems isActive={isActiveMenu('/cloud')} />
+        <MenuLink isListGroupItems onClick={console.log(adminAppContainer.state.)} />
       </>
     );
   };
@@ -113,11 +113,11 @@ const AdminNavigation = (props) => {
   );
 };
 
-const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
+const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AdminAppContainer]);
 
 AdminNavigation.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default withTranslation()(AdminNavigationWrapper);
