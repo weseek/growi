@@ -156,9 +156,8 @@ export class SlackCtrl {
     const callBackId = payload?.view?.callback_id;
 
     // register
-    // response_urls is an array but the element included is only one.
     if (callBackId === 'register') {
-      await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
+      await this.registerService.insertOrderRecord(this.orderRepository, installation, payload);
       await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
       return;
     }

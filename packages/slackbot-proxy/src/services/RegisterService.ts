@@ -43,7 +43,7 @@ export class RegisterService implements GrowiCommandProcessor {
     });
   }
 
-  async upsertOrderRecord(
+  async insertOrderRecord(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       orderRepository: OrderRepository, installation: Installation | undefined, payload: any,
   ): Promise<void> {
