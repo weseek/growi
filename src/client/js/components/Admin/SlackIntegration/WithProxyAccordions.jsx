@@ -177,24 +177,24 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
-  const [connectionMessage, setConnectionMessage] = useState(null);
+  const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
 
   let value;
-  if (connectionMessage == null || connectionMessage === '') {
+  if (latestConnectionMessage == null || latestConnectionMessage === '') {
     value = '';
   }
   else {
-    value = [connectionMessage.code, connectionMessage.message];
+    value = [latestConnectionMessage.code, latestConnectionMessage.message];
   }
 
   const submitForm = async(e) => {
     e.preventDefault();
     try {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
-      setConnectionMessage('');
+      setLatestConnectionMessage('');
     }
     catch (error) {
-      setConnectionMessage(error[0]);
+      setLatestConnectionMessage(error[0]);
       logger.error(error);
     }
   };
@@ -225,11 +225,11 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
           </button>
         </form>
       </div>
-      {connectionMessage == null
+      {latestConnectionMessage == null
         ? <p></p>
         : (
           <>
-            {connectionMessage === ''
+            {latestConnectionMessage === ''
               ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
               : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
             }
