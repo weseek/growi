@@ -8,7 +8,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -30,6 +30,10 @@ module.exports = (crowi) => {
   const ShareLink = crowi.model('ShareLink');
   const Page = crowi.model('Page');
 
+  validator.getShareLinks = [
+    // validate the page id is MongoId
+    query('relatedPage').isMongoId().withMessage('Page Id is required'),
+  ];
 
   /**
    * @swagger
@@ -50,10 +54,19 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', loginRequired, async(req, res) => {
+  router.get('/', loginRequired, validator.getShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
+
+    const page = await Page.findByIdAndViewer(relatedPage, req.user);
+
+    if (page == null) {
+      const msg = 'Page is not found or forbidden';
+      logger.error('Error', msg);
+      return res.apiv3Err(new ErrorV3(msg, 'get-shareLink-failed'));
+    }
+
     try {
-      const shareLinksResult = await ShareLink.find({ relatedPage: { $in: relatedPage } }).populate({ path: 'relatedPage', select: 'path' });
+      const shareLinksResult = await ShareLink.find({ relatedPage }).populate({ path: 'relatedPage', select: 'path' });
       return res.apiv3({ shareLinksResult });
     }
     catch (err) {
@@ -64,8 +77,8 @@ module.exports = (crowi) => {
   });
 
   validator.shareLinkStatus = [
-    // validate the page id is null
-    body('relatedPage').not().isEmpty().withMessage('Page Id is null'),
+    // validate the page id is MongoId
+    body('relatedPage').isMongoId().withMessage('Page Id is required'),
     // validate expireation date is not empty, is not before today and is date.
     body('expiredAt').if(value => value != null).isAfter(today.toString()).withMessage('Your Selected date is past'),
     // validate the length of description is max 100.
@@ -110,7 +123,7 @@ module.exports = (crowi) => {
     if (page == null) {
       const msg = 'Page is not found or forbidden';
       logger.error('Error', msg);
-      return res.apiv3Err(new ErrorV3(msg, 'get-shareLink-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'post-shareLink-failed'));
     }
 
     const ShareLink = crowi.model('ShareLink');
@@ -128,8 +141,8 @@ module.exports = (crowi) => {
 
 
   validator.deleteShareLinks = [
-    // validate the page id is null
-    query('relatedPage').not().isEmpty().withMessage('Page Id is null'),
+    // validate the page id is MongoId
+    query('relatedPage').isMongoId().withMessage('Page Id is required'),
   ];
 
   /**
@@ -198,6 +211,10 @@ module.exports = (crowi) => {
     }
   });
 
+  validator.deleteShareLink = [
+    param('id').isMongoId().withMessage('ShareLink Id is required'),
+  ];
+
   /**
   * @swagger
   *
@@ -216,7 +233,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', /* loginRequired, csrf, */ async(req, res) => {
+  router.delete('/:id', loginRequired, csrf, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     try {
