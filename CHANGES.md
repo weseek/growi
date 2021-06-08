@@ -8,6 +8,7 @@
 * Fix: Invalid NaN label is shown when deletedAt of the page is undefined
     * Introduced by v4.2.8
 
+
 ## v4.2.19
 
 * Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
@@ -17,6 +18,7 @@
     * string-width
     * diff
     * archiver
+    * stream-to-promise
 
 ## v4.2.18
 
