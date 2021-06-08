@@ -26,7 +26,7 @@ const CustomBotWithoutProxySettings = (props) => {
       }
     }
     catch (err) {
-      addLogs(err[0], connectionMessage, setConnectionMessage);
+      setConnectionMessage(addLogs(connectionMessage, err[0].message, err[0].code));
     }
   };
 
