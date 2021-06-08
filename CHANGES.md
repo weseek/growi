@@ -9,6 +9,7 @@
     * Introduced by v4.2.8
 * Support: Upgrade libs
     * stream-to-promise
+
 ## v4.2.19
 
 * Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
@@ -18,6 +19,7 @@
     * string-width
     * diff
     * archiver
+    
 ## v4.2.18
 
 * Feature: Convertible page contents width
