@@ -64,7 +64,7 @@ module.exports = (crowi) => {
   });
 
   validator.shareLinkStatus = [
-    // validate the page id is null
+    // validate the page id is MongoId
     body('relatedPage').isMongoId().withMessage('Page Id is required'),
     // validate expireation date is not empty, is not before today and is date.
     body('expiredAt').if(value => value != null).isAfter(today.toString()).withMessage('Your Selected date is past'),
@@ -128,7 +128,7 @@ module.exports = (crowi) => {
 
 
   validator.deleteShareLinks = [
-    // validate the page id is null
+    // validate the page id is MongoId
     query('relatedPage').isMongoId().withMessage('Page Id is required'),
   ];
 
