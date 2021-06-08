@@ -8,7 +8,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -65,7 +65,7 @@ module.exports = (crowi) => {
 
   validator.shareLinkStatus = [
     // validate the page id is null
-    body('relatedPage').not().isEmpty().withMessage('Page Id is null'),
+    body('relatedPage').isMongoId().withMessage('Page Id is required'),
     // validate expireation date is not empty, is not before today and is date.
     body('expiredAt').if(value => value != null).isAfter(today.toString()).withMessage('Your Selected date is past'),
     // validate the length of description is max 100.
@@ -129,7 +129,7 @@ module.exports = (crowi) => {
 
   validator.deleteShareLinks = [
     // validate the page id is null
-    query('relatedPage').not().isEmpty().withMessage('Page Id is null'),
+    query('relatedPage').isMongoId().withMessage('Page Id is required'),
   ];
 
   /**
@@ -198,6 +198,10 @@ module.exports = (crowi) => {
     }
   });
 
+  validator.deleteShareLink = [
+    param('id').isMongoId().withMessage('ShareLink Id is required'),
+  ];
+
   /**
   * @swagger
   *
@@ -216,7 +220,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', loginRequired, csrf, async(req, res) => {
+  router.delete('/:id', loginRequired, csrf, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     try {
