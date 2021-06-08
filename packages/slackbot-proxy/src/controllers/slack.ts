@@ -83,15 +83,6 @@ export class SlackCtrl {
       return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
-    // status
-    if (growiCommand.growiCommandType === 'status') {
-      // Send response immediately to avoid opelation_timeout error
-      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-      res.send();
-
-      return this.registerService.fetchStatus();
-    }
-
     /*
      * forward to GROWI server
      */
@@ -105,6 +96,16 @@ export class SlackCtrl {
         blocks: [
           generateMarkdownSectionBlock('*No relation found.*'),
           generateMarkdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
+    }
+
+    // status
+    if (growiCommand.growiCommandType === 'status') {
+      return res.json({
+        blocks: [
+          generateMarkdownSectionBlock('*Found Relations to GROWI.*'),
+          ...relations.map(relation=>generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}.`))
         ],
       });
     }

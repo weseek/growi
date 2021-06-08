@@ -83,8 +83,4 @@ export class RegisterService implements GrowiCommandProcessor {
     return;
   }
 
-  async fetchStatus(){
-    // todo implement
-  }
-
 }
