@@ -105,7 +105,7 @@ export class SlackCtrl {
       return res.json({
         blocks: [
           generateMarkdownSectionBlock('*Found Relations to GROWI.*'),
-          ...relations.map(relation=>generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}.`))
+          ...relations.map(relation => generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}.`)),
         ],
       });
     }
