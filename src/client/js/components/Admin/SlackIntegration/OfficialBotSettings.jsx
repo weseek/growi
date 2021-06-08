@@ -38,8 +38,8 @@ const OfficialBotSettings = (props) => {
     try {
       if (props.onDeleteSlackAppIntegration != null) {
         props.onDeleteSlackAppIntegration();
-        toastSuccess(t('toaster.delete_slack_integration_procedure'));
       }
+      toastSuccess(t('toaster.delete_slack_integration_procedure'));
     }
     catch (err) {
       toastError(err);
