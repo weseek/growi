@@ -178,20 +178,18 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
+  const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
 
-  let value;
-  if (latestConnectionMessage == null || latestConnectionMessage === '') {
-    value = '';
-  }
-  else {
-    value = [latestConnectionMessage.code, latestConnectionMessage.message];
+  let logsValue = null;
+  if (latestConnectionMessage != null) {
+    logsValue = [latestConnectionMessage.code, latestConnectionMessage.message];
   }
 
   const submitForm = async(e) => {
     e.preventDefault();
     try {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
-      setLatestConnectionMessage('');
+      setIsLatestConnectionSuccess(true);
     }
     catch (error) {
       setLatestConnectionMessage(error[0]);
@@ -225,16 +223,16 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
           </button>
         </form>
       </div>
-      {latestConnectionMessage == null
-        ? <p></p>
-        : (
+      {isLatestConnectionSuccess
+        ? (
           <>
-            {latestConnectionMessage === ''
+            {latestConnectionMessage == null
               ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
               : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
             }
           </>
-        )}
+        )
+        : <p></p>}
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
@@ -242,7 +240,7 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-lg"
               rows="5"
-              value={value}
+              value={logsValue}
               readOnly
             />
           </div>
