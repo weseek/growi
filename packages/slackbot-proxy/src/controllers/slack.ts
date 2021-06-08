@@ -83,9 +83,6 @@ export class SlackCtrl {
       return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
-    /*
-     * forward to GROWI server
-     */
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -114,6 +111,9 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
+    /*
+     * forward to GROWI server
+     */
     const promises = relations.map((relation: Relation) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
