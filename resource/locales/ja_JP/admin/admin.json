@@ -298,7 +298,7 @@
     "reset": "リセット",
     "reset_all_settings": "全ての設定をリセット",
     "delete_slackbot_settings": "Slack Bot 設定を削除する",
-    "slackbot_settings_notice": "削除します",
+    "slackbot_settings_notice": "Slak ワークスペースの連携手順が削除されます。<br>よろしいですか？",
     "all_settings_of_the_bot_will_be_reset": "Botの全ての設定がリセットされます。<br>よろしいですか？",
     "accordion": {
       "create_bot": "Bot を作成する",

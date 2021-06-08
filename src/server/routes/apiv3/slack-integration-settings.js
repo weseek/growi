@@ -533,6 +533,7 @@ module.exports = (crowi) => {
     catch (error) {
       return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
     }
+    return res.apiv3();
 
   });
 

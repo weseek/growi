@@ -1,9 +1,17 @@
-const addLogs = (log, connectionMessage, setConnectionMessage) => {
-  const newLog = `${new Date()} - ${log.code}, ${log.message}\n\n`;
-  if (connectionMessage == null) {
-    return setConnectionMessage(newLog);
+const addLogs = (log, newLogMessage, newLogCode = undefined) => {
+
+  let newLog;
+  if (newLogCode == null) {
+    newLog = `${new Date()} - ${newLogMessage}\n\n`;
   }
-  return setConnectionMessage(`${newLog}${connectionMessage}`);
+  else {
+    newLog = `${new Date()} - ${newLogCode}, ${newLogMessage}\n\n`;
+  }
+
+  if (log == null) {
+    return newLog;
+  }
+  return `${newLog}${log}`;
 };
 
 export {
