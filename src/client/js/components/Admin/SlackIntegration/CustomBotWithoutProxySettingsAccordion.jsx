@@ -40,6 +40,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     appContainer, activeStep, onTestConnectionInvoked,
     slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
   } = props;
+  const successMessage = 'Successfully sent to Slack workspace.';
 
   const { t } = useTranslation();
   // eslint-disable-next-line no-unused-vars
@@ -54,7 +55,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       setIsLatestConnectionSuccess(true);
       if (onTestConnectionInvoked != null) {
         onTestConnectionInvoked();
-        const newLogs = addLogs(logsValue, 'Successfully sent to Slack workspace.', null);
+        const newLogs = addLogs(logsValue, successMessage, null);
         setLogsValue(newLogs);
       }
     }
