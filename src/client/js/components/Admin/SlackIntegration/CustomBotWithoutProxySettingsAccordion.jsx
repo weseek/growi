@@ -31,7 +31,7 @@ const MessageBasedOnConnection = (props) => {
 
 MessageBasedOnConnection.propTypes = {
   isLatestConnectionSuccess: PropTypes.bool,
-  latestConnectionMessage: PropTypes.string,
+  logsValue: PropTypes.string,
 };
 
 
