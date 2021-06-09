@@ -65,10 +65,8 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     setTestChannel(channel);
   };
 
-
   const submitForm = (e) => {
     e.preventDefault();
-
     testConnection();
   };
 
