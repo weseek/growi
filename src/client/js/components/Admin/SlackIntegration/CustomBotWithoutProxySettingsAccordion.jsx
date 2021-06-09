@@ -193,12 +193,13 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   onUpdatedSecretToken: PropTypes.func,
+  onTestConnectionInvoked: PropTypes.func,
+
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
 
-  onTestConnectionInvoked: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsAccordionWrapper;
