@@ -11,29 +11,7 @@ import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnec
 const CustomBotWithoutProxySettings = (props) => {
   const { appContainer, connectionStatuses } = props;
   const { t } = useTranslation();
-
   const [siteName, setSiteName] = useState('');
-  // const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
-  // const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
-  // const [testChannel, setTestChannel] = useState('');
-
-  // const testConnection = async() => {
-  //   try {
-  //     await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
-  //     setIsLatestConnectionSuccess(true);
-  //     if (onTestConnectionInvoked != null) {
-  //       onTestConnectionInvoked();
-  //     }
-  //   }
-  //   catch (err) {
-  //     setIsLatestConnectionSuccess(false);
-  //     setLatestConnectionMessage(addLogs(latestConnectionMessage, err[0].message, err[0].code));
-  //   }
-  // };
-
-  // const inputTestChannelHandler = (channel) => {
-  //   setTestChannel(channel);
-  // };
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -43,7 +21,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const workspaceName = connectionStatuses[props.slackBotToken]?.workspaceName;
 
   return (
-
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}
         {/* TODO: add an appropriate links by GW-5614 */}
@@ -66,11 +43,6 @@ const CustomBotWithoutProxySettings = (props) => {
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
-          // isLatestConnectionSuccess={isLatestConnectionSuccess}
-          // latestConnectionMessage={latestConnectionMessage}
-          // testChannel={testChannel}
-          // onTestFormSubmitted={testConnection}
-          // inputTestChannelHandler={inputTestChannelHandler}
         />
       </div>
     </>
@@ -81,7 +53,6 @@ const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWit
 
 CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  // adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
@@ -89,7 +60,6 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
 
   connectionStatuses: PropTypes.object.isRequired,
-  // onTestConnectionInvoked: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;

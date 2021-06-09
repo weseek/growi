@@ -37,7 +37,8 @@ MessageBasedOnConnection.propTypes = {
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
-    appContainer, activeStep, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onTestConnectionInvoked,
+    appContainer, activeStep, onTestConnectionInvoked,
+    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
   } = props;
 
   const { t } = useTranslation();
