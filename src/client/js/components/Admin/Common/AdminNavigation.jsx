@@ -86,7 +86,10 @@ const AdminNavigation = (props) => {
         {adminHomeContainer.state.envVars?.GROWI_CLOUD_URI != null
           && adminHomeContainer.state.envVars?.GROWI_APP_ID_FOR_GROWI_CLOUD != null
           && (
-            <a href={`${adminHomeContainer.state.envVars?.GROWI_CLOUD_URI}/my/apps/${adminHomeContainer.state.envVars?.GROWI_APP_ID_FOR_GROWI_CLOUD}`}>
+            <a
+              href={`${adminHomeContainer.state.envVars?.GROWI_CLOUD_URI}/my/apps/${adminHomeContainer.state.envVars?.GROWI_APP_ID_FOR_GROWI_CLOUD}`}
+              className="list-group-item list-group-item-action border-0 round-corner"
+            >
               <MenuLabel menu="cloud" />
             </a>
           )}
