@@ -186,6 +186,7 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
     try {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
       setIsLatestConnectionSuccess(true);
+      setLatestConnectionMessage(null);
     }
     catch (error) {
       setIsLatestConnectionSuccess(false);
