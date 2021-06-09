@@ -2,7 +2,8 @@
 
 ## v4.2.21-RC
 
-* 
+* Support: Upgrade libs
+    * stream-to-promise
 
 ## v4.2.20
 
@@ -12,8 +13,6 @@
 * Fix: Checking permission when operating share links
 * Fix: Invalid NaN label is shown when deletedAt of the page is undefined
     * Introduced by v4.2.8
-* Support: Upgrade libs
-    * stream-to-promise
 
 ## v4.2.19
 
