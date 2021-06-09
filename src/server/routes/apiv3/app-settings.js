@@ -260,6 +260,9 @@ module.exports = (crowi) => {
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
+
+      growiCloudUri: crowi.configManager.getConfigFromEnvVars('crowi', 'app:growiCloudUri'),
+      growiAppIdForGrowiCloud: crowi.configManager.getConfigFromEnvVars('crowi', 'app:growiAppIdForCloud'),
     };
     return res.apiv3({ appSettingsParams });
 

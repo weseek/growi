@@ -5,29 +5,16 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
-import loggerFactory from '@alias/logger';
-import AdminHomeContainer from '../../../services/AdminHomeContainer';
+import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
-
-const logger = loggerFactory('growi:admin');
 
 const AdminNavigation = (props) => {
-  const { t, adminHomeContainer } = props;
+  const { t, adminAppContainer } = props;
   const pathname = window.location.pathname;
 
   useEffect(() => {
-    (async() => {
-      try {
-        await adminHomeContainer.retrieveAdminHomeData();
-      }
-      catch (err) {
-        toastError(err);
-        adminHomeContainer.setState({ retrieveError: err });
-        logger.error(err);
-      }
-    })();
-  }, [adminHomeContainer]);
+    adminAppContainer.retrieveAppSettingsData();
+  }, [adminAppContainer]);
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
@@ -83,15 +70,15 @@ const AdminNavigation = (props) => {
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
-        {adminHomeContainer.state.envVars?.GROWI_CLOUD_URI != null
-          && adminHomeContainer.state.envVars?.GROWI_APP_ID_FOR_GROWI_CLOUD != null
+        {adminAppContainer.state.growiCloudUri != null
+          && adminAppContainer.state.growiAppIdForGrowiCloud != null
           && (
-            <a
-              href={`${adminHomeContainer.state.envVars?.GROWI_CLOUD_URI}/my/apps/${adminHomeContainer.state.envVars?.GROWI_APP_ID_FOR_GROWI_CLOUD}`}
-              className="list-group-item list-group-item-action border-0 round-corner"
-            >
-              <MenuLabel menu="cloud" />
-            </a>
+          <a
+            href={`${adminAppContainer.state.growiCloudUri}/my/apps/${adminAppContainer.state.growiAppIdForGrowiCloud}`}
+            className="list-group-item list-group-item-action border-0 round-corner"
+          >
+            <MenuLabel menu="cloud" />
+          </a>
           )
         }
       </>
@@ -139,11 +126,11 @@ const AdminNavigation = (props) => {
   );
 };
 
-const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AdminHomeContainer]);
+const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AdminAppContainer]);
 
 AdminNavigation.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  adminHomeContainer: PropTypes.instanceOf(AdminHomeContainer).isRequired,
+  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
 
 export default withTranslation()(AdminNavigationWrapper);

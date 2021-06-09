@@ -57,6 +57,9 @@ export default class AdminAppContainer extends Container {
       s3ReferenceFileWithRelayMode: false,
 
       isEnabledPlugins: true,
+
+      growiCloudUri: '',
+      growiAppIdForGrowiCloud: '',
     };
 
   }
@@ -114,6 +117,9 @@ export default class AdminAppContainer extends Container {
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
+
+      growiCloudUri: appSettingsParams.growiCloudUri,
+      growiAppIdForGrowiCloud: appSettingsParams.growiAppIdForGrowiCloud,
     });
 
     // if useOnlyEnvVarForFileUploadType is true, get fileUploadType from only env var and make the forms fixed.
