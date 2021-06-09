@@ -1,8 +1,17 @@
 # CHANGES
 
-## v4.2.20-RC
+## v4.2.21-RC
 
 * 
+
+## v4.2.20
+
+* Improvement: Error message when the password is too short
+* Improvement: Repeat XSS processing as a countermeasure against nesting 
+* Fix: NoSQL injection of access-token-parser
+* Fix: Checking permission when operating share links
+* Fix: Invalid NaN label is shown when deletedAt of the page is undefined
+    * Introduced by v4.2.8
 
 ## v4.2.19
 
