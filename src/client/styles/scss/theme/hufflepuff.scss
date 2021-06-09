@@ -69,7 +69,7 @@ html[light] {
   $color-resize-button: $color-reversal;
   $bgcolor-resize-button: $subthemecolor;
   $color-resize-button-hover: $color-reversal;
-  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 5%);
+  $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 10%);
   // Sidebar contents
   $color-sidebar-context: $accentcolor;
   $bgcolor-sidebar-context: $themelight;
@@ -95,13 +95,12 @@ html[light] {
   @import 'apply-colors-light';
 
   //Button
-  // Outline buttons are applyed the accent color to this spring theme cuz the primary is too light and it looks like unable to click them.
   .btn.btn-outline-primary {
-    @include btn-page-editor-mode-manager(darken($primary, 50%), darken($primary, 50%), lighten($primary, 10%));
+    @include btn-page-editor-mode-manager(darken($primary, 50%), darken($primary, 50%), lighten($primary, 20%));
   }
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(darken($primary, 50%), lighten($primary, 5%), lighten($primary, 10%));
+      @include btn-page-editor-mode-manager(darken($primary, 70%), lighten($primary, 5%), lighten($primary, 20%));
     }
   }
 
@@ -219,9 +218,9 @@ html[dark] {
   $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
   // Sidebar resize button
   $color-resize-button: $color-global;
-  $bgcolor-resize-button: $subthemecolor;
+  $bgcolor-resize-button: $accentcolor;
   $color-resize-button-hover: $color-global;
-  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 5%);
+  $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 7%);
   // Sidebar contents
   // $bgcolor-sidebar-context: $subthemecolor;
   $bgcolor-sidebar-context: lighten($themedark, 5%);
@@ -269,9 +268,12 @@ html[dark] {
   }
 
   // Button
+  .btn.btn-outline-primary {
+    @include btn-page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 5%), darken($primary, 20%), darken($primary, 40%));
+  }
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(lighten($primary, 30%), $primary, darken($primary, 10%), darken($primary, 20%));
+      @include btn-page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 5%), darken($primary, 10%), darken($primary, 40%));
     }
   }
 
