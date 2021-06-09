@@ -2,7 +2,8 @@
 
 ## v4.2.21-RC
 
-* 
+* Support: Upgrade libs
+    * stream-to-promise
 
 ## v4.2.20
 
