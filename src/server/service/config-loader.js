@@ -402,13 +402,13 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns:      'crowi',
     key:     'app:growiCloudUri',
     type:    TYPES.STRING,
-    default: null,
+    default: 'asdfasdf',
   },
   GROWI_APP_ID_FOR_GROWI_CLOUD: {
     ns:      'crowi',
     key:     'app:growiAppIdForCloud',
     type:    TYPES.STRING,
-    default: null,
+    default: 'asdfasdf',
   },
   DEFAULT_EMAIL_PUBLISHED: {
     ns:      'crowi',

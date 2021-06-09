@@ -114,6 +114,10 @@ export default class AdminAppContainer extends Container {
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
+
+      growiCloudUri: appSettingsParams.growiCloudUri,
+      growiAppIdForCloud: appSettingsParams.growiAppIdForCloud,
+
     });
 
     // if useOnlyEnvVarForFileUploadType is true, get fileUploadType from only env var and make the forms fixed.

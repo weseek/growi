@@ -26,7 +26,7 @@ const AdminNavigation = (props) => {
       case 'users':         return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':   return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
       case 'search':        return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
-      case 'cloud':         return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings') }</>;
+      case 'cloud':         return <><i className="icon-fw icon-share-alt"></i>       { `${t('to_cloud_settings')} ${adminAppContainer.state.growiCloudUri}`}</>;
       default:              return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
     }
   };
@@ -41,7 +41,7 @@ const AdminNavigation = (props) => {
 
     return (
       <a
-        href={isRoot ? '/admin' : urljoin('/admin', menu)}
+        // href={isRoot ? '/admin' : urljoin('/admin', menu)}
         className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
       >
         <MenuLabel menu={menu} />
@@ -67,7 +67,10 @@ const AdminNavigation = (props) => {
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
-        <MenuLink isListGroupItems onClick={console.log(adminAppContainer.state.)} />
+        <MenuLink
+          menu="cloud"
+          isListGroupItems
+        />
       </>
     );
   };
