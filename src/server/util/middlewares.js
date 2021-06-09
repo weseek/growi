@@ -142,16 +142,7 @@ module.exports = (crowi) => {
       });
 
       swig.setFilter('preventXss', (string) => {
-        count = 0;
-        tempValue = string;
-        while (true) {
-          count += 1;
-          currValue = crowi.xss.process(tempValue);
-          if(count > 50) return '--filtered--';
-          if(currValue == tempValue) break;
-          tempValue = currValue;
-        }
-        return currValue;
+        return crowi.xss.process(string);
       });
 
       swig.setFilter('slice', (list, start, end) => {
