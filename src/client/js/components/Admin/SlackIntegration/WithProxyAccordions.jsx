@@ -271,7 +271,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
-        onUpdateSlackAppIntegration={props.onUpdateSlackAppIntegration}
+        onUpdateTokens={props.onUpdateTokens}
       />,
     },
     '③': {
@@ -300,7 +300,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
-        onUpdateSlackAppIntegration={props.onUpdateSlackAppIntegration}
+        onUpdateTokens={props.onUpdateTokens}
       />,
     },
     '④': {
@@ -342,7 +342,6 @@ WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
   slackAppIntegrationId: PropTypes.string.isRequired,
-  onUpdateSlackAppIntegration: PropTypes.func,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };
