@@ -89,6 +89,10 @@ export class SlackCtrl {
 
     // unregister
     if (growiCommand.growiCommandType === 'unregister') {
+      if (growiCommand.growiCommandArgs.length === 0) {
+        return 'GROWI Urls is required.';
+      }
+
       // Send response immediately to avoid opelation_timeout error
       // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
       res.send();

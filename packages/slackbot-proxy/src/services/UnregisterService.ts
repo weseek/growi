@@ -1,11 +1,10 @@
 import { Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
-import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
+import { GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { RelationRepository } from '~/repositories/relation';
 import { Installation } from '~/entities/installation';
-import { Relation } from '~/entities/relation';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -45,8 +44,6 @@ export class UnregisterService implements GrowiCommandProcessor {
   async unregister(relationRepository:RelationRepository, installation:Installation | undefined, authorizeResult, payload):Promise<void> {
     const { botToken } = authorizeResult;
     const { channel, growiUrls } = JSON.parse(payload.view.private_metadata);
-
-    console.log(installation?.id, growiUrls);
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
     const deleteResult = await relationRepository.createQueryBuilder('relation')
