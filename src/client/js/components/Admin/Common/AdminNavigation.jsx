@@ -55,17 +55,9 @@ const AdminNavigation = (props) => {
       ? 'list-group-item list-group-item-action border-0 round-corner'
       : 'dropdown-item px-3 py-2';
 
-    let link = urljoin('/admin', menu);
-    if (isRoot) {
-      link = '/admin';
-    }
-    if (menu === 'cloud') {
-      link = `${adminHomeContainer.state.envVars?.GROWI_CLOUD_URI}/my/apps/${adminHomeContainer.state.envVars?.GROWI_APP_ID_FOR_GROWI_CLOUD}`;
-    }
-
     return (
       <a
-        href={link}
+        href={isRoot ? '/admin' : urljoin('/admin', menu)}
         className={`${pageTransitionClassName} ${isActive ? 'active' : ''}`}
       >
         <MenuLabel menu={menu} />
@@ -93,8 +85,11 @@ const AdminNavigation = (props) => {
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         {adminHomeContainer.state.envVars?.GROWI_CLOUD_URI != null
           && adminHomeContainer.state.envVars?.GROWI_APP_ID_FOR_GROWI_CLOUD != null
-          && <MenuLink menu="cloud" isListGroupItems />
-        }
+          && (
+            <a href={`${adminHomeContainer.state.envVars?.GROWI_CLOUD_URI}/my/apps/${adminHomeContainer.state.envVars?.GROWI_APP_ID_FOR_GROWI_CLOUD}`}>
+              <MenuLabel menu="cloud" />
+            </a>
+          )}
       </>
     );
   };

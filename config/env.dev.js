@@ -22,6 +22,6 @@ module.exports = {
   // DEV_HTTPS: true,
   // FORCE_WIKI_MODE: 'private', // 'public', 'private', undefined
   // PROMSTER_ENABLED: true,
-  GROWI_CLOUD_URI: 'http://growi.cloud',
-  GROWI_APP_ID_FOR_GROWI_CLOUD: 'demo',
+  // GROWI_CLOUD_URI: 'http://growi.cloud',
+  // GROWI_APP_ID_FOR_GROWI_CLOUD: '012345',
 };
