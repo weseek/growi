@@ -180,19 +180,16 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const [testChannel, setTestChannel] = useState('');
   const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
-  const [logsValue, setLogsValue] = useState(null);
 
   const submitForm = async(e) => {
     e.preventDefault();
     try {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
       setIsLatestConnectionSuccess(true);
-      setLogsValue(null);
     }
     catch (error) {
       setIsLatestConnectionSuccess(false);
       setLatestConnectionMessage(addLogs(latestConnectionMessage, error[0].code, error[0].message));
-      setLogsValue(latestConnectionMessage);
       logger.error(error);
     }
   };
@@ -231,7 +228,7 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-lg"
               rows="5"
-              value={logsValue}
+              value={latestConnectionMessage || ''}
               readOnly
             />
           </div>
