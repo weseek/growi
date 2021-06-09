@@ -36,14 +36,11 @@ const CustomBotWithProxyConnectionStatus = (props) => {
       </div>
 
       <div className="card rounded-lg shadow border-0 w-50 admin-bot-card">
-        <div className="row">
-          <h5 className="card-title font-weight-bold mt-3 ml-4 col">GROWI App</h5>
-          <div className="pull-right mt-3 mr-3">
-            <a className="icon-fw fa fa-repeat fa-2x"></a>
-          </div>
-        </div>
+        <h5 className="card-title font-weight-bold mt-3 ml-4">GROWI App
+          <a className="icon-fw fa fa-repeat pull-right fa-sm-lg"></a>
+        </h5>
         <div className="card-body text-center">
-          <div className="mt-5 border p-2 mx-3 bg-primary text-light">
+          <div className="my-5 border p-2 mx-md-3 bg-primary text-light">
             {siteName}
           </div>
         </div>
