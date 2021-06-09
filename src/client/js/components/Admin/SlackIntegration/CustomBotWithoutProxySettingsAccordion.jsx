@@ -16,13 +16,13 @@ export const botInstallationStep = {
 };
 
 const MessageBasedOnConnection = (props) => {
-  const { isLatestConnectionSuccess, latestConnectionMessage } = props;
+  const { isLatestConnectionSuccess, logsValue } = props;
   const { t } = useTranslation();
   if (isLatestConnectionSuccess) {
     return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
   }
 
-  if (latestConnectionMessage == null) {
+  if (logsValue === '') {
     return <p></p>;
   }
 
@@ -44,9 +44,9 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
   const { t } = useTranslation();
   // eslint-disable-next-line no-unused-vars
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
-  const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
   const [testChannel, setTestChannel] = useState('');
+  const [logsValue, setLogsValue] = useState('');
 
   const testConnection = async() => {
     try {
@@ -54,11 +54,14 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       setIsLatestConnectionSuccess(true);
       if (onTestConnectionInvoked != null) {
         onTestConnectionInvoked();
+        const newLogs = addLogs(logsValue, 'success', null);
+        setLogsValue(newLogs);
       }
     }
     catch (err) {
       setIsLatestConnectionSuccess(false);
-      setLatestConnectionMessage(addLogs(latestConnectionMessage, err[0].message, err[0].code));
+      const newLogs = addLogs(logsValue, err[0].message, err[0].code);
+      setLogsValue(newLogs);
     }
   };
 
@@ -71,13 +74,6 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
     testConnection();
   };
 
-  let logsValue = null;
-  if (latestConnectionMessage != null) {
-    logsValue = latestConnectionMessage;
-  }
-  if (isLatestConnectionSuccess) {
-    logsValue = null;
-  }
 
   const slackSigningSecretCombined = slackSigningSecret || slackSigningSecretEnv;
   const slackBotTokenCombined = slackBotToken || slackBotTokenEnv;
@@ -168,7 +164,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           </form>
         </div>
 
-        <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} latestConnectionMessage={latestConnectionMessage} />
+        <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} logsValue={logsValue} />
 
         <form>
           <div className="row my-3 justify-content-center">
@@ -177,7 +173,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
               <textarea
                 className="form-control card border-info slack-connection-log-body rounded-lg"
                 rows="5"
-                value={logsValue || ''}
+                value={logsValue}
                 readOnly
               />
             </div>
