@@ -52,9 +52,26 @@ export class RegisterService implements GrowiCommandProcessor {
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
 
-    const urlValidate = () => {
-      return growiUrl.if(value => value !== '').trim().matches(/^(https?:\/\/)/).isURL({ require_tld: false });
+    console.log('growiUrlHoge', growiUrl);
+    console.log('growiUrlHoge', typeof (growiUrl));
+
+    const isUrl = (url: string) => {
+      return url.match(/^(https?:\/\/)/);
     };
+
+    console.log('urlValidate()', isUrl(growiUrl));
+
+    if (isUrl(growiUrl) == null) {
+      // return {
+      //   response_action: 'errors',
+      //   errors: {
+      //     block_id: 'growiUrl',
+      //   },
+      // };
+      console.log('urlは正しくありません');
+      return;
+    }
+    console.log('urlは正常');
 
     orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,
