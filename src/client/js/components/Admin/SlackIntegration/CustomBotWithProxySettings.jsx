@@ -160,6 +160,7 @@ CustomBotWithProxySettings.propTypes = {
   onClickAddSlackWorkspaceBtn: PropTypes.func,
   onDeleteSlackAppIntegration: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
+  onUpdateTokens: PropTypes.func,
 };
 
 export default CustomBotWithProxySettingsWrapper;
