@@ -76,12 +76,12 @@ const RegisteringProxyUrlProcess = () => {
 
 const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers((props) => {
   const { t } = useTranslation();
-  const { appContainer, slackAppIntegrationId } = props;
+  const { appContainer, slackAppIntegrationId, onUpdateSlackAppIntegration } = props;
 
   const regenerateTokensHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/regenerate-tokens', { slackAppIntegrationId });
-      // TODO: fetch data by GW-6160
+      onUpdateSlackAppIntegration();
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
     catch (err) {
@@ -271,6 +271,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
+        onUpdateSlackAppIntegration={props.onUpdateSlackAppIntegration}
       />,
     },
     '③': {
@@ -299,6 +300,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
+        onUpdateSlackAppIntegration={props.onUpdateSlackAppIntegration}
       />,
     },
     '④': {
@@ -340,6 +342,7 @@ WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   botType: PropTypes.string.isRequired,
   slackAppIntegrationId: PropTypes.string.isRequired,
+  onUpdateSlackAppIntegration: PropTypes.func,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
 };
