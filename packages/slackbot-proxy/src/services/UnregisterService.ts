@@ -41,7 +41,7 @@ export class UnregisterService implements GrowiCommandProcessor {
     });
   }
 
-  async unregister(relationRepository:RelationRepository, installation:Installation | undefined, authorizeResult, payload):Promise<void> {
+  async unregister(relationRepository:RelationRepository, installation:Installation | undefined, authorizeResult: AuthorizeResult, payload: any):Promise<void> {
     const { botToken } = authorizeResult;
     const { channel, growiUrls } = JSON.parse(payload.view.private_metadata);
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
