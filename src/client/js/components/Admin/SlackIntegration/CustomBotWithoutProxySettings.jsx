@@ -40,14 +40,12 @@ const CustomBotWithoutProxySettings = (props) => {
         </div>
         <CustomBotWithoutProxySettingsAccordion
           activeStep={botInstallationStep.CREATE_BOT}
-          connectionStatuses={connectionStatuses}
           slackBotTokenEnv={props.slackBotTokenEnv}
           slackBotToken={props.slackBotToken}
           slackSigningSecretEnv={props.slackSigningSecretEnv}
           slackSigningSecret={props.slackSigningSecret}
           onTestConnectionInvoked={props.onTestConnectionInvoked}
           onUpdatedSecretToken={props.onUpdatedSecretToken}
-
         />
       </div>
     </>
@@ -64,8 +62,8 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
 
-  onTestConnectionInvoked: PropTypes.func.isRequired,
   onUpdatedSecretToken: PropTypes.func.isRequired,
+  onTestConnectionInvoked: PropTypes.func.isRequired,
   connectionStatuses: PropTypes.object.isRequired,
 };
 
