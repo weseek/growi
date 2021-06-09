@@ -46,7 +46,7 @@ export class RegisterService implements GrowiCommandProcessor {
   async insertOrderRecord(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       orderRepository: OrderRepository, installation: Installation | undefined, payload: any,
-  ): Promise<void> {
+  ): Promise<any> {
     const inputValues = payload.view.state.values;
     const growiUrl = inputValues.growiUrl.contents_input.value;
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
@@ -59,17 +59,16 @@ export class RegisterService implements GrowiCommandProcessor {
       return url.match(/^(https?:\/\/)/);
     };
 
-    console.log('urlValidate()', isUrl(growiUrl));
+    console.log('isUrl(growiUrl)', isUrl(growiUrl));
 
     if (isUrl(growiUrl) == null) {
-      // return {
-      //   response_action: 'errors',
-      //   errors: {
-      //     block_id: 'growiUrl',
-      //   },
-      // };
       console.log('urlは正しくありません');
-      return;
+      return {
+        response_action: 'errors',
+        errors: {
+          block_id: 'growiUrl',
+        },
+      };
     }
     console.log('urlは正常');
 

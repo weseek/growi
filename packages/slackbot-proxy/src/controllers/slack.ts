@@ -141,7 +141,7 @@ export class SlackCtrl {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
+    // res.send();
 
     // pass
     if (body.ssl_check != null) {
@@ -154,10 +154,19 @@ export class SlackCtrl {
 
     const payload = JSON.parse(body.payload);
     const callBackId = payload?.view?.callback_id;
+    const { type } = payload;
+    console.log('typehoge', type);
+
 
     // register
     if (callBackId === 'register') {
-      await this.registerService.insertOrderRecord(this.orderRepository, installation, payload);
+      const insertResults = await this.registerService.insertOrderRecord(this.orderRepository, installation, payload);
+
+      console.log('insertResults', insertResults);
+      if (insertResults != null && insertResults.response_action === 'errors') {
+        return res.send(insertResults.response_action);
+      }
+
       await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
       return;
     }
