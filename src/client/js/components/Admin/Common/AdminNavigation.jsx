@@ -92,7 +92,8 @@ const AdminNavigation = (props) => {
             >
               <MenuLabel menu="cloud" />
             </a>
-          )}
+          )
+        }
       </>
     );
   };
