@@ -52,6 +52,10 @@ export class RegisterService implements GrowiCommandProcessor {
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
 
+    const urlValidate = () => {
+      return growiUrl.if(value => value !== '').trim().matches(/^(https?:\/\/)/).isURL({ require_tld: false });
+    };
+
     orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,
     });
