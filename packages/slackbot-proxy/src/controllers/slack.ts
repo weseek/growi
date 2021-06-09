@@ -19,6 +19,7 @@ import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
+import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
 
 
@@ -42,6 +43,9 @@ export class SlackCtrl {
 
   @Inject()
   registerService: RegisterService;
+
+  @Inject()
+  unregisterService: UnregisterService;
 
   @Get('/install')
   async install(): Promise<string> {
