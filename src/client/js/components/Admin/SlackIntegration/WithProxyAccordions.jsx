@@ -9,6 +9,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
+import { addLogs } from './slak-integration-util';
 
 const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
@@ -179,21 +180,23 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const [testChannel, setTestChannel] = useState('');
   const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
+  const [logsValue, setLogsValue] = useState(null);
 
-  let logsValue = null;
-  if (latestConnectionMessage != null) {
-    logsValue = [latestConnectionMessage.code, latestConnectionMessage.message];
-  }
+  // if (latestConnectionMessage != null) {
+  //   logsValue = [latestConnectionMessage.code, latestConnectionMessage.message];
+  // }
 
   const submitForm = async(e) => {
     e.preventDefault();
     try {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
       setIsLatestConnectionSuccess(true);
+      setLogsValue(null);
     }
     catch (error) {
       setIsLatestConnectionSuccess(false);
-      setLatestConnectionMessage(error[0]);
+      setLatestConnectionMessage(addLogs(latestConnectionMessage, error[0].code, error[0].message));
+      setLogsValue(latestConnectionMessage);
       logger.error(error);
     }
   };
