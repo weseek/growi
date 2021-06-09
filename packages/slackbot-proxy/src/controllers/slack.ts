@@ -186,6 +186,12 @@ export class SlackCtrl {
       return;
     }
 
+    // unregister
+    if (callBackId === 'unregister') {
+      await this.unregisterService.unregister(this.relationRepository, installation, authorizeResult, payload);
+      return;
+    }
+
     /*
      * forward to GROWI server
      */

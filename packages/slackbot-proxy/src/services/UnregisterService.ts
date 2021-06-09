@@ -3,6 +3,8 @@ import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
+import { RelationRepository } from '~/repositories/relation';
+import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -13,7 +15,7 @@ export class UnregisterService implements GrowiCommandProcessor {
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
     const { botToken } = authorizeResult;
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
-
+    const growiUrls = growiCommand.growiCommandArgs;
     await client.views.open({
       trigger_id: body.trigger_id,
       view: {
@@ -31,13 +33,41 @@ export class UnregisterService implements GrowiCommandProcessor {
           type: 'plain_text',
           text: 'Close',
         },
-        private_metadata: JSON.stringify({ channel: body.channel_name }),
+        private_metadata: JSON.stringify({ channel: body.channel_name, growiUrls }),
 
         blocks: [
-          ...growiCommand.growiCommandArgs.map(growiCommandArg => generateMarkdownSectionBlock(`GROWI url: ${growiCommandArg}.`)),
+          ...growiUrls.map(growiCommandArg => generateMarkdownSectionBlock(`GROWI url: ${growiCommandArg}.`)),
         ],
       },
     });
+  }
+
+  async unregister(relationRepository:RelationRepository, installation:Installation | undefined, authorizeResult, payload):Promise<void> {
+    const { botToken } = authorizeResult;
+    const { channel, growiUrls } = JSON.parse(payload.view.private_metadata);
+
+    console.log(installation?.id, growiUrls);
+    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+
+    const deleteResult = await relationRepository.createQueryBuilder('relation')
+      .where('relation.growiUri IN (:uris)', { uris: growiUrls })
+      .andWhere('relation.installationId = :installationId', { installationId: installation?.id })
+      .delete()
+      .execute();
+
+    await client.chat.postEphemeral({
+      channel,
+      user: payload.user.id,
+      // Recommended including 'text' to provide a fallback when using blocks
+      // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
+      text: 'Delete Relations',
+      blocks: [
+        generateMarkdownSectionBlock(`Deleted ${deleteResult.affected} Relations.`),
+      ],
+    });
+
+    return;
+
   }
 
 
