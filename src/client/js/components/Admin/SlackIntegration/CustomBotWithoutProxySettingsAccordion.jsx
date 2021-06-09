@@ -54,7 +54,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       setIsLatestConnectionSuccess(true);
       if (onTestConnectionInvoked != null) {
         onTestConnectionInvoked();
-        const newLogs = addLogs(logsValue, 'success', null);
+        const newLogs = addLogs(logsValue, 'Successfully sent to Slack workspace.', null);
         setLogsValue(newLogs);
       }
     }
