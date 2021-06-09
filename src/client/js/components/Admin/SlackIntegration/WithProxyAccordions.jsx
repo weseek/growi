@@ -182,10 +182,6 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
   const [logsValue, setLogsValue] = useState(null);
 
-  // if (latestConnectionMessage != null) {
-  //   logsValue = [latestConnectionMessage.code, latestConnectionMessage.message];
-  // }
-
   const submitForm = async(e) => {
     e.preventDefault();
     try {
