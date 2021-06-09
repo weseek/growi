@@ -1,17 +1,33 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable react/jsx-props-no-multi-spaces */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
+import loggerFactory from '@alias/logger';
 import AdminHomeContainer from '../../../services/AdminHomeContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import { toastError } from '../../../util/apiNotification';
 
+const logger = loggerFactory('growi:admin');
 
 const AdminNavigation = (props) => {
   const { t, adminHomeContainer } = props;
   const pathname = window.location.pathname;
+
+  useEffect(() => {
+    (async() => {
+      try {
+        await adminHomeContainer.retrieveAdminHomeData();
+      }
+      catch (err) {
+        toastError(err);
+        adminHomeContainer.setState({ retrieveError: err });
+        logger.error(err);
+      }
+    })();
+  }, [adminHomeContainer]);
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
