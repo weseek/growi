@@ -2,38 +2,38 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
+// import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
-import { addLogs } from './slak-integration-util';
+// import { addLogs } from './slak-integration-util';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, connectionStatuses, onTestConnectionInvoked } = props;
+  const { appContainer, connectionStatuses } = props;
   const { t } = useTranslation();
 
   const [siteName, setSiteName] = useState('');
-  const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
-  const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
-  const [testChannel, setTestChannel] = useState('');
+  // const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
+  // const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
+  // const [testChannel, setTestChannel] = useState('');
 
-  const testConnection = async() => {
-    try {
-      await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
-      setIsLatestConnectionSuccess(true);
-      if (onTestConnectionInvoked != null) {
-        onTestConnectionInvoked();
-      }
-    }
-    catch (err) {
-      setIsLatestConnectionSuccess(false);
-      setLatestConnectionMessage(addLogs(latestConnectionMessage, err[0].message, err[0].code));
-    }
-  };
+  // const testConnection = async() => {
+  //   try {
+  //     await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
+  //     setIsLatestConnectionSuccess(true);
+  //     if (onTestConnectionInvoked != null) {
+  //       onTestConnectionInvoked();
+  //     }
+  //   }
+  //   catch (err) {
+  //     setIsLatestConnectionSuccess(false);
+  //     setLatestConnectionMessage(addLogs(latestConnectionMessage, err[0].message, err[0].code));
+  //   }
+  // };
 
-  const inputTestChannelHandler = (channel) => {
-    setTestChannel(channel);
-  };
+  // const inputTestChannelHandler = (channel) => {
+  //   setTestChannel(channel);
+  // };
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -66,22 +66,22 @@ const CustomBotWithoutProxySettings = (props) => {
         <CustomBotWithoutProxySettingsAccordion
           {...props}
           activeStep={botInstallationStep.CREATE_BOT}
-          isLatestConnectionSuccess={isLatestConnectionSuccess}
-          latestConnectionMessage={latestConnectionMessage}
-          testChannel={testChannel}
-          onTestFormSubmitted={testConnection}
-          inputTestChannelHandler={inputTestChannelHandler}
+          // isLatestConnectionSuccess={isLatestConnectionSuccess}
+          // latestConnectionMessage={latestConnectionMessage}
+          // testChannel={testChannel}
+          // onTestFormSubmitted={testConnection}
+          // inputTestChannelHandler={inputTestChannelHandler}
         />
       </div>
     </>
   );
 };
 
-const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer, AdminAppContainer]);
+const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer]);
 
 CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
+  // adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
@@ -89,7 +89,7 @@ CustomBotWithoutProxySettings.propTypes = {
   slackBotTokenEnv: PropTypes.string,
 
   connectionStatuses: PropTypes.object.isRequired,
-  onTestConnectionInvoked: PropTypes.func,
+  // onTestConnectionInvoked: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;

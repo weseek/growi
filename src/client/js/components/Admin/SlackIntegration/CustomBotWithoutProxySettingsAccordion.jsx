@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import Accordion from '../Common/Accordion';
+import AppContainer from '../../../services/AppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
+import { addLogs } from './slak-integration-util';
+
 
 export const botInstallationStep = {
   CREATE_BOT: 'create-bot',
@@ -33,23 +37,39 @@ MessageBasedOnConnection.propTypes = {
 
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
-    activeStep, latestConnectionMessage, isLatestConnectionSuccess, testChannel,
-    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
-    inputTestChannelHandler, onTestFormSubmitted,
+    appContainer, activeStep, slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, onTestConnectionInvoked,
   } = props;
 
   const { t } = useTranslation();
-  // TODO: GW-5644 Store default open accordion
   // eslint-disable-next-line no-unused-vars
   const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
+  const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
+  const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
+  const [testChannel, setTestChannel] = useState('');
+
+  const testConnection = async() => {
+    try {
+      await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
+      setIsLatestConnectionSuccess(true);
+      if (onTestConnectionInvoked != null) {
+        onTestConnectionInvoked();
+      }
+    }
+    catch (err) {
+      setIsLatestConnectionSuccess(false);
+      setLatestConnectionMessage(addLogs(latestConnectionMessage, err[0].message, err[0].code));
+    }
+  };
+
+  const inputTestChannelHandler = (channel) => {
+    setTestChannel(channel);
+  };
+
 
   const submitForm = (e) => {
     e.preventDefault();
 
-    if (onTestFormSubmitted == null) {
-      return;
-    }
-    onTestFormSubmitted();
+    testConnection();
   };
 
   let logsValue = null;
@@ -170,8 +190,12 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
 };
 
 
+const CustomBotWithoutProxySettingsAccordionWrapper = withUnstatedContainers(CustomBotWithoutProxySettingsAccordion, [AppContainer]);
+
+
 CustomBotWithoutProxySettingsAccordion.propTypes = {
   activeStep: PropTypes.oneOf(Object.values(botInstallationStep)).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   onUpdatedSecretToken: PropTypes.func,
   slackSigningSecret: PropTypes.string,
@@ -179,11 +203,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
 
-  isLatestConnectionSuccess: PropTypes.bool,
-  latestConnectionMessage: PropTypes.string,
-  testChannel: PropTypes.string,
-  inputTestChannelHandler: PropTypes.func,
-  onTestFormSubmitted: PropTypes.func,
+  onTestConnectionInvoked: PropTypes.func,
 };
 
-export default CustomBotWithoutProxySettingsAccordion;
+export default CustomBotWithoutProxySettingsAccordionWrapper;
