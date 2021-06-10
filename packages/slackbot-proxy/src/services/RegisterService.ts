@@ -75,7 +75,7 @@ export class RegisterService implements GrowiCommandProcessor {
           generateMarkdownSectionBlock(invalidErrorMsg),
         ],
       });
-      return { errors: invalidErrorMsg };
+      return { error: invalidErrorMsg };
     }
 
     orderRepository.save({
