@@ -440,6 +440,7 @@
     "initialize_successed": "{{target}}を初期化しました",
     "give_user_admin": "{{username}}を管理者に設定しました",
     "remove_user_admin": "{{username}}を管理者から外しました",
+    "delete_slack_integration_procedure": "Slack 連携手順を削除しました",
     "activate_user_success": "{{username}}を有効化しました",
     "deactivate_user_success": "{{username}}を無効化しました",
     "remove_user_success": "{{username}}を削除しました",

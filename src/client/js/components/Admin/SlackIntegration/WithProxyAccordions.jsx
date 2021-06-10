@@ -81,7 +81,9 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   const regenerateTokensHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/regenerate-tokens', { slackAppIntegrationId });
-      // TODO: fetch data by GW-6160
+      if (props.onUpdateTokens != null) {
+        props.onUpdateTokens();
+      }
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
     catch (err) {
@@ -177,22 +179,23 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
-  const [connectionError, setConnectionError] = useState(null);
+  const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
+  const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
 
-  let value = '';
-  if (connectionError != null) {
-    value = [connectionError.code, connectionError.message];
+  let logsValue = null;
+  if (latestConnectionMessage != null) {
+    logsValue = [latestConnectionMessage.code, latestConnectionMessage.message];
   }
 
   const submitForm = async(e) => {
     e.preventDefault();
-    setConnectionError(null);
-
     try {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+      setIsLatestConnectionSuccess(true);
     }
     catch (error) {
-      setConnectionError(error[0]);
+      setIsLatestConnectionSuccess(false);
+      setLatestConnectionMessage(error[0]);
       logger.error(error);
     }
   };
@@ -223,10 +226,7 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
           </button>
         </form>
       </div>
-      {connectionError == null
-        ? <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>
-        : <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>
-      }
+      <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} latestConnectionMessage={latestConnectionMessage} />
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
@@ -234,7 +234,7 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
             <textarea
               className="form-control card border-info slack-connection-log-body rounded-lg"
               rows="5"
-              value={value}
+              value={logsValue}
               readOnly
             />
           </div>
@@ -244,6 +244,19 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   );
 };
 
+const MessageBasedOnConnection = (props) => {
+  const { isLatestConnectionSuccess, latestConnectionMessage } = props;
+  const { t } = useTranslation();
+  if (isLatestConnectionSuccess) {
+    return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
+  }
+
+  if (latestConnectionMessage == null) {
+    return <p></p>;
+  }
+
+  return <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>;
+};
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
@@ -260,6 +273,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
+        onUpdateTokens={props.onUpdateTokens}
       />,
     },
     '③': {
@@ -288,6 +302,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
+        onUpdateTokens={props.onUpdateTokens}
       />,
     },
     '④': {

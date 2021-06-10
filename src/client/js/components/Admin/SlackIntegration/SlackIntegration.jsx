@@ -23,7 +23,6 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
@@ -89,7 +88,6 @@ const SlackIntegration = (props) => {
       });
       setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
-      setIsRegisterSlackCredentials(false);
       setSlackSigningSecret(null);
       setSlackBotToken(null);
       setConnectionStatuses({});
@@ -127,14 +125,15 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+          onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
+          onUpdateTokens={fetchSlackIntegrationData}
         />
       );
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
         <CustomBotWithoutProxySettings
-          isRegisterSlackCredentials={isRegisterSlackCredentials}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
@@ -151,8 +150,9 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
-          fetchSlackIntegrationData={fetchSlackIntegrationData}
+          onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
+          onUpdateTokens={fetchSlackIntegrationData}
         />
       );
       break;

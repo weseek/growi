@@ -301,7 +301,7 @@
     "reset": "Reset",
     "reset_all_settings": "Reset all settings",
     "delete_slackbot_settings": "Delete Slack Bot settings",
-    "slackbot_settings_notice": "Delete",
+    "slackbot_settings_notice": "The Slack workspace integration procedure will be deleted. <br> Are you sure?",
     "all_settings_of_the_bot_will_be_reset": "All settings of the Bot will be reset.<br>Are you sure?",
     "accordion": {
       "create_bot": "Create Bot",
