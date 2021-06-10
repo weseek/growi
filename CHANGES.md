@@ -2,8 +2,13 @@
 
 ## v4.2.21-RC
 
+* Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
 * Support: Upgrade libs
+    * connect-mongo
+    * migrate-mongo
+    * mongoose
     * stream-to-promise
+
 
 ## v4.2.20
 
