@@ -40,7 +40,7 @@ const CustomBotWithProxyConnectionStatus = (props) => {
           <a className="icon-fw fa fa-repeat float-md-right ml-2 mr-sm-3 fa-sm-lg"></a>
         </h5>
         <div className="card-body text-center">
-          <div className="my-5 border p-2 mx-md-3 bg-primary text-light">
+          <div className="mx-md-3 my-4 my-lg-5 p-2 border bg-primary text-light">
             {siteName}
           </div>
         </div>

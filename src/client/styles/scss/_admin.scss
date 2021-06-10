@@ -156,7 +156,7 @@ $slack-work-space-name-card-border: #efc1f6;
         transform: translate(-50%, -50%);
       }
       .circle-inner.grw-proxy-server-name {
-        margin-top: 60px;
+        margin-top: 55px;
       }
     }
 
@@ -172,7 +172,10 @@ $slack-work-space-name-card-border: #efc1f6;
           @extend .mt-0;
         }
         .hr-container {
-          margin-top: 65px;
+          margin-top: 40px;
+          @include media-breakpoint-up(lg) {
+            margin-top: 65px;
+          }
         }
       }
     }
