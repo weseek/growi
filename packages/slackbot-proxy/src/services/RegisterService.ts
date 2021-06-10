@@ -66,7 +66,7 @@ export class RegisterService implements GrowiCommandProcessor {
       return {
         response_action: 'errors',
         errors: {
-          block_id: 'growiUrl',
+          growiUrl: 'Please enter a valid URL',
         },
       };
     }

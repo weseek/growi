@@ -194,7 +194,7 @@ export class SlackCtrl {
 
       console.log('insertResults', insertResults);
       if (insertResults != null && insertResults.response_action === 'errors') {
-        return res.send(insertResults.response_action);
+        return res.send(insertResults);
       }
 
       await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
