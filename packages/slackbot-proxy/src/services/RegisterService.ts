@@ -78,7 +78,6 @@ export class RegisterService implements GrowiCommandProcessor {
     };
 
     let url;
-
     try {
       url = new URL(growiUrl);
     }
