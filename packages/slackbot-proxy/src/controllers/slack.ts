@@ -19,6 +19,7 @@ import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
+import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
 
 
@@ -42,6 +43,9 @@ export class SlackCtrl {
 
   @Inject()
   registerService: RegisterService;
+
+  @Inject()
+  unregisterService: UnregisterService;
 
   @Get('/install')
   async install(): Promise<string> {
@@ -81,6 +85,19 @@ export class SlackCtrl {
       res.send();
 
       return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
+    }
+
+    // unregister
+    if (growiCommand.growiCommandType === 'unregister') {
+      if (growiCommand.growiCommandArgs.length === 0) {
+        return 'GROWI Urls is required.';
+      }
+
+      // Send response immediately to avoid opelation_timeout error
+      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+      res.send();
+
+      return this.unregisterService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
@@ -170,6 +187,12 @@ export class SlackCtrl {
     if (callBackId === 'register') {
       await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
       await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
+      return;
+    }
+
+    // unregister
+    if (callBackId === 'unregister') {
+      await this.unregisterService.unregister(this.relationRepository, installation, authorizeResult, payload);
       return;
     }
 
