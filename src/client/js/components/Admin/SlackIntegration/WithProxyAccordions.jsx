@@ -9,6 +9,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
+import { addLogs } from './slak-integration-util';
 
 const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
@@ -179,23 +180,22 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
-  const [latestConnectionMessage, setLatestConnectionMessage] = useState(null);
+  const [logsValue, setLogsValue] = useState('');
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
-
-  let logsValue = null;
-  if (latestConnectionMessage != null) {
-    logsValue = [latestConnectionMessage.code, latestConnectionMessage.message];
-  }
+  const successMessage = 'Successfully sent to Slack workspace.';
 
   const submitForm = async(e) => {
     e.preventDefault();
     try {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
       setIsLatestConnectionSuccess(true);
+      const newLogs = addLogs(logsValue, successMessage, null);
+      setLogsValue(newLogs);
     }
     catch (error) {
       setIsLatestConnectionSuccess(false);
-      setLatestConnectionMessage(error[0]);
+      const newLogs = addLogs(logsValue, error[0].message, error[0].code);
+      setLogsValue(newLogs);
       logger.error(error);
     }
   };
@@ -226,7 +226,7 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
           </button>
         </form>
       </div>
-      <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} latestConnectionMessage={latestConnectionMessage} />
+      <MessageBasedOnConnection isLatestConnectionSuccess={isLatestConnectionSuccess} logsValue={logsValue} />
       <form>
         <div className="row my-3 justify-content-center">
           <div className="form-group slack-connection-log col-md-4">
@@ -245,13 +245,13 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
 };
 
 const MessageBasedOnConnection = (props) => {
-  const { isLatestConnectionSuccess, latestConnectionMessage } = props;
+  const { isLatestConnectionSuccess, logsValue } = props;
   const { t } = useTranslation();
   if (isLatestConnectionSuccess) {
     return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
   }
 
-  if (latestConnectionMessage == null) {
+  if (logsValue == null) {
     return <p></p>;
   }
 
