@@ -404,6 +404,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  GROWI_APP_ID_FOR_GROWI_CLOUD: {
+    ns:      'crowi',
+    key:     'app:growiAppIdForCloud',
+    type:    TYPES.STRING,
+    default: null,
+  },
   DEFAULT_EMAIL_PUBLISHED: {
     ns:      'crowi',
     key:     'customize:isEmailPublishedForNewUser',
