@@ -63,12 +63,6 @@ export class RegisterService implements GrowiCommandProcessor {
     };
 
     if (isUrl(growiUrl) == null) {
-      return {
-        response_action: 'errors',
-        errors: {
-          growiUrl: 'Please enter a valid URL',
-        },
-      };
       await client.chat.postEphemeral({
         channel,
         user: payload.user.id,
