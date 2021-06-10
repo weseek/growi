@@ -58,11 +58,7 @@ export class RegisterService implements GrowiCommandProcessor {
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
-    const isUrl = (url: string) => {
-      return url.match(/^(https?:\/\/)/);
-    };
-
-    if (isUrl(growiUrl) == null) {
+    const postInvalidUrlErr = async() => {
       const invalidErrorMsg = 'Please enter a valid URL';
 
       await client.chat.postEphemeral({
@@ -75,7 +71,14 @@ export class RegisterService implements GrowiCommandProcessor {
           generateMarkdownSectionBlock(invalidErrorMsg),
         ],
       });
-      return { error: invalidErrorMsg };
+    };
+
+    try {
+      const url = new URL(growiUrl);
+      return url;
+    }
+    catch (err) {
+      postInvalidUrlErr();
     }
 
     orderRepository.save({
