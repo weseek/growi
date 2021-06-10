@@ -7,7 +7,7 @@ const ProxyCircle = () => (
   <div className="grw-bridge-proxy-circle">
     <div className="circle position-absolute bg-primary border-light rounded-circle">
       <p className="circle-inner text-light font-weight-bold d-none d-lg-inline">Proxy Server</p>
-      <p className="circle-inner grw-proxy-server-name hoge d-block d-lg-none">Proxy Server</p>
+      <p className="circle-inner grw-proxy-server-name d-block d-lg-none">Proxy Server</p>
     </div>
   </div>
 );
