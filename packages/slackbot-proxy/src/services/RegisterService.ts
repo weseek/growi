@@ -73,12 +73,14 @@ export class RegisterService implements GrowiCommandProcessor {
       });
     };
 
+    let url;
+
     try {
-      const url = new URL(growiUrl);
-      return url;
+      url = new URL(growiUrl);
     }
-    catch (err) {
+    catch (error) {
       postInvalidUrlErr();
+      return { error, growiUrl: url };
     }
 
     orderRepository.save({
