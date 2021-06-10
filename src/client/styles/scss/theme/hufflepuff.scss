@@ -32,19 +32,20 @@ html[light] {
   // Background colors
   $bgcolor-global: lighten($themelight, 10%);
   $bgcolor-inline-code: $gray-100; //optional
-  // ↓spring's copy↓
   $bgcolor-card: $gray-50;
   $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
-  $color-global: black;
+  $color-global: $subthemecolor;
   $color-reversal: white;
   $color-link: $accentcolor;
-  $color-link-hover: lighten($subthemecolor, 10%);
-  $color-link-wiki: $subthemecolor;
+  $color-link-hover: lighten($accentcolor, 10%);
+  $color-link-wiki: $accentcolor;
   $color-link-wiki-hover: lighten($color-link-wiki, 10%);
-  $color-link-nabvar: $bgcolor-global;
+  $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e; // optional
+
+  // ↓spring's copy↓
 
   // List Group colors
   // $color-list: $color-global;
@@ -167,7 +168,8 @@ html[light] {
 html[dark] {
   // Theme colors
   $themecolor: #eaab20;
-  $themedark: rgb(36, 36, 0);
+  // $themedark: rgb(36, 36, 0);
+  $themedark: #3d3f38;
   $subthemecolor: #231e1d;
   $accentcolor: #993439;
 
@@ -177,23 +179,24 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: $themedark;
+  // $bgcolor-global: #3d3f38;
+  // $bgcolor-navbar: #27343b;
   // ↓mono-blue's copy↓
-  $bgcolor-navbar: #27343b;
   $bgcolor-inline-code: $subthemecolor;
   $bgcolor-card: darken($themedark, 5%);
   $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
-  $color-global: #d3d4d4;
+  $color-global: #efe2cf;
   $color-reversal: $gray-100;
-  $color-link: #f0e397;
-  $color-link-hover: darken($color-link, 12%);
+  $color-link: lighten($themecolor, 20%);
+  $color-link-hover: lighten($color-link, 10%);
   $color-link-wiki: lighten($primary, 20%);
   $color-link-wiki-hover: lighten($color-link-wiki, 20%);
   $color-link-nabvar: $color-reversal;
   $color-inline-code: $themecolor;
   // $color-inline-code: #c7254e; // optional
-  $color-search: #000102;
+  // $color-search: #000102;
 
   // List Group colors
   // $color-list: $color-global;
@@ -281,7 +284,7 @@ html[dark] {
     // add background-image
     #page-wrapper,
     .page-editor-preview-container {
-      background-image: url('/images/themes/hufflepuff/badger-dark5.png');
+      background-image: url('/images/themes/hufflepuff/badger-dark.jpg');
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
