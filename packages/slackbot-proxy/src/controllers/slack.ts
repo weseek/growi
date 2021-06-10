@@ -92,6 +92,9 @@ export class SlackCtrl {
       if (growiCommand.growiCommandArgs.length === 0) {
         return 'GROWI Urls is required.';
       }
+      if (!growiCommand.growiCommandArgs.every(v => v.match(/^(https?:\/\/)/))) {
+        return 'GROWI Urls must be urls.';
+      }
 
       // Send response immediately to avoid opelation_timeout error
       // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
