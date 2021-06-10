@@ -41,6 +41,7 @@ export class UnregisterService implements GrowiCommandProcessor {
     });
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async unregister(relationRepository:RelationRepository, installation:Installation | undefined, authorizeResult: AuthorizeResult, payload: any):Promise<void> {
     const { botToken } = authorizeResult;
     const { channel, growiUrls } = JSON.parse(payload.view.private_metadata);
