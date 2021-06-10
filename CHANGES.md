@@ -1,8 +1,37 @@
 # CHANGES
 
-## v4.2.18-RC
+## v4.2.21-RC
 
-* Feature: Cobvertible page contents width.
+* Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
+* Support: Upgrade libs
+    * connect-mongo
+    * migrate-mongo
+    * mongoose
+    * stream-to-promise
+
+
+## v4.2.20
+
+* Improvement: Error message when the password is too short
+* Improvement: Repeat XSS processing as a countermeasure against nesting 
+* Fix: NoSQL injection of access-token-parser
+* Fix: Checking permission when operating share links
+* Fix: Invalid NaN label is shown when deletedAt of the page is undefined
+    * Introduced by v4.2.8
+
+## v4.2.19
+
+* Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
+* Feature: Set max-age of the user's cookie in admin page
+* Improvement: Change the first accessing page after installation to the top page
+* Support: Upgrade libs
+    * string-width
+    * diff
+    * archiver
+
+## v4.2.18
+
+* Feature: Convertible page contents width
 * Fix: Group selector of User Group Delete Modal does not show all groups
 * Fix: Global notification to Slack does not encode spaces of page path
 * Support: Upgrade libs

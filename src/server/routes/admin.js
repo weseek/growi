@@ -498,5 +498,10 @@ module.exports = function(crowi, app) {
     return res.json(ApiResponse.success());
   };
 
+  actions.notFound = {};
+  actions.notFound.index = function(req, res) {
+    return res.render('admin/not_found');
+  };
+
   return actions;
 };

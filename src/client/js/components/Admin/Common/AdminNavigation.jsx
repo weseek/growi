@@ -8,9 +8,15 @@ import urljoin from 'url-join';
 
 import { pathUtils } from 'growi-commons';
 
+import AppContainer from '../../../services/AppContainer';
+import { withUnstatedContainers } from '../../UnstatedUtils';
+
 const AdminNavigation = (props) => {
-  const { t } = props;
+  const { t, appContainer } = props;
   const pathname = window.location.pathname;
+
+  const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
+  const growiAppIdForGrowiCloud = appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD;
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
@@ -27,6 +33,7 @@ const AdminNavigation = (props) => {
       case 'users':                    return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
       case 'user-groups':              return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
       case 'search':                   return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
+      case 'cloud':                    return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
       default:                         return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
     }
   };
@@ -75,6 +82,16 @@ const AdminNavigation = (props) => {
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
+        {growiCloudUri != null && growiAppIdForGrowiCloud != null
+          && (
+          <a
+            href={`${growiCloudUri}/my/apps/${growiAppIdForGrowiCloud}`}
+            className="list-group-item list-group-item-action border-0 round-corner"
+          >
+            <MenuLabel menu="cloud" />
+          </a>
+          )
+        }
       </>
     );
   };
@@ -121,10 +138,11 @@ const AdminNavigation = (props) => {
   );
 };
 
+const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
 
 AdminNavigation.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(AdminNavigation);
+export default withTranslation()(AdminNavigationWrapper);

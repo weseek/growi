@@ -26,4 +26,6 @@ module.exports = {
   // SLACK_BOT_TOKEN: '',
   SALT_FOR_GTOP_TOKEN: 'proxy',
   SALT_FOR_PTOG_TOKEN: 'growi',
+  // GROWI_CLOUD_URI: 'http://growi.cloud',
+  // GROWI_APP_ID_FOR_GROWI_CLOUD: '012345',
 };

@@ -37,6 +37,38 @@ const isUserPage = (path) => {
   return false;
 };
 
+const forbiddenPages = [
+  /\^|\$|\*|\+|#|%/,
+  /^\/-\/.*/,
+  /^\/_r\/.*/,
+  /^\/_apix?(\/.*)?/,
+  /^\/?https?:\/\/.+$/, // avoid miss in renaming
+  /\/{2,}/, // avoid miss in renaming
+  /\s+\/\s+/, // avoid miss in renaming
+  /.+\/edit$/,
+  /.+\.md$/,
+  /^(\.\.)$/, // see: https://github.com/weseek/growi/issues/3582
+  /(\/\.\.)\/?/, // see: https://github.com/weseek/growi/issues/3582
+  /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
+];
+
+/**
+ * Whether path can be created
+ * @param {string} path
+ * @returns {boolean}
+ */
+const isCreatablePage = (path) => {
+  let isCreatable = true;
+  forbiddenPages.forEach((page) => {
+    const pageNameReg = new RegExp(page);
+    if (path.match(pageNameReg)) {
+      isCreatable = false;
+    }
+  });
+
+  return isCreatable;
+};
+
 /**
  * return user path
  * @param {Object} user
@@ -83,6 +115,7 @@ module.exports = {
   isTopPage,
   isTrashPage,
   isUserPage,
+  isCreatablePage,
   userPageRoot,
   convertToNewAffiliationPath,
   encodeSpaces,
