@@ -184,15 +184,11 @@ export class SlackCtrl {
 
     const payload = JSON.parse(body.payload);
     const callBackId = payload?.view?.callback_id;
-    const { type } = payload;
-    console.log('typehoge', type);
-
 
     // register
     if (callBackId === 'register') {
       const insertResults = await this.registerService.insertOrderRecord(this.orderRepository, installation, payload);
 
-      console.log('insertResults', insertResults);
       if (insertResults != null && insertResults.response_action === 'errors') {
         return res.send(insertResults);
       }

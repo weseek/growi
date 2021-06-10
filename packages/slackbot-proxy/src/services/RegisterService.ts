@@ -52,17 +52,11 @@ export class RegisterService implements GrowiCommandProcessor {
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
 
-    console.log('growiUrlHoge', growiUrl);
-    console.log('growiUrlHoge', typeof (growiUrl));
-
     const isUrl = (url: string) => {
       return url.match(/^(https?:\/\/)/);
     };
 
-    console.log('isUrl(growiUrl)', isUrl(growiUrl));
-
     if (isUrl(growiUrl) == null) {
-      console.log('urlは正しくありません');
       return {
         response_action: 'errors',
         errors: {
@@ -70,7 +64,6 @@ export class RegisterService implements GrowiCommandProcessor {
         },
       };
     }
-    console.log('urlは正常');
 
     orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,
