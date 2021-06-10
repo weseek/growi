@@ -12,6 +12,9 @@ const AdminNavigation = (props) => {
   const { t, appContainer } = props;
   const pathname = window.location.pathname;
 
+  const growiCloudUri = appContainer.config.env.GROWI_CLOUD_URI;
+  const growiAppIdForGrowiCloud = appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD;
+
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
     switch (menu) {
@@ -66,11 +69,10 @@ const AdminNavigation = (props) => {
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
-        {appContainer.config.env.GROWI_CLOUD_URI != null
-          && appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD != null
+        {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
           <a
-            href={`${appContainer.config.env.GROWI_CLOUD_URI}/my/apps/${appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD}`}
+            href={`${growiCloudUri}/my/apps/${growiAppIdForGrowiCloud}`}
             className="list-group-item list-group-item-action border-0 round-corner"
           >
             <MenuLabel menu="cloud" />
