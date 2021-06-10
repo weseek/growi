@@ -44,13 +44,19 @@ export class RegisterService implements GrowiCommandProcessor {
   }
 
   async insertOrderRecord(
+      orderRepository: OrderRepository, installation: Installation | undefined,
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      orderRepository: OrderRepository, installation: Installation | undefined, payload: any,
+      authorizeResult:AuthorizeResult, payload: any,
   ): Promise<any> {
     const inputValues = payload.view.state.values;
     const growiUrl = inputValues.growiUrl.contents_input.value;
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
+
+    const { botToken } = authorizeResult;
+    const { channel } = JSON.parse(payload.view.private_metadata);
+
+    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
     const isUrl = (url: string) => {
       return url.match(/^(https?:\/\/)/);
@@ -63,6 +69,17 @@ export class RegisterService implements GrowiCommandProcessor {
           growiUrl: 'Please enter a valid URL',
         },
       };
+      await client.chat.postEphemeral({
+        channel,
+        user: payload.user.id,
+        // Recommended including 'text' to provide a fallback when using blocks
+        // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
+        text: 'Invalid URL',
+        blocks: [
+          generateMarkdownSectionBlock('Please enter a valid URL'),
+        ],
+      });
+      return { errors: 'Please enter a valid URL' };
     }
 
     orderRepository.save({
