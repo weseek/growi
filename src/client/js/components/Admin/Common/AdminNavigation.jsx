@@ -1,20 +1,16 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable react/jsx-props-no-multi-spaces */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
-import AdminAppContainer from '../../../services/AdminAppContainer';
+import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const AdminNavigation = (props) => {
-  const { t, adminAppContainer } = props;
+  const { t, appContainer } = props;
   const pathname = window.location.pathname;
-
-  useEffect(() => {
-    adminAppContainer.retrieveAppSettingsData();
-  }, [adminAppContainer]);
 
   // eslint-disable-next-line react/prop-types
   const MenuLabel = ({ menu }) => {
@@ -70,11 +66,11 @@ const AdminNavigation = (props) => {
         <MenuLink menu="users"        isListGroupItems isActive={isActiveMenu('/users')} />
         <MenuLink menu="user-groups"  isListGroupItems isActive={isActiveMenu('/user-groups')} />
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
-        {adminAppContainer.state.growiCloudUri != null
-          && adminAppContainer.state.growiAppIdForGrowiCloud != null
+        {appContainer.config.env.GROWI_CLOUD_URI != null
+          && appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD != null
           && (
           <a
-            href={`${adminAppContainer.state.growiCloudUri}/my/apps/${adminAppContainer.state.growiAppIdForGrowiCloud}`}
+            href={`${appContainer.config.env.GROWI_CLOUD_URI}/my/apps/${appContainer.config.env.GROWI_APP_ID_FOR_GROWI_CLOUD}`}
             className="list-group-item list-group-item-action border-0 round-corner"
           >
             <MenuLabel menu="cloud" />
@@ -126,11 +122,11 @@ const AdminNavigation = (props) => {
   );
 };
 
-const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AdminAppContainer]);
+const AdminNavigationWrapper = withUnstatedContainers(AdminNavigation, [AppContainer]);
 
 AdminNavigation.propTypes = {
   t: PropTypes.func.isRequired, // i18next
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
 export default withTranslation()(AdminNavigationWrapper);
