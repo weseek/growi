@@ -129,6 +129,7 @@ const SlackIntegration = (props) => {
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
+          onUpdateTokens={fetchSlackIntegrationData}
         />
       );
       break;
@@ -154,6 +155,7 @@ const SlackIntegration = (props) => {
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
+          onUpdateTokens={fetchSlackIntegrationData}
         />
       );
       break;

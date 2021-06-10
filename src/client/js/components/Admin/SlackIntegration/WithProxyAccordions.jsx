@@ -81,7 +81,9 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   const regenerateTokensHandler = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/regenerate-tokens', { slackAppIntegrationId });
-      // TODO: fetch data by GW-6160
+      if (props.onUpdateTokens != null) {
+        props.onUpdateTokens();
+      }
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
     catch (err) {
@@ -271,6 +273,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
+        onUpdateTokens={props.onUpdateTokens}
       />,
     },
     '③': {
@@ -299,6 +302,7 @@ const WithProxyAccordions = (props) => {
         slackAppIntegrationId={props.slackAppIntegrationId}
         tokenPtoG={props.tokenPtoG}
         tokenGtoP={props.tokenGtoP}
+        onUpdateTokens={props.onUpdateTokens}
       />,
     },
     '④': {
