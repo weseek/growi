@@ -5,6 +5,7 @@ import { useTranslation } from '~/i18n';
 import { SystemInformationTable } from './SystemInformationTable';
 import { InstalledPluginTable } from './InstalledPluginTable';
 import { EnvVarsTable } from './EnvVarsTable';
+import { useEnvVars } from '~/stores/admin-context';
 
 type Props = {
   nodeVersion: string,
@@ -12,12 +13,11 @@ type Props = {
   yarnVersion: string,
 
   installedPlugins: any,
-
-  envVars: any,
 };
 
 export const AdminHome:FC<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { data: envVars } = useEnvVars();
 
   return (
     <Fragment>
@@ -51,7 +51,7 @@ export const AdminHome:FC<Props> = (props: Props) => {
           <p>{t('admin:admin_top.env_var_priority')}</p>
           {/* eslint-disable-next-line react/no-danger */}
           <p dangerouslySetInnerHTML={{ __html: t('admin:admin_top.about_security') }} />
-          {props.envVars && <EnvVarsTable envVars={props.envVars} />}
+          {envVars && <EnvVarsTable envVars={envVars} />}
         </div>
       </div>
     </Fragment>

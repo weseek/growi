@@ -24,7 +24,7 @@
   data-page-last-update-username="{% if page && page.lastUpdateUser %}{{ page.lastUpdateUser.name }}{% endif %}"
   data-page-updated-at="{% if page %}{{ page.updatedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-delete-username="{% if page && page.deleteUser %}{{ page.deleteUser.name }}{% endif %}"
-  data-page-deleted-at="{% if page %}{{ page.deletedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
+  data-page-deleted-at="{% if page && page.deletedAt %}{{ page.deletedAt|datetz('Y/m/d H:i:s') }}{% endif %}"
   data-page-has-children="{% if pages.length > 0 %}true{% else %}false{% endif %}"
   data-page-user="{% if pageUser %}{{ pageUser|json }}{% else %}null{% endif %}"
   data-page-ids-of-seen-users="{{ page.seenUsers|slice(-15)|default([])|reverse|join(',') }}"

@@ -1,6 +1,25 @@
 # CHANGES
 
-## v4.2.19-RC
+## v4.2.21-RC
+
+* Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
+* Support: Upgrade libs
+    * connect-mongo
+    * migrate-mongo
+    * mongoose
+    * stream-to-promise
+
+
+## v4.2.20
+
+* Improvement: Error message when the password is too short
+* Improvement: Repeat XSS processing as a countermeasure against nesting 
+* Fix: NoSQL injection of access-token-parser
+* Fix: Checking permission when operating share links
+* Fix: Invalid NaN label is shown when deletedAt of the page is undefined
+    * Introduced by v4.2.8
+
+## v4.2.19
 
 * Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
 * Feature: Set max-age of the user's cookie in admin page

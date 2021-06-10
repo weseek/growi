@@ -23,6 +23,7 @@ import {
   useCurrentUser,
   useSearchServiceConfigured, useSearchServiceReachable, useSiteUrl,
 } from '../../stores/context';
+import { useEnvVars } from '~/stores/admin-context';
 
 const pluginUtils = new PluginUtils();
 
@@ -55,7 +56,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
         npmVersion={props.npmVersion}
         yarnVersion={props.yarnVersion}
         installedPlugins={props.installedPlugins}
-        envVars={props.envVars}
       />,
     },
     app: {
@@ -114,6 +114,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   useSearchServiceReachable(props.isSearchServiceReachable);
 
   useSiteUrl(props.siteUrl);
+
+  useEnvVars(props.envVars);
 
   return (
     <AdminLayout title={title} selectedNavOpt={name}>

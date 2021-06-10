@@ -249,12 +249,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
-  GROWI_CLOUD_URI: {
-    ns:      'crowi',
-    key:     'app:growiCloudUri',
-    type:    ValueType.STRING,
-    default: null,
-  },
   MONGO_GRIDFS_TOTAL_LIMIT: {
     ns:      'crowi',
     key:     'gridfs:totalLimit',
@@ -425,6 +419,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'promster:port',
     type:    ValueType.NUMBER,
     default: 7788,
+  },
+  GROWI_CLOUD_URI: {
+    ns:      'crowi',
+    key:     'app:growiCloudUri',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  GROWI_APP_ID_FOR_GROWI_CLOUD: {
+    ns:      'crowi',
+    key:     'app:growiAppIdForCloud',
+    type:    ValueType.STRING,
+    default: null,
   },
   DEFAULT_EMAIL_PUBLISHED: {
     ns:      'crowi',
