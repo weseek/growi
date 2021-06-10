@@ -2,39 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
 
 const CustomBotWithoutProxySettings = (props) => {
-  const { appContainer, connectionStatuses, onTestConnectionInvoked } = props;
+  const { appContainer, connectionStatuses } = props;
   const { t } = useTranslation();
-
   const [siteName, setSiteName] = useState('');
-  const [isIntegrationSuccess, setIsIntegrationSuccess] = useState(false);
-  const [connectionMessage, setConnectionMessage] = useState(null);
-  const [testChannel, setTestChannel] = useState('');
-
-  const testConnection = async() => {
-    try {
-      await appContainer.apiv3.post('/slack-integration-settings/without-proxy/test', { channel: testChannel });
-      setConnectionMessage('');
-      setIsIntegrationSuccess(true);
-
-      if (onTestConnectionInvoked != null) {
-        onTestConnectionInvoked();
-      }
-    }
-    catch (err) {
-      setConnectionMessage(err[0]);
-      setIsIntegrationSuccess(false);
-    }
-  };
-
-  const inputTestChannelHandler = (channel) => {
-    setTestChannel(channel);
-  };
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -44,7 +19,6 @@ const CustomBotWithoutProxySettings = (props) => {
   const workspaceName = connectionStatuses[props.slackBotToken]?.workspaceName;
 
   return (
-
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}
         {/* TODO: add an appropriate links by GW-5614 */}
@@ -65,33 +39,32 @@ const CustomBotWithoutProxySettings = (props) => {
           </h2>
         </div>
         <CustomBotWithoutProxySettingsAccordion
-          {...props}
           activeStep={botInstallationStep.CREATE_BOT}
-          connectionMessage={connectionMessage}
-          isIntegrationSuccess={isIntegrationSuccess}
-          testChannel={testChannel}
-          onTestFormSubmitted={testConnection}
-          inputTestChannelHandler={inputTestChannelHandler}
+          slackBotTokenEnv={props.slackBotTokenEnv}
+          slackBotToken={props.slackBotToken}
+          slackSigningSecretEnv={props.slackSigningSecretEnv}
+          slackSigningSecret={props.slackSigningSecret}
+          onTestConnectionInvoked={props.onTestConnectionInvoked}
+          onUpdatedSecretToken={props.onUpdatedSecretToken}
         />
       </div>
     </>
   );
 };
 
-const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer, AdminAppContainer]);
+const CustomBotWithoutProxySettingsWrapper = withUnstatedContainers(CustomBotWithoutProxySettings, [AppContainer]);
 
 CustomBotWithoutProxySettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 
   slackSigningSecret: PropTypes.string,
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
 
-  isIntegrationSuccess: PropTypes.bool,
+  onUpdatedSecretToken: PropTypes.func.isRequired,
+  onTestConnectionInvoked: PropTypes.func.isRequired,
   connectionStatuses: PropTypes.object.isRequired,
-  onTestConnectionInvoked: PropTypes.func,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;
