@@ -189,11 +189,11 @@ export class SlackCtrl {
     // register
     if (callBackId === 'register') {
       try {
-        await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult, payload);
+        await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult.botToken, payload);
       }
       catch (err) {
         if (err instanceof InvalidUrlError) {
-          logger.error(err);
+          logger.info(err);
           return;
         }
         logger.error(err);

@@ -47,14 +47,13 @@ export class RegisterService implements GrowiCommandProcessor {
   async insertOrderRecord(
       orderRepository: OrderRepository, installation: Installation | undefined,
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      authorizeResult:AuthorizeResult, payload: any,
+      botToken: string | undefined, payload: any,
   ): Promise<void> {
     const inputValues = payload.view.state.values;
     const growiUrl = inputValues.growiUrl.contents_input.value;
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
 
-    const { botToken } = authorizeResult;
     const { channel } = JSON.parse(payload.view.private_metadata);
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
