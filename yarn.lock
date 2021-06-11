@@ -8041,6 +8041,11 @@ extend@^3.0.2, extend@~3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
 
+extensible-custom-error@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/extensible-custom-error/-/extensible-custom-error-0.0.7.tgz#4d6cc86c71d60a0e11fa8d24972104720cd30305"
+  integrity sha512-1tgubPkgC+Qi2nUpulI7hGddHh0fA8hXu3P0LBUq2pamZL52KSJZqMu8Q3CiA6kf7Irn/CU1fJe6y4igHCwu4Q==
+
 external-editor@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/external-editor/-/external-editor-3.0.3.tgz#5866db29a97826dbe4bf3afd24070ead9ea43a27"
