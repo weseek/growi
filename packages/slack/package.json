@@ -19,6 +19,7 @@
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
     "dotenv-flow": "^3.2.0",
+    "extensible-custom-error": "^0.0.7",
     "universal-bunyan": "^0.9.2"
   },
   "devDependencies": {
