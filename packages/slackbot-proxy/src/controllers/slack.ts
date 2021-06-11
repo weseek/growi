@@ -194,7 +194,7 @@ export class SlackCtrl {
       }
       catch (err) {
         if (err instanceof InvalidUrlError) {
-          logger.info('Invalid URL', growiUrl);
+          logger.info(err.message, err.url);
           return;
         }
         logger.error(err);
