@@ -187,8 +187,11 @@ export class SlackCtrl {
 
     // register
     if (callBackId === 'register') {
-      const insertOrderResults = await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult, payload);
-      if (insertOrderResults != null && insertOrderResults.error != null) {
+      try {
+        await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult, payload);
+      }
+      catch (err) {
+        logger.error(err);
         return;
       }
 

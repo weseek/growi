@@ -51,7 +51,7 @@ export class RegisterService implements GrowiCommandProcessor {
       orderRepository: OrderRepository, installation: Installation | undefined,
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       authorizeResult:AuthorizeResult, payload: any,
-  ): Promise<any> {
+  ): Promise<void> {
     const inputValues = payload.view.state.values;
     const growiUrl = inputValues.growiUrl.contents_input.value;
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
@@ -77,14 +77,13 @@ export class RegisterService implements GrowiCommandProcessor {
       });
     };
 
-    let url;
     try {
-      url = new URL(growiUrl);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const url = new URL(growiUrl);
     }
     catch (error) {
       postInvalidUrlErr();
-      logger.error(error);
-      return { error, growiUrl: url };
+      throw new Error('Invalid URL');
     }
 
     orderRepository.save({
