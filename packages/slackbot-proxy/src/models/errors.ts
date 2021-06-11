@@ -1,9 +1,3 @@
-export class MyError extends Error {
+import ExtensibleCustomError from 'extensible-custom-error';
 
-  constructor(e?: string) {
-    super(e);
-    this.name = new.target.name;
-    Object.setPrototypeOf(this, new.target.prototype);
-  }
-
-}
+export class InvalidUrlError extends ExtensibleCustomError {}

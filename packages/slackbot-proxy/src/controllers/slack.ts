@@ -20,6 +20,7 @@ import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/mi
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 import { UnregisterService } from '~/services/UnregisterService';
+import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
 
 
@@ -191,6 +192,9 @@ export class SlackCtrl {
         await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult, payload);
       }
       catch (err) {
+        if (err instanceof InvalidUrlError) {
+          console.log('InvalidUrlErrorきた');
+        }
         logger.error(err);
         return;
       }

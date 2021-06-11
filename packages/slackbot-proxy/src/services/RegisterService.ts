@@ -5,6 +5,7 @@ import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
+import { InvalidUrlError } from '../models/errors';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -79,7 +80,7 @@ export class RegisterService implements GrowiCommandProcessor {
     }
     catch (error) {
       postInvalidUrlErr();
-      throw new Error('Invalid URL');
+      throw new InvalidUrlError();
     }
 
     orderRepository.save({
