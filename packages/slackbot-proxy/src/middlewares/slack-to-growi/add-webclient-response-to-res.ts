@@ -18,8 +18,8 @@ export class AddWebclientResponseToRes implements IMiddleware {
       return res.send({ ok: true });
     };
 
-    res.webClientErr = (message?:string) => {
-      return res.send({ ok: false, message });
+    res.webClientErr = (error?:string) => {
+      return res.send({ ok: false, error });
     };
 
     next();
