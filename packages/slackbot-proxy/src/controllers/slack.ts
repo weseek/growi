@@ -20,6 +20,7 @@ import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/mi
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 import { UnregisterService } from '~/services/UnregisterService';
+import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
 
 
@@ -186,10 +187,19 @@ export class SlackCtrl {
     const callBackId = payload?.view?.callback_id;
 
     // register
-    // response_urls is an array but the element included is only one.
     if (callBackId === 'register') {
-      await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
-      await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
+      try {
+        await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult.botToken, payload);
+      }
+      catch (err) {
+        if (err instanceof InvalidUrlError) {
+          logger.info(err.message);
+          return;
+        }
+        logger.error(err);
+      }
+
+      await this.registerService.notifyServerUriToSlack(authorizeResult.botToken, payload);
       return;
     }
 

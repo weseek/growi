@@ -5,6 +5,7 @@ import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
+import { InvalidUrlError } from '../models/errors';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -43,14 +44,40 @@ export class RegisterService implements GrowiCommandProcessor {
     });
   }
 
-  async upsertOrderRecord(
+  async insertOrderRecord(
+      orderRepository: OrderRepository, installation: Installation | undefined,
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      orderRepository: OrderRepository, installation: Installation | undefined, payload: any,
+      botToken: string | undefined, payload: any,
   ): Promise<void> {
     const inputValues = payload.view.state.values;
     const growiUrl = inputValues.growiUrl.contents_input.value;
     const tokenPtoG = inputValues.tokenPtoG.contents_input.value;
     const tokenGtoP = inputValues.tokenGtoP.contents_input.value;
+
+    const { channel } = JSON.parse(payload.view.private_metadata);
+
+    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const url = new URL(growiUrl);
+    }
+    catch (error) {
+      const invalidErrorMsg = 'Please enter a valid URL';
+
+      await client.chat.postEphemeral({
+        channel,
+        user: payload.user.id,
+        // Recommended including 'text' to provide a fallback when using blocks
+        // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
+        text: 'Invalid URL',
+        blocks: [
+          generateMarkdownSectionBlock(invalidErrorMsg),
+        ],
+      });
+
+      throw new InvalidUrlError(growiUrl);
+    }
 
     orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,
@@ -59,10 +86,9 @@ export class RegisterService implements GrowiCommandProcessor {
 
   async notifyServerUriToSlack(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      authorizeResult:AuthorizeResult, payload: any,
+      botToken: string | undefined, payload: any,
   ): Promise<void> {
 
-    const { botToken } = authorizeResult;
     const { channel } = JSON.parse(payload.view.private_metadata);
 
     const serverUri = process.env.SERVER_URI;
