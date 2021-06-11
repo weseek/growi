@@ -171,7 +171,7 @@ export class GrowiToSlackCtrl {
     const { tokenGtoPs } = req;
 
     if (tokenGtoPs.length !== 1) {
-      return res.webClientErr('tokenGtoPs is invalid');
+      return res.webClientErr('tokenGtoPs is invalid', 'invalid_tokenGtoP');
     }
 
     const tokenGtoP = tokenGtoPs[0];
@@ -183,12 +183,12 @@ export class GrowiToSlackCtrl {
       .getOne();
 
     if (relation == null) {
-      return res.webClientErr('relation is invalid');
+      return res.webClientErr('relation is invalid', 'invalid_relation');
     }
 
     const token = relation.installation.data.bot?.token;
     if (token == null) {
-      return res.webClientErr('installation is invalid');
+      return res.webClientErr('installation is invalid', 'invalid_installation');
     }
 
     const client = generateWebClient(token);
@@ -200,7 +200,7 @@ export class GrowiToSlackCtrl {
     }
     catch (err) {
       logger.error(err);
-      return res.webClientErr(`failed to send to slack. err: ${err.message}`);
+      return res.webClientErr(`failed to send to slack. err: ${err.message}`, 'fail_api_call');
     }
 
     logger.debug('send to slack is success');

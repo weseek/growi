@@ -4,8 +4,8 @@ import {
 
 
 export type WebclientRes = Res & {
-  webClient: ()=> void,
-  webClientErr:(message?:string)=>void
+  webClient: () => void,
+  webClientErr: (message?:string, errorCode?:string) => void
 };
 
 
@@ -18,8 +18,8 @@ export class AddWebclientResponseToRes implements IMiddleware {
       return res.send({ ok: true });
     };
 
-    res.webClientErr = (error?:string) => {
-      return res.send({ ok: false, error });
+    res.webClientErr = (error?:string, errorCode?:string) => {
+      return res.send({ ok: false, error, errorCode });
     };
 
     next();
