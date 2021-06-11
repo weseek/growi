@@ -91,6 +91,7 @@ const SlackIntegration = (props) => {
       setSlackSigningSecret(null);
       setSlackBotToken(null);
       setConnectionStatuses({});
+      fetchSlackIntegrationData();
     }
     catch (err) {
       toastError(err);
