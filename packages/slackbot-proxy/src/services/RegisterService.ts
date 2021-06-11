@@ -76,7 +76,7 @@ export class RegisterService implements GrowiCommandProcessor {
         ],
       });
 
-      throw new InvalidUrlError(`'${growiUrl}' is an invalid URL`);
+      throw new InvalidUrlError(growiUrl);
     }
 
     orderRepository.save({

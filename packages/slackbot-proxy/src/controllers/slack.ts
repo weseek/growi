@@ -185,7 +185,6 @@ export class SlackCtrl {
 
     const payload = JSON.parse(body.payload);
     const callBackId = payload?.view?.callback_id;
-    const growiUrl = payload.view.state.values.growiUrl.contents_input.value;
 
     // register
     if (callBackId === 'register') {
@@ -194,7 +193,7 @@ export class SlackCtrl {
       }
       catch (err) {
         if (err instanceof InvalidUrlError) {
-          logger.info(err.message, err.url);
+          logger.info(err.message);
           return;
         }
         logger.error(err);
