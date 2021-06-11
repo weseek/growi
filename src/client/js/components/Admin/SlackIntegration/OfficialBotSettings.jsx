@@ -71,28 +71,33 @@ const OfficialBotSettings = (props) => {
         {/* TODO: add an appropriate links by GW-5614 */}
         <i className="fa fa-external-link btn-link ml-2" aria-hidden="true"></i>
       </h2>
-      <CustomBotWithProxyConnectionStatus
-        siteName={siteName}
-        connectionStatuses={connectionStatuses}
-      />
 
-      <div className="form-group row my-4">
-        <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
-        <div className="col-md-6 mt-3">
-          <input
-            className="form-control"
-            type="text"
-            name="settingForm[proxyUrl]"
-            defaultValue={newProxyServerUri}
-            onChange={(e) => { setNewProxyServerUri(e.target.value) }}
+      {slackAppIntegrations.length !== 0 && (
+        <>
+          <CustomBotWithProxyConnectionStatus
+            siteName={siteName}
+            connectionStatuses={connectionStatuses}
           />
-        </div>
-        <div className="col-md-2 mt-3 text-center text-md-left">
-          <button type="button" className="btn btn-primary" onClick={updateProxyUri}>{ t('Update') }</button>
-        </div>
-      </div>
 
-      <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
+          <div className="form-group row my-4">
+            <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
+            <div className="col-md-6 mt-3">
+              <input
+                className="form-control"
+                type="text"
+                name="settingForm[proxyUrl]"
+                defaultValue={newProxyServerUri}
+                onChange={(e) => { setNewProxyServerUri(e.target.value) }}
+              />
+            </div>
+            <div className="col-md-2 mt-3 text-center text-md-left">
+              <button type="button" className="btn btn-primary" onClick={updateProxyUri}>{ t('Update') }</button>
+            </div>
+          </div>
+
+          <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
+        </>
+      )}
 
       <div className="mx-3">
         {slackAppIntegrations.map((slackAppIntegration, i) => {
