@@ -193,10 +193,10 @@ export class SlackCtrl {
       }
       catch (err) {
         if (err instanceof InvalidUrlError) {
-          console.log('InvalidUrlErrorきた');
+          logger.error(err);
+          return;
         }
         logger.error(err);
-        return;
       }
 
       await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
