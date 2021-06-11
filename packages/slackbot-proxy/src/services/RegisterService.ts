@@ -59,21 +59,6 @@ export class RegisterService implements GrowiCommandProcessor {
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
-    const postInvalidUrlErr = async() => {
-      const invalidErrorMsg = 'Please enter a valid URL';
-
-      await client.chat.postEphemeral({
-        channel,
-        user: payload.user.id,
-        // Recommended including 'text' to provide a fallback when using blocks
-        // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-        text: 'Invalid URL',
-        blocks: [
-          generateMarkdownSectionBlock(invalidErrorMsg),
-        ],
-      });
-    };
-
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const url = new URL(growiUrl);
