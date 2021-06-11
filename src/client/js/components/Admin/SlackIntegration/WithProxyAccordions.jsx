@@ -251,7 +251,7 @@ const MessageBasedOnConnection = (props) => {
     return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
   }
 
-  if (logsValue == null) {
+  if (logsValue === '') {
     return <p></p>;
   }
 
