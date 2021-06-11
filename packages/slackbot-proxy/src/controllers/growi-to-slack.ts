@@ -9,6 +9,8 @@ import {
   verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient,
 } from '@growi/slack';
 
+import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/slack-to-growi/add-webclient-response-to-res';
+
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
@@ -162,12 +164,14 @@ export class GrowiToSlackCtrl {
   }
 
   @Post('/:method')
-  @UseBefore(verifyGrowiToSlackRequest)
-  async postResult(@PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+  @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
+  async postResult(
+    @PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
+  ): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
 
     if (tokenGtoPs.length !== 1) {
-      return res.status(400).send({ message: 'tokenGtoPs is invalid' });
+      return res.webClientErr('tokenGtoPs is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
@@ -179,12 +183,12 @@ export class GrowiToSlackCtrl {
       .getOne();
 
     if (relation == null) {
-      return res.status(400).send({ message: 'relation is invalid' });
+      return res.webClientErr('relation is invalid');
     }
 
     const token = relation.installation.data.bot?.token;
     if (token == null) {
-      return res.status(400).send({ message: 'installation is invalid' });
+      return res.webClientErr('installation is invalid');
     }
 
     const client = generateWebClient(token);
@@ -196,13 +200,13 @@ export class GrowiToSlackCtrl {
     }
     catch (err) {
       logger.error(err);
-      return res.status(400).send({ message: `failed to send to slack. err: ${err.message}` });
+      return res.webClientErr(`failed to send to slack. err: ${err.message}`);
     }
 
     logger.debug('send to slack is success');
 
     // required to return ok for apiCall
-    return res.send({ ok: true });
+    return res.webClient();
   }
 
 }
