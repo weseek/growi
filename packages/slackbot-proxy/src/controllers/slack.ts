@@ -199,7 +199,7 @@ export class SlackCtrl {
         logger.error(err);
       }
 
-      await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
+      await this.registerService.notifyServerUriToSlack(authorizeResult.botToken, payload);
       return;
     }
 

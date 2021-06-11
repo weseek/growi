@@ -86,10 +86,9 @@ export class RegisterService implements GrowiCommandProcessor {
 
   async notifyServerUriToSlack(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      authorizeResult:AuthorizeResult, payload: any,
+      botToken: string | undefined, payload: any,
   ): Promise<void> {
 
-    const { botToken } = authorizeResult;
     const { channel } = JSON.parse(payload.view.private_metadata);
 
     const serverUri = process.env.SERVER_URI;
