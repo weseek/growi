@@ -7,7 +7,6 @@ const MessageBasedOnConnection = (props) => {
   const { isLatestConnectionSuccess, logsValue } = props;
   const { t } = useTranslation();
 
-  console.log(isLatestConnectionSuccess);
   if (isLatestConnectionSuccess) {
     return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
   }
