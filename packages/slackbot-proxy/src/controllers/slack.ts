@@ -59,6 +59,7 @@ export class SlackCtrl {
         'im:history',
         'mpim:history',
         'chat:write',
+        'team:read',
       ],
     });
 
