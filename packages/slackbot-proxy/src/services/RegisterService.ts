@@ -6,10 +6,6 @@ import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command
 import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
 
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('slackbot-proxy:register-service');
-
 const isProduction = process.env.NODE_ENV === 'production';
 
 @Service()
