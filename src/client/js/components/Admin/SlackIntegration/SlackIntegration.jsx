@@ -83,14 +83,11 @@ const SlackIntegration = (props) => {
 
   const changeCurrentBotSettings = async(botType) => {
     try {
-      const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
+      await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
       });
-      setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
-      setSlackSigningSecret(null);
-      setSlackBotToken(null);
-      setConnectionStatuses({});
+      fetchSlackIntegrationData();
     }
     catch (err) {
       toastError(err);
