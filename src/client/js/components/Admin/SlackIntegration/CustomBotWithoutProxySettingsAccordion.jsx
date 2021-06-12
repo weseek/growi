@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Accordion from '../Common/Accordion';
 import AppContainer from '../../../services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
+import MessageBasedOnConnection from './MessageBasedOnConnection';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 import { addLogs } from './slak-integration-util';
 
@@ -13,25 +14,6 @@ export const botInstallationStep = {
   INSTALL_BOT: 'install-bot',
   REGISTER_SLACK_CONFIGURATION: 'register-slack-configuration',
   CONNECTION_TEST: 'connection-test',
-};
-
-const MessageBasedOnConnection = (props) => {
-  const { isLatestConnectionSuccess, logsValue } = props;
-  const { t } = useTranslation();
-  if (isLatestConnectionSuccess) {
-    return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
-  }
-
-  if (logsValue === '') {
-    return <p></p>;
-  }
-
-  return <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>;
-};
-
-MessageBasedOnConnection.propTypes = {
-  isLatestConnectionSuccess: PropTypes.bool.isRequired,
-  logsValue: PropTypes.string.isRequired,
 };
 
 

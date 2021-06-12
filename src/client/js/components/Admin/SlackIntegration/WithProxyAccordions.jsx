@@ -10,6 +10,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 import { addLogs } from './slak-integration-util';
+import MessageBasedOnConnection from './MessageBasedOnConnection';
 
 const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
@@ -244,19 +245,6 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
   );
 };
 
-const MessageBasedOnConnection = (props) => {
-  const { isLatestConnectionSuccess, logsValue } = props;
-  const { t } = useTranslation();
-  if (isLatestConnectionSuccess) {
-    return <p className="text-info text-center my-4">{t('admin:slack_integration.accordion.send_message_to_slack_work_space')}</p>;
-  }
-
-  if (logsValue === '') {
-    return <p></p>;
-  }
-
-  return <p className="text-danger text-center my-4">{t('admin:slack_integration.accordion.error_check_logs_below')}</p>;
-};
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
