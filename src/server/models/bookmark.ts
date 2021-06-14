@@ -1,6 +1,4 @@
-import {
-  Schema, Model, Document,
-} from 'mongoose';
+import { Schema, Model } from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -30,7 +28,7 @@ interface ModelMethods {
   removeBookmark(pageId:string, user:IUser): Promise<IBookmark>
  }
 
-const schema:Schema<IBookmark & Document> = new Schema<IBookmark & Document>({
+const schema = new Schema<IBookmark>({
   page: { type: ObjectId, ref: 'Page', index: true },
   user: { type: ObjectId, ref: 'User', index: true },
   createdAt: { type: Date, default: Date.now },

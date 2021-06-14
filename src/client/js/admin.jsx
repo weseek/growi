@@ -19,7 +19,7 @@ import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
 import ImportDataPage from './components/Admin/ImportDataPage';
 import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
 import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
-import AdminNavigation from './components/Admin/Common/AdminNavigation';
+import AdminNavigation from '~/components/Admin/Common/AdminNavigation';
 
 import NavigationContainer from './services/NavigationContainer';
 

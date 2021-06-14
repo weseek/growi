@@ -1,4 +1,4 @@
-import { Schema, Model, Document } from 'mongoose';
+import { Schema, Model } from 'mongoose';
 import flatMap from 'array.prototype.flatmap';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -6,7 +6,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 import Tag from '~/server/models/tag';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
-import { PageTagRelation as IPageTagRelation, Tag as ITag } from '~/interfaces/page';
+import { PageTagRelation as IPageTagRelation } from '~/interfaces/page';
 
 
 /*
@@ -20,7 +20,7 @@ interface ModelMethods{
 /*
  * define schema
  */
-const schema:Schema<IPageTagRelation & Document> = new Schema<IPageTagRelation & Document>({
+const schema = new Schema<IPageTagRelation>({
   relatedPage: {
     type: Schema.Types.ObjectId,
     ref: 'Page',

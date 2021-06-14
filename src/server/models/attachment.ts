@@ -25,7 +25,7 @@ function generateFileHash(fileName) {
   return hash.digest('hex');
 }
 
-const schema = new Schema({
+const schema = new Schema<IAttachment>({
   page: { type: ObjectId, ref: 'Page', index: true },
   creator: { type: ObjectId, ref: 'User', index: true },
   filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below

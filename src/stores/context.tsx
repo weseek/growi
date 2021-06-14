@@ -88,14 +88,6 @@ export const useHackmdUri = (initialData?: string): responseInterface<string, an
   return useStaticSWR('hackmdUri', initialData);
 };
 
-export const useGrowiCloudUri = (initialData?: string): responseInterface<string, any> => {
-  return useStaticSWR('growiCloudUri', initialData);
-};
-
-export const useGrowiAppIdForCloud = (initialData?: string): responseInterface<string, any> => {
-  return useStaticSWR('growiAppIdForCloud', initialData);
-};
-
 export const useIsAllReplyShown = (initialData?: boolean): responseInterface<boolean, any> => {
   return useStaticSWR('isAllReplyShown', initialData, false);
 };

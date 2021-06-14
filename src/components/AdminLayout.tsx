@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { Provider } from 'unstated';
 
 import BasicLayout from './BasicLayout';
-import AdminNavigation from '~/client/js/components/Admin/Common/AdminNavigation';
+import AdminNavigation from '~/components/Admin/Common/AdminNavigation';
 
 type Props = {
   title: string

@@ -1,6 +1,4 @@
-import {
-  Types, Schema,
-} from 'mongoose';
+import { Types, Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
