@@ -122,7 +122,6 @@ const AdminNavigation = (props) => {
 };
 
 AdminNavigation.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
   selected: PropTypes.string,
 };
 
