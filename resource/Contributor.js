@@ -109,6 +109,7 @@ const contributors = [
           { position: 'Flatt Security', name: 'Azara/Norihide Saito' },
           { position: 'CyberAgent, Inc.', name: 'Daisuke Takahashi' },
           { position: 'Mitsui Bussan Secure Directions, Inc.', name: 'Yuji Tounai' },
+          { name: 'yy0931' },
         ],
       },
     ],
