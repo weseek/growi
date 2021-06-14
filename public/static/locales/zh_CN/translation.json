@@ -797,6 +797,7 @@
 		"deletion_modal_header": "删除页",
 		"delete_completely": "完全删除"
 	},
+	"to_cloud_settings": "進入 GROWI.cloud 的管理界面",
 	"login": {
 		"Sign in error": "登录错误",
 		"Registration successful": "注册成功",

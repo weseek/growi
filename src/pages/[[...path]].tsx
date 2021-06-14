@@ -29,7 +29,7 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useSearchServiceConfigured, useSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useGrowiCloudUri, useGrowiAppIdForCloud,
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';

@@ -9,7 +9,7 @@ module.exports = (crowi) => {
   return async(req, res, next) => {
     // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
     const accessToken = req.query.access_token || req.body.access_token || null;
-    if (!accessToken) {
+    if (accessToken == null || typeof accessToken !== 'string') {
       return next();
     }
 

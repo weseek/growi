@@ -786,6 +786,7 @@
     "rebuild_description_1": "全てのページのインデックスを削除し、作り直します。",
     "rebuild_description_2": "この作業には数秒かかります。"
   },
+  "to_cloud_settings": "GROWI.cloud の管理画面へ",
   "login": {
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
