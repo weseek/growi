@@ -178,7 +178,8 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   );
 }, [AppContainer]);
 
-const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
+const TestProcess = (props) => {
+  const { apiv3Post, slackAppIntegrationId, onTestConnectionInvoked } = props;
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   const [logsValue, setLogsValue] = useState('');
@@ -190,8 +191,14 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
     try {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
       setIsLatestConnectionSuccess(true);
-      const newLogs = addLogs(logsValue, successMessage, null);
-      setLogsValue(newLogs);
+
+      if (onTestConnectionInvoked != null) {
+        console.log('ontest は　nullじゃない');
+        onTestConnectionInvoked();
+        const newLogs = addLogs(logsValue, successMessage, null);
+        setLogsValue(newLogs);
+      }
+
     }
     catch (error) {
       setIsLatestConnectionSuccess(false);
@@ -248,6 +255,8 @@ const TestProcess = ({ apiv3Post, slackAppIntegrationId }) => {
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
+  const { connectionStatuses, workspaceName } = props;
+  console.log(workspaceName);
 
   const officialBotIntegrationProcedure = {
     '①': {
@@ -312,7 +321,7 @@ const WithProxyAccordions = (props) => {
       {Object.entries(integrationProcedureMapping).map(([key, value]) => {
         return (
           <Accordion
-            title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)}</>}
+            title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)} {value.title === 'test_connection' && workspaceName != null && <i className="ml-3 text-success fa fa-check"></i>}</>}
             key={key}
           >
             {value.content}

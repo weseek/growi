@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:SlackBotSettings');
 
 const CustomBotWithProxySettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens,
+    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onTestConnectionInvoked,
   } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
@@ -119,10 +119,13 @@ const CustomBotWithProxySettings = (props) => {
               </div>
               <WithProxyAccordions
                 botType="customBotWithProxy"
+                connectionStatuses={connectionStatuses}
+                workspaceName={workspaceName}
                 slackAppIntegrationId={slackAppIntegration._id}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
                 onUpdateTokens={onUpdateTokens}
+                onTestConnectionInvoked={onTestConnectionInvoked}
               />
             </React.Fragment>
           );
@@ -159,6 +162,7 @@ CustomBotWithProxySettings.propTypes = {
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
   onDeleteSlackAppIntegration: PropTypes.func,
+  onTestConnectionInvoked: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
   onUpdateTokens: PropTypes.func,
 };
