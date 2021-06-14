@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^5.8.5",
+    "@growi/slack": "^0.9.0-RC",
     "@kobalab/socket.io-session": "^1.0.3",
     "@promster/express": "^5.0.1",
     "@promster/server": "^6.0.0",
