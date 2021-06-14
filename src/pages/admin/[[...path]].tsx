@@ -165,8 +165,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.growiCloudUri = configManager.getConfig('crowi', 'app:growiCloudUri');
   props.growiAppIdForCloud = configManager.getConfig('crowi', 'app:growiAppIdForCloud');
 
-  console.log(props.growiAppIdForCloud);
-
   return {
     props,
   };
