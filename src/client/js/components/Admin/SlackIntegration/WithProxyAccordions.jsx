@@ -193,7 +193,6 @@ const TestProcess = (props) => {
       setIsLatestConnectionSuccess(true);
 
       if (onTestConnectionInvoked != null) {
-        console.log('ontest は　nullじゃない');
         onTestConnectionInvoked();
         const newLogs = addLogs(logsValue, successMessage, null);
         setLogsValue(newLogs);
@@ -255,7 +254,7 @@ const TestProcess = (props) => {
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
-  const { connectionStatuses, workspaceName } = props;
+  const { connectionStatuses, workspaceName, onTestConnectionInvoked } = props;
   console.log(workspaceName);
 
   const officialBotIntegrationProcedure = {
@@ -308,7 +307,11 @@ const WithProxyAccordions = (props) => {
     },
     '⑤': {
       title: 'test_connection',
-      content: <TestProcess apiv3Post={props.appContainer.apiv3.post} slackAppIntegrationId={props.slackAppIntegrationId} />,
+      content: <TestProcess
+        apiv3Post={props.appContainer.apiv3.post}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        onTestConnectionInvoked={onTestConnectionInvoked}
+      />,
     },
   };
 
