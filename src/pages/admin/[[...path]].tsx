@@ -21,8 +21,6 @@ import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchi
 
 import {
   useCurrentUser,
-  useGrowiAppIdForCloud,
-  useGrowiCloudUri,
   useSearchServiceConfigured, useSearchServiceReachable, useSiteUrl,
 } from '~/stores/context';
 import { useEnvVars } from '~/stores/admin-context';
@@ -43,8 +41,6 @@ type Props = CommonProps & {
 
   siteUrl: string,
 
-  growiCloudUri: string,
-  growiAppIdForCloud: string,
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
@@ -117,8 +113,6 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
 
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
-  useGrowiCloudUri(props.growiCloudUri);
-  useGrowiAppIdForCloud(props.growiAppIdForCloud);
 
   useSiteUrl(props.siteUrl);
 
@@ -135,7 +129,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    appService, searchService, configManager,
+    appService, searchService,
   } = crowi;
 
   const { user } = req;
@@ -161,9 +155,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
-
-  props.growiCloudUri = configManager.getConfig('crowi', 'app:growiCloudUri');
-  props.growiAppIdForCloud = configManager.getConfig('crowi', 'app:growiAppIdForCloud');
 
   return {
     props,
