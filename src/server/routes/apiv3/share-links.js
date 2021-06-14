@@ -2,7 +2,6 @@ import loggerFactory from '~/utils/logger';
 
 import Page from '~/server/models/page';
 import ShareLink from '~/server/models/share-link';
-import Page from '~/server/models/page';
 
 const logger = loggerFactory('growi:routes:apiv3:share-links');
 
