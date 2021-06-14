@@ -1,6 +1,4 @@
-import {
-  Schema, Types, Model, Document,
-} from 'mongoose';
+import { Schema, Types, Model } from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -18,7 +16,7 @@ interface ModelMethods{
 /*
  * define schema
  */
-const schema:Schema<IShareLink & Document> = new Schema<IShareLink & Document>({
+const schema = new Schema<IShareLink>({
   relatedPage: {
     type: Types.ObjectId,
     ref: 'Page',

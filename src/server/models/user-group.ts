@@ -20,7 +20,7 @@ interface ModelMethods {
 /*
  * define schema
  */
-const schema:Schema<IUserGroup & Document> = new Schema<IUserGroup & Document>({
+const schema = new Schema<IUserGroup>({
   userGroupId: String,
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },

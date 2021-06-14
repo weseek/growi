@@ -1,6 +1,4 @@
-import {
-  Schema, Types, Model, Document,
-} from 'mongoose';
+import { Schema, Types, Model } from 'mongoose';
 
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -22,7 +20,7 @@ interface ModelMethods {
 /*
  * define schema
  */
-const schema:Schema<IUserGroupRelation & Document> = new Schema<IUserGroupRelation & Document>({
+const schema = new Schema<IUserGroupRelation>({
   relatedGroup: { type: Types.ObjectId, ref: 'UserGroup', required: true },
   relatedUser: { type: Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now, required: true },

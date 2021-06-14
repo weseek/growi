@@ -27,7 +27,7 @@ export const getOrCreateModel = <Interface, Method>(modelName: string, schema: S
 };
 
 export const mongoOptions: ConnectionOptions = {
-  useNewUrlParser: true, // removes a deprecation warning when connecting
-  useUnifiedTopology: true,
+  // useNewUrlParser: true, // removes a deprecation warning when connecting
+  // useUnifiedTopology: true,
   useFindAndModify: false,
 };
