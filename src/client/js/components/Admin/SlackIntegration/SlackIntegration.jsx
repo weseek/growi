@@ -150,7 +150,7 @@ const SlackIntegration = (props) => {
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
           onUpdateTokens={fetchSlackIntegrationData}
-          onTestConnectionInvoked={fetchSlackIntegrationData}
+          onSubmitForm={fetchSlackIntegrationData}
         />
       );
       break;
