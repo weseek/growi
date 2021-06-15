@@ -185,7 +185,6 @@ const TestProcess = ({
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   const [logsValue, setLogsValue] = useState('');
-
   const successMessage = 'Successfully sent to Slack workspace.';
 
   const submitForm = async(e) => {
@@ -256,12 +255,13 @@ const TestProcess = ({
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
-  // const { connectionStatuses } = props;
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
 
   const submitForm = () => {
-    props.onSubmitForm();
     setIsLatestConnectionSuccess(true);
+    if (props.onSubmitForm != null) {
+      props.onSubmitForm();
+    }
   };
 
   const submitFormFailed = () => {
