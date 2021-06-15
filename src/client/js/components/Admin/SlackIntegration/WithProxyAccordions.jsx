@@ -180,7 +180,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 
 const TestProcess = (props) => {
   const {
-    apiv3Post, slackAppIntegrationId, onTestConnectionInvoked, isLatestConnectionSuccess, setIsLatestConnectionSuccess,
+    apiv3Post, slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
   } = props;
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
@@ -194,16 +194,18 @@ const TestProcess = (props) => {
       await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
       const newLogs = addLogs(logsValue, successMessage, null);
       setLogsValue(newLogs);
-      if (onTestConnectionInvoked != null) {
-        onTestConnectionInvoked();
+
+      if (onSubmitForm != null) {
+        onSubmitForm();
       }
-      setIsLatestConnectionSuccess(true);
     }
     catch (error) {
-      setIsLatestConnectionSuccess(false);
       const newLogs = addLogs(logsValue, error[0].message, error[0].code);
       setLogsValue(newLogs);
       logger.error(error);
+      if (onSubmitFormFailed != null) {
+        onSubmitFormFailed();
+      }
     }
   };
 
@@ -254,8 +256,17 @@ const TestProcess = (props) => {
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
-  const { connectionStatuses } = props;
+  // const { connectionStatuses } = props;
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
+
+  const submitForm = () => {
+    props.onSubmitForm();
+    setIsLatestConnectionSuccess(true);
+  };
+
+  const submitFormFailed = () => {
+    setIsLatestConnectionSuccess(false);
+  };
 
 
   const officialBotIntegrationProcedure = {
@@ -310,11 +321,10 @@ const WithProxyAccordions = (props) => {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
-        connectionStatuses={connectionStatuses}
         slackAppIntegrationId={props.slackAppIntegrationId}
-        onTestConnectionInvoked={props.onTestConnectionInvoked}
+        onSubmitForm={submitForm}
+        onSubmitFormFailed={submitFormFailed}
         isLatestConnectionSuccess={isLatestConnectionSuccess}
-        setIsLatestConnectionSuccess={setIsLatestConnectionSuccess}
       />,
     },
   };
@@ -328,7 +338,13 @@ const WithProxyAccordions = (props) => {
       {Object.entries(integrationProcedureMapping).map(([key, value]) => {
         return (
           <Accordion
-            title={<><span className="mr-2">{key}</span>{t(`admin:slack_integration.accordion.${value.title}`)} {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
+            title={(
+              <>
+                <span className="mr-2">{key}</span>
+                {t(`admin:slack_integration.accordion.${value.title}`)}
+                {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}
+              </>
+)}
             key={key}
           >
             {value.content}
