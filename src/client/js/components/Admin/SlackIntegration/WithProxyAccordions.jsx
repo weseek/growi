@@ -178,10 +178,10 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   );
 }, [AppContainer]);
 
-const TestProcess = (props) => {
-  const {
-    apiv3Post, slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
-  } = props;
+const TestProcess = ({
+  apiv3Post, slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
+}) => {
+
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   const [logsValue, setLogsValue] = useState('');
