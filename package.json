@@ -285,9 +285,9 @@
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
     "ts-jest": "^26.3.0",
-    "ts-node-dev": "1.0.0-pre.59",
+    "ts-node-dev": "1.1.6",
     "tsc-alias": "^1.2.6",
-    "typescript": "^4.0.2",
+    "typescript": "^4.3.2",
     "unstated": "^2.1.1",
     "webpack-assets-manifest": "^4.0.1"
   },
