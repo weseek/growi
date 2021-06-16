@@ -24,10 +24,12 @@ html[light] {
   $themecolor: #eaab20;
   $themelight: #efe2cf;
   $subthemecolor: #231e1d;
+  $third-main-color: #f0c05a;
   $accentcolor: #993439;
 
   $primary: $themecolor;
-  $secondary: $subthemecolor;
+  // $secondary: $subthemecolor;
+  $secondary: $third-main-color;
 
   // Background colors
   $bgcolor-global: lighten($themelight, 10%);
@@ -56,7 +58,7 @@ html[light] {
   $bgcolor-list-active: $accentcolor;
 
   // Navbar
-  $bgcolor-navbar: #f0c05a;
+  $bgcolor-navbar: $third-main-color;
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #90a555 0%, #a84be6 50%, #eaab20 100%);
 
@@ -149,12 +151,12 @@ html[light] {
     background-color: $themecolor;
   }
 
-  h1,
-  h2 {
-    svg {
-      fill: $subthemecolor;
-    }
-  }
+  // h1,
+  // h2 {
+  //   svg {
+  //     fill: $subthemecolor;
+  //   }
+  // }
 
   .nav.nav-tabs {
     > .nav-item {
@@ -171,10 +173,13 @@ html[dark] {
   // $themedark: rgb(36, 36, 0);
   $themedark: #3d3f38;
   $subthemecolor: #231e1d;
+  $third-main-color: #967224;
   $accentcolor: #993439;
 
-  $primary: $themecolor;
-  $secondary: $subthemecolor;
+  // $primary: $themecolor;
+  $primary: darken($themecolor, 10%);
+  // $secondary: $subthemecolor;
+  $secondary: $third-main-color;
   $dark: #031018;
 
   // Background colors
@@ -207,7 +212,7 @@ html[dark] {
   // $bgcolor-list-active: $primary;
 
   // Navbar
-  $bgcolor-navbar: #967224;
+  $bgcolor-navbar: $third-main-color;
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #90a555 0%, #3d98a3 50%, #eaab20 100%);
 
@@ -272,11 +277,11 @@ html[dark] {
 
   // Button
   .btn.btn-outline-primary {
-    @include btn-page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 5%), darken($primary, 20%), darken($primary, 40%));
+    @include btn-page-editor-mode-manager(lighten($primary, 40%), lighten($primary, 15%), darken($primary, 10%), darken($primary, 30%));
   }
   .btn-group.grw-page-editor-mode-manager {
     .btn.btn-outline-primary {
-      @include btn-page-editor-mode-manager(lighten($primary, 30%), lighten($primary, 5%), darken($primary, 10%), darken($primary, 40%));
+      @include btn-page-editor-mode-manager(lighten($primary, 40%), lighten($primary, 15%), darken($primary, 0%), darken($primary, 30%));
     }
   }
 
