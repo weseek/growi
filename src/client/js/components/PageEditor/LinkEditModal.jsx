@@ -153,7 +153,6 @@ class LinkEditModal extends React.PureComponent {
     const path = this.state.linkInputValue;
     let markdown = '';
     let previewError = '';
-    let permalink = '';
 
     if (path.startsWith('/')) {
       const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
@@ -163,8 +162,6 @@ class LinkEditModal extends React.PureComponent {
       try {
         const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
         markdown = page.revision.body;
-        // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
-        permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
       }
       catch (err) {
         previewError = err.message;
@@ -173,7 +170,7 @@ class LinkEditModal extends React.PureComponent {
     else {
       previewError = t('link_edit.page_not_found_in_preview', { path });
     }
-    this.setState({ markdown, previewError, permalink });
+    this.setState({ markdown, previewError });
   }
 
   getLinkForPreview() {
@@ -217,7 +214,8 @@ class LinkEditModal extends React.PureComponent {
   handleChangeTypeahead(selected) {
     const page = selected[0];
     if (page != null) {
-      this.setState({ linkInputValue: page.path });
+      const permalink = `${window.location.origin}/${page.id}`;
+      this.setState({ linkInputValue: page.path, permalink });
     }
   }
 
