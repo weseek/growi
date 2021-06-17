@@ -211,9 +211,15 @@ export class SlackCtrl {
     }
 
     /*
-     * forward to GROWI server
-     */
-    const relations = await this.relationRepository.find({ installation });
+    * forward to GROWI server
+    */
+    let relations = await this.relationRepository.find({ installation });
+
+    // For Modal, Send request to only one GROWI
+    if (payload.view != null) {
+      const { growiUri } = JSON.parse(payload.view.private_metadata);
+      relations = relations.filter(relation => relation.growiUri === growiUri);
+    }
 
     const promises = relations.map((relation: Relation) => {
       // generate API URL
