@@ -10,12 +10,16 @@ export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
     }
     const parsedBlocks = JSON.parse(body.blocks as string);
     parsedBlocks.forEach((parsedBlock) => {
-      if (parsedBlock.type === 'actions') {
-        const parsedValue = JSON.parse(parsedBlock.elements[0].value as string);
-        parsedValue.growiUri = growiUri;
-        parsedBlock.elements[0].value = JSON.stringify(parsedValue);
+      if (parsedBlock.type !== 'actions') {
+        return;
       }
+      parsedBlock.elements.map((element) => {
+        const parsedValue = JSON.parse(element.value as string);
+        parsedValue.growiUri = growiUri;
+        element.value = JSON.stringify(parsedValue);
+      });
     });
+
     body.blocks = JSON.stringify(parsedBlocks);
   }
 
