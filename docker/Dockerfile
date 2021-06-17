@@ -23,6 +23,11 @@ COPY ./packages/slack/package.json packages/slack/
 RUN yarn config set network-timeout 300000
 RUN npx lerna bootstrap
 
+# make artifacts
+RUN tar cf node_modules.tar node_modules \
+  packages/app/node_modules \
+  packages/slack/node_modules
+
 
 
 ##
@@ -47,17 +52,29 @@ FROM node:14-slim AS prebuilder-default
 
 ENV appDir /opt/growi
 
+WORKDIR ${appDir}
+
+# copy dependent packages
+COPY --from=deps-resolver \
+  ${appDir}/node_modules.tar ${appDir}/
+
+# extract node_modules.tar
+RUN tar xf node_modules.tar
+RUN rm node_modules.tar
+
 COPY ./package.json ./
 COPY ./lerna.json ./
 COPY ./tsconfig.base.json ./
+COPY ./babel.config.js ./
+COPY ./bin ./bin
+COPY ./config ./config
+COPY ./resource ./resource
+COPY ./src ./src
+COPY ./tmp ./tmp
+
 # copy all related packages
 COPY packages/slack packages/slack
 COPY packages/app packages/app
-
-# copy dependent packages
-COPY --from=deps-resolver ${appDir}/node_modules .
-COPY --from=deps-resolver ${appDir}/packages/slack/node_modules packages/slack/
-COPY --from=deps-resolver ${appDir}/packages/app/node_modules packages/app/
 
 
 
@@ -74,6 +91,7 @@ COPY docker/nocdn/env.prod.js ${appDir}/config/
 ##
 ## builder
 ##
+# FROM prebuilder-${flavor}
 FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
@@ -85,10 +103,10 @@ RUN yarn build:prod
 
 # make artifacts
 RUN tar cf packages.tar \
-  packages/app/package.json \
-  packages/app/config \
-  packages/app/public \
-  packages/app/tmp \
+  package.json \
+  config \
+  public \
+  tmp \
   packages/slack/package.json \
   packages/slack/dist
 
@@ -102,6 +120,11 @@ FROM node:14-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
+
+# Add Tini
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
 
 COPY --from=deps-resolver-prod --chown=node:node \
   ${appDir}/node_modules.tar ${appDir}/
@@ -120,10 +143,8 @@ RUN tar xf node_modules.tar
 RUN tar xf packages.tar
 RUN rm node_modules.tar packages.tar
 
-WORKDIR ${appDir}
-
 VOLUME /data
 EXPOSE 3000
 
-ENTRYPOINT ["/sbin/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
 CMD ["yarn", "server:prod"]
