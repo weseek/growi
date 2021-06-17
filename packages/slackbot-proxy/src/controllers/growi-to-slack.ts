@@ -196,6 +196,8 @@ export class GrowiToSlackCtrl {
     try {
       const opt = req.body as WebAPICallOptions;
       opt.headers = req.headers;
+      opt.private_metadata = { growiUri: relation.growiUri };
+
       await client.apiCall(method, opt);
     }
     catch (err) {
