@@ -17,6 +17,7 @@ import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
+import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
 import { UnregisterService } from '~/services/UnregisterService';
@@ -164,7 +165,7 @@ export class SlackCtrl {
   }
 
   @Post('/interactions')
-  @UseBefore(AuthorizeInteractionMiddleware)
+  @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
@@ -213,15 +214,9 @@ export class SlackCtrl {
     /*
     * forward to GROWI server
     */
-
-    let growiUri;
-    // For Modal, Send request to only one GROWI
-    if (payload.view != null) {
-      growiUri = JSON.parse(payload.view.private_metadata).growiUri;
-    }
     console.log(payload.actions);
 
-    const relation = await this.relationRepository.findOne({ installation, growiUri });
+    const relation = await this.relationRepository.findOne({ installation, growiUri: req.growiUri });
 
     if (relation == null) {
       logger.error('*No relation found.*');
@@ -230,7 +225,7 @@ export class SlackCtrl {
 
     try {
       // generate API URL
-      const url = new URL('/_api/v3/slack-integration/proxied/interactions', growiUri);
+      const url = new URL('/_api/v3/slack-integration/proxied/interactions', req.growiUri);
       await axios.post(url.toString(), {
         ...body,
       }, {
