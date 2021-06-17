@@ -13,7 +13,7 @@ export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
       if (parsedBlock.type !== 'actions') {
         return;
       }
-      parsedBlock.elements.map((element) => {
+      parsedBlock.elements.forEach((element) => {
         const parsedValue = JSON.parse(element.value as string);
         parsedValue.growiUri = growiUri;
         element.value = JSON.stringify(parsedValue);
