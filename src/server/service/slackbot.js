@@ -143,7 +143,7 @@ class SlackBotService extends S2sMessageHandlable {
   async shareSearchResults(client, payload) {
     client.chat.postMessage({
       channel: payload.channel.id,
-      text: payload.actions[0].value,
+      text: JSON.parse(payload.actions[0].value).pageList,
     });
   }
 
@@ -197,7 +197,9 @@ class SlackBotService extends S2sMessageHandlable {
             },
             style: 'primary',
             action_id: 'shareSearchResults',
-            value: JSON.stringify({ offset, body, args }),
+            value: JSON.stringify({
+              offset, body, args, pageList: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+            }),
           },
         ],
       };
