@@ -163,6 +163,19 @@ export class GrowiToSlackCtrl {
     return res.send({ relation: createdRelation, slackBotToken: token });
   }
 
+  generateOptFromRequest(req:GrowiReq, growiUri:string):WebAPICallOptions {
+    const opt = req.body;
+    opt.headers = req.headers;
+
+    if (opt.view != null) {
+      const parsedView = JSON.parse(opt.view as string);
+      parsedView.private_metadata = JSON.stringify({ growiUri });
+      opt.view = JSON.stringify(parsedView);
+    }
+
+    return opt;
+  }
+
   @Post('/:method')
   @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
   async postResult(
@@ -194,9 +207,7 @@ export class GrowiToSlackCtrl {
     const client = generateWebClient(token);
 
     try {
-      const opt = req.body as WebAPICallOptions;
-      opt.headers = req.headers;
-      opt.private_metadata = { growiUri: relation.growiUri };
+      const opt = this.generateOptFromRequest(req, relation.growiUri);
 
       await client.apiCall(method, opt);
     }
