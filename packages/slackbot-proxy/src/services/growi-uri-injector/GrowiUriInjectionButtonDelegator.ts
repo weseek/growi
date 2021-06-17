@@ -1,14 +1,33 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { GrowiUriInjector } from './GrowiUriInjector';
 
 export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
 
 
-  inject(body: any): any {
-    return body;
+  inject(body: any, growiUri:string): void {
+    if (body.blocks == null) {
+      return;
+    }
+    const parsedBlocks = JSON.parse(body.blocks as string);
+    parsedBlocks.forEach((parsedBlock) => {
+      if (parsedBlock.type === 'actions') {
+        const parsedValue = JSON.parse(parsedBlock.elements[0].value as string);
+        parsedValue.growiUri = growiUri;
+        parsedBlock.elements[0].value = JSON.stringify(parsedValue);
+      }
+    });
+    body.blocks = JSON.stringify(parsedBlocks);
   }
 
-  extract(block: any): any {
-    return block;
+  extract(body: any): string|void {
+    const payload = JSON.parse(body.payload);
+
+    if (payload?.actions[0]?.value == null) {
+      return;
+    }
+
+    const parsedValues = JSON.parse(payload.actions[0]?.value);
+    return parsedValues.growiUri;
   }
 
 }
