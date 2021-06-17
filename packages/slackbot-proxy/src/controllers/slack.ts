@@ -223,7 +223,12 @@ export class SlackCtrl {
     const relation = await this.relationRepository.findOne({ installation, growiUri });
 
     if (relation == null) {
-      throw new Error('Relation is not found');
+      return res.json({
+        blocks: [
+          generateMarkdownSectionBlock('*No relation found.*'),
+          generateMarkdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
     }
 
     try {
