@@ -197,7 +197,7 @@ class SlackBotService extends S2sMessageHandlable {
             },
             style: 'primary',
             action_id: 'shareSearchResults',
-            value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+            value: JSON.stringify({ offset, body, args }),
           },
         ],
       };

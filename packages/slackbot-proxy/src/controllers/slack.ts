@@ -219,16 +219,13 @@ export class SlackCtrl {
     if (payload.view != null) {
       growiUri = JSON.parse(payload.view.private_metadata).growiUri;
     }
+    console.log(payload.actions);
 
     const relation = await this.relationRepository.findOne({ installation, growiUri });
 
     if (relation == null) {
-      return res.json({
-        blocks: [
-          generateMarkdownSectionBlock('*No relation found.*'),
-          generateMarkdownSectionBlock('Run `/growi register` first.'),
-        ],
-      });
+      logger.error('*No relation found.*');
+      return;
     }
 
     try {
