@@ -12,8 +12,11 @@ export class GrowiUriInjectionModalDelegator implements GrowiUriInjector {
     }
   }
 
-  extract(body: any): string {
-    return body;
+  extract(body: any): string|void {
+    const payload = JSON.parse(body.payload);
+    if (payload.view != null) {
+      return JSON.parse(payload.view.private_metadata).growiUri;
+    }
   }
 
 }
