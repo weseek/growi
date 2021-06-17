@@ -18,6 +18,7 @@ import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
 import { InstallerService } from '~/services/InstallerService';
+import { SelectRequestService } from '~/services/SelectRequestService';
 import { RegisterService } from '~/services/RegisterService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
@@ -42,6 +43,9 @@ export class SlackCtrl {
 
   @Inject()
   orderRepository: OrderRepository;
+
+  @Inject()
+  selectRequestService: SelectRequestService;
 
   @Inject()
   registerService: RegisterService;
@@ -130,17 +134,14 @@ export class SlackCtrl {
       });
     }
 
-    if (singlePostCommands.includes(growiCommand.growiCommandType)) {
-      return res.json({
-        blocks: [
-          generateMarkdownSectionBlock('*singlePostCommands*'),
-        ],
-      });
-    }
-
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
+
+    if (singlePostCommands.includes(growiCommand.growiCommandType)) {
+      body.growiUris = relations.map(relation => relation.growiUri);
+      return this.selectRequestService.process(growiCommand, authorizeResult, body);
+    }
 
     /*
      * forward to GROWI server
