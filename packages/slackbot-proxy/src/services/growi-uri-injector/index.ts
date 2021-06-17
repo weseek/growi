@@ -5,10 +5,13 @@ import { GrowiUriInjectionButtonDelegator } from './GrowiUriInjectionButtonDeleg
 
 const logger = loggerFactory('growi-uri-injector:growiUriInjectorFactory');
 
-const TypeToDelegatorMappings = {
-  MODAL: GrowiUriInjectionModalDelegator,
-  BUTTON: GrowiUriInjectionButtonDelegator,
+type DelegatorType = 'MODAL' | 'BUTTON';
+
+const TypeToDelegatorMappings:{[key in DelegatorType]:GrowiUriInjector} = {
+  MODAL: new GrowiUriInjectionModalDelegator(),
+  BUTTON: new GrowiUriInjectionButtonDelegator(),
 };
+
 
 /**
  * Instanciate GrowiUriInjector
@@ -17,7 +20,7 @@ class GrowiUriInjectorFactory {
 
   delegator: GrowiUriInjector;
 
-  initializeDelegator(type:string) {
+  initializeDelegator(type:DelegatorType) {
 
     this.delegator = TypeToDelegatorMappings[type];
 
@@ -26,7 +29,7 @@ class GrowiUriInjectorFactory {
     }
   }
 
-  getDelegator(type) {
+  getDelegator(type:DelegatorType) {
     if (this.delegator == null) {
       this.initializeDelegator(type);
     }
