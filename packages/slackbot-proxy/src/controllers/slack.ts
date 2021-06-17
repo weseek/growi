@@ -211,8 +211,8 @@ export class SlackCtrl {
     }
 
     /*
-    * forward to GROWI server
-    */
+     * forward to GROWI server
+     */
     let relations = await this.relationRepository.find({ installation });
 
     // For Modal, Send request to only one GROWI
