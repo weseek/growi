@@ -170,7 +170,6 @@ html[light] {
 html[dark] {
   // Theme colors
   $themecolor: #eaab20;
-  // $themedark: rgb(36, 36, 0);
   $themedark: #3d3f38;
   $subthemecolor: #231e1d;
   $third-main-color: #967224;
@@ -186,8 +185,8 @@ html[dark] {
   $bgcolor-global: $themedark;
   // $bgcolor-global: #3d3f38;
   // $bgcolor-navbar: #27343b;
-  // ↓mono-blue's copy↓
   $bgcolor-inline-code: $subthemecolor;
+  // ↓mono-blue's copy↓
   $bgcolor-card: darken($themedark, 5%);
   $bgcolor-highlighted: rgba($primary, 0.5);
 
@@ -223,7 +222,7 @@ html[dark] {
   // Sidebar
   $bgcolor-sidebar: $themecolor;
   // $bgcolor-sidebar-nav-item-active: rgba(#, 0.3); // optional
-  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #0099ff; // optional
+  $text-shadow-sidebar-nav-item-active: 0px 0px 10px #cc951e; // optional
   // Sidebar resize button
   $color-resize-button: $color-global;
   $bgcolor-resize-button: $accentcolor;
@@ -240,7 +239,7 @@ html[dark] {
   $color-editor-icons: $color-global;
 
   // Border colors
-  $border-color-theme: #146aa0;
+  $border-color-theme: darken($themecolor, 5%);
   $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
