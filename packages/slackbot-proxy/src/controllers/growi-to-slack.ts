@@ -166,9 +166,10 @@ export class GrowiToSlackCtrl {
 
   injectGrowiUri(req:GrowiReq, growiUri:string):WebAPICallOptions {
 
-
-    const growiUriInjector = GrowiUriInjectorFactory.getDelegator(DelegatorType.MODAL);
-    growiUriInjector.inject(req.body, growiUri);
+    Object.values(DelegatorType).forEach((type) => {
+      const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
+      growiUriInjector.inject(req.body, growiUri);
+    });
 
     const opt = req.body;
     opt.headers = req.headers;
