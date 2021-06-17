@@ -11,7 +11,6 @@ import {
 } from 'reactstrap';
 
 import path from 'path';
-import validator from 'validator';
 import { withTranslation } from 'react-i18next';
 import PreviewWithSuspense from './PreviewWithSuspense';
 import PagePreviewIcon from '../Icons/PagePreviewIcon';
@@ -154,9 +153,14 @@ class LinkEditModal extends React.PureComponent {
     let markdown = '';
     let previewError = '';
 
+    const isMongoId = (str) => {
+      const hexadecimal = /^(0x|0h)?[0-9A-F]+$/i;
+      return hexadecimal.test(str) && str.length === 24;
+    };
+
     if (path.startsWith('/')) {
       const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
-      const isPermanentLink = validator.isMongoId(pathWithoutFragment.slice(1));
+      const isPermanentLink = isMongoId(pathWithoutFragment.slice(1));
       const pageId = isPermanentLink ? pathWithoutFragment.slice(1) : null;
 
       try {
