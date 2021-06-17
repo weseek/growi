@@ -26,6 +26,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
+const singlePostCommands = ['create'];
 
 @Controller('/slack')
 export class SlackCtrl {
@@ -125,6 +126,14 @@ export class SlackCtrl {
         blocks: [
           generateMarkdownSectionBlock('*Found Relations to GROWI.*'),
           ...relations.map(relation => generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}.`)),
+        ],
+      });
+    }
+
+    if (singlePostCommands.includes(growiCommand.growiCommandType)) {
+      return res.json({
+        blocks: [
+          generateMarkdownSectionBlock('*singlePostCommands*'),
         ],
       });
     }
