@@ -265,7 +265,7 @@ class SlackBotService extends S2sMessageHandlable {
             this.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
             this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
           ],
-          private_metadata: body.channel_id,
+          private_metadata: JSON.stringify({ channelId: body.channel_id }),
         },
       });
     }
@@ -302,8 +302,9 @@ class SlackBotService extends S2sMessageHandlable {
 
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
+      const channelId = JSON.parse(payload.view.private_metadata).channelId;
       await client.chat.postEphemeral({
-        channel: payload.view.private_metadata,
+        channel: channelId,
         user: payload.user.id,
         text: `The page <${decodeURI(growiUri + path)} | ${decodeURI(`${growiUri}/${page._id}`)}> has been created.`,
       });
