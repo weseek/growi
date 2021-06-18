@@ -242,7 +242,6 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async createModal(client, body) {
-    this.channel_id = body.channel_id;
     try {
       await client.views.open({
         trigger_id: body.trigger_id,
@@ -267,6 +266,7 @@ class SlackBotService extends S2sMessageHandlable {
             this.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
             this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
           ],
+          private_metadata: body.channel_id,
         },
       });
     }
@@ -304,7 +304,7 @@ class SlackBotService extends S2sMessageHandlable {
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
       await client.chat.postEphemeral({
-        channel: this.channel_id,
+        channel: payload.view.private_metadata,
         user: payload.user.id,
         text: `The page <${decodeURI(growiUri + path)} | ${decodeURI(`${growiUri}/${page._id}`)}> has been created.`,
       });
