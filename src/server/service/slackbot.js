@@ -302,6 +302,7 @@ class SlackBotService extends S2sMessageHandlable {
       const page = await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
 
       // Send a message when page creation is complete
+      const growiUri = this.crowi.appService.getSiteUrl();
       await client.chat.postEphemeral({
         channel: this.channel_id,
         user: payload.user.id,
