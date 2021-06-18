@@ -17,6 +17,7 @@ class SlackBotService extends S2sMessageHandlable {
     this.lastLoadedAt = null;
 
     this.initialize();
+    this.channel_id = '';
   }
 
   initialize() {
@@ -241,6 +242,7 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async createModal(client, body) {
+    this.channel_id = body.channel_id;
     try {
       await client.views.open({
         trigger_id: body.trigger_id,
