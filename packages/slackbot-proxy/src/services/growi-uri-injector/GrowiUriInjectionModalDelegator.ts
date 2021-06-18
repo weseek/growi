@@ -9,16 +9,25 @@ export class GrowiUriInjectionModalDelegator implements GrowiUriInjector {
       return;
     }
     const parsedView = JSON.parse(body.view as string);
-    parsedView.private_metadata = JSON.stringify({ growiUri });
+    // const originalPrivateMetadata = JSON.stringify(parsedView.private_metadata);
+    const originalData = JSON.stringify({ type: 'view_submission' });
+
+    parsedView.private_metadata = JSON.stringify({ growiUri, originalData });
     body.view = JSON.stringify(parsedView);
   }
 
-  extract(body: any): string|void {
+  extract(body: any): {growiUri?:string, originalData:{[key:string]:any}} {
     const payload = JSON.parse(body.payload);
+
     if (payload?.view?.private_metadata == null) {
-      return;
+      return { originalData: {} };
     }
-    return JSON.parse(payload.view.private_metadata).growiUri;
+    const parsedPrivateMetadata = JSON.parse(payload.view.private_metadata);
+    if (parsedPrivateMetadata.originalData != null) {
+      parsedPrivateMetadata.originalData = JSON.parse(parsedPrivateMetadata.originalData);
+    }
+    return parsedPrivateMetadata;
+
   }
 
 }

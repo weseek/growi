@@ -10,9 +10,9 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
   use(@Req() req: Req & SlackOauthReq, @Res() res: Res, @Next() next: Next): void {
 
     // break when uri is found
-    for (const tyoe of Object.values(DelegatorType)) {
-      const growiUriInjector = GrowiUriInjectorFactory.getDelegator(tyoe);
-      const growiUri = growiUriInjector.extract(req.body);
+    for (const type of Object.values(DelegatorType)) {
+      const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
+      const { growiUri } = growiUriInjector.extract(req.body);
       if (growiUri != null) {
         req.growiUri = growiUri;
         break;
