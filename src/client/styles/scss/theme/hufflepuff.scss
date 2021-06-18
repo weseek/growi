@@ -47,15 +47,13 @@ html[light] {
   $color-link-nabvar: $color-reversal;
   $color-inline-code: #c7254e; // optional
 
-  // ↓spring's copy↓
-
   // List Group colors
   // $color-list: $color-global;
-  $bgcolor-list: $themelight;
-  $color-list-hover: lighten($accentcolor, 20%);
-  $bgcolor-list-hover: darken($bgcolor-list, 2%);
-  $color-list-active: $bgcolor-global;
-  $bgcolor-list-active: $accentcolor;
+  $bgcolor-list: transparent;
+  $color-list-hover: lighten($themecolor, 10%);
+  // $bgcolor-list-hover: darken($bgcolor-list, 2%);
+  // $color-list-active: $bgcolor-global;
+  // $bgcolor-list-active: $accentcolor;
 
   // Navbar
   $bgcolor-navbar: $third-main-color;
@@ -79,6 +77,7 @@ html[light] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: $themelight;
 
+  // ↓spring's copy↓
   // Icon colors
   $color-editor-icons: $color-global;
 
