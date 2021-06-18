@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:SlackBotSettings');
 
 const OfficialBotSettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens,
+    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onSubmitForm,
   } = props;
   const [siteName, setSiteName] = useState('');
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
@@ -124,6 +124,7 @@ const OfficialBotSettings = (props) => {
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
                 onUpdateTokens={onUpdateTokens}
+                onSubmitForm={onSubmitForm}
               />
             </React.Fragment>
           );
@@ -164,6 +165,7 @@ OfficialBotSettings.propTypes = {
   onDeleteSlackAppIntegration: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
   onUpdateTokens: PropTypes.func,
+  onSubmitForm: PropTypes.func,
 };
 
 export default OfficialBotSettingsWrapper;
