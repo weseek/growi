@@ -306,7 +306,7 @@ class SlackBotService extends S2sMessageHandlable {
       await client.chat.postEphemeral({
         channel: this.channel_id,
         user: payload.user.id,
-        text: `The page <${growiUri}${path}|${growiUri}/${page._id}> has been created.`,
+        text: `The page <${decodeURI(growiUri + path)} | ${decodeURI(`${growiUri}/${page._id}`)}> has been created.`,
       });
     }
     catch (err) {
