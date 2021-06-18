@@ -265,6 +265,7 @@ class SlackBotService extends S2sMessageHandlable {
             this.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
             this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
           ],
+          private_metadata: JSON.stringify({ channelId: body.channel_id }),
         },
       });
     }
@@ -297,7 +298,16 @@ class SlackBotService extends S2sMessageHandlable {
 
       // generate a dummy id because Operation to create a page needs ObjectId
       const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
-      await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
+      const page = await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
+
+      // Send a message when page creation is complete
+      const growiUri = this.crowi.appService.getSiteUrl();
+      const channelId = JSON.parse(payload.view.private_metadata).channelId;
+      await client.chat.postEphemeral({
+        channel: channelId,
+        user: payload.user.id,
+        text: `The page <${decodeURI(growiUri + path)} | ${decodeURI(`${growiUri}/${page._id}`)}> has been created.`,
+      });
     }
     catch (err) {
       client.chat.postMessage({
