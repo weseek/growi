@@ -301,6 +301,7 @@ class SlackBotService extends S2sMessageHandlable {
       const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
       await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
 
+      // Send a message when page creation is complete
       await client.chat.postEphemeral({
         channel: this.channel_id,
         user: payload.user.id,
