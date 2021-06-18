@@ -17,7 +17,6 @@ class SlackBotService extends S2sMessageHandlable {
     this.lastLoadedAt = null;
 
     this.initialize();
-    this.channel_id = '';
   }
 
   initialize() {
