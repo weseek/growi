@@ -267,12 +267,6 @@ class SlackBotService extends S2sMessageHandlable {
           ],
         },
       });
-
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Successfully created a new page.',
-      });
     }
     catch (err) {
       logger.error('Failed to create a page.');
