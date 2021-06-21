@@ -152,6 +152,7 @@ class LinkEditModal extends React.PureComponent {
     const { t } = this.props;
     const path = this.state.linkInputValue;
     let markdown = '';
+    let permalink = '';
     let previewError = '';
 
     if (path.startsWith('/')) {
@@ -162,6 +163,7 @@ class LinkEditModal extends React.PureComponent {
       try {
         const { page } = await this.props.appContainer.apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
         markdown = page.revision.body;
+        permalink = page.id;
       }
       catch (err) {
         previewError = err.message;
@@ -170,7 +172,7 @@ class LinkEditModal extends React.PureComponent {
     else {
       previewError = t('link_edit.page_not_found_in_preview', { path });
     }
-    this.setState({ markdown, previewError });
+    this.setState({ markdown, previewError, permalink });
   }
 
   getLinkForPreview() {
