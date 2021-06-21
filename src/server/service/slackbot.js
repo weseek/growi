@@ -75,6 +75,19 @@ class SlackBotService extends S2sMessageHandlable {
     return;
   }
 
+  async helpCommand(client, body) {
+    const message = '*Help*\n growi-bot usage\n `/growi [command] [args]`\n\n Create new page\n `create`\n\n Search pages\n `search [keyword]`';
+    client.chat.postEphemeral({
+      channel: body.channel_id,
+      user: body.user_id,
+      text: 'Help',
+      blocks: [
+        this.generateMarkdownSectionBlock(message),
+      ],
+    });
+    return;
+  }
+
   getKeywords(args) {
     const keywordsArr = args.slice(1);
     const keywords = keywordsArr.join(' ');
