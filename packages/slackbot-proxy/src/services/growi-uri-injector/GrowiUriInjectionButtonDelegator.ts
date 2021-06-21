@@ -3,35 +3,30 @@ import { GrowiUriInjector } from './GrowiUriInjector';
 
 export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
 
-
-  inject(body: any, growiUri:string): void {
-    if (body.blocks == null) {
-      return;
-    }
-    const parsedBlocks = JSON.parse(body.blocks as string);
+  inject(parsedBlocks: any, growiUri:string): void {
     parsedBlocks.forEach((parsedBlock) => {
       if (parsedBlock.type !== 'actions') {
         return;
       }
       parsedBlock.elements.forEach((element) => {
-        const parsedValue = JSON.parse(element.value as string);
-        parsedValue.growiUri = growiUri;
-        element.value = JSON.stringify(parsedValue);
+        // TODO shoud handle method
+        if (element.type === 'button') {
+          const parsedValue = JSON.parse(element.value as string);
+          const originalData = JSON.stringify(parsedValue);
+          element.value = JSON.stringify({ growiUri, originalData });
+        }
       });
     });
-
-    body.blocks = JSON.stringify(parsedBlocks);
   }
 
-  extract(body: any): string|void {
-    const payload = JSON.parse(body.payload);
-
-    if (payload?.actions[0]?.value == null) {
-      return;
+  extract(action: any): {growiUri?:string, originalData:any} {
+    const parsedValues = JSON.parse(action.value);
+    if (parsedValues.originalData != null) {
+      parsedValues.originalData = JSON.parse(parsedValues.originalData);
     }
-
-    const parsedValues = JSON.parse(payload.actions[0]?.value);
-    return parsedValues.growiUri;
+    return parsedValues;
   }
 
 }
+
+export const growiUriInjectionButtonDelegator = new GrowiUriInjectionButtonDelegator();

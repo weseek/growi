@@ -21,13 +21,14 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
       // break when uri is found
       for (const type of Object.values(DelegatorType)) {
         const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
-        const parsedValues = growiUriInjector.extract(payload);
+        const parsedValues = growiUriInjector.extract(payload.actions[0]);
+        console.log(25, payload.actions[0], parsedValues);
+
         if (parsedValues.growiUri != null) {
           req.growiUri = parsedValues.growiUri;
+          payload.actions[0].value = JSON.stringify(parsedValues.originalData);
           break;
         }
-        console.log(22, parsedValues);
-
       }
     }
 

@@ -19,6 +19,7 @@ import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 import { DelegatorType, factory as GrowiUriInjectorFactory } from '~/services/growi-uri-injector';
+import { growiUriInjectionModalDelegator } from '~/services/growi-uri-injector/GrowiUriInjectionModalDelegator';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
@@ -166,10 +167,20 @@ export class GrowiToSlackCtrl {
 
   injectGrowiUri(req:GrowiReq, growiUri:string):WebAPICallOptions {
 
-    Object.values(DelegatorType).forEach((type) => {
-      const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
-      growiUriInjector.inject(req.body, growiUri);
-    });
+    if (req.body.view != null) {
+      growiUriInjectionModalDelegator.inject(req.body, growiUri);
+    }
+
+    if (req.body.blocks != null) {
+      const parsedBlocks = JSON.parse(req.body.blocks as string);
+
+      Object.values(DelegatorType).forEach((type) => {
+        const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
+        growiUriInjector.inject(parsedBlocks, growiUri);
+      });
+
+      req.body.blocks = JSON.stringify(parsedBlocks);
+    }
 
     const opt = req.body;
     opt.headers = req.headers;
