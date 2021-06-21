@@ -3,7 +3,7 @@ import {
 } from '@tsed/common';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { DelegatorTypes, factory as GrowiUriInjectorFactory } from '~/services/growi-uri-injector';
-import { growiUriInjectionModalDelegator } from '~/services/growi-uri-injector/GrowiUriInjectionModalDelegator';
+import { extractGrowiUriFromView } from '~/utils/extractGrowiUriFromView';
 
 @Middleware()
 export class ExtractGrowiUriFromReq implements IMiddleware {
@@ -14,7 +14,7 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
 
     // extract for modal
     if (payload.view != null) {
-      const extractedValues = growiUriInjectionModalDelegator.extract(payload);
+      const extractedValues = extractGrowiUriFromView(payload.view);
       req.growiUri = extractedValues.growiUri;
       payload.view.private_metadata = extractedValues.originalData;
     }
