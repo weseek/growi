@@ -71,21 +71,32 @@ const PageCreateModal = (props) => {
   }
 
   /**
+   * encode except slashes
+   */
+  function encodeExceptSlashes(path) {
+    return path
+      .split('/')
+      .map(item => encodeURIComponent(item))
+      .join('/');
+  }
+  /**
    * access today page
    */
   function createTodayPage() {
     let tmpTodayInput1 = todayInput1;
+    const tmpTodayInput2 = encodeExceptSlashes(todayInput2);
     if (tmpTodayInput1 === '') {
       tmpTodayInput1 = t('Memo');
     }
-    window.location.href = encodeURI(urljoin(userPageRootPath, tmpTodayInput1, now, todayInput2, '#edit'));
+    tmpTodayInput1 = encodeExceptSlashes(tmpTodayInput1);
+    window.location.href = urljoin(userPageRootPath, tmpTodayInput1, now, tmpTodayInput2, '#edit');
   }
 
   /**
    * access input page
    */
   function createInputPage() {
-    window.location.href = encodeURI(urljoin(pageNameInput, '#edit'));
+    window.location.href = urljoin(encodeExceptSlashes(pageNameInput), '#edit');
   }
 
   function ppacInputChangeHandler(value) {
