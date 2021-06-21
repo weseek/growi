@@ -76,7 +76,7 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async helpCommand(client, body) {
-    const message = 'This is `Help` message!';
+    const message = '*Help*\n growi-bot usage\n `/growi [command] [args]`\n\n Create new page\n `create`\n\n Search pages\n `search [keyword]`';
     client.chat.postEphemeral({
       channel: body.channel_id,
       user: body.user_id,
