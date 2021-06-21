@@ -1,13 +1,13 @@
 import { GrowiUriInjector } from './GrowiUriInjector';
 import { GrowiUriInjectionButtonDelegator } from './GrowiUriInjectionButtonDelegator';
 
-export const DelegatorType = {
+export const DelegatorTypes = {
   BUTTON: 'button',
 } as const;
-export type DelegatorType = typeof DelegatorType[keyof typeof DelegatorType];
+export type DelegatorTypes = typeof DelegatorTypes[keyof typeof DelegatorTypes];
 
-const TypeToDelegatorMappings:{[key in DelegatorType]:GrowiUriInjector} = {
-  [DelegatorType.BUTTON]: new GrowiUriInjectionButtonDelegator(),
+const TypeToDelegatorMappings:{[key in DelegatorTypes]:GrowiUriInjector} = {
+  [DelegatorTypes.BUTTON]: new GrowiUriInjectionButtonDelegator(),
 };
 
 
@@ -16,7 +16,7 @@ const TypeToDelegatorMappings:{[key in DelegatorType]:GrowiUriInjector} = {
  */
 class GrowiUriInjectorFactory {
 
-  getDelegator(type:DelegatorType) {
+  getDelegator(type:DelegatorTypes) {
     return TypeToDelegatorMappings[type];
   }
 
