@@ -14,19 +14,19 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
 
     // extract for modal
     if (payload.view != null) {
-      const parsedValues = growiUriInjectionModalDelegator.extract(payload);
-      req.growiUri = parsedValues.growiUri;
-      payload.view.private_metadata = parsedValues.originalData;
+      const extractedValues = growiUriInjectionModalDelegator.extract(payload);
+      req.growiUri = extractedValues.growiUri;
+      payload.view.private_metadata = extractedValues.originalData;
     }
     else {
       // break when uri is found
       for (const type of Object.values(DelegatorTypes)) {
         const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
-        const parsedValues = growiUriInjector.extract(payload.actions[0]);
+        const extractedValues = growiUriInjector.extract(payload.actions[0]);
 
-        if (parsedValues.growiUri != null) {
-          req.growiUri = parsedValues.growiUri;
-          payload.actions[0].value = JSON.stringify(parsedValues.originalData);
+        if (extractedValues.growiUri != null) {
+          req.growiUri = extractedValues.growiUri;
+          payload.actions[0].value = JSON.stringify(extractedValues.originalData);
           break;
         }
       }
