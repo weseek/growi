@@ -224,11 +224,14 @@ class LinkEditModal extends React.PureComponent {
   }
 
   handleChangeLinkInput(link) {
+    this.setState({ linkInputValue: link, isUseRelativePath: false, isUsePermanentLink: false });
     let isUseRelativePath = this.state.isUseRelativePath;
     if (!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink) {
       isUseRelativePath = false;
     }
-    this.setState({ linkInputValue: link, isUseRelativePath, isUsePermanentLink: false });
+    this.setState({
+      linkInputValue: link, isUseRelativePath, isUsePermanentLink: false, permalink: '',
+    });
   }
 
   handleSelecteLinkerType(linkerType) {
