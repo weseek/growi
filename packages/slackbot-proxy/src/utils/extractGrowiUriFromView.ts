@@ -3,5 +3,8 @@ export const extractGrowiUriFromView = (view:{'private_metadata': string}): {gro
   if (parsedValues.originalData != null) {
     parsedValues.originalData = JSON.parse(parsedValues.originalData);
   }
+  else {
+    parsedValues.originalData = view.private_metadata;
+  }
   return parsedValues;
 };
