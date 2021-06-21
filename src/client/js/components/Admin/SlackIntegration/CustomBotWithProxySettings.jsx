@@ -20,10 +20,9 @@ const CustomBotWithProxySettings = (props) => {
   const [siteName, setSiteName] = useState('');
   const { t } = useTranslation();
 
+  // componentDidUpdate
   useEffect(() => {
-    if (proxyServerUri != null) {
-      setNewProxyServerUri(proxyServerUri);
-    }
+    setNewProxyServerUri(proxyServerUri);
   }, [proxyServerUri]);
 
   const addSlackAppIntegrationHandler = async() => {
