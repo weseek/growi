@@ -1,22 +1,17 @@
 import { GrowiUriInjector } from './GrowiUriInjector';
 import { GrowiUriInjectionButtonDelegator } from './GrowiUriInjectionButtonDelegator';
 
-export const DelegatorTypes = {
-  BUTTON: 'button',
-} as const;
-export type DelegatorTypes = typeof DelegatorTypes[keyof typeof DelegatorTypes];
-
 /**
  * Instanciate GrowiUriInjector
  */
 export const growiUriInjectorFactory = {
-  [DelegatorTypes.BUTTON]: (): GrowiUriInjector => {
+  button: (): GrowiUriInjector => {
     return new GrowiUriInjectionButtonDelegator();
   },
 };
 
-export const findInjectorByType = (type :DelegatorTypes): null|GrowiUriInjector => {
-  if (!Object.values(DelegatorTypes).includes(type)) {
+export const findInjectorByType = (type:string): null|GrowiUriInjector => {
+  if (!Object.keys(growiUriInjectorFactory).includes(type)) {
     return null;
   }
   return growiUriInjectorFactory[type]();
