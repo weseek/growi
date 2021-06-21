@@ -14,3 +14,10 @@ export const growiUriInjectorFactory = {
     return new GrowiUriInjectionButtonDelegator();
   },
 };
+
+export const findInjectorFactoryByType = (type :DelegatorTypes): null|GrowiUriInjector => {
+  if (!Object.values(DelegatorTypes).includes(type)) {
+    return null;
+  }
+  return growiUriInjectorFactory[type]();
+};
