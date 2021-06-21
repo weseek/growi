@@ -28,3 +28,5 @@ export class GrowiUriInjectionModalDelegator implements GrowiUriInjector {
   }
 
 }
+
+export const growiUriInjectionModalDelegator = new GrowiUriInjectionModalDelegator();
