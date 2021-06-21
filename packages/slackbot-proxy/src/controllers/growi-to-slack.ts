@@ -18,6 +18,8 @@ import { OrderRepository } from '~/repositories/order';
 
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
+import { findInjectorByType } from '~/services/growi-uri-injector/GrowiUriInjectorFactory';
+import { injectGrowiUriToView } from '~/utils/injectGrowiUriToView';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
@@ -163,6 +165,38 @@ export class GrowiToSlackCtrl {
     return res.send({ relation: createdRelation, slackBotToken: token });
   }
 
+  injectGrowiUri(req:GrowiReq, growiUri:string):WebAPICallOptions {
+
+    if (req.body.view != null) {
+      injectGrowiUriToView(req.body, growiUri);
+    }
+
+    if (req.body.blocks != null) {
+      const parsedBlocks = JSON.parse(req.body.blocks as string);
+
+      parsedBlocks.forEach((parsedBlock) => {
+        if (parsedBlock.type !== 'actions') {
+          return;
+        }
+        parsedBlock.elements.forEach((element) => {
+          const growiUriInjector = findInjectorByType(element.type);
+          if (growiUriInjector != null) {
+            growiUriInjector.inject(element, growiUri);
+          }
+        });
+
+        return;
+      });
+
+      req.body.blocks = JSON.stringify(parsedBlocks);
+    }
+
+    const opt = req.body;
+    opt.headers = req.headers;
+
+    return opt;
+  }
+
   @Post('/:method')
   @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
   async postResult(
@@ -194,8 +228,8 @@ export class GrowiToSlackCtrl {
     const client = generateWebClient(token);
 
     try {
-      const opt = req.body as WebAPICallOptions;
-      opt.headers = req.headers;
+      const opt = this.injectGrowiUri(req, relation.growiUri);
+
       await client.apiCall(method, opt);
     }
     catch (err) {
