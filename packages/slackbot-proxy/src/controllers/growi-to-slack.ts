@@ -18,7 +18,7 @@ import { OrderRepository } from '~/repositories/order';
 
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
-import { DelegatorTypes, factory as GrowiUriInjectorFactory } from '~/services/growi-uri-injector';
+import { DelegatorTypes, growiUriInjectorFactory } from '~/services/growi-uri-injector/GrowiUriInjectorFactory';
 import { injectGrowiUriToView } from '~/utils/injectGrowiUriToView';
 
 
@@ -180,7 +180,7 @@ export class GrowiToSlackCtrl {
         }
         parsedBlock.elements.forEach((element) => {
           Object.values(DelegatorTypes).forEach((type) => {
-            const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
+            const growiUriInjector = growiUriInjectorFactory[type]();
 
             if (growiUriInjector.handleInject(element.type)) {
               growiUriInjector.inject(element, growiUri);

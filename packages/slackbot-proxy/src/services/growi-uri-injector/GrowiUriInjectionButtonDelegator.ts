@@ -22,5 +22,3 @@ export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
   }
 
 }
-
-export const growiUriInjectionButtonDelegator = new GrowiUriInjectionButtonDelegator();

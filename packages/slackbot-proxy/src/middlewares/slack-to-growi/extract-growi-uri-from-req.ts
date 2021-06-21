@@ -2,7 +2,7 @@ import {
   IMiddleware, Middleware, Next, Req, Res,
 } from '@tsed/common';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
-import { DelegatorTypes, factory as GrowiUriInjectorFactory } from '~/services/growi-uri-injector';
+import { DelegatorTypes, growiUriInjectorFactory } from '~/services/growi-uri-injector/GrowiUriInjectorFactory';
 import { extractGrowiUriFromView } from '~/utils/extractGrowiUriFromView';
 
 @Middleware()
@@ -21,7 +21,7 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
     else {
       // break when uri is found
       for (const type of Object.values(DelegatorTypes)) {
-        const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
+        const growiUriInjector = growiUriInjectorFactory[type]();
         const extractedValues = growiUriInjector.extract(payload.actions[0]);
 
         if (extractedValues.growiUri != null) {
