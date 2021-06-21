@@ -18,7 +18,7 @@ import { OrderRepository } from '~/repositories/order';
 
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
-import { DelegatorType, factory as GrowiUriInjectorFactory } from '~/services/growi-uri-injector';
+import { DelegatorTypes, factory as GrowiUriInjectorFactory } from '~/services/growi-uri-injector';
 import { growiUriInjectionModalDelegator } from '~/services/growi-uri-injector/GrowiUriInjectionModalDelegator';
 
 
@@ -174,7 +174,7 @@ export class GrowiToSlackCtrl {
     if (req.body.blocks != null) {
       const parsedBlocks = JSON.parse(req.body.blocks as string);
 
-      Object.values(DelegatorType).forEach((type) => {
+      Object.values(DelegatorTypes).forEach((type) => {
         const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
         growiUriInjector.inject(parsedBlocks, growiUri);
       });
