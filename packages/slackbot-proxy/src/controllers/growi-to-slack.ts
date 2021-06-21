@@ -174,9 +174,21 @@ export class GrowiToSlackCtrl {
     if (req.body.blocks != null) {
       const parsedBlocks = JSON.parse(req.body.blocks as string);
 
-      Object.values(DelegatorTypes).forEach((type) => {
-        const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
-        growiUriInjector.inject(parsedBlocks, growiUri);
+      parsedBlocks.forEach((parsedBlock) => {
+        if (parsedBlock.type !== 'actions') {
+          return;
+        }
+        parsedBlock.elements.forEach((element) => {
+          Object.values(DelegatorTypes).forEach((type) => {
+            const growiUriInjector = GrowiUriInjectorFactory.getDelegator(type);
+
+            if (growiUriInjector.handleInject(element.type)) {
+              growiUriInjector.inject(element, growiUri);
+            }
+          });
+        });
+
+        return;
       });
 
       req.body.blocks = JSON.stringify(parsedBlocks);

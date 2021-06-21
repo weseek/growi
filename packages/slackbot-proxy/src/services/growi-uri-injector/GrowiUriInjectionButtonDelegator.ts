@@ -3,20 +3,14 @@ import { GrowiUriInjector } from './GrowiUriInjector';
 
 export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
 
-  inject(parsedBlocks: any, growiUri:string): void {
-    parsedBlocks.forEach((parsedBlock) => {
-      if (parsedBlock.type !== 'actions') {
-        return;
-      }
-      parsedBlock.elements.forEach((element) => {
-        // TODO shoud handle method
-        if (element.type === 'button') {
-          const parsedValue = JSON.parse(element.value as string);
-          const originalData = JSON.stringify(parsedValue);
-          element.value = JSON.stringify({ growiUri, originalData });
-        }
-      });
-    });
+  handleInject(type:string) {
+    return type === 'button';
+  }
+
+  inject(element: {value:string}, growiUri:string): void {
+    const parsedValue = JSON.parse(element.value);
+    const originalData = JSON.stringify(parsedValue);
+    element.value = JSON.stringify({ growiUri, originalData });
   }
 
   extract(action: any): {growiUri?:string, originalData:any} {
