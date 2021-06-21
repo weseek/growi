@@ -21,6 +21,7 @@ const OfficialBotSettings = (props) => {
 
   const [newProxyServerUri, setNewProxyServerUri] = useState();
 
+  // componentDidUpdate
   useEffect(() => {
     setNewProxyServerUri(proxyServerUri);
   }, [proxyServerUri, slackAppIntegrations]);
