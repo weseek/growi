@@ -179,13 +179,10 @@ export class GrowiToSlackCtrl {
           return;
         }
         parsedBlock.elements.forEach((element) => {
-          Object.values(DelegatorTypes).forEach((type) => {
-            const growiUriInjector = growiUriInjectorFactory[type]();
-
-            if (growiUriInjector.handleInject(element.type)) {
-              growiUriInjector.inject(element, growiUri);
-            }
-          });
+          const growiUriInjector = growiUriInjectorFactory[element.type]();
+          if (growiUriInjector != null) {
+            growiUriInjector.inject(element, growiUri);
+          }
         });
 
         return;

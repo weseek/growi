@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { GrowiUriInjector } from './GrowiUriInjector';
 
 export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
 
-  handleInject(type:string) {
+  handleInject(type:string):boolean {
     return type === 'button';
   }
 
@@ -13,7 +12,7 @@ export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
     element.value = JSON.stringify({ growiUri, originalData });
   }
 
-  extract(action: any): {growiUri?:string, originalData:any} {
+  extract(action: {value:string}): {growiUri?:string, originalData:any} {
     const parsedValues = JSON.parse(action.value);
     if (parsedValues.originalData != null) {
       parsedValues.originalData = JSON.parse(parsedValues.originalData);
