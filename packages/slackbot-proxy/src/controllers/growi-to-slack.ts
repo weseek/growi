@@ -179,7 +179,7 @@ export class GrowiToSlackCtrl {
           return;
         }
         parsedBlock.elements.forEach((element) => {
-          const growiUriInjector = findInjectorByType(element.key);
+          const growiUriInjector = findInjectorByType(element.type);
           if (growiUriInjector != null) {
             growiUriInjector.inject(element, growiUri);
           }
