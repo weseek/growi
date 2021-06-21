@@ -75,6 +75,19 @@ class SlackBotService extends S2sMessageHandlable {
     return;
   }
 
+  async helpCommand(client, body) {
+    const message = 'This is `Help` message!';
+    client.chat.postEphemeral({
+      channel: body.channel_id,
+      user: body.user_id,
+      text: 'Help',
+      blocks: [
+        this.generateMarkdownSectionBlock(message),
+      ],
+    });
+    return;
+  }
+
   getKeywords(args) {
     const keywordsArr = args.slice(1);
     const keywords = keywordsArr.join(' ');
