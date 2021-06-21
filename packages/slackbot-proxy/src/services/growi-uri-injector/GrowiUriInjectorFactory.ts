@@ -15,7 +15,7 @@ export const growiUriInjectorFactory = {
   },
 };
 
-export const findInjectorFactoryByType = (type :DelegatorTypes): null|GrowiUriInjector => {
+export const findInjectorByType = (type :DelegatorTypes): null|GrowiUriInjector => {
   if (!Object.values(DelegatorTypes).includes(type)) {
     return null;
   }
