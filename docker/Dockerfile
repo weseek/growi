@@ -62,20 +62,6 @@ COPY --from=deps-resolver \
 RUN tar xf node_modules.tar
 RUN rm node_modules.tar
 
-COPY ./package.json ./
-COPY ./lerna.json ./
-COPY ./tsconfig.base.json ./
-COPY ./babel.config.js ./
-COPY ./bin ./bin
-COPY ./config ./config
-COPY ./resource ./resource
-COPY ./src ./src
-COPY ./tmp ./tmp
-
-# copy all related packages
-COPY packages/slack packages/slack
-COPY packages/app packages/app
-
 
 
 ##
@@ -98,6 +84,20 @@ ENV appDir /opt/growi
 
 WORKDIR ${appDir}
 
+COPY ./package.json ./
+COPY ./lerna.json ./
+COPY ./tsconfig.base.json ./
+COPY ./babel.config.js ./
+COPY ./bin ./bin
+COPY ./config ./config
+COPY ./public ./public
+COPY ./resource ./resource
+COPY ./src ./src
+COPY ./tmp ./tmp
+# copy all related packages
+COPY packages/slack packages/slack
+COPY packages/app packages/app
+
 # build
 RUN yarn build:prod
 
@@ -106,6 +106,8 @@ RUN tar cf packages.tar \
   package.json \
   config \
   public \
+  resource \
+  src \
   tmp \
   packages/slack/package.json \
   packages/slack/dist
@@ -135,8 +137,6 @@ COPY docker/docker-entrypoint.sh /
 RUN chmod 700 /docker-entrypoint.sh
 RUN chown node:node ${appDir}
 
-USER node
-
 # extract node_modules.tar
 WORKDIR ${appDir}
 RUN tar xf node_modules.tar
@@ -146,5 +146,5 @@ RUN rm node_modules.tar packages.tar
 VOLUME /data
 EXPOSE 3000
 
-ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
+# ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
 CMD ["yarn", "server:prod"]
