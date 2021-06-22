@@ -60,7 +60,7 @@ const PageAccessoriesModal = (props) => {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser && !isNotFoundPage,  // TAICHI: ここでdisableにする
+        isLinkEnabled: v => !isGuestUser && !isSharedUser && !isNotFoundPage,
       },
     };
   }, [t, isGuestUser, isSharedUser, isNotFoundPage]);

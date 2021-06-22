@@ -53,9 +53,6 @@ export default class AppContainer extends Container {
     this.isGuestUser = this.currentUser == null;
     this.isSharedUser = isSharedPageElem != null && this.currentUser == null;
 
-    // TAICHI: check if Link Sharing is enabled or not
-    // this.isLinkSharingForbidden =
-
     const userLocaleId = this.currentUser?.lang;
     this.i18n = i18nFactory(userLocaleId);
 
