@@ -290,7 +290,13 @@ const WithProxyAccordions = (props) => {
     },
     '④': {
       title: 'test_connection',
-      content: <TestProcess />,
+      content: <TestProcess
+        apiv3Post={props.appContainer.apiv3.post}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        onSubmitForm={submitForm}
+        onSubmitFormFailed={submitFormFailed}
+        isLatestConnectionSuccess={isLatestConnectionSuccess}
+      />,
     },
   };
 

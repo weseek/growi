@@ -17,6 +17,7 @@ import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
+import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectRequestService } from '~/services/SelectRequestService';
 import { RegisterService } from '~/services/RegisterService';
@@ -174,7 +175,7 @@ export class SlackCtrl {
   }
 
   @Post('/interactions')
-  @UseBefore(AuthorizeInteractionMiddleware)
+  @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
@@ -221,36 +222,25 @@ export class SlackCtrl {
     }
 
     /*
-     * forward to GROWI server
-     */
-    let relations = await this.relationRepository.find({ installation });
+    * forward to GROWI server
+    */
+    const relation = await this.relationRepository.findOne({ installation, growiUri: req.growiUri });
 
-    // For Modal, Send request to only one GROWI
-    if (payload.view != null) {
-      const { growiUri } = JSON.parse(payload.view.private_metadata);
-      relations = relations.filter(relation => relation.growiUri === growiUri);
+    if (relation == null) {
+      logger.error('*No relation found.*');
+      return;
     }
 
-    const promises = relations.map((relation: Relation) => {
+    try {
       // generate API URL
-      const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
-      return axios.post(url.toString(), {
+      const url = new URL('/_api/v3/slack-integration/proxied/interactions', req.growiUri);
+      await axios.post(url.toString(), {
         ...body,
       }, {
         headers: {
           'x-growi-ptog-tokens': relation.tokenPtoG,
         },
       });
-    });
-
-    // pickup PromiseRejectedResult only
-    const results = await Promise.allSettled(promises);
-    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-    const botToken = installation?.data.bot?.token;
-
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
     }
     catch (err) {
       logger.error(err);
