@@ -254,7 +254,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: Infinity,
   },
-  FORBID_LINK_SHARING: {
+  DISABLE_LINK_SHARING: {
     ns:      'crowi',
     key:     'security:forbidLinkSharing',
     type:    TYPES.BOOLEAN,
