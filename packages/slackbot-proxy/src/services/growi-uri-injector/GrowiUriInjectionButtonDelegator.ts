@@ -2,10 +2,6 @@ import { GrowiUriInjector } from './GrowiUriInjector';
 
 export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
 
-  handleInject(type:string):boolean {
-    return type === 'button';
-  }
-
   inject(element: {value:string}, growiUri:string): void {
     const parsedValue = JSON.parse(element.value);
     const originalData = JSON.stringify(parsedValue);
