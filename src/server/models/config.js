@@ -47,6 +47,7 @@ module.exports = function(crowi) {
       'security:list-policy:hideRestrictedByOwner' : false,
       'security:list-policy:hideRestrictedByGroup' : false,
       'security:pageCompleteDeletionAuthority' : undefined,
+      'security:forbidLinkSharing' : false,
 
       'security:passport-local:isEnabled' : true,
       'security:passport-ldap:isEnabled' : false,
@@ -192,7 +193,8 @@ module.exports = function(crowi) {
         image: crowi.fileUploadService.getIsUploadable(),
         file: crowi.fileUploadService.getFileUploadEnabled(),
       },
-      registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),  // TAICHI：この下に追加することでbrowser側でconfigが使えるようになる
+      registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+      forbidLinkSharing: crowi.configManager.getConfig('crowi', 'security:forbidLinkSharing'),
       themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
