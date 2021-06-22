@@ -8,7 +8,7 @@
     * migrate-mongo
     * mongoose
     * stream-to-promise
-
+    * ws
 
 ## v4.2.20
 
