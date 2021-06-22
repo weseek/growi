@@ -67,6 +67,7 @@ export class SelectRequestService implements GrowiCommandProcessor {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async forwardRequest(relationRepository:RelationRepository, installation:Installation | undefined, payload:any):Promise<void> {
+    const { trigger_id: triggerId } = payload;
     const { state, private_metadata: privateMetadata } = payload?.view;
     const { value: growiUri } = state?.values?.select_growi?.growi_app?.selected_option;
 
@@ -76,6 +77,9 @@ export class SelectRequestService implements GrowiCommandProcessor {
     if (growiCommand == null || body == null) {
       throw new Error('growiCommand and body are required.');
     }
+
+    // ovverride trigger_id
+    body.trigger_id = triggerId;
 
     const relation = await relationRepository.findOne({ installation, growiUri });
 
