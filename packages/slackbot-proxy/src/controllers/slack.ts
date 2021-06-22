@@ -221,6 +221,12 @@ export class SlackCtrl {
       return;
     }
 
+    // forward to GROWI server
+    if (callBackId === 'select_growi') {
+      await this.selectRequestService.forwardRequest(this.relationRepository, installation, payload);
+      return;
+    }
+
     /*
     * forward to GROWI server
     */
