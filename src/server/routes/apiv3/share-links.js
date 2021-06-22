@@ -115,7 +115,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {  // TAICHI: ASK
     const { relatedPage, expiredAt, description } = req.body;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);

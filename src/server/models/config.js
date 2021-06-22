@@ -192,7 +192,7 @@ module.exports = function(crowi) {
         image: crowi.fileUploadService.getIsUploadable(),
         file: crowi.fileUploadService.getFileUploadEnabled(),
       },
-      registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+      registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),  // TAICHI：この下に追加することでbrowser側でconfigが使えるようになる
       themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),

@@ -49,7 +49,7 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUser || isSharedUser || isNotFoundPage,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage,  // TAICHI: ここでdisableになる isLinkSharingDisabled
         i18n: t('share_links.share_link_management'),
       },
     ];
