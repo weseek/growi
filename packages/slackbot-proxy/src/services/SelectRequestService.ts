@@ -36,7 +36,7 @@ export class SelectRequestService implements GrowiCommandProcessor {
           type: 'plain_text',
           text: 'Close',
         },
-        private_metadata: JSON.stringify({ channel: body.channel_name, growiCommand }),
+        private_metadata: JSON.stringify({ body, growiCommand }),
 
         blocks: [
           {
@@ -71,10 +71,10 @@ export class SelectRequestService implements GrowiCommandProcessor {
     const { value: growiUri } = state?.values?.select_growi?.growi_app?.selected_option;
 
     const parsedPrivateMetadata = JSON.parse(privateMetadata);
-    const { growiCommand } = parsedPrivateMetadata;
+    const { growiCommand, body } = parsedPrivateMetadata;
 
-    if (growiUri == null || growiCommand == null) {
-      throw new Error('growiUri and growiCommand are required.');
+    if (growiCommand == null || body == null) {
+      throw new Error('growiCommand and body are required.');
     }
 
     const relation = await relationRepository.findOne({ installation, growiUri });
@@ -88,7 +88,8 @@ export class SelectRequestService implements GrowiCommandProcessor {
      */
     // generate API URL
     const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
-    return axios.post(url.toString(), {
+    await axios.post(url.toString(), {
+      ...body,
       growiCommand,
     }, {
       headers: {
