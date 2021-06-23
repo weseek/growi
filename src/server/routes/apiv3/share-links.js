@@ -25,6 +25,7 @@ const today = new Date();
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const linkSharingRequired = require('../../middlewares/link-sharing-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const ShareLink = crowi.model('ShareLink');
@@ -54,7 +55,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', loginRequired, validator.getShareLinks, apiV3FormValidator, async(req, res) => {
+  router.get('/', loginRequired, linkSharingRequired, validator.getShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
@@ -115,7 +116,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, linkSharingRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
