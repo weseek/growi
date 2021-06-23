@@ -47,7 +47,7 @@ module.exports = function(crowi) {
       'security:list-policy:hideRestrictedByOwner' : false,
       'security:list-policy:hideRestrictedByGroup' : false,
       'security:pageCompleteDeletionAuthority' : undefined,
-      'security:forbidLinkSharing' : false,
+      'security:disableLinkSharing' : false,
 
       'security:passport-local:isEnabled' : true,
       'security:passport-ldap:isEnabled' : false,
@@ -194,7 +194,7 @@ module.exports = function(crowi) {
         file: crowi.fileUploadService.getFileUploadEnabled(),
       },
       registrationWhiteList: crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
-      forbidLinkSharing: crowi.configManager.getConfig('crowi', 'security:forbidLinkSharing'),
+      disableLinkSharing: crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
       themeType: crowi.configManager.getConfig('crowi', 'customize:theme'),
       isEnabledLinebreaks: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
