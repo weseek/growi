@@ -140,8 +140,14 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    if (singlePostCommands.includes(growiCommand.growiCommandType)) {
-      body.growiUris = relations.map(relation => relation.growiUri);
+    body.growiUris = [];
+    relations.forEach((relation) => {
+      if (relation.siglePostCommands.includes(growiCommand.growiCommandType)) {
+        body.growiUris.push(relation.growiUri);
+      }
+    });
+
+    if (body.growiUris != null && body.growiUris.length > 0) {
       return this.selectRequestService.process(growiCommand, authorizeResult, body);
     }
 
