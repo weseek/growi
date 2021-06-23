@@ -325,6 +325,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  const ShareLink = crowi.model('ShareLink');
 
   async function updateAndReloadStrategySettings(authId, params) {
     const { configManager, passportService } = crowi;
