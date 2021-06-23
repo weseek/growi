@@ -28,8 +28,6 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
-// temporary array
-const singlePostCommands = ['create'];
 
 @Controller('/slack')
 export class SlackCtrl {
