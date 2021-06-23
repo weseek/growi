@@ -142,18 +142,21 @@ COPY --from=deps-resolver-prod --chown=node:node \
 COPY --from=builder --chown=node:node \
   ${appDir}/packages.tar ${appDir}/
 
-COPY docker/docker-entrypoint.sh /
-RUN chmod 700 /docker-entrypoint.sh
-RUN chown node:node ${appDir}
-
-# extract node_modules.tar
+# extract artifacts as 'node' user
+USER node
 WORKDIR ${appDir}
 RUN tar xf node_modules.tar
 RUN tar xf packages.tar
 RUN rm node_modules.tar packages.tar
 
+USER root
+
+COPY docker/docker-entrypoint.sh /
+RUN chmod 700 /docker-entrypoint.sh
+RUN chown node:node ${appDir}
+
 VOLUME /data
 EXPOSE 3000
 
-# ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
 CMD ["yarn", "server:prod"]
