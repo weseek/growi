@@ -7,8 +7,8 @@ module.exports = (crowi) => (req, res, next) => {
     const isLinkSharingDisabled = crowi.configManager.getConfig('crowi', 'security:disableLinkSharing');
     logger.debug(`isLinkSharingDisabled: ${isLinkSharingDisabled}`);
 
-    if (!isLinkSharingDisabled) {
-        return res.apiv3Err(new ErrorV3('Link sharing is disabled'));
+    if (isLinkSharingDisabled) {
+        return res.apiv3Err(new ErrorV3('Link sharing is disabled', 'link-sharing-disabled'));
     }
     next();
 }
