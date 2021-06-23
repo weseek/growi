@@ -21,6 +21,7 @@ const validator = {
     ]),
     body('hideRestrictedByOwner').if(value => value != null).isBoolean(),
     body('hideRestrictedByGroup').if(value => value != null).isBoolean(),
+    body('disableLinkSharing').if(value => value != null).isBoolean(),
   ],
   authenticationSetting: [
     body('isEnabled').if(value => value != null).isBoolean(),
@@ -363,6 +364,7 @@ module.exports = (crowi) => {
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
         sessionMaxAge: await crowi.configManager.getConfig('crowi', 'security:sessionMaxAge'),
+        disableLinkSharing: await crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
       },
       localSetting: {
         useOnlyEnvVarsForSomeOptions: await crowi.configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
@@ -572,6 +574,7 @@ module.exports = (crowi) => {
       'security:sessionMaxAge': parseInt(req.body.sessionMaxAge),
       'security:restrictGuestMode': req.body.restrictGuestMode,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
+      'security:disableLinkSharing': req.body.disableLinkSharing,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
     };
@@ -586,9 +589,21 @@ module.exports = (crowi) => {
         sessionMaxAge: await crowi.configManager.getConfig('crowi', 'security:sessionMaxAge'),
         restrictGuestMode: await crowi.configManager.getConfig('crowi', 'security:restrictGuestMode'),
         pageCompleteDeletionAuthority: await crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
+        disableLinkSharing: await crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
       };
+
+      if (securitySettingParams.disableLinkSharing) {
+        try {
+          await ShareLink.deleteMany({});
+        }
+        catch (err) {
+          const msg = 'Error occurred in delete all share link';
+          logger.error('Error', err);
+          return res.apiv3Err(new ErrorV3(msg, 'delete-all-shareLink-failed'));
+        }
+      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
