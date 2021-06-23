@@ -522,33 +522,6 @@ module.exports = function(crowi) {
     return true;
   };
 
-  pageSchema.statics.isCreatableName = function(name) {
-    const forbiddenPages = [
-      /\^|\$|\*|\+|#|%/,
-      /^\/-\/.*/,
-      /^\/_r\/.*/,
-      /^\/_apix?(\/.*)?/,
-      /^\/?https?:\/\/.+$/, // avoid miss in renaming
-      /\/{2,}/, // avoid miss in renaming
-      /\s+\/\s+/, // avoid miss in renaming
-      /.+\/edit$/,
-      /.+\.md$/,
-      /^(\.\.)$/, // see: https://github.com/weseek/growi/issues/3582
-      /(\/\.\.)\/?/, // see: https://github.com/weseek/growi/issues/3582
-      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
-    ];
-
-    let isCreatable = true;
-    forbiddenPages.forEach((page) => {
-      const pageNameReg = new RegExp(page);
-      if (name.match(pageNameReg)) {
-        isCreatable = false;
-      }
-    });
-
-    return isCreatable;
-  };
-
   pageSchema.statics.fixToCreatableName = function(path) {
     return path
       .replace(/\/\//g, '/');
@@ -1012,9 +985,8 @@ module.exports = function(crowi) {
     savedPage = await this.findByPath(revision.path);
     await savedPage.populateDataToShowRevision();
 
-    if (socketClientId != null) {
-      pageEvent.emit('create', savedPage, user, socketClientId);
-    }
+    pageEvent.emit('create', savedPage, user, socketClientId);
+
     return savedPage;
   };
 
@@ -1041,9 +1013,7 @@ module.exports = function(crowi) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
-    if (socketClientId != null) {
-      pageEvent.emit('update', savedPage, user, socketClientId);
-    }
+    pageEvent.emit('update', savedPage, user, socketClientId);
 
     return savedPage;
   };

@@ -67,8 +67,22 @@ class SlackBotService extends S2sMessageHandlable {
     client.chat.postEphemeral({
       channel: body.channel_id,
       user: body.user_id,
+      text: 'No command',
       blocks: [
         this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
+      ],
+    });
+    return;
+  }
+
+  async helpCommand(client, body) {
+    const message = '*Help*\n growi-bot usage\n `/growi [command] [args]`\n\n Create new page\n `create`\n\n Search pages\n `search [keyword]`';
+    client.chat.postEphemeral({
+      channel: body.channel_id,
+      user: body.user_id,
+      text: 'Help',
+      blocks: [
+        this.generateMarkdownSectionBlock(message),
       ],
     });
     return;
@@ -86,6 +100,7 @@ class SlackBotService extends S2sMessageHandlable {
       client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: 'Input keywords',
         blocks: [
           this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
@@ -106,6 +121,7 @@ class SlackBotService extends S2sMessageHandlable {
       client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: `No page found with "${keywords}"`,
         blocks: [
           this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
           this.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
@@ -140,7 +156,7 @@ class SlackBotService extends S2sMessageHandlable {
   async shareSearchResults(client, payload) {
     client.chat.postMessage({
       channel: payload.channel.id,
-      text: payload.actions[0].value,
+      text: JSON.parse(payload.actions[0].value).pageList,
     });
   }
 
@@ -194,7 +210,9 @@ class SlackBotService extends S2sMessageHandlable {
             },
             style: 'primary',
             action_id: 'shareSearchResults',
-            value: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+            value: JSON.stringify({
+              offset, body, args, pageList: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+            }),
           },
         ],
       };
@@ -215,6 +233,7 @@ class SlackBotService extends S2sMessageHandlable {
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: 'Successed To Search',
         blocks: [
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
@@ -227,6 +246,7 @@ class SlackBotService extends S2sMessageHandlable {
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: 'Failed To Search',
         blocks: [
           this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
@@ -260,6 +280,7 @@ class SlackBotService extends S2sMessageHandlable {
             this.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
             this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
           ],
+          private_metadata: JSON.stringify({ channelId: body.channel_id }),
         },
       });
     }
@@ -268,6 +289,7 @@ class SlackBotService extends S2sMessageHandlable {
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
+        text: 'Failed To Create',
         blocks: [
           this.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
         ],
@@ -291,7 +313,16 @@ class SlackBotService extends S2sMessageHandlable {
 
       // generate a dummy id because Operation to create a page needs ObjectId
       const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
-      await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
+      const page = await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
+
+      // Send a message when page creation is complete
+      const growiUri = this.crowi.appService.getSiteUrl();
+      const channelId = JSON.parse(payload.view.private_metadata).channelId;
+      await client.chat.postEphemeral({
+        channel: channelId,
+        user: payload.user.id,
+        text: `The page <${decodeURI(growiUri + path)} | ${decodeURI(`${growiUri}/${page._id}`)}> has been created.`,
+      });
     }
     catch (err) {
       client.chat.postMessage({

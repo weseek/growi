@@ -23,12 +23,10 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
-  const [isRegisterSlackCredentials, setIsRegisterSlackCredentials] = useState(false);
-  const [slackWSNameInWithoutProxy, setSlackWSNameInWithoutProxy] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
-  const [connectionStatuses, setConnectionStatuses] = useState(null);
+  const [connectionStatuses, setConnectionStatuses] = useState({});
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
@@ -38,15 +36,6 @@ const SlackIntegration = (props) => {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
       } = data.settings;
 
-      if (data.connectionStatuses == null) {
-        data.connectionStatuses = {};
-      }
-      // if (data.connectionStatuses != null) {
-      // TODO fix
-      // const { workspaceName } = data.connectionStatuses[slackBotToken];
-      // setSlackWSNameInWithoutProxy(workspaceName);
-      // setConnectionStatuses(data.connectionStatuses);
-      // }
       setConnectionStatuses(data.connectionStatuses);
       setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
@@ -72,17 +61,6 @@ const SlackIntegration = (props) => {
     }
   };
 
-  const resetWithOutSettings = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/bot-type', { currentBotType: 'customBotWithoutProxy' });
-      fetchSlackIntegrationData();
-      toastSuccess(t('admin:slack_integration.bot_reset_successful'));
-    }
-    catch (error) {
-      toastError(error);
-    }
-  };
-
   const createSlackIntegrationData = async() => {
     try {
       await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
@@ -94,21 +72,22 @@ const SlackIntegration = (props) => {
     }
   };
 
+  const changeSecretAndToken = (secret, token) => {
+    setSlackSigningSecret(secret);
+    setSlackBotToken(token);
+  };
+
   useEffect(() => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
   const changeCurrentBotSettings = async(botType) => {
     try {
-      const res = await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
+      await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
       });
-      setCurrentBotType(res.data.slackBotTypeParam.slackBotType);
       setSelectedBotType(null);
-      setIsRegisterSlackCredentials(false);
-      setSlackSigningSecret(null);
-      setSlackBotToken(null);
-      setSlackWSNameInWithoutProxy(null);
+      fetchSlackIntegrationData();
     }
     catch (err) {
       toastError(err);
@@ -143,23 +122,23 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+          onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
+          onUpdateTokens={fetchSlackIntegrationData}
+          onSubmitForm={fetchSlackIntegrationData}
         />
       );
       break;
     case 'customBotWithoutProxy':
       settingsComponent = (
         <CustomBotWithoutProxySettings
-          isRegisterSlackCredentials={isRegisterSlackCredentials}
           slackBotTokenEnv={slackBotTokenEnv}
           slackBotToken={slackBotToken}
           slackSigningSecretEnv={slackSigningSecretEnv}
           slackSigningSecret={slackSigningSecret}
-          slackWSNameInWithoutProxy={slackWSNameInWithoutProxy}
-          onSetSlackSigningSecret={setSlackSigningSecret}
-          onSetSlackBotToken={setSlackBotToken}
-          onResetSettings={resetWithOutSettings}
-          fetchSlackIntegrationData={fetchSlackIntegrationData}
+          onTestConnectionInvoked={fetchSlackIntegrationData}
+          onUpdatedSecretToken={changeSecretAndToken}
+          connectionStatuses={connectionStatuses}
         />
       );
       break;
@@ -169,8 +148,10 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
-          fetchSlackIntegrationData={fetchSlackIntegrationData}
+          onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
+          onUpdateTokens={fetchSlackIntegrationData}
+          onSubmitForm={fetchSlackIntegrationData}
         />
       );
       break;
@@ -201,19 +182,13 @@ const SlackIntegration = (props) => {
           </a>
         </h2>
 
-        <div className="d-flex justify-content">
-          <div className="mr-auto">
-            {t('admin:slack_integration.selecting_bot_types.selecting_bot_type')}
-          </div>
-
-          {(currentBotType != null) && (
-            <button
-              className="mx-3 btn btn-outline-danger flex-end"
-              type="button"
-              onClick={() => setIsDeleteConfirmModalShown(true)}
-            >{t('admin:slack_integration.reset_all_settings')}
-            </button>
-          )}
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn btn-outline-danger"
+            type="button"
+            onClick={() => setIsDeleteConfirmModalShown(true)}
+          >{t('admin:slack_integration.reset_all_settings')}
+          </button>
         </div>
 
         <div className="row my-5 flex-wrap-reverse justify-content-center">

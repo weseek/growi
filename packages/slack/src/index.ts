@@ -5,6 +5,7 @@ export const supportedSlackCommands: string[] = [
 export const supportedGrowiCommands: string[] = [
   'search',
   'create',
+  'help',
 ];
 
 export * from './interfaces/growi-command';

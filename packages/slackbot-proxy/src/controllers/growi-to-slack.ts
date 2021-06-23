@@ -6,8 +6,10 @@ import axios from 'axios';
 import { WebAPICallOptions, WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, testToSlack, generateWebClient,
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient,
 } from '@growi/slack';
+
+import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/slack-to-growi/add-webclient-response-to-res';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
@@ -16,6 +18,8 @@ import { OrderRepository } from '~/repositories/order';
 
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
+import { findInjectorByType } from '~/services/growi-uri-injector/GrowiUriInjectorFactory';
+import { injectGrowiUriToView } from '~/utils/injectGrowiUriToView';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
@@ -63,13 +67,17 @@ export class GrowiToSlackCtrl {
 
     logger.debug(`${relations.length} relations found`, relations);
 
-    // extract bot token
-    const tokens: string[] = relations
-      .map(relation => relation.installation?.data?.bot?.token)
-      .filter((v): v is string => v != null); // filter out null values
+    // key: tokenGtoP, value: botToken
+    const botTokenResolverMapping: {[tokenGtoP:string]:string} = {};
 
-    const connectionStatuses = await getConnectionStatuses(tokens);
+    relations.forEach((relation) => {
+      const botToken = relation.installation?.data?.bot?.token;
+      if (botToken != null) {
+        botTokenResolverMapping[relation.tokenGtoP] = botToken;
+      }
+    });
 
+    const connectionStatuses = await getConnectionStatuses(Object.keys(botTokenResolverMapping), (tokenGtoP:string) => botTokenResolverMapping[tokenGtoP]);
     return res.send({ connectionStatuses });
   }
 
@@ -107,12 +115,9 @@ export class GrowiToSlackCtrl {
         return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
       }
 
-      try {
-        await testToSlack(token);
-      }
-      catch (err) {
-        logger.error(err);
-        return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+      const status = await getConnectionStatus(token);
+      if (status.error != null) {
+        return res.status(400).send({ message: `failed to get connection. err: ${status.error}` });
       }
 
       return res.send({ relation, slackBotToken: token });
@@ -145,12 +150,9 @@ export class GrowiToSlackCtrl {
       return res.status(400).send({ message: 'installation is invalid' });
     }
 
-    try {
-      await testToSlack(token);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.status(400).send({ message: `failed to test. err: ${err.message}` });
+    const status = await getConnectionStatus(token);
+    if (status.error != null) {
+      return res.status(400).send({ message: `failed to get connection. err: ${status.error}` });
     }
 
     logger.debug('relation test is success', order);
@@ -163,13 +165,47 @@ export class GrowiToSlackCtrl {
     return res.send({ relation: createdRelation, slackBotToken: token });
   }
 
+  injectGrowiUri(req:GrowiReq, growiUri:string):WebAPICallOptions {
+
+    if (req.body.view != null) {
+      injectGrowiUriToView(req.body, growiUri);
+    }
+
+    if (req.body.blocks != null) {
+      const parsedBlocks = JSON.parse(req.body.blocks as string);
+
+      parsedBlocks.forEach((parsedBlock) => {
+        if (parsedBlock.type !== 'actions') {
+          return;
+        }
+        parsedBlock.elements.forEach((element) => {
+          const growiUriInjector = findInjectorByType(element.type);
+          if (growiUriInjector != null) {
+            growiUriInjector.inject(element, growiUri);
+          }
+        });
+
+        return;
+      });
+
+      req.body.blocks = JSON.stringify(parsedBlocks);
+    }
+
+    const opt = req.body;
+    opt.headers = req.headers;
+
+    return opt;
+  }
+
   @Post('/:method')
-  @UseBefore(verifyGrowiToSlackRequest)
-  async postResult(@PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+  @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
+  async postResult(
+    @PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
+  ): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
 
     if (tokenGtoPs.length !== 1) {
-      return res.status(400).send({ message: 'tokenGtoPs is invalid' });
+      return res.webClientErr('tokenGtoPs is invalid', 'invalid_tokenGtoP');
     }
 
     const tokenGtoP = tokenGtoPs[0];
@@ -181,29 +217,30 @@ export class GrowiToSlackCtrl {
       .getOne();
 
     if (relation == null) {
-      return res.status(400).send({ message: 'relation is invalid' });
+      return res.webClientErr('relation is invalid', 'invalid_relation');
     }
 
     const token = relation.installation.data.bot?.token;
     if (token == null) {
-      return res.status(400).send({ message: 'installation is invalid' });
+      return res.webClientErr('installation is invalid', 'invalid_installation');
     }
 
     const client = generateWebClient(token);
 
     try {
-      const opt = req.body as WebAPICallOptions;
-      opt.headers = req.headers;
+      const opt = this.injectGrowiUri(req, relation.growiUri);
+
       await client.apiCall(method, opt);
     }
     catch (err) {
       logger.error(err);
-      return res.status(400).send({ message: `failed to send to slack. err: ${err.message}` });
+      return res.webClientErr(`failed to send to slack. err: ${err.message}`, 'fail_api_call');
     }
 
-    logger.debug('postMessage is success');
+    logger.debug('send to slack is success');
 
-    return res.end();
+    // required to return ok for apiCall
+    return res.webClient();
   }
 
 }

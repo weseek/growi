@@ -242,6 +242,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: undefined,
   },
+  SESSION_MAX_AGE: {
+    ns:      'crowi',
+    key:     'security:sessionMaxAge',
+    type:    TYPES.NUMBER,
+    default: undefined,
+  },
   USER_UPPER_LIMIT: {
     ns:      'crowi',
     key:     'security:userUpperLimit',
@@ -419,6 +425,10 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   SLACK_BOT_TYPE: {
     ns:      'crowi',
     key:     'slackbot:currentBotType', // 'officialBot' || 'customBotWithoutProxy' || 'customBotWithProxy'
+  },
+  GROWI_APP_ID_FOR_GROWI_CLOUD: {
+    ns:      'crowi',
+    key:     'app:growiAppIdForCloud',
     type:    TYPES.STRING,
     default: null,
   },

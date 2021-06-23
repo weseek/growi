@@ -8,7 +8,7 @@ import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 import urljoin from 'url-join';
 
-import { userPageRoot } from '@commons/util/path-utils';
+import { userPageRoot, isCreatablePage } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
 
 import AppContainer from '../services/AppContainer';
@@ -24,12 +24,12 @@ const PageCreateModal = (props) => {
   const isReachable = config.isSearchServiceReachable;
   const pathname = decodeURI(window.location.pathname);
   const userPageRootPath = userPageRoot(appContainer.currentUser);
-  const parentPath = pathUtils.addTrailingSlash(pathname);
+  const pageNameInputInitialValue = isCreatablePage(pathname) ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
 
   const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
-  const [pageNameInput, setPageNameInput] = useState(parentPath);
+  const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
 
   function transitBySubmitEvent(e, transitHandler) {
@@ -162,7 +162,7 @@ const PageCreateModal = (props) => {
               {isReachable
                 ? (
                   <PagePathAutoComplete
-                    initializedPath={pathname}
+                    initializedPath={pageNameInput}
                     addTrailingSlash
                     onSubmit={ppacSubmitHandler}
                     onInputChange={ppacInputChangeHandler}

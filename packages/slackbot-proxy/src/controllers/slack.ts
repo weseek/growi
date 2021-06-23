@@ -17,8 +17,11 @@ import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
+import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
 import { RegisterService } from '~/services/RegisterService';
+import { UnregisterService } from '~/services/UnregisterService';
+import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
 
 
@@ -43,6 +46,9 @@ export class SlackCtrl {
   @Inject()
   registerService: RegisterService;
 
+  @Inject()
+  unregisterService: UnregisterService;
+
   @Get('/install')
   async install(): Promise<string> {
     const url = await this.installerService.installer.generateInstallUrl({
@@ -54,6 +60,7 @@ export class SlackCtrl {
         'im:history',
         'mpim:history',
         'chat:write',
+        'team:read',
       ],
     });
 
@@ -83,9 +90,22 @@ export class SlackCtrl {
       return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
-    /*
-     * forward to GROWI server
-     */
+    // unregister
+    if (growiCommand.growiCommandType === 'unregister') {
+      if (growiCommand.growiCommandArgs.length === 0) {
+        return 'GROWI Urls is required.';
+      }
+      if (!growiCommand.growiCommandArgs.every(v => v.match(/^(https?:\/\/)/))) {
+        return 'GROWI Urls must be urls.';
+      }
+
+      // Send response immediately to avoid opelation_timeout error
+      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+      res.send();
+
+      return this.unregisterService.process(growiCommand, authorizeResult, body as {[key:string]:string});
+    }
+
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -100,10 +120,23 @@ export class SlackCtrl {
       });
     }
 
+    // status
+    if (growiCommand.growiCommandType === 'status') {
+      return res.json({
+        blocks: [
+          generateMarkdownSectionBlock('*Found Relations to GROWI.*'),
+          ...relations.map(relation => generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}.`)),
+        ],
+      });
+    }
+
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
+    /*
+     * forward to GROWI server
+     */
     const promises = relations.map((relation: Relation) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
@@ -132,7 +165,7 @@ export class SlackCtrl {
   }
 
   @Post('/interactions')
-  @UseBefore(AuthorizeInteractionMiddleware)
+  @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
@@ -153,41 +186,51 @@ export class SlackCtrl {
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
     const payload = JSON.parse(body.payload);
-    const { type } = payload;
+    const callBackId = payload?.view?.callback_id;
 
     // register
-    // response_urls is an array but the element included is only one.
-    if (type === 'view_submission') {
-      await this.registerService.upsertOrderRecord(this.orderRepository, installation, payload);
-      await this.registerService.notifyServerUriToSlack(authorizeResult, payload);
+    if (callBackId === 'register') {
+      try {
+        await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult.botToken, payload);
+      }
+      catch (err) {
+        if (err instanceof InvalidUrlError) {
+          logger.info(err.message);
+          return;
+        }
+        logger.error(err);
+      }
+
+      await this.registerService.notifyServerUriToSlack(authorizeResult.botToken, payload);
+      return;
+    }
+
+    // unregister
+    if (callBackId === 'unregister') {
+      await this.unregisterService.unregister(this.relationRepository, installation, authorizeResult, payload);
       return;
     }
 
     /*
-     * forward to GROWI server
-     */
-    const relations = await this.relationRepository.find({ installation });
+    * forward to GROWI server
+    */
+    const relation = await this.relationRepository.findOne({ installation, growiUri: req.growiUri });
 
-    const promises = relations.map((relation: Relation) => {
+    if (relation == null) {
+      logger.error('*No relation found.*');
+      return;
+    }
+
+    try {
       // generate API URL
-      const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
-      return axios.post(url.toString(), {
+      const url = new URL('/_api/v3/slack-integration/proxied/interactions', req.growiUri);
+      await axios.post(url.toString(), {
         ...body,
       }, {
         headers: {
           'x-growi-ptog-tokens': relation.tokenPtoG,
         },
       });
-    });
-
-    // pickup PromiseRejectedResult only
-    const results = await Promise.allSettled(promises);
-    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-    const botToken = installation?.data.bot?.token;
-
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
     }
     catch (err) {
       logger.error(err);

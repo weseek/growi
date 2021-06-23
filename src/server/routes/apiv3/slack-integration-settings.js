@@ -5,7 +5,7 @@ const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
-const { getConnectionStatuses, testToSlack, sendSuccessMessage } = require('@growi/slack');
+const { getConnectionStatus, getConnectionStatuses, sendSuccessMessage } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
@@ -149,7 +149,7 @@ module.exports = (crowi) => {
     }
 
     // retrieve connection statuses
-    let connectionStatuses;
+    let connectionStatuses = {};
     if (currentBotType == null) {
       // TODO imple null action
     }
@@ -183,8 +183,15 @@ module.exports = (crowi) => {
       if (proxyServerUri != null) {
         try {
           if (settings.slackAppIntegrations.length > 0) {
-            const tokenGtoPs = settings.slackAppIntegrations.map(slackAppIntegration => slackAppIntegration.tokenGtoP);
-            connectionStatuses = (await getConnectionStatusesFromProxy(tokenGtoPs)).connectionStatuses;
+            // key: slackAppIntegration.tokenGtoP, value: slackAppIntegration._id
+            const tokenGtoPToSlackAppIntegrationId = {};
+            settings.slackAppIntegrations.forEach((slackAppIntegration) => {
+              tokenGtoPToSlackAppIntegrationId[slackAppIntegration.tokenGtoP] = slackAppIntegration._id;
+            });
+            const result = (await getConnectionStatusesFromProxy(Object.keys(tokenGtoPToSlackAppIntegrationId)));
+            Object.entries(result.connectionStatuses).forEach(([tokenGtoP, connectionStatus]) => {
+              connectionStatuses[tokenGtoPToSlackAppIntegrationId[tokenGtoP]] = connectionStatus;
+            });
           }
         }
         catch (error) {
@@ -376,25 +383,53 @@ module.exports = (crowi) => {
    *            description: Succeeded to create slack app integration
    */
   router.put('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    let checkTokens;
-    let tokenGtoP;
-    let tokenPtoG;
-    let generateTokens;
-    do {
-      generateTokens = SlackAppIntegration.generateAccessToken();
-      tokenGtoP = generateTokens[0];
-      tokenPtoG = generateTokens[1];
-      // eslint-disable-next-line no-await-in-loop
-      checkTokens = await SlackAppIntegration.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
-    } while (checkTokens != null);
+    const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
+    if (SlackAppIntegrationRecordsNum >= 10) {
+      const msg = 'Not be able to create more than 10 slack workspace integration settings';
+      logger.error('Error', msg);
+      return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
+    }
+
+    const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+
     try {
       const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
-      const msg = 'Error occured in updating access token for slack app tokens';
+      const msg = 'Error occurred during creating slack integration settings procedure';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-slackAppTokens-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'creating-slack-integration-settings-procedure-failed'), 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/regenerate-tokens:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: putRegenerateTokens
+   *        summary: /slack-integration
+   *        description: Regenerate SlackAppTokens
+   *        responses:
+   *          200:
+   *            description: Succeeded to regenerate slack app tokens
+   */
+  router.put('/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+
+    const { slackAppIntegrationId } = req.body;
+
+    try {
+      const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+      const slackAppTokens = await SlackAppIntegration.findOneAndUpdate({ _id: slackAppIntegrationId }, { tokenGtoP, tokenPtoG });
+
+      return res.apiv3(slackAppTokens, 200);
+    }
+    catch (error) {
+      const msg = 'Error occurred during regenerating slack app tokens';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'regenerating-slackAppTokens-failed'), 500);
     }
   });
 
@@ -498,6 +533,7 @@ module.exports = (crowi) => {
     catch (error) {
       return res.apiv3Err(new ErrorV3(`Error occured while sending message. Cause: ${error.message}`, 'send-message-failed', error.stack));
     }
+    return res.apiv3();
 
   });
 
@@ -529,12 +565,9 @@ module.exports = (crowi) => {
     }
 
     const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
-    try {
-      await testToSlack(slackBotToken);
-    }
-    catch (error) {
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
+    const status = await getConnectionStatus(slackBotToken);
+    if (status.error != null) {
+      return res.apiv3Err(new ErrorV3(`Error occured while getting connection. ${status.error}`, 'send-message-failed'));
     }
 
     const { channel } = req.body;
