@@ -19,7 +19,6 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 
 import { toastError } from '../util/apiNotification';
 
-
 const PageCreateModal = (props) => {
   const { t, appContainer, navigationContainer } = props;
 
