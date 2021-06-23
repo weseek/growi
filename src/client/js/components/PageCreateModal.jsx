@@ -17,6 +17,9 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
+import { toastError } from '../util/apiNotification';
+
+
 const PageCreateModal = (props) => {
   const { t, appContainer, navigationContainer } = props;
 
@@ -71,6 +74,21 @@ const PageCreateModal = (props) => {
   }
 
   /**
+   * join paths, check url, then redirect to edit page
+   */
+  function joinCheckRedirect(...path) {
+
+    const joinedUrl = encodeURI(urljoin(...path));
+
+    if (!isCreatablePage(joinedUrl)) {
+      toastError('Invalid characters found.');
+      return;
+    }
+
+    window.location.href = urljoin(joinedUrl, '#edit');
+  }
+
+  /**
    * access today page
    */
   function createTodayPage() {
@@ -78,14 +96,16 @@ const PageCreateModal = (props) => {
     if (tmpTodayInput1 === '') {
       tmpTodayInput1 = t('Memo');
     }
-    window.location.href = encodeURI(urljoin(userPageRootPath, tmpTodayInput1, now, todayInput2, '#edit'));
+    joinCheckRedirect(userPageRootPath, tmpTodayInput1, now, todayInput2);
+    // window.location.href = encodeURI(urljoin(userPageRootPath, tmpTodayInput1, now, todayInput2, '#edit'));
   }
 
   /**
    * access input page
    */
   function createInputPage() {
-    window.location.href = encodeURI(urljoin(pageNameInput, '#edit'));
+    joinCheckRedirect(pageNameInput);
+    // window.location.href = encodeURI(urljoin(pageNameInput, '#edit'));
   }
 
   function ppacInputChangeHandler(value) {
@@ -101,7 +121,8 @@ const PageCreateModal = (props) => {
    */
   function createTemplatePage(e) {
     const pageName = (template === 'children') ? '_template' : '__template';
-    window.location.href = encodeURI(urljoin(pathname, pageName, '#edit'));
+    joinCheckRedirect(pathname, pageName);
+    // window.location.href = encodeURI(urljoin(pathname, pageName, '#edit'));
   }
 
   function renderCreateTodayForm() {
