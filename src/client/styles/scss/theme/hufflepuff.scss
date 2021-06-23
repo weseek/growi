@@ -174,7 +174,6 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: $themedark;
-  // $bgcolor-global: #3d3f38;
   // $bgcolor-navbar: #27343b;
   $bgcolor-inline-code: $subthemecolor;
   $bgcolor-card: darken($themedark, 5%);
@@ -276,10 +275,7 @@ html[dark] {
   }
 
   .card-timeline > .card-header {
-    // background-color: $third-main-color;
-    // background-color: darken($themecolor, 5%);
     background-color: $accentcolor;
-
   }
 
   .growi:not(.login-page) {
