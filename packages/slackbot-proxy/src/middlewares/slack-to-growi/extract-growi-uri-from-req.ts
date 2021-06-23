@@ -10,6 +10,10 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
 
   use(@Req() req: Req & SlackOauthReq, @Res() res: Res, @Next() next: Next): void {
 
+    if (req.body.payload == null) {
+      return next();
+    }
+
     const payload = JSON.parse(req.body.payload);
 
     // extract for modal
