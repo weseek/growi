@@ -9,6 +9,7 @@
     * mongoose
     * stream-to-promise
     * ws
+    * validator
 
 ## v4.2.20
 
