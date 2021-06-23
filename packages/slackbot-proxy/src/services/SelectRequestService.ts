@@ -1,8 +1,7 @@
 import { Service } from '@tsed/di';
 import axios from 'axios';
 
-import { WebClient, LogLevel } from '@slack/web-api';
-import { GrowiCommand } from '@growi/slack';
+import { GrowiCommand, generateWebClient } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
@@ -10,15 +9,18 @@ import { RelationRepository } from '~/repositories/relation';
 import { Installation } from '~/entities/installation';
 
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 @Service()
 export class SelectRequestService implements GrowiCommandProcessor {
 
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUris:string[]}): Promise<void> {
     const { botToken } = authorizeResult;
 
-    const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
+    if (botToken == null) {
+      throw new Error('botToken is required.');
+    }
+
+    const client = generateWebClient(botToken);
+
     await client.views.open({
       trigger_id: body.trigger_id,
       view: {
