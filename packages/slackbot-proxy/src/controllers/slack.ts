@@ -19,6 +19,7 @@ import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
+import { SelectRequestService } from '~/services/SelectRequestService';
 import { RegisterService } from '~/services/RegisterService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
@@ -42,6 +43,9 @@ export class SlackCtrl {
 
   @Inject()
   orderRepository: OrderRepository;
+
+  @Inject()
+  selectRequestService: SelectRequestService;
 
   @Inject()
   registerService: RegisterService;
@@ -134,6 +138,17 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
+    body.growiUris = [];
+    relations.forEach((relation) => {
+      if (relation.siglePostCommands.includes(growiCommand.growiCommandType)) {
+        body.growiUris.push(relation.growiUri);
+      }
+    });
+
+    if (body.growiUris != null && body.growiUris.length > 0) {
+      return this.selectRequestService.process(growiCommand, authorizeResult, body);
+    }
+
     /*
      * forward to GROWI server
      */
@@ -208,6 +223,12 @@ export class SlackCtrl {
     // unregister
     if (callBackId === 'unregister') {
       await this.unregisterService.unregister(this.relationRepository, installation, authorizeResult, payload);
+      return;
+    }
+
+    // forward to GROWI server
+    if (callBackId === 'select_growi') {
+      await this.selectRequestService.forwardRequest(this.relationRepository, installation, payload);
       return;
     }
 
