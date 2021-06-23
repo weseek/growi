@@ -76,12 +76,12 @@ const PageCreateModal = (props) => {
   /**
    * join paths, check url, then redirect to edit page
    */
-  function joinCheckRedirect(...path) {
+  function joinAndRedirect(...path) {
 
     const joinedUrl = encodeURI(urljoin(...path));
 
     if (!isCreatablePage(joinedUrl)) {
-      toastError('Invalid characters found.');
+      toastError(new Error('Invalid characters found.'));
       return;
     }
 
@@ -96,16 +96,14 @@ const PageCreateModal = (props) => {
     if (tmpTodayInput1 === '') {
       tmpTodayInput1 = t('Memo');
     }
-    joinCheckRedirect(userPageRootPath, tmpTodayInput1, now, todayInput2);
-    // window.location.href = encodeURI(urljoin(userPageRootPath, tmpTodayInput1, now, todayInput2, '#edit'));
+    joinAndRedirect(userPageRootPath, tmpTodayInput1, now, todayInput2);
   }
 
   /**
    * access input page
    */
   function createInputPage() {
-    joinCheckRedirect(pageNameInput);
-    // window.location.href = encodeURI(urljoin(pageNameInput, '#edit'));
+    joinAndRedirect(pageNameInput);
   }
 
   function ppacInputChangeHandler(value) {
@@ -121,8 +119,7 @@ const PageCreateModal = (props) => {
    */
   function createTemplatePage(e) {
     const pageName = (template === 'children') ? '_template' : '__template';
-    joinCheckRedirect(pathname, pageName);
-    // window.location.href = encodeURI(urljoin(pathname, pageName, '#edit'));
+    joinAndRedirect(pathname, pageName);
   }
 
   function renderCreateTodayForm() {
