@@ -34,7 +34,7 @@ html[light] {
   // Background colors
   $bgcolor-global: lighten($themelight, 10%);
   $bgcolor-inline-code: $gray-100; //optional
-  $bgcolor-card: $gray-50;
+  $bgcolor-card: $gray-100;
   $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
@@ -146,16 +146,8 @@ html[light] {
   }
 
   .card-timeline > .card-header {
-    //for now
-    background-color: $themecolor;
+    background-color: $third-main-color;
   }
-
-  // h1,
-  // h2 {
-  //   svg {
-  //     fill: $subthemecolor;
-  //   }
-  // }
 
   .nav.nav-tabs {
     > .nav-item {
@@ -182,11 +174,10 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: $themedark;
-  // $bgcolor-global: #3d3f38;
   // $bgcolor-navbar: #27343b;
   $bgcolor-inline-code: $subthemecolor;
-  // ↓mono-blue's copy↓
   $bgcolor-card: darken($themedark, 5%);
+  // ↓mono-blue's copy↓
   $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
@@ -281,6 +272,10 @@ html[dark] {
     .btn.btn-outline-primary {
       @include btn-page-editor-mode-manager(lighten($primary, 40%), lighten($primary, 15%), darken($primary, 0%), darken($primary, 30%));
     }
+  }
+
+  .card-timeline > .card-header {
+    background-color: $accentcolor;
   }
 
   .growi:not(.login-page) {
