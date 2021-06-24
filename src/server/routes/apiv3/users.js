@@ -377,7 +377,7 @@ module.exports = (crowi) => {
       return res.apiv3({ afterWorkEmailList }, 201);
     }
     catch (err) {
-      const msg = 'Failed to send mail';
+      const msg = 'Failed to send email';
       return res.apiv3Err(new ErrorV3(msg, afterWorkEmailList.createdUserList));
     }
   });
