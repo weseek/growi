@@ -325,7 +325,6 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-  const ShareLink = crowi.model('ShareLink');
 
   async function updateAndReloadStrategySettings(authId, params) {
     const { configManager, passportService } = crowi;
@@ -595,16 +594,6 @@ module.exports = (crowi) => {
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
       };
 
-      if (securitySettingParams.disableLinkSharing) {
-        try {
-          await ShareLink.deleteMany({});
-        }
-        catch (err) {
-          const msg = 'Error occurred in delete all share link';
-          logger.error('Error', err);
-          return res.apiv3Err(new ErrorV3(msg, 'delete-all-shareLink-failed'));
-        }
-      }
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
