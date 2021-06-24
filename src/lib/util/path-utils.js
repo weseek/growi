@@ -71,7 +71,7 @@ const isCreatablePage = (path) => {
 };
 
 /**
- * join paths, check url, then redirect to edit page
+ * return path to editor
  * @param {string} path
  * @returns {string}
  */
