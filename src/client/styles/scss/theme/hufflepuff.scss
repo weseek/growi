@@ -106,6 +106,12 @@ html[light] {
     }
   }
 
+  .card.border-primary {
+    .card-header.bg-primary.text-light {
+      color: $subthemecolor !important;
+    }
+  }
+
   .growi:not(.login-page) {
     // add background-image
     #page-wrapper,
