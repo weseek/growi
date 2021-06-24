@@ -6,8 +6,9 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
+import urljoin from 'url-join';
 
-import { userPageRoot, isCreatablePage, joinAndRedirectToEditor } from '@commons/util/path-utils';
+import { userPageRoot, isCreatablePage, generateEditorPath } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
 
 import AppContainer from '../services/AppContainer';
@@ -69,7 +70,19 @@ const PageCreateModal = (props) => {
   function onChangeTemplateHandler(value) {
     setTemplate(value);
   }
-
+  /**
+   * join path and check if creatable
+   * @param {string} paths
+   * @returns {boolean}
+   */
+  function joinAndCheck(...paths) {
+    const joinedUrl = encodeURI(urljoin(...paths));
+    if (!isCreatablePage(joinedUrl)) {
+      toastError('Invalid characters found.');
+      return;
+    }
+    return joinedUrl;
+  }
   /**
    * access today page
    */
@@ -78,24 +91,16 @@ const PageCreateModal = (props) => {
     if (tmpTodayInput1 === '') {
       tmpTodayInput1 = t('Memo');
     }
-    try {
-      joinAndRedirectToEditor(userPageRootPath, tmpTodayInput1, now, todayInput2);
-    }
-    catch (err) {
-      toastError(err);
-    }
+    const joinedUrl = joinAndCheck(userPageRootPath, tmpTodayInput1, now, todayInput2);
+    window.location.href = generateEditorPath(joinedUrl);
   }
 
   /**
    * access input page
    */
   function createInputPage() {
-    try {
-      joinAndRedirectToEditor(pageNameInput);
-    }
-    catch (err) {
-      toastError(err);
-    }
+    joinAndCheck(pageNameInput);
+    window.location.href = generateEditorPath(pageNameInput);
   }
 
   function ppacInputChangeHandler(value) {
@@ -111,12 +116,8 @@ const PageCreateModal = (props) => {
    */
   function createTemplatePage(e) {
     const pageName = (template === 'children') ? '_template' : '__template';
-    try {
-      joinAndRedirectToEditor(pathname, pageName);
-    }
-    catch (err) {
-      toastError(err);
-    }
+    const joinedUrl = joinAndCheck(urljoin(pathname, pageName));
+    window.location.href = generateEditorPath(joinedUrl);
   }
 
   function renderCreateTodayForm() {

@@ -72,14 +72,11 @@ const isCreatablePage = (path) => {
 
 /**
  * join paths, check url, then redirect to edit page
- * @param {string} paths
+ * @param {string} path
+ * @returns {string}
  */
-function joinAndRedirectToEditor(...paths) {
-  const joinedUrl = encodeURI(urljoin(...paths));
-  if (!isCreatablePage(joinedUrl)) {
-    return new Error('Invalid characters found.');
-  }
-  window.location.href = urljoin(joinedUrl, '#edit');
+function generateEditorPath(path) {
+  return urljoin(path, '#edit');
 }
 
 /**
@@ -129,7 +126,7 @@ module.exports = {
   isTrashPage,
   isUserPage,
   isCreatablePage,
-  joinAndRedirectToEditor,
+  generateEditorPath,
   userPageRoot,
   convertToNewAffiliationPath,
   encodeSpaces,
