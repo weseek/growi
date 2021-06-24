@@ -2,13 +2,16 @@
   "name": "@growi/app",
   "version": "0.9.0-RC",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "cd ../../ && env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail"
+  },
   "// comments for dependencies": {
     "openid-client": "Node.js 12 or higher is required for openid-client@3 and above.",
     "string-width": "5.0.0 or above uses ESM."
   },
   "dependencies": {
     "@google-cloud/storage": "^5.8.5",
+    "@growi/slack": "^0.9.0-RC",
     "@kobalab/socket.io-session": "^1.0.3",
     "@promster/express": "^5.0.1",
     "@promster/server": "^6.0.0",
@@ -49,6 +52,9 @@
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
     "growi-commons": "^5.0.3",
+    "growi-plugin-attachment-refs": "^2.0.1",
+    "growi-plugin-lsx": "^4.0.2",
+    "growi-plugin-pukiwiki-like-linker": "^3.1.0",
     "helmet": "^3.13.0",
     "i18next": "^19.0.0",
     "i18next-express-middleware": "^1.4.1",
@@ -185,6 +191,8 @@
     "react-frame-component": "^4.0.0",
     "react-hotkeys": "^2.0.0",
     "react-i18next": "^11.1.0",
+    "react-images": "1.0.0",
+    "react-motion": "^0.5.2",
     "react-waypoint": "^9.0.0",
     "reactstrap": "^8.9.0",
     "replacestream": "^4.0.3",

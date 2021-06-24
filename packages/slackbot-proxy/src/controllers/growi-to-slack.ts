@@ -24,6 +24,8 @@ import { injectGrowiUriToView } from '~/utils/injectGrowiUriToView';
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
 
+// temporarily save for selection to growi
+const temporarySinglePostCommands = ['create'];
 
 @Controller('/g2s')
 export class GrowiToSlackCtrl {
@@ -159,7 +161,11 @@ export class GrowiToSlackCtrl {
 
     // Transaction is not considered because it is used infrequently,
     const createdRelation = await this.relationRepository.save({
-      installation: order.installation, tokenGtoP: order.tokenGtoP, tokenPtoG: order.tokenPtoG, growiUri: order.growiUrl,
+      installation: order.installation,
+      tokenGtoP: order.tokenGtoP,
+      tokenPtoG: order.tokenPtoG,
+      growiUri: order.growiUrl,
+      siglePostCommands: temporarySinglePostCommands,
     });
 
     return res.send({ relation: createdRelation, slackBotToken: token });
