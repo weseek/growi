@@ -51,6 +51,7 @@ class ShareLinkSetting extends React.Component {
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
     this.deleteLinkById = this.deleteLinkById.bind(this);
+    this.putShareLinkSetting = this.putShareLinkSetting.bind(this);
   }
 
   componentWillMount() {
@@ -70,7 +71,7 @@ class ShareLinkSetting extends React.Component {
   async putShareLinkSetting() {
     const { t, adminGeneralSecurityContainer } = this.props;
     try {
-      await adminGeneralSecurityContainer.updateGeneralSecuritySetting();
+      await adminGeneralSecurityContainer.updateShareLinkSetting();
       toastSuccess(t('security_setting.updated_shareLink_setting'));
     }
     catch (err) {
@@ -136,7 +137,6 @@ class ShareLinkSetting extends React.Component {
           </button>
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
-        {/* ここにShareLink Settingのdropdown button */}
         <h4>{t('security_setting.share_link_rights')}</h4>
         <div className="row mb-4">
           <div className="col-md-3 text-md-right py-2">
@@ -154,19 +154,27 @@ class ShareLinkSetting extends React.Component {
                 aria-expanded="true"
               >
                 <span className="float-left">
-                  {disableLinkSharing === 'Allow' && t('security_setting.link_sharing_rights_choices.allow')}
-                  {disableLinkSharing === 'Deny' && t('security_setting.link_sharing_rights_choices.deny')}
+                  {disableLinkSharing === false && t('security_setting.link_sharing_rights_choices.allow')}
+                  {disableLinkSharing === true && t('security_setting.link_sharing_rights_choices.deny')}
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.setDisableLinkSharing('Allow') }}>
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.setDisableLinkSharing(false) }}>
                   {t('security_setting.link_sharing_rights_choices.allow')}
                 </button>
-                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.setDisableLinkSharing('Deny') }}>
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.setDisableLinkSharing(true) }}>
                   {t('security_setting.link_sharing_rights_choices.deny')}
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="row my-3">
+          <div className="text-center text-md-left offset-md-3 col-md-5">
+            <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putShareLinkSetting}>
+              {t('Update')}
+            </button>
           </div>
         </div>
         <Pager
@@ -187,15 +195,6 @@ class ShareLinkSetting extends React.Component {
           : (<p className="text-center">{t('share_links.No_share_links')}</p>
           )
         }
-
-        {/* ここにUpdate button */}
-        {/* <div className="row my-3">
-          <div className="text-center text-md-left offset-md-3 col-md-5">
-            <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putShareLinkSetting}>
-              {t('Update')}
-            </button>
-          </div>
-        </div> */}
 
 
         <DeleteAllShareLinksModal
