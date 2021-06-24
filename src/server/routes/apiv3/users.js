@@ -358,11 +358,11 @@ module.exports = (crowi) => {
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
-    let invitedUserList;
+    let afterWorkEmailList;
 
     // Create users
     try {
-      invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList);
+      afterWorkEmailList = await User.createUsersByInvitation(req.body.shapedEmailList);
     }
     catch {
       const msg = 'Failed to create user';
@@ -372,13 +372,13 @@ module.exports = (crowi) => {
     // Send email
     try {
       if (req.body.sendEmail) {
-        await User.sendEmailbyUserList(invitedUserList.createdUserList);
+        await User.sendEmailbyUserList(afterWorkEmailList.createdUserList);
       }
-      return res.apiv3({ invitedUserList }, 201);
+      return res.apiv3({ afterWorkEmailList }, 201);
     }
     catch (err) {
       const msg = 'Failed to send mail';
-      return res.apiv3Err(new ErrorV3(msg, invitedUserList.createdUserList));
+      return res.apiv3Err(new ErrorV3(msg, afterWorkEmailList.createdUserList));
     }
   });
 
