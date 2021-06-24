@@ -157,6 +157,7 @@
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
+  "Link sharing is disabled": "你不允许分享该链接",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
