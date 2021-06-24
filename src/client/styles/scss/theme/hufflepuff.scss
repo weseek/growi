@@ -73,9 +73,9 @@ html[light] {
   $bgcolor-resize-button-hover: lighten($bgcolor-resize-button, 10%);
   // Sidebar contents
   $color-sidebar-context: $accentcolor;
-  $bgcolor-sidebar-context: $themelight;
+  $bgcolor-sidebar-context: lighten($themelight, 8%);
   // Sidebar list group
-  $bgcolor-sidebar-list-group: $themelight;
+  $bgcolor-sidebar-list-group: lighten($themelight, 10%);
 
   // ↓spring's copy↓
   // Icon colors
@@ -219,11 +219,10 @@ html[dark] {
   $color-resize-button-hover: $color-global;
   $bgcolor-resize-button-hover: darken($bgcolor-resize-button, 7%);
   // Sidebar contents
-  // $bgcolor-sidebar-context: $subthemecolor;
-  $bgcolor-sidebar-context: lighten($themedark, 5%);
   $color-sidebar-context: $color-global;
+  $bgcolor-sidebar-context: $subthemecolor;
   // Sidebar list group
-  // $bgcolor-sidebar-list-group: #; // optional
+  $bgcolor-sidebar-list-group: lighten($subthemecolor, 5%);
 
   // Icon colors
   $color-editor-icons: $color-global;
