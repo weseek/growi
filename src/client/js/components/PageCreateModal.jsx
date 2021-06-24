@@ -71,7 +71,7 @@ const PageCreateModal = (props) => {
     setTemplate(value);
   }
   /**
-   * join path and check if creatable
+   * join path, check if creatable, then redirect
    * @param {string} paths
    */
   function joinCheckRedirect(...paths) {
