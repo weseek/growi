@@ -1,3 +1,4 @@
+const urljoin = require('url-join');
 const escapeStringRegexp = require('escape-string-regexp');
 
 /**
@@ -70,6 +71,18 @@ const isCreatablePage = (path) => {
 };
 
 /**
+ * join paths, check url, then redirect to edit page
+ * @param {string} paths
+ */
+function joinAndRedirectToEditor(...paths) {
+  const joinedUrl = encodeURI(urljoin(...paths));
+  if (!isCreatablePage(joinedUrl)) {
+    return new Error('Invalid characters found.');
+  }
+  window.location.href = urljoin(joinedUrl, '#edit');
+}
+
+/**
  * return user path
  * @param {Object} user
  * @return {string}
@@ -116,6 +129,7 @@ module.exports = {
   isTrashPage,
   isUserPage,
   isCreatablePage,
+  joinAndRedirectToEditor,
   userPageRoot,
   convertToNewAffiliationPath,
   encodeSpaces,

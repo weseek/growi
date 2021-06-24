@@ -6,18 +6,16 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import urljoin from 'url-join';
 
-import { userPageRoot, isCreatablePage } from '@commons/util/path-utils';
+import { userPageRoot, isCreatablePage, joinAndRedirectToEditor } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
 
 import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
+import { toastError } from '../util/apiNotification';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
-
-import { toastError } from '../util/apiNotification';
 
 const PageCreateModal = (props) => {
   const { t, appContainer, navigationContainer } = props;
@@ -73,21 +71,6 @@ const PageCreateModal = (props) => {
   }
 
   /**
-   * join paths, check url, then redirect to edit page
-   */
-  function joinAndRedirect(...path) {
-
-    const joinedUrl = encodeURI(urljoin(...path));
-
-    if (!isCreatablePage(joinedUrl)) {
-      toastError(new Error('Invalid characters found.'));
-      return;
-    }
-
-    window.location.href = urljoin(joinedUrl, '#edit');
-  }
-
-  /**
    * access today page
    */
   function createTodayPage() {
@@ -95,14 +78,24 @@ const PageCreateModal = (props) => {
     if (tmpTodayInput1 === '') {
       tmpTodayInput1 = t('Memo');
     }
-    joinAndRedirect(userPageRootPath, tmpTodayInput1, now, todayInput2);
+    try {
+      joinAndRedirectToEditor(userPageRootPath, tmpTodayInput1, now, todayInput2);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   /**
    * access input page
    */
   function createInputPage() {
-    joinAndRedirect(pageNameInput);
+    try {
+      joinAndRedirectToEditor(pageNameInput);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   function ppacInputChangeHandler(value) {
@@ -118,7 +111,12 @@ const PageCreateModal = (props) => {
    */
   function createTemplatePage(e) {
     const pageName = (template === 'children') ? '_template' : '__template';
-    joinAndRedirect(pathname, pageName);
+    try {
+      joinAndRedirectToEditor(pathname, pageName);
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   function renderCreateTodayForm() {
