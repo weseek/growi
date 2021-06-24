@@ -364,8 +364,9 @@ module.exports = (crowi) => {
     try {
       afterWorkEmailList = await User.createUsersByInvitation(req.body.shapedEmailList);
     }
-    catch {
+    catch (err) {
       const msg = 'Failed to create user';
+      logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg));
     }
 
@@ -378,6 +379,7 @@ module.exports = (crowi) => {
     }
     catch (err) {
       const msg = 'Failed to send email';
+      logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, afterWorkEmailList.createdUserList));
     }
   });
