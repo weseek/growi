@@ -610,7 +610,7 @@ module.exports = function(crowi) {
 
   };
 
-  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
+  userSchema.statics.createUsersByInvitation = async function(emailList) {
     validateCrowi();
 
     if (!Array.isArray(emailList)) {
@@ -618,10 +618,6 @@ module.exports = function(crowi) {
     }
 
     const afterWorkEmailList = await this.createUsersByEmailList(emailList);
-
-    if (toSendEmail) {
-      await this.sendEmailbyUserList(afterWorkEmailList.createdUserList);
-    }
 
     return afterWorkEmailList;
   };

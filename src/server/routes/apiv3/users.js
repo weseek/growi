@@ -357,13 +357,28 @@ module.exports = (crowi) => {
    *                      description: Users email that already exists
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
+
+    let invitedUserList;
+
+    // Create users
     try {
-      const invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
+      invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList);
+    }
+    catch {
+      const msg = 'Failed to create user';
+      return res.apiv3Err(new ErrorV3(msg));
+    }
+
+    // Send email
+    try {
+      if (req.body.sendEmail) {
+        await User.sendEmailbyUserList(invitedUserList.createdUserList);
+      }
       return res.apiv3({ invitedUserList }, 201);
     }
     catch (err) {
       const msg = 'Failed to send mail';
-      return res.apiv3Err(new ErrorV3(msg));
+      return res.apiv3Err(new ErrorV3(msg, invitedUserList.createdUserList));
     }
   });
 
