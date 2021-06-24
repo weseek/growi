@@ -78,7 +78,7 @@ const PageCreateModal = (props) => {
   function joinCheckRedirect(...paths) {
     const joinedUrl = encodeURI(urljoin(...paths));
     if (!isCreatablePage(joinedUrl)) {
-      toastError(new Error('Invalid characters found.'));
+      toastError(new Error('Invalid characters found on new page path'));
       return;
     }
     window.location.href = generateEditorPath(joinedUrl);
