@@ -25,11 +25,23 @@ const today = new Date();
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-  const linkSharingRequired = require('../../middlewares/link-sharing-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
   const ShareLink = crowi.model('ShareLink');
   const Page = crowi.model('Page');
+
+  /**
+   * middleware to limit link sharing
+   */
+  const linkSharingRequired = (req, res, next) => {
+    const isLinkSharingDisabled = crowi.configManager.getConfig('crowi', 'security:disableLinkSharing');
+    logger.debug(`isLinkSharingDisabled: ${isLinkSharingDisabled}`);
+
+    if (isLinkSharingDisabled) {
+      return res.apiv3Err(new ErrorV3('Link sharing is disabled', 'link-sharing-disabled'));
+    }
+    next();
+  };
 
   validator.getShareLinks = [
     // validate the page id is MongoId
