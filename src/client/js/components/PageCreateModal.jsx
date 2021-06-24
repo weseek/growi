@@ -83,6 +83,7 @@ const PageCreateModal = (props) => {
     }
     window.location.href = generateEditorPath(joinedUrl);
   }
+
   /**
    * access today page
    */
