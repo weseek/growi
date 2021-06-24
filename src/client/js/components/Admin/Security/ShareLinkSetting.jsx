@@ -67,6 +67,17 @@ class ShareLinkSetting extends React.Component {
 
   }
 
+  async putShareLinkSettings() {
+    const { t, adminGeneralSecurityContainer } = this.props;
+    try {
+      await adminGeneralSecurityContainer.updateGeneralSecuritySetting();
+      toastSuccess(t('security_setting.updated_shareLink_setting'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
   showDeleteConfirmModal() {
     this.setState({ isDeleteConfirmModalShown: true });
   }
@@ -125,6 +136,39 @@ class ShareLinkSetting extends React.Component {
           </button>
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
+        {/* ここにShareLink Settingのdropdown button */}
+        {/* <h4>{t('security_setting.page_access_and_delete_rights')}</h4>
+        <div className="row mb-4">
+          <div className="col-md-3 text-md-right py-2">
+            <strong>{t('security_setting.Guest Users Access')}</strong>
+          </div>
+          <div className="col-md-9">
+            <div className="dropdown">
+              <button
+                className={`btn btn-outline-secondary dropdown-toggle text-right col-12
+                            col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="true"
+              >
+                <span className="float-left">
+                  {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
+                  {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')}
+                </span>
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
+                  {t('security_setting.guest_mode.deny')}
+                </button>
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
+                  {t('security_setting.guest_mode.readonly')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div> */}
         <Pager
           links={shareLinks}
           activePage={shareLinksActivePage}
@@ -143,6 +187,15 @@ class ShareLinkSetting extends React.Component {
           : (<p className="text-center">{t('share_links.No_share_links')}</p>
           )
         }
+
+        {/* ここにUpdate button */}
+        {/* <div className="row my-3">
+          <div className="text-center text-md-left offset-md-3 col-md-5">
+            <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putShareLinkSetting}>
+              {t('Update')}
+            </button>
+          </div>
+        </div> */}
 
 
         <DeleteAllShareLinksModal
