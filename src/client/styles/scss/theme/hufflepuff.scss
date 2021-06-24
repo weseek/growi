@@ -180,11 +180,9 @@ html[dark] {
 
   // Background colors
   $bgcolor-global: $themedark;
-  // $bgcolor-global: #3d3f38;
   // $bgcolor-navbar: #27343b;
   $bgcolor-inline-code: $subthemecolor;
   $bgcolor-card: darken($themedark, 5%);
-  // ↓mono-blue's copy↓
   $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
@@ -212,6 +210,7 @@ html[dark] {
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #90a555 0%, #3d98a3 50%, #eaab20 100%);
 
+  // ↓mono-blue's copy↓
   // Logo colors
   $bgcolor-logo: #13191c;
   $fillcolor-logo-mark: white;
