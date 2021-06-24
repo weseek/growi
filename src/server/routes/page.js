@@ -413,6 +413,9 @@ module.exports = function(crowi, app) {
       // page or sharelink are not found
       return res.render('layout-growi/not_found_shared_page');
     }
+    if (crowi.configManager.getConfig('crowi', 'security:disableLinkSharing')) {
+      return res.render('layout-growi/forbidden');
+    }
 
     const renderVars = {};
 
