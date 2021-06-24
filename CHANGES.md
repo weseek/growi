@@ -10,6 +10,7 @@
     * stream-to-promise
     * ws
     * validator
+    * i18next
 
 ## v4.2.20
 
