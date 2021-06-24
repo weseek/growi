@@ -362,8 +362,8 @@ module.exports = (crowi) => {
       return res.apiv3({ invitedUserList }, 201);
     }
     catch (err) {
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(err));
+      const msg = 'Failed to send mail';
+      return res.apiv3Err(new ErrorV3(msg));
     }
   });
 
