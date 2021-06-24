@@ -67,7 +67,7 @@ class ShareLinkSetting extends React.Component {
 
   }
 
-  async putShareLinkSettings() {
+  async putShareLinkSetting() {
     const { t, adminGeneralSecurityContainer } = this.props;
     try {
       await adminGeneralSecurityContainer.updateGeneralSecuritySetting();
@@ -120,7 +120,7 @@ class ShareLinkSetting extends React.Component {
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
     const {
-      shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
+      shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit, disableLinkSharing,
     } = adminGeneralSecurityContainer.state;
 
     return (
@@ -137,10 +137,10 @@ class ShareLinkSetting extends React.Component {
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
         {/* ここにShareLink Settingのdropdown button */}
-        {/* <h4>{t('security_setting.page_access_and_delete_rights')}</h4>
+        <h4>{t('security_setting.share_link_rights')}</h4>
         <div className="row mb-4">
           <div className="col-md-3 text-md-right py-2">
-            <strong>{t('security_setting.Guest Users Access')}</strong>
+            <strong>{t('security_setting.link_sharing')}</strong>
           </div>
           <div className="col-md-9">
             <div className="dropdown">
@@ -154,21 +154,21 @@ class ShareLinkSetting extends React.Component {
                 aria-expanded="true"
               >
                 <span className="float-left">
-                  {currentRestrictGuestMode === 'Deny' && t('security_setting.guest_mode.deny')}
-                  {currentRestrictGuestMode === 'Readonly' && t('security_setting.guest_mode.readonly')}
+                  {disableLinkSharing === 'Allow' && t('security_setting.link_sharing_rights_choices.allow')}
+                  {disableLinkSharing === 'Deny' && t('security_setting.link_sharing_rights_choices.deny')}
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
-                  {t('security_setting.guest_mode.deny')}
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.setDisableLinkSharing('Allow') }}>
+                  {t('security_setting.link_sharing_rights_choices.allow')}
                 </button>
-                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
-                  {t('security_setting.guest_mode.readonly')}
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.setDisableLinkSharing('Deny') }}>
+                  {t('security_setting.link_sharing_rights_choices.deny')}
                 </button>
               </div>
             </div>
           </div>
-        </div> */}
+        </div>
         <Pager
           links={shareLinks}
           activePage={shareLinksActivePage}

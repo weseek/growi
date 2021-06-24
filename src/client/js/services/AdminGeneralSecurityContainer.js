@@ -91,6 +91,13 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * setter for disableLinkSharing
+   */
+  setDisableLinkSharing(disableLinkSharing) {
+    this.setState({ disableLinkSharing });
+  }
+
+  /**
    * Change restrictGuestMode
    */
   changeRestrictGuestMode(restrictGuestModeLabel) {
@@ -148,7 +155,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       disableLinkSharing: this.state.disableLinkSharing,
     };
 
-    requestParams = await removeNullPropertyFromObject(requestParams);  // 要チェック
+    requestParams = await removeNullPropertyFromObject(requestParams);
     const response = await this.appContainer.apiv3.put('/security-setting/general-setting', requestParams);
     const { securitySettingParams } = response.data;
     return securitySettingParams;

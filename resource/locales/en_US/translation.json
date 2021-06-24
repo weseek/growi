@@ -583,6 +583,12 @@
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
+    "share_link_rights": "Share link rights",
+    "link_sharing": "Link sharing",
+    "link_sharing_rights_choices": {
+      "allow": "Allow",
+      "deny": "Deny"
+    },
     "configuration": " Configuration",
     "optional": "Optional",
     "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
