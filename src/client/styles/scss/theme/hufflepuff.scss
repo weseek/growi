@@ -294,4 +294,28 @@ html[dark] {
       background-size: cover;
     }
   }
+
+  // login and register
+  .nologin {
+    #page-wrapper {
+      background-color: $themedark;
+      background-image: url('/images/themes/hufflepuff/badger-light.png');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
+
+    .login-header,
+    .login-dialog {
+      background-color: rgba(black, 0.1);
+    }
+
+    .link-switch {
+      color: $color-global;
+    }
+
+    .grw-external-auth-form {
+      border-color: $accentcolor !important;
+    }
+  }
 }
