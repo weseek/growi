@@ -70,6 +70,7 @@ const PageCreateModal = (props) => {
   function onChangeTemplateHandler(value) {
     setTemplate(value);
   }
+
   /**
    * join path, check if creatable, then redirect
    * @param {string} paths
@@ -77,12 +78,11 @@ const PageCreateModal = (props) => {
   function joinCheckRedirect(...paths) {
     const joinedUrl = encodeURI(urljoin(...paths));
     if (!isCreatablePage(joinedUrl)) {
-      toastError('Invalid characters found.');
+      toastError(new Error('Invalid characters found.'));
       return;
     }
     window.location.href = generateEditorPath(joinedUrl);
   }
-
   /**
    * access today page
    */
