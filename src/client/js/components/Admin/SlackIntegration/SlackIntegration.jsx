@@ -183,7 +183,11 @@ const SlackIntegration = (props) => {
           </a>
         </h2>
 
-        {Object.keys(connectionStatuses).length === 0 ? <h1>hoeg</h1>
+        {Object.keys(connectionStatuses).length === 0 ? (
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          </div>
+        )
         : (
           <>
             <div className="d-flex justify-content-end">
