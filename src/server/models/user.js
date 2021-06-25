@@ -586,7 +586,6 @@ module.exports = function(crowi) {
         results.forEach((result) => {
           if (result.status === 'fulfilled') {
             createdUserList.push(result.value);
-
             // remove created user
             const index = failedToCreateUserEmailList.indexOf(result.value.email);
             failedToCreateUserEmailList.splice(index, 1);
