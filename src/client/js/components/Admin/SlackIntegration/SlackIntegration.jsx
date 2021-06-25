@@ -27,6 +27,7 @@ const SlackIntegration = (props) => {
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
   const [connectionStatuses, setConnectionStatuses] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
@@ -44,6 +45,7 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+      setIsLoading(false);
     }
     catch (err) {
       toastError(err);
@@ -113,6 +115,34 @@ const SlackIntegration = (props) => {
     setSelectedBotType(null);
   };
 
+    return (
+      <>
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn btn-outline-danger"
+            type="button"
+            onClick={() => setIsDeleteConfirmModalShown(true)}
+          >{t('admin:slack_integration.reset_all_settings')}
+          </button>
+        </div>
+
+        <div className="row my-5 flex-wrap-reverse justify-content-center">
+          {botTypes.map((botType) => {
+        return (
+          <div key={botType} className="m-3">
+            <BotTypeCard
+              botType={botType}
+              isActive={currentBotType === botType}
+              onBotTypeSelectHandler={botTypeSelectHandler}
+            />
+          </div>
+        );
+      })}
+        </div>
+      </>
+    );
+
+  };
   let settingsComponent = null;
 
   switch (currentBotType) {
@@ -157,7 +187,6 @@ const SlackIntegration = (props) => {
       break;
   }
 
-  console.log(connectionStatuses);
   return (
     <>
       <ConfirmBotChangeModal
@@ -183,7 +212,7 @@ const SlackIntegration = (props) => {
           </a>
         </h2>
 
-        {Object.keys(connectionStatuses).length === 0 ? (
+        {isLoading ? (
           <div className="text-muted text-center">
             <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
           </div>
@@ -213,7 +242,9 @@ const SlackIntegration = (props) => {
           })}
             </div>
           </>
-        )}
+)}
+
+
       </div>
 
       {settingsComponent}
