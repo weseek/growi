@@ -28,7 +28,7 @@ export class SelectRequestService implements GrowiCommandProcessor {
         callback_id: 'select_growi',
         title: {
           type: 'plain_text',
-          text: 'Slect Growi url',
+          text: 'Select GROWI Url',
         },
         submit: {
           type: 'plain_text',
