@@ -78,18 +78,24 @@ const isCreatablePage = (path) => {
  * @returns {string}
  */
 function joinUrl(...paths) {
-
   const pathArray = [...paths]
     .map(str => str.replace(/^\/+|\/+$|\s/g, ''));
 
-  const queries = new Set(pathArray.filter(str => /^\?/.test(str)));
-  const hash = new Set(pathArray.filter(str => /^#/.test(str)));
+  const queries = new Set(pathArray.filter(str => /(\?|\&)([^?&=]+)\=([^?&=]+)/.test(str)));
 
-  const newPathArray = pathArray.filter((item) => {
-    return !queries.has(item) || !hash.has(item);
-  });
-  const url = new URL(newPathArray, 'http://dummy');
-  console.log(url);
+  const hashes = new Set(pathArray.filter(str => /^#/.test(str)));
+
+  if (queries.size > 1 || hashes.size > 1) {
+    throw new Error('Do not enter more than 1 query string or hash');
+  }
+
+  const path = pathArray
+    .filter(item => !queries.has(item) && !hashes.has(item))
+    .join('/')
+    .concat([...queries])
+    .concat([...hashes]);
+
+  return `/${path}`;
 }
 
 /**
