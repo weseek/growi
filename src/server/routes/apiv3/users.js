@@ -143,7 +143,12 @@ module.exports = (crowi) => {
     await Promise.allSettled(promise)
       .then((results) => {
         results.forEach((result) => {
-          console.log(result);
+          if (result.status === 'fulfilled') {
+            const email = result.value.accepted[0];
+            const index = failedToSendEmailList.indexOf(email);
+            // remove faild send email
+            failedToSendEmailList.splice(index, 1);
+          }
         });
       });
 
