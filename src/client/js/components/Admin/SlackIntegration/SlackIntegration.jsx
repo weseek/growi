@@ -27,6 +27,7 @@ const SlackIntegration = (props) => {
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
   const [connectionStatuses, setConnectionStatuses] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
@@ -44,6 +45,7 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+      setIsLoading(false);
     }
     catch (err) {
       toastError(err);
@@ -155,6 +157,14 @@ const SlackIntegration = (props) => {
         />
       );
       break;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+      </div>
+    );
   }
 
   return (
