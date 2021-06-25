@@ -151,7 +151,7 @@
   "original_path":"元のパス",
   "new_path":"新しいパス",
   "duplicated_path":"重複したパス",
-  "Link sharing is disabled": "リンクのシェアは許可されていません",
+  "Link sharing is disabled": "リンクのシェアは無効化されています",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
