@@ -146,7 +146,7 @@ module.exports = (crowi) => {
           if (result.status === 'fulfilled') {
             const email = result.value.accepted[0];
             sendedEmailUserList.push(userList.filter((user) => { return user.email === email })[0]);
-            // remove faild send email
+            // remove failed send email
             const index = failedToSendEmailList.indexOf(email);
             failedToSendEmailList.splice(index, 1);
           }
@@ -156,12 +156,12 @@ module.exports = (crowi) => {
         });
       });
 
-    const faild = {
+    const failed = {
       emailList: failedToSendEmailList,
       msg: failedToSendEmailReason,
     };
 
-    return { sendedEmailUserList, faild };
+    return { sendedEmailUserList, failed };
   };
 
   /**
@@ -412,13 +412,17 @@ module.exports = (crowi) => {
 
     // Create users
     const createUsersByEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
+    if (createUsersByEmailList.failed.msg !== '') {
+      return res.apiv3Err(new ErrorV3(createUsersByEmailList.failed));
+    }
 
     // Send email
     if (req.body.sendEmail) {
-      const sendedEmailList = await sendEmailbyUserList(createUsersByEmailList.createdUserList);
+      const sendEmailList = await sendEmailbyUserList(createUsersByEmailList.createdUserList);
+      if (createUsersByEmailList.failed.msg) {
+        return res.apiv3Err(new ErrorV3(sendEmailList.failed));
+      }
     }
-    console.log(sendedEmailList);
-
     return res.apiv3({ createUsersByEmailList }, 201);
   });
 
