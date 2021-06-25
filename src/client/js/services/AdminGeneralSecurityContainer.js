@@ -35,6 +35,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGitHubEnabled: false,
       isTwitterEnabled: false,
       setupStrategies: [],
+      disableLinkSharing: false,
       shareLinks: [],
       totalshareLinks: 0,
       shareLinksPagingLimit: Infinity,
@@ -54,6 +55,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
       sessionMaxAge: generalSetting.sessionMaxAge,
       wikiMode: generalSetting.wikiMode,
+      disableLinkSharing: generalSetting.disableLinkSharing,
       isLocalEnabled: generalAuth.isLocalEnabled,
       isLdapEnabled: generalAuth.isLdapEnabled,
       isSamlEnabled: generalAuth.isSamlEnabled,
@@ -86,6 +88,13 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   setSessionMaxAge(sessionMaxAge) {
     this.setState({ sessionMaxAge });
+  }
+
+  /**
+   * setter for disableLinkSharing
+   */
+  setDisableLinkSharing(disableLinkSharing) {
+    this.setState({ disableLinkSharing });
   }
 
   /**
@@ -129,6 +138,21 @@ export default class AdminGeneralSecurityContainer extends Container {
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
+    };
+
+    requestParams = await removeNullPropertyFromObject(requestParams);
+    const response = await this.appContainer.apiv3.put('/security-setting/general-setting', requestParams);
+    const { securitySettingParams } = response.data;
+    return securitySettingParams;
+  }
+
+  /**
+   * Update Share Link Settings
+   */
+  async updateShareLinkSetting() {
+
+    let requestParams = {
+      disableLinkSharing: this.state.disableLinkSharing,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
