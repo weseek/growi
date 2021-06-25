@@ -122,28 +122,42 @@ module.exports = (crowi) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
 
-    await Promise.allSettled(userList.map(async(user) => {
-      if (user.password == null) {
-        return;
-      }
+    const promise = userList.map(async(user) => {
+      return mailService.send({
+        to: user.email,
+        subject: `Invitation to ${appTitle}`,
+        template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
+        vars: {
+          email: user.email,
+          password: user.password,
+          url: crowi.appService.getSiteUrl(),
+          appTitle,
+        },
+      });
+    });
 
-      try {
-        return mailService.send({
-          to: user.email,
-          subject: `Invitation to ${appTitle}`,
-          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
-          vars: {
-            email: user.email,
-            password: user.password,
-            url: crowi.appService.getSiteUrl(),
-            appTitle,
-          },
-        });
-      }
-      catch (err) {
-        return logger.debug('fail to send email: ', err);
-      }
-    }));
+    // await Promise.allSettled(userList.map(async(user) => {
+    //   if (user.password == null) {
+    //     return;
+    //   }
+
+    //   try {
+    //     return mailService.send({
+    //       to: user.email,
+    //       subject: `Invitation to ${appTitle}`,
+    //       template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
+    //       vars: {
+    //         email: user.email,
+    //         password: user.password,
+    //         url: crowi.appService.getSiteUrl(),
+    //         appTitle,
+    //       },
+    //     });
+    //   }
+    //   catch (err) {
+    //     return logger.debug('fail to send email: ', err);
+    //   }
+    // }));
 
   };
 
