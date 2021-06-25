@@ -4,7 +4,6 @@ const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
 const md5 = require('md5');
 
