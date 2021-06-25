@@ -596,12 +596,12 @@ module.exports = function(crowi) {
         });
       });
 
-    const failedToCreateUser = {
+    const failed = {
       emailList: failedToCreateUserEmailList,
       msg: failedToCreateReason,
     };
 
-    return { existingEmailList, createdUserList, failedToCreateUser };
+    return { existingEmailList, createdUserList, failed };
   };
 
   userSchema.statics.sendEmailbyUserList = async function(userList) {

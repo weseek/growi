@@ -156,12 +156,12 @@ module.exports = (crowi) => {
         });
       });
 
-    const faildToSendEmailUser = {
+    const faild = {
       emailList: failedToSendEmailList,
       msg: failedToSendEmailReason,
     };
 
-    return { sendedEmailUserList, faildToSendEmailUser };
+    return { sendedEmailUserList, faild };
   };
 
   /**
