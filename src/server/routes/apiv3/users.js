@@ -124,7 +124,7 @@ module.exports = (crowi) => {
 
     const sendedEmailUserList = [];
     const failedToSendEmailList = userList.map((user) => { return user.email });
-    const failedToSendEmailReason = '';
+    let failedToSendEmailReason = '';
 
     const promise = userList.map(async(user) => {
       return mailService.send({
@@ -145,9 +145,13 @@ module.exports = (crowi) => {
         results.forEach((result) => {
           if (result.status === 'fulfilled') {
             const email = result.value.accepted[0];
-            const index = failedToSendEmailList.indexOf(email);
+            sendedEmailUserList.push(userList.filter((user) => { return user.email === email })[0]);
             // remove faild send email
+            const index = failedToSendEmailList.indexOf(email);
             failedToSendEmailList.splice(index, 1);
+          }
+          else {
+            failedToSendEmailReason = result.reason;
           }
         });
       });
@@ -407,13 +411,13 @@ module.exports = (crowi) => {
     }
 
     // Create users
-    const afterWorkEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
+    const createUsersByEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
 
     // Send email
-    const sendedEmailList = await sendEmailbyUserList(afterWorkEmailList.createdUserList);
+    const sendedEmailList = await sendEmailbyUserList(createUsersByEmailList.createdUserList);
     console.log(sendedEmailList);
 
-    return res.apiv3({ afterWorkEmailList }, 201);
+    return res.apiv3({ createUsersByEmailList }, 201);
   });
 
   /**
