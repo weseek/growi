@@ -414,7 +414,9 @@ module.exports = (crowi) => {
     const createUsersByEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
 
     // Send email
-    const sendedEmailList = await sendEmailbyUserList(createUsersByEmailList.createdUserList);
+    if (req.body.sendEmail) {
+      const sendedEmailList = await sendEmailbyUserList(createUsersByEmailList.createdUserList);
+    }
     console.log(sendedEmailList);
 
     return res.apiv3({ createUsersByEmailList }, 201);
