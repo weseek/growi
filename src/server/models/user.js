@@ -574,7 +574,6 @@ module.exports = function(crowi) {
 
     const createdUserList = [];
     const failedToCreateUserEmailList = creationEmailList;
-    let failedToCreateReason = '';
 
     const promise = creationEmailList.map(async(email) => {
       const user = await this.createUserByEmail(email);
@@ -591,17 +590,12 @@ module.exports = function(crowi) {
             failedToCreateUserEmailList.splice(index, 1);
           }
           else {
-            failedToCreateReason = result.reason;
+            logger.error(result.reason);
           }
         });
       });
 
-    const failed = {
-      emailList: failedToCreateUserEmailList,
-      msg: failedToCreateReason,
-    };
-
-    return { existingEmailList, createdUserList, failed };
+    return { existingEmailList, createdUserList, failedToCreateUserEmailList };
   };
 
   userSchema.statics.sendEmailbyUserList = async function(userList) {

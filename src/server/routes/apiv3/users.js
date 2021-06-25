@@ -122,9 +122,7 @@ module.exports = (crowi) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
 
-    const sendedEmailUserList = [];
     const failedToSendEmailList = userList.map((user) => { return user.email });
-    let failedToSendEmailReason = '';
 
     const promise = userList.map(async(user) => {
       return mailService.send({
@@ -145,23 +143,17 @@ module.exports = (crowi) => {
         results.forEach((result) => {
           if (result.status === 'fulfilled') {
             const email = result.value.accepted[0];
-            sendedEmailUserList.push(userList.filter((user) => { return user.email === email })[0]);
             // remove failed send email
             const index = failedToSendEmailList.indexOf(email);
             failedToSendEmailList.splice(index, 1);
           }
           else {
-            failedToSendEmailReason = result.reason;
+            logger.error(result.reason);
           }
         });
       });
 
-    const failed = {
-      emailList: failedToSendEmailList,
-      msg: failedToSendEmailReason,
-    };
-
-    return { sendedEmailUserList, failed };
+    return failedToSendEmailList;
   };
 
   /**
@@ -411,19 +403,19 @@ module.exports = (crowi) => {
     }
 
     // Create users
-    const createUsersByEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
-    if (createUsersByEmailList.failed.msg !== '') {
-      return res.apiv3Err(new ErrorV3(createUsersByEmailList.failed));
+    const afterWorkEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
+    if (afterWorkEmailList.failedToCreateUserEmailList.length > 0) {
+      return res.apiv3Err(new ErrorV3('Failed to create user', afterWorkEmailList.failedToCreateUserEmailList));
     }
 
     // Send email
     if (req.body.sendEmail) {
-      const sendEmailList = await sendEmailbyUserList(createUsersByEmailList.createdUserList);
-      if (createUsersByEmailList.failed.msg) {
-        return res.apiv3Err(new ErrorV3(sendEmailList.failed));
+      const failedToSendEmailList = await sendEmailbyUserList(afterWorkEmailList.createdUserList);
+      if (failedToSendEmailList.length > 0) {
+        return res.apiv3Err(new ErrorV3('Failed to send email', failedToSendEmailList));
       }
     }
-    return res.apiv3({ createUsersByEmailList }, 201);
+    return res.apiv3({ afterWorkEmailList }, 201);
   });
 
   /**
