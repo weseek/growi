@@ -157,6 +157,7 @@ const SlackIntegration = (props) => {
       break;
   }
 
+  console.log(connectionStatuses);
   return (
     <>
       <ConfirmBotChangeModal
@@ -182,17 +183,20 @@ const SlackIntegration = (props) => {
           </a>
         </h2>
 
-        <div className="d-flex justify-content-end">
-          <button
-            className="btn btn-outline-danger"
-            type="button"
-            onClick={() => setIsDeleteConfirmModalShown(true)}
-          >{t('admin:slack_integration.reset_all_settings')}
-          </button>
-        </div>
+        {Object.keys(connectionStatuses).length === 0 ? <h1>hoeg</h1>
+        : (
+          <>
+            <div className="d-flex justify-content-end">
+              <button
+                className="btn btn-outline-danger"
+                type="button"
+                onClick={() => setIsDeleteConfirmModalShown(true)}
+              >{t('admin:slack_integration.reset_all_settings')}
+              </button>
+            </div>
 
-        <div className="row my-5 flex-wrap-reverse justify-content-center">
-          {botTypes.map((botType) => {
+            <div className="row my-5 flex-wrap-reverse justify-content-center">
+              {botTypes.map((botType) => {
             return (
               <div key={botType} className="m-3">
                 <BotTypeCard
@@ -203,7 +207,9 @@ const SlackIntegration = (props) => {
               </div>
             );
           })}
-        </div>
+            </div>
+          </>
+        )}
       </div>
 
       {settingsComponent}
