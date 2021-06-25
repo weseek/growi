@@ -6,6 +6,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const path = require('path');
+
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
@@ -115,6 +117,35 @@ module.exports = (crowi) => {
   validator.recentCreatedByUser = [
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
+
+  const sendEmailbyUserList = async(userList) => {
+    const { appService, mailService } = crowi;
+    const appTitle = appService.getAppTitle();
+
+    await Promise.allSettled(userList.map(async(user) => {
+      if (user.password == null) {
+        return;
+      }
+
+      try {
+        return mailService.send({
+          to: user.email,
+          subject: `Invitation to ${appTitle}`,
+          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
+          vars: {
+            email: user.email,
+            password: user.password,
+            url: crowi.appService.getSiteUrl(),
+            appTitle,
+          },
+        });
+      }
+      catch (err) {
+        return logger.debug('fail to send email: ', err);
+      }
+    }));
+
+  };
 
   /**
    * @swagger
@@ -378,7 +409,7 @@ module.exports = (crowi) => {
     // Send email
     try {
       if (req.body.sendEmail) {
-        await User.sendEmailbyUserList(afterWorkEmailList.createdUserList);
+        await sendEmailbyUserList(afterWorkEmailList.createdUserList);
       }
       return res.apiv3({ afterWorkEmailList }, 201);
     }
