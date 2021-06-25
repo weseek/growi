@@ -610,18 +610,6 @@ module.exports = function(crowi) {
 
   };
 
-  userSchema.statics.createUsersByInvitation = async function(emailList) {
-    validateCrowi();
-
-    if (!Array.isArray(emailList)) {
-      debug('emailList is not array');
-    }
-
-    const afterWorkEmailList = await this.createUsersByEmailList(emailList);
-
-    return afterWorkEmailList;
-  };
-
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
     const User = this;
     const newUser = new User();
