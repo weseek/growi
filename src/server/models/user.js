@@ -573,7 +573,8 @@ module.exports = function(crowi) {
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
     const createdUserList = [];
-    let failedToCreatetReason;
+    const failedToCreateUserEmailList = creationEmailList;
+    let failedToCreateReason = '';
 
     const promise = creationEmailList.map(async(email) => {
       const user = await this.createUserByEmail(email);
@@ -585,14 +586,23 @@ module.exports = function(crowi) {
         results.forEach((result) => {
           if (result.status === 'fulfilled') {
             createdUserList.push(result.value);
+
+            // remove created user
+            const index = failedToCreateUserEmailList.indexOf(result.value.email);
+            failedToCreateUserEmailList.splice(index, 1);
           }
           else {
-            failedToCreatetReason = result.reason;
+            failedToCreateReason = result.reason;
           }
         });
       });
 
-    return { existingEmailList, createdUserList };
+    const failedToCreateUser = {
+      emailList: failedToCreateUserEmailList,
+      msg: failedToCreateReason,
+    };
+
+    return { existingEmailList, createdUserList, failedToCreateUser };
   };
 
   userSchema.statics.sendEmailbyUserList = async function(userList) {
