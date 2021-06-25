@@ -1,4 +1,6 @@
-const urljoin = require('url-join');
+// const nodePath = require('path');
+// const nodeUrl = require('url');
+// const urljoin = require('url-join');
 const escapeStringRegexp = require('escape-string-regexp');
 
 /**
@@ -71,12 +73,32 @@ const isCreatablePage = (path) => {
 };
 
 /**
+ * join url
+ * @param {string} paths
+ * @returns {string}
+ */
+function joinUrl(...paths) {
+
+  const pathArray = [...paths]
+    .map(str => str.replace(/^\/+|\/+$|\s/g, ''));
+
+  const queries = new Set(pathArray.filter(str => /^\?/.test(str)));
+  const hash = new Set(pathArray.filter(str => /^#/.test(str)));
+
+  const newPathArray = pathArray.filter((item) => {
+    return !queries.has(item) || !hash.has(item);
+  });
+  const url = new URL(newPathArray, 'http://dummy');
+  console.log(url);
+}
+
+/**
  * return path to editor
  * @param {string} path
  * @returns {string}
  */
-function generateEditorPath(path) {
-  return urljoin(path, '#edit');
+function generateEditorPath(...paths) {
+  return joinUrl(...paths, '#edit');
 }
 
 /**

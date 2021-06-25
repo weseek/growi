@@ -6,15 +6,17 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import urljoin from 'url-join';
+// import urljoin from 'url-join';
 
-import { userPageRoot, isCreatablePage, generateEditorPath } from '@commons/util/path-utils';
+import {
+  userPageRoot, isCreatablePage, generateEditorPath,
+} from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
 
 import AppContainer from '../services/AppContainer';
 import NavigationContainer from '../services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
+// import { toastError } from '../util/apiNotification';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -76,12 +78,12 @@ const PageCreateModal = (props) => {
    * @param {string} paths
    */
   function joinCheckRedirect(...paths) {
-    const joinedUrl = encodeURI(urljoin(...paths));
-    if (!isCreatablePage(joinedUrl)) {
-      toastError(new Error('Invalid characters found on new page path'));
-      return;
-    }
-    window.location.href = generateEditorPath(joinedUrl);
+    // const joinedUrl = encodeURI(urljoin(...paths));
+    // if (!isCreatablePage(joinedUrl)) {
+    //   toastError(new Error('Invalid characters found on new page path'));
+    //   return;
+    // }
+    window.location.href = generateEditorPath(...paths);
   }
 
   /**
