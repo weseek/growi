@@ -177,6 +177,7 @@ class ShareLinkSetting extends React.Component {
             </button>
           </div>
         </div>
+        <h4>{t('security_setting.all_share_links')}</h4>
         <Pager
           links={shareLinks}
           activePage={shareLinksActivePage}
