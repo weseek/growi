@@ -598,35 +598,6 @@ module.exports = function(crowi) {
     return { existingEmailList, createdUserList, failedToCreateUserEmailList };
   };
 
-  userSchema.statics.sendEmailbyUserList = async function(userList) {
-    const { appService, mailService } = crowi;
-    const appTitle = appService.getAppTitle();
-
-    await Promise.all(userList.map(async(user) => {
-      if (user.password == null) {
-        return;
-      }
-
-      try {
-        return mailService.send({
-          to: user.email,
-          subject: `Invitation to ${appTitle}`,
-          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
-          vars: {
-            email: user.email,
-            password: user.password,
-            url: crowi.appService.getSiteUrl(),
-            appTitle,
-          },
-        });
-      }
-      catch (err) {
-        return debug('fail to send email: ', err);
-      }
-    }));
-
-  };
-
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
     const User = this;
     const newUser = new User();
