@@ -162,6 +162,20 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * Switch disableLinkSharing
+   */
+  async switchDisableLinkSharing() {
+    try {
+      const response = await this.updateShareLinkSetting();
+      this.setDisableLinkSharing(!this.state.disableLinkSharing);
+      return response;
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
+  /**
    * Switch authentication
    */
   async switchAuthentication(stateVariableName, authId) {
