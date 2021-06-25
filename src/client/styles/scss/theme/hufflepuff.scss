@@ -231,7 +231,7 @@ html[dark] {
   $bgcolor-sidebar-list-group: lighten($subthemecolor, 5%);
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  $color-editor-icons: $themecolor;
 
   // Border colors
   $border-color-theme: darken($themecolor, 5%);
