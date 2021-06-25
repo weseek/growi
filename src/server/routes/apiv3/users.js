@@ -147,51 +147,12 @@ module.exports = (crowi) => {
         });
       });
 
-
-    // .then((results) => {
-    //   results.forEach((result) => {
-    //     console.log(result);
-    //     if (result.status === 'fulfilled') {
-    //       sendedEmailUserList.push(result.value);
-    //       // remove email sended user
-    //       const index = failedToSendEmailList.indexOf(result.value.email);
-    //       failedToSendEmailList.splice(index, 1);
-    //     }
-    //     else {
-    //       failedToSendEmailReason = result.reason;
-    //     }
-    //   });
-    // });
-
     const faildToSendEmailUser = {
       emailList: failedToSendEmailList,
       msg: failedToSendEmailReason,
     };
 
     return { sendedEmailUserList, faildToSendEmailUser };
-
-    // await Promise.allSettled(userList.map(async(user) => {
-    //   if (user.password == null) {
-    //     return;
-    //   }
-
-    //   try {
-    //     return mailService.send({
-    //       to: user.email,
-    //       subject: `Invitation to ${appTitle}`,
-    //       template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
-    //       vars: {
-    //         email: user.email,
-    //         password: user.password,
-    //         url: crowi.appService.getSiteUrl(),
-    //         appTitle,
-    //       },
-    //     });
-    //   }
-    //   catch (err) {
-    //     return logger.debug('fail to send email: ', err);
-    //   }
-    // }));
   };
 
   /**
