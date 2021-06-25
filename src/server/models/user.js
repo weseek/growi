@@ -573,10 +573,24 @@ module.exports = function(crowi) {
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
     const createdUserList = [];
-    await Promise.all(creationEmailList.map(async(email) => {
-      const createdEmail = await this.createUserByEmail(email);
-      createdUserList.push(createdEmail);
-    }));
+    let failedToCreatetReason;
+
+    const promise = creationEmailList.map(async(email) => {
+      const user = await this.createUserByEmail(email);
+      return user;
+    });
+
+    await Promise.allSettled(promise)
+      .then((results) => {
+        results.forEach((result) => {
+          if (result.status === 'fulfilled') {
+            createdUserList.push(result.value);
+          }
+          else {
+            failedToCreatetReason = result.reason;
+          }
+        });
+      });
 
     return { existingEmailList, createdUserList };
   };
