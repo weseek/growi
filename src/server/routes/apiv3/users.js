@@ -444,17 +444,10 @@ module.exports = (crowi) => {
     const afterWorkEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
 
     // Send email
-    try {
-      if (req.body.sendEmail) {
-        await sendEmailbyUserList(afterWorkEmailList.createdUserList);
-        return res.apiv3({ afterWorkEmailList }, 201);
-      }
-    }
-    catch (err) {
-      const msg = 'Failed to send email';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, afterWorkEmailList.createdUserList));
-    }
+    const sendedEmailList = await sendEmailbyUserList(afterWorkEmailList.createdUserList);
+    console.log(sendedEmailList);
+
+    return res.apiv3({ afterWorkEmailList }, 201);
   });
 
   /**
