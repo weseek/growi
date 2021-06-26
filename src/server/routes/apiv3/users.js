@@ -124,7 +124,7 @@ module.exports = (crowi) => {
 
     const failedToSendEmailList = userList.map((user) => { return user.email });
 
-    const promise = userList.map((user) => {
+    const promises = userList.map((user) => {
       return mailService.send({
         to: user.email,
         subject: `Invitation to ${appTitle}`,
@@ -138,7 +138,7 @@ module.exports = (crowi) => {
       });
     });
 
-    const results = await Promise.allSettled(promise);
+    const results = await Promise.allSettled(promises);
     results
       .forEach((result) => {
         if (result.status === 'fulfilled') {
