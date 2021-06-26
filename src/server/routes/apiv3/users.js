@@ -124,7 +124,7 @@ module.exports = (crowi) => {
 
     const failedToSendEmailList = userList.map((user) => { return user.email });
 
-    const promise = userList.map(async(user) => {
+    const promise = userList.map((user) => {
       return mailService.send({
         to: user.email,
         subject: `Invitation to ${appTitle}`,
@@ -138,19 +138,18 @@ module.exports = (crowi) => {
       });
     });
 
-    await Promise.allSettled(promise)
-      .then((results) => {
-        results.forEach((result) => {
-          if (result.status === 'fulfilled') {
-            const email = result.value.accepted[0];
-            // remove failed send email
-            const index = failedToSendEmailList.indexOf(email);
-            failedToSendEmailList.splice(index, 1);
-          }
-          else {
-            logger.error(result.reason);
-          }
-        });
+    const results = await Promise.allSettled(promise);
+    results
+      .forEach((result) => {
+        if (result.status === 'fulfilled') {
+          const email = result.value.accepted[0];
+          // remove failed send email
+          const index = failedToSendEmailList.indexOf(email);
+          failedToSendEmailList.splice(index, 1);
+        }
+        else {
+          logger.error(result.reason);
+        }
       });
 
     return failedToSendEmailList;
