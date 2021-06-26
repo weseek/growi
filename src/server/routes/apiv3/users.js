@@ -400,6 +400,7 @@ module.exports = (crowi) => {
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
+    // Delete duplicate email addresses
     const emailList = Array.from(new Set(req.body.shapedEmailList));
 
     // Create users
