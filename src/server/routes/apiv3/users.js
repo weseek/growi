@@ -400,12 +400,10 @@ module.exports = (crowi) => {
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
-    if (!Array.isArray(req.body.shapedEmailList)) {
-      logger.debug('emailList is not array');
-    }
+    const emailList = Array.from(new Set(req.body.shapedEmailList));
 
     // Create users
-    const createUser = await User.createUsersByEmailList(req.body.shapedEmailList);
+    const createUser = await User.createUsersByEmailList(emailList);
     if (createUser.failedToCreateUserEmailList.length > 0 && createUser.createdUserList.length === 0) {
       return res.apiv3Err(new ErrorV3('Failed to create user', createUser.failedToCreateUserEmailList));
     }
