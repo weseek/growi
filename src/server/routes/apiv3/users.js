@@ -394,6 +394,9 @@ module.exports = (crowi) => {
    *                    existingEmailList:
    *                      type: object
    *                      description: Users email that already exists
+   *                    failedToCreateUserEmailList:
+   *                      type: object
+   *                      description: Users email that failed to create
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
