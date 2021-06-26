@@ -574,12 +574,12 @@ module.exports = function(crowi) {
     const createdUserList = [];
     const failedToCreateUserEmailList = creationEmailList;
 
-    const promise = creationEmailList.map(async(email) => {
+    const promises = creationEmailList.map(async(email) => {
       const user = await this.createUserByEmail(email);
       return user;
     });
 
-    await Promise.allSettled(promise)
+    await Promise.allSettled(promises)
       .then((results) => {
         results.forEach((result) => {
           if (result.status === 'fulfilled') {
