@@ -404,7 +404,7 @@ module.exports = (crowi) => {
 
     // Create users
     const afterWorkEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
-    if (afterWorkEmailList.failedToCreateUserEmailList.length > 0) {
+    if (afterWorkEmailList.failedToCreateUserEmailList.length > 0 && afterWorkEmailList.createdUserList.length === 0) {
       return res.apiv3Err(new ErrorV3('Failed to create user', afterWorkEmailList.failedToCreateUserEmailList));
     }
 
