@@ -402,19 +402,19 @@ module.exports = (crowi) => {
     }
 
     // Create users
-    const afterWorkEmailList = await User.createUsersByEmailList(req.body.shapedEmailList);
-    if (afterWorkEmailList.failedToCreateUserEmailList.length > 0 && afterWorkEmailList.createdUserList.length === 0) {
-      return res.apiv3Err(new ErrorV3('Failed to create user', afterWorkEmailList.failedToCreateUserEmailList));
+    const createUser = await User.createUsersByEmailList(req.body.shapedEmailList);
+    if (createUser.failedToCreateUserEmailList.length > 0 && createUser.createdUserList.length === 0) {
+      return res.apiv3Err(new ErrorV3('Failed to create user', createUser.failedToCreateUserEmailList));
     }
 
     // Send email
     if (req.body.sendEmail) {
-      const failedToSendEmailList = await sendEmailbyUserList(afterWorkEmailList.createdUserList);
+      const failedToSendEmailList = await sendEmailbyUserList(createUser.createdUserList);
       if (failedToSendEmailList.length > 0) {
         return res.apiv3Err(new ErrorV3('Failed to send email', failedToSendEmailList));
       }
     }
-    return res.apiv3({ afterWorkEmailList }, 201);
+    return res.apiv3({ createUser }, 201);
   });
 
   /**
