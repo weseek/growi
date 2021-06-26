@@ -579,19 +579,18 @@ module.exports = function(crowi) {
       return user;
     });
 
-    await Promise.allSettled(promises)
-      .then((results) => {
-        results.forEach((result) => {
-          if (result.status === 'fulfilled') {
-            createdUserList.push(result.value);
-            // remove created user
-            const index = failedToCreateUserEmailList.indexOf(result.value.email);
-            failedToCreateUserEmailList.splice(index, 1);
-          }
-          else {
-            logger.error(result.reason);
-          }
-        });
+    const results = await Promise.allSettled(promises);
+    results
+      .forEach((result) => {
+        if (result.status === 'fulfilled') {
+          createdUserList.push(result.value);
+          // remove created user
+          const index = failedToCreateUserEmailList.indexOf(result.value.email);
+          failedToCreateUserEmailList.splice(index, 1);
+        }
+        else {
+          logger.error(result.reason);
+        }
       });
 
     return { existingEmailList, createdUserList, failedToCreateUserEmailList };
