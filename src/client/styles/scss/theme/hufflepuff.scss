@@ -177,7 +177,6 @@ html[dark] {
   // $bgcolor-navbar: #27343b;
   $bgcolor-inline-code: $subthemecolor;
   $bgcolor-card: darken($themedark, 5%);
-  // ↓mono-blue's copy↓
   $bgcolor-highlighted: rgba($primary, 0.5);
 
   // Font colors
@@ -205,6 +204,7 @@ html[dark] {
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #90a555 0%, #3d98a3 50%, #eaab20 100%);
 
+  // ↓mono-blue's copy↓
   // Logo colors
   $bgcolor-logo: #13191c;
   $fillcolor-logo-mark: white;
@@ -285,6 +285,30 @@ html[dark] {
       background-attachment: fixed;
       background-position: bottom;
       background-size: cover;
+    }
+  }
+
+  // login and register
+  .nologin {
+    #page-wrapper {
+      background-color: $themedark;
+      background-image: url('/images/themes/hufflepuff/badger-light.png');
+      background-attachment: fixed;
+      background-position: bottom;
+      background-size: cover;
+    }
+
+    .login-header,
+    .login-dialog {
+      background-color: rgba(black, 0.1);
+    }
+
+    .link-switch {
+      color: $color-global;
+    }
+
+    .grw-external-auth-form {
+      border-color: $accentcolor !important;
     }
   }
 }
