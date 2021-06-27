@@ -1,4 +1,4 @@
-import { Service } from '@tsed/di';
+import { Inject, Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
 import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
@@ -11,6 +11,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 @Service()
 export class RegisterService implements GrowiCommandProcessor {
+
+  @Inject()
+  orderRepository: OrderRepository;
 
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
     const { botToken } = authorizeResult;
@@ -45,7 +48,7 @@ export class RegisterService implements GrowiCommandProcessor {
   }
 
   async insertOrderRecord(
-      orderRepository: OrderRepository, installation: Installation | undefined,
+      installation: Installation | undefined,
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       botToken: string | undefined, payload: any,
   ): Promise<void> {
@@ -79,7 +82,7 @@ export class RegisterService implements GrowiCommandProcessor {
       throw new InvalidUrlError(growiUrl);
     }
 
-    orderRepository.save({
+    this.orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,
     });
   }
