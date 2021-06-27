@@ -7,7 +7,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  generateMarkdownSectionBlock, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+  generateMarkdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -72,6 +72,45 @@ export class SlackCtrl {
       // eslint-disable-next-line max-len
       + '<img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />'
       + '</a>';
+  }
+
+  /**
+   * Send command to specified GROWIs
+   * @param growiCommand
+   * @param relations
+   * @param body
+   * @returns
+   */
+  private async sendCommand(growiCommand: GrowiCommand, relations: Relation[], body: any) {
+    if (relations.length === 0) {
+      throw new Error('relations must be set');
+    }
+    const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
+
+    const promises = relations.map((relation: Relation) => {
+      // generate API URL
+      const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
+      return axios.post(url.toString(), {
+        ...body,
+        growiCommand,
+      }, {
+        headers: {
+          'x-growi-ptog-tokens': relation.tokenPtoG,
+        },
+      });
+    });
+
+    // pickup PromiseRejectedResult only
+    const results = await Promise.allSettled(promises);
+    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
+    }
+    catch (err) {
+      logger.error(err);
+    }
   }
 
   @Post('/commands')
@@ -152,31 +191,7 @@ export class SlackCtrl {
     /*
      * forward to GROWI server
      */
-    const promises = relations.map((relation: Relation) => {
-      // generate API URL
-      const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
-      return axios.post(url.toString(), {
-        ...body,
-        growiCommand,
-      }, {
-        headers: {
-          'x-growi-ptog-tokens': relation.tokenPtoG,
-        },
-      });
-    });
-
-    // pickup PromiseRejectedResult only
-    const results = await Promise.allSettled(promises);
-    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-    const botToken = installation?.data.bot?.token;
-
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
-    }
-    catch (err) {
-      logger.error(err);
-    }
+    this.sendCommand(growiCommand, relations, body);
   }
 
   @Post('/interactions')
