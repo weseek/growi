@@ -19,7 +19,7 @@ import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
-import { SelectRequestService } from '~/services/SelectRequestService';
+import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
@@ -45,7 +45,7 @@ export class SlackCtrl {
   orderRepository: OrderRepository;
 
   @Inject()
-  selectRequestService: SelectRequestService;
+  selectGrowiService: SelectGrowiService;
 
   @Inject()
   registerService: RegisterService;
@@ -185,7 +185,7 @@ export class SlackCtrl {
     });
 
     if (body.growiUris != null && body.growiUris.length > 0) {
-      return this.selectRequestService.process(growiCommand, authorizeResult, body);
+      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
     /*
@@ -243,8 +243,8 @@ export class SlackCtrl {
 
     // forward to GROWI server
     if (callBackId === 'select_growi') {
-      await this.selectRequestService.forwardRequest(this.relationRepository, installation, payload);
-      return;
+      const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
+      return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
     /*
