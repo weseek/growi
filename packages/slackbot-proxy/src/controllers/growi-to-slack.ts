@@ -19,7 +19,6 @@ import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 import { findInjectorByType } from '~/services/growi-uri-injector/GrowiUriInjectorFactory';
-import { injectGrowiUriToView } from '~/utils/injectGrowiUriToView';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 
 
