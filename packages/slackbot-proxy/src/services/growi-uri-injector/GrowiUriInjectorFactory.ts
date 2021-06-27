@@ -1,16 +1,16 @@
-import { GrowiUriInjector } from './GrowiUriInjector';
+import { ObsoleteGrowiUriInjector } from '~/interfaces/growi-to-slack/growi-uri-injector';
 import { GrowiUriInjectionButtonDelegator } from './GrowiUriInjectionButtonDelegator';
 
 /**
  * Instanciate GrowiUriInjector
  */
 export const growiUriInjectorFactory = {
-  button: (): GrowiUriInjector => {
+  button: (): ObsoleteGrowiUriInjector => {
     return new GrowiUriInjectionButtonDelegator();
   },
 };
 
-export const findInjectorByType = (type:string): null|GrowiUriInjector => {
+export const findInjectorByType = (type:string): null|ObsoleteGrowiUriInjector => {
   if (!Object.keys(growiUriInjectorFactory).includes(type)) {
     return null;
   }

@@ -1,6 +1,6 @@
-import { GrowiUriInjector } from './GrowiUriInjector';
+import { ObsoleteGrowiUriInjector } from '~/interfaces/growi-to-slack/growi-uri-injector';
 
-export class GrowiUriInjectionButtonDelegator implements GrowiUriInjector {
+export class GrowiUriInjectionButtonDelegator implements ObsoleteGrowiUriInjector {
 
   inject(element: {value:string}, growiUri:string): void {
     const parsedValue = JSON.parse(element.value);
