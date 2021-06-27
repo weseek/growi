@@ -221,7 +221,7 @@ export class SlackCtrl {
     // register
     if (callBackId === 'register') {
       try {
-        await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult.botToken, payload);
+        await this.registerService.insertOrderRecord(installation, authorizeResult.botToken, payload);
       }
       catch (err) {
         if (err instanceof InvalidUrlError) {
@@ -237,7 +237,7 @@ export class SlackCtrl {
 
     // unregister
     if (callBackId === 'unregister') {
-      await this.unregisterService.unregister(this.relationRepository, installation, authorizeResult, payload);
+      await this.unregisterService.unregister(installation, authorizeResult, payload);
       return;
     }
 
