@@ -205,7 +205,7 @@ export class GrowiToSlackCtrl {
 
   @Post('/:method')
   @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
-  async postResult(
+  async callSlackApi(
     @PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
   ): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
