@@ -11,6 +11,7 @@
     * stream-to-promise
     * validator
     * ws
+    * nodemailer
 
 ## v4.2.20
 
