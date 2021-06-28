@@ -1,6 +1,3 @@
-// const nodePath = require('path');
-// const nodeUrl = require('url');
-// const urljoin = require('url-join');
 const escapeStringRegexp = require('escape-string-regexp');
 
 /**
@@ -73,28 +70,6 @@ const isCreatablePage = (path) => {
 };
 
 /**
- * join url
- * @param {string} paths
- * @returns {string}
- */
-function joinUrl(...paths) {
-  const pathArray = [...paths].map(str => encodeURI(str.replace(/^\/+|\/+$|\s/g, '')));
-  const queries = new Set(pathArray.filter(str => /(\?|&)([^?&=]+)=([^?&=]+)/.test(str)));
-  const hashes = new Set(pathArray.filter(str => /^#/.test(str)));
-  if (queries.size > 1 || hashes.size > 1) {
-    throw new Error('Do not enter more than 1 query string or hash');
-  }
-
-  const path = pathArray
-    .filter(item => !queries.has(item) && !hashes.has(item))
-    .join('/')
-    .concat([...queries])
-    .concat([...hashes]);
-
-  return `/${path}`;
-}
-
-/**
  * return path to editor
  * @param {string} path
  * @returns {string}
@@ -151,7 +126,6 @@ module.exports = {
   isUserPage,
   isCreatablePage,
   generateEditorPath,
-  joinUrl,
   userPageRoot,
   convertToNewAffiliationPath,
   encodeSpaces,
