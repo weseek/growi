@@ -608,7 +608,7 @@ module.exports = function(crowi) {
     //     }
     //   });
 
-    return { createdUserList, existingEmailList, failedToCreateUserEmailList };
+    // return { createdUserList, existingEmailList, failedToCreateUserEmailList };
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
