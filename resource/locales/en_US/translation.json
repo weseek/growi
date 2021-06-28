@@ -148,6 +148,7 @@
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
+  "Link sharing is disabled": "Link sharing is disabled",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
