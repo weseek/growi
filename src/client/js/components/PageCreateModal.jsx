@@ -237,9 +237,9 @@ const PageCreateModal = (props) => {
 
             <div id="dd-template-type" className="dropdown flex-fill">
               <button id="template-type" type="button" className="btn btn-secondary btn dropdown-toggle w-100" data-toggle="dropdown">
-                {template == null && t('template.option_label.select') }
-                {template === 'children' && t('template.children.label') }
-                {template === 'decendants' && t('template.decendants.label') }
+                {template == null && t('template.option_label.select')}
+                {template === 'children' && t('template.children.label')}
+                {template === 'decendants' && t('template.decendants.label')}
               </button>
               <div className="dropdown-menu" aria-labelledby="userMenu">
                 <button className="dropdown-item" type="button" onClick={() => onChangeTemplateHandler('children')}>
