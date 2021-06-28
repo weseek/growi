@@ -51,7 +51,7 @@ class ShareLinkSetting extends React.Component {
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
     this.deleteLinkById = this.deleteLinkById.bind(this);
-    this.putShareLinkSetting = this.putShareLinkSetting.bind(this);
+    this.switchDisableLinkSharing = this.switchDisableLinkSharing.bind(this);
   }
 
   componentWillMount() {
@@ -66,17 +66,6 @@ class ShareLinkSetting extends React.Component {
       toastError(err);
     }
 
-  }
-
-  async putShareLinkSetting() {
-    const { t, adminGeneralSecurityContainer } = this.props;
-    try {
-      await adminGeneralSecurityContainer.updateShareLinkSetting();
-      toastSuccess(t('security_setting.updated_shareLink_setting'));
-    }
-    catch (err) {
-      toastError(err);
-    }
   }
 
   showDeleteConfirmModal() {
@@ -117,6 +106,17 @@ class ShareLinkSetting extends React.Component {
     this.getShareLinkList(shareLinksActivePage);
   }
 
+  async switchDisableLinkSharing() {
+    const { t, adminGeneralSecurityContainer } = this.props;
+    try {
+      await adminGeneralSecurityContainer.switchDisableLinkSharing();
+      toastSuccess(t('toaster.switch_disable_link_sharing_success'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
@@ -138,45 +138,26 @@ class ShareLinkSetting extends React.Component {
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
         <h4>{t('security_setting.share_link_rights')}</h4>
-        <div className="row mb-4">
-          <div className="col-md-3 text-md-right py-2">
-            <strong>{t('security_setting.link_sharing')}</strong>
-          </div>
-          <div className="col-md-9">
-            <div className="dropdown">
-              <button
-                className={`btn btn-outline-secondary dropdown-toggle text-right col-12
-                            col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="true"
-              >
-                <span className="float-left">
-                  {disableLinkSharing === false && t('security_setting.link_sharing_rights_choices.allow')}
-                  {disableLinkSharing === true && t('security_setting.link_sharing_rights_choices.deny')}
-                </span>
-              </button>
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.setDisableLinkSharing(false) }}>
-                  {t('security_setting.link_sharing_rights_choices.allow')}
-                </button>
-                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.setDisableLinkSharing(true) }}>
-                  {t('security_setting.link_sharing_rights_choices.deny')}
-                </button>
-              </div>
+        <div className="row mb-5">
+          <div className="col-6 offset-3">
+            <div className="custom-control custom-switch custom-checkbox-success">
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id="disableLinkSharing"
+                checked={!disableLinkSharing}
+                onChange={() => this.switchDisableLinkSharing()}
+              />
+              <label className="custom-control-label" htmlFor="disableLinkSharing">
+                {t('security_setting.enable_link_sharing')}
+              </label>
             </div>
+            {!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && disableLinkSharing && (
+              <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>
+            )}
           </div>
         </div>
-
-        <div className="row my-3">
-          <div className="text-center text-md-left offset-md-3 col-md-5">
-            <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putShareLinkSetting}>
-              {t('Update')}
-            </button>
-          </div>
-        </div>
+        <h4>{t('security_setting.all_share_links')}</h4>
         <Pager
           links={shareLinks}
           activePage={shareLinksActivePage}
