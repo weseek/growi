@@ -118,7 +118,7 @@ module.exports = (crowi) => {
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
 
-  const sendEmailbyUserList = async(userList) => {
+  const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
 
@@ -409,7 +409,7 @@ module.exports = (crowi) => {
 
     // Send email
     if (req.body.sendEmail) {
-      const sendEmail = await sendEmailbyUserList(createUser.createdUserList);
+      const sendEmail = await sendEmailByUserList(createUser.createdUserList);
       if (sendEmail.failedToSendEmailList.length > 0) {
         failedEmailList.push(sendEmail.failedToSendEmailList);
       }
