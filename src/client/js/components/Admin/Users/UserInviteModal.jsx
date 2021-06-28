@@ -9,7 +9,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError, toastWarning } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -193,9 +193,16 @@ class UserInviteModal extends React.Component {
 
     try {
       const emailList = await adminUsersContainer.createUserInvited(shapedEmailList, this.state.sendEmail);
+      const existingEmailList = emailList.existingEmailList;
+      if (existingEmailList.length > 0) {
+        let msg = 'Email addresses already exist\n\n';
+        existingEmailList.forEach((email) => {
+          msg += `${email}\n`;
+        });
+        toastWarning(msg);
+      }
       this.setState({ emailInputValue: '' });
       this.setState({ invitedEmailList: emailList });
-      toastSuccess('Inviting user success');
     }
     catch (err) {
       toastError(err);
