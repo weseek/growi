@@ -150,40 +150,6 @@ module.exports = (crowi) => {
     }));
 
     return { succeededToSendEmailList, failedToSendEmailList };
-
-    // const failedToSendEmailList = userList.map((user) => { return user.email });
-
-    // const promises = userList.map(async(user) => {
-    //   const sendEmail = await mailService.send({
-    //     to: user.email,
-    //     subject: `Invitation to ${appTitle}`,
-    //     template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
-    //     vars: {
-    //       email: user.email,
-    //       password: user.password,
-    //       url: crowi.appService.getSiteUrl(),
-    //       appTitle,
-    //     },
-    //   });
-    //   return { user, sendEmail };
-    // });
-
-    // const results = await Promise.allSettled(promises);
-    // results
-    //   .forEach((result) => {
-    //     if (result.status === 'fulfilled') {
-    //       const email = result.value.accepted[0];
-    //       // remove failed send email
-    //       const index = failedToSendEmailList.indexOf(email);
-    //       failedToSendEmailList.splice(index, 1);
-    //     }
-    //     else {
-    //       console.log(result);
-    //       logger.error(result.reason);
-    //     }
-    //   });
-
-    // return failedToSendEmailList;
   };
 
   /**

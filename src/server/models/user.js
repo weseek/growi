@@ -589,26 +589,6 @@ module.exports = function(crowi) {
     }));
 
     return { createdUserList, existingEmailList, failedToCreateUserEmailList };
-
-    // const promises = creationEmailList.map((email) => {
-    //   return this.createUserByEmail(email);
-    // });
-
-    // const results = await Promise.allSettled(promises);
-    // results
-    //   .forEach((result) => {
-    //     if (result.status === 'fulfilled') {
-    //       createdUserList.push(result.value);
-    //       // remove created user
-    //       const index = failedToCreateUserEmailList.indexOf(result.value.email);
-    //       failedToCreateUserEmailList.splice(index, 1);
-    //     }
-    //     else {
-    //       logger.error(result.reason);
-    //     }
-    //   });
-
-    // return { createdUserList, existingEmailList, failedToCreateUserEmailList };
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
