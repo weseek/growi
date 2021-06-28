@@ -51,6 +51,7 @@ class ShareLinkSetting extends React.Component {
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
     this.deleteLinkById = this.deleteLinkById.bind(this);
+    this.switchDisableLinkSharing = this.switchDisableLinkSharing.bind(this);
   }
 
   componentWillMount() {
@@ -105,6 +106,17 @@ class ShareLinkSetting extends React.Component {
     this.getShareLinkList(shareLinksActivePage);
   }
 
+  async switchDisableLinkSharing() {
+    const { t, adminGeneralSecurityContainer } = this.props;
+    try {
+      await adminGeneralSecurityContainer.switchDisableLinkSharing();
+      toastSuccess(t('toaster.switch_disable_link_sharing_success'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
@@ -134,7 +146,7 @@ class ShareLinkSetting extends React.Component {
                 className="custom-control-input"
                 id="disableLinkSharing"
                 checked={!disableLinkSharing}
-                onChange={() => adminGeneralSecurityContainer.switchDisableLinkSharing()}
+                onChange={() => this.switchDisableLinkSharing()}
               />
               <label className="custom-control-label" htmlFor="disableLinkSharing">
                 {t('security_setting.enable_link_sharing')}

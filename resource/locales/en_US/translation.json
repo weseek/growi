@@ -441,6 +441,7 @@
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
     "issue_share_link": "Succeeded to issue new share link",
     "remove_share_link": "Succeeded to remove {{count}} share links",
+    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
     "failed_to_reset_password":"Failed to reset password"
   },
   "template": {

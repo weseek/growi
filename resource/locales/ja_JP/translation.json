@@ -443,6 +443,7 @@
     "remove_share_link_success": "{{shareLinkId}}を削除しました",
     "issue_share_link": "共有リンクを作成しました",
     "remove_share_link": "共有リンクを{{count}}件削除しました",
+    "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
     "failed_to_reset_password":"パスワードのリセットに失敗しました"
   },
   "template": {
