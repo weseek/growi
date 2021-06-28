@@ -574,9 +574,8 @@ module.exports = function(crowi) {
     const createdUserList = [];
     const failedToCreateUserEmailList = creationEmailList;
 
-    const promises = creationEmailList.map(async(email) => {
-      const user = await this.createUserByEmail(email);
-      return user;
+    const promises = creationEmailList.map((email) => {
+      return this.createUserByEmail(email);
     });
 
     const results = await Promise.allSettled(promises);
