@@ -78,13 +78,9 @@ const isCreatablePage = (path) => {
  * @returns {string}
  */
 function joinUrl(...paths) {
-  const pathArray = [...paths]
-    .map(str => str.replace(/^\/+|\/+$|\s/g, ''));
-
-  const queries = new Set(pathArray.filter(str => /(\?|\&)([^?&=]+)\=([^?&=]+)/.test(str)));
-
+  const pathArray = [...paths].map(str => encodeURI(str.replace(/^\/+|\/+$|\s/g, '')));
+  const queries = new Set(pathArray.filter(str => /(\?|&)([^?&=]+)=([^?&=]+)/.test(str)));
   const hashes = new Set(pathArray.filter(str => /^#/.test(str)));
-
   if (queries.size > 1 || hashes.size > 1) {
     throw new Error('Do not enter more than 1 query string or hash');
   }
@@ -103,8 +99,8 @@ function joinUrl(...paths) {
  * @param {string} path
  * @returns {string}
  */
-function generateEditorPath(...paths) {
-  return joinUrl(...paths, '#edit');
+function generateEditorPath(path) {
+  return `${path}#edit`;
 }
 
 /**
@@ -155,6 +151,7 @@ module.exports = {
   isUserPage,
   isCreatablePage,
   generateEditorPath,
+  joinUrl,
   userPageRoot,
   convertToNewAffiliationPath,
   encodeSpaces,
