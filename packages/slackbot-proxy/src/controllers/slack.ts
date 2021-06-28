@@ -254,6 +254,7 @@ export class SlackCtrl {
     * forward to GROWI server
     */
     const relation = await this.relationRepository.findOne({ installation, growiUri: req.growiUri });
+
     if (relation == null) {
       logger.error('*No relation found.*');
       return;
