@@ -122,37 +122,71 @@ module.exports = (crowi) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
 
-    const failedToSendEmailList = userList.map((user) => { return user.email });
+    const succeededToSendEmailList = [];
+    const failedToSendEmailList = [];
 
-    const promises = userList.map((user) => {
-      return mailService.send({
-        to: user.email,
-        subject: `Invitation to ${appTitle}`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
-        vars: {
+    await Promise.all(userList.map(async(user) => {
+      if (user.password == null) {
+        return;
+      }
+
+      try {
+        await mailService.send({
+          to: user.email,
+          subject: `Invitation to ${appTitle}`,
+          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
+          vars: {
+            email: user.email,
+            password: user.password,
+            url: crowi.appService.getSiteUrl(),
+            appTitle,
+          },
+        });
+        succeededToSendEmailList.push(user.email);
+      }
+      catch (err) {
+        failedToSendEmailList.push({
           email: user.email,
-          password: user.password,
-          url: crowi.appService.getSiteUrl(),
-          appTitle,
-        },
-      });
-    });
+          reason: err,
+        });
+      }
+    }));
 
-    const results = await Promise.allSettled(promises);
-    results
-      .forEach((result) => {
-        if (result.status === 'fulfilled') {
-          const email = result.value.accepted[0];
-          // remove failed send email
-          const index = failedToSendEmailList.indexOf(email);
-          failedToSendEmailList.splice(index, 1);
-        }
-        else {
-          logger.error(result.reason);
-        }
-      });
+    return { succeededToSendEmailList, failedToSendEmailList };
 
-    return failedToSendEmailList;
+    // const failedToSendEmailList = userList.map((user) => { return user.email });
+
+    // const promises = userList.map(async(user) => {
+    //   const sendEmail = await mailService.send({
+    //     to: user.email,
+    //     subject: `Invitation to ${appTitle}`,
+    //     template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
+    //     vars: {
+    //       email: user.email,
+    //       password: user.password,
+    //       url: crowi.appService.getSiteUrl(),
+    //       appTitle,
+    //     },
+    //   });
+    //   return { user, sendEmail };
+    // });
+
+    // const results = await Promise.allSettled(promises);
+    // results
+    //   .forEach((result) => {
+    //     if (result.status === 'fulfilled') {
+    //       const email = result.value.accepted[0];
+    //       // remove failed send email
+    //       const index = failedToSendEmailList.indexOf(email);
+    //       failedToSendEmailList.splice(index, 1);
+    //     }
+    //     else {
+    //       console.log(result);
+    //       logger.error(result.reason);
+    //     }
+    //   });
+
+    // return failedToSendEmailList;
   };
 
   /**
@@ -411,11 +445,9 @@ module.exports = (crowi) => {
 
     // Send email
     if (req.body.sendEmail) {
-      const failedToSendEmailList = await sendEmailbyUserList(createUser.createdUserList);
-      if (failedToSendEmailList.length > 0) {
-        return res.apiv3Err(new ErrorV3('Failed to send email', failedToSendEmailList));
-      }
+      const semdEmail = await sendEmailbyUserList(createUser.createdUserList);
     }
+
     return res.apiv3({ createUser }, 201);
   });
 
