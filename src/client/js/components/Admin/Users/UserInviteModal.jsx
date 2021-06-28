@@ -214,6 +214,10 @@ class UserInviteModal extends React.Component {
       this.setState({ emailInputValue: '' });
       this.setState({ invitedEmailList: emailList });
 
+      if (emailList.createdUserList.length > 0) {
+        const createdEmailList = emailList.createdUserList.map((user) => { return user.email });
+        this.showToasterByEmailList(createdEmailList, 'success');
+      }
       if (emailList.existingEmailList.length > 0) {
         this.showToasterByEmailList(emailList.existingEmailList, 'warning');
       }
