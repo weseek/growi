@@ -8,7 +8,7 @@ import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
 import {
-  userPageRoot, isCreatablePage, generateEditorPath,
+  userPageRoot, isCreatablePage,
 } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
 
@@ -77,14 +77,16 @@ const PageCreateModal = (props) => {
    * @param {string} paths
    */
   function redirectToEditor(...paths) {
-    const joinedPath = [...paths].map(str => str.replace(/^\/+|\/+$|\s/g, '')).join('/');
+    // Remove trailing slashes
+    const joinedPath = [...paths].map(str => str.replace(/^\/+|\/+$|\s/g, '')).join('/').replace(/\/$/, '');
     try {
       const url = new URL(joinedPath, 'https://dummy');
-      if (!isCreatablePage(url)) {
+      if (!isCreatablePage(url.pathname)) {
         toastError(new Error('Invalid characters'));
         return;
       }
-      window.location.href = generateEditorPath(url.pathname);
+      // window.location.href = `${url.pathname}#edit`;
+      console.log(`${url.pathname}#edit`);
     }
     catch (err) {
       toastError(new Error('Invalid path format'));

@@ -70,15 +70,6 @@ const isCreatablePage = (path) => {
 };
 
 /**
- * return path to editor
- * @param {string} path
- * @returns {string}
- */
-function generateEditorPath(path) {
-  return `${path}#edit`;
-}
-
-/**
  * return user path
  * @param {Object} user
  * @return {string}
@@ -125,7 +116,6 @@ module.exports = {
   isTrashPage,
   isUserPage,
   isCreatablePage,
-  generateEditorPath,
   userPageRoot,
   convertToNewAffiliationPath,
   encodeSpaces,
