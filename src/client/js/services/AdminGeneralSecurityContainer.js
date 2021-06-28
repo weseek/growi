@@ -147,26 +147,15 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Update Share Link Settings
-   */
-  async updateShareLinkSetting() {
-
-    let requestParams = {
-      disableLinkSharing: this.state.disableLinkSharing,
-    };
-
-    requestParams = await removeNullPropertyFromObject(requestParams);
-    const response = await this.appContainer.apiv3.put('/security-setting/share-link-setting', requestParams);
-    const { securitySettingParams } = response.data;
-    return securitySettingParams;
-  }
-
-  /**
    * Switch disableLinkSharing
    */
   async switchDisableLinkSharing() {
     try {
-      const response = await this.updateShareLinkSetting();
+      let requestParams = {
+        disableLinkSharing: !this.state.disableLinkSharing,
+      };
+      requestParams = await removeNullPropertyFromObject(requestParams);
+      const response = await this.appContainer.apiv3.put('/security-setting/share-link-setting', requestParams);
       this.setDisableLinkSharing(!this.state.disableLinkSharing);
       return response;
     }

@@ -585,12 +585,7 @@
       "closed": "Closed (Invitation Only)"
     },
     "share_link_rights": "Share link rights",
-    "link_sharing": "Link sharing",
-    "link_sharing_rights_choices": {
-      "allow": "Allow",
-      "deny": "Deny"
-    },
-    "updated_shareLink_setting": "Succeeded to update share link setting",
+    "enable_link_sharing": "Enable link sharing",
     "all_share_links": "All share links",
     "configuration": " Configuration",
     "optional": "Optional",

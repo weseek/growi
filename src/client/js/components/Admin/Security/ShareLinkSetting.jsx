@@ -51,7 +51,6 @@ class ShareLinkSetting extends React.Component {
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
     this.deleteLinkById = this.deleteLinkById.bind(this);
-    this.putShareLinkSetting = this.putShareLinkSetting.bind(this);
   }
 
   componentWillMount() {
@@ -66,17 +65,6 @@ class ShareLinkSetting extends React.Component {
       toastError(err);
     }
 
-  }
-
-  async putShareLinkSetting() {
-    const { t, adminGeneralSecurityContainer } = this.props;
-    try {
-      await adminGeneralSecurityContainer.updateShareLinkSetting();
-      toastSuccess(t('security_setting.updated_shareLink_setting'));
-    }
-    catch (err) {
-      toastError(err);
-    }
   }
 
   showDeleteConfirmModal() {

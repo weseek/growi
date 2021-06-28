@@ -573,12 +573,7 @@
 			"closed": "已关闭（仅限邀请）"
 		},
     "share_link_rights": "分享链接权",
-    "link_sharing": "链接共享",
-    "link_sharing_rights_choices": {
-      "allow": "允许",
-      "deny": "拒绝"
-    },
-    "updated_shareLink_setting": "成功更新分享链接设置",
+    "enable_link_sharing": "启用链接共享",
 		"configuration": " 配置",
 		"optional": "可选的",
 		"Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
