@@ -41,6 +41,24 @@ class UserInviteModal extends React.Component {
     toastSuccess('Copied Mail and Password');
   }
 
+  showToasterByEmailList(emailList, toast) {
+    let msg = '';
+    emailList.forEach((email) => {
+      msg += `${email}\n`;
+    });
+    switch (toast) {
+      case 'success':
+        toastSuccess(msg);
+        break;
+      case 'warning':
+        toastWarning(msg);
+        break;
+      case 'error':
+        toastError(msg);
+        break;
+    }
+  }
+
   renderModalBody() {
     const { t } = this.props;
 
@@ -193,16 +211,12 @@ class UserInviteModal extends React.Component {
 
     try {
       const emailList = await adminUsersContainer.createUserInvited(shapedEmailList, this.state.sendEmail);
-      const existingEmailList = emailList.existingEmailList;
-      if (existingEmailList.length > 0) {
-        let msg = 'Email addresses already exist\n\n';
-        existingEmailList.forEach((email) => {
-          msg += `${email}\n`;
-        });
-        toastWarning(msg);
-      }
       this.setState({ emailInputValue: '' });
       this.setState({ invitedEmailList: emailList });
+
+      if (emailList.existingEmailList.length > 0) {
+        this.showToasterByEmailList(emailList.existingEmailList, 'warning');
+      }
     }
     catch (err) {
       toastError(err);
