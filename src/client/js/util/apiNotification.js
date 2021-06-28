@@ -36,6 +36,6 @@ export const toastSuccess = (body, header = 'Success', option = toastrOption.suc
   toastr.success(body, header, option);
 };
 
-export const toastWarning = (body, header = 'Warning', option = toastrOption.warning) => {
+export const toastWarning = (body, header = 'Warning', option = toastrOption.success) => {
   toastr.warning(body, header, option);
 };
