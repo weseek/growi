@@ -126,10 +126,6 @@ module.exports = (crowi) => {
     const failedToSendEmailList = [];
 
     await Promise.all(userList.map(async(user) => {
-      if (user.password == null) {
-        return;
-      }
-
       try {
         await mailService.send({
           to: user.email,
@@ -437,19 +433,23 @@ module.exports = (crowi) => {
 
     // Delete duplicate email addresses
     const emailList = Array.from(new Set(req.body.shapedEmailList));
+    const failedEmailList = [];
 
     // Create users
     const createUser = await User.createUsersByEmailList(emailList);
-    if (createUser.failedToCreateUserEmailList.length > 0 && createUser.createdUserList.length === 0) {
-      return res.apiv3Err(new ErrorV3('Failed to create user', createUser.failedToCreateUserEmailList));
+    if (createUser.failedToCreateUserEmailList.length > 0) {
+      failedEmailList.push(createUser.failedToCreateUserEmailList);
     }
 
     // Send email
     if (req.body.sendEmail) {
       const semdEmail = await sendEmailbyUserList(createUser.createdUserList);
+      if (semdEmail.failedToSendEmailList.length > 0) {
+        failedEmailList.push(semdEmail.failedToSendEmailList);
+      }
     }
 
-    return res.apiv3({ createUser }, 201);
+    return res.apiv3({ createUser, failedEmailList }, 201);
   });
 
   /**
