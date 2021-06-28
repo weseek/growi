@@ -229,7 +229,7 @@ const PageCreateModal = (props) => {
         <fieldset className="col-12">
 
           <h3 className="grw-modal-head pb-2">
-            { t('template.modal_label.Create template under') }<br />
+            {t('template.modal_label.Create template under')}<br />
             <code className="h6">{pathname}</code>
           </h3>
 
