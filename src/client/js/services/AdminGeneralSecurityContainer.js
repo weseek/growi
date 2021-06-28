@@ -151,10 +151,9 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   async switchDisableLinkSharing() {
     try {
-      let requestParams = {
+      const requestParams = {
         disableLinkSharing: !this.state.disableLinkSharing,
       };
-      requestParams = await removeNullPropertyFromObject(requestParams);
       const response = await this.appContainer.apiv3.put('/security-setting/share-link-setting', requestParams);
       this.setDisableLinkSharing(!this.state.disableLinkSharing);
       return response;
