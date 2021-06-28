@@ -145,6 +145,7 @@ module.exports = (crowi) => {
         succeededToSendEmailList.push(user.email);
       }
       catch (err) {
+        logger.error(err);
         failedToSendEmailList.push({
           email: user.email,
           reason: err,
