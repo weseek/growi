@@ -152,7 +152,14 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationRepository.find({ installation });
+    // const relations = await this.relationRepository.find({ installation });
+
+    const relations = await this.relationRepository.createQueryBuilder('relation')
+      .where('relation.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation.installation', 'installation')
+      .getMany();
+
+    console.log('relations', relations);
 
     if (relations.length === 0) {
       return res.json({
@@ -251,7 +258,6 @@ export class SlackCtrl {
     * forward to GROWI server
     */
     const relation = await this.relationRepository.findOne({ installation, growiUri: req.growiUri });
-
     if (relation == null) {
       logger.error('*No relation found.*');
       return;

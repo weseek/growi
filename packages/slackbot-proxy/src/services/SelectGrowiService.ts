@@ -93,7 +93,12 @@ export class SelectGrowiService implements GrowiCommandProcessor {
     // ovverride trigger_id
     sendCommandBody.trigger_id = triggerId;
 
-    const relation = await this.relationRepository.findOne({ installation, growiUri });
+    // const relation = await this.relationRepository.findOne({ installation, growiUri });
+    const relation = await this.relationRepository.createQueryBuilder('relation')
+      .where('relation.growiUri =:growiUri', { growiUri })
+      .andWhere('relation.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation.installation', 'installation')
+      .getOne();
 
     if (relation == null) {
       // TODO: postEphemeralErrors
