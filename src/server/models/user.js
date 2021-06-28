@@ -572,25 +572,41 @@ module.exports = function(crowi) {
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
     const createdUserList = [];
-    const failedToCreateUserEmailList = creationEmailList;
+    const failedToCreateUserEmailList = [];
 
-    const promises = creationEmailList.map((email) => {
-      return this.createUserByEmail(email);
-    });
+    await Promise.all(creationEmailList.map(async(email) => {
+      try {
+        const createdUser = await this.createUserByEmail(email);
+        createdUserList.push(createdUser);
+      }
+      catch (err) {
+        logger.error(err);
+        failedToCreateUserEmailList.push({
+          email,
+          reason: err,
+        });
+      }
+    }));
 
-    const results = await Promise.allSettled(promises);
-    results
-      .forEach((result) => {
-        if (result.status === 'fulfilled') {
-          createdUserList.push(result.value);
-          // remove created user
-          const index = failedToCreateUserEmailList.indexOf(result.value.email);
-          failedToCreateUserEmailList.splice(index, 1);
-        }
-        else {
-          logger.error(result.reason);
-        }
-      });
+    return { createdUserList, existingEmailList, failedToCreateUserEmailList };
+
+    // const promises = creationEmailList.map((email) => {
+    //   return this.createUserByEmail(email);
+    // });
+
+    // const results = await Promise.allSettled(promises);
+    // results
+    //   .forEach((result) => {
+    //     if (result.status === 'fulfilled') {
+    //       createdUserList.push(result.value);
+    //       // remove created user
+    //       const index = failedToCreateUserEmailList.indexOf(result.value.email);
+    //       failedToCreateUserEmailList.splice(index, 1);
+    //     }
+    //     else {
+    //       logger.error(result.reason);
+    //     }
+    //   });
 
     return { createdUserList, existingEmailList, failedToCreateUserEmailList };
   };
