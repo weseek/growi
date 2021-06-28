@@ -164,8 +164,7 @@ export default class AdminUsersContainer extends Container {
       sendEmail,
     });
     await this.retrieveUsersByPagingNum(this.state.activePage);
-    const { createUser, failedEmailList } = response.data;
-    return { createUser, failedEmailList };
+    return response.data;
   }
 
   /**

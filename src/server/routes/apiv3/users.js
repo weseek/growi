@@ -415,7 +415,11 @@ module.exports = (crowi) => {
       }
     }
 
-    return res.apiv3({ createUser, failedEmailList }, 201);
+    return res.apiv3({
+      createdUserList: createUser.createdUserList,
+      existingEmailList: createUser.existingEmailList,
+      failedEmailList,
+    }, 201);
   });
 
   /**
