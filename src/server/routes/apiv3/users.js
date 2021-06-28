@@ -443,9 +443,9 @@ module.exports = (crowi) => {
 
     // Send email
     if (req.body.sendEmail) {
-      const semdEmail = await sendEmailbyUserList(createUser.createdUserList);
-      if (semdEmail.failedToSendEmailList.length > 0) {
-        failedEmailList.push(semdEmail.failedToSendEmailList);
+      const sendEmail = await sendEmailbyUserList(createUser.createdUserList);
+      if (sendEmail.failedToSendEmailList.length > 0) {
+        failedEmailList.push(sendEmail.failedToSendEmailList);
       }
     }
 
