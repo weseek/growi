@@ -35,3 +35,7 @@ export const toastError = (err, header = 'Error', option = toastrOption.error) =
 export const toastSuccess = (body, header = 'Success', option = toastrOption.success) => {
   toastr.success(body, header, option);
 };
+
+export const toastWarning = (body, header = 'Warning', option = toastrOption.warning) => {
+  toastr.warning(body, header, option);
+};
