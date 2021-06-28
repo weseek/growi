@@ -639,7 +639,7 @@ module.exports = (crowi) => {
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', updateData);
       const securitySettingParams = {
-        disableLinkSharing: await crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
+        disableLinkSharing: crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
       };
 
       return res.apiv3({ securitySettingParams });
