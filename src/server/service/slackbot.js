@@ -303,7 +303,8 @@ class SlackBotService extends S2sMessageHandlable {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
 
-    const contentsBody = payload.view.state.values.contents.contents_input.value;
+    let contentsBody = payload.view.state.values.contents.contents_input.value;
+    contentsBody = this.reshapeContentsBody(contentsBody);
 
     try {
       let path = payload.view.state.values.path.path_input.value;
@@ -369,6 +370,50 @@ class SlackBotService extends S2sMessageHandlable {
         },
       },
     };
+  }
+
+  reshapeContentsBody(contentsBody) {
+    // TAICHI
+    /**
+     * Detect parts and mark them
+     * @returns String
+     */
+    const detectAndMark = (str) => {
+      const regexpSectionHeader = new RegExp(/.+\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
+      const regexpTime = new RegExp(/\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
+      const regexpReaction = new RegExp(/^:[\w-]+:$/);
+
+      // split lines
+      const splitted = str.split('\n');
+
+      let didReactionRemoved = false;
+      const marked = splitted.map((line) => {
+        let copyline = line;
+        // Check 1: Did a reaction removed last time?
+        if (didReactionRemoved) {
+          copyline = '';
+          didReactionRemoved = false;
+        }
+        // Check 2: Is this line a header?
+        if (regexpSectionHeader.test(copyline)) {
+          // extract time
+          const time = copyline.match(regexpTime);
+          // ##*username*  HH:mm AM
+          copyline = '##*'.concat(copyline, '*', time);
+        }
+        // Check 3: Is this line a reaction?(Maybe remove them?)
+        if (regexpReaction.test(copyline)) {
+          // remove reaction
+          copyline = '';
+        }
+        return copyline;
+      });
+      // remove all blanks
+      const removedBlanks = marked.filter(line => line !== '');
+      // Add two spaces to all lines and remove one space from reactions and reaction counts
+      return removedBlanks;
+    };
+    return '';
   }
 
 }
