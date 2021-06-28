@@ -77,16 +77,20 @@ const PageCreateModal = (props) => {
    * @param {string} paths
    */
   function redirectToEditor(...paths) {
-    // Remove trailing slashes
-    const joinedPath = [...paths].map(str => str.replace(/^\/+|\/+$|\s/g, '')).join('/').replace(/\/$/, '');
+
+    const joinedPath = [...paths]
+      .map(str => str.replace(/^\/+|\/+$|\s/g, ''))
+      .join('/')
+      .replace(/\/$/, '');
+
+    if (!isCreatablePage(joinedPath)) {
+      toastError(new Error('Invalid characters'));
+      return;
+    }
+
     try {
       const url = new URL(joinedPath, 'https://dummy');
-      if (!isCreatablePage(url.pathname)) {
-        toastError(new Error('Invalid characters'));
-        return;
-      }
-      // window.location.href = `${url.pathname}#edit`;
-      console.log(`${url.pathname}#edit`);
+      window.location.href = `${url.pathname}#edit`;
     }
     catch (err) {
       toastError(new Error('Invalid path format'));
