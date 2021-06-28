@@ -35,7 +35,7 @@ const BotCreateProcess = () => {
   );
 };
 
-const BotInstallProcess = () => {
+const BotInstallProcessForOfficialBot = () => {
   const { t } = useTranslation();
   return (
     <div className="my-5 d-flex flex-column align-items-center">
@@ -291,7 +291,7 @@ const WithProxyAccordions = (props) => {
   const officialBotIntegrationProcedure = {
     '①': {
       title: 'install_bot_to_slack',
-      content: <BotInstallProcess />,
+      content: <BotInstallProcessForOfficialBot />,
     },
     '②': {
       title: 'register_for_growi_official_bot_proxy_service',
