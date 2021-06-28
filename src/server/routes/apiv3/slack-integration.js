@@ -33,7 +33,7 @@ module.exports = (crowi) => {
 
     if (slackAppIntegrationCount === 0) {
       return res.status(403).send({
-        message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`?',
+        message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`? Or Did you delete registration for GROWI ? if so, the link with GROWI has been disconnected.',
       });
     }
 
