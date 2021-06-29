@@ -111,6 +111,27 @@ function encodeSpaces(path) {
   return path.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
 }
 
+/**
+ * Generate editor path
+ * @param {string} paths
+ * @returns {string}
+ */
+function generateEditorPath(...paths) {
+  const joinedPath = [...paths].join('/');
+
+  if (!isCreatablePage(joinedPath)) {
+    throw new Error('Check path');
+  }
+
+  try {
+    const url = new URL(joinedPath, 'https://dummy');
+    return `${url.pathname}#edit`;
+  }
+  catch (err) {
+    throw new Error('Invalid path format');
+  }
+}
+
 module.exports = {
   isTopPage,
   isTrashPage,
@@ -119,4 +140,5 @@ module.exports = {
   userPageRoot,
   convertToNewAffiliationPath,
   encodeSpaces,
+  generateEditorPath,
 };
