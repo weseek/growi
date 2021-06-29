@@ -233,7 +233,7 @@ class UserInviteModal extends React.Component {
       }
       if (emailList.failedEmailList.length > 0) {
         const failedEmailList = emailList.failedEmailList.map((failed) => {
-          return failed.email;
+          return `email: ${failed.email}<br>・reason: ${failed.reason}<br>`;
         });
         this.showToasterByEmailList(failedEmailList, 'error');
       }
