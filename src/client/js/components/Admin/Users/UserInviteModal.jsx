@@ -44,13 +44,15 @@ class UserInviteModal extends React.Component {
   showToasterByEmailList(emailList, toast) {
     let msg = '';
     emailList.forEach((email) => {
-      msg += `${email}\n`;
+      msg += `・ ${email}<br>`;
     });
     switch (toast) {
       case 'success':
+        msg = `User has been created<br>${msg}`;
         toastSuccess(msg);
         break;
       case 'warning':
+        msg = `Existing email<br>${msg}`;
         toastWarning(msg);
         break;
       case 'error':
