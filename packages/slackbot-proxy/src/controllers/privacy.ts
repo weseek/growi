@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
 @Controller('/privacy')
-export class SlackCtrl {
+export class PrivacyCtrl {
 
   constructor(router: PlatformRouter) {
     if (isOfficialMode) {
