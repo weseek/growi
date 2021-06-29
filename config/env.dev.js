@@ -22,8 +22,8 @@ module.exports = {
   // DEV_HTTPS: true,
   // FORCE_WIKI_MODE: 'private', // 'public', 'private', undefined
   // PROMSTER_ENABLED: true,
-  // SLACK_SIGNING_SECRET: '',
-  // SLACK_BOT_TOKEN: '',
+  SLACK_SIGNING_SECRET: '700c6a09e385577d35943c2a9ecc35d2',
+  SLACK_BOT_TOKEN: 'xoxb-2216907132596-2201060929479-nSm6I0fdiB4JuRLFzyzPyWKb',
   SALT_FOR_GTOP_TOKEN: 'proxy',
   SALT_FOR_PTOG_TOKEN: 'growi',
   // GROWI_CLOUD_URI: 'http://growi.cloud',

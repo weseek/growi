@@ -391,6 +391,7 @@ class SlackBotService extends S2sMessageHandlable {
     const reshape = (str) => {
       const regexpSectionHeader = new RegExp(/.+\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
       const regexpTime = new RegExp(/\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
+      const regexpShortTime = new RegExp(/^[\d]{1,2}:[\d]{2}$/);
       const regexpReaction = new RegExp(/^:[+\w-]+:$/);
 
       const splitted = str.split('\n');
@@ -416,7 +417,12 @@ class SlackBotService extends S2sMessageHandlable {
           copyline = '</div>\n<div class="slack-talk-bubble">\n\n## **'.concat(copyline);
           copyline = copyline.replace(regexpTime, '**'.concat(time), '\n<');
         }
-        // Check 3: Is this line a reaction?
+        // Check 3: Is this line a short time(HH:mm)?
+        else if (regexpShortTime.test(copyline)) {
+          // --HH:mm--
+          copyline = '--'.concat(copyline, '--');
+        }
+        // Check 4: Is this line a reaction?
         else if (regexpReaction.test(copyline)) {
           // remove reaction
           copyline = '';
