@@ -153,8 +153,8 @@ class LinkEditModal extends React.PureComponent {
     const { t } = this.props;
     const path = this.state.linkInputValue;
     let markdown = '';
-    let previewError = '';
     let permalink = '';
+    let previewError = '';
 
     if (path.startsWith('/')) {
       const pathWithoutFragment = new URL(path, 'http://dummy').pathname;
@@ -164,8 +164,7 @@ class LinkEditModal extends React.PureComponent {
       try {
         const { page } = await apiGet('/pages.get', { path: pathWithoutFragment, page_id: pageId });
         markdown = page.revision.body;
-        // create permanent link only if path isn't permanent link because checkbox for isUsePermanentLink is disabled when permalink is ''.
-        permalink = !isPermanentLink ? `${window.location.origin}/${page.id}` : '';
+        permalink = page.id;
       }
       catch (err) {
         previewError = err.message;
@@ -218,7 +217,8 @@ class LinkEditModal extends React.PureComponent {
   handleChangeTypeahead(selected) {
     const page = selected[0];
     if (page != null) {
-      this.setState({ linkInputValue: page.path });
+      const permalink = `${window.location.origin}/${page.id}`;
+      this.setState({ linkInputValue: page.path, permalink });
     }
   }
 
@@ -231,7 +231,9 @@ class LinkEditModal extends React.PureComponent {
     if (!this.state.linkInputValue.startsWith('/') || this.state.linkerType === Linker.types.growiLink) {
       isUseRelativePath = false;
     }
-    this.setState({ linkInputValue: link, isUseRelativePath, isUsePermanentLink: false });
+    this.setState({
+      linkInputValue: link, isUseRelativePath, isUsePermanentLink: false, permalink: '',
+    });
   }
 
   handleSelecteLinkerType(linkerType) {
