@@ -372,48 +372,72 @@ class SlackBotService extends S2sMessageHandlable {
     };
   }
 
+  /**
+   * Reshape contentsBody
+   */
   reshapeContentsBody(contentsBody) {
-    // TAICHI
-    /**
-     * Detect parts and mark them
-     * @returns String
-     */
-    const detectAndMark = (str) => {
+    let linesBeforeFirstHeader = [];
+    // Remove everything before the first Header
+    const removeLinesBeforeFirstHeader = (array) => {
+      const regexpSectionHeader = new RegExp(/.+\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
+      let i = 0;
+      while (!regexpSectionHeader.test(array[i]) && i <= array.length) {
+        i++;
+      }
+      linesBeforeFirstHeader = linesBeforeFirstHeader.concat(array.slice(0, i));
+      return array.slice(i);
+    };
+
+    const reshape = (str) => {
       const regexpSectionHeader = new RegExp(/.+\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
       const regexpTime = new RegExp(/\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
-      const regexpReaction = new RegExp(/^:[\w-]+:$/);
+      const regexpReaction = new RegExp(/^:[+\w-]+:$/);
 
-      // split lines
       const splitted = str.split('\n');
+      const cleanedArray = removeLinesBeforeFirstHeader(splitted);
+      if (cleanedArray.length === 0) {
+        return linesBeforeFirstHeader.join('');
+      }
 
       let didReactionRemoved = false;
-      const marked = splitted.map((line) => {
+      const reshapedArray = cleanedArray.map((line) => {
         let copyline = line;
         // Check 1: Did a reaction removed last time?
         if (didReactionRemoved) {
+          // remove reaction count
           copyline = '';
           didReactionRemoved = false;
         }
         // Check 2: Is this line a header?
-        if (regexpSectionHeader.test(copyline)) {
-          // extract time
-          const time = copyline.match(regexpTime);
-          // ##*username*  HH:mm AM
-          copyline = '##*'.concat(copyline, '*', time);
+        else if (regexpSectionHeader.test(copyline)) {
+          // extract time from line
+          const time = copyline.match(regexpTime)[0];
+          // </div><div class="slack-talk-bubble">##*username*  HH:mm AM
+          copyline = '</div>\n<div class="slack-talk-bubble">\n\n## **'.concat(copyline);
+          copyline = copyline.replace(regexpTime, '**'.concat(time), '\n<');
         }
-        // Check 3: Is this line a reaction?(Maybe remove them?)
-        if (regexpReaction.test(copyline)) {
+        // Check 3: Is this line a reaction?
+        else if (regexpReaction.test(copyline)) {
           // remove reaction
           copyline = '';
+          didReactionRemoved = true;
         }
         return copyline;
       });
       // remove all blanks
-      const removedBlanks = marked.filter(line => line !== '');
-      // Add two spaces to all lines and remove one space from reactions and reaction counts
-      return removedBlanks;
+      const blanksRemoved = reshapedArray.filter(line => line !== '');
+      // delete the first </div> and add </div> to the last row
+      blanksRemoved[0] = blanksRemoved[0].replace(/<\/div>/g, '');
+      blanksRemoved.push('</div>');
+      // Add 2 spaces and 1 enter to all lines
+      const completedArray = blanksRemoved.map(line => line.concat('  \n'));
+      // join all
+      const contentsBeforeFirstHeader = linesBeforeFirstHeader.join('');
+      const contentsAfterFirstHeader = completedArray.join('');
+      return contentsBeforeFirstHeader.concat(contentsAfterFirstHeader);
     };
-    return '';
+
+    return reshape(contentsBody);
   }
 
 }
