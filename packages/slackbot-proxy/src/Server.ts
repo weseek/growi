@@ -88,6 +88,21 @@ const helmetOptions = isProduction ? {} : {
   exclude: [
     '**/*.spec.ts',
   ],
+  viewsDir: `${rootDir}/views`,
+  views: {
+    root: `${rootDir}/views`,
+    viewEngine: 'ejs',
+    extensions: {
+      ejs: 'ejs',
+    },
+  },
+  statics: {
+    '/': [
+      {
+        root: `${rootDir}/public`,
+      },
+    ],
+  },
 })
 export class Server {
 

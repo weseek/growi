@@ -171,10 +171,11 @@ class SlackBotService extends S2sMessageHandlable {
       return;
     }
 
-    const base = this.crowi.appService.getSiteUrl();
+    const appUrl = this.crowi.appService.getSiteUrl();
+    const appTitle = this.crowi.appService.getAppTitle();
 
     const urls = resultPaths.map((path) => {
-      const url = new URL(path, base);
+      const url = new URL(path, appUrl);
       return `<${decodeURI(url.href)} | ${decodeURI(url.pathname)}>`;
     });
 
@@ -235,6 +236,7 @@ class SlackBotService extends S2sMessageHandlable {
         user: body.user_id,
         text: 'Successed To Search',
         blocks: [
+          this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>`),
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
           actionBlocks,
