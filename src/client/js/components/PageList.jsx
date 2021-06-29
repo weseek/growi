@@ -64,6 +64,14 @@ const PageList = (props) => {
       </div>
     );
   }
+  if (appContainer.config.disableLinkSharing) {
+    return (
+      <div className="mt-2">
+        {/* eslint-disable-next-line react/no-danger */}
+        <p>{t('custom_navigation.link_sharing_is_disabled')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="page-list">
