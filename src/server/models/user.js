@@ -574,8 +574,9 @@ module.exports = function(crowi) {
     const createdUserList = [];
     const failedToCreateUserEmailList = [];
 
-    await Promise.all(creationEmailList.map(async(email) => {
+    for (const email of creationEmailList) {
       try {
+        // eslint-disable-next-line no-await-in-loop
         const createdUser = await this.createUserByEmail(email);
         createdUserList.push(createdUser);
       }
@@ -586,7 +587,7 @@ module.exports = function(crowi) {
           reason: err,
         });
       }
-    }));
+    }
 
     return { createdUserList, existingEmailList, failedToCreateUserEmailList };
   };

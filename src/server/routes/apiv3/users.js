@@ -18,6 +18,17 @@ const PAGE_ITEMS = 50;
 
 const validator = {};
 
+class SendEmailError extends Error {
+
+  constructor(message = '', email = '') {
+    super();
+
+    this.message = message;
+    this.email = email;
+  }
+
+}
+
 /**
  * @swagger
  *  tags:
@@ -125,8 +136,9 @@ module.exports = (crowi) => {
     const succeededToSendEmailList = [];
     const failedToSendEmailList = [];
 
-    await Promise.all(userList.map(async(user) => {
+    for (const user of userList) {
       try {
+        // eslint-disable-next-line no-await-in-loop
         await mailService.send({
           to: user.email,
           subject: `Invitation to ${appTitle}`,
@@ -147,7 +159,7 @@ module.exports = (crowi) => {
           reason: err,
         });
       }
-    }));
+    }
 
     return { succeededToSendEmailList, failedToSendEmailList };
   };
