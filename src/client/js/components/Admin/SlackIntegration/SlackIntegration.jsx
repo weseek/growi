@@ -159,14 +159,6 @@ const SlackIntegration = (props) => {
       break;
   }
 
-  if (isLoading) {
-    return (
-      <div className="text-muted text-center">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-      </div>
-    );
-  }
-
   return (
     <>
       <ConfirmBotChangeModal
@@ -200,9 +192,13 @@ const SlackIntegration = (props) => {
           >{t('admin:slack_integration.reset_all_settings')}
           </button>
         </div>
-
-        <div className="row my-5 flex-wrap-reverse justify-content-center">
-          {botTypes.map((botType) => {
+        {isLoading ? (
+          <div className="text-muted text-center">
+            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          </div>
+         ) : (
+           <div className="row my-5 flex-wrap-reverse justify-content-center">
+             {botTypes.map((botType) => {
             return (
               <div key={botType} className="m-3">
                 <BotTypeCard
@@ -213,7 +209,9 @@ const SlackIntegration = (props) => {
               </div>
             );
           })}
-        </div>
+           </div>
+)}
+
       </div>
 
       {settingsComponent}
