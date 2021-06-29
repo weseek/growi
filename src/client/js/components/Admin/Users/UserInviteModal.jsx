@@ -9,6 +9,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import * as toastr from 'toastr';
 import { toastSuccess, toastError, toastWarning } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -55,9 +56,15 @@ class UserInviteModal extends React.Component {
         msg = `Existing email<br>${msg}`;
         toastWarning(msg);
         break;
-      // TODO: GW-6496
       case 'error':
-        toastError(msg);
+        toastr.error(msg, 'Error', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '0',
+        });
         break;
     }
   }
