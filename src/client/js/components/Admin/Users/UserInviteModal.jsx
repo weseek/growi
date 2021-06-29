@@ -9,7 +9,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError, toastWarning } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -39,6 +39,27 @@ class UserInviteModal extends React.Component {
 
   showToaster() {
     toastSuccess('Copied Mail and Password');
+  }
+
+  showToasterByEmailList(emailList, toast) {
+    let msg = '';
+    emailList.forEach((email) => {
+      msg += `・${email}<br>`;
+    });
+    switch (toast) {
+      case 'success':
+        msg = `User has been created<br>${msg}`;
+        toastSuccess(msg);
+        break;
+      case 'warning':
+        msg = `Existing email<br>${msg}`;
+        toastWarning(msg);
+        break;
+      // TODO: GW-6496
+      case 'error':
+        toastError(msg);
+        break;
+    }
   }
 
   renderModalBody() {
@@ -195,7 +216,15 @@ class UserInviteModal extends React.Component {
       const emailList = await adminUsersContainer.createUserInvited(shapedEmailList, this.state.sendEmail);
       this.setState({ emailInputValue: '' });
       this.setState({ invitedEmailList: emailList });
-      toastSuccess('Inviting user success');
+
+      if (emailList.createdUserList.length > 0) {
+        const createdEmailList = emailList.createdUserList.map((user) => { return user.email });
+        this.showToasterByEmailList(createdEmailList, 'success');
+      }
+      if (emailList.existingEmailList.length > 0) {
+        this.showToasterByEmailList(emailList.existingEmailList, 'warning');
+      }
+      // TODO: GW-6496
     }
     catch (err) {
       toastError(err);
