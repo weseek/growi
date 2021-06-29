@@ -121,8 +121,6 @@ module.exports = (crowi) => {
   const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
-
-    const succeededToSendEmailList = [];
     const failedToSendEmailList = [];
 
     for (const user of userList) {
@@ -139,7 +137,6 @@ module.exports = (crowi) => {
             appTitle,
           },
         });
-        succeededToSendEmailList.push(user.email);
       }
       catch (err) {
         logger.error(err);
@@ -150,7 +147,7 @@ module.exports = (crowi) => {
       }
     }
 
-    return { succeededToSendEmailList, failedToSendEmailList };
+    return { failedToSendEmailList };
   };
 
   /**
