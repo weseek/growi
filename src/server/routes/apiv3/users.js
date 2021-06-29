@@ -121,12 +121,11 @@ module.exports = (crowi) => {
   const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
-
-    const succeededToSendEmailList = [];
     const failedToSendEmailList = [];
 
-    await Promise.all(userList.map(async(user) => {
+    for (const user of userList) {
       try {
+        // eslint-disable-next-line no-await-in-loop
         await mailService.send({
           to: user.email,
           subject: `Invitation to ${appTitle}`,
@@ -138,18 +137,17 @@ module.exports = (crowi) => {
             appTitle,
           },
         });
-        succeededToSendEmailList.push(user.email);
       }
       catch (err) {
         logger.error(err);
         failedToSendEmailList.push({
           email: user.email,
-          reason: err,
+          reason: err.message,
         });
       }
-    }));
+    }
 
-    return { succeededToSendEmailList, failedToSendEmailList };
+    return { failedToSendEmailList };
   };
 
   /**
