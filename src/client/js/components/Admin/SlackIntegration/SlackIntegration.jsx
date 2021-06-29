@@ -45,14 +45,14 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
-      setIsLoading(false);
     }
     catch (err) {
-      console.log(proxyServerUri);
-      console.log(err);
       toastError(err);
     }
-  }, [appContainer.apiv3, proxyServerUri]);
+    finally {
+      setIsLoading(false);
+    }
+  }, [appContainer.apiv3]);
 
   const resetAllSettings = async() => {
     try {
