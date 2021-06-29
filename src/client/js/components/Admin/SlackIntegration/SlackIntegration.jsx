@@ -48,9 +48,11 @@ const SlackIntegration = (props) => {
       setIsLoading(false);
     }
     catch (err) {
+      console.log(proxyServerUri);
+      console.log(err);
       toastError(err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, proxyServerUri]);
 
   const resetAllSettings = async() => {
     try {
@@ -159,6 +161,14 @@ const SlackIntegration = (props) => {
       break;
   }
 
+  if (isLoading) {
+    return (
+      <div className="text-muted text-center">
+        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+      </div>
+    );
+  }
+
   return (
     <>
       <ConfirmBotChangeModal
@@ -192,13 +202,9 @@ const SlackIntegration = (props) => {
           >{t('admin:slack_integration.reset_all_settings')}
           </button>
         </div>
-        {isLoading ? (
-          <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
-          </div>
-         ) : (
-           <div className="row my-5 flex-wrap-reverse justify-content-center">
-             {botTypes.map((botType) => {
+
+        <div className="row my-5 flex-wrap-reverse justify-content-center">
+          {botTypes.map((botType) => {
             return (
               <div key={botType} className="m-3">
                 <BotTypeCard
@@ -209,9 +215,7 @@ const SlackIntegration = (props) => {
               </div>
             );
           })}
-           </div>
-)}
-
+        </div>
       </div>
 
       {settingsComponent}
