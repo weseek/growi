@@ -18,17 +18,6 @@ const PAGE_ITEMS = 50;
 
 const validator = {};
 
-class SendEmailError extends Error {
-
-  constructor(message = '', email = '') {
-    super();
-
-    this.message = message;
-    this.email = email;
-  }
-
-}
-
 /**
  * @swagger
  *  tags:
