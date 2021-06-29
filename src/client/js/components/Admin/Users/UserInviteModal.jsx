@@ -55,6 +55,7 @@ class UserInviteModal extends React.Component {
         msg = `Existing email<br>${msg}`;
         toastWarning(msg);
         break;
+      // TODO: GW-6496
       case 'error':
         toastError(msg);
         break;
@@ -223,6 +224,7 @@ class UserInviteModal extends React.Component {
       if (emailList.existingEmailList.length > 0) {
         this.showToasterByEmailList(emailList.existingEmailList, 'warning');
       }
+      // TODO: GW-6496
     }
     catch (err) {
       toastError(err);
