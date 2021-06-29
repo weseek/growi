@@ -6,6 +6,8 @@ const express = require('express');
 
 const router = express.Router();
 
+const path = require('path');
+
 const { body, query } = require('express-validator');
 const { isEmail } = require('validator');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
@@ -115,6 +117,38 @@ module.exports = (crowi) => {
   validator.recentCreatedByUser = [
     query('limit').if(value => value != null).isInt({ max: 300 }).withMessage('You should set less than 300 or not to set limit.'),
   ];
+
+  const sendEmailByUserList = async(userList) => {
+    const { appService, mailService } = crowi;
+    const appTitle = appService.getAppTitle();
+    const failedToSendEmailList = [];
+
+    for (const user of userList) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await mailService.send({
+          to: user.email,
+          subject: `Invitation to ${appTitle}`,
+          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
+          vars: {
+            email: user.email,
+            password: user.password,
+            url: crowi.appService.getSiteUrl(),
+            appTitle,
+          },
+        });
+      }
+      catch (err) {
+        logger.error(err);
+        failedToSendEmailList.push({
+          email: user.email,
+          reason: err.message,
+        });
+      }
+    }
+
+    return { failedToSendEmailList };
+  };
 
   /**
    * @swagger
@@ -355,16 +389,35 @@ module.exports = (crowi) => {
    *                    existingEmailList:
    *                      type: object
    *                      description: Users email that already exists
+   *                    failedEmailList:
+   *                      type: object
+   *                      description: Users email that failed to create or send email
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, csrf, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
-    try {
-      const invitedUserList = await User.createUsersByInvitation(req.body.shapedEmailList, req.body.sendEmail);
-      return res.apiv3({ invitedUserList }, 201);
+
+    // Delete duplicate email addresses
+    const emailList = Array.from(new Set(req.body.shapedEmailList));
+    const failedEmailList = [];
+
+    // Create users
+    const createUser = await User.createUsersByEmailList(emailList);
+    if (createUser.failedToCreateUserEmailList.length > 0) {
+      failedEmailList.push(createUser.failedToCreateUserEmailList);
     }
-    catch (err) {
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(err));
+
+    // Send email
+    if (req.body.sendEmail) {
+      const sendEmail = await sendEmailByUserList(createUser.createdUserList);
+      if (sendEmail.failedToSendEmailList.length > 0) {
+        failedEmailList.push(sendEmail.failedToSendEmailList);
+      }
     }
+
+    return res.apiv3({
+      createdUserList: createUser.createdUserList,
+      existingEmailList: createUser.existingEmailList,
+      failedEmailList,
+    }, 201);
   });
 
   /**

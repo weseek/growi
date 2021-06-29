@@ -4,7 +4,6 @@ const debug = require('debug')('growi:models:user');
 const logger = require('@alias/logger')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
-const path = require('path');
 const uniqueValidator = require('mongoose-unique-validator');
 const md5 = require('md5');
 
@@ -573,57 +572,24 @@ module.exports = function(crowi) {
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
     const createdUserList = [];
-    await Promise.all(creationEmailList.map(async(email) => {
-      const createdEmail = await this.createUserByEmail(email);
-      createdUserList.push(createdEmail);
-    }));
+    const failedToCreateUserEmailList = [];
 
-    return { existingEmailList, createdUserList };
-  };
-
-  userSchema.statics.sendEmailbyUserList = async function(userList) {
-    const { appService, mailService } = crowi;
-    const appTitle = appService.getAppTitle();
-
-    await Promise.all(userList.map(async(user) => {
-      if (user.password == null) {
-        return;
-      }
-
+    for (const email of creationEmailList) {
       try {
-        return mailService.send({
-          to: user.email,
-          subject: `Invitation to ${appTitle}`,
-          template: path.join(crowi.localeDir, 'en_US/admin/userInvitation.txt'),
-          vars: {
-            email: user.email,
-            password: user.password,
-            url: crowi.appService.getSiteUrl(),
-            appTitle,
-          },
-        });
+        // eslint-disable-next-line no-await-in-loop
+        const createdUser = await this.createUserByEmail(email);
+        createdUserList.push(createdUser);
       }
       catch (err) {
-        return debug('fail to send email: ', err);
+        logger.error(err);
+        failedToCreateUserEmailList.push({
+          email,
+          reason: err.message,
+        });
       }
-    }));
-
-  };
-
-  userSchema.statics.createUsersByInvitation = async function(emailList, toSendEmail) {
-    validateCrowi();
-
-    if (!Array.isArray(emailList)) {
-      debug('emailList is not array');
     }
 
-    const afterWorkEmailList = await this.createUsersByEmailList(emailList);
-
-    if (toSendEmail) {
-      await this.sendEmailbyUserList(afterWorkEmailList.createdUserList);
-    }
-
-    return afterWorkEmailList;
+    return { createdUserList, existingEmailList, failedToCreateUserEmailList };
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
