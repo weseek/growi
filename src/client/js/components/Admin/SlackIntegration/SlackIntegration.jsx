@@ -45,10 +45,12 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
-      setIsLoading(false);
     }
     catch (err) {
       toastError(err);
+    }
+    finally {
+      setIsLoading(false);
     }
   }, [appContainer.apiv3]);
 
