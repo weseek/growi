@@ -39,7 +39,6 @@ const BotInstallProcessForOfficialBot = () => {
   const { t } = useTranslation();
   return (
     <div className="my-5 d-flex flex-column align-items-center">
-      {/* TODO: Insert install link */}
       <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://slackbot-proxy.growi.org/', '_blank')}>
         {t('admin:slack_integration.accordion.install_now')}
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
