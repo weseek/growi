@@ -277,7 +277,7 @@ export class SlackCtrl {
       + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
       + '<body style="text-align:center; padding-top:20%;">'
       + '<h1>Illegal state, try it again.</h1>'
-      + '<a href="/slack/install">'
+      + '<a href="/">'
       + 'Go to install page'
       + '</a>'
       + '</body></html>');
