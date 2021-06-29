@@ -224,7 +224,12 @@ class UserInviteModal extends React.Component {
       if (emailList.existingEmailList.length > 0) {
         this.showToasterByEmailList(emailList.existingEmailList, 'warning');
       }
-      // TODO: GW-6496
+      if (emailList.failedEmailList.length > 0) {
+        const failedEmailList = emailList.failedEmailList.map((failed) => {
+          return failed.email;
+        });
+        this.showToasterByEmailList(failedEmailList, 'error');
+      }
     }
     catch (err) {
       toastError(err);
