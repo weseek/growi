@@ -77,7 +77,6 @@ const PageCreateModal = (props) => {
    * @param {string} paths
    */
   async function redirectToEditor(...paths) {
-
     try {
       const editorPath = await generateEditorPath(...paths);
       console.log(editorPath);

@@ -120,7 +120,7 @@ function generateEditorPath(...paths) {
   const joinedPath = [...paths].join('/');
 
   if (!isCreatablePage(joinedPath)) {
-    throw new Error('Check path');
+    throw new Error('Invalid characters on path');
   }
 
   try {
