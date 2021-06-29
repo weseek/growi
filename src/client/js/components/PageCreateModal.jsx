@@ -80,7 +80,7 @@ const PageCreateModal = (props) => {
     try {
       const editorPath = await generateEditorPath(...paths);
       console.log(editorPath);
-      // window.location.href = `${url.pathname}#edit`;
+      window.location.href = editorPath;
     }
     catch (err) {
       toastError(err);
