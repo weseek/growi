@@ -584,7 +584,7 @@ module.exports = function(crowi) {
         logger.error(err);
         failedToCreateUserEmailList.push({
           email,
-          reason: err,
+          reason: err.message,
         });
       }
     }

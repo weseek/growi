@@ -142,7 +142,7 @@ module.exports = (crowi) => {
         logger.error(err);
         failedToSendEmailList.push({
           email: user.email,
-          reason: err,
+          reason: err.message,
         });
       }
     }
