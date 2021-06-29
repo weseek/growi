@@ -402,14 +402,18 @@ module.exports = (crowi) => {
     // Create users
     const createUser = await User.createUsersByEmailList(emailList);
     if (createUser.failedToCreateUserEmailList.length > 0) {
-      failedEmailList.push(createUser.failedToCreateUserEmailList);
+      createUser.failedToCreateUserEmailList.forEach((failed) => {
+        failedEmailList.push(failed);
+      });
     }
 
     // Send email
     if (req.body.sendEmail) {
       const sendEmail = await sendEmailByUserList(createUser.createdUserList);
       if (sendEmail.failedToSendEmailList.length > 0) {
-        failedEmailList.push(sendEmail.failedToSendEmailList);
+        sendEmail.failedToSendEmailList.forEach((failed) => {
+          failedEmailList.push(failed);
+        });
       }
     }
 
