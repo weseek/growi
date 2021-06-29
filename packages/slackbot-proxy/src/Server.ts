@@ -96,6 +96,13 @@ const helmetOptions = isProduction ? {} : {
       ejs: 'ejs',
     },
   },
+  statics: {
+    '/': [
+      {
+        root: `${rootDir}/public`,
+      },
+    ],
+  },
 })
 export class Server {
 
