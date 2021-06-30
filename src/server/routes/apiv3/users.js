@@ -137,6 +137,8 @@ module.exports = (crowi) => {
             appTitle,
           },
         });
+        // eslint-disable-next-line no-await-in-loop
+        await User.updateInvitationEmailSended(user.user.id);
       }
       catch (err) {
         logger.error(err);
