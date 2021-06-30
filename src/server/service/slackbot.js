@@ -1,7 +1,10 @@
+
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
+
+const { reshapeContentsBody } = require('@growi/slack');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -304,8 +307,7 @@ class SlackBotService extends S2sMessageHandlable {
   async createPageInGrowi(client, payload) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
-
-    const contentsBody = payload.view.state.values.contents.contents_input.value;
+    const contentsBody = reshapeContentsBody(payload.view.state.values.contents.contents_input.value);
 
     try {
       let path = payload.view.state.values.path.path_input.value;
