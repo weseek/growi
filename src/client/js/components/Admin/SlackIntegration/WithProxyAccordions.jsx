@@ -35,12 +35,11 @@ const BotCreateProcess = () => {
   );
 };
 
-const BotInstallProcess = () => {
+const BotInstallProcessForOfficialBot = () => {
   const { t } = useTranslation();
   return (
     <div className="my-5 d-flex flex-column align-items-center">
-      {/* TODO: Insert install link */}
-      <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
+      <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://slackbot-proxy.growi.org/', '_blank')}>
         {t('admin:slack_integration.accordion.install_now')}
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
@@ -53,6 +52,25 @@ const BotInstallProcess = () => {
           </small>
         </p>
       </a>
+    </div>
+  );
+};
+
+const BotInstallProcessForCustomBotWithProxy = () => {
+  const { t } = useTranslation();
+  return (
+    <div className="container w-75 py-5">
+      <p>1. {t('admin:slack_integration.accordion.select_install_your_app')}</p>
+      <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
+      <p>2. {t('admin:slack_integration.accordion.select_install_to_workspace')}</p>
+      <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
+      <p>3. {t('admin:slack_integration.accordion.click_allow')}</p>
+      <img src="/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
+      <p>4. {t('admin:slack_integration.accordion.install_complete_if_checked')}</p>
+      <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
+      <p>5. {t('admin:slack_integration.accordion.invite_bot_to_channel')}</p>
+      <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
+      <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
     </div>
   );
 };
@@ -272,7 +290,7 @@ const WithProxyAccordions = (props) => {
   const officialBotIntegrationProcedure = {
     '①': {
       title: 'install_bot_to_slack',
-      content: <BotInstallProcess />,
+      content: <BotInstallProcessForOfficialBot />,
     },
     '②': {
       title: 'register_for_growi_official_bot_proxy_service',
@@ -307,7 +325,7 @@ const WithProxyAccordions = (props) => {
     },
     '②': {
       title: 'install_bot_to_slack',
-      content: <BotInstallProcess />,
+      content: <BotInstallProcessForCustomBotWithProxy />,
     },
     '③': {
       title: 'register_for_growi_official_bot_proxy_service',

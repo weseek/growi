@@ -7,7 +7,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  generateMarkdownSectionBlock, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+  generateMarkdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -19,7 +19,7 @@ import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
-import { SelectRequestService } from '~/services/SelectRequestService';
+import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
@@ -45,7 +45,7 @@ export class SlackCtrl {
   orderRepository: OrderRepository;
 
   @Inject()
-  selectRequestService: SelectRequestService;
+  selectGrowiService: SelectGrowiService;
 
   @Inject()
   registerService: RegisterService;
@@ -53,25 +53,43 @@ export class SlackCtrl {
   @Inject()
   unregisterService: UnregisterService;
 
-  @Get('/install')
-  async install(): Promise<string> {
-    const url = await this.installerService.installer.generateInstallUrl({
-      // Add the scopes your app needs
-      scopes: [
-        'channels:history',
-        'commands',
-        'groups:history',
-        'im:history',
-        'mpim:history',
-        'chat:write',
-        'team:read',
-      ],
+  /**
+   * Send command to specified GROWIs
+   * @param growiCommand
+   * @param relations
+   * @param body
+   * @returns
+   */
+  private async sendCommand(growiCommand: GrowiCommand, relations: Relation[], body: any) {
+    if (relations.length === 0) {
+      throw new Error('relations must be set');
+    }
+    const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
+
+    const promises = relations.map((relation: Relation) => {
+      // generate API URL
+      const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
+      return axios.post(url.toString(), {
+        ...body,
+        growiCommand,
+      }, {
+        headers: {
+          'x-growi-ptog-tokens': relation.tokenPtoG,
+        },
+      });
     });
 
-    return `<a href="${url}">`
-      // eslint-disable-next-line max-len
-      + '<img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />'
-      + '</a>';
+    // pickup PromiseRejectedResult only
+    const results = await Promise.allSettled(promises);
+    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
+    }
+    catch (err) {
+      logger.error(err);
+    }
   }
 
   @Post('/commands')
@@ -113,7 +131,10 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationRepository.find({ installation });
+    const relations = await this.relationRepository.createQueryBuilder('relation')
+      .where('relation.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation.installation', 'installation')
+      .getMany();
 
     if (relations.length === 0) {
       return res.json({
@@ -146,37 +167,13 @@ export class SlackCtrl {
     });
 
     if (body.growiUris != null && body.growiUris.length > 0) {
-      return this.selectRequestService.process(growiCommand, authorizeResult, body);
+      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
     /*
      * forward to GROWI server
      */
-    const promises = relations.map((relation: Relation) => {
-      // generate API URL
-      const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
-      return axios.post(url.toString(), {
-        ...body,
-        growiCommand,
-      }, {
-        headers: {
-          'x-growi-ptog-tokens': relation.tokenPtoG,
-        },
-      });
-    });
-
-    // pickup PromiseRejectedResult only
-    const results = await Promise.allSettled(promises);
-    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-    const botToken = installation?.data.bot?.token;
-
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, botToken!);
-    }
-    catch (err) {
-      logger.error(err);
-    }
+    this.sendCommand(growiCommand, relations, body);
   }
 
   @Post('/interactions')
@@ -206,7 +203,7 @@ export class SlackCtrl {
     // register
     if (callBackId === 'register') {
       try {
-        await this.registerService.insertOrderRecord(this.orderRepository, installation, authorizeResult.botToken, payload);
+        await this.registerService.insertOrderRecord(installation, authorizeResult.botToken, payload);
       }
       catch (err) {
         if (err instanceof InvalidUrlError) {
@@ -222,14 +219,14 @@ export class SlackCtrl {
 
     // unregister
     if (callBackId === 'unregister') {
-      await this.unregisterService.unregister(this.relationRepository, installation, authorizeResult, payload);
+      await this.unregisterService.unregister(installation, authorizeResult, payload);
       return;
     }
 
     // forward to GROWI server
     if (callBackId === 'select_growi') {
-      await this.selectRequestService.forwardRequest(this.relationRepository, installation, payload);
-      return;
+      const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
+      return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
     /*
@@ -280,7 +277,7 @@ export class SlackCtrl {
       + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
       + '<body style="text-align:center; padding-top:20%;">'
       + '<h1>Illegal state, try it again.</h1>'
-      + '<a href="/slack/install">'
+      + '<a href="/">'
       + 'Go to install page'
       + '</a>'
       + '</body></html>');

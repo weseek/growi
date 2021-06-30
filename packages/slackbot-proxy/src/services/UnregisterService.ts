@@ -1,4 +1,4 @@
-import { Service } from '@tsed/di';
+import { Inject, Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
 import { GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
@@ -10,6 +10,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 @Service()
 export class UnregisterService implements GrowiCommandProcessor {
+
+  @Inject()
+  relationRepository: RelationRepository;
 
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string}): Promise<void> {
     const { botToken } = authorizeResult;
@@ -42,12 +45,12 @@ export class UnregisterService implements GrowiCommandProcessor {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async unregister(relationRepository:RelationRepository, installation:Installation | undefined, authorizeResult: AuthorizeResult, payload: any):Promise<void> {
+  async unregister(installation: Installation | undefined, authorizeResult: AuthorizeResult, payload: any):Promise<void> {
     const { botToken } = authorizeResult;
     const { channel, growiUrls } = JSON.parse(payload.view.private_metadata);
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
-    const deleteResult = await relationRepository.createQueryBuilder('relation')
+    const deleteResult = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.growiUri IN (:uris)', { uris: growiUrls })
       .andWhere('relation.installationId = :installationId', { installationId: installation?.id })
       .delete()
