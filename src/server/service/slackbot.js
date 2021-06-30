@@ -1,7 +1,10 @@
+
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
+
+const { reshapeContentsBody } = require('@growi/slack');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -302,9 +305,7 @@ class SlackBotService extends S2sMessageHandlable {
   async createPageInGrowi(client, payload) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
-
-    let contentsBody = payload.view.state.values.contents.contents_input.value;
-    contentsBody = this.reshapeContentsBody(contentsBody);
+    const contentsBody = reshapeContentsBody(payload.view.state.values.contents.contents_input.value);
 
     try {
       let path = payload.view.state.values.path.path_input.value;
@@ -370,80 +371,6 @@ class SlackBotService extends S2sMessageHandlable {
         },
       },
     };
-  }
-
-  /**
-   * Reshape contentsBody
-   */
-  reshapeContentsBody(contentsBody) {
-    let linesBeforeFirstHeader = [];
-    // Remove everything before the first Header
-    const removeLinesBeforeFirstHeader = (array) => {
-      const regexpSectionHeader = new RegExp(/.+\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
-      let i = 0;
-      while (!regexpSectionHeader.test(array[i]) && i <= array.length) {
-        i++;
-      }
-      linesBeforeFirstHeader = linesBeforeFirstHeader.concat(array.slice(0, i));
-      return array.slice(i);
-    };
-
-    const reshape = (str) => {
-      const regexpSectionHeader = new RegExp(/.+\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
-      const regexpTime = new RegExp(/\s\s[\d]{1,2}:[\d]{2}(\s[AP]{1}M)?$/);
-      const regexpShortTime = new RegExp(/^[\d]{1,2}:[\d]{2}$/);
-      const regexpReaction = new RegExp(/^:[+\w-]+:$/);
-
-      const splitted = str.split('\n');
-      const cleanedArray = removeLinesBeforeFirstHeader(splitted);
-      if (cleanedArray.length === 0) {
-        return linesBeforeFirstHeader.join('');
-      }
-
-      let didReactionRemoved = false;
-      const reshapedArray = cleanedArray.map((line) => {
-        let copyline = line;
-        // Check 1: Did a reaction removed last time?
-        if (didReactionRemoved) {
-          // remove reaction count
-          copyline = '';
-          didReactionRemoved = false;
-        }
-        // Check 2: Is this line a header?
-        else if (regexpSectionHeader.test(copyline)) {
-          // extract time from line
-          const time = copyline.match(regexpTime)[0];
-          // </div><div class="slack-talk-bubble">##*username*  HH:mm AM
-          copyline = '</div>\n<div class="slack-talk-bubble">\n\n## **'.concat(copyline);
-          copyline = copyline.replace(regexpTime, '**'.concat(time), '\n<');
-        }
-        // Check 3: Is this line a short time(HH:mm)?
-        else if (regexpShortTime.test(copyline)) {
-          // --HH:mm--
-          copyline = '--'.concat(copyline, '--');
-        }
-        // Check 4: Is this line a reaction?
-        else if (regexpReaction.test(copyline)) {
-          // remove reaction
-          copyline = '';
-          didReactionRemoved = true;
-        }
-        return copyline;
-      });
-      // remove all blanks
-      const blanksRemoved = reshapedArray.filter(line => line !== '');
-      // delete the first </div> and add </div> to the last row
-      blanksRemoved[0] = blanksRemoved[0].replace(/<\/div>/g, '');
-      blanksRemoved.push('</div>');
-      // Add 2 spaces and 1 enter to all lines
-      const completedArray = blanksRemoved.map(line => line.concat('  \n'));
-      // join all
-      const contentsBeforeFirstHeader = linesBeforeFirstHeader.join('');
-      const contentsAfterFirstHeader = completedArray.join('');
-      return contentsBeforeFirstHeader.concat(contentsAfterFirstHeader);
-    };
-
-    return reshape(contentsBody);
   }
 
 }
