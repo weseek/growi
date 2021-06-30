@@ -63,7 +63,7 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
-    invitationEmailSended: { type: Date, default: null },
+    isInvitationEmailSended: { type: Boolean, default: false },
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
@@ -683,14 +683,14 @@ module.exports = function(crowi) {
     return username;
   };
 
-  userSchema.statics.updateInvitationEmailSended = async function(id) {
+  userSchema.statics.updateIsInvitationEmailSended = async function(id) {
     const user = await this.findById(id);
 
     if (!user) {
       throw new Error('User not found');
     }
 
-    user.invitationEmailSended = new Date();
+    user.isInvitationEmailSended = true;
     user.save();
   };
 
