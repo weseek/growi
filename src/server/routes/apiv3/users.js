@@ -126,6 +126,8 @@ module.exports = (crowi) => {
     for (const user of userList) {
       try {
         // eslint-disable-next-line no-await-in-loop
+        await User.updateInvitationEmailSended(user.user.id);
+        // eslint-disable-next-line no-await-in-loop
         await mailService.send({
           to: user.email,
           subject: `Invitation to ${appTitle}`,
@@ -137,8 +139,6 @@ module.exports = (crowi) => {
             appTitle,
           },
         });
-        // eslint-disable-next-line no-await-in-loop
-        await User.updateInvitationEmailSended(user.user.id);
       }
       catch (err) {
         logger.error(err);
