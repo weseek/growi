@@ -63,6 +63,7 @@ module.exports = function(crowi) {
     createdAt: { type: Date, default: Date.now },
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
+    isInvitationEmailSended: { type: Boolean, default: false },
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
@@ -680,6 +681,21 @@ module.exports = function(crowi) {
     }
 
     return username;
+  };
+
+  userSchema.statics.updateIsInvitationEmailSended = async function(id) {
+    const user = await this.findById(id);
+
+    if (user == null) {
+      throw new Error('User not found');
+    }
+
+    if (user.status !== 5) {
+      throw new Error('The status of the user is not "invited"');
+    }
+
+    user.isInvitationEmailSended = true;
+    user.save();
   };
 
   class UserUpperLimitException {
