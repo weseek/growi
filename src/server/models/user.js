@@ -686,8 +686,12 @@ module.exports = function(crowi) {
   userSchema.statics.updateIsInvitationEmailSended = async function(id) {
     const user = await this.findById(id);
 
-    if (!user) {
+    if (user == null) {
       throw new Error('User not found');
+    }
+
+    if (user.status !== 5) {
+      throw new Error('The status of the user is not "invited"');
     }
 
     user.isInvitationEmailSended = true;
