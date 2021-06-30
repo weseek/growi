@@ -27,18 +27,18 @@ const regexpShortTime = new RegExp(/^[\d]{1,2}:[\d]{2}$/);
 const regexpReaction = new RegExp(/^:[+\w-]+:$/);
 
 // Remove everything before the first Header
-const devideLinesBeforeAfterFirstHeader = (array: string[]) => {
+const devideLinesBeforeAfterFirstHeader = (lines: string[]) => {
   let i = 0;
-  while (!regexpMessageHeader.test(array[i]) && i <= array.length) {
+  while (!regexpMessageHeader.test(lines[i]) && i <= lines.length) {
     i++;
   }
-  const linesBeforeFirstHeader = array.slice(0, i);
-  const linesAfterFirstHeader = array.slice(i);
+  const linesBeforeFirstHeader = lines.slice(0, i);
+  const linesAfterFirstHeader = lines.slice(i);
   return { linesBeforeFirstHeader, linesAfterFirstHeader };
 };
 
 // Reshape linesAfterFirstHeader
-const reshape = (str: string): string => {
+export const reshapeContentsBody = (str: string): string => {
   const splitted = str.split('\n');
   const { linesBeforeFirstHeader, linesAfterFirstHeader } = devideLinesBeforeAfterFirstHeader(splitted);
   if (linesAfterFirstHeader.length === 0) {
@@ -90,11 +90,4 @@ const reshape = (str: string): string => {
   const contentsBeforeFirstHeader = linesBeforeFirstHeader.join('');
   const contentsAfterFirstHeader = completedArray.join('');
   return contentsBeforeFirstHeader.concat(contentsAfterFirstHeader);
-};
-
-/**
- * Reshape contentsBody
- */
-export const reshapeContentsBody = (contentsBody: string): string => {
-  return reshape(contentsBody);
 };
