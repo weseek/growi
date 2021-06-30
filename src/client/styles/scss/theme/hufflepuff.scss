@@ -77,12 +77,11 @@ html[light] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: lighten($themelight, 10%);
 
-  // ↓spring's copy↓
   // Icon colors
-  $color-editor-icons: $color-global;
+  $color-editor-icons: $accentcolor;
 
   // Border colors
-  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
+  $border-color-theme: lighten($subthemecolor, 40%);
   $bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -91,7 +90,7 @@ html[light] {
   $color-dropdown-link-hover: $color-global;
 
   // admin theme box
-  $color-theme-color-box: $primary;
+  $color-theme-color-box: darken($primary, 5%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -166,9 +165,7 @@ html[dark] {
   $third-main-color: #967224;
   $accentcolor: #993439;
 
-  // $primary: $themecolor;
   $primary: darken($themecolor, 10%);
-  // $secondary: $subthemecolor;
   $secondary: $third-main-color;
   $dark: #031018;
 
@@ -204,7 +201,6 @@ html[dark] {
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #90a555 0%, #3d98a3 50%, #eaab20 100%);
 
-  // ↓mono-blue's copy↓
   // Logo colors
   $bgcolor-logo: #13191c;
   $fillcolor-logo-mark: white;
@@ -225,10 +221,10 @@ html[dark] {
   $bgcolor-sidebar-list-group: lighten($subthemecolor, 5%);
 
   // Icon colors
-  $color-editor-icons: $color-global;
+  $color-editor-icons: $themecolor;
 
   // Border colors
-  $border-color-theme: darken($themecolor, 5%);
+  $border-color-theme: darken($themecolor, 25%);
   $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
