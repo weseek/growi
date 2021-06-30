@@ -397,23 +397,19 @@ module.exports = (crowi) => {
 
     // Delete duplicate email addresses
     const emailList = Array.from(new Set(req.body.shapedEmailList));
-    const failedEmailList = [];
+    let failedEmailList = [];
 
     // Create users
     const createUser = await User.createUsersByEmailList(emailList);
     if (createUser.failedToCreateUserEmailList.length > 0) {
-      createUser.failedToCreateUserEmailList.forEach((failed) => {
-        failedEmailList.push(failed);
-      });
+      failedEmailList = failedEmailList.concat(createUser.failedToCreateUserEmailList);
     }
 
     // Send email
     if (req.body.sendEmail) {
       const sendEmail = await sendEmailByUserList(createUser.createdUserList);
       if (sendEmail.failedToSendEmailList.length > 0) {
-        sendEmail.failedToSendEmailList.forEach((failed) => {
-          failedEmailList.push(failed);
-        });
+        failedEmailList = failedEmailList.concat(sendEmail.failedToSendEmailList);
       }
     }
 
