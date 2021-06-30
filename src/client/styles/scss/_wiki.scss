@@ -223,19 +223,17 @@ div.body {
     padding: 7%;
     padding-bottom: 3%;
     margin: 0 7%;
-    background-color: #eee;
+    background-color: rgba(200, 200, 200, 0.2);
     border-radius: 10px;
 
     & > h2 {
-      font-size: 1.1em;
+      font-size: 1em;
       font-weight: normal;
-      color: #999;
 
       strong {
         margin-right: 0.3em;
         font-size: 1.2em;
         font-weight: bolder;
-        color: black;
       }
     }
   }
