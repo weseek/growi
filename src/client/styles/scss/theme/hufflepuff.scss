@@ -84,14 +84,13 @@ html[light] {
   $border-color-theme: lighten($subthemecolor, 40%);
   $bordercolor-inline-code: #ccc8c8; // optional
 
-  // ↓spring's copy↓
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
   $color-dropdown-link-active: $color-reversal;
   $color-dropdown-link-hover: $color-global;
 
   // admin theme box
-  $color-theme-color-box: $primary;
+  $color-theme-color-box: darken($primary, 5%);
 
   @import 'apply-colors';
   @import 'apply-colors-light';
@@ -172,9 +171,7 @@ html[dark] {
   $third-main-color: #967224;
   $accentcolor: #993439;
 
-  // $primary: $themecolor;
   $primary: darken($themecolor, 10%);
-  // $secondary: $subthemecolor;
   $secondary: $third-main-color;
   $dark: #031018;
 
@@ -210,7 +207,6 @@ html[dark] {
   $bgcolor-search-top-dropdown: $themecolor;
   $border-image-navbar: linear-gradient(to right, #90a555 0%, #3d98a3 50%, #eaab20 100%);
 
-  // ↓mono-blue's copy↓
   // Logo colors
   $bgcolor-logo: #13191c;
   $fillcolor-logo-mark: white;
