@@ -85,6 +85,7 @@ class UserMenu extends React.Component {
       <UncontrolledDropdown id="userMenu" size="sm">
         <DropdownToggle caret color="secondary" outline>
           <i className="icon-settings"></i>
+          <i className="fa fa-circle text-danger notification-icon"></i>
         </DropdownToggle>
         <DropdownMenu positionFixed>
           {this.renderEditMenu()}
