@@ -9,6 +9,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import * as toastr from 'toastr';
 import { toastSuccess, toastError, toastWarning } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -55,9 +56,15 @@ class UserInviteModal extends React.Component {
         msg = `Existing email<br>${msg}`;
         toastWarning(msg);
         break;
-      // TODO: GW-6496
       case 'error':
-        toastError(msg);
+        toastr.error(msg, 'Error', {
+          closeButton: true,
+          progressBar: true,
+          newestOnTop: false,
+          showDuration: '100',
+          hideDuration: '100',
+          timeOut: '0',
+        });
         break;
     }
   }
@@ -224,7 +231,16 @@ class UserInviteModal extends React.Component {
       if (emailList.existingEmailList.length > 0) {
         this.showToasterByEmailList(emailList.existingEmailList, 'warning');
       }
-      // TODO: GW-6496
+      if (emailList.failedEmailList.length > 0) {
+        const failedEmailList = emailList.failedEmailList.map((failed, index) => {
+          let response = `email: ${failed.email}<br>・reason: ${failed.reason}`;
+          if (index !== emailList.failedEmailList.length - 1) {
+            response += '<br>';
+          }
+          return response;
+        });
+        this.showToasterByEmailList(failedEmailList, 'error');
+      }
     }
     catch (err) {
       toastError(err);
