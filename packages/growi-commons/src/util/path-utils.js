@@ -17,7 +17,10 @@ function matchSlashes(path) {
  * @returns {boolean}
  * @memberof pathUtils
  */
-function hasHeadingSlash(path) {
+ function hasHeadingSlash(path) {
+  if (path == null || path === '') {
+    return false;
+  }
   const match = matchSlashes(path);
   return (match[2] != null);
 }
@@ -29,6 +32,9 @@ function hasHeadingSlash(path) {
  * @memberof pathUtils
  */
 function hasTrailingSlash(path) {
+  if (path == null || path === '') {
+    return false;
+  }
   const match = matchSlashes(path);
   return (match[4] != null);
 }
