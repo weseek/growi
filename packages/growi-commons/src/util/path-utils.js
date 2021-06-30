@@ -17,7 +17,7 @@ function matchSlashes(path) {
  * @returns {boolean}
  * @memberof pathUtils
  */
- function hasHeadingSlash(path) {
+function hasHeadingSlash(path) {
   if (path == null || path === '') {
     return false;
   }
