@@ -77,14 +77,14 @@ html[light] {
   // Sidebar list group
   $bgcolor-sidebar-list-group: lighten($themelight, 10%);
 
-  // ↓spring's copy↓
   // Icon colors
-  $color-editor-icons: $color-global;
+  $color-editor-icons: $accentcolor;
 
   // Border colors
-  $border-color-theme: $gray-300; // former: `$navbar-border: $gray-300;`
+  $border-color-theme: lighten($subthemecolor, 40%);
   $bordercolor-inline-code: #ccc8c8; // optional
 
+  // ↓spring's copy↓
   // Dropdown colors
   $bgcolor-dropdown-link-active: $growi-blue;
   $color-dropdown-link-active: $color-reversal;
@@ -234,7 +234,7 @@ html[dark] {
   $color-editor-icons: $themecolor;
 
   // Border colors
-  $border-color-theme: darken($themecolor, 5%);
+  $border-color-theme: darken($themecolor, 25%);
   $bordercolor-inline-code: #4d4d4d; // optional
 
   // Dropdown colors
