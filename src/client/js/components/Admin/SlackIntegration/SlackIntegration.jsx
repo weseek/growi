@@ -147,7 +147,7 @@ const SlackIntegration = (props) => {
       settingsComponent = (
         <OfficialBotSettings
           slackAppIntegrations={slackAppIntegrations}
-          proxyServerUri={proxyServerUri}
+          proxyServerUri={officialBotProxyUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
@@ -173,7 +173,7 @@ const SlackIntegration = (props) => {
       settingsComponent = (
         <CustomBotWithProxySettings
           slackAppIntegrations={slackAppIntegrations}
-          proxyServerUri={officialBotProxyUri}
+          proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
