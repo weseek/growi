@@ -13,6 +13,7 @@
     * validator
     * ws
     * nodemailer
+    * i18next-express-middleware
 
 ## v4.2.20
 
