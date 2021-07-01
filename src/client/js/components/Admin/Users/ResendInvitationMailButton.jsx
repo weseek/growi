@@ -7,14 +7,20 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const ResendInvitationEmailButton = (props) => {
 
+  const { user } = props;
+
   return (
-    <p>ResendInvitationEmailButton</p>
+    <button className="dropdown-item" type="button" onClick={() => { }}>
+      <i className="icon-fw icon-envelope"></i> 招待メールの送信
+    </button>
   );
 };
 
 
 const ResendInvitationEmailButtonWrapper = withUnstatedContainers(ResendInvitationEmailButton, [AppContainer, AdminUsersContainer]);
 
-ResendInvitationEmailButton.propTypes = {};
+ResendInvitationEmailButton.propTypes = {
+  user: PropTypes.object.isRequired,
+};
 
 export default ResendInvitationEmailButtonWrapper;
