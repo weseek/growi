@@ -99,7 +99,7 @@ COPY packages/slack packages/slack
 COPY packages/app packages/app
 
 # build
-RUN yarn lerna build
+RUN yarn lerna run build
 
 # make artifacts
 RUN tar cf packages.tar \
