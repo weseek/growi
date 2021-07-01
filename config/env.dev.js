@@ -28,4 +28,5 @@ module.exports = {
   SALT_FOR_PTOG_TOKEN: 'growi',
   // GROWI_CLOUD_URI: 'http://growi.cloud',
   // GROWI_APP_ID_FOR_GROWI_CLOUD: '012345',
+  OFFICIAL_BOT_PROXY_URL: 'https://slackbot-proxy.growi.org',
 };

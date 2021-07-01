@@ -8,6 +8,7 @@ import { Installation } from '~/entities/installation';
 import { InvalidUrlError } from '../models/errors';
 
 const isProduction = process.env.NODE_ENV === 'production';
+const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
 @Service()
 export class RegisterService implements GrowiCommandProcessor {
@@ -98,7 +99,7 @@ export class RegisterService implements GrowiCommandProcessor {
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
-    if (serverUri === process.env.OFFICIAL_BOT_PROXY_URL) {
+    if (isOfficialMode) {
       await client.chat.postEphemeral({
         channel,
         user: payload.user.id,
