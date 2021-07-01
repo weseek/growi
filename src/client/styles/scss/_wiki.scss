@@ -218,6 +218,25 @@ div.body {
       }
     }
   }
+
+  .grw-togetter {
+    padding: 7%;
+    padding-bottom: 3%;
+    margin: 0 7%;
+    background-color: rgba(200, 200, 200, 0.2);
+    border-radius: 10px;
+
+    & > h2 {
+      font-size: 1em;
+      font-weight: normal;
+
+      strong {
+        margin-right: 0.3em;
+        font-size: 1.2em;
+        font-weight: bolder;
+      }
+    }
+  }
 }
 
 // mobile
