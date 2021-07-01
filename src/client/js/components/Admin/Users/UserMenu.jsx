@@ -82,18 +82,17 @@ class UserMenu extends React.Component {
     const { user } = this.props;
 
     return (
-      <Fragment>
-        <UncontrolledDropdown id="userMenu" size="sm">
-          <DropdownToggle caret color="secondary" outline>
-            <i className="icon-settings"></i>
-          </DropdownToggle>
-          <DropdownMenu positionFixed>
-            {this.renderEditMenu()}
-            {user.status !== 4 && this.renderStatusMenu()}
-            {user.status === 2 && this.renderAdminMenu()}
-          </DropdownMenu>
-        </UncontrolledDropdown>
-      </Fragment>
+      <UncontrolledDropdown id="userMenu" size="sm">
+        <DropdownToggle caret color="secondary" outline>
+          <i className="icon-settings" />
+          {(!user.isInvitationEmailSended && user.status === 5) && <i className="fa fa-circle text-danger grw-usermenu-notification-icon" />}
+        </DropdownToggle>
+        <DropdownMenu positionFixed>
+          {this.renderEditMenu()}
+          {user.status !== 4 && this.renderStatusMenu()}
+          {user.status === 2 && this.renderAdminMenu()}
+        </DropdownMenu>
+      </UncontrolledDropdown>
     );
   }
 
