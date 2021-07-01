@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:SlackBotSettings');
 
 const OfficialBotSettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, /* proxyServerUri, */ onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onSubmitForm,
+    appContainer, slackAppIntegrations, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onSubmitForm,
   } = props;
   const [siteName, setSiteName] = useState('');
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
@@ -57,19 +57,6 @@ const OfficialBotSettings = (props) => {
             siteName={siteName}
             connectionStatuses={connectionStatuses}
           />
-
-          {/* <div className="form-group row my-4">
-            <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
-            <div className="col-md-6 mt-3">
-              <input
-                className="form-control"
-                type="text"
-                name="settingForm[proxyUrl]"
-                defaultValue={proxyServerUri}
-                readOnly
-              />
-            </div>
-          </div> */}
 
           <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
         </>
@@ -136,7 +123,6 @@ OfficialBotSettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   slackAppIntegrations: PropTypes.array,
-  // proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
   onDeleteSlackAppIntegration: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,

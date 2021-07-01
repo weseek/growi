@@ -92,17 +92,6 @@ const SlackIntegration = (props) => {
         currentBotType: botType,
       });
       setSelectedBotType(null);
-      // if (botType === 'officialBot') {
-      //   try {
-      //     await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-      //       proxyUri: officialBotProxyUri,
-      //     });
-      //     toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
-      //   }
-      //   catch (err) {
-      //     toastError(err);
-      //   }
-      // }
       fetchSlackIntegrationData();
     }
     catch (err) {
@@ -117,17 +106,6 @@ const SlackIntegration = (props) => {
     if (currentBotType == null) {
       return changeCurrentBotSettings(botType);
     }
-    // if (botType === 'officialBot') {
-    //   try {
-    //     await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-    //       proxyUri: officialBotProxyUri,
-    //     });
-    //     toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
-    //   }
-    //   catch (err) {
-    //     toastError(err);
-    //   }
-    // }
     setSelectedBotType(botType);
   };
 
@@ -147,7 +125,6 @@ const SlackIntegration = (props) => {
       settingsComponent = (
         <OfficialBotSettings
           slackAppIntegrations={slackAppIntegrations}
-          // proxyServerUri={officialBotProxyUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
