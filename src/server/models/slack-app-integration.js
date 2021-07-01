@@ -5,14 +5,16 @@ const schema = new mongoose.Schema({
   tokenGtoP: { type: String, required: true, unique: true },
   tokenPtoG: { type: String, required: true, unique: true },
 });
+
 class SlackAppIntegration {
 
   static generateAccessTokens() {
+    const now = new Date().getTime();
     const hasher1 = crypto.createHash('sha512');
     const hasher2 = crypto.createHash('sha512');
-    const tokenGtoP = hasher1.update(new Date().getTime().toString() + process.env.SALT_FOR_GTOP_TOKEN);
-    const tokenPtoG = hasher2.update(new Date().getTime().toString() + process.env.SALT_FOR_PTOG_TOKEN);
-    return [tokenGtoP.digest('base64'), tokenPtoG.digest('base64')];
+    const tokenGtoP = hasher1.update(`gtop${now.toString()}${process.env.SALT_FOR_GTOP_TOKEN}`).digest('base64');
+    const tokenPtoG = hasher2.update(`ptog${now.toString()}${process.env.SALT_FOR_PTOG_TOKEN}`).digest('base64');
+    return [tokenGtoP, tokenPtoG];
   }
 
   static async generateUniqueAccessTokens() {
