@@ -58,8 +58,8 @@ class UserMenu extends React.Component {
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
           {user.status === 2 && <StatusSuspendedButton user={user} />}
-          {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
           {(!user.isInvitationEmailSended && user.status === 5) && <ResendInvitationEmailButton user={user} />}
+          {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
         </li>
       </Fragment>
     );
