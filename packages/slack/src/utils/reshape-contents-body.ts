@@ -62,8 +62,8 @@ export const reshapeContentsBody = (str: string): string => {
       if (matched !== null && matched.length > 0) {
         time = matched[0];
       }
-      // </div><div class="slack-talk-bubble">##*username*  HH:mm AM
-      copyline = '</div>\n<div class="slack-talk-bubble">\n\n## **'.concat(copyline);
+      // ##*username*  HH:mm AM
+      copyline = '\n## **'.concat(copyline);
       copyline = copyline.replace(regexpTime, '**'.concat(time));
     }
     // Check 3: Is this line a short time(HH:mm)?
@@ -81,8 +81,8 @@ export const reshapeContentsBody = (str: string): string => {
   });
   // remove all blanks
   const blanksRemoved = reshapedArray.filter(line => line !== '');
-  // delete the first </div> and add </div> to the last row
-  blanksRemoved[0] = blanksRemoved[0].replace(/<\/div>/g, '');
+  // add <div> to the first line & add </div> to the last line
+  blanksRemoved[0] = '\n<div class="grw-togetter">\n'.concat(blanksRemoved[0]);
   blanksRemoved.push('</div>');
   // Add 2 spaces and 1 enter to all lines
   const completedArray = blanksRemoved.map(line => line.concat('  \n'));
