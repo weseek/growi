@@ -12,6 +12,7 @@
     * validator
     * ws
     * nodemailer
+    * striptags
 
 ## v4.2.20
 
