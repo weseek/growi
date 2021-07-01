@@ -13,6 +13,8 @@ import BotTypeCard from './BotTypeCard';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
+const officialBotProxyUri = process.env.OFFICIAL_BOT_PROXY_URL;
+
 
 const SlackIntegration = (props) => {
   const { appContainer } = props;
@@ -28,7 +30,6 @@ const SlackIntegration = (props) => {
   const [proxyServerUri, setProxyServerUri] = useState();
   const [connectionStatuses, setConnectionStatuses] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const officialBotProxyUri = 'https://slackbot-proxy.growi.org/';
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
