@@ -169,7 +169,8 @@
     "page_not_exist_alert": "该页面不存在，请创建一个新页面"
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page."
+    "no_page_list": "There are no pages under this page.",
+    "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"installer": {
 		"setup": "安装",

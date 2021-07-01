@@ -168,7 +168,8 @@
     "page_not_exist_alert": "This page does not exist. Please create a new page."
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page."
+    "no_page_list": "There are no pages under this page.",
+    "link_sharing_is_disabled": "Link sharing is disabled."
   },
   "installer": {
     "setup": "Setup",
