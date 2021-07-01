@@ -13,6 +13,7 @@
     * ws
     * nodemailer
     * i18next-express-middleware
+    * growi-commons
 
 ## v4.2.20
 

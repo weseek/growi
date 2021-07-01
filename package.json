@@ -1,4 +1,4 @@
-{
+yar{
   "name": "growi",
   "version": "4.2.21-RC",
   "description": "Team collaboration software using markdown",
@@ -114,7 +114,7 @@
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
-    "growi-commons": "^5.0.3",
+    "growi-commons": "^5.0.4",
     "helmet": "^3.13.0",
     "i18next": "^20.3.2",
     "i18next-express-middleware": "^2.0.0",
