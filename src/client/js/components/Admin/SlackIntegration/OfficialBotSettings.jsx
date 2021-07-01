@@ -19,13 +19,6 @@ const OfficialBotSettings = (props) => {
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
 
-  // const [newProxyServerUri, setNewProxyServerUri] = useState();
-
-  // componentDidUpdate
-  // useEffect(() => {
-  //   setNewProxyServerUri(proxyServerUri);
-  // }, [proxyServerUri, slackAppIntegrations]);
-
   const addSlackAppIntegrationHandler = async() => {
     if (onClickAddSlackWorkspaceBtn != null) {
       onClickAddSlackWorkspaceBtn();
@@ -45,19 +38,6 @@ const OfficialBotSettings = (props) => {
       logger.error(err);
     }
   };
-
-  // const updateProxyUri = async() => {
-  //   try {
-  //     await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-  //       proxyUri: newProxyServerUri,
-  //     });
-  //     toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //     logger.error(err);
-  //   }
-  // };
 
   useEffect(() => {
     const siteName = appContainer.config.crowi.title;
@@ -87,12 +67,8 @@ const OfficialBotSettings = (props) => {
                 name="settingForm[proxyUrl]"
                 defaultValue={proxyServerUri}
                 readOnly
-                // onChange={(e) => { setNewProxyServerUri(e.target.value) }}
               />
             </div>
-            {/* <div className="col-md-2 mt-3 text-center text-md-left">
-              <button type="button" className="btn btn-primary" onClick={updateProxyUri}>{ t('Update') }</button>
-            </div> */}
           </div>
 
           <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
