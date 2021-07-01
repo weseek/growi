@@ -2,6 +2,8 @@
 
 ## v4.2.21-RC
 
+* Improvement: Headers style on built-in editor
+* Improvement: Codemirror is now scrollable one editor height of empty space into view at the bottom of the editor
 * Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
 * Support: Upgrade libs
     * connect-mongo
