@@ -57,6 +57,7 @@ function Crowi(rootdir) {
   this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
+  this.slackBotService = null;
   this.xss = new Xss();
 
   this.tokens = null;
@@ -104,6 +105,7 @@ Crowi.prototype.init = async function() {
     this.setupSearcher(),
     this.setupMailer(),
     this.setupSlack(),
+    this.setupSlackLegacy(),
     this.setupCsrf(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
@@ -116,6 +118,7 @@ Crowi.prototype.init = async function() {
     this.setupImport(),
     this.setupPageService(),
     this.setupSyncPageStatusService(),
+    this.setupSlackBotService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -311,6 +314,10 @@ Crowi.prototype.getSlack = function() {
   return this.slack;
 };
 
+Crowi.prototype.getSlackLegacy = function() {
+  return this.slackLegacy;
+};
+
 Crowi.prototype.getInterceptorManager = function() {
   return this.interceptorManager;
 };
@@ -379,6 +386,15 @@ Crowi.prototype.setupSlack = async function() {
 
   return new Promise(((resolve, reject) => {
     self.slack = require('../util/slack')(self);
+    resolve();
+  }));
+};
+
+Crowi.prototype.setupSlackLegacy = async function() {
+  const self = this;
+
+  return new Promise(((resolve, reject) => {
+    self.slackLegacy = require('../util/slack-legacy')(self);
     resolve();
   }));
 };
@@ -651,6 +667,18 @@ Crowi.prototype.setupSyncPageStatusService = async function() {
     if (this.s2sMessagingService != null) {
       this.s2sMessagingService.addMessageHandler(this.syncPageStatusService);
     }
+  }
+};
+
+Crowi.prototype.setupSlackBotService = async function() {
+  const SlackBotService = require('../service/slackbot');
+  if (this.slackBotService == null) {
+    this.slackBotService = new SlackBotService(this);
+  }
+
+  // add as a message handler
+  if (this.s2sMessagingService != null) {
+    this.s2sMessagingService.addMessageHandler(this.slackBotService);
   }
 };
 
