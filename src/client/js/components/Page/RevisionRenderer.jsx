@@ -25,7 +25,7 @@ class RevisionRenderer extends React.PureComponent {
   initCurrentRenderingContext() {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
-      currentPagePath: this.props.pageContainer.state.path || '/_search',
+      currentPagePath: decodeURIComponent(window.location.pathname),
     };
   }
 
