@@ -9,6 +9,9 @@ import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
+import PageContainer from '../../services/PageContainer';
+import FootstampIcon from '../FootstampIcon';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
 import { toastError } from '../../util/apiNotification';
@@ -22,6 +25,7 @@ class RecentChanges extends React.Component {
   static propTypes = {
     t: PropTypes.func.isRequired, // i18next
     appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+    pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   };
 
   constructor(props) {
@@ -55,6 +59,7 @@ class RecentChanges extends React.Component {
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
       </div>
     );
+    const { pageContainer } = this.props;
 
     return (
       <li className="list-group-item p-2">
@@ -66,6 +71,9 @@ class RecentChanges extends React.Component {
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             </h5>
             <div className="text-right small">
+              <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
+              <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
+              <br />
               <FormattedDistanceDate id={page.id} date={page.updatedAt} />
             </div>
           </div>
@@ -102,6 +110,7 @@ class RecentChanges extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer]);
+const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer, PageContainer]);
+
 
 export default withTranslation()(RecentChangesWrapper);
