@@ -13,10 +13,9 @@ import BotTypeCard from './BotTypeCard';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
 const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
-const officialBotProxyUri = process.env.OFFICIAL_BOT_PROXY_URL;
-
 
 const SlackIntegration = (props) => {
+
   const { appContainer } = props;
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
@@ -93,17 +92,17 @@ const SlackIntegration = (props) => {
         currentBotType: botType,
       });
       setSelectedBotType(null);
-      if (botType === 'officialBot') {
-        try {
-          await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-            proxyUri: officialBotProxyUri,
-          });
-          toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
-        }
-        catch (err) {
-          toastError(err);
-        }
-      }
+      // if (botType === 'officialBot') {
+      //   try {
+      //     await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+      //       proxyUri: officialBotProxyUri,
+      //     });
+      //     toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+      //   }
+      //   catch (err) {
+      //     toastError(err);
+      //   }
+      // }
       fetchSlackIntegrationData();
     }
     catch (err) {
@@ -118,17 +117,17 @@ const SlackIntegration = (props) => {
     if (currentBotType == null) {
       return changeCurrentBotSettings(botType);
     }
-    if (botType === 'officialBot') {
-      try {
-        await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-          proxyUri: officialBotProxyUri,
-        });
-        toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
-      }
-      catch (err) {
-        toastError(err);
-      }
-    }
+    // if (botType === 'officialBot') {
+    //   try {
+    //     await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+    //       proxyUri: officialBotProxyUri,
+    //     });
+    //     toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+    //   }
+    //   catch (err) {
+    //     toastError(err);
+    //   }
+    // }
     setSelectedBotType(botType);
   };
 
@@ -148,7 +147,7 @@ const SlackIntegration = (props) => {
       settingsComponent = (
         <OfficialBotSettings
           slackAppIntegrations={slackAppIntegrations}
-          proxyServerUri={officialBotProxyUri}
+          // proxyServerUri={officialBotProxyUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
