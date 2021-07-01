@@ -5,10 +5,13 @@
 * Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
 * Support: Upgrade libs
     * connect-mongo
+    * i18next
     * migrate-mongo
     * mongoose
     * stream-to-promise
-
+    * validator
+    * ws
+    * nodemailer
 
 ## v4.2.20
 
