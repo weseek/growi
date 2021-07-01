@@ -28,6 +28,7 @@ const SlackIntegration = (props) => {
   const [proxyServerUri, setProxyServerUri] = useState();
   const [connectionStatuses, setConnectionStatuses] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const officialBotProxyUri = 'https://slackbot-proxy.growi.org/';
 
 
   const fetchSlackIntegrationData = useCallback(async() => {
@@ -91,6 +92,17 @@ const SlackIntegration = (props) => {
         currentBotType: botType,
       });
       setSelectedBotType(null);
+      if (botType === 'officialBot') {
+        try {
+          await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+            proxyUri: officialBotProxyUri,
+          });
+          toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+        }
+        catch (err) {
+          toastError(err);
+        }
+      }
       fetchSlackIntegrationData();
     }
     catch (err) {
@@ -104,6 +116,17 @@ const SlackIntegration = (props) => {
     }
     if (currentBotType == null) {
       return changeCurrentBotSettings(botType);
+    }
+    if (botType === 'officialBot') {
+      try {
+        await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
+          proxyUri: officialBotProxyUri,
+        });
+        toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
+      }
+      catch (err) {
+        toastError(err);
+      }
     }
     setSelectedBotType(botType);
   };
