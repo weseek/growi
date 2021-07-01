@@ -25,7 +25,7 @@ class UserInviteModal extends React.Component {
       emailInputValue: '',
       sendEmail: false,
       invitedEmailList: null,
-      createUserButtonPushed: false,
+      isCreateUserButtonPushed: false,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -109,7 +109,7 @@ class UserInviteModal extends React.Component {
 
   renderModalFooter() {
     const { t, appContainer } = this.props;
-    const { createUserButtonPushed } = this.state;
+    const { isCreateUserButtonPushed } = this.state;
     const { isMailerSetup } = appContainer.config;
 
     return (
@@ -146,11 +146,11 @@ class UserInviteModal extends React.Component {
             type="button"
             className="btn btn-primary"
             onClick={async() => {
-              this.setState({ createUserButtonPushed: true });
+              this.setState({ isCreateUserButtonPushed: true });
               await this.handleSubmit();
-              this.setState({ createUserButtonPushed: false });
+              this.setState({ isCreateUserButtonPushed: false });
             }}
-            disabled={!this.validEmail() || createUserButtonPushed}
+            disabled={!this.validEmail() || isCreateUserButtonPushed}
           >
             {t('admin:user_management.invite_modal.issue')}
           </button>
