@@ -145,9 +145,10 @@ class UserInviteModal extends React.Component {
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() => {
-              this.handleSubmit();
+            onClick={async() => {
               this.setState({ createUserButtonPushed: true });
+              await this.handleSubmit();
+              this.setState({ createUserButtonPushed: false });
             }}
             disabled={!this.validEmail() || createUserButtonPushed}
           >
@@ -220,9 +221,6 @@ class UserInviteModal extends React.Component {
   async handleSubmit() {
     const { adminUsersContainer } = this.props;
 
-    // eslint-disable-next-line no-unused-vars
-    const { createUserButtonPushed } = this.state;
-
     const array = this.state.emailInputValue.split('\n');
     const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
     const shapedEmailList = emailList.map((email) => { return email.trim() });
@@ -253,7 +251,6 @@ class UserInviteModal extends React.Component {
     catch (err) {
       toastError(err);
     }
-    this.setState({ createUserButtonPushed: false });
   }
 
   handleInput(event) {
