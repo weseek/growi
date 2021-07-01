@@ -6,12 +6,12 @@ import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const ResendInvitationEmailButton = (props) => {
-
   const { user } = props;
+  const { t } = useTranslation();
 
   return (
     <button className="dropdown-item" type="button" onClick={() => { }}>
-      <i className="icon-fw icon-envelope"></i> 招待メールの送信
+      <i className="icon-fw icon-envelope"></i> {t('admin:user_management.user_table.send_invitation_email')}
     </button>
   );
 };
