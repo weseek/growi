@@ -45,7 +45,9 @@ const ResendInvitationEmailButton = (props) => {
 
   return (
     <button className="dropdown-item" type="button" onClick={() => { onClickSendInvitationEmailButton() }}>
-      <i className="icon-fw icon-envelope"></i> {t('admin:user_management.user_table.send_invitation_email')}
+      <i className="icon-fw icon-envelope"></i>
+      {user.isInvitationEmailSended && (<>{t('admin:user_management.user_table.resend_invitation_email')}</>)}
+      {!user.isInvitationEmailSended && (<>{t('admin:user_management.user_table.send_invitation_email')}</>)}
     </button>
   );
 };
