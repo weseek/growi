@@ -817,6 +817,35 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/send-invitation-email:
+   *      put:
+   *        tags: [Users]
+   *        operationId: sendInvitationEmail
+   *        summary: /users/send-invitation-email
+   *        description: send invitation email
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  id:
+   *                    type: string
+   *                    description: user id for send invitation email
+   *        responses:
+   *          200:
+   *            description: success send invitation email
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    failedToSendEmailList:
+   *                      type: object
+   *                      description: email and easons for email sending failure
+   */
   router.put('/send-invitation-email', async(req, res) => {
     const { id } = req.body;
 
