@@ -10,7 +10,7 @@ import StatusSuspendedButton from './StatusSuspendedButton';
 import RemoveUserButton from './UserRemoveButton';
 import RemoveAdminButton from './RemoveAdminButton';
 import GiveAdminButton from './GiveAdminButton';
-import ResendInvitationEmailButton from './ResendInvitationMailButton';
+import SendInvitationEmailButton from './SendInvitationMailButton';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -58,7 +58,7 @@ class UserMenu extends React.Component {
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
           {user.status === 2 && <StatusSuspendedButton user={user} />}
-          {(!user.isInvitationEmailSended && user.status === 5) && <ResendInvitationEmailButton user={user} />}
+          {(!user.isInvitationEmailSended && user.status === 5) && <SendInvitationEmailButton user={user} />}
           {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
         </li>
       </Fragment>
