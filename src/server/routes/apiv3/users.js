@@ -816,5 +816,55 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  paths:
+   *    /users/send-invitation-email:
+   *      put:
+   *        tags: [Users]
+   *        operationId: sendInvitationEmail
+   *        summary: /users/send-invitation-email
+   *        description: send invitation email
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  id:
+   *                    type: string
+   *                    description: user id for send invitation email
+   *        responses:
+   *          200:
+   *            description: success send invitation email
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    failedToSendEmail:
+   *                      type: object
+   *                      description: email and reasons for email sending failure
+   */
+  router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+    const { id } = req.body;
+
+    try {
+      const user = await User.findById(id);
+      const newPassword = await User.resetPasswordByRandomString(id);
+      const userList = [{
+        email: user.email,
+        password: newPassword,
+        user: { id },
+      }];
+      const sendEmail = await sendEmailByUserList(userList);
+      // return null if absent
+      return res.apiv3({ failedToSendEmail: sendEmail.failedToSendEmailList[0] });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
   return router;
 };

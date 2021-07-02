@@ -285,7 +285,9 @@
       "your_own": "You cannot deactivate your own account",
       "remove_admin_access": "Remove admin access",
       "cannot_remove": "You cannot remove yourself from administrator",
-      "give_admin_access": "Give admin access"
+      "give_admin_access": "Give admin access",
+      "send_invitation_email": "Send invitation email",
+      "resend_invitation_email": "Resend invitation email"
     },
     "reset_password": "Reset Password",
     "reset_password_modal": {

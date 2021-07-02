@@ -283,7 +283,9 @@
       "your_own": "自分自身のアカウントを停止することはできません",
       "remove_admin_access": "管理者から外す",
       "cannot_remove": "自分自身を管理者から外すことはできません",
-      "give_admin_access": "管理者にする"
+      "give_admin_access": "管理者にする",
+      "send_invitation_email": "招待メールの送信",
+      "resend_invitation_email": "招待メールの再送信"
     },
     "reset_password": "パスワードのリセット",
     "reset_password_modal": {
