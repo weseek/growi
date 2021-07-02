@@ -841,7 +841,7 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    failedToSendEmailList:
+   *                    failedToSendEmail:
    *                      type: object
    *                      description: email and easons for email sending failure
    */
@@ -857,8 +857,7 @@ module.exports = (crowi) => {
         user: { id },
       };
       const sendEmail = await sendEmailByUserList([req]);
-      console.log(sendEmail);
-      return res.apiv3({ newPassword });
+      return res.apiv3({ failedToSendEmail: sendEmail.failedToSendEmailList[0] });
     }
     catch (err) {
       logger.error('Error', err);
