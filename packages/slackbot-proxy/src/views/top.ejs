@@ -3,30 +3,41 @@
   <link href="./css/bootstrap.min.css" rel="stylesheet" >
 </head>
 
-<body style="padding-top:100px;">
-  <div class="text-center">
-    <h1 >GROWI Bot</h1>
-    <h3>GROWI is a wiki that can be written in Markdown and easy to share information with everyone.</h3>
-    With GROWI for Slack, you can:
-    <ul>
-      <li>Search pages for multiple GROWI apps.</li>
-      <li>Create pages easily.</li>
-    </ul>
-    <div>
-      <img height="300" width="300" alt="GROWi Bot" src="/images/growi-bot.png" />
+<body class="pt-5">
+  <div class="container border p-5">
+    <div class="row text-center mx-3">
+      <h1>GROWI Bot</h1>
+      <h4>GROWI is a wiki that can be written in Markdown and easy to share information with everyone.</h4>
+
+      <div>
+        <img height="300" width="300" alt="GROWi Bot" src="/images/growi-bot.png" />
+      </div>
+
+      <div class="d-flex justify-content-evenly mt-5">
+        <a href=<%- url %>>
+          <img alt="Add to Slack" height="40" width="139" src="/images/add-to-slack.png"/>
+        </a>
+        <% if (isOfficialMode) { %>
+          <a href="/privacy">
+            Privacy Policy
+          </a>
+        <% } %>
+      </div>
+    </div>
+    <div class="row m-3">
+      <div class="d-flex flex-column align-items-center">
+        With GROWI for Slack, you can:
+        <ul>
+          <li>Search pages for multiple GROWI apps.</li>
+          <li>Create pages easily.</li>
+        </ul>
+        <div>
+          GROWI is open-source software developed by WESEEK, Inc and we are looking for contributors who can work with us.<br>
+          Please <a href="https://growi-slackin.weseek.co.jp/">join</a> Slack and feel free to talk to WESEEK members!
+        </div>
+      </div>
     </div>
   </div>
-  <div style="display:flex; justify-content: space-around; max-width: 500px; margin:30px auto;">
-    <a href=<%- url %>>
-      <img alt="Add to Slack" height="40" width="139" src="/images/add-to-slack.png"/>
-    </a>
-    <% if (isOfficialMode) { %>
-      <a href="/privacy">
-        Privacy Policy
-      </a>
-    <% } %>
-  </div>
-  <div>
-    GROWI is open-source software developed by WESEEK, Inc and we are looking for contributors who can work with us. Please [join](https://growi-slackin.weseek.co.jp/) Slack and feel free to talk to WESEEK members!
-  </div>
+
+
 </body>
