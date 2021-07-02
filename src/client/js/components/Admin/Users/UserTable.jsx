@@ -14,7 +14,6 @@ import SortIcons from './SortIcons';
 class UserTable extends React.Component {
 
   constructor(props) {
-    console.log('呼ばれたよ');
     super(props);
 
     this.state = {
