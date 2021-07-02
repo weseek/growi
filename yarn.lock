@@ -9228,6 +9228,11 @@ growi-commons@^5.0.2, growi-commons@^5.0.3:
   resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.3.tgz#8ec745dcb2d3d003e3acd7d6fbec85cf0967354b"
   integrity sha512-lV2jmqxWPiuzuVaetSY1uq7viwgRCNwLMnU78GaYix4jfXNcYzdrfedTlU3ZRiVIjLggSFb87EhYqtM/4RfjmA==
 
+growi-commons@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.4.tgz#1235b7955a3f492803e8c714fef5c4a797e442b7"
+  integrity sha512-K282Pe97SnJgbZWAuMz9pNDTmvmw4JYPf/oYQaPmBsUjaxG4FDwd7+p5UFc5GqZUWcLwXvtJZQZMZEH/xpg+nA==
+
 growi-plugin-attachment-refs@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/growi-plugin-attachment-refs/-/growi-plugin-attachment-refs-2.0.1.tgz#118c4928a6df93afd0c5fab7a7eab569977dcd55"
