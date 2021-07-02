@@ -11,6 +11,8 @@ const SendInvitationEmailButton = (props) => {
   const { appContainer, user } = props;
   const { t } = useTranslation();
 
+  const textColor = !user.isInvitationEmailSended ? 'text-danger' : '';
+
   const onClickSendInvitationEmailButton = async() => {
     try {
       const res = await appContainer.apiv3Put('users/send-invitation-email', { id: user._id });
@@ -44,7 +46,7 @@ const SendInvitationEmailButton = (props) => {
   };
 
   return (
-    <button className="dropdown-item" type="button" onClick={() => { onClickSendInvitationEmailButton() }}>
+    <button className={`dropdown-item ${textColor}`} type="button" onClick={() => { onClickSendInvitationEmailButton() }}>
       <i className="icon-fw icon-envelope"></i>
       {user.isInvitationEmailSended && (<>{t('admin:user_management.user_table.resend_invitation_email')}</>)}
       {!user.isInvitationEmailSended && (<>{t('admin:user_management.user_table.send_invitation_email')}</>)}
