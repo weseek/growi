@@ -857,6 +857,7 @@ module.exports = (crowi) => {
         user: { id },
       }];
       const sendEmail = await sendEmailByUserList(userList);
+      // return null if absent
       return res.apiv3({ failedToSendEmail: sendEmail.failedToSendEmailList[0] });
     }
     catch (err) {

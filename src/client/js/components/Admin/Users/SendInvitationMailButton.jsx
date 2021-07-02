@@ -1,8 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import * as toastr from 'toastr';
-import { toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -18,26 +17,12 @@ const SendInvitationEmailButton = (props) => {
       const res = await appContainer.apiv3Put('users/send-invitation-email', { id: user._id });
       const { failedToSendEmail } = res.data;
       if (failedToSendEmail == null) {
-        const msg = `・${user.email}`;
-        toastr.success(msg, 'Successfully sent invitation mail', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '3000',
-        });
+        const msg = `Email has been sent<br>・${user.email}`;
+        toastSuccess(msg);
       }
       else {
-        const msg = `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}`;
-        toastr.error(msg, 'Failure to send invitation mail', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '0',
-        });
+        const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
+        toastError(msg);
       }
     }
     catch (err) {
