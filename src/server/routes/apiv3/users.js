@@ -403,6 +403,7 @@ module.exports = (crowi) => {
 
     // Create users
     const createUser = await User.createUsersByEmailList(emailList);
+    console.log(createUser.createdUserList[0].user);
     if (createUser.failedToCreateUserEmailList.length > 0) {
       failedEmailList = failedEmailList.concat(createUser.failedToCreateUserEmailList);
     }
@@ -809,6 +810,27 @@ module.exports = (crowi) => {
         await User.findById(id)]);
 
       return res.apiv3({ newPassword, user });
+    }
+    catch (err) {
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(err));
+    }
+  });
+
+  router.put('/send-invitation-email', async(req, res) => {
+    const { id } = req.body;
+
+    try {
+      const user = await User.findById(id);
+      const newPassword = await User.resetPasswordByRandomString(id);
+      const req = {
+        email: user.email,
+        password: newPassword,
+        user: { id },
+      };
+      const sendEmail = await sendEmailByUserList([req]);
+      console.log(sendEmail);
+      return res.apiv3({ newPassword });
     }
     catch (err) {
       logger.error('Error', err);
