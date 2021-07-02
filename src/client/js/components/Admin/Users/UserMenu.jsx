@@ -7,7 +7,7 @@ import {
 
 import StatusActivateButton from './StatusActivateButton';
 import StatusSuspendedButton from './StatusSuspendedButton';
-import RemoveUserButton from './UserRemoveButton';
+import UserRemoveButton from './UserRemoveButton';
 import RemoveAdminButton from './RemoveAdminButton';
 import GiveAdminButton from './GiveAdminButton';
 import SendInvitationEmailButton from './SendInvitationMailButton';
@@ -58,8 +58,8 @@ class UserMenu extends React.Component {
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
           {user.status === 2 && <StatusSuspendedButton user={user} />}
-          {(!user.isInvitationEmailSended && user.status === 5) && <SendInvitationEmailButton user={user} />}
-          {(user.status === 1 || user.status === 3 || user.status === 5) && <RemoveUserButton user={user} />}
+          {(user.status === 5 && !user.isInvitationEmailSended) && <SendInvitationEmailButton user={user} />}
+          {(user.status === 1 || user.status === 3 || user.status === 5) && <UserRemoveButton user={user} />}
         </li>
       </Fragment>
     );
@@ -87,7 +87,7 @@ class UserMenu extends React.Component {
       <UncontrolledDropdown id="userMenu" size="sm">
         <DropdownToggle caret color="secondary" outline>
           <i className="icon-settings" />
-          {(!user.isInvitationEmailSended && user.status === 5) && <i className="fa fa-circle text-danger grw-usermenu-notification-icon" />}
+          {(user.status === 5 && !user.isInvitationEmailSended) && <i className="fa fa-circle text-danger grw-usermenu-notification-icon" />}
         </DropdownToggle>
         <DropdownMenu positionFixed>
           {this.renderEditMenu()}
