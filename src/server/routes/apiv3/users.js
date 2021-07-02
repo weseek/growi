@@ -843,7 +843,7 @@ module.exports = (crowi) => {
    *                  properties:
    *                    failedToSendEmail:
    *                      type: object
-   *                      description: email and easons for email sending failure
+   *                      description: email and reasons for email sending failure
    */
   router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { id } = req.body;
