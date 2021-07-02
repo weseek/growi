@@ -403,7 +403,6 @@ module.exports = (crowi) => {
 
     // Create users
     const createUser = await User.createUsersByEmailList(emailList);
-    console.log(createUser.createdUserList[0].user);
     if (createUser.failedToCreateUserEmailList.length > 0) {
       failedEmailList = failedEmailList.concat(createUser.failedToCreateUserEmailList);
     }
