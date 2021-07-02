@@ -7,7 +7,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-const ResendInvitationEmailButton = (props) => {
+const SendInvitationEmailButton = (props) => {
   const { appContainer, user } = props;
   const { t } = useTranslation();
 
@@ -52,11 +52,11 @@ const ResendInvitationEmailButton = (props) => {
   );
 };
 
-const ResendInvitationEmailButtonWrapper = withUnstatedContainers(ResendInvitationEmailButton, [AppContainer, AdminUsersContainer]);
+const SendInvitationEmailButtonWrapper = withUnstatedContainers(SendInvitationEmailButton, [AppContainer, AdminUsersContainer]);
 
-ResendInvitationEmailButton.propTypes = {
+SendInvitationEmailButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   user: PropTypes.object.isRequired,
 };
 
-export default ResendInvitationEmailButtonWrapper;
+export default SendInvitationEmailButtonWrapper;
