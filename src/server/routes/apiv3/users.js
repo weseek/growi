@@ -851,12 +851,12 @@ module.exports = (crowi) => {
     try {
       const user = await User.findById(id);
       const newPassword = await User.resetPasswordByRandomString(id);
-      const req = {
+      const userList = [{
         email: user.email,
         password: newPassword,
         user: { id },
-      };
-      const sendEmail = await sendEmailByUserList([req]);
+      }];
+      const sendEmail = await sendEmailByUserList(userList);
       return res.apiv3({ failedToSendEmail: sendEmail.failedToSendEmailList[0] });
     }
     catch (err) {
