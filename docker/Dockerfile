@@ -109,6 +109,7 @@ RUN tar cf packages.tar \
   resource \
   src \
   tmp \
+  packages/app/package.json \
   packages/slack/package.json \
   packages/slack/dist
 
