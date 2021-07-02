@@ -22,6 +22,10 @@ module.exports = {
   // DEV_HTTPS: true,
   // FORCE_WIKI_MODE: 'private', // 'public', 'private', undefined
   // PROMSTER_ENABLED: true,
+  // SLACK_SIGNING_SECRET: '',
+  // SLACK_BOT_TOKEN: '',
+  SALT_FOR_GTOP_TOKEN: 'proxy',
+  SALT_FOR_PTOG_TOKEN: 'growi',
   // GROWI_CLOUD_URI: 'http://growi.cloud',
   // GROWI_APP_ID_FOR_GROWI_CLOUD: '012345',
 };
