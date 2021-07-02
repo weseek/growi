@@ -103,6 +103,16 @@ const helmetOptions = isProduction ? {} : {
         root: `${rootDir}/public`,
       },
     ],
+    '/css': [
+      {
+        root: `${rootDir}/../node_modules/bootstrap/dist/css`,
+      },
+    ],
+    '/js': [
+      {
+        root: `${rootDir}/../node_modules/bootstrap/dist/js`,
+      },
+    ],
   },
 })
 export class Server {
