@@ -1,7 +1,24 @@
 # CHANGES
 
-## v4.2.21-RC
+## v4.3.0-RC
 
+### BREAKING CHANGES
+
+None.
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
+
+### Updates
+
+* Feature: New Slack Integration with Slack Bot
+    * Searching GROWI pages from Slack
+    * Creating GROWI pages from Slack
+        * Easy record conversations
+
+## v4.2.21
+
+* Improvement: Headers style on built-in editor
+* Improvement: Codemirror is now scrollable one editor height of empty space into view at the bottom of the editor
 * Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
 * Support: Upgrade libs
     * connect-mongo
@@ -13,6 +30,7 @@
     * ws
     * nodemailer
     * i18next-express-middleware
+    * growi-commons
 
 ## v4.2.20
 

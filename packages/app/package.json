@@ -51,7 +51,7 @@
     "express-validator": "^6.1.1",
     "express-webpack-assets": "^0.1.0",
     "graceful-fs": "^4.1.11",
-    "growi-commons": "^5.0.3",
+    "growi-commons": "^5.0.4",
     "growi-plugin-attachment-refs": "^2.0.1",
     "growi-plugin-lsx": "^4.0.2",
     "growi-plugin-pukiwiki-like-linker": "^3.1.0",
