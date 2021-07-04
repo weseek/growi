@@ -110,4 +110,11 @@ html[dark] {
       @include btn-page-editor-mode-manager(darken($primary, 50%), lighten($primary, 5%), darken($primary, 5%));
     }
   }
+
+  // Cards
+  .admin-bot-card {
+    .grw-botcard-title-active {
+      color: $color-reversal;
+    }
+  }
 }

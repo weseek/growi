@@ -1,6 +1,21 @@
 # CHANGES
 
-## v4.2.21-RC
+## v4.3.0-RC
+
+### BREAKING CHANGES
+
+None.
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
+
+### Updates
+
+* Feature: New Slack Integration with Slack Bot
+    * Searching GROWI pages from Slack
+    * Creating GROWI pages from Slack
+        * Easy record conversations
+
+## v4.2.21
 
 * Improvement: Headers style on built-in editor
 * Improvement: Codemirror is now scrollable one editor height of empty space into view at the bottom of the editor
@@ -15,6 +30,7 @@
     * ws
     * nodemailer
     * i18next-express-middleware
+    * growi-commons
 
 ## v4.2.20
 
@@ -42,14 +58,14 @@
 * Fix: Global notification to Slack does not encode spaces of page path
 * Support: Upgrade libs
     * @google-cloud/storage
-    * @slack/web-api
-    * @slack/webhook
 
 ## v4.2.17
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
 * Improvement: Hide Sidebar at shared pages
 * Fix: No unsaved alert is displayed without difference the latest markdown and editor value
+* Support: Update libs
+    * eslint-config-weseek
 
 ## v4.2.16
 
@@ -65,7 +81,6 @@
     * Introduced by v4.2.8
 * Support: Upgrade libs
     * reactstrap
-
 
 
 ## v4.2.14
