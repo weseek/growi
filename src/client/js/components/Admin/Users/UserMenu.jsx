@@ -22,14 +22,19 @@ class UserMenu extends React.Component {
     super(props);
 
     this.state = {
-
+      isInvitationEmailSended: this.props.user.isInvitationEmailSended,
     };
 
     this.onPasswordResetClicked = this.onPasswordResetClicked.bind(this);
+    this.updateIsInvitationEmailSended = this.updateIsInvitationEmailSended.bind(this);
   }
 
   onPasswordResetClicked() {
     this.props.adminUsersContainer.showPasswordResetModal(this.props.user);
+  }
+
+  updateIsInvitationEmailSended() {
+    this.setState({ isInvitationEmailSended: true });
   }
 
   renderEditMenu() {
@@ -50,6 +55,7 @@ class UserMenu extends React.Component {
 
   renderStatusMenu() {
     const { t, user } = this.props;
+    const { isInvitationEmailSended } = this.state;
 
     return (
       <Fragment>
@@ -58,7 +64,13 @@ class UserMenu extends React.Component {
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
           {user.status === 2 && <StatusSuspendedButton user={user} />}
-          {user.status === 5 && <SendInvitationEmailButton user={user} />}
+          {user.status === 5 && (
+          <SendInvitationEmailButton
+            user={user}
+            isInvitationEmailSended={isInvitationEmailSended}
+            updateIsInvitationEmailSended={this.updateIsInvitationEmailSended}
+          />
+          )}
           {(user.status === 1 || user.status === 3 || user.status === 5) && <UserRemoveButton user={user} />}
         </li>
       </Fragment>
@@ -82,12 +94,13 @@ class UserMenu extends React.Component {
 
   render() {
     const { user } = this.props;
+    const { isInvitationEmailSended } = this.state;
 
     return (
       <UncontrolledDropdown id="userMenu" size="sm">
         <DropdownToggle caret color="secondary" outline>
           <i className="icon-settings" />
-          {(user.status === 5 && !user.isInvitationEmailSended) && <i className="fa fa-circle text-danger grw-usermenu-notification-icon" />}
+          {(user.status === 5 && !isInvitationEmailSended) && <i className="fa fa-circle text-danger grw-usermenu-notification-icon" />}
         </DropdownToggle>
         <DropdownMenu positionFixed>
           {this.renderEditMenu()}

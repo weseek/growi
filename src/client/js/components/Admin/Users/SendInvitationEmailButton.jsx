@@ -7,10 +7,12 @@ import AdminUsersContainer from '../../../services/AdminUsersContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const SendInvitationEmailButton = (props) => {
-  const { appContainer, user } = props;
+  const {
+    appContainer, user, isInvitationEmailSended, updateIsInvitationEmailSended,
+  } = props;
   const { t } = useTranslation();
 
-  const textColor = !user.isInvitationEmailSended ? 'text-danger' : '';
+  const textColor = !isInvitationEmailSended ? 'text-danger' : '';
 
   const onClickSendInvitationEmailButton = async() => {
     try {
@@ -19,6 +21,7 @@ const SendInvitationEmailButton = (props) => {
       if (failedToSendEmail == null) {
         const msg = `Email has been sent<br>・${user.email}`;
         toastSuccess(msg);
+        updateIsInvitationEmailSended();
       }
       else {
         const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
@@ -33,8 +36,8 @@ const SendInvitationEmailButton = (props) => {
   return (
     <button className={`dropdown-item ${textColor}`} type="button" onClick={() => { onClickSendInvitationEmailButton() }}>
       <i className="icon-fw icon-envelope"></i>
-      {user.isInvitationEmailSended && (<>{t('admin:user_management.user_table.resend_invitation_email')}</>)}
-      {!user.isInvitationEmailSended && (<>{t('admin:user_management.user_table.send_invitation_email')}</>)}
+      {isInvitationEmailSended && (<>{t('admin:user_management.user_table.resend_invitation_email')}</>)}
+      {!isInvitationEmailSended && (<>{t('admin:user_management.user_table.send_invitation_email')}</>)}
     </button>
   );
 };
@@ -44,6 +47,8 @@ const SendInvitationEmailButtonWrapper = withUnstatedContainers(SendInvitationEm
 SendInvitationEmailButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   user: PropTypes.object.isRequired,
+  isInvitationEmailSended: PropTypes.bool.isRequired,
+  updateIsInvitationEmailSended: PropTypes.func.isRequired,
 };
 
 export default SendInvitationEmailButtonWrapper;
