@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+
+
 function omitInsecureAttributes(user) {
   // omit password
   delete user.password;
@@ -12,6 +15,13 @@ function omitInsecureAttributes(user) {
 }
 
 function serializeUserSecurely(user) {
+  const User = mongoose.model('User');
+
+  // return when it is not a user object
+  if (user == null || !(user instanceof User)) {
+    return user;
+  }
+
   let serialized = user;
 
   // invoke toObject if page is a model instance

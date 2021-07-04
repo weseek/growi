@@ -522,31 +522,6 @@ module.exports = function(crowi) {
     return true;
   };
 
-  pageSchema.statics.isCreatableName = function(name) {
-    const forbiddenPages = [
-      /\^|\$|\*|\+|#|%/,
-      /^\/-\/.*/,
-      /^\/_r\/.*/,
-      /^\/_apix?(\/.*)?/,
-      /^\/?https?:\/\/.+$/, // avoid miss in renaming
-      /\/{2,}/, // avoid miss in renaming
-      /\s+\/\s+/, // avoid miss in renaming
-      /.+\/edit$/,
-      /.+\.md$/,
-      /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
-    ];
-
-    let isCreatable = true;
-    forbiddenPages.forEach((page) => {
-      const pageNameReg = new RegExp(page);
-      if (name.match(pageNameReg)) {
-        isCreatable = false;
-      }
-    });
-
-    return isCreatable;
-  };
-
   pageSchema.statics.fixToCreatableName = function(path) {
     return path
       .replace(/\/\//g, '/');

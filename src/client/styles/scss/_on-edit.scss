@@ -76,6 +76,10 @@ body.on-edit {
     display: none;
   }
 
+  .toast-top-right {
+    top: 64px;
+  }
+
   /*****************
    * Expand Editor
    *****************/
@@ -183,17 +187,6 @@ body.on-edit {
     .page-editor-editor-container {
       border-right: 1px solid transparent;
 
-      // override CodeMirror styles
-      .CodeMirror {
-        .cm-matchhighlight {
-          background-color: cyan;
-        }
-
-        .CodeMirror-selection-highlight-scrollbar {
-          background-color: darkcyan;
-        }
-      }
-
       // add icon on cursor
       .markdown-table-activated,
       .markdown-link-activated {
@@ -300,9 +293,18 @@ body.on-edit {
   }
 }
 
-// overwrite .CodeMirror pre
-.CodeMirror pre.CodeMirror-line {
-  font-family: $font-family-monospace;
+body.on-edit {
+  &:not(.growi-layout-fluid) .page-editor-preview-body {
+    .wiki {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+  }
+  &.growi-layout-fluid .page-editor-preview-body {
+    .wiki {
+      margin: 0 auto;
+    }
+  }
 }
 
 // overwrite .CodeMirror-hints
@@ -327,11 +329,6 @@ body.on-edit {
       font-size: 15px; // adjust to .wiki
     }
   }
-}
-
-// overwrite .CodeMirror-placeholder
-.CodeMirror pre.CodeMirror-placeholder {
-  color: $text-muted;
 }
 
 #tag-edit-button-tooltip {

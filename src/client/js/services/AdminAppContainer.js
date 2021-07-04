@@ -19,6 +19,7 @@ export default class AdminAppContainer extends Container {
       title: this.dummyTitle,
       confidential: '',
       globalLang: '',
+      isEmailPublishedForNewUser: true,
       fileUpload: '',
 
       siteUrl: '',
@@ -78,6 +79,7 @@ export default class AdminAppContainer extends Container {
       title: appSettingsParams.title,
       confidential: appSettingsParams.confidential,
       globalLang: appSettingsParams.globalLang,
+      isEmailPublishedForNewUser: appSettingsParams.isEmailPublishedForNewUser,
       fileUpload: appSettingsParams.fileUpload,
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
@@ -142,6 +144,13 @@ export default class AdminAppContainer extends Container {
    */
   changeGlobalLang(globalLang) {
     this.setState({ globalLang });
+  }
+
+  /**
+   * Change isEmailPublishedForNewUser
+   */
+  changeIsEmailPublishedForNewUserShow(isEmailPublishedForNewUser) {
+    this.setState({ isEmailPublishedForNewUser });
   }
 
   /**
@@ -309,6 +318,7 @@ export default class AdminAppContainer extends Container {
       title: this.state.title,
       confidential: this.state.confidential,
       globalLang: this.state.globalLang,
+      isEmailPublishedForNewUser: this.state.isEmailPublishedForNewUser,
       fileUpload: this.state.fileUpload,
     });
     const { appSettingParams } = response.data;

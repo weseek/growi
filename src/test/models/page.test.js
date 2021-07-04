@@ -168,50 +168,6 @@ describe('Page', () => {
     });
   });
 
-  describe('.isCreatableName', () => {
-    test('should decide creatable or not', () => {
-      expect(Page.isCreatableName('/hoge')).toBeTruthy();
-
-      // edge cases
-      expect(Page.isCreatableName('/me')).toBeFalsy();
-      expect(Page.isCreatableName('/me/')).toBeFalsy();
-      expect(Page.isCreatableName('/me/x')).toBeFalsy();
-      expect(Page.isCreatableName('/meeting')).toBeTruthy();
-      expect(Page.isCreatableName('/meeting/x')).toBeTruthy();
-
-      // end with "edit"
-      expect(Page.isCreatableName('/meeting/edit')).toBeFalsy();
-
-      // under score
-      expect(Page.isCreatableName('/_')).toBeTruthy();
-      expect(Page.isCreatableName('/_template')).toBeTruthy();
-      expect(Page.isCreatableName('/__template')).toBeTruthy();
-      expect(Page.isCreatableName('/_r/x')).toBeFalsy();
-      expect(Page.isCreatableName('/_api')).toBeFalsy();
-      expect(Page.isCreatableName('/_apix')).toBeFalsy();
-      expect(Page.isCreatableName('/_api/x')).toBeFalsy();
-
-      expect(Page.isCreatableName('/hoge/xx.md')).toBeFalsy();
-
-      // start with https?
-      expect(Page.isCreatableName('/http://demo.growi.org/hoge')).toBeFalsy();
-      expect(Page.isCreatableName('/https://demo.growi.org/hoge')).toBeFalsy();
-      expect(Page.isCreatableName('http://demo.growi.org/hoge')).toBeFalsy();
-      expect(Page.isCreatableName('https://demo.growi.org/hoge')).toBeFalsy();
-
-      expect(Page.isCreatableName('/ the / path / with / space')).toBeFalsy();
-
-      const forbidden = ['installer', 'register', 'login', 'logout',
-                         'admin', 'files', 'trash', 'paste', 'comments'];
-      for (let i = 0; i < forbidden.length; i++) {
-        const pn = forbidden[i];
-        expect(Page.isCreatableName(`/${pn}`)).toBeFalsy();
-        expect(Page.isCreatableName(`/${pn}/`)).toBeFalsy();
-        expect(Page.isCreatableName(`/${pn}/abc`)).toBeFalsy();
-      }
-    });
-  });
-
   describe('.isAccessiblePageByViewer', () => {
     describe('with a granted page', () => {
       test('should return true with granted user', async() => {

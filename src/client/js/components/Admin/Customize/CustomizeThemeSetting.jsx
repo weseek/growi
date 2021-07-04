@@ -35,7 +35,7 @@ class CustomizeThemeSetting extends React.Component {
     if (process.env.NODE_ENV === 'development') {
       return (
         <div className="alert alert-warning">
-          <strong>DEBUG MESSAGE:</strong> development build では、リアルタイムプレビューが無効になります
+          <strong>DEBUG MESSAGE:</strong> Live preview for theme is disabled in development mode.
         </div>
       );
     }

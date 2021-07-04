@@ -1,16 +1,87 @@
 # CHANGES
 
-## v4.2.14-RC
+## v4.2.21-RC
 
+* Improvement: Headers style on built-in editor
+* Improvement: Codemirror is now scrollable one editor height of empty space into view at the bottom of the editor
+* Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
+* Support: Upgrade libs
+    * connect-mongo
+    * i18next
+    * migrate-mongo
+    * mongoose
+    * stream-to-promise
+    * validator
+    * ws
+    * nodemailer
+    * i18next-express-middleware
+
+## v4.2.20
+
+* Improvement: Error message when the password is too short
+* Improvement: Repeat XSS processing as a countermeasure against nesting
+* Fix: NoSQL injection of access-token-parser
+* Fix: Checking permission when operating share links
+* Fix: Invalid NaN label is shown when deletedAt of the page is undefined
+    * Introduced by v4.2.8
+
+## v4.2.19
+
+* Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
+* Feature: Set max-age of the user's cookie in admin page
+* Improvement: Change the first accessing page after installation to the top page
+* Support: Upgrade libs
+    * string-width
+    * diff
+    * archiver
+
+## v4.2.18
+
+* Feature: Convertible page contents width
+* Fix: Group selector of User Group Delete Modal does not show all groups
+* Fix: Global notification to Slack does not encode spaces of page path
+* Support: Upgrade libs
+    * @google-cloud/storage
+    * @slack/web-api
+    * @slack/webhook
+
+## v4.2.17
+
+* Improvement: Invoke garbage collection when reindex all pages by elasticsearch
+* Improvement: Hide Sidebar at shared pages
+* Fix: No unsaved alert is displayed without difference the latest markdown and editor value
+
+## v4.2.16
+
+* Fix: "Only inside the group" causes an error
+    * Introduced by v4.2.15
+
+## v4.2.15
+
+* Improvement: toastr location for editing
+* Improvement: Handsontable with static backdrop to prevent from closing when backdrop is clicked
+* Fix: Accept invalid page path like `..%2f`
+* Fix: Pages updated date is corrupted after recursive operation
+    * Introduced by v4.2.8
+* Support: Upgrade libs
+    * reactstrap
+
+
+
+## v4.2.14
+
+* Feature: Add an option to restrict publishing email property for new users
+* Improvement: Invite modal in admin page without email server settings
+* Improvement: Global notification settings in admin page without email server settings
+* Fix: Can create pages on the share route
+    * Introduced by v4.2.8
+* Fix: Pages restrected by group are excluded for recurrence operation
+    * Introduced by v4.2.8
+* Fix: Rename and duplicate to descendants path does not work correctly
+    * Introduced by v4.2.8
 * Support: Update libs
     * bunyan
     * browser-bunyan
-* Fix: Can create pages on the share route
-    * Introduced by v4.2.8
-* Fix: Group page is excluded by recurrence operation
-    * Introduced by v4.2.8
-* Fix: New path to rename and duplicate is considered as a child page
-    * Introduced by v4.2.8
 
 ## v4.2.13
 
@@ -31,7 +102,7 @@
 
 ## v4.2.10
 
-* Feature: Staff Credits for apps on GROWI.cloud 
+* Feature: Staff Credits for apps on GROWI.cloud
 * Improvement: Hackmd button behavior when disabled
 * Improvement: Layout of comparing revisions
 * Fix: Empty trash is not working
@@ -82,6 +153,7 @@
 ## v4.2.5
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
+    * Turned out not working -- 2021.05.01
 * Fix: MathJax rendering does not work
 
 ## v4.2.4

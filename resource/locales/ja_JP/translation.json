@@ -6,10 +6,10 @@
   "delete_all": "全て削除",
   "Duplicate": "複製",
   "Copy": "コピー",
-  "preview":"プレビュー",
-  "desktop":"パソコン",
-  "phone":"スマホ",
-  "tablet":"タブレット",
+  "preview": "プレビュー",
+  "desktop": "パソコン",
+  "phone": "スマホ",
+  "tablet": "タブレット",
   "Click to copy": "クリックでコピー",
   "Move/Rename": "移動/名前変更",
   "Moved": "移動しました",
@@ -125,13 +125,11 @@
   "Only me": "自分のみ",
   "Only inside the group": "特定グループのみ",
   "page_list": "ページリスト",
-  "page_list_and_search_results": "ページリスト・検索結果",
   "scope_of_page_disclosure": "ページの公開範囲",
   "set_point": "設定値",
   "always_displayed": "表示 (固定)",
   "always_hidden": "非表示 (固定)",
   "displayed_or_hidden": "表示 / 非表示",
-  "page_access_and_delete_rights": "ページの閲覧・削除権限",
   "Reselect the group": "グループの再選択",
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
@@ -150,9 +148,9 @@
   "No bookmarks yet": "No bookmarks yet",
   "Recent Created": "最新の作成",
   "Recent Changes": "最新の変更",
-  "original_path":"元のパス",
-  "new_path":"新しいパス",
-  "duplicated_path":"重複したパス",
+  "original_path": "元のパス",
+  "new_path": "新しいパス",
+  "duplicated_path": "重複したパス",
   "personal_dropdown": {
     "home": "ホーム",
     "settings": "設定",
@@ -211,7 +209,7 @@
   },
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
-  "personal_settings":{
+  "personal_settings": {
     "disassociate_external_account": "External Account の連携解除",
     "disassociate_external_account_desc": "<strong>{{providerType}}</strong> プロバイダーの <strong>{{accountId}}</strong> アカウントを連携解除します",
     "set_new_password": "パスワードを新規に設定",
@@ -226,11 +224,11 @@
     "Shere this page link to public": "外部に共有するリンクを発行する",
     "share_link_list": "共有リンクリスト",
     "share_link_management": "共有リンク管理",
-    "No_share_links":"共有リンクが存在しません",
+    "No_share_links": "共有リンクが存在しません",
     "Share Link": "共有用リンク",
     "Page Path": "ページパス",
-    "share_link_notice":"共有リンクを全て削除します",
-    "delete_all_share_links":"全ての共有リンクを削除します",
+    "share_link_notice": "共有リンクを全て削除します",
+    "delete_all_share_links": "全ての共有リンクを削除します",
     "expire": "有効期限",
     "Days": "日間",
     "Custom": "カスタム",
@@ -238,8 +236,8 @@
     "enter_desc": "概要を入力",
     "Unlimited": "無期限",
     "Issue": "発行",
-    "share_settings" :"共有設定",
-    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください"
+    "share_settings": "共有設定",
+    "Invalid_Number_of_Date": "有効期限の日数には整数を入力してください"
   },
   "API Settings": "API設定",
   "API Token Settings": "API Token設定",
@@ -296,9 +294,9 @@
     "notice": {
       "version": "これは現在の版ではありません。",
       "moved": "このページは",
-      "moved_period":"から移動しました。",
+      "moved_period": "から移動しました。",
       "redirected": "リダイレクト元 >>",
-      "redirected_period":"",
+      "redirected_period": "",
       "duplicated": "このページは",
       "duplicated_period": "から複製されました。",
       "unlinked": "このページへのリダイレクトは削除されました。",
@@ -334,8 +332,8 @@
     "comparing_source": "ソース",
     "comparing_target": "ターゲット",
     "comparing_revisions": "差分を比較する",
-    "compare_latest":"最新と比較",
-    "compare_previous":"1つ前のバージョンと比較"
+    "compare_latest": "最新と比較",
+    "compare_previous": "1つ前のバージョンと比較"
   },
   "modal_rename": {
     "label": {
@@ -366,7 +364,7 @@
     "recursively": "配下のページも削除します",
     "completely": "ゴミ箱を経由せず、完全に削除します"
   },
-  "modal_empty":{
+  "modal_empty": {
     "empty_the_trash": "ゴミ箱を空にする",
     "notice": "完全削除したページは元に戻すことができません"
   },
@@ -444,7 +442,7 @@
     "remove_share_link_success": "{{shareLinkId}}を削除しました",
     "issue_share_link": "共有リンクを作成しました",
     "remove_share_link": "共有リンクを{{count}}件削除しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました"
+    "failed_to_reset_password": "パスワードのリセットに失敗しました"
   },
   "template": {
     "modal_label": {
@@ -495,7 +493,7 @@
     "insert_image": "で画像を挿入できます",
     "open_sandbox": "Sandbox を開く"
   },
-  "hackmd":{
+  "hackmd": {
     "hack_md": "HackMD",
     "not_set_up": "HackMD はセットアップされていません",
     "used_for_not_found": "HackMD は新しいページの作成には利用できません",
@@ -541,15 +539,21 @@
     "for_example": "例えば、",
     "in_this_case": "と記載することで、そのドメインのメールアドレスを持っている人のみ登録可能になります。",
     "insert_single": "1行に1メールアドレス入力してください。",
+    "page_list_and_search_results": "ページリスト・検索結果",
     "page_listing_1": "ページのリスト表示と検索<br>'自分のみ'に閲覧制限しているページ",
     "page_listing_1_desc": "ページのリスト表示や検索結果において、'自分のみ'に閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
     "page_listing_2": "ページのリスト表示と検索<br>特定グループに閲覧制限しているページ",
     "page_listing_2_desc": "ページのリスト表示や検索結果において、特定グループにのみ閲覧制限をしているページをアクセス権のないユーザーにも表示します。",
+    "page_access_and_delete_rights": "ページの閲覧・削除権限",
     "complete_deletion": "ページの完全削除",
     "complete_deletion_explain": "ページを完全に削除できるユーザーを制限します。",
     "admin_only": "管理者のみ可能",
     "admin_and_author": "管理者とページ作者が可能",
     "anyone": "誰でも可能",
+    "session": "セッション",
+    "max_age": "有効期間 (ミリ秒)",
+    "max_age_desc": "ユーザーのセッション情報の有効期間をミリ秒で指定できます。<br>デフォルト値: 2592000000 (30日間)",
+    "max_age_caution": "この値を変更した後は、サーバーを再起動する必要があります。",
     "Authentication mechanism settings": "認証機構設定",
     "setup_is_not_yet_complete": "セットアップはまだ完了してません",
     "alert_siteUrl_is_not_set": "'サイトURL' が設定されていません。{{link}} から設定してください。",
@@ -786,6 +790,7 @@
     "rebuild_description_1": "全てのページのインデックスを削除し、作り直します。",
     "rebuild_description_2": "この作業には数秒かかります。"
   },
+  "to_cloud_settings": "GROWI.cloud の管理画面へ",
   "login": {
     "Sign in error": "ログインエラー",
     "Registration successful": "登録完了",
@@ -804,34 +809,34 @@
     "successfully_disconnected": "切断に成功しました!",
     "strategy_has_not_been_set_up": "{{strategy}} はセットアップされていません。",
     "maximum_number_of_users": "ユーザー数が上限を超えたためアクティベートできません。",
-    "database_error":"データベースサーバーに問題があります。",
+    "database_error": "データベースサーバーに問題があります。",
     "sign_in_failure": "ログインに失敗しました。",
     "aws_sttings_required": "この機能にはAWS設定が必要です。管理者に訪ねて下さい。",
     "application_already_installed": "アプリケーションのインストールが完了しました。",
-    "email_address_could_not_be_used":"このメールアドレスは使用できません。(許可されたメールアドレスを確認してください。)",
-    "user_id_is_not_available":"このユーザーIDは使用できません。",
-    "email_address_is_already_registered":"このメールアドレスは既に登録されています。",
-    "can_not_register_maximum_number_of_users":"ユーザー数が上限を超えたため登録できません。",
-    "failed_to_register":"登録に失敗しました。",
-    "successfully_created":"{{username}} が作成されました。",
-    "can_not_activate_maximum_number_of_users":"ユーザーが上限に達したためアクティベートできません。",
-    "failed_to_activate":"アクティベートに失敗しました。",
-    "unable_to_use_this_user":"利用できないユーザーIDです。",
-    "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
-    "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
-    "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}"
+    "email_address_could_not_be_used": "このメールアドレスは使用できません。(許可されたメールアドレスを確認してください。)",
+    "user_id_is_not_available": "このユーザーIDは使用できません。",
+    "email_address_is_already_registered": "このメールアドレスは既に登録されています。",
+    "can_not_register_maximum_number_of_users": "ユーザー数が上限を超えたため登録できません。",
+    "failed_to_register": "登録に失敗しました。",
+    "successfully_created": "{{username}} が作成されました。",
+    "can_not_activate_maximum_number_of_users": "ユーザーが上限に達したためアクティベートできません。",
+    "failed_to_activate": "アクティベートに失敗しました。",
+    "unable_to_use_this_user": "利用できないユーザーIDです。",
+    "complete_to_install1": "GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
+    "complete_to_install2": "GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
+    "failed_to_create_admin_user": "管理ユーザーの作成に失敗しました。{{errMessage}}"
   },
-  "grid_edit":{
-    "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",
+  "grid_edit": {
+    "create_bootstrap_4_grid": "Bootstrap 4 グリッドを作成",
     "grid_settings": "グリッド設定",
-    "grid_pattern":"グリッド　パターン",
-    "division":"分割",
-    "smart_no":"スマホ / 分割なし",
-    "break_point":"画面サイズより分割"
+    "grid_pattern": "グリッド　パターン",
+    "division": "分割",
+    "smart_no": "スマホ / 分割なし",
+    "break_point": "画面サイズより分割"
   },
-  "validation":{
+  "validation": {
     "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",
     "aws_custom_endpoint": "カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。",
-    "failed_to_send_a_test_email":"SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。"
+    "failed_to_send_a_test_email": "SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。"
   }
 }

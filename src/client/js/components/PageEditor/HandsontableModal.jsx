@@ -428,7 +428,14 @@ export default class HandsontableModal extends React.PureComponent {
     );
 
     return (
-      <Modal isOpen={this.state.show} toggle={this.cancel} size="lg" className={`handsontable-modal ${this.state.isWindowExpanded && 'grw-modal-expanded'}`}>
+      <Modal
+        isOpen={this.state.show}
+        toggle={this.cancel}
+        backdrop="static"
+        keyboard={false}
+        size="lg"
+        className={`handsontable-modal ${this.state.isWindowExpanded && 'grw-modal-expanded'}`}
+      >
         <ModalHeader tag="h4" toggle={this.cancel} close={buttons} className="bg-primary text-light">
           Edit Table
         </ModalHeader>

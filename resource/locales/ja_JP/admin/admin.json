@@ -1,5 +1,5 @@
 {
-  "mailer_setup_required":"送信するには <a href='/admin/app'>メールの設定</a> が必要です。",
+  "mailer_setup_required": "送信するには <a href='/admin/app'>メールの設定</a> が必要です。",
   "admin_top": {
     "management_wiki": "Wiki管理",
     "system_information": "システム情報",
@@ -9,9 +9,9 @@
     "package_name": "パッケージ名",
     "specified_version": "指定バージョン",
     "installed_version": "インストールされているバージョン",
-    "list_of_env_vars":"サーバー側で設定されている環境変数一覧",
-    "env_var_priority":"セキュリティに関する環境変数を除き、データベースの値が優先的に取得されます。",
-    "about_security":"セキュリティに関する環境変数は <a href='/admin/security'>セキュリティ設定画面</a> からご確認ください。"
+    "list_of_env_vars": "サーバー側で設定されている環境変数一覧",
+    "env_var_priority": "セキュリティに関する環境変数を除き、データベースの値が優先的に取得されます。",
+    "about_security": "セキュリティに関する環境変数は <a href='/admin/security'>セキュリティ設定画面</a> からご確認ください。"
   },
   "app_setting": {
     "site_name": "サイト名",
@@ -23,6 +23,7 @@
     "confidential_name": "コンフィデンシャル表示",
     "confidential_example": "例: 社外秘",
     "default_language": "新規ユーザーのデフォルト設定言語",
+    "default_mail_visibility": "新規ユーザーの初期メール公開設定",
     "file_uploading": "ファイルアップロード",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
@@ -30,9 +31,9 @@
     "mail_settings": "メールの設定",
     "mailer_is_not_set_up": "メール設定がセットアップされていません。",
     "from_e-mail_address": "Fromアドレス",
-    "transmission_method":"送信方法",
-    "smtp_label":"SMTP",
-    "ses_label":"SES(AWS)",
+    "transmission_method": "送信方法",
+    "smtp_label": "SMTP",
+    "ses_label": "SES(AWS)",
     "send_test_email": "テストメールを送信",
     "success_to_send_test_email": "テストメールを送信しました。",
     "smtp_settings": "SMTP設定",
@@ -42,20 +43,20 @@
     "initialize_mail_settings": "設定を初期化",
     "initialize_mail_modal_header": "メール設定の初期化",
     "confirm_to_initialize_mail_settings": "一度初期化した設定は戻せません。本当に初期化しますか？",
-    "file_upload_settings":"ファイルアップロード設定",
-    "file_upload_method":"ファイルアップロード方法",
-    "file_delivery_method":"ファイルの配信方法",
-    "file_delivery_method_redirect":"リダイレクト",
-    "file_delivery_method_relay":"内部システム中継",
-    "file_delivery_method_redirect_info":"リダイレクト： GROWIサーバーを介さずに署名付きURLにリダイレクトされるため、優れたパフォーマンスを出します。",
-    "file_delivery_method_relay_info":"内部システム中継： GROWIサーバーがクライアントに配信するため、完全なセキュリティーを提供します。",
+    "file_upload_settings": "ファイルアップロード設定",
+    "file_upload_method": "ファイルアップロード方法",
+    "file_delivery_method": "ファイルの配信方法",
+    "file_delivery_method_redirect": "リダイレクト",
+    "file_delivery_method_relay": "内部システム中継",
+    "file_delivery_method_redirect_info": "リダイレクト： GROWIサーバーを介さずに署名付きURLにリダイレクトされるため、優れたパフォーマンスを出します。",
+    "file_delivery_method_relay_info": "内部システム中継： GROWIサーバーがクライアントに配信するため、完全なセキュリティーを提供します。",
     "gcs_label": "GCP(GCS)",
     "aws_label": "AWS(S3)",
     "local_label": "Local",
     "gridfs_label": "MongoDB(GridFS)",
     "fixed_by_env_var": "環境変数 <code>FILE_UPLOAD={{fileUploadType}}</code> により固定されています。",
     "file_upload": "ファイルをアップロードするための設定を行います。ファイルアップロードの設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
-    "ses_settings":"SES設定",
+    "ses_settings": "SES設定",
     "test_connection": "接続テスト",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
     "region": "リージョン",
@@ -114,8 +115,13 @@
     }
   },
   "customize_setting": {
+    "layout": "レイアウト",
+    "layout_options": {
+      "default": "デフォルトのコンテンツ幅",
+      "expanded": "コンテンツ幅 100%"
+    },
     "theme": "テーマ",
-    "theme_desc" : {
+    "theme_desc": {
       "light_and_dark": "Light/Dark モード選択あり",
       "unique": "モード選択なし"
     },
@@ -131,19 +137,14 @@
       "tab_switch_desc2": "無効化することで、ページ遷移のみを戻る/進む操作の対象にすることができます。",
       "attach_title_header": "新規ページ作成時の h1 セクション自動挿入",
       "attach_title_header_desc": "新規作成したページの1行目に、ページのパスを h1 セクションとして挿入します。",
-
       "list_num_s": "モーダルに表示されるリスト数",
       "list_num_desc_s": "モーダルにおける <ページリスト> <タイムライン> <更新履歴> <添付ファイル>での、1ページあたりの表示数を設定します。",
-
       "list_num_m": "ユーザーページに表示されるリスト数",
       "list_num_desc_m": "ユーザーページにおける <Bookmarks> <Recently Created>での、1ページあたりの表示数を設定します。",
-
       "list_num_l": "検索ページに表示されるリスト数",
       "list_num_desc_l": "<Search>での、1ページあたりの表示数を設定します。",
-
       "list_num_xl": "Not FoundページやTrashページに表示されるリスト数",
       "list_num_desc_xl": "記事エリアにおける<Not Found> <Trash>での、1ページあたりの表示数を設定します。",
-
       "stale_notification": "古いページに通知を表示する",
       "stale_notification_desc": "最後の更新から1年を超えるページへの通知を表示します。",
       "show_all_reply_comments": "返信コメントを全て表示する",
@@ -245,9 +246,9 @@
     },
     "import": "インポート",
     "skip_username_and_email_when_overlapped": "ユーザー名またはメールアドレスが同じ場合、その部分がスキップされます。",
-    "prepare_new_account_for_migration":"移行用のアカウントを新環境で用意してください。",
-    "archive_data_import_detail":"参考： GROWI Docs - データのインポート",
-    "admin_archive_data_import_guide_url":"https://docs.growi.org/ja/admin-guide/management-cookbook/import.html#growi-%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A4%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%88",
+    "prepare_new_account_for_migration": "移行用のアカウントを新環境で用意してください。",
+    "archive_data_import_detail": "参考： GROWI Docs - データのインポート",
+    "admin_archive_data_import_guide_url": "https://docs.growi.org/ja/admin-guide/management-cookbook/import.html#growi-%E3%82%A2%E3%83%BC%E3%82%AB%E3%82%A4%E3%83%96%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A4%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%88",
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
@@ -256,10 +257,10 @@
     "click_twice_same_checkbox": "少なくとも一つはチェックしてください。",
     "invite_modal": {
       "emails": "メールアドレス (複数行入力で複数人発行可能)",
-      "description1":"メールアドレスを使用して新規ユーザーを仮発行します。",
-      "description2":"初回のログイン時に使用する仮パスワードが生成されます。",
+      "description1": "メールアドレスを使用して新規ユーザーを仮発行します。",
+      "description2": "初回のログイン時に使用する仮パスワードが生成されます。",
       "invite_thru_email": "招待メールを送信する",
-      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>メールの設定</a>",
+      "mail_setting_link": "<i class='icon-settings mr-2'></i><a href='/admin/app'>メールの設定</a>",
       "valid_email": "メールアドレスを入力してください。",
       "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
       "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
@@ -289,9 +290,9 @@
     },
     "external_account": "外部アカウントの管理",
     "external_accounts": "外部アカウント",
-    "create_external_account":"外部アカウントの作成",
+    "create_external_account": "外部アカウントの作成",
     "external_account_list": "外部アカウント一覧",
-    "external_account_none":"外部アカウントはありません",
+    "external_account_none": "外部アカウントはありません",
     "invite": "招待する",
     "invited": "ユーザーを招待しました",
     "back_to_user_management": "ユーザー管理に戻る",
