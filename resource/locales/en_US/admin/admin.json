@@ -271,7 +271,7 @@
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
       "send_new_password": "Please send the new password to the user.",
-      "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
+      "send_temporary_password": "If you have not sent an invitation email, copy the temporary password on this screen and contact the inviter. You can also send or resend the invitation email from the drop-down in the user list.",
       "existing_email": "The following emails already exist",
       "issue": "Issue"
     },
