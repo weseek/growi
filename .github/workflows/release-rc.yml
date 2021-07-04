@@ -26,8 +26,8 @@ jobs:
       with:
         images: weseek/growi,ghcr.io/weseek/growi
         tags: |
-          type=raw,value=${{ steps.meta.semver.outputs.SEMVER }}
-          type=raw,value=${{ steps.meta.semver.outputs.SEMVER }}.{{sha}}
+          type=raw,value=${{ steps.semver.outputs.SEMVER }}
+          type=raw,value=${{ steps.semver.outputs.SEMVER }}.{{sha}}
 
     - name: Login to docker.io registry
       run: |
