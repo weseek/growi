@@ -15,6 +15,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup semver
+      id: semver
       run: |
         semver=`npm run version --silent`
         echo "::set-output name=SEMVER::$semver"
