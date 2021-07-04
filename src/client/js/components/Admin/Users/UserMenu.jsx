@@ -10,7 +10,7 @@ import StatusSuspendedButton from './StatusSuspendedButton';
 import UserRemoveButton from './UserRemoveButton';
 import RemoveAdminButton from './RemoveAdminButton';
 import GiveAdminButton from './GiveAdminButton';
-import SendInvitationEmailButton from './SendInvitationMailButton';
+import SendInvitationEmailButton from './SendInvitationEmailButton';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
