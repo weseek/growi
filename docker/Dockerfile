@@ -99,7 +99,7 @@ COPY packages/slack packages/slack
 COPY packages/app packages/app
 
 # build
-RUN yarn build:prod
+RUN yarn lerna run build
 
 # make artifacts
 RUN tar cf packages.tar \
@@ -109,6 +109,7 @@ RUN tar cf packages.tar \
   resource \
   src \
   tmp \
+  packages/app/package.json \
   packages/slack/package.json \
   packages/slack/dist
 
