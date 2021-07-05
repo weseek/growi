@@ -279,7 +279,8 @@
 			"invite_thru_email": "发送邀请电子邮件",
 			"temporary_password": "创建的用户具有临时密码",
 			"send_new_password": "请将新密码发送给用户。",
-			"send_temporary_password": "如果你没有发送电子邮件邀请，请复制此屏幕上的临时密码并联系邀请人。 你也可以从用户表中的下拉菜单中发送或重新发送邀请邮件。",
+			"send_temporary_password": "如果你没有发送电子邮件邀请，请复制此屏幕上的临时密码并联系邀请人。",
+      "send_email": "你也可以从用户表中的下拉菜单中发送或重新发送邀请邮件。",
 			"existing_email": "以下电子邮件已存在",
       "issue": "Issue"
 		},
