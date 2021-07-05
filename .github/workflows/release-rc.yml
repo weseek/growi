@@ -66,8 +66,3 @@ jobs:
       run: |
         rm -rf /tmp/.buildx-cache
         mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
-    - name: Check whether workspace is clean
-      run: |
-        STATUS=`git status --porcelain`
-        if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
