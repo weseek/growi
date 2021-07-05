@@ -18,6 +18,7 @@ import { createTerminus } from '@godaddy/terminus';
 
 import swaggerSettingsForDev from '~/config/swagger/config.dev';
 import swaggerSettingsForProd from '~/config/swagger/config.prod';
+import './filters/ResourceNotFoundFilter';
 import loggerFactory from '~/utils/logger';
 
 export const rootDir = __dirname;
@@ -100,6 +101,16 @@ const helmetOptions = isProduction ? {} : {
     '/': [
       {
         root: `${rootDir}/public`,
+      },
+    ],
+    '/css': [
+      {
+        root: `${rootDir}/../node_modules/bootstrap/dist/css`,
+      },
+    ],
+    '/js': [
+      {
+        root: `${rootDir}/../node_modules/bootstrap/dist/js`,
       },
     ],
   },
