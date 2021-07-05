@@ -2,6 +2,9 @@
 
 ## v4.3.0-RC
 
+* Support: Upgrade libs
+    * striptags
+
 ### BREAKING CHANGES
 
 None.
