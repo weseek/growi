@@ -34,6 +34,8 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
     * nodemailer
     * i18next-express-middleware
     * growi-commons
+    * growi-plugin-attachment-refs
+    * growi-plugin-lsx
 
 ## v4.2.20
 
