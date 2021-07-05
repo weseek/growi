@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
 import NavigationContainer from '../../services/NavigationContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
@@ -25,7 +24,7 @@ class RevisionRenderer extends React.PureComponent {
   initCurrentRenderingContext() {
     this.currentRenderingContext = {
       markdown: this.props.markdown,
-      currentPagePath: this.props.pageContainer.state.path,
+      currentPagePath: decodeURIComponent(window.location.pathname),
     };
   }
 
@@ -121,11 +120,10 @@ class RevisionRenderer extends React.PureComponent {
 /**
  * Wrapper component for using unstated
  */
-const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, PageContainer, NavigationContainer]);
+const RevisionRendererWrapper = withUnstatedContainers(RevisionRenderer, [AppContainer, NavigationContainer]);
 
 RevisionRenderer.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
   growiRenderer: PropTypes.instanceOf(GrowiRenderer).isRequired,
   markdown: PropTypes.string.isRequired,
