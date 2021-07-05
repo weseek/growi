@@ -85,6 +85,7 @@ ENV appDir /opt/growi
 WORKDIR ${appDir}
 
 COPY ./package.json ./
+COPY ./yarn.lock ./
 COPY ./lerna.json ./
 COPY ./tsconfig.base.json ./
 COPY ./babel.config.js ./
