@@ -8,7 +8,6 @@ on:
     paths:
       - .github/workflows/ci.yml
       - packages/app/**
-      - packages/app-for-hoisting/**
       - .eslint*
       - .prettier*
       - .stylelint*
@@ -198,7 +197,6 @@ jobs:
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npx lerna bootstrap
-        yarn lerna add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion --scope @growi/app --scope @growi/app-for-hoisting
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -271,17 +269,15 @@ jobs:
     - name: Install dependencies
       run: |
         npx lerna bootstrap
-        yarn lerna add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs --scope @growi/app --scope @growi/app-for-hoisting
-        yarn lerna add -D react-images@1.0.0 react-motion --scope @growi/app --scope @growi/app-for-hoisting
-        yarn lerna run build --scope @growi/slack
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:prod:analyze
+    - name: Build
       run: |
-        yarn build:prod:analyze
+        yarn lerna run build --scope @growi/slack
+        yarn lerna run build --scope @growi/app
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production
