@@ -67,44 +67,28 @@ jobs:
         git fetch --tags
         git checkout refs/tags/v${{ needs.github-release.outputs.RELEASE_VERSION }}
 
-    - name: Determine suffix
+    - name: Setup suffix
+      id: suffix
       run: |
         [[ ${{ matrix.flavor }} = "nocdn" ]] && suffix="-nocdn" || suffix=""
-        echo "SUFFIX=$suffix" >> $GITHUB_ENV
+        echo "::set-output name=SUFFIX::$suffix"
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: weseek/growi,ghcr.io/weseek/growi
+        flavor: |
+          suffix=${{ steps.suffix.outputs.SUFFIX }}
+        tags: |
+          type=raw,value=latest
+          type=semver,value=${{ needs.github-release.outputs.RELEASE_VERSION }},pattern={{major}}
+          type=semver,value=${{ needs.github-release.outputs.RELEASE_VERSION }},pattern={{major}}.{{minor}}
+          type=semver,value=${{ needs.github-release.outputs.RELEASE_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
     - name: Login to docker.io registry
       run: |
         echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
-
-    - name: Build Docker Image
-      run: |
-        docker buildx build \
-          --tag growi${{ env.SUFFIX }} \
-          --build-arg flavor=${{ matrix.flavor }} \
-          --platform linux/amd64 \
-          --load \
-          --file ./docker/Dockerfile .
-
-    - name: Docker Tags by SemVer
-      uses: weseek/ghaction-docker-tags-by-semver@v1.0.5
-      with:
-        source: growi${{ env.SUFFIX }}
-        target: weseek/growi
-        semver: ${{ needs.github-release.outputs.RELEASE_VERSION }}
-        suffix: ${{ env.SUFFIX }}
-        additional-tags: 'latest'
-        publish: true
-
-    - name: Update Docker Hub Description
-      uses: peter-evans/dockerhub-description@v2
-      with:
-        username: wsmoogle
-        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-        repository: weseek/growi
-        readme-filepath: ./docker/README.md
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
@@ -113,15 +97,25 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
-    - name: Docker Tags by SemVer in Github Container Registry
-      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
       with:
-        source: growi${{ env.SUFFIX }}
-        target: ghcr.io/weseek/growi
-        semver: ${{ needs.github-release.outputs.RELEASE_VERSION }}
-        suffix: ${{ env.SUFFIX }}
-        additional-tags: 'latest'
-        publish: true
+        context: .
+        file: ./docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+
+    - name: Update Docker Hub Description
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        repository: weseek/growi
+        readme-filepath: ./docker/README.md
 
     - name: Slack Notification
       uses: weseek/ghaction-release-slack-notification@master
