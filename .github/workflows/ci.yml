@@ -8,7 +8,6 @@ on:
     paths:
       - .github/workflows/ci.yml
       - packages/app/**
-      - packages/app-for-hoisting/**
       - .eslint*
       - .prettier*
       - .stylelint*
@@ -198,7 +197,6 @@ jobs:
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npx lerna bootstrap
-        yarn lerna add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion --scope @growi/app --scope @growi/app-for-hoisting
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
