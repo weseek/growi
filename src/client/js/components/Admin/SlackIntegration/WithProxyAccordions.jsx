@@ -303,10 +303,6 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
-      title: 'set_proxy_url_on_growi',
-      content: <RegisteringProxyUrlProcess />,
-    },
-    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}

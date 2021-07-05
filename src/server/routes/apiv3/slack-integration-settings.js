@@ -276,6 +276,10 @@ module.exports = (crowi) => {
     await resetAllBotSettings();
     const requestParams = { 'slackbot:currentBotType': currentBotType };
 
+    if (currentBotType === 'officialBot') {
+      requestParams['slackbot:proxyServerUri'] = 'https://slackbot-proxy.growi.org';
+    }
+
     try {
       await updateSlackBotSettings(requestParams);
       crowi.slackBotService.publishUpdatedMessage();
