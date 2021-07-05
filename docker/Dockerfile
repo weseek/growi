@@ -104,6 +104,7 @@ RUN yarn lerna run build
 # make artifacts
 RUN tar cf packages.tar \
   package.json \
+  yarn.lock \
   config \
   public \
   resource \
