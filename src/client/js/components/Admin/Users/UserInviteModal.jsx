@@ -152,8 +152,9 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="mr-3 text-left text-danger" style={{ flex: 1 }}>
-          {t('admin:user_management.invite_modal.send_temporary_password')}
+        <label className="mr-3 text-left" style={{ flex: 1 }}>
+          <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
+          <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>
         <button
           type="button"
