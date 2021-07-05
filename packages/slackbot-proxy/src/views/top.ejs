@@ -7,13 +7,18 @@
   <div>
     <img height="300" width="300" alt="GROWi Bot" src="/images/growi-bot.png" />
   </div>
-  <div style="display:flex; justify-content: space-around; max-width: 500px; margin:30px auto;">
-    <a href=<%- url %>>
+  <div style="margin-top:24px;">
+    <a  href=<%- url %>>
       <img alt="Add to Slack" height="40" width="139" src="/images/add-to-slack.png"/>
     </a>
+  </div>
+  <div style="display:flex; justify-content: space-around; max-width: 500px; margin:30px auto;">
     <% if (isOfficialMode) { %>
       <a href="/privacy">
         Privacy Policy
+      </a>
+      <a href="/term">
+        Term of Service
       </a>
     <% } %>
   </div>
