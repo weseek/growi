@@ -9,7 +9,6 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import * as toastr from 'toastr';
 import { toastSuccess, toastError, toastWarning } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -58,14 +57,7 @@ class UserInviteModal extends React.Component {
         toastWarning(msg);
         break;
       case 'error':
-        toastr.error(msg, 'Error', {
-          closeButton: true,
-          progressBar: true,
-          newestOnTop: false,
-          showDuration: '100',
-          hideDuration: '100',
-          timeOut: '0',
-        });
+        toastError({ message: msg });
         break;
     }
   }
@@ -160,8 +152,9 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="mr-3 text-left text-danger" style={{ flex: 1 }}>
-          {t('admin:user_management.invite_modal.send_temporary_password')}
+        <label className="mr-3 text-left" style={{ flex: 1 }}>
+          <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
+          <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>
         <button
           type="button"

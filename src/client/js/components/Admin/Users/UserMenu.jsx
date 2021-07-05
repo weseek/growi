@@ -10,7 +10,7 @@ import StatusSuspendedButton from './StatusSuspendedButton';
 import UserRemoveButton from './UserRemoveButton';
 import RemoveAdminButton from './RemoveAdminButton';
 import GiveAdminButton from './GiveAdminButton';
-import SendInvitationEmailButton from './SendInvitationMailButton';
+import SendInvitationEmailButton from './SendInvitationEmailButton';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -22,14 +22,19 @@ class UserMenu extends React.Component {
     super(props);
 
     this.state = {
-
+      isInvitationEmailSended: this.props.user.isInvitationEmailSended,
     };
 
     this.onPasswordResetClicked = this.onPasswordResetClicked.bind(this);
+    this.onSuccessfullySentInvitationEmail = this.onSuccessfullySentInvitationEmail.bind(this);
   }
 
   onPasswordResetClicked() {
     this.props.adminUsersContainer.showPasswordResetModal(this.props.user);
+  }
+
+  onSuccessfullySentInvitationEmail() {
+    this.setState({ isInvitationEmailSended: true });
   }
 
   renderEditMenu() {
@@ -50,6 +55,7 @@ class UserMenu extends React.Component {
 
   renderStatusMenu() {
     const { t, user } = this.props;
+    const { isInvitationEmailSended } = this.state;
 
     return (
       <Fragment>
@@ -58,7 +64,13 @@ class UserMenu extends React.Component {
         <li>
           {(user.status === 1 || user.status === 3) && <StatusActivateButton user={user} />}
           {user.status === 2 && <StatusSuspendedButton user={user} />}
-          {user.status === 5 && <SendInvitationEmailButton user={user} />}
+          {user.status === 5 && (
+          <SendInvitationEmailButton
+            user={user}
+            isInvitationEmailSended={isInvitationEmailSended}
+            onSuccessfullySentInvitationEmail={this.onSuccessfullySentInvitationEmail}
+          />
+          )}
           {(user.status === 1 || user.status === 3 || user.status === 5) && <UserRemoveButton user={user} />}
         </li>
       </Fragment>
@@ -82,12 +94,13 @@ class UserMenu extends React.Component {
 
   render() {
     const { user } = this.props;
+    const { isInvitationEmailSended } = this.state;
 
     return (
       <UncontrolledDropdown id="userMenu" size="sm">
         <DropdownToggle caret color="secondary" outline>
           <i className="icon-settings" />
-          {(user.status === 5 && !user.isInvitationEmailSended) && <i className="fa fa-circle text-danger grw-usermenu-notification-icon" />}
+          {(user.status === 5 && !isInvitationEmailSended) && <i className="fa fa-circle text-danger grw-usermenu-notification-icon" />}
         </DropdownToggle>
         <DropdownMenu positionFixed>
           {this.renderEditMenu()}
