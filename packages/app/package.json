@@ -4,9 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "cd ../../ && env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
-    "plugin:def": "cd ../../ && env-cmd -f config/env.prod.js node bin/generate-plugin-definitions-source.js",
-    "prebuild": "yarn plugin:def && yarn resource",
-    "resource": "cd ../../ && env-cmd -f config/env.prod.js node bin/download-cdn-resources.js"
+    "prebuild": "cd ../../ && yarn plugin:def && yarn resource"
   },
   "// comments for dependencies": {
     "openid-client": "Node.js 12 or higher is required for openid-client@3 and above.",
