@@ -22,7 +22,7 @@
   "private": true,
   "workspaces": {
     "packages": ["packages/*"],
-    "nohoist": ["slackbot-proxy/bootstrap"]
+    "nohoist": ["**/slackbot-proxy/bootstrap"]
   },
   "scripts": {
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
