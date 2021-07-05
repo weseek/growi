@@ -37,6 +37,38 @@ const isUserPage = (path) => {
   return false;
 };
 
+const forbiddenPages = [
+  /\^|\$|\*|\+|#|%|\?/,
+  /^\/-\/.*/,
+  /^\/_r\/.*/,
+  /^\/_apix?(\/.*)?/,
+  /^\/?https?:\/\/.+$/, // avoid miss in renaming
+  /\/{2,}/, // avoid miss in renaming
+  /\s+\/\s+/, // avoid miss in renaming
+  /.+\/edit$/,
+  /.+\.md$/,
+  /^(\.\.)$/, // see: https://github.com/weseek/growi/issues/3582
+  /(\/\.\.)\/?/, // see: https://github.com/weseek/growi/issues/3582
+  /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
+];
+
+/**
+ * Whether path can be created
+ * @param {string} path
+ * @returns {boolean}
+ */
+const isCreatablePage = (path) => {
+  let isCreatable = true;
+  forbiddenPages.forEach((page) => {
+    const pageNameReg = new RegExp(page);
+    if (path.match(pageNameReg)) {
+      isCreatable = false;
+    }
+  });
+
+  return isCreatable;
+};
+
 /**
  * return user path
  * @param {Object} user
@@ -65,10 +97,48 @@ const convertToNewAffiliationPath = (oldPath, newPath, childPath) => {
   return childPath.replace(pathRegExp, newPath);
 };
 
+/**
+ * Encode SPACE and IDEOGRAPHIC SPACE
+ * @param {string} path
+ * @returns {string}
+ */
+function encodeSpaces(path) {
+  if (path == null) {
+    return null;
+  }
+
+  // Encode SPACE and IDEOGRAPHIC SPACE
+  return path.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
+}
+
+/**
+ * Generate editor path
+ * @param {string} paths
+ * @returns {string}
+ */
+function generateEditorPath(...paths) {
+  const joinedPath = [...paths].join('/');
+
+  if (!isCreatablePage(joinedPath)) {
+    throw new Error('Invalid characters on path');
+  }
+
+  try {
+    const url = new URL(joinedPath, 'https://dummy');
+    return `${url.pathname}#edit`;
+  }
+  catch (err) {
+    throw new Error('Invalid path format');
+  }
+}
+
 module.exports = {
   isTopPage,
   isTrashPage,
   isUserPage,
+  isCreatablePage,
   userPageRoot,
   convertToNewAffiliationPath,
+  encodeSpaces,
+  generateEditorPath,
 };

@@ -60,8 +60,11 @@
 {% endblock %}
 
 {% block html_body %}
+{% if getConfig('crowi', 'customize:isContainerFluid') %}
+  {% set additionalBodyClass = 'growi-layout-fluid' %}
+{% endif %}
 <body
-  class="{% block html_base_css %}{% endblock %} growi"
+  class="{% block html_base_css %}{% endblock %} growi {{ additionalBodyClass }}"
   data-is-admin="{{ user.admin }}"
   data-plugin-enabled="{{ getConfig('crowi', 'plugin:isEnabledPlugins') }}"
   {% block html_base_attr %}{% endblock %}
@@ -77,8 +80,9 @@
   {% block head_warn_breaking_changes %}{% include '../widget/alert_breaking_changes.html' %}{% endblock %}
 
   <div id="page-wrapper" class="page-wrapper d-flex d-print-block">
-    {# Sidebar #}
+    {% block sidebar %}
     <div id="grw-sidebar-wrapper"></div>
+    {% endblock %}
 
     <div class="flex-fill mw-0">
       {% block head_warn_alert_siteurl_undefined %}{% include '../widget/alert_siteurl_undefined.html' %}{% endblock %}

@@ -1,13 +1,22 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-
 import locales from '@root/resource/locales';
+
+const aliasesMapping = {};
+Object.values(locales).forEach((locale) => {
+  if (locale.meta.aliases == null) {
+    return;
+  }
+  locale.meta.aliases.forEach((alias) => {
+    aliasesMapping[alias] = locale.meta.id;
+  });
+});
 
 // extract metadata list from 'resource/locales/${locale}/meta.json'
 export const localeMetadatas = Object.values(locales).map(locale => locale.meta);
 
-export const i18nFactory = (userLocaleId = 'en_US') => {
+export const i18nFactory = (userLocaleId) => {
   // setup LanguageDetector
   const langDetector = new LanguageDetector();
   langDetector.addDetector({
@@ -15,7 +24,18 @@ export const i18nFactory = (userLocaleId = 'en_US') => {
     lookup(options) {
       return userLocaleId;
     },
-    cacheUserlanguage(lng, options) {
+  });
+  // Wrapper to convert lang after detected from browser
+  langDetector.addDetector({
+    name: 'navigatorWrapperToConvertByAlias',
+    lookup(options) {
+      const results = langDetector.detectors.navigator.lookup(options);
+      const lang = results[0];
+      if (lang == null) {
+        return;
+      }
+
+      return aliasesMapping[lang] || lang;
     },
   });
 
@@ -29,7 +49,7 @@ export const i18nFactory = (userLocaleId = 'en_US') => {
 
       fallbackLng: 'en_US',
       detection: {
-        order: ['userSettingDetector', 'querystring', 'localStorage'],
+        order: ['userSettingDetector', 'navigatorWrapperToConvertByAlias', 'querystring'],
       },
 
       interpolation: {

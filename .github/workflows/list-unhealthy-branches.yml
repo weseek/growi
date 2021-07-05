@@ -37,7 +37,7 @@ jobs:
         status: custom
         payload: |
           {
-            text: '<!channel> There is some *illegal named branches* on GitHub.',
+            text: '<!channel> There is some branches *with illegal names* on GitHub.',
             channel: '#ci',
             attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_ILLEGAL }}
           }
@@ -51,7 +51,7 @@ jobs:
         status: custom
         payload: |
           {
-            text: '<!channel> There is some *illegal named branches* on GitHub.',
+            text: '<!channel> There is some branches *that are no longer updated* on GitHub.',
             channel: '#ci',
             attachments: ${{ steps.list-branches.outputs.SLACK_ATTACHMENTS_INACTIVE }}
           }

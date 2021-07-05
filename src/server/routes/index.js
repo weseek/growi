@@ -117,6 +117,8 @@ module.exports = function(crowi, app) {
   app.get('/admin/export'                       , loginRequiredStrictly , adminRequired ,admin.export.index);
   app.get('/admin/export/:fileName'             , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
+  app.get('/admin/*'                       , loginRequiredStrictly ,adminRequired, admin.notFound.index);
+
   app.get('/me'                       , loginRequiredStrictly , me.index);
   // external-accounts
   app.get('/me/external-accounts'                         , loginRequiredStrictly , me.externalAccounts.list);

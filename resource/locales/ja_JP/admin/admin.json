@@ -23,6 +23,7 @@
     "confidential_name": "コンフィデンシャル表示",
     "confidential_example": "例: 社外秘",
     "default_language": "新規ユーザーのデフォルト設定言語",
+    "default_mail_visibility": "新規ユーザーの初期メール公開設定",
     "file_uploading": "ファイルアップロード",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
@@ -114,9 +115,13 @@
     }
   },
   "customize_setting": {
+    "layout": "レイアウト",
+    "layout_options": {
+      "default": "デフォルトのコンテンツ幅",
+      "expanded": "コンテンツ幅 100%"
+    },
     "theme": "テーマ",
     "theme_desc" : {
-      "light_and_dark": "Light/Dark モード選択あり",
       "unique": "モード選択なし"
     },
     "function": "機能",
