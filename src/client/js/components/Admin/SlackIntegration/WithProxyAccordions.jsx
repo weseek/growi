@@ -169,8 +169,8 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
                 // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
             />
-            <div className="input-group align-items-center ml-2 mb-3">
-              <div className="input-group-prepend mx-1">
+            <div className="input-group align-items-center pl-2 mb-3">
+              <div className="input-group-prepend w-75">
                 <input className="form-control" type="text" value={props.growiUrl} readOnly />
                 <CopyToClipboard text={props.growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
                   <div className="btn input-group-text">
