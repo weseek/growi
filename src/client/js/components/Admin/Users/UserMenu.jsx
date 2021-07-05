@@ -26,14 +26,14 @@ class UserMenu extends React.Component {
     };
 
     this.onPasswordResetClicked = this.onPasswordResetClicked.bind(this);
-    this.updateIsInvitationEmailSended = this.updateIsInvitationEmailSended.bind(this);
+    this.onSuccessfullySentInvitationEmail = this.onSuccessfullySentInvitationEmail.bind(this);
   }
 
   onPasswordResetClicked() {
     this.props.adminUsersContainer.showPasswordResetModal(this.props.user);
   }
 
-  updateIsInvitationEmailSended() {
+  onSuccessfullySentInvitationEmail() {
     this.setState({ isInvitationEmailSended: true });
   }
 
@@ -68,7 +68,7 @@ class UserMenu extends React.Component {
           <SendInvitationEmailButton
             user={user}
             isInvitationEmailSended={isInvitationEmailSended}
-            updateIsInvitationEmailSended={this.updateIsInvitationEmailSended}
+            onSuccessfullySentInvitationEmail={this.onSuccessfullySentInvitationEmail}
           />
           )}
           {(user.status === 1 || user.status === 3 || user.status === 5) && <UserRemoveButton user={user} />}

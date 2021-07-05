@@ -8,7 +8,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const SendInvitationEmailButton = (props) => {
   const {
-    appContainer, user, isInvitationEmailSended, updateIsInvitationEmailSended,
+    appContainer, user, isInvitationEmailSended, onSuccessfullySentInvitationEmail,
   } = props;
   const { t } = useTranslation();
 
@@ -21,7 +21,7 @@ const SendInvitationEmailButton = (props) => {
       if (failedToSendEmail == null) {
         const msg = `Email has been sent<br>・${user.email}`;
         toastSuccess(msg);
-        updateIsInvitationEmailSended();
+        onSuccessfullySentInvitationEmail();
       }
       else {
         const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
@@ -48,7 +48,7 @@ SendInvitationEmailButton.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   user: PropTypes.object.isRequired,
   isInvitationEmailSended: PropTypes.bool.isRequired,
-  updateIsInvitationEmailSended: PropTypes.func.isRequired,
+  onSuccessfullySentInvitationEmail: PropTypes.func.isRequired,
 };
 
 export default SendInvitationEmailButtonWrapper;
