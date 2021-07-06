@@ -48,7 +48,7 @@
     "//// First aid to pass the build": "",
     "prebuild": "yarn clean && cross-env NODE_ENV=production yarn plugin:def && cross-env NODE_ENV=production yarn resource",
     "predev:watch": "npm run predev:watch",
-    "predev": "npm run clean:app && npm run plugin:def && npm run resource && yarn build:slack",
+    "//// predev": "npm run clean:app && npm run plugin:def && npm run resource && yarn build:slack",
     "//// The following lines are not maintained": "",
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "build:apiv3:jsdoc": "cross-env API_VERSION=3 npm run build:api:jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
