@@ -422,7 +422,7 @@ module.exports = (crowi) => {
 
     try {
       const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
-      const slackAppTokens = await SlackAppIntegration.findOneAndUpdate({ _id: slackAppIntegrationId }, { tokenGtoP, tokenPtoG });
+      const slackAppTokens = await SlackAppIntegration.findByIdAndUpdate(slackAppIntegrationId, { tokenGtoP, tokenPtoG });
 
       return res.apiv3(slackAppTokens, 200);
     }
