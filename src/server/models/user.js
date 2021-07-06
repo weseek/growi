@@ -335,13 +335,6 @@ module.exports = function(crowi) {
     return this.save();
   };
 
-  userSchema.methods.updateGoogleId = function(googleId, callback) {
-    this.googleId = googleId;
-    this.save((err, userData) => {
-      return callback(err, userData);
-    });
-  };
-
   userSchema.statics.getUserStatusLabels = function() {
     const userStatus = {};
     userStatus[STATUS_REGISTERED] = 'Approval Pending';

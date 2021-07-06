@@ -1,3 +1,6 @@
+$slack-work-space-name-card-background: #fff5ff;
+$slack-work-space-name-card-border: #efc1f6;
+
 .admin-page {
   .title {
     padding-top: 1rem;
@@ -80,6 +83,106 @@
   .admin-export {
     .progress {
       height: 8px;
+    }
+  }
+
+  /*
+  Slack Integration
+  */
+  .selecting-bot-type {
+    .supplementary-bot-name {
+      font-size: 1rem;
+    }
+    .badge-info {
+      font-size: 0.6rem;
+    }
+    .admin-bot-card {
+      min-width: 280px;
+      max-width: 500px;
+      border-radius: 8px !important;
+    }
+    .border-primary {
+      border-width: 2px;
+    }
+  }
+  // TODO: change to utility class on Bootstrap 5
+  .slack-connection-log {
+    .slack-connection-log-title {
+      border-left: 2px solid;
+    }
+    .slack-connection-log-body {
+      border: 2px solid;
+    }
+  }
+
+  .admin-slack-integration {
+    .admin-setting-header {
+      .btn-link {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .bot-integration {
+    .admin-bot-card {
+      border-radius: 8px !important;
+    }
+    .admin-border-failed {
+      border-style: dashed;
+      border-width: 2px;
+    }
+    .admin-border-success {
+      border-width: 3px;
+    }
+
+    .grw-bridge-proxy-circle {
+      .circle {
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        border: 13px solid;
+        transform: translate(-50%, -50%);
+        @include media-breakpoint-down(md) {
+          width: 50px;
+          height: 50px;
+          border: 8px solid;
+        }
+      }
+
+      .circle-inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .circle-inner.grw-proxy-server-name {
+        margin-top: 55px;
+      }
+    }
+
+    // switch layout for Bridge component
+    .grw-bridge-container {
+      .label {
+        @extend .mt-5;
+      }
+
+      // with ProxyCircle
+      &.with-proxy {
+        .label {
+          @extend .mt-0;
+        }
+        .hr-container {
+          margin-top: 40px;
+          @include media-breakpoint-up(lg) {
+            margin-top: 65px;
+          }
+        }
+      }
+    }
+
+    .slack-work-space-name-card {
+      background-color: $slack-work-space-name-card-background;
+      border: 1px solid $slack-work-space-name-card-border;
     }
   }
 
