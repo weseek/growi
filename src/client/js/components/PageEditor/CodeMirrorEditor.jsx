@@ -129,6 +129,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     require('codemirror/addon/search/match-highlighter');
     require('codemirror/addon/selection/active-line');
     require('codemirror/addon/scroll/annotatescrollbar');
+    require('codemirror/addon/scroll/scrollpastend');
     require('codemirror/addon/fold/foldcode');
     require('codemirror/addon/fold/foldgutter');
     require('codemirror/addon/fold/markdown-fold');
@@ -848,6 +849,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             tabSize: 4,
             indentUnit: this.props.indentSize,
             lineWrapping: true,
+            scrollPastEnd: true,
             autoRefresh: { force: true }, // force option is enabled by autorefresh.ext.js -- Yuki Takei
             autoCloseTags: true,
             placeholder,

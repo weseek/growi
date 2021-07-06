@@ -187,17 +187,6 @@
     .page-editor-editor-container {
       border-right: 1px solid transparent;
 
-      // override CodeMirror styles
-      .CodeMirror {
-        .cm-matchhighlight {
-          background-color: cyan;
-        }
-
-        .CodeMirror-selection-highlight-scrollbar {
-          background-color: darkcyan;
-        }
-      }
-
       // add icon on cursor
       .markdown-table-activated,
       .markdown-link-activated {
@@ -313,11 +302,6 @@
   }
 }
 
-// overwrite .CodeMirror pre
-.CodeMirror pre.CodeMirror-line {
-  font-family: $font-family-monospace;
-}
-
 // overwrite .CodeMirror-hints
 .CodeMirror-hints {
   max-height: 30em !important;
@@ -340,11 +324,6 @@
       font-size: 15px; // adjust to .wiki
     }
   }
-}
-
-// overwrite .CodeMirror-placeholder
-.CodeMirror pre.CodeMirror-placeholder {
-  color: $text-muted;
 }
 
 #tag-edit-button-tooltip {

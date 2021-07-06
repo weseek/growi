@@ -1,10 +1,22 @@
-name: Node CI
+name: Node CI for growi
 
 on:
   push:
     branches-ignore:
       - release/**
       - tmp/**
+    paths:
+      - .github/workflows/ci.yml
+      - packages/app/**
+      - packages/app-for-hoisting/**
+      - .eslint*
+      - .prettier*
+      - .stylelint*
+      - config/**
+      - resource/**
+      - src/**
+      - package.json
+      - yarn.lock
 
 jobs:
 
@@ -25,7 +37,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v2
       with:
-        path: node_modules
+        path: '**/node_modules'
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
@@ -42,7 +54,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -58,7 +70,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*test (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - lint (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -91,7 +103,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v2
       with:
-        path: node_modules
+        path: '**/node_modules'
         key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
@@ -108,7 +120,7 @@ jobs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
+        npx lerna bootstrap
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -130,7 +142,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*test (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - test (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -153,7 +165,7 @@ jobs:
       id: cache-dependencies
       uses: actions/cache@v2
       with:
-        path: node_modules
+        path: '**/node_modules'
         key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
     - name: Get yarn cache dir
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
@@ -170,9 +182,8 @@ jobs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
-        yarn install
-    # Disabled Temprary -- 2021.01.29 Yuki Takei
-    #     yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion
+        npx lerna bootstrap
+        yarn lerna add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs react-images@1.0.0 react-motion --scope @growi/app --scope @growi/app-for-hoisting
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -209,7 +220,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*build-dev (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - build-dev (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -248,7 +259,7 @@ jobs:
     - name: Cache/Restore node_modules
       uses: actions/cache@v2
       with:
-        path: node_modules
+        path: '**/node_modules'
         key: ${{ runner.OS }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
         restore-keys: |
           ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
@@ -266,10 +277,10 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Install dependencies
       run: |
-        yarn install
-    # Disabled Temprary -- 2021.01.29 Yuki Takei
-    #     yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
-    #     yarn add -D react-images@1.0.0 react-motion
+        npx lerna bootstrap
+        yarn lerna add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs --scope @growi/app --scope @growi/app-for-hoisting
+        yarn lerna add -D react-images@1.0.0 react-motion --scope @growi/app --scope @growi/app-for-hoisting
+        yarn lerna run build --scope @growi/slack
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -277,10 +288,10 @@ jobs:
         yarn list --depth=0
     - name: yarn build
       run: |
-        yarn build
-    - name: yarn install --production
+        yarn build:prod:analyze
+    - name: lerna bootstrap --production
       run: |
-        yarn install --production
+        npx lerna bootstrap -- --production
     - name: Print dependencies
       run: |
         echo -n "node " && node -v
@@ -315,7 +326,7 @@ jobs:
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*build-prod (${{ matrix.node-version }})*'
+        job_name: '*Node CI for growi - build-prod (${{ matrix.node-version }})*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}

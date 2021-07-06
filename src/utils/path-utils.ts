@@ -55,7 +55,7 @@ export const isDeletablePage = (path: string): boolean => {
 };
 
 const restrictedPatternsToCreate: Array<RegExp> = [
-  /\^|\$|\*|\+|#|%/,
+  /\^|\$|\*|\+|#|%|\?/,
   /^\/-\/.*/,
   /^\/_r\/.*/,
   /^\/_apix?(\/.*)?/,
@@ -109,4 +109,25 @@ export const encodeSpaces = (path?:string): string | undefined => {
 
   // Encode SPACE and IDEOGRAPHIC SPACE
   return path.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
-};
+}
+
+/**
+ * Generate editor path
+ * @param {string} paths
+ * @returns {string}
+ */
+export const generateEditorPath=(...paths)=> {
+  const joinedPath = [...paths].join('/');
+
+  if (!isCreatablePage(joinedPath)) {
+    throw new Error('Invalid characters on path');
+  }
+
+  try {
+    const url = new URL(joinedPath, 'https://dummy');
+    return `${url.pathname}#edit`;
+  }
+  catch (err) {
+    throw new Error('Invalid path format');
+  }
+}

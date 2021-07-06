@@ -13,18 +13,20 @@ const MenuLabel = ({ menu }) => {
   const { t } = useTranslation();
 
   switch (menu) {
-    case 'app':           return <><i className="icon-fw icon-settings"></i>        { t('App Settings') }</>;
-    case 'security':      return <><i className="icon-fw icon-shield"></i>          { t('security_settings') }</>;
-    case 'markdown':      return <><i className="icon-fw icon-note"></i>            { t('Markdown Settings') }</>;
-    case 'customize':     return <><i className="icon-fw icon-wrench"></i>          { t('Customize') }</>;
-    case 'importer':      return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
-    case 'export':        return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
-    case 'notification':  return <><i className="icon-fw icon-bell"></i>            { t('Notification Settings') }</>;
-    case 'users':         return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
-    case 'user-groups':   return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
-    case 'search':        return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
-    case 'cloud':         return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
-    default:              return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
+    case 'app':                       return <><i className="icon-fw icon-settings"></i>        { t('App Settings') }</>;
+    case 'security':                  return <><i className="icon-fw icon-shield"></i>          { t('security_settings') }</>;
+    case 'markdown':                  return <><i className="icon-fw icon-note"></i>            { t('Markdown Settings') }</>;
+    case 'customize':                 return <><i className="icon-fw icon-wrench"></i>          { t('Customize') }</>;
+    case 'importer':                  return <><i className="icon-fw icon-cloud-upload"></i>    { t('Import Data') }</>;
+    case 'export':                    return <><i className="icon-fw icon-cloud-download"></i>  { t('Export Archive Data') }</>;
+    case 'notification':              return <><i className="icon-fw icon-bell"></i>            { t('Notification Settings') }</>;
+    case 'slack-integration':         return <><i className="icon-fw icon-shuffle"></i>         { t('slack_integration') }</>;
+    case 'slack-integration-legacy':  return <><i className="icon-fw icon-shuffle"></i>         { t('Legacy_Slack_Integration')}</>;
+    case 'users':                     return <><i className="icon-fw icon-user"></i>            { t('User_Management') }</>;
+    case 'user-groups':               return <><i className="icon-fw icon-people"></i>          { t('UserGroup Management') }</>;
+    case 'search':                    return <><i className="icon-fw icon-magnifier"></i>       { t('Full Text Search Management') }</>;
+    case 'cloud':                     return <><i className="icon-fw icon-share-alt"></i>       { t('to_cloud_settings')} </>;
+    default:                          return <><i className="icon-fw icon-home"></i>            { t('Wiki Management Home Page') }</>;
   }
 };
 
@@ -90,17 +92,19 @@ const AdminNavigation: VFC<Props> = (props: Props) => {
   const getListGroupItemOrDropdownItemList = (isListGroupItems) => {
     return (
       <>
-        <MenuLink menu="home"         isListGroupItems={isListGroupItems} isActive={selected === 'home'} isRoot />
-        <MenuLink menu="app"          isListGroupItems={isListGroupItems} isActive={selected === 'app'} />
-        <MenuLink menu="security"     isListGroupItems={isListGroupItems} isActive={selected === 'security'} />
-        <MenuLink menu="markdown"     isListGroupItems={isListGroupItems} isActive={selected === 'markdown'} />
-        <MenuLink menu="customize"    isListGroupItems={isListGroupItems} isActive={selected === 'customize'} />
-        <MenuLink menu="importer"     isListGroupItems={isListGroupItems} isActive={selected === 'importer'} />
-        <MenuLink menu="export"       isListGroupItems={isListGroupItems} isActive={selected === 'export'} />
-        <MenuLink menu="notification" isListGroupItems={isListGroupItems} isActive={selected === 'notification' || selected === 'global-notification'} />
-        <MenuLink menu="users"        isListGroupItems={isListGroupItems} isActive={selected === 'users'} />
-        <MenuLink menu="user-groups"  isListGroupItems={isListGroupItems} isActive={selected === 'user-groups'} />
-        <MenuLink menu="search"       isListGroupItems={isListGroupItems} isActive={selected === 'search'} />
+        <MenuLink menu="home"                     isListGroupItems={isListGroupItems} isActive={selected === 'home'} isRoot />
+        <MenuLink menu="app"                      isListGroupItems={isListGroupItems} isActive={selected === 'app'} />
+        <MenuLink menu="security"                 isListGroupItems={isListGroupItems} isActive={selected === 'security'} />
+        <MenuLink menu="markdown"                 isListGroupItems={isListGroupItems} isActive={selected === 'markdown'} />
+        <MenuLink menu="customize"                isListGroupItems={isListGroupItems} isActive={selected === 'customize'} />
+        <MenuLink menu="importer"                 isListGroupItems={isListGroupItems} isActive={selected === 'importer'} />
+        <MenuLink menu="export"                   isListGroupItems={isListGroupItems} isActive={selected === 'export'} />
+        <MenuLink menu="notification"             isListGroupItems={isListGroupItems} isActive={selected === 'notification' || selected === 'global-notification'} />
+        <MenuLink menu="slack-integration"        isListGroupItems={isListGroupItems} isActive={selected === 'slack-integration'} />
+        <MenuLink menu="slack-integration-legacy" isListGroupItems={isListGroupItems} isActive={selected === 'slack-integration-legacy'} />
+        <MenuLink menu="users"                    isListGroupItems={isListGroupItems} isActive={selected === 'users'} />
+        <MenuLink menu="user-groups"              isListGroupItems={isListGroupItems} isActive={selected === 'user-groups'} />
+        <MenuLink menu="search"                   isListGroupItems={isListGroupItems} isActive={selected === 'search'} />
         <GrowiCloudMenuLink />
       </>
     );
