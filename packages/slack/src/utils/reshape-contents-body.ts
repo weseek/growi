@@ -64,7 +64,7 @@ export const reshapeContentsBody = (str: string): string => {
       }
       // ##*username*  HH:mm AM
       copyline = '\n## **'.concat(copyline);
-      copyline = copyline.replace(regexpTime, '**'.concat(time));
+      copyline = copyline.replace(regexpTime, '**<span class="grw-togetter-time">'.concat(time, '</span>\n'));
     }
     // Check 3: Is this line a short time(HH:mm)?
     else if (regexpShortTime.test(copyline)) {
