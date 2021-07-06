@@ -1,4 +1,6 @@
 const { getInstance } = require('../setup-crowi');
+import setupSlackLegacy from '~/server/util/slack-legacy';
+
 
 describe('Slack Util', () => {
 
@@ -7,7 +9,7 @@ describe('Slack Util', () => {
 
   beforeEach(async(done) => {
     crowi = await getInstance();
-    slackLegacy = require(`${crowi.libDir}/util/slack-legacy`)(crowi);
+    slackLegacy = setupSlackLegacy(crowi);
     done();
   });
 
