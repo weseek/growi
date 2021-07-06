@@ -56,14 +56,23 @@
 
   // override @atlaskit/navigation-next styles
   $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
-  div[data-layout-container='true'] {
+  .data-layout-container {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 0px);
+    margin-top: 0px;
     // css-teprsg
     > div:nth-of-type(2) {
       padding-left: unset !important;
       margin-left: unset !important;
     }
   }
-  div[data-testid='Navigation'] {
+  .navigation {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 200;
     // css-xxx-ContainerNavigationMask
     > div:nth-of-type(1) {
     }
@@ -78,6 +87,12 @@
       > div:first-child {
         background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
       }
+    }
+    .navigation-wrap {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+      overflow: hidden;
     }
   }
 
@@ -141,10 +156,10 @@
 
   // override @atlaskit/navigation-next styles
   $navbar-total-height: $grw-navbar-height + $grw-navbar-border-width;
-  div[data-layout-container='true'] {
+  .data-layout-container {
     max-height: calc(100vh - #{$grw-navbar-border-width});
   }
-  div[data-testid='Navigation'] {
+  .navigation {
     position: unset;
 
     top: $navbar-total-height;

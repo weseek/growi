@@ -179,7 +179,19 @@ const Sidebar = (props: Props) => {
             context: 'product',
           })}
         >
-          <LayoutManager
+          <div className="data-layout-container">
+            <div className="navigation">
+              <div className="navigation-wrap">
+                <div className="grw-global-navigation">
+                  <GlobalNavigation></GlobalNavigation>
+                </div>
+
+                <SidebarContents></SidebarContents>
+              </div>
+            </div>
+          </div>
+
+          {/* <LayoutManager
             globalNavigation={GlobalNavigation}
             productNavigation={() => null}
             containerNavigation={SidebarContents}
@@ -190,7 +202,7 @@ const Sidebar = (props: Props) => {
             shouldHideGlobalNavShadow
             showContextualNavigation
           >
-          </LayoutManager>
+          </LayoutManager> */}
         </ThemeProvider>
       </div>
 
