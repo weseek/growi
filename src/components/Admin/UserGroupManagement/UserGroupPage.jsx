@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import UserGroupTable from './UserGroupTable';
+import UserGroupTable from '../../../client/js/components/Admin/UserGroup/UserGroupTable';
 import UserGroupCreateForm from '../../../client/js/components/Admin/UserGroup/UserGroupCreateForm';
 import UserGroupDeleteModal from '../../../client/js/components/Admin/UserGroup/UserGroupDeleteModal';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '../../../../src/client/js/util/apiNotification';
 import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
 
 export default function UserGroupPage() {
@@ -17,7 +17,7 @@ export default function UserGroupPage() {
     syncUserGroupAndRelations();
   }, []);
 
-  async function showDeleteModal(group) {
+  const showDeleteModal = async(group) => {
     try {
       await this.syncUserGroupAndRelations();
       setSelectedUserGroup(group);
@@ -28,12 +28,12 @@ export default function UserGroupPage() {
     }
   }
 
-  hideDeleteModal() {
+  const hideDeleteModal = () => {
     setSelectedUserGroup(undefined);
     setIsDeleteModalShow(false);
   }
 
-  addUserGroup(userGroup, users) {
+  const addUserGroup = (userGroup, users) => {
     this.setState((prevState) => {
       const userGroupRelations = Object.assign(prevState.userGroupRelations, {
         [userGroup._id]: users,
@@ -46,7 +46,7 @@ export default function UserGroupPage() {
     });
   }
 
-  async function deleteUserGroupById({ deleteGroupId, actionName, transferToUserGroupId }) {
+  const deleteUserGroupById = async ({ deleteGroupId, actionName, transferToUserGroupId }) => {
     try {
       const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
         actionName,
@@ -75,7 +75,7 @@ export default function UserGroupPage() {
     }
   }
 
-  async function syncUserGroupAndRelations() {
+  const syncUserGroupAndRelations = async () => {
     try {
       const userGroupsRes = await apiv3Get('/user-groups', { pagination: false });
       const userGroupRelationsRes = await apiv3Get('/user-group-relations');
