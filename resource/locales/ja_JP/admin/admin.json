@@ -318,7 +318,6 @@
       "dont_need_update": "※既に値が入っている場合は更新する必要はありません",
       "select_install_your_app": "Install your app をクリックします。",
       "select_install_to_workspace": "Install to Workspace をクリックします。",
-      "register_official_bot_proxy_service": "アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録",
       "register_proxy_url": "Proxy の URLをGROWIに登録する",
       "click_allow": "遷移先の画面にて、Allowをクリックします。",
       "install_complete_if_checked": "Install your app の右側に緑色のチェックがつけばワークスペースへのインストール完了です。",

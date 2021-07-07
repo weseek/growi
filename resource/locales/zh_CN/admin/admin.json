@@ -328,7 +328,6 @@
       "dont_need_update": "※如果值已经在里面了，就不需要再更新。",
       "select_install_your_app": "选择 \"Install your app\"。",
       "select_install_to_workspace": "选择 \"Install to Workspace\"。",
-      "register_official_bot_proxy_service": "发行访问令牌 / 注册 GROWI 官方 Bot 代理服务",
       "register_proxy_url": "向 GROWI 注册代理 URL",
       "click_allow": "选择 \"Allow\"。",
       "install_complete_if_checked": "确认已选中 \"Install your app\"。",
