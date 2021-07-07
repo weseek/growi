@@ -18,6 +18,7 @@ import { createTerminus } from '@godaddy/terminus';
 
 import swaggerSettingsForDev from '~/config/swagger/config.dev';
 import swaggerSettingsForProd from '~/config/swagger/config.prod';
+import './filters/HttpErrorsFilter';
 import './filters/ResourceNotFoundFilter';
 import loggerFactory from '~/utils/logger';
 

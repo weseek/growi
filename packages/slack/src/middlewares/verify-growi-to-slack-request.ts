@@ -1,5 +1,6 @@
 import { Response, NextFunction } from 'express';
 
+import createError from 'http-errors';
 import loggerFactory from '../utils/logger';
 import { RequestFromGrowi } from '../interfaces/request-between-growi-and-proxy';
 
@@ -15,14 +16,14 @@ export const verifyGrowiToSlackRequest = (req: RequestFromGrowi, res: Response, 
   if (str == null) {
     const message = 'The value of header \'x-growi-gtop-tokens\' must not be empty.';
     logger.warn(message, { body: req.body });
-    return res.status(400).send({ message });
+    return next(createError(400, message));
   }
 
   const tokens = str.split(',').map(value => value.trim());
   if (tokens.length === 0) {
     const message = 'The value of header \'x-growi-gtop-tokens\' must include at least one or more tokens.';
     logger.warn(message, { body: req.body });
-    return res.status(400).send({ message });
+    return next(createError(400, message));
   }
 
   req.tokenGtoPs = tokens;

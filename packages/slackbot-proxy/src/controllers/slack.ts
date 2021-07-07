@@ -3,6 +3,7 @@ import {
 } from '@tsed/common';
 
 import axios from 'axios';
+import createError from 'http-errors';
 
 import { WebAPICallResult } from '@slack/web-api';
 
@@ -93,7 +94,7 @@ export class SlackCtrl {
   }
 
   @Post('/commands')
-  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, (req, res, next) => { return next(createError('Error DETEMASUYO!')) }, AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
