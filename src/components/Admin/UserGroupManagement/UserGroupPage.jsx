@@ -14,7 +14,7 @@ export default function UserGroupPage() {
   const [isDeleteModalShow, setIsDeleteModalShow] = useState(false);
 
   useEffect(() => {
-    await syncUserGroupAndRelations();
+    syncUserGroupAndRelations();
   }, []);
 
   async function showDeleteModal(group) {
