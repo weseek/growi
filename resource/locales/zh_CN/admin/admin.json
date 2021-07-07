@@ -360,7 +360,8 @@
 			"invite_thru_email": "发送邀请电子邮件",
 			"temporary_password": "创建的用户具有临时密码",
 			"send_new_password": "请将新密码发送给用户。",
-			"send_temporary_password": "请确保复制此屏幕上的临时密码并将其发送给用户。",
+			"send_temporary_password": "如果你没有发送电子邮件邀请，请复制此屏幕上的临时密码并联系邀请人。",
+      "send_email": "你也可以从用户表中的下拉菜单中发送或重新发送邀请邮件。",
 			"existing_email": "以下电子邮件已存在",
       "issue": "Issue"
 		},
@@ -374,7 +375,9 @@
 			"your_own": "您不能停用自己的帐户",
 			"remove_admin_access": "删除管理员访问权限",
 			"cannot_remove": "您不能从管理员中删除自己",
-			"give_admin_access": "授予管理员访问权限"
+			"give_admin_access": "授予管理员访问权限",
+      "send_invitation_email": "发送邀请邮件",
+      "resend_invitation_email": "重发邀请函"
 		},
 		"reset_password": "重置密码",
 		"reset_password_modal": {

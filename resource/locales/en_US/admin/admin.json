@@ -353,7 +353,8 @@
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
       "send_new_password": "Please send the new password to the user.",
-      "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
+      "send_temporary_password": "If you have not sent an invitation email, copy the temporary password on this screen and contact the inviter.",
+      "send_email": "You can also send or resend the invitation email from the drop-down in the users table.",
       "existing_email": "The following emails already exist",
       "issue": "Issue"
     },
@@ -367,7 +368,9 @@
       "your_own": "You cannot deactivate your own account",
       "remove_admin_access": "Remove admin access",
       "cannot_remove": "You cannot remove yourself from administrator",
-      "give_admin_access": "Give admin access"
+      "give_admin_access": "Give admin access",
+      "send_invitation_email": "Send invitation email",
+      "resend_invitation_email": "Resend invitation email"
     },
     "reset_password": "Reset Password",
     "reset_password_modal": {
