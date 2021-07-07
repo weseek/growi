@@ -308,6 +308,7 @@
       "install_now": "今すぐインストール",
       "generate_access_token": "Access Tokenの発行",
       "register_for_growi_official_bot_proxy_service": "GROWI Official Bot Proxy サービスへの登録",
+      "register_for_growi_custom_bot_proxy": "GROWI Custom Bot Proxy への登録",
       "enter_growi_register_on_slack": "Slack上で <b>/growi register</b> と打ちます。",
       "paste_growi_url": "モーダルが表示されるので、<b>GROWI URL</b> には下記のURLを入力します。",
       "enter_access_token_for_growi_and_proxy": "上記で発行した<b>Access Token Proxy to GROWI</b> と <b>Access Token GROWI to Proxy</b>を入れる",

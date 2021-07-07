@@ -318,6 +318,7 @@
       "install_now": "现在安装",
       "generate_access_token": "生成Access Token",
       "register_for_growi_official_bot_proxy_service": "注册 GROWI Official Bot Proxy Service",
+      "register_for_growi_custom_bot_proxy": "注册 GROWI Custom Bot Proxy",
       "enter_growi_register_on_slack": "在Slack中，输入 <b>/growi register</b>",
       "paste_growi_url": "由于显示了模式，请在 <b>GROWI URL</b> 中输入以下URL",
       "enter_access_token_for_growi_and_proxy": "插入上面发出的 <b>Access Token Proxy to GROWI</b> 和 <b>Access Token GROWI to Proxy</b>。",
