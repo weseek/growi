@@ -324,7 +324,7 @@ const WithProxyAccordions = (props) => {
       content: <BotInstallProcessForCustomBotWithProxy />,
     },
     '③': {
-      title: 'register_for_growi_official_bot_proxy_service',
+      title: 'register_for_growi_custom_bot_proxy',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         slackAppIntegrationId={props.slackAppIntegrationId}
