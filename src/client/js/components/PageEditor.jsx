@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
-import { envUtils } from 'growi-commons';
+// import { envUtils } from 'growi-commons';
 import loggerFactory from '~/utils/logger';
 
 import PageContainer from '../services/PageContainer';
@@ -25,15 +25,15 @@ class PageEditor extends React.Component {
     this.previewElement = React.createRef();
 
     // const config = this.props.appContainer.getConfig();
-    const isUploadable = config.upload.image || config.upload.file;
-    const isUploadableFile = config.upload.file;
-    const isMathJaxEnabled = !!config.env.MATHJAX;
+    // const isUploadable = config.upload.image || config.upload.file;
+    // const isUploadableFile = config.upload.file;
+    // const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
       markdown: this.props.pageContainer.state.markdown,
-      isUploadable,
-      isUploadableFile,
-      isMathJaxEnabled,
+      // isUploadable,
+      // isUploadableFile,
+      // isMathJaxEnabled,
     };
 
     this.setCaretLine = this.setCaretLine.bind(this);
@@ -318,11 +318,11 @@ class PageEditor extends React.Component {
           <Editor
             ref={(c) => { this.editor = c }}
             value={this.state.markdown}
-            noCdn={noCdn}
+            // noCdn={noCdn}
             // isMobile={this.props.appContainer.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
-            emojiStrategy={emojiStrategy}
+            // emojiStrategy={emojiStrategy}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}
@@ -366,4 +366,3 @@ PageEditor.propTypes = {
 };
 
 export default PageEditorWrapperNext;
-// export default PageEditorWrapper;
