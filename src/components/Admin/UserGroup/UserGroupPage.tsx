@@ -36,7 +36,7 @@ const UserGroupPage = (): JSX.Element => {
 
   const addUserGroup = (userGroup: UserGroup, users) => {
 
-    setUserGroups((prevState)  => { return [...prevState, userGroup] });
+    setUserGroups((prevState: UserGroup[]): UserGroup[] => { return [...prevState, userGroup] });
 
     setUserGroupRelations((prevState) => (
       Object.assign(prevState, {
