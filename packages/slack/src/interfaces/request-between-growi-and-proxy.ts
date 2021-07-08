@@ -12,8 +12,6 @@ export type RequestFromGrowi = Request & {
     view?: string,
     blocks?: string
   },
-  // for storing parsed blocks object
-  parsedBlocks?: any[],
 };
 
 export type RequestFromProxy = Request & {

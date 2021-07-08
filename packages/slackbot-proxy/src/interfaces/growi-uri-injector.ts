@@ -1,5 +1,5 @@
-import { Req } from '@tsed/common';
-import { SlackOauthReq } from '../slack-to-growi/slack-oauth-req';
+import { GrowiReq } from './growi-to-slack/growi-req';
+import { SlackOauthReq } from './slack-to-growi/slack-oauth-req';
 
 export type GrowiUriWithOriginalData = {
   growiUri: string,
@@ -18,10 +18,10 @@ export const isGrowiUriWithOriginalData = (data: any): data is GrowiUriWithOrigi
 
 export interface GrowiUriInjector<IB, EP> {
 
-  shouldHandleToInject(req: Req): boolean;
+  shouldHandleToInject(req: GrowiReq): boolean;
   inject(body: IB, growiUri:string): void;
 
-  shouldHandleToExtract(req: Req & SlackOauthReq): boolean;
+  shouldHandleToExtract(req: SlackOauthReq): boolean;
   extract(payload: EP): GrowiUriWithOriginalData;
 
 }

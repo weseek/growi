@@ -2,7 +2,7 @@ import { GrowiUriInjector, GrowiUriWithOriginalData, isGrowiUriWithOriginalData 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 
-export class ViewInteractionPayloadDelegator implements GrowiUriInjector<{view: string}, {view: {'private_metadata': string}}> {
+export class BlockActionsPayloadDelegator implements GrowiUriInjector<{view: string}, {view: {'private_metadata': string}}> {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   shouldHandleToInject(req: GrowiReq): boolean {
@@ -20,7 +20,7 @@ export class ViewInteractionPayloadDelegator implements GrowiUriInjector<{view: 
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  shouldHandleToExtract(req: SlackOauthReq): boolean {
+  shouldHandleToExtract(req: Req & SlackOauthReq): boolean {
     const { type, view } = req.parsedPayload;
     if (type !== 'view_submission') {
       return false;

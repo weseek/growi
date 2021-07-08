@@ -1,4 +1,4 @@
-import { ObsoleteGrowiUriInjector } from '~/interfaces/growi-to-slack/growi-uri-injector';
+import { ObsoleteGrowiUriInjector } from '~/interfaces/growi-uri-injector';
 
 export class GrowiUriInjectionButtonDelegator implements ObsoleteGrowiUriInjector {
 
