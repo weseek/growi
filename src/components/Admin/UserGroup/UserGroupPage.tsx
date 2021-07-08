@@ -17,7 +17,7 @@ const UserGroupPage = (): JSX.Element => {
     syncUserGroupAndRelations();
   }, []);
 
-  const showDeleteModal = async(group) => {
+  const showDeleteModal = async (group) => {
     try {
       await syncUserGroupAndRelations();
       setSelectedUserGroup(group);
@@ -35,19 +35,12 @@ const UserGroupPage = (): JSX.Element => {
 
   const addUserGroup = (userGroup, users) => {
 
-    this.setState((prevState) => {
-      const userGroupRelations = Object.assign(prevState.userGroupRelations, {
+    setUserGroups((prevState) => [...prevState, userGroup]);
+
+    setUserGroupRelations((prevState) => (
+      Object.assign(prevState, {
         [userGroup._id]: users,
-      });
-
-      return {
-        userGroups: [...prevState.userGroups, userGroup],
-        userGroupRelations,
-      };
-    });
-
-    setUserGroups();
-    setUserGroupRelations();
+      })));
 
 
   }
@@ -73,7 +66,12 @@ const UserGroupPage = (): JSX.Element => {
           // isDeleteModalShow: false,
         };
       });
-
+      setUserGroups(
+        (prevState) => {
+          const userGroups = prevState.filter((userGroup) => {
+            return _id !== deleteGroupId;
+          });
+      )
 
 
       setSelectedUserGroup(undefined);
