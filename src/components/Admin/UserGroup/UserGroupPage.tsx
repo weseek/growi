@@ -5,12 +5,12 @@ import UserGroupDeleteModal from '~/client/js/components/Admin/UserGroup/UserGro
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
-import { User, UserGroup } from '~/interfaces/user';
+import { User, UserGroup, UserGroupRelation } from '~/interfaces/user';
 
 const UserGroupPage = (): JSX.Element => {
 
-  const [userGroups, setUserGroups] = useState([]);
-  const [userGroupRelations, setUserGroupRelations] = useState<UserGroup[]>([]);
+  const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
+  const [userGroupRelations, setUserGroupRelations] = useState<UserGroupRelation[]>([]);
   const [selectedUserGroup, setSelectedUserGroup] = useState(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isDeleteModalShow, setIsDeleteModalShow] = useState(false);
 
