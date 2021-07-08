@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react'
 // import { toastSuccess, toastError } from '../../../../src/client/js/util/apiNotification';
 // import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
 
-export default function UserGroupPage() {
+const UserGroupPage = (): JSX.Element => {
 
   // const [userGroups, setUserGroups] = useState([]);
   // const [userGroupRelations, setUserGroupRelations] = useState([]);
@@ -111,3 +111,5 @@ export default function UserGroupPage() {
     </>
   )
 }
+
+export default UserGroupPage;
