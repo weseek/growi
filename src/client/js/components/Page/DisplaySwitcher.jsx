@@ -3,6 +3,7 @@ import React from 'react';
 import { TabContent, TabPane } from 'reactstrap';
 
 import { useEditorMode } from '~/stores/ui';
+import { Provider } from 'unstated';
 
 import Page from '../Page';
 // import UserInfo from '../User/UserInfo';
@@ -16,7 +17,7 @@ const DisplaySwitcher = (props) => {
 
   // dynamic import to skip rendering at SSR
   const TableOfContents = dynamic(() => import('../TableOfContents'), { ssr: false });
-  const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
+  const PageEditorSubstance = dynamic(() => import('../PageEditorSubstance'), { ssr: false });
   // const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd'), { ssr: false });
   // const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 
@@ -50,7 +51,9 @@ const DisplaySwitcher = (props) => {
         </TabPane>
         <TabPane tabId="edit">
           <div id="page-editor">
-            <PageEditor />
+            <Provider>
+              <PageEditorSubstance />
+            </Provider>
           </div>
         </TabPane>
         <TabPane tabId="hackmd">
