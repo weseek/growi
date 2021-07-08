@@ -171,7 +171,7 @@ export class GrowiToSlackCtrl {
     return res.send({ relation: createdRelation, slackBotToken: token });
   }
 
-  injectGrowiUri(req:GrowiReq, growiUri:string):WebAPICallOptions {
+  injectGrowiUri(req: GrowiReq, growiUri: string):WebAPICallOptions {
 
     // TODO: iterate with decorator
     const vipd = new ViewInteractionPayloadDelegator();
@@ -179,7 +179,8 @@ export class GrowiToSlackCtrl {
       vipd.inject(req.body, growiUri);
     }
     else if (req.body.blocks != null) {
-      const parsedBlocks = JSON.parse(req.body.blocks as string);
+      const parsedBlocks = JSON.parse(req.body.blocks) as any[];
+      req.parsedBlocks = parsedBlocks;
 
       parsedBlocks.forEach((parsedBlock) => {
         if (parsedBlock.type !== 'actions') {

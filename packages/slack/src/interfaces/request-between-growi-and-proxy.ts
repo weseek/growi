@@ -6,6 +6,14 @@ export type RequestFromGrowi = Request & {
 
   // will be extracted from header
   tokenGtoPs: string[],
+
+  // Block Kit properties
+  body: {
+    view?: string,
+    blocks?: string
+  },
+  // for storing parsed blocks object
+  parsedBlocks?: any[],
 };
 
 export type RequestFromProxy = Request & {
