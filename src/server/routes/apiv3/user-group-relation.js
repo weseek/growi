@@ -4,7 +4,6 @@ const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslin
 
 const express = require('express');
 
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 const { serializeUserGroupRelationSecurely } = require('../../models/serializers/user-group-relation-serializer');
 
