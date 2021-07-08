@@ -5,7 +5,7 @@ import UserGroupDeleteModal from '~/client/js/components/Admin/UserGroup/UserGro
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
-import { User, UserGroup, UserGroupRelation } from '~/interfaces/user';
+import { UserGroup, UserGroupRelation } from '~/interfaces/user';
 
 const UserGroupPage = (): JSX.Element => {
 
@@ -36,7 +36,7 @@ const UserGroupPage = (): JSX.Element => {
 
   const addUserGroup = (userGroup: UserGroup, users) => {
 
-    setUserGroups((prevState: UserGroup[]): UserGroup[] => { return [...prevState, userGroup] });
+    setUserGroups((prevState: UserGroup[]): UserGroup[] => ([...prevState, userGroup]));
 
     setUserGroupRelations((prevState) => (
       Object.assign(prevState, {
@@ -53,27 +53,17 @@ const UserGroupPage = (): JSX.Element => {
         transferToUserGroupId,
       });
 
-      this.setState((prevState) => {
-        const userGroups = prevState.userGroups.filter((userGroup) => {
+      setUserGroups(prevState => {
+        return prevState.filter((userGroup) => {
           return userGroup._id !== deleteGroupId;
+        })
+      })
+
+      setUserGroupRelations(prevState => {
+        return prevState.filter((userGroupRelation) => {
+          return userGroupRelation._id != deleteGroupId
         });
-
-        delete prevState.userGroupRelations[deleteGroupId];
-
-        return {
-          userGroups,
-          userGroupRelations: prevState.userGroupRelations,
-          // selectedUserGroup: undefined,
-          // isDeleteModalShow: false,
-        };
-      });
-      setUserGroups(
-        (prevState) => {
-          const userGroups = prevState.filter((userGroup) => {
-            return _id !== deleteGroupId;
-          });
-      )
-
+      })
 
       setSelectedUserGroup(undefined);
       setIsDeleteModalShow(false);
