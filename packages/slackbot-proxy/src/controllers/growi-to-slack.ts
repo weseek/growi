@@ -175,7 +175,7 @@ export class GrowiToSlackCtrl {
 
     // TODO: iterate with decorator
     const vipd = new ViewInteractionPayloadDelegator();
-    if (vipd.shouldHandleToInject(req.body)) {
+    if (vipd.shouldHandleToInject(req)) {
       vipd.inject(req.body, growiUri);
     }
     else if (req.body.blocks != null) {

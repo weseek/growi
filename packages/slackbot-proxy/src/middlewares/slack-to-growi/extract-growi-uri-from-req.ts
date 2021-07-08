@@ -15,12 +15,13 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
       return next();
     }
 
-    const payload = JSON.parse(req.body.payload);
+    const parsedPayload = JSON.parse(req.body.payload);
+    req.parsedPayload = parsedPayload;
 
     // TODO: iterate with decorator
     const vipd = new ViewInteractionPayloadDelegator();
-    if (vipd.shouldHandleToExtract(payload)) {
-      const data = vipd.extract(payload);
+    if (vipd.shouldHandleToExtract(req)) {
+      const data = vipd.extract(req.parsedPayload);
       req.growiUri = data.growiUri;
     }
     // else {
@@ -36,8 +37,6 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
     //     }
     //   }
     // }
-
-    req.body.payload = JSON.stringify(payload);
 
     return next();
   }

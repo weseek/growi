@@ -1,10 +1,13 @@
+import { Req } from '@tsed/common';
+
 import { GrowiUriInjector, GrowiUriWithOriginalData, isGrowiUriWithOriginalData } from '~/interfaces/growi-to-slack/growi-uri-injector';
+import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 
 export class ViewInteractionPayloadDelegator implements GrowiUriInjector<{view: string}, {view: {'private_metadata': string}}> {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  shouldHandleToInject(body: any): boolean {
-    return body.view != null;
+  shouldHandleToInject(req: Req): boolean {
+    return req.body.view != null;
   }
 
   inject(body: {view: string}, growiUri:string): void {
@@ -18,8 +21,8 @@ export class ViewInteractionPayloadDelegator implements GrowiUriInjector<{view: 
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  shouldHandleToExtract(payload: {type: string, view?: any}): boolean {
-    const { type, view } = payload;
+  shouldHandleToExtract(req: Req & SlackOauthReq): boolean {
+    const { type, view } = req.parsedPayload;
     if (type !== 'view_submission') {
       return false;
     }
