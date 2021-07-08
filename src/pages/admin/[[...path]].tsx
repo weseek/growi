@@ -18,7 +18,7 @@ import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSetting
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
-import UserGroupPage from '~/components/Admin/UserGroupManagement/UserGroupPage';
+import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
 
 import {
   useCurrentUser,

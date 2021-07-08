@@ -71,9 +71,13 @@ export type customizeParams = {
 }
 
 export type securityParamsGeneralSetting = {
-    restrictGuestMode: string,
-    pageCompleteDeletionAuthority: string,
-    hideRestrictedByOwner: string,
-    hideRestrictedByGroup: string,
-    wikiMode: string,
+  restrictGuestMode: string,
+  pageCompleteDeletionAuthority: string,
+  hideRestrictedByOwner: string,
+  hideRestrictedByGroup: string,
+  wikiMode: string,
+}
+
+export type userGroup = {
+
 }

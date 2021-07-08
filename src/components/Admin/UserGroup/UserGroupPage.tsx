@@ -45,44 +45,44 @@ const UserGroupPage = (): JSX.Element => {
 
   }
 
-  const deleteUserGroupById = async ({ deleteGroupId, actionName, transferToUserGroupId }) => {
-    try {
-      const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
-        actionName,
-        transferToUserGroupId,
-      });
+  // const deleteUserGroupById = async ({ deleteGroupId, actionName, transferToUserGroupId }) => {
+  //   try {
+  //     const res = await apiv3Delete(`/user-groups/${deleteGroupId}`, {
+  //       actionName,
+  //       transferToUserGroupId,
+  //     });
 
-      this.setState((prevState) => {
-        const userGroups = prevState.userGroups.filter((userGroup) => {
-          return userGroup._id !== deleteGroupId;
-        });
+  //     this.setState((prevState) => {
+  //       const userGroups = prevState.userGroups.filter((userGroup) => {
+  //         return userGroup._id !== deleteGroupId;
+  //       });
 
-        delete prevState.userGroupRelations[deleteGroupId];
+  //       delete prevState.userGroupRelations[deleteGroupId];
 
-        return {
-          userGroups,
-          userGroupRelations: prevState.userGroupRelations,
-          // selectedUserGroup: undefined,
-          // isDeleteModalShow: false,
-        };
-      });
-      setUserGroups(
-        (prevState) => {
-          const userGroups = prevState.filter((userGroup) => {
-            return _id !== deleteGroupId;
-          });
-      )
+  //       return {
+  //         userGroups,
+  //         userGroupRelations: prevState.userGroupRelations,
+  //         // selectedUserGroup: undefined,
+  //         // isDeleteModalShow: false,
+  //       };
+  //     });
+  //     setUserGroups(
+  //       (prevState) => {
+  //         const userGroups = prevState.filter((userGroup) => {
+  //           return _id !== deleteGroupId;
+  //         });
+  //     )
 
 
-      setSelectedUserGroup(undefined);
-      setIsDeleteModalShow(false);
+  //     setSelectedUserGroup(undefined);
+  //     setIsDeleteModalShow(false);
 
-      toastSuccess(`Deleted a group "${window.xss.process(res.data.userGroup.name)}"`);
-    }
-    catch (err) {
-      toastError(new Error('Unable to delete the group'));
-    }
-  }
+  //     toastSuccess(`Deleted a group "${window.xss.process(res.data.userGroup.name)}"`);
+  //   }
+  //   catch (err) {
+  //     toastError(new Error('Unable to delete the group'));
+  //   }
+  // }
 
   const syncUserGroupAndRelations = async () => {
     try {
