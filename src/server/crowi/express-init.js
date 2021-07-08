@@ -15,7 +15,7 @@ module.exports = function(crowi, app) {
   const expressSession = require('express-session');
   const flash = require('connect-flash');
   const mongoSanitize = require('express-mongo-sanitize');
-  const swig = require('swig-templates');
+  // const swig = require('swig-templates');
   // const webpackAssets = require('express-webpack-assets');
 
   const promster = require('../middlewares/promster')(crowi, app);
@@ -52,7 +52,7 @@ module.exports = function(crowi, app) {
   app.set('port', crowi.port);
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
-  app.engine('html', swig.renderFile);
+  // app.engine('html', swig.renderFile);
   // app.use(webpackAssets(
   //   path.join(crowi.publicDir, 'manifest.json'),
   //   { devMode: (crowi.node_env === 'development') },
