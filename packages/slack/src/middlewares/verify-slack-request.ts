@@ -51,7 +51,7 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
     return next();
   }
 
-  const message = 'Verification fail';
+  const message = 'Verification failed.';
   logger.warn(message, { body: req.body });
   return next(createError(403, message));
 };

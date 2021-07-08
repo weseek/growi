@@ -9,7 +9,6 @@ export const supportedGrowiCommands: string[] = [
 ];
 
 export * from './interfaces/growi-command';
-export * from './interfaces/http-errors';
 export * from './interfaces/request-between-growi-and-proxy';
 export * from './interfaces/request-from-slack';
 export * from './models/errors';
