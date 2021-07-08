@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import detectIndent from 'detect-indent';
+// import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
 // import { envUtils } from 'growi-commons';
 import loggerFactory from '~/utils/logger';
-
 import PageContainer from '../services/PageContainer';
 
-import { withUnstatedContainers } from './UnstatedUtils';
+// import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
@@ -23,18 +22,6 @@ class PageEditor extends React.Component {
     super(props);
 
     this.previewElement = React.createRef();
-
-    // const config = this.props.appContainer.getConfig();
-    // const isUploadable = config.upload.image || config.upload.file;
-    // const isUploadableFile = config.upload.file;
-    // const isMathJaxEnabled = !!config.env.MATHJAX;
-
-    this.state = {
-      markdown: this.props.pageContainer.state.markdown,
-      // isUploadable,
-      // isUploadableFile,
-      // isMathJaxEnabled,
-    };
 
     this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
@@ -308,20 +295,17 @@ class PageEditor extends React.Component {
   }
 
   render() {
-    // const config = this.props.appContainer.getConfig();
-    // const noCdn = envUtils.toBoolean(config.env.NO_CDN);
-    // const emojiStrategy = this.props.appContainer.getEmojiStrategy();
 
     return (
       <div className="d-flex flex-wrap">
         <div className="page-editor-editor-container flex-grow-1 flex-basis-0 mw-0">
           <Editor
             ref={(c) => { this.editor = c }}
-            value={this.state.markdown}
+            value={this.props.markdown}
             // noCdn={noCdn}
             // isMobile={this.props.appContainer.isMobile}
-            isUploadable={this.state.isUploadable}
-            isUploadableFile={this.state.isUploadableFile}
+            // isUploadable={this.state.isUploadable}
+            // isUploadableFile={this.state.isUploadableFile}
             // emojiStrategy={emojiStrategy}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
@@ -332,10 +316,10 @@ class PageEditor extends React.Component {
         </div>
         <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
           <Preview
-            markdown={this.state.markdown}
+            markdown={this.props.markdown}
             // eslint-disable-next-line no-return-assign
             inputRef={(el) => { return this.previewElement = el }}
-            isMathJaxEnabled={this.state.isMathJaxEnabled}
+            // isMathJaxEnabled={this.state.isMathJaxEnabled}
             renderMathJaxOnInit={false}
             onScroll={this.onPreviewScroll}
           />
@@ -343,20 +327,20 @@ class PageEditor extends React.Component {
       </div>
     );
   }
-
 }
 
 /**
  * Wrapper component for using unstated
  */
-// const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer]);
-const PageEditorWrapper = withUnstatedContainers(PageEditor, [PageContainer, EditorContainer]);
+// const PageEditorWrapper = withUnstatedContainers(PageEditor, [PageContainer, EditorContainer]);
 
 const PageEditorWrapperNext = (props) =>{
   const {t} = useTranslation()
-
   return (
-    <PageEditorWrapper t={t} />
+    <PageEditor
+      t={t}
+      markdown={props.markdown}
+    />
   )
 }
 
