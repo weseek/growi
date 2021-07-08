@@ -18,7 +18,7 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
   if (signingSecret == null) {
     const message = 'No signing secret.';
     logger.warn(message, { body: req.body });
-    throw createError(400, message);
+    return next(createError(400, message));
   }
 
   // take out slackSignature and timestamp from header
@@ -35,7 +35,7 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
   const time = Math.floor(new Date().getTime() / 1000);
   if (Math.abs(time - timestamp) > 300) {
     const message = 'Verification failed.';
-    logger.warn(message, { body: req.body, errTYPE: createError(403, message).status });
+    logger.warn(message, { body: req.body });
     return next(createError(403, message));
   }
 
@@ -53,5 +53,5 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
 
   const message = 'Verification fail';
   logger.warn(message, { body: req.body });
-  throw createError(403, message);
+  return next(createError(403, message));
 };
