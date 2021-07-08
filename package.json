@@ -29,7 +29,7 @@
   "scripts": {
     "dev:ci": "yarn dev -- --ci",
     "dev": "cross-env NODE_ENV=development yarn ts-node-dev --ignore-watch .next src/server/app.ts",
-    "//// build": "yarn next build && tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "build": "cross-env NODE_ENV=production yarn next build && tsc && tsc-alias",
     "console": "env-cmd -f config/env.dev.js cross-env node --experimental-repl-await -r ts-node/register -r tsconfig-paths/register src/server/console.js",
     "lint:js": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "lint:styles": "stylelint src/clilent/styles/**/*.scss src/styles/**/*.scss",
