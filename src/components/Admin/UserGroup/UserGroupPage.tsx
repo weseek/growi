@@ -35,15 +35,12 @@ const UserGroupPage = (): JSX.Element => {
   }
 
   const addUserGroup = (userGroup: UserGroup, users) => {
-
     setUserGroups((prevState: UserGroup[]): UserGroup[] => ([...prevState, userGroup]));
-
     setUserGroupRelations((prevState) => (
       Object.assign(prevState, {
         [userGroup._id]: users,
-      })));
-
-
+      })
+    ));
   }
 
   const deleteUserGroupById = async ({ deleteGroupId, actionName, transferToUserGroupId }) => {
@@ -68,7 +65,7 @@ const UserGroupPage = (): JSX.Element => {
       setSelectedUserGroup(undefined);
       setIsDeleteModalShow(false);
 
-      toastSuccess(`Deleted a group "${window.xss.process(res.data.userGroup.name)}"`);
+      toastSuccess(`Deleted group "${res.data.userGroup.name}"`);
     }
     catch (err) {
       toastError(new Error('Unable to delete the group'));
