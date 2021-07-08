@@ -127,15 +127,17 @@ const CustomBotWithProxySettings = (props) => {
             </React.Fragment>
           );
         })}
-        <div className="row justify-content-center my-5">
-          <button
-            type="button"
-            className="btn btn-outline-primary"
-            onClick={addSlackAppIntegrationHandler}
-          >
-            {`+ ${t('admin:slack_integration.accordion.add_slack_workspace')}`}
-          </button>
-        </div>
+        {slackAppIntegrations.length < 10 && (
+          <div className="row justify-content-center my-5">
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={addSlackAppIntegrationHandler}
+            >
+              {`+ ${t('admin:slack_integration.accordion.add_slack_workspace')}`}
+            </button>
+          </div>
+        )}
       </div>
       <DeleteSlackBotSettingsModal
         isResetAll={false}

@@ -85,6 +85,7 @@ ENV appDir /opt/growi
 WORKDIR ${appDir}
 
 COPY ./package.json ./
+COPY ./yarn.lock ./
 COPY ./lerna.json ./
 COPY ./tsconfig.base.json ./
 COPY ./babel.config.js ./
@@ -104,11 +105,13 @@ RUN yarn lerna run build
 # make artifacts
 RUN tar cf packages.tar \
   package.json \
+  yarn.lock \
   config \
   public \
   resource \
   src \
   tmp \
+  packages/app/package.json \
   packages/slack/package.json \
   packages/slack/dist
 
