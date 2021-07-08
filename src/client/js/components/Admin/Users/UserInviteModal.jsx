@@ -9,7 +9,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError, toastWarning } from '../../../util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '../../../services/AppContainer';
@@ -24,6 +24,7 @@ class UserInviteModal extends React.Component {
       emailInputValue: '',
       sendEmail: false,
       invitedEmailList: null,
+      isCreateUserButtonPushed: false,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,6 +40,26 @@ class UserInviteModal extends React.Component {
 
   showToaster() {
     toastSuccess('Copied Mail and Password');
+  }
+
+  showToasterByEmailList(emailList, toast) {
+    let msg = '';
+    emailList.forEach((email) => {
+      msg += `・${email}<br>`;
+    });
+    switch (toast) {
+      case 'success':
+        msg = `User has been created<br>${msg}`;
+        toastSuccess(msg);
+        break;
+      case 'warning':
+        msg = `Existing email<br>${msg}`;
+        toastWarning(msg);
+        break;
+      case 'error':
+        toastError({ message: msg });
+        break;
+    }
   }
 
   renderModalBody() {
@@ -80,6 +101,7 @@ class UserInviteModal extends React.Component {
 
   renderModalFooter() {
     const { t, appContainer } = this.props;
+    const { isCreateUserButtonPushed } = this.state;
     const { isMailerSetup } = appContainer.config;
 
     return (
@@ -116,7 +138,7 @@ class UserInviteModal extends React.Component {
             type="button"
             className="btn btn-primary"
             onClick={this.handleSubmit}
-            disabled={!this.validEmail()}
+            disabled={!this.validEmail() || isCreateUserButtonPushed}
           >
             {t('admin:user_management.invite_modal.issue')}
           </button>
@@ -130,8 +152,9 @@ class UserInviteModal extends React.Component {
 
     return (
       <>
-        <label className="mr-3 text-left text-danger" style={{ flex: 1 }}>
-          {t('admin:user_management.invite_modal.send_temporary_password')}
+        <label className="mr-3 text-left" style={{ flex: 1 }}>
+          <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
+          <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>
         <button
           type="button"
@@ -186,6 +209,10 @@ class UserInviteModal extends React.Component {
 
   async handleSubmit() {
     const { adminUsersContainer } = this.props;
+    // eslint-disable-next-line no-unused-vars
+    const { isCreateUserButtonPushed } = this.state;
+
+    this.setState({ isCreateUserButtonPushed: true });
 
     const array = this.state.emailInputValue.split('\n');
     const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
@@ -195,10 +222,30 @@ class UserInviteModal extends React.Component {
       const emailList = await adminUsersContainer.createUserInvited(shapedEmailList, this.state.sendEmail);
       this.setState({ emailInputValue: '' });
       this.setState({ invitedEmailList: emailList });
-      toastSuccess('Inviting user success');
+
+      if (emailList.createdUserList.length > 0) {
+        const createdEmailList = emailList.createdUserList.map((user) => { return user.email });
+        this.showToasterByEmailList(createdEmailList, 'success');
+      }
+      if (emailList.existingEmailList.length > 0) {
+        this.showToasterByEmailList(emailList.existingEmailList, 'warning');
+      }
+      if (emailList.failedEmailList.length > 0) {
+        const failedEmailList = emailList.failedEmailList.map((failed, index) => {
+          let messgage = `email: ${failed.email}<br>・reason: ${failed.reason}`;
+          if (index !== emailList.failedEmailList.length - 1) {
+            messgage += '<br>';
+          }
+          return messgage;
+        });
+        this.showToasterByEmailList(failedEmailList, 'error');
+      }
     }
     catch (err) {
       toastError(err);
+    }
+    finally {
+      this.setState({ isCreateUserButtonPushed: false });
     }
   }
 

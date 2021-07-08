@@ -1,5 +1,5 @@
 import { Inject, Service } from '@tsed/di';
-import { WebClient, LogLevel } from '@slack/web-api';
+import { WebClient, LogLevel, Block } from '@slack/web-api';
 import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
@@ -8,6 +8,7 @@ import { Installation } from '~/entities/installation';
 import { InvalidUrlError } from '../models/errors';
 
 const isProduction = process.env.NODE_ENV === 'production';
+const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
 @Service()
 export class RegisterService implements GrowiCommandProcessor {
@@ -47,6 +48,18 @@ export class RegisterService implements GrowiCommandProcessor {
     });
   }
 
+  async replyToSlack(client: WebClient, channel: string, user: string, text: string, blocks: Array<Block>): Promise<void> {
+    await client.chat.postEphemeral({
+      channel,
+      user,
+      // Recommended including 'text' to provide a fallback when using blocks
+      // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
+      text,
+      blocks,
+    });
+    return;
+  }
+
   async insertOrderRecord(
       installation: Installation | undefined,
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -67,18 +80,10 @@ export class RegisterService implements GrowiCommandProcessor {
     }
     catch (error) {
       const invalidErrorMsg = 'Please enter a valid URL';
-
-      await client.chat.postEphemeral({
-        channel,
-        user: payload.user.id,
-        // Recommended including 'text' to provide a fallback when using blocks
-        // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-        text: 'Invalid URL',
-        blocks: [
-          generateMarkdownSectionBlock(invalidErrorMsg),
-        ],
-      });
-
+      const blocks = [
+        generateMarkdownSectionBlock(invalidErrorMsg),
+      ];
+      await this.replyToSlack(client, channel, payload.user.id, 'Invalid URL', blocks);
       throw new InvalidUrlError(growiUrl);
     }
 
@@ -98,17 +103,20 @@ export class RegisterService implements GrowiCommandProcessor {
 
     const client = new WebClient(botToken, { logLevel: isProduction ? LogLevel.DEBUG : LogLevel.INFO });
 
-    await client.chat.postEphemeral({
-      channel,
-      user: payload.user.id,
-      // Recommended including 'text' to provide a fallback when using blocks
-      // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
-      text: 'Proxy URL',
-      blocks: [
-        generateMarkdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
-        generateMarkdownSectionBlock(`Proxy URL: ${serverUri}`),
-      ],
-    });
+    if (isOfficialMode) {
+      const blocks = [
+        generateMarkdownSectionBlock('Successfully registered with the proxy! Please check test connection in your GROWI'),
+      ];
+      await this.replyToSlack(client, channel, payload.user.id, 'Proxy URL', blocks);
+      return;
+
+    }
+
+    const blocks = [
+      generateMarkdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
+      generateMarkdownSectionBlock(`Proxy URL: ${serverUri}`),
+    ];
+    await this.replyToSlack(client, channel, payload.user.id, 'Proxy URL', blocks);
     return;
   }
 
