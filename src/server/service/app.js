@@ -113,6 +113,7 @@ class AppService extends S2sMessageHandlable {
   async setupAfterInstall() {
     this.crowi.pluginService.autoDetectAndLoadPlugins();
     this.crowi.setupRoutesAtLast();
+    this.crowi.setupGlobalErrorHandlers();
 
     // remove message handler
     const { s2sMessagingService } = this;

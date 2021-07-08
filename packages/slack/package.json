@@ -15,7 +15,6 @@
     "test:lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
-    "@types/http-errors": "^1.8.0",
     "axios": "^0.21.1",
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",

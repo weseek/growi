@@ -1,5 +1,4 @@
-
-const { isHttpError } = require('http-errors');
+const { isHttpError } = require('../../../node_modules/http-errors');
 
 module.exports = (err, req, res, next) => {
   // handle if the err is a HttpError instance

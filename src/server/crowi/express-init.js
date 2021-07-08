@@ -1,5 +1,3 @@
-const httpErrorHandler = require('../middlewares/http-error-handler');
-
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
@@ -111,9 +109,6 @@ module.exports = function(crowi, app) {
 
     sessionMiddleware(req, res, next);
   });
-
-  // http-error-handler
-  app.use(httpErrorHandler);
 
   // passport
   debug('initialize Passport');
