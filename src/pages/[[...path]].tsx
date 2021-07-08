@@ -277,10 +277,14 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   // temp
+  const env = process.env;
   props.editorConfig = {
     upload: {
       image: crowi.fileUploadService.getIsUploadable(),
       file: crowi.fileUploadService.getFileUploadEnabled(),
+    },
+    env: {
+      MATHJAX: env.MATHJAX || null,
     },
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');

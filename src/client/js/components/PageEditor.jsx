@@ -319,7 +319,7 @@ class PageEditor extends React.Component {
             markdown={this.props.markdown}
             // eslint-disable-next-line no-return-assign
             inputRef={(el) => { return this.previewElement = el }}
-            // isMathJaxEnabled={this.props.isMathJaxEnabled}
+            isMathJaxEnabled={this.props.isMathJaxEnabled}
             renderMathJaxOnInit={false}
             onScroll={this.onPreviewScroll}
           />
@@ -334,7 +334,7 @@ class PageEditor extends React.Component {
  */
 // const PageEditorWrapper = withUnstatedContainers(PageEditor, [PageContainer, EditorContainer]);
 
-const PageEditorWrapperNext = (props) =>{
+const PageEditorWrapperForNextUse = (props) =>{
   const {t} = useTranslation()
   return (
     <PageEditor
@@ -342,7 +342,7 @@ const PageEditorWrapperNext = (props) =>{
       markdown={props.markdown}
       isUploadable={props.isUploadable}
       isUploadableFile={props.isUploadableFile}
-      // isMathJaxEnabled={props.isMathJaxEnabled}
+      isMathJaxEnabled={props.isMathJaxEnabled}
     />
   )
 }
@@ -352,4 +352,4 @@ PageEditor.propTypes = {
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default PageEditorWrapperNext;
+export default PageEditorWrapperForNextUse;
