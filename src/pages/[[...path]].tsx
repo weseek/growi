@@ -29,7 +29,7 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useSearchServiceConfigured, useSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useEditorConfig
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
@@ -64,6 +64,7 @@ type Props = CommonProps & {
   highlightJsStyle: string,
   isAllReplyShown: boolean,
   isContainerFluid: boolean,
+  editorConfig: any,
   isEnabledStaleNotification: boolean,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
@@ -89,6 +90,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
+  useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
@@ -274,6 +276,22 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
+  // temp
+  // const env = process.env;
+  // props.editorConfig = {
+  //   upload: {
+  //     image: crowi.fileUploadService.getIsUploadable(),
+  //     file: crowi.fileUploadService.getFileUploadEnabled(),
+  //   },
+  //   env: {
+  //     PLANTUML_URI: env.PLANTUML_URI || null,
+  //     BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
+  //     DRAWIO_URI: env.DRAWIO_URI || null,
+  //     HACKMD_URI: env.HACKMD_URI || null,
+  //     MATHJAX: env.MATHJAX || null,
+  //     NO_CDN: env.NO_CDN || null,
+  //   },
+  // };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
