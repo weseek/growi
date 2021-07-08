@@ -10,11 +10,8 @@ const logger = loggerFactory('growi:services:EditorContainer');
  */
 export default class EditorContainer extends Container {
 
-  constructor(appContainer, defaultEditorOptions, defaultPreviewOptions) {
+  constructor( defaultEditorOptions, defaultPreviewOptions) {
     super();
-
-    this.appContainer = appContainer;
-    this.appContainer.registerContainer(this);
 
     const mainContent = document.querySelector('#content-main');
 
@@ -35,7 +32,7 @@ export default class EditorContainer extends Container {
 
       editorOptions: {},
       previewOptions: {},
-      indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
+      indentSize:  4,  // indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
 
     this.isSetBeforeunloadEventHandler = false;
@@ -115,7 +112,7 @@ export default class EditorContainer extends Container {
     }
 
     // set to state obj
-    this.state[stateKey] = Object.assign(defaultOptions, loadedOpts);
+    // this.state[stateKey] = Object.assign(defaultOptions, loadedOpts);
   }
 
   saveOptsToLocalStorage() {
@@ -124,17 +121,17 @@ export default class EditorContainer extends Container {
   }
 
   setCaretLine(line) {
-    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    if (pageEditor != null) {
-      pageEditor.setCaretLine(line);
-    }
+    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+    // if (pageEditor != null) {
+    //   pageEditor.setCaretLine(line);
+    // }
   }
 
   focusToEditor() {
-    const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    if (pageEditor != null) {
-      pageEditor.focusToEditor();
-    }
+    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
+    // if (pageEditor != null) {
+    //   pageEditor.focusToEditor();
+    // }
   }
 
   getCurrentOptionsToSave() {

@@ -24,11 +24,8 @@ const logger = loggerFactory('growi:services:PageContainer');
  */
 export default class PageContainer extends Container {
 
-  constructor(appContainer) {
+  constructor() {
     super();
-
-    this.appContainer = appContainer;
-    this.appContainer.registerContainer(this);
 
     this.state = {};
 
@@ -101,15 +98,15 @@ export default class PageContainer extends Container {
       logger.warn('The data of \'data-page-revision-author\' is invalid', e);
     }
 
-    const { interceptorManager } = this.appContainer;
-    interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
-    interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
-    interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
+    // const { interceptorManager } = this.appContainer;
+    // interceptorManager.addInterceptor(new DetachCodeBlockInterceptor(appContainer), 10); // process as soon as possible
+    // interceptorManager.addInterceptor(new DrawioInterceptor(appContainer), 20);
+    // interceptorManager.addInterceptor(new RestoreCodeBlockInterceptor(appContainer), 900); // process as late as possible
 
     this.initStateMarkdown();
     this.checkAndUpdateImageUrlCached(this.state.likerUsers);
 
-    const { isSharedUser } = this.appContainer;
+    // const { isSharedUser } = this.appContainer;
 
     // see https://dev.growi.org/5fabddf8bbeb1a0048bcb9e9
     const isAbleToGetAttachedInformationAboutPages = this.state.isPageExist && !isSharedUser;
@@ -123,19 +120,19 @@ export default class PageContainer extends Container {
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
     this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
-    this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
-    this.addWebSocketEventHandlers();
+    // this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
+    // this.addWebSocketEventHandlers();
 
     const unlinkPageButton = document.getElementById('unlink-page-button');
     if (unlinkPageButton != null) {
       unlinkPageButton.addEventListener('click', async() => {
-        try {
-          const res = await this.appContainer.apiPost('/pages.unlink', { path });
-          window.location.href = encodeURI(`${res.path}?unlinked=true`);
-        }
-        catch (err) {
-          toastError(err);
-        }
+        // try {
+        //   const res = await this.appContainer.apiPost('/pages.unlink', { path });
+        //   window.location.href = encodeURI(`${res.path}?unlinked=true`);
+        // }
+        // catch (err) {
+        //   toastError(err);
+        // }
       });
     }
 
@@ -151,7 +148,7 @@ export default class PageContainer extends Container {
 
   get isAbleToOpenPageEditor() {
     const { isNotCreatable, isTrashPage } = this.state;
-    const { isGuestUser } = this.appContainer;
+    // const { isGuestUser } = this.appContainer;
 
     return (!isNotCreatable && !isTrashPage && !isGuestUser);
   }
@@ -568,71 +565,71 @@ export default class PageContainer extends Container {
     });
   }
 
-  addWebSocketEventHandlers() {
-    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
-    const socket = socketIoContainer.getSocket();
+  // addWebSocketEventHandlers() {
+  //   // const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
+  //   // const socket = socketIoContainer.getSocket();
 
-    socket.on('page:create', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
+  //   socket.on('page:create', (data) => {
+  //     // skip if triggered myself
+  //     if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
+  //       return;
+  //     }
 
-      logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
+  //     logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
-      // update remote page data
-      const { s2cMessagePageUpdated } = data;
-      if (s2cMessagePageUpdated.pageId === this.state.pageId) {
-        this.setLatestRemotePageData(s2cMessagePageUpdated);
-      }
-    });
+  //     // update remote page data
+  //     const { s2cMessagePageUpdated } = data;
+  //     if (s2cMessagePageUpdated.pageId === this.state.pageId) {
+  //       this.setLatestRemotePageData(s2cMessagePageUpdated);
+  //     }
+  //   });
 
-    socket.on('page:update', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
+  //   socket.on('page:update', (data) => {
+  //     // skip if triggered myself
+  //     if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
+  //       return;
+  //     }
 
-      logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
+  //     logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
-      // update remote page data
-      const { s2cMessagePageUpdated } = data;
-      if (s2cMessagePageUpdated.pageId === this.state.pageId) {
-        this.setLatestRemotePageData(s2cMessagePageUpdated);
-      }
-    });
+  //     // update remote page data
+  //     const { s2cMessagePageUpdated } = data;
+  //     if (s2cMessagePageUpdated.pageId === this.state.pageId) {
+  //       this.setLatestRemotePageData(s2cMessagePageUpdated);
+  //     }
+  //   });
 
-    socket.on('page:delete', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
+  //   socket.on('page:delete', (data) => {
+  //     // skip if triggered myself
+  //     if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
+  //       return;
+  //     }
 
-      logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
+  //     logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
-      // update remote page data
-      const { s2cMessagePageUpdated } = data;
-      if (s2cMessagePageUpdated.pageId === this.state.pageId) {
-        this.setLatestRemotePageData(s2cMessagePageUpdated);
-      }
-    });
+  //     // update remote page data
+  //     const { s2cMessagePageUpdated } = data;
+  //     if (s2cMessagePageUpdated.pageId === this.state.pageId) {
+  //       this.setLatestRemotePageData(s2cMessagePageUpdated);
+  //     }
+  //   });
 
-    socket.on('page:editingWithHackmd', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
+  //   socket.on('page:editingWithHackmd', (data) => {
+  //     // skip if triggered myself
+  //     if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
+  //       return;
+  //     }
 
-      logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
+  //     logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
-      // update isHackmdDraftUpdatingInRealtime
-      const { s2cMessagePageUpdated } = data;
-      if (s2cMessagePageUpdated.pageId === this.state.pageId) {
-        this.setState({ isHackmdDraftUpdatingInRealtime: true });
-      }
-    });
+  //     // update isHackmdDraftUpdatingInRealtime
+  //     const { s2cMessagePageUpdated } = data;
+  //     if (s2cMessagePageUpdated.pageId === this.state.pageId) {
+  //       this.setState({ isHackmdDraftUpdatingInRealtime: true });
+  //     }
+  //   });
 
-  }
+  // }
 
   /* TODO GW-325 */
   retrieveMyBookmarkList() {
