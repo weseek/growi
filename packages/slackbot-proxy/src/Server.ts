@@ -18,6 +18,7 @@ import { createTerminus } from '@godaddy/terminus';
 
 import swaggerSettingsForDev from '~/config/swagger/config.dev';
 import swaggerSettingsForProd from '~/config/swagger/config.prod';
+import './filters/ResourceNotFoundFilter';
 import loggerFactory from '~/utils/logger';
 
 export const rootDir = __dirname;
@@ -88,6 +89,21 @@ const helmetOptions = isProduction ? {} : {
   exclude: [
     '**/*.spec.ts',
   ],
+  viewsDir: `${rootDir}/views`,
+  views: {
+    root: `${rootDir}/views`,
+    viewEngine: 'ejs',
+    extensions: {
+      ejs: 'ejs',
+    },
+  },
+  statics: {
+    '/': [
+      {
+        root: `${rootDir}/public`,
+      },
+    ],
+  },
 })
 export class Server {
 

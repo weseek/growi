@@ -1,7 +1,10 @@
+
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 
 const PAGINGLIMIT = 10;
+
+const { reshapeContentsBody } = require('@growi/slack');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -171,10 +174,11 @@ class SlackBotService extends S2sMessageHandlable {
       return;
     }
 
-    const base = this.crowi.appService.getSiteUrl();
+    const appUrl = this.crowi.appService.getSiteUrl();
+    const appTitle = this.crowi.appService.getAppTitle();
 
     const urls = resultPaths.map((path) => {
-      const url = new URL(path, base);
+      const url = new URL(path, appUrl);
       return `<${decodeURI(url.href)} | ${decodeURI(url.pathname)}>`;
     });
 
@@ -235,14 +239,15 @@ class SlackBotService extends S2sMessageHandlable {
         user: body.user_id,
         text: 'Successed To Search',
         blocks: [
+          this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>`),
           this.generateMarkdownSectionBlock(keywordsAndDesc),
           this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
           actionBlocks,
         ],
       });
     }
-    catch {
-      logger.error('Failed to get search results.');
+    catch (err) {
+      logger.error('Failed to get search results.', err);
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
@@ -302,8 +307,7 @@ class SlackBotService extends S2sMessageHandlable {
   async createPageInGrowi(client, payload) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
-
-    const contentsBody = payload.view.state.values.contents.contents_input.value;
+    const contentsBody = reshapeContentsBody(payload.view.state.values.contents.contents_input.value);
 
     try {
       let path = payload.view.state.values.path.path_input.value;

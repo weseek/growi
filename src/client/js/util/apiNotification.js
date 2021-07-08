@@ -20,6 +20,14 @@ const toastrOption = {
     hideDuration: '100',
     timeOut: '3000',
   },
+  warning: {
+    closeButton: true,
+    progressBar: true,
+    newestOnTop: false,
+    showDuration: '100',
+    hideDuration: '100',
+    timeOut: '6000',
+  },
 };
 
 // accepts both a single error and an array of errors
@@ -34,4 +42,8 @@ export const toastError = (err, header = 'Error', option = toastrOption.error) =
 // only accepts a single item
 export const toastSuccess = (body, header = 'Success', option = toastrOption.success) => {
   toastr.success(body, header, option);
+};
+
+export const toastWarning = (body, header = 'Warning', option = toastrOption.warning) => {
+  toastr.warning(body, header, option);
 };

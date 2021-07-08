@@ -15,6 +15,7 @@ import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
 
 const SlackIntegration = (props) => {
+
   const { appContainer } = props;
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
@@ -45,10 +46,12 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
-      setIsLoading(false);
     }
     catch (err) {
       toastError(err);
+    }
+    finally {
+      setIsLoading(false);
     }
   }, [appContainer.apiv3]);
 
@@ -122,7 +125,6 @@ const SlackIntegration = (props) => {
       settingsComponent = (
         <OfficialBotSettings
           slackAppIntegrations={slackAppIntegrations}
-          proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
@@ -185,11 +187,11 @@ const SlackIntegration = (props) => {
       <div className="selecting-bot-type mb-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
-          {/* TODO: add an appropriate link by GW-5614 */}
-          <a className="ml-2 btn-link" href="#">
+          {/* TODO: If Bot-manual section of docs is merged into master, show links and add an appropriate links by GW-5614. */}
+          {/* <a className="ml-2 btn-link" href="#">
             {t('admin:slack_integration.selecting_bot_types.detailed_explanation')}
             <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
-          </a>
+          </a> */}
         </h2>
 
         <div className="d-flex justify-content-end">

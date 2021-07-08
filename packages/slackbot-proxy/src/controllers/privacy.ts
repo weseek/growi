@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
 @Controller('/privacy')
-export class SlackCtrl {
+export class PrivacyCtrl {
 
   constructor(router: PlatformRouter) {
     if (isOfficialMode) {
@@ -14,7 +14,7 @@ export class SlackCtrl {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   getPrivacy(req: Request, res: Response): string|void {
-    res.send('Privary Policy');
+    res.render('privacy.ejs');
   }
 
 }

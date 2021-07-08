@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.2.21-RC",
+  "version": "4.3.0-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -21,10 +21,8 @@
   },
   "private": true,
   "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": []
+    "packages": ["packages/*"],
+    "nohoist": ["**/slackbot-proxy/bootstrap"]
   },
   "scripts": {
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
@@ -37,15 +35,12 @@
     "build:dev:watch:poll": "npm run build:dev:app:watch:poll",
     "build:dev": "yarn build:dev:app",
     "build:slack": "lerna run build --scope @growi/slack",
-    "build:prod:analyze": "cross-env ANALYZE=1 npm run build:prod",
-    "build:prod": "env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
     "build": "npm run build:dev:watch",
     "build:poll": "npm run build:dev:watch:poll",
     "clean:app": "rimraf -- public/js public/styles",
     "clean:report": "rimraf -- report",
     "clean": "npm-run-all -p clean:*",
     "console": "env-cmd -f config/env.dev.js node --experimental-repl-await src/server/console.js",
-    "heroku-postbuild": "sh bin/heroku/install-packages.sh && npm run build:prod",
     "lint:js:fix": "eslint \"**/*.{js,jsx}\" --fix",
     "lint:js": "eslint \"**/*.{js,jsx}\"",
     "lint:styles:fix": "stylelint --fix src/client/styles/scss/**/*.scss",
@@ -60,7 +55,6 @@
     "plugin:def": "node bin/generate-plugin-definitions-source.js",
     "prebuild:dev:watch": "npm run prebuild:dev",
     "prebuild:dev": "npm run clean:app && env-cmd -f config/env.dev.js npm run plugin:def && env-cmd -f config/env.dev.js npm run resource && yarn build:slack",
-    "prebuild:prod": "npm run clean && env-cmd -f config/env.prod.js npm run plugin:def && env-cmd -f config/env.prod.js npm run resource",
     "prelint:swagger2openapi": "npm run build:apiv3:jsdoc",
     "preserver:prod": "npm run migrate",
     "prestart": "npm run build:prod",
