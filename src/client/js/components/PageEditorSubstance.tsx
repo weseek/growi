@@ -13,14 +13,14 @@ const PageEditorSubstance: VFC =()=> {
   console.log(isMobile)
 
   const [markdown, setMarkdown] = useState(currentPage?.revision?.body);
-  // const [isUploadable, setIsUploadable] = useState(config.upload.image || config.upload.file);
-  // const [isUploadableFile, setIsUploadableFile] = useState(config.upload.file);
+  const [isUploadable, setIsUploadable] = useState(config.upload.image || config.upload.file);
+  const [isUploadableFile, setIsUploadableFile] = useState(config.upload.file);
   // const [isMathJaxEnabled, setIsMathJaxEnabled] = useState(!!config.env.MATHJAX);
 
   return (
     <PageEditorWrapperNext
-      // isUploadable={isUploadable}
-      // isUploadableFile={isUploadableFile}
+      isUploadable={isUploadable}
+      isUploadableFile={isUploadableFile}
       // isMathJaxEnabled={isMathJaxEnabled}
       markdown={markdown}
     />

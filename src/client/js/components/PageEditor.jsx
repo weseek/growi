@@ -304,8 +304,8 @@ class PageEditor extends React.Component {
             value={this.props.markdown}
             // noCdn={noCdn}
             // isMobile={this.props.appContainer.isMobile}
-            // isUploadable={this.state.isUploadable}
-            // isUploadableFile={this.state.isUploadableFile}
+            isUploadable={this.props.isUploadable}
+            isUploadableFile={this.props.isUploadableFile}
             // emojiStrategy={emojiStrategy}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
@@ -319,7 +319,7 @@ class PageEditor extends React.Component {
             markdown={this.props.markdown}
             // eslint-disable-next-line no-return-assign
             inputRef={(el) => { return this.previewElement = el }}
-            // isMathJaxEnabled={this.state.isMathJaxEnabled}
+            // isMathJaxEnabled={this.props.isMathJaxEnabled}
             renderMathJaxOnInit={false}
             onScroll={this.onPreviewScroll}
           />
@@ -340,6 +340,9 @@ const PageEditorWrapperNext = (props) =>{
     <PageEditor
       t={t}
       markdown={props.markdown}
+      isUploadable={props.isUploadable}
+      isUploadableFile={props.isUploadableFile}
+      // isMathJaxEnabled={props.isMathJaxEnabled}
     />
   )
 }
