@@ -33,7 +33,7 @@ import {
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
 
 
 const logger = loggerFactory('growi:pages:all');
@@ -277,21 +277,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
   // temp
-  // const env = process.env;
-  // props.editorConfig = {
-  //   upload: {
-  //     image: crowi.fileUploadService.getIsUploadable(),
-  //     file: crowi.fileUploadService.getFileUploadEnabled(),
-  //   },
-  //   env: {
-  //     PLANTUML_URI: env.PLANTUML_URI || null,
-  //     BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,
-  //     DRAWIO_URI: env.DRAWIO_URI || null,
-  //     HACKMD_URI: env.HACKMD_URI || null,
-  //     MATHJAX: env.MATHJAX || null,
-  //     NO_CDN: env.NO_CDN || null,
-  //   },
-  // };
+  props.editorConfig = {
+    upload: {
+      image: crowi.fileUploadService.getIsUploadable(),
+      file: crowi.fileUploadService.getFileUploadEnabled(),
+    },
+  };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
