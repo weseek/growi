@@ -25,10 +25,11 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegration.estimatedDocumentCount({ tokenPtoG });
+    const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
+      slackAppIntegrationCount,
     });
 
     if (slackAppIntegrationCount === 0) {

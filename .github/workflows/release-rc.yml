@@ -14,34 +14,24 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+    - name: Setup semver
+      id: semver
+      run: |
+        semver=`npm run version --silent`
+        echo "::set-output name=SEMVER::$semver"
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: weseek/growi,ghcr.io/weseek/growi
+        tags: |
+          type=raw,value=${{ steps.semver.outputs.SEMVER }}
+          type=raw,value=${{ steps.semver.outputs.SEMVER }}.{{sha}}
 
     - name: Login to docker.io registry
       run: |
         echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
-
-    - name: Build Docker Image
-      run: |
-        CACHE_REF=weseek/growi-cache:4
-        docker buildx build \
-          --tag growi \
-          --platform linux/amd64 \
-          --load \
-          --file ./docker/Dockerfile .
-
-    - name: Get SemVer
-      run: |
-        semver=`npm run version --silent`
-        echo "SEMVER=$semver" >> $GITHUB_ENV
-
-    - name: Docker Tags by SemVer
-      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
-      with:
-        source: growi
-        target: weseek/growi
-        semver: ${{ env.SEMVER }}
-        publish: true
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
@@ -50,15 +40,29 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
-    - name: Docker Tags by SemVer in Github Container Registry
-      uses: weseek/ghaction-docker-tags-by-semver@v1.0.3
-      with:
-        source: growi
-        target: ghcr.io/weseek/growi
-        semver: ${{ env.SEMVER }}
-        publish: true
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
-    - name: Check whether workspace is clean
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-app-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-app-
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+        tags: ${{ steps.meta.outputs.tags }}
+
+    - name: Move cache
       run: |
-        STATUS=`git status --porcelain`
-        if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache

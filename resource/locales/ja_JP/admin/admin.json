@@ -308,6 +308,7 @@
       "install_now": "今すぐインストール",
       "generate_access_token": "Access Tokenの発行",
       "register_for_growi_official_bot_proxy_service": "GROWI Official Bot Proxy サービスへの登録",
+      "register_for_growi_custom_bot_proxy": "GROWI Custom Bot Proxy への登録",
       "enter_growi_register_on_slack": "Slack上で <b>/growi register</b> と打ちます。",
       "paste_growi_url": "モーダルが表示されるので、<b>GROWI URL</b> には下記のURLを入力します。",
       "enter_access_token_for_growi_and_proxy": "上記で発行した<b>Access Token Proxy to GROWI</b> と <b>Access Token GROWI to Proxy</b>を入れる",
@@ -317,7 +318,6 @@
       "dont_need_update": "※既に値が入っている場合は更新する必要はありません",
       "select_install_your_app": "Install your app をクリックします。",
       "select_install_to_workspace": "Install to Workspace をクリックします。",
-      "register_official_bot_proxy_service": "アクセストークンの発行 / GROWI Official Bot Proxy サービスへの登録",
       "register_proxy_url": "Proxy の URLをGROWIに登録する",
       "click_allow": "遷移先の画面にて、Allowをクリックします。",
       "install_complete_if_checked": "Install your app の右側に緑色のチェックがつけばワークスペースへのインストール完了です。",
@@ -351,7 +351,8 @@
       "valid_email": "メールアドレスを入力してください。",
       "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
       "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
-      "send_temporary_password": "招待メールを送っていない場合、この画面で必ず仮パスワードをコピーし、招待者へ連絡してください。",
+      "send_temporary_password": "招待メールを送っていない場合、この画面で仮パスワードをコピーし、招待者へ連絡してください。",
+      "send_email": "ユーザーテーブルのドロップダウンから招待メールの送信または再送信を行うこともできます。",
       "existing_email": "以下のEmailはすでに存在しています。",
       "issue": "発行"
     },
@@ -365,7 +366,9 @@
       "your_own": "自分自身のアカウントを停止することはできません",
       "remove_admin_access": "管理者から外す",
       "cannot_remove": "自分自身を管理者から外すことはできません",
-      "give_admin_access": "管理者にする"
+      "give_admin_access": "管理者にする",
+      "send_invitation_email": "招待メールの送信",
+      "resend_invitation_email": "招待メールの再送信"
     },
     "reset_password": "パスワードのリセット",
     "reset_password_modal": {

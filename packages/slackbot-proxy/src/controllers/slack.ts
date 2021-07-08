@@ -151,7 +151,7 @@ export class SlackCtrl {
       return res.json({
         blocks: [
           generateMarkdownSectionBlock('*Found Relations to GROWI.*'),
-          ...relations.map(relation => generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}.`)),
+          ...relations.map(relation => generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
         ],
       });
     }
@@ -180,8 +180,8 @@ export class SlackCtrl {
   @Post('/interactions')
   @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
-    logger.info('receive interaction', req.body);
     logger.info('receive interaction', req.authorizeResult);
+    logger.debug('receive interaction', req.body);
 
     const { body, authorizeResult } = req;
 

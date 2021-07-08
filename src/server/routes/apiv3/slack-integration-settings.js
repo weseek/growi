@@ -107,6 +107,9 @@ module.exports = (crowi) => {
 
   async function postRelationTest(token) {
     const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    if (proxyUri == null) {
+      throw new Error('Proxy URL is not registered');
+    }
 
     const result = await axios.get(urljoin(proxyUri, '/g2s/relation-test'), {
       headers: {
@@ -272,6 +275,10 @@ module.exports = (crowi) => {
 
     await resetAllBotSettings();
     const requestParams = { 'slackbot:currentBotType': currentBotType };
+
+    if (currentBotType === 'officialBot') {
+      requestParams['slackbot:proxyServerUri'] = 'https://slackbot-proxy.growi.org';
+    }
 
     try {
       await updateSlackBotSettings(requestParams);
