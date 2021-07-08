@@ -1,19 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import detectIndent from 'detect-indent';
+import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
-// import { envUtils } from 'growi-commons';
+import { envUtils } from 'growi-commons';
 import loggerFactory from '~/utils/logger';
 
-// import AppContainer from '../services/AppContainer';
-// import PageContainer from '../services/PageContainer';
+import PageContainer from '../services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
-// import Preview from './PageEditor/Preview';
+import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-// import EditorContainer from '../services/EditorContainer';
+import EditorContainer from '../services/EditorContainer';
+import { useTranslation } from '~/i18n';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -25,27 +25,27 @@ class PageEditor extends React.Component {
     this.previewElement = React.createRef();
 
     // const config = this.props.appContainer.getConfig();
-    // const isUploadable = config.upload.image || config.upload.file;
-    // const isUploadableFile = config.upload.file;
-    // const isMathJaxEnabled = !!config.env.MATHJAX;
+    const isUploadable = config.upload.image || config.upload.file;
+    const isUploadableFile = config.upload.file;
+    const isMathJaxEnabled = !!config.env.MATHJAX;
 
     this.state = {
-      // markdown: this.props.pageContainer.state.markdown,
-      // isUploadable,
-      // isUploadableFile,
-      // isMathJaxEnabled,
+      markdown: this.props.pageContainer.state.markdown,
+      isUploadable,
+      isUploadableFile,
+      isMathJaxEnabled,
     };
 
-    // this.setCaretLine = this.setCaretLine.bind(this);
-    // this.focusToEditor = this.focusToEditor.bind(this);
-    // this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
-    // this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
-    // this.onUpload = this.onUpload.bind(this);
-    // this.onEditorScroll = this.onEditorScroll.bind(this);
-    // this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
-    // this.onPreviewScroll = this.onPreviewScroll.bind(this);
-    // this.saveDraft = this.saveDraft.bind(this);
-    // this.clearDraft = this.clearDraft.bind(this);
+    this.setCaretLine = this.setCaretLine.bind(this);
+    this.focusToEditor = this.focusToEditor.bind(this);
+    this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
+    this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
+    this.onUpload = this.onUpload.bind(this);
+    this.onEditorScroll = this.onEditorScroll.bind(this);
+    this.onEditorScrollCursorIntoView = this.onEditorScrollCursorIntoView.bind(this);
+    this.onPreviewScroll = this.onPreviewScroll.bind(this);
+    this.saveDraft = this.saveDraft.bind(this);
+    this.clearDraft = this.clearDraft.bind(this);
 
     // for scrolling
     this.lastScrolledDateWithCursor = null;
@@ -102,50 +102,50 @@ class PageEditor extends React.Component {
    */
   onMarkdownChanged(value) {
     // TODO GW-5862 display alert
-    // const { pageContainer } = this.props;
-    // this.setMarkdownStateWithDebounce(value);
-    // // only when the first time to edit
-    // if (!pageContainer.state.revisionId) {
-    //   this.saveDraftWithDebounce();
-    // }
+    const { pageContainer } = this.props;
+    this.setMarkdownStateWithDebounce(value);
+    // only when the first time to edit
+    if (!pageContainer.state.revisionId) {
+      this.saveDraftWithDebounce();
+    }
   }
 
   // Displays an alert if there is a difference with pageContainer's markdown
   componentDidUpdate(prevProps, prevState) {
     // TODO GW-5862 display alert
-    // const { pageContainer, editorContainer } = this.props;
+    const { pageContainer, editorContainer } = this.props;
 
-    // if (this.state.markdown !== prevState.markdown) {
-    //   if (pageContainer.state.markdown !== this.state.markdown) {
-    //     editorContainer.enableUnsavedWarning();
-    //   }
-    // }
+    if (this.state.markdown !== prevState.markdown) {
+      if (pageContainer.state.markdown !== this.state.markdown) {
+        editorContainer.enableUnsavedWarning();
+      }
+    }
   }
 
   /**
    * save and update state of containers
    */
   async onSaveWithShortcut() {
-    // const { pageContainer, editorContainer } = this.props;
-    // const optionsToSave = editorContainer.getCurrentOptionsToSave();
+    const { pageContainer, editorContainer } = this.props;
+    const optionsToSave = editorContainer.getCurrentOptionsToSave();
 
-    // try {
-    //   // disable unsaved warning
-    //   editorContainer.disableUnsavedWarning();
+    try {
+      // disable unsaved warning
+      editorContainer.disableUnsavedWarning();
 
-    //   // eslint-disable-next-line no-unused-vars
-    //   const { page, tags } = await pageContainer.save(this.state.markdown, optionsToSave);
-    //   logger.debug('success to save');
+      // eslint-disable-next-line no-unused-vars
+      const { page, tags } = await pageContainer.save(this.state.markdown, optionsToSave);
+      logger.debug('success to save');
 
-    //   pageContainer.showSuccessToastr();
+      pageContainer.showSuccessToastr();
 
-    //   // update state of EditorContainer
-    //   editorContainer.setState({ tags });
-    // }
-    // catch (error) {
-    //   logger.error('failed to save', error);
-    //   pageContainer.showErrorToastr(error);
-    // }
+      // update state of EditorContainer
+      editorContainer.setState({ tags });
+    }
+    catch (error) {
+      logger.error('failed to save', error);
+      pageContainer.showErrorToastr(error);
+    }
   }
 
   /**
@@ -153,44 +153,44 @@ class PageEditor extends React.Component {
    * @param {any} file
    */
   async onUpload(file) {
-    // const { appContainer, pageContainer, editorContainer } = this.props;
+    const { pageContainer, editorContainer } = this.props;
 
     // try {
     //   let res = await appContainer.apiGet('/attachments.limit', {
     //     fileSize: file.size,
     //   });
 
-    //   if (!res.isUploadable) {
-    //     throw new Error(res.errorMessage);
-    //   }
+      // if (!res.isUploadable) {
+      //   throw new Error(res.errorMessage);
+      // }
 
-    //   const formData = new FormData();
-    //   const { pageId, path } = pageContainer.state;
-    //   formData.append('_csrf', appContainer.csrfToken);
-    //   formData.append('file', file);
-    //   formData.append('path', path);
-    //   if (pageId != null) {
-    //     formData.append('page_id', pageContainer.state.pageId);
-    //   }
+      // const formData = new FormData();
+      // const { pageId, path } = pageContainer.state;
+      // // formData.append('_csrf', appContainer.csrfToken);
+      // formData.append('file', file);
+      // formData.append('path', path);
+      // if (pageId != null) {
+      //   formData.append('page_id', pageContainer.state.pageId);
+      // }
 
-    //   res = await appContainer.apiPost('/attachments.add', formData);
-    //   const attachment = res.attachment;
-    //   const fileName = attachment.originalName;
+      // res = await appContainer.apiPost('/attachments.add', formData);
+      // const attachment = res.attachment;
+      // const fileName = attachment.originalName;
 
-    //   let insertText = `[${fileName}](${attachment.filePathProxied})`;
-    //   // when image
-    //   if (attachment.fileFormat.startsWith('image/')) {
-    //     // modify to "![fileName](url)" syntax
-    //     insertText = `!${insertText}`;
-    //   }
-    //   this.editor.insertText(insertText);
+      // let insertText = `[${fileName}](${attachment.filePathProxied})`;
+      // when image
+      // if (attachment.fileFormat.startsWith('image/')) {
+      //   // modify to "![fileName](url)" syntax
+      //   insertText = `!${insertText}`;
+      // }
+      // this.editor.insertText(insertText);
 
-    //   // when if created newly
-    //   if (res.pageCreated) {
-    //     logger.info('Page is created', res.page._id);
-    //     pageContainer.updateStateAfterSave(res.page, res.tags, res.revision);
-    //     editorContainer.setState({ grant: res.page.grant });
-    //   }
+      // when if created newly
+      // if (res.pageCreated) {
+      //   logger.info('Page is created', res.page._id);
+      //   pageContainer.updateStateAfterSave(res.page, res.tags, res.revision);
+      //   editorContainer.setState({ grant: res.page.grant });
+      // }
     // }
     // catch (e) {
     //   logger.error('failed to upload', e);
@@ -298,14 +298,14 @@ class PageEditor extends React.Component {
     scrollSyncHelper.scrollEditor(this.editor, this.previewElement, offset);
   }
 
-  // saveDraft() {
-  //   const { pageContainer, editorContainer } = this.props;
-  //   editorContainer.saveDraft(pageContainer.state.path, this.state.markdown);
-  // }
+  saveDraft() {
+    const { pageContainer, editorContainer } = this.props;
+    editorContainer.saveDraft(pageContainer.state.path, this.state.markdown);
+  }
 
-  // clearDraft() {
-  //   this.props.editorContainer.clearDraft(this.props.pageContainer.state.path);
-  // }
+  clearDraft() {
+    this.props.editorContainer.clearDraft(this.props.pageContainer.state.path);
+  }
 
   render() {
     // const config = this.props.appContainer.getConfig();
@@ -318,11 +318,11 @@ class PageEditor extends React.Component {
           <Editor
             ref={(c) => { this.editor = c }}
             value={this.state.markdown}
-            // noCdn={noCdn}
+            noCdn={noCdn}
             // isMobile={this.props.appContainer.isMobile}
             isUploadable={this.state.isUploadable}
             isUploadableFile={this.state.isUploadableFile}
-            // emojiStrategy={emojiStrategy}
+            emojiStrategy={emojiStrategy}
             onScroll={this.onEditorScroll}
             onScrollCursorIntoView={this.onEditorScrollCursorIntoView}
             onChange={this.onMarkdownChanged}
@@ -331,14 +331,14 @@ class PageEditor extends React.Component {
           />
         </div>
         <div className="d-none d-lg-block page-editor-preview-container flex-grow-1 flex-basis-0 mw-0">
-          {/* <Preview
+          <Preview
             markdown={this.state.markdown}
             // eslint-disable-next-line no-return-assign
             inputRef={(el) => { return this.previewElement = el }}
             isMathJaxEnabled={this.state.isMathJaxEnabled}
             renderMathJaxOnInit={false}
             onScroll={this.onPreviewScroll}
-          /> */}
+          />
         </div>
       </div>
     );
@@ -350,13 +350,20 @@ class PageEditor extends React.Component {
  * Wrapper component for using unstated
  */
 // const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer]);
-// const PageEditorWrapper = withUnstatedContainers(PageEditor, [AppContainer, PageContainer, EditorContainer]);
+const PageEditorWrapper = withUnstatedContainers(PageEditor, [PageContainer, EditorContainer]);
+
+const PageEditorWrapperNext = (props) =>{
+  const {t} = useTranslation()
+
+  return (
+    <PageEditorWrapper t={t} />
+  )
+}
 
 PageEditor.propTypes = {
-  // appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  // pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  // editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 };
 
-export default PageEditor;
+export default PageEditorWrapperNext;
 // export default PageEditorWrapper;
