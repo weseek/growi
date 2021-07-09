@@ -133,6 +133,15 @@
         width: 24px;
         height: 100%;
         cursor: ew-resize;
+        &:hover .grw-navigation-draggable-hitarea-child {
+          position: absolute;
+          left: 3px;
+          width: 2px;
+          height: 100%;
+          background-color: rgb(76, 154, 255);
+          opacity: 1;
+          transition: opacity 200ms ease 0s;
+        }
         .grw-navigation-draggable-hitarea-child {
           position: absolute;
           left: 3px;
@@ -141,9 +150,6 @@
           background-color: rgb(76, 154, 255);
           opacity: 0;
           transition: opacity 200ms ease 0s;
-          &:hover {
-            opacity: 1;
-          }
         }
       }
     }
@@ -302,7 +308,26 @@
   z-index: $zindex-fixed + 1;
 }
 
-.css-889cso {
+.normal-state {
+  position: absolute;
+  top: 32px;
+  width: 24px;
+  height: 24px;
+  padding: 0px;
+  color: rgb(107, 119, 140);
+  cursor: pointer;
+  background: 0px center white;
+  border: 0px;
+  border-radius: 50%;
+  outline: 0px;
+  box-shadow: rgb(9 30 66 / 8%) 0px 0px 0px 1px, rgb(9 30 66 / 8%) 0px 2px 4px 1px;
+  opacity: 0;
+  transition: background-color 100ms linear 0s, color 100ms linear 0s, opacity 300ms cubic-bezier(0.2, 0, 0, 1) 0s,
+    transform 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+  transform: translate(-50%);
+}
+
+.hover-state {
   position: absolute;
   top: 32px;
   width: 24px;
