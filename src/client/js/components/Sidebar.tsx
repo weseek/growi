@@ -168,8 +168,19 @@ const Sidebar = (props: Props) => {
     toggleDrawerMode(isDrawerMode);
   }, [isDrawerMode, toggleDrawerMode]);
 
-  const [isHover, switchHover] = useState(false);
+  const [isHover, setHover] = useState(false);
   const [productNavWidth, setProductNavWidth] = useState(sidebarDefaultWidth);
+
+  const hoverHandler = useCallback((isHover: boolean) => {
+    setHover(isHover);
+
+    if (isHover && navigationUIController.state.isCollapsed) {
+      setProductNavWidth(sidebarDefaultWidth);
+    }
+    if (!isHover && navigationUIController.state.isCollapsed) {
+      setProductNavWidth(0);
+    }
+  }, [navigationUIController.state.isCollapsed]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     navigationUIController.toggleCollapse();
@@ -192,7 +203,7 @@ const Sidebar = (props: Props) => {
           })}
         >
           <div className="data-layout-container">
-            <div className="navigation" onMouseEnter={() => switchHover(true)} onMouseLeave={() => switchHover(false)}>
+            <div className="navigation" onMouseEnter={() => hoverHandler(true)} onMouseLeave={() => hoverHandler(false)}>
               <div className="grw-navigation-wrap">
                 <div className="grw-global-navigation">
                   <GlobalNavigation></GlobalNavigation>
