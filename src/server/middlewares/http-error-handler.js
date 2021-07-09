@@ -1,4 +1,19 @@
-const { isHttpError } = require('../../../node_modules/http-errors');
+const { HttpError } = require('../../../node_modules/http-errors');
+
+const isHttpError = (val) => {
+  if (!val || typeof val !== 'object') {
+    return false;
+  }
+
+  if (val instanceof HttpError) {
+    return true;
+  }
+
+  return val instanceof Error
+    && typeof val.expose === 'boolean'
+    && typeof val.statusCode === 'number'
+    && val.status === val.statusCode;
+};
 
 module.exports = (err, req, res, next) => {
   // handle if the err is a HttpError instance
