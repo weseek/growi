@@ -95,15 +95,48 @@
       overflow: hidden;
       .grw-contextual-navigation {
         position: relative;
+        width: 240px;
         height: 100%;
         transition: width 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
-        .grw-contextual-navigation-sub {
+        transition: width 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+        will-change: width;
+        .grw-contextual-navigation-child {
+          position: absolute;
+          top: 0px;
+          left: 0px;
           box-sizing: border-box;
-          display: flex;
-          flex-direction: column;
           width: 100%;
+          min-width: 240px;
           height: 100%;
-          overflow: hidden auto;
+          overflow-x: hidden;
+          color: rgb(255, 255, 255);
+          background-color: rgb(7, 71, 166);
+          .grw-contextual-navigation-sub {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            overflow: hidden auto;
+          }
+        }
+        .grw-contextual-navigation-child2 {
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          box-sizing: border-box;
+          width: 100%;
+          min-width: 240px;
+          height: 100%;
+          overflow-x: hidden;
+          color: rgb(66, 82, 110);
+          background-color: rgb(244, 245, 247);
+          transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+          transition-duration: 0.22s;
+          transition-property: boxShadow, transform;
+          animation-duration: 0.22s;
+          animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+          animation-fill-mode: forwards;
         }
       }
     }

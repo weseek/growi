@@ -190,10 +190,10 @@ const Sidebar = (props: Props) => {
                   <GlobalNavigation></GlobalNavigation>
                 </div>
                 <div className="grw-contextual-navigation">
-                  <div>
+                  <div className="grw-contextual-navigation-child">
                     <div role="group" className="grw-contextual-navigation-sub"></div>
                   </div>
-                  <div>
+                  <div className="grw-contextual-navigation-child2">
                     <div role="group" className="grw-contextual-navigation-sub">
                       <div className="SlimScrollDiv">
                         <SidebarContents></SidebarContents>
