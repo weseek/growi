@@ -1,4 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
+import { useRouter } from 'next/router'
 
 import { useTranslation } from '~/i18n';
 import { useSearchServiceReachable } from '~/stores/context';
@@ -23,6 +24,7 @@ type Props = {
 }
 
 const GlobalSearch: FC<Props> = (props: Props) => {
+  const router = useRouter();
 
   const { t } = useTranslation();
 
@@ -48,7 +50,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
     }
     url.searchParams.append('q', q);
 
-    window.location.href = url.href;
+    router.push(url.href);
   }, [text, isScopeChildren]);
 
   const { dropup } = props;
