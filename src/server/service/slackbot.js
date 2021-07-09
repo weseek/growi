@@ -246,8 +246,8 @@ class SlackBotService extends S2sMessageHandlable {
         ],
       });
     }
-    catch {
-      logger.error('Failed to get search results.');
+    catch (err) {
+      logger.error('Failed to get search results.', err);
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,

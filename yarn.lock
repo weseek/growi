@@ -4634,6 +4634,11 @@ bootstrap@^4.5.0:
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.5.0.tgz#97d9dbcb5a8972f8722c9962483543b907d9b9ec"
   integrity sha512-Z93QoXvodoVslA+PWNdk23Hze4RBYIkpb5h8I2HY2Tu2h7A0LpAgLcyrhrSUyo2/Oxm2l1fRZPs1e5hnxnliXA==
 
+bootstrap@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-5.0.2.tgz#aff23d5e0e03c31255ad437530ee6556e78e728e"
+  integrity sha512-1Ge963tyEQWJJ+8qtXFU6wgmAVj9gweEjibUdbmcCEYsn38tVwRk8107rk2vzt6cfQcRr3SlZ8aQBqaD8aqf+Q==
+
 bowser@^1.7.3:
   version "1.9.4"
   resolved "https://registry.yarnpkg.com/bowser/-/bowser-1.9.4.tgz#890c58a2813a9d3243704334fa81b96a5c150c9a"
@@ -9223,24 +9228,24 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-growi-commons@^5.0.2, growi-commons@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.3.tgz#8ec745dcb2d3d003e3acd7d6fbec85cf0967354b"
-  integrity sha512-lV2jmqxWPiuzuVaetSY1uq7viwgRCNwLMnU78GaYix4jfXNcYzdrfedTlU3ZRiVIjLggSFb87EhYqtM/4RfjmA==
+growi-commons@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/growi-commons/-/growi-commons-5.0.4.tgz#1235b7955a3f492803e8c714fef5c4a797e442b7"
+  integrity sha512-K282Pe97SnJgbZWAuMz9pNDTmvmw4JYPf/oYQaPmBsUjaxG4FDwd7+p5UFc5GqZUWcLwXvtJZQZMZEH/xpg+nA==
 
-growi-plugin-attachment-refs@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/growi-plugin-attachment-refs/-/growi-plugin-attachment-refs-2.0.1.tgz#118c4928a6df93afd0c5fab7a7eab569977dcd55"
-  integrity sha512-Kyi5YQoc/5cuan9ldEvnjzh9rYi9hKjKyy75xHn0/4BZZ3aMz9AzzUcln99rqldOGwig3fuobYCCH9YnW/voZw==
+growi-plugin-attachment-refs@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/growi-plugin-attachment-refs/-/growi-plugin-attachment-refs-2.0.2.tgz#341d95e6cf2b91ebcff5f9573518e15fa12ccb46"
+  integrity sha512-7BTH6ERpybPKAEy0+rLylF9Rap1jHod9d0mPF62HXJmycynGlS66hyqpM20mKq5rSKxEWucmbUdtceQjs139+Q==
   dependencies:
-    growi-commons "^5.0.3"
+    growi-commons "^5.0.4"
 
-growi-plugin-lsx@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/growi-plugin-lsx/-/growi-plugin-lsx-4.0.2.tgz#cdf9caf6bb74a50c2eae0a64ea7b413160c32057"
-  integrity sha512-qF3Yx5sbXnf5C9cZshrtd3irPjs4SC5K3CXEhFiQuo6SZN66+uqQ6twuIgMthkTrBw5boHSoevmIiVqfIUsdIw==
+growi-plugin-lsx@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/growi-plugin-lsx/-/growi-plugin-lsx-4.0.3.tgz#feaf5a8687ac009f0f15ee76f7f0cba4efe6a1d3"
+  integrity sha512-x9N50WQRyFL9xY8FJ8ajF3v67eHma5brEASdsxI0t2CSzPlRhqJti3jTrbauevCNb8/na8Woq6B5rr6kPOFwIQ==
   dependencies:
-    growi-commons "^5.0.2"
+    growi-commons "^5.0.4"
     url "^0.11.0"
 
 growi-plugin-pukiwiki-like-linker@^3.1.0:
@@ -18002,9 +18007,9 @@ strip-json-comments@^2.0.0, strip-json-comments@^2.0.1, strip-json-comments@~2.0
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
 striptags@>=3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/striptags/-/striptags-3.1.1.tgz#c8c3e7fdd6fb4bb3a32a3b752e5b5e3e38093ebd"
-  integrity sha1-yMPn/db7S7OjKjt1LltePjgJPr0=
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/striptags/-/striptags-3.2.0.tgz#cc74a137db2de8b0b9a370006334161f7dd67052"
+  integrity sha512-g45ZOGzHDMe2bdYMdIvdAfCQkCTDMGBazSw1ypMowwGIee7ZQ5dU0rBJ8Jqgl+jAKIv4dbeE1jscZq9wid1Tkw==
 
 strong-log-transformer@^2.1.0:
   version "2.1.0"
