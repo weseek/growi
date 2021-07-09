@@ -29,7 +29,7 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useSearchServiceConfigured, useSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useEditorConfig
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax,useEditorConfig
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
@@ -61,6 +61,7 @@ type Props = CommonProps & {
   hasSlackConfig: boolean,
   drawioUri: string,
   hackmdUri: string,
+  mathJax: string,
   highlightJsStyle: string,
   isAllReplyShown: boolean,
   isContainerFluid: boolean,
@@ -99,6 +100,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useHasSlackConfig(props.hasSlackConfig);
   useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
+  useMathJax(props.mathJax)
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
@@ -270,21 +272,17 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
+  props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
-  // temp
-  const env = process.env;
   props.editorConfig = {
     upload: {
       image: crowi.fileUploadService.getIsUploadable(),
       file: crowi.fileUploadService.getFileUploadEnabled(),
-    },
-    env: {
-      MATHJAX: env.MATHJAX || null,
     },
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');

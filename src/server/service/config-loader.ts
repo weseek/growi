@@ -69,6 +69,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  MATHJAX:{
+    ns:      'crowi',
+    key:     'app:mathJax',
+    type:    ValueType.STRING,
+    default: null,
+  },
   // PLANTUML_URI: {
   //   ns:      ,
   //   key:     ,

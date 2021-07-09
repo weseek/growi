@@ -88,6 +88,10 @@ export const useHackmdUri = (initialData?: string): responseInterface<string, an
   return useStaticSWR('hackmdUri', initialData);
 };
 
+export const useMathJax = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('mathJax', initialData);
+};
+
 export const useEditorConfig = (initialData?: any): responseInterface<any, any> => {
   return useStaticSWR('editorConfig', initialData);
 };
