@@ -42,7 +42,7 @@ export const reshapeContentsBody = (str: string): string => {
   const splitted = str.split('\n');
   const { linesBeforeFirstHeader, linesAfterFirstHeader } = devideLinesBeforeAfterFirstHeader(splitted);
   if (linesAfterFirstHeader.length === 0) {
-    return linesBeforeFirstHeader.join('');
+    return linesBeforeFirstHeader.join('\n');
   }
 
   let didReactionRemoved = false;
