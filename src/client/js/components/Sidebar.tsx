@@ -181,12 +181,38 @@ const Sidebar = (props: Props) => {
         >
           <div className="data-layout-container">
             <div className="navigation">
-              <div className="navigation-wrap">
+              <div className="grw-navigation-wrap">
                 <div className="grw-global-navigation">
                   <GlobalNavigation></GlobalNavigation>
                 </div>
-
-                <SidebarContents></SidebarContents>
+                <div className="grw-contextual-navigation">
+                  <div>
+                    <div role="group" className="grw-contextual-navigation-sub"></div>
+                  </div>
+                  <div>
+                    <div role="group" className="grw-contextual-navigation-sub">
+                      <div className="SlimScrollDiv">
+                        <SidebarContents></SidebarContents>
+                      </div>
+                      <div className="slimScrollBar"></div>
+                      <div className="slimScrollRail"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="grw-navigation-draggable">
+                <div className="grw-navigation-draggable-sub"></div>
+                <div className="grw-navigation-draggable-hitarea">
+                  <div className="grw-navigation-draggable-hitarea-child"></div>
+                </div>
+                <div>
+                  <div>
+                    <button className="ak-navigation-resize-button css-889cso" type="button" aria-expanded="true" aria-label="Toggle navigation">
+                      <div className="css-z8pkji"></div>
+                      <span role="presentation" className="sc-AxjAm jMDUxe"></span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -88,11 +88,63 @@
         background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
       }
     }
-    .navigation-wrap {
+    .grw-navigation-wrap {
       display: flex;
       flex-direction: row;
       height: 100%;
       overflow: hidden;
+      .grw-contextual-navigation {
+        position: relative;
+        height: 100%;
+        .grw-contextual-navigation-sub {
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          height: 100%;
+          overflow: hidden auto;
+        }
+      }
+    }
+    .grw-navigation-draggable {
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      left: 100%;
+      z-index: 3;
+      width: 24px;
+      transform: translateZ(0px);
+      .grw-navigation-draggable-sub {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: -3px;
+        width: 3px;
+        pointer-events: none;
+        opacity: 0.5;
+        transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+        transition-duration: 0.22s;
+        transition-property: left, opacity, width;
+      }
+      .grw-navigation-draggable-hitarea {
+        position: relative;
+        left: -4px;
+        width: 24px;
+        height: 100%;
+        cursor: ew-resize;
+        .grw-navigation-draggable-hitarea-child {
+          position: absolute;
+          left: 3px;
+          width: 2px;
+          height: 100%;
+          background-color: rgb(76, 154, 255);
+          opacity: 0;
+          transition: opacity 200ms ease 0s;
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
     }
   }
 

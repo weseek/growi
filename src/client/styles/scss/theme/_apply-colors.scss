@@ -233,7 +233,7 @@ ul.pagination {
       background-color: $bgcolor-sidebar;
     }
   }
-  div[data-testid='ContextualNavigation'] {
+  div.grw-contextual-navigation {
     > div {
       color: $color-sidebar-context;
       background-color: $bgcolor-sidebar-context;
