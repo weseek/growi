@@ -6,13 +6,12 @@ import { throttle, debounce } from 'throttle-debounce';
 // import { envUtils } from 'growi-commons';
 import loggerFactory from '~/utils/logger';
 import PageContainer from '../services/PageContainer';
-
+import EditorContainer from '../services/EditorContainer';
 // import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import EditorContainer from '../services/EditorContainer';
-import { useTranslation } from '~/i18n';
+import { useTranslation} from '~/i18n';
 
 const logger = loggerFactory('growi:PageEditor');
 
