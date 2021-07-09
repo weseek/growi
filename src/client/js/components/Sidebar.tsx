@@ -169,9 +169,17 @@ const Sidebar = (props: Props) => {
   }, [isDrawerMode, toggleDrawerMode]);
 
   const [isHover, switchHover] = useState(false);
+  const [productNavWidth, setProductNavWidth] = useState(sidebarDefaultWidth);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     navigationUIController.toggleCollapse();
+
+    if (navigationUIController.state.isCollapsed) {
+      setProductNavWidth(0);
+    }
+    else {
+      setProductNavWidth(sidebarDefaultWidth);
+    }
   }, [navigationUIController]);
 
   return (
@@ -189,7 +197,7 @@ const Sidebar = (props: Props) => {
                 <div className="grw-global-navigation">
                   <GlobalNavigation></GlobalNavigation>
                 </div>
-                <div className="grw-contextual-navigation">
+                <div className="grw-contextual-navigation" style={{ width: productNavWidth }}>
                   <div className="grw-contextual-navigation-child">
                     <div role="group" className="grw-contextual-navigation-sub"></div>
                   </div>
@@ -212,7 +220,7 @@ const Sidebar = (props: Props) => {
                 <div>
                   <div>
                     <button
-                      className={`ak-navigation-resize-button ${isHover ? 'hover-state' : 'normal-state'} `}
+                      className={`ak-navigation-resize-button ${isHover || navigationUIController.state.isCollapsed ? 'hover-state' : 'normal-state'} `}
                       type="button"
                       aria-expanded="true"
                       aria-label="Toggle navigation"
