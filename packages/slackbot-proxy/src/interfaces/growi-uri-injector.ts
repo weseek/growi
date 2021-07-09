@@ -1,5 +1,28 @@
-import { GrowiReq } from './growi-to-slack/growi-req';
-import { SlackOauthReq } from './slack-to-growi/slack-oauth-req';
+// see: https://api.slack.com/reference/interaction-payloads/views
+export type ViewElement = {
+  type: string,
+  'private_metadata'?: any,
+}
+
+// see: https://api.slack.com/reference/interaction-payloads/views
+export type ViewInteractionPayload = {
+  type: string,
+  view: {
+    'private_metadata'?: any,
+  },
+}
+
+// see: https://api.slack.com/reference/block-kit/blocks
+export type BlockElement = {
+  type: string,
+  elements: { type: string }[],
+}
+
+// see: https://api.slack.com/reference/interaction-payloads/block-actions
+export type BlockActionsPayload = {
+  type: string,
+  actions: { type: string }[],
+}
 
 export type GrowiUriWithOriginalData = {
   growiUri: string,
@@ -16,13 +39,13 @@ export const isGrowiUriWithOriginalData = (data: any): data is GrowiUriWithOrigi
   return data.growiUri != null && data.originalData != null;
 };
 
-export interface GrowiUriInjector<IB, EP> {
+export interface GrowiUriInjector<IDATA extends ViewElement|BlockElement[], EDATA extends (ViewInteractionPayload|BlockActionsPayload)> {
 
-  shouldHandleToInject(req: GrowiReq): boolean;
-  inject(body: IB, growiUri:string): void;
+  shouldHandleToInject(data: IDATA): boolean;
+  inject(data: IDATA, growiUri:string): void;
 
-  shouldHandleToExtract(req: SlackOauthReq): boolean;
-  extract(payload: EP): GrowiUriWithOriginalData;
+  shouldHandleToExtract(data: EDATA): boolean;
+  extract(data: EDATA): GrowiUriWithOriginalData;
 
 }
 

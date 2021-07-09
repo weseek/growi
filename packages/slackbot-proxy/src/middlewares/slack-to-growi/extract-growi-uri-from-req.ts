@@ -18,11 +18,11 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
     // TODO: get list from decorator
     const vipDelegators: ViewInteractionPayloadDelegator[] = [new ViewInteractionPayloadDelegator()];
     const bapDelegators: BlockActionsPayloadDelegator[] = [];
-    const delegators = vipDelegators.concat(bapDelegators);
 
     const parsedPayload = JSON.parse(req.body.payload);
 
-    for (const delegator of delegators) {
+    // iterate combined delegators
+    for (const delegator of [...vipDelegators, ...bapDelegators]) {
       if (delegator.shouldHandleToExtract(parsedPayload)) {
         const data = delegator.extract(parsedPayload);
         req.growiUri = data.growiUri;
