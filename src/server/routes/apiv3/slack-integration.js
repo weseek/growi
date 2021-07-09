@@ -114,6 +114,9 @@ module.exports = (crowi) => {
         case 'help':
           await crowi.slackBotService.helpCommand(client, body);
           break;
+        case 'togetter':
+          await crowi.slackBotService.togetterCommand(client, body, args);
+          break;
         default:
           await crowi.slackBotService.notCommand(client, body);
           break;

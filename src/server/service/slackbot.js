@@ -91,6 +91,17 @@ class SlackBotService extends S2sMessageHandlable {
     return;
   }
 
+  async togetterCommand(client, body, args) {
+    // args一旦無視で
+    // Checkbox Message を返す
+    client.chat.postEphemeral({
+      channel: body.channel_id,
+      user: body.user_id,
+      text: 'Select messages to use.',
+      blocks: this.togetterMessageBlocks(),
+    });
+  }
+
   getKeywords(args) {
     const keywordsArr = args.slice(1);
     const keywords = keywordsArr.join(' ');
@@ -339,12 +350,12 @@ class SlackBotService extends S2sMessageHandlable {
     }
   }
 
-  generateMarkdownSectionBlock(blocks) {
+  generateMarkdownSectionBlock(text) {
     return {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: blocks,
+        text,
       },
     };
   }
@@ -372,6 +383,100 @@ class SlackBotService extends S2sMessageHandlable {
           text: placeholder,
         },
       },
+    };
+  }
+
+  togetterMessageBlocks() {
+    return [
+      this.generateMarkdownSectionBlock('Select messages to use.'),
+      this.actionsBlock(this.buttonElement('Show more', 'show_more'), this.buttonElement('Check all', 'check_all')),
+      this.actionsBlock(this.togetterCheckboxesElement()),
+      this.inputBlock(this.togetterInputBlockElement('page_path'), 'Page path'),
+      this.actionsBlock(this.buttonElement('Cancel', 'cancel'), this.buttonElement('Create page', 'create_page')),
+    ];
+  }
+
+  actionsBlock(...elements) {
+    return {
+      type: 'actions',
+      elements: [
+        ...elements,
+      ],
+    };
+  }
+
+  inputBlock(element, labelText) {
+    return {
+      type: 'input',
+      element,
+      label: {
+        type: 'plain_text',
+        text: labelText,
+        emoji: true,
+      },
+    };
+  }
+
+  /**
+   * Button element
+   * https://api.slack.com/reference/block-kit/block-elements#button
+   */
+  buttonElement(text, actionId) {
+    return {
+      type: 'button',
+      text: {
+        type: 'plain_text',
+        text,
+      },
+      action_id: actionId,
+    };
+  }
+
+  togetterCheckboxesElement() {
+    return {
+      type: 'checkboxes',
+      options: this.togetterCheckboxesElementOptions(),
+      action_id: 'checkboxes_changed',
+    };
+  }
+
+  togetterCheckboxesElementOptions() {
+    // options を conversations.history の結果でインクリメント
+    const options = [];
+    // 仮置き
+    for (let i = 0; i < 10; i++) {
+      const option = this.checkboxesElementOption('*username*  12:00PM', 'sample slack messages ... :star:');
+      options.push(option);
+    }
+    return options;
+  }
+
+  /**
+   * Option object
+   * https://api.slack.com/reference/block-kit/composition-objects#option
+   */
+  checkboxesElementOption(text, description) {
+    return {
+      text: {
+        type: 'mrkdwn',
+        text,
+      },
+      description: {
+        type: 'mrkdwn',
+        text: description,
+      },
+      value: 'selected',
+    };
+  }
+
+  /**
+   * Plain-text input element
+   * https://api.slack.com/reference/block-kit/block-elements#input
+   */
+  togetterInputBlockElement(actionId) {
+    return {
+      type: 'plain_text_input',
+      action_id: actionId,
     };
   }
 
