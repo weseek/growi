@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "esnext",
     "module": "commonjs",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "sourceMap": true,
-    "noEmit": true,
-    "removeComments": false,
+    "allowJs": true,
+    "skipLibCheck": true,
     "importHelpers": true,
-    "isolatedModules": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "noEmit": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
 
     /* Strict Type-Checking Options */
-    // "strict": true,
     "strictNullChecks": true,
     "noImplicitAny": false,
 
@@ -19,7 +19,6 @@
     "noUnusedParameters": false,
 
     /* Module Resolution Options */
-    "moduleResolution": "node",
     "typeRoots": [
       "./node_modules/@types"
     ],
