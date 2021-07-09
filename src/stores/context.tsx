@@ -92,6 +92,10 @@ export const useMathJax = (initialData?: string): responseInterface<string, any>
   return useStaticSWR('mathJax', initialData);
 };
 
+export const useNoCnd = (initialData?: string): responseInterface<string, any> => {
+  return useStaticSWR('noCdn', initialData);
+};
+
 export const useEditorConfig = (initialData?: any): responseInterface<any, any> => {
   return useStaticSWR('editorConfig', initialData);
 };

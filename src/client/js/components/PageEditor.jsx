@@ -302,8 +302,8 @@ class PageEditor extends React.Component {
           <Editor
             ref={(c) => { this.editor = c }}
             value={this.props.markdown}
-            // noCdn={noCdn}
-            // isMobile={this.props.appContainer.isMobile}
+            noCdn={this.props.noCdn}
+            isMobile={this.props.isMobile}
             isUploadable={this.props.isUploadable}
             isUploadableFile={this.props.isUploadableFile}
             // emojiStrategy={emojiStrategy}
@@ -343,6 +343,7 @@ const PageEditorWrapperForNextUse = (props) =>{
       isUploadable={props.isUploadable}
       isUploadableFile={props.isUploadableFile}
       isMathJaxEnabled={props.isMathJaxEnabled}
+      isMobile={props.isMobile}
     />
   )
 }

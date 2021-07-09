@@ -29,7 +29,7 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useSearchServiceConfigured, useSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax,useEditorConfig
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCnd, useEditorConfig
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
@@ -62,6 +62,7 @@ type Props = CommonProps & {
   drawioUri: string,
   hackmdUri: string,
   mathJax: string,
+  noCdn: string,
   highlightJsStyle: string,
   isAllReplyShown: boolean,
   isContainerFluid: boolean,
@@ -101,6 +102,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
   useMathJax(props.mathJax)
+  useNoCnd(props.noCdn)
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
@@ -273,6 +275,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
+  props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');

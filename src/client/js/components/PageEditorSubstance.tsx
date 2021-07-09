@@ -11,8 +11,6 @@ const PageEditorSubstance: VFC =()=> {
   const { data: config } = useEditorConfig();
   const { data: mathJax } = useMathJax();
 
-  console.log(isMobile)
-
   const [markdown, setMarkdown] = useState(currentPage?.revision?.body);
   const [isUploadable, setIsUploadable] = useState(config.upload.image || config.upload.file);
   const [isUploadableFile, setIsUploadableFile] = useState(config.upload.file);
@@ -24,6 +22,7 @@ const PageEditorSubstance: VFC =()=> {
       isUploadableFile={isUploadableFile}
       isMathJaxEnabled={isMathJaxEnabled}
       markdown={markdown}
+      isMobile={isMobile}
     />
   )
 
