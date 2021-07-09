@@ -20,6 +20,7 @@ import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import { BlockActionsPayloadDelegator } from '~/services/growi-uri-injector/BlockActionsPayloadDelegator';
+import { BlockElement, ViewElement } from '~/interfaces/growi-uri-injector';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
@@ -177,8 +178,8 @@ export class GrowiToSlackCtrl {
     const vipDelegators: ViewInteractionPayloadDelegator[] = [new ViewInteractionPayloadDelegator()];
     const bapDelegators: BlockActionsPayloadDelegator[] = [];
 
-    const parsedView = JSON.parse(req.body.view);
-    const parsedBlocks = JSON.parse(req.body.blocks);
+    const parsedView = JSON.parse(req.body.view) as ViewElement;
+    const parsedBlocks = JSON.parse(req.body.blocks) as BlockElement[];
 
     vipDelegators.forEach((delegator) => {
       if (delegator.shouldHandleToInject(parsedView)) {
@@ -187,12 +188,12 @@ export class GrowiToSlackCtrl {
     });
     req.body.view = JSON.stringify(parsedView);
 
-    bapDelegators.forEach((delegator) => {
-      if (delegator.shouldHandleToInject(req)) {
-        delegator.inject(parsedBlocks, growiUri);
-      }
-    });
-    req.body.blocks = JSON.stringify(parsedBlocks);
+    // bapDelegators.forEach((delegator) => {
+    //   if (delegator.shouldHandleToInject(parsedBlocks)) {
+    //     delegator.inject(parsedBlocks, growiUri);
+    //   }
+    // });
+    // req.body.blocks = JSON.stringify(parsedBlocks);
 
     // const vipd = new ViewInteractionPayloadDelegator();
     // if (vipd.shouldHandleToInject(req)) {
