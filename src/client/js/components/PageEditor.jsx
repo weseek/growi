@@ -22,9 +22,9 @@ class PageEditor extends React.Component {
 
     this.previewElement = React.createRef();
 
-    this.setCaretLine = this.setCaretLine.bind(this);
+    // this.setCaretLine = this.setCaretLine.bind(this);
     this.focusToEditor = this.focusToEditor.bind(this);
-    this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
+    // this.onMarkdownChanged = this.onMarkdownChanged.bind(this);
     this.onSaveWithShortcut = this.onSaveWithShortcut.bind(this);
     this.onUpload = this.onUpload.bind(this);
     this.onEditorScroll = this.onEditorScroll.bind(this);
@@ -77,10 +77,10 @@ class PageEditor extends React.Component {
    * set caret position of editor
    * @param {number} line
    */
-  setCaretLine(line) {
-    this.editor.setCaretLine(line);
-    scrollSyncHelper.scrollPreview(this.previewElement, line);
-  }
+  // setCaretLine(line) {
+  //   this.editor.setCaretLine(line);
+  //   scrollSyncHelper.scrollPreview(this.previewElement, line);
+  // }
 
   /**
    * the change event handler for `markdown` state
@@ -88,24 +88,24 @@ class PageEditor extends React.Component {
    */
   onMarkdownChanged(value) {
     // TODO GW-5862 display alert
-    const { pageContainer } = this.props;
-    this.setMarkdownStateWithDebounce(value);
-    // only when the first time to edit
-    if (!pageContainer.state.revisionId) {
-      this.saveDraftWithDebounce();
-    }
+    // const { pageContainer } = this.props;
+    // this.setMarkdownStateWithDebounce(value);
+    // // only when the first time to edit
+    // if (!pageContainer.state.revisionId) {
+    //   this.saveDraftWithDebounce();
+    // }
   }
 
   // Displays an alert if there is a difference with pageContainer's markdown
   componentDidUpdate(prevProps, prevState) {
     // TODO GW-5862 display alert
-    const { pageContainer, editorContainer } = this.props;
+    // const { pageContainer, editorContainer } = this.props;
 
-    if (this.state.markdown !== prevState.markdown) {
-      if (pageContainer.state.markdown !== this.state.markdown) {
-        editorContainer.enableUnsavedWarning();
-      }
-    }
+    // if (this.state.markdown !== prevState.markdown) {
+    //   if (pageContainer.state.markdown !== this.state.markdown) {
+    //     editorContainer.enableUnsavedWarning();
+    //   }
+    // }
   }
 
   /**
@@ -221,19 +221,19 @@ class PageEditor extends React.Component {
    * @param {number} line
    */
   scrollPreviewByEditorLine(line) {
-    if (this.previewElement == null) {
-      return;
-    }
+    // if (this.previewElement == null) {
+    //   return;
+    // }
 
-    // prevent circular invocation
-    if (this.isOriginOfScrollSyncPreview) {
-      this.isOriginOfScrollSyncPreview = false; // turn off the flag
-      return;
-    }
+    // // prevent circular invocation
+    // if (this.isOriginOfScrollSyncPreview) {
+    //   this.isOriginOfScrollSyncPreview = false; // turn off the flag
+    //   return;
+    // }
 
-    // turn on the flag
-    this.isOriginOfScrollSyncEditor = true;
-    scrollSyncHelper.scrollPreview(this.previewElement, line);
+    // // turn on the flag
+    // this.isOriginOfScrollSyncEditor = true;
+    // scrollSyncHelper.scrollPreview(this.previewElement, line);
   }
 
   /**
@@ -241,19 +241,19 @@ class PageEditor extends React.Component {
    * @param {number} line
    */
   scrollPreviewByCursorMoving(line) {
-    if (this.previewElement == null) {
-      return;
-    }
+    // if (this.previewElement == null) {
+    //   return;
+    // }
 
-    // prevent circular invocation
-    if (this.isOriginOfScrollSyncPreview) {
-      this.isOriginOfScrollSyncPreview = false; // turn off the flag
-      return;
-    }
+    // // prevent circular invocation
+    // if (this.isOriginOfScrollSyncPreview) {
+    //   this.isOriginOfScrollSyncPreview = false; // turn off the flag
+    //   return;
+    // }
 
-    // turn on the flag
-    this.isOriginOfScrollSyncEditor = true;
-    scrollSyncHelper.scrollPreviewToRevealOverflowing(this.previewElement, line);
+    // // turn on the flag
+    // this.isOriginOfScrollSyncEditor = true;
+    // scrollSyncHelper.scrollPreviewToRevealOverflowing(this.previewElement, line);
   }
 
   /**
@@ -269,19 +269,19 @@ class PageEditor extends React.Component {
    * @param {number} offset
    */
   scrollEditorByPreviewScroll(offset) {
-    if (this.previewElement == null) {
-      return;
-    }
+    // if (this.previewElement == null) {
+    //   return;
+    // }
 
-    // prevent circular invocation
-    if (this.isOriginOfScrollSyncEditor) {
-      this.isOriginOfScrollSyncEditor = false; // turn off the flag
-      return;
-    }
+    // // prevent circular invocation
+    // if (this.isOriginOfScrollSyncEditor) {
+    //   this.isOriginOfScrollSyncEditor = false; // turn off the flag
+    //   return;
+    // }
 
-    // turn on the flag
-    this.isOriginOfScrollSyncPreview = true;
-    scrollSyncHelper.scrollEditor(this.editor, this.previewElement, offset);
+    // // turn on the flag
+    // this.isOriginOfScrollSyncPreview = true;
+    // scrollSyncHelper.scrollEditor(this.editor, this.previewElement, offset);
   }
 
   saveDraft() {
