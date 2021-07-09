@@ -3,7 +3,6 @@ import React, { useCallback, useEffect } from 'react';
 
 import {
   withNavigationUIController,
-  LayoutManager,
   NavigationProvider,
   ThemeProvider,
 } from '@atlaskit/navigation-next';
@@ -169,6 +168,9 @@ const Sidebar = (props: Props) => {
     toggleDrawerMode(isDrawerMode);
   }, [isDrawerMode, toggleDrawerMode]);
 
+  const toggleNavigationBtnClickHandler = useCallback(() => {
+    navigationUIController.toggleCollapse();
+  }, [navigationUIController]);
 
   return (
     <>
@@ -207,7 +209,13 @@ const Sidebar = (props: Props) => {
                 </div>
                 <div>
                   <div>
-                    <button className="ak-navigation-resize-button css-889cso" type="button" aria-expanded="true" aria-label="Toggle navigation">
+                    <button
+                      className="ak-navigation-resize-button css-889cso"
+                      type="button"
+                      aria-expanded="true"
+                      aria-label="Toggle navigation"
+                      onClick={toggleNavigationBtnClickHandler}
+                    >
                       <div className="css-z8pkji"></div>
                       <span role="presentation" className="sc-AxjAm jMDUxe"></span>
                     </button>

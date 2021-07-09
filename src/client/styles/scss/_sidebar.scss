@@ -96,6 +96,7 @@
       .grw-contextual-navigation {
         position: relative;
         height: 100%;
+        transition: width 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
         .grw-contextual-navigation-sub {
           box-sizing: border-box;
           display: flex;
@@ -299,4 +300,36 @@
 
 .grw-sidebar-backdrop.modal-backdrop {
   z-index: $zindex-fixed + 1;
+}
+
+.css-889cso {
+  position: absolute;
+  top: 32px;
+  width: 24px;
+  height: 24px;
+  padding: 0px;
+  color: rgb(107, 119, 140);
+  cursor: pointer;
+  /* background: 0px center white; */
+  border: 0px;
+  border-radius: 50%;
+  outline: 0px;
+  box-shadow: rgb(9 30 66 / 8%) 0px 0px 0px 1px, rgb(9 30 66 / 8%) 0px 2px 4px 1px;
+  opacity: 1;
+  transition: background-color 100ms linear 0s, color 100ms linear 0s, opacity 300ms cubic-bezier(0.2, 0, 0, 1) 0s,
+    transform 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+  transform: translate(-50%);
+}
+
+.css-z8pkji {
+  position: absolute;
+  inset: -8px -12px -8px -8px;
+}
+
+.jMDUxe {
+  display: inline-block;
+  flex-shrink: 0;
+  line-height: 1;
+  color: currentcolor;
+  fill: rgb(255, 255, 255);
 }
