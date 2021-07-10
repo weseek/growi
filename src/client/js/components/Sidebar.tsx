@@ -178,20 +178,22 @@ const Sidebar = (props: Props) => {
       setProductNavWidth(sidebarDefaultWidth);
     }
     if (!isHover && navigationUIController.state.isCollapsed) {
-      setProductNavWidth(0);
+      setProductNavWidth(20);
     }
   }, [navigationUIController.state.isCollapsed]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     navigationUIController.toggleCollapse();
+  }, [navigationUIController]);
 
+  useEffect(() => {
     if (navigationUIController.state.isCollapsed) {
-      setProductNavWidth(0);
+      setProductNavWidth(20);
     }
     else {
       setProductNavWidth(sidebarDefaultWidth);
     }
-  }, [navigationUIController]);
+  }, [navigationUIController.state.isCollapsed]);
 
   return (
     <>
@@ -203,22 +205,23 @@ const Sidebar = (props: Props) => {
           })}
         >
           <div className="data-layout-container">
-            <div className="navigation" onMouseEnter={() => hoverHandler(true)} onMouseLeave={() => hoverHandler(false)}>
+            <div className="navigation">
               <div className="grw-navigation-wrap">
                 <div className="grw-global-navigation">
                   <GlobalNavigation></GlobalNavigation>
                 </div>
-                <div className="grw-contextual-navigation" style={{ width: productNavWidth }}>
+                <div
+                  className="grw-contextual-navigation"
+                  style={{ width: productNavWidth }}
+                  onMouseEnter={() => hoverHandler(true)}
+                  onMouseLeave={() => hoverHandler(false)}
+                >
                   <div className="grw-contextual-navigation-child">
                     <div role="group" className="grw-contextual-navigation-sub"></div>
                   </div>
                   <div className="grw-contextual-navigation-child2">
-                    <div role="group" className="grw-contextual-navigation-sub">
-                      <div className="SlimScrollDiv">
-                        <SidebarContents></SidebarContents>
-                      </div>
-                      <div className="slimScrollBar"></div>
-                      <div className="slimScrollRail"></div>
+                    <div role="group" className={`grw-contextual-navigation-sub ${!isHover && navigationUIController.state.isCollapsed ? 'collapsed' : ''}`}>
+                      <SidebarContents></SidebarContents>
                     </div>
                   </div>
                 </div>
@@ -231,7 +234,7 @@ const Sidebar = (props: Props) => {
                 <div>
                   <div>
                     <button
-                      className={`ak-navigation-resize-button ${isHover || navigationUIController.state.isCollapsed ? 'hover-state' : 'normal-state'} `}
+                      className={`ak-navigation-resize-button ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
                       type="button"
                       aria-expanded="true"
                       aria-label="Toggle navigation"
@@ -256,19 +259,6 @@ const Sidebar = (props: Props) => {
               </div>
             </div>
           </div>
-
-          {/* <LayoutManager
-            globalNavigation={GlobalNavigation}
-            productNavigation={() => null}
-            containerNavigation={SidebarContents}
-            experimental_hideNavVisuallyOnCollapse
-            experimental_flyoutOnHover
-            experimental_alternateFlyoutBehaviour
-            experimental_fullWidthFlyout
-            shouldHideGlobalNavShadow
-            showContextualNavigation
-          >
-          </LayoutManager> */}
         </ThemeProvider>
       </div>
 
