@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import React, {
-  MouseEvent, useCallback, useEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 
 import {
@@ -16,7 +16,7 @@ import {
 import SidebarNav from './Sidebar/SidebarNav';
 
 const sidebarDefaultWidth = 320;
-
+const sidebarMinWidth = 240;
 
 type GlobalNavigationProps = {
   navigationUIController: any, // UIController from @atlaskit/navigation-next
@@ -209,16 +209,20 @@ const Sidebar = (props: Props) => {
   }, [isDragging]);
 
   const dragableAreaMouseUpHandler = useCallback(() => {
-    setDrag(false);
+    if (isDragging) {
+      setDrag(false);
 
-    if (productNavWidth < 240) {
-      setProductNavWidth(sidebarDefaultWidth);
-      navigationUIController.collapse();
+      if (productNavWidth < sidebarMinWidth) {
+        setProductNavWidth(sidebarMinWidth);
+        setSidebarWidthCached(sidebarMinWidth);
+        navigationUIController.collapse();
+      }
+
+      document.removeEventListener('mousemove', draggableAreaMoveHandler);
+      document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
     }
 
-    document.removeEventListener('mousemove', draggableAreaMoveHandler);
-    document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
-  }, [productNavWidth, navigationUIController, draggableAreaMoveHandler]);
+  }, [isDragging, productNavWidth, navigationUIController, draggableAreaMoveHandler]);
 
   const dragableAreaClickHandler = useCallback(() => {
     if (navigationUIController.state.isCollapsed) {
