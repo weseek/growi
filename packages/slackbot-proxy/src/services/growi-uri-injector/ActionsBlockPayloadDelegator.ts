@@ -1,4 +1,4 @@
-import { Inject, Service } from '@tsed/di';
+import { Inject, OnInit, Service } from '@tsed/di';
 import {
   BlockActionsPayload, BlockElement, GrowiUriInjector, GrowiUriWithOriginalData,
 } from '~/interfaces/growi-uri-injector';
@@ -6,14 +6,14 @@ import { ButtonActionPayloadDelegator } from './block-elements/ButtonActionPaylo
 
 
 @Service()
-export class ActionsBlockPayloadDelegator implements GrowiUriInjector<BlockElement[], BlockActionsPayload & {actions: any}> {
+export class ActionsBlockPayloadDelegator implements GrowiUriInjector<BlockElement[], BlockActionsPayload & {actions: any}>, OnInit {
 
   @Inject()
   buttonActionPayloadDelegator: ButtonActionPayloadDelegator;
 
   private childDelegators: GrowiUriInjector<any, any>[] = [];
 
-  constructor() {
+  $onInit(): void | Promise<any> {
     this.childDelegators.push(this.buttonActionPayloadDelegator);
   }
 

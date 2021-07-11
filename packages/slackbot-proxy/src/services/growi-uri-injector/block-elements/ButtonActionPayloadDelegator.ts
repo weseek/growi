@@ -1,5 +1,7 @@
+import { Service } from '@tsed/di';
 import { GrowiUriWithOriginalData, GrowiUriInjector } from '~/interfaces/growi-uri-injector';
 
+@Service()
 export class ButtonActionPayloadDelegator implements GrowiUriInjector<{type: string, value: string}[], {type: string, value: string}> {
 
   shouldHandleToInject(elements: {type: string}[]): boolean {
