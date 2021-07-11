@@ -26,10 +26,3 @@ export interface GrowiUriInjector<ISDATA, IDATA, ESDATA, EDATA> {
   extract(data: EDATA): GrowiUriWithOriginalData;
 
 }
-
-export interface ObsoleteGrowiUriInjector {
-
-  inject(body: any, growiUri:string): void;
-
-  extract(body: any):any;
-}
