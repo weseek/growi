@@ -19,10 +19,10 @@ export const isGrowiUriWithOriginalData = (data: any): data is GrowiUriWithOrigi
 
 export interface GrowiUriInjector<ISDATA, IDATA, ESDATA, EDATA> {
 
-  shouldHandleToInject(data: ISDATA): boolean;
+  shouldHandleToInject(data: ISDATA & any): data is IDATA;
   inject(data: IDATA, growiUri:string): void;
 
-  shouldHandleToExtract(data: ESDATA): boolean;
+  shouldHandleToExtract(data: ESDATA & any): data is EDATA;
   extract(data: EDATA): GrowiUriWithOriginalData;
 
 }
