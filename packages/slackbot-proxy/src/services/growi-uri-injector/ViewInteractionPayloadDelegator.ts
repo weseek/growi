@@ -37,7 +37,7 @@ export class ViewInteractionPayloadDelegator implements GrowiUriInjector<ViewEle
   extract(data: ViewInteractionPayload): GrowiUriWithOriginalData {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const restoredData: GrowiUriWithOriginalData = JSON.parse(data.view.private_metadata!); // private_metadata must not be null at this moment
-    data.view.private_metadata = JSON.parse(restoredData.originalData);
+    data.view.private_metadata = restoredData.originalData;
 
     return restoredData;
   }
