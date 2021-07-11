@@ -33,7 +33,6 @@ export class ButtonActionPayloadDelegator implements GrowiUriInjector<TypedBlock
   }
 
   extract(action: ButtonActionPayload): GrowiUriWithOriginalData {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const restoredData: GrowiUriWithOriginalData = JSON.parse(action.value);
     action.value = restoredData.originalData;
 
