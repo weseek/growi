@@ -3,7 +3,7 @@ import {
 } from '@tsed/common';
 import axios from 'axios';
 
-import { WebAPICallOptions, WebAPICallResult } from '@slack/web-api';
+import { WebAPICallResult } from '@slack/web-api';
 
 import {
   verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient,
@@ -20,7 +20,6 @@ import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
-import { BlockElement, ViewElement } from '~/interfaces/growi-uri-injector';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
@@ -178,26 +177,27 @@ export class GrowiToSlackCtrl {
     return res.send({ relation: createdRelation, slackBotToken: token });
   }
 
-  injectGrowiUri(req: GrowiReq, growiUri: string):WebAPICallOptions {
-
-    // delegate to ViewInteractionPayloadDelegator
-    if (this.viewInteractionPayloadDelegator.shouldHandleToInject(req)) {
-      const parsedView = JSON.parse(req.body.view) as ViewElement;
-      this.viewInteractionPayloadDelegator.inject(parsedView, growiUri);
-      req.body.view = JSON.stringify(parsedView);
+  injectGrowiUri(req: GrowiReq, growiUri: string): void {
+    if (req.body.view == null && req.body.blocks == null) {
+      return;
     }
 
-    // delegate to ActionsBlockPayloadDelegator
-    if (this.actionsBlockPayloadDelegator.shouldHandleToInject(req)) {
-      const parsedBlocks = JSON.parse(req.body.blocks) as BlockElement[];
-      this.actionsBlockPayloadDelegator.inject(parsedBlocks, growiUri);
-      req.body.blocks = JSON.stringify(parsedBlocks);
+    if (req.body.view != null) {
+      const parsedElement = JSON.parse(req.body.view);
+      // delegate to ViewInteractionPayloadDelegator
+      if (this.viewInteractionPayloadDelegator.shouldHandleToInject(parsedElement)) {
+        this.viewInteractionPayloadDelegator.inject(parsedElement, growiUri);
+        req.body.view = JSON.stringify(parsedElement);
+      }
     }
-
-    const opt = req.body;
-    opt.headers = req.headers;
-
-    return opt;
+    else if (req.body.blocks != null) {
+      const parsedElement = JSON.parse(req.body.blocks);
+      // delegate to ActionsBlockPayloadDelegator
+      if (this.actionsBlockPayloadDelegator.shouldHandleToInject(parsedElement)) {
+        this.actionsBlockPayloadDelegator.inject(parsedElement, growiUri);
+        req.body.blocks = JSON.stringify(parsedElement);
+      }
+    }
   }
 
   @Post('/:method')
@@ -231,7 +231,10 @@ export class GrowiToSlackCtrl {
     const client = generateWebClient(token);
 
     try {
-      const opt = this.injectGrowiUri(req, relation.growiUri);
+      this.injectGrowiUri(req, relation.growiUri);
+
+      const opt = req.body;
+      opt.headers = req.headers;
 
       await client.apiCall(method, opt);
     }

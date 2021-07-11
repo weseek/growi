@@ -1,15 +1,24 @@
 import { Service } from '@tsed/di';
-import { GrowiUriWithOriginalData, GrowiUriInjector } from '~/interfaces/growi-uri-injector';
+import { GrowiUriWithOriginalData, GrowiUriInjector, TypedBlock } from '~/interfaces/growi-uri-injector';
+
+
+type ButtonElement = TypedBlock & {
+  value: string,
+}
+
+type ButtonActionPayload = TypedBlock & {
+  value: string,
+}
 
 @Service()
-export class ButtonActionPayloadDelegator implements GrowiUriInjector<{type: string, value: string}[], {type: string, value: string}> {
+export class ButtonActionPayloadDelegator implements GrowiUriInjector<TypedBlock[], ButtonElement[], TypedBlock, ButtonActionPayload> {
 
-  shouldHandleToInject(elements: {type: string}[]): boolean {
+  shouldHandleToInject(elements: TypedBlock[]): elements is ButtonElement[] {
     const buttonElements = elements.filter(element => element.type === 'button');
     return buttonElements.length > 0;
   }
 
-  inject(elements: {type: string, value: string}[], growiUri: string): void {
+  inject(elements: ButtonElement[], growiUri: string): void {
     const buttonElements = elements.filter(blockElement => blockElement.type === 'button');
 
     buttonElements
@@ -19,11 +28,11 @@ export class ButtonActionPayloadDelegator implements GrowiUriInjector<{type: str
       });
   }
 
-  shouldHandleToExtract(action: {type: string, value: string}): boolean {
+  shouldHandleToExtract(action: TypedBlock): action is ButtonActionPayload {
     return action.type === 'button';
   }
 
-  extract(action: {type: string, value: string}): GrowiUriWithOriginalData {
+  extract(action: ButtonActionPayload): GrowiUriWithOriginalData {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const restoredData: GrowiUriWithOriginalData = JSON.parse(action.value);
     action.value = restoredData.originalData;

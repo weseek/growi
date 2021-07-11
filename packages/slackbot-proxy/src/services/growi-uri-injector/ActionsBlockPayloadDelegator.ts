@@ -1,25 +1,36 @@
 import { Inject, OnInit, Service } from '@tsed/di';
-import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import {
-  BlockActionsPayload, BlockElement, GrowiUriInjector, GrowiUriWithOriginalData,
+  GrowiUriInjector, GrowiUriWithOriginalData, TypedBlock,
 } from '~/interfaces/growi-uri-injector';
 import { ButtonActionPayloadDelegator } from './block-elements/ButtonActionPayloadDelegator';
 
 
+// see: https://api.slack.com/reference/block-kit/blocks
+type BlockElement = TypedBlock & {
+  elements: (TypedBlock & any)[],
+}
+
+// see: https://api.slack.com/reference/interaction-payloads/block-actions
+type BlockActionsPayload = TypedBlock & {
+  actions: TypedBlock[],
+}
+
 @Service()
-export class ActionsBlockPayloadDelegator implements GrowiUriInjector<BlockElement[], BlockActionsPayload & {actions: any}>, OnInit {
+export class ActionsBlockPayloadDelegator implements GrowiUriInjector<any, BlockElement[], any, BlockActionsPayload>, OnInit {
 
   @Inject()
   buttonActionPayloadDelegator: ButtonActionPayloadDelegator;
 
-  private childDelegators: GrowiUriInjector<any, any>[] = [];
+  private childDelegators: (ButtonActionPayloadDelegator)[] = [];
 
   $onInit(): void | Promise<any> {
     this.childDelegators.push(this.buttonActionPayloadDelegator);
   }
 
-  shouldHandleToInject(req: GrowiReq): boolean {
-    return req.body.blocks != null;
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  shouldHandleToInject(data: any): data is BlockElement[] {
+    const actionsBlocks = data.filter(blockElement => blockElement.type === 'actions');
+    return actionsBlocks.length > 0;
   }
 
   inject(data: BlockElement[], growiUri: string): void {
@@ -36,8 +47,8 @@ export class ActionsBlockPayloadDelegator implements GrowiUriInjector<BlockEleme
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  shouldHandleToExtract(data: BlockActionsPayload & {actions?: any}): boolean {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  shouldHandleToExtract(data: any): data is BlockActionsPayload {
     if (data.actions == null || data.actions.length === 0) {
       return false;
     }
@@ -48,7 +59,7 @@ export class ActionsBlockPayloadDelegator implements GrowiUriInjector<BlockEleme
       .includes(true);
   }
 
-  extract(data: BlockActionsPayload & {actions: any}): GrowiUriWithOriginalData {
+  extract(data: BlockActionsPayload): GrowiUriWithOriginalData {
     let growiUriWithOriginalData: GrowiUriWithOriginalData;
 
     const action = data.actions[0];

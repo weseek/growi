@@ -1,14 +1,26 @@
 import { Service } from '@tsed/di';
-import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import {
-  GrowiUriInjector, GrowiUriWithOriginalData, isGrowiUriWithOriginalData, ViewElement, ViewInteractionPayload,
+  GrowiUriInjector, GrowiUriWithOriginalData, isGrowiUriWithOriginalData, TypedBlock,
 } from '~/interfaces/growi-uri-injector';
 
-@Service()
-export class ViewInteractionPayloadDelegator implements GrowiUriInjector<ViewElement, ViewInteractionPayload> {
+// see: https://api.slack.com/reference/interaction-payloads/views
+type ViewElement = TypedBlock & {
+  'private_metadata'?: any,
+}
 
-  shouldHandleToInject(req: GrowiReq): boolean {
-    return req.body.view != null;
+// see: https://api.slack.com/reference/interaction-payloads/views
+type ViewInteractionPayload = TypedBlock & {
+  view: {
+    'private_metadata'?: any,
+  },
+}
+
+@Service()
+export class ViewInteractionPayloadDelegator implements GrowiUriInjector<any, ViewElement, any, ViewInteractionPayload> {
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  shouldHandleToInject(data: any): data is ViewElement {
+    return data.type != null && data.private_metadata != null;
   }
 
   inject(data: ViewElement, growiUri :string): void {
@@ -19,9 +31,13 @@ export class ViewInteractionPayloadDelegator implements GrowiUriInjector<ViewEle
     data.private_metadata = JSON.stringify(urlWithOrgData);
   }
 
-  shouldHandleToExtract(data: ViewInteractionPayload): boolean {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  shouldHandleToExtract(data: any): data is ViewInteractionPayload {
     const { type, view } = data;
     if (type !== 'view_submission') {
+      return false;
+    }
+    if (view.private_metadata == null) {
       return false;
     }
 

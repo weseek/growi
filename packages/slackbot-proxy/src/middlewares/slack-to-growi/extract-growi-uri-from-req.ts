@@ -25,15 +25,13 @@ export class ExtractGrowiUriFromReq implements IMiddleware {
 
     const parsedPayload = JSON.parse(req.body.payload);
 
-    // iterate
-    for (const delegator of [this.viewInteractionPayloadDelegator, this.actionsBlockPayloadDelegator]) {
-      if (delegator.shouldHandleToExtract(parsedPayload)) {
-        const data = delegator.extract(parsedPayload);
-        req.growiUri = data.growiUri;
-
-        // break if growiUri discovered
-        break;
-      }
+    if (this.viewInteractionPayloadDelegator.shouldHandleToExtract(parsedPayload)) {
+      const data = this.viewInteractionPayloadDelegator.extract(parsedPayload);
+      req.growiUri = data.growiUri;
+    }
+    else if (this.actionsBlockPayloadDelegator.shouldHandleToExtract(parsedPayload)) {
+      const data = this.actionsBlockPayloadDelegator.extract(parsedPayload);
+      req.growiUri = data.growiUri;
     }
 
     req.body.payload = JSON.stringify(parsedPayload);
