@@ -3,6 +3,7 @@ import {
   GrowiUriInjector, GrowiUriWithOriginalData, TypedBlock,
 } from '~/interfaces/growi-uri-injector';
 import { ButtonActionPayloadDelegator } from './block-elements/ButtonActionPayloadDelegator';
+import { CheckboxesActionPayloadDelegator } from './block-elements/CheckboxesActionPayloadDelegator';
 
 
 // see: https://api.slack.com/reference/block-kit/blocks
@@ -21,10 +22,16 @@ export class ActionsBlockPayloadDelegator implements GrowiUriInjector<any, Block
   @Inject()
   buttonActionPayloadDelegator: ButtonActionPayloadDelegator;
 
-  private childDelegators: (ButtonActionPayloadDelegator)[] = [];
+  @Inject()
+  checkboxesActionPayloadDelegator: CheckboxesActionPayloadDelegator;
+
+  private childDelegators: GrowiUriInjector<TypedBlock[], any, TypedBlock, any>[] = [];
 
   $onInit(): void | Promise<any> {
-    this.childDelegators.push(this.buttonActionPayloadDelegator);
+    this.childDelegators.push(
+      this.buttonActionPayloadDelegator,
+      this.checkboxesActionPayloadDelegator,
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
