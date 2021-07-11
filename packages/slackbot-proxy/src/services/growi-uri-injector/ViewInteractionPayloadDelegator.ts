@@ -1,7 +1,9 @@
+import { Service } from '@tsed/di';
 import {
   GrowiUriInjector, GrowiUriWithOriginalData, isGrowiUriWithOriginalData, ViewElement, ViewInteractionPayload,
 } from '~/interfaces/growi-uri-injector';
 
+@Service()
 export class ViewInteractionPayloadDelegator implements GrowiUriInjector<ViewElement, ViewInteractionPayload> {
 
   shouldHandleToInject(data: ViewElement): boolean {

@@ -15,13 +15,13 @@ export type ViewInteractionPayload = {
 // see: https://api.slack.com/reference/block-kit/blocks
 export type BlockElement = {
   type: string,
-  elements: { type: string }[],
+  element?: { type: string } & any,
+  elements?: ({ type: string } & any)[],
 }
 
 // see: https://api.slack.com/reference/interaction-payloads/block-actions
 export type BlockActionsPayload = {
   type: string,
-  actions: { type: string }[],
 }
 
 export type GrowiUriWithOriginalData = {

@@ -19,7 +19,7 @@ import { OrderRepository } from '~/repositories/order';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
-import { BlockActionsPayloadDelegator } from '~/services/growi-uri-injector/BlockActionsPayloadDelegator';
+import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
 import { BlockElement, ViewElement } from '~/interfaces/growi-uri-injector';
 
 
@@ -42,6 +42,12 @@ export class GrowiToSlackCtrl {
 
   @Inject()
   orderRepository: OrderRepository;
+
+  @Inject()
+  viewInteractionPayloadDelegator: ViewInteractionPayloadDelegator;
+
+  @Inject()
+  actionsBlockPayloadDelegator: ActionsBlockPayloadDelegator;
 
   async requestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
     const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
@@ -174,53 +180,20 @@ export class GrowiToSlackCtrl {
 
   injectGrowiUri(req: GrowiReq, growiUri: string):WebAPICallOptions {
 
-    // TODO: get list from decorator
-    const vipDelegators: ViewInteractionPayloadDelegator[] = [new ViewInteractionPayloadDelegator()];
-    const bapDelegators: BlockActionsPayloadDelegator[] = [];
-
     const parsedView = JSON.parse(req.body.view) as ViewElement;
     const parsedBlocks = JSON.parse(req.body.blocks) as BlockElement[];
 
-    vipDelegators.forEach((delegator) => {
-      if (delegator.shouldHandleToInject(parsedView)) {
-        delegator.inject(parsedView, growiUri);
-      }
-    });
-    req.body.view = JSON.stringify(parsedView);
+    // delegate to ViewInteractionPayloadDelegator
+    if (this.viewInteractionPayloadDelegator.shouldHandleToInject(parsedView)) {
+      this.viewInteractionPayloadDelegator.inject(parsedView, growiUri);
+      req.body.view = JSON.stringify(parsedView);
+    }
 
-    // bapDelegators.forEach((delegator) => {
-    //   if (delegator.shouldHandleToInject(parsedBlocks)) {
-    //     delegator.inject(parsedBlocks, growiUri);
-    //   }
-    // });
-    // req.body.blocks = JSON.stringify(parsedBlocks);
-
-    // const vipd = new ViewInteractionPayloadDelegator();
-    // if (vipd.shouldHandleToInject(req)) {
-    //   vipd.inject(req.body, growiUri);
-    // }
-    // else if (req.body.blocks != null) {
-    //   const parsedBlocks = JSON.parse(req.body.blocks) as any[];
-    //   req.parsedBlocks = parsedBlocks;
-
-    //   // TODO: iterate with decorator
-
-    //   parsedBlocks.forEach((parsedBlock) => {
-    //     if (parsedBlock.type !== 'actions') {
-    //       return;
-    //     }
-    //     parsedBlock.elements.forEach((element) => {
-    //       const growiUriInjector = findInjectorByType(element.type);
-    //       if (growiUriInjector != null) {
-    //         growiUriInjector.inject(element, growiUri);
-    //       }
-    //     });
-
-    //     return;
-    //   });
-
-    //   req.body.blocks = JSON.stringify(parsedBlocks);
-    // }
+    // delegate to ActionsBlockPayloadDelegator
+    if (this.actionsBlockPayloadDelegator.shouldHandleToInject(parsedBlocks)) {
+      this.actionsBlockPayloadDelegator.inject(parsedBlocks, growiUri);
+      req.body.blocks = JSON.stringify(parsedBlocks);
+    }
 
     const opt = req.body;
     opt.headers = req.headers;
