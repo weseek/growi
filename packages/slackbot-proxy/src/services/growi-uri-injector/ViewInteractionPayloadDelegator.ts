@@ -1,4 +1,5 @@
 import { Service } from '@tsed/di';
+import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import {
   GrowiUriInjector, GrowiUriWithOriginalData, isGrowiUriWithOriginalData, ViewElement, ViewInteractionPayload,
 } from '~/interfaces/growi-uri-injector';
@@ -6,8 +7,8 @@ import {
 @Service()
 export class ViewInteractionPayloadDelegator implements GrowiUriInjector<ViewElement, ViewInteractionPayload> {
 
-  shouldHandleToInject(data: ViewElement): boolean {
-    return data != null;
+  shouldHandleToInject(req: GrowiReq): boolean {
+    return req.body.view != null;
   }
 
   inject(data: ViewElement, growiUri :string): void {

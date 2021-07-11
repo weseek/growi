@@ -1,4 +1,5 @@
 import { Inject, OnInit, Service } from '@tsed/di';
+import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import {
   BlockActionsPayload, BlockElement, GrowiUriInjector, GrowiUriWithOriginalData,
 } from '~/interfaces/growi-uri-injector';
@@ -17,19 +18,8 @@ export class ActionsBlockPayloadDelegator implements GrowiUriInjector<BlockEleme
     this.childDelegators.push(this.buttonActionPayloadDelegator);
   }
 
-  shouldHandleToInject(data: BlockElement[]): boolean {
-    const actionsBlocks = data.filter(blockElement => blockElement.type === 'actions');
-    if (actionsBlocks.length === 0) {
-      return false;
-    }
-
-    // collect elements
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const elements = actionsBlocks.flatMap(actionBlock => actionBlock.elements!);
-
-    return this.childDelegators
-      .map(delegator => delegator.shouldHandleToInject(elements))
-      .includes(true);
+  shouldHandleToInject(req: GrowiReq): boolean {
+    return req.body.blocks != null;
   }
 
   inject(data: BlockElement[], growiUri: string): void {
@@ -52,17 +42,19 @@ export class ActionsBlockPayloadDelegator implements GrowiUriInjector<BlockEleme
       return false;
     }
 
+    const action = data.actions[0];
     return this.childDelegators
-      .map(delegator => delegator.shouldHandleToExtract(data.actions))
+      .map(delegator => delegator.shouldHandleToExtract(action))
       .includes(true);
   }
 
   extract(data: BlockActionsPayload & {actions: any}): GrowiUriWithOriginalData {
     let growiUriWithOriginalData: GrowiUriWithOriginalData;
 
+    const action = data.actions[0];
     for (const delegator of this.childDelegators) {
-      if (delegator.shouldHandleToExtract(data.actions)) {
-        growiUriWithOriginalData = delegator.extract(data.actions);
+      if (delegator.shouldHandleToExtract(action)) {
+        growiUriWithOriginalData = delegator.extract(action);
         break;
       }
     }

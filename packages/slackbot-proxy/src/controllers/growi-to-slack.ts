@@ -180,17 +180,16 @@ export class GrowiToSlackCtrl {
 
   injectGrowiUri(req: GrowiReq, growiUri: string):WebAPICallOptions {
 
-    const parsedView = JSON.parse(req.body.view) as ViewElement;
-    const parsedBlocks = JSON.parse(req.body.blocks) as BlockElement[];
-
     // delegate to ViewInteractionPayloadDelegator
-    if (this.viewInteractionPayloadDelegator.shouldHandleToInject(parsedView)) {
+    if (this.viewInteractionPayloadDelegator.shouldHandleToInject(req)) {
+      const parsedView = JSON.parse(req.body.view) as ViewElement;
       this.viewInteractionPayloadDelegator.inject(parsedView, growiUri);
       req.body.view = JSON.stringify(parsedView);
     }
 
     // delegate to ActionsBlockPayloadDelegator
-    if (this.actionsBlockPayloadDelegator.shouldHandleToInject(parsedBlocks)) {
+    if (this.actionsBlockPayloadDelegator.shouldHandleToInject(req)) {
+      const parsedBlocks = JSON.parse(req.body.blocks) as BlockElement[];
       this.actionsBlockPayloadDelegator.inject(parsedBlocks, growiUri);
       req.body.blocks = JSON.stringify(parsedBlocks);
     }

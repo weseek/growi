@@ -41,11 +41,11 @@ export const isGrowiUriWithOriginalData = (data: any): data is GrowiUriWithOrigi
 
 export interface GrowiUriInjector<IDATA extends ViewElement|BlockElement[], EDATA extends (ViewInteractionPayload|BlockActionsPayload)> {
 
-  shouldHandleToInject(data: IDATA): boolean;
-  inject(data: IDATA, growiUri:string): void;
+  shouldHandleToInject(data: unknown): boolean;
+  inject(data: unknown, growiUri:string): void;
 
   shouldHandleToExtract(data: EDATA): boolean;
-  extract(data: EDATA): GrowiUriWithOriginalData;
+  extract(data: unknown): GrowiUriWithOriginalData;
 
 }
 
