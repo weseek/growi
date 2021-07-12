@@ -247,26 +247,33 @@ class SlackBotService extends S2sMessageHandlable {
     const keywords = this.getKeywords(args);
 
 
-    const searchResultsNum = pages.length;
     let searchResultsDesc;
 
-    switch (searchResultsNum) {
+    switch (resultsTotal) {
       case 1:
-        searchResultsDesc = `:mag: *${searchResultsNum}* page is found.`;
+        searchResultsDesc = `*${resultsTotal}* page is found.`;
         break;
 
       default:
-        searchResultsDesc = `:mag: *${searchResultsNum}* pages are found.`;
+        searchResultsDesc = `*${resultsTotal}* pages are found.`;
         break;
     }
 
 
-    const now = new Date();
+    const contextBlock = {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `keyword(s) : *"${keywords}"*  |  Current: ${offset + 1} - ${offset + pages.length}  |  Total ${resultsTotal} pages`,
+        },
+      ],
+    };
 
+    const now = new Date();
     const blocks = [
-      this.generateMarkdownSectionBlock(searchResultsDesc),
-      { type: 'divider' },
-      this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>\nkeyword(s) : *"${keywords}"*.`),
+      this.generateMarkdownSectionBlock(`:mag: <${decodeURI(appUrl)}|*${appTitle}*>\n${searchResultsDesc}`),
+      contextBlock,
       { type: 'divider' },
       // create an array by map and extract
       ...pages.map((page) => {
@@ -284,7 +291,7 @@ class SlackBotService extends S2sMessageHandlable {
           },
           accessory: {
             type: 'button',
-            action_id: 'shareSinglePage',
+            action_id: 'shareSingleSearchResult',
             text: {
               type: 'plain_text',
               text: 'Share',
@@ -293,6 +300,8 @@ class SlackBotService extends S2sMessageHandlable {
           },
         };
       }),
+      { type: 'divider' },
+      contextBlock,
     ];
 
     // DEFAULT show "Share" button
@@ -320,7 +329,7 @@ class SlackBotService extends S2sMessageHandlable {
             text: 'Dismiss',
           },
           style: 'danger',
-          action_id: 'dismiss',
+          action_id: 'dismissSearchResults',
         },
       ],
     };
