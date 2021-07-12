@@ -20,6 +20,7 @@ import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
+import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/SectionBlockPayloadDelegator';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
@@ -47,6 +48,9 @@ export class GrowiToSlackCtrl {
 
   @Inject()
   actionsBlockPayloadDelegator: ActionsBlockPayloadDelegator;
+
+  @Inject()
+  sectionBlockPayloadDelegator: SectionBlockPayloadDelegator;
 
   async requestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
     const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
@@ -195,6 +199,11 @@ export class GrowiToSlackCtrl {
       // delegate to ActionsBlockPayloadDelegator
       if (this.actionsBlockPayloadDelegator.shouldHandleToInject(parsedElement)) {
         this.actionsBlockPayloadDelegator.inject(parsedElement, growiUri);
+        req.body.blocks = JSON.stringify(parsedElement);
+      }
+      // delegate to SectionBlockPayloadDelegator
+      if (this.sectionBlockPayloadDelegator.shouldHandleToInject(parsedElement)) {
+        this.sectionBlockPayloadDelegator.inject(parsedElement, growiUri);
         req.body.blocks = JSON.stringify(parsedElement);
       }
     }
