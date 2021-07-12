@@ -145,8 +145,12 @@ module.exports = (crowi) => {
     const { action_id: actionId } = payload.actions[0];
 
     switch (actionId) {
-      case 'shareSinglePage': {
+      case 'shareSingleSearchResult': {
         await crowi.slackBotService.shareSinglePage(client, payload);
+        break;
+      }
+      case 'dismissSearchResults': {
+        await crowi.slackBotService.dismissSearchResults(client, payload);
         break;
       }
       case 'showNextResults': {

@@ -1,6 +1,7 @@
 
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
+const axios = require('axios');
 const { formatDistanceStrict } = require('date-fns');
 
 const PAGINGLIMIT = 10;
@@ -180,11 +181,6 @@ class SlackBotService extends S2sMessageHandlable {
   async shareSinglePage(client, payload) {
     const { channel, user, actions } = payload;
 
-    // return axios.post(responseUrl, {
-    //   response_type: 'in_channel',
-    //   delete_original: true,
-    // });
-
     const appUrl = this.crowi.appService.getSiteUrl();
     const appTitle = this.crowi.appService.getAppTitle();
 
@@ -195,27 +191,9 @@ class SlackBotService extends S2sMessageHandlable {
     const { page, href, pathname } = JSON.parse(action.value);
     const { updatedAt, commentCount } = page;
 
-    // // get original message data
-    // const historyResult = await client.conversations.history({
-    //   channel: channelId,
-    // });
-
-    // console.log(historyResult.messages);
-    // if (!historyResult.ok || historyResult.messages.length !== 1) {
-    //   logger.error('Failed to share search results.');
-    //   await client.chat.postEphemeral({
-    //     channel: channelId,
-    //     text: 'Failed to share search results.',
-    //   });
-    //   throw new Error('Failed to share search results.');
-    // }
-
-    // const originalMessage = historyResult.messages[0];
-
-    // console.log({ originalMessage });
     // share
     const now = new Date();
-    const postPromise = client.chat.postMessage({
+    return client.chat.postMessage({
       channel: channelId,
       blocks: [
         this.generateMarkdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
@@ -230,16 +208,14 @@ class SlackBotService extends S2sMessageHandlable {
         },
       ],
     });
+  }
 
-    // // remove
-    // const deletePromise = client.chat.delete({
-    //   channel: channelId,
-    //   as_user: false,
-    //   ts: originalMessageTs,
-    // });
+  async dismissSearchResults(client, payload) {
+    const { response_url: responseUrl } = payload;
 
-    // return Promise.all([postPromise, deletePromise]);
-    return Promise.all([postPromise]);
+    return axios.post(responseUrl, {
+      delete_original: true,
+    });
   }
 
   async showEphemeralSearchResults(client, body, args, offsetNum) {
