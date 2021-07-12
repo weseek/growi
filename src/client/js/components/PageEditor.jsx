@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react'
+
+import { useCurrentPageSWR } from '~/stores/page';
+import { useIsMobile } from '~/stores/ui';
+import { useEditorConfig, useMathJax } from '~/stores/context';
 import PropTypes from 'prop-types';
 // import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
 // import { envUtils } from 'growi-commons';
 import loggerFactory from '~/utils/logger';
-import PageContainer from '../services/PageContainer';
-import EditorContainer from '../services/EditorContainer';
+// import PageContainer from '../services/PageContainer';
+// import EditorContainer from '../services/EditorContainer';
 // import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
-import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
+// import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
 import { useTranslation} from '~/i18n';
 
 const logger = loggerFactory('growi:PageEditor');
@@ -333,23 +337,36 @@ class PageEditor extends React.Component {
  */
 // const PageEditorWrapper = withUnstatedContainers(PageEditor, [PageContainer, EditorContainer]);
 
-const PageEditorWrapperForNextUse = (props) =>{
+// PageEditor.propTypes = {
+//   pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
+//   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+// };
+
+// export default PageEditorWrapper;
+
+const PageEditorSubstance = () => {
+
   const {t} = useTranslation()
+  const { data: currentPage } = useCurrentPageSWR();
+  const { data: isMobile } = useIsMobile();
+  const { data: config } = useEditorConfig();
+  const { data: mathJax } = useMathJax();
+
+  const [markdown, setMarkdown] = useState(currentPage?.revision?.body);
+  const [isUploadable, setIsUploadable] = useState(config.upload.image || config.upload.file);
+  const [isUploadableFile, setIsUploadableFile] = useState(config.upload.file);
+  const [isMathJaxEnabled, setIsMathJaxEnabled] = useState(!!mathJax);
+
   return (
     <PageEditor
-      t={t}
-      markdown={props.markdown}
-      isUploadable={props.isUploadable}
-      isUploadableFile={props.isUploadableFile}
-      isMathJaxEnabled={props.isMathJaxEnabled}
-      isMobile={props.isMobile}
+      t ={t}
+      isUploadable={isUploadable}
+      isUploadableFile={isUploadableFile}
+      isMathJaxEnabled={isMathJaxEnabled}
+      markdown={markdown}
+      isMobile={isMobile}
     />
   )
 }
 
-PageEditor.propTypes = {
-  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-};
-
-export default PageEditorWrapperForNextUse;
+export default PageEditorSubstance
