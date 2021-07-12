@@ -156,7 +156,15 @@ class SlackBotService extends S2sMessageHandlable {
     };
   }
 
-  async shareSearchResults(client, payload) {
+  async shareSinglePage(client, payload) {
+    console.log({ payload });
+    // const { response_url: responseUrl } = payload;
+
+    // return axios.post(responseUrl, {
+    //   response_type: 'in_channel',
+    //   delete_original: true,
+    // });
+
     const { channel, container } = payload;
     const channelId = channel.id;
     const originalMessageTs = container.message_ts;
@@ -166,23 +174,21 @@ class SlackBotService extends S2sMessageHandlable {
     // get original message data
     const historyResult = await client.conversations.history({
       channel: channelId,
-      inclusive: true,
-      latest: originalMessageTs,
-      limit: 1,
     });
 
-    if (!historyResult.ok || historyResult.messages.length !== 1) {
-      logger.error('Failed to share search results.');
-      await client.chat.postEphemeral({
-        channel: channelId,
-        text: 'Failed to share search results.',
-      });
-      throw new Error('Failed to share search results.');
-    }
+    console.log(historyResult.messages);
+    // if (!historyResult.ok || historyResult.messages.length !== 1) {
+    //   logger.error('Failed to share search results.');
+    //   await client.chat.postEphemeral({
+    //     channel: channelId,
+    //     text: 'Failed to share search results.',
+    //   });
+    //   throw new Error('Failed to share search results.');
+    // }
 
-    const originalMessage = historyResult.messages[0];
+    // const originalMessage = historyResult.messages[0];
 
-    console.log({ originalMessage });
+    // console.log({ originalMessage });
     // // share
     // const postPromise = client.chat.postMessage({
     //   channel: channelId,
@@ -220,44 +226,72 @@ class SlackBotService extends S2sMessageHandlable {
       throw new Error('/growi command:search: Failed to search');
     }
 
+    const appUrl = this.crowi.appService.getSiteUrl();
+    const appTitle = this.crowi.appService.getAppTitle();
+
     const {
       resultPaths, offset, resultsTotal,
     } = searchResult;
 
     const keywords = this.getKeywords(args);
 
-    if (resultPaths.length === 0) {
-      return;
-    }
-
-    const appUrl = this.crowi.appService.getSiteUrl();
-    const appTitle = this.crowi.appService.getAppTitle();
-
-    const urls = resultPaths.map((path) => {
-      const url = new URL(path, appUrl);
-      return `<${decodeURI(url.href)} | ${decodeURI(url.pathname)}>`;
-    });
 
     const searchResultsNum = resultPaths.length;
     let searchResultsDesc;
 
     switch (searchResultsNum) {
-      case 10:
-        searchResultsDesc = 'Maximum number of results that can be displayed is 10';
-        break;
-
       case 1:
-        searchResultsDesc = `${searchResultsNum} page is found`;
+        searchResultsDesc = `:mag: *${searchResultsNum}* page is found.`;
         break;
 
       default:
-        searchResultsDesc = `${searchResultsNum} pages are found`;
+        searchResultsDesc = `:mag: *${searchResultsNum}* pages are found.`;
         break;
     }
 
-    const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
+
+    const blocks = [
+      this.generateMarkdownSectionBlock(searchResultsDesc),
+      { type: 'divider' },
+      this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>\nkeyword(s) : *"${keywords}"*.`),
+      { type: 'divider' },
+      // create an array by map and extract
+      ...resultPaths.map((path) => {
+        const url = new URL(path, appUrl);
+        return {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `<${decodeURI(url.href)} | *${decodeURI(url.pathname)}*>`,
+          },
+          accessory: {
+            type: 'button',
+            action_id: 'shareSinglePage',
+            text: {
+              type: 'plain_text',
+              text: 'Share',
+            },
+            value: JSON.stringify({ path, url }),
+          },
+        };
+      }),
+    ];
 
     // DEFAULT show "Share" button
+    // const actionBlocks = {
+    //   type: 'actions',
+    //   elements: [
+    //     {
+    //       type: 'button',
+    //       text: {
+    //         type: 'plain_text',
+    //         text: 'Share',
+    //       },
+    //       style: 'primary',
+    //       action_id: 'shareSearchResults',
+    //     },
+    //   ],
+    // };
     const actionBlocks = {
       type: 'actions',
       elements: [
@@ -265,10 +299,10 @@ class SlackBotService extends S2sMessageHandlable {
           type: 'button',
           text: {
             type: 'plain_text',
-            text: 'Share',
+            text: 'Dismiss',
           },
-          style: 'primary',
-          action_id: 'shareSearchResults',
+          style: 'danger',
+          action_id: 'dismiss',
         },
       ],
     };
@@ -286,18 +320,14 @@ class SlackBotService extends S2sMessageHandlable {
         },
       );
     }
+    blocks.push(actionBlocks);
 
     try {
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
         text: 'Successed To Search',
-        blocks: [
-          this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>`),
-          this.generateMarkdownSectionBlock(keywordsAndDesc),
-          this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
-          actionBlocks,
-        ],
+        blocks,
       });
     }
     catch (err) {
