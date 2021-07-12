@@ -157,10 +157,48 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async shareSearchResults(client, payload) {
-    client.chat.postMessage({
-      channel: payload.channel.id,
-      text: JSON.parse(payload.actions[0].value).pageList,
+    const { channel, container } = payload;
+    const channelId = channel.id;
+    const originalMessageTs = container.message_ts;
+
+    console.log({ container });
+
+    // get original message data
+    const historyResult = await client.conversations.history({
+      channel: channelId,
+      inclusive: true,
+      latest: originalMessageTs,
+      limit: 1,
     });
+
+    if (!historyResult.ok || historyResult.messages.length !== 1) {
+      logger.error('Failed to share search results.');
+      await client.chat.postEphemeral({
+        channel: channelId,
+        text: 'Failed to share search results.',
+      });
+      throw new Error('Failed to share search results.');
+    }
+
+    const originalMessage = historyResult.messages[0];
+
+    console.log({ originalMessage });
+    // // share
+    // const postPromise = client.chat.postMessage({
+    //   channel: channelId,
+    //   as_user: true,
+    //   text: message.text,
+    //   blocks: message.blocks,
+    // });
+
+    // // remove
+    // const deletePromise = client.chat.delete({
+    //   channel: channelId,
+    //   as_user: false,
+    //   ts: originalMessageTs,
+    // });
+
+    // return Promise.all([postPromise, deletePromise]);
   }
 
   async showEphemeralSearchResults(client, body, args, offsetNum) {
@@ -231,9 +269,6 @@ class SlackBotService extends S2sMessageHandlable {
           },
           style: 'primary',
           action_id: 'shareSearchResults',
-          value: JSON.stringify({
-            offset, body, args, pageList: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-          }),
         },
       ],
     };

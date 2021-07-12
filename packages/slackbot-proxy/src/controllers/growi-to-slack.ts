@@ -207,6 +207,8 @@ export class GrowiToSlackCtrl {
   ): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
 
+    logger.debug('Slack API called: ', { method });
+
     if (tokenGtoPs.length !== 1) {
       return res.webClientErr('tokenGtoPs is invalid', 'invalid_tokenGtoP');
     }
@@ -236,17 +238,12 @@ export class GrowiToSlackCtrl {
       const opt = req.body;
       opt.headers = req.headers;
 
-      await client.apiCall(method, opt);
+      return client.apiCall(method, opt);
     }
     catch (err) {
       logger.error(err);
       return res.webClientErr(`failed to send to slack. err: ${err.message}`, 'fail_api_call');
     }
-
-    logger.debug('send to slack is success');
-
-    // required to return ok for apiCall
-    return res.webClient();
   }
 
 }
