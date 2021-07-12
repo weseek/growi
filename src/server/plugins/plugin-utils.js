@@ -57,7 +57,7 @@ class PluginUtils {
    * @memberOf PluginService
    */
   listPlugins(rootDir) {
-    const packagePath = path.join(rootDir, 'package.json');
+    const packagePath = path.join(rootDir, 'packages/app/package.json');
 
     // Make sure package.json exists
     if (!fs.existsSync(packagePath)) {

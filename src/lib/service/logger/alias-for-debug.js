@@ -1,5 +1,3 @@
-const generateBunyanLogger = require('./index');
-
 /**
  * return 'debug' method of bunyan logger
  *
@@ -8,6 +6,6 @@ const generateBunyanLogger = require('./index');
  * @param {string} name
  */
 module.exports = (name) => {
-  const bunyanLogger = generateBunyanLogger(name);
+  const bunyanLogger = require('./index')(name);
   return bunyanLogger.debug.bind(bunyanLogger);
 };
