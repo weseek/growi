@@ -157,26 +157,26 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async shareSinglePage(client, payload) {
-    console.log({ payload });
-    // const { response_url: responseUrl } = payload;
+    const { channel, user, actions } = payload;
 
     // return axios.post(responseUrl, {
     //   response_type: 'in_channel',
     //   delete_original: true,
     // });
 
-    const { channel, container } = payload;
+    const appUrl = this.crowi.appService.getSiteUrl();
+    const appTitle = this.crowi.appService.getAppTitle();
+
     const channelId = channel.id;
-    const originalMessageTs = container.message_ts;
+    const action = actions[0]; // shareSinglePage action must have button action
+    const { href, pathname } = JSON.parse(action.value);
 
-    console.log({ container });
+    // // get original message data
+    // const historyResult = await client.conversations.history({
+    //   channel: channelId,
+    // });
 
-    // get original message data
-    const historyResult = await client.conversations.history({
-      channel: channelId,
-    });
-
-    console.log(historyResult.messages);
+    // console.log(historyResult.messages);
     // if (!historyResult.ok || historyResult.messages.length !== 1) {
     //   logger.error('Failed to share search results.');
     //   await client.chat.postEphemeral({
@@ -189,13 +189,14 @@ class SlackBotService extends S2sMessageHandlable {
     // const originalMessage = historyResult.messages[0];
 
     // console.log({ originalMessage });
-    // // share
-    // const postPromise = client.chat.postMessage({
-    //   channel: channelId,
-    //   as_user: true,
-    //   text: message.text,
-    //   blocks: message.blocks,
-    // });
+    // share
+    const postPromise = client.chat.postMessage({
+      channel: channelId,
+      blocks: [
+        this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>\n<${decodeURI(href)} | ${decodeURI(pathname)}>`),
+        this.generateMarkdownSectionBlock(`(shared by *${user.username}*)`),
+      ],
+    });
 
     // // remove
     // const deletePromise = client.chat.delete({
@@ -205,6 +206,7 @@ class SlackBotService extends S2sMessageHandlable {
     // });
 
     // return Promise.all([postPromise, deletePromise]);
+    return Promise.all([postPromise]);
   }
 
   async showEphemeralSearchResults(client, body, args, offsetNum) {
@@ -258,11 +260,12 @@ class SlackBotService extends S2sMessageHandlable {
       // create an array by map and extract
       ...resultPaths.map((path) => {
         const url = new URL(path, appUrl);
+        const { href, pathname } = url;
         return {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<${decodeURI(url.href)} | *${decodeURI(url.pathname)}*>`,
+            text: `<${decodeURI(href)} | *${decodeURI(pathname)}*>`,
           },
           accessory: {
             type: 'button',
@@ -271,7 +274,7 @@ class SlackBotService extends S2sMessageHandlable {
               type: 'plain_text',
               text: 'Share',
             },
-            value: JSON.stringify({ path, url }),
+            value: JSON.stringify({ href, pathname }),
           },
         };
       }),
