@@ -19,7 +19,7 @@ import { useTranslation} from '~/i18n';
 
 const logger = loggerFactory('growi:PageEditor');
 
-class PageEditor extends React.Component {
+class PageEditorSubstance extends React.Component {
 
   constructor(props) {
     super(props);
@@ -344,7 +344,7 @@ class PageEditor extends React.Component {
 
 // export default PageEditorWrapper;
 
-const PageEditorSubstance = () => {
+const PageEditor = () => {
 
   const {t} = useTranslation()
   const { data: currentPage } = useCurrentPageSWR();
@@ -358,7 +358,7 @@ const PageEditorSubstance = () => {
   const [isMathJaxEnabled, setIsMathJaxEnabled] = useState(!!mathJax);
 
   return (
-    <PageEditor
+    <PageEditorSubstance
       t ={t}
       isUploadable={isUploadable}
       isUploadableFile={isUploadableFile}
@@ -369,4 +369,4 @@ const PageEditorSubstance = () => {
   )
 }
 
-export default PageEditorSubstance
+export default PageEditor
