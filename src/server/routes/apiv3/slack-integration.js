@@ -121,7 +121,6 @@ module.exports = (crowi) => {
     }
     catch (error) {
       logger.error(error);
-      return res.send(error.message);
     }
   }
 
