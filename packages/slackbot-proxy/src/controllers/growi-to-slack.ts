@@ -20,6 +20,7 @@ import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
+import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/SectionBlockPayloadDelegator';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
@@ -47,6 +48,9 @@ export class GrowiToSlackCtrl {
 
   @Inject()
   actionsBlockPayloadDelegator: ActionsBlockPayloadDelegator;
+
+  @Inject()
+  sectionBlockPayloadDelegator: SectionBlockPayloadDelegator;
 
   async requestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
     const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
@@ -197,6 +201,11 @@ export class GrowiToSlackCtrl {
         this.actionsBlockPayloadDelegator.inject(parsedElement, growiUri);
         req.body.blocks = JSON.stringify(parsedElement);
       }
+      // delegate to SectionBlockPayloadDelegator
+      if (this.sectionBlockPayloadDelegator.shouldHandleToInject(parsedElement)) {
+        this.sectionBlockPayloadDelegator.inject(parsedElement, growiUri);
+        req.body.blocks = JSON.stringify(parsedElement);
+      }
     }
   }
 
@@ -206,6 +215,8 @@ export class GrowiToSlackCtrl {
     @PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
   ): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
+
+    logger.debug('Slack API called: ', { method });
 
     if (tokenGtoPs.length !== 1) {
       return res.webClientErr('tokenGtoPs is invalid', 'invalid_tokenGtoP');
@@ -236,17 +247,12 @@ export class GrowiToSlackCtrl {
       const opt = req.body;
       opt.headers = req.headers;
 
-      await client.apiCall(method, opt);
+      return client.apiCall(method, opt);
     }
     catch (err) {
       logger.error(err);
       return res.webClientErr(`failed to send to slack. err: ${err.message}`, 'fail_api_call');
     }
-
-    logger.debug('send to slack is success');
-
-    // required to return ok for apiCall
-    return res.webClient();
   }
 
 }
