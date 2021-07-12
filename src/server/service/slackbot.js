@@ -164,9 +164,27 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async showEphemeralSearchResults(client, body, args, offsetNum) {
+
+    let searchResult;
+    try {
+      searchResult = await this.getSearchResultPaths(client, body, args, offsetNum);
+    }
+    catch (err) {
+      logger.error('Failed to get search results.', err);
+      await client.chat.postEphemeral({
+        channel: body.channel_id,
+        user: body.user_id,
+        text: 'Failed To Search',
+        blocks: [
+          this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
+        ],
+      });
+      throw new Error('/growi command:search: Failed to search');
+    }
+
     const {
       resultPaths, offset, resultsTotal,
-    } = await this.getSearchResultPaths(client, body, args, offsetNum);
+    } = searchResult;
 
     const keywords = this.getKeywords(args);
 
@@ -201,39 +219,40 @@ class SlackBotService extends S2sMessageHandlable {
 
     const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
 
+    // DEFAULT show "Share" button
+    const actionBlocks = {
+      type: 'actions',
+      elements: [
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: 'Share',
+          },
+          style: 'primary',
+          action_id: 'shareSearchResults',
+          value: JSON.stringify({
+            offset, body, args, pageList: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
+          }),
+        },
+      ],
+    };
+    // show "Next" button if next page exists
+    if (resultsTotal > offset + PAGINGLIMIT) {
+      actionBlocks.elements.unshift(
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: 'Next',
+          },
+          action_id: 'showNextResults',
+          value: JSON.stringify({ offset, body, args }),
+        },
+      );
+    }
+
     try {
-      // DEFAULT show "Share" button
-      const actionBlocks = {
-        type: 'actions',
-        elements: [
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Share',
-            },
-            style: 'primary',
-            action_id: 'shareSearchResults',
-            value: JSON.stringify({
-              offset, body, args, pageList: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-            }),
-          },
-        ],
-      };
-      // show "Next" button if next page exists
-      if (resultsTotal > offset + PAGINGLIMIT) {
-        actionBlocks.elements.unshift(
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Next',
-            },
-            action_id: 'showNextResults',
-            value: JSON.stringify({ offset, body, args }),
-          },
-        );
-      }
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
@@ -247,16 +266,16 @@ class SlackBotService extends S2sMessageHandlable {
       });
     }
     catch (err) {
-      logger.error('Failed to get search results.', err);
+      logger.error('Failed to post ephemeral message.', err);
       await client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
-        text: 'Failed To Search',
+        text: 'Failed to post ephemeral message.',
         blocks: [
-          this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
+          this.generateMarkdownSectionBlock(err.toString()),
         ],
       });
-      throw new Error('/growi command:search: Failed to search');
+      throw new Error(err);
     }
   }
 
