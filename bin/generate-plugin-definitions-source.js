@@ -20,24 +20,8 @@ const OUT = helpers.root('tmp/plugins/plugin-definitions.js');
 
 
 // list plugin names
-let pluginNames = pluginUtils.listPluginNames(helpers.root());
+const pluginNames = pluginUtils.listPluginNames(helpers.root());
 logger.info('Detected plugins: ', pluginNames);
-
-// add from PLUGIN_NAMES_TOBE_LOADED when development
-if (process.env.NODE_ENV === 'development'
-    && process.env.PLUGIN_NAMES_TOBE_LOADED !== undefined
-    && process.env.PLUGIN_NAMES_TOBE_LOADED.length > 0) {
-  const pluginNamesDev = process.env.PLUGIN_NAMES_TOBE_LOADED.split(',');
-
-  logger.info('Detected plugins from PLUGIN_NAMES_TOBE_LOADED: ', pluginNamesDev);
-
-  // merge and remove duplicates
-  if (pluginNamesDev.length > 0) {
-    pluginNames = pluginNames.concat(pluginNamesDev);
-    pluginNames = Array.from(new Set(pluginNames));
-  }
-}
-
 
 // get definitions
 const definitions = pluginNames
