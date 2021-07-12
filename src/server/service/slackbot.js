@@ -1,6 +1,7 @@
 
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
+const { formatDistanceStrict } = require('date-fns');
 
 const PAGINGLIMIT = 10;
 
@@ -97,7 +98,7 @@ class SlackBotService extends S2sMessageHandlable {
     return keywords;
   }
 
-  async getSearchResultPaths(client, body, args, offset = 0) {
+  async retrieveSearchResults(client, body, args, offset = 0) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
       client.chat.postEphemeral({
@@ -144,16 +145,36 @@ class SlackBotService extends S2sMessageHandlable {
           this.generateMarkdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
         ],
       });
-      return { resultPaths: [] };
+      return { pages: [] };
     }
 
-    const resultPaths = results.data.map((data) => {
-      return data._source.path;
+    const pages = results.data.map((data) => {
+      const { path, updated_at: updatedAt, comment_count: commentCount } = data._source;
+      return { path, updatedAt, commentCount };
     });
 
     return {
-      resultPaths, offset, resultsTotal,
+      pages, offset, resultsTotal,
     };
+  }
+
+  generatePageLinkMrkdwn(pathname, href) {
+    return `<${decodeURI(href)} | ${decodeURI(pathname)}>`;
+  }
+
+  appendSpeechBaloon(mrkdwn, commentCount) {
+    return (commentCount != null && commentCount > 0)
+      ? `${mrkdwn}   :speech_balloon: ${commentCount}`
+      : mrkdwn;
+  }
+
+  generateLastUpdateMrkdwn(updatedAt, baseDate) {
+    if (updatedAt != null) {
+      // cast to date
+      const date = new Date(updatedAt);
+      return formatDistanceStrict(date, baseDate);
+    }
+    return '';
   }
 
   async shareSinglePage(client, payload) {
@@ -169,7 +190,10 @@ class SlackBotService extends S2sMessageHandlable {
 
     const channelId = channel.id;
     const action = actions[0]; // shareSinglePage action must have button action
-    const { href, pathname } = JSON.parse(action.value);
+
+    // restore page data from value
+    const { page, href, pathname } = JSON.parse(action.value);
+    const { updatedAt, commentCount } = page;
 
     // // get original message data
     // const historyResult = await client.conversations.history({
@@ -190,11 +214,20 @@ class SlackBotService extends S2sMessageHandlable {
 
     // console.log({ originalMessage });
     // share
+    const now = new Date();
     const postPromise = client.chat.postMessage({
       channel: channelId,
       blocks: [
-        this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>\n<${decodeURI(href)} | ${decodeURI(pathname)}>`),
-        this.generateMarkdownSectionBlock(`(shared by *${user.username}*)`),
+        this.generateMarkdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: `<${decodeURI(appUrl)}|*${appTitle}*>  |  ${this.generateLastUpdateMrkdwn(updatedAt, now)}  |  Shared by *${user.username}*`,
+            },
+          ],
+        },
       ],
     });
 
@@ -213,7 +246,7 @@ class SlackBotService extends S2sMessageHandlable {
 
     let searchResult;
     try {
-      searchResult = await this.getSearchResultPaths(client, body, args, offsetNum);
+      searchResult = await this.retrieveSearchResults(client, body, args, offsetNum);
     }
     catch (err) {
       logger.error('Failed to get search results.', err);
@@ -232,13 +265,13 @@ class SlackBotService extends S2sMessageHandlable {
     const appTitle = this.crowi.appService.getAppTitle();
 
     const {
-      resultPaths, offset, resultsTotal,
+      pages, offset, resultsTotal,
     } = searchResult;
 
     const keywords = this.getKeywords(args);
 
 
-    const searchResultsNum = resultPaths.length;
+    const searchResultsNum = pages.length;
     let searchResultsDesc;
 
     switch (searchResultsNum) {
@@ -252,20 +285,26 @@ class SlackBotService extends S2sMessageHandlable {
     }
 
 
+    const now = new Date();
+
     const blocks = [
       this.generateMarkdownSectionBlock(searchResultsDesc),
       { type: 'divider' },
       this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>\nkeyword(s) : *"${keywords}"*.`),
       { type: 'divider' },
       // create an array by map and extract
-      ...resultPaths.map((path) => {
+      ...pages.map((page) => {
+        const { path, updatedAt, commentCount } = page;
+        // generate URL
         const url = new URL(path, appUrl);
         const { href, pathname } = url;
+
         return {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `<${decodeURI(href)} | *${decodeURI(pathname)}*>`,
+            text: `${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`
+              + `\n    Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}`,
           },
           accessory: {
             type: 'button',
@@ -274,7 +313,7 @@ class SlackBotService extends S2sMessageHandlable {
               type: 'plain_text',
               text: 'Share',
             },
-            value: JSON.stringify({ href, pathname }),
+            value: JSON.stringify({ page, href, pathname }),
           },
         };
       }),
