@@ -4,20 +4,18 @@ import { reshapeContentsBody } from './reshape-contents-body';
 describe('reshapeContentsBody', () => {
 
   describe('Markdown only', () => {
-    test('Strips out newline characters', () => {
+    test('Return the same input', () => {
       const input = '# Title  \n## Section  \nI tested this code at 12:00 AM.  \n**bold** text\nsome texts';
-      const output = '# Title  ## Section  I tested this code at 12:00 AM.  **bold** textsome texts';
 
-      expect(reshapeContentsBody(input)).toBe(output);
+      expect(reshapeContentsBody(input)).toBe(input);
     });
   });
 
   describe('Contains time but no headers', () => {
-    test('Strips newline characters', () => {
+    test('Return the same input', () => {
       const input = '12:23\nsome messages...\n12:23\nsome messages...\n12:23';
-      const output = '12:23some messages...12:23some messages...12:23';
 
-      expect(reshapeContentsBody(input)).toBe(output);
+      expect(reshapeContentsBody(input)).toBe(input);
     });
   });
 
