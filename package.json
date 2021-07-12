@@ -28,15 +28,15 @@
   },
   "scripts": {
     "dev:ci": "yarn dev -- --ci",
-    "dev": "yarn ts-node-dev --ignore-watch .next src/server/app.ts",
-    "build": "yarn next build && tsc --project tsconfig.server.json && tsc-alias -p tsconfig.server.json",
-    "console": "env-cmd -f config/env.dev.js cross-env TS_NODE_PROJECT=tsconfig.server.json node --experimental-repl-await -r ts-node/register -r tsconfig-paths/register src/server/console.js",
+    "dev": "cross-env NODE_ENV=development yarn ts-node-dev --ignore-watch .next src/server/app.ts",
+    "build": "cross-env NODE_ENV=production yarn next build && tsc && tsc-alias",
+    "console": "env-cmd -f config/env.dev.js cross-env node --experimental-repl-await -r ts-node/register -r tsconfig-paths/register src/server/console.js",
     "lint:js": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "lint:styles": "stylelint src/clilent/styles/**/*.scss src/styles/**/*.scss",
-    "plugin:def": "yarn ts-node -r dotenv-flow/config bin/generate-plugin-definitions-source.ts",
-    "resource": "yarn ts-node -r dotenv-flow/config bin/download-cdn-resources.ts",
-    "ts-node": "ts-node --project tsconfig.server.json -r tsconfig-paths/register --transpile-only",
-    "ts-node-dev": "ts-node-dev --project tsconfig.server.json -r tsconfig-paths/register --transpile-only",
+    "plugin:def": "yarn ts-node bin/generate-plugin-definitions-source.ts",
+    "resource": "yarn ts-node bin/download-cdn-resources.ts",
+    "ts-node": "ts-node -r tsconfig-paths/register -r dotenv-flow/config --transpile-only",
+    "ts-node-dev": "ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --transpile-only",
     "start:ci": "yarn start --ci",
     "start": "cross-env NODE_ENV=production node --expose_gc dist/src/server/app.js",
     "test": "jest --config=config/jest.config.js --passWithNoTests -- ",
@@ -46,9 +46,8 @@
     "migrate:up": "yarn ts-node node_modules/.bin/migrate-mongo up -f config/migrate.js",
     "migrate:down": "yarn ts-node node_modules/.bin/migrate-mongo down -f config/migrate.js",
     "//// First aid to pass the build": "",
-    "prebuild": "yarn clean && cross-env NODE_ENV=production yarn plugin:def && cross-env NODE_ENV=production yarn resource",
-    "predev:watch": "npm run prebuild",
-    "//// predev": "npm run clean:app && npm run plugin:def && npm run resource && yarn build:slack",
+    "prebuild": "cross-env NODE_ENV=production yarn plugin:def && cross-env NODE_ENV=production yarn resource",
+    "predev": "yarn plugin:def && yarn resource",
     "//// The following lines are not maintained": "",
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "build:apiv3:jsdoc": "cross-env API_VERSION=3 npm run build:api:jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
@@ -64,9 +63,6 @@
     "build:prod": "env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
     "// build": "npm run build:dev:watch",
     "// build:poll": "npm run build:dev:watch:poll",
-    "clean:app": "rimraf -- public/js public/styles",
-    "clean:report": "rimraf -- report",
-    "clean": "npm-run-all -p clean:*",
     "heroku-postbuild": "sh bin/heroku/install-packages.sh && npm run build:prod",
     "lint:swagger2openapi": "node node_modules/swagger2openapi/oas-validate tmp/swagger.json",
     "lint": "npm-run-all -p lint:js lint:styles lint:swagger2openapi",
@@ -89,13 +85,6 @@
   },
   "devDependencies": {
     "lerna": "^4.0.0"
-  },
-  "_moduleAliases": {
-    "@root": ".",
-    "@commons": "src/lib",
-    "@server": "src/server",
-    "@alias/logger": "src/lib/service/logger",
-    "debug": "src/lib/service/logger/alias-for-debug"
   },
   "jest": {
     "moduleNameMapper": {

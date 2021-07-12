@@ -1,44 +1,11 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    /* Basic Options */
-    "target": "es2019",
-    "module": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "skipLibCheck": true,
-    "allowJs": true,
-    "jsx": "preserve",
-    "sourceMap": true,
-    "removeComments": false,
-    "noEmit": true,
-    "isolatedModules": true,
-
-    /* Strict Type-Checking Options */
-    "strict": true,
-    "noImplicitAny": false,
-
-    /* Additional Checks */
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-
-    /* Module Resolution Options */
-    "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"],
+      "~/*": ["./src/*"],
       "^/*": ["./*"],
-    },
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-
-    /* Misc */
-    "preserveConstEnums": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-
-    /* Experimental Options */
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  },
-  "exclude": ["dist", ".next", "out", "next.config.js"],
-  "include": ["next-env.d.ts", "src/**/*", "src/**/*"]
+      "@growi/*": ["./packages/*/src"]
+    }
+  }
 }
