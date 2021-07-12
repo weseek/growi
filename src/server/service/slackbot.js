@@ -196,13 +196,14 @@ class SlackBotService extends S2sMessageHandlable {
     return client.chat.postMessage({
       channel: channelId,
       blocks: [
+        { type: 'divider' },
         this.generateMarkdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
         {
           type: 'context',
           elements: [
             {
               type: 'mrkdwn',
-              text: `<${decodeURI(appUrl)}|*${appTitle}*>  |  ${this.generateLastUpdateMrkdwn(updatedAt, now)}  |  Shared by *${user.username}*`,
+              text: `<${decodeURI(appUrl)}|*${appTitle}*>  |  Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}  |  Shared by *${user.username}*`,
             },
           ],
         },
