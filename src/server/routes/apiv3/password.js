@@ -5,7 +5,7 @@ const router = express.Router();
 
 module.exports = (crowi) => {
 
-  router.put('/', async(req, res) => {
+  router.get('/', async(req, res) => {
     return res.apiv3({ hoge: 'hoge' });
   });
 
