@@ -4,6 +4,7 @@ import ReactCardFlip from 'react-card-flip';
 
 import { withTranslation } from 'react-i18next';
 
+import urljoin from 'url-join';
 import AppContainer from '../services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -252,7 +253,11 @@ class LoginForm extends React.Component {
       isLdapStrategySetup,
       isRegistrationEnabled,
       objOfIsExternalAuthEnableds,
+      appContainer,
     } = this.props;
+
+    const growiUrlHost = appContainer.config.crowi.url;
+    const passwordResetRequestPageurl = urljoin(growiUrlHost, '_api/v3/password');
 
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
     const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
@@ -268,8 +273,7 @@ class LoginForm extends React.Component {
                 {isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
-                    {/* TODO switch to password resetting form */}
-                    <a href="#reset-password" id="reset-password" className="d-block link-switch mb-1">
+                    <a href={passwordResetRequestPageurl} id="reset-password" className="d-block link-switch mb-1">
                       <i className="icon-key"></i> {t('forgot_password')}
                     </a>
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
