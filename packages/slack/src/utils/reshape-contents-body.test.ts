@@ -1,16 +1,14 @@
 /* eslint-disable max-len */
-/* eslint-disable no-useless-escape */
 import { reshapeContentsBody } from './reshape-contents-body';
 
 describe('reshapeContentsBody', () => {
 
   describe('Markdown only', () => {
     test('Return the same input', () => {
-      // const input = '# Title  \n## Section  \nI tested this code at 12:00 AM.  \n**bold** text\nsome texts';
       const input = `
-      # Title\s\s
-      ## Section\s\s
-      I tested this code at 12:00 AM.\s\s
+      # Title\u0020\u0020
+      ## Section\u0020\u0020
+      I tested this code at 12:00 AM.\u0020\u0020
       **bold** text
       some texts`;
 
@@ -20,7 +18,6 @@ describe('reshapeContentsBody', () => {
 
   describe('Contains time but no headers', () => {
     test('Return the same input', () => {
-      // const input = '12:23\nsome messages...\n12:23\nsome messages...\n12:23';
       const input = `
 12:23
 some messages...
@@ -34,8 +31,6 @@ some messages...
 
   describe('Copied from Slack only', () => {
     test('Reshape', () => {
-      // const input = 'taichi-m  12:23 PM\nsome messages...\nsome messages...\nsome messages...\n12:23\nsome messages...\n12:23\nsome messages...';
-      // const output = '\n<div class="grw-togetter">\n\n## **taichi-m**<span class="grw-togetter-time">  12:23 PM</span>\n  \nsome messages...  \nsome messages...  \nsome messages...  \n--12:23--  \nsome messages...  \n--12:23--  \nsome messages...  \n</div>  \n';
       const input = `
 taichi-m  12:23 PM
 some messages...
@@ -47,19 +42,18 @@ some messages...
 some messages...`;
 
       const output = `
-
 <div class="grw-togetter">
 
 ## **taichi-m**<span class="grw-togetter-time">  12:23 PM</span>
-\s\s
-some messages...\s\s
-some messages...\s\s
-some messages...\s\s
---12:23--\s\s
-some messages...\s\s
---12:23--\s\s
-some messages...\s\s
-</div>\s\s
+\u0020\u0020
+some messages...\u0020\u0020
+some messages...\u0020\u0020
+some messages...\u0020\u0020
+--12:23--\u0020\u0020
+some messages...\u0020\u0020
+--12:23--\u0020\u0020
+some messages...\u0020\u0020
+</div>\u0020\u0020
 `;
 
       expect(reshapeContentsBody(input)).toBe(output);
@@ -68,8 +62,6 @@ some messages...\s\s
 
   describe('Copied from Slack only (24 hours format)', () => {
     test('Reshape', () => {
-      // const input = 'taichi-m  12:23\nsome messages...\nsome messages...\nsome messages...\n12:23\nsome messages...\n12:23\nsome messages...';
-      // const output = '\n<div class="grw-togetter">\n\n## **taichi-m**<span class="grw-togetter-time">  12:23</span>\n  \nsome messages...  \nsome messages...  \nsome messages...  \n--12:23--  \nsome messages...  \n--12:23--  \nsome messages...  \n</div>  \n';
       const input = `
 taichi-m  12:23
 some messages...
@@ -81,19 +73,18 @@ some messages...
 some messages...`;
 
       const output = `
-
 <div class="grw-togetter">
 
 ## **taichi-m**<span class="grw-togetter-time">  12:23</span>
-\s\s
-some messages...\s\s
-some messages...\s\s
-some messages...\s\s
---12:23--\s\s
-some messages...\s\s
---12:23--\s\s
-some messages...\s\s
-</div>\s\s
+\u0020\u0020
+some messages...\u0020\u0020
+some messages...\u0020\u0020
+some messages...\u0020\u0020
+--12:23--\u0020\u0020
+some messages...\u0020\u0020
+--12:23--\u0020\u0020
+some messages...\u0020\u0020
+</div>\u0020\u0020
 `;
 
       expect(reshapeContentsBody(input)).toBe(output);
@@ -102,22 +93,19 @@ some messages...\s\s
 
   describe('Markdown and copied from Slack', () => {
     test('Reshape only after the first header', () => {
-      // const input = 'some messages...\n\ntaichi-m  12:23 PM\nsome messages...';
-      // const output = 'some messages...\n<div class="grw-togetter">\n\n## **taichi-m**<span class="grw-togetter-time">  12:23 PM</span>\n  \nsome messages...  \n</div>  \n';
       const input = `
 some messages...
 
 taichi-m  12:23 PM
 some messages...`;
 
-      const output = `
-some messages...
+      const output = `some messages...
 <div class="grw-togetter">
 
 ## **taichi-m**<span class="grw-togetter-time">  12:23 PM</span>
-\s\s
-some messages...\s\s
-</div>\s\s
+\u0020\u0020
+some messages...\u0020\u0020
+</div>\u0020\u0020
 `;
 
       expect(reshapeContentsBody(input)).toBe(output);
