@@ -8,6 +8,7 @@ const PasswordResetRequestForm = (props) => {
 
   return (
     <>
+      {/* TODO: show Password Reset Request Form by GW-6789 */}
       Password Reset Request Form
     </>
   );
