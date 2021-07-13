@@ -1,6 +1,8 @@
 
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
+const axios = require('axios');
+const { formatDistanceStrict } = require('date-fns');
 
 const PAGINGLIMIT = 10;
 
@@ -97,7 +99,7 @@ class SlackBotService extends S2sMessageHandlable {
     return keywords;
   }
 
-  async getSearchResultPaths(client, body, args, offset = 0) {
+  async retrieveSearchResults(client, body, args, offset = 0) {
     const firstKeyword = args[1];
     if (firstKeyword == null) {
       client.chat.postEphemeral({
@@ -144,107 +146,84 @@ class SlackBotService extends S2sMessageHandlable {
           this.generateMarkdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
         ],
       });
-      return { resultPaths: [] };
+      return { pages: [] };
     }
 
-    const resultPaths = results.data.map((data) => {
-      return data._source.path;
+    const pages = results.data.map((data) => {
+      const { path, updated_at: updatedAt, comment_count: commentCount } = data._source;
+      return { path, updatedAt, commentCount };
     });
 
     return {
-      resultPaths, offset, resultsTotal,
+      pages, offset, resultsTotal,
     };
   }
 
-  async shareSearchResults(client, payload) {
-    client.chat.postMessage({
-      channel: payload.channel.id,
-      text: JSON.parse(payload.actions[0].value).pageList,
-    });
+  generatePageLinkMrkdwn(pathname, href) {
+    return `<${decodeURI(href)} | ${decodeURI(pathname)}>`;
   }
 
-  async showEphemeralSearchResults(client, body, args, offsetNum) {
-    const {
-      resultPaths, offset, resultsTotal,
-    } = await this.getSearchResultPaths(client, body, args, offsetNum);
+  appendSpeechBaloon(mrkdwn, commentCount) {
+    return (commentCount != null && commentCount > 0)
+      ? `${mrkdwn}   :speech_balloon: ${commentCount}`
+      : mrkdwn;
+  }
 
-    const keywords = this.getKeywords(args);
-
-    if (resultPaths.length === 0) {
-      return;
+  generateLastUpdateMrkdwn(updatedAt, baseDate) {
+    if (updatedAt != null) {
+      // cast to date
+      const date = new Date(updatedAt);
+      return formatDistanceStrict(date, baseDate);
     }
+    return '';
+  }
+
+  async shareSinglePage(client, payload) {
+    const { channel, user, actions } = payload;
 
     const appUrl = this.crowi.appService.getSiteUrl();
     const appTitle = this.crowi.appService.getAppTitle();
 
-    const urls = resultPaths.map((path) => {
-      const url = new URL(path, appUrl);
-      return `<${decodeURI(url.href)} | ${decodeURI(url.pathname)}>`;
+    const channelId = channel.id;
+    const action = actions[0]; // shareSinglePage action must have button action
+
+    // restore page data from value
+    const { page, href, pathname } = JSON.parse(action.value);
+    const { updatedAt, commentCount } = page;
+
+    // share
+    const now = new Date();
+    return client.chat.postMessage({
+      channel: channelId,
+      blocks: [
+        { type: 'divider' },
+        this.generateMarkdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: `<${decodeURI(appUrl)}|*${appTitle}*>  |  Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}  |  Shared by *${user.username}*`,
+            },
+          ],
+        },
+      ],
     });
+  }
 
-    const searchResultsNum = resultPaths.length;
-    let searchResultsDesc;
+  async dismissSearchResults(client, payload) {
+    const { response_url: responseUrl } = payload;
 
-    switch (searchResultsNum) {
-      case 10:
-        searchResultsDesc = 'Maximum number of results that can be displayed is 10';
-        break;
+    return axios.post(responseUrl, {
+      delete_original: true,
+    });
+  }
 
-      case 1:
-        searchResultsDesc = `${searchResultsNum} page is found`;
-        break;
+  async showEphemeralSearchResults(client, body, args, offsetNum) {
 
-      default:
-        searchResultsDesc = `${searchResultsNum} pages are found`;
-        break;
-    }
-
-    const keywordsAndDesc = `keyword(s) : "${keywords}" \n ${searchResultsDesc}.`;
-
+    let searchResult;
     try {
-      // DEFAULT show "Share" button
-      const actionBlocks = {
-        type: 'actions',
-        elements: [
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Share',
-            },
-            style: 'primary',
-            action_id: 'shareSearchResults',
-            value: JSON.stringify({
-              offset, body, args, pageList: `${keywordsAndDesc} \n\n ${urls.join('\n')}`,
-            }),
-          },
-        ],
-      };
-      // show "Next" button if next page exists
-      if (resultsTotal > offset + PAGINGLIMIT) {
-        actionBlocks.elements.unshift(
-          {
-            type: 'button',
-            text: {
-              type: 'plain_text',
-              text: 'Next',
-            },
-            action_id: 'showNextResults',
-            value: JSON.stringify({ offset, body, args }),
-          },
-        );
-      }
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Successed To Search',
-        blocks: [
-          this.generateMarkdownSectionBlock(`<${decodeURI(appUrl)}|*${appTitle}*>`),
-          this.generateMarkdownSectionBlock(keywordsAndDesc),
-          this.generateMarkdownSectionBlock(`${urls.join('\n')}`),
-          actionBlocks,
-        ],
-      });
+      searchResult = await this.retrieveSearchResults(client, body, args, offsetNum);
     }
     catch (err) {
       logger.error('Failed to get search results.', err);
@@ -257,6 +236,139 @@ class SlackBotService extends S2sMessageHandlable {
         ],
       });
       throw new Error('/growi command:search: Failed to search');
+    }
+
+    const appUrl = this.crowi.appService.getSiteUrl();
+    const appTitle = this.crowi.appService.getAppTitle();
+
+    const {
+      pages, offset, resultsTotal,
+    } = searchResult;
+
+    const keywords = this.getKeywords(args);
+
+
+    let searchResultsDesc;
+
+    switch (resultsTotal) {
+      case 1:
+        searchResultsDesc = `*${resultsTotal}* page is found.`;
+        break;
+
+      default:
+        searchResultsDesc = `*${resultsTotal}* pages are found.`;
+        break;
+    }
+
+
+    const contextBlock = {
+      type: 'context',
+      elements: [
+        {
+          type: 'mrkdwn',
+          text: `keyword(s) : *"${keywords}"*  |  Current: ${offset + 1} - ${offset + pages.length}  |  Total ${resultsTotal} pages`,
+        },
+      ],
+    };
+
+    const now = new Date();
+    const blocks = [
+      this.generateMarkdownSectionBlock(`:mag: <${decodeURI(appUrl)}|*${appTitle}*>\n${searchResultsDesc}`),
+      contextBlock,
+      { type: 'divider' },
+      // create an array by map and extract
+      ...pages.map((page) => {
+        const { path, updatedAt, commentCount } = page;
+        // generate URL
+        const url = new URL(path, appUrl);
+        const { href, pathname } = url;
+
+        return {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`
+              + `\n    Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}`,
+          },
+          accessory: {
+            type: 'button',
+            action_id: 'shareSingleSearchResult',
+            text: {
+              type: 'plain_text',
+              text: 'Share',
+            },
+            value: JSON.stringify({ page, href, pathname }),
+          },
+        };
+      }),
+      { type: 'divider' },
+      contextBlock,
+    ];
+
+    // DEFAULT show "Share" button
+    // const actionBlocks = {
+    //   type: 'actions',
+    //   elements: [
+    //     {
+    //       type: 'button',
+    //       text: {
+    //         type: 'plain_text',
+    //         text: 'Share',
+    //       },
+    //       style: 'primary',
+    //       action_id: 'shareSearchResults',
+    //     },
+    //   ],
+    // };
+    const actionBlocks = {
+      type: 'actions',
+      elements: [
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: 'Dismiss',
+          },
+          style: 'danger',
+          action_id: 'dismissSearchResults',
+        },
+      ],
+    };
+    // show "Next" button if next page exists
+    if (resultsTotal > offset + PAGINGLIMIT) {
+      actionBlocks.elements.unshift(
+        {
+          type: 'button',
+          text: {
+            type: 'plain_text',
+            text: 'Next',
+          },
+          action_id: 'showNextResults',
+          value: JSON.stringify({ offset, body, args }),
+        },
+      );
+    }
+    blocks.push(actionBlocks);
+
+    try {
+      await client.chat.postEphemeral({
+        channel: body.channel_id,
+        user: body.user_id,
+        text: 'Successed To Search',
+        blocks,
+      });
+    }
+    catch (err) {
+      logger.error('Failed to post ephemeral message.', err);
+      await client.chat.postEphemeral({
+        channel: body.channel_id,
+        user: body.user_id,
+        text: 'Failed to post ephemeral message.',
+        blocks: [
+          this.generateMarkdownSectionBlock(err.toString()),
+        ],
+      });
+      throw new Error(err);
     }
   }
 
