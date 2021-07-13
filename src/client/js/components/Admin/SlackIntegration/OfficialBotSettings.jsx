@@ -13,18 +13,11 @@ const logger = loggerFactory('growi:SlackBotSettings');
 
 const OfficialBotSettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onSubmitForm,
+    appContainer, slackAppIntegrations, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onSubmitForm,
   } = props;
   const [siteName, setSiteName] = useState('');
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
   const { t } = useTranslation();
-
-  const [newProxyServerUri, setNewProxyServerUri] = useState();
-
-  // componentDidUpdate
-  useEffect(() => {
-    setNewProxyServerUri(proxyServerUri);
-  }, [proxyServerUri, slackAppIntegrations]);
 
   const addSlackAppIntegrationHandler = async() => {
     if (onClickAddSlackWorkspaceBtn != null) {
@@ -39,19 +32,6 @@ const OfficialBotSettings = (props) => {
         props.onDeleteSlackAppIntegration();
       }
       toastSuccess(t('toaster.delete_slack_integration_procedure'));
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  };
-
-  const updateProxyUri = async() => {
-    try {
-      await appContainer.apiv3.put('/slack-integration-settings/proxy-uri', {
-        proxyUri: newProxyServerUri,
-      });
-      toastSuccess(t('toaster.update_successed', { target: t('Proxy URL') }));
     }
     catch (err) {
       toastError(err);
@@ -77,22 +57,6 @@ const OfficialBotSettings = (props) => {
             siteName={siteName}
             connectionStatuses={connectionStatuses}
           />
-
-          <div className="form-group row my-4">
-            <label className="text-left text-md-right col-md-3 col-form-label mt-3">Proxy URL</label>
-            <div className="col-md-6 mt-3">
-              <input
-                className="form-control"
-                type="text"
-                name="settingForm[proxyUrl]"
-                defaultValue={newProxyServerUri}
-                onChange={(e) => { setNewProxyServerUri(e.target.value) }}
-              />
-            </div>
-            <div className="col-md-2 mt-3 text-center text-md-left">
-              <button type="button" className="btn btn-primary" onClick={updateProxyUri}>{ t('Update') }</button>
-            </div>
-          </div>
 
           <h2 className="admin-setting-header">{t('admin:slack_integration.integration_procedure')}</h2>
         </>
@@ -159,7 +123,6 @@ OfficialBotSettings.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 
   slackAppIntegrations: PropTypes.array,
-  proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
   onDeleteSlackAppIntegration: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,

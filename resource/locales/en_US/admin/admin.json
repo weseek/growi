@@ -311,6 +311,7 @@
       "install_now": "Install now",
       "generate_access_token": "Generate Access Token",
       "register_for_growi_official_bot_proxy_service": "Register for GROWI Official Bot Proxy Service",
+      "register_for_growi_custom_bot_proxy": "Register for your GROWI Custom Bot Proxy",
       "enter_growi_register_on_slack": "Enter <b>/growi register</b> on slack",
       "paste_growi_url": "Since a modal is displayed, enter the following URL in <b>GROWI URL</b>.",
       "enter_access_token_for_growi_and_proxy": "Enter <b>Access Token Proxy to GROWI</b> and <b>Access Token GROWI to Proxy</b>",
@@ -320,7 +321,6 @@
       "dont_need_update": "※If the value is already in there, there is no need to update it.",
       "select_install_your_app": "Select \"Install your app\".",
       "select_install_to_workspace": "Select \"Install to Workspace\".",
-      "register_official_bot_proxy_service": "Issue Access Token / Register GROWI Official Bot Proxy Service",
       "register_proxy_url": "Register Proxy URL with GROWI",
       "click_allow": "Select \"Allow\".",
       "install_complete_if_checked": "Confirm that \"Install your app\" is checked.",
@@ -353,7 +353,8 @@
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
       "send_new_password": "Please send the new password to the user.",
-      "send_temporary_password": "Be sure to copy the temporary password ON THIS SCREEN and send it to the user.",
+      "send_temporary_password": "If you have not sent an invitation email, copy the temporary password on this screen and contact the inviter.",
+      "send_email": "You can also send or resend the invitation email from the drop-down in the users table.",
       "existing_email": "The following emails already exist",
       "issue": "Issue"
     },
@@ -367,7 +368,9 @@
       "your_own": "You cannot deactivate your own account",
       "remove_admin_access": "Remove admin access",
       "cannot_remove": "You cannot remove yourself from administrator",
-      "give_admin_access": "Give admin access"
+      "give_admin_access": "Give admin access",
+      "send_invitation_email": "Send invitation email",
+      "resend_invitation_email": "Resend invitation email"
     },
     "reset_password": "Reset Password",
     "reset_password_modal": {

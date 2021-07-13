@@ -15,6 +15,7 @@ import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 const botTypes = ['officialBot', 'customBotWithoutProxy', 'customBotWithProxy'];
 
 const SlackIntegration = (props) => {
+
   const { appContainer } = props;
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState(null);
@@ -124,7 +125,6 @@ const SlackIntegration = (props) => {
       settingsComponent = (
         <OfficialBotSettings
           slackAppIntegrations={slackAppIntegrations}
-          proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}

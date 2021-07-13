@@ -169,8 +169,8 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
                 // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
             />
-            <div className="input-group align-items-center ml-2 mb-3">
-              <div className="input-group-prepend mx-1">
+            <div className="input-group align-items-center pl-2 mb-3">
+              <div className="input-group-prepend w-75">
                 <input className="form-control" type="text" value={props.growiUrl} readOnly />
                 <CopyToClipboard text={props.growiUrl} onCopy={() => toastSuccess(t('admin:slack_integration.copied_to_clipboard'))}>
                   <div className="btn input-group-text">
@@ -303,10 +303,6 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
-      title: 'set_proxy_url_on_growi',
-      content: <RegisteringProxyUrlProcess />,
-    },
-    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -328,7 +324,7 @@ const WithProxyAccordions = (props) => {
       content: <BotInstallProcessForCustomBotWithProxy />,
     },
     '③': {
-      title: 'register_for_growi_official_bot_proxy_service',
+      title: 'register_for_growi_custom_bot_proxy',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         slackAppIntegrationId={props.slackAppIntegrationId}
