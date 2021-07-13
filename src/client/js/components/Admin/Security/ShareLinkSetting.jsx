@@ -51,6 +51,7 @@ class ShareLinkSetting extends React.Component {
     this.closeDeleteConfirmModal = this.closeDeleteConfirmModal.bind(this);
     this.deleteAllLinksButtonHandler = this.deleteAllLinksButtonHandler.bind(this);
     this.deleteLinkById = this.deleteLinkById.bind(this);
+    this.switchDisableLinkSharing = this.switchDisableLinkSharing.bind(this);
   }
 
   componentWillMount() {
@@ -105,11 +106,22 @@ class ShareLinkSetting extends React.Component {
     this.getShareLinkList(shareLinksActivePage);
   }
 
+  async switchDisableLinkSharing() {
+    const { t, adminGeneralSecurityContainer } = this.props;
+    try {
+      await adminGeneralSecurityContainer.switchDisableLinkSharing();
+      toastSuccess(t('toaster.switch_disable_link_sharing_success'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }
+
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
     const {
-      shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
+      shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit, disableLinkSharing,
     } = adminGeneralSecurityContainer.state;
 
     return (
@@ -125,6 +137,27 @@ class ShareLinkSetting extends React.Component {
           </button>
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
+        <h4>{t('security_setting.share_link_rights')}</h4>
+        <div className="row mb-5">
+          <div className="col-6 offset-3">
+            <div className="custom-control custom-switch custom-checkbox-success">
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id="disableLinkSharing"
+                checked={!disableLinkSharing}
+                onChange={() => this.switchDisableLinkSharing()}
+              />
+              <label className="custom-control-label" htmlFor="disableLinkSharing">
+                {t('security_setting.enable_link_sharing')}
+              </label>
+            </div>
+            {!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && disableLinkSharing && (
+              <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>
+            )}
+          </div>
+        </div>
+        <h4>{t('security_setting.all_share_links')}</h4>
         <Pager
           links={shareLinks}
           activePage={shareLinksActivePage}
