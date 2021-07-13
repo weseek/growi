@@ -169,16 +169,19 @@ export class GrowiToSlackCtrl {
 
     logger.debug('relation test is success', order);
 
-    // Transaction is not considered because it is used infrequently,
-    const createdRelation = await this.relationRepository.save({
-      installation: order.installation,
-      tokenGtoP: order.tokenGtoP,
-      tokenPtoG: order.tokenPtoG,
-      growiUri: order.growiUrl,
-      siglePostCommands: temporarySinglePostCommands,
-    });
+    await this.relationRepository.createQueryBuilder('relation')
+      .insert()
+      .values({
+        installation: order.installation,
+        tokenGtoP: order.tokenGtoP,
+        tokenPtoG: order.tokenPtoG,
+        growiUri: order.growiUrl,
+        siglePostCommands: temporarySinglePostCommands,
+      })
+      .orUpdate({ conflict_target: ['installation', 'growiUri'], overwrite: ['tokenGtoP', 'tokenPtoG', 'siglePostCommands'] })
+      .execute();
 
-    return res.send({ relation: createdRelation, slackBotToken: token });
+    return res.send({ slackBotToken: token });
   }
 
   injectGrowiUri(req: GrowiReq, growiUri: string): void {
