@@ -174,11 +174,9 @@ module.exports = (crowi) => {
       }
       case 'togetterCancelPageCreation': {
         console.log('ここでCancelする');
-        console.log(payload);
         break;
       }
       default:
-        console.log(payload);
         break;
     }
   };

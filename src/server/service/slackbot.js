@@ -500,12 +500,10 @@ class SlackBotService extends S2sMessageHandlable {
 
   togetterMessageBlocks() {
     return [
-      this.generateMarkdownSectionBlock('Select messages to use.'),
+      this.inputBlock(this.togetterCheckboxesElement(), 'selected_messages', 'Select massages to use.'),
       this.actionsBlock(this.buttonElement('Show more', 'togetterShowMore')),
-      this.actionsBlock(this.togetterCheckboxesElement()),
-      this.inputBlock(this.togetterInputBlockElement('page_path'), 'page_path', 'Page path'),
-      this.inputBlock(this.togetterCheckboxesElement(), 'check', 'CHECK'),
-      this.actionsBlock(this.buttonElement('Cancel', 'togetterCancelPageCreation'), this.buttonElement('Create page', 'togetterCreatePage')),
+      this.inputBlock(this.togetterInputBlockElement('page_path', '/'), 'page_path', 'Page path'),
+      this.actionsBlock(this.buttonElement('Cancel', 'togetterCancelPageCreation'), this.buttonElement('Create page', 'togetterCreatePage', 'primary')),
     ];
   }
 
@@ -535,8 +533,8 @@ class SlackBotService extends S2sMessageHandlable {
    * Button element
    * https://api.slack.com/reference/block-kit/block-elements#button
    */
-  buttonElement(text, actionId) {
-    return {
+  buttonElement(text, actionId, style = undefined) {
+    const button = {
       type: 'button',
       text: {
         type: 'plain_text',
@@ -544,6 +542,10 @@ class SlackBotService extends S2sMessageHandlable {
       },
       action_id: actionId,
     };
+    if (style === 'primary' || style === 'danger') {
+      button.style = style;
+    }
+    return button;
   }
 
   togetterCheckboxesElement() {
@@ -587,9 +589,13 @@ class SlackBotService extends S2sMessageHandlable {
    * Plain-text input element
    * https://api.slack.com/reference/block-kit/block-elements#input
    */
-  togetterInputBlockElement(actionId) {
+  togetterInputBlockElement(actionId, placeholderText = 'Write something ...') {
     return {
       type: 'plain_text_input',
+      placeholder: {
+        type: 'plain_text',
+        text: placeholderText,
+      },
       action_id: actionId,
     };
   }
