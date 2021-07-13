@@ -151,6 +151,7 @@
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
+  "Link sharing is disabled": "Link sharing is disabled",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -170,7 +171,8 @@
     "page_not_exist_alert": "This page does not exist. Please create a new page."
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page."
+    "no_page_list": "There are no pages under this page.",
+    "link_sharing_is_disabled": "Link sharing is disabled."
   },
   "installer": {
     "setup": "Setup",
@@ -444,6 +446,7 @@
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
     "issue_share_link": "Succeeded to issue new share link",
     "remove_share_link": "Succeeded to remove {{count}} share links",
+    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
     "failed_to_reset_password":"Failed to reset password"
   },
   "template": {
@@ -587,6 +590,9 @@
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
+    "share_link_rights": "Share link rights",
+    "enable_link_sharing": "Enable link sharing",
+    "all_share_links": "All share links",
     "configuration": " Configuration",
     "optional": "Optional",
     "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",

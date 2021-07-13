@@ -26,6 +26,7 @@ const PageAccessoriesModal = (props) => {
   const {
     t, pageAccessoriesContainer, onClose, isGuestUser, isSharedUser, isNotFoundPage,
   } = props;
+  const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
   const { switchActiveTab } = pageAccessoriesContainer;
   const { activeTab, activeComponents } = pageAccessoriesContainer.state;
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
@@ -60,10 +61,10 @@ const PageAccessoriesModal = (props) => {
         Icon: ShareLinkIcon,
         i18n: t('share_links.share_link_management'),
         index: 4,
-        isLinkEnabled: v => !isGuestUser && !isSharedUser && !isNotFoundPage,
+        isLinkEnabled: v => !isGuestUser && !isSharedUser && !isNotFoundPage && !isLinkSharingDisabled,
       },
     };
-  }, [t, isGuestUser, isSharedUser, isNotFoundPage]);
+  }, [t, isGuestUser, isSharedUser, isNotFoundPage, isLinkSharingDisabled]);
 
   const closeModalHandler = useCallback(() => {
     if (onClose == null) {
