@@ -94,7 +94,6 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async togetterCommand(client, body, args) {
-    // args一旦無視で
     // Checkbox Message を返す
     client.chat.postEphemeral({
       channel: body.channel_id,
