@@ -22,6 +22,9 @@ const validator = {
     body('hideRestrictedByOwner').if(value => value != null).isBoolean(),
     body('hideRestrictedByGroup').if(value => value != null).isBoolean(),
   ],
+  shareLinkSetting: [
+    body('disableLinkSharing').if(value => value != null).isBoolean(),
+  ],
   authenticationSetting: [
     body('isEnabled').if(value => value != null).isBoolean(),
     body('authId').isString().isIn([
@@ -129,6 +132,12 @@ const validator = {
  *          hideRestrictedByGroup:
  *            type: boolean
  *            description: enable hide by group
+ *      ShareLinkSetting:
+ *        type: object
+ *        properties:
+ *          disableLinkSharing:
+ *            type: boolean
+ *            description: disable link sharing
  *      LocalSetting:
  *        type: object
  *        properties:
@@ -364,6 +373,9 @@ module.exports = (crowi) => {
         wikiMode: await crowi.configManager.getConfig('crowi', 'security:wikiMode'),
         sessionMaxAge: await crowi.configManager.getConfig('crowi', 'security:sessionMaxAge'),
       },
+      shareLinkSetting: {
+        disableLinkSharing: await crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
+      },
       localSetting: {
         useOnlyEnvVarsForSomeOptions: await crowi.configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
@@ -589,6 +601,47 @@ module.exports = (crowi) => {
         hideRestrictedByOwner: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
       };
+
+      return res.apiv3({ securitySettingParams });
+    }
+    catch (err) {
+      const msg = 'Error occurred in updating security setting';
+      logger.error('Error', err);
+      return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /_api/v3/security-setting/share-link-setting:
+   *      put:
+   *        tags: [SecuritySetting, apiv3]
+   *        description: Update ShareLink Setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/ShareLinkSetting'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update ShareLink Setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/ShareLinkSetting'
+   */
+  router.put('/share-link-setting', loginRequiredStrictly, adminRequired, csrf, validator.generalSetting, apiV3FormValidator, async(req, res) => {
+    const updateData = {
+      'security:disableLinkSharing': req.body.disableLinkSharing,
+    };
+    try {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', updateData);
+      const securitySettingParams = {
+        disableLinkSharing: crowi.configManager.getConfig('crowi', 'security:disableLinkSharing'),
+      };
+
       return res.apiv3({ securitySettingParams });
     }
     catch (err) {
