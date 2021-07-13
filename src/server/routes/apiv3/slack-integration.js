@@ -114,6 +114,9 @@ module.exports = (crowi) => {
         case 'help':
           await crowi.slackBotService.helpCommand(client, body);
           break;
+        case 'togetter':
+          await crowi.slackBotService.togetterCommand(client, body, args);
+          break;
         default:
           await crowi.slackBotService.notCommand(client, body);
           break;
@@ -159,6 +162,14 @@ module.exports = (crowi) => {
         const { body, args, offset } = parsedValue;
         const newOffset = offset + 10;
         await crowi.slackBotService.showEphemeralSearchResults(client, body, args, newOffset);
+        break;
+      }
+      case 'showMoreTogetterResults': {
+        const parsedValue = JSON.parse(payload.actions[0].value);
+
+        const { body, args, limit } = parsedValue;
+        const newLimit = limit + 10;
+        await crowi.slackBotService.togetterCommand(client, body, args, newLimit);
         break;
       }
       default:
