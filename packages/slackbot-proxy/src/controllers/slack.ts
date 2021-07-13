@@ -256,7 +256,7 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+  async handleEvent(@BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {
