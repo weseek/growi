@@ -257,7 +257,7 @@ class LoginForm extends React.Component {
     } = this.props;
 
     const growiUrlHost = appContainer.config.crowi.url;
-    const passwordResetRequestPageurl = urljoin(growiUrlHost, '_api/v3/password');
+    const passwordResetRequestPageUrl = urljoin(growiUrlHost, '_api/v3/password');
 
     const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
     const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
@@ -273,7 +273,7 @@ class LoginForm extends React.Component {
                 {isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
-                    <a href={passwordResetRequestPageurl} id="reset-password" className="d-block link-switch mb-1">
+                    <a href={passwordResetRequestPageUrl} id="reset-password" className="d-block link-switch mb-1">
                       <i className="icon-key"></i> {t('forgot_password')}
                     </a>
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
