@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { reshapeContentsBody } from './reshape-contents-body';
 
 describe('reshapeContentsBody', () => {
