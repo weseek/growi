@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { useUserGroupSWR } from '~/stores/admin';
+
 import UserGroupTable from '~/client/js/components/Admin/UserGroup/UserGroupTable';
 import UserGroupCreateForm from '~/client/js/components/Admin/UserGroup/UserGroupCreateForm';
 import UserGroupDeleteModal from '~/client/js/components/Admin/UserGroup/UserGroupDeleteModal';
