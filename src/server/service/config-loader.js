@@ -404,6 +404,28 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.STRING,
     default: null,
   },
+  SLACK_SIGNING_SECRET: {
+    ns:      'crowi',
+    key:     'slackbot:signingSecret',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  SLACK_BOT_TOKEN: {
+    ns:      'crowi',
+    key:     'slackbot:token',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  SLACK_INTEGRATION_PROXY_URI: {
+    ns:      'crowi',
+    key:     'slackbot:proxyServerUri',
+    type:    TYPES.STRING,
+    default: null,
+  },
+  SLACK_BOT_TYPE: {
+    ns:      'crowi',
+    key:     'slackbot:currentBotType', // 'officialBot' || 'customBotWithoutProxy' || 'customBotWithProxy'
+  },
   GROWI_APP_ID_FOR_GROWI_CLOUD: {
     ns:      'crowi',
     key:     'app:growiAppIdForCloud',
