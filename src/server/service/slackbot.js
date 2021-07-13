@@ -389,10 +389,11 @@ class SlackBotService extends S2sMessageHandlable {
   togetterMessageBlocks() {
     return [
       this.generateMarkdownSectionBlock('Select messages to use.'),
-      this.actionsBlock(this.buttonElement('Show more', 'show_more'), this.buttonElement('Check all', 'check_all')),
+      this.actionsBlock(this.buttonElement('Show more', 'togetterShowMore')),
       this.actionsBlock(this.togetterCheckboxesElement()),
-      this.inputBlock(this.togetterInputBlockElement('page_path'), 'Page path'),
-      this.actionsBlock(this.buttonElement('Cancel', 'cancel'), this.buttonElement('Create page', 'create_page')),
+      this.inputBlock(this.togetterInputBlockElement('page_path'), 'page_path', 'Page path'),
+      this.inputBlock(this.togetterCheckboxesElement(), 'check', 'CHECK'),
+      this.actionsBlock(this.buttonElement('Cancel', 'togetterCancelPageCreation'), this.buttonElement('Create page', 'togetterCreatePage')),
     ];
   }
 
@@ -405,9 +406,10 @@ class SlackBotService extends S2sMessageHandlable {
     };
   }
 
-  inputBlock(element, labelText) {
+  inputBlock(element, blockId, labelText) {
     return {
       type: 'input',
+      block_id: blockId,
       element,
       label: {
         type: 'plain_text',
@@ -445,7 +447,7 @@ class SlackBotService extends S2sMessageHandlable {
     const options = [];
     // 仮置き
     for (let i = 0; i < 10; i++) {
-      const option = this.checkboxesElementOption('*username*  12:00PM', 'sample slack messages ... :star:');
+      const option = this.checkboxesElementOption('*username*  12:00PM', 'sample slack messages ... :star:', `selected-${i}`);
       options.push(option);
     }
     return options;
@@ -455,7 +457,7 @@ class SlackBotService extends S2sMessageHandlable {
    * Option object
    * https://api.slack.com/reference/block-kit/composition-objects#option
    */
-  checkboxesElementOption(text, description) {
+  checkboxesElementOption(text, description, value) {
     return {
       text: {
         type: 'mrkdwn',
@@ -465,7 +467,7 @@ class SlackBotService extends S2sMessageHandlable {
         type: 'mrkdwn',
         text: description,
       },
-      value: 'selected',
+      value,
     };
   }
 
