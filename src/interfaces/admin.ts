@@ -78,6 +78,6 @@ export type securityParamsGeneralSetting = {
   wikiMode: string,
 }
 
-export type userGroup = {
+export type userGroupParams = {
 
 }

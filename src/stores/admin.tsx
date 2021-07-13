@@ -5,6 +5,7 @@ import {
   markdownParams as IMarkdownParams,
   customizeParams as ICustomizeParams,
   securityParamsGeneralSetting as ISecurityParamsGeneralSetting,
+  userGroupParams as IUserGroupParams,
 } from '~/interfaces/admin';
 
 export const useAppSettingsSWR = (): responseInterface<IAppParams, Error> => {
@@ -35,6 +36,14 @@ export const useSecuritySettingGeneralSWR = (): responseInterface<ISecurityParam
   return useSWR(
     '/security-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.securityParams.generalSetting),
+    { revalidateOnFocus: false },
+  );
+};
+
+export const useUserGroupSWR = (): responseInterface<IUserGroupParams, Error> => {
+  return useSWR(
+    '/user-groups',
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.userGroupParams),
     { revalidateOnFocus: false },
   );
 };

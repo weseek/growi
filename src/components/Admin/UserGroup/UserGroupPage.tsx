@@ -84,6 +84,10 @@ const UserGroupPage = (): JSX.Element => {
     }
   }
 
+  // TODO GW-5305 retrieve isAclEnabled from SWR or getServerSideProps
+  // const { isAclEnabled } = this.props.appContainer.config;
+  const isAclEnabled = false;
+
   return (
     <>
       <UserGroupCreateForm
