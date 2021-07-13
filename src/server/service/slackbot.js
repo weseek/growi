@@ -93,6 +93,24 @@ class SlackBotService extends S2sMessageHandlable {
     return;
   }
 
+  async togetterCommand(client, body, args, limit = 10) {
+    const reusult = await client.conversations.history({
+      channel: body.channel_id,
+      limit,
+    });
+    console.log(reusult);
+    const message = '*togetterCommand*';
+    client.chat.postEphemeral({
+      channel: body.channel_id,
+      user: body.user_id,
+      text: 'togetter',
+      blocks: [
+        this.generateMarkdownSectionBlock(message),
+      ],
+    });
+    return;
+  }
+
   getKeywords(args) {
     const keywordsArr = args.slice(1);
     const keywords = keywordsArr.join(' ');
