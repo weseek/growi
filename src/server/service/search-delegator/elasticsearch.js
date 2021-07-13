@@ -556,7 +556,7 @@ class ElasticsearchDelegator {
 
   createSearchQuerySortedByUpdatedAt(option) {
     // getting path by default is almost for debug
-    let fields = ['path', 'bookmark_count', 'tag_names'];
+    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names'];
     if (option) {
       fields = option.fields || fields;
     }
@@ -577,7 +577,7 @@ class ElasticsearchDelegator {
   }
 
   createSearchQuerySortedByScore(option) {
-    let fields = ['path', 'bookmark_count', 'tag_names'];
+    let fields = ['path', 'bookmark_count', 'comment_count', 'updated_at', 'tag_names'];
     if (option) {
       fields = option.fields || fields;
     }
