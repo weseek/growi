@@ -94,11 +94,13 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async togetterCommand(client, body, args, limit = 10) {
+    // TODO GW-6721 Get the time from args
     const reusult = await client.conversations.history({
       channel: body.channel_id,
       limit,
     });
     console.log(reusult);
+    // TODO GW-6712 display checkbox using result
     const message = '*togetterCommand*';
     client.chat.postEphemeral({
       channel: body.channel_id,
