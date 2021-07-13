@@ -170,15 +170,23 @@ export class GrowiToSlackCtrl {
     logger.debug('relation test is success', order);
 
     // Transaction is not considered because it is used infrequently,
-    const createdRelation = await this.relationRepository.save({
-      installation: order.installation,
-      tokenGtoP: order.tokenGtoP,
-      tokenPtoG: order.tokenPtoG,
-      growiUri: order.growiUrl,
-      siglePostCommands: temporarySinglePostCommands,
-    });
+    const response = await this.relationRepository.createQueryBuilder('relation')
+      .insert()
+      .values({
+        installation: order.installation,
+        tokenGtoP: order.tokenGtoP,
+        tokenPtoG: order.tokenPtoG,
+        growiUri: order.growiUrl,
+        siglePostCommands: temporarySinglePostCommands,
+      })
+      // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
+      .orUpdate({ conflict_target: ['installation', 'growiUri'], overwrite: ['tokenGtoP', 'tokenPtoG', 'siglePostCommands'] })
+      .execute();
 
-    return res.send({ relation: createdRelation, slackBotToken: token });
+    // Find the generated relation
+    const generatedRelation = await this.relationRepository.findOne({ id: response.identifiers[0].id });
+
+    return res.send({ relation: generatedRelation, slackBotToken: token });
   }
 
   injectGrowiUri(req: GrowiReq, growiUri: string): void {
