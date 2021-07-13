@@ -30,6 +30,19 @@ module.exports = (crowi) => {
   const ShareLink = crowi.model('ShareLink');
   const Page = crowi.model('Page');
 
+  /**
+   * middleware to limit link sharing
+   */
+  const linkSharingRequired = (req, res, next) => {
+    const isLinkSharingDisabled = crowi.configManager.getConfig('crowi', 'security:disableLinkSharing');
+    logger.debug(`isLinkSharingDisabled: ${isLinkSharingDisabled}`);
+
+    if (isLinkSharingDisabled) {
+      return res.apiv3Err(new ErrorV3('Link sharing is disabled', 'link-sharing-disabled'));
+    }
+    next();
+  };
+
   validator.getShareLinks = [
     // validate the page id is MongoId
     query('relatedPage').isMongoId().withMessage('Page Id is required'),
@@ -54,7 +67,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get share links
    */
-  router.get('/', loginRequired, validator.getShareLinks, apiV3FormValidator, async(req, res) => {
+  router.get('/', loginRequired, linkSharingRequired, validator.getShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
@@ -115,7 +128,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to create one share link
    */
 
-  router.post('/', loginRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, linkSharingRequired, csrf, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
