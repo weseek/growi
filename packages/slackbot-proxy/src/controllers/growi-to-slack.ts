@@ -169,6 +169,7 @@ export class GrowiToSlackCtrl {
 
     logger.debug('relation test is success', order);
 
+    // Transaction is not considered because it is used infrequently,
     await this.relationRepository.createQueryBuilder('relation')
       .insert()
       .values({
