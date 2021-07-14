@@ -1,9 +1,9 @@
 # CHANGES
 
-## v4.3.0-RC
+## v4.3.1-RC
 
-* Support: Upgrade libs
-    * striptags
+* 
+## v4.3.0-RC
 
 ### BREAKING CHANGES
 
@@ -22,6 +22,8 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
 * Improvement: Mark users who failed to send invitation emails
 * Fix: lsx plugin in the custom sidebar does not work when showing search result page
 * Support: Switch the official docker base image from Alpine based to Ubuntu based
+* Support: Upgrade libs
+    * striptags
 
 ## v4.2.21
 
