@@ -28,6 +28,7 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
+  const password = require('./password')(crowi, app);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
@@ -174,6 +175,8 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.integrate);
   app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
+
+  app.get('/password', password.forgotpassword);
 
   app.get('/share/:linkId', page.showSharedPage);
 
