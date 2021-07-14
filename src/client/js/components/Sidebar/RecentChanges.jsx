@@ -61,6 +61,11 @@ class RecentChanges extends React.Component {
     );
     const { pageContainer } = this.props;
 
+    let locked;
+    if (page.grant !== 1) {
+      locked = <span><i className="icon-lock" /></span>;
+    }
+
     return (
       <li className="list-group-item p-2">
         <div className="d-flex w-100">
@@ -75,6 +80,7 @@ class RecentChanges extends React.Component {
               <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
               <i className="icon-bubble"></i>
               <span>{page.commentCount}</span>
+              {locked}
               <br />
               <FormattedDistanceDate id={page.id} date={page.updatedAt} />
             </div>
