@@ -9,10 +9,10 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler(crowi);
 
-  handler.handleCommand = async function(client, body, args, offsetNum) {
+  handler.handleCommand = async function(client, body, args) {
     let searchResult;
     try {
-      searchResult = await this.retrieveSearchResults(client, body, args, offsetNum);
+      searchResult = await this.retrieveSearchResults(client, body, args);
     }
     catch (err) {
       logger.error('Failed to get search results.', err);

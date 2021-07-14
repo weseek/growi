@@ -104,7 +104,7 @@ module.exports = (crowi) => {
     const command = args[0];
 
     try {
-      crowi.slackBotService.handleCommand(command, client, body, args);
+      await crowi.slackBotService.handleCommand(command, client, body, args);
     }
     catch (error) {
       logger.error(error);
