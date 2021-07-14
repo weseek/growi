@@ -79,21 +79,7 @@
     bottom: 0px;
     left: 0px;
     z-index: 200;
-    // css-xxx-ContainerNavigationMask
-    > div:nth-of-type(1) {
-    }
-    // css-xxx-Outer
-    > div:nth-of-type(2) {
-      z-index: 100; // greater than the value of slimScrollBar
 
-      width: 0;
-      transform: unset; // unset for 'position: fixed' of .ak-navigation-resize-button
-
-      // css-xxx-Shadow
-      > div:first-child {
-        background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
-      }
-    }
     .grw-navigation-wrap {
       display: flex;
       flex-direction: row;
@@ -103,8 +89,9 @@
         position: relative;
         width: 240px;
         height: 100%;
-        transition: width 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
-        transition: width 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+        &:not(.dragging) {
+          transition: width 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
+        }
         will-change: width;
         .grw-contextual-navigation-child {
           position: absolute;
@@ -162,16 +149,17 @@
       top: 0px;
       bottom: 0px;
       left: 100%;
-      z-index: 3;
-      width: 24px;
-      transform: translateZ(0px);
-      .grw-navigation-draggable-sub {
+      z-index: 100; // greater than the value of slimScrollBar
+      width: 0;
+      transform: unset; // unset for 'position: fixed' of .ak-navigation-resize-button
+      .grw-navigation-draggable-first-child {
         position: absolute;
         top: 0px;
         bottom: 0px;
         left: -3px;
         width: 3px;
         pointer-events: none;
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.1) 0px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0.1) 1px, rgba(0, 0, 0, 0) 100%);
         opacity: 0.5;
         transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
         transition-duration: 0.22s;
@@ -280,7 +268,7 @@
   z-index: $zindex-fixed + 2;
 
   // override @atlaskit/navigation-next styles
-  div[data-testid='Navigation'] {
+  div.navigation {
     max-width: 80vw;
 
     // apply transition
@@ -289,12 +277,12 @@
   }
 
   &:not(.open) {
-    div[data-testid='Navigation'] {
+    div.navigation {
       transform: translateX(-100%);
     }
   }
   &.open {
-    div[data-testid='Navigation'] {
+    div.navigation {
       transform: translateX(0);
     }
 
@@ -341,14 +329,14 @@
 // supress transition
 .grw-sidebar {
   &.grw-sidebar-supress-transitions-to-drawer {
-    div[data-testid='Navigation'] {
+    div.navigation {
       transition: none !important;
     }
   }
 
   &.grw-sidebar-supress-transitions-to-dock {
-    div[data-testid='Content'],
-    div[data-testid='ContextualNavigation'] {
+    div.content,
+    div.contextual-navigation {
       transition: none !important;
     }
   }

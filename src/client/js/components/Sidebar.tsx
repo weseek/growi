@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 
 import {
@@ -173,9 +173,16 @@ const Sidebar = (props: Props) => {
 
   const [isHover, setHover] = useState(false);
   const [isDragging, setDrag] = useState(false);
-  const [productNavWidth, setProductNavWidth] = useState(sidebarDefaultWidth);
   // TODO global state
-  const [sidebarWidthCached, setSidebarWidthCached] = useState(productNavWidth);
+  const [sidebarWidthCached, setSidebarWidthCached] = useState(sidebarDefaultWidth);
+
+  const resizableContainer = useRef<HTMLDivElement>(null);
+  const setContentWidth = useCallback((newWidth) => {
+    if (resizableContainer.current == null) {
+      return;
+    }
+    resizableContainer.current.style.width = `${newWidth}px`;
+  }, []);
 
   const hoverHandler = useCallback((isHover: boolean) => {
     if (!navigationUIController.state.isCollapsed) {
@@ -185,12 +192,12 @@ const Sidebar = (props: Props) => {
     setHover(isHover);
 
     if (isHover) {
-      setProductNavWidth(sidebarWidthCached);
+      setContentWidth(sidebarWidthCached);
     }
     if (!isHover) {
-      setProductNavWidth(sidebarMinimizeWidth);
+      setContentWidth(sidebarMinimizeWidth);
     }
-  }, [navigationUIController.state.isCollapsed, sidebarWidthCached]);
+  }, [navigationUIController.state.isCollapsed, sidebarWidthCached, setContentWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     navigationUIController.toggleCollapse();
@@ -198,34 +205,45 @@ const Sidebar = (props: Props) => {
 
   useEffect(() => {
     if (navigationUIController.state.isCollapsed) {
-      setProductNavWidth(sidebarMinimizeWidth);
+      setContentWidth(sidebarMinimizeWidth);
     }
     else {
-      setProductNavWidth(sidebarWidthCached);
+      setContentWidth(sidebarWidthCached);
     }
-  }, [navigationUIController.state.isCollapsed, sidebarWidthCached]);
+  }, [navigationUIController.state.isCollapsed, sidebarWidthCached, setContentWidth]);
 
   const draggableAreaMoveHandler = useCallback((event) => {
     if (isDragging) {
       event.preventDefault();
-      setProductNavWidth(event.pageX - 60);
-      setSidebarWidthCached(event.pageX - 60);
+      const newWitdh = event.pageX - 60;
+      if (resizableContainer.current != null) {
+        setContentWidth(newWitdh);
+        resizableContainer.current.classList.add('dragging');
+      }
     }
-  }, [isDragging]);
+  }, [isDragging, setContentWidth]);
 
   const dragableAreaMouseUpHandler = useCallback(() => {
+    if (resizableContainer.current == null) {
+      return;
+    }
+
     setDrag(false);
 
-    if (productNavWidth < sidebarMinWidth) {
+    if (resizableContainer.current.clientWidth < sidebarMinWidth) {
       setSidebarWidthCached(sidebarMinWidth);
       navigationUIController.collapse();
-      setProductNavWidth(sidebarMinimizeWidth);
+      setContentWidth(sidebarMinimizeWidth);
     }
+    else {
+      setSidebarWidthCached(resizableContainer.current.clientWidth);
+    }
+    resizableContainer.current.classList.remove('dragging');
 
     document.removeEventListener('mousemove', draggableAreaMoveHandler);
     document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
 
-  }, [productNavWidth, navigationUIController, draggableAreaMoveHandler]);
+  }, [navigationUIController, draggableAreaMoveHandler, setContentWidth]);
 
   const dragableAreaClickHandler = useCallback(() => {
     if (navigationUIController.state.isCollapsed) {
@@ -255,8 +273,8 @@ const Sidebar = (props: Props) => {
                   <GlobalNavigation></GlobalNavigation>
                 </div>
                 <div
+                  ref={resizableContainer}
                   className="grw-contextual-navigation"
-                  style={{ width: productNavWidth }}
                   onMouseEnter={() => hoverHandler(true)}
                   onMouseLeave={() => hoverHandler(false)}
                   onMouseMove={draggableAreaMoveHandler}
