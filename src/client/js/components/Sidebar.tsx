@@ -17,6 +17,7 @@ import SidebarNav from './Sidebar/SidebarNav';
 
 const sidebarDefaultWidth = 320;
 const sidebarMinWidth = 240;
+const sidebarMinimizeWidth = 20;
 
 type GlobalNavigationProps = {
   navigationUIController: any, // UIController from @atlaskit/navigation-next
@@ -177,13 +178,17 @@ const Sidebar = (props: Props) => {
   const [sidebarWidthCached, setSidebarWidthCached] = useState(productNavWidth);
 
   const hoverHandler = useCallback((isHover: boolean) => {
+    if (!navigationUIController.state.isCollapsed) {
+      return;
+    }
+
     setHover(isHover);
 
-    if (isHover && navigationUIController.state.isCollapsed) {
+    if (isHover) {
       setProductNavWidth(sidebarWidthCached);
     }
-    if (!isHover && navigationUIController.state.isCollapsed) {
-      setProductNavWidth(20);
+    if (!isHover) {
+      setProductNavWidth(sidebarMinimizeWidth);
     }
   }, [navigationUIController.state.isCollapsed, sidebarWidthCached]);
 
@@ -193,7 +198,7 @@ const Sidebar = (props: Props) => {
 
   useEffect(() => {
     if (navigationUIController.state.isCollapsed) {
-      setProductNavWidth(20);
+      setProductNavWidth(sidebarMinimizeWidth);
     }
     else {
       setProductNavWidth(sidebarWidthCached);
@@ -209,20 +214,18 @@ const Sidebar = (props: Props) => {
   }, [isDragging]);
 
   const dragableAreaMouseUpHandler = useCallback(() => {
-    if (isDragging) {
-      setDrag(false);
+    setDrag(false);
 
-      if (productNavWidth < sidebarMinWidth) {
-        setProductNavWidth(sidebarMinWidth);
-        setSidebarWidthCached(sidebarMinWidth);
-        navigationUIController.collapse();
-      }
-
-      document.removeEventListener('mousemove', draggableAreaMoveHandler);
-      document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
+    if (productNavWidth < sidebarMinWidth) {
+      setSidebarWidthCached(sidebarMinWidth);
+      navigationUIController.collapse();
+      setProductNavWidth(sidebarMinimizeWidth);
     }
 
-  }, [isDragging, productNavWidth, navigationUIController, draggableAreaMoveHandler]);
+    document.removeEventListener('mousemove', draggableAreaMoveHandler);
+    document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
+
+  }, [productNavWidth, navigationUIController, draggableAreaMoveHandler]);
 
   const dragableAreaClickHandler = useCallback(() => {
     if (navigationUIController.state.isCollapsed) {
