@@ -268,8 +268,7 @@ class LoginForm extends React.Component {
                 {isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
-                    {/* TODO switch to password resetting form */}
-                    <a href="#reset-password" id="reset-password" className="d-block link-switch mb-1">
+                    <a href="/forgot-password" className="d-block link-switch mb-1">
                       <i className="icon-key"></i> {t('forgot_password')}
                     </a>
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
