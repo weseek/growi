@@ -1,0 +1,87 @@
+name: Release Docker Image for @growi/slackbot-proxy
+
+on:
+  push:
+    branches:
+      - release/slackbot-proxy/**
+
+jobs:
+
+  build-and-push-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup semver
+      id: semver
+      working-directory: ./packages/slackbot-proxy
+      run: |
+        semver=`npm run version --silent`
+        echo "::set-output name=SEMVER::$semver"
+
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: weseek/growi-slackbot-proxy,ghcr.io/weseek/growi-slackbot-proxy,asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy
+        tags: |
+          type=raw,value=latest
+          type=raw,value=${{ steps.semver.outputs.SEMVER }}
+
+    - name: Login to docker.io registry
+      run: |
+        echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+
+    - name: Setup gcloud
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: ${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}
+        service_account_key: ${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}
+        export_default_credentials: true
+
+    - name: Configure docker for gcloud
+      run: |
+        gcloud auth configure-docker --quiet
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-slackbot-proxy-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-slackbot-proxy-
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./packages/slackbot-proxy/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+        tags: ${{ steps.meta.outputs.tags }}
+
+    - name: Move cache
+      run: |
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
+    - name: Update Docker Hub Description
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        repository: weseek/growi-slackbot-proxy
+        readme-filepath: ./packages/slackbot-proxy/docker/README.md

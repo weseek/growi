@@ -1,6 +1,48 @@
 # CHANGES
 
-## v4.2.20-RC
+## v4.3.0-RC
+
+* Support: Upgrade libs
+    * striptags
+
+### BREAKING CHANGES
+
+None.
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
+
+### Updates
+
+* Feature: New Slack Integration with Slack Bot
+    * Searching GROWI pages from Slack
+    * Creating GROWI pages from Slack
+        * Easy record conversations
+* Feature: Enable/Disable option for share link
+* Feature: Re-send invitation mail from user management page
+* Improvement: Mark users who failed to send invitation emails
+* Fix: lsx plugin in the custom sidebar does not work when showing search result page
+* Support: Switch the official docker base image from Alpine based to Ubuntu based
+
+## v4.2.21
+
+* Improvement: Headers style on built-in editor
+* Improvement: Codemirror is now scrollable one editor height of empty space into view at the bottom of the editor
+* Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
+* Support: Upgrade libs
+    * connect-mongo
+    * i18next
+    * migrate-mongo
+    * mongoose
+    * stream-to-promise
+    * validator
+    * ws
+    * nodemailer
+    * i18next-express-middleware
+    * growi-commons
+    * growi-plugin-attachment-refs
+    * growi-plugin-lsx
+
+## v4.2.20
 
 * Improvement: Error message when the password is too short
 * Improvement: Repeat XSS processing as a countermeasure against nesting 
@@ -26,14 +68,14 @@
 * Fix: Global notification to Slack does not encode spaces of page path
 * Support: Upgrade libs
     * @google-cloud/storage
-    * @slack/web-api
-    * @slack/webhook
 
 ## v4.2.17
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
 * Improvement: Hide Sidebar at shared pages
 * Fix: No unsaved alert is displayed without difference the latest markdown and editor value
+* Support: Update libs
+    * eslint-config-weseek
 
 ## v4.2.16
 
@@ -49,7 +91,6 @@
     * Introduced by v4.2.8
 * Support: Upgrade libs
     * reactstrap
-
 
 
 ## v4.2.14
