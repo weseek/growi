@@ -61,6 +61,11 @@ class RecentChanges extends React.Component {
     );
     const { pageContainer } = this.props;
 
+    let locked;
+    if (page.grant !== 1) {
+      locked = <span><i className="icon-lock" /></span>;
+    }
+
     return (
       <li className="list-group-item p-2">
         <div className="d-flex w-100">
@@ -69,6 +74,7 @@ class RecentChanges extends React.Component {
             { !dPagePath.isRoot && <FormerLink /> }
             <h5 className="mb-1">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
+              {locked}
             </h5>
             <div className="text-right small">
               <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
