@@ -176,7 +176,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
-  app.get('/password', password.forgotpassword);
+  app.get('/forgot-password', password.forgotpassword);
 
   app.get('/share/:linkId', page.showSharedPage);
 
