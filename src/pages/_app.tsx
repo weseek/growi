@@ -9,12 +9,17 @@ import InterceptorManager from '~/service/interceptor-manager';
 import { useGrowiVersion } from '../stores/context';
 import { useInterceptorManager } from '~/stores/interceptor';
 
+import GrowiNavBar from '../client/js/components/Navbar/GrowiNavbar'
+
 function GrowiApp({ Component, pageProps }: AppProps) {
   useInterceptorManager(new InterceptorManager());
   useGrowiVersion(pageProps.growiVersion);
 
   return (
-    <Component {...pageProps} />
+    <>
+      <GrowiNavBar />
+      <Component {...pageProps} />
+    </>
   );
 }
 
