@@ -15,6 +15,7 @@ export * from './models/errors';
 export * from './middlewares/verify-growi-to-slack-request';
 export * from './middlewares/verify-slack-request';
 export * from './utils/block-creater';
+export * from './utils/block-kit-builder';
 export * from './utils/check-communicable';
 export * from './utils/post-ephemeral-errors';
 export * from './utils/reshape-contents-body';
