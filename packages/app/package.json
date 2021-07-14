@@ -4,7 +4,13 @@
   "license": "MIT",
   "scripts": {
     "build": "cd ../../ && env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
-    "prebuild": "cd ../../ && yarn plugin:def && yarn resource"
+    "prebuild": "cd ../../ && yarn plugin:def && yarn resource",
+    "lint:js:fix": "eslint \"**/*.{js,jsx}\" --fix",
+    "lint:js": "eslint \"**/*.{js,jsx}\"",
+    "lint:styles:fix": "stylelint --fix src/**/*.scss",
+    "lint:styles": "stylelint src/**/*.scss",
+    "lint:swagger2openapi": "node node_modules/swagger2openapi/oas-validate tmp/swagger.json",
+    "lint": "npm-run-all -p lint:js lint:styles lint:swagger2openapi"
   },
   "// comments for dependencies": {
     "openid-client": "Node.js 12 or higher is required for openid-client@3 and above.",

@@ -1,4 +1,5 @@
 module.exports = {
+  root: true, // https://eslint.org/docs/user-guide/configuring/configuration-files#cascading-and-hierarchy
   extends: [
     'weseek',
     'weseek/react',
