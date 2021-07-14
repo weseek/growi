@@ -37,6 +37,8 @@ import Fab from './components/Fab';
 import PersonalSettings from './components/Me/PersonalSettings';
 import GrowiSubNavigation from './components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from './components/Navbar/GrowiSubNavigationSwitcher';
+import PasswordResetRequestForm from './components/PasswordResetRequestForm';
+
 
 import NavigationContainer from './services/NavigationContainer';
 import PageContainer from './services/PageContainer';
@@ -102,6 +104,8 @@ Object.assign(componentMappings, {
 
   'forbidden-page': <ForbiddenPage />,
 
+  'password-reset-request-form': <PasswordResetRequestForm />,
+
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
@@ -127,6 +131,7 @@ if (pageContainer.state.pageId != null) {
 
     'recent-created-icon': <RecentlyCreatedIcon />,
     'user-bookmark-icon': <BookmarkIcon />,
+    'password-reset-request-form':  <PasswordResetRequestForm />,
   });
 
   // show the Page accessory modal when query of "compare" is requested
