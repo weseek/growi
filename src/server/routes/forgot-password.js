@@ -1,7 +1,7 @@
 module.exports = function(crowi, app) {
   const actions = {};
 
-  actions.forgotpassword = async function(req, res) {
+  actions.forgotPassword = async function(req, res) {
     return res.render('forgot-password');
   };
 
