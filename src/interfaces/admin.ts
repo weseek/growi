@@ -77,7 +77,3 @@ export type securityParamsGeneralSetting = {
   hideRestrictedByGroup: string,
   wikiMode: string,
 }
-
-export type userGroupParams = {
-
-}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useUserGroupSWR } from '~/stores/admin';
+import { useUserGroupSWR, useUserGroupRelationsSWR } from '~/stores/admin';
+import { useAclEnabled } from '~/stores/context';
 
 import UserGroupTable from '~/client/js/components/Admin/UserGroup/UserGroupTable';
 import UserGroupCreateForm from '~/client/js/components/Admin/UserGroup/UserGroupCreateForm';
@@ -10,11 +11,14 @@ import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
 import { UserGroup, UserGroupRelation } from '~/interfaces/user';
 
 const UserGroupPage = (): JSX.Element => {
-
+  const isAclEnabled = useAclEnabled();
   const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
   const [userGroupRelations, setUserGroupRelations] = useState<UserGroupRelation[]>([]);
   const [selectedUserGroup, setSelectedUserGroup] = useState(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isDeleteModalShow, setIsDeleteModalShow] = useState(false);
+  // TODO: Fix pagination src/server/models/user-group.ts
+  // const { data: userGroupParams } = useUserGroupSWR({ pagination: false });
+  const { data: userGroupRelationsParams } = useUserGroupRelationsSWR();
 
   useEffect(() => {
     syncUserGroupAndRelations();
@@ -53,13 +57,13 @@ const UserGroupPage = (): JSX.Element => {
       });
 
       setUserGroups(prevState => {
-        return prevState.filter((userGroup) => {
+        return prevState?.filter((userGroup) => {
           return userGroup._id !== deleteGroupId;
         })
       })
 
       setUserGroupRelations(prevState => {
-        return prevState.filter((userGroupRelation) => {
+        return prevState?.filter((userGroupRelation) => {
           return userGroupRelation._id != deleteGroupId
         });
       })
@@ -76,19 +80,18 @@ const UserGroupPage = (): JSX.Element => {
 
   const syncUserGroupAndRelations = async () => {
     try {
-      const userGroupsRes = await apiv3Get('/user-groups', { pagination: false });
-      const userGroupRelationsRes = await apiv3Get('/user-group-relations');
-      setUserGroups(userGroupsRes.data.userGroups);
-      setUserGroupRelations(userGroupRelationsRes.data.userGroupRelations);
+      // TODO: Fix pagination src/server/models/user-group.ts
+      // if (userGroupParams != null) {
+      //   setUserGroups(userGroupParams);
+      // }
+      if (userGroupRelationsParams != null) {
+        setUserGroupRelations(userGroupRelationsParams);
+      }
     }
     catch (err) {
       toastError(err);
     }
   }
-
-  // TODO GW-5305 retrieve isAclEnabled from SWR or getServerSideProps
-  // const { isAclEnabled } = this.props.appContainer.config;
-  const isAclEnabled = false;
 
   return (
     <>

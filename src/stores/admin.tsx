@@ -1,12 +1,16 @@
 import useSWR, { responseInterface } from 'swr';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
+  UserGroup as IUserGroup,
+  UserGroupRelation as IUserGroupRelation
+} from '~/interfaces/user';
+import {
   appParams as IAppParams,
   markdownParams as IMarkdownParams,
   customizeParams as ICustomizeParams,
   securityParamsGeneralSetting as ISecurityParamsGeneralSetting,
-  userGroupParams as IUserGroupParams,
 } from '~/interfaces/admin';
+
 
 export const useAppSettingsSWR = (): responseInterface<IAppParams, Error> => {
   return useSWR(
@@ -40,10 +44,19 @@ export const useSecuritySettingGeneralSWR = (): responseInterface<ISecurityParam
   );
 };
 
-export const useUserGroupSWR = (): responseInterface<IUserGroupParams, Error> => {
+export const useUserGroupSWR = ({ pagination }): responseInterface<IUserGroup[], Error> => {
   return useSWR(
-    '/user-groups',
-    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.userGroupParams),
+    ['/user-groups', pagination],
+    (endpoint) => apiv3Get(endpoint, { pagination })
+      .then(result => result.data.userGroupParams),
+    { revalidateOnFocus: false },
+  );
+};
+
+export const useUserGroupRelationsSWR = (): responseInterface<IUserGroupRelation[], Error> => {
+  return useSWR(
+    '/user-group-relations',
+    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.userGroupRelationsParams),
     { revalidateOnFocus: false },
   );
 };
