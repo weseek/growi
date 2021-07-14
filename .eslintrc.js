@@ -1,8 +1,8 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   extends: [
-    'weseek',
-    'weseek/typescript-next',
+    // 'weseek',
+    // 'weseek/typescript-next',
     'plugin:jest/recommended',
   ],
   env: {
