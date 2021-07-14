@@ -2,7 +2,10 @@
 
 ## v4.3.1-RC
 
-* 
+* Update libs
+    * @slack/web-api
+    * morgan
+
 ## v4.3.0-RC
 
 ### BREAKING CHANGES
