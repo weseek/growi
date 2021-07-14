@@ -4,7 +4,6 @@ import ReactCardFlip from 'react-card-flip';
 
 import { withTranslation } from 'react-i18next';
 
-import urljoin from 'url-join';
 import AppContainer from '../services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
