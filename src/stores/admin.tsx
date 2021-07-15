@@ -47,7 +47,7 @@ export const useSecuritySettingGeneralSWR = (): responseInterface<ISecurityParam
 export const useUserGroupSWR = ({ pagination }): responseInterface<IUserGroup[], Error> => {
   return useSWR(
     ['/user-groups', pagination],
-    (endpoint) => apiv3Get(endpoint, { pagination })
+    (endpoint,pagination) => apiv3Get(endpoint, { pagination })
       .then(result => result.data.userGroupParams),
     { revalidateOnFocus: false },
   );
