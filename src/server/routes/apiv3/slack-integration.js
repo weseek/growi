@@ -104,23 +104,7 @@ module.exports = (crowi) => {
     const command = args[0];
 
     try {
-      switch (command) {
-        case 'search':
-          await crowi.slackBotService.showEphemeralSearchResults(client, body, args);
-          break;
-        case 'create':
-          await crowi.slackBotService.createModal(client, body);
-          break;
-        case 'help':
-          await crowi.slackBotService.helpCommand(client, body);
-          break;
-        case 'togetter':
-          await crowi.slackBotService.togetterCommand(client, body, args);
-          break;
-        default:
-          await crowi.slackBotService.notCommand(client, body);
-          break;
-      }
+      await crowi.slackBotService.handleCommand(command, client, body, args);
     }
     catch (error) {
       logger.error(error);
