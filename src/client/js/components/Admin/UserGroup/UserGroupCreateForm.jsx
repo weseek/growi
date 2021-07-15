@@ -14,7 +14,7 @@ class UserGroupCreateForm extends React.Component {
       name: '',
     };
 
-    if (process.browser) {
+    if (process.browser != null) {
       this.xss = window.xss;
     }
 
