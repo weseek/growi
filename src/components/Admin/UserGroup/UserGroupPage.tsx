@@ -10,7 +10,7 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
 import { UserGroup, UserGroupRelation } from '~/interfaces/user';
 
-const UserGroupPage = (): JSX.Element => {
+export const UserGroupPage = (): JSX.Element => {
   const isAclEnabled = useAclEnabled();
   const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
   const [userGroupRelations, setUserGroupRelations] = useState<UserGroupRelation[]>([]);
