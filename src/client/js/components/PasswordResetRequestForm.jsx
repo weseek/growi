@@ -8,7 +8,7 @@ const PasswordResetRequestForm = (props) => {
 
   return (
     <>
-      <div className="d-flex align-items-center justify-content-center">
+      <div className="d-flex justify-content-center mt-5">
         <div className="text-center">
           <h3><i className="fa fa-lock fa-4x"></i></h3>
           <h2 className="text-center">Forgot Password?</h2>
@@ -25,6 +25,9 @@ const PasswordResetRequestForm = (props) => {
             <div className="form-group">
               <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit" />
             </div>
+            <a href="/login">
+              <i className="icon-login mr-1"></i>Back to Login Page
+            </a>
           </form>
         </div>
       </div>
