@@ -53,8 +53,7 @@ module.exports = (crowi) => {
       return res.status(200).send({ info });
     }
     catch (err) {
-      // return res.apiv3Err(err, 503);
-      return res.apiv3Err(new ErrorV3('SearchService is not configured', 'search-service-unconfigured'), 503);
+      return res.apiv3Err(err, 503);
     }
   });
 

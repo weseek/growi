@@ -8,20 +8,20 @@ import { Indices, Aliases } from '~/interfaces/search';
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
 import StatusTable from '~/client/js/components/Admin/ElasticsearchManagement/StatusTable';
-// import ReconnectControls from '~/client/js/components/Admin/ElasticsearchManagement/ReconnectControls';
+import ReconnectControls from '~/client/js/components/Admin/ElasticsearchManagement/ReconnectControls';
 // import NormalizeIndicesControls from '~/client/js/components/Admin/ElasticsearchManagement/NormalizeIndicesControls';
 // import RebuildIndexControls from '~/client/js/components/Admin/ElasticsearchManagement/RebuildIndexControls';
-import { apiv3Get, apiv3Post, apiv3Put } from '~/utils/apiv3-client';
+import { apiv3Post, apiv3Put } from '~/utils/apiv3-client';
 import { useIndicesSWR } from '~/stores/search';
 
 const ElasticsearchManagement = props => {
-  // const { t } = useTranslation();
-  const { data, error } = useIndicesSWR();
+  const { t } = useTranslation();
+  const { data, error, mutate } = useIndicesSWR();
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
-  // const [isReconnectingProcessing, setIsReconnectingProcessing] = useState<boolean>(false);
-  // const [isRebuildingProcessing, setIsRebuildingProcessing] = useState<boolean>(false);
+  const [isReconnectingProcessing, setIsReconnectingProcessing] = useState<boolean>(false);
+  const [isRebuildingProcessing, setIsRebuildingProcessing] = useState<boolean>(false);
   // const [isRebuildingCompleted, setIsRebuildingCompleted] = useState<boolean>(false);
 
   const [isNormalized, setIsNormalized] = useState<boolean | null>(null);
@@ -35,16 +35,13 @@ const ElasticsearchManagement = props => {
   // }, []);
   // const initWebSockets = () => {
   //   const socket = props.adminSocketIoContainer.getSocket();
-
   //   socket.on('addPageProgress', data => {
   //     setIsRebuildingProcessing(true);
   //   });
-
   //   socket.on('finishAddPage', data => {
   //     setIsRebuildingProcessing(false);
   //     setIsRebuildingCompleted(true);
   //   });
-
   //   socket.on('rebuildingFailed', data => {
   //     toastError(new Error(data.error), 'Rebuilding Index has failed.');
   //   });
@@ -52,7 +49,6 @@ const ElasticsearchManagement = props => {
 
   useEffect(() => {
     retrieveIndicesStatus();
-    console.log(error);
   }, []);
 
   const retrieveIndicesStatus = () => {
@@ -68,16 +64,10 @@ const ElasticsearchManagement = props => {
     if (error != null) {
       setIsConnected(false);
       console.log(error)
-      if (error.code === 'search-service-unconfigured') {
+
+      if (error[0].code === 'search-service-unconfigured') {
         setIsConfigured(false);
       }
-
-      // evaluate whether configured or not
-      // for (const error of errors) {
-      //   if (error.code === 'search-service-unconfigured') {
-      //     this.setState({ isConfigured: false });
-      //   }
-      // }
 
       toastError(error);
     }
@@ -86,49 +76,49 @@ const ElasticsearchManagement = props => {
   }
 
 
-  // const reconnect = async () => {
-  //   setIsReconnectingProcessing(true);
+  const reconnect = async () => {
+    setIsReconnectingProcessing(true);
 
-  //   try {
-  //     await apiv3Post('/search/connection');
-  //   } catch (e) {
-  //     toastError(e);
-  //     return;
-  //   }
+    try {
+      await apiv3Post('/search/connection');
+    } catch (e) {
+      toastError(e);
+      return;
+    }
 
-  //   window.location.reload();
-  // };
+    window.location.reload();
+  };
 
-  // const normalizeIndices = async () => {
-  //   try {
-  //     await apiv3Put('/search/indices', { operation: 'normalize' });
-  //   } catch (e) {
-  //     toastError(e);
-  //   }
+  const normalizeIndices = async () => {
+    try {
+      await apiv3Put('/search/indices', { operation: 'normalize' });
+    } catch (e) {
+      toastError(e);
+    }
 
-  //   await retrieveIndicesStatus();
+    await mutate();
 
-  //   toastSuccess('Normalizing has succeeded');
-  // };
+    toastSuccess('Normalizing has succeeded');
+  };
 
-  // const rebuildIndices = async () => {
-  //   setIsRebuildingProcessing(true);
+  const rebuildIndices = async () => {
+    setIsRebuildingProcessing(true);
 
-  //   try {
-  //     await apiv3Put('/search/indices', { operation: 'rebuild' });
-  //     toastSuccess('Rebuilding is requested');
-  //   } catch (e) {
-  //     toastError(e);
-  //   }
+    try {
+      await apiv3Put('/search/indices', { operation: 'rebuild' });
+      toastSuccess('Rebuilding is requested');
+    } catch (e) {
+      toastError(e);
+    }
 
-  //   await retrieveIndicesStatus();
-  // };
+    await mutate();
+  };
 
   // TODO: GW- retrieve from SWR
   // const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
   const isErrorOccuredOnSearchService = true;
 
-  // const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
+  const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
 
   return (
     <>
@@ -149,7 +139,7 @@ const ElasticsearchManagement = props => {
       <hr />
 
       {/* Controls */}
-      {/* <div className="row">
+      <div className="row">
         <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.reconnect')}</label>
         <div className="col-md-6">
           <ReconnectControls
@@ -161,7 +151,7 @@ const ElasticsearchManagement = props => {
 
       <hr />
 
-      <div className="row">
+      {/* <div className="row">
         <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.normalize')}</label>
         <div className="col-md-6">
           <NormalizeIndicesControls
