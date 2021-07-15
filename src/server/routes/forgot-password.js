@@ -1,5 +1,5 @@
 module.exports = function(crowi, app) {
-  const { appService, mailService } = crowi;
+  const { /* appService, */ mailService } = crowi;
   const path = require('path');
   const actions = {};
   const api = {};
