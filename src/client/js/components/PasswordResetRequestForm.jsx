@@ -18,7 +18,7 @@ const PasswordResetRequestForm = (props) => {
                   <h2 className="text-center">Forgot Password?</h2>
                   <p>You can reset your password here.</p>
                   <div className="card-body">
-                    <form id="register-form" role="form" autoComplete="off" className="form" method="post">
+                    <form id="register-form" role="form" className="form" method="post">
                       <div className="form-group">
                         <div className="input-group">
                           <span className="input-group-addon">
