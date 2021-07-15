@@ -26,7 +26,7 @@ const PasswordResetRequestForm = (props) => {
               <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit" />
             </div>
             <a href="/login">
-              <i className="icon-login mr-1"></i>Back to Login Page
+              <i className="icon-login mr-1"></i>Return to login
             </a>
           </form>
         </div>
