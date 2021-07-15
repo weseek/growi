@@ -21,14 +21,15 @@ const PasswordResetRequestForm = (props) => {
                     <form id="register-form" role="form" autoComplete="off" className="form" method="post">
                       <div className="form-group">
                         <div className="input-group">
-                          <span className="input-group-addon"><i className="glyphicon glyphicon-envelope color-blue"></i></span>
+                          <span className="input-group-addon">
+                            <i className="glyphicon glyphicon-envelope" />
+                          </span>
                           <input id="email" name="email" placeholder="email address" className="form-control" type="email" />
                         </div>
                       </div>
                       <div className="form-group">
                         <input name="recover-submit" className="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit" />
                       </div>
-                      <input type="hidden" className="hide" name="token" id="token" value="" />
                     </form>
                   </div>
                 </div>
