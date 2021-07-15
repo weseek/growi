@@ -176,6 +176,14 @@ module.exports = (crowi) => {
         console.log('ここでCancelする');
         break;
       }
+      case 'showMoreTogetterResults': {
+        const parsedValue = JSON.parse(payload.actions[0].value);
+
+        const { body, args, limit } = parsedValue;
+        const newLimit = limit + 10;
+        await crowi.slackBotService.togetterCommand(client, body, args, newLimit);
+        break;
+      }
       default:
         break;
     }

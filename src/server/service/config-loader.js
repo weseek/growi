@@ -254,6 +254,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.NUMBER,
     default: Infinity,
   },
+  DISABLE_LINK_SHARING: {
+    ns:      'crowi',
+    key:     'security:disableSharing',
+    type:    TYPES.BOOLEAN,
+    default: false,
+  },
   LOCAL_STRATEGY_ENABLED: {
     ns:      'crowi',
     key:     'security:passport-local:isEnabled',

@@ -93,7 +93,13 @@ class SlackBotService extends S2sMessageHandlable {
     return;
   }
 
-  async togetterCommand(client, body, args) {
+  async togetterCommand(client, body, args, limit = 10) {
+    // TODO GW-6721 Get the time from args
+    const reusult = await client.conversations.history({
+      channel: body.channel_id,
+      limit,
+    });
+    console.log(reusult);
     // Checkbox Message を返す
     client.chat.postEphemeral({
       channel: body.channel_id,
@@ -101,6 +107,7 @@ class SlackBotService extends S2sMessageHandlable {
       text: 'Select messages to use.',
       blocks: this.togetterMessageBlocks(),
     });
+    return;
   }
 
   getKeywords(args) {

@@ -19,6 +19,7 @@ const PageAccessoriesModalControl = (props) => {
   const {
     t, pageAccessoriesContainer, isGuestUser, isSharedUser, isNotFoundPage,
   } = props;
+  const isLinkSharingDisabled = pageAccessoriesContainer.appContainer.config.disableLinkSharing;
 
   const accessoriesBtnList = useMemo(() => {
     return [
@@ -49,11 +50,11 @@ const PageAccessoriesModalControl = (props) => {
       {
         name: 'shareLink',
         Icon: <ShareLinkIcon />,
-        disabled: isGuestUser || isSharedUser || isNotFoundPage,
+        disabled: isGuestUser || isSharedUser || isNotFoundPage || isLinkSharingDisabled,
         i18n: t('share_links.share_link_management'),
       },
     ];
-  }, [t, isGuestUser, isSharedUser, isNotFoundPage]);
+  }, [t, isGuestUser, isSharedUser, isNotFoundPage, isLinkSharingDisabled]);
 
   return (
     <div className="grw-page-accessories-control d-flex flex-nowrap align-items-center justify-content-end justify-content-lg-between">
@@ -62,6 +63,9 @@ const PageAccessoriesModalControl = (props) => {
         let tooltipMessage;
         if (accessory.disabled) {
           tooltipMessage = isNotFoundPage ? t('not_found_page.page_not_exist') : t('Not available for guest');
+          if (accessory.name === 'shareLink' && isLinkSharingDisabled) {
+            tooltipMessage = t('Link sharing is disabled');
+          }
         }
         else {
           tooltipMessage = accessory.i18n;
