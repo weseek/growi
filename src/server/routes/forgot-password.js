@@ -13,14 +13,14 @@ module.exports = function(crowi, app) {
   async function sendPasswordResetEmail() {
 
     return mailService.send({
-      to: 'kaori@weseek.co.jp',
+      to: 'hoge@gmail.com',
       subject: 'forgotPasswordMailTest',
       // TODO: apply i18n by GW-6833
       template: path.join(crowi.localeDir, 'en_US/notifications/passwordReset.txt'),
       // TODO: need to set appropriate values by GW-6828
       // vars: {
       //   appTitle: appService.getAppTitle(),
-      //   email: 'kaori@weseek.co.jp',
+      //   email: 'hoge@gmail.com',
       //   url: 'https://www.google.com/',
       // },
     });
