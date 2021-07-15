@@ -56,6 +56,7 @@ require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
 require('codemirror/mode/gfm/gfm');
 require('../../util/codemirror/autorefresh.ext');
+require('../../util/codemirror/gfm-growi.mode');
 
 
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
@@ -820,7 +821,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const mode = this.state.isGfmMode ? 'gfm' : undefined;
+    const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
@@ -857,8 +858,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
             gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
             // match-highlighter, matchesonscrollbar, annotatescrollbar options
             highlightSelectionMatches: { annotateScrollbar: true },
-            // markdown mode options
-            highlightFormatting: true,
             // continuelist, indentlist
             extraKeys: {
               Enter: this.handleEnterKey,
