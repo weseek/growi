@@ -163,8 +163,11 @@ const Sidebar = (props: Props) => {
     mutateDrawerOpened(false);
   }, [mutateDrawerOpened]);
 
+  const [showSkelton, setSkelton] = useState(true);
+
   useEffect(() => {
     // this.hackUIController();
+    setSkelton(false);
   }, []);
 
   useEffect(() => {
@@ -257,82 +260,84 @@ const Sidebar = (props: Props) => {
     document.addEventListener('mouseup', dragableAreaMouseUpHandler);
   }, [draggableAreaMoveHandler, dragableAreaMouseUpHandler]);
 
-  return (
-    <>
-      <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
-        <ThemeProvider
-          theme={theme => ({
+  return (showSkelton ? <SkeltonSidebar {...props} />
+    : (
+      <>
+        <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
+          <ThemeProvider
+            theme={theme => ({
             ...theme,
             context: 'product',
           })}
-        >
-          <div className="data-layout-container">
-            <div className="navigation">
-              <div className="grw-navigation-wrap">
-                <div className="grw-global-navigation">
-                  <GlobalNavigation></GlobalNavigation>
-                </div>
-                <div
-                  ref={resizableContainer}
-                  className="grw-contextual-navigation"
-                  onMouseEnter={() => hoverHandler(true)}
-                  onMouseLeave={() => hoverHandler(false)}
-                  onMouseMove={draggableAreaMoveHandler}
-                  onMouseUp={dragableAreaMouseUpHandler}
-                >
-                  <div className="grw-contextual-navigation-child">
-                    <div role="group" className="grw-contextual-navigation-sub"></div>
+          >
+            <div className="data-layout-container">
+              <div className="navigation">
+                <div className="grw-navigation-wrap">
+                  <div className="grw-global-navigation">
+                    <GlobalNavigation></GlobalNavigation>
                   </div>
-                  <div className="grw-contextual-navigation-child2">
-                    <div role="group" className={`grw-contextual-navigation-sub ${!isHover && navigationUIController.state.isCollapsed ? 'collapsed' : ''}`}>
-                      <SidebarContents></SidebarContents>
+                  <div
+                    ref={resizableContainer}
+                    className="grw-contextual-navigation"
+                    onMouseEnter={() => hoverHandler(true)}
+                    onMouseLeave={() => hoverHandler(false)}
+                    onMouseMove={draggableAreaMoveHandler}
+                    onMouseUp={dragableAreaMouseUpHandler}
+                  >
+                    <div className="grw-contextual-navigation-child">
+                      <div role="group" className="grw-contextual-navigation-sub"></div>
+                    </div>
+                    <div className="grw-contextual-navigation-child2">
+                      <div role="group" className={`grw-contextual-navigation-sub ${!isHover && navigationUIController.state.isCollapsed ? 'collapsed' : ''}`}>
+                        <SidebarContents></SidebarContents>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="grw-navigation-draggable">
+                  <div className="grw-navigation-draggable-sub"></div>
+                  <div
+                    className="grw-navigation-draggable-hitarea"
+                    onMouseDown={dragableAreaClickHandler}
+                  >
+                    <div className="grw-navigation-draggable-hitarea-child"></div>
+                  </div>
+                  <div>
+                    <div>
+                      <button
+                        className={`ak-navigation-resize-button ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
+                        type="button"
+                        aria-expanded="true"
+                        aria-label="Toggle navigation"
+                        onClick={toggleNavigationBtnClickHandler}
+                      >
+                        <div className="css-z8pkji"></div>
+                        <span role="presentation" className="sc-AxjAm jMDUxe">
+                          <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation">
+                            <path
+                              d="M13.706 9.698a.988.988 0 0 0 0-1.407
+                             1.01 1.01 0 0 0-1.419 0l-2.965 2.94a1.09 1.09 0 0 0 0 1.548l2.955
+                             2.93a1.01 1.01 0 0 0 1.42 0 .988.988 0 0 0 0-1.407l-2.318-2.297 2.327-2.307z"
+                              fill="currentColor"
+                              fillRule="evenodd"
+                            >
+                            </path>
+                          </svg>
+                        </span>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="grw-navigation-draggable">
-                <div className="grw-navigation-draggable-sub"></div>
-                <div
-                  className="grw-navigation-draggable-hitarea"
-                  onMouseDown={dragableAreaClickHandler}
-                >
-                  <div className="grw-navigation-draggable-hitarea-child"></div>
-                </div>
-                <div>
-                  <div>
-                    <button
-                      className={`ak-navigation-resize-button ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
-                      type="button"
-                      aria-expanded="true"
-                      aria-label="Toggle navigation"
-                      onClick={toggleNavigationBtnClickHandler}
-                    >
-                      <div className="css-z8pkji"></div>
-                      <span role="presentation" className="sc-AxjAm jMDUxe">
-                        <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation">
-                          <path
-                            d="M13.706 9.698a.988.988 0 0 0 0-1.407
-                             1.01 1.01 0 0 0-1.419 0l-2.965 2.94a1.09 1.09 0 0 0 0 1.548l2.955
-                             2.93a1.01 1.01 0 0 0 1.42 0 .988.988 0 0 0 0-1.407l-2.318-2.297 2.327-2.307z"
-                            fill="currentColor"
-                            fillRule="evenodd"
-                          >
-                          </path>
-                        </svg>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
-        </ThemeProvider>
-      </div>
+          </ThemeProvider>
+        </div>
 
-      { isDrawerOpened && (
+        { isDrawerOpened && (
         <div className="grw-sidebar-backdrop modal-backdrop show" onClick={backdropClickedHandler}></div>
-      ) }
-    </>
+        ) }
+      </>
+    )
   );
 
 };
@@ -363,6 +368,42 @@ const SidebarWithNavigation = (props) => {
       <SidebarWithNavigationUIController {...props} />
     </NavigationProvider>
   );
+};
+
+
+const SkeltonSidebar = (props: Props) => {
+
+  // TODO get sidebar width and collapse state server side code
+
+  return (
+    <>
+      <div className={'grw-sidebar d-print-none \'grw-sidebar-drawer'}>
+        <ThemeProvider
+          theme={theme => ({
+            ...theme,
+            context: 'product',
+          })}
+        >
+          <div className="data-layout-container">
+            <div className="navigation">
+              <div className="grw-navigation-wrap">
+                <div className="grw-global-navigation">
+                  {/* dummy component */}
+                  <SidebarNav onItemSelected={() => {}} />
+                </div>
+                <div
+                  style={{ width: sidebarMinWidth }}
+                  className="grw-contextual-navigation"
+                >
+                </div>
+              </div>
+            </div>
+          </div>
+        </ThemeProvider>
+      </div>
+    </>
+  );
+
 };
 
 export default SidebarWithNavigation;

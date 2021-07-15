@@ -16,7 +16,7 @@ type Props = {
 
 const BasicLayout = ({ children, title, className }: Props): JSX.Element => {
 
-  const Sidebar = dynamic(() => import('../client/js/components/Sidebar'), { ssr: false });
+  const Sidebar = dynamic(() => import('../client/js/components/Sidebar'), { ssr: true });
   const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
   const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
   const SystemVersion = dynamic(() => import('./SystemVersion'), { ssr: false });
