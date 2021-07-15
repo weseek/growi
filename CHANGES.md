@@ -10,6 +10,8 @@
 
 ### BREAKING CHANGES
 
+* GROWI manages dependencies with `lerna`
+    * Use `npx lerna bootstrap` instead of `yarn install`
 * GROWI includes some official plugins in default
     * Users no longer need to install [growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx), [growi-plugin-pukiwiki-like-linker](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) and [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs) before build client.
 
