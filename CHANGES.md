@@ -2,12 +2,17 @@
 
 ## v4.3.1-RC
 
-* 
+* Fix: Build script for production
+
+
+
 ## v4.3.0-RC
 
 ### BREAKING CHANGES
 
-None.
+* GROWI includes some official plugins in default
+    * Users no longer need to install [growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx), [growi-plugin-pukiwiki-like-linker](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) and [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs) before build client.
+
 
 Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
 
