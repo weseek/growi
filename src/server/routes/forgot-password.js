@@ -11,8 +11,6 @@ module.exports = function(crowi, app) {
 
 
   async function sendPasswordResetEmail() {
-    // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
-    // const appTitle = appService.getAppTitle();
 
     return mailService.send({
       to: 'kaori@weseek.co.jp',
@@ -23,7 +21,6 @@ module.exports = function(crowi, app) {
 
   api.get = async function(req, res) {
     await sendPasswordResetEmail();
-
     return;
   };
 
