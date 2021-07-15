@@ -15,6 +15,7 @@ module.exports = function(crowi, app) {
     return mailService.send({
       to: 'kaori@weseek.co.jp',
       subject: 'forgotPasswordMailTest',
+      // TODO: apply i18n by GW-6833
       template: path.join(crowi.localeDir, 'en_US/notifications/passwordReset.txt'),
       // TODO: need to set appropriate values by GW-6828
       // vars: {
