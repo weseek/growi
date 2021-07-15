@@ -1,18 +1,33 @@
 .CodeMirror {
-  .cm-header-1 {
-    font-size: 1.8em;
-  }
-  .cm-header-2 {
-    font-size: 1.4em;
-  }
-  .cm-header-3 {
-    font-size: 1.2em;
-  }
-  .cm-header-4 {
-    font-size: 1.1em;
-  }
-  .cm-header-5 {
-    font-size: 1.05em;
+  .cm-header {
+    // '#'
+    .cm-formatting-header {
+      font-style: italic;
+      opacity: 0.3;
+    }
+
+    &.cm-header-1 {
+      padding-top: 0.3em;
+      padding-bottom: 0.5em;
+      font-size: 1.9em;
+      font-weight: normal;
+    }
+    &.cm-header-2 {
+      padding-bottom: 0.5em;
+      font-size: 1.6em;
+    }
+    &.cm-header-3 {
+      font-size: 1.4em;
+    }
+    &.cm-header-4 {
+      font-size: 1.35em;
+    }
+    &.cm-header-5 {
+      font-size: 1.25em;
+    }
+    &.cm-header-6 {
+      font-size: 1.2em;
+    }
   }
 
   .cm-matchhighlight {
