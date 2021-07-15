@@ -26,9 +26,9 @@ module.exports = () => {
             text: 'Cancel',
           },
           blocks: [
-            B.generateMarkdownSectionBlock('Create new page.'),
-            B.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
-            B.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
+            B.markdownSectionBlock('Create new page.'),
+            B.inputSectionBlock('path', 'Path', 'path_input', false, '/path'),
+            B.inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
           ],
           private_metadata: JSON.stringify({ channelId: body.channel_id }),
         },
@@ -41,7 +41,7 @@ module.exports = () => {
         user: body.user_id,
         text: 'Failed To Create',
         blocks: [
-          B.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
+          B.markdownSectionBlock(`*Failed to create new page.*\n ${err}`),
         ],
       });
       throw err;

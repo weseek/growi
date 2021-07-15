@@ -1,6 +1,6 @@
 import { WebAPICallResult } from '@slack/web-api';
 
-import { generateMarkdownSectionBlock } from './block-creater';
+import { BlockKitBuilder as B } from './block-kit-builder';
 import { generateWebClient } from './webclient-factory';
 
 export const postEphemeralErrors = async(
@@ -19,7 +19,7 @@ export const postEphemeralErrors = async(
       channel: channelId,
       user: userId,
       blocks: [
-        generateMarkdownSectionBlock('*Error occured:*'),
+        B.markdownSectionBlock('*Error occured:*'),
         ...rejectedResults.map((rejectedResult) => {
           const reason = rejectedResult.reason.toString();
           const resData = rejectedResult.reason.response?.data;
@@ -30,7 +30,7 @@ export const postEphemeralErrors = async(
             errorMessage += `\n  Cause: ${resDataMessage}`;
           }
 
-          return generateMarkdownSectionBlock(errorMessage);
+          return B.markdownSectionBlock(errorMessage);
         }),
       ],
     });

@@ -7,7 +7,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  generateMarkdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+  BlockKitBuilder as B, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -139,8 +139,8 @@ export class SlackCtrl {
     if (relations.length === 0) {
       return res.json({
         blocks: [
-          generateMarkdownSectionBlock('*No relation found.*'),
-          generateMarkdownSectionBlock('Run `/growi register` first.'),
+          B.markdownSectionBlock('*No relation found.*'),
+          B.markdownSectionBlock('Run `/growi register` first.'),
         ],
       });
     }
@@ -149,8 +149,8 @@ export class SlackCtrl {
     if (growiCommand.growiCommandType === 'status') {
       return res.json({
         blocks: [
-          generateMarkdownSectionBlock('*Found Relations to GROWI.*'),
-          ...relations.map(relation => generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
+          B.markdownSectionBlock('*Found Relations to GROWI.*'),
+          ...relations.map(relation => B.markdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
         ],
       });
     }

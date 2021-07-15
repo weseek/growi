@@ -11,7 +11,7 @@ module.exports = () => {
       user: body.user_id,
       text: 'Help',
       blocks: [
-        B.generateMarkdownSectionBlock(message),
+        B.markdownSectionBlock(message),
       ],
     });
   };
