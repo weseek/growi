@@ -8,9 +8,9 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
  */
 const schema = new mongoose.Schema({
   token: { type: String, required: true, unique: true },
-  email: String,
+  email: { type: String, required: true },
   relatedUser: { type: ObjectId, ref: 'User' },
-  isExpired: Boolean,
+  isExpired: { type: Boolean, default: false },
 });
 schema.plugin(uniqueValidator);
 
