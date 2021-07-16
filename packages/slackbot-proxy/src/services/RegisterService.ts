@@ -1,6 +1,6 @@
 import { Inject, Service } from '@tsed/di';
 import { WebClient, LogLevel, Block } from '@slack/web-api';
-import { generateInputSectionBlock, GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
+import { markdownSectionBlock, inputSectionBlock, GrowiCommand } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
@@ -40,9 +40,9 @@ export class RegisterService implements GrowiCommandProcessor {
         private_metadata: JSON.stringify({ channel: body.channel_name }),
 
         blocks: [
-          generateInputSectionBlock('growiUrl', 'GROWI domain', 'contents_input', false, 'https://example.com'),
-          generateInputSectionBlock('tokenPtoG', 'Access Token Proxy to GROWI', 'contents_input', false, 'jBMZvpk.....'),
-          generateInputSectionBlock('tokenGtoP', 'Access Token GROWI to Proxy', 'contents_input', false, 'sdg15av.....'),
+          inputSectionBlock('growiUrl', 'GROWI domain', 'contents_input', false, 'https://example.com'),
+          inputSectionBlock('tokenPtoG', 'Access Token Proxy to GROWI', 'contents_input', false, 'jBMZvpk.....'),
+          inputSectionBlock('tokenGtoP', 'Access Token GROWI to Proxy', 'contents_input', false, 'sdg15av.....'),
         ],
       },
     });
@@ -81,7 +81,7 @@ export class RegisterService implements GrowiCommandProcessor {
     catch (error) {
       const invalidErrorMsg = 'Please enter a valid URL';
       const blocks = [
-        generateMarkdownSectionBlock(invalidErrorMsg),
+        markdownSectionBlock(invalidErrorMsg),
       ];
       await this.replyToSlack(client, channel, payload.user.id, 'Invalid URL', blocks);
       throw new InvalidUrlError(growiUrl);
@@ -105,7 +105,7 @@ export class RegisterService implements GrowiCommandProcessor {
 
     if (isOfficialMode) {
       const blocks = [
-        generateMarkdownSectionBlock('Successfully registered with the proxy! Please check test connection in your GROWI'),
+        markdownSectionBlock('Successfully registered with the proxy! Please check test connection in your GROWI'),
       ];
       await this.replyToSlack(client, channel, payload.user.id, 'Proxy URL', blocks);
       return;
@@ -113,8 +113,8 @@ export class RegisterService implements GrowiCommandProcessor {
     }
 
     const blocks = [
-      generateMarkdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
-      generateMarkdownSectionBlock(`Proxy URL: ${serverUri}`),
+      markdownSectionBlock('Please enter and update the following Proxy URL to slack bot setting form in your GROWI'),
+      markdownSectionBlock(`Proxy URL: ${serverUri}`),
     ];
     await this.replyToSlack(client, channel, payload.user.id, 'Proxy URL', blocks);
     return;

@@ -3,7 +3,7 @@ const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
-const { BlockKitBuilder: B } = require('@growi/slack');
+const { markdownSectionBlock } = require('@growi/slack');
 const { reshapeContentsBody } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 
@@ -87,27 +87,7 @@ class SlackBotService extends S2sMessageHandlable {
       user: body.user_id,
       text: 'No command',
       blocks: [
-        B.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
-      ],
-    });
-    return;
-  }
-
-  async togetterCommand(client, body, args, limit = 10) {
-    // TODO GW-6721 Get the time from args
-    const reusult = await client.conversations.history({
-      channel: body.channel_id,
-      limit,
-    });
-    console.log(reusult);
-    // TODO GW-6712 display checkbox using result
-    const message = '*togetterCommand*';
-    client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
-      text: 'togetter',
-      blocks: [
-        this.generateMarkdownSectionBlock(message),
+        markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
     });
     return;
@@ -152,7 +132,7 @@ class SlackBotService extends S2sMessageHandlable {
       channel: channelId,
       blocks: [
         { type: 'divider' },
-        B.generateMarkdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
+        markdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
         {
           type: 'context',
           elements: [
@@ -203,7 +183,7 @@ class SlackBotService extends S2sMessageHandlable {
       client.chat.postMessage({
         channel: payload.user.id,
         blocks: [
-          B.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
+          markdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
       });
       logger.error('Failed to create page in GROWI.');
       throw err;

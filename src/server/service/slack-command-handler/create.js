@@ -1,4 +1,4 @@
-const { BlockKitBuilder: B } = require('@growi/slack');
+const { markdownSectionBlock, inputSectionBlock } = require('@growi/slack');
 const logger = require('@alias/logger')('growi:service:SlackCommandHandler:create');
 
 module.exports = () => {
@@ -26,9 +26,9 @@ module.exports = () => {
             text: 'Cancel',
           },
           blocks: [
-            B.generateMarkdownSectionBlock('Create new page.'),
-            B.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
-            B.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
+            markdownSectionBlock('Create new page.'),
+            inputSectionBlock('path', 'Path', 'path_input', false, '/path'),
+            inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
           ],
           private_metadata: JSON.stringify({ channelId: body.channel_id }),
         },
@@ -41,7 +41,7 @@ module.exports = () => {
         user: body.user_id,
         text: 'Failed To Create',
         blocks: [
-          B.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
+          markdownSectionBlock(`*Failed to create new page.*\n ${err}`),
         ],
       });
       throw err;

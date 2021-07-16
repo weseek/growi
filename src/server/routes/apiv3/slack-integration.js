@@ -148,6 +148,18 @@ module.exports = (crowi) => {
         await crowi.slackBotService.showEphemeralSearchResults(client, body, args, newOffset);
         break;
       }
+      case 'togetterShowMore': {
+        console.log('Show more here');
+        break;
+      }
+      case 'togetterCreatePage': {
+        console.log('Create page and delete the original message here');
+        break;
+      }
+      case 'togetterCancelPageCreation': {
+        console.log('Cancel here');
+        break;
+      }
       case 'showMoreTogetterResults': {
         const parsedValue = JSON.parse(payload.actions[0].value);
 

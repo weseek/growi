@@ -1,4 +1,4 @@
-const { BlockKitBuilder: B } = require('@growi/slack');
+const { markdownSectionBlock } = require('@growi/slack');
 
 module.exports = () => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
@@ -11,7 +11,7 @@ module.exports = () => {
       user: body.user_id,
       text: 'Help',
       blocks: [
-        B.generateMarkdownSectionBlock(message),
+        markdownSectionBlock(message),
       ],
     });
   };

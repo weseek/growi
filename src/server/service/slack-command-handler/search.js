@@ -1,6 +1,6 @@
 const logger = require('@alias/logger')('growi:service:SlackCommandHandler:search');
 
-const { BlockKitBuilder: B } = require('@growi/slack');
+const { markdownSectionBlock, divider } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 
 const PAGINGLIMIT = 10;
@@ -21,7 +21,7 @@ module.exports = (crowi) => {
         user: body.user_id,
         text: 'Failed To Search',
         blocks: [
-          B.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
+          markdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
       throw new Error('/growi command:search: Failed to search');
@@ -62,7 +62,7 @@ module.exports = (crowi) => {
 
     const now = new Date();
     const blocks = [
-      B.generateMarkdownSectionBlock(`:mag: <${decodeURI(appUrl)}|*${appTitle}*>\n${searchResultsDesc}`),
+      markdownSectionBlock(`:mag: <${decodeURI(appUrl)}|*${appTitle}*>\n${searchResultsDesc}`),
       contextBlock,
       { type: 'divider' },
       // create an array by map and extract
@@ -154,7 +154,7 @@ module.exports = (crowi) => {
         user: body.user_id,
         text: 'Failed to post ephemeral message.',
         blocks: [
-          B.generateMarkdownSectionBlock(err.toString()),
+          markdownSectionBlock(err.toString()),
         ],
       });
       throw new Error(err);
@@ -169,7 +169,7 @@ module.exports = (crowi) => {
         user: body.user_id,
         text: 'Input keywords',
         blocks: [
-          B.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
+          markdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
       return;
@@ -190,22 +190,22 @@ module.exports = (crowi) => {
         user: body.user_id,
         text: `No page found with "${keywords}"`,
         blocks: [
-          B.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
-          B.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
-          B.divider(),
-          B.generateMarkdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
-          B.divider(),
-          B.generateMarkdownSectionBlock('`"This is GROWI"` (surround with double quotes) \n Search pages that include the phrase "This is GROWI"'),
-          B.divider(),
-          B.generateMarkdownSectionBlock('`-keyword` \n Exclude pages that include keyword in the title or body'),
-          B.divider(),
-          B.generateMarkdownSectionBlock('`prefix:/user/` \n Search only the pages that the title start with /user/'),
-          B.divider(),
-          B.generateMarkdownSectionBlock('`-prefix:/user/` \n Exclude the pages that the title start with /user/'),
-          B.divider(),
-          B.generateMarkdownSectionBlock('`tag:wiki` \n Search for pages with wiki tag'),
-          B.divider(),
-          B.generateMarkdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
+          markdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
+          markdownSectionBlock(':mag: *Help: Searching*'),
+          divider(),
+          markdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
+          divider(),
+          markdownSectionBlock('`"This is GROWI"` (surround with double quotes) \n Search pages that include the phrase "This is GROWI"'),
+          divider(),
+          markdownSectionBlock('`-keyword` \n Exclude pages that include keyword in the title or body'),
+          divider(),
+          markdownSectionBlock('`prefix:/user/` \n Search only the pages that the title start with /user/'),
+          divider(),
+          markdownSectionBlock('`-prefix:/user/` \n Exclude the pages that the title start with /user/'),
+          divider(),
+          markdownSectionBlock('`tag:wiki` \n Search for pages with wiki tag'),
+          divider(),
+          markdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
         ],
       });
       return { pages: [] };
