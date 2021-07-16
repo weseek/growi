@@ -26,7 +26,7 @@ import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/Sect
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
 
 // temporarily save for selection to growi
-const temporarySinglePostCommands = ['create'];
+const temporarySinglePostCommands = ['create', 'togetter'];
 
 @Controller('/g2s')
 export class GrowiToSlackCtrl {
