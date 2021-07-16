@@ -1,4 +1,6 @@
-const { BlockKitBuilder: B } = require('@growi/slack');
+const {
+  inputBlock, actionsBlock, buttonElement, checkboxesElementOption,
+} = require('@growi/slack');
 
 module.exports = () => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
@@ -11,7 +13,7 @@ module.exports = () => {
       limit,
     });
     console.log(reusult);
-    // Checkbox Message を返す
+    // Return Checkbox Message
     client.chat.postEphemeral({
       channel: body.channel_id,
       user: body.user_id,
@@ -23,10 +25,10 @@ module.exports = () => {
 
   handler.togetterMessageBlocks = function() {
     return [
-      B.inputBlock(this.togetterCheckboxesElement(), 'selected_messages', 'Select massages to use.'),
-      B.actionsBlock(B.buttonElement('Show more', 'togetterShowMore')),
-      B.inputBlock(this.togetterInputBlockElement('page_path', '/'), 'page_path', 'Page path'),
-      B.actionsBlock(B.buttonElement('Cancel', 'togetterCancelPageCreation'), B.buttonElement('Create page', 'togetterCreatePage', 'primary')),
+      inputBlock(this.togetterCheckboxesElement(), 'selected_messages', 'Select massages to use.'),
+      actionsBlock(buttonElement('Show more', 'togetterShowMore')),
+      inputBlock(this.togetterInputBlockElement('page_path', '/'), 'page_path', 'Page path'),
+      actionsBlock(buttonElement('Cancel', 'togetterCancelPageCreation'), buttonElement('Create page', 'togetterCreatePage', 'primary')),
     ];
   };
 
@@ -39,11 +41,11 @@ module.exports = () => {
   };
 
   handler.togetterCheckboxesElementOptions = function() {
-    // options を conversations.history の結果でインクリメント
+    // increment options with results from conversations.history
     const options = [];
-    // 仮置き
+    // temporary code
     for (let i = 0; i < 10; i++) {
-      const option = B.checkboxesElementOption('*username*  12:00PM', 'sample slack messages ... :star:', `selected-${i}`);
+      const option = checkboxesElementOption('*username*  12:00PM', 'sample slack messages ... :star:', `selected-${i}`);
       options.push(option);
     }
     return options;
