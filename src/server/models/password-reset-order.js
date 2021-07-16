@@ -19,10 +19,6 @@ class PasswordResetOrder {
   }
 
   static isExpired() {
-    if (this.expiredAt == null) {
-      return false;
-    }
-
     return this.expiredAt.getTime() < new Date().getTime();
   }
 
