@@ -71,7 +71,7 @@ class AssociateModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose} size="lg">
-        <ModalHeader className="bg-info text-light" toggle={this.props.onClose}>
+        <ModalHeader className="bg-primary text-light" toggle={this.props.onClose}>
           { t('admin:user_management.create_external_account') }
         </ModalHeader>
         <ModalBody>
@@ -118,7 +118,7 @@ class AssociateModal extends React.Component {
           </div>
         </ModalBody>
         <ModalFooter className="border-top-0">
-          <button type="button" className="btn btn-info mt-3" onClick={this.onClickAddBtn}>
+          <button type="button" className="btn btn-primary mt-3" onClick={this.onClickAddBtn}>
             <i className="fa fa-plus-circle" aria-hidden="true"></i>
             {t('add')}
           </button>
