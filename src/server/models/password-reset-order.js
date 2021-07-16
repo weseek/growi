@@ -13,7 +13,23 @@ schema.plugin(uniqueValidator);
 class PasswordResetOrder {
 
   static generateOneTimeToken() {
-    // TODO: generate unique token by GW-6802
+    const now = new Date().getTime();
+    const hasher1 = crypto.createHash('sha512');
+    const token = hasher1.update(`gtop${now.toString()}${process.env.SALT_FOR_GTOP_TOKEN}`).digest('base64');
+    return token;
+  }
+
+  static async generateUniqueAccessToken() {
+    let duplicateToken;
+    let generateToken;
+
+    do {
+      generateToken = this.generateOneTimeToken();
+      // eslint-disable-next-line no-await-in-loop
+      duplicateToken = await this.findOne({ $or: { token: generateToken } });
+    } while (duplicateToken != null);
+
+    return generateToken;
   }
 
   static isExpired() {
