@@ -149,15 +149,15 @@ module.exports = (crowi) => {
         break;
       }
       case 'togetterShowMore': {
-        console.log('ここでShow moreする');
+        console.log('Show more here');
         break;
       }
       case 'togetterCreatePage': {
-        console.log('ここでpageCreateGrowiしてメッセージを消すなどする');
+        console.log('Create page and delete the original message here');
         break;
       }
       case 'togetterCancelPageCreation': {
-        console.log('ここでCancelする');
+        console.log('Cancel here');
         break;
       }
       case 'showMoreTogetterResults': {
