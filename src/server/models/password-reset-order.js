@@ -15,11 +15,11 @@ const schema = new mongoose.Schema({
 schema.plugin(uniqueValidator);
 
 /**
- * OneTimeUrl Class
+ * PasswordResetOrder Class
  *
- * @class OneTimeUrl
+ * @class PasswordResetOrder
  */
-class OneTimeUrl {
+class PasswordResetOrder {
 
   static generateOneTimeToken() {
     // TODO: generate unique token by GW-6802
@@ -28,8 +28,8 @@ class OneTimeUrl {
 }
 
 module.exports = function(crowi) {
-  OneTimeUrl.crowi = crowi;
-  schema.loadClass(OneTimeUrl);
-  const model = mongoose.model('OneTimeUrl', schema);
+  PasswordResetOrder.crowi = crowi;
+  schema.loadClass(PasswordResetOrder);
+  const model = mongoose.model('PasswordResetOrder', schema);
   return model;
 };
