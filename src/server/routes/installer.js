@@ -92,12 +92,12 @@ module.exports = function(crowi) {
     req.logIn(adminUser, (err) => {
       if (err) {
         req.flash('successMessage', req.t('message.complete_to_install1'));
-        req.session.redirectTo = '/admin/app';
+        req.session.redirectTo = '/';
         return res.redirect('/login');
       }
 
       req.flash('successMessage', req.t('message.complete_to_install2'));
-      return res.redirect('/admin/app');
+      return res.redirect('/');
     });
   };
 

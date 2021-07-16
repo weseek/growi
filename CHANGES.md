@@ -1,9 +1,78 @@
 # CHANGES
 
-## v4.2.19-RC
+## v4.3.2-RC
 
+* 
+
+## v4.3.1
+
+* Fix: Build script for production
+
+
+
+## v4.3.0-RC
+
+### BREAKING CHANGES
+
+* GROWI manages dependencies with `lerna`
+    * Use `npx lerna bootstrap` instead of `yarn install`
+* GROWI includes some official plugins in default
+    * Users no longer need to install [growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx), [growi-plugin-pukiwiki-like-linker](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) and [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs) before build client.
+
+
+Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
+
+### Updates
+
+* Feature: New Slack Integration with Slack Bot
+    * Searching GROWI pages from Slack
+    * Creating GROWI pages from Slack
+        * Easy record conversations
+* Feature: Enable/Disable option for share link
+* Feature: Re-send invitation mail from user management page
+* Improvement: Mark users who failed to send invitation emails
+* Fix: lsx plugin in the custom sidebar does not work when showing search result page
+* Support: Switch the official docker base image from Alpine based to Ubuntu based
+* Support: Upgrade libs
+    * striptags
+
+## v4.2.21
+
+* Improvement: Headers style on built-in editor
+* Improvement: Codemirror is now scrollable one editor height of empty space into view at the bottom of the editor
+* Improvement: Upgrade mongodb driver to fix [NODE-2784](https://jira.mongodb.org/browse/NODE-2784)
+* Support: Upgrade libs
+    * connect-mongo
+    * i18next
+    * migrate-mongo
+    * mongoose
+    * stream-to-promise
+    * validator
+    * ws
+    * nodemailer
+    * i18next-express-middleware
+    * growi-commons
+    * growi-plugin-attachment-refs
+    * growi-plugin-lsx
+
+## v4.2.20
+
+* Improvement: Error message when the password is too short
+* Improvement: Repeat XSS processing as a countermeasure against nesting 
+* Fix: NoSQL injection of access-token-parser
+* Fix: Checking permission when operating share links
+* Fix: Invalid NaN label is shown when deletedAt of the page is undefined
+    * Introduced by v4.2.8
+
+## v4.2.19
+
+* Feature: Set max-age of the user's cookie with the env var `SESSION_MAX_AGE`
+* Feature: Set max-age of the user's cookie in admin page
+* Improvement: Change the first accessing page after installation to the top page
 * Support: Upgrade libs
     * string-width
+    * diff
+    * archiver
 
 ## v4.2.18
 
@@ -12,14 +81,14 @@
 * Fix: Global notification to Slack does not encode spaces of page path
 * Support: Upgrade libs
     * @google-cloud/storage
-    * @slack/web-api
-    * @slack/webhook
 
 ## v4.2.17
 
 * Improvement: Invoke garbage collection when reindex all pages by elasticsearch
 * Improvement: Hide Sidebar at shared pages
 * Fix: No unsaved alert is displayed without difference the latest markdown and editor value
+* Support: Update libs
+    * eslint-config-weseek
 
 ## v4.2.16
 
@@ -35,7 +104,6 @@
     * Introduced by v4.2.8
 * Support: Upgrade libs
     * reactstrap
-
 
 
 ## v4.2.14

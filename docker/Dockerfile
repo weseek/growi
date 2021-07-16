@@ -13,16 +13,20 @@ LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 ENV appDir /opt/growi
 
 WORKDIR ${appDir}
-COPY ./package.json ./
-COPY ./yarn.lock ./
+COPY ./package.json .
+COPY ./yarn.lock .
+COPY ./lerna.json .
+COPY ./packages/app/package.json packages/app/
+COPY ./packages/slack/package.json packages/slack/
 
 # setup
 RUN yarn config set network-timeout 300000
-RUN yarn
-# install official plugins
-RUN yarn add growi-plugin-lsx growi-plugin-pukiwiki-like-linker growi-plugin-attachment-refs
-# install peerDependencies
-RUN yarn add -D react-images@1.0.0 react-motion
+RUN npx lerna bootstrap
+
+# make artifacts
+RUN tar cf node_modules.tar node_modules \
+  packages/app/node_modules \
+  packages/slack/node_modules
 
 
 
@@ -34,24 +38,29 @@ FROM deps-resolver AS deps-resolver-prod
 # shrink dependencies for production
 RUN yarn install --production
 
+# make artifacts
+RUN tar cf node_modules.tar node_modules \
+  packages/app/node_modules \
+  packages/slack/node_modules
+
 
 
 ##
 ## prebuilder-default
 ##
 FROM node:14-slim AS prebuilder-default
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
 
-COPY --from=deps-resolver ${appDir}/node_modules ${appDir}/node_modules
+WORKDIR ${appDir}
 
-# copy all files except the files listed in Dockerfile.dockerignore
-COPY . ${appDir}
+# copy dependent packages
+COPY --from=deps-resolver \
+  ${appDir}/node_modules.tar ${appDir}/
 
-# overwirte package.json and yarn.lock
-COPY --from=deps-resolver ${appDir}/package.json ${appDir}/package.json
-COPY --from=deps-resolver ${appDir}/yarn.lock ${appDir}/yarn.lock
+# extract node_modules.tar
+RUN tar xf node_modules.tar
+RUN rm node_modules.tar
 
 
 
@@ -68,45 +77,89 @@ COPY docker/nocdn/env.prod.js ${appDir}/config/
 ##
 ## builder
 ##
+# FROM prebuilder-${flavor}
 FROM prebuilder-${flavor} AS builder
 
 ENV appDir /opt/growi
 
 WORKDIR ${appDir}
 
-# build
-RUN yarn build:prod
+COPY ./package.json ./
+COPY ./yarn.lock ./
+COPY ./lerna.json ./
+COPY ./tsconfig.base.json ./
+COPY ./babel.config.js ./
+COPY ./bin ./bin
+COPY ./config ./config
+COPY ./public ./public
+COPY ./resource ./resource
+COPY ./src ./src
+COPY ./tmp ./tmp
+# copy all related packages
+COPY packages/slack packages/slack
+COPY packages/app packages/app
 
-# remove except artifacts
-WORKDIR /tmp
-RUN --mount=target=. sh docker/bin/remove-except-artifacts.sh
-WORKDIR ${appDir}
+# build
+RUN yarn lerna run build
+
+# make artifacts
+RUN tar cf packages.tar \
+  package.json \
+  yarn.lock \
+  config \
+  public \
+  resource \
+  src \
+  tmp \
+  packages/app/package.json \
+  packages/slack/package.json \
+  packages/slack/dist
+
 
 
 
 ##
 ## release
 ##
-FROM node:14-alpine
+FROM node:14-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV appDir /opt/growi
 
-# install tini
-RUN apk add tini su-exec
+# Add gosu
+# see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y gosu; \
+	rm -rf /var/lib/apt/lists/*; \
+# verify that the binary works
+	gosu nobody true
+
+# Add Tini
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
+COPY --from=deps-resolver-prod --chown=node:node \
+  ${appDir}/node_modules.tar ${appDir}/
+COPY --from=builder --chown=node:node \
+  ${appDir}/packages.tar ${appDir}/
+
+# extract artifacts as 'node' user
+USER node
+WORKDIR ${appDir}
+RUN tar xf node_modules.tar
+RUN tar xf packages.tar
+RUN rm node_modules.tar packages.tar
+
+USER root
 
 COPY docker/docker-entrypoint.sh /
 RUN chmod 700 /docker-entrypoint.sh
-
-COPY --from=deps-resolver-prod --chown=node:node \
-  ${appDir}/node_modules ${appDir}/node_modules
-COPY --from=builder --chown=node:node \
-  ${appDir} ${appDir}
-
-WORKDIR ${appDir}
+RUN chown node:node ${appDir}
 
 VOLUME /data
 EXPOSE 3000
 
-ENTRYPOINT ["/sbin/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
+ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
 CMD ["yarn", "server:prod"]

@@ -18,6 +18,7 @@ export default class AdminGeneralSecurityContainer extends Container {
 
     this.state = {
       retrieveError: null,
+      sessionMaxAge: null,
       wikiMode: '',
       // set dummy value tile for using suspense
       currentRestrictGuestMode: this.dummyCurrentRestrictGuestMode,
@@ -34,6 +35,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGitHubEnabled: false,
       isTwitterEnabled: false,
       setupStrategies: [],
+      disableLinkSharing: false,
       shareLinks: [],
       totalshareLinks: 0,
       shareLinksPagingLimit: Infinity,
@@ -45,13 +47,15 @@ export default class AdminGeneralSecurityContainer extends Container {
   async retrieveSecurityData() {
     await this.retrieveSetupStratedies();
     const response = await this.appContainer.apiv3.get('/security-setting/');
-    const { generalSetting, generalAuth } = response.data.securityParams;
+    const { generalSetting, shareLinkSetting, generalAuth } = response.data.securityParams;
     this.setState({
       currentRestrictGuestMode: generalSetting.restrictGuestMode,
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
+      sessionMaxAge: generalSetting.sessionMaxAge,
       wikiMode: generalSetting.wikiMode,
+      disableLinkSharing: shareLinkSetting.disableLinkSharing,
       isLocalEnabled: generalAuth.isLocalEnabled,
       isLdapEnabled: generalAuth.isLdapEnabled,
       isSamlEnabled: generalAuth.isSamlEnabled,
@@ -77,6 +81,20 @@ export default class AdminGeneralSecurityContainer extends Container {
    */
   get isWikiModeForced() {
     return this.state.wikiMode === 'public' || this.state.wikiMode === 'private';
+  }
+
+  /**
+   * setter for sessionMaxAge
+   */
+  setSessionMaxAge(sessionMaxAge) {
+    this.setState({ sessionMaxAge });
+  }
+
+  /**
+   * setter for disableLinkSharing
+   */
+  setDisableLinkSharing(disableLinkSharing) {
+    this.setState({ disableLinkSharing });
   }
 
   /**
@@ -115,6 +133,7 @@ export default class AdminGeneralSecurityContainer extends Container {
   async updateGeneralSecuritySetting() {
 
     let requestParams = {
+      sessionMaxAge: this.state.sessionMaxAge,
       restrictGuestMode: this.state.currentRestrictGuestMode,
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
@@ -125,6 +144,18 @@ export default class AdminGeneralSecurityContainer extends Container {
     const response = await this.appContainer.apiv3.put('/security-setting/general-setting', requestParams);
     const { securitySettingParams } = response.data;
     return securitySettingParams;
+  }
+
+  /**
+   * Switch disableLinkSharing
+   */
+  async switchDisableLinkSharing() {
+    const requestParams = {
+      disableLinkSharing: !this.state.disableLinkSharing,
+    };
+    const response = await this.appContainer.apiv3.put('/security-setting/share-link-setting', requestParams);
+    this.setDisableLinkSharing(!this.state.disableLinkSharing);
+    return response;
   }
 
   /**

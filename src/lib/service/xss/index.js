@@ -1,6 +1,9 @@
 const xss = require('xss');
 const commonmarkSpec = require('./commonmark-spec');
 
+
+const REPETITIONS_NUM = 50;
+
 class Xss {
 
   constructor(xssOption) {
@@ -36,7 +39,23 @@ class Xss {
   }
 
   process(document) {
-    return this.myxss.process(document);
+    let count = 0;
+    let currDoc = document;
+    let prevDoc = document;
+
+    do {
+      count += 1;
+      // stop running infinitely
+      if (count > REPETITIONS_NUM) {
+        return '--filtered--';
+      }
+
+      prevDoc = currDoc;
+      currDoc = this.myxss.process(currDoc);
+    }
+    while (currDoc !== prevDoc);
+
+    return currDoc;
   }
 
 }

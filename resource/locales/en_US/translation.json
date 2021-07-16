@@ -109,6 +109,9 @@
   "Markdown Settings": "Markdown Settings",
   "Customize": "Customize",
   "Notification Settings": "Notification Settings",
+  "slack_integration": "Slack Integration",
+  "External_Notification": "External Notification",
+  "Legacy_Slack_Integration": "Legacy Slack Integration",
   "User_Management": "User Management",
   "external_account_management": "External Account Management",
   "UserGroup Management": "UserGroup Management",
@@ -125,13 +128,11 @@
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
   "page_list": "Page List",
-  "page_list_and_search_results": "Page list / Search results",
   "scope_of_page_disclosure": "Scope of page disclosure",
   "set_point": "Set point",
   "always_displayed": "Always displayed",
   "always_hidden": "Always hidden",
   "displayed_or_hidden": "Displayed / Hidden",
-  "page_access_and_delete_rights": "Page access / Delete rights",
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -150,6 +151,7 @@
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
+  "Link sharing is disabled": "Link sharing is disabled",
   "personal_dropdown": {
     "home": "Home",
     "settings": "Settings",
@@ -169,7 +171,8 @@
     "page_not_exist_alert": "This page does not exist. Please create a new page."
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page."
+    "no_page_list": "There are no pages under this page.",
+    "link_sharing_is_disabled": "Link sharing is disabled."
   },
   "installer": {
     "setup": "Setup",
@@ -435,6 +438,7 @@
     "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
+    "delete_slack_integration_procedure": "Succeeded to delete the slack integration procedure",
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}}",
@@ -442,6 +446,7 @@
     "remove_share_link_success": "Succeeded to remove {{shareLinkId}}",
     "issue_share_link": "Succeeded to issue new share link",
     "remove_share_link": "Succeeded to remove {{count}} share links",
+    "switch_disable_link_sharing_success": "Succeeded to update share link setting",
     "failed_to_reset_password":"Failed to reset password"
   },
   "template": {
@@ -528,7 +533,6 @@
     "delete_completely": "Delete completely"
   },
   "security_setting": {
-    "Security settings": "Security settings",
     "Guest Users Access": "Guest users access",
     "Fixed by env var": "This is fixed by the env var <code>%s=%s</code>.",
     "Register limitation": "Register limitation",
@@ -540,15 +544,21 @@
     "for_example": " For example, if you would like to restrict registration to users within the growi.org domain, you can write ",
     "in_this_case": "; in this case, only users within the growi.org domain would be able to register, and all other users would be rejected.",
     "insert_single": "Please insert single e-mail address per line.",
+    "page_list_and_search_results": "Page list / Search results",
     "page_listing_1": "Page listing/searching<br>restricted by 'Only me'",
     "page_listing_1_desc": "Show pages that are restricted by 'Only me' option when listing/searching",
     "page_listing_2": "Page listing/searching<br>restricted by User group",
     "page_listing_2_desc": "Show pages that are restricted by User group when listing/searching",
+    "page_access_and_delete_rights": "Page access / Delete rights",
     "complete_deletion": "Restrict complete deletion of pages",
     "complete_deletion_explain": "Restricts users who can completely delete pages.",
     "admin_only": "Admin only",
     "admin_and_author": "Admin and author",
     "anyone": "Anyone",
+    "session": "Session",
+    "max_age": "Max age (msec)",
+    "max_age_desc": "Specifies the number (in milliseconds) to expire users session.<br>Default: 2592000000 (30days)",
+    "max_age_caution": "Restarting the server is required after you modify this value.",
     "Authentication mechanism settings": "Authentication Mechanism Settings",
     "setup_is_not_yet_complete": "Setup is not yet complete",
     "alert_siteUrl_is_not_set": "'Site URL' is NOT set. Set it from the {{link}}",
@@ -580,6 +590,9 @@
       "restricted": "Restricted (Requires approval by administrators)",
       "closed": "Closed (Invitation Only)"
     },
+    "share_link_rights": "Share link rights",
+    "enable_link_sharing": "Enable link sharing",
+    "all_share_links": "All share links",
     "configuration": " Configuration",
     "optional": "Optional",
     "Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",
@@ -785,6 +798,7 @@
     "rebuild_description_1": "Click the button to rebuild index and add all page datas.",
     "rebuild_description_2": "This may take a while."
   },
+  "to_cloud_settings": "Open GROWI.cloud Settings",
   "login": {
     "Sign in error": "Login error",
     "Registration successful": "Registration successful",

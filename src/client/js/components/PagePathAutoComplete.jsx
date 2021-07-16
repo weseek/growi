@@ -41,7 +41,7 @@ const PagePathAutoComplete = (props) => {
       onChange={inputChangeHandler}
       onInputChange={props.onInputChange}
       inputName="new_path"
-      emptyLabelExceptError={null}
+      behaviorOfResetBtn="clear"
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}
       autoFocus={props.autoFocus}

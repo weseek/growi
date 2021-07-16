@@ -69,7 +69,7 @@ class ImportDataPageContents extends React.Component {
                   className="form-control"
                   type="text"
                   name="esaTeamName"
-                  value={adminImportContainer.state.esaTeamName}
+                  value={adminImportContainer.state.esaTeamName || ''}
                   onChange={adminImportContainer.handleInputValue}
                 />
               </div>
@@ -85,7 +85,7 @@ class ImportDataPageContents extends React.Component {
                   className="form-control"
                   type="password"
                   name="esaAccessToken"
-                  value={adminImportContainer.state.esaAccessToken}
+                  value={adminImportContainer.state.esaAccessToken || ''}
                   onChange={adminImportContainer.handleInputValue}
                 />
               </div>
@@ -174,7 +174,7 @@ class ImportDataPageContents extends React.Component {
                   className="form-control"
                   type="text"
                   name="qiitaTeamName"
-                  value={adminImportContainer.state.qiitaTeamName}
+                  value={adminImportContainer.state.qiitaTeamName || ''}
                   onChange={adminImportContainer.handleInputValue}
                 />
               </div>
@@ -189,7 +189,7 @@ class ImportDataPageContents extends React.Component {
                   className="form-control"
                   type="password"
                   name="qiitaAccessToken"
-                  value={adminImportContainer.state.qiitaAccessToken}
+                  value={adminImportContainer.state.qiitaAccessToken || ''}
                   onChange={adminImportContainer.handleInputValue}
                 />
               </div>

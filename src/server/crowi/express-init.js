@@ -11,6 +11,7 @@ module.exports = function(crowi, app) {
   const passport = require('passport');
   const expressSession = require('express-session');
   const flash = require('connect-flash');
+  const mongoSanitize = require('express-mongo-sanitize');
   const swig = require('swig-templates');
   const webpackAssets = require('express-webpack-assets');
   const i18next = require('i18next');
@@ -116,6 +117,7 @@ module.exports = function(crowi, app) {
   app.use(passport.session());
 
   app.use(flash());
+  app.use(mongoSanitize());
 
   app.use(promster);
   app.use(registerSafeRedirect);
