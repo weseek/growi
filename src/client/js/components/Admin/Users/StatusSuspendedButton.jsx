@@ -7,8 +7,10 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import AdminUsersContainer from '../../../services/AdminUsersContainer';
 
 const StatusSuspendedButton = (props) => {
-  const { t, user, adminUsersContainer } = props;
-  const { currentUsername } = adminUsersContainer;
+  const { t, user, appContainer } = props;
+
+  // TODO: GW-5303 retrieve from SWR
+  const { currentUsername } = appContainer;
 
   const onClickDeactiveBtn = async() => {
     try {
