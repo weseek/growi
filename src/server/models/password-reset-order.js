@@ -8,7 +8,7 @@ const schema = new mongoose.Schema({
   email: { type: String, required: true },
   relatedUser: { type: ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now, required: true },
-  expiredAt: { type: Date },
+  expiredAt: { type: Date, default: Date.now + 600000, required: true },
 });
 schema.plugin(uniqueValidator);
 
