@@ -2,25 +2,29 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
 /*
  * define schema
  */
 const schema = new mongoose.Schema({
   token: { type: String, required: true, unique: true },
   email: String,
+  relatedUser: { type: ObjectId, ref: 'User' },
+  isExpired: Boolean,
 });
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
 /**
- * Tag Class
+ * OneTimeUrl Class
  *
- * @class Tag
+ * @class OneTimeUrl
  */
 class OneTimeUrl {
 
-  static generateToken() {
-    // TODO generate token
+  static generateOneTimeToken() {
+    // TODO: generate unique token by GW-6802
   }
 
 }
