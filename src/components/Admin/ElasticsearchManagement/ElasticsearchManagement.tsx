@@ -9,8 +9,8 @@ import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
 
 import StatusTable from '~/client/js/components/Admin/ElasticsearchManagement/StatusTable';
 import ReconnectControls from '~/client/js/components/Admin/ElasticsearchManagement/ReconnectControls';
-// import NormalizeIndicesControls from '~/client/js/components/Admin/ElasticsearchManagement/NormalizeIndicesControls';
-// import RebuildIndexControls from '~/client/js/components/Admin/ElasticsearchManagement/RebuildIndexControls';
+import NormalizeIndicesControls from '~/client/js/components/Admin/ElasticsearchManagement/NormalizeIndicesControls';
+import RebuildIndexControls from '~/client/js/components/Admin/ElasticsearchManagement/RebuildIndexControls';
 import { apiv3Post, apiv3Put } from '~/utils/apiv3-client';
 import { useIndicesSWR } from '~/stores/search';
 
@@ -22,14 +22,14 @@ const ElasticsearchManagement = props => {
   const [isConfigured, setIsConfigured] = useState<boolean>(false);
   const [isReconnectingProcessing, setIsReconnectingProcessing] = useState<boolean>(false);
   const [isRebuildingProcessing, setIsRebuildingProcessing] = useState<boolean>(false);
-  // const [isRebuildingCompleted, setIsRebuildingCompleted] = useState<boolean>(false);
+  const [isRebuildingCompleted, setIsRebuildingCompleted] = useState<boolean>(false);
 
   const [isNormalized, setIsNormalized] = useState<boolean | null>(null);
   const [indicesData, setIndicesData] = useState<Indices | null>(null);
   const [aliasesData, setAliasesData] = useState<Aliases | null>(null);
 
   // TODO: GW-5134 SocketIoContainer 機能の swr 化
-  // TODO:GW-6816 [5134ブロック] ElasticsearchManagementにSocketIoを追加する
+  // TODO: GW-6816 [5134ブロック] ElasticsearchManagementにSocketIoを追加する
   // useEffect(() => {
   //   initWebSockets();
   // }, []);
@@ -49,10 +49,9 @@ const ElasticsearchManagement = props => {
 
   useEffect(() => {
     retrieveIndicesStatus();
-  }, []);
+  }, [data]);
 
   const retrieveIndicesStatus = () => {
-
     if (data != null) {
       setIsConnected(true)
       setIsConfigured(true)
@@ -97,7 +96,6 @@ const ElasticsearchManagement = props => {
     }
 
     await mutate();
-
     toastSuccess('Normalizing has succeeded');
   };
 
@@ -117,7 +115,6 @@ const ElasticsearchManagement = props => {
   // TODO: GW- retrieve from SWR
   // const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
   const isErrorOccuredOnSearchService = true;
-
   const isReconnectBtnEnabled = !isReconnectingProcessing && (!isInitialized || !isConnected || isErrorOccuredOnSearchService);
 
   return (
@@ -138,7 +135,6 @@ const ElasticsearchManagement = props => {
 
       <hr />
 
-      {/* Controls */}
       <div className="row">
         <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.reconnect')}</label>
         <div className="col-md-6">
@@ -151,7 +147,7 @@ const ElasticsearchManagement = props => {
 
       <hr />
 
-      {/* <div className="row">
+      <div className="row">
         <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.normalize')}</label>
         <div className="col-md-6">
           <NormalizeIndicesControls
@@ -168,14 +164,16 @@ const ElasticsearchManagement = props => {
       <div className="row">
         <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.rebuild')}</label>
         <div className="col-md-6">
-          <RebuildIndexControls
+          {/* TODO: GW-5134 SocketIoContainer 機能の swr 化 */}
+          {/* GW-6820 [5134ブロック] ElasticsearchManagement/RebuildIndexControlsのFC化 */}
+          {/* <RebuildIndexControls
             isRebuildingProcessing={isRebuildingProcessing}
             isRebuildingCompleted={isRebuildingCompleted}
             isNormalized={isNormalized}
             onRebuildingRequested={rebuildIndices}
-          />
+          /> */}
         </div>
-      </div> */}
+      </div>
     </>
   );
 };
