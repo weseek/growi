@@ -42,10 +42,12 @@ module.exports = () => {
   };
 
   handler.togetterCheckboxesElementOptions = function(messages) {
-    const options = messages.map((message, index) => {
-      const date = fromUnixTime(message.ts);
-      return checkboxesElementOption(`*${message.user}*  ${format(new Date(date), 'yyyy/MM/dd HH:mm:ss')}`, message.text, `selected-${index}`);
-    });
+    const options = messages
+      .sort((a, b) => { return a.ts - b.ts })
+      .map((message, index) => {
+        const date = fromUnixTime(message.ts);
+        return checkboxesElementOption(`*${message.user}*  ${format(new Date(date), 'yyyy/MM/dd HH:mm:ss')}`, message.text, `selected-${index}`);
+      });
     return options;
   };
 
