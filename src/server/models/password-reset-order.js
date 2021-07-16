@@ -7,6 +7,8 @@ const schema = new mongoose.Schema({
   token: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   relatedUser: { type: ObjectId, ref: 'User' },
+  createdAt: { type: Date, default: Date.now, required: true },
+  expiredAt: { type: Date, default: Date.now + 600000, required: true },
 });
 schema.plugin(uniqueValidator);
 
@@ -33,10 +35,7 @@ class PasswordResetOrder {
   }
 
   static isExpired() {
-    const now = Date.now();
-    const expiredAt = this.createdAt.getTime() + 600000;
-
-    return expiredAt < now;
+    return this.expiredAt.getTime() < new Date().getTime();
   }
 
 }
