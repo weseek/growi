@@ -19,10 +19,11 @@ class PasswordResetOrder {
   }
 
   static isExpired() {
-    const now = Date.now();
-    const expiredAt = this.createdAt.getTime() + 600000;
+    if (this.expiredAt == null) {
+      return false;
+    }
 
-    return expiredAt < now;
+    return this.expiredAt.getTime() < new Date().getTime();
   }
 
 }
