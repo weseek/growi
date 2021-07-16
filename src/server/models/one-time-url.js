@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
@@ -13,7 +12,6 @@ const schema = new mongoose.Schema({
   relatedUser: { type: ObjectId, ref: 'User' },
   isExpired: Boolean,
 });
-schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
 /**
