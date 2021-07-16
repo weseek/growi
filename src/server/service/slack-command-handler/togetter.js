@@ -18,18 +18,20 @@ module.exports = () => {
       channel: body.channel_id,
       user: body.user_id,
       text: 'Select messages to use.',
-      delete_original: true,
-      blocks: this.togetterMessageBlocks(result.messages),
+      blocks: this.togetterMessageBlocks(result.messages, body, args, limit),
     });
     return;
   };
 
-  handler.togetterMessageBlocks = function(messages) {
+  handler.togetterMessageBlocks = function(messages, body, args, limit) {
     return [
       inputBlock(this.togetterCheckboxesElement(messages), 'selected_messages', 'Select massages to use.'),
-      actionsBlock(buttonElement('Show more', 'togetterShowMore')),
+      actionsBlock(buttonElement({ text: 'Show more', actionId: 'togetterShowMore', value: JSON.stringify({ body, args, limit }) })),
       inputBlock(this.togetterInputBlockElement('page_path', '/'), 'page_path', 'Page path'),
-      actionsBlock(buttonElement('Cancel', 'togetterCancelPageCreation'), buttonElement('Create page', 'togetterCreatePage', 'primary')),
+      actionsBlock(
+        buttonElement({ text: 'Cancel', actionId: 'togetterCancelPageCreation' }),
+        buttonElement({ text: 'Create page', actionId: 'togetterCreatePage', color: 'primary' }),
+      ),
     ];
   };
 
