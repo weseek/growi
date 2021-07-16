@@ -18,7 +18,7 @@ const StatusSuspendedButton = (props) => {
     catch (err) {
       toastError(err);
     }
-  }
+  };
 
   const renderSuspendedBtn = () => {
     return (
