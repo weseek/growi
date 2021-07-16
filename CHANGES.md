@@ -17,6 +17,11 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
     * Searching GROWI pages from Slack
     * Creating GROWI pages from Slack
         * Easy record conversations
+* Feature: Enable/Disable option for share link
+* Feature: Re-send invitation mail from user management page
+* Improvement: Mark users who failed to send invitation emails
+* Fix: lsx plugin in the custom sidebar does not work when showing search result page
+* Support: Switch the official docker base image from Alpine based to Ubuntu based
 
 ## v4.2.21
 

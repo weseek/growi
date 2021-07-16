@@ -1,6 +1,6 @@
 import { Inject, Service } from '@tsed/di';
 import { WebClient, LogLevel } from '@slack/web-api';
-import { GrowiCommand, generateMarkdownSectionBlock } from '@growi/slack';
+import { GrowiCommand, markdownSectionBlock } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { RelationRepository } from '~/repositories/relation';
@@ -38,7 +38,7 @@ export class UnregisterService implements GrowiCommandProcessor {
         private_metadata: JSON.stringify({ channel: body.channel_name, growiUrls }),
 
         blocks: [
-          ...growiUrls.map(growiCommandArg => generateMarkdownSectionBlock(`GROWI url: ${growiCommandArg}.`)),
+          ...growiUrls.map(growiCommandArg => markdownSectionBlock(`GROWI url: ${growiCommandArg}.`)),
         ],
       },
     });
@@ -63,7 +63,7 @@ export class UnregisterService implements GrowiCommandProcessor {
       // refer to https://api.slack.com/methods/chat.postEphemeral#text_usage
       text: 'Delete Relations',
       blocks: [
-        generateMarkdownSectionBlock(`Deleted ${deleteResult.affected} Relations.`),
+        markdownSectionBlock(`Deleted ${deleteResult.affected} Relations.`),
       ],
     });
 

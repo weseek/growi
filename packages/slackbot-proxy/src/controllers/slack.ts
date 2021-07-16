@@ -7,7 +7,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  generateMarkdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -139,8 +139,8 @@ export class SlackCtrl {
     if (relations.length === 0) {
       return res.json({
         blocks: [
-          generateMarkdownSectionBlock('*No relation found.*'),
-          generateMarkdownSectionBlock('Run `/growi register` first.'),
+          markdownSectionBlock('*No relation found.*'),
+          markdownSectionBlock('Run `/growi register` first.'),
         ],
       });
     }
@@ -149,8 +149,8 @@ export class SlackCtrl {
     if (growiCommand.growiCommandType === 'status') {
       return res.json({
         blocks: [
-          generateMarkdownSectionBlock('*Found Relations to GROWI.*'),
-          ...relations.map(relation => generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
+          markdownSectionBlock('*Found Relations to GROWI.*'),
+          ...relations.map(relation => markdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
         ],
       });
     }
@@ -256,7 +256,7 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+  async handleEvent(@BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {

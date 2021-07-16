@@ -104,20 +104,7 @@ module.exports = (crowi) => {
     const command = args[0];
 
     try {
-      switch (command) {
-        case 'search':
-          await crowi.slackBotService.showEphemeralSearchResults(client, body, args);
-          break;
-        case 'create':
-          await crowi.slackBotService.createModal(client, body);
-          break;
-        case 'help':
-          await crowi.slackBotService.helpCommand(client, body);
-          break;
-        default:
-          await crowi.slackBotService.notCommand(client, body);
-          break;
-      }
+      await crowi.slackBotService.handleCommand(command, client, body, args);
     }
     catch (error) {
       logger.error(error);
@@ -159,6 +146,26 @@ module.exports = (crowi) => {
         const { body, args, offset } = parsedValue;
         const newOffset = offset + 10;
         await crowi.slackBotService.showEphemeralSearchResults(client, body, args, newOffset);
+        break;
+      }
+      case 'togetterShowMore': {
+        console.log('Show more here');
+        break;
+      }
+      case 'togetterCreatePage': {
+        console.log('Create page and delete the original message here');
+        break;
+      }
+      case 'togetterCancelPageCreation': {
+        console.log('Cancel here');
+        break;
+      }
+      case 'showMoreTogetterResults': {
+        const parsedValue = JSON.parse(payload.actions[0].value);
+
+        const { body, args, limit } = parsedValue;
+        const newLimit = limit + 10;
+        await crowi.slackBotService.togetterCommand(client, body, args, newLimit);
         break;
       }
       default:
