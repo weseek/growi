@@ -7,6 +7,8 @@ const schema = new mongoose.Schema({
   token: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   relatedUser: { type: ObjectId, ref: 'User' },
+  createdAt: { type: Date, default: Date.now, required: true },
+  expiredAt: { type: Date },
 });
 schema.plugin(uniqueValidator);
 
