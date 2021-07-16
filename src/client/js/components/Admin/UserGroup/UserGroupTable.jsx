@@ -8,7 +8,7 @@ class UserGroupTable extends React.Component {
   constructor(props) {
     super(props);
 
-    if (process.browser) {
+    if (typeof window !== "undefined") {
       this.xss = window.xss;
     }
 

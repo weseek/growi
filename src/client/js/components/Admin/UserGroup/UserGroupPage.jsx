@@ -18,7 +18,7 @@ class UserGroupPage extends React.Component {
       selectedUserGroup: undefined, // not null but undefined (to use defaultProps in UserGroupDeleteModal)
       isDeleteModalShow: false,
     };
-    if (process.browser) {
+    if (typeof window !== "undefined") {
       this.xss = window.xss;
     }
 

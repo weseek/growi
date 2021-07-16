@@ -22,7 +22,8 @@ export const UserGroupPage = (): JSX.Element => {
 
   useEffect(() => {
     syncUserGroupAndRelations();
-  }, []);
+    console.log(userGroupRelationsParams);
+  }, [userGroupRelationsParams]);
 
   const showDeleteModal = async (group) => {
     try {
