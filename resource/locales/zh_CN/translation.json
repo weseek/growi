@@ -160,6 +160,7 @@
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"duplicated_path",
+  "Link sharing is disabled": "你不允许分享该链接",
 	"form_validation": {
 		"error_message": "有些值不正确",
 		"required": "%s 是必需的",
@@ -171,7 +172,8 @@
     "page_not_exist_alert": "该页面不存在，请创建一个新页面"
   },
   "custom_navigation": {
-    "no_page_list": "There are no pages under this page."
+    "no_page_list": "There are no pages under this page.",
+    "link_sharing_is_disabled": "链接共享已被禁用"
   },
 	"installer": {
 		"setup": "安装",
@@ -421,6 +423,7 @@
 		"deactivate_user_success": "Succeeded to deactivate {{username}}",
 		"remove_user_success": "Succeeded to removing {{username}} ",
     "remove_external_user_success": "Succeeded to remove {{accountId}} ",
+    "switch_disable_link_sharing_success": "成功更新分享链接设置",
     "failed_to_reset_password":"Failed to reset password"
   },
 	"template": {
@@ -575,6 +578,9 @@
 			"restricted": "受限（需要管理员批准）",
 			"closed": "已关闭（仅限邀请）"
 		},
+    "share_link_rights": "分享链接权",
+    "enable_link_sharing": "启用链接共享",
+    "all_share_links": "所有共享链接",
 		"configuration": " 配置",
 		"optional": "可选的",
 		"Treat username matching as identical": "Automatically bind external accounts newly logged in to local accounts when <code>username</code> match",

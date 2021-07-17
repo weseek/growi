@@ -123,7 +123,7 @@ class MikanAuthTest extends React.Component {
           <label>
             <h5>Logs</h5>
           </label>
-          <textarea id="taLogs" className="col" rows="4" value={this.state.logs} readOnly />
+          <textarea id="taLogs" className="col form-control" rows="4" value={this.state.logs} readOnly />
         </div>
 
         <div>
