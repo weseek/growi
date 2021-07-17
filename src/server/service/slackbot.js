@@ -155,35 +155,25 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   // Submit action in create Modal
-  async createPage(client, payload, contentsBody) {
+  async createPage(client, payload, path, channelId, contentsBody) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
-    let path = '';
-    let channelId = '';
     try {
-      if (payload.type === 'block_actions' && payload.actions[0].action_id === 'togetterCreatePage') {
-        path = payload.state.values.page_path.page_path.value;
-        channelId = payload.channel.id;
-      }
-      else {
-        path = payload.view.state.values.path.path_input.value;
-        channelId = JSON.parse(payload.view.private_metadata).channelId;
-      }
       // sanitize path
-      path = this.crowi.xss.process(path);
-      path = pathUtils.normalizePath(path);
+      const sanitizedPath = this.crowi.xss.process(path);
+      const normalizedPath = pathUtils.normalizePath(sanitizedPath);
 
       // generate a dummy id because Operation to create a page needs ObjectId
       const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
-      const page = await Page.create(path, reshapedContentsBody, dummyObjectIdOfUser, {});
+      const page = await Page.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
 
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
       await client.chat.postEphemeral({
         channel: channelId,
         user: payload.user.id,
-        text: `The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + path)}`)}> has been created.`,
+        text: `The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`,
       });
     }
     catch (err) {
@@ -198,8 +188,10 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async createPageInGrowi(client, payload) {
+    const path = payload.view.state.values.path.path_input.value;
+    const channelId = JSON.parse(payload.view.private_metadata).channelId;
     const contentsBody = payload.view.state.values.contents.contents_input.value;
-    await this.createPage(client, payload, contentsBody);
+    await this.createPage(client, payload, path, channelId, contentsBody);
   }
 
   async togetterCreatePageInGrowi(client, payload) {
@@ -210,12 +202,18 @@ class SlackBotService extends S2sMessageHandlable {
       const body = option.description.text.concat('\n');
       return header.concat(body);
     });
+    let path = '';
+    let channelId = '';
+    if (payload.type === 'block_actions' && payload.actions[0].action_id === 'togetterCreatePage') {
+      path = payload.state.values.page_path.page_path.value;
+      channelId = payload.channel.id;
+    }
     const contentsBody = messages.join('');
     // dismiss
     axios.post(responseUrl, {
       delete_original: true,
     });
-    await this.createPage(client, payload, contentsBody);
+    await this.createPage(client, payload, path, channelId, contentsBody);
   }
 
 }
