@@ -15,7 +15,7 @@ const isHttpError = (val) => {
     && val.status === val.statusCode;
 };
 
-module.exports = (err, req, res, next) => {
+module.exports = async(err, req, res, next) => {
   // handle if the err is a HttpError instance
   if (isHttpError(err)) {
     const httpError = err;
