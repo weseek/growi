@@ -153,8 +153,10 @@ module.exports = (crowi) => {
 
     // retrieve connection statuses
     let connectionStatuses = {};
+    let errorMsg;
+    let errorCode;
     if (currentBotType == null) {
-      // TODO imple null action
+      // no need to do anything
     }
     else if (currentBotType === 'customBotWithoutProxy') {
       const token = settings.slackBotToken;
@@ -163,10 +165,10 @@ module.exports = (crowi) => {
         try {
           connectionStatuses = await getConnectionStatuses([token]);
         }
-        catch (error) {
-          const msg = 'Error occured in getting connection statuses';
-          logger.error('Error', error);
-          return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
+        catch (e) {
+          errorMsg = 'Error occured in getting connection statuses';
+          errorCode = 'get-connection-failed';
+          logger.error(errorMsg, e);
         }
       }
     }
@@ -175,37 +177,37 @@ module.exports = (crowi) => {
         const slackAppIntegrations = await SlackAppIntegration.find();
         settings.slackAppIntegrations = slackAppIntegrations;
       }
-      catch (error) {
-        const msg = 'Error occured in getting connection statuses';
-        logger.error('Error', error);
-        return res.apiv3Err(new ErrorV3(msg, 'get-connection-failed'), 500);
+      catch (e) {
+        errorMsg = 'Error occured in finding SlackAppIntegration entities.';
+        errorCode = 'get-slackappintegration-failed';
+        logger.error(errorMsg, e);
       }
 
       const proxyServerUri = settings.proxyServerUri;
 
-      if (proxyServerUri != null) {
+      if (proxyServerUri != null && settings.slackAppIntegrations != null && settings.slackAppIntegrations.length > 0) {
         try {
-          if (settings.slackAppIntegrations.length > 0) {
-            // key: slackAppIntegration.tokenGtoP, value: slackAppIntegration._id
-            const tokenGtoPToSlackAppIntegrationId = {};
-            settings.slackAppIntegrations.forEach((slackAppIntegration) => {
-              tokenGtoPToSlackAppIntegrationId[slackAppIntegration.tokenGtoP] = slackAppIntegration._id;
-            });
-            const result = (await getConnectionStatusesFromProxy(Object.keys(tokenGtoPToSlackAppIntegrationId)));
-            Object.entries(result.connectionStatuses).forEach(([tokenGtoP, connectionStatus]) => {
-              connectionStatuses[tokenGtoPToSlackAppIntegrationId[tokenGtoP]] = connectionStatus;
-            });
-          }
+          // key: slackAppIntegration.tokenGtoP, value: slackAppIntegration._id
+          const tokenGtoPToSlackAppIntegrationId = {};
+          settings.slackAppIntegrations.forEach((slackAppIntegration) => {
+            tokenGtoPToSlackAppIntegrationId[slackAppIntegration.tokenGtoP] = slackAppIntegration._id;
+          });
+          const result = (await getConnectionStatusesFromProxy(Object.keys(tokenGtoPToSlackAppIntegrationId)));
+          Object.entries(result.connectionStatuses).forEach(([tokenGtoP, connectionStatus]) => {
+            connectionStatuses[tokenGtoPToSlackAppIntegrationId[tokenGtoP]] = connectionStatus;
+          });
         }
-        catch (error) {
-          const msg = 'Incorrect Proxy URL';
-          logger.error('Error', error);
-          return res.apiv3Err(new ErrorV3(msg, 'test-connection-failed'), 400);
+        catch (e) {
+          errorMsg = 'Incorrect Proxy URL';
+          errorCode = 'test-connection-failed';
+          logger.error(errorMsg, e);
         }
       }
     }
 
-    return res.apiv3({ currentBotType, settings, connectionStatuses });
+    return res.apiv3({
+      currentBotType, settings, connectionStatuses, errorMsg, errorCode,
+    });
   });
 
   /**

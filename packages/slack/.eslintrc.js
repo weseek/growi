@@ -6,7 +6,6 @@ module.exports = {
     'plugin:jest/recommended',
   ],
   env: {
-    jquery: true,
     'jest/globals': true,
   },
   globals: {

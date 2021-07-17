@@ -28,6 +28,8 @@ const SlackIntegration = (props) => {
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
   const [connectionStatuses, setConnectionStatuses] = useState({});
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [errorCode, setErrorCode] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
 
@@ -38,6 +40,8 @@ const SlackIntegration = (props) => {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
       } = data.settings;
 
+      setErrorMsg(data.errorMsg);
+      setErrorCode(data.errorCode);
       setConnectionStatuses(data.connectionStatuses);
       setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
@@ -193,6 +197,12 @@ const SlackIntegration = (props) => {
             <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
           </a> */}
         </h2>
+
+        { errorCode && (
+          <div className="alert alert-warning">
+            <strong>ERROR: </strong>{errorMsg} ({errorCode})
+          </div>
+        ) }
 
         <div className="d-flex justify-content-end">
           <button
