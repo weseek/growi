@@ -10,13 +10,12 @@ module.exports = function(crowi, app) {
   };
 
 
-  async function sendPasswordResetEmail() {
+  async function sendPasswordResetEmail(i18n) {
 
     return mailService.send({
       to: 'hoge@gmail.com',
       subject: 'forgotPasswordMailTest',
-      // TODO: apply i18n by GW-6833
-      template: path.join(crowi.localeDir, 'en_US/notifications/passwordReset.txt'),
+      template: path.join(crowi.localeDir, `${i18n}/notifications/passwordReset.txt`),
       // TODO: need to set appropriate values by GW-6828
       // vars: {
       //   appTitle: appService.getAppTitle(),
@@ -27,7 +26,8 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
-    await sendPasswordResetEmail();
+    const i18n = req.language;
+    await sendPasswordResetEmail(i18n);
     return;
   };
 
