@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+const crypto = require('crypto');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -15,9 +16,8 @@ schema.plugin(uniqueValidator);
 class PasswordResetOrder {
 
   static generateOneTimeToken() {
-    const now = new Date().getTime();
-    const hasher1 = crypto.createHash('sha512');
-    const token = hasher1.update(`gtop${now.toString()}${process.env.SALT_FOR_GTOP_TOKEN}`).digest('base64');
+    const hasher = crypto.createHash('sha384');
+    const token = hasher.update((new Date()).getTime()).digest('base64');
     return token;
   }
 
