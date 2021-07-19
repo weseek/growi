@@ -34,8 +34,8 @@ class PasswordResetOrder {
     return token;
   }
 
-  static isExpired() {
-    return this.expiredAt < Date.now();
+  isExpired() {
+    return this.expiredAt.getTime() < Date.now();
   }
 
 }
