@@ -380,7 +380,7 @@ const Editor = () =>{
   const {data: rendererSettings } = useRendererSettings()
   console.log(rendererSettings.adminPreferredIndentSize)
   return (
-    <EditorSubstance adminPreferredIndentSize={rendererSettings.adminPreferredIndentSize}/>
+    <EditorSubstance adminPreferredIndentSize={rendererSettings.adminPreferredIndentSize} />
   )
 }
 
