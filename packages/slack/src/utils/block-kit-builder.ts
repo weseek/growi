@@ -63,13 +63,20 @@ export function inputBlock(
   };
 }
 
+type ButtonElement = {
+  text: string,
+  actionId: string,
+  style?: string,
+  value?:string
+}
+
 /**
  * Button element
  * https://api.slack.com/reference/block-kit/block-elements#button
  */
 export function buttonElement({
   text, actionId, style, value,
-}:{text: string, actionId: string, style?: string, value?:string}): Button {
+}:ButtonElement): Button {
   const button: Button = {
     type: 'button',
     text: {
