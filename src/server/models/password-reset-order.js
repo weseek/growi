@@ -17,7 +17,7 @@ class PasswordResetOrder {
 
   static generateOneTimeToken() {
     const hasher = crypto.createHash('sha384');
-    const token = hasher.update((new Date()).getTime()).digest('base64');
+    const token = hasher.update((new Date()).getTime().toString()).digest('base64');
     return token;
   }
 
