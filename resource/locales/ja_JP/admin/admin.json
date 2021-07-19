@@ -71,11 +71,6 @@
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
     "note_for_the_only_env_option": "現在GCS設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください"
   },
-  "security_setting":{
-    "password_reset_by_users": "ユーザーによるパスワード再設定",
-    "enable_or_disable": "有効 / 無効",
-    "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。"
-  },
   "markdown_setting": {
     "lineBreak_header": "Line Break設定",
     "lineBreak_desc": "Line Breakの設定を変更できます。",
