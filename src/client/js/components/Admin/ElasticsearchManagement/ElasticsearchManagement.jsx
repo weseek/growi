@@ -187,6 +187,6 @@ export default function ElasticsearchManagement() {
     isConnected: true,
     isConfigured: true,
   };
-  const { data, isValidating, error, mutate } = useIndicesSWR();
+  const { data, mutate } = useIndicesSWR();
   return <>{data != null && t != null && <ElasticsearchManagementBody data={data} mutate={mutate} t={t} status={status} />}</>;
 }
