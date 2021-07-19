@@ -35,7 +35,6 @@ module.exports = function(crowi, app) {
   api.post = async function(req, res) {
     const token = await PasswordResetOrder.generateUniqueOneTimeToken();
     const email = 'hoge@example.com';
-    console.log('oneTimeToken', token);
 
     try {
       await PasswordResetOrder.create({ token, email });
