@@ -72,7 +72,7 @@ class LocalSecuritySettingContents extends React.Component {
               </label>
             </div>
             {!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && isLocalEnabled && (
-            <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>
+              <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>
             )}
           </div>
         </div>
