@@ -56,27 +56,6 @@ class LocalSecuritySettingContents extends React.Component {
           />
         )}
 
-        <div className="row mb-5">
-          <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="isLocalEnabled"
-                checked={isLocalEnabled}
-                onChange={() => adminGeneralSecurityContainer.switchIsLocalEnabled()}
-                disabled={adminLocalSecurityContainer.state.useOnlyEnvVars}
-              />
-              <label className="custom-control-label" htmlFor="isLocalEnabled">
-                {t('security_setting.Local.enable_local')}
-              </label>
-            </div>
-            {!adminGeneralSecurityContainer.state.setupStrategies.includes('local') && isLocalEnabled && (
-              <div className="badge badge-warning">{t('security_setting.setup_is_not_yet_complete')}</div>
-            )}
-          </div>
-        </div>
-
         {isLocalEnabled && (
           <React.Fragment>
             <h3 className="border-bottom">{t('security_setting.configuration')}</h3>

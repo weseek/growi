@@ -212,29 +212,6 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
 
-        <h4>{t('Password')}</h4>
-        <div className="form-group row">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:security_setting.password_reset_by_users')}</label>
-          <div className="col-md-6">
-            <div className="custom-control custom-switch custom-checkbox-success">
-              <input
-                type="checkbox"
-                className="custom-control-input"
-                id="isAbleToResetPasswordByUser"
-                // TODO: reflect the password reset by GW-6805
-                // checked={}
-                // onChange={}
-              />
-              <label className="custom-control-label" htmlFor="isAbleToResetPasswordByUser">
-                {t('admin:security_setting.enable_or_disable')}
-              </label>
-            </div>
-            <p className="form-text text-muted small">
-              {t('admin:security_setting.password_reset_desc')}
-            </p>
-          </div>
-        </div>
-
         <div className="row my-3">
           <div className="text-center text-md-left offset-md-3 col-md-5">
             <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putSecuritySetting}>
