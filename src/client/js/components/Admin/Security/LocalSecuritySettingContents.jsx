@@ -137,7 +137,7 @@ class LocalSecuritySettingContents extends React.Component {
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('admin:security_setting.password_reset_by_users')}</label>
+              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_setting.Local.password_reset_by_users')}</label>
               <div className="col-12 col-md-6">
                 <div className="custom-control custom-switch custom-checkbox-success">
                   <input
@@ -154,7 +154,7 @@ class LocalSecuritySettingContents extends React.Component {
                   </label>
                 </div>
                 <p className="form-text text-muted small">
-                  {t('admin:security_setting.password_reset_desc')}
+                  {t('security_setting.Local.password_reset_desc')}
                 </p>
               </div>
             </div>
