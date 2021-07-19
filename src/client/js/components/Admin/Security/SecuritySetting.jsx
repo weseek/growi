@@ -220,11 +220,12 @@ class SecuritySetting extends React.Component {
               <input
                 type="checkbox"
                 className="custom-control-input"
-                id="isShowRestrictedByOwner"
-                checked={adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
-                onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
+                id="isAbleToResetPasswordByUser"
+                // TODO: reflect the password reset by GW-6805
+                // checked={}
+                // onChange={}
               />
-              <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
+              <label className="custom-control-label" htmlFor="isAbleToResetPasswordByUser">
                 {t('admin:security_setting.enable_or_disable')}
               </label>
             </div>
