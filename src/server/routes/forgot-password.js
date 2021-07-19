@@ -44,7 +44,6 @@ module.exports = function(crowi, app) {
     catch (err) {
       const msg = 'Error occurred during password reset request procedure';
       logger.error(err);
-      // return res.apiv3Err(new ErrorV3(msg, 'creating-slack-integration-settings-procedure-failed'), 500);
       return res.json(ApiResponse.error(msg));
     }
 
