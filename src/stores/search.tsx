@@ -4,16 +4,9 @@ import { SearchIndicesInfo as ISearchIndicesInfo } from '~/interfaces/search';
 
 export const useIndicesSWR = (): responseInterface<ISearchIndicesInfo, Error> => {
 
-  const fetcher = async (endpoint) => {
-    try {
-      return await apiv3Get(endpoint)
-    }
-    catch (error) {
-      throw error
-    }
-  }
-
   return useSWR(
-    '/search/indices', fetcher, { revalidateOnFocus: false },
+    '/search/indices',
+    (endpoint) => apiv3Get(endpoint).then(result => result),
+    { revalidateOnFocus: false },
   );
 };

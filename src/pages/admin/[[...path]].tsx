@@ -19,7 +19,7 @@ import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSett
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
 import UserGroupPage from '~/components/Admin/UserGroup/UserGroupPage';
-import ElasticsearchManagement from '~/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
+import ElasticsearchManagement from '~/client/js/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 
 import {
   useCurrentUser,
