@@ -155,39 +155,65 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   // Submit action in create Modal
-  async createPageInGrowi(client, payload) {
+  async createPage(client, payload, path, channelId, contentsBody) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
-    const contentsBody = reshapeContentsBody(payload.view.state.values.contents.contents_input.value);
-
+    const reshapedContentsBody = reshapeContentsBody(contentsBody);
     try {
-      let path = payload.view.state.values.path.path_input.value;
       // sanitize path
-      path = this.crowi.xss.process(path);
-      path = pathUtils.normalizePath(path);
+      const sanitizedPath = this.crowi.xss.process(path);
+      const normalizedPath = pathUtils.normalizePath(sanitizedPath);
 
       // generate a dummy id because Operation to create a page needs ObjectId
       const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
-      const page = await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
+      const page = await Page.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
 
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
-      const channelId = JSON.parse(payload.view.private_metadata).channelId;
       await client.chat.postEphemeral({
         channel: channelId,
         user: payload.user.id,
-        text: `The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + path)}`)}> has been created.`,
+        text: `The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`,
       });
     }
     catch (err) {
       client.chat.postMessage({
         channel: payload.user.id,
         blocks: [
-          markdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
+          markdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${reshapedContentsBody}`)],
       });
       logger.error('Failed to create page in GROWI.');
       throw err;
     }
+  }
+
+  async createPageInGrowi(client, payload) {
+    const path = payload.view.state.values.path.path_input.value;
+    const channelId = JSON.parse(payload.view.private_metadata).channelId;
+    const contentsBody = payload.view.state.values.contents.contents_input.value;
+    await this.createPage(client, payload, path, channelId, contentsBody);
+  }
+
+  async togetterCreatePageInGrowi(client, payload) {
+    const { response_url: responseUrl } = payload;
+    const selectedOptions = payload.state.values.selected_messages.checkboxes_changed.selected_options;
+    const messages = selectedOptions.map((option) => {
+      const header = option.text.text.concat('\n');
+      const body = option.description.text.concat('\n');
+      return header.concat(body);
+    });
+    let path = '';
+    let channelId = '';
+    if (payload.type === 'block_actions' && payload.actions[0].action_id === 'togetterCreatePage') {
+      path = payload.state.values.page_path.page_path.value;
+      channelId = payload.channel.id;
+    }
+    const contentsBody = messages.join('');
+    // dismiss
+    axios.post(responseUrl, {
+      delete_original: true,
+    });
+    await this.createPage(client, payload, path, channelId, contentsBody);
   }
 
 }
