@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+const logger = require('@alias/logger')('growi:routes:forgot-password');
+const ApiResponse = require('../util/apiResponse');
+
 module.exports = function(crowi, app) {
   const PasswordResetOrder = mongoose.model('PasswordResetOrder');
   const { /* appService, */ mailService } = crowi;
@@ -16,7 +19,7 @@ module.exports = function(crowi, app) {
   async function sendPasswordResetEmail() {
 
     return mailService.send({
-      to: 'hoge@gmail.com',
+      to: 'hoge@example.com',
       subject: 'forgotPasswordMailTest',
       // TODO: apply i18n by GW-6833
       template: path.join(crowi.localeDir, 'en_US/notifications/passwordReset.txt'),
@@ -30,7 +33,21 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
-    const oneTimeToken = await PasswordResetOrder.generateUniqueOneTimeToken();
+    const token = await PasswordResetOrder.generateUniqueOneTimeToken();
+    const email = 'hoge@example.com';
+    console.log('oneTimeToken', token);
+
+    try {
+      await PasswordResetOrder.create({ token, email });
+      res.send(ApiResponse.success(token));
+    }
+    catch (err) {
+      const msg = 'Error occurred during password reset request procedure';
+      logger.error(err);
+      // return res.apiv3Err(new ErrorV3(msg, 'creating-slack-integration-settings-procedure-failed'), 500);
+      return res.json(ApiResponse.error(msg));
+    }
+
     await sendPasswordResetEmail();
     return;
   };
