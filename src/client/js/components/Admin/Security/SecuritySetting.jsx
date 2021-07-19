@@ -212,9 +212,9 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
 
-        <h4>{t('security_setting.session')}</h4>
+        <h4>{t('Password Settings')}</h4>
         <div className="form-group row">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_setting.max_age')}</label>
+          <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:security_setting.password_reset_by_users')}</label>
           <div className="col-md-6">
             <div className="custom-control custom-switch custom-checkbox-success">
               <input
@@ -225,8 +225,11 @@ class SecuritySetting extends React.Component {
                 onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
               />
               <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
-                {t('displayed_or_hidden')}
+                {t('admin:security_setting.enable_or_disable')}
               </label>
+              <p className="form-text text-muted small">
+                {t('admin:security_setting.password_reset_desc')}
+              </p>
             </div>
           </div>
         </div>
