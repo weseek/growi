@@ -1,4 +1,7 @@
+const mongoose = require('mongoose');
+
 module.exports = function(crowi, app) {
+  const PasswordResetOrder = mongoose.model('PasswordResetOrder');
   const { /* appService, */ mailService } = crowi;
   const path = require('path');
   const actions = {};
@@ -27,6 +30,7 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
+    const oneTimeToken = await PasswordResetOrder.generateOneTimeToken();
     await sendPasswordResetEmail();
     return;
   };
