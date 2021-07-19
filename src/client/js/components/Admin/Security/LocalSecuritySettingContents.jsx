@@ -157,6 +157,29 @@ class LocalSecuritySettingContents extends React.Component {
               </div>
             </div>
 
+            <div className="row">
+              <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_setting.Local.password_reset_by_users')}</label>
+              <div className="col-12 col-md-6">
+                <div className="custom-control custom-switch custom-checkbox-success">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="isAbleToResetPasswordByUser"
+                    // TODO: reflect the password reset by GW-6805
+                    // checked={}
+                    // onChange={}
+                  />
+                  <label className="custom-control-label" htmlFor="isAbleToResetPasswordByUser">
+                    {/* {t('admin:security_setting.enable_or_disable')} */}
+                    {t('security_setting.Local.enable_password_reset_by_users')}
+                  </label>
+                </div>
+                <p className="form-text text-muted small">
+                  {t('security_setting.Local.password_reset_desc')}
+                </p>
+              </div>
+            </div>
+
             <div className="row my-3">
               <div className="offset-3 col-6">
                 <button

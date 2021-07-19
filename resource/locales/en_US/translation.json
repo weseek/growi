@@ -600,7 +600,10 @@
     "Local": {
       "name": "ID/Password",
       "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
-      "enable_local": "Enable ID/Password"
+      "enable_local": "Enable ID/Password",
+      "password_reset_by_users": "Password reset by users",
+      "enable_password_reset_by_users": "Enable password reset by users",
+      "password_reset_desc": "when forgot password, users are able to reset it by themselves."
     },
     "ldap": {
       "enable_ldap": "Enable LDAP",
