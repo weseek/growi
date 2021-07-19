@@ -227,10 +227,10 @@ class SecuritySetting extends React.Component {
               <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
                 {t('admin:security_setting.enable_or_disable')}
               </label>
-              <p className="form-text text-muted small">
-                {t('admin:security_setting.password_reset_desc')}
-              </p>
             </div>
+            <p className="form-text text-muted small">
+              {t('admin:security_setting.password_reset_desc')}
+            </p>
           </div>
         </div>
 
