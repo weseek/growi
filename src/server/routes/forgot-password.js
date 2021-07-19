@@ -30,7 +30,7 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
-    const oneTimeToken = await PasswordResetOrder.generateOneTimeToken();
+    const oneTimeToken = await PasswordResetOrder.generateUniqueOneTimeToken();
     await sendPasswordResetEmail();
     return;
   };
