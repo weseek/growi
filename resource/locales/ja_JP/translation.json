@@ -599,7 +599,10 @@
     "Local": {
       "name": "ID/Password",
       "note for the only env option": "現在LOCAL認証のON/OFFは環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
-      "enable_local": "ID/Password を有効にする"
+      "enable_local": "ID/Password を有効にする",
+      "password_reset_by_users": "ユーザーによるパスワード再設定",
+      "enable_password_reset_by_users": "ユーザーによるパスワード再設定を有効にする",
+      "password_reset_desc": "ログイン時のパスワードを忘れた際に、ユーザー自身がパスワードを再設定できます。"
     },
     "ldap": {
       "enable_ldap": "LDAP を有効にする",
