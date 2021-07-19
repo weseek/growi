@@ -138,7 +138,11 @@ class ElasticsearchManagementBody extends React.Component {
         <div className="row">
           <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.reconnect')}</label>
           <div className="col-md-6">
-            <ReconnectControls isEnabled={isReconnectBtnEnabled} isProcessing={isReconnectingProcessing} onReconnectingRequested={this.reconnect} />
+            <ReconnectControls
+              isEnabled={isReconnectBtnEnabled}
+              isProcessing={isReconnectingProcessing}
+              onReconnectingRequested={this.reconnect}
+            />
           </div>
         </div>
 
@@ -161,12 +165,14 @@ class ElasticsearchManagementBody extends React.Component {
         <div className="row">
           <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.rebuild')}</label>
           <div className="col-md-6">
-            <RebuildIndexControls
+          {/* TODO: GW-5134 SocketIoContainer 機能の swr 化 */}
+
+            {/* <RebuildIndexControls
               isRebuildingProcessing={isRebuildingProcessing}
               isRebuildingCompleted={isRebuildingCompleted}
               isNormalized={isNormalized}
               onRebuildingRequested={this.rebuildIndices}
-            />
+            /> */}
           </div>
         </div>
       </>
