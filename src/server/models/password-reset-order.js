@@ -21,19 +21,6 @@ class PasswordResetOrder {
     return token;
   }
 
-  static async generateUniqueAccessToken() {
-    let duplicateToken;
-    let generateToken;
-
-    do {
-      generateToken = this.generateOneTimeToken();
-      // eslint-disable-next-line no-await-in-loop
-      duplicateToken = await this.findOne({ $or: { token: generateToken } });
-    } while (duplicateToken != null);
-
-    return generateToken;
-  }
-
   static isExpired() {
     return this.expiredAt.getTime() < new Date().getTime();
   }
