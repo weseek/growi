@@ -1,13 +1,24 @@
 # CHANGES
 
-## v4.3.0-RC
+## v4.3.2-RC
 
-* Support: Upgrade libs
-    * striptags
+* 
+
+## v4.3.1
+
+* Fix: Build script for production
+
+
+
+## v4.3.0-RC
 
 ### BREAKING CHANGES
 
-None.
+* GROWI manages dependencies with `lerna`
+    * Use `npx lerna bootstrap` instead of `yarn install`
+* GROWI includes some official plugins in default
+    * Users no longer need to install [growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx), [growi-plugin-pukiwiki-like-linker](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) and [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs) before build client.
+
 
 Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
 
@@ -22,6 +33,8 @@ Upgrading Guide: <https://docs.growi.org/en/admin-guide/upgrading/43x.html>
 * Improvement: Mark users who failed to send invitation emails
 * Fix: lsx plugin in the custom sidebar does not work when showing search result page
 * Support: Switch the official docker base image from Alpine based to Ubuntu based
+* Support: Upgrade libs
+    * striptags
 
 ## v4.2.21
 
