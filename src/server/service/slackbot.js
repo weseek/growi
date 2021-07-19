@@ -421,16 +421,29 @@ class SlackBotService extends S2sMessageHandlable {
     const pathUtils = require('growi-commons').pathUtils;
     const contentsBody = reshapeContentsBody(payload.view.state.values.contents.contents_input.value);
 
+    let page = '';
+    let path = '';
     try {
-      let path = payload.view.state.values.path.path_input.value;
+      path = payload.view.state.values.path.path_input.value;
       // sanitize path
       path = this.crowi.xss.process(path);
       path = pathUtils.normalizePath(path);
 
       // generate a dummy id because Operation to create a page needs ObjectId
       const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
-      const page = await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
+      page = await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
+    }
+    catch (err) {
+      client.chat.postMessage({
+        channel: payload.user.id,
+        blocks: [
+          this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
+      });
+      logger.error('Failed to create page in GROWI because of Cannot create new page to existed path.');
+      throw err;
+    }
 
+    try {
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
       const channelId = JSON.parse(payload.view.private_metadata).channelId;
@@ -441,12 +454,15 @@ class SlackBotService extends S2sMessageHandlable {
       });
     }
     catch (err) {
+      console.log(err);
       client.chat.postMessage({
         channel: payload.user.id,
         blocks: [
-          this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
+          this.generateMarkdownSectionBlock(
+            `Something went wrong. Check if you have installed the Growi bot to the channel then try again.\n *-- Error log --*\n${err.body.message}`,
+          )],
       });
-      logger.error('Failed to create page in GROWI.');
+      logger.error('Failed to create page in GROWI because of chat.postEphemeral.');
       throw err;
     }
   }
