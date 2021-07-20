@@ -23,7 +23,7 @@ const BotCreateProcess = () => {
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
       <a
-        href={t('admin:slack_integration.custom_bot_with_proxy_setting_url')}
+        href={t('admin:slack_integration.docs_url.custom_bot_with_proxy_setting')}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -47,7 +47,7 @@ const BotInstallProcessForOfficialBot = () => {
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
       <a
-        href={t('admin:slack_integration.official_bot_setting_url')}
+        href={t('admin:slack_integration.docs_url.official_bot_setting')}
         target="_blank"
         rel="noopener noreferrer"
       >

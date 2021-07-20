@@ -50,7 +50,7 @@ const OfficialBotSettings = (props) => {
         <i
           className="fa fa-external-link btn-link ml-2"
           aria-hidden="true"
-          onClick={() => window.open(`${t('admin:slack_integration.official_bot_url')}`, '_blank')}
+          onClick={() => window.open(`${t('admin:slack_integration.docs_url.official_bot')}`, '_blank')}
         />
       </h2>
 

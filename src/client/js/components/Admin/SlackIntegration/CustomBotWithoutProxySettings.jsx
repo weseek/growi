@@ -24,7 +24,7 @@ const CustomBotWithoutProxySettings = (props) => {
         <i
           className="fa fa-external-link btn-link ml-2"
           aria-hidden="true"
-          onClick={() => window.open(`${t('admin:slack_integration.custom_bot_without_proxy_url')}`, '_blank')}
+          onClick={() => window.open(`${t('admin:slack_integration.docs_url.custom_bot_without_proxy')}`, '_blank')}
         />
       </h2>
 
