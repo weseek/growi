@@ -76,15 +76,14 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             {t('admin:slack_integration.accordion.create_bot')}
             <i className="fa fa-external-link ml-2" aria-hidden="true" />
           </button>
-          {/* TODO: If Bot-manual section of docs is merged into master, show links and add an appropriate links by GW-5614. */}
-          {/* <a href="#">
+          <a href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/custom-bot-without-proxy-settings.html" target="_blank">
             <p className="text-center mt-1">
               <small>
                 {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-                <i className="fa fa-external-link ml-2" aria-hidden="true" />
+                <i className="fa fa-external-link ml-2" aria-hidden="true"/>
               </small>
             </p>
-          </a> */}
+          </a>
         </div>
       </Accordion>
       <Accordion
