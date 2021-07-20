@@ -1,4 +1,4 @@
-import { keyInterface, SWRResponse } from 'swr';
+import { Key, SWRResponse } from 'swr';
 
 import { HtmlElementNode } from 'rehype-toc';
 
@@ -18,7 +18,7 @@ export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
 };
 
 export const useViewRenderer = (): SWRResponse<MarkdownRenderer, any> => {
-  let key: keyInterface = 'viewRenderer';
+  let key: Key = 'viewRenderer';
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
@@ -38,7 +38,7 @@ export const useViewRenderer = (): SWRResponse<MarkdownRenderer, any> => {
 };
 
 export const usePreviewRenderer = (): SWRResponse<MarkdownRenderer, any> => {
-  let key: keyInterface = 'previewRenderer';
+  let key: Key = 'previewRenderer';
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
@@ -57,7 +57,7 @@ export const usePreviewRenderer = (): SWRResponse<MarkdownRenderer, any> => {
 };
 
 export const useSearchResultRenderer = (): SWRResponse<MarkdownRenderer, any> => {
-  let key: keyInterface = 'searchResultRenderer';
+  let key: Key = 'searchResultRenderer';
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
@@ -76,7 +76,7 @@ export const useSearchResultRenderer = (): SWRResponse<MarkdownRenderer, any> =>
 };
 
 export const useTimelineRenderer = (): SWRResponse<MarkdownRenderer, any> => {
-  let key: keyInterface = 'timelineRenderer';
+  let key: Key = 'timelineRenderer';
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
@@ -95,7 +95,7 @@ export const useTimelineRenderer = (): SWRResponse<MarkdownRenderer, any> => {
 };
 
 export const useDraftRenderer = (): SWRResponse<MarkdownRenderer, any> => {
-  let key: keyInterface = 'draftRenderer';
+  let key: Key = 'draftRenderer';
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
@@ -114,7 +114,7 @@ export const useDraftRenderer = (): SWRResponse<MarkdownRenderer, any> => {
 };
 
 export const useCustomSidebarRenderer = (): SWRResponse<MarkdownRenderer, any> => {
-  let key: keyInterface = 'customSidebarRenderer';
+  let key: Key = 'customSidebarRenderer';
 
   const { data: renderer, mutate: mutateRenderer } = useStaticSWR(key);
   const { data: rendererSettings } = useRendererSettings();
