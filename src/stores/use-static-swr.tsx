@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import useSWR, {
   keyInterface, SWRResponse, mutate, cache,
 } from 'swr';
-import { ConfigInterface, fetcherFn, mutateCallback } from 'swr/dist/types';
+import { SWRConfiguration, fetcherFn, mutateCallback } from 'swr/dist/types';
 
 
 export const useStaticSWR = <Data, Error>(
@@ -38,7 +38,7 @@ const generateKeyInStorage = (key: string): string => {
 export const useStorageSyncedSWR = <Data, Error>(
   storage: Storage,
   key: keyInterface,
-  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
+  config?: SWRConfiguration<Data, Error> & serializeInterface<Data>,
 ): SWRResponse<Data, Error> => {
 
   const serialize = config?.serialize;
@@ -84,14 +84,14 @@ export const useStorageSyncedSWR = <Data, Error>(
 
 export const useLocalStorageSyncedSWR = <Data, Error>(
   key: keyInterface,
-  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
+  config?: SWRConfiguration<Data, Error> & serializeInterface<Data>,
 ): SWRResponse<Data, Error> => {
   return useStorageSyncedSWR(localStorage, key, config);
 };
 
 export const useSessionStorageSyncedSWR = <Data, Error>(
   key: keyInterface,
-  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
+  config?: SWRConfiguration<Data, Error> & serializeInterface<Data>,
 ): SWRResponse<Data, Error> => {
   return useStorageSyncedSWR(sessionStorage, key, config);
 };
