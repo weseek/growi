@@ -16,7 +16,7 @@ import { useTranslation } from '~/i18n';
 const CustomizeSettingContents = (): JSX.Element => {
   const { t }= useTranslation()
 
-  // dynamic import to skip rendering at SSR
+  // disable SSR to check dark mode at CustomizeLayoutSetting
   const CustomizeLayoutSetting = dynamic(() => import('../../../client/js/components/Admin/Customize/CustomizeLayoutSetting'), { ssr: false });
 
   const { error, data } = useCustomizeSettingsSWR();
