@@ -20,7 +20,7 @@ export const useStaticSWR = <Data, Error>(
     mutate(key, updateData);
   }
 
-  return useSWR(key, {
+  return useSWR(key, null, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
