@@ -26,12 +26,8 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
-    let i18n;
-
-    if (req.language == null) {
-      i18n = configManager.getConfig('crowi', 'app:globalLang');
-    }
-    i18n = req.language;
+    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const i18n = req.language || grobalLang;
 
     await sendPasswordResetEmail(i18n);
     return;
