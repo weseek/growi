@@ -10,6 +10,7 @@ import AppContainer from './services/AppContainer';
 import InstallerForm from './components/InstallerForm';
 import LoginForm from './components/LoginForm';
 import PasswordResetRequestForm from './components/PasswordResetRequestForm';
+import PasswordResetExecutionForm from './components/PasswordResetExecutionForm';
 
 const i18n = i18nFactory();
 
@@ -86,6 +87,18 @@ if (passwordResetRequestFormElem) {
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
       <PasswordResetRequestForm />
+    </I18nextProvider>,
+    passwordResetRequestFormElem,
+  );
+}
+
+// render PasswordResetRequestForm
+const PasswordResetExecutionFormElem = document.getElementById('password-reset-request-form');
+if (PasswordResetExecutionFormElem) {
+
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <PasswordResetExecutionForm />
     </I18nextProvider>,
     passwordResetRequestFormElem,
   );
