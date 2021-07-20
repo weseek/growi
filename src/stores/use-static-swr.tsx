@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import useSWR, {
-  Key, SWRResponse, mutate, cache,fetcher
+  Key, SWRResponse, mutate, cache
 } from 'swr';
-import { SWRConfiguration, Fetcher, mutateCallback } from 'swr/dist/types';
+import { SWRConfiguration, Fetcher, MutatorCallback } from 'swr/dist/types';
 
 
 export const useStaticSWR = <Data, Error>(
@@ -64,7 +64,7 @@ export const useStorageSyncedSWR = <Data, Error>(
 
   // replace mutate method
   const originalMutate = res.mutate;
-  res.mutate = (data?: Data | Promise<Data> | mutateCallback<Data>) :Promise<Data | undefined> => {
+  res.mutate = (data?: Data | Promise<Data> | MutatorCallback<Data>) :Promise<Data | undefined> => {
     if (key != null) {
       const keyInStorage = generateKeyInStorage(key as string);
 
