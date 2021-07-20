@@ -21,11 +21,12 @@ const CustomBotWithoutProxySettings = (props) => {
   return (
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}
-        <i
-          className="fa fa-external-link btn-link ml-2"
-          aria-hidden="true"
-          onClick={() => window.open(`${t('admin:slack_integration.docs_url.custom_bot_without_proxy')}`, '_blank')}
-        />
+        <a href={t('admin:slack_integration.docs_url.custom_bot_without_proxy')} target="_blank" rel="noopener noreferrer">
+          <i
+            className="fa fa-external-link btn-link ml-2"
+            aria-hidden="true"
+          />
+        </a>
       </h2>
 
       <CustomBotWithoutProxyConnectionStatus
