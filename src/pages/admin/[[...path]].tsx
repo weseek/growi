@@ -18,6 +18,7 @@ import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSetting
 import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
+import ElasticsearchManagement from '~/client/js/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 
 import {
   useCurrentUser,
@@ -102,7 +103,7 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
-      component: <></>,
+      component: <ElasticsearchManagement />,
     },
   };
 
