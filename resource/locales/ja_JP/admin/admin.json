@@ -337,7 +337,16 @@
 
     },
     "custom_bot_with_proxy_integration": "Custom bot with proxy 連携",
-    "official_bot_integration": "Official bot 連携"
+    "official_bot_integration": "Official bot 連携",
+    "docs_url": {
+      "slack_integration": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/",
+      "official_bot": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/#official-bot-%E6%8E%A8%E5%A5%A8",
+      "custom_bot_without_proxy": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/#custom-bot-without-proxy",
+      "custom_bot_with_proxy": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/#custom-bot-with-proxy",
+      "official_bot_setting": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/official-bot-settings.html",
+      "custom_bot_without_proxy_setting": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/custom-bot-without-proxy-settings.html",
+      "custom_bot_with_proxy_setting": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/custom-bot-with-proxy-settings.html"
+    }
   },
   "user_management": {
     "invite_users": "新規ユーザーの仮発行",
