@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 import useSWR, {
-  Key, SWRResponse, mutate, cache,
+  Key, SWRResponse, mutate, cache,fetcher
 } from 'swr';
-import { SWRConfiguration, fetcherFn, mutateCallback } from 'swr/dist/types';
+import { SWRConfiguration, Fetcher, mutateCallback } from 'swr/dist/types';
 
 
 export const useStaticSWR = <Data, Error>(
   key: Key,
-  updateData?: Data | fetcherFn<Data>,
-  initialData?: Data | fetcherFn<Data>,
+  updateData?: Data | Fetcher<Data>,
+  initialData?: Data | Fetcher<Data>,
 ): SWRResponse<Data, Error> => {
 
   if (updateData == null) {
