@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
+import { useUserGroupSWR, useUserGroupRelationsSWR } from '~/stores/admin';
+
 
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
-import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
+import { apiv3Delete } from '~/utils/apiv3-client';
 
 class UserGroupPageBody extends React.Component {
 
@@ -19,16 +21,15 @@ class UserGroupPageBody extends React.Component {
       isDeleteModalShow: false,
     };
 
-    this.xss = window.xss;
-
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
     this.addUserGroup = this.addUserGroup.bind(this);
     this.deleteUserGroupById = this.deleteUserGroupById.bind(this);
   }
 
-  async componentDidMount() {
-    await this.syncUserGroupAndRelations();
+  syncUserGroupAndRelations() {
+    // this.props.mutateGroups();
+    this.props.mutateRelations();
   }
 
   async showDeleteModal(group) {
@@ -71,54 +72,29 @@ class UserGroupPageBody extends React.Component {
         actionName,
         transferToUserGroupId,
       });
-
-      this.setState((prevState) => {
-        const userGroups = prevState.userGroups.filter((userGroup) => {
-          return userGroup._id !== deleteGroupId;
-        });
-
-        delete prevState.userGroupRelations[deleteGroupId];
-
-        return {
-          userGroups,
-          userGroupRelations: prevState.userGroupRelations,
-          selectedUserGroup: undefined,
-          isDeleteModalShow: false,
-        };
+      this.syncUserGroupAndRelations();
+      this.setState({
+        selectedUserGroup: undefined,
+        isDeleteModalShow: false,
       });
 
-      toastSuccess(`Deleted a group "${this.xss.process(res.data.userGroup.name)}"`);
+      toastSuccess(`Deleted group "${res.data.userGroup.name}"`);
     }
     catch (err) {
       toastError(new Error('Unable to delete the group'));
     }
   }
 
-  async syncUserGroupAndRelations() {
-    try {
-      const userGroupsRes = await apiv3Get('/user-groups', { pagination: false });
-      const userGroupRelationsRes = await apiv3Get('/user-group-relations');
-
-      this.setState({
-        userGroups: userGroupsRes.data.userGroups,
-        userGroupRelations: userGroupRelationsRes.data.userGroupRelations,
-      });
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
   render() {
     // TODO GW-5305 retrieve isAclEnabled from SWR or getServerSideProps
     // const { isAclEnabled } = this.props.appContainer.config;
-    const isAclEnabled = false;
+    const isAclEnabled = true;
 
     return (
       <Fragment>
         <UserGroupCreateForm
           isAclEnabled={isAclEnabled}
-          onCreate={this.addUserGroup}
+          onCreate={this.syncUserGroupAndRelations}
         />
         <UserGroupTable
           userGroups={this.state.userGroups}
@@ -141,7 +117,21 @@ class UserGroupPageBody extends React.Component {
 }
 
 const UserGroupPage = () => {
-  return <UserGroupPageBody />
+  // TODO: Fix pagination src/server/models/user-group.ts
+  const userGroupsData = [];
+  // const { data: userGroupsData, mutate: mutateGroups } = useUserGroupSWR({ pagination: false });
+  const { data: userGroupRelationsData, mutate: mutateRelations } = useUserGroupRelationsSWR();
+  return (
+    <>
+      {userGroupRelationsData != null &&
+        <UserGroupPageBody
+          userGroupsData={userGroupsData}
+          userGroupRelationsData={userGroupRelationsData}
+          mutateRelations={mutateRelations}
+        />
+      }
+    </>
+  )
 }
 
 export default UserGroupPage;

@@ -11,7 +11,6 @@ import {
   securityParamsGeneralSetting as ISecurityParamsGeneralSetting,
 } from '~/interfaces/admin';
 
-
 export const useAppSettingsSWR = (): responseInterface<IAppParams, Error> => {
   return useSWR(
     '/app-settings',
