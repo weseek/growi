@@ -9,6 +9,10 @@ module.exports = function(crowi, app) {
     return res.render('forgot-password');
   };
 
+  actions.resetPassword = async function(req, res) {
+    return res.render('reset-password');
+  };
+
 
   async function sendPasswordResetEmail() {
 
