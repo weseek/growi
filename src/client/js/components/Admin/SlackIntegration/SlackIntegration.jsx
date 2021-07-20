@@ -191,11 +191,10 @@ const SlackIntegration = (props) => {
       <div className="selecting-bot-type mb-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
-          {/* TODO: If Bot-manual section of docs is merged into master, show links and add an appropriate links by GW-5614. */}
-          {/* <a className="ml-2 btn-link" href="#">
+          <a className="ml-2 btn-link" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/" target="_blank">
             {t('admin:slack_integration.selecting_bot_types.detailed_explanation')}
             <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
-          </a> */}
+          </a>
         </h2>
 
         { errorCode && (
