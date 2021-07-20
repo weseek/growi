@@ -1,14 +1,17 @@
-"compilerOptions": {
-  "baseUrl": ".",
-  "paths": {
-    "~/*": [
-      "./src/*"
-    ],
-    "^/*": [
-      "./*"
-    ],
-    "@growi/*": [
-      "./packages/*/src"
-    ]
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ],
+      "^/*": [
+        "./*"
+      ],
+      "@growi/*": [
+        "./packages/*/src"
+      ]
+    }
   }
 }
