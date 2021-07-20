@@ -1,8 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
-// import { withUnstatedContainers } from '../../UnstatedUtils';
 import { useIndicesSWR } from '~/stores/search';
 // TODO: GW-5134 SocketIoContainer 機能の swr 化
 // TODO: GW-6816 [5134ブロック] ElasticsearchManagementにSocketIoを追加する
@@ -12,7 +10,7 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import StatusTable from './StatusTable';
 import ReconnectControls from './ReconnectControls';
 import NormalizeIndicesControls from './NormalizeIndicesControls';
-import RebuildIndexControls from './RebuildIndexControls';
+// import RebuildIndexControls from './RebuildIndexControls';
 import { apiv3Post, apiv3Put } from '~/utils/apiv3-client';
 
 class ElasticsearchManagementBody extends React.Component {
@@ -37,10 +35,6 @@ class ElasticsearchManagementBody extends React.Component {
     this.normalizeIndices = this.normalizeIndices.bind(this);
     this.rebuildIndices = this.rebuildIndices.bind(this);
   }
-
-  // componentDidMount() {
-  //   this.initWebSockets();
-  // }
 
   // TODO: GW-5134 SocketIoContainer 機能の swr 化
   // TODO: GW-6816 [5134ブロック] ElasticsearchManagementにSocketIoを追加する
@@ -70,7 +64,8 @@ class ElasticsearchManagementBody extends React.Component {
 
     try {
       await apiv3Post('/search/connection');
-    } catch (e) {
+    }
+    catch (e) {
       toastError(e);
       return;
     }
@@ -82,11 +77,12 @@ class ElasticsearchManagementBody extends React.Component {
   async normalizeIndices() {
     try {
       await apiv3Put('/search/indices', { operation: 'normalize' });
-    } catch (e) {
+    }
+    catch (e) {
       toastError(e);
     }
 
-    await this.props.mutate();
+    await this.props.mutateIndices();
 
     toastSuccess('Normalizing has succeeded');
   }
@@ -97,20 +93,21 @@ class ElasticsearchManagementBody extends React.Component {
     try {
       await apiv3Put('/search/indices', { operation: 'rebuild' });
       toastSuccess('Rebuilding is requested');
-    } catch (e) {
+    }
+    catch (e) {
       toastError(e);
     }
 
-    await this.props.mutate();
+    await this.props.mutateIndices();
   }
 
   render() {
     const { t } = this.props;
     const { isReconnectingProcessing, isRebuildingProcessing, isRebuildingCompleted } = this.state;
-    const { isNormalized, indices, aliases } = this.props.data.info;
+    const { isNormalized, indices, aliases } = this.props.indicesInfo;
     const { isInitialized, isConnected, isConfigured } = this.props.status;
 
-    // TODO: GW- retrieve from SWR
+    // TODO: GW-6857 retrieve from SWR
     // const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
     const isErrorOccuredOnSearchService = true;
 
@@ -165,7 +162,7 @@ class ElasticsearchManagementBody extends React.Component {
         <div className="row">
           <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.rebuild')}</label>
           <div className="col-md-6">
-          {/* TODO: GW-5134 SocketIoContainer 機能の swr 化 */}
+            {/* TODO: GW-5134 SocketIoContainer 機能の swr 化 */}
 
             {/* <RebuildIndexControls
               isRebuildingProcessing={isRebuildingProcessing}
@@ -182,11 +179,13 @@ class ElasticsearchManagementBody extends React.Component {
 
 export default function ElasticsearchManagement() {
   const { t } = useTranslation();
+  // GW-6858　Todo: Get status
   const status = {
     isInitialized: true,
     isConnected: true,
     isConfigured: true,
   };
   const { data, mutate } = useIndicesSWR();
-  return <>{data != null && t != null && <ElasticsearchManagementBody data={data} mutate={mutate} t={t} status={status} />}</>;
+
+  return <>{data != null && <ElasticsearchManagementBody indicesInfo={data.info} mutateIndices={mutate} t={t} status={status} />}</>;
 }
