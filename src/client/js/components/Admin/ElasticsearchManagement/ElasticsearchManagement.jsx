@@ -2,8 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useIndicesSWR } from '~/stores/search';
-// TODO: GW-5134 SocketIoContainer 機能の swr 化
-// TODO: GW-6816 [5134ブロック] ElasticsearchManagementにSocketIoを追加する
+// TODO: GW-5134 Migrate SocketIoContainer to SWR
+// TODO: GW-6816 Add SocketIo to ElasticsearchManagement
 // import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
@@ -36,8 +36,8 @@ class ElasticsearchManagementBody extends React.Component {
     this.rebuildIndices = this.rebuildIndices.bind(this);
   }
 
-  // TODO: GW-5134 SocketIoContainer 機能の swr 化
-  // TODO: GW-6816 [5134ブロック] ElasticsearchManagementにSocketIoを追加する
+  // TODO: GW-5134 Migrate SocketIoContainer to SWR
+  // TODO: GW-6816 Add SocketIo to ElasticsearchManagement
   // initWebSockets() {
   //   const socket = this.props.adminSocketIoContainer.getSocket();
 
@@ -179,6 +179,7 @@ class ElasticsearchManagementBody extends React.Component {
 
 export default function ElasticsearchManagement() {
   const { t } = useTranslation();
+  // TODO: GW-6857 retrieve isErrorOccuredOnSearchService from SWR
   // GW-6858　Todo: Get status
   const status = {
     isInitialized: true,
@@ -186,6 +187,16 @@ export default function ElasticsearchManagement() {
     isConfigured: true,
   };
   const { data, mutate } = useIndicesSWR();
+  // TODO: GW-6857 retrieve from SWR
 
-  return <>{data != null && <ElasticsearchManagementBody indicesInfo={data.info} mutateIndices={mutate} t={t} status={status} />}</>;
+  return (
+    <>{data != null &&
+      <ElasticsearchManagementBody
+        indicesInfo={data.info}
+        mutateIndices={mutate}
+        t={t}
+        status={status}
+      />
+    }</>
+  )
 }
