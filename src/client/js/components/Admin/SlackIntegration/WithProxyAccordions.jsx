@@ -23,7 +23,7 @@ const BotCreateProcess = () => {
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
       <a
-        href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/custom-bot-with-proxy-settings.html"
+        href={t('admin:slack_integration.custom_bot_with_proxy_setting_url')}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -47,7 +47,7 @@ const BotInstallProcessForOfficialBot = () => {
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
       <a
-        href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html"
+        href={t('admin:slack_integration.official_bot_setting_url')}
         target="_blank"
         rel="noopener noreferrer"
       >

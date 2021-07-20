@@ -77,7 +77,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <i className="fa fa-external-link ml-2" aria-hidden="true" />
           </button>
           <a
-            href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/custom-bot-without-proxy-settings.html"
+            href={t('admin:slack_integration.custom_bot_without_proxy_setting_url')}
             target="_blank"
             rel="noopener noreferrer"
           >

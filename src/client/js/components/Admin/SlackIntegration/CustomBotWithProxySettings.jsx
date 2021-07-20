@@ -69,7 +69,7 @@ const CustomBotWithProxySettings = (props) => {
         <i
           className="fa fa-external-link btn-link ml-2"
           aria-hidden="true"
-          onClick={() => window.open('https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/#custom-bot-with-proxy', '_blank')}
+          onClick={() => window.open(`${t('admin:slack_integration.custom_bot_with_proxy_url')}`, '_blank')}
         />
       </h2>
 
