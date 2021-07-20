@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import { useUserGroupSWR, useUserGroupRelationsSWR } from '~/stores/admin';
 
-
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
