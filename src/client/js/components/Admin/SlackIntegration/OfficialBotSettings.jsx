@@ -49,7 +49,7 @@ const OfficialBotSettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}
         <i className="fa fa-external-link btn-link ml-2"
            aria-hidden="true"
-           onClick={() => window.open('https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html', '_blank')}></i>
+           onClick={() => window.open('https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/#official-bot-%E3%80%90recommended%E3%80%91', '_blank')}></i>
       </h2>
 
       {slackAppIntegrations.length !== 0 && (
