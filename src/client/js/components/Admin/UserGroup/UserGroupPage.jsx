@@ -7,7 +7,7 @@ import UserGroupDeleteModal from './UserGroupDeleteModal';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
 
-class UserGroupPage extends React.Component {
+class UserGroupPageBody extends React.Component {
 
   constructor(props) {
     super(props);
@@ -18,9 +18,8 @@ class UserGroupPage extends React.Component {
       selectedUserGroup: undefined, // not null but undefined (to use defaultProps in UserGroupDeleteModal)
       isDeleteModalShow: false,
     };
-    if (process.browser) {
-      this.xss = window.xss;
-    }
+
+    this.xss = window.xss;
 
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
@@ -139,6 +138,10 @@ class UserGroupPage extends React.Component {
     );
   }
 
+}
+
+const UserGroupPage = () => {
+  return <UserGroupPageBody />
 }
 
 export default UserGroupPage;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useUserGroupSWR, useUserGroupRelationsSWR } from '~/stores/admin';
 import { useAclEnabled } from '~/stores/context';
 
@@ -7,26 +7,20 @@ import UserGroupCreateForm from '~/client/js/components/Admin/UserGroup/UserGrou
 import UserGroupDeleteModal from '~/client/js/components/Admin/UserGroup/UserGroupDeleteModal';
 
 import { toastSuccess, toastError } from '~/client/js/util/apiNotification';
-import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
-import { UserGroup, UserGroupRelation } from '~/interfaces/user';
+import { apiv3Delete } from '~/utils/apiv3-client';
 
-const UserGroupPage = (): JSX.Element => {
+export const UserGroupPage = (): JSX.Element => {
   const isAclEnabled = useAclEnabled();
-  const [userGroups, setUserGroups] = useState<UserGroup[]>([]);
-  const [userGroupRelations, setUserGroupRelations] = useState<UserGroupRelation[]>([]);
   const [selectedUserGroup, setSelectedUserGroup] = useState(undefined); // not null but undefined (to use defaultProps in UserGroupDeleteModal)
   const [isDeleteModalShow, setIsDeleteModalShow] = useState(false);
   // TODO: Fix pagination src/server/models/user-group.ts
-  // const { data: userGroupParams } = useUserGroupSWR({ pagination: false });
-  const { data: userGroupRelationsParams } = useUserGroupRelationsSWR();
-
-  useEffect(() => {
-    syncUserGroupAndRelations();
-  }, []);
+  const userGroupsData = [];
+  // const { data: userGroupsData, mutate: mutateGroups } = useUserGroupSWR({ pagination: false });
+  const { data: userGroupRelationsData, mutate: mutateRelations } = useUserGroupRelationsSWR();
 
   const showDeleteModal = async (group) => {
     try {
-      await syncUserGroupAndRelations();
+      await mutateRelations();
       setSelectedUserGroup(group);
       setIsDeleteModalShow(true)
     }
@@ -40,13 +34,9 @@ const UserGroupPage = (): JSX.Element => {
     setIsDeleteModalShow(false);
   }
 
-  const addUserGroup = (userGroup: UserGroup, users) => {
-    setUserGroups((prevState: UserGroup[]): UserGroup[] => ([...prevState, userGroup]));
-    setUserGroupRelations((prevState) => (
-      Object.assign(prevState, {
-        [userGroup._id]: users,
-      })
-    ));
+  const mutateGroupsAndRelations = () => {
+    // mutateGroups();
+    mutateRelations();
   }
 
   const deleteUserGroupById = async ({ deleteGroupId, actionName, transferToUserGroupId }) => {
@@ -55,22 +45,9 @@ const UserGroupPage = (): JSX.Element => {
         actionName,
         transferToUserGroupId,
       });
-
-      setUserGroups(prevState => {
-        return prevState?.filter((userGroup) => {
-          return userGroup._id !== deleteGroupId;
-        })
-      })
-
-      setUserGroupRelations(prevState => {
-        return prevState?.filter((userGroupRelation) => {
-          return userGroupRelation._id != deleteGroupId
-        });
-      })
-
+      mutateGroupsAndRelations();
       setSelectedUserGroup(undefined);
       setIsDeleteModalShow(false);
-
       toastSuccess(`Deleted group "${res.data.userGroup.name}"`);
     }
     catch (err) {
@@ -78,41 +55,32 @@ const UserGroupPage = (): JSX.Element => {
     }
   }
 
-  const syncUserGroupAndRelations = async () => {
-    try {
-      // TODO: Fix pagination src/server/models/user-group.ts
-      // if (userGroupParams != null) {
-      //   setUserGroups(userGroupParams);
-      // }
-      if (userGroupRelationsParams != null) {
-        setUserGroupRelations(userGroupRelationsParams);
-      }
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
   return (
     <>
       <UserGroupCreateForm
         isAclEnabled={isAclEnabled}
-        onCreate={addUserGroup}
+        onCreate={mutateGroupsAndRelations}
       />
-      <UserGroupTable
-        userGroups={userGroups}
-        isAclEnabled={isAclEnabled}
-        onDelete={showDeleteModal}
-        userGroupRelations={userGroupRelations}
-      />
-      <UserGroupDeleteModal
-        userGroups={userGroups}
-        deleteUserGroup={selectedUserGroup}
-        onDelete={deleteUserGroupById}
-        isShow={isDeleteModalShow}
-        onShow={showDeleteModal}
-        onHide={hideDeleteModal}
-      />
+      {userGroupsData != null && userGroupRelationsData != null
+        && (
+          <>
+            <UserGroupTable
+              userGroups={userGroupsData}
+              isAclEnabled={isAclEnabled}
+              onDelete={showDeleteModal}
+              userGroupRelations={userGroupRelationsData}
+            />
+            <UserGroupDeleteModal
+              userGroups={userGroupsData}
+              deleteUserGroup={selectedUserGroup}
+              onDelete={deleteUserGroupById}
+              isShow={isDeleteModalShow}
+              onShow={showDeleteModal}
+              onHide={hideDeleteModal}
+            />
+          </>
+        )
+      }
     </>
   )
 }

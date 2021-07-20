@@ -57,7 +57,7 @@ class UserGroupDeleteModal extends React.Component {
 
     this.state = this.initialState;
 
-    if (process.browser) {
+    if (typeof window !== "undefined") {
       this.xss = window.xss;
     }
 

@@ -44,19 +44,20 @@ export const useSecuritySettingGeneralSWR = (): responseInterface<ISecurityParam
   );
 };
 
-export const useUserGroupSWR = ({ pagination }): responseInterface<IUserGroup[], Error> => {
-  return useSWR(
-    ['/user-groups', pagination],
-    (endpoint) => apiv3Get(endpoint, { pagination })
-      .then(result => result.data.userGroupParams),
-    { revalidateOnFocus: false },
-  );
-};
+// TODO: fix pagination
+// export const useUserGroupSWR = ({ pagination }): responseInterface<IUserGroup[], Error> => {
+//   return useSWR(
+//     ['/user-groups', pagination],
+//     (endpoint, pagination) => apiv3Get(endpoint, { pagination })
+//       .then(result => result.data),
+//     { revalidateOnFocus: false },
+//   );
+// };
 
 export const useUserGroupRelationsSWR = (): responseInterface<IUserGroupRelation[], Error> => {
   return useSWR(
     '/user-group-relations',
-    (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.userGroupRelationsParams),
+    (endpoint) => apiv3Get(endpoint).then(result => result.data.userGroupRelations),
     { revalidateOnFocus: false },
   );
 };
