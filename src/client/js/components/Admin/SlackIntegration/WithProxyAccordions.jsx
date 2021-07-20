@@ -22,7 +22,11 @@ const BotCreateProcess = () => {
         {t('admin:slack_integration.accordion.create_bot')}
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
-      <a href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/custom-bot-with-proxy-settings.html" target="_blank">
+      <a
+        href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/custom-bot-with-proxy-settings.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_create_a_bot')}
@@ -42,7 +46,11 @@ const BotInstallProcessForOfficialBot = () => {
         {t('admin:slack_integration.accordion.install_now')}
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
-      <a href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html" target="_blank">
+      <a
+        href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_install')}
