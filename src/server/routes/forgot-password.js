@@ -1,5 +1,5 @@
 module.exports = function(crowi, app) {
-  const { /* appService, */ mailService } = crowi;
+  const { /* appService, */ mailService, configManager } = crowi;
   const path = require('path');
   const actions = {};
   const api = {};
@@ -26,7 +26,13 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
-    const i18n = req.language;
+    let i18n;
+
+    if (req.language == null) {
+      i18n = configManager.getConfig('crowi', 'app:globalLang');
+    }
+    i18n = req.language;
+
     await sendPasswordResetEmail(i18n);
     return;
   };
