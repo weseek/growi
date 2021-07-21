@@ -31,7 +31,9 @@ class PasswordResetOrder {
       duplicateToken = await this.findOne({ token });
     } while (duplicateToken != null);
 
-    return token;
+    this.token = token;
+
+    return this.token;
   }
 
   isExpired() {
