@@ -28,6 +28,8 @@ const SlackIntegration = (props) => {
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
   const [connectionStatuses, setConnectionStatuses] = useState({});
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [errorCode, setErrorCode] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
 
@@ -38,6 +40,8 @@ const SlackIntegration = (props) => {
         slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
       } = data.settings;
 
+      setErrorMsg(data.errorMsg);
+      setErrorCode(data.errorCode);
       setConnectionStatuses(data.connectionStatuses);
       setCurrentBotType(data.currentBotType);
       setSlackSigningSecret(slackSigningSecret);
@@ -187,12 +191,17 @@ const SlackIntegration = (props) => {
       <div className="selecting-bot-type mb-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
-          {/* TODO: If Bot-manual section of docs is merged into master, show links and add an appropriate links by GW-5614. */}
-          {/* <a className="ml-2 btn-link" href="#">
+          <a className="ml-2 btn-link" href={t('admin:slack_integration.docs_url.slack_integration')} target="_blank" rel="noopener noreferrer">
             {t('admin:slack_integration.selecting_bot_types.detailed_explanation')}
             <i className="fa fa-external-link ml-1" aria-hidden="true"></i>
-          </a> */}
+          </a>
         </h2>
+
+        { errorCode && (
+          <div className="alert alert-warning">
+            <strong>ERROR: </strong>{errorMsg} ({errorCode})
+          </div>
+        ) }
 
         <div className="d-flex justify-content-end">
           <button

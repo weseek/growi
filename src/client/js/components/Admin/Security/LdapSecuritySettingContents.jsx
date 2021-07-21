@@ -225,9 +225,9 @@ class LdapSecuritySettingContents extends React.Component {
                 <p className="form-text text-muted">
                   <small>
                     {t('security_setting.example')}1 - {t('security_setting.ldap.search_filter_example1')}:
-                    <code>(|(uid={'{{ username }}'})(mail={'{{ username }}'}))</code><br />
+                    <code>(|(uid={'{{username}}'})(mail={'{{username}}'}))</code><br />
                     {t('security_setting.example')}2 - {t('security_setting.ldap.search_filter_example2')}:
-                    <code>(sAMAccountName={'{{ username }}'})</code>
+                    <code>(sAMAccountName={'{{username}}'})</code>
                   </small>
                 </p>
               </div>
