@@ -9,7 +9,7 @@ const PasswordResetExecutionForm = (props) => {
 
   return (
     // TODO: improve the form by GW-6852
-    <div id="password-reset-execution-form">
+    <div>
       PasswordResetExecutionForm
     </div>
   );
