@@ -27,7 +27,7 @@ class UserGroupPageBody extends React.Component {
   }
 
   syncUserGroupAndRelations() {
-    // this.props.mutateGroups();
+    this.props.mutateGroups();
     this.props.mutateRelations();
   }
 
@@ -118,7 +118,7 @@ class UserGroupPageBody extends React.Component {
 const UserGroupPage = () => {
   // TODO: Fix pagination src/server/models/user-group.ts
   const userGroupsData = [];
-  // const { data: userGroupsData, mutate: mutateGroups } = useUserGroupSWR({ pagination: false });
+  const { data: userGroupsData, mutate: mutateGroups } = useUserGroupSWR({ pagination: false });
   const { data: userGroupRelationsData, mutate: mutateRelations } = useUserGroupRelationsSWR();
   return (
     <>
@@ -127,6 +127,7 @@ const UserGroupPage = () => {
           userGroupsData={userGroupsData}
           userGroupRelationsData={userGroupRelationsData}
           mutateRelations={mutateRelations}
+          mutateGroups={mutateGroups}
         />
       }
     </>
