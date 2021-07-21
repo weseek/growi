@@ -311,7 +311,8 @@ class EditorSubstance extends AbstractEditor {
                       // eslint-disable-next-line arrow-body-style
                   <CodeMirrorEditor
                     ref={(c) => { this.cmEditor = c }}
-                    indentSize={this.props.adminPreferredIndentSize}
+                    // TODO GW-6870 to SWRrify
+                    // indentSize={editorContainer.state.indentSize}
                     // editorOptions={editorContainer.state.editorOptions}
                     onPasteFiles={this.pasteFilesHandler}
                     onDragEnter={this.dragEnterHandler}
@@ -377,9 +378,8 @@ EditorSubstance.propTypes = Object.assign({
 
 
 const Editor = () =>{
-  const {data: rendererSettings } = useRendererSettings()
   return (
-    <EditorSubstance adminPreferredIndentSize={rendererSettings.adminPreferredIndentSize} />
+    <EditorSubstance />
   )
 }
 
