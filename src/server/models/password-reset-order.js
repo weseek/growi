@@ -18,7 +18,7 @@ class PasswordResetOrder {
   static generateOneTimeToken() {
 
     const buf = crypto.randomBytes(256);
-    const token = buf.toString('hex');
+    const token = buf.toString('base64');
 
     return token;
   }
