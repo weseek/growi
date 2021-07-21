@@ -16,8 +16,10 @@ schema.plugin(uniqueValidator);
 class PasswordResetOrder {
 
   static generateOneTimeToken() {
-    const hasher = crypto.createHash('sha384');
-    const token = hasher.update((new Date()).getTime().toString()).digest('base64');
+
+    const buf = crypto.randomBytes(256);
+    const token = buf.toString('hex');
+
     return token;
   }
 
