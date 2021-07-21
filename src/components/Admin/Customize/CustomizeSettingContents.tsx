@@ -1,8 +1,8 @@
-import dynamic from 'next/dynamic';
 import React from 'react';
 
 import { useCustomizeSettingsSWR } from '~/stores/admin';
 
+import CustomizeLayoutSetting from '~/client/js/components/Admin/Customize/CustomizeLayoutSetting';
 import { CustomizeThemeSetting } from '~/components/Admin/Customize/CustomizeThemeSetting';
 import { CustomizeFunctionSetting } from '~/components/Admin/Customize/CustomizeFunctionSetting';
 import { CustomizeHighlightSetting } from '~/components/Admin/Customize/CustomizeHighlightSetting';
@@ -15,9 +15,6 @@ import { useTranslation } from '~/i18n';
 
 const CustomizeSettingContents = (): JSX.Element => {
   const { t }= useTranslation()
-
-  // disable SSR to check dark mode at CustomizeLayoutSetting
-  const CustomizeLayoutSetting = dynamic(() => import('../../../client/js/components/Admin/Customize/CustomizeLayoutSetting'), { ssr: false });
 
   const { error, data } = useCustomizeSettingsSWR();
 
