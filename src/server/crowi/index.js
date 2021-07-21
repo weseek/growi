@@ -13,6 +13,7 @@ const mongoose = require('mongoose');
 const models = require('../models');
 
 const PluginService = require('../plugins/plugin.service');
+const httpErrorHandler = require('../middlewares/http-error-handler');
 
 const sep = path.sep;
 
@@ -451,6 +452,9 @@ Crowi.prototype.start = async function() {
   // setup Express Routes
   this.setupRoutesAtLast();
 
+  // setup Global Error Handlers
+  this.setupGlobalErrorHandlers();
+
   return serverListening;
 };
 
@@ -484,6 +488,14 @@ Crowi.prototype.buildServer = async function() {
  */
 Crowi.prototype.setupRoutesAtLast = function() {
   require('../routes')(this, this.express);
+};
+
+/**
+ * setup global error handlers
+ * !! this must be after the Routes setup !!
+ */
+Crowi.prototype.setupGlobalErrorHandlers = function() {
+  this.express.use(httpErrorHandler);
 };
 
 /**

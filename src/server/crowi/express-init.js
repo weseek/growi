@@ -1,5 +1,4 @@
 
-
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
   const path = require('path');
