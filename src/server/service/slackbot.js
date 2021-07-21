@@ -454,7 +454,6 @@ class SlackBotService extends S2sMessageHandlable {
       });
     }
     catch (err) {
-      console.log(err);
       client.chat.postMessage({
         channel: payload.user.id,
         blocks: [
