@@ -14,6 +14,7 @@ class LoginForm extends React.Component {
 
     this.state = {
       isRegistering: false,
+      isPasswordResetEnabled: false,
     };
 
     this.switchForm = this.switchForm.bind(this);
@@ -27,6 +28,10 @@ class LoginForm extends React.Component {
     if (hash === '#register') {
       this.state.isRegistering = true;
     }
+  }
+
+  componentDidMount() {
+    this.setState({ isPasswordResetEnabled: true });
   }
 
   switchForm() {
@@ -268,9 +273,11 @@ class LoginForm extends React.Component {
                 {isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
-                    <a href="/forgot-password" className="d-block link-switch mb-1">
-                      <i className="icon-key"></i> {t('forgot_password')}
-                    </a>
+                    {this.state.isPasswordResetEnable && (
+                      <a href="/forgot-password" className="d-block link-switch mb-1">
+                        <i className="icon-key"></i> {t('forgot_password')}
+                      </a>
+                    )}
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
                       <i className="ti-check-box"></i> {t('Sign up is here')}
                     </a>
