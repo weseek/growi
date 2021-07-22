@@ -8,9 +8,7 @@
 
 * Fix: Build script for production
 
-
-
-## v4.3.0-RC
+## v4.3.0
 
 ### BREAKING CHANGES
 
