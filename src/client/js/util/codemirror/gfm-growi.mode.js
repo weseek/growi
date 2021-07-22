@@ -10,7 +10,8 @@ window.CodeMirror.defineMode('gfm-growi', (cmConfig, modeCfg) => {
   const origToken = mode.token;
   mode.token = function(stream, state) {
     let classes = origToken(stream, state) || '';
-    classes = classes.replace(/(^| )(header\S*)/g, '$1line-cm-$2');
+    // https://regex101.com/r/Fep0w2/1
+    classes = classes.replace(/(^| )header(\S*)/g, '$1header$2 line-grw-cm-header-line');
     return /^\s*$/.test(classes) ? null : classes;
   };
 
