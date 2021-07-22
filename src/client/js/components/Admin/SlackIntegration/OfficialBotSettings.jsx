@@ -47,8 +47,13 @@ const OfficialBotSettings = (props) => {
   return (
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}
-        {/* TODO: If Bot-manual section of docs is merged into master, show links and add an appropriate links by GW-5614. */}
-        {/* <i className="fa fa-external-link btn-link ml-2" aria-hidden="true"></i> */}
+        <a href={t('admin:slack_integration.docs_url.official_bot')} target="_blank" rel="noopener noreferrer">
+          <i
+            className="fa fa-external-link btn-link ml-2"
+            aria-hidden="true"
+            onClick={() => window.open(`${t('admin:slack_integration.docs_url.official_bot')}`, '_blank')}
+          />
+        </a>
       </h2>
 
       {slackAppIntegrations.length !== 0 && (
