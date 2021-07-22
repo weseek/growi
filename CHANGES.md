@@ -3,6 +3,8 @@
 ## v4.3.2-RC
 
 * Feature: Hufflpuff theme
+* Improvement: CodeMirror header styles
+* Improvement: CodeMirror syntax-highlighting fenced code blocks
 * Improvement: Slack Integration Settings
     * Error behavior when getting connection statuses
     * Add links to docs
