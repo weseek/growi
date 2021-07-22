@@ -1,19 +1,20 @@
 .CodeMirror {
-  .cm-header {
+  .cm-header.CodeMirror-line {
+    padding-top: 0.16em;
+    padding-bottom: 0.08em;
+    font-family: $font-family-monospace;
+
     // '#'
     .cm-formatting-header {
       font-style: italic;
+      font-weight: bold;
       opacity: 0.3;
     }
 
     &.cm-header-1 {
-      padding-top: 0.3em;
-      padding-bottom: 0.5em;
       font-size: 1.9em;
-      font-weight: normal;
     }
     &.cm-header-2 {
-      padding-bottom: 0.5em;
       font-size: 1.6em;
     }
     &.cm-header-3 {
@@ -31,7 +32,7 @@
   }
 
   .cm-matchhighlight {
-    color: $gray-900;
+    color: $gray-900 !important;
     background-color: cyan;
   }
 
@@ -42,10 +43,5 @@
   // overwrite .CodeMirror-placeholder
   pre.CodeMirror-placeholder {
     color: $text-muted;
-  }
-
-  // overwrite .CodeMirror pre
-  pre.CodeMirror-line {
-    font-family: $font-family-monospace;
   }
 }
