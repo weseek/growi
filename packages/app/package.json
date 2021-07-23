@@ -3,8 +3,8 @@
   "version": "0.9.0-RC",
   "license": "MIT",
   "scripts": {
-    "build": "cd ../../ && env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
-    "prebuild": "cd ../../ && yarn plugin:def && yarn resource",
+    "build": "env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
+    "prebuild": "node bin/generate-plugin-definitions-source.js && node bin/download-cdn-resources.js",
     "lint:js:fix": "eslint \"**/*.{js,jsx}\" --fix",
     "lint:js": "eslint \"**/*.{js,jsx}\"",
     "lint:styles:fix": "stylelint --fix src/**/*.scss",
