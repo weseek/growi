@@ -1,15 +1,26 @@
 # CHANGES
 
-## v4.3.1-RC
+## v4.3.2-RC
+
+* Feature: Hufflpuff theme
+* Improvement: CodeMirror header styles
+* Improvement: CodeMirror syntax-highlighting fenced code blocks
+* Improvement: Slack Integration Settings
+    * Error behavior when getting connection statuses
+    * Add links to docs
+* Improvement: /_api/v3/recent can be accessed with access token
+* Support: Using http-errors
+
+## v4.3.1
 
 * Fix: Build script for production
 
-
-
-## v4.3.0-RC
+## v4.3.0
 
 ### BREAKING CHANGES
 
+* GROWI manages dependencies with `lerna`
+    * Use `npx lerna bootstrap` instead of `yarn install`
 * GROWI includes some official plugins in default
     * Users no longer need to install [growi-plugin-lsx](https://github.com/weseek/growi-plugin-lsx), [growi-plugin-pukiwiki-like-linker](https://github.com/weseek/growi-plugin-pukiwiki-like-linker) and [growi-plugin-attachment-refs](https://github.com/weseek/growi-plugin-attachment-refs) before build client.
 

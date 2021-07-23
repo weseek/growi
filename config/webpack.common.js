@@ -45,6 +45,7 @@ module.exports = (options) => {
       'styles/theme-island':      './src/client/styles/scss/theme/island.scss',
       'styles/theme-antarctic':      './src/client/styles/scss/theme/antarctic.scss',
       'styles/theme-spring':         './src/client/styles/scss/theme/spring.scss',
+      'styles/theme-hufflepuff':         './src/client/styles/scss/theme/hufflepuff.scss',
       // styles for external services
       'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
     }, options.entry || {}), // Merge with env dependent settings
