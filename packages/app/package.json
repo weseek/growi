@@ -205,7 +205,6 @@
     "reactstrap": "^8.9.0",
     "replacestream": "^4.0.3",
     "reveal.js": "^3.5.0",
-    "rs-i18n": "^0.0.9",
     "sass-loader": "^8.0.0",
     "simple-load-script": "^1.0.2",
     "socket.io-client": "^2.3.0",
