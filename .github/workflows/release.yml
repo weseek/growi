@@ -138,7 +138,7 @@ jobs:
       with:
         channel: '#release'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
-        created_tag: 'v${{ needs.github-release.outputs.RELEASE_VERSION }}${{ env.SUFFIX }}'
+        created_tag: 'v${{ needs.github-release.outputs.RELEASE_VERSION }}${{ steps.suffix.outputs.SUFFIX }}'
 
     - name: Check whether workspace is clean
       run: |
