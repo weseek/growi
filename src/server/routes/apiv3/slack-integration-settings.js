@@ -111,11 +111,11 @@ module.exports = (crowi) => {
       throw new Error('Proxy URL is not registered');
     }
 
-    const result = await axios.get(urljoin(proxyUri, '/g2s/relation-test'), {
-      headers: {
-        'x-growi-gtop-tokens': token,
-      },
-    });
+    const headers = {
+      'x-growi-gtop-tokens': token,
+    };
+
+    const result = await axios.post(urljoin(proxyUri, '/g2s/relation-test'), { hoge: 'huga' }, { headers });
 
     return result.data;
   }
