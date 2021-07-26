@@ -8,9 +8,7 @@ class UserGroupTable extends React.Component {
   constructor(props) {
     super(props);
 
-    if (typeof window !== "undefined") {
-      this.xss = window.xss;
-    }
+    this.xss = window.xss;
 
     this.state = {
       userGroups: this.props.userGroups,

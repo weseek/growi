@@ -1,4 +1,4 @@
-import { FilterQuery, PaginateOptions, PaginateResult, Schema, Model } from 'mongoose';
+import { Schema, Model } from 'mongoose';
 
 
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -10,20 +10,12 @@ import ConfigManager from '~/server/service/config-manager';
 
 const debug = Debug('growi:models:userGroup');
 
-
-
 /*
  * define methods type
  */
 interface ModelMethods {
-  updateName(name: string): Promise<void>;
+  updateName(name:string): Promise<void>;
 }
-
-type PaginateMethod<T> = (
-  query?: FilterQuery<T>,
-  options?: PaginateOptions,
-  callback?: (err: any, result: PaginateResult<T>) => void,
-) => Promise<PaginateResult<T>>;
 
 /*
  * define schema
@@ -33,9 +25,7 @@ const schema = new Schema<IUserGroup>({
   name: { type: String, required: true, unique: true },
   createdAt: { type: Date, default: Date.now },
 });
-schema.plugin(mongoosePaginate & { paginate?: mongoosePaginate });
-
-
+schema.plugin(mongoosePaginate);
 
 /**
  * UserGroup Class
@@ -44,8 +34,7 @@ schema.plugin(mongoosePaginate & { paginate?: mongoosePaginate });
  */
 class UserGroup extends Model {
 
-  // static paginate: (query, options) => Promise<IUserGroup[]>;
-  static paginate: PaginateMethod<IUserGroup[]>;
+  static paginate: (query, options)=>Promise<IUserGroup[]>;
 
   constructor() {
     super();
