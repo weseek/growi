@@ -161,7 +161,7 @@ export class SlackCtrl {
 
     body.growiUris = [];
     relations.forEach((relation) => {
-      if (relation.siglePostCommands.includes(growiCommand.growiCommandType)) {
+      if (relation.singlePostCommands.includes(growiCommand.growiCommandType)) {
         body.growiUris.push(relation.growiUri);
       }
     });
