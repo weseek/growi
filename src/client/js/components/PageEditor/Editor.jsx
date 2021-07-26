@@ -15,12 +15,13 @@ import Dropzone from 'react-dropzone';
 import Cheatsheet from './Cheatsheet';
 import AbstractEditor from './AbstractEditor';
 // import TextAreaEditor from './TextAreaEditor';
+import { useRendererSettings } from '~/stores/renderer';
 
 import pasteHelper from './PasteHelper';
 // import CodeMirrorEditor from './CodeMirrorEditor';
 const CodeMirrorEditor = dynamic(() => import('./CodeMirrorEditor'), { ssr: false });
 
-export default class Editor extends AbstractEditor {
+class EditorSubstance extends AbstractEditor {
 
   constructor(props) {
     super(props);
@@ -310,6 +311,7 @@ export default class Editor extends AbstractEditor {
                       // eslint-disable-next-line arrow-body-style
                   <CodeMirrorEditor
                     ref={(c) => { this.cmEditor = c }}
+                    // TODO GW-6870 to SWRrify
                     // indentSize={editorContainer.state.indentSize}
                     // editorOptions={editorContainer.state.editorOptions}
                     onPasteFiles={this.pasteFilesHandler}
@@ -364,7 +366,7 @@ export default class Editor extends AbstractEditor {
 
 }
 
-Editor.propTypes = Object.assign({
+EditorSubstance.propTypes = Object.assign({
   noCdn: PropTypes.bool,
   isMobile: PropTypes.bool,
   isUploadable: PropTypes.bool,
@@ -373,3 +375,12 @@ Editor.propTypes = Object.assign({
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
 }, AbstractEditor.propTypes);
+
+
+const Editor = () =>{
+  return (
+    <EditorSubstance />
+  )
+}
+
+export default Editor

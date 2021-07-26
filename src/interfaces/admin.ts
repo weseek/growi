@@ -52,6 +52,7 @@ export type markdownParams = {
 }
 
 export type customizeParams = {
+  isContainerFluid?: boolean,
   customizeCss?: string,
   customizeHeader?: string,
   customizeScript?: string,
