@@ -1,15 +1,15 @@
 import { useCallback } from 'react';
 import useSWR, {
-  keyInterface, responseInterface, mutate, cache,
+  Key, SWRResponse, mutate, cache
 } from 'swr';
-import { ConfigInterface, fetcherFn, mutateCallback } from 'swr/dist/types';
+import { SWRConfiguration, Fetcher, MutatorCallback } from 'swr/dist/types';
 
 
 export const useStaticSWR = <Data, Error>(
-  key: keyInterface,
-  updateData?: Data | fetcherFn<Data>,
-  initialData?: Data | fetcherFn<Data>,
-): responseInterface<Data, Error> => {
+  key: Key,
+  updateData?: Data | Fetcher<Data>,
+  initialData?: Data | Fetcher<Data>,
+): SWRResponse<Data, Error> => {
 
   if (updateData == null) {
     if (!cache.has(key) && initialData != null) {
@@ -20,7 +20,7 @@ export const useStaticSWR = <Data, Error>(
     mutate(key, updateData);
   }
 
-  return useSWR(key, {
+  return useSWR(key, null, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
@@ -37,9 +37,9 @@ const generateKeyInStorage = (key: string): string => {
 
 export const useStorageSyncedSWR = <Data, Error>(
   storage: Storage,
-  key: keyInterface,
-  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
-): responseInterface<Data, Error> => {
+  key: Key,
+  config?: SWRConfiguration<Data, Error> & serializeInterface<Data>,
+): SWRResponse<Data, Error> => {
 
   const serialize = config?.serialize;
   const deserialize = config?.deserialize;
@@ -64,7 +64,7 @@ export const useStorageSyncedSWR = <Data, Error>(
 
   // replace mutate method
   const originalMutate = res.mutate;
-  res.mutate = (data?: Data | Promise<Data> | mutateCallback<Data>) :Promise<Data | undefined> => {
+  res.mutate = (data?: Data | Promise<Data> | MutatorCallback<Data>) :Promise<Data | undefined> => {
     if (key != null) {
       const keyInStorage = generateKeyInStorage(key as string);
 
@@ -83,15 +83,15 @@ export const useStorageSyncedSWR = <Data, Error>(
 };
 
 export const useLocalStorageSyncedSWR = <Data, Error>(
-  key: keyInterface,
-  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
-): responseInterface<Data, Error> => {
+  key: Key,
+  config?: SWRConfiguration<Data, Error> & serializeInterface<Data>,
+): SWRResponse<Data, Error> => {
   return useStorageSyncedSWR(localStorage, key, config);
 };
 
 export const useSessionStorageSyncedSWR = <Data, Error>(
-  key: keyInterface,
-  config?: ConfigInterface<Data, Error> & serializeInterface<Data>,
-): responseInterface<Data, Error> => {
+  key: Key,
+  config?: SWRConfiguration<Data, Error> & serializeInterface<Data>,
+): SWRResponse<Data, Error> => {
   return useStorageSyncedSWR(sessionStorage, key, config);
 };
