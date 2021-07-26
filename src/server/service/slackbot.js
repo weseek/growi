@@ -204,7 +204,7 @@ class SlackBotService extends S2sMessageHandlable {
     });
     let path = '';
     let channelId = '';
-    if (payload.type === 'block_actions' && payload.actions[0].action_id === 'togetterCreatePage') {
+    if (payload.type === 'block_actions' && payload.actions[0].action_id === 'togetter:createPage') {
       path = payload.state.values.page_path.page_path.value;
       channelId = payload.channel.id;
     }
@@ -214,6 +214,13 @@ class SlackBotService extends S2sMessageHandlable {
       delete_original: true,
     });
     await this.createPage(client, payload, path, channelId, contentsBody);
+  }
+
+  async togetterCancel(client, payload) {
+    const { response_url: responseUrl } = payload;
+    axios.post(responseUrl, {
+      delete_original: true,
+    });
   }
 
 }
