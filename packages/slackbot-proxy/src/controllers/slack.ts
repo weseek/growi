@@ -160,6 +160,7 @@ export class SlackCtrl {
     res.send();
 
     body.growiUrisForSinglePost = relations.filter((relation) => {
+      // TODO GW-6845 retrieve commands if it has expired
       return !relation.isExpiredCommands() && relation.singlePostCommands.includes(growiCommand.growiCommandType);
     }).map(relation => relation.growiUri);
 
@@ -169,6 +170,7 @@ export class SlackCtrl {
     }
 
     const relationsForBroadcast = relations.filter((relation) => {
+      // TODO GW-6845 retrieve commands if it has expired
       return !relation.isExpiredCommands() && relation.broadcastCommands.includes(growiCommand.growiCommandType);
     });
 
