@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
 import React from 'react';
 import { TabContent, TabPane } from 'reactstrap';
-
 import { useEditorMode } from '~/stores/ui';
 
 import Page from '../Page';
@@ -48,7 +47,7 @@ const DisplaySwitcher = (props) => {
 
           </div>
         </TabPane>
-        <TabPane tabId="edit">
+        <TabPane tabId="editor">
           <div id="page-editor">
             <PageEditor />
           </div>
