@@ -8,9 +8,34 @@ const PasswordResetExecutionForm = (props) => {
   // const { t } = props;
 
   return (
-    // TODO: improve the form by GW-6852
-    <div>
-      PasswordResetExecutionForm
+    <div className="container">
+      <div className="row justify-content-md-center">
+        <div className="col-md-6 mt-5">
+          <div className="text-center">
+            <h1><i className="icon-lock large"></i></h1>
+            <h2 className="text-center">Reset Password</h2>
+            <p>Enter a new password for hoge@example.com.</p>
+            <form role="form" className="form" method="post">
+              <div className="form-group">
+                <div className="input-group">
+                  <input name="email" placeholder="New Password" className="form-control" type="email" />
+                </div>
+              </div>
+              <div className="form-group">
+                <div className="input-group">
+                  <input name="email" placeholder="Confirm the new password" className="form-control" type="email" />
+                </div>
+              </div>
+              <div className="form-group">
+                <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit" />
+              </div>
+              <a href="/login">
+                <i className="icon-login mr-1"></i>Sign in instead
+              </a>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
