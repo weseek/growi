@@ -19,12 +19,12 @@ const PasswordResetExecutionForm = (props) => {
             <form role="form" className="form" method="post">
               <div className="form-group">
                 <div className="input-group">
-                  <input name="email" placeholder="New Password" className="form-control" type="email" />
+                  <input name="password" placeholder="New Password" className="form-control" type="password" />
                 </div>
               </div>
               <div className="form-group">
                 <div className="input-group">
-                  <input name="email" placeholder="Confirm the new password" className="form-control" type="email" />
+                  <input name="password" placeholder="Confirm the new password" className="form-control" type="password" />
                 </div>
               </div>
               <div className="form-group">
