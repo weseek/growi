@@ -1,4 +1,4 @@
-import useSWR, { mutate, responseInterface } from 'swr';
+import useSWR, { mutate, SWRResponse } from 'swr';
 import { apiGet } from '~/client/js/util/apiv1-client';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
@@ -12,7 +12,7 @@ import { useCurrentPagePath, useShareLinkId } from './context';
 import { useStaticSWR } from './use-static-swr';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const usePageSWR = (path, initialData?: any): responseInterface<Page, Error> => {
+export const usePageSWR = (path, initialData?: any): SWRResponse<Page, Error> => {
   return useSWR(
     ['/page', path],
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.page),
@@ -25,7 +25,7 @@ export const usePageSWR = (path, initialData?: any): responseInterface<Page, Err
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const useCurrentPageSWR = (initialData?: any): responseInterface<Page, Error> => {
+export const useCurrentPageSWR = (initialData?: any): SWRResponse<Page, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   if (initialData != null) {
@@ -35,7 +35,7 @@ export const useCurrentPageSWR = (initialData?: any): responseInterface<Page, Er
   return usePageSWR(currentPagePath);
 };
 
-export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
+export const useCurrentPageTagsSWR = (): SWRResponse<Tag[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
@@ -48,7 +48,7 @@ export const useCurrentPageTagsSWR = (): responseInterface<Tag[], Error> => {
   );
 };
 
-export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): responseInterface<PaginationResult<Revision>, Error> => {
+export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): SWRResponse<PaginationResult<Revision>, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
@@ -61,7 +61,7 @@ export const useCurrentPageHistorySWR = (selectedPage?:number, limit?:number): r
   );
 };
 
-export const useRevisionById = (revisionId?:string): responseInterface<Revision, Error> => {
+export const useRevisionById = (revisionId?:string): SWRResponse<Revision, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
   const { data: shareLinkId } = useShareLinkId();
   const endpoint = revisionId != null ? `/revisions/${revisionId}` : null;
@@ -76,7 +76,7 @@ export const useRevisionById = (revisionId?:string): responseInterface<Revision,
   );
 };
 
-export const useLatestRevision = (): responseInterface<Revision, Error> => {
+export const useLatestRevision = (): SWRResponse<Revision, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
   const { data: shareLinkId } = useShareLinkId();
 
@@ -92,7 +92,7 @@ export const useLatestRevision = (): responseInterface<Revision, Error> => {
   );
 };
 
-export const useCurrentPageCommentsSWR = (): responseInterface<Comment[], Error> => {
+export const useCurrentPageCommentsSWR = (): SWRResponse<Comment[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
@@ -106,7 +106,7 @@ export const useCurrentPageCommentsSWR = (): responseInterface<Comment[], Error>
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const useCurrentPageDeleted = (): responseInterface<boolean, Error> => {
+export const useCurrentPageDeleted = (): SWRResponse<boolean, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPage } = useCurrentPageSWR();
 
@@ -119,7 +119,7 @@ export const useCurrentPageDeleted = (): responseInterface<boolean, Error> => {
   return useStaticSWR('currentPageDeleted', isDeleted);
 };
 
-export const useRecentlyUpdatedSWR = <Data, Error>(): responseInterface<Page[], Error> => {
+export const useRecentlyUpdatedSWR = <Data, Error>(): SWRResponse<Page[], Error> => {
   return useSWR(
     '/pages/recent',
     endpoint => apiv3Get(endpoint).then(response => response.data?.pages),
@@ -130,7 +130,7 @@ export const useRecentlyUpdatedSWR = <Data, Error>(): responseInterface<Page[], 
   );
 };
 
-export const useCurrentPageList = (activePage: number): responseInterface<PaginationResultByQueryBuilder, Error> => {
+export const useCurrentPageList = (activePage: number): SWRResponse<PaginationResultByQueryBuilder, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
@@ -143,7 +143,7 @@ export const useCurrentPageList = (activePage: number): responseInterface<Pagina
   );
 };
 
-export const useCurrentPageAttachment = (activePage: number): responseInterface<PaginationResult<Attachment>, Error> => {
+export const useCurrentPageAttachment = (activePage: number): SWRResponse<PaginationResult<Attachment>, Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
@@ -156,7 +156,7 @@ export const useCurrentPageAttachment = (activePage: number): responseInterface<
   );
 };
 
-export const useCurrentPageShareLinks = (): responseInterface<ShareLink[], Error> => {
+export const useCurrentPageShareLinks = (): SWRResponse<ShareLink[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   return useSWR(
@@ -169,7 +169,7 @@ export const useCurrentPageShareLinks = (): responseInterface<ShareLink[], Error
   );
 };
 
-export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
+export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): SWRResponse<Data, Error> => {
   return useSWR(
     ['/bookmarks/info', pageId],
     (endpoint, pageId) => apiv3Get(endpoint, { pageId }).then(response => response.data),
@@ -181,7 +181,7 @@ export const useBookmarkInfoSWR = <Data, Error>(pageId: string, initialData?: bo
   );
 };
 
-export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<string[], Error> => {
+export const useCurrentPageSeenUsersSWR = (limit?: number):SWRResponse<string[], Error> => {
   const { data: currentPage } = useCurrentPageSWR();
 
   const isSeenUsersExist = currentPage != null && currentPage.seenUsers.length > 0;
@@ -200,7 +200,7 @@ export const useCurrentPageSeenUsersSWR = (limit?: number):responseInterface<str
   );
 };
 
-export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): responseInterface<Data, Error> => {
+export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolean): SWRResponse<Data, Error> => {
   return useSWR(
     ['/page/like-info', pageId],
     (endpoint, pageId) => apiv3Get(endpoint, { _id: pageId }).then(response => response.data),
@@ -212,7 +212,7 @@ export const useLikeInfoSWR = <Data, Error>(pageId: string, initialData?: boolea
   );
 };
 
-export const useDescendantsCount = (pagePath: string): responseInterface<number, Error> => {
+export const useDescendantsCount = (pagePath: string): SWRResponse<number, Error> => {
   return useSWR(
     ['/pages/descendents-count', pagePath],
     (endpoint, pagePath) => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.descendantsCount),
@@ -223,7 +223,7 @@ export const useDescendantsCount = (pagePath: string): responseInterface<number,
   );
 };
 
-export const useSubordinatedList = (pagePath: string): responseInterface<Page[], Error> => {
+export const useSubordinatedList = (pagePath: string): SWRResponse<Page[], Error> => {
   return useSWR(
     ['/pages/subordinated-list', pagePath],
     (endpoint, pagePath) => apiv3Get(endpoint, { path: pagePath }).then(response => response.data.subordinatedPaths),
@@ -234,7 +234,7 @@ export const useSubordinatedList = (pagePath: string): responseInterface<Page[],
   );
 };
 
-export const useExistingPaths = (pagePath: string, newParentPath:string): responseInterface<string[], Error> => {
+export const useExistingPaths = (pagePath: string, newParentPath:string): SWRResponse<string[], Error> => {
   return useSWR(
     ['/page/exist-paths', newParentPath],
     (endpoint, toPath) => apiv3Get(endpoint, { fromPath: pagePath, toPath }).then(response => response.data.existPaths),
