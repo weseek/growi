@@ -15,7 +15,7 @@ const PasswordResetExecutionForm = (props) => {
             <h1><i className="icon-lock large"></i></h1>
             <h2 className="text-center">Reset Password</h2>
             {/* TODO: show user email by GW-6778 */}
-            <p>Enter a new password for hoge@example.com.</p>
+            <p>Enter a new password for foo@example.com.</p>
             <form role="form" className="form" method="post">
               <div className="form-group">
                 <div className="input-group">
