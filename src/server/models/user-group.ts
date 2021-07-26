@@ -34,7 +34,7 @@ schema.plugin(mongoosePaginate);
  */
 class UserGroup extends Model {
 
-  static paginate: (query, options)=>Promise<IUserGroup[]>;
+  // static paginate: (query, options)=>Promise<IUserGroup[]>;
 
   constructor() {
     super();

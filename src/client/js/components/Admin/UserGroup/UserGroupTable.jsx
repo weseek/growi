@@ -8,10 +8,6 @@ class UserGroupTable extends React.Component {
   constructor(props) {
     super(props);
 
-    if (typeof window !== "undefined") {
-      this.xss = window.xss;
-    }
-
     this.state = {
       userGroups: this.props.userGroups,
       userGroupMap: {},
@@ -85,10 +81,10 @@ class UserGroupTable extends React.Component {
                 <tr key={group._id}>
                   {this.props.isAclEnabled
                     ? (
-                      <td><a href={`/admin/user-group-detail/${group._id}`}>{this.xss.process(group.name)}</a></td>
+                      <td><a href={`/admin/user-group-detail/${group._id}`}>{group.name}</a></td>
                     )
                     : (
-                      <td>{this.xss.process(group.name)}</td>
+                      <td>{group.name}</td>
                     )
                   }
                   <td>

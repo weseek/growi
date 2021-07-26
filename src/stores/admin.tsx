@@ -43,15 +43,14 @@ export const useSecuritySettingGeneralSWR = (): SWRResponse<ISecurityParamsGener
   );
 };
 
-// TODO: fix pagination
-// export const useUserGroupSWR = ({ pagination }): responseInterface<IUserGroup[], Error> => {
-//   return useSWR(
-//     ['/user-groups', pagination],
-//     (endpoint, pagination) => apiv3Get(endpoint, { pagination })
-//       .then(result => result.data),
-//     { revalidateOnFocus: false },
-//   );
-// };
+export const useUserGroupSWR = ({ pagination }): responseInterface<IUserGroup[], Error> => {
+  return useSWR(
+    ['/user-groups', pagination],
+    (endpoint, pagination) => apiv3Get(endpoint, { pagination })
+      .then(result => result.data),
+    { revalidateOnFocus: false },
+  );
+};
 
 export const useUserGroupRelationsSWR = (): responseInterface<IUserGroupRelation[], Error> => {
   return useSWR(
