@@ -2,6 +2,7 @@ import {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 
 import AdminLayout from '~/components/AdminLayout';
 
@@ -15,7 +16,6 @@ import { AdminHome } from '~/components/Admin/Home/AdminHome';
 import AppSettingsPageContents from '~/components/Admin/App/AppSettingsPageContents';
 import { SecurityManagementContents } from '~/components/Admin/Security/SecurityManagementContents';
 import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
-import CustomizeSettingContents from '~/components/Admin/Customize/CustomizeSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
 import UserGroupPage from '~/client/js/components/Admin/UserGroup/UserGroupPage';
@@ -49,6 +49,8 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
   const router = useRouter();
   const path = router.query.path || 'home';
   const name = Array.isArray(path) ? path[0] : path;
+
+  const CustomizeSettingContents = dynamic(() => import('../../components/Admin/Customize/CustomizeSettingContents'), { ssr: false });
 
   const adminPagesMap = {
     home: {
