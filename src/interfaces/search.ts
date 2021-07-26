@@ -58,3 +58,4 @@ export type SearchIndicesInfo = {
   },
 }
 
+{"mode":"full","isActive":false}
