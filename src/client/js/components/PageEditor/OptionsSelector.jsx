@@ -9,6 +9,7 @@ import {
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import EditorContainer from '../../services/EditorContainer';
+import { useIndentSize } from '~/stores/editor';
 
 
 export const defaultEditorOptions = {
@@ -21,7 +22,7 @@ export const defaultPreviewOptions = {
   renderMathJaxInRealtime: false,
 };
 
-class OptionsSelector extends React.Component {
+class OptionsSelectorSubstance extends React.Component {
 
   constructor(props) {
     super(props);
@@ -115,10 +116,6 @@ class OptionsSelector extends React.Component {
     this.setState({ isCddMenuOpened: !this.state.isCddMenuOpened });
   }
 
-  onChangeIndentSize(newValue) {
-    const { editorContainer } = this.props;
-    editorContainer.setState({ indentSize: newValue });
-  }
 
   renderThemeSelector() {
     const { editorContainer } = this.props;
@@ -328,6 +325,21 @@ class OptionsSelector extends React.Component {
     );
   }
 
+}
+
+const OptionsSelector = () => {
+  const { data: indentSize } = useIndentSize()
+  const [indentSize, setIndentSize] = useState(indentSize)
+
+  const onChangeIndentSize = (newValue) => {
+    setIndentSize(newValue)
+  }
+
+  return(
+    <OptionsSelectorSubstance
+      onChangeIndentSize={onChangeIndentSize}
+    />
+  )
 }
 
 /**

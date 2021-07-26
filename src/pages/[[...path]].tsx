@@ -34,6 +34,7 @@ import {
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
 import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { useIndentSize } from '~/stores/editor';
 
 
 const logger = loggerFactory('growi:pages:all');
@@ -103,6 +104,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useHackmdUri(props.hackmdUri);
   useMathJax(props.mathJax)
   useNoCdn(props.noCdn)
+  useIndentSize(props.adminPreferredIndentSize);
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
