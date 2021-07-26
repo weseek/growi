@@ -160,16 +160,16 @@ export class SlackCtrl {
     res.send();
 
     body.growiUrisForSinglePost = relations.filter((relation) => {
-      return relation.singlePostCommands.includes(growiCommand.growiCommandType);
+      return !relation.isExpiredCommands() && relation.singlePostCommands.includes(growiCommand.growiCommandType);
     }).map(relation => relation.growiUri);
 
 
-    if (body.growiUrisForSinglePost != null && body.growiUrisForSinglePost.length > 0) {
+    if (body.growiUrisForSinglePost.length > 0) {
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
     const relationsForBroadcast = relations.filter((relation) => {
-      return relation.broadcastCommands.includes(growiCommand.growiCommandType);
+      return !relation.isExpiredCommands() && relation.broadcastCommands.includes(growiCommand.growiCommandType);
     });
 
     /*
