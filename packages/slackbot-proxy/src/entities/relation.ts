@@ -39,4 +39,9 @@ export class Relation {
   @CreateDateColumn()
   expiredAtCommands: Date;
 
+  isExpired():boolean {
+    const now = Date.now();
+    return this.expiredAtCommands.getTime() < now;
+  }
+
 }
