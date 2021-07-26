@@ -400,9 +400,13 @@ module.exports = (crowi) => {
     }
 
     const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+    const broadcastCommands = ['search'];
+    const singlePostCommands = ['create'];
 
     try {
-      const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
+      const slackAppTokens = await SlackAppIntegration.create({
+        tokenGtoP, tokenPtoG, broadcastCommands, singlePostCommands,
+      });
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
