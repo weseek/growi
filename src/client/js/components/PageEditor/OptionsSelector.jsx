@@ -115,7 +115,7 @@ class OptionsSelector extends React.Component {
     this.setState({ isCddMenuOpened: !this.state.isCddMenuOpened });
   }
 
-  // TODO: useIndentSize after EditorNavbnavBottom is shown
+  // TODO: useIndentSize after EditorNavbarBottom is shown
   onChangeIndentSize(newValue) {
     const { editorContainer } = this.props;
     editorContainer.setState({ indentSize: newValue });
