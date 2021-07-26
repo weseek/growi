@@ -199,4 +199,3 @@ export default function ElasticsearchManagement() {
     }</>
   )
 }
-{"mode":"full","isActive":false}
