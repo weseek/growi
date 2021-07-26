@@ -29,7 +29,7 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useSearchServiceConfigured, useSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCnd, useEditorConfig
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
@@ -102,7 +102,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
   useMathJax(props.mathJax)
-  useNoCnd(props.noCdn)
+  useNoCdn(props.noCdn)
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
