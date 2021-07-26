@@ -9,7 +9,7 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/n
 import BasicLayout from '../components/BasicLayout'
 
 import {
-  useCurrentUser
+  useCurrentUser, useSearchServiceConfigured
 } from '../stores/context';
 
 type Props = CommonProps & {
@@ -17,6 +17,7 @@ type Props = CommonProps & {
 
   page: any,
   isAbleToDeleteCompletely: boolean,
+  isSearchServiceConfigured: boolean,
 }
 const SearchPage: NextPage<Props> = (props: Props) => {
 
@@ -25,6 +26,7 @@ const SearchPage: NextPage<Props> = (props: Props) => {
   const title = useCustomTitle(props, t('SearchResult'));
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+  useSearchServiceConfigured(props.isSearchServiceConfigured)
 
   // load all languages
   i18n.loadLanguages(config.allLanguages);
@@ -47,6 +49,9 @@ const SearchPage: NextPage<Props> = (props: Props) => {
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
 
+  const { crowi } = req;
+  const { searchService } = crowi;
+
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
@@ -61,6 +66,8 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
   }
+
+  props.isSearchServiceConfigured = searchService.isConfigured;
 
   return {
     props: {
