@@ -159,21 +159,23 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    body.growiUris = [];
-    relations.forEach((relation) => {
-      if (relation.singlePostCommands.includes(growiCommand.growiCommandType)) {
-        body.growiUris.push(relation.growiUri);
-      }
-    });
+    body.growiUrisForSinglePost = relations.filter((relation) => {
+      return relation.singlePostCommands.includes(growiCommand.growiCommandType);
+    }).map(relation => relation.growiUri);
 
-    if (body.growiUris != null && body.growiUris.length > 0) {
+
+    if (body.growiUrisForSinglePost != null && body.growiUrisForSinglePost.length > 0) {
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
+
+    const relationsForBroadcast = relations.filter((relation) => {
+      return relation.broadcastCommands.includes(growiCommand.growiCommandType);
+    });
 
     /*
      * forward to GROWI server
      */
-    this.sendCommand(growiCommand, relations, body);
+    this.sendCommand(growiCommand, relationsForBroadcast, body);
   }
 
   @Post('/interactions')
