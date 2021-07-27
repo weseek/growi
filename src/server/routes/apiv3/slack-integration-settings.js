@@ -110,7 +110,7 @@ module.exports = (crowi) => {
     return result.data;
   }
 
-  async function putSupportedCommands(token, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse) {
+  async function requestToProxyServer(token, method, endpoint, body) {
     const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
     if (proxyUri == null) {
       throw new Error('Proxy URL is not registered');
@@ -120,26 +120,7 @@ module.exports = (crowi) => {
       'x-growi-gtop-tokens': token,
     };
 
-    const result = await axios.put(
-      urljoin(proxyUri, '/g2s/supported-commands'),
-      { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse },
-      { headers },
-    );
-
-    return result.data;
-  }
-
-  async function postRelationTest(token, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse) {
-    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
-    if (proxyUri == null) {
-      throw new Error('Proxy URL is not registered');
-    }
-
-    const headers = {
-      'x-growi-gtop-tokens': token,
-    };
-
-    const result = await axios.post(urljoin(proxyUri, '/g2s/relation-test'), { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse }, { headers });
+    const result = await axios[method](urljoin(proxyUri, endpoint), body, { headers });
 
     return result.data;
   }
@@ -533,10 +514,20 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
-      const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(id, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+      const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
+        id,
+        { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse },
+        { new: true },
+      );
 
-      await putSupportedCommands(
-        slackAppIntegration.tokenGtoP, slackAppIntegration.supportedCommandsForBroadcastUse, slackAppIntegration.supportedCommandsForSingleUse,
+      await requestToProxyServer(
+        slackAppIntegration.tokenGtoP,
+        'put',
+        '/g2s/supported-commands',
+        {
+          supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
+          supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+        },
       );
 
       return res.apiv3({ slackAppIntegration });
@@ -583,9 +574,17 @@ module.exports = (crowi) => {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
-      const result = await postRelationTest(
-        slackAppIntegration.tokenGtoP, slackAppIntegration.supportedCommandsForBroadcastUse, slackAppIntegration.supportedCommandsForSingleUse,
+
+      const result = await requestToProxyServer(
+        slackAppIntegration.tokenGtoP,
+        'post',
+        '/g2s/relation-test',
+        {
+          supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
+          supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+        },
       );
+
       slackBotToken = result.slackBotToken;
       if (slackBotToken == null) {
         const msg = 'Could not find slackBotToken by relation';
