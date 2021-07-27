@@ -21,6 +21,7 @@ import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-gro
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
+import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
@@ -49,6 +50,9 @@ export class SlackCtrl {
 
   @Inject()
   registerService: RegisterService;
+
+  @Inject()
+  relationsService: RelationsService;
 
   @Inject()
   unregisterService: UnregisterService;
@@ -159,25 +163,24 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    body.growiUrisForSinglePost = relations.filter((relation) => {
+    body.growiUrisForSingleUse = relations.filter((relation) => {
       // TODO GW-6845 retrieve commands if it has expired
-      return !relation.isExpiredCommands() && relation.supportedCommandsForSingleUse.includes(growiCommand.growiCommandType);
+      return this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType);
     }).map(relation => relation.growiUri);
 
-
-    if (body.growiUrisForSinglePost.length > 0) {
+    if (body.growiUrisForSingleUse.length > 0) {
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
-    const relationsForBroadcast = relations.filter((relation) => {
+    const relationsForBroadcastUse = relations.filter((relation) => {
       // TODO GW-6845 retrieve commands if it has expired
-      return !relation.isExpiredCommands() && relation.supportedCommandsForBroadcastUse.includes(growiCommand.growiCommandType);
+      return this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType);
     });
 
     /*
      * forward to GROWI server
      */
-    this.sendCommand(growiCommand, relationsForBroadcast, body);
+    this.sendCommand(growiCommand, relationsForBroadcastUse, body);
   }
 
   @Post('/interactions')
