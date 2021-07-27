@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { useIndicesSWR } from '~/stores/search';
+import { useSearchIndicesInfoSWR } from '~/stores/search';
 // TODO: GW-5134 Migrate SocketIoContainer to SWR
 // TODO: GW-6816 Add SocketIo to ElasticsearchManagement
 // import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
@@ -18,17 +18,9 @@ class ElasticsearchManagementBody extends React.Component {
     super(props);
 
     this.state = {
-      isInitialized: false,
-
-      isConnected: false,
-      isConfigured: false,
       isReconnectingProcessing: false,
       isRebuildingProcessing: false,
       isRebuildingCompleted: false,
-
-      isNormalized: null,
-      indicesData: null,
-      aliasesData: null,
     };
 
     this.reconnect = this.reconnect.bind(this);
@@ -64,8 +56,7 @@ class ElasticsearchManagementBody extends React.Component {
 
     try {
       await apiv3Post('/search/connection');
-    }
-    catch (e) {
+    } catch (e) {
       toastError(e);
       return;
     }
@@ -77,12 +68,11 @@ class ElasticsearchManagementBody extends React.Component {
   async normalizeIndices() {
     try {
       await apiv3Put('/search/indices', { operation: 'normalize' });
-    }
-    catch (e) {
+    } catch (e) {
       toastError(e);
     }
 
-    await this.props.mutateIndices();
+    await this.props.onUpdateIndices();
 
     toastSuccess('Normalizing has succeeded');
   }
@@ -93,19 +83,16 @@ class ElasticsearchManagementBody extends React.Component {
     try {
       await apiv3Put('/search/indices', { operation: 'rebuild' });
       toastSuccess('Rebuilding is requested');
-    }
-    catch (e) {
+    } catch (e) {
       toastError(e);
     }
 
-    await this.props.mutateIndices();
+    await this.props.onUpdateIndices();
   }
 
   render() {
-    const { t } = this.props;
+    const { t, isInitialized, isConnected, isConfigured, isNormalized, indicesData, aliasesData } = this.props;
     const { isReconnectingProcessing, isRebuildingProcessing, isRebuildingCompleted } = this.state;
-    const { isNormalized, indices, aliases } = this.props.indicesInfo;
-    const { isInitialized, isConnected, isConfigured } = this.props.status;
 
     // TODO: GW-6857 retrieve from SWR
     // const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
@@ -115,7 +102,6 @@ class ElasticsearchManagementBody extends React.Component {
 
     return (
       <>
-
         <div className="row">
           <div className="col-md-12">
             <StatusTable
@@ -124,8 +110,8 @@ class ElasticsearchManagementBody extends React.Component {
               isConnected={isConnected}
               isConfigured={isConfigured}
               isNormalized={isNormalized}
-              indicesData={indices}
-              aliasesData={aliases}
+              indicesData={indicesData}
+              aliasesData={aliasesData}
             />
           </div>
         </div>
@@ -135,11 +121,7 @@ class ElasticsearchManagementBody extends React.Component {
         <div className="row">
           <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.reconnect')}</label>
           <div className="col-md-6">
-            <ReconnectControls
-              isEnabled={isReconnectBtnEnabled}
-              isProcessing={isReconnectingProcessing}
-              onReconnectingRequested={this.reconnect}
-            />
+            <ReconnectControls isEnabled={isReconnectBtnEnabled} isProcessing={isReconnectingProcessing} onReconnectingRequested={this.reconnect} />
           </div>
         </div>
 
@@ -179,23 +161,44 @@ class ElasticsearchManagementBody extends React.Component {
 export default function ElasticsearchManagement() {
   const { t } = useTranslation();
   // TODO: GW-6857 retrieve isErrorOccuredOnSearchService from SWR
-  // GW-6858　Todo: Get status
-  const status = {
-    isInitialized: true,
-    isConnected: true,
-    isConfigured: true,
-  };
-  const { data, mutate } = useIndicesSWR();
-  // TODO: GW-6857 retrieve from SWR
+
+  let isConnected = true;
+  let isInitialized = true;
+  let isConfigured = true;
+  let isNormalized = false;
+  let indicesData = {};
+  let aliasesData = {};
+
+  const { data, error, isValidating, mutate } = useSearchIndicesInfoSWR();
+
+  if (data != null) {
+    indicesData = data.info.indices;
+    aliasesData = data.info.aliases;
+    isNormalized = data.info.isNormalized;
+  }
+
+  if (error != null) {
+    isConnected = false;
+
+    if (error[0].code === 'search-service-unconfigured') {
+      isConfigured = false;
+    }
+  }
+
+  if (isValidating) {
+    isInitialized = false;
+  }
 
   return (
-    <>{data != null &&
-      <ElasticsearchManagementBody
-        indicesInfo={data.info}
-        mutateIndices={mutate}
-        t={t}
-        status={status}
-      />
-    }</>
-  )
+    <ElasticsearchManagementBody
+      indicesData={indicesData}
+      aliasesData={aliasesData}
+      isNormalized={isNormalized}
+      onUpdateIndices={mutate}
+      t={t}
+      isInitialized={isInitialized}
+      isConnected={isConnected}
+      isConfigured={isConfigured}
+    />
+  );
 }
