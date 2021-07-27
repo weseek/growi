@@ -2,8 +2,8 @@
 
 ## v4.3.3-RC
 
-* 
-
+* Support: Upgrade libs
+    * escape-string-regexp
 ## v4.3.2
 
 * Feature: Hufflpuff theme
