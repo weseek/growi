@@ -5,7 +5,7 @@ const axios = require('axios');
 
 const { markdownSectionBlock } = require('@growi/slack');
 const { reshapeContentsBody } = require('@growi/slack');
-const { formatDistanceStrict } = require('date-fns');
+const { formatDistanceStrict, parse, format } = require('date-fns');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -195,29 +195,101 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async togetterCreatePageInGrowi(client, payload) {
-    const { response_url: responseUrl } = payload;
-    const selectedOptions = payload.state.values.selected_messages.checkboxes_changed.selected_options;
-    const messages = selectedOptions.map((option) => {
-      const header = option.text.text.concat('\n');
-      const body = option.description.text.concat('\n');
-      return header.concat(body);
-    });
-    let path = '';
-    let channelId = '';
-    if (payload.type === 'block_actions' && payload.actions[0].action_id === 'togetter:createPage') {
-      path = payload.state.values.page_path.page_path.value;
-      channelId = payload.channel.id;
+    let cleanedContents = [];
+    let result = [];
+    const path = payload.state.values.page_path.page_path.value;
+    const channel = payload.channel.id;
+    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
+    let oldest = payload.state.values.oldest.oldest.value;
+    let latest = payload.state.values.latest.latest.value;
+    oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
+    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
+    // get messages
+    try {
+      result = await client.conversations.history({
+        channel,
+        latest,
+        oldest,
+        limit: 10,
+        inclusive: true,
+      });
+
+      // return if no message found
+      if (!result.messages.length) {
+        await client.chat.postMessage({
+          channel: payload.user.id,
+          text: 'No message found from togetter command. Try again.',
+          blocks: [
+            markdownSectionBlock('No message found from togetter command. Try again.'),
+          ],
+        });
+        return;
+      }
     }
-    const contentsBody = messages.join('');
-    // dismiss
-    axios.post(responseUrl, {
-      delete_original: true,
-    });
-    await this.createPage(client, payload, path, channelId, contentsBody);
+    catch (err) {
+      throw err;
+    }
+
+    // clean messages
+    try {
+      cleanedContents = await this.togetterCleanMessages(result.messages);
+    }
+    catch (err) {
+      throw err;
+    }
+
+    const contentsBody = cleanedContents.join('');
+    // create and send url message
+    try {
+      await this.createPage(client, payload, path, channel, contentsBody);
+      // send preview to dm
+      await client.chat.postMessage({
+        channel: payload.user.id,
+        text: 'Preview from togetter command',
+        blocks: [
+          markdownSectionBlock(contentsBody),
+        ],
+      });
+      // dismiss message
+      const responseUrl = payload.response_url;
+      axios.post(responseUrl, {
+        delete_original: true,
+      });
+    }
+    catch (err) {
+      throw err;
+    }
+  }
+
+  async togetterCleanMessages(messages) {
+    const cleanedContents = [];
+    let lastMessage = {};
+    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
+    messages
+      .sort((a, b) => {
+        return a.ts - b.ts;
+      })
+      .forEach((message) => {
+        // increment contentsBody while removing the same headers
+        // exclude header
+        const lastMessageTs = Math.floor(lastMessage.ts / 60);
+        const messageTs = Math.floor(message.ts / 60);
+        if (lastMessage.user === message.user && lastMessageTs === messageTs) {
+          cleanedContents.push(`${message.text}\n`);
+        }
+        // include header
+        else {
+          const ts = (parseInt(message.ts) - grwTzoffset) * 1000;
+          const time = format(new Date(ts), 'h:mm a');
+          cleanedContents.push(`${message.user}  ${time}\n${message.text}\n`);
+          lastMessage = message;
+        }
+      });
+    return cleanedContents;
   }
 
   async togetterCancel(client, payload) {
-    const { response_url: responseUrl } = payload;
+    const responseUrl = payload.response_url;
     axios.post(responseUrl, {
       delete_original: true,
     });
