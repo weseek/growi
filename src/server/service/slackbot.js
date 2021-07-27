@@ -196,9 +196,18 @@ class SlackBotService extends S2sMessageHandlable {
 
   async togetterCreatePageInGrowi(client, payload) {
     let result = [];
-    let formData = {};
+    const channel = payload.channel.id;
     try {
-      formData = await this.togetterValidateForm(client, payload);
+      // validate form
+      const { path, oldest, latest } = await this.togetterValidateForm(client, payload);
+      // get messages
+      result = await this.togetterGetMessages(client, payload, channel, path, latest, oldest);
+      // clean messages
+      const cleanedContents = await this.togetterCleanMessages(result.messages);
+
+      const contentsBody = cleanedContents.join('');
+      // create and send url message
+      await this.togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody);
     }
     catch (err) {
       await client.chat.postMessage({
@@ -210,62 +219,22 @@ class SlackBotService extends S2sMessageHandlable {
       });
       return;
     }
+  }
 
-    // get messages
-    const { path, oldest, latest } = formData;
-    const channel = payload.channel.id;
-    try {
-      result = await client.conversations.history({
-        channel,
-        latest,
-        oldest,
-        limit: 100,
-        inclusive: true,
-      });
+  async togetterGetMessages(client, payload, channel, path, latest, oldest) {
+    const result = await client.conversations.history({
+      channel,
+      latest,
+      oldest,
+      limit: 100,
+      inclusive: true,
+    });
 
-      // return if no message found
-      if (!result.messages.length) {
-        await client.chat.postMessage({
-          channel: payload.user.id,
-          text: 'No message found from togetter command. Try again.',
-          blocks: [
-            markdownSectionBlock('No message found from togetter command. Try again.'),
-          ],
-        });
-        return;
-      }
+    // return if no message found
+    if (!result.messages.length) {
+      throw new Error('No message found from togetter command. Try again.');
     }
-    catch (err) {
-      throw err;
-    }
-
-    // clean messages
-    const cleanedContents = await this.togetterCleanMessages(result.messages);
-
-    const contentsBody = cleanedContents.join('');
-    // create and send url message
-    try {
-      await this.createPage(client, payload, path, channel, contentsBody);
-      // send preview to dm
-      await client.chat.postMessage({
-        channel: payload.user.id,
-        text: 'Preview from togetter command',
-        blocks: [
-          markdownSectionBlock('*Preview*'),
-          divider(),
-          markdownSectionBlock(contentsBody),
-          divider(),
-        ],
-      });
-      // dismiss message
-      const responseUrl = payload.response_url;
-      axios.post(responseUrl, {
-        delete_original: true,
-      });
-    }
-    catch (err) {
-      throw err;
-    }
+    return result;
   }
 
   async togetterValidateForm(client, payload) {
@@ -312,6 +281,31 @@ class SlackBotService extends S2sMessageHandlable {
         }
       });
     return cleanedContents;
+  }
+
+  async togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody) {
+    try {
+      await this.createPage(client, payload, path, channel, contentsBody);
+      // send preview to dm
+      await client.chat.postMessage({
+        channel: payload.user.id,
+        text: 'Preview from togetter command',
+        blocks: [
+          markdownSectionBlock('*Preview*'),
+          divider(),
+          markdownSectionBlock(contentsBody),
+          divider(),
+        ],
+      });
+      // dismiss message
+      const responseUrl = payload.response_url;
+      axios.post(responseUrl, {
+        delete_original: true,
+      });
+    }
+    catch (err) {
+      throw new Error('Error occurred while creating a page.');
+    }
   }
 
   async togetterCancel(client, payload) {
