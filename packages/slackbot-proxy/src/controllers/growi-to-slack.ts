@@ -104,8 +104,6 @@ export class GrowiToSlackCtrl {
     }
 
     const tokenGtoP = tokenGtoPs[0];
-
-    // retrieve Relation with Installation
     const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
 
     return res.send({ relation });
