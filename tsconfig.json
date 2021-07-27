@@ -3,15 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "~/*": [
-        "./src/*"
-      ],
-      "^/*": [
-        "./*"
-      ],
-      "@growi/*": [
-        "./packages/*/src"
-      ]
+      "~/*": ["./src/*"],
+      "^/*": ["./*"],
+      "@growi/*": ["./packages/*/src"]
     }
   }
 }
