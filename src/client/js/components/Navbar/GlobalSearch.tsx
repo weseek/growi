@@ -41,7 +41,7 @@ const GlobalSearch: FC<Props> = (props: Props) => {
 
   const search = useCallback(() => {
     const url = new URL(window.location.href);
-    url.pathname = '/search';
+    url.pathname = '/search-results';
 
     // construct search query
     let q = text;

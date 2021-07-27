@@ -8,9 +8,7 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 import BasicLayout from '../components/BasicLayout'
 
-import {
-  useCurrentUser
-} from '../stores/context';
+import { useCurrentUser } from '../stores/context';
 
 type Props = CommonProps & {
   currentUser: any,
@@ -18,11 +16,10 @@ type Props = CommonProps & {
   page: any,
   isAbleToDeleteCompletely: boolean,
 }
-const SearchPage: NextPage<Props> = (props: Props) => {
 
+const SearchResultPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  // Todo: 検索結果ページ用の翻訳追加
-  const title = useCustomTitle(props, t('SearchResult'));
+  const title = useCustomTitle(props, t('search_result.title'));
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
 
@@ -70,4 +67,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 }
 
-export default SearchPage;
+export default SearchResultPage;
