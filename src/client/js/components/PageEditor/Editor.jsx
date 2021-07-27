@@ -9,6 +9,7 @@ import {
 } from 'reactstrap';
 
 import Dropzone from 'react-dropzone';
+import { useIndentSize } from '~/stores/editor';
 
 // import EditorContainer from '../../services/EditorContainer';
 
@@ -311,8 +312,7 @@ class EditorSubstance extends AbstractEditor {
                       // eslint-disable-next-line arrow-body-style
                   <CodeMirrorEditor
                     ref={(c) => { this.cmEditor = c }}
-                    // TODO GW-6870 to SWRrify
-                    // indentSize={editorContainer.state.indentSize}
+                    indentSize={this.props.indentSize}
                     // editorOptions={editorContainer.state.editorOptions}
                     onPasteFiles={this.pasteFilesHandler}
                     onDragEnter={this.dragEnterHandler}
@@ -377,9 +377,11 @@ EditorSubstance.propTypes = Object.assign({
 }, AbstractEditor.propTypes);
 
 
-const Editor = () =>{
+const Editor = () => {
+  const { data: indentSize } = useIndentSize()
+
   return (
-    <EditorSubstance />
+    <EditorSubstance indentSize={indentSize} />
   )
 }
 
