@@ -3,7 +3,7 @@ const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
-const { markdownSectionBlock } = require('@growi/slack');
+const { markdownSectionBlock, divider } = require('@growi/slack');
 const { reshapeContentsBody } = require('@growi/slack');
 const { formatDistanceStrict, parse, format } = require('date-fns');
 
@@ -203,7 +203,8 @@ class SlackBotService extends S2sMessageHandlable {
     let oldest = payload.state.values.oldest.oldest.value;
     let latest = payload.state.values.latest.latest.value;
     oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
-    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
+    // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
+    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
     // get messages
     try {
       result = await client.conversations.history({
@@ -247,7 +248,10 @@ class SlackBotService extends S2sMessageHandlable {
         channel: payload.user.id,
         text: 'Preview from togetter command',
         blocks: [
+          markdownSectionBlock('*Preview*'),
+          divider(),
           markdownSectionBlock(contentsBody),
+          divider(),
         ],
       });
       // dismiss message
