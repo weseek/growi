@@ -3,9 +3,27 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"],
-      "^/*": ["./*"],
-      "@growi/*": ["./packages/*/src"]
-    }
-  }
+      "~/*": [
+        "./src/*"
+      ],
+      "^/*": [
+        "./*"
+      ],
+      "@growi/*": [
+        "./packages/*/src"
+      ]
+    },
+    "strict": false,
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "jsx": "preserve"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -11,6 +11,13 @@ import {
   securityParamsGeneralSetting as ISecurityParamsGeneralSetting,
 } from '~/interfaces/admin';
 
+type GetUserGroupsOptions = {
+  pagination?: boolean,
+  page?: number,
+  limit?: number,
+  offset?: number,
+}
+
 export const useAppSettingsSWR = (): SWRResponse<IAppParams, Error> => {
   return useSWR(
     '/app-settings',
@@ -43,7 +50,7 @@ export const useSecuritySettingGeneralSWR = (): SWRResponse<ISecurityParamsGener
   );
 };
 
-export const useUserGroupSWR = ({ pagination }): responseInterface<IUserGroup[], Error> => {
+export const useUserGroupSWR = ({ pagination }: GetUserGroupsOptions): SWRResponse<IUserGroup[], Error> => {
   return useSWR(
     ['/user-groups', pagination],
     (endpoint, pagination) => apiv3Get(endpoint, { pagination })
@@ -52,7 +59,7 @@ export const useUserGroupSWR = ({ pagination }): responseInterface<IUserGroup[],
   );
 };
 
-export const useUserGroupRelationsSWR = (): responseInterface<IUserGroupRelation[], Error> => {
+export const useUserGroupRelationsSWR = (): SWRResponse<IUserGroupRelation[], Error> => {
   return useSWR(
     '/user-group-relations',
     (endpoint) => apiv3Get(endpoint).then(result => result.data.userGroupRelations),
