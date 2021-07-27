@@ -23,7 +23,7 @@ type Props = CommonProps & {
 const SearchPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation();
-  // Todo: add translation for SearchResult
+  // Todo: 検索結果ページ用の翻訳追加
   const title = useCustomTitle(props, t('SearchResult'));
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
