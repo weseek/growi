@@ -9,7 +9,6 @@ import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
-import PageContainer from '../../services/PageContainer';
 import FootstampIcon from '../FootstampIcon';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -25,7 +24,6 @@ class RecentChanges extends React.Component {
   static propTypes = {
     t: PropTypes.func.isRequired, // i18next
     appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-    pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   };
 
   constructor(props) {
@@ -59,7 +57,6 @@ class RecentChanges extends React.Component {
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
       </div>
     );
-    const { pageContainer } = this.props;
 
     let locked;
     if (page.grant !== 1) {
@@ -87,7 +84,7 @@ class RecentChanges extends React.Component {
             </h5>
             <div className="text-right small">
               <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
-              <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
+              <span className="seen-user-count">{page.seenUsers.length}</span>
               <i className="icon-bubble"></i>
               <span>{page.commentCount}</span>
               { tagElements }
@@ -128,7 +125,7 @@ class RecentChanges extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer, PageContainer]);
+const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer]);
 
 
 export default withTranslation()(RecentChangesWrapper);
