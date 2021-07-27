@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
@@ -59,6 +59,11 @@ module.exports = (crowi) => {
       body('proxyUri').if(value => value !== '').trim().matches(/^(https?:\/\/)/)
         .isURL({ require_tld: false }),
     ],
+    updateSupportedCommands: [
+      body('supportedCommandsForSingleUse').toArray(),
+      body('supportedCommandsForBroadcastUse').toArray(),
+      param('id').isMongoId().withMessage('id is required'),
+    ],
     RelationTest: [
       body('slackAppIntegrationId').isMongoId(),
       body('channel').trim().isString(),
@@ -105,7 +110,7 @@ module.exports = (crowi) => {
     return result.data;
   }
 
-  async function postRelationTest(token, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse) {
+  async function requestToProxyServer(token, method, endpoint, body) {
     const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
     if (proxyUri == null) {
       throw new Error('Proxy URL is not registered');
@@ -115,7 +120,7 @@ module.exports = (crowi) => {
       'x-growi-gtop-tokens': token,
     };
 
-    const result = await axios.post(urljoin(proxyUri, '/g2s/relation-test'), { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse }, { headers });
+    const result = await axios[method](urljoin(proxyUri, endpoint), body, { headers });
 
     return result.data;
   }
@@ -494,6 +499,49 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
+   *    /slack-integration-settings/:id/supported-commands:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: putSupportedCommands
+   *        summary: /slack-integration-settings/:id/supported-commands
+   *        description: update supported commands
+   *        responses:
+   *          200:
+   *            description: Succeeded to update supported commands
+   */
+  router.put('/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+    const { id } = req.params;
+
+    try {
+      const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
+        id,
+        { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse },
+        { new: true },
+      );
+
+      await requestToProxyServer(
+        slackAppIntegration.tokenGtoP,
+        'put',
+        '/g2s/supported-commands',
+        {
+          supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
+          supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+        },
+      );
+
+      return res.apiv3({ slackAppIntegration });
+    }
+    catch (error) {
+      const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
    *    /slack-integration-settings/with-proxy/relation-test:
    *      post:
    *        tags: [botType]
@@ -526,9 +574,17 @@ module.exports = (crowi) => {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
-      const result = await postRelationTest(
-        slackAppIntegration.tokenGtoP, slackAppIntegration.supportedCommandsForBroadcastUse, slackAppIntegration.supportedCommandsForSingleUse,
+
+      const result = await requestToProxyServer(
+        slackAppIntegration.tokenGtoP,
+        'post',
+        '/g2s/relation-test',
+        {
+          supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
+          supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+        },
       );
+
       slackBotToken = result.slackBotToken;
       if (slackBotToken == null) {
         const msg = 'Could not find slackBotToken by relation';

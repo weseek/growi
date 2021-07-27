@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams,
+  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put,
 } from '@tsed/common';
 import axios from 'axios';
 import createError from 'http-errors';
@@ -90,6 +90,23 @@ export class GrowiToSlackCtrl {
 
     const connectionStatuses = await getConnectionStatuses(Object.keys(botTokenResolverMapping), (tokenGtoP:string) => botTokenResolverMapping[tokenGtoP]);
     return res.send({ connectionStatuses });
+  }
+
+  @Put('/supported-commands')
+  @UseBefore(verifyGrowiToSlackRequest)
+  async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+    // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
+    const { tokenGtoPs } = req;
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+
+    if (tokenGtoPs.length !== 1) {
+      throw createError(400, 'installation is invalid');
+    }
+
+    const tokenGtoP = tokenGtoPs[0];
+    const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+
+    return res.send({ relation });
   }
 
   @Post('/relation-test')
