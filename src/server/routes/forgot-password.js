@@ -34,8 +34,7 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
-    // TODO: using email getting by password reset request form by GW-6828
-    const email = 'foo@example.com';
+    const { email } = req.body;
     try {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       res.send(ApiResponse.success({ passwordResetOrderData }));
