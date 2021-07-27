@@ -17,6 +17,11 @@ const PasswordResetRequestForm = (props) => {
   };
 
   const onClickSendPasswordResetRequestMail = async(email) => {
+    if (email == null) {
+      toastError('err', 'email is required.');
+      return;
+    }
+
     try {
       const res = await appContainer.apiPost('/forgot-password', { email });
       console.log('resHOge', res);
