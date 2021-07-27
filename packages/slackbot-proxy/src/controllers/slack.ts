@@ -163,8 +163,9 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    body.growiUrisForSingleUse = relations.filter((relation) => {
-      // TODO GW-6845 retrieve commands if it has expired
+    const syncedRelations = await this.relationsService.syncSupportedGrowiCommands(relations);
+
+    body.growiUrisForSingleUse = syncedRelations.filter((relation) => {
       return this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType);
     }).map(relation => relation.growiUri);
 
@@ -172,8 +173,7 @@ export class SlackCtrl {
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
-    const relationsForBroadcastUse = relations.filter((relation) => {
-      // TODO GW-6845 retrieve commands if it has expired
+    const relationsForBroadcastUse = syncedRelations.filter((relation) => {
       return this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType);
     });
 

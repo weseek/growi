@@ -225,5 +225,12 @@ module.exports = (crowi) => {
     return handleInteractions(req, res);
   });
 
+  router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+
+    return res.send(slackAppIntegration);
+  });
+
   return router;
 };
