@@ -9,6 +9,9 @@ export const useSearchIndicesInfoSWR = (): SWRResponse<ISearchIndicesInfo, Error
       return await apiv3Get(endpoint)
     }
     catch (error) {
+      if (error[0].code === 'search-service-unconfigured') {
+        return { isConfigured: false }
+      }
       throw error
     }
   }
