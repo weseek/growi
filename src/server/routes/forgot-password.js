@@ -34,9 +34,10 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
-    // const email = 'hoge@example.com';
+    // TODO: get email from password reset request form by GW-6828
+    const email = 'foo@example.com';
     try {
-      const token = await PasswordResetOrder.generateUniqueOneTimeToken();
+      const token = await PasswordResetOrder.generateUniqueOneTimeToken(email);
       console.log('token.hoge', token);
       // await passwordResetOrder.save({ email });
       res.send(ApiResponse.success());
