@@ -24,6 +24,8 @@ class PasswordResetOrder {
   }
 
   static async generateUniqueOneTimeToken() {
+    const email = 'hoge@example.com';
+
     let token;
     let duplicateToken;
 
@@ -33,9 +35,12 @@ class PasswordResetOrder {
       duplicateToken = await this.findOne({ token });
     } while (duplicateToken != null);
 
-    this.token = token;
+    // this.token = token;
 
-    return this.token;
+    const data = await this.create({ token, email });
+    console.log('dataHoge', this);
+
+    return data;
   }
 
   isExpired() {

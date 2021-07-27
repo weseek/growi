@@ -34,12 +34,12 @@ module.exports = function(crowi, app) {
   }
 
   api.post = async function(req, res) {
-    const token = await PasswordResetOrder.generateUniqueOneTimeToken();
-    const email = 'hoge@example.com';
-
+    // const email = 'hoge@example.com';
     try {
-      await PasswordResetOrder.create({ email, token });
-      res.send(ApiResponse.success({ email, token }));
+      const token = await PasswordResetOrder.generateUniqueOneTimeToken();
+      console.log('token.hoge', token);
+      // await passwordResetOrder.save({ email });
+      res.send(ApiResponse.success());
     }
     catch (err) {
       const msg = 'Error occurred during password reset request procedure';
