@@ -56,7 +56,8 @@ class ElasticsearchManagementBody extends React.Component {
 
     try {
       await apiv3Post('/search/connection');
-    } catch (e) {
+    }
+    catch (e) {
       toastError(e);
       return;
     }
@@ -68,7 +69,8 @@ class ElasticsearchManagementBody extends React.Component {
   async normalizeIndices() {
     try {
       await apiv3Put('/search/indices', { operation: 'normalize' });
-    } catch (e) {
+    }
+    catch (e) {
       toastError(e);
     }
 
@@ -83,7 +85,8 @@ class ElasticsearchManagementBody extends React.Component {
     try {
       await apiv3Put('/search/indices', { operation: 'rebuild' });
       toastSuccess('Rebuilding is requested');
-    } catch (e) {
+    }
+    catch (e) {
       toastError(e);
     }
 
@@ -119,7 +122,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.reconnect')}</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.reconnect') }</label>
           <div className="col-md-6">
             <ReconnectControls isEnabled={isReconnectBtnEnabled} isProcessing={isReconnectingProcessing} onReconnectingRequested={this.reconnect} />
           </div>
@@ -128,7 +131,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.normalize')}</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.normalize') }</label>
           <div className="col-md-6">
             <NormalizeIndicesControls
               isRebuildingProcessing={isRebuildingProcessing}
@@ -142,7 +145,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.rebuild')}</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.rebuild') }</label>
           <div className="col-md-6">
             {/* TODO: GW-5134 Migrate SocketIoContainer to SWR */}
             {/* <RebuildIndexControls
