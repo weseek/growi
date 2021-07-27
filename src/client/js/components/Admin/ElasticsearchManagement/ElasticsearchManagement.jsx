@@ -169,9 +169,9 @@ export default function ElasticsearchManagement() {
   const { t } = useTranslation();
   // TODO: GW-6857 retrieve isErrorOccuredOnSearchService from SWR
 
-  let isConnected = true;
-  let isInitialized = true;
-  let isConfigured = true;
+  let isConfigured = false;
+  let isConnected = false;
+  let isInitialized = false;
   let isNormalized = false;
   let indicesData = {};
   let aliasesData = {};
@@ -182,6 +182,9 @@ export default function ElasticsearchManagement() {
     indicesData = data.info.indices;
     aliasesData = data.info.aliases;
     isNormalized = data.info.isNormalized;
+    isConfigured = true
+    isConnected = true;
+    isInitialized = true;
   }
 
   if (error != null) {
