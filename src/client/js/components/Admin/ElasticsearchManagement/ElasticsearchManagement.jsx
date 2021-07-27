@@ -122,7 +122,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.reconnect')}</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.reconnect') }</label>
           <div className="col-md-6">
             <ReconnectControls
               isEnabled={isReconnectBtnEnabled}
@@ -135,7 +135,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.normalize')}</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.normalize') }</label>
           <div className="col-md-6">
             <NormalizeIndicesControls
               isRebuildingProcessing={isRebuildingProcessing}
@@ -149,7 +149,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.rebuild')}</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.rebuild') }</label>
           <div className="col-md-6">
             {/* TODO: GW-5134 Migrate SocketIoContainer to SWR */}
             {/* <RebuildIndexControls
