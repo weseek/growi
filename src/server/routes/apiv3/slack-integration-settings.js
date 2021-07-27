@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const express = require('express');
-const { body, query } = require('express-validator');
+const { body, query, param } = require('express-validator');
 const axios = require('axios');
 const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
@@ -58,6 +58,11 @@ module.exports = (crowi) => {
     proxyUri: [
       body('proxyUri').if(value => value !== '').trim().matches(/^(https?:\/\/)/)
         .isURL({ require_tld: false }),
+    ],
+    updateSupportedCommands: [
+      body('supportedCommandsForSingleUse').toArray(),
+      body('supportedCommandsForBroadcastUse').toArray(),
+      param('id').isMongoId().withMessage('id is required'),
     ],
     RelationTest: [
       body('slackAppIntegrationId').isMongoId(),
@@ -489,6 +494,34 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
     }
 
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/:id/supported-commands:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: putSupportedCommands
+   *        summary: /slack-integration-settings/:id/supported-commands
+   *        description: update supported commands
+   *        responses:
+   *          200:
+   *            description: Succeeded to update supported commands
+   */
+  router.put('/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+    const { id } = req.params;
+
+    try {
+      const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(id, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+      return res.apiv3({ slackAppIntegration });
+    }
+    catch (error) {
+      const msg = 'Error occured in updating Custom bot setting';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+    }
   });
 
   /**
