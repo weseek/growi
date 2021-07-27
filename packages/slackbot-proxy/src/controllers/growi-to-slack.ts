@@ -3,6 +3,7 @@ import {
 } from '@tsed/common';
 import axios from 'axios';
 import createError from 'http-errors';
+import { addHours } from 'date-fns';
 
 import { WebAPICallResult } from '@slack/web-api';
 
@@ -168,8 +169,7 @@ export class GrowiToSlackCtrl {
     logger.debug('relation test is success', order);
 
     // temporary cache for 48 hours
-    const now = new Date();
-    const expiredAtCommands = new Date(now.setHours(now.getHours() + 48));
+    const expiredAtCommands = addHours(new Date(), 48);
 
     // Transaction is not considered because it is used infrequently,
     const response = await this.relationRepository.createQueryBuilder('relation')
