@@ -9,7 +9,7 @@ import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/n
 import BasicLayout from '../components/BasicLayout'
 
 import {
-  useCurrentUser, useSearchServiceConfigured
+  useCurrentUser, useSearchServiceConfigured, useSearchServiceReachable
 } from '../stores/context';
 
 type Props = CommonProps & {
@@ -18,15 +18,17 @@ type Props = CommonProps & {
   page: any,
   isAbleToDeleteCompletely: boolean,
   isSearchServiceConfigured: boolean,
+  isSearchServiceReachable: boolean,
 }
 const SearchPage: NextPage<Props> = (props: Props) => {
 
   const { t } = useTranslation();
-  // Todo: 検索結果ページ用の翻訳追加
+  // Todo: add translation for SearchResult
   const title = useCustomTitle(props, t('SearchResult'));
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useSearchServiceConfigured(props.isSearchServiceConfigured)
+  useSearchServiceReachable(props.isSearchServiceReachable)
 
   // load all languages
   i18n.loadLanguages(config.allLanguages);
@@ -68,6 +70,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   }
 
   props.isSearchServiceConfigured = searchService.isConfigured;
+  props.isSearchServiceReachable = searchService.isReachable;
 
   return {
     props: {
