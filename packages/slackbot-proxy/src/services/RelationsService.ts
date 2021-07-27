@@ -31,7 +31,7 @@ export class RelationsService {
       const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
       relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
       relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
-      relation.expiredAtCommands = addHours(supportedCommandsForSingleUse.expiredAtCommands, 48);
+      relation.expiredAtCommands = addHours(relation.expiredAtCommands, 48);
 
       return this.relationRepository.save(relation);
     }));
