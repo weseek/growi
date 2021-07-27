@@ -22,7 +22,7 @@ class PasswordResetOrder {
     return token;
   }
 
-  static async createPasswordResetOrderRecord(email) {
+  static async createPasswordResetOrder(email) {
     let token;
     let duplicateToken;
 
