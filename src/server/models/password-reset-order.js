@@ -33,8 +33,6 @@ class PasswordResetOrder {
       duplicateToken = await this.findOne({ token });
     } while (duplicateToken != null);
 
-    // this.token = token;
-
     const data = await this.create({ token, email });
     console.log('dataHoge', this);
 
