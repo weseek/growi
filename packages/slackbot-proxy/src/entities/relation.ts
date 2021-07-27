@@ -31,10 +31,10 @@ export class Relation {
   growiUri: string;
 
   @Column('simple-array')
-  broadcastCommands: string[];
+  supportedCommandsForBroadcastUse: string[];
 
   @Column('simple-array')
-  singlePostCommands: string[];
+  supportedCommandsForSingleUse: string[];
 
   @CreateDateColumn()
   expiredAtCommands: Date;

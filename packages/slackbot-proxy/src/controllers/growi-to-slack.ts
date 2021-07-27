@@ -179,12 +179,15 @@ export class GrowiToSlackCtrl {
         tokenGtoP: order.tokenGtoP,
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
-        broadcastCommands: req.body.broadcastCommands,
-        singlePostCommands: req.body.singlePostCommands,
+        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
+        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
         expiredAtCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
-      .orUpdate({ conflict_target: ['installation', 'growiUri'], overwrite: ['tokenGtoP', 'tokenPtoG', 'broadcastCommands', 'singlePostCommands'] })
+      .orUpdate({
+        conflict_target: ['installation', 'growiUri'],
+        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+      })
       .execute();
 
     // Find the generated relation

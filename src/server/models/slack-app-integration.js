@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const schema = new mongoose.Schema({
   tokenGtoP: { type: String, required: true, unique: true },
   tokenPtoG: { type: String, required: true, unique: true },
-  broadcastCommands: { type: [String], default: [] },
-  singlePostCommands: { type: [String], default: [] },
+  supportedCommandsForBroadcastUse: { type: [String], default: [] },
+  supportedCommandsForSingleUse: { type: [String], default: [] },
 });
 
 class SlackAppIntegration {

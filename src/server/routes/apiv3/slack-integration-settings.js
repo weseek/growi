@@ -105,7 +105,7 @@ module.exports = (crowi) => {
     return result.data;
   }
 
-  async function postRelationTest(token, broadcastCommands, singlePostCommands) {
+  async function postRelationTest(token, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse) {
     const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
     if (proxyUri == null) {
       throw new Error('Proxy URL is not registered');
@@ -115,7 +115,7 @@ module.exports = (crowi) => {
       'x-growi-gtop-tokens': token,
     };
 
-    const result = await axios.post(urljoin(proxyUri, '/g2s/relation-test'), { broadcastCommands, singlePostCommands }, { headers });
+    const result = await axios.post(urljoin(proxyUri, '/g2s/relation-test'), { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse }, { headers });
 
     return result.data;
   }
@@ -400,12 +400,12 @@ module.exports = (crowi) => {
     }
 
     const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
-    const broadcastCommands = ['search'];
-    const singlePostCommands = ['create'];
+    const supportedCommandsForBroadcastUse = ['search'];
+    const supportedCommandsForSingleUse = ['create'];
 
     try {
       const slackAppTokens = await SlackAppIntegration.create({
-        tokenGtoP, tokenPtoG, broadcastCommands, singlePostCommands,
+        tokenGtoP, tokenPtoG, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
       });
       return res.apiv3(slackAppTokens, 200);
     }
@@ -526,7 +526,9 @@ module.exports = (crowi) => {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
-      const result = await postRelationTest(slackAppIntegration.tokenGtoP, slackAppIntegration.broadcastCommands, slackAppIntegration.singlePostCommands);
+      const result = await postRelationTest(
+        slackAppIntegration.tokenGtoP, slackAppIntegration.supportedCommandsForBroadcastUse, slackAppIntegration.supportedCommandsForSingleUse,
+      );
       slackBotToken = result.slackBotToken;
       if (slackBotToken == null) {
         const msg = 'Could not find slackBotToken by relation';
