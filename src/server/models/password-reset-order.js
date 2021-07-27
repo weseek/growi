@@ -23,7 +23,7 @@ class PasswordResetOrder {
     return token;
   }
 
-  static async createPasswordResetOrder(email) {
+  static async createPasswordResetOrderRecord(email) {
     let token;
     let duplicateToken;
 
@@ -34,7 +34,6 @@ class PasswordResetOrder {
     } while (duplicateToken != null);
 
     const data = await this.create({ token, email });
-    console.log('dataHoge', this);
 
     return data;
   }

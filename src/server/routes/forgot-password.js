@@ -37,7 +37,7 @@ module.exports = function(crowi, app) {
     // TODO: using email from password reset request form by GW-6828
     const email = 'foo@example.com';
     try {
-      await PasswordResetOrder.createPasswordResetOrder(email);
+      await PasswordResetOrder.createPasswordResetOrderRecord(email);
       res.send(ApiResponse.success());
     }
     catch (err) {
