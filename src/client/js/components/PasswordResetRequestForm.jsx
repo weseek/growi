@@ -10,6 +10,26 @@ const PasswordResetRequestForm = (props) => {
 
   const changeEmail = (inputValue) => {
     setEmail(inputValue);
+    console.log(email);
+  };
+
+  const onClickSendPasswordResetRequestMail = async(email) => {
+    console.log('hogeEmail', email);
+    try {
+      // const res = await appContainer.apiPost('/forgot-password', { });
+      // const { failedToSendEmail } = res.data;
+      // if (failedToSendEmail == null) {
+      //   const msg = `Email has been sent<br>・${email}`;
+      //   toastSuccess(msg);
+      // }
+      // else {
+      //   const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
+      //   toastError(msg);
+      // }
+    }
+    catch (err) {
+      // toastError(err);
+    }
   };
 
   return (
@@ -20,7 +40,13 @@ const PasswordResetRequestForm = (props) => {
         </div>
       </div>
       <div className="form-group">
-        <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value="Reset Password" type="submit" />
+        <input
+          name="reset-password-btn"
+          className="btn btn-lg btn-primary btn-block"
+          value="Reset Password"
+          type="submit"
+          onClick={() => { onClickSendPasswordResetRequestMail(email) }}
+        />
       </div>
       <a href="/login">
         <i className="icon-login mr-1"></i>Return to login
