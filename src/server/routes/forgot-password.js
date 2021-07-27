@@ -6,7 +6,6 @@ const ApiResponse = require('../util/apiResponse');
 module.exports = function(crowi, app) {
   const PasswordResetOrder = mongoose.model('PasswordResetOrder');
   const { /* appService, */ mailService, configManager } = crowi;
-  // const { /* appService, */ mailService, configManager } = crowi;
   const path = require('path');
   const actions = {};
   const api = {};
