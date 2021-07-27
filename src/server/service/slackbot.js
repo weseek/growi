@@ -195,23 +195,31 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async togetterCreatePageInGrowi(client, payload) {
-    let cleanedContents = [];
     let result = [];
-    const path = payload.state.values.page_path.page_path.value;
-    const channel = payload.channel.id;
-    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
-    let oldest = payload.state.values.oldest.oldest.value;
-    let latest = payload.state.values.latest.latest.value;
-    oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
-    // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
-    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
+    let formData = {};
+    try {
+      formData = await this.togetterValidateForm(client, payload);
+    }
+    catch (err) {
+      await client.chat.postMessage({
+        channel: payload.user.id,
+        text: err.message,
+        blocks: [
+          markdownSectionBlock(err.message),
+        ],
+      });
+      return;
+    }
+
     // get messages
+    const { path, oldest, latest } = formData;
+    const channel = payload.channel.id;
     try {
       result = await client.conversations.history({
         channel,
         latest,
         oldest,
-        limit: 10,
+        limit: 100,
         inclusive: true,
       });
 
@@ -232,12 +240,7 @@ class SlackBotService extends S2sMessageHandlable {
     }
 
     // clean messages
-    try {
-      cleanedContents = await this.togetterCleanMessages(result.messages);
-    }
-    catch (err) {
-      throw err;
-    }
+    const cleanedContents = await this.togetterCleanMessages(result.messages);
 
     const contentsBody = cleanedContents.join('');
     // create and send url message
@@ -263,6 +266,25 @@ class SlackBotService extends S2sMessageHandlable {
     catch (err) {
       throw err;
     }
+  }
+
+  async togetterValidateForm(client, payload) {
+    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
+    const path = payload.state.values.page_path.page_path.value;
+    let oldest = payload.state.values.oldest.oldest.value;
+    let latest = payload.state.values.latest.latest.value;
+    if (!path) {
+      throw new Error('Page path is required.');
+    }
+    oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
+    // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
+    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
+
+    if (oldest > latest) {
+      throw new Error('Oldest datetime should be older than the latest date time.');
+    }
+
+    return { path, oldest, latest };
   }
 
   async togetterCleanMessages(messages) {
