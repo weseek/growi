@@ -31,6 +31,17 @@ export class Relation {
   growiUri: string;
 
   @Column('simple-array')
-  siglePostCommands: string[];
+  supportedCommandsForBroadcastUse: string[];
+
+  @Column('simple-array')
+  supportedCommandsForSingleUse: string[];
+
+  @CreateDateColumn()
+  expiredAtCommands: Date;
+
+  isExpiredCommands():boolean {
+    const now = Date.now();
+    return this.expiredAtCommands.getTime() < now;
+  }
 
 }

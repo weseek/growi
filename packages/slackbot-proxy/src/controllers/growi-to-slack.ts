@@ -3,6 +3,7 @@ import {
 } from '@tsed/common';
 import axios from 'axios';
 import createError from 'http-errors';
+import { addHours } from 'date-fns';
 
 import { WebAPICallResult } from '@slack/web-api';
 
@@ -25,9 +26,6 @@ import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/Sect
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
-
-// temporarily save for selection to growi
-const temporarySinglePostCommands = ['create'];
 
 @Controller('/g2s')
 export class GrowiToSlackCtrl {
@@ -94,7 +92,7 @@ export class GrowiToSlackCtrl {
     return res.send({ connectionStatuses });
   }
 
-  @Get('/relation-test')
+  @Post('/relation-test')
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
@@ -170,6 +168,9 @@ export class GrowiToSlackCtrl {
 
     logger.debug('relation test is success', order);
 
+    // temporary cache for 48 hours
+    const expiredAtCommands = addHours(new Date(), 48);
+
     // Transaction is not considered because it is used infrequently,
     const response = await this.relationRepository.createQueryBuilder('relation')
       .insert()
@@ -178,10 +179,15 @@ export class GrowiToSlackCtrl {
         tokenGtoP: order.tokenGtoP,
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
-        siglePostCommands: temporarySinglePostCommands,
+        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
+        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
+        expiredAtCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
-      .orUpdate({ conflict_target: ['installation', 'growiUri'], overwrite: ['tokenGtoP', 'tokenPtoG', 'siglePostCommands'] })
+      .orUpdate({
+        conflict_target: ['installation', 'growiUri'],
+        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+      })
       .execute();
 
     // Find the generated relation

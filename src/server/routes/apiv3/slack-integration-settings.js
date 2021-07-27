@@ -105,17 +105,17 @@ module.exports = (crowi) => {
     return result.data;
   }
 
-  async function postRelationTest(token) {
+  async function postRelationTest(token, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse) {
     const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
     if (proxyUri == null) {
       throw new Error('Proxy URL is not registered');
     }
 
-    const result = await axios.get(urljoin(proxyUri, '/g2s/relation-test'), {
-      headers: {
-        'x-growi-gtop-tokens': token,
-      },
-    });
+    const headers = {
+      'x-growi-gtop-tokens': token,
+    };
+
+    const result = await axios.post(urljoin(proxyUri, '/g2s/relation-test'), { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse }, { headers });
 
     return result.data;
   }
@@ -400,9 +400,13 @@ module.exports = (crowi) => {
     }
 
     const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+    const supportedCommandsForBroadcastUse = ['search'];
+    const supportedCommandsForSingleUse = ['create'];
 
     try {
-      const slackAppTokens = await SlackAppIntegration.create({ tokenGtoP, tokenPtoG });
+      const slackAppTokens = await SlackAppIntegration.create({
+        tokenGtoP, tokenPtoG, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
+      });
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
@@ -522,7 +526,9 @@ module.exports = (crowi) => {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
-      const result = await postRelationTest(slackAppIntegration.tokenGtoP);
+      const result = await postRelationTest(
+        slackAppIntegration.tokenGtoP, slackAppIntegration.supportedCommandsForBroadcastUse, slackAppIntegration.supportedCommandsForSingleUse,
+      );
       slackBotToken = result.slackBotToken;
       if (slackBotToken == null) {
         const msg = 'Could not find slackBotToken by relation';
