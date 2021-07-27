@@ -8,7 +8,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 
 const PasswordResetRequestForm = (props) => {
-  console.log('Props', props);
   // TODO: apply i18n by GW-6861
   const { /* t, */ appContainer } = props;
   const [email, setEmail] = useState();
@@ -18,14 +17,13 @@ const PasswordResetRequestForm = (props) => {
   };
 
   const onClickSendPasswordResetRequestMail = async(email) => {
-    console.log('hogeEmail', email);
     try {
       const res = await appContainer.apiPost('/forgot-password', { email });
-      console.log('res', res);
+      console.log('resHOge', res);
       // const { failedToSendEmail } = res.data;
       // if (failedToSendEmail == null) {
-      //   const msg = `Email has been sent<br>・${email}`;
-      //   toastSuccess(msg);
+      const msg = `Email has been sent<br>・${email}`;
+      toastSuccess(msg);
       // }
       // else {
       //   const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
