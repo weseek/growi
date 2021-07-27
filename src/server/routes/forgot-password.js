@@ -5,7 +5,8 @@ const ApiResponse = require('../util/apiResponse');
 
 module.exports = function(crowi, app) {
   const PasswordResetOrder = mongoose.model('PasswordResetOrder');
-  const { /* appService, */ mailService } = crowi;
+  const { /* appService, */ mailService, configManager } = crowi;
+  // const { /* appService, */ mailService, configManager } = crowi;
   const path = require('path');
   const actions = {};
   const api = {};
@@ -20,13 +21,12 @@ module.exports = function(crowi, app) {
   };
 
 
-  async function sendPasswordResetEmail() {
+  async function sendPasswordResetEmail(i18n) {
 
     return mailService.send({
       to: 'hoge@example.com',
       subject: 'forgotPasswordMailTest',
-      // TODO: apply i18n by GW-6833
-      template: path.join(crowi.localeDir, 'en_US/notifications/passwordReset.txt'),
+      template: path.join(crowi.localeDir, `${i18n}/notifications/passwordReset.txt`),
       // TODO: need to set appropriate values by GW-6828
       // vars: {
       //   appTitle: appService.getAppTitle(),
@@ -50,7 +50,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(msg));
     }
 
-    await sendPasswordResetEmail();
+    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const i18n = req.language || grobalLang;
+
+    await sendPasswordResetEmail(i18n);
     return;
   };
 
