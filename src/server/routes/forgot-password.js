@@ -1,10 +1,8 @@
-const mongoose = require('mongoose');
-
 const logger = require('@alias/logger')('growi:routes:forgot-password');
 const ApiResponse = require('../util/apiResponse');
 
 module.exports = function(crowi, app) {
-  const PasswordResetOrder = mongoose.model('PasswordResetOrder');
+  const PasswordResetOrder = crowi.model('PasswordResetOrder');
   const { /* appService, */ mailService, configManager } = crowi;
   const path = require('path');
   const actions = {};
