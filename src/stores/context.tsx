@@ -92,7 +92,7 @@ export const useMathJax = (initialData?: string): SWRResponse<string, any> => {
   return useStaticSWR('mathJax', initialData);
 };
 
-export const useNoCnd = (initialData?: string): SWRResponse<string, any> => {
+export const useNoCdn = (initialData?: string): SWRResponse<string, any> => {
   return useStaticSWR('noCdn', initialData);
 };
 
