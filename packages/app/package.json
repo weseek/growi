@@ -17,6 +17,7 @@
     "string-width": "5.0.0 or above uses ESM."
   },
   "dependencies": {
+    "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "@google-cloud/storage": "^5.8.5",
     "@growi/slack": "^0.9.0-RC",
     "@kobalab/socket.io-session": "^1.0.3",
@@ -34,7 +35,6 @@
     "body-parser": "^1.18.2",
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
-    "bunyan-format": "^0.2.1",
     "check-node-version": "^4.1.0",
     "connect-flash": "~0.1.1",
     "connect-mongo": "^4.4.1",
@@ -137,7 +137,6 @@
     "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-transform-imports": "^2.0.0",
     "bootstrap": "^4.5.0",
-    "browser-bunyan": "^1.6.3",
     "browser-sync": "^2.26.3",
     "bunyan-debug": "^2.0.0",
     "cli": "~1.0.1",
