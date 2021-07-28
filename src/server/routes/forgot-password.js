@@ -40,7 +40,7 @@ module.exports = function(crowi, app) {
     try {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       await sendPasswordResetEmail(email, i18n);
-      res.json(ApiResponse.success({ passwordResetOrderData }));
+      return res.json(ApiResponse.success({ passwordResetOrderData }));
     }
     catch (err) {
       const msg = 'Error occurred during password reset request procedure';
