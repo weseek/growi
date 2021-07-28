@@ -1,13 +1,14 @@
 import React, { Fragment } from 'react';
+import { useUserGroupSWR, useUserGroupRelationsSWR } from '~/stores/admin';
 
 import UserGroupTable from './UserGroupTable';
 import UserGroupCreateForm from './UserGroupCreateForm';
 import UserGroupDeleteModal from './UserGroupDeleteModal';
 
 import { toastSuccess, toastError } from '../../../util/apiNotification';
-import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
+import { apiv3Delete } from '~/utils/apiv3-client';
 
-class UserGroupPage extends React.Component {
+class UserGroupPageBody extends React.Component {
 
   constructor(props) {
     super(props);
@@ -19,7 +20,9 @@ class UserGroupPage extends React.Component {
       isDeleteModalShow: false,
     };
 
-    this.xss = window.xss;
+    if (typeof window !== "undefined") {
+      this.xss = window.xss;
+    }
 
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
@@ -27,13 +30,14 @@ class UserGroupPage extends React.Component {
     this.deleteUserGroupById = this.deleteUserGroupById.bind(this);
   }
 
-  async componentDidMount() {
-    await this.syncUserGroupAndRelations();
+  syncUserGroupAndRelations() {
+    this.props.mutateGroups();
+    this.props.mutateRelations();
   }
 
-  async showDeleteModal(group) {
+  showDeleteModal(group) {
     try {
-      await this.syncUserGroupAndRelations();
+      this.syncUserGroupAndRelations();
 
       this.setState({
         selectedUserGroup: group,
@@ -71,20 +75,10 @@ class UserGroupPage extends React.Component {
         actionName,
         transferToUserGroupId,
       });
-
-      this.setState((prevState) => {
-        const userGroups = prevState.userGroups.filter((userGroup) => {
-          return userGroup._id !== deleteGroupId;
-        });
-
-        delete prevState.userGroupRelations[deleteGroupId];
-
-        return {
-          userGroups,
-          userGroupRelations: prevState.userGroupRelations,
-          selectedUserGroup: undefined,
-          isDeleteModalShow: false,
-        };
+      this.syncUserGroupAndRelations();
+      this.setState({
+        selectedUserGroup: undefined,
+        isDeleteModalShow: false,
       });
 
       toastSuccess(`Deleted a group "${this.xss.process(res.data.userGroup.name)}"`);
@@ -94,34 +88,19 @@ class UserGroupPage extends React.Component {
     }
   }
 
-  async syncUserGroupAndRelations() {
-    try {
-      const userGroupsRes = await apiv3Get('/user-groups', { pagination: false });
-      const userGroupRelationsRes = await apiv3Get('/user-group-relations');
-
-      this.setState({
-        userGroups: userGroupsRes.data.userGroups,
-        userGroupRelations: userGroupRelationsRes.data.userGroupRelations,
-      });
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }
-
   render() {
     // TODO GW-5305 retrieve isAclEnabled from SWR or getServerSideProps
     // const { isAclEnabled } = this.props.appContainer.config;
-    const isAclEnabled = false;
+    const isAclEnabled = true;
 
     return (
       <Fragment>
         <UserGroupCreateForm
           isAclEnabled={isAclEnabled}
-          onCreate={this.addUserGroup}
+          onCreate={this.syncUserGroupAndRelations}
         />
         <UserGroupTable
-          userGroups={this.state.userGroups}
+          userGroups={this.props.userGroupsData.userGroups}
           isAclEnabled={isAclEnabled}
           onDelete={this.showDeleteModal}
           userGroupRelations={this.state.userGroupRelations}
@@ -138,6 +117,23 @@ class UserGroupPage extends React.Component {
     );
   }
 
+}
+
+const UserGroupPage = () => {
+  const { data: userGroupsData, mutate: mutateGroups } = useUserGroupSWR({ pagination: false });
+  const { data: userGroupRelationsData, mutate: mutateRelations } = useUserGroupRelationsSWR();
+  return (
+    <>
+      {userGroupRelationsData != null &&
+        <UserGroupPageBody
+          userGroupsData={userGroupsData}
+          userGroupRelationsData={userGroupRelationsData}
+          mutateRelations={mutateRelations}
+          mutateGroups={mutateGroups}
+        />
+      }
+    </>
+  )
 }
 
 export default UserGroupPage;
