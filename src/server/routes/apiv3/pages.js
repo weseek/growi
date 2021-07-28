@@ -313,14 +313,14 @@ module.exports = (crowi) => {
       const ids = result.pages.map((page) => { return page._id });
       const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
       const relationsMap = new Map();
-      result.pages.forEach((page) => {
-        relationsMap.set(page._id.toString(), []);
-      });
       relations.forEach((relation) => {
-        relationsMap.get(relation.relatedPage.toString()).push(relation.relatedTag);
+        const pageId = relation.relatedPage.toString();
+        relationsMap.set(pageId, []);
+        relationsMap.get(pageId).push(relation.relatedTag);
       });
       result.pages.forEach((page) => {
-        page.tags = relationsMap.get(page._id.toString());
+        const pageId = page._id.toString();
+        page.tags = relationsMap.has(pageId) ? relationsMap.get(pageId) : [];
       });
 
       return res.apiv3(result);
