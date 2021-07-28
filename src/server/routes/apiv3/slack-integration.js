@@ -157,12 +157,12 @@ module.exports = (crowi) => {
         await togetterHandler.handleCommand(client, body, args, newLimit);
         break;
       }
-      case 'togetterCreatePage': {
+      case 'togetter:createPage': {
         await crowi.slackBotService.togetterCreatePageInGrowi(client, payload);
         break;
       }
-      case 'togetterCancelPageCreation': {
-        console.log('Cancel here');
+      case 'togetter:cancel': {
+        await crowi.slackBotService.togetterCancel(client, payload);
         break;
       }
       default:

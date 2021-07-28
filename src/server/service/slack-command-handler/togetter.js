@@ -1,9 +1,9 @@
 const {
-  inputBlock, actionsBlock, buttonElement, checkboxesElementOption,
+  inputBlock, actionsBlock, buttonElement, markdownSectionBlock,
 } = require('@growi/slack');
-const { fromUnixTime, format } = require('date-fns');
+const { format } = require('date-fns');
 
-module.exports = () => {
+module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
@@ -25,32 +25,15 @@ module.exports = () => {
 
   handler.togetterMessageBlocks = function(messages, body, args, limit) {
     return [
-      inputBlock(this.togetterCheckboxesElement(messages), 'selected_messages', 'Select massages to use.'),
-      actionsBlock(buttonElement({ text: 'Show more', actionId: 'togetterShowMore', value: JSON.stringify({ body, args, limit }) })),
+      markdownSectionBlock('Select the oldest and latest datetime of the messages to use.'),
+      inputBlock(this.plainTextInputElementWithInitialTime('oldest'), 'oldest', 'Oldest datetime'),
+      inputBlock(this.plainTextInputElementWithInitialTime('latest'), 'latest', 'Latest datetime'),
       inputBlock(this.togetterInputBlockElement('page_path', '/'), 'page_path', 'Page path'),
       actionsBlock(
-        buttonElement({ text: 'Cancel', actionId: 'togetterCancelPageCreation' }),
-        buttonElement({ text: 'Create page', actionId: 'togetterCreatePage', color: 'primary' }),
+        buttonElement({ text: 'Cancel', actionId: 'togetter:cancel' }),
+        buttonElement({ text: 'Create page', actionId: 'togetter:createPage', style: 'primary' }),
       ),
     ];
-  };
-
-  handler.togetterCheckboxesElement = function(messages) {
-    return {
-      type: 'checkboxes',
-      options: this.togetterCheckboxesElementOptions(messages),
-      action_id: 'checkboxes_changed',
-    };
-  };
-
-  handler.togetterCheckboxesElementOptions = function(messages) {
-    const options = messages
-      .sort((a, b) => { return a.ts - b.ts })
-      .map((message, index) => {
-        const date = fromUnixTime(message.ts);
-        return checkboxesElementOption(`*${message.user}*  ${format(new Date(date), 'yyyy/MM/dd HH:mm:ss')}`, message.text, `selected-${index}`);
-      });
-    return options;
   };
 
   /**
@@ -65,6 +48,17 @@ module.exports = () => {
         text: placeholderText,
       },
       action_id: actionId,
+    };
+  };
+
+  handler.plainTextInputElementWithInitialTime = function(actionId) {
+    const tzDateSec = new Date().getTime();
+    const grwTzoffset = crowi.appService.getTzoffset() * 60 * 1000;
+    const initialDateTime = format(new Date(tzDateSec - grwTzoffset), 'yyyy/MM/dd-HH:mm');
+    return {
+      type: 'plain_text_input',
+      action_id: actionId,
+      initial_value: initialDateTime,
     };
   };
 
