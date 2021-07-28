@@ -17,18 +17,18 @@ const PasswordResetRequestForm = (props) => {
   };
 
   const onClickSendPasswordResetRequestMail = async(email) => {
-    if (email == null) {
-      toastError('err', 'email is required.');
-      return;
-    }
+    // if (email == null) {
+    //   toastError('err', 'email is required.');
+    //   return;
+    // }
 
     try {
       const res = await appContainer.apiPost('/forgot-password', { email });
       console.log('resHOge', res);
       // const { failedToSendEmail } = res.data;
       // if (failedToSendEmail == null) {
-      const msg = `Email has been sent<br>・${email}`;
-      toastSuccess(msg);
+      // const msg = `Email has been sent<br>・${email}`;
+      // toastSuccess(msg);
       // }
       // else {
       //   const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
@@ -36,12 +36,13 @@ const PasswordResetRequestForm = (props) => {
       // }
     }
     catch (err) {
-      toastError(err);
+      // console.log('err', err);
+      toastError('err', err);
     }
   };
 
   return (
-    <form role="form" className="form" method="post">
+    <form role="form" action="/_api/forgot-password" className="form" method="post">
       <div className="form-group">
         <div className="input-group">
           <input name="email" placeholder="E-mail Address" className="form-control" type="email" onChange={e => changeEmail(e.target.value)} />
@@ -53,7 +54,7 @@ const PasswordResetRequestForm = (props) => {
           className="btn btn-lg btn-primary btn-block"
           value="Reset Password"
           type="submit"
-          onClick={() => { onClickSendPasswordResetRequestMail(email) }}
+          // onClick={() => { onClickSendPasswordResetRequestMail(email) }}
         />
       </div>
       <a href="/login">

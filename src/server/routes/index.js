@@ -177,7 +177,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.get('/forgot-password', forgotPassword.forgotPassword);
-  app.post('/forgot-password', forgotPassword.api.post);
+  app.post('/_api/forgot-password', forgotPassword.api.post);
   // TODO: apply oneTimeToken to the link by GW−6856
   app.get('/forgot-password/hogeToken', forgotPassword.resetPassword);
 

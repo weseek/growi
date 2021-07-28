@@ -19,6 +19,7 @@ module.exports = function(crowi, app) {
 
 
   async function sendPasswordResetEmail(email, i18n) {
+    console.log('emailHoge', email);
 
     return mailService.send({
       to: email,
@@ -35,21 +36,25 @@ module.exports = function(crowi, app) {
 
   api.post = async function(req, res) {
     const { email } = req.body;
+    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const i18n = req.language || grobalLang;
+
+    // res.send({ hoge: 'hogge' });
+
     try {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
-      res.send(ApiResponse.success({ passwordResetOrderData }));
+      await sendPasswordResetEmail(email, i18n);
+      // res.send(ApiResponse.success({ passwordResetOrderData }));
+      console.log('passwordResetOrderData', passwordResetOrderData);
+      // return passwordResetOrderData;
+      res.json(ApiResponse.success({ passwordResetOrderData }));
     }
     catch (err) {
       const msg = 'Error occurred during password reset request procedure';
       logger.error(err);
+      console.log('err', err);
       return res.json(ApiResponse.error(msg));
     }
-
-    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
-    const i18n = req.language || grobalLang;
-
-    await sendPasswordResetEmail(email, i18n);
-    return;
   };
 
 
