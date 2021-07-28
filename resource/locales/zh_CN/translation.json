@@ -851,13 +851,15 @@
   },
   "forgot_password":{
     "forgot_password": "忘记密码？",
-    "send_email": "发送",
+    "send": "发送",
     "return_to_login": "返回登录",
     "reset_password": "重设密码",
     "sign_in_instead": "改为登录",
     "password_reset_request_desc": "您可以在此处重置密码",
     "password_reset_excecution_desc": "输入新的密码",
     "new_password": "新密码",
-    "confirm_new_password": "确认新密码"
+    "confirm_new_password": "确认新密码",
+    "email_is_required": "电子邮件是必需的",
+    "success_to_send_email": "我发了一封电子邮件"
   }
 }

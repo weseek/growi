@@ -846,13 +846,15 @@
   },
   "forgot_password":{
     "forgot_password": "Forgot Password?",
-    "send_email": "Send",
+    "send": "Send",
     "return_to_login": "Return to login",
     "reset_password": "Reset Password",
     "sign_in_instead": "Sign in instead",
     "password_reset_request_desc": "You can reset your password here.",
     "password_reset_excecution_desc": "Enter a new password",
     "new_password": "New Password",
-    "confirm_new_password": "Confirm the new password"
+    "confirm_new_password": "Confirm the new password",
+    "email_is_required": "Email is required",
+    "success_to_send_email": "Success to send email"
   }
 }
