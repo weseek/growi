@@ -41,7 +41,6 @@
   "Update Page": "Update Page",
   "Warning": "Warning",
   "Sign in": "Sign in",
-  "forgot_password": "Forgot password?",
   "Sign up is here": "Sign up",
   "Sign in is here": "Sign in",
   "Sign up": "Sign up",
@@ -844,5 +843,16 @@
     "aws_region": "For the region, enter the AWS region name. ex):us-east-1",
     "aws_custom_endpoint":"For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required.",
     "failed_to_send_a_test_email":"Failed to send a test email using SMTP. Please check your settings."
+  },
+  "forgot_password":{
+    "forgot_password": "Forgot Password?",
+    "send_email": "Send",
+    "return_to_login": "Return to login",
+    "reset_password": "Reset Password",
+    "sign_in_instead": "Sign in instead",
+    "password_reset_request_desc": "You can reset your password here.",
+    "password_reset_excecution_desc": "Enter a new password",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm the new password"
   }
 }
