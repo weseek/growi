@@ -66,6 +66,15 @@ class RecentChanges extends React.Component {
       locked = <span><i className="icon-lock" /></span>;
     }
 
+    const tags = page.tags;
+    const tagElements = tags.map((tag) => {
+      return (
+        <a key={tag} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2">
+          {tag.name}
+        </a>
+      );
+    });
+
     return (
       <li className="list-group-item p-2">
         <div className="d-flex w-100">
@@ -81,6 +90,7 @@ class RecentChanges extends React.Component {
               <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
               <i className="icon-bubble"></i>
               <span>{page.commentCount}</span>
+              { tagElements }
               <br />
               <FormattedDistanceDate id={page.id} date={page.updatedAt} />
             </div>
