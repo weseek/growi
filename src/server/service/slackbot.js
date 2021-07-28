@@ -3,9 +3,9 @@ const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
-const { markdownSectionBlock } = require('@growi/slack');
+const { markdownSectionBlock, divider } = require('@growi/slack');
 const { reshapeContentsBody } = require('@growi/slack');
-const { formatDistanceStrict } = require('date-fns');
+const { formatDistanceStrict, parse, format } = require('date-fns');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -195,29 +195,135 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async togetterCreatePageInGrowi(client, payload) {
-    const { response_url: responseUrl } = payload;
-    const selectedOptions = payload.state.values.selected_messages.checkboxes_changed.selected_options;
-    const messages = selectedOptions.map((option) => {
-      const header = option.text.text.concat('\n');
-      const body = option.description.text.concat('\n');
-      return header.concat(body);
-    });
-    let path = '';
-    let channelId = '';
-    if (payload.type === 'block_actions' && payload.actions[0].action_id === 'togetter:createPage') {
-      path = payload.state.values.page_path.page_path.value;
-      channelId = payload.channel.id;
+    let result = [];
+    const channel = payload.channel.id;
+    try {
+      // validate form
+      const { path, oldest, latest } = await this.togetterValidateForm(client, payload);
+      // get messages
+      result = await this.togetterGetMessages(client, payload, channel, path, latest, oldest);
+      // clean messages
+      const cleanedContents = await this.togetterCleanMessages(result.messages);
+
+      const contentsBody = cleanedContents.join('');
+      // create and send url message
+      await this.togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody);
     }
-    const contentsBody = messages.join('');
-    // dismiss
-    axios.post(responseUrl, {
-      delete_original: true,
+    catch (err) {
+      await client.chat.postMessage({
+        channel: payload.user.id,
+        text: err.message,
+        blocks: [
+          markdownSectionBlock(err.message),
+        ],
+      });
+      return;
+    }
+  }
+
+  async togetterGetMessages(client, payload, channel, path, latest, oldest) {
+    const result = await client.conversations.history({
+      channel,
+      latest,
+      oldest,
+      limit: 100,
+      inclusive: true,
     });
-    await this.createPage(client, payload, path, channelId, contentsBody);
+
+    // return if no message found
+    if (!result.messages.length) {
+      throw new Error('No message found from togetter command. Try again.');
+    }
+    return result;
+  }
+
+  async togetterValidateForm(client, payload) {
+    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
+    const path = payload.state.values.page_path.page_path.value;
+    let oldest = payload.state.values.oldest.oldest.value;
+    let latest = payload.state.values.latest.latest.value;
+    oldest = oldest.trim();
+    latest = latest.trim();
+    if (!path) {
+      throw new Error('Page path is required.');
+    }
+    /**
+     * RegExp for datetime yyyy/MM/dd-HH:mm
+     * @see https://regex101.com/r/xiQoTb/1
+     */
+    const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0?[1-9]|[12][0-9]|3[01])-(0[0-9]|1[012]):[0-5][0-9]$/);
+
+    if (!regexpDatetime.test(oldest)) {
+      throw new Error('Datetime format for oldest must be yyyy/MM/dd-HH:mm');
+    }
+    if (!regexpDatetime.test(latest)) {
+      throw new Error('Datetime format for latest must be yyyy/MM/dd-HH:mm');
+    }
+    oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
+    // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
+    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
+
+    if (oldest > latest) {
+      throw new Error('Oldest datetime must be older than the latest date time.');
+    }
+
+    return { path, oldest, latest };
+  }
+
+  async togetterCleanMessages(messages) {
+    const cleanedContents = [];
+    let lastMessage = {};
+    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
+    messages
+      .sort((a, b) => {
+        return a.ts - b.ts;
+      })
+      .forEach((message) => {
+        // increment contentsBody while removing the same headers
+        // exclude header
+        const lastMessageTs = Math.floor(lastMessage.ts / 60);
+        const messageTs = Math.floor(message.ts / 60);
+        if (lastMessage.user === message.user && lastMessageTs === messageTs) {
+          cleanedContents.push(`${message.text}\n`);
+        }
+        // include header
+        else {
+          const ts = (parseInt(message.ts) - grwTzoffset) * 1000;
+          const time = format(new Date(ts), 'h:mm a');
+          cleanedContents.push(`${message.user}  ${time}\n${message.text}\n`);
+          lastMessage = message;
+        }
+      });
+    return cleanedContents;
+  }
+
+  async togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody) {
+    try {
+      await this.createPage(client, payload, path, channel, contentsBody);
+      // send preview to dm
+      await client.chat.postMessage({
+        channel: payload.user.id,
+        text: 'Preview from togetter command',
+        blocks: [
+          markdownSectionBlock('*Preview*'),
+          divider(),
+          markdownSectionBlock(contentsBody),
+          divider(),
+        ],
+      });
+      // dismiss message
+      const responseUrl = payload.response_url;
+      axios.post(responseUrl, {
+        delete_original: true,
+      });
+    }
+    catch (err) {
+      throw new Error('Error occurred while creating a page.');
+    }
   }
 
   async togetterCancel(client, payload) {
-    const { response_url: responseUrl } = payload;
+    const responseUrl = payload.response_url;
     axios.post(responseUrl, {
       delete_original: true,
     });
