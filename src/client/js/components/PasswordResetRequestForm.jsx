@@ -16,11 +16,12 @@ const PasswordResetRequestForm = (props) => {
     setEmail(inputValue);
   };
 
-  const onClickSendPasswordResetRequestMail = async(email) => {
-    // if (email == null) {
-    //   toastError('err', 'email is required.');
-    //   return;
-    // }
+  const sendPasswordResetRequestMail = async(e) => {
+    e.preventDefault();
+    if (email == null) {
+      toastError('err', 'email is required.');
+      return;
+    }
 
     try {
       const res = await appContainer.apiPost('/forgot-password', { email });
@@ -42,20 +43,19 @@ const PasswordResetRequestForm = (props) => {
   };
 
   return (
-    <form role="form" action="/_api/forgot-password" className="form" method="post">
+    <form onSubmit={sendPasswordResetRequestMail}>
       <div className="form-group">
         <div className="input-group">
           <input name="email" placeholder="E-mail Address" className="form-control" type="email" onChange={e => changeEmail(e.target.value)} />
         </div>
       </div>
       <div className="form-group">
-        <input
-          name="reset-password-btn"
+        <button
           className="btn btn-lg btn-primary btn-block"
-          value="Reset Password"
           type="submit"
-          // onClick={() => { onClickSendPasswordResetRequestMail(email) }}
-        />
+        >
+          Reset Password
+        </button>
       </div>
       <a href="/login">
         <i className="icon-login mr-1"></i>Return to login
