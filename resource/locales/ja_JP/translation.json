@@ -42,7 +42,6 @@
   "Update Page": "ページを更新",
   "Warning": "注意",
   "Sign in": "ログイン",
-  "forgot_password": "パスワードをお忘れですか?",
   "Sign up is here": "新規登録はこちら",
   "Sign in is here": "ログインはこちら",
   "Sign up": "新規登録",
@@ -838,5 +837,16 @@
     "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",
     "aws_custom_endpoint": "カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。",
     "failed_to_send_a_test_email":"SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。"
+  },
+  "forgot_password":{
+    "forgot_password": "パスワードをお忘れですか?",
+    "send_email": "送信",
+    "return_to_login": "ログイン画面に戻る",
+    "reset_password": "パスワード リセット",
+    "sign_in_instead": "ログインする",
+    "password_reset_request_desc": "ここからパスワードリセットできます",
+    "password_reset_excecution_desc": "新しいパスワードを入力してください",
+    "new_password": "新しいパスワード",
+    "confirm_new_password": "新しいパスワードの確認"
   }
 }

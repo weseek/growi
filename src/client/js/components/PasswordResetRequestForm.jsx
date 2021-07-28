@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { toastSuccess, toastError } from '../util/apiNotification';
+import { /* toastSuccess, */ toastError } from '../util/apiNotification';
 
 import AppContainer from '../services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -9,7 +9,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const PasswordResetRequestForm = (props) => {
   // TODO: apply i18n by GW-6861
-  const { /* t, */ appContainer } = props;
+  const { t, appContainer } = props;
   const [email, setEmail] = useState();
 
   const changeEmail = (inputValue) => {
@@ -47,7 +47,7 @@ const PasswordResetRequestForm = (props) => {
         </button>
       </div>
       <a href="/login">
-        <i className="icon-login mr-1"></i>Return to login
+        <i className="icon-login mr-1"></i>{t('forgot_password.return_to_login')}
       </a>
     </form>
   );
