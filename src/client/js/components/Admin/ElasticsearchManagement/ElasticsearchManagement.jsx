@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSearchIndicesInfoSWR } from '~/stores/search';
@@ -122,7 +122,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.reconnect') }</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.reconnect')}</label>
           <div className="col-md-6">
             <ReconnectControls
               isEnabled={isReconnectBtnEnabled}
@@ -135,7 +135,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.normalize') }</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.normalize')}</label>
           <div className="col-md-6">
             <NormalizeIndicesControls
               isRebuildingProcessing={isRebuildingProcessing}
@@ -149,7 +149,7 @@ class ElasticsearchManagementBody extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.rebuild') }</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.rebuild')}</label>
           <div className="col-md-6">
             {/* TODO: GW-5134 Migrate SocketIoContainer to SWR */}
             {/* <RebuildIndexControls
@@ -178,21 +178,19 @@ export default function ElasticsearchManagement() {
 
   const { data, error, isValidating, mutate } = useSearchIndicesInfoSWR();
 
-  if (data != null) {
+  if (data?.info != null) {
     indicesData = data.info.indices;
     aliasesData = data.info.aliases;
     isNormalized = data.info.isNormalized;
     isConfigured = true
     isConnected = true;
     isInitialized = true;
+
   }
 
   if (error != null) {
     isConnected = false;
-
-    if (error[0].code === 'search-service-unconfigured') {
-      isConfigured = false;
-    }
+    isConfigured = error.isConfigured;
   }
 
   if (isValidating) {
