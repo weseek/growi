@@ -38,9 +38,9 @@ module.exports = function(crowi, app) {
     const i18n = req.language || grobalLang;
 
     try {
-      const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
+      await PasswordResetOrder.createPasswordResetOrder(email);
       await sendPasswordResetEmail(email, i18n);
-      return res.json(ApiResponse.success({ passwordResetOrderData }));
+      return res.json(ApiResponse.success());
     }
     catch (err) {
       const msg = 'Error occurred during password reset request procedure';
