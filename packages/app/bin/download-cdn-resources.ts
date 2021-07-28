@@ -3,14 +3,15 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-require('module-alias/register');
+import { envUtils } from 'growi-commons';
 
-const logger = require('@alias/logger')('growi:bin:download-cdn-resources');
+import CdnResourcesDownloader from '../src/services/cdn-resources-downloader';
+import loggerFactory from '../src/utils/logger';
 
-const { envUtils } = require('growi-commons');
+const logger = loggerFactory('growi:bin:download-cdn-resources');
 
 // check env var
-const noCdn = envUtils.toBoolean(process.env.NO_CDN);
+const noCdn: boolean = envUtils.toBoolean(process.env.NO_CDN);
 if (!noCdn) {
   logger.info('Using CDN. No resources are downloaded.');
   // exit
@@ -19,13 +20,10 @@ if (!noCdn) {
 
 logger.info('This is NO_CDN mode. Start to download resources.');
 
-const CdnResourcesDownloader = require('@commons/service/cdn-resources-downloader');
-const CdnResourcesService = require('@commons/service/cdn-resources-service');
 
 const downloader = new CdnResourcesDownloader();
-const service = new CdnResourcesService();
 
-service.downloadAndWriteAll(downloader)
+downloader.downloadAndWriteAll()
   .then(() => {
     logger.info('Download is completed successfully');
   })
