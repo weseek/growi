@@ -312,14 +312,17 @@ module.exports = (crowi) => {
       const PageTagRelation = mongoose.model('PageTagRelation');
       const ids = result.pages.map((page) => { return page._id });
       const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
+      const relationsMap = new Map();
       result.pages.forEach((page) => {
-        page.tags = [];
-        relations.forEach((relation) => {
-          if (relation.relatedPage.toString() === page._id.toString()) {
-            page.tags.push(relation.relatedTag);
-          }
-        });
+        relationsMap.set(page._id.toString(), []);
       });
+      relations.forEach((relation) => {
+        relationsMap.get(relation.relatedPage.toString()).push(relation.relatedTag);
+      });
+      result.pages.forEach((page) => {
+        page.tags = relationsMap.get(page._id.toString());
+      });
+
       return res.apiv3(result);
     }
     catch (err) {
