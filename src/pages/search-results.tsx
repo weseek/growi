@@ -8,13 +8,17 @@ import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, getServerSideCommonProps, useCustomTitle } from '~/utils/nextjs-page-utils';
 import BasicLayout from '../components/BasicLayout'
 
-import { useCurrentUser } from '../stores/context';
+import {
+  useCurrentUser, useSearchServiceConfigured, useSearchServiceReachable
+} from '../stores/context';
 
 type Props = CommonProps & {
   currentUser: any,
 
   page: any,
   isAbleToDeleteCompletely: boolean,
+  isSearchServiceConfigured: boolean,
+  isSearchServiceReachable: boolean,
 }
 
 const SearchResultPage: NextPage<Props> = (props: Props) => {
@@ -22,6 +26,8 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
   const title = useCustomTitle(props, t('search_result.title'));
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
+  useSearchServiceConfigured(props.isSearchServiceConfigured)
+  useSearchServiceReachable(props.isSearchServiceReachable)
 
   // load all languages
   i18n.loadLanguages(config.allLanguages);
@@ -44,6 +50,9 @@ const SearchResultPage: NextPage<Props> = (props: Props) => {
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req: CrowiRequest = context.req as CrowiRequest;
 
+  const { crowi } = req;
+  const { searchService } = crowi;
+
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
@@ -58,6 +67,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (user != null) {
     props.currentUser = JSON.stringify(user.toObject());
   }
+
+  props.isSearchServiceConfigured = searchService.isConfigured;
+  props.isSearchServiceReachable = searchService.isReachable;
 
   return {
     props: {
