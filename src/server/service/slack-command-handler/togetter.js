@@ -25,7 +25,7 @@ module.exports = (crowi) => {
 
   handler.togetterMessageBlocks = function(messages, body, args, limit) {
     return [
-      markdownSectionBlock('Select the oldest and latest datetime of the messages to use'),
+      markdownSectionBlock('Select the oldest and latest datetime of the messages to use.'),
       inputBlock(this.plainTextInputElementWithInitialTime('oldest'), 'oldest', 'Oldest datetime'),
       inputBlock(this.plainTextInputElementWithInitialTime('latest'), 'latest', 'Latest datetime'),
       inputBlock(this.togetterInputBlockElement('page_path', '/'), 'page_path', 'Page path'),

@@ -242,15 +242,29 @@ class SlackBotService extends S2sMessageHandlable {
     const path = payload.state.values.page_path.page_path.value;
     let oldest = payload.state.values.oldest.oldest.value;
     let latest = payload.state.values.latest.latest.value;
+    oldest = oldest.trim();
+    latest = latest.trim();
     if (!path) {
       throw new Error('Page path is required.');
+    }
+    /**
+     * RegExp for datetime yyyy/MM/dd-HH:mm
+     * @see https://regex101.com/r/xiQoTb/1
+     */
+    const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0?[1-9]|[12][0-9]|3[01])-(0[0-9]|1[012]):[0-5][0-9]$/);
+
+    if (!regexpDatetime.test(oldest)) {
+      throw new Error('Datetime format for oldest must be yyyy/MM/dd-HH:mm');
+    }
+    if (!regexpDatetime.test(latest)) {
+      throw new Error('Datetime format for latest must be yyyy/MM/dd-HH:mm');
     }
     oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
     // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
     latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
 
     if (oldest > latest) {
-      throw new Error('Oldest datetime should be older than the latest date time.');
+      throw new Error('Oldest datetime must be older than the latest date time.');
     }
 
     return { path, oldest, latest };
