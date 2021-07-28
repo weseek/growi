@@ -851,6 +851,7 @@
   },
   "forgot_password":{
     "forgot_password": "忘记密码？",
+    "send_email": "发送",
     "return_to_login": "返回登录",
     "reset_password": "重设密码",
     "sign_in_instead": "改为登录",

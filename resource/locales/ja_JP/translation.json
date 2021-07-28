@@ -840,6 +840,7 @@
   },
   "forgot_password":{
     "forgot_password": "パスワードをお忘れですか?",
+    "send_email": "送信",
     "return_to_login": "ログイン画面に戻る",
     "reset_password": "パスワード リセット",
     "sign_in_instead": "ログインする",

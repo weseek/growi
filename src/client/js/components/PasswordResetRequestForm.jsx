@@ -14,7 +14,7 @@ const PasswordResetRequestForm = (props) => {
         </div>
       </div>
       <div className="form-group">
-        <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value={t('forgot_password.reset_password')} type="submit" />
+        <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value={t('forgot_password.send_email')} type="submit" />
       </div>
       <a href="/login">
         <i className="icon-login mr-1"></i>{t('forgot_password.return_to_login')}

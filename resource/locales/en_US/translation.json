@@ -846,6 +846,7 @@
   },
   "forgot_password":{
     "forgot_password": "Forgot Password?",
+    "send_email": "Send",
     "return_to_login": "Return to login",
     "reset_password": "Reset Password",
     "sign_in_instead": "Sign in instead",
