@@ -2,10 +2,10 @@
 
 ## v4.3.3-RC
 
-* Update libs
+* Support: Upgrade libs
     * @slack/web-api
+    * escape-string-regexp
     * morgan
-* 
 
 ## v4.3.2
 
