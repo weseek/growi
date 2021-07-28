@@ -851,6 +851,8 @@
     "reset_password": "Reset Password",
     "sign_in_instead": "Sign in instead",
     "password_reset_request_desc": "You can reset your password here.",
-    "password_reset_excecution_desc": "Enter a new password"
+    "password_reset_excecution_desc": "Enter a new password",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm the new password"
   }
 }

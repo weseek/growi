@@ -845,6 +845,8 @@
     "reset_password": "パスワード リセット",
     "sign_in_instead": "ログインする",
     "password_reset_request_desc": "ここからパスワードリセットできます",
-    "password_reset_excecution_desc": "新しいパスワードを入力してください"
+    "password_reset_excecution_desc": "新しいパスワードを入力してください",
+    "new_password": "新しいパスワード",
+    "confirm_new_password": "新しいパスワードの確認"
   }
 }
