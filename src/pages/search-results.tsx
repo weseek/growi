@@ -20,11 +20,10 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
 }
-const SearchPage: NextPage<Props> = (props: Props) => {
 
+const SearchResultPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-  // Todo: 検索結果ページ用の翻訳追加
-  const title = useCustomTitle(props, t('SearchResult'));
+  const title = useCustomTitle(props, t('search_result.title'));
 
   useCurrentUser(props.currentUser != null ? JSON.parse(props.currentUser) : null);
   useSearchServiceConfigured(props.isSearchServiceConfigured)
@@ -80,4 +79,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
 }
 
-export default SearchPage;
+export default SearchResultPage;
