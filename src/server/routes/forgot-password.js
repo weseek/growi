@@ -22,7 +22,7 @@ module.exports = function(crowi, app) {
 
     return mailService.send({
       to: email,
-      subject: 'forgotPasswordMailTest',
+      subject: 'Password Reset',
       template: path.join(crowi.localeDir, `${i18n}/notifications/passwordReset.txt`),
       // TODO: need to set appropriate values by GW-6828
       // vars: {
