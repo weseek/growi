@@ -178,14 +178,18 @@ export class SlackCtrl {
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
-    // const relationsForBroadcastUse = syncedRelations.filter((relation) => {
-    //   return this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType);
-    // });
+    const relationsForBroadcastUse:Relation[] = [];
+    await Promise.all(relations.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupported) {
+        relationsForSingleUse.push(relation);
+      }
+    }));
 
     /*
      * forward to GROWI server
      */
-    // this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+    this.sendCommand(growiCommand, relationsForBroadcastUse, body);
   }
 
   @Post('/interactions')

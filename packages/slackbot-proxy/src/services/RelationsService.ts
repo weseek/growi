@@ -35,13 +35,13 @@ export class RelationsService {
     return this.relationRepository.save(relation);
   }
 
-  async isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
+  async syncAndReturnBool(relation:Relation, baseDate:Date, discriminantWhetherRelationIsSupported:(relation:Relation)=>boolean):Promise<boolean> {
     const distanceHoursToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
 
     if (distanceHoursToExpiredAt < 0) {
       try {
         const syncedRelation = await this.syncSupportedGrowiCommands(relation);
-        return syncedRelation.supportedCommandsForSingleUse.includes(growiCommandType);
+        return discriminantWhetherRelationIsSupported(syncedRelation);
       }
       catch (err) {
         logger.error(err);
@@ -59,11 +59,15 @@ export class RelationsService {
       }
     }
 
-    return relation.supportedCommandsForSingleUse.includes(growiCommandType);
+    return discriminantWhetherRelationIsSupported(relation);
   }
 
-  // isSupportedGrowiCommandForBroadcastUse(relation:Relation, growiCommandType:string):boolean {
-  //   return relation.supportedCommandsForBroadcastUse.includes(growiCommandType);
-  // }
+  async isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
+    return this.syncAndReturnBool(relation, baseDate, relation => relation.supportedCommandsForSingleUse.includes(growiCommandType));
+  }
+
+  async isSupportedGrowiCommandForBroadcastUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
+    return this.syncAndReturnBool(relation, baseDate, relation => relation.supportedCommandsForBroadcastUse.includes(growiCommandType));
+  }
 
 }
