@@ -3,24 +3,24 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:bin:generate-plugin-definitions-source');
+import fs from 'graceful-fs';
+import normalize from 'normalize-path';
+import swig from 'swig-templates';
 
-const fs = require('graceful-fs');
-const normalize = require('normalize-path');
-const swig = require('swig-templates');
+import PluginUtils from '../src/server/plugins/plugin-utils';
+import loggerFactory from '../src/utils/logger';
+import { resolveFromRoot } from '../src/utils/project-dir-utils';
 
-const helpers = require('@commons/util/helpers');
-const PluginUtils = require('@server/plugins/plugin-utils');
+const logger = loggerFactory('growi:bin:generate-plugin-definitions-source');
+
 
 const pluginUtils = new PluginUtils();
 
-const TEMPLATE = helpers.root('bin/templates/plugin-definitions.js.swig');
-const OUT = helpers.root('tmp/plugins/plugin-definitions.js');
-
+const TEMPLATE = resolveFromRoot('bin/templates/plugin-definitions.js.swig');
+const OUT = resolveFromRoot('tmp/plugins/plugin-definitions.js');
 
 // list plugin names
-const pluginNames = pluginUtils.listPluginNames(helpers.root());
+const pluginNames: string[] = pluginUtils.listPluginNames();
 logger.info('Detected plugins: ', pluginNames);
 
 // get definitions
@@ -29,12 +29,17 @@ const definitions = pluginNames
     return pluginUtils.generatePluginDefinition(name, true);
   })
   .map((definition) => {
+    if (definition == null) {
+      return null;
+    }
+
     // convert backslash to slash
     definition.entries = definition.entries.map((entryPath) => {
       return normalize(entryPath);
     });
     return definition;
-  });
+  })
+  .filter(definition => definition != null);
 
 const compiledTemplate = swig.compileFile(TEMPLATE);
 const code = compiledTemplate({ definitions });
