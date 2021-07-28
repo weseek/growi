@@ -25,6 +25,10 @@ RUN yarn config set network-timeout 300000
 FROM deps-resolver-base AS deps-resolver-dev
 RUN npx lerna bootstrap
 
+# make artifacts
+RUN tar cf node_modules.tar node_modules \
+  packages/slackbot-proxy/node_modules \
+  packages/slack/node_modules
 
 
 ##
@@ -45,17 +49,20 @@ ENV appDir /opt
 
 WORKDIR ${appDir}
 
-COPY --from=deps-resolver-dev ${appDir}/node_modules node_modules
+# copy dependent packages
+COPY --from=deps-resolver-dev \
+  ${appDir}/node_modules.tar ${appDir}/
 
-# copy all related packages
-COPY packages/slack packages/slack
-COPY packages/slackbot-proxy packages/slackbot-proxy
+# extract node_modules.tar
+RUN tar xf node_modules.tar
+RUN rm node_modules.tar
 
 COPY ./package.json ./
 COPY ./lerna.json ./
 COPY ./tsconfig.base.json ./
-COPY ./packages/slack ./packages/slack
-COPY ./packages/slackbot-proxy ./packages/slackbot-proxy
+# copy all related packages
+COPY packages/slack packages/slack
+COPY packages/slackbot-proxy packages/slackbot-proxy
 
 # build
 RUN yarn lerna run build

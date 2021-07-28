@@ -66,8 +66,12 @@ const CustomBotWithProxySettings = (props) => {
   return (
     <>
       <h2 className="admin-setting-header mb-2">{t('admin:slack_integration.custom_bot_with_proxy_integration')}
-        {/* TODO: If Bot-manual section of docs is merged into master, show links and add an appropriate links by GW-5614. */}
-        {/* <i className="fa fa-external-link btn-link ml-2" aria-hidden="true"></i> */}
+        <a href={t('admin:slack_integration.docs_url.custom_bot_with_proxy')} target="_blank" rel="noopener noreferrer">
+          <i
+            className="fa fa-external-link btn-link ml-2"
+            aria-hidden="true"
+          />
+        </a>
       </h2>
 
       {slackAppIntegrations.length !== 0 && (

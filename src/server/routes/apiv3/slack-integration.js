@@ -25,10 +25,11 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegration.estimatedDocumentCount({ tokenPtoG });
+    const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
+      slackAppIntegrationCount,
     });
 
     if (slackAppIntegrationCount === 0) {
@@ -120,7 +121,6 @@ module.exports = (crowi) => {
     }
     catch (error) {
       logger.error(error);
-      return res.send(error.message);
     }
   }
 
@@ -145,8 +145,12 @@ module.exports = (crowi) => {
     const { action_id: actionId } = payload.actions[0];
 
     switch (actionId) {
-      case 'shareSearchResults': {
-        await crowi.slackBotService.shareSearchResults(client, payload);
+      case 'shareSingleSearchResult': {
+        await crowi.slackBotService.shareSinglePage(client, payload);
+        break;
+      }
+      case 'dismissSearchResults': {
+        await crowi.slackBotService.dismissSearchResults(client, payload);
         break;
       }
       case 'showNextResults': {
@@ -209,7 +213,6 @@ module.exports = (crowi) => {
     }
     catch (error) {
       logger.error(error);
-      return res.send(error.message);
     }
 
   }

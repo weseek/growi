@@ -12,11 +12,6 @@ module.exports = {
   HACKMD_URI_FOR_SERVER: 'http://hackmd:3000',
   // DRAWIO_URI: 'http://localhost:8080/?offline=1&https=0',
   // S2SMSG_PUBSUB_SERVER_TYPE: 'nchan',
-  PLUGIN_NAMES_TOBE_LOADED: [
-    // 'growi-plugin-lsx',
-    // 'growi-plugin-pukiwiki-like-linker',
-    // 'growi-plugin-attachment-refs',
-  ],
   // PUBLISH_OPEN_API: true,
   // USER_UPPER_LIMIT: 0,
   // DEV_HTTPS: true,

@@ -54,8 +54,36 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
-require('codemirror/mode/gfm/gfm');
 require('../../util/codemirror/autorefresh.ext');
+require('../../util/codemirror/gfm-growi.mode');
+// import modes to highlight
+require('codemirror/mode/clike/clike');
+require('codemirror/mode/css/css');
+require('codemirror/mode/django/django');
+require('codemirror/mode/erlang/erlang');
+require('codemirror/mode/gfm/gfm');
+require('codemirror/mode/go/go');
+require('codemirror/mode/javascript/javascript');
+require('codemirror/mode/jsx/jsx');
+require('codemirror/mode/mathematica/mathematica');
+require('codemirror/mode/nginx/nginx');
+require('codemirror/mode/perl/perl');
+require('codemirror/mode/php/php');
+require('codemirror/mode/python/python');
+require('codemirror/mode/r/r');
+require('codemirror/mode/ruby/ruby');
+require('codemirror/mode/rust/rust');
+require('codemirror/mode/sass/sass');
+require('codemirror/mode/shell/shell');
+require('codemirror/mode/sql/sql');
+require('codemirror/mode/stex/stex');
+require('codemirror/mode/stylus/stylus');
+require('codemirror/mode/swift/swift');
+require('codemirror/mode/toml/toml');
+require('codemirror/mode/vb/vb');
+require('codemirror/mode/vue/vue');
+require('codemirror/mode/xml/xml');
+require('codemirror/mode/yaml/yaml');
 
 
 const MARKDOWN_TABLE_ACTIVATED_CLASS = 'markdown-table-activated';
@@ -820,7 +848,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const mode = this.state.isGfmMode ? 'gfm' : undefined;
+    const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
@@ -857,8 +885,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
             gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
             // match-highlighter, matchesonscrollbar, annotatescrollbar options
             highlightSelectionMatches: { annotateScrollbar: true },
-            // markdown mode options
-            highlightFormatting: true,
             // continuelist, indentlist
             extraKeys: {
               Enter: this.handleEnterKey,

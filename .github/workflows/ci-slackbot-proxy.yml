@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - release/**
+      - rc/**
       - tmp/**
     paths:
       - .github/workflows/ci-slackbot-proxy.yml

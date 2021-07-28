@@ -164,8 +164,7 @@ export default class AdminUsersContainer extends Container {
       sendEmail,
     });
     await this.retrieveUsersByPagingNum(this.state.activePage);
-    const { invitedUserList } = response.data;
-    return invitedUserList;
+    return response.data;
   }
 
   /**

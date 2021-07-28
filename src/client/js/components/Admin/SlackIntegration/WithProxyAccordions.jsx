@@ -22,15 +22,18 @@ const BotCreateProcess = () => {
         {t('admin:slack_integration.accordion.create_bot')}
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
-      {/* TODO: If Bot-manual section of docs is merged into master, show links and add an appropriate links by GW-5614. */}
-      {/* <a href="#">
+      <a
+        href={t('admin:slack_integration.docs_url.custom_bot_with_proxy_setting')}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_create_a_bot')}
             <i className="fa fa-external-link ml-2" aria-hidden="true" />
           </small>
         </p>
-      </a> */}
+      </a>
     </div>
   );
 };
@@ -43,15 +46,18 @@ const BotInstallProcessForOfficialBot = () => {
         {t('admin:slack_integration.accordion.install_now')}
         <i className="fa fa-external-link ml-2" aria-hidden="true" />
       </button>
-      {/* TODO: If Bot-manual section of docs is merged into master, show links and add an appropriate links by GW-5614. */}
-      {/* <a href="#">
+      <a
+        href={t('admin:slack_integration.docs_url.official_bot_setting')}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_install')}
             <i className="fa fa-external-link ml-2" aria-hidden="true" />
           </small>
         </p>
-      </a> */}
+      </a>
     </div>
   );
 };
@@ -303,10 +309,6 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
-      title: 'set_proxy_url_on_growi',
-      content: <RegisteringProxyUrlProcess />,
-    },
-    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -328,7 +330,7 @@ const WithProxyAccordions = (props) => {
       content: <BotInstallProcessForCustomBotWithProxy />,
     },
     '③': {
-      title: 'register_for_growi_official_bot_proxy_service',
+      title: 'register_for_growi_custom_bot_proxy',
       content: <GeneratingTokensAndRegisteringProxyServiceProcess
         growiUrl={props.appContainer.config.crowi.url}
         slackAppIntegrationId={props.slackAppIntegrationId}
