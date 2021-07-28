@@ -20,20 +20,25 @@ class UserGroupPageBody extends React.Component {
       isDeleteModalShow: false,
     };
 
+    if (typeof window !== "undefined") {
+      this.xss = window.xss;
+    }
+
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
     this.addUserGroup = this.addUserGroup.bind(this);
     this.deleteUserGroupById = this.deleteUserGroupById.bind(this);
   }
 
+
   syncUserGroupAndRelations() {
     this.props.mutateGroups();
     this.props.mutateRelations();
   }
 
-  async showDeleteModal(group) {
+  showDeleteModal(group) {
     try {
-      await this.syncUserGroupAndRelations();
+      this.syncUserGroupAndRelations();
 
       this.setState({
         selectedUserGroup: group,
@@ -77,7 +82,7 @@ class UserGroupPageBody extends React.Component {
         isDeleteModalShow: false,
       });
 
-      toastSuccess(`Deleted group "${res.data.userGroup.name}"`);
+      toastSuccess(`Deleted a group "${this.xss.process(res.data.userGroup.name)}"`);
     }
     catch (err) {
       toastError(new Error('Unable to delete the group'));
