@@ -3,27 +3,27 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { I18nextProvider } from 'react-i18next';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
-import ErrorBoundary from './components/ErrorBoudary';
+import ErrorBoundary from '../components/ErrorBoudary';
 
-import AdminHome from './components/Admin/AdminHome/AdminHome';
-import UserGroupDetailPage from './components/Admin/UserGroupDetail/UserGroupDetailPage';
-import NotificationSetting from './components/Admin/Notification/NotificationSetting';
-import SlackIntegrationNotificationSetting from './components/Admin/Notification/SlackIntegrationNotificationSetting';
-import SlackIntegration from './components/Admin/SlackIntegration/SlackIntegration';
-import ManageGlobalNotification from './components/Admin/Notification/ManageGlobalNotification';
-import MarkdownSetting from './components/Admin/MarkdownSetting/MarkDownSetting';
-import UserManagement from './components/Admin/UserManagement';
-import AppSettingsPage from './components/Admin/App/AppSettingsPage';
-import SecurityManagement from './components/Admin/Security/SecurityManagement';
-import ManageExternalAccount from './components/Admin/ManageExternalAccount';
-import UserGroupPage from './components/Admin/UserGroup/UserGroupPage';
-import Customize from './components/Admin/Customize/Customize';
-import ImportDataPage from './components/Admin/ImportDataPage';
-import ExportArchiveDataPage from './components/Admin/ExportArchiveDataPage';
-import FullTextSearchManagement from './components/Admin/FullTextSearchManagement';
-import AdminNavigation from './components/Admin/Common/AdminNavigation';
+import AdminHome from '../components/Admin/AdminHome/AdminHome';
+import UserGroupDetailPage from '../components/Admin/UserGroupDetail/UserGroupDetailPage';
+import NotificationSetting from '../components/Admin/Notification/NotificationSetting';
+import SlackIntegrationNotificationSetting from '../components/Admin/Notification/SlackIntegrationNotificationSetting';
+import SlackIntegration from '../components/Admin/SlackIntegration/SlackIntegration';
+import ManageGlobalNotification from '../components/Admin/Notification/ManageGlobalNotification';
+import MarkdownSetting from '../components/Admin/MarkdownSetting/MarkDownSetting';
+import UserManagement from '../components/Admin/UserManagement';
+import AppSettingsPage from '../components/Admin/App/AppSettingsPage';
+import SecurityManagement from '../components/Admin/Security/SecurityManagement';
+import ManageExternalAccount from '../components/Admin/ManageExternalAccount';
+import UserGroupPage from '../components/Admin/UserGroup/UserGroupPage';
+import Customize from '../components/Admin/Customize/Customize';
+import ImportDataPage from '../components/Admin/ImportDataPage';
+import ExportArchiveDataPage from '../components/Admin/ExportArchiveDataPage';
+import FullTextSearchManagement from '../components/Admin/FullTextSearchManagement';
+import AdminNavigation from '../components/Admin/Common/AdminNavigation';
 
 import NavigationContainer from './services/NavigationContainer';
 

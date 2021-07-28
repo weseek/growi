@@ -1,15 +1,15 @@
 import React from 'react';
 
-import loggerFactory from '@alias/logger';
 import Xss from '@commons/service/xss';
+import loggerFactory from '~/utils/logger';
 
-import GrowiNavbar from './components/Navbar/GrowiNavbar';
-import GrowiNavbarBottom from './components/Navbar/GrowiNavbarBottom';
-import HotkeysManager from './components/Hotkeys/HotkeysManager';
+import GrowiNavbar from '../components/Navbar/GrowiNavbar';
+import GrowiNavbarBottom from '../components/Navbar/GrowiNavbarBottom';
+import HotkeysManager from '../components/Hotkeys/HotkeysManager';
+import PageCreateModal from '../components/PageCreateModal';
 
 import AppContainer from './services/AppContainer';
 import SocketIoContainer from './services/SocketIoContainer';
-import PageCreateModal from './components/PageCreateModal';
 
 const logger = loggerFactory('growi:cli:app');
 

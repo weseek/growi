@@ -16,7 +16,7 @@ export default class GrowiPlugin {
     // import plugin definitions
     let definitions = [];
     try {
-      definitions = require('@tmp/plugins/plugin-definitions');
+      definitions = require('^/tmp/plugins/plugin-definitions');
     }
     catch (e) {
       logger.error('failed to load definitions');

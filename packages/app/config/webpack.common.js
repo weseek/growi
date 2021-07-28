@@ -1,56 +1,55 @@
 /**
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
+const path = require('path');
 const webpack = require('webpack');
 
 /*
- * Webpack Plugins
- */
+  * Webpack Plugins
+  */
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
-const helpers = require('../src/lib/util/helpers');
-
 /*
- * Webpack configuration
- *
- * See: http://webpack.github.io/docs/configuration.html#cli
- */
+  * Webpack configuration
+  *
+  * See: http://webpack.github.io/docs/configuration.html#cli
+  */
 module.exports = (options) => {
   return {
     mode: options.mode,
     entry: Object.assign({
-      'js/boot':                      './src/client/js/boot',
-      'js/app':                       './src/client/js/app',
-      'js/admin':                     './src/client/js/admin',
-      'js/nologin':                   './src/client/js/nologin',
-      'js/legacy':                    './src/client/js/legacy/crowi',
-      'js/legacy-presentation':       './src/client/js/legacy/crowi-presentation',
-      'js/plugin':                    './src/client/js/plugin',
-      'js/ie11-polyfill':             './src/client/js/ie11-polyfill',
-      'js/hackmd-agent':              './src/client/js/hackmd-agent',
-      'js/hackmd-styles':             './src/client/js/hackmd-styles',
+      'js/boot':                      './src/client/boot',
+      'js/app':                       './src/client/app',
+      'js/admin':                     './src/client/admin',
+      'js/nologin':                   './src/client/nologin',
+      'js/legacy':                    './src/client/legacy/crowi',
+      'js/legacy-presentation':       './src/client/legacy/crowi-presentation',
+      'js/plugin':                    './src/client/plugin',
+      'js/ie11-polyfill':             './src/client/ie11-polyfill',
+      'js/hackmd-agent':              './src/client/hackmd-agent',
+      'js/hackmd-styles':             './src/client/hackmd-styles',
       // styles
-      'styles/style-app':             './src/client/styles/scss/style-app.scss',
-      'styles/style-presentation':    './src/client/styles/scss/style-presentation.scss',
+      'styles/style-app':             './src/styles/style-app.scss',
+      'styles/style-presentation':    './src/styles/style-presentation.scss',
       // themes
-      'styles/theme-default':         './src/client/styles/scss/theme/default.scss',
-      'styles/theme-nature':          './src/client/styles/scss/theme/nature.scss',
-      'styles/theme-mono-blue':       './src/client/styles/scss/theme/mono-blue.scss',
-      'styles/theme-future':          './src/client/styles/scss/theme/future.scss',
-      'styles/theme-kibela':          './src/client/styles/scss/theme/kibela.scss',
-      'styles/theme-halloween':       './src/client/styles/scss/theme/halloween.scss',
-      'styles/theme-christmas':          './src/client/styles/scss/theme/christmas.scss',
-      'styles/theme-wood':          './src/client/styles/scss/theme/wood.scss',
-      'styles/theme-island':      './src/client/styles/scss/theme/island.scss',
-      'styles/theme-antarctic':      './src/client/styles/scss/theme/antarctic.scss',
-      'styles/theme-spring':         './src/client/styles/scss/theme/spring.scss',
-      'styles/theme-hufflepuff':         './src/client/styles/scss/theme/hufflepuff.scss',
+      'styles/theme-default':         './src/styles/theme/default.scss',
+      'styles/theme-nature':          './src/styles/theme/nature.scss',
+      'styles/theme-mono-blue':       './src/styles/theme/mono-blue.scss',
+      'styles/theme-future':          './src/styles/theme/future.scss',
+      'styles/theme-kibela':          './src/styles/theme/kibela.scss',
+      'styles/theme-halloween':       './src/styles/theme/halloween.scss',
+      'styles/theme-christmas':       './src/styles/theme/christmas.scss',
+      'styles/theme-wood':            './src/styles/theme/wood.scss',
+      'styles/theme-island':          './src/styles/theme/island.scss',
+      'styles/theme-antarctic':       './src/styles/theme/antarctic.scss',
+      'styles/theme-spring':          './src/styles/theme/spring.scss',
+      'styles/theme-hufflepuff':      './src/styles/theme/hufflepuff.scss',
       // styles for external services
-      'styles/style-hackmd':          './src/client/styles/hackmd/style.scss',
+      'styles/style-hackmd':          './src/styles-hackmd/style.scss',
     }, options.entry || {}), // Merge with env dependent settings
     output: Object.assign({
-      path: helpers.root('public'),
+      path: path.resolve(__dirname, '../public'),
       publicPath: '/',
       filename: '[name].bundle.js',
     }, options.output || {}), // Merge with env dependent settings
@@ -62,16 +61,15 @@ module.exports = (options) => {
       hljs: 'hljs',
     },
     resolve: {
-      extensions: ['.js', '.jsx', '.json'],
-      modules: ((options.resolve && options.resolve.modules) || []).concat([helpers.root('node_modules')]),
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+      // modules: ((options.resolve && options.resolve.modules) || []).concat([path.resolve(__dirname, 'node_modules')]),
       alias: {
-        '@root': helpers.root('/'),
-        '@commons': helpers.root('src/lib'),
-        '@client': helpers.root('src/client'),
-        '@tmp': helpers.root('tmp'),
-        '@alias/logger': helpers.root('src/lib/service/logger'),
-        // replace bunyan
-        bunyan: 'browser-bunyan',
+        '~': path.resolve(__dirname, '../src'), // src
+        '^': path.resolve(__dirname, '../'), // project root
+        '@root': path.resolve(__dirname, '../'),
+        '@commons': path.resolve(__dirname, '../src/lib'),
+        '@client': path.resolve(__dirname, '../src/client'),
+        '@alias/logger': path.resolve(__dirname, '../src/utils/logger'),
       },
     },
     module: {
@@ -79,11 +77,11 @@ module.exports = (options) => {
         {
           test: /.jsx?$/,
           exclude: {
-            test:    helpers.root('node_modules'),
+            test: path.resolve(__dirname, '../node_modules'),
             exclude: [ // include as a result
-              { test: helpers.root('node_modules', 'growi-plugin-') },
-              helpers.root('node_modules/growi-commons'),
-              helpers.root('node_modules/codemirror/src'),
+              { test: path.resolve(__dirname, '../node_modules/growi-plugin-') },
+              path.resolve(__dirname, '../node_modules/growi-commons'),
+              path.resolve(__dirname, '../node_modules/codemirror/src'),
             ],
           },
           use: [{
@@ -98,14 +96,14 @@ module.exports = (options) => {
           },
         },
         /*
-         * File loader for supporting images, for example, in CSS files.
-         */
+          * File loader for supporting images, for example, in CSS files.
+          */
         {
           test: /\.(jpg|png|gif)$/,
           use: 'file-loader',
         },
         /* File loader for supporting fonts, for example, in CSS files.
-        */
+         */
         {
           test: /\.(eot|woff2?|svg|ttf)([?]?.*)$/,
           use: 'null-loader',

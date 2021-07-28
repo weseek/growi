@@ -7,8 +7,8 @@ import { i18nFactory } from './util/i18n';
 
 import AppContainer from './services/AppContainer';
 
-import InstallerForm from './components/InstallerForm';
-import LoginForm from './components/LoginForm';
+import InstallerForm from '../components/InstallerForm';
+import LoginForm from '../components/LoginForm';
 
 const i18n = i18nFactory();
 

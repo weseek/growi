@@ -2,19 +2,19 @@
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
 
+const path = require('path');
+
 /**
- * Webpack Plugins
- */
+  * Webpack Plugins
+  */
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const helpers = require('../src/lib/util/helpers');
-
 /**
- * Webpack Constants
- */
+  * Webpack Constants
+  */
 const { ANALYZE } = process.env;
 
 module.exports = require('./webpack.common')({
@@ -44,12 +44,12 @@ module.exports = require('./webpack.common')({
           },
           'sass-loader',
         ],
-        exclude: [helpers.root('src/client/js/legacy')],
+        exclude: [path.resolve(__dirname, '../src/client/legacy')],
       },
       {
         test: /\.(css|scss)$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
-        include: [helpers.root('src/client/js/legacy')],
+        include: [path.resolve(__dirname, '../src/client/legacy')],
       },
     ],
   },
@@ -61,7 +61,7 @@ module.exports = require('./webpack.common')({
 
     new BundleAnalyzerPlugin({
       analyzerMode: ANALYZE ? 'static' : 'disabled',
-      reportFilename: helpers.root('report/bundle-analyzer.html'),
+      reportFilename: path.resolve(__dirname, '../report/bundle-analyzer.html'),
       openAnalyzer: false,
     }),
 
