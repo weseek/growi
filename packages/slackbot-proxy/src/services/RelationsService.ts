@@ -39,12 +39,23 @@ export class RelationsService {
     return result;
   }
 
-  isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string):boolean {
+  isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):boolean {
+    const distanceHoursToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
+
+    if (distanceHoursToExpiredAt < 0) {
+      console.log('sync');
+    }
+
+    // 24 hours
+    if (distanceHoursToExpiredAt < 1000 * 60 * 60 * 24) {
+      console.log('update');
+    }
+
     return relation.supportedCommandsForSingleUse.includes(growiCommandType);
   }
 
-  isSupportedGrowiCommandForBroadcastUse(relation:Relation, growiCommandType:string):boolean {
-    return relation.supportedCommandsForBroadcastUse.includes(growiCommandType);
-  }
+  // isSupportedGrowiCommandForBroadcastUse(relation:Relation, growiCommandType:string):boolean {
+  //   return relation.supportedCommandsForBroadcastUse.includes(growiCommandType);
+  // }
 
 }

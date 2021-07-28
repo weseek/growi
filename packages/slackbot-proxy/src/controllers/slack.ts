@@ -163,24 +163,25 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    const syncedRelations = await this.relationsService.syncSupportedGrowiCommands(relations);
+    // const syncedRelations = await this.relationsService.syncSupportedGrowiCommands(relations);
 
-    body.growiUrisForSingleUse = syncedRelations.filter((relation) => {
-      return this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType);
+    const baseDate = new Date();
+    body.growiUrisForSingleUse = relations.filter((relation) => {
+      return this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
     }).map(relation => relation.growiUri);
 
-    if (body.growiUrisForSingleUse.length > 0) {
-      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
-    }
+    // if (body.growiUrisForSingleUse.length > 0) {
+    //   return this.selectGrowiService.process(growiCommand, authorizeResult, body);
+    // }
 
-    const relationsForBroadcastUse = syncedRelations.filter((relation) => {
-      return this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType);
-    });
+    // const relationsForBroadcastUse = syncedRelations.filter((relation) => {
+    //   return this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType);
+    // });
 
     /*
      * forward to GROWI server
      */
-    this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+    // this.sendCommand(growiCommand, relationsForBroadcastUse, body);
   }
 
   @Post('/interactions')
