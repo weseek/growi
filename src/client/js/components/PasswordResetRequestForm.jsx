@@ -19,25 +19,14 @@ const PasswordResetRequestForm = (props) => {
   const sendPasswordResetRequestMail = async(e) => {
     e.preventDefault();
     if (email == null) {
-      toastError('err', 'email is required.');
+      toastError('err', 'Email is required.');
       return;
     }
 
     try {
-      const res = await appContainer.apiPost('/forgot-password', { email });
-      console.log('resHOge', res);
-      // const { failedToSendEmail } = res.data;
-      // if (failedToSendEmail == null) {
-      // const msg = `Email has been sent<br>・${email}`;
-      // toastSuccess(msg);
-      // }
-      // else {
-      //   const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
-      //   toastError(msg);
-      // }
+      await appContainer.apiPost('/forgot-password', { email });
     }
     catch (err) {
-      // console.log('err', err);
       toastError('err', err);
     }
   };
