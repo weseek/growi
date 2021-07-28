@@ -163,16 +163,20 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    // const syncedRelations = await this.relationsService.syncSupportedGrowiCommands(relations);
-
     const baseDate = new Date();
-    body.growiUrisForSingleUse = relations.filter((relation) => {
-      return this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
-    }).map(relation => relation.growiUri);
 
-    // if (body.growiUrisForSingleUse.length > 0) {
-    //   return this.selectGrowiService.process(growiCommand, authorizeResult, body);
-    // }
+    const relationsForSingleUse:Relation[] = [];
+    await Promise.all(relations.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupported) {
+        relationsForSingleUse.push(relation);
+      }
+    }));
+
+    if (relationsForSingleUse.length > 0) {
+      body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
+      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
+    }
 
     // const relationsForBroadcastUse = syncedRelations.filter((relation) => {
     //   return this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType);

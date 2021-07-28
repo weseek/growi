@@ -5,6 +5,10 @@ import { addHours } from 'date-fns';
 import { Relation } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('slackbot-proxy:services:RelationsService');
+
 @Service()
 export class RelationsService {
 
@@ -21,34 +25,38 @@ export class RelationsService {
     });
   }
 
-  async syncSupportedGrowiCommands(relations:Relation[]): Promise<Relation[]> {
-    const result = await Promise.all(relations.map(async(relation) => {
-      if (!relation.isExpiredCommands()) {
-        return relation;
-      }
+  async syncSupportedGrowiCommands(relation:Relation): Promise<Relation> {
+    const res = await this.getSupportedGrowiCommands(relation);
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
+    relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
+    relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
+    relation.expiredAtCommands = addHours(new Date(), 48);
 
-      const res = await this.getSupportedGrowiCommands(relation);
-      const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
-      relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
-      relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
-      relation.expiredAtCommands = addHours(new Date(), 48);
-
-      return this.relationRepository.save(relation);
-    }));
-
-    return result;
+    return this.relationRepository.save(relation);
   }
 
-  isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):boolean {
+  async isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
     const distanceHoursToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
 
     if (distanceHoursToExpiredAt < 0) {
-      console.log('sync');
+      try {
+        const syncedRelation = await this.syncSupportedGrowiCommands(relation);
+        return syncedRelation.supportedCommandsForSingleUse.includes(growiCommandType);
+      }
+      catch (err) {
+        logger.error(err);
+        return false;
+      }
     }
 
     // 24 hours
     if (distanceHoursToExpiredAt < 1000 * 60 * 60 * 24) {
-      console.log('update');
+      try {
+        this.syncSupportedGrowiCommands(relation);
+      }
+      catch (err) {
+        logger.error(err);
+      }
     }
 
     return relation.supportedCommandsForSingleUse.includes(growiCommandType);
