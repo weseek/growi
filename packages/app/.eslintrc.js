@@ -3,6 +3,7 @@ module.exports = {
   extends: [
     'weseek',
     'weseek/react',
+    'weseek/typescript',
     "plugin:jest/recommended",
   ],
   env: {
@@ -21,7 +22,13 @@ module.exports = {
     "jest",
   ],
   rules: {
-    'indent': [
+    'import/prefer-default-export': 'off',
+    'no-restricted-imports': ['error', {
+      name: 'axios',
+      message: 'Please use src/utils/axios instead.',
+    }],
+    '@typescript-eslint/no-explicit-any': 'off',
+    indent: [
       'error',
       2,
       {
@@ -32,7 +39,5 @@ module.exports = {
         FunctionExpression: { body: 1, parameters: 2 },
       },
     ],
-    // eslint-plugin-import rules
-    'import/no-unresolved': [2, { ignore: ['^@'] }], // ignore @alias/..., @commons/..., ...
   },
 };
