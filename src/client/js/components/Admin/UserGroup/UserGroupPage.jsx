@@ -30,7 +30,6 @@ class UserGroupPageBody extends React.Component {
     this.deleteUserGroupById = this.deleteUserGroupById.bind(this);
   }
 
-
   syncUserGroupAndRelations() {
     this.props.mutateGroups();
     this.props.mutateRelations();
