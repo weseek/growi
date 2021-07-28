@@ -4,13 +4,14 @@
   "license": "MIT",
   "scripts": {
     "build": "env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
-    "prebuild": "node bin/generate-plugin-definitions-source.js && node bin/download-cdn-resources.js",
+    "prebuild": "yarn ts-node bin/generate-plugin-definitions-source.ts && node bin/download-cdn-resources.js",
     "lint:js:fix": "eslint \"**/*.{js,jsx}\" --fix",
     "lint:js": "eslint \"**/*.{js,jsx}\"",
     "lint:styles:fix": "stylelint --fix src/**/*.scss",
     "lint:styles": "stylelint src/**/*.scss",
     "lint:swagger2openapi": "node node_modules/swagger2openapi/oas-validate tmp/swagger.json",
-    "lint": "npm-run-all -p lint:js lint:styles lint:swagger2openapi"
+    "lint": "npm-run-all -p lint:js lint:styles lint:swagger2openapi",
+    "ts-node": "ts-node -r tsconfig-paths/register -r dotenv-flow/config"
   },
   "// comments for dependencies": {
     "openid-client": "Node.js 12 or higher is required for openid-client@3 and above.",
@@ -217,6 +218,12 @@
     "terser-webpack-plugin": "^4.1.0",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
+    "ts-jest": "^26.5.4",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.6",
+    "tsc-alias": "^1.2.9",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.2.3",
     "unstated": "^2.1.1",
     "webpack": "^4.39.3",
     "webpack-assets-manifest": "^3.1.1",
