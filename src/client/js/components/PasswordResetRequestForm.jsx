@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { /* toastSuccess, */ toastError } from '../util/apiNotification';
+import { toastSuccess, toastError } from '../util/apiNotification';
 
 import AppContainer from '../services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
@@ -19,12 +19,13 @@ const PasswordResetRequestForm = (props) => {
   const sendPasswordResetRequestMail = async(e) => {
     e.preventDefault();
     if (email == null) {
-      toastError('err', 'Email is required.');
+      toastError('err', t('forgot_password.email_is_required'));
       return;
     }
 
     try {
       await appContainer.apiPost('/forgot-password', { email });
+      toastSuccess(t('forgot_password.success_to_send_email'));
     }
     catch (err) {
       toastError('err', err);
@@ -43,7 +44,7 @@ const PasswordResetRequestForm = (props) => {
           className="btn btn-lg btn-primary btn-block"
           type="submit"
         >
-          Reset Password
+          {t('forgot_password.send')}
         </button>
       </div>
       <a href="/login">

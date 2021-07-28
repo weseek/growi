@@ -840,13 +840,15 @@
   },
   "forgot_password":{
     "forgot_password": "パスワードをお忘れですか?",
-    "send_email": "送信",
+    "send": "送信",
     "return_to_login": "ログイン画面に戻る",
     "reset_password": "パスワード リセット",
     "sign_in_instead": "ログインする",
     "password_reset_request_desc": "ここからパスワードリセットできます",
     "password_reset_excecution_desc": "新しいパスワードを入力してください",
     "new_password": "新しいパスワード",
-    "confirm_new_password": "新しいパスワードの確認"
+    "confirm_new_password": "新しいパスワードの確認",
+    "email_is_required": "メールを入力してください",
+    "success_to_send_email": "メールを送信しました"
   }
 }
