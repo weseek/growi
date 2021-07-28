@@ -8,7 +8,6 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 
 const PasswordResetRequestForm = (props) => {
-  // TODO: apply i18n by GW-6861
   const { t, appContainer } = props;
   const [email, setEmail] = useState();
 
