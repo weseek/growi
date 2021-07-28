@@ -3,6 +3,7 @@ const loggerFactory = require('@alias/logger');
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
+const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
 const { query } = require('express-validator');
@@ -308,6 +309,17 @@ module.exports = (crowi) => {
         }
       });
 
+      const PageTagRelation = mongoose.model('PageTagRelation');
+      const ids = result.pages.map((page) => { return page._id });
+      const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
+      result.pages.forEach((page) => {
+        page.tags = [];
+        relations.forEach((relation) => {
+          if (relation.relatedPage.toString() === page._id.toString()) {
+            page.tags.push(relation.relatedTag);
+          }
+        });
+      });
       return res.apiv3(result);
     }
     catch (err) {

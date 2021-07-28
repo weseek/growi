@@ -768,13 +768,6 @@ module.exports = function(crowi) {
     builder.addConditionToPagenate(opt.offset, opt.limit, sortOpt);
     builder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
     const pages = await builder.query.lean().exec('find');
-    const PageTagRelation = mongoose.model('PageTagRelation');
-    await Promise.all(pages.map(async(page) => {
-      const relations = await PageTagRelation.find({ relatedPage: page._id }).populate('relatedTag');
-      page.tags = relations.map((relation) => {
-        return relation.relatedTag;
-      });
-    }));
 
     const result = {
       pages, totalCount, offset: opt.offset, limit: opt.limit,
