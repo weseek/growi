@@ -315,7 +315,9 @@ module.exports = (crowi) => {
       const relationsMap = new Map();
       relations.forEach((relation) => {
         const pageId = relation.relatedPage.toString();
-        relationsMap.set(pageId, []);
+        if (!relationsMap.has(pageId)) {
+          relationsMap.set(pageId, []);
+        }
         relationsMap.get(pageId).push(relation.relatedTag);
       });
       result.pages.forEach((page) => {
