@@ -35,7 +35,7 @@ export class RelationsService {
     return this.relationRepository.save(relation);
   }
 
-  async syncAndReturnBool(relation:Relation, baseDate:Date, discriminantWhetherRelationIsSupported:(relation:Relation)=>boolean):Promise<boolean> {
+  async syncAndReturnIsSupported(relation:Relation, baseDate:Date, discriminantWhetherRelationIsSupported:(relation:Relation)=>boolean):Promise<boolean> {
     const distanceHoursToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
 
     if (distanceHoursToExpiredAt < 0) {
@@ -63,11 +63,11 @@ export class RelationsService {
   }
 
   async isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
-    return this.syncAndReturnBool(relation, baseDate, relation => relation.supportedCommandsForSingleUse.includes(growiCommandType));
+    return this.syncAndReturnIsSupported(relation, baseDate, relation => relation.supportedCommandsForSingleUse.includes(growiCommandType));
   }
 
   async isSupportedGrowiCommandForBroadcastUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
-    return this.syncAndReturnBool(relation, baseDate, relation => relation.supportedCommandsForBroadcastUse.includes(growiCommandType));
+    return this.syncAndReturnIsSupported(relation, baseDate, relation => relation.supportedCommandsForBroadcastUse.includes(growiCommandType));
   }
 
 }
