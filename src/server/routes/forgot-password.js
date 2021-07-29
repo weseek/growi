@@ -3,7 +3,7 @@ const ApiResponse = require('../util/apiResponse');
 
 module.exports = function(crowi, app) {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
-  const { /* appService, */ mailService, configManager } = crowi;
+  const { appService, mailService, configManager } = crowi;
   const path = require('path');
   const actions = {};
   const api = {};
@@ -18,17 +18,16 @@ module.exports = function(crowi, app) {
   };
 
 
-  async function sendPasswordResetEmail(email, i18n) {
+  async function sendPasswordResetEmail(email, url, i18n) {
     return mailService.send({
       to: email,
       subject: 'Password Reset',
       template: path.join(crowi.localeDir, `${i18n}/notifications/passwordReset.txt`),
-      // TODO: need to set appropriate values by GW-6828
-      // vars: {
-      //   appTitle: appService.getAppTitle(),
-      //   email: 'hoge@gmail.com',
-      //   url: 'https://www.google.com/',
-      // },
+      vars: {
+        appTitle: appService.getAppTitle(),
+        email,
+        url,
+      },
     });
   }
 
@@ -36,10 +35,13 @@ module.exports = function(crowi, app) {
     const { email } = req.body;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = req.language || grobalLang;
+    const appUrl = appService.getSiteUrl();
 
     try {
-      await PasswordResetOrder.createPasswordResetOrder(email);
-      await sendPasswordResetEmail(email, i18n);
+      const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
+      const url = new URL(`/forgot-password/token?${passwordResetOrderData.token}`, appUrl);
+      const oneTimeUrl = url.href;
+      await sendPasswordResetEmail(email, oneTimeUrl, i18n);
       return res.json(ApiResponse.success());
     }
     catch (err) {
