@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "env-cmd -f config/env.prod.js webpack --config config/webpack.prod.js --profile --bail",
-    "// prebuild": "yarn ts-node bin/generate-plugin-definitions-source.ts && yarn ts-node bin/download-cdn-resources.ts",
+    "prebuild": "yarn ts-node bin/generate-plugin-definitions-source.ts && yarn ts-node bin/download-cdn-resources.ts",
     "lint:js:fix": "eslint \"**/*.{js,jsx}\" --fix",
     "lint:js": "eslint \"**/*.{js,jsx}\"",
     "lint:styles:fix": "stylelint --fix src/**/*.scss",
