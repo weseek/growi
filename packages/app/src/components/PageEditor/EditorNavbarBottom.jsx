@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import { Collapse, Button } from 'reactstrap';
 
-import NavigationContainer from '../../services/NavigationContainer';
-import EditorContainer from '../../services/EditorContainer';
-import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
+import EditorContainer from '~/client/services/EditorContainer';
+import AppContainer from '~/client/services/AppContainer';
 import SlackNotification from '../SlackNotification';
 import SlackLogo from '../SlackLogo';
 import { withUnstatedContainers } from '../UnstatedUtils';

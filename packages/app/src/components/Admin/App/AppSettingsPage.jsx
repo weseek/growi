@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
-import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminAppContainer from '../../../services/AdminAppContainer';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 import AppSettingsPageContents from './AppSettingsPageContents';
 

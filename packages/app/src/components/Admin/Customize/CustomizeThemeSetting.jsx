@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import CustomizeThemeOptions from './CustomizeThemeOptions';
-import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 class CustomizeThemeSetting extends React.Component {

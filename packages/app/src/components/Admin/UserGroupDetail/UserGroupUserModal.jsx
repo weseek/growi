@@ -7,8 +7,8 @@ import {
 
 import UserGroupUserFormByInput from './UserGroupUserFormByInput';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
 import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
 

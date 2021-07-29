@@ -4,8 +4,8 @@ import loggerFactory from '@alias/logger';
 
 import { withTranslation } from 'react-i18next';
 
-import PageContainer from '../services/PageContainer';
-import NavigationContainer from '../services/NavigationContainer';
+import PageContainer from '~/client/services/PageContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 

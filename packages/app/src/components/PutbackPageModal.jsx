@@ -9,7 +9,7 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import PageContainer from '../services/PageContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 

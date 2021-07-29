@@ -6,9 +6,9 @@ import loggerFactory from '@alias/logger';
 import { localeMetadatas } from '../../../util/i18n';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AdminAppContainer from '../../../services/AdminAppContainer';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:appSettings');

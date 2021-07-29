@@ -7,7 +7,7 @@ import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 import CopyDropdown from '../Page/CopyDropdown';
 
 const ShareLinkList = (props) => {

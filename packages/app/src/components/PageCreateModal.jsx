@@ -12,10 +12,10 @@ import {
 } from '@commons/util/path-utils';
 import { pathUtils } from 'growi-commons';
 
-import AppContainer from '../services/AppContainer';
-import NavigationContainer from '../services/NavigationContainer';
+import AppContainer from '~/client/services/AppContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 

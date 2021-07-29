@@ -38,15 +38,15 @@ import PersonalSettings from '../components/Me/PersonalSettings';
 import GrowiSubNavigation from '../components/Navbar/GrowiSubNavigation';
 import GrowiSubNavigationSwitcher from '../components/Navbar/GrowiSubNavigationSwitcher';
 
-import NavigationContainer from './services/NavigationContainer';
-import PageContainer from './services/PageContainer';
-import PageHistoryContainer from './services/PageHistoryContainer';
-import RevisionComparerContainer from './services/RevisionComparerContainer';
-import CommentContainer from './services/CommentContainer';
-import EditorContainer from './services/EditorContainer';
-import TagContainer from './services/TagContainer';
-import PersonalContainer from './services/PersonalContainer';
-import PageAccessoriesContainer from './services/PageAccessoriesContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
+import PageContainer from '~/client/services/PageContainer';
+import PageHistoryContainer from '~/client/services/PageHistoryContainer';
+import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
+import CommentContainer from '~/client/services/CommentContainer';
+import EditorContainer from '~/client/services/EditorContainer';
+import TagContainer from '~/client/services/TagContainer';
+import PersonalContainer from '~/client/services/PersonalContainer';
+import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 
 import { appContainer, componentMappings } from './base';
 

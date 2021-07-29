@@ -11,10 +11,10 @@ import {
 } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import ReactCrop from 'react-image-crop';
-import AppContainer from '../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import 'react-image-crop/dist/ReactCrop.css';
-import { toastError } from '../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 const logger = loggerFactory('growi:ImageCropModal');
 

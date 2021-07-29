@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminHomeContainer from '../../../services/AdminHomeContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 
 class SystemInformationTable extends React.Component {
 

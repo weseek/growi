@@ -7,9 +7,9 @@ import ImportOptionForPages from '@commons/models/admin/import-option-for-pages'
 import ImportOptionForRevisions from '@commons/models/admin/import-option-for-revisions';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
-import AppContainer from '../../../../services/AppContainer';
-import AdminSocketIoContainer from '../../../../services/AdminSocketIoContainer';
-import { toastSuccess, toastError } from '../../../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
 import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';

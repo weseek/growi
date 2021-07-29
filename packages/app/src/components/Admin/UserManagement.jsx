@@ -6,10 +6,10 @@ import PaginationWrapper from '../PaginationWrapper';
 
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import { toastError } from '../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
-import AdminUsersContainer from '../../services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
 import PasswordResetModal from './Users/PasswordResetModal';
 import InviteUserControl from './Users/InviteUserControl';

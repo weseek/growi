@@ -8,10 +8,10 @@ import {
 
 import * as toastr from 'toastr';
 
-import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
-import CommentContainer from '../../services/CommentContainer';
-import EditorContainer from '../../services/EditorContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
+import CommentContainer from '~/client/services/CommentContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 import GrowiRenderer from '../../util/GrowiRenderer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';

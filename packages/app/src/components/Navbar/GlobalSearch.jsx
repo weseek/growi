@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import NavigationContainer from '../../services/NavigationContainer';
+import AppContainer from '~/client/services/AppContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 
 import SearchForm from '../SearchForm';
 

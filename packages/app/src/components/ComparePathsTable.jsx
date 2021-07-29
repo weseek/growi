@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import PageContainer from '../services/PageContainer';
+import PageContainer from '~/client/services/PageContainer';
 import { convertToNewAffiliationPath } from '../../../lib/util/path-utils';
 
 function ComparePathsTable(props) {

@@ -8,9 +8,9 @@ import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import NavigationContainer from '../../services/NavigationContainer';
-import PageContainer from '../../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 import CopyDropdown from '../Page/CopyDropdown';
 import TagLabels from '../Page/TagLabels';

@@ -5,9 +5,9 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import { toastError } from '../util/apiNotification';
-import PageContainer from '../services/PageContainer';
-import AppContainer from '../services/AppContainer';
+import { toastError } from '~/client/util/apiNotification';
+import PageContainer from '~/client/services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 class BookmarkButton extends React.Component {
 

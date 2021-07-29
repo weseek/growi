@@ -8,8 +8,8 @@ import GrowiNavbarBottom from '../components/Navbar/GrowiNavbarBottom';
 import HotkeysManager from '../components/Hotkeys/HotkeysManager';
 import PageCreateModal from '../components/PageCreateModal';
 
-import AppContainer from './services/AppContainer';
-import SocketIoContainer from './services/SocketIoContainer';
+import AppContainer from '~/client/services/AppContainer';
+import SocketIoContainer from '~/client/services/SocketIoContainer';
 
 const logger = loggerFactory('growi:cli:app');
 

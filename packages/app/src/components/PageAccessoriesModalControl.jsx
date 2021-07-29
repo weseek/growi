@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
-import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
+import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 
 import PageListIcon from './Icons/PageListIcon';
 import TimeLineIcon from './Icons/TimeLineIcon';

@@ -9,11 +9,11 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastSuccess, toastError, toastWarning } from '../../../util/apiNotification';
+import { toastSuccess, toastError, toastWarning } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminUsersContainer from '../../../services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
 class UserInviteModal extends React.Component {
 

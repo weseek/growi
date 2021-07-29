@@ -9,7 +9,7 @@ import {
 
 import Dropzone from 'react-dropzone';
 
-import EditorContainer from '../../services/EditorContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 
 import Cheatsheet from './Cheatsheet';
 import AbstractEditor from './AbstractEditor';

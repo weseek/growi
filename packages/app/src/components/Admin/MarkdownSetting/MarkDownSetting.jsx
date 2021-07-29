@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
-import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import MarkDownSettingContents from './MarkDownSettingContents';
-import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 
 const logger = loggerFactory('growi:MarkDown');
 

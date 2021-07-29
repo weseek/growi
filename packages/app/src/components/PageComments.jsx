@@ -7,9 +7,9 @@ import {
 
 import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../services/AppContainer';
-import CommentContainer from '../services/CommentContainer';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import CommentContainer from '~/client/services/CommentContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 

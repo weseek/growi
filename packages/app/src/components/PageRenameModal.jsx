@@ -11,10 +11,10 @@ import { withTranslation } from 'react-i18next';
 
 import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import ComparePathsTable from './ComparePathsTable';
 import DuplicatedPathsTable from './DuplicatedPathsTable';

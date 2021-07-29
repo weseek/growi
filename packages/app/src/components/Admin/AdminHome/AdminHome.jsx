@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
-import { toastError } from '../../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminHomeContainer from '../../../services/AdminHomeContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 import SystemInfomationTable from './SystemInfomationTable';
 import InstalledPluginTable from './InstalledPluginTable';
 import EnvVarsTable from './EnvVarsTable';

@@ -4,10 +4,10 @@ import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:appSettings');

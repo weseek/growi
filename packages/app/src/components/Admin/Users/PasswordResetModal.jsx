@@ -5,9 +5,9 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastError } from '../../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 class PasswordResetModal extends React.Component {
 

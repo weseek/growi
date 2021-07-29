@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import NavigationContainer from '../../services/NavigationContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 
 const DrawerToggler = (props) => {
 

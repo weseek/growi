@@ -8,8 +8,8 @@ import {
 import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import SocketIoContainer from '../services/SocketIoContainer';
-import AppContainer from '../services/AppContainer';
+import SocketIoContainer from '~/client/services/SocketIoContainer';
+import AppContainer from '~/client/services/AppContainer';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 const EmptyTrashModal = (props) => {

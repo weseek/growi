@@ -6,8 +6,8 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
-import AppContainer from '../../../services/AppContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
 import Accordion from '../Common/Accordion';
 import { addLogs } from './slak-integration-util';
 import MessageBasedOnConnection from './MessageBasedOnConnection';

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import CommentEditor from './CommentEditor';
 

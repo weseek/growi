@@ -5,11 +5,11 @@ import loggerFactory from '@alias/logger';
 
 import { TabContent, TabPane } from 'reactstrap';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
-import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 
 import { CustomNavTab } from '../../CustomNavigation/CustomNav';
 

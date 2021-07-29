@@ -7,8 +7,8 @@ import PageAttachmentList from './PageAttachment/PageAttachmentList';
 import DeleteAttachmentModal from './PageAttachment/DeleteAttachmentModal';
 import PaginationWrapper from './PaginationWrapper';
 import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 class PageAttachment extends React.Component {
 

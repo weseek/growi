@@ -13,7 +13,7 @@ import AttachmentIcon from './Icons/AttachmentIcon';
 import ShareLinkIcon from './Icons/ShareLinkIcon';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
+import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 import PageAttachment from './PageAttachment';
 import PageTimeline from './PageTimeline';
 import PageList from './PageList';

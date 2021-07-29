@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
-import EditorContainer from '../../services/EditorContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 
 import PaginationWrapper from '../PaginationWrapper';
 

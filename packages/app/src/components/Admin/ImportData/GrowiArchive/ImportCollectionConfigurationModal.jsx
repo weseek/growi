@@ -13,8 +13,8 @@ import {
 import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
 
 import { withUnstatedContainers } from '../../../UnstatedUtils';
-import AppContainer from '../../../../services/AppContainer';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+// import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
 class ImportCollectionConfigurationModal extends React.Component {

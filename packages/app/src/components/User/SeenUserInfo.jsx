@@ -9,7 +9,7 @@ import UserPictureList from './UserPictureList';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import PageContainer from '../../services/PageContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 import FootstampIcon from '../FootstampIcon';
 

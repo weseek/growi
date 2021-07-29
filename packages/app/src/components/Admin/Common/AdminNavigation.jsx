@@ -8,7 +8,7 @@ import urljoin from 'url-join';
 
 import { pathUtils } from 'growi-commons';
 
-import AppContainer from '../../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const AdminNavigation = (props) => {

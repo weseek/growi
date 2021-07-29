@@ -5,10 +5,10 @@ import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:slackAppConfiguration');

@@ -4,9 +4,9 @@ import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 class UserGroupEditForm extends React.Component {
 

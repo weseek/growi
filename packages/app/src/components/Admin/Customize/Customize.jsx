@@ -3,12 +3,12 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 import loggerFactory from '@alias/logger';
-import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
-import AppContainer from '../../../services/AppContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
-import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { toastError } from '~/client/util/apiNotification';
+import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import CustomizeLayoutSetting from './CustomizeLayoutSetting';

@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
-import { toastError } from '../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 import SearchPageForm from './SearchPage/SearchPageForm';
 import SearchResult from './SearchPage/SearchResult';

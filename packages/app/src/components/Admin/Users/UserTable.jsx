@@ -7,8 +7,8 @@ import UserPicture from '../../User/UserPicture';
 import UserMenu from './UserMenu';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminUsersContainer from '../../../services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import SortIcons from './SortIcons';
 
 class UserTable extends React.Component {

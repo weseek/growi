@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 import RevisionRenderer from '../Page/RevisionRenderer';
 
 const logger = loggerFactory('growi:cli:CustomSidebar');

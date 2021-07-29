@@ -5,7 +5,7 @@ import { Waypoint } from 'react-waypoint';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiRenderer from '../../util/GrowiRenderer';
-import AppContainer from '../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import RevisionRenderer from './RevisionRenderer';
 

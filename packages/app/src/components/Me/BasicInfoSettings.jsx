@@ -5,10 +5,10 @@ import { withTranslation } from 'react-i18next';
 
 import { localeMetadatas } from '../../util/i18n';
 
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import PersonalContainer from '../../services/PersonalContainer';
+import PersonalContainer from '~/client/services/PersonalContainer';
 
 class BasicInfoSettings extends React.Component {
 

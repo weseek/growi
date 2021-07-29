@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
-import AdminGitHubSecurityContainer from '../../../services/AdminGitHubSecurityContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 
 class GitHubSecurityManagementContents extends React.Component {
 

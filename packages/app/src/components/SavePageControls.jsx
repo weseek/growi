@@ -10,9 +10,9 @@ import {
 
 import loggerFactory from '@alias/logger';
 
-import PageContainer from '../services/PageContainer';
-import AppContainer from '../services/AppContainer';
-import EditorContainer from '../services/EditorContainer';
+import PageContainer from '~/client/services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import GrantSelector from './SavePageControls/GrantSelector';

@@ -8,7 +8,7 @@ import { pathUtils } from 'growi-commons';
 import urljoin from 'url-join';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import PageContainer from '../services/PageContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 const CreateTemplateModal = (props) => {
   const { t, pageContainer } = props;

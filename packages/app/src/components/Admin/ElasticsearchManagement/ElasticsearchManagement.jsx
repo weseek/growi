@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import StatusTable from './StatusTable';
 import ReconnectControls from './ReconnectControls';

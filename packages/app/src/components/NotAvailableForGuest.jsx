@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
-import AppContainer from '../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 

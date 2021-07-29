@@ -5,7 +5,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 
 import GrowiArchiveSection from './GrowiArchiveSection';
 
-import AdminImportContainer from '../../../services/AdminImportContainer';
+import AdminImportContainer from '~/client/services/AdminImportContainer';
 
 class ImportDataPageContents extends React.Component {
 

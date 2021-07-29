@@ -5,7 +5,7 @@ import { debounce } from 'throttle-debounce';
 
 import { withTranslation } from 'react-i18next';
 
-import AppContainer from '../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 

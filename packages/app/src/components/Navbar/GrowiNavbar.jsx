@@ -5,8 +5,8 @@ import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from '../UnstatedUtils';
-import NavigationContainer from '../../services/NavigationContainer';
-import AppContainer from '../../services/AppContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 
 import GrowiLogo from '../Icons/GrowiLogo';

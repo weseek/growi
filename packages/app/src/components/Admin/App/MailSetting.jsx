@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 import SmtpSetting from './SmtpSetting';
 import SesSetting from './SesSetting';
 

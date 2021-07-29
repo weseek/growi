@@ -5,11 +5,11 @@ import urljoin from 'url-join';
 
 import loggerFactory from '@alias/logger';
 
-import { toastError } from '../../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 import TriggerEventCheckBox from './TriggerEventCheckBox';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
-import AppContainer from '../../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const logger = loggerFactory('growi:manageGlobalNotification');

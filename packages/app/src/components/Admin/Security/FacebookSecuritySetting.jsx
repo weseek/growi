@@ -5,8 +5,8 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 
 class FacebookSecurityManagement extends React.Component {
 

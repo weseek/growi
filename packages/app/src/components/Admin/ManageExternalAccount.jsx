@@ -5,10 +5,10 @@ import { withTranslation } from 'react-i18next';
 import PaginationWrapper from '../PaginationWrapper';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import AdminExternalAccountsContainer from '../../services/AdminExternalAccountsContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
 import ExternalAccountTable from './Users/ExternalAccountTable';
-import { toastError } from '../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 
 class ManageExternalAccount extends React.Component {

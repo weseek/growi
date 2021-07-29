@@ -10,8 +10,8 @@ import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import { toastError } from '../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import { toastError } from '~/client/util/apiNotification';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import UserPicture from '../User/UserPicture';

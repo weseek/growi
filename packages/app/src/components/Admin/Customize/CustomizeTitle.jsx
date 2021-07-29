@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Card, CardBody } from 'reactstrap';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 class CustomizeTitle extends React.Component {
 

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
-import AdminTwitterSecurityContainer from '../../../services/AdminTwitterSecurityContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 
 class TwitterSecurityManagementContents extends React.Component {
 

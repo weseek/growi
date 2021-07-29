@@ -6,8 +6,8 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionBody from '../Page/RevisionBody';
 
-import AppContainer from '../../services/AppContainer';
-import EditorContainer from '../../services/EditorContainer';
+import AppContainer from '~/client/services/AppContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 
 /**
  * Wrapper component for Page/RevisionBody

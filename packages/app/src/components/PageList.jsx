@@ -5,8 +5,8 @@ import { withTranslation } from 'react-i18next';
 import Page from './PageList/Page';
 import { withUnstatedContainers } from './UnstatedUtils';
 
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 import PaginationWrapper from './PaginationWrapper';
 

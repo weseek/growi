@@ -8,10 +8,10 @@ import parse from 'date-fns/parse';
 import { isInteger } from 'core-js/fn/number';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 class ShareLinkForm extends React.Component {
 

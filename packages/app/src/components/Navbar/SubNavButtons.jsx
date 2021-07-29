@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AppContainer from '../../services/AppContainer';
-import NavigationContainer from '../../services/NavigationContainer';
-import PageContainer from '../../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
+import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import BookmarkButton from '../BookmarkButton';

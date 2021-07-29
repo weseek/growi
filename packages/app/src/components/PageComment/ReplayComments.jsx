@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import { Collapse } from 'reactstrap';
 
-import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 import Comment from './Comment';
 

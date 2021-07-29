@@ -4,10 +4,10 @@ import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
 
 const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
 

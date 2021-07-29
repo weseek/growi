@@ -7,7 +7,7 @@ import UserGroupUserTable from './UserGroupUserTable';
 import UserGroupUserModal from './UserGroupUserModal';
 import UserGroupPageList from './UserGroupPageList';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 class UserGroupDetailPage extends React.Component {
 

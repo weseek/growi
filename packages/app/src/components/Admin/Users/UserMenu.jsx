@@ -13,8 +13,8 @@ import GiveAdminButton from './GiveAdminButton';
 import SendInvitationEmailButton from './SendInvitationEmailButton';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminUsersContainer from '../../../services/AdminUsersContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 
 class UserMenu extends React.Component {
 

@@ -9,11 +9,11 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
-import PersonalContainer from '../../services/PersonalContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PersonalContainer from '~/client/services/PersonalContainer';
 
 class DisassociateModal extends React.Component {
 

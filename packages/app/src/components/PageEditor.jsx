@@ -6,14 +6,14 @@ import detectIndent from 'detect-indent';
 import { throttle, debounce } from 'throttle-debounce';
 import { envUtils } from 'growi-commons';
 
-import AppContainer from '../services/AppContainer';
-import PageContainer from '../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 import Editor from './PageEditor/Editor';
 import Preview from './PageEditor/Preview';
 import scrollSyncHelper from './PageEditor/ScrollSyncHelper';
-import EditorContainer from '../services/EditorContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 
 const logger = loggerFactory('growi:PageEditor');
 

@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import { toastError } from '../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 import { withLoadingSppiner } from './SuspenseUtils';
 import PageRevisionTable from './PageHistory/PageRevisionTable';
 
-import PageHistroyContainer from '../services/PageHistoryContainer';
+import PageHistroyContainer from '~/client/services/PageHistoryContainer';
 import PaginationWrapper from './PaginationWrapper';
 import RevisionComparer from './RevisionComparer/RevisionComparer';
-import RevisionComparerContainer from '../services/RevisionComparerContainer';
+import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 
 const logger = loggerFactory('growi:PageHistory');
 

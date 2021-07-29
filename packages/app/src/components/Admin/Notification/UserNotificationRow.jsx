@@ -4,8 +4,8 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminNotificationContainer from '../../../services/AdminNotificationContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 
 import NotificationTypeIcon from './NotificationTypeIcon';
 

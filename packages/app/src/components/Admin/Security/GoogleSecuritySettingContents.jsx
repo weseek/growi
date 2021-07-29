@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
-import AdminGoogleSecurityContainer from '../../../services/AdminGoogleSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
 
 class GoogleSecurityManagementContents extends React.Component {
 

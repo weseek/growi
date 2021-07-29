@@ -5,7 +5,7 @@ import loggerFactory from '@alias/logger';
 import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';
 
-import NavigationContainer from '../services/NavigationContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 const logger = loggerFactory('growi:cli:StickyStretchableScroller');

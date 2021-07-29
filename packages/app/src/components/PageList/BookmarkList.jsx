@@ -5,8 +5,8 @@ import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 
-import AppContainer from '../../services/AppContainer';
-import { toastError } from '../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import { toastError } from '~/client/util/apiNotification';
 
 import PaginationWrapper from '../PaginationWrapper';
 

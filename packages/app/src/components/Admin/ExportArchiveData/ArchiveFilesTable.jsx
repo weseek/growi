@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
 

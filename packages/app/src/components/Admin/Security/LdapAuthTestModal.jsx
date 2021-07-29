@@ -10,8 +10,8 @@ import {
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminLdapSecurityContainer from '../../../services/AdminLdapSecurityContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
 import LdapAuthTest from './LdapAuthTest';
 
 

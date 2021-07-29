@@ -4,8 +4,8 @@ import loggerFactory from '@alias/logger';
 
 import StickyEvents from 'sticky-events';
 
-import AppContainer from '../services/AppContainer';
-import NavigationContainer from '../services/NavigationContainer';
+import AppContainer from '~/client/services/AppContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 import CreatePageIcon from './Icons/CreatePageIcon';
 import ReturnTopIcon from './Icons/ReturnTopIcon';

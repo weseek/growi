@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminUsersContainer from '../../../services/AdminUsersContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 class UserRemoveButton extends React.Component {
 

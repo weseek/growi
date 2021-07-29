@@ -5,10 +5,10 @@ import * as toastr from 'toastr';
 
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+// import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
-import AdminSocketIoContainer from '../../services/AdminSocketIoContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 
 import LabeledProgressBar from './Common/LabeledProgressBar';
 

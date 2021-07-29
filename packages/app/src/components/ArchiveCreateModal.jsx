@@ -4,9 +4,9 @@ import { withTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-import AppContainer from '../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
-import { toastSuccess, toastError } from '../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
 const ArchiveCreateModal = (props) => {

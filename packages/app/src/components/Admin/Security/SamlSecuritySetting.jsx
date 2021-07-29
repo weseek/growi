@@ -3,10 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '../../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
-import AdminSamlSecurityContainer from '../../../services/AdminSamlSecurityContainer';
-import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
+import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
 import SamlSecuritySettingContents from './SamlSecuritySettingContents';

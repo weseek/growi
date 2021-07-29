@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { toastError } from '../../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
+import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import SecurityManagementContents from './SecurityManagementContents';
 
 let retrieveErrors = null;

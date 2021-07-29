@@ -5,9 +5,9 @@ import { withTranslation } from 'react-i18next';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { debounce } from 'throttle-debounce';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import UserPicture from '../../User/UserPicture';
 
 class UserGroupUserFormByInput extends React.Component {

@@ -5,9 +5,9 @@ import { withTranslation } from 'react-i18next';
 import Page from '../../PageList/Page';
 import PaginationWrapper from '../../PaginationWrapper';
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminUserGroupDetailContainer from '../../../services/AdminUserGroupDetailContainer';
-import { toastError } from '../../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import { toastError } from '~/client/util/apiNotification';
 
 class UserGroupPageList extends React.Component {
 

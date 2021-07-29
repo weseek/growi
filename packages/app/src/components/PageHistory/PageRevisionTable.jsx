@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import PageHistroyContainer from '../../services/PageHistoryContainer';
-import RevisionComparerContainer from '../../services/RevisionComparerContainer';
+import PageHistroyContainer from '~/client/services/PageHistoryContainer';
+import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 
 import Revision from './Revision';
 

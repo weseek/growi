@@ -5,7 +5,7 @@ import { I18nextProvider } from 'react-i18next';
 
 import { i18nFactory } from './util/i18n';
 
-import AppContainer from './services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';

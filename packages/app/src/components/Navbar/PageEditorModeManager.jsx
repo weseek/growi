@@ -4,7 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 
 /* eslint-disable react/prop-types */
 const PageEditorModeButtonWrapper = React.memo(({

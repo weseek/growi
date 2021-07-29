@@ -5,8 +5,8 @@ import PageAccessoriesModalControl from './PageAccessoriesModalControl';
 import PageAccessoriesModal from './PageAccessoriesModal';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
-import PageAccessoriesContainer from '../services/PageAccessoriesContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageAccessoriesContainer from '~/client/services/PageAccessoriesContainer';
 
 const PageAccessories = (props) => {
   const { appContainer, pageAccessoriesContainer, isNotFoundPage } = props;

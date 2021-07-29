@@ -5,11 +5,11 @@ import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import WhiteListInput from './WhiteListInput';

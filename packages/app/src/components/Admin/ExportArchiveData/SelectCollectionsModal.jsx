@@ -7,8 +7,8 @@ import {
 import * as toastr from 'toastr';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-// import { toastSuccess, toastError } from '../../../util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+// import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
 const GROUPS_PAGE = [

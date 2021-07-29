@@ -10,7 +10,7 @@ import { encodeSpaces } from '@commons/util/path-utils';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import RevisionComparerContainer from '../../services/RevisionComparerContainer';
+import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 
 import RevisionDiff from '../PageHistory/RevisionDiff';
 

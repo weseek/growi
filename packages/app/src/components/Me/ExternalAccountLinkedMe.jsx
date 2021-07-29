@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import { toastError } from '../../util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../services/AppContainer';
-import PersonalContainer from '../../services/PersonalContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PersonalContainer from '~/client/services/PersonalContainer';
 import ExternalAccountRow from './ExternalAccountRow';
 import AssociateModal from './AssociateModal';
 import DisassociateModal from './DisassociateModal';

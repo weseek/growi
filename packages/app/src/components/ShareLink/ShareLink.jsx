@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
-import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 import ShareLinkList from './ShareLinkList';
 import ShareLinkForm from './ShareLinkForm';
 
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 class ShareLink extends React.Component {
 

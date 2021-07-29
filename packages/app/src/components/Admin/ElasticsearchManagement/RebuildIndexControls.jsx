@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
 
 import LabeledProgressBar from '../Common/LabeledProgressBar';
 

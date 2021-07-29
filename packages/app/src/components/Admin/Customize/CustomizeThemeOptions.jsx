@@ -5,9 +5,9 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
+import AppContainer from '~/client/services/AppContainer';
 import ThemeColorBox from './ThemeColorBox';
-import AdminCustomizeContainer from '../../../services/AdminCustomizeContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 
 class CustomizeThemeOptions extends React.Component {
 

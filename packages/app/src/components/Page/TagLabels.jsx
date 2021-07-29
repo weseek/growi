@@ -2,12 +2,12 @@ import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import AppContainer from '../../services/AppContainer';
-import PageContainer from '../../services/PageContainer';
-import EditorContainer from '../../services/EditorContainer';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
+import EditorContainer from '~/client/services/EditorContainer';
 
 import RenderTagLabels from './RenderTagLabels';
 import TagEditModal from './TagEditModal';

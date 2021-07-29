@@ -25,27 +25,27 @@ import ExportArchiveDataPage from '../components/Admin/ExportArchiveDataPage';
 import FullTextSearchManagement from '../components/Admin/FullTextSearchManagement';
 import AdminNavigation from '../components/Admin/Common/AdminNavigation';
 
-import NavigationContainer from './services/NavigationContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 
-import AdminSocketIoContainer from './services/AdminSocketIoContainer';
-import AdminHomeContainer from './services/AdminHomeContainer';
-import AdminCustomizeContainer from './services/AdminCustomizeContainer';
-import AdminUserGroupDetailContainer from './services/AdminUserGroupDetailContainer';
-import AdminUsersContainer from './services/AdminUsersContainer';
-import AdminAppContainer from './services/AdminAppContainer';
-import AdminImportContainer from './services/AdminImportContainer';
-import AdminMarkDownContainer from './services/AdminMarkDownContainer';
-import AdminExternalAccountsContainer from './services/AdminExternalAccountsContainer';
-import AdminGeneralSecurityContainer from './services/AdminGeneralSecurityContainer';
-import AdminLdapSecurityContainer from './services/AdminLdapSecurityContainer';
-import AdminLocalSecurityContainer from './services/AdminLocalSecurityContainer';
-import AdminSamlSecurityContainer from './services/AdminSamlSecurityContainer';
-import AdminOidcSecurityContainer from './services/AdminOidcSecurityContainer';
-import AdminBasicSecurityContainer from './services/AdminBasicSecurityContainer';
-import AdminGoogleSecurityContainer from './services/AdminGoogleSecurityContainer';
-import AdminGitHubSecurityContainer from './services/AdminGitHubSecurityContainer';
-import AdminTwitterSecurityContainer from './services/AdminTwitterSecurityContainer';
-import AdminNotificationContainer from './services/AdminNotificationContainer';
+import AdminSocketIoContainer from '~/client/services/AdminSocketIoContainer';
+import AdminHomeContainer from '~/client/services/AdminHomeContainer';
+import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
+import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
+import AdminUsersContainer from '~/client/services/AdminUsersContainer';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
+import AdminImportContainer from '~/client/services/AdminImportContainer';
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
+import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
+import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
+import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
+import AdminOidcSecurityContainer from '~/client/services/AdminOidcSecurityContainer';
+import AdminBasicSecurityContainer from '~/client/services/AdminBasicSecurityContainer';
+import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityContainer';
+import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
+import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
+import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 
 import { appContainer, componentMappings } from './base';
 

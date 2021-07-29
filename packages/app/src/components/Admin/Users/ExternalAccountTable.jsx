@@ -4,10 +4,10 @@ import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import AppContainer from '../../../services/AppContainer';
-import AdminExternalAccountsContainer from '../../../services/AdminExternalAccountsContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
 
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 class ExternalAccountTable extends React.Component {
 

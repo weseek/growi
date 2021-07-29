@@ -4,8 +4,8 @@ import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminAppContainer from '../../../services/AdminAppContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminAppContainer from '~/client/services/AdminAppContainer';
 
 function AwsSetting(props) {
   const { t, adminAppContainer } = props;

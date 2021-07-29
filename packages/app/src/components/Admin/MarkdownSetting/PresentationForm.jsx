@@ -5,10 +5,10 @@ import { withTranslation } from 'react-i18next';
 import loggerFactory from '@alias/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
-import AppContainer from '../../../services/AppContainer';
-import AdminMarkDownContainer from '../../../services/AdminMarkDownContainer';
+import AppContainer from '~/client/services/AppContainer';
+import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:markdown:presentation');

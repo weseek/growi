@@ -9,8 +9,8 @@ import {
 } from '@atlaskit/navigation-next';
 
 import { withUnstatedContainers } from './UnstatedUtils';
-import AppContainer from '../services/AppContainer';
-import NavigationContainer from '../services/NavigationContainer';
+import AppContainer from '~/client/services/AppContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 
 import DrawerToggler from './Navbar/DrawerToggler';
 

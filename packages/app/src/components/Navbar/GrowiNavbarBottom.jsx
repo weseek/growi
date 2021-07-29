@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import NavigationContainer from '../../services/NavigationContainer';
+import NavigationContainer from '~/client/services/NavigationContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import GlobalSearch from './GlobalSearch';
