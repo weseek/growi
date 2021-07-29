@@ -13,6 +13,7 @@ module.exports = function(crowi, app) {
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
+  const passwordReset = require('../middlewares/password-reset')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const form = require('../form');
@@ -179,7 +180,7 @@ module.exports = function(crowi, app) {
   app.get('/forgot-password', forgotPassword.forgotPassword);
   app.post('/_api/forgot-password', forgotPassword.api.post);
   // TODO: inserting middleware by GW-6926
-  app.get('/forgot-password/:token', forgotPassword.resetPassword);
+  app.get('/forgot-password/:token'      , passwordReset, forgotPassword.resetPassword);
 
   app.get('/share/:linkId', page.showSharedPage);
 
