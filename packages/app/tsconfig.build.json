@@ -1,15 +1,17 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "esnext",
     "jsx": "react",
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "strict": true
-  },
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts"
-  ]
+    "strict": true,
+    "paths": {
+      "~/*": ["./src/*"],
+      "^/*": ["./*"],
+      "@alias/logger": ["./src/server/utils/logger"],
+      "debug": ["./src/server/utils/logger/alias-for-debug"]
+    }
+  }
 }
