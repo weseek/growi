@@ -23,7 +23,6 @@ module.exports = function(crowi, app) {
       to: email,
       subject: 'Password Reset',
       template: path.join(crowi.localeDir, `${i18n}/notifications/passwordReset.txt`),
-      // TODO: need to set appropriate values by GW-6828
       vars: {
         appTitle: appService.getAppTitle(),
         email,
