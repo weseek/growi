@@ -58,6 +58,7 @@ module.exports = (options) => {
       jquery: 'jQuery',
       emojione: 'emojione',
       hljs: 'hljs',
+      'dtrace-provider': 'dtrace-provider',
     },
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
