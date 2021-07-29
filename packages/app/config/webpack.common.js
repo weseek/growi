@@ -72,10 +72,13 @@ module.exports = (options) => {
         '@alias/logger': path.resolve(__dirname, '../src/utils/logger'),
       },
     },
+    node: {
+      fs: 'empty',
+    },
     module: {
       rules: options.module.rules.concat([
         {
-          test: /.jsx?$/,
+          test: /.(jsx?|tsx?)$/,
           exclude: {
             test: path.resolve(__dirname, '../node_modules'),
             exclude: [ // include as a result
@@ -85,7 +88,11 @@ module.exports = (options) => {
             ],
           },
           use: [{
-            loader: 'babel-loader?cacheDirectory',
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,
+              configFile: path.resolve(__dirname, '../tsconfig.build.json'),
+            },
           }],
         },
         {
