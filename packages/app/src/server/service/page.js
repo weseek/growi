@@ -4,7 +4,7 @@ const logger = require('@alias/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('@server/util/batch-stream');
-const { isTrashPage } = require('@commons/util/path-utils');
+const { isTrashPage } = require('~/utils/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;

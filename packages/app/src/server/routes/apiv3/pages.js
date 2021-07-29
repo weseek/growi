@@ -6,7 +6,7 @@ const pathUtils = require('growi-commons').pathUtils;
 
 const { body } = require('express-validator');
 const { query } = require('express-validator');
-const { isCreatablePage } = require('@commons/util/path-utils');
+const { isCreatablePage } = require('~/utils/path-utils');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const router = express.Router();
@@ -458,7 +458,7 @@ module.exports = (crowi) => {
   ];
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
-    const { isTrashPage } = require('@commons/util/path-utils');
+    const { isTrashPage } = require('~/utils/path-utils');
 
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;

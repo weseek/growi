@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageContainer from '~/client/services/PageContainer';
-import { convertToNewAffiliationPath } from '../../../lib/util/path-utils';
+import { convertToNewAffiliationPath } from '~/utils/path-utils';
 
 function DuplicatedPathsTable(props) {
   const {

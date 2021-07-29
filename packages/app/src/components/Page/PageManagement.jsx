@@ -4,7 +4,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { isTopPage } from '@commons/util/path-utils';
+import { isTopPage } from '~/utils/path-utils';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';

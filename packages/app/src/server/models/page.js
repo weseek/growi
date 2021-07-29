@@ -14,7 +14,7 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
-const { isTopPage, isTrashPage } = require('@commons/util/path-utils');
+const { isTopPage, isTrashPage } = require('~/utils/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;

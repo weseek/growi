@@ -1,7 +1,7 @@
 const logger = require('@alias/logger')('growi:service:GlobalNotificationSlackService'); // eslint-disable-line no-unused-vars
 const urljoin = require('url-join');
 
-const { encodeSpaces } = require('@commons/util/path-utils');
+const { encodeSpaces } = require('~/utils/path-utils');
 
 /**
  * sub service class of GlobalNotificationSetting

@@ -6,7 +6,7 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { encodeSpaces } from '@commons/util/path-utils';
+import { encodeSpaces } from '~/utils/path-utils';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 

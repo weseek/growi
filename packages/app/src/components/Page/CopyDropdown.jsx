@@ -12,7 +12,7 @@ import {
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import { encodeSpaces } from '@commons/util/path-utils';
+import { encodeSpaces } from '~/utils/path-utils';
 
 /* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (

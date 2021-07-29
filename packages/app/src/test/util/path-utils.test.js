@@ -1,4 +1,4 @@
-const { isTopPage, convertToNewAffiliationPath, isCreatablePage } = require('../../lib/util/path-utils');
+const { isTopPage, convertToNewAffiliationPath, isCreatablePage } = require('~/utils/path-utils');
 
 
 describe('TopPage Path test', () => {

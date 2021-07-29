@@ -1,5 +1,5 @@
 const { pathUtils } = require('growi-commons');
-const { isTrashPage } = require('@commons/util/path-utils');
+const { isTrashPage } = require('~/utils/path-utils');
 
 const DevidedPagePath = require('./devided-page-path');
 

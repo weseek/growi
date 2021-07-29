@@ -1,4 +1,4 @@
-const { isCreatablePage } = require('@commons/util/path-utils');
+const { isCreatablePage } = require('~/utils/path-utils');
 
 module.exports = (crowi) => {
   const Page = crowi.model('Page');

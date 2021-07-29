@@ -1,4 +1,4 @@
-const { isCreatablePage } = require('@commons/util/path-utils');
+const { isCreatablePage } = require('~/utils/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');

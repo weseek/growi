@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 
 import {
   userPageRoot, isCreatablePage, generateEditorPath,
-} from '@commons/util/path-utils';
+} from '~/utils/path-utils';
 import { pathUtils } from 'growi-commons';
 
 import AppContainer from '~/client/services/AppContainer';
