@@ -18,6 +18,7 @@ import { SecurityManagementContents } from '~/components/Admin/Security/Security
 import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSettingContents';
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
+import ElasticsearchManagement from '~/client/js/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
 import UserGroupPage from '~/client/js/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/client/js/components/Admin/UserManagement';
 
@@ -102,11 +103,11 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
-      component: <UserGroupPage />,
+      component: <></>,
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),
-      component: <></>,
+      component: <ElasticsearchManagement />,
     },
   };
 

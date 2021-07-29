@@ -14,9 +14,7 @@ class UserGroupCreateForm extends React.Component {
       name: '',
     };
 
-    if (typeof window !== "undefined") {
-      this.xss = window.xss;
-    }
+    this.xss = window.xss;
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
