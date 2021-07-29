@@ -17,19 +17,6 @@ module.exports = function(crowi, app) {
     return res.render('reset-password');
   };
 
-  // actions.loginWithGoogle = function(req, res, next) {
-  //   if (!passportService.isGoogleStrategySetup) {
-  //     debug('GoogleStrategy has not been set up');
-  //     req.flash('warningMessage', req.t('message.strategy_has_not_been_set_up', { strategy: 'GoogleStrategy' }));
-  //     return next();
-  //   }
-
-  //   passport.authenticate('google', {
-  //     scope: ['profile', 'email'],
-  //   })(req, res);
-  // };
-
-
   async function sendPasswordResetEmail(email, url, i18n) {
     return mailService.send({
       to: email,
