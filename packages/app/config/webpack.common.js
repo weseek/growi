@@ -79,11 +79,11 @@ module.exports = (options) => {
         {
           test: /.(jsx?|tsx?)$/,
           exclude: {
-            test: path.resolve(__dirname, '../node_modules'),
+            test: /node_modules/,
             exclude: [ // include as a result
-              { test: path.resolve(__dirname, '../node_modules/growi-plugin-') },
-              path.resolve(__dirname, '../node_modules/growi-commons'),
-              path.resolve(__dirname, '../node_modules/codemirror/src'),
+              { test: /node_modules\/growi-plugin-/ },
+              /node_modules\/growi-commons/,
+              /node_modules\/codemirror/,
             ],
           },
           use: [{
