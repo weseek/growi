@@ -17,7 +17,6 @@ module.exports = function(crowi, app) {
     return res.render('reset-password');
   };
 
-
   async function sendPasswordResetEmail(email, url, i18n) {
     return mailService.send({
       to: email,
@@ -39,7 +38,7 @@ module.exports = function(crowi, app) {
 
     try {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
-      const url = new URL(`/forgot-password/token?${passwordResetOrderData.token}`, appUrl);
+      const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
       await sendPasswordResetEmail(email, oneTimeUrl, i18n);
       return res.json(ApiResponse.success());
