@@ -176,7 +176,7 @@ export default function ElasticsearchManagement() {
   let indicesData = {};
   let aliasesData = {};
 
-  const { data, error, isValidating, mutate } = useSearchIndicesInfoSWR();
+  const { data, error, mutate } = useSearchIndicesInfoSWR();
 
   if (data?.info != null) {
     indicesData = data.info.indices;
@@ -191,10 +191,6 @@ export default function ElasticsearchManagement() {
   if (error != null) {
     isConnected = false;
     isConfigured = error.isConfigured;
-  }
-
-  if (isValidating) {
-    isInitialized = false;
   }
 
   return (
