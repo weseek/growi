@@ -13,7 +13,7 @@ import { Express } from 'express';
 import expressBunyanLogger from 'express-bunyan-logger';
 import gracefulExit from 'express-graceful-exit';
 
-import { ConnectionOptions } from 'typeorm';
+import { ConnectionOptions, getConnectionManager } from 'typeorm';
 import { createTerminus } from '@godaddy/terminus';
 
 import swaggerSettingsForDev from '~/config/swagger/config.dev';
@@ -107,6 +107,7 @@ const helmetOptions = isProduction ? {} : {
     ],
   },
 })
+
 export class Server {
 
   @Inject()
@@ -153,15 +154,18 @@ export class Server {
   }
 
   $beforeListen(): void {
-    const expressApp = this.app.getApp();
+    // const expressApp = this.app.getApp();
     const server = this.injector.get<HttpServer>(HttpServer);
 
     // init terminus
     createTerminus(server, {
       onSignal: async() => {
         logger.info('server is starting cleanup');
+        const connectionManager = getConnectionManager();
+        const defaultConnection = connectionManager.get('default');
+        await defaultConnection.close();
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        gracefulExit.gracefulExitHandler(expressApp, server!);
+        // gracefulExit.gracefulExitHandler(expressApp, server!);
       },
       onShutdown: async() => {
         logger.info('cleanup finished, server is shutting down');
