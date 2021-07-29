@@ -54,8 +54,8 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
-require('../../util/codemirror/autorefresh.ext');
-require('../../util/codemirror/gfm-growi.mode');
+require('~/client/util/codemirror/autorefresh.ext');
+require('~/client/util/codemirror/gfm-growi.mode');
 // import modes to highlight
 require('codemirror/mode/clike/clike');
 require('codemirror/mode/css/css');

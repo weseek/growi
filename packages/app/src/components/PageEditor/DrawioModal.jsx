@@ -10,7 +10,7 @@ import {
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
-import { getDiagramsNetLangCode } from '../../util/locale-utils';
+import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 
 class DrawioModal extends React.PureComponent {
 

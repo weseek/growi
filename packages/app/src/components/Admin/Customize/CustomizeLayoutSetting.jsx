@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import AppContainer from '~/client/services/AppContainer';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import { isDarkMode as isDarkModeByUtil } from '../../../util/color-scheme';
+import { isDarkMode as isDarkModeByUtil } from '~/client/util/color-scheme';
 
 const isDarkMode = isDarkModeByUtil();
 const colorText = isDarkMode ? 'dark' : 'light';

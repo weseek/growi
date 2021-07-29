@@ -1,4 +1,4 @@
-import UpdateDisplayUtil from '../../util/codemirror/update-display-util.ext';
+import UpdateDisplayUtil from '~/client/util/codemirror/update-display-util.ext';
 
 class EmojiAutoCompleteHelper {
 

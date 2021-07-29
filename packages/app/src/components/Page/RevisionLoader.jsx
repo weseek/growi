@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Waypoint } from 'react-waypoint';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import GrowiRenderer from '../../util/GrowiRenderer';
+import GrowiRenderer from '~/client/util/GrowiRenderer';
 import AppContainer from '~/client/services/AppContainer';
 
 import RevisionRenderer from './RevisionRenderer';

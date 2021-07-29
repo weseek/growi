@@ -16,7 +16,7 @@ import {
   removeUserPreference,
   updateUserPreference,
   updateUserPreferenceWithOsSettings,
-} from '../../util/color-scheme';
+} from '~/client/util/color-scheme';
 
 import UserPicture from '../User/UserPicture';
 

@@ -7,7 +7,7 @@ require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/mode/htmlmixed/htmlmixed');
-require('../../util/codemirror/autorefresh.ext');
+require('~/client/util/codemirror/autorefresh.ext');
 
 require('jquery-ui/ui/widgets/resizable');
 

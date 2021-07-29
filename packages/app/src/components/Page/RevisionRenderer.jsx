@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
-import GrowiRenderer from '../../util/GrowiRenderer';
+import GrowiRenderer from '~/client/util/GrowiRenderer';
 
 import RevisionBody from './RevisionBody';
 

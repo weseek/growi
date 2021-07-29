@@ -3,7 +3,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
-import { localeMetadatas } from '../../util/i18n';
+import { localeMetadatas } from '~/client/util/i18n';
 
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import { withUnstatedContainers } from '../UnstatedUtils';
