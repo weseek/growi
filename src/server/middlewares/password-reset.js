@@ -2,7 +2,7 @@ module.exports = (crowi, app) => {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
 
   return async(req, res, next) => {
-    const { token } = req.query;
+    const token = req.query.value;
 
     const passwordResetOrder = await PasswordResetOrder.findOne({ token });
 
