@@ -38,7 +38,7 @@ module.exports = function(crowi, app) {
     const appUrl = appService.getSiteUrl();
 
     try {
-      const { passwordResetOrderData } = await PasswordResetOrder.createPasswordResetOrder(email);
+      const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/token?${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
       await sendPasswordResetEmail(email, oneTimeUrl, i18n);
