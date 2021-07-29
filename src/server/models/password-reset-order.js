@@ -34,7 +34,7 @@ class PasswordResetOrder {
 
     const passwordResetOrderData = await this.create({ token, email });
 
-    return passwordResetOrderData;
+    return { passwordResetOrderData };
   }
 
   isExpired() {

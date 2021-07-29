@@ -179,7 +179,7 @@ module.exports = function(crowi, app) {
   app.get('/forgot-password', forgotPassword.forgotPassword);
   app.post('/_api/forgot-password', forgotPassword.api.post);
   // TODO: apply oneTimeToken to the link by GW−6856
-  app.get('/forgot-password/hogeToken', forgotPassword.resetPassword);
+  app.get('/forgot-password/:token', forgotPassword.resetPassword);
 
   app.get('/share/:linkId', page.showSharedPage);
 
