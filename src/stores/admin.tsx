@@ -1,11 +1,22 @@
 import useSWR, { SWRResponse } from 'swr';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
 import {
+  UserGroup as IUserGroup,
+  UserGroupRelation as IUserGroupRelation
+} from '~/interfaces/user';
+import {
   appParams as IAppParams,
   markdownParams as IMarkdownParams,
   customizeParams as ICustomizeParams,
   securityParamsGeneralSetting as ISecurityParamsGeneralSetting,
 } from '~/interfaces/admin';
+
+type GetUserGroupsOptions = {
+  pagination?: boolean,
+  page?: number,
+  limit?: number,
+  offset?: number,
+}
 
 export const useAppSettingsSWR = (): SWRResponse<IAppParams, Error> => {
   return useSWR(
@@ -35,6 +46,23 @@ export const useSecuritySettingGeneralSWR = (): SWRResponse<ISecurityParamsGener
   return useSWR(
     '/security-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.securityParams.generalSetting),
+    { revalidateOnFocus: false },
+  );
+};
+
+export const useUserGroupSWR = ({ pagination }: GetUserGroupsOptions): SWRResponse<IUserGroup[], Error> => {
+  return useSWR(
+    ['/user-groups', pagination],
+    (endpoint, pagination) => apiv3Get(endpoint, { pagination })
+      .then(result => result.data),
+    { revalidateOnFocus: false },
+  );
+};
+
+export const useUserGroupRelationsSWR = (): SWRResponse<IUserGroupRelation[], Error> => {
+  return useSWR(
+    '/user-group-relations',
+    (endpoint) => apiv3Get(endpoint).then(result => result.data.userGroupRelations),
     { revalidateOnFocus: false },
   );
 };

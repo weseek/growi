@@ -19,6 +19,7 @@ import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSetting
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
 import ElasticsearchManagement from '~/client/js/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
+import UserGroupPage from '~/client/js/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/client/js/components/Admin/UserManagement';
 
 import {
