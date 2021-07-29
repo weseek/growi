@@ -2,14 +2,14 @@
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
 
+const path = require('path');
+
 /*
  * Webpack Plugins
  */
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-
-const helpers = require('../src/lib/util/helpers');
 
 /**
  * Webpack Constants
@@ -20,7 +20,7 @@ module.exports = require('./webpack.common')({
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   entry: {
-    'js/dev': './src/client/js/dev',
+    'js/dev': './src/client/dev',
   },
   resolve: {
     modules: ['../node_modules'],
@@ -35,8 +35,8 @@ module.exports = require('./webpack.common')({
           { loader: 'sass-loader', options: { sourceMap: true } },
         ],
         exclude: [
-          helpers.root('src/client/styles/hackmd'),
-          helpers.root('src/client/styles/scss/style-presentation.scss'),
+          path.resolve(__dirname, '../src/styles-hackmd'),
+          path.resolve(__dirname, '../src/styles/style-presentation.scss'),
         ],
       },
       { // Dump CSS for HackMD
@@ -47,8 +47,8 @@ module.exports = require('./webpack.common')({
           'sass-loader',
         ],
         include: [
-          helpers.root('src/client/styles/hackmd'),
-          helpers.root('src/client/styles/scss/style-presentation.scss'),
+          path.resolve(__dirname, '../src/styles-hackmd'),
+          path.resolve(__dirname, '../src/styles/style-presentation.scss'),
         ],
       },
     ],

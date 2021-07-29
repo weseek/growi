@@ -1,8 +1,8 @@
 /**
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
+ const path = require('path');
 const webpack = require('webpack');
-const helpers = require('../src/lib/util/helpers');
 
 
 module.exports = {
@@ -34,17 +34,17 @@ module.exports = {
     ],
   },
   output: {
-    path: helpers.root('public/dll'),
+    path: path.resolve(__dirname, '../public/dll'),
     filename: 'dll.js',
     library: 'growi_dlls',
   },
   resolve: {
     extensions: ['.js', '.json'],
-    modules: [helpers.root('src'), helpers.root('node_modules')],
+    modules: [path.resolve(__dirname, '../src'), path.resolve(__dirname, '../node_modules')],
   },
   plugins: [
     new webpack.DllPlugin({
-      path: helpers.root('public/dll/manifest.json'),
+      path: path.resolve(__dirname, '../public/dll/manifest.json'),
       name: 'growi_dlls',
     }),
   ],
