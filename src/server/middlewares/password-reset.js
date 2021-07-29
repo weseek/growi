@@ -1,16 +1,20 @@
 module.exports = (crowi, app) => {
+  const PasswordResetOrder = crowi.model('PasswordResetOrder');
 
   return (req, res, next) => {
     // const { token } = req.params;
     const { token } = req.query;
-    // check the oneTimeToken is valid
+    const passwordResetOrder = PasswordResetOrder.findOne({ token });
 
     // http://localhost:3000/forgot-password/token?token=hoge
-    if (token == null /* || token.isExpired() */) {
+
+    // check the oneTimeToken is valid
+    if (token == null || passwordResetOrder.isExpired()) {
       console.log('req.queryがほげ');
       // return res.redirect('/login');
       return res.redirect('/login');
     }
+
     return next();
   };
 };
