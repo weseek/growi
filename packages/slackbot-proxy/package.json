@@ -24,7 +24,6 @@
     "version": "node -p \"require('./package.json').version\""
   },
   "// comments for dependencies": {
-    "express-graceful-exit": "0.5.2 includes a typings file error: https://github.com/emostar/express-graceful-exit/issues/24"
   },
   "dependencies": {
     "@godaddy/terminus": "^4.8.0",
