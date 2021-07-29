@@ -1,20 +1,18 @@
-const escapeStringRegexp = require('escape-string-regexp');
+import escapeStringRegexp from 'escape-string-regexp';
 
 /**
  * Whether path is the top page
- * @param {string} path
- * @returns {boolean}
+ * @param path
  */
-const isTopPage = (path) => {
+export const isTopPage = (path: string): boolean => {
   return path === '/';
 };
 
 /**
  * Whether path belongs to the trash page
- * @param {string} path
- * @returns {boolean}
+ * @param path
  */
-const isTrashPage = (path) => {
+export const isTrashPage = (path: string): boolean => {
   // https://regex101.com/r/BSDdRr/1
   if (path.match(/^\/trash(\/.*)?$/)) {
     return true;
@@ -25,10 +23,9 @@ const isTrashPage = (path) => {
 
 /**
  * Whether path belongs to the user page
- * @param {string} path
- * @returns {boolean}
+ * @param path
  */
-const isUserPage = (path) => {
+export const isUserPage = (path: string): boolean => {
   // https://regex101.com/r/SxPejV/1
   if (path.match(/^\/user(\/.*)?$/)) {
     return true;
@@ -37,7 +34,27 @@ const isUserPage = (path) => {
   return false;
 };
 
-const forbiddenPages = [
+/**
+ * Whether path belongs to the shared page
+ * @param path
+ */
+export const isSharedPage = (path: string): boolean => {
+  // https://regex101.com/r/ZjdOiB/1
+  if (path.match(/^\/share(\/.*)?$/)) {
+    return true;
+  }
+
+  return false;
+};
+
+const restrictedPatternsToDelete: Array<RegExp> = [
+  /^\/user\/[^/]+$/, // user page
+];
+export const isDeletablePage = (path: string): boolean => {
+  return !restrictedPatternsToDelete.some(pattern => path.match(pattern));
+};
+
+const restrictedPatternsToCreate: Array<RegExp> = [
   /\^|\$|\*|\+|#|%|\?/,
   /^\/-\/.*/,
   /^\/_r\/.*/,
@@ -51,30 +68,15 @@ const forbiddenPages = [
   /(\/\.\.)\/?/, // see: https://github.com/weseek/growi/issues/3582
   /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share)(\/.*|$)/,
 ];
-
-/**
- * Whether path can be created
- * @param {string} path
- * @returns {boolean}
- */
-const isCreatablePage = (path) => {
-  let isCreatable = true;
-  forbiddenPages.forEach((page) => {
-    const pageNameReg = new RegExp(page);
-    if (path.match(pageNameReg)) {
-      isCreatable = false;
-    }
-  });
-
-  return isCreatable;
+export const isCreatablePage = (path: string): boolean => {
+  return !restrictedPatternsToCreate.some(pattern => path.match(pattern));
 };
 
 /**
  * return user path
- * @param {Object} user
- * @return {string}
+ * @param user
  */
-const userPageRoot = (user) => {
+export const userPageRoot = (user: any): string => {
   if (!user || !user.username) {
     return '';
   }
@@ -83,13 +85,11 @@ const userPageRoot = (user) => {
 
 /**
  * return user path
- * @param {string} parentPath
- * @param {string} childPath
- * @param {string} newPath
- *
- * @return {string}
+ * @param parentPath
+ * @param childPath
+ * @param newPath
  */
-const convertToNewAffiliationPath = (oldPath, newPath, childPath) => {
+export const convertToNewAffiliationPath = (oldPath: string, newPath: string, childPath: string): string => {
   if (newPath === null) {
     throw new Error('Please input the new page path');
   }
@@ -102,9 +102,9 @@ const convertToNewAffiliationPath = (oldPath, newPath, childPath) => {
  * @param {string} path
  * @returns {string}
  */
-function encodeSpaces(path) {
+export const encodeSpaces = (path?:string): string | undefined => {
   if (path == null) {
-    return null;
+    return undefined;
   }
 
   // Encode SPACE and IDEOGRAPHIC SPACE
@@ -116,7 +116,7 @@ function encodeSpaces(path) {
  * @param {string} paths
  * @returns {string}
  */
-function generateEditorPath(...paths) {
+export const generateEditorPath=(...paths)=> {
   const joinedPath = [...paths].join('/');
 
   if (!isCreatablePage(joinedPath)) {
@@ -131,14 +131,3 @@ function generateEditorPath(...paths) {
     throw new Error('Invalid path format');
   }
 }
-
-module.exports = {
-  isTopPage,
-  isTrashPage,
-  isUserPage,
-  isCreatablePage,
-  userPageRoot,
-  convertToNewAffiliationPath,
-  encodeSpaces,
-  generateEditorPath,
-};
