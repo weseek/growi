@@ -1,13 +1,10 @@
 module.exports = (crowi, app) => {
-  // const { configManager } = crowi;
 
-  // when disabled
-  // if (!configManager.getConfig('crowi', 'promster:isEnabled')) {
-  //   return (req, res, next) => next();
-  // }
-
-  // const { createMiddleware } = require('@promster/express');
-  // return createMiddleware({ app });
-  console.log('middleware');
-  return (req, res, next) => next();
+  return (req, res, next) => {
+    // check the oneTimeToken is valid
+    if (req.token == null /* || token.isExpired() */) {
+      return res.redirect('/login');
+    }
+    return next();
+  };
 };
