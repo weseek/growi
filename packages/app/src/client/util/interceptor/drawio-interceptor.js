@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'unstated';
 import { BasicInterceptor } from 'growi-commons';
 
-import Drawio from '../../components/Drawio';
+import Drawio from '~/components/Drawio';
 
 /**
  * The interceptor for draw.io

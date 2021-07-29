@@ -7,7 +7,7 @@ import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 
-import MarkdownTable from '../models/MarkdownTable';
+import MarkdownTable from '~/client/models/MarkdownTable';
 
 import LinkEditModal from './PageEditor/LinkEditModal';
 import RevisionRenderer from './Page/RevisionRenderer';

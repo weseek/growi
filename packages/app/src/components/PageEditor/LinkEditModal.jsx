@@ -20,7 +20,7 @@ import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
 import SearchTypeahead from '../SearchTypeahead';
-import Linker from '../../models/Linker';
+import Linker from '~/client/models/Linker';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 

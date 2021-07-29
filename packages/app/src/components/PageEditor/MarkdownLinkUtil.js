@@ -1,4 +1,4 @@
-import Linker from '../../models/Linker';
+import Linker from '~/client/models/Linker';
 
 /**
  * Utility for markdown link

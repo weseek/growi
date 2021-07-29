@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import geu from './GridEditorUtil';
-import BootstrapGrid from '../../models/BootstrapGrid';
+import BootstrapGrid from '~/client/models/BootstrapGrid';
 
 const resSizes = BootstrapGrid.ResponsiveSize;
 const resSizeObj = {

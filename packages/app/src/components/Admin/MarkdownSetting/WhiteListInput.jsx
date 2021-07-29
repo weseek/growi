@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { tags, attrs } from '../../../../../lib/service/xss/recommended-whitelist';
+import { tags, attrs } from '~/services/xss/recommended-whitelist';
 
 import AppContainer from '~/client/services/AppContainer';
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';

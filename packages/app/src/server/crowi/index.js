@@ -3,7 +3,7 @@ const logger = require('@alias/logger')('growi:crowi');
 const pkg = require('@root/package.json');
 const InterceptorManager = require('@commons/service/interceptor-manager');
 const CdnResourcesService = require('@commons/service/cdn-resources-service');
-const Xss = require('@commons/service/xss');
+const Xss = require('~/services/xss');
 const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
 
 const path = require('path');

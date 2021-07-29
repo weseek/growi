@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { GlobalHotKeys } from 'react-hotkeys';
 
-import HotkeyStroke from '../../models/HotkeyStroke';
+import HotkeyStroke from '~/client/models/HotkeyStroke';
 
 const HotkeysDetector = (props) => {
 

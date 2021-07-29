@@ -1,7 +1,7 @@
 import { BasicInterceptor } from 'growi-commons';
 
 import mtu from './MarkdownTableUtil';
-import MarkdownTable from '../../models/MarkdownTable';
+import MarkdownTable from '~/client/models/MarkdownTable';
 
 /**
  * Interceptor for markdown table

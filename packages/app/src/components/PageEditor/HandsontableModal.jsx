@@ -12,7 +12,7 @@ import { debounce } from 'throttle-debounce';
 
 
 import MarkdownTableDataImportForm from './MarkdownTableDataImportForm';
-import MarkdownTable from '../../models/MarkdownTable';
+import MarkdownTable from '~/client/models/MarkdownTable';
 import ExpandOrContractButton from '../ExpandOrContractButton';
 
 const DEFAULT_HOT_HEIGHT = 300;

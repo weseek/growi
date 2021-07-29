@@ -5,7 +5,7 @@ import {
   Collapse,
 } from 'reactstrap';
 
-import MarkdownTable from '../../models/MarkdownTable';
+import MarkdownTable from '~/client/models/MarkdownTable';
 
 export default class MarkdownTableDataImportForm extends React.Component {
 

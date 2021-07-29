@@ -1,4 +1,4 @@
-import MarkdownTable from '../../models/MarkdownTable';
+import MarkdownTable from '~/client/models/MarkdownTable';
 
 /**
  * Utility for markdown table
