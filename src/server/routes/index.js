@@ -179,7 +179,6 @@ module.exports = function(crowi, app) {
 
   app.get('/forgot-password', forgotPassword.forgotPassword);
   app.post('/_api/forgot-password', forgotPassword.api.post);
-  // TODO: inserting middleware by GW-6926
   app.get('/forgot-password/:token'      , passwordReset, forgotPassword.resetPassword);
 
   app.get('/share/:linkId', page.showSharedPage);

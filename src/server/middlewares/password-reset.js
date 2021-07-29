@@ -13,7 +13,6 @@ module.exports = (crowi, app) => {
 
     // check the oneTimeToken is valid
     if (token == null || passwordResetOrder.isExpired()) {
-      // return res.redirect('/login');
       return res.redirect('/login');
     }
 
