@@ -145,7 +145,6 @@ export class Server {
   }
 
   $beforeListen(): void {
-    // const expressApp = this.app.getApp();
     const server = this.injector.get<HttpServer>(HttpServer);
 
     // init terminus
