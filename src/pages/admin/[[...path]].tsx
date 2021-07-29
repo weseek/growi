@@ -19,6 +19,7 @@ import MarkDownSettingContents from '~/components/Admin/Markdown/MarkDownSetting
 import DataImportPageContents from '~/components/Admin/DataImport/DataImportPageContents';
 import { ExportArchiveDataPage } from '~/components/Admin/DataExport/ExportArchiveDataPage';
 import ElasticsearchManagement from '~/client/js/components/Admin/ElasticsearchManagement/ElasticsearchManagement';
+import SlackIntegration from '~/client/js/components/Admin/SlackIntegration/SlackIntegration';
 import UserGroupPage from '~/client/js/components/Admin/UserGroup/UserGroupPage';
 import UserManagement from '~/client/js/components/Admin/UserManagement';
 
@@ -97,13 +98,17 @@ const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
       title: '',
       component: <></>,
     },
+    'slack-integration': {
+      title: useCustomTitle(props, t('Slack_Integration')),
+      component: <SlackIntegration />,
+    },
     users: {
       title: useCustomTitle(props, t('User_Management')),
       component: <UserManagement />,
     },
     'user-groups': {
       title: useCustomTitle(props, t('UserGroup Management')),
-      component: <></>,
+      component: <UserGroupPage />,
     },
     search: {
       title: useCustomTitle(props, t('Full Text Search Management')),

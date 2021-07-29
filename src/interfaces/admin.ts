@@ -72,9 +72,22 @@ export type customizeParams = {
 }
 
 export type securityParamsGeneralSetting = {
-    restrictGuestMode: string,
-    pageCompleteDeletionAuthority: string,
-    hideRestrictedByOwner: string,
-    hideRestrictedByGroup: string,
-    wikiMode: string,
+  restrictGuestMode: string,
+  pageCompleteDeletionAuthority: string,
+  hideRestrictedByOwner: string,
+  hideRestrictedByGroup: string,
+  wikiMode: string,
+}
+
+export type slackIntegrationParams = {
+  connectionStatuses: object[],
+  currentBotType: string,
+  settings: {
+    slackSigningSecret: string,
+    slackBotToken: string,
+    slackSigningSecretEnvVars: string,
+    slackBotTokenEnvVars: string,
+    slackAppIntegrations: string,
+    proxyServerUri: string,
+  }
 }

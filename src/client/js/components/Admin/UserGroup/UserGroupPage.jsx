@@ -7,7 +7,7 @@ import UserGroupDeleteModal from './UserGroupDeleteModal';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { apiv3Get, apiv3Delete } from '~/utils/apiv3-client';
 
-class UserGroupPage extends React.Component {
+class UserGroupPageBody extends React.Component {
 
   constructor(props) {
     super(props);
