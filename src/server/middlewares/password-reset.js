@@ -1,10 +1,15 @@
 module.exports = (crowi, app) => {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
 
-  return (req, res, next) => {
-    // const { token } = req.params;
+  return async(req, res, next) => {
     const { token } = req.query;
-    const passwordResetOrder = PasswordResetOrder.findOne({ token });
+
+    const passwordResetOrder = await PasswordResetOrder.findOne({ token });
+    console.log('passwordResetOrder', passwordResetOrder);
+
+    if (passwordResetOrder == null) {
+      return res.redirect('/login');
+    }
 
     // http://localhost:3000/forgot-password/token?token=hoge
 
