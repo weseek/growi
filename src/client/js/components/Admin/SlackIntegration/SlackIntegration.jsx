@@ -34,7 +34,7 @@ const SlackIntegration = () => {
   const [selectedBotType, setSelectedBotType] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
 
-  const resetAllSettings = async () => {
+  const resetAllSettings = async() => {
     try {
       await apiv3Delete('/slack-integration-settings/bot-type');
       mutateSlackIntegrationData();
@@ -45,7 +45,7 @@ const SlackIntegration = () => {
     }
   };
 
-  const createSlackIntegrationData = async () => {
+  const createSlackIntegrationData = async() => {
     try {
       await apiv3Put('/slack-integration-settings/slack-app-integrations');
       mutateSlackIntegrationData();
@@ -65,7 +65,7 @@ const SlackIntegration = () => {
     console.log(data)
   }, [data]);
 
-  const changeCurrentBotSettings = async (botType) => {
+  const changeCurrentBotSettings = async(botType) => {
     try {
       await apiv3Put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
@@ -78,7 +78,7 @@ const SlackIntegration = () => {
     }
   };
 
-  const botTypeSelectHandler = async (botType) => {
+  const botTypeSelectHandler = async(botType) => {
     if (botType === currentBotType) {
       return;
     }
@@ -88,7 +88,7 @@ const SlackIntegration = () => {
     setSelectedBotType(botType);
   };
 
-  const changeCurrentBotSettingsHandler = async () => {
+  const changeCurrentBotSettingsHandler = async() => {
     changeCurrentBotSettings(selectedBotType);
     toastSuccess(t('admin:slack_integration.bot_reset_successful'));
   };
