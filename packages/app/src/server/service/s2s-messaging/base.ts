@@ -1,12 +1,54 @@
 import loggerFactory from '~/utils/logger';
 
+import S2sMessage from '~/server/models/vo/s2s-message';
+
+import { S2sMessageHandlable } from './handlable';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:s2s-messaging:base');
 
-const S2sMessageHandlable = require('./handlable');
 
-class S2sMessagingServiceDelegator {
+export interface S2sMessagingService {
 
-  constructor(uri) {
+  uid: number;
+
+  uri: string;
+
+  handlableList: S2sMessageHandlable[];
+
+  shouldResubscribe(): boolean;
+
+  subscribe(forceReconnect: boolean): void;
+
+  /**
+   * Publish message
+   * @param s2sMessage
+   */
+  publish(s2sMessage: S2sMessage): Promise<void>;
+
+  /**
+   * Add message handler
+   * @param handlable
+   */
+  addMessageHandler(handlable: S2sMessageHandlable): void;
+
+  /**
+   * Remove message handler
+   * @param handlable
+   */
+  removeMessageHandler(handlable: S2sMessageHandlable): void;
+
+}
+
+export abstract class AbstractS2sMessagingService implements S2sMessagingService {
+
+  uid: number;
+
+  uri: string;
+
+  handlableList: S2sMessageHandlable[];
+
+  constructor(uri: string) {
     this.uid = Math.floor(Math.random() * 100000);
     this.uri = uri;
 
@@ -17,50 +59,32 @@ class S2sMessagingServiceDelegator {
     this.handlableList = [];
   }
 
-  shouldResubscribe() {
-    throw new Error('implement this');
-  }
+  abstract shouldResubscribe(): boolean;
 
-  subscribe(forceReconnect) {
-    throw new Error('implement this');
-  }
+  abstract subscribe(forceReconnect: boolean): void;
 
   /**
    * Publish message
-   * @param {S2sMessage} s2sMessage
+   * @param s2sMessage
    */
-  async publish(s2sMessage) {
+  async publish(s2sMessage: S2sMessage): Promise<void> {
     s2sMessage.setPublisherUid(this.uid);
   }
 
   /**
    * Add message handler
-   * @param {S2sMessageHandlable} handlable
+   * @param handlable
    */
-  addMessageHandler(handlable) {
-    if (!(handlable instanceof S2sMessageHandlable)) {
-      logger.warn('Unsupported instance');
-      logger.debug('Unsupported instance: ', handlable);
-      return;
-    }
-
+  addMessageHandler(handlable: S2sMessageHandlable): void {
     this.handlableList.push(handlable);
   }
 
   /**
    * Remove message handler
-   * @param {S2sMessageHandlable} handlable
+   * @param handlable
    */
-  removeMessageHandler(handlable) {
-    if (!(handlable instanceof S2sMessageHandlable)) {
-      logger.warn('Unsupported instance');
-      logger.debug('Unsupported instance: ', handlable);
-      return;
-    }
-
+  removeMessageHandler(handlable: S2sMessageHandlable): void {
     this.handlableList = this.handlableList.filter(h => h !== handlable);
   }
 
 }
-
-module.exports = S2sMessagingServiceDelegator;
