@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+import loggerFactory from '~/utils/logger';
 
 const debug = require('debug')('growi:models:user');
 const mongoose = require('mongoose');
@@ -9,10 +10,11 @@ const md5 = require('md5');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
 
-const { listLocaleIds, migrateDeprecatedLocaleId } = require('@commons/util/locale-utils');
-const logger = require('~/utils/logger')('growi:models:user');
+const { listLocaleIds, migrateDeprecatedLocaleId } = require('~/utils/locale-utils');
 
 const { omitInsecureAttributes } = require('./serializers/user-serializer');
+
+const logger = loggerFactory('growi:models:user');
 
 module.exports = function(crowi) {
   const STATUS_REGISTERED = 1;

@@ -7,7 +7,7 @@ const express = require('express');
 
 const passport = require('passport');
 
-const { listLocaleIds } = require('@commons/util/locale-utils');
+const { listLocaleIds } = require('~/utils/locale-utils');
 
 const router = express.Router();
 

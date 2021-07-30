@@ -22,7 +22,7 @@ module.exports = function(crowi, app) {
   const registerSafeRedirect = require('../middlewares/safe-redirect')();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
-  const { listLocaleIds } = require('@commons/util/locale-utils');
+  const { listLocaleIds } = require('~/utils/locale-utils');
 
   const avoidSessionRoutes = require('../routes/avoid-session-routes');
   const i18nUserSettingDetector = require('../util/i18nUserSettingDetector');

@@ -1,6 +1,6 @@
-const fs = require('fs');
+import fs from 'fs';
 
-const helpers = require('./helpers');
+import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 const MIGRATE_LOCALE_MAP = {
   en: 'en_US',
@@ -11,7 +11,7 @@ const MIGRATE_LOCALE_MAP = {
  * List locales dirents
  */
 function listLocaleDirents() {
-  const allDirents = fs.readdirSync(helpers.root('resource/locales'), { withFileTypes: true });
+  const allDirents = fs.readdirSync(resolveFromRoot('../../../resource/locales'), { withFileTypes: true });
   return allDirents
     .filter(dirent => dirent.isDirectory());
 }
