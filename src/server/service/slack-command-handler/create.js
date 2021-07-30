@@ -3,7 +3,7 @@ const logger = require('@alias/logger')('growi:service:SlackCommandHandler:creat
 const { reshapeContentsBody } = require('@growi/slack');
 const mongoose = require('mongoose');
 
-module.exports = () => {
+module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
@@ -14,7 +14,7 @@ module.exports = () => {
 
         view: {
           type: 'modal',
-          callback_id: 'createPage',
+          callback_id: 'create:createPage',
           title: {
             type: 'plain_text',
             text: 'Create Page',
@@ -54,20 +54,20 @@ module.exports = () => {
     await this[handlerMethodName](client, payload);
   };
 
-  handler.createPageInGrowi = async function(client, payload) {
+  handler.createPage = async function(client, payload) {
     const path = payload.view.state.values.path.path_input.value;
     const channelId = JSON.parse(payload.view.private_metadata).channelId;
     const contentsBody = payload.view.state.values.contents.contents_input.value;
-    await this.createPage(client, payload, path, channelId, contentsBody);
+    await this.MUSTMOVETOUTILcreatePage(client, payload, path, channelId, contentsBody);
   };
 
   handler.MUSTMOVETOUTILcreatePage = async function(client, payload, path, channelId, contentsBody) {
-    const Page = this.crowi.model('Page');
+    const Page = crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
     try {
       // sanitize path
-      const sanitizedPath = this.crowi.xss.process(path);
+      const sanitizedPath = crowi.xss.process(path);
       const normalizedPath = pathUtils.normalizePath(sanitizedPath);
 
       // generate a dummy id because Operation to create a page needs ObjectId
@@ -75,7 +75,7 @@ module.exports = () => {
       const page = await Page.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
 
       // Send a message when page creation is complete
-      const growiUri = this.crowi.appService.getSiteUrl();
+      const growiUri = crowi.appService.getSiteUrl();
       await client.chat.postEphemeral({
         channel: channelId,
         user: payload.user.id,
