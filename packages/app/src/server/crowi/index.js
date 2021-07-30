@@ -1,14 +1,22 @@
-const debug = require('debug')('growi:crowi');
-const logger = require('@alias/logger')('growi:crowi');
-const pkg = require('@root/package.json');
-const InterceptorManager = require('@commons/service/interceptor-manager');
-const CdnResourcesService = require('@commons/service/cdn-resources-service');
-const Xss = require('~/services/xss');
-const { getMongoUri, mongoOptions } = require('@commons/util/mongoose-utils');
+/* eslint-disable @typescript-eslint/no-this-alias */
 
-const path = require('path');
+import path from 'path';
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
+import pkg from '^/package.json';
+
+import InterceptorManager from '~/services/interceptor-manager';
+import Xss from '~/services/xss';
+import loggerFactory from '~/utils/logger';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { projectRoot } from '~/utils/project-dir-utils';
+
+import ConfigManager from '../service/config-manager';
+import AclService from '../service/acl';
+import AttachmentService from '../service/attachment';
+
+const logger = loggerFactory('growi:crowi');
+const httpErrorHandler = require('../middlewares/http-error-handler');
 
 const models = require('../models');
 
@@ -17,7 +25,7 @@ const httpErrorHandler = require('../middlewares/http-error-handler');
 
 const sep = path.sep;
 
-function Crowi(rootdir) {
+function Crowi() {
   const self = this;
 
   this.version = pkg.version;
@@ -266,7 +274,6 @@ Crowi.prototype.setupSessionConfig = async function() {
 };
 
 Crowi.prototype.setupConfigManager = async function() {
-  const ConfigManager = require('../service/config-manager');
   this.configManager = new ConfigManager(this.model('Config'));
   return this.configManager.loadConfigs();
 };
@@ -336,7 +343,7 @@ Crowi.prototype.getRestQiitaAPIService = function() {
 };
 
 Crowi.prototype.setupPassport = async function() {
-  debug('Passport is enabled');
+  logger.debug('Passport is enabled');
 
   // initialize service
   const PassportService = require('../service/passport');
@@ -368,12 +375,12 @@ Crowi.prototype.setupPassport = async function() {
 };
 
 Crowi.prototype.setupSearcher = async function() {
-  const SearchService = require('@server/service/search');
+  const SearchService = require('~/server/service/search');
   this.searchService = new SearchService(this);
 };
 
 Crowi.prototype.setupMailer = async function() {
-  const MailService = require('@server/service/mail');
+  const MailService = require('~/server/service/mail');
   this.mailService = new MailService(this);
 
   // add as a message handler
@@ -467,7 +474,7 @@ Crowi.prototype.buildServer = async function() {
   // use bunyan
   if (env === 'production') {
     const expressBunyanLogger = require('express-bunyan-logger');
-    const logger = require('@alias/logger')('express');
+    const logger = loggerFactory('express');
     express.use(expressBunyanLogger({
       logger,
       excludes: ['*'],
@@ -554,7 +561,6 @@ Crowi.prototype.setUpXss = async function() {
  * setup AclService
  */
 Crowi.prototype.setUpAcl = async function() {
-  const AclService = require('../service/acl');
   if (this.aclService == null) {
     this.aclService = new AclService(this.configManager);
   }
@@ -618,7 +624,6 @@ Crowi.prototype.setUpFileUploaderSwitchService = async function() {
  * setup AttachmentService
  */
 Crowi.prototype.setupAttachmentService = async function() {
-  const AttachmentService = require('../service/attachment');
   if (this.attachmentService == null) {
     this.attachmentService = new AttachmentService(this);
   }
