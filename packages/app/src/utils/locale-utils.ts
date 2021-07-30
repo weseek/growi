@@ -11,7 +11,7 @@ const MIGRATE_LOCALE_MAP = {
  * List locales dirents
  */
 function listLocaleDirents() {
-  const allDirents = fs.readdirSync(resolveFromRoot('../../../resource/locales'), { withFileTypes: true });
+  const allDirents = fs.readdirSync(resolveFromRoot('./resource/locales'), { withFileTypes: true });
   return allDirents
     .filter(dirent => dirent.isDirectory());
 }
@@ -22,7 +22,7 @@ function listLocaleDirents() {
 function listLocaleMetadatas() {
   return listLocaleDirents()
     .map(dir => dir.name)
-    .map(localeDirName => require(`../../../resource/locales/${localeDirName}/meta.json`));
+    .map(localeDirName => require(`../../resource/locales/${localeDirName}/meta.json`));
 }
 
 /**
