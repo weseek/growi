@@ -82,11 +82,15 @@ if (loginFormElem) {
 
 // render PasswordResetRequestForm
 const passwordResetRequestFormElem = document.getElementById('password-reset-request-form');
+const appContainer = new AppContainer();
+appContainer.initApp();
 if (passwordResetRequestFormElem) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <PasswordResetRequestForm />
+      <Provider inject={[appContainer]}>
+        <PasswordResetRequestForm />
+      </Provider>
     </I18nextProvider>,
     passwordResetRequestFormElem,
   );

@@ -1,5 +1,9 @@
+const logger = require('@alias/logger')('growi:routes:forgot-password');
+const ApiResponse = require('../util/apiResponse');
+
 module.exports = function(crowi, app) {
-  const { /* appService, */ mailService } = crowi;
+  const PasswordResetOrder = crowi.model('PasswordResetOrder');
+  const { appService, mailService, configManager } = crowi;
   const path = require('path');
   const actions = {};
   const api = {};
@@ -13,26 +17,37 @@ module.exports = function(crowi, app) {
     return res.render('reset-password');
   };
 
-
-  async function sendPasswordResetEmail() {
-
+  async function sendPasswordResetEmail(email, url, i18n) {
     return mailService.send({
-      to: 'hoge@gmail.com',
-      subject: 'forgotPasswordMailTest',
-      // TODO: apply i18n by GW-6833
-      template: path.join(crowi.localeDir, 'en_US/notifications/passwordReset.txt'),
-      // TODO: need to set appropriate values by GW-6828
-      // vars: {
-      //   appTitle: appService.getAppTitle(),
-      //   email: 'hoge@gmail.com',
-      //   url: 'https://www.google.com/',
-      // },
+      to: email,
+      subject: 'Password Reset',
+      template: path.join(crowi.localeDir, `${i18n}/notifications/passwordReset.txt`),
+      vars: {
+        appTitle: appService.getAppTitle(),
+        email,
+        url,
+      },
     });
   }
 
   api.post = async function(req, res) {
-    await sendPasswordResetEmail();
-    return;
+    const { email } = req.body;
+    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const i18n = req.language || grobalLang;
+    const appUrl = appService.getSiteUrl();
+
+    try {
+      const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
+      const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
+      const oneTimeUrl = url.href;
+      await sendPasswordResetEmail(email, oneTimeUrl, i18n);
+      return res.json(ApiResponse.success());
+    }
+    catch (err) {
+      const msg = 'Error occurred during password reset request procedure';
+      logger.error(err);
+      return res.json(ApiResponse.error(msg));
+    }
   };
 
 

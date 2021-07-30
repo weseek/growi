@@ -275,7 +275,7 @@ class LoginForm extends React.Component {
                   <div className="col-12 text-right py-2">
                     {this.state.isPasswordResetEnable && (
                       <a href="/forgot-password" className="d-block link-switch mb-1">
-                        <i className="icon-key"></i> {t('forgot_password')}
+                        <i className="icon-key"></i> {t('forgot_password.forgot_password')}
                       </a>
                     )}
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
