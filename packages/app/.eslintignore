@@ -1,4 +1,3 @@
-/packages/**
 /public/**
 /src/client/legacy/thirdparty-js/**
 /src/client/util/reveal/plugins/markdown.js

@@ -1,5 +1,5 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
+  root: true, // https://eslint.org/docs/user-guide/configuring/configuration-files#cascading-and-hierarchy
   extends: [
     'weseek',
     'weseek/typescript',
