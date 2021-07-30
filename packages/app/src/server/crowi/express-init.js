@@ -76,7 +76,7 @@ module.exports = function(crowi, app) {
       restrictGuestMode: crowi.aclService.getRestrictGuestModeLabels(),
       registrationMode: crowi.aclService.getRegistrationModeLabels(),
     };
-    res.locals.local_config = Config.getLocalconfig(); // config for browser context
+    res.locals.local_config = Config.getLocalconfig(crowi); // config for browser context
 
     next();
   });

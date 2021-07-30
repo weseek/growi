@@ -1,6 +1,10 @@
-const logger = require('@alias/logger')('growi:service:AppService'); // eslint-disable-line no-unused-vars
-const { pathUtils } = require('growi-commons');
+import { pathUtils } from 'growi-commons';
 
+import loggerFactory from '~/utils/logger';
+
+import { generateConfigsForInstalling } from '../models/config';
+
+const logger = loggerFactory('growi:service:AppService');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
@@ -97,7 +101,7 @@ class AppService extends S2sMessageHandlable {
    * Execute only once for installing application
    */
   async initDB(globalLang) {
-    const initialConfig = this.configManager.configModel.getConfigsObjectForInstalling();
+    const initialConfig = generateConfigsForInstalling();
     initialConfig['app:globalLang'] = globalLang;
     await this.configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
   }
