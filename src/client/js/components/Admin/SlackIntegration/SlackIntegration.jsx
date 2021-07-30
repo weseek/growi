@@ -4,7 +4,9 @@ import { toastSuccess, toastError } from '../../../util/apiNotification';
 import { apiv3Delete, apiv3Put } from '~/utils/apiv3-client';
 import { useSlackIntegrationSWR } from '~/stores/slack-integration';
 
-// TODO: Fix Can't resolve '../../../services/AppContainer'
+// TODO: GW-6935 Show Official Bot
+// TODO: GW-6936 Show With Proxy
+// TODO: GW-6937 Show Without Proxy
 // import OfficialBotSettings from './OfficialBotSettings';
 // import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 // import CustomBotWithProxySettings from './CustomBotWithProxySettings';
@@ -97,6 +99,9 @@ const SlackIntegration = () => {
 
   let settingsComponent = null;
 
+  // TODO: GW-6935 Show Official Bot
+  // TODO: GW-6936 Show With Proxy
+  // TODO: GW-6937 Show Without Proxy
   switch (currentBotType) {
     // case 'officialBot':
     //   settingsComponent = (
