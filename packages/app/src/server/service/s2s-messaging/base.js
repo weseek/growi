@@ -1,4 +1,6 @@
-const logger = require('~/utils/logger')('growi:service:s2s-messaging:base');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:s2s-messaging:base');
 
 const S2sMessageHandlable = require('./handlable');
 

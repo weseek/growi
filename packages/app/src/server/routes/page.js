@@ -1,3 +1,5 @@
+import loggerFactory from '~/utils/logger';
+
 const { isCreatablePage } = require('~/utils/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
@@ -129,7 +131,7 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
-  const logger = require('~/utils/logger')('growi:routes:page');
+  const logger = loggerFactory('growi:routes:page');
   const swig = require('swig-templates');
 
   const pathUtils = require('growi-commons').pathUtils;
@@ -148,8 +150,8 @@ module.exports = function(crowi, app) {
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
 
-  const XssOption = require('../../lib/service/xss/xssOption');
-  const Xss = require('../../lib/service/xss/index');
+  const XssOption = require('~/services/xss/xssOption');
+  const Xss = require('~/services/xss/index');
   const initializedConfig = {
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
     tagWhiteList: xssService.getTagWhiteList(),

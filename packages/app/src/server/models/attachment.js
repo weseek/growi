@@ -1,3 +1,5 @@
+import loggerFactory from '~/utils/logger';
+
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
@@ -8,7 +10,8 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const { addSeconds } = require('date-fns');
-const logger = require('~/utils/logger')('growi:models:attachment');
+
+const logger = loggerFactory('growi:models:attachment');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

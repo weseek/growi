@@ -1,8 +1,11 @@
+import loggerFactory from '~/utils/logger';
+
 const fs = require('fs');
 const path = require('path');
 const streamToPromise = require('stream-to-promise');
 const unzipper = require('unzipper');
-const logger = require('~/utils/logger')('growi:services:GrowiBridgeService'); // eslint-disable-line no-unused-vars
+
+const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-disable-line no-unused-vars
 
 /**
  * the service class for bridging GROWIs (export and import)

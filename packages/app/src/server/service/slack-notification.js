@@ -1,4 +1,6 @@
-const logger = require('~/utils/logger')('growi:service:SlackNotification'); // eslint-disable-line no-unused-vars
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:SlackNotification'); // eslint-disable-line no-unused-vars
 /**
  * the service class of SlackNotificationService
  */

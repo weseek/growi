@@ -1,7 +1,9 @@
+import loggerFactory from '~/utils/logger';
+
 /* eslint-disable no-use-before-define */
 
 
-const logger = require('~/utils/logger')('growi:routes:attachment');
+const logger = loggerFactory('growi:routes:attachment');
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');

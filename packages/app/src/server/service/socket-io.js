@@ -1,9 +1,11 @@
+import loggerFactory from '~/utils/logger';
+
 const socketIo = require('socket.io');
 const expressSession = require('express-session');
 const passport = require('passport');
 const socketioSession = require('@kobalab/socket.io-session');
 
-const logger = require('~/utils/logger')('growi:service:socket-io');
+const logger = loggerFactory('growi:service:socket-io');
 
 
 /**

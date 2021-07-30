@@ -1,5 +1,7 @@
 
-const logger = require('~/utils/logger')('growi:service:SlackBotService');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 const axios = require('axios');
 const { formatDistanceStrict } = require('date-fns');

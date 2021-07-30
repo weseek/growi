@@ -1,4 +1,6 @@
-const logger = require('~/utils/logger')('growi:service:system-events:SyncPageStatusService');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:system-events:SyncPageStatusService');
 
 const S2sMessage = require('../../models/vo/s2s-message');
 const { S2cMessagePageUpdated } = require('../../models/vo/s2c-message');

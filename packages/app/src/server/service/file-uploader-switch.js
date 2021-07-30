@@ -1,4 +1,6 @@
-const logger = require('~/utils/logger')('growi:service:FileUploader');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:FileUploader');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');

@@ -1,9 +1,12 @@
+import loggerFactory from '~/utils/logger';
+
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
-const logger = require('~/utils/logger')('growi:models:page');
+
+const logger = loggerFactory('growi:models:page');
 const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
-const { createBatchStream } = require('@server/util/batch-stream');
+const { createBatchStream } = require('~/server/util/batch-stream');
 const { isTrashPage } = require('~/utils/path-utils');
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 

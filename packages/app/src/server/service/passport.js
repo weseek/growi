@@ -1,4 +1,6 @@
-const logger = require('~/utils/logger')('growi:service:PassportService');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:PassportService');
 const urljoin = require('url-join');
 const luceneQueryParser = require('lucene-query-parser');
 

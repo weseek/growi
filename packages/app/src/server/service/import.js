@@ -1,4 +1,6 @@
-const logger = require('~/utils/logger')('growi:services:ImportService'); // eslint-disable-line no-unused-vars
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 const fs = require('fs');
 const path = require('path');
 

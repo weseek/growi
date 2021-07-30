@@ -1,5 +1,7 @@
 import MarkdownIt from 'markdown-it';
 
+import loggerFactory from '~/utils/logger';
+
 import Linker from './PreProcessor/Linker';
 import CsvToTable from './PreProcessor/CsvToTable';
 import EasyGrid from './PreProcessor/EasyGrid';
@@ -19,7 +21,7 @@ import DrawioViewerConfigurer from './markdown-it/drawio-viewer';
 import TableWithHandsontableButtonConfigurer from './markdown-it/table-with-handsontable-button';
 import HeaderWithEditLinkConfigurer from './markdown-it/header-with-edit-link';
 
-const logger = require('~/utils/logger')('growi:util:GrowiRenderer');
+const logger = loggerFactory('growi:util:GrowiRenderer');
 
 export default class GrowiRenderer {
 

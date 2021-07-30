@@ -1,9 +1,11 @@
 import path from 'path';
 import { listLocaleIds } from '~/utils/locale-utils';
+import loggerFactory from '~/utils/logger';
 
 const swig = require('swig-templates');
 const onHeaders = require('on-headers');
-const logger = require('~/utils/logger')('growi:crowi:dev');
+
+const logger = loggerFactory('growi:crowi:dev');
 
 
 class CrowiDev {
