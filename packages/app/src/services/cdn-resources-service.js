@@ -1,7 +1,8 @@
+import loggerFactory from '~/utils/logger';
+import { resolveFromRoot } from '~/utils/project-dir-utils';
+
 const { URL } = require('url');
 const urljoin = require('url-join');
-
-const helpers = require('@commons/util/helpers');
 
 const { envUtils } = require('growi-commons');
 
@@ -14,7 +15,7 @@ const cdnLocalStyleWebRoot = '/styles/cdn';
 class CdnResourcesService {
 
   constructor() {
-    this.logger = require('~/utils/logger')('growi:service:CdnResourcesService');
+    this.logger = loggerFactory('growi:service:CdnResourcesService');
 
     this.loadManifests();
   }
@@ -24,7 +25,7 @@ class CdnResourcesService {
   }
 
   loadManifests() {
-    this.cdnManifests = require('@root/resource/cdn-manifests');
+    this.cdnManifests = require('^/resource/cdn-manifests');
     this.logger.debug('manifest data loaded : ', this.cdnManifests);
   }
 
@@ -50,14 +51,14 @@ class CdnResourcesService {
    * @param {CdnResourceDownloader} cdnResourceDownloader
    */
   async downloadAndWriteAll(cdnResourceDownloader) {
-    const CdnResource = require('@commons/models/cdn-resource');
+    const CdnResource = require('~/models/cdn-resource');
 
     const cdnScriptResources = this.cdnManifests.js.map((manifest) => {
-      const outDir = helpers.root(cdnLocalScriptRoot);
+      const outDir = resolveFromRoot(cdnLocalScriptRoot);
       return new CdnResource(manifest.name, manifest.url, outDir);
     });
     const cdnStyleResources = this.cdnManifests.style.map((manifest) => {
-      const outDir = helpers.root(cdnLocalStyleRoot);
+      const outDir = resolveFromRoot(cdnLocalStyleRoot);
       return new CdnResource(manifest.name, manifest.url, outDir);
     });
 

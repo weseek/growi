@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
@@ -60,7 +61,7 @@ module.exports = function(crowi, app) {
 
     const Page = crowi.model('Page');
     const User = crowi.model('User');
-    const Config = crowi.model('Config');
+    const Config = mongoose.model('Config');
     app.set('tzoffset', crowi.appService.getTzoffset());
 
     req.csrfToken = null;

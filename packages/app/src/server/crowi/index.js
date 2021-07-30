@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 
 import pkg from '^/package.json';
 
+import CdnResourcesService from '~/services/cdn-resources-service';
 import InterceptorManager from '~/services/interceptor-manager';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
@@ -25,14 +26,13 @@ const PluginService = require('../plugins/plugin.service');
 const sep = path.sep;
 
 function Crowi() {
-  const self = this;
-
   this.version = pkg.version;
   this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
   this.publicDir = path.join(projectRoot, 'public') + sep;
   this.resourceDir = path.join(projectRoot, 'resource') + sep;
   this.localeDir = path.join(this.resourceDir, 'locales') + sep;
+  this.viewsDir = path.join(projectRoot, 'src', 'server', 'views') + sep;
   this.tmpDir = path.join(projectRoot, 'tmp') + sep;
   this.cacheDir = path.join(this.tmpDir, 'cache');
 
@@ -58,6 +58,7 @@ function Crowi() {
   this.socketIoService = null;
   this.pageService = null;
   this.syncPageStatusService = null;
+  this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.slackBotService = null;
   this.xss = new Xss();
