@@ -206,11 +206,11 @@ const commandsNameForBroadcastUse = ['search'];
 const commandsNameForSingleUse = ['create'];
 
 const ManageCommandsProcess = ({
-  apiv3Put, slackAppIntegrationId,
+  apiv3Put, slackAppIntegrationId, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
 }) => {
   const { t } = useTranslation();
-  const [selectedCommandsForBroadcastUse, setSelectedCommandsForBroadcastUse] = useState(new Set());
-  const [selectedCommandsForSingleUse, setSelectedCommandsForSingleUse] = useState(new Set());
+  const [selectedCommandsForBroadcastUse, setSelectedCommandsForBroadcastUse] = useState(new Set(supportedCommandsForBroadcastUse));
+  const [selectedCommandsForSingleUse, setSelectedCommandsForSingleUse] = useState(new Set(supportedCommandsForSingleUse));
 
   const toggleCheckboxForBroadcast = (e) => {
     const { target } = e;
@@ -408,7 +408,6 @@ const WithProxyAccordions = (props) => {
       props.onSubmitForm();
     }
   };
-
   const submitFormFailed = () => {
     setIsLatestConnectionSuccess(false);
   };
@@ -434,6 +433,8 @@ const WithProxyAccordions = (props) => {
       content: <ManageCommandsProcess
         apiv3Put={props.appContainer.apiv3.put}
         slackAppIntegrationId={props.slackAppIntegrationId}
+        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
+        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
       />,
     },
     '④': {
@@ -476,6 +477,8 @@ const WithProxyAccordions = (props) => {
       content: <ManageCommandsProcess
         apiv3Put={props.appContainer.apiv3.put}
         slackAppIntegrationId={props.slackAppIntegrationId}
+        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
+        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
       />,
     },
     '⑥': {
@@ -527,6 +530,8 @@ WithProxyAccordions.propTypes = {
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
+  supportedCommandsForBroadcastUse: PropTypes.arrayOf(PropTypes.string),
+  supportedCommandsForSingleUse: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default WithProxyAccordionsWrapper;
