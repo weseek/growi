@@ -66,13 +66,20 @@ class SlackBotService extends S2sMessageHandlable {
    * Handle /commands endpoint
    */
   async handleCommand(command, client, body, ...opt) {
-    const module = `./slack-command-handler/${command}`;
+    let module;
+    try {
+      module = `./slack-command-handler/${command}`;
+    }
+    catch (err) {
+      this.notCommand(client, body);
+    }
+
     try {
       const handler = require(module)(this.crowi);
       await handler.handleCommand(client, body, ...opt);
     }
     catch (err) {
-      this.notCommand(client, body);
+      throw err;
     }
   }
 

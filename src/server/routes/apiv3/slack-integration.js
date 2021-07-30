@@ -129,22 +129,7 @@ module.exports = (crowi) => {
 
 
   const handleBlockActions = async(client, payload) => {
-    const { action_id: actionId } = payload.actions[0];
-
-    switch (actionId) {
-      // GW-6844 merge後に移行終了
-      case 'search:showNextResults': {
-        const parsedValue = JSON.parse(payload.actions[0].value);
-
-        const { body, args, offset } = parsedValue;
-        const newOffset = offset + 10;
-        await crowi.slackBotService.showEphemeralSearchResults(client, body, args, newOffset);
-        break;
-      }
-      default:
-        await crowi.slackBotService.handleBlockActions(client, payload);
-        break;
-    }
+    await crowi.slackBotService.handleBlockActions(client, payload);
   };
 
   const handleViewSubmission = async(client, payload) => {
