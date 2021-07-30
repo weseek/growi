@@ -469,9 +469,9 @@ class SlackBotService extends S2sMessageHandlable {
     }
     /**
      * RegExp for datetime yyyy/MM/dd-HH:mm
-     * @see https://regex101.com/r/xiQoTb/1
+     * @see https://regex101.com/r/XbxdNo/1
      */
-    const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0?[1-9]|[12][0-9]|3[01])-(0[0-9]|1[012]):[0-5][0-9]$/);
+    const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])-([01][0-9]|2[0123]):[0-5][0-9]$/);
 
     if (!regexpDatetime.test(oldest)) {
       throw new Error('Datetime format for oldest must be yyyy/MM/dd-HH:mm');
