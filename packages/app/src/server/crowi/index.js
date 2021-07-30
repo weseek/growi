@@ -64,7 +64,6 @@ function Crowi() {
   this.socketIoService = null;
   this.pageService = null;
   this.syncPageStatusService = null;
-  this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
   this.slackBotService = null;
   this.xss = new Xss();
