@@ -264,7 +264,7 @@ const ManageCommandsProcess = ({
   return (
     <div className="py-4 px-5">
       <p className="mb-4">{t('admin:slack_integration.accordion.manage_commands')}</p>
-      <span className="mb-1">Broadcast Use</span>
+      <span className="mb-2">Broadcast Use</span>
       <div className="custom-control custom-checkbox">
         <div className="row mb-5">
           {commandsNameForBroadcastUse.map((commandName) => {
@@ -287,7 +287,7 @@ const ManageCommandsProcess = ({
           })}
         </div>
       </div>
-      <span className="mb-1">Single Use</span>
+      <span className="mb-2">Single Use</span>
       <div className="custom-control custom-checkbox">
         <div className="row mb-5">
           {commandsNameForSingleUse.map((commandName) => {
@@ -430,6 +430,13 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+      />,
+    },
+    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
