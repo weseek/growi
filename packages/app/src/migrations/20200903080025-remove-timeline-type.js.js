@@ -1,17 +1,16 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:remove-behavior-type');
+import loggerFactory from '~/utils/logger';
+
+import Config from '~/server/models/config';
+
+const logger = loggerFactory('growi:migrate:remove-timeline-type');
 
 const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
-
-const { getModelSafely } = require('@commons/util/mongoose-utils');
+const config = require('^/config/migrate');
 
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     await Config.findOneAndDelete({ key: 'customize:isEnabledTimeline' }); // remove timeline
 
@@ -22,8 +21,6 @@ module.exports = {
     // do not rollback
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     const insertConfig = new Config({
       ns: 'crowi',

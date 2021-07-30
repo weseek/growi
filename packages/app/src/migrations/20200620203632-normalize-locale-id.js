@@ -1,18 +1,18 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:normalize-locale-id');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import Config from '~/server/models/config';
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+import { getModelSafely } from '~/server/util/mongoose-utils';
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
+const logger = loggerFactory('growi:migrate:normalize-locale-id');
 
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
-    const User = getModelSafely('User') || require('@server/models/user')();
+    const User = getModelSafely('User') || require('~/server/models/user')();
 
     await Promise.all([
       // update en-US -> en_US

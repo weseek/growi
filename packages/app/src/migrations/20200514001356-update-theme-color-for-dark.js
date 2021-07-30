@@ -1,17 +1,15 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:update-theme-color-for-dark');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import Config from '~/server/models/config';
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
+const logger = loggerFactory('growi:migrate:update-theme-color-for-dark');
 
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     await Promise.all([
       await Config.findOneAndUpdate({ key: 'customize:theme', value: JSON.stringify('default-dark') }, { value: JSON.stringify('default') }), // update default-dark

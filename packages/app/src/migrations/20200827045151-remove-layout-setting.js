@@ -1,17 +1,16 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:remove-layout-setting');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import Config from '~/server/models/config';
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+import { getModelSafely } from '~/server/util/mongoose-utils';
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
+const logger = loggerFactory('growi:migrate:remove-layout-setting');
 
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     const layoutType = await Config.findOne({ key: 'customize:layout' });
 
@@ -41,8 +40,6 @@ module.exports = {
   async down(db, client) {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     const theme = await Config.findOne({ key: 'customize:theme' });
     const insertLayoutType = (theme.value === '"kibela"') ? 'kibela' : 'growi';

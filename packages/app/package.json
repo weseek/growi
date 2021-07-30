@@ -14,6 +14,11 @@
     "lint:styles": "stylelint src/**/*.scss",
     "lint:swagger2openapi": "node node_modules/swagger2openapi/oas-validate tmp/swagger.json",
     "lint": "npm-run-all -p lint:js lint:styles lint:swagger2openapi",
+    "migrate": "yarn migrate:up",
+    "migrate:create": "yarn ts-node node_modules/.bin/migrate-mongo create -f config/migrate.js -- ",
+    "migrate:status": "yarn ts-node node_modules/.bin/migrate-mongo status -f config/migrate.js",
+    "migrate:up": "yarn ts-node node_modules/.bin/migrate-mongo up -f config/migrate.js",
+    "migrate:down": "yarn ts-node node_modules/.bin/migrate-mongo down -f config/migrate.js",
     "ts-node": "ts-node -r tsconfig-paths/register -r dotenv-flow/config --transpile-only",
     "ts-node-dev": "ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --transpile-only"
   },

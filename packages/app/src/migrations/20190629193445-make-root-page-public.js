@@ -1,15 +1,16 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:make-root-page-public');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:migrate:make-root-page-public');
 
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Page = require('@server/models/page')();
+    const Page = require('~/server/models/page')();
 
     await Page.findOneAndUpdate(
       { path: '/' },

@@ -1,10 +1,11 @@
-const logger = require('@alias/logger')('growi:migrate:add-config-app-installed');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import Config from '~/server/models/config';
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+import { getModelSafely } from '~/server/util/mongoose-utils';
 
-const { getModelSafely } = require('@commons/util/mongoose-utils');
-
+const logger = loggerFactory('growi:migrate:add-config-app-installed');
 
 /**
  * BEFORE
@@ -20,8 +21,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Config = getModelSafely('Config') || require('@server/models/config')();
-    const User = getModelSafely('User') || require('@server/models/user')();
+    const User = getModelSafely('User') || require('~/server/models/user')();
 
     // find 'app:siteUrl'
     const appInstalled = await Config.findOne({
@@ -50,8 +50,6 @@ module.exports = {
   async down(db) {
     logger.info('Rollback migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    const Config = getModelSafely('Config') || require('@server/models/config')();
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({

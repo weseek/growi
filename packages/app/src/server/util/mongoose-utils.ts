@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose, {
+  Model, Document, ConnectionOptions, Schema,
+} from 'mongoose';
 
-const getMongoUri = () => {
+export const getMongoUri = (): string => {
   const { env } = process;
 
   return env.MONGOLAB_URI // for B.C.
@@ -10,21 +12,20 @@ const getMongoUri = () => {
     || ((env.NODE_ENV === 'test') ? 'mongodb://mongo/growi_test' : 'mongodb://mongo/growi');
 };
 
-const getModelSafely = (modelName) => {
+export const getModelSafely = <T>(modelName: string): Model<T & Document> | null => {
   if (mongoose.modelNames().includes(modelName)) {
-    return mongoose.model(modelName);
+    return mongoose.model<T & Document>(modelName);
   }
   return null;
 };
 
-const mongoOptions = {
-  useNewUrlParser: true, // removes a deprecation warning when connecting
-  useUnifiedTopology: true,
-  useFindAndModify: false,
+export const getOrCreateModel = <Interface, Method>(modelName: string, schema: Schema<Interface>): Method & Model<Interface & Document> => {
+  if (mongoose.modelNames().includes(modelName)) {
+    return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName);
+  }
+  return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName, schema);
 };
 
-module.exports = {
-  getMongoUri,
-  getModelSafely,
-  mongoOptions,
+export const mongoOptions: ConnectionOptions = {
+  useFindAndModify: false,
 };

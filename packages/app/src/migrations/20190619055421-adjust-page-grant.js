@@ -1,8 +1,9 @@
-require('module-alias/register');
-const logger = require('@alias/logger')('growi:migrate:adjust-page-grant');
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose');
-const config = require('@root/config/migrate');
+import config from '^/config/migrate';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:migrate:adjust-page-grant');
 
 module.exports = {
 
@@ -10,7 +11,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const Page = require('@server/models/page')();
+    const Page = require('~/server/models/page')();
 
     await Page.bulkWrite([
       {
