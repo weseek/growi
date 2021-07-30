@@ -1,15 +1,13 @@
 // converts csv item to array
-const toArrayFromCsv = (text) => {
-  let array = [];
-
+export const toArrayFromCsv = (text: string): string[] => {
   if (text == null) {
-    return array;
+    return [];
   }
 
-  array = text.split(',').map(el => el.trim());
-  array = array.filter(el => el !== '');
+  const array = text
+    .split(',')
+    .map(el => el.trim())
+    .filter(el => el !== '');
 
   return array;
 };
-
-module.exports = toArrayFromCsv;
