@@ -1,3 +1,5 @@
+import loggerFactory from '~/utils/logger';
+
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
@@ -15,7 +17,8 @@ const { pathUtils } = require('growi-commons');
 const escapeStringRegexp = require('escape-string-regexp');
 const templateChecker = require('~/utils/template-checker');
 const { isTopPage, isTrashPage } = require('~/utils/path-utils');
-const logger = require('~/utils/logger')('growi:models:page');
+
+const logger = loggerFactory('growi:models:page');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
