@@ -266,6 +266,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    TYPES.BOOLEAN,
     default: false,
   },
+  LOCAL_STRATEGY_PASSWORD_RESET_ENABLED: {
+    ns:      'crowi',
+    key:     'security:passport-local:isPasswordResetEnabled',
+    type:    TYPES.BOOLEAN,
+    default: true,
+  },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
     key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',
