@@ -1,4 +1,4 @@
-const loggerFactory = require('@alias/logger');
+const loggerFactory = require('~/utils/logger');
 
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 

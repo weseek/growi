@@ -15,7 +15,7 @@ export class DetachCodeBlockInterceptor extends BasicInterceptor {
 
   constructor(crowi) {
     super();
-    this.logger = require('@alias/logger')('growi:DetachCodeBlockInterceptor');
+    this.logger = require('~/utils/logger')('growi:DetachCodeBlockInterceptor');
 
     this.crowi = crowi;
     this.crowiForJquery = crowi.getCrowiForJquery();
@@ -95,7 +95,7 @@ export class RestoreCodeBlockInterceptor extends BasicInterceptor {
 
   constructor(crowi) {
     super();
-    this.logger = require('@alias/logger')('growi:DetachCodeBlockInterceptor');
+    this.logger = require('~/utils/logger')('growi:DetachCodeBlockInterceptor');
 
     this.crowi = crowi;
     this.crowiForJquery = crowi.getCrowiForJquery();

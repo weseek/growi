@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 
-const logger = require('@alias/logger')('growi:routes:hackmd');
+const logger = require('~/utils/logger')('growi:routes:hackmd');
 const path = require('path');
 const fs = require('graceful-fs');
 const swig = require('swig-templates');

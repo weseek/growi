@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 
 
-const logger = require('@alias/logger')('growi:routes:attachment');
+const logger = require('~/utils/logger')('growi:routes:attachment');
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');

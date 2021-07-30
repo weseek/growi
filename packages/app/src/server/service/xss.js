@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:XssSerivce'); // eslint-disable-line no-unused-vars
+const logger = require('~/utils/logger')('growi:service:XssSerivce'); // eslint-disable-line no-unused-vars
 
 const Xss = require('~/services/xss');
 const { tags, attrs } = require('~/services/xss/recommended-whitelist');

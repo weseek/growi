@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:fileUploaderLocal');
+const logger = require('~/utils/logger')('growi:service:fileUploaderLocal');
 
 const fs = require('fs');
 const path = require('path');

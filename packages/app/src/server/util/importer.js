@@ -5,7 +5,7 @@
 /* eslint-disable no-use-before-define */
 
 module.exports = (crowi) => {
-  const logger = require('@alias/logger')('growi:util:importer');
+  const logger = require('~/utils/logger')('growi:util:importer');
   const esa = require('esa-nodejs');
   const createGrowiPages = require('./createGrowiPagesFromImports')(crowi);
   const restQiitaAPIService = crowi.getRestQiitaAPIService();

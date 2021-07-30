@@ -1,12 +1,12 @@
 // don't add any more middlewares to this file.
 // all new middlewares should be an independent file under /server/middlewares
 // eslint-disable-next-line no-unused-vars
-const logger = require('@alias/logger')('growi:lib:middlewares');
 
 const { formatDistanceStrict } = require('date-fns');
 const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
+const logger = require('~/utils/logger')('growi:lib:middlewares');
 
 module.exports = (crowi) => {
   const { configManager } = crowi;

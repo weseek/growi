@@ -1,5 +1,5 @@
 module.exports = function(crowi) {
-  const logger = require('@alias/logger')('growi:routes:installer');
+  const logger = require('~/utils/logger')('growi:routes:installer');
   const path = require('path');
   const fs = require('graceful-fs');
 

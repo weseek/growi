@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:mail');
+const logger = require('~/utils/logger')('growi:service:mail');
 
 const nodemailer = require('nodemailer');
 const swig = require('swig-templates');

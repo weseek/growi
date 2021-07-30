@@ -16,7 +16,7 @@ class RevisionLoader extends React.Component {
 
   constructor(props) {
     super(props);
-    this.logger = require('@alias/logger')('growi:Page:RevisionLoader');
+    this.logger = require('~/utils/logger')('growi:Page:RevisionLoader');
 
     this.state = {
       markdown: '',

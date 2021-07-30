@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:GlobalNotificationMailService'); // eslint-disable-line no-unused-vars
+const logger = require('~/utils/logger')('growi:service:GlobalNotificationMailService'); // eslint-disable-line no-unused-vars
 const nodePath = require('path');
 
 /**

@@ -2,13 +2,13 @@
 /* eslint-disable no-return-await */
 
 // eslint-disable-next-line no-unused-vars
-const logger = require('@alias/logger')('growi:models:attachment');
 const path = require('path');
 
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const { addSeconds } = require('date-fns');
+const logger = require('~/utils/logger')('growi:models:attachment');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

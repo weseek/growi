@@ -129,7 +129,7 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
-  const logger = require('@alias/logger')('growi:routes:page');
+  const logger = require('~/utils/logger')('growi:routes:page');
   const swig = require('swig-templates');
 
   const pathUtils = require('growi-commons').pathUtils;

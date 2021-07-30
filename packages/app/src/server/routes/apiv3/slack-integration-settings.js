@@ -3,7 +3,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 const axios = require('axios');
 const urljoin = require('url-join');
-const loggerFactory = require('@alias/logger');
+const loggerFactory = require('~/utils/logger');
 
 const { getConnectionStatus, getConnectionStatuses, sendSuccessMessage } = require('@growi/slack');
 

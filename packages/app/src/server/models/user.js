@@ -1,7 +1,6 @@
 /* eslint-disable no-use-before-define */
 
 const debug = require('debug')('growi:models:user');
-const logger = require('@alias/logger')('growi:models:user');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
@@ -11,6 +10,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 const crypto = require('crypto');
 
 const { listLocaleIds, migrateDeprecatedLocaleId } = require('@commons/util/locale-utils');
+const logger = require('~/utils/logger')('growi:models:user');
 
 const { omitInsecureAttributes } = require('./serializers/user-serializer');
 

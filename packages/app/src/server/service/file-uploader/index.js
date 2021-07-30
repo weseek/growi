@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:FileUploaderServise');
+const logger = require('~/utils/logger')('growi:service:FileUploaderServise');
 
 const envToModuleMappings = {
   aws:     'aws',

@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:fileUploaderGridfs');
+const logger = require('~/utils/logger')('growi:service:fileUploaderGridfs');
 const mongoose = require('mongoose');
 const util = require('util');
 

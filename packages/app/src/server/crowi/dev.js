@@ -1,10 +1,10 @@
-const logger = require('@alias/logger')('growi:crowi:dev');
 const path = require('path');
 
 const { listLocaleIds } = require('@commons/util/locale-utils');
 
 const swig = require('swig-templates');
 const onHeaders = require('on-headers');
+const logger = require('~/utils/logger')('growi:crowi:dev');
 
 
 class CrowiDev {

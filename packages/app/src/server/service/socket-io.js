@@ -3,7 +3,7 @@ const expressSession = require('express-session');
 const passport = require('passport');
 const socketioSession = require('@kobalab/socket.io-session');
 
-const logger = require('@alias/logger')('growi:service:socket-io');
+const logger = require('~/utils/logger')('growi:service:socket-io');
 
 
 /**

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-const logger = require('@alias/logger')('growi:service:search');
+const logger = require('~/utils/logger')('growi:service:search');
 
 class SearchService {
 

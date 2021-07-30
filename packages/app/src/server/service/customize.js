@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-const logger = require('@alias/logger')('growi:service:CustomizeService');
+const logger = require('~/utils/logger')('growi:service:CustomizeService');
 
 const DevidedPagePath = require('@commons/models/devided-page-path');
 

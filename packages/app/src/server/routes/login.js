@@ -5,7 +5,7 @@
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login');
-  const logger = require('@alias/logger')('growi:routes:login');
+  const logger = require('~/utils/logger')('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');
   const { configManager, appService, aclService, mailService } = crowi;

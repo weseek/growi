@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
-const logger = require('@alias/logger')('growi:models:page');
+const logger = require('~/utils/logger')('growi:models:page');
 const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('@server/util/batch-stream');

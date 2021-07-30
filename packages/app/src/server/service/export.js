@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:services:ExportService'); // eslint-disable-line no-unused-vars
+const logger = require('~/utils/logger')('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 
 const fs = require('fs');
 const path = require('path');

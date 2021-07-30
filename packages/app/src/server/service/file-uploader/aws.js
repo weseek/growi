@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:fileUploaderAws');
+const logger = require('~/utils/logger')('growi:service:fileUploaderAws');
 
 const urljoin = require('url-join');
 const aws = require('aws-sdk');

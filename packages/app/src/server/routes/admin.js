@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:admin');
-  const logger = require('@alias/logger')('growi:routes:admin');
+  const logger = require('~/utils/logger')('growi:routes:admin');
 
   const models = crowi.models;
   const UserGroup = models.UserGroup;

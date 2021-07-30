@@ -1,4 +1,4 @@
-const loggerFactory = require('@alias/logger');
+const loggerFactory = require('~/utils/logger');
 
 const logger = loggerFactory('growi:service:search-reconnect-context:reconnect-context');
 

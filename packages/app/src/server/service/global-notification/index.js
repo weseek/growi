@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:GlobalNotificationService');
+const logger = require('~/utils/logger')('growi:service:GlobalNotificationService');
 const GloabalNotificationSlack = require('./global-notification-slack');
 const GloabalNotificationMail = require('./global-notification-mail');
 

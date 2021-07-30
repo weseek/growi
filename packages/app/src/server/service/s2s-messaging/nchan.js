@@ -1,4 +1,4 @@
-const logger = require('@alias/logger')('growi:service:s2s-messaging:nchan');
+const logger = require('~/utils/logger')('growi:service:s2s-messaging:nchan');
 
 const path = require('path');
 const axios = require('axios');

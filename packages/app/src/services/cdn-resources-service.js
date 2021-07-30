@@ -14,7 +14,7 @@ const cdnLocalStyleWebRoot = '/styles/cdn';
 class CdnResourcesService {
 
   constructor() {
-    this.logger = require('@alias/logger')('growi:service:CdnResourcesService');
+    this.logger = require('~/utils/logger')('growi:service:CdnResourcesService');
 
     this.loadManifests();
   }

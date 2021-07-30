@@ -93,7 +93,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
-    this.logger = require('@alias/logger')('growi:PageEditor:CodeMirrorEditor');
+    this.logger = require('~/utils/logger')('growi:PageEditor:CodeMirrorEditor');
 
     this.state = {
       value: this.props.value,

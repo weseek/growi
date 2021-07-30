@@ -3,7 +3,7 @@
 
 import { toArrayIfNot } from '~/utils/array-utils';
 
-const logger = require('@alias/logger')('growi:apiv3');
+const logger = require('~/utils/logger')('growi:apiv3');
 
 const apiv3ErrorHandler = (_err, header = 'Error') => {
   // extract api errors from general 400 err

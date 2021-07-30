@@ -44,7 +44,7 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
  */
 
 module.exports = function(crowi, app) {
-  const logger = require('@alias/logger')('growi:routes:comment');
+  const logger = require('~/utils/logger')('growi:routes:comment');
   const Comment = crowi.model('Comment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');

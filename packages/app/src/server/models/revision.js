@@ -3,7 +3,7 @@
 
 module.exports = function(crowi) {
   // eslint-disable-next-line no-unused-vars
-  const logger = require('@alias/logger')('growi:models:revision');
+  const logger = require('~/utils/logger')('growi:models:revision');
 
   const mongoose = require('mongoose');
   const mongoosePaginate = require('mongoose-paginate-v2');

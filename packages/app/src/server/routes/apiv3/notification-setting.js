@@ -1,4 +1,4 @@
-const loggerFactory = require('@alias/logger');
+const loggerFactory = require('~/utils/logger');
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');

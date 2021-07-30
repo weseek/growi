@@ -2,7 +2,6 @@
 /* eslint-disable no-return-await */
 
 /* eslint-disable no-use-before-define */
-const logger = require('@alias/logger')('growi:models:page');
 
 const debug = require('debug')('growi:models:page');
 const nodePath = require('path');
@@ -14,8 +13,9 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const templateChecker = require('@commons/util/template-checker');
-const { isTopPage, isTrashPage } = require('~/utils/path-utils');
 const escapeStringRegexp = require('escape-string-regexp');
+const { isTopPage, isTrashPage } = require('~/utils/path-utils');
+const logger = require('~/utils/logger')('growi:models:page');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 

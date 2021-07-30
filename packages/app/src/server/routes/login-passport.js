@@ -2,7 +2,7 @@
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:login-passport');
-  const logger = require('@alias/logger')('growi:routes:login-passport');
+  const logger = require('~/utils/logger')('growi:routes:login-passport');
   const passport = require('passport');
   const ExternalAccount = crowi.model('ExternalAccount');
   const passportService = crowi.passportService;
