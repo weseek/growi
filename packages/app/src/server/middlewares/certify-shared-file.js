@@ -1,5 +1,6 @@
+import loggerFactory from '~/utils/logger';
+
 const url = require('url');
-const loggerFactory = require('~/utils/logger');
 
 const logger = loggerFactory('growi:middleware:certify-shared-fire');
 

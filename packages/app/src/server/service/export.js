@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import { toArrayIfNot } from '~/utils/array-utils';
 
 const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 
@@ -9,8 +10,6 @@ const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
 const ConfigLoader = require('../service/config-loader');
-
-const toArrayIfNot = require('../../lib/util/toArrayIfNot');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 

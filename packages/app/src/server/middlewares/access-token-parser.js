@@ -1,4 +1,5 @@
-const loggerFactory = require('~/utils/logger');
+import loggerFactory from '~/utils/logger';
+
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
 
 const logger = loggerFactory('growi:middleware:access-token-parser');
