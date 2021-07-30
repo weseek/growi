@@ -6,6 +6,7 @@ import { Waypoint } from 'react-waypoint';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
 import AppContainer from '~/client/services/AppContainer';
+import loggerFactory from '~/utils/logger';
 
 import RevisionRenderer from './RevisionRenderer';
 
@@ -16,7 +17,7 @@ class RevisionLoader extends React.Component {
 
   constructor(props) {
     super(props);
-    this.logger = require('~/utils/logger')('growi:Page:RevisionLoader');
+    this.logger = loggerFactory('growi:Page:RevisionLoader');
 
     this.state = {
       markdown: '',

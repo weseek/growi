@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Input } from 'reactstrap';
 import InterceptorManager from '~/services/interceptor-manager';
+import loggerFactory from '~/utils/logger';
 
 
 import AbstractEditor from './AbstractEditor';
@@ -16,7 +17,7 @@ export default class TextAreaEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
-    this.logger = require('~/utils/logger')('growi:PageEditor:TextAreaEditor');
+    this.logger = loggerFactory('growi:PageEditor:TextAreaEditor');
 
     this.state = {
       value: this.props.value,

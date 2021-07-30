@@ -7,7 +7,11 @@ import * as codemirror from 'codemirror';
 import { Button } from 'reactstrap';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
+import * as loadScript from 'simple-load-script';
+import * as loadCssSync from 'load-css-file';
+
 import InterceptorManager from '~/services/interceptor-manager';
+import loggerFactory from '~/utils/logger';
 
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
@@ -26,8 +30,6 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-const loadScript = require('simple-load-script');
-const loadCssSync = require('load-css-file');
 // set save handler
 codemirror.commands.save = (instance) => {
   if (instance.codeMirrorEditor != null) {
@@ -93,7 +95,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   constructor(props) {
     super(props);
-    this.logger = require('~/utils/logger')('growi:PageEditor:CodeMirrorEditor');
+    this.logger = loggerFactory('growi:PageEditor:CodeMirrorEditor');
 
     this.state = {
       value: this.props.value,
