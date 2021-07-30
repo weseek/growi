@@ -8,6 +8,14 @@ export const supportedGrowiCommands: string[] = [
   'help',
 ];
 
+export const defaultSupportedCommandsNameForBroadcastUse: string[] = [
+  'search',
+];
+
+export const defaultSupportedCommandsNameForSingleUse: string[] = [
+  'create',
+];
+
 export * from './interfaces/growi-command';
 export * from './interfaces/request-between-growi-and-proxy';
 export * from './interfaces/request-from-slack';
