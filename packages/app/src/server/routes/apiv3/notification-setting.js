@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
@@ -10,7 +11,6 @@ const router = express.Router();
 const { body } = require('express-validator');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
-const removeNullPropertyFromObject = require('../../../lib/util/removeNullPropertyFromObject');
 
 const validator = {
   slackConfiguration: [

@@ -1,15 +1,24 @@
-require('module-alias/register');
+/** **********************************************************
+ *                           Caution
+ *
+ * Module aliases by compilerOptions.paths in tsconfig.json
+ * are NOT available in setup scripts
+ *********************************************************** */
+
+import 'tsconfig-paths/register';
+
+import mongoose from 'mongoose';
+
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
 // check env
 if (process.env.NODE_ENV !== 'test') {
   throw new Error('\'process.env.NODE_ENV\' must be \'test\'');
 }
 
-const mongoose = require('mongoose');
 
-const { getMongoUri, mongoOptions } = require('../lib/util/mongoose-utils');
-
-const { getInstance } = require('./setup-crowi');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// const { getInstance } = require('./setup-crowi');
 
 module.exports = async() => {
   await mongoose.connect(getMongoUri(), mongoOptions);
@@ -18,9 +27,9 @@ module.exports = async() => {
   await mongoose.connection.dropDatabase();
 
   // init DB
-  const crowi = await getInstance();
-  const appService = crowi.appService;
-  await appService.initDB();
+  // const crowi = await getInstance();
+  // const appService = crowi.appService;
+  // await appService.initDB();
 
   await mongoose.disconnect();
 };
