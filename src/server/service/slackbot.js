@@ -71,7 +71,7 @@ class SlackBotService extends S2sMessageHandlable {
       module = `./slack-command-handler/${command}`;
     }
     catch (err) {
-      this.notCommand(client, body);
+      await this.notCommand(client, body);
     }
 
     try {
