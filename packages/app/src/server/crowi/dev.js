@@ -1,6 +1,5 @@
-const path = require('path');
-
-const { listLocaleIds } = require('@commons/util/locale-utils');
+import path from 'path';
+import { listLocaleIds } from '~/utils/locale-utils';
 
 const swig = require('swig-templates');
 const onHeaders = require('on-headers');
