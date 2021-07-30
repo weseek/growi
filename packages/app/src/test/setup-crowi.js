@@ -1,11 +1,9 @@
-const helpers = require('@commons/util/helpers');
-
-const Crowi = require('@server/crowi');
+const Crowi = require('~/server/crowi');
 
 let _instance = null;
 
 async function createInstance() {
-  const crowi = new Crowi(helpers.root());
+  const crowi = new Crowi();
   await crowi.initForTest();
 
   return crowi;

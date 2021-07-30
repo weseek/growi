@@ -12,7 +12,7 @@ describe('accessTokenParser', () => {
   beforeAll(async(done) => {
     crowi = await getInstance();
     User = mongoose.model('User');
-    accessTokenParser = require('@server/middlewares/access-token-parser')(crowi);
+    accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
 
     targetUser = await User.create({
       name: 'Example for access token parser',
