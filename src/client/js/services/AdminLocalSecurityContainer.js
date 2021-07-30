@@ -22,6 +22,7 @@ export default class AdminLocalSecurityContainer extends Container {
       registrationMode: this.dummyRegistrationMode,
       registrationWhiteList: [],
       useOnlyEnvVars: false,
+      isEnabledPasswordReset: true,
     };
 
   }
@@ -64,6 +65,13 @@ export default class AdminLocalSecurityContainer extends Container {
    */
   changeRegistrationWhiteList(value) {
     this.setState({ registrationWhiteList: value.split('\n') });
+  }
+
+  /**
+   * Switch password reset enabled
+   */
+  async switchIsPasswordResetEnabled(value) {
+    this.setState({ isPasswordResetEnabled: value });
   }
 
   /**
