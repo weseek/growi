@@ -167,7 +167,7 @@ class LocalSecuritySettingContents extends React.Component {
                     className="custom-control-input"
                     id="isPasswordResetEnabled"
                     checked={isPasswordResetEnabled}
-                    onChange={adminLocalSecurityContainer.switchIsPasswordResetEnabled()}
+                    onChange={() => adminLocalSecurityContainer.switchIsPasswordResetEnabled()}
                   />
                   <label className="custom-control-label" htmlFor="isAbleToResetPasswordByUser">
                     {/* {t('admin:security_setting.enable_or_disable')} */}

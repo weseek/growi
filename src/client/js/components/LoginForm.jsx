@@ -30,10 +30,6 @@ class LoginForm extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.setState({ isPasswordResetEnabled: true });
-  }
-
   switchForm() {
     this.setState({ isRegistering: !this.state.isRegistering });
   }
