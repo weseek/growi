@@ -202,19 +202,38 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   );
 }, [AppContainer]);
 
-const commandNames = ['create', 'search'];
+const commandsNameForBroadcastUse = ['search'];
+const commandsNameForSingleUse = ['create'];
 
 const ManageCommandsProcess = ({
-  apiv3Put,
+  apiv3Put, slackAppIntegrationId,
 }) => {
   const { t } = useTranslation();
-  const [selectedCommands, setSelectedCommands] = useState(new Set());
+  const [selectedCommandsForBroadcastUse, setSelectedCommandsForBroadcastUse] = useState(new Set());
+  const [selectedCommandsForSingleUse, setSelectedCommandsForSingleUse] = useState(new Set());
 
-  const toggleCheckbox = (e) => {
+  const toggleCheckboxForBroadcast = (e) => {
     const { target } = e;
     const { name, checked } = target;
 
-    setSelectedCommands((prevState) => {
+    setSelectedCommandsForBroadcastUse((prevState) => {
+      const selectedCommands = new Set(prevState);
+      if (checked) {
+        selectedCommands.add(name);
+      }
+      else {
+        selectedCommands.delete(name);
+      }
+
+      return selectedCommands;
+    });
+  };
+
+  const toggleCheckboxForSingleUse = (e) => {
+    const { target } = e;
+    const { name, checked } = target;
+
+    setSelectedCommandsForSingleUse((prevState) => {
       const selectedCommands = new Set(prevState);
       if (checked) {
         selectedCommands.add(name);
@@ -228,16 +247,27 @@ const ManageCommandsProcess = ({
   };
 
   const updateCommandsHandler = async() => {
-    console.log('push');
+    try {
+      await apiv3Put(`/slack-integration-settings/${slackAppIntegrationId}/supported-commands`, {
+        supportedCommandsForBroadcastUse: Array.from(selectedCommandsForBroadcastUse),
+        supportedCommandsForSingleUse: Array.from(selectedCommandsForSingleUse),
+      });
+      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
   };
 
 
   return (
     <div className="py-4 px-5">
       <p className="mb-4">{t('admin:slack_integration.accordion.manage_commands')}</p>
+      <span className="mb-1">Broadcast Use</span>
       <div className="custom-control custom-checkbox">
         <div className="row mb-5">
-          {commandNames.map((commandName) => {
+          {commandsNameForBroadcastUse.map((commandName) => {
             return (
               <div className="col-sm-6 my-1" key={commandName}>
                 <input
@@ -246,8 +276,31 @@ const ManageCommandsProcess = ({
                   id={commandName}
                   name={commandName}
                   value={commandName}
-                  checked={selectedCommands.has(commandName)}
-                  onChange={toggleCheckbox}
+                  checked={selectedCommandsForBroadcastUse.has(commandName)}
+                  onChange={toggleCheckboxForBroadcast}
+                />
+                <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
+                  {commandName}
+                </label>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <span className="mb-1">Single Use</span>
+      <div className="custom-control custom-checkbox">
+        <div className="row mb-5">
+          {commandsNameForSingleUse.map((commandName) => {
+            return (
+              <div className="col-sm-6 my-1" key={commandName}>
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id={commandName}
+                  name={commandName}
+                  value={commandName}
+                  checked={selectedCommandsForSingleUse.has(commandName)}
+                  onChange={toggleCheckboxForSingleUse}
                 />
                 <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
                   {commandName}
@@ -415,6 +468,7 @@ const WithProxyAccordions = (props) => {
       title: 'manage_commands',
       content: <ManageCommandsProcess
         apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
       />,
     },
     '⑥': {
@@ -444,7 +498,7 @@ const WithProxyAccordions = (props) => {
                 {t(`admin:slack_integration.accordion.${value.title}`)}
                 {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}
               </>
-)}
+            )}
             key={key}
           >
             {value.content}
