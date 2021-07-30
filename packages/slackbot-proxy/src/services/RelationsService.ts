@@ -35,22 +35,21 @@ export class RelationsService {
     return this.relationRepository.save(relation);
   }
 
-  async syncAndReturnIsSupported(relation:Relation, baseDate:Date, discriminantWhetherRelationIsSupported:(relation:Relation)=>boolean):Promise<boolean> {
-    const distanceHoursToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
+  async syncRelation(relation:Relation, baseDate:Date):Promise<Relation|null> {
+    const distanceMillisecondsToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
 
-    if (distanceHoursToExpiredAt < 0) {
+    if (distanceMillisecondsToExpiredAt < 0) {
       try {
-        const syncedRelation = await this.syncSupportedGrowiCommands(relation);
-        return discriminantWhetherRelationIsSupported(syncedRelation);
+        return await this.syncSupportedGrowiCommands(relation);
       }
       catch (err) {
         logger.error(err);
-        return false;
+        return null;
       }
     }
 
     // 24 hours
-    if (distanceHoursToExpiredAt < 1000 * 60 * 60 * 24) {
+    if (distanceMillisecondsToExpiredAt < 1000 * 60 * 60 * 24) {
       try {
         this.syncSupportedGrowiCommands(relation);
       }
@@ -59,15 +58,23 @@ export class RelationsService {
       }
     }
 
-    return discriminantWhetherRelationIsSupported(relation);
+    return relation;
   }
 
   async isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
-    return this.syncAndReturnIsSupported(relation, baseDate, relation => relation.supportedCommandsForSingleUse.includes(growiCommandType));
+    const syncedRelation = await this.syncRelation(relation, baseDate);
+    if (syncedRelation == null) {
+      return false;
+    }
+    return relation.supportedCommandsForSingleUse.includes(growiCommandType);
   }
 
   async isSupportedGrowiCommandForBroadcastUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
-    return this.syncAndReturnIsSupported(relation, baseDate, relation => relation.supportedCommandsForBroadcastUse.includes(growiCommandType));
+    const syncedRelation = await this.syncRelation(relation, baseDate);
+    if (syncedRelation == null) {
+      return false;
+    }
+    return relation.supportedCommandsForBroadcastUse.includes(growiCommandType);
   }
 
 }
