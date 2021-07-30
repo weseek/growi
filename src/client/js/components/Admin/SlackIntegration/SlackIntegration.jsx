@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
+import { apiv3Delete, apiv3Put } from '~/utils/apiv3-client';
 import { useSlackIntegrationSWR } from '~/stores/slack-integration';
 
+// TODO: Fix Can't resolve '../../../services/AppContainer'
 // import OfficialBotSettings from './OfficialBotSettings';
 // import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 // import CustomBotWithProxySettings from './CustomBotWithProxySettings';
@@ -32,7 +34,7 @@ const SlackIntegration = () => {
 
   const resetAllSettings = async () => {
     try {
-      await appContainer.apiv3.delete('/slack-integration-settings/bot-type');
+      await apiv3Delete('/slack-integration-settings/bot-type');
       mutateSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.bot_all_reset_successful'));
     }
@@ -43,7 +45,7 @@ const SlackIntegration = () => {
 
   const createSlackIntegrationData = async () => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/slack-app-integrations');
+      await apiv3Put('/slack-integration-settings/slack-app-integrations');
       mutateSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.adding_slack_ws_integration_settings_successful'));
     }
@@ -63,7 +65,7 @@ const SlackIntegration = () => {
 
   const changeCurrentBotSettings = async (botType) => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/bot-type', {
+      await apiv3Put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
       });
       setSelectedBotType(null);
@@ -96,44 +98,44 @@ const SlackIntegration = () => {
   let settingsComponent = null;
 
   switch (currentBotType) {
-    case 'officialBot':
-      settingsComponent = (
-        <OfficialBotSettings
-          slackAppIntegrations={slackAppIntegrations}
-          onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
-          onDeleteSlackAppIntegration={mutateSlackIntegrationData}
-          connectionStatuses={connectionStatuses}
-          onUpdateTokens={mutateSlackIntegrationData}
-          onSubmitForm={mutateSlackIntegrationData}
-        />
-      );
-      break;
-    case 'customBotWithoutProxy':
-      settingsComponent = (
-        <CustomBotWithoutProxySettings
-          slackBotTokenEnv={slackBotTokenEnv}
-          slackBotToken={slackBotToken}
-          slackSigningSecretEnv={slackSigningSecretEnv}
-          slackSigningSecret={slackSigningSecret}
-          onTestConnectionInvoked={mutateSlackIntegrationData}
-          onUpdatedSecretToken={changeSecretAndToken}
-          connectionStatuses={connectionStatuses}
-        />
-      );
-      break;
-    case 'customBotWithProxy':
-      settingsComponent = (
-        <CustomBotWithProxySettings
-          slackAppIntegrations={slackAppIntegrations}
-          proxyServerUri={proxyServerUri}
-          onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
-          onDeleteSlackAppIntegration={mutateSlackIntegrationData}
-          connectionStatuses={connectionStatuses}
-          onUpdateTokens={mutateSlackIntegrationData}
-          onSubmitForm={mutateSlackIntegrationData}
-        />
-      );
-      break;
+    // case 'officialBot':
+    //   settingsComponent = (
+    //     <OfficialBotSettings
+    //       slackAppIntegrations={slackAppIntegrations}
+    //       onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+    //       onDeleteSlackAppIntegration={mutateSlackIntegrationData}
+    //       connectionStatuses={connectionStatuses}
+    //       onUpdateTokens={mutateSlackIntegrationData}
+    //       onSubmitForm={mutateSlackIntegrationData}
+    //     />
+    //   );
+    //   break;
+    // case 'customBotWithoutProxy':
+    //   settingsComponent = (
+    //     <CustomBotWithoutProxySettings
+    //       slackBotTokenEnv={slackBotTokenEnv}
+    //       slackBotToken={slackBotToken}
+    //       slackSigningSecretEnv={slackSigningSecretEnv}
+    //       slackSigningSecret={slackSigningSecret}
+    //       onTestConnectionInvoked={mutateSlackIntegrationData}
+    //       onUpdatedSecretToken={changeSecretAndToken}
+    //       connectionStatuses={connectionStatuses}
+    //     />
+    //   );
+    //   break;
+    // case 'customBotWithProxy':
+    //   settingsComponent = (
+    //     <CustomBotWithProxySettings
+    //       slackAppIntegrations={slackAppIntegrations}
+    //       proxyServerUri={proxyServerUri}
+    //       onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+    //       onDeleteSlackAppIntegration={mutateSlackIntegrationData}
+    //       connectionStatuses={connectionStatuses}
+    //       onUpdateTokens={mutateSlackIntegrationData}
+    //       onSubmitForm={mutateSlackIntegrationData}
+    //     />
+    //   );
+    //   break;
   }
 
   if (isValidating) {
