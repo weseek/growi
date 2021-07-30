@@ -21,7 +21,6 @@ const httpErrorHandler = require('../middlewares/http-error-handler');
 const models = require('../models');
 
 const PluginService = require('../plugins/plugin.service');
-const httpErrorHandler = require('../middlewares/http-error-handler');
 
 const sep = path.sep;
 
@@ -31,15 +30,10 @@ function Crowi() {
   this.version = pkg.version;
   this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-  this.rootDir = rootdir;
-  this.pluginDir = path.join(this.rootDir, 'node_modules') + sep;
-  this.publicDir = path.join(this.rootDir, 'public') + sep;
-  this.libDir = path.join(this.rootDir, 'src/server') + sep;
-  this.eventsDir = path.join(this.libDir, 'events') + sep;
-  this.viewsDir = path.join(this.libDir, 'views') + sep;
-  this.resourceDir = path.join(this.rootDir, 'resource') + sep;
+  this.publicDir = path.join(projectRoot, 'public') + sep;
+  this.resourceDir = path.join(projectRoot, 'resource') + sep;
   this.localeDir = path.join(this.resourceDir, 'locales') + sep;
-  this.tmpDir = path.join(this.rootDir, 'tmp') + sep;
+  this.tmpDir = path.join(projectRoot, 'tmp') + sep;
   this.cacheDir = path.join(this.tmpDir, 'cache');
 
   this.express = null;
@@ -78,11 +72,11 @@ function Crowi() {
   this.port = this.env.PORT || 3000;
 
   this.events = {
-    user: new (require(`${self.eventsDir}user`))(this),
-    page: new (require(`${self.eventsDir}page`))(this),
-    bookmark: new (require(`${self.eventsDir}bookmark`))(this),
-    tag: new (require(`${self.eventsDir}tag`))(this),
-    admin: new (require(`${self.eventsDir}admin`))(this),
+    user: new (require('../events/user'))(this),
+    page: new (require('../events/page'))(this),
+    bookmark: new (require('../events/bookmark'))(this),
+    tag: new (require('../events/tag'))(this),
+    admin: new (require('../events/admin'))(this),
   };
 }
 

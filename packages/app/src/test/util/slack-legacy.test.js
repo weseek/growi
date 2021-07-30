@@ -7,7 +7,7 @@ describe('Slack Util', () => {
 
   beforeEach(async(done) => {
     crowi = await getInstance();
-    slackLegacy = require(`${crowi.libDir}/util/slack-legacy`)(crowi);
+    slackLegacy = require('~/server/util/slack-legacy')(crowi);
     done();
   });
 
