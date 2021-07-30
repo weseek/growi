@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import DevidedPagePath from '@commons/models/devided-page-path';
+import DevidedPagePath from '~/models/devided-page-path';
 
 const PagePathLabel = (props) => {
 

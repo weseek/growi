@@ -7,7 +7,7 @@ import * as codemirror from 'codemirror';
 import { Button } from 'reactstrap';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
-import InterceptorManager from '@commons/service/interceptor-manager';
+import InterceptorManager from '~/services/interceptor-manager';
 
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
@@ -862,9 +862,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
           placeholder="search"
           editorDidMount={(editor) => {
           // add event handlers
-          editor.on('paste', this.pasteHandler);
-          editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
-        }}
+            editor.on('paste', this.pasteHandler);
+            editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
+          }}
           value={this.state.value}
           options={{
             mode,
@@ -897,19 +897,19 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
-          if (this.props.onScroll != null) {
+            if (this.props.onScroll != null) {
             // add line data
-            const line = editor.lineAtHeight(data.top, 'local');
-            data.line = line;
-            this.props.onScroll(data);
-          }
-        }}
+              const line = editor.lineAtHeight(data.top, 'local');
+              data.line = line;
+              this.props.onScroll(data);
+            }
+          }}
           onChange={this.changeHandler}
           onDragEnter={(editor, event) => {
-          if (this.props.onDragEnter != null) {
-            this.props.onDragEnter(event);
-          }
-        }}
+            if (this.props.onDragEnter != null) {
+              this.props.onDragEnter(event);
+            }
+          }}
         />
 
         { this.renderLoadingKeymapOverlay() }

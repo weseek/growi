@@ -1,9 +1,9 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 
-import InterceptorManager from '@commons/service/interceptor-manager';
-
 import { Input } from 'reactstrap';
+import InterceptorManager from '~/services/interceptor-manager';
+
 
 import AbstractEditor from './AbstractEditor';
 
@@ -259,10 +259,10 @@ export default class TextAreaEditor extends AbstractEditor {
           innerRef={(c) => { this.textarea = c }}
           defaultValue={this.state.value}
           onChange={(e) => {
-          if (this.props.onChange != null) {
-            this.props.onChange(e.target.value);
-          }
-        }}
+            if (this.props.onChange != null) {
+              this.props.onChange(e.target.value);
+            }
+          }}
         />
       </React.Fragment>
     );

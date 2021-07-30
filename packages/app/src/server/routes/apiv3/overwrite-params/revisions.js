@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 // eslint-disable-next-line no-unused-vars
-const ImportOptionForPages = require('@commons/models/admin/import-option-for-pages');
+const ImportOptionForPages = require('~/models/admin/import-option-for-pages');
 
 const { ObjectId } = mongoose.Types;
 

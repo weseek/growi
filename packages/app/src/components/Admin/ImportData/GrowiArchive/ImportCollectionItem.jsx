@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 
 import { Progress } from 'reactstrap';
 
-import GrowiArchiveImportOption from '@commons/models/admin/growi-archive-import-option';
+import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 
 
 const MODE_ATTR_MAP = {

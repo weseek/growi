@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import DevidedPagePath from '@commons/models/devided-page-path';
-import LinkedPagePath from '@commons/models/linked-page-path';
-import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
+import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
+import DevidedPagePath from '~/models/devided-page-path';
+import LinkedPagePath from '~/models/linked-page-path';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
