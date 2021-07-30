@@ -6,7 +6,7 @@ const urljoin = require('url-join');
 const loggerFactory = require('@alias/logger');
 
 const {
-  getConnectionStatus, getConnectionStatuses, sendSuccessMessage, supportedCommandsNameForBroadcastUse, supportedCommandsNameForSingleUse,
+  getConnectionStatus, getConnectionStatuses, sendSuccessMessage, defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse,
 } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -411,8 +411,8 @@ module.exports = (crowi) => {
       const slackAppTokens = await SlackAppIntegration.create({
         tokenGtoP,
         tokenPtoG,
-        supportedCommandsForBroadcastUse: supportedCommandsNameForBroadcastUse,
-        supportedCommandsForSingleUse: supportedCommandsNameForSingleUse,
+        supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
+        supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
       });
       return res.apiv3(slackAppTokens, 200);
     }

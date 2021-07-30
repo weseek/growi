@@ -8,11 +8,11 @@ export const supportedGrowiCommands: string[] = [
   'help',
 ];
 
-export const supportedCommandsNameForBroadcastUse: string[] = [
+export const defaultSupportedCommandsNameForBroadcastUse: string[] = [
   'search',
 ];
 
-export const supportedCommandsNameForSingleUse: string[] = [
+export const defaultSupportedCommandsNameForSingleUse: string[] = [
   'create',
 ];
 

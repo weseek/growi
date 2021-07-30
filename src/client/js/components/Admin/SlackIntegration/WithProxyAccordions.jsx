@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import loggerFactory from '@alias/logger';
-import { supportedCommandsNameForBroadcastUse, supportedCommandsNameForSingleUse } from '@growi/slack';
+import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -265,7 +265,7 @@ const ManageCommandsProcess = ({
       <span className="mb-2">Broadcast Use</span>
       <div className="custom-control custom-checkbox">
         <div className="row mb-5">
-          {supportedCommandsNameForBroadcastUse.map((commandName) => {
+          {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
             return (
               <div className="col-sm-6 my-1" key={commandName}>
                 <input
@@ -288,7 +288,7 @@ const ManageCommandsProcess = ({
       <span className="mb-2">Single Use</span>
       <div className="custom-control custom-checkbox">
         <div className="row mb-5">
-          {supportedCommandsNameForSingleUse.map((commandName) => {
+          {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
             return (
               <div className="col-sm-6 my-1" key={commandName}>
                 <input
