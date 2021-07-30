@@ -202,6 +202,74 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   );
 }, [AppContainer]);
 
+const commandNames = ['create', 'search'];
+
+const ManageCommandsProcess = ({
+  apiv3Put,
+}) => {
+  const { t } = useTranslation();
+  const [selectedCommands, setSelectedCommands] = useState(new Set());
+
+  const toggleCheckbox = (e) => {
+    const { target } = e;
+    const { name, checked } = target;
+
+    setSelectedCommands((prevState) => {
+      const selectedCommands = new Set(prevState);
+      if (checked) {
+        selectedCommands.add(name);
+      }
+      else {
+        selectedCommands.delete(name);
+      }
+
+      return selectedCommands;
+    });
+  };
+
+  const updateCommandsHandler = async() => {
+    console.log('push');
+  };
+
+
+  return (
+    <div className="py-4 px-5">
+      <p className="mb-4">{t('admin:slack_integration.accordion.manage_commands')}</p>
+      <div className="custom-control custom-checkbox">
+        <div className="row mb-5">
+          {commandNames.map((commandName) => {
+            return (
+              <div className="col-sm-6 my-1" key={commandName}>
+                <input
+                  type="checkbox"
+                  className="custom-control-input"
+                  id={commandName}
+                  name={commandName}
+                  value={commandName}
+                  checked={selectedCommands.has(commandName)}
+                  onChange={toggleCheckbox}
+                />
+                <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
+                  {commandName}
+                </label>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="row">
+        <button
+          type="button"
+          className="btn btn-primary mx-auto"
+          onClick={updateCommandsHandler}
+        >
+          { t('Update') }
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const TestProcess = ({
   apiv3Post, slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
 }) => {
@@ -344,6 +412,12 @@ const WithProxyAccordions = (props) => {
       content: <RegisteringProxyUrlProcess />,
     },
     '⑤': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+      />,
+    },
+    '⑥': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
