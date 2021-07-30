@@ -1,4 +1,4 @@
-const { HttpError } = require('../../../node_modules/http-errors');
+import { HttpError } from 'http-errors';
 
 const isHttpError = (val) => {
   if (!val || typeof val !== 'object') {
