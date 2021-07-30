@@ -11,7 +11,7 @@ const {
 } = require('stream');
 const streamToPromise = require('stream-to-promise');
 
-const { createBatchStream } = require('@server/util/batch-stream');
+const { createBatchStream } = require('../../util/batch-stream');
 
 const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 50;

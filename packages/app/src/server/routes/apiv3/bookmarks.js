@@ -1,4 +1,4 @@
-const loggerFactory = require('~/utils/logger');
+import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-line no-unused-vars
 
@@ -66,7 +66,7 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequiredStrictly = require('@server/middlewares/login-required')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
