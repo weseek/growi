@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import loggerFactory from '@alias/logger';
+import { supportedCommandsNameForBroadcastUse, supportedCommandsNameForSingleUse } from '@growi/slack';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
@@ -202,9 +203,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
   );
 }, [AppContainer]);
 
-const commandsNameForBroadcastUse = ['search'];
-const commandsNameForSingleUse = ['create'];
-
 const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
 }) => {
@@ -267,7 +265,7 @@ const ManageCommandsProcess = ({
       <span className="mb-2">Broadcast Use</span>
       <div className="custom-control custom-checkbox">
         <div className="row mb-5">
-          {commandsNameForBroadcastUse.map((commandName) => {
+          {supportedCommandsNameForBroadcastUse.map((commandName) => {
             return (
               <div className="col-sm-6 my-1" key={commandName}>
                 <input
@@ -290,7 +288,7 @@ const ManageCommandsProcess = ({
       <span className="mb-2">Single Use</span>
       <div className="custom-control custom-checkbox">
         <div className="row mb-5">
-          {commandsNameForSingleUse.map((commandName) => {
+          {supportedCommandsNameForSingleUse.map((commandName) => {
             return (
               <div className="col-sm-6 my-1" key={commandName}>
                 <input
