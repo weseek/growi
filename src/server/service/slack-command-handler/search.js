@@ -2,6 +2,7 @@ const logger = require('@alias/logger')('growi:service:SlackCommandHandler:searc
 
 const { markdownSectionBlock, divider } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
+const axios = require('axios');
 
 const PAGINGLIMIT = 10;
 
@@ -81,7 +82,7 @@ module.exports = (crowi) => {
           },
           accessory: {
             type: 'button',
-            action_id: 'shareSingleSearchResult',
+            action_id: 'search:shareSingleSearchResult',
             text: {
               type: 'plain_text',
               text: 'Share',
@@ -159,6 +160,51 @@ module.exports = (crowi) => {
       });
       throw new Error(err);
     }
+  };
+
+  handler.handleBlockActions = async function(client, payload, handlerMethodName) {
+    await this[handlerMethodName](client, payload);
+  };
+
+  handler.shareSinglePageResult = async function(client, payload) {
+    const { channel, user, actions } = payload;
+
+    const appUrl = this.crowi.appService.getSiteUrl();
+    const appTitle = this.crowi.appService.getAppTitle();
+
+    const channelId = channel.id;
+    const action = actions[0]; // shareSinglePage action must have button action
+
+    // restore page data from value
+    const { page, href, pathname } = JSON.parse(action.value);
+    const { updatedAt, commentCount } = page;
+
+    // share
+    const now = new Date();
+    return client.chat.postMessage({
+      channel: channelId,
+      blocks: [
+        { type: 'divider' },
+        markdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: `<${decodeURI(appUrl)}|*${appTitle}*>  |  Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}  |  Shared by *${user.username}*`,
+            },
+          ],
+        },
+      ],
+    });
+  };
+
+  handler.dismissSearchResults = async function(client, payload) {
+    const { response_url: responseUrl } = payload;
+
+    return axios.post(responseUrl, {
+      delete_original: true,
+    });
   };
 
   handler.retrieveSearchResults = async function(client, body, args, offset = 0) {

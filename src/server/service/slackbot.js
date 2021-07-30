@@ -1,12 +1,6 @@
 
 const logger = require('@alias/logger')('growi:service:SlackBotService');
-const mongoose = require('mongoose');
-const axios = require('axios');
-
-const { markdownSectionBlock, divider } = require('@growi/slack');
-const { reshapeContentsBody } = require('@growi/slack');
-const { formatDistanceStrict, parse, format } = require('date-fns');
-
+const { markdownSectionBlock } = require('@growi/slack');
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
@@ -80,6 +74,39 @@ class SlackBotService extends S2sMessageHandlable {
     }
   }
 
+  // handleBlockActions(), handleViewSubmission()
+  async handleBlockActions(client, payload) {
+    const { action_id: actionId } = payload.actions[0];
+    const commandName = actionId.split(':')[0];
+    const handlerMethodName = actionId.split(':')[1];
+    const module = `./slack-command-handler/${commandName}`;
+    try {
+      const handler = require(module)(this.crowi);
+      await handler.handleBlockActions(client, payload, handlerMethodName);
+    }
+    catch (err) {
+      // response
+      throw err;
+    }
+    return;
+  }
+
+  async handleViewSubmission(client, payload) {
+    const { callback_id: callbackId } = payload.view;
+    const commandName = callbackId.split(':')[0];
+    const handlerMethodName = callbackId.split(':')[1];
+    const module = `./slack-command-handler/${commandName}`;
+    try {
+      const handler = require(module)(this.crowi);
+      await handler.handleBlockActions(client, payload, handlerMethodName);
+    }
+    catch (err) {
+      // response
+      throw err;
+    }
+    return;
+  }
+
   async notCommand(client, body) {
     logger.error('Invalid first argument');
     client.chat.postEphemeral({
@@ -91,242 +118,6 @@ class SlackBotService extends S2sMessageHandlable {
       ],
     });
     return;
-  }
-
-  generatePageLinkMrkdwn(pathname, href) {
-    return `<${decodeURI(href)} | ${decodeURI(pathname)}>`;
-  }
-
-  appendSpeechBaloon(mrkdwn, commentCount) {
-    return (commentCount != null && commentCount > 0)
-      ? `${mrkdwn}   :speech_balloon: ${commentCount}`
-      : mrkdwn;
-  }
-
-  generateLastUpdateMrkdwn(updatedAt, baseDate) {
-    if (updatedAt != null) {
-      // cast to date
-      const date = new Date(updatedAt);
-      return formatDistanceStrict(date, baseDate);
-    }
-    return '';
-  }
-
-
-  async shareSinglePage(client, payload) {
-    const { channel, user, actions } = payload;
-
-    const appUrl = this.crowi.appService.getSiteUrl();
-    const appTitle = this.crowi.appService.getAppTitle();
-
-    const channelId = channel.id;
-    const action = actions[0]; // shareSinglePage action must have button action
-
-    // restore page data from value
-    const { page, href, pathname } = JSON.parse(action.value);
-    const { updatedAt, commentCount } = page;
-
-    // share
-    const now = new Date();
-    return client.chat.postMessage({
-      channel: channelId,
-      blocks: [
-        { type: 'divider' },
-        markdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
-        {
-          type: 'context',
-          elements: [
-            {
-              type: 'mrkdwn',
-              text: `<${decodeURI(appUrl)}|*${appTitle}*>  |  Last updated: ${this.generateLastUpdateMrkdwn(updatedAt, now)}  |  Shared by *${user.username}*`,
-            },
-          ],
-        },
-      ],
-    });
-  }
-
-  async dismissSearchResults(client, payload) {
-    const { response_url: responseUrl } = payload;
-
-    return axios.post(responseUrl, {
-      delete_original: true,
-    });
-  }
-
-  // Submit action in create Modal
-  async createPage(client, payload, path, channelId, contentsBody) {
-    const Page = this.crowi.model('Page');
-    const pathUtils = require('growi-commons').pathUtils;
-    const reshapedContentsBody = reshapeContentsBody(contentsBody);
-    try {
-      // sanitize path
-      const sanitizedPath = this.crowi.xss.process(path);
-      const normalizedPath = pathUtils.normalizePath(sanitizedPath);
-
-      // generate a dummy id because Operation to create a page needs ObjectId
-      const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
-      const page = await Page.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
-
-      // Send a message when page creation is complete
-      const growiUri = this.crowi.appService.getSiteUrl();
-      await client.chat.postEphemeral({
-        channel: channelId,
-        user: payload.user.id,
-        text: `The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`,
-      });
-    }
-    catch (err) {
-      client.chat.postMessage({
-        channel: payload.user.id,
-        blocks: [
-          markdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${reshapedContentsBody}`)],
-      });
-      logger.error('Failed to create page in GROWI.');
-      throw err;
-    }
-  }
-
-  async createPageInGrowi(client, payload) {
-    const path = payload.view.state.values.path.path_input.value;
-    const channelId = JSON.parse(payload.view.private_metadata).channelId;
-    const contentsBody = payload.view.state.values.contents.contents_input.value;
-    await this.createPage(client, payload, path, channelId, contentsBody);
-  }
-
-  async togetterCreatePageInGrowi(client, payload) {
-    let result = [];
-    const channel = payload.channel.id;
-    try {
-      // validate form
-      const { path, oldest, latest } = await this.togetterValidateForm(client, payload);
-      // get messages
-      result = await this.togetterGetMessages(client, payload, channel, path, latest, oldest);
-      // clean messages
-      const cleanedContents = await this.togetterCleanMessages(result.messages);
-
-      const contentsBody = cleanedContents.join('');
-      // create and send url message
-      await this.togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody);
-    }
-    catch (err) {
-      await client.chat.postMessage({
-        channel: payload.user.id,
-        text: err.message,
-        blocks: [
-          markdownSectionBlock(err.message),
-        ],
-      });
-      return;
-    }
-  }
-
-  async togetterGetMessages(client, payload, channel, path, latest, oldest) {
-    const result = await client.conversations.history({
-      channel,
-      latest,
-      oldest,
-      limit: 100,
-      inclusive: true,
-    });
-
-    // return if no message found
-    if (!result.messages.length) {
-      throw new Error('No message found from togetter command. Try again.');
-    }
-    return result;
-  }
-
-  async togetterValidateForm(client, payload) {
-    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
-    const path = payload.state.values.page_path.page_path.value;
-    let oldest = payload.state.values.oldest.oldest.value;
-    let latest = payload.state.values.latest.latest.value;
-    oldest = oldest.trim();
-    latest = latest.trim();
-    if (!path) {
-      throw new Error('Page path is required.');
-    }
-    /**
-     * RegExp for datetime yyyy/MM/dd-HH:mm
-     * @see https://regex101.com/r/xiQoTb/1
-     */
-    const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0?[1-9]|[12][0-9]|3[01])-(0[0-9]|1[012]):[0-5][0-9]$/);
-
-    if (!regexpDatetime.test(oldest)) {
-      throw new Error('Datetime format for oldest must be yyyy/MM/dd-HH:mm');
-    }
-    if (!regexpDatetime.test(latest)) {
-      throw new Error('Datetime format for latest must be yyyy/MM/dd-HH:mm');
-    }
-    oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
-    // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
-    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
-
-    if (oldest > latest) {
-      throw new Error('Oldest datetime must be older than the latest date time.');
-    }
-
-    return { path, oldest, latest };
-  }
-
-  async togetterCleanMessages(messages) {
-    const cleanedContents = [];
-    let lastMessage = {};
-    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
-    messages
-      .sort((a, b) => {
-        return a.ts - b.ts;
-      })
-      .forEach((message) => {
-        // increment contentsBody while removing the same headers
-        // exclude header
-        const lastMessageTs = Math.floor(lastMessage.ts / 60);
-        const messageTs = Math.floor(message.ts / 60);
-        if (lastMessage.user === message.user && lastMessageTs === messageTs) {
-          cleanedContents.push(`${message.text}\n`);
-        }
-        // include header
-        else {
-          const ts = (parseInt(message.ts) - grwTzoffset) * 1000;
-          const time = format(new Date(ts), 'h:mm a');
-          cleanedContents.push(`${message.user}  ${time}\n${message.text}\n`);
-          lastMessage = message;
-        }
-      });
-    return cleanedContents;
-  }
-
-  async togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody) {
-    try {
-      await this.createPage(client, payload, path, channel, contentsBody);
-      // send preview to dm
-      await client.chat.postMessage({
-        channel: payload.user.id,
-        text: 'Preview from togetter command',
-        blocks: [
-          markdownSectionBlock('*Preview*'),
-          divider(),
-          markdownSectionBlock(contentsBody),
-          divider(),
-        ],
-      });
-      // dismiss message
-      const responseUrl = payload.response_url;
-      axios.post(responseUrl, {
-        delete_original: true,
-      });
-    }
-    catch (err) {
-      throw new Error('Error occurred while creating a page.');
-    }
-  }
-
-  async togetterCancel(client, payload) {
-    const responseUrl = payload.response_url;
-    axios.post(responseUrl, {
-      delete_original: true,
-    });
   }
 
 }

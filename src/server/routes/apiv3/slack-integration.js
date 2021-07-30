@@ -132,15 +132,8 @@ module.exports = (crowi) => {
     const { action_id: actionId } = payload.actions[0];
 
     switch (actionId) {
-      case 'shareSingleSearchResult': {
-        await crowi.slackBotService.shareSinglePage(client, payload);
-        break;
-      }
-      case 'dismissSearchResults': {
-        await crowi.slackBotService.dismissSearchResults(client, payload);
-        break;
-      }
-      case 'showNextResults': {
+      // GW-6844 merge後に移行終了
+      case 'search:showNextResults': {
         const parsedValue = JSON.parse(payload.actions[0].value);
 
         const { body, args, offset } = parsedValue;
@@ -148,38 +141,14 @@ module.exports = (crowi) => {
         await crowi.slackBotService.showEphemeralSearchResults(client, body, args, newOffset);
         break;
       }
-      case 'togetterShowMore': {
-        const parsedValue = JSON.parse(payload.actions[0].value);
-        const togetterHandler = require('../../service/slack-command-handler/togetter')(crowi);
-
-        const { body, args, limit } = parsedValue;
-        const newLimit = limit + 1;
-        await togetterHandler.handleCommand(client, body, args, newLimit);
-        break;
-      }
-      case 'togetter:createPage': {
-        await crowi.slackBotService.togetterCreatePageInGrowi(client, payload);
-        break;
-      }
-      case 'togetter:cancel': {
-        await crowi.slackBotService.togetterCancel(client, payload);
-        break;
-      }
       default:
+        await crowi.slackBotService.handleBlockActions(client, payload);
         break;
     }
   };
 
   const handleViewSubmission = async(client, payload) => {
-    const { callback_id: callbackId } = payload.view;
-
-    switch (callbackId) {
-      case 'createPage':
-        await crowi.slackBotService.createPageInGrowi(client, payload);
-        break;
-      default:
-        break;
-    }
+    await crowi.slackBotService.handleViewSubmission(client, payload);
   };
 
   async function handleInteractions(req, res) {
