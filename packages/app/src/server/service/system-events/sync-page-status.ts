@@ -1,10 +1,11 @@
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:service:system-events:SyncPageStatusService');
+import S2sMessage from '../../models/vo/s2s-message';
+import { S2cMessagePageUpdated } from '../../models/vo/s2c-message';
+import { S2sMessageHandlable } from '../s2s-messaging/handlable';
+import { S2sMessagingService } from '../s2s-messaging/base';
 
-const S2sMessage = require('../../models/vo/s2s-message');
-const { S2cMessagePageUpdated } = require('../../models/vo/s2c-message');
-const S2sMessageHandlable = require('../s2s-messaging/handlable');
+const logger = loggerFactory('growi:service:system-events:SyncPageStatusService');
 
 /**
  * This service notify page status
@@ -19,11 +20,17 @@ const S2sMessageHandlable = require('../s2s-messaging/handlable');
  *  3. GROWI server B, C, ... relay the information to clients B1, B2, .. C1, C2, ... with SocketIoService
  *
  */
-class SyncPageStatusService extends S2sMessageHandlable {
+class SyncPageStatusService implements S2sMessageHandlable {
+
+  crowi!: any;
+
+  s2sMessagingService!: S2sMessagingService;
+
+  socketIoService!: any;
+
+  emitter!: any;
 
   constructor(crowi, s2sMessagingService, socketIoService) {
-    super();
-
     this.crowi = crowi;
     this.s2sMessagingService = s2sMessagingService;
     this.socketIoService = socketIoService;

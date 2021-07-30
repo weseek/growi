@@ -4,19 +4,23 @@ import loggerFactory from '~/utils/logger';
 
 import { generateConfigsForInstalling } from '../models/config';
 
+import S2sMessage from '../models/vo/s2s-message';
+import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import { S2sMessagingService } from './s2s-messaging/base';
+
 const logger = loggerFactory('growi:service:AppService');
-
-const S2sMessage = require('../models/vo/s2s-message');
-const S2sMessageHandlable = require('./s2s-messaging/handlable');
-
 /**
  * the service class of AppService
  */
-class AppService extends S2sMessageHandlable {
+class AppService implements S2sMessageHandlable {
+
+  crowi!: any;
+
+  configManager: any;
+
+  s2sMessagingService: S2sMessagingService;
 
   constructor(crowi) {
-    super();
-
     this.crowi = crowi;
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;

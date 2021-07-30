@@ -1,22 +1,26 @@
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:service:FileUploader');
+import S2sMessage from '../models/vo/s2s-message';
+import ConfigManager from './config-manager';
+import { S2sMessagingService } from './s2s-messaging/base';
+import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
-const S2sMessage = require('../models/vo/s2s-message');
-const S2sMessageHandlable = require('./s2s-messaging/handlable');
+const logger = loggerFactory('growi:service:FileUploaderSwitch');
 
-class fileUploaderSwitch extends S2sMessageHandlable {
+class FileUploaderSwitch implements S2sMessageHandlable {
+
+  crowi: any;
+
+  configManager: ConfigManager;
+
+  s2sMessagingService: S2sMessagingService;
+
+  lastLoadedAt?: Date;
 
   constructor(crowi) {
-    super();
-
     this.crowi = crowi;
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
-    this.appService = crowi.appService;
-    this.xssService = crowi.xssService;
-
-    this.lastLoadedAt = null;
   }
 
   /**
@@ -59,4 +63,4 @@ class fileUploaderSwitch extends S2sMessageHandlable {
 
 }
 
-module.exports = fileUploaderSwitch;
+module.exports = FileUploaderSwitch;

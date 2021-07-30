@@ -1,5 +1,7 @@
 
 import loggerFactory from '~/utils/logger';
+import { S2sMessagingService } from './s2s-messaging/base';
+import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:SlackBotService');
 const mongoose = require('mongoose');
@@ -11,17 +13,18 @@ const PAGINGLIMIT = 10;
 const { reshapeContentsBody } = require('@growi/slack');
 
 const S2sMessage = require('../models/vo/s2s-message');
-const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
-class SlackBotService extends S2sMessageHandlable {
+class SlackBotService implements S2sMessageHandlable {
+
+  crowi!: any;
+
+  s2sMessagingService!: S2sMessagingService;
+
+  lastLoadedAt?: Date;
 
   constructor(crowi) {
-    super();
-
     this.crowi = crowi;
     this.s2sMessagingService = crowi.s2sMessagingService;
-
-    this.lastLoadedAt = null;
 
     this.initialize();
   }
