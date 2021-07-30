@@ -12,8 +12,8 @@ const uniqueValidator = require('mongoose-unique-validator');
 const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
-const templateChecker = require('@commons/util/template-checker');
 const escapeStringRegexp = require('escape-string-regexp');
+const templateChecker = require('~/utils/template-checker');
 const { isTopPage, isTrashPage } = require('~/utils/path-utils');
 const logger = require('~/utils/logger')('growi:models:page');
 
