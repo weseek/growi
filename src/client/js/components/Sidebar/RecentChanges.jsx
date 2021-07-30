@@ -9,7 +9,6 @@ import DevidedPagePath from '@commons/models/devided-page-path';
 import LinkedPagePath from '@commons/models/linked-page-path';
 import PagePathHierarchicalLink from '@commons/components/PagePathHierarchicalLink';
 
-import PageContainer from '../../services/PageContainer';
 import FootstampIcon from '../FootstampIcon';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -25,7 +24,6 @@ class RecentChanges extends React.Component {
   static propTypes = {
     t: PropTypes.func.isRequired, // i18next
     appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-    pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
   };
 
   constructor(props) {
@@ -59,21 +57,12 @@ class RecentChanges extends React.Component {
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
       </div>
     );
-    const { pageContainer } = this.props;
 
     let locked;
     if (page.grant !== 1) {
       locked = <span><i className="icon-lock" /></span>;
     }
 
-    const tags = page.tags;
-    const tagElements = tags.map((tag) => {
-      return (
-        <a key={tag} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2">
-          {tag.name}
-        </a>
-      );
-    });
 
     return (
       <li className="list-group-item p-2">
@@ -87,10 +76,9 @@ class RecentChanges extends React.Component {
             </h5>
             <div className="text-right small">
               <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
-              <span className="seen-user-count">{pageContainer.state.countOfSeenUsers}</span>
+              <span className="seen-user-count">{page.seenUsers.length}</span>
               <i className="icon-bubble"></i>
               <span>{page.commentCount}</span>
-              { tagElements }
               <br />
               <FormattedDistanceDate id={page.id} date={page.updatedAt} />
             </div>
@@ -128,7 +116,7 @@ class RecentChanges extends React.Component {
 /**
  * Wrapper component for using unstated
  */
-const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer, PageContainer]);
+const RecentChangesWrapper = withUnstatedContainers(RecentChanges, [AppContainer]);
 
 
 export default withTranslation()(RecentChangesWrapper);
