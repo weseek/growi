@@ -66,10 +66,6 @@ module.exports = (options) => {
       alias: {
         '~': path.resolve(__dirname, '../src'), // src
         '^': path.resolve(__dirname, '../'), // project root
-        '@root': path.resolve(__dirname, '../'),
-        '@commons': path.resolve(__dirname, '../src/lib'),
-        '@client': path.resolve(__dirname, '../src/client'),
-        '@alias/logger': path.resolve(__dirname, '../src/utils/logger'),
       },
     },
     node: {

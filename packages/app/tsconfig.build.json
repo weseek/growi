@@ -10,7 +10,6 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "@alias/logger": ["./src/server/utils/logger"],
       "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
   }
