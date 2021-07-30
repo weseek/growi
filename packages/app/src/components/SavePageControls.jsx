@@ -8,7 +8,7 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import PageContainer from '~/client/services/PageContainer';
 import AppContainer from '~/client/services/AppContainer';

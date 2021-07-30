@@ -2,7 +2,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import AppContainer from '~/client/services/AppContainer';
 

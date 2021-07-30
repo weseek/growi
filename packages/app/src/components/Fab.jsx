@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import StickyEvents from 'sticky-events';
 

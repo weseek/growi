@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 
 import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';

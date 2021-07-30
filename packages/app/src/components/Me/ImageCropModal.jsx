@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 import canvasToBlob from 'async-canvas-to-blob';
 
 import {

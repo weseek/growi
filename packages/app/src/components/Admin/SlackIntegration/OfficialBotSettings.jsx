@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '@alias/logger';
+import loggerFactory from '~/utils/logger';
 import { useTranslation } from 'react-i18next';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
