@@ -35,6 +35,7 @@ export default class AdminLocalSecurityContainer extends Container {
         useOnlyEnvVars: localSetting.useOnlyEnvVarsForSomeOptions,
         registrationMode: localSetting.registrationMode,
         registrationWhiteList: localSetting.registrationWhiteList,
+        isPasswordResetEnabled: localSetting.isPasswordResetEnabled,
       });
     }
     catch (err) {

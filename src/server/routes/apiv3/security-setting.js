@@ -368,6 +368,7 @@ module.exports = (crowi) => {
         useOnlyEnvVarsForSomeOptions: await crowi.configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+        isPasswordResetEnabled: await crowi.configManager.getConfig('crowi', 'security:isPasswordResetEnabled'),
       },
       generalAuth: {
         isLocalEnabled: await crowi.configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
