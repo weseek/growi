@@ -694,6 +694,7 @@ module.exports = (crowi) => {
     const requestParams = {
       'security:registrationMode': req.body.registrationMode,
       'security:registrationWhiteList': req.body.registrationWhiteList,
+      'security:isPasswordResetEnabled': req.body.isPasswordResetEnabled,
     };
     try {
       await updateAndReloadStrategySettings('local', requestParams);
