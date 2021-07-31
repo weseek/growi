@@ -14,7 +14,7 @@ module.exports = function(crowi, app) {
   };
 
   actions.resetPassword = async function(req, res) {
-    return res.render('reset-password');
+    return res.render('reset-password', { email: req.query.email });
   };
 
   async function sendPasswordResetEmail(email, url, i18n) {
