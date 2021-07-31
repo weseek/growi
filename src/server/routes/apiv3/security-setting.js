@@ -702,6 +702,7 @@ module.exports = (crowi) => {
       const localSettingParams = {
         registrationMode: await crowi.configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhiteList: await crowi.configManager.getConfig('crowi', 'security:registrationWhiteList'),
+        isPasswordResetEnabled: await crowi.configManager.getConfig('crowi', 'security:isPasswordResetEnabled'),
       };
       return res.apiv3({ localSettingParams });
     }
