@@ -70,7 +70,7 @@ export default class AdminLocalSecurityContainer extends Container {
   /**
    * Switch password reset enabled
    */
-  async switchIsPasswordResetEnabled() {
+  switchIsPasswordResetEnabled() {
     this.setState({ isPasswordResetEnabled: !this.state.isPasswordResetEnabled });
   }
 

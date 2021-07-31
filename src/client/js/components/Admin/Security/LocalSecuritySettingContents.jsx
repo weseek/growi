@@ -161,7 +161,6 @@ class LocalSecuritySettingContents extends React.Component {
               <label className="col-12 col-md-3 text-left text-md-right  col-form-label">{t('security_setting.Local.password_reset_by_users')}</label>
               <div className="col-12 col-md-6">
                 <div className="custom-control custom-switch custom-checkbox-success">
-                  {/* ここ */}
                   <input
                     type="checkbox"
                     className="custom-control-input"
@@ -169,8 +168,7 @@ class LocalSecuritySettingContents extends React.Component {
                     checked={isPasswordResetEnabled}
                     onChange={() => adminLocalSecurityContainer.switchIsPasswordResetEnabled()}
                   />
-                  <label className="custom-control-label" htmlFor="isAbleToResetPasswordByUser">
-                    {/* {t('admin:security_setting.enable_or_disable')} */}
+                  <label className="custom-control-label" htmlFor="isPasswordResetEnabled">
                     {t('security_setting.Local.enable_password_reset_by_users')}
                   </label>
                 </div>
