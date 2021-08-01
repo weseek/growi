@@ -8734,11 +8734,6 @@ growi-plugin-lsx@^4.0.3:
     growi-commons "^5.0.4"
     url "^0.11.0"
 
-growi-plugin-pukiwiki-like-linker@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/growi-plugin-pukiwiki-like-linker/-/growi-plugin-pukiwiki-like-linker-3.1.0.tgz#e76981d0b3c6ca963950c6ca2a7cd2b520186523"
-  integrity sha512-DCthMiv8fugimqTHnRCer7qhkZIGdXr+A2YAzJFmpRocSC05ujnBS8T23ebomN0f9Hvz1pCMQ9fYFrn6b8JbIQ==
-
 growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"

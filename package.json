@@ -34,7 +34,7 @@
     "build:dev:watch": "npm run build:dev:app:watch",
     "build:dev:watch:poll": "npm run build:dev:app:watch:poll",
     "build:dev": "yarn build:dev:app",
-    "build:prod": "yarn lerna run build --scope @growi/app --scope @growi/slack",
+    "build:prod": "yarn lerna run build --scope @growi/app --scope @growi/slack --scope @growi/plugin-pukiwiki-like-linker",
     "build:slack": "lerna run build --scope @growi/slack",
     "build": "npm run build:dev:watch",
     "build:poll": "npm run build:dev:watch:poll",
