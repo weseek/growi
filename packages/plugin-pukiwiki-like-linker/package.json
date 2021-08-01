@@ -11,6 +11,9 @@
     "src"
   ],
   "scripts": {
+    "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "tsc": "tsc -p tsconfig.build.json",
+    "tsc:w": "yarn tsc -w",
     "lint:js:fix": "eslint **/*.{js,jsx} --fix",
     "lint:js": "eslint **/*.{js,jsx}",
     "lint:styles:fix": "stylelint --fix src/**/*.scss",
