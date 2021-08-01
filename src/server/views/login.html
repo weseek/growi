@@ -109,7 +109,7 @@
 
       {% set registrationMode = getConfig('crowi', 'security:registrationMode') %}
       {% set isRegistrationEnabled = passportService.isLocalStrategySetup && registrationMode != 'Closed' %}
-      {% set isPasswordResetEnabled = getConfig('crowi', 'security:isPasswordResetEnabled') %}
+      {% set isPasswordResetEnabled = getConfig('crowi', 'security:passport-local:isPasswordResetEnabled') %}
 
       <div
         id="login-form"

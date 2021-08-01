@@ -43,7 +43,7 @@ module.exports = function(crowi) {
 
       'security:registrationMode'      : 'Open',
       'security:registrationWhiteList' : [],
-      'security:isPasswordResetEnabled'  : true,
+      'security:passport-local:isPasswordResetEnabled'  : true,
 
       'security:list-policy:hideRestrictedByOwner' : false,
       'security:list-policy:hideRestrictedByGroup' : false,
