@@ -22,7 +22,7 @@ export default class AdminLocalSecurityContainer extends Container {
       registrationMode: this.dummyRegistrationMode,
       registrationWhiteList: [],
       useOnlyEnvVars: false,
-      isPasswordResetEnabled: true,
+      isPasswordResetEnabled: false,
     };
 
   }
