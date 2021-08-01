@@ -1,6 +1,6 @@
 {
-  "name": "growi-plugin-pukiwiki-like-linker",
-  "version": "3.1.0",
+  "name": "@growi/plugin-pukiwiki-like-linker",
+  "version": "4.3.3-RC",
   "description": "GROWI plugin to add PukiwikiLikeLinker",
   "keywords": [
     "growi",
@@ -13,7 +13,7 @@
   "scripts": {
     "lint:js:fix": "eslint **/*.{js,jsx} --fix",
     "lint:js": "eslint **/*.{js,jsx}",
-    "lint:styles:fix": "prettier-stylelint --quiet --write src/**/*.scss",
+    "lint:styles:fix": "stylelint --fix src/**/*.scss",
     "lint:styles": "stylelint src/**/*.scss",
     "lint": "npm-run-all -p lint:js lint:styles",
     "test": ""
@@ -23,24 +23,24 @@
     "url": "https://github.com/weseek/growi-plugin-pukiwiki-like-linker.git"
   },
   "author": "Yuki Takei <yuki@weseek.co.jp>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/weseek/growi-plugin-pukiwiki-like-linker/issues"
-  },
-  "homepage": "https://github.com/weseek/growi-plugin-pukiwiki-like-linker#readme",
   "dependencies": {
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.15.1",
-    "eslint-config-weseek": "^1.0.1",
-    "eslint-plugin-import": "^2.16.0",
-    "npm-run-all": "^4.1.5",
-    "prettier-stylelint": "^0.4.2"
-  },
-  "engines": {
-    "node": ">=8.11.1 <15",
-    "npm": ">=5.6.0 <7",
-    "yarn": ">=1.5.1 <2"
+    "@types/jest": "^26.0.22",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "browser-bunyan": "^1.6.3",
+    "cross-env": "^7.0.0",
+    "eslint": "^7.31.0",
+    "eslint-config-weseek": "^1.0.11",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.3.2",
+    "npm-run-all": "^4.1.2",
+    "stylelint": "^13.2.0",
+    "stylelint-config-recess-order": "^2.0.1",
+    "ts-jest": "^26.5.4",
+    "tsc-alias": "^1.2.9",
+    "typescript": "^4.2.3"
   }
 }
