@@ -32,7 +32,7 @@ class LocalSecuritySettingContents extends React.Component {
 
   render() {
     const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer } = this.props;
-    const { registrationMode } = adminLocalSecurityContainer.state;
+    const { registrationMode, isPasswordResetEnabled } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;
 
     return (
@@ -164,13 +164,11 @@ class LocalSecuritySettingContents extends React.Component {
                   <input
                     type="checkbox"
                     className="custom-control-input"
-                    id="isAbleToResetPasswordByUser"
-                    // TODO: reflect the password reset by GW-6805
-                    // checked={}
-                    // onChange={}
+                    id="isPasswordResetEnabled"
+                    checked={isPasswordResetEnabled}
+                    onChange={() => adminLocalSecurityContainer.switchIsPasswordResetEnabled()}
                   />
-                  <label className="custom-control-label" htmlFor="isAbleToResetPasswordByUser">
-                    {/* {t('admin:security_setting.enable_or_disable')} */}
+                  <label className="custom-control-label" htmlFor="isPasswordResetEnabled">
                     {t('security_setting.Local.enable_password_reset_by_users')}
                   </label>
                 </div>

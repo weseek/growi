@@ -251,6 +251,7 @@ class LoginForm extends React.Component {
       isLocalStrategySetup,
       isLdapStrategySetup,
       isRegistrationEnabled,
+      isPasswordResetEnabled,
       objOfIsExternalAuthEnableds,
     } = this.props;
 
@@ -268,9 +269,11 @@ class LoginForm extends React.Component {
                 {isRegistrationEnabled && (
                 <div className="row">
                   <div className="col-12 text-right py-2">
+                    {isPasswordResetEnabled && (
                     <a href="/forgot-password" className="d-block link-switch mb-1">
                       <i className="icon-key"></i> {t('forgot_password.forgot_password')}
                     </a>
+                    )}
                     <a href="#register" id="register" className="link-switch" onClick={this.switchForm}>
                       <i className="ti-check-box"></i> {t('Sign up is here')}
                     </a>
@@ -310,6 +313,7 @@ LoginForm.propTypes = {
   isRegistrationEnabled: PropTypes.bool,
   registrationMode: PropTypes.string,
   registrationWhiteList: PropTypes.array,
+  isPasswordResetEnabled: PropTypes.bool,
   isLocalStrategySetup: PropTypes.bool,
   isLdapStrategySetup: PropTypes.bool,
   objOfIsExternalAuthEnableds: PropTypes.object,
