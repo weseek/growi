@@ -13,9 +13,6 @@ module.exports = {
 
   preset: 'ts-jest/presets/js-with-ts',
 
-  rootDir: '../',
-  roots: ['<rootDir>/src'],
-
   globalSetup: '<rootDir>/src/test/global-setup.js',
   globalTeardown: '<rootDir>/src/test/global-teardown.js',
 
