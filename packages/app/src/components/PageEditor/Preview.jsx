@@ -81,16 +81,16 @@ class Preview extends React.PureComponent {
           <div
             className="page-editor-preview-body"
             ref={(elm) => {
-                this.previewElement = elm;
-                if (this.props.inputRef != null) {
-                  this.props.inputRef(elm);
-                }
-              }}
+              this.previewElement = elm;
+              if (this.props.inputRef != null) {
+                this.props.inputRef(elm);
+              }
+            }}
             onScroll={(event) => {
-                if (this.props.onScroll != null) {
-                  this.props.onScroll(event.target.scrollTop);
-                }
-              }}
+              if (this.props.onScroll != null) {
+                this.props.onScroll(event.target.scrollTop);
+              }
+            }}
           >
             <RevisionBody
               {...this.props}

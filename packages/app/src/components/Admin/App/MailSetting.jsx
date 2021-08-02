@@ -64,22 +64,22 @@ function MailSetting(props) {
         </label>
         <div className="col-md-6 py-2">
           {transmissionMethods.map((method) => {
-              return (
-                <div key={method} className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    name="transmission-method"
-                    id={`transmission-method-radio-${method}`}
-                    checked={adminAppContainer.state.transmissionMethod === method}
-                    onChange={(e) => {
+            return (
+              <div key={method} className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  name="transmission-method"
+                  id={`transmission-method-radio-${method}`}
+                  checked={adminAppContainer.state.transmissionMethod === method}
+                  onChange={(e) => {
                     adminAppContainer.changeTransmissionMethod(method);
                   }}
-                  />
-                  <label className="custom-control-label" htmlFor={`transmission-method-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
-                </div>
-              );
-            })}
+                />
+                <label className="custom-control-label" htmlFor={`transmission-method-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -92,9 +92,9 @@ function MailSetting(props) {
             { t('Update') }
           </button>
           {adminAppContainer.state.transmissionMethod === 'smtp' && (
-          <button type="button" className="btn btn-secondary ml-4" onClick={sendTestEmailHandler}>
-            {t('admin:app_setting.send_test_email')}
-          </button>
+            <button type="button" className="btn btn-secondary ml-4" onClick={sendTestEmailHandler}>
+              {t('admin:app_setting.send_test_email')}
+            </button>
           )}
         </div>
       </div>

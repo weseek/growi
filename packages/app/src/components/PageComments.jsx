@@ -155,11 +155,11 @@ class PageComments extends React.Component {
           growiRenderer={this.growiRenderer}
         />
         {replies.length !== 0 && (
-        <ReplayComments
-          replyList={replies}
-          deleteBtnClicked={this.confirmToDeleteComment}
-          growiRenderer={this.growiRenderer}
-        />
+          <ReplayComments
+            replyList={replies}
+            deleteBtnClicked={this.confirmToDeleteComment}
+            growiRenderer={this.growiRenderer}
+          />
         )}
         { !showEditor && isLoggedIn && (
           <div className="text-right">

@@ -332,39 +332,39 @@ class CommentEditor extends React.Component {
           <div className="d-flex">
             <label className="mr-2">
               {activeTab === 'comment_editor' && (
-              <span className="custom-control custom-checkbox">
-                <input
-                  type="checkbox"
-                  className="custom-control-input"
-                  id="comment-form-is-markdown"
-                  name="isMarkdown"
-                  checked={this.state.isMarkdown}
-                  value="1"
-                  onChange={this.updateStateCheckbox}
-                />
-                <label
-                  className="ml-2 custom-control-label"
-                  htmlFor="comment-form-is-markdown"
-                >
-                  Markdown
-                </label>
-              </span>
-                  ) }
+                <span className="custom-control custom-checkbox">
+                  <input
+                    type="checkbox"
+                    className="custom-control-input"
+                    id="comment-form-is-markdown"
+                    name="isMarkdown"
+                    checked={this.state.isMarkdown}
+                    value="1"
+                    onChange={this.updateStateCheckbox}
+                  />
+                  <label
+                    className="ml-2 custom-control-label"
+                    htmlFor="comment-form-is-markdown"
+                  >
+                    Markdown
+                  </label>
+                </span>
+              ) }
             </label>
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
 
             { this.state.hasSlackConfig
               && (
-              <div className="form-inline align-self-center mr-md-2">
-                <SlackNotification
-                  isSlackEnabled={commentContainer.state.isSlackEnabled}
-                  slackChannels={commentContainer.state.slackChannels}
-                  onEnabledFlagChange={this.onSlackEnabledFlagChange}
-                  onChannelChange={this.onSlackChannelsChange}
-                  id="idForComment"
-                />
-              </div>
+                <div className="form-inline align-self-center mr-md-2">
+                  <SlackNotification
+                    isSlackEnabled={commentContainer.state.isSlackEnabled}
+                    slackChannels={commentContainer.state.slackChannels}
+                    onEnabledFlagChange={this.onSlackEnabledFlagChange}
+                    onChannelChange={this.onSlackChannelsChange}
+                    id="idForComment"
+                  />
+                </div>
               )
             }
             <div className="d-none d-sm-block">

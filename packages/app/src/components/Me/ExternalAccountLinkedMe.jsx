@@ -70,7 +70,7 @@ class ExternalAccountLinkedMe extends React.Component {
         <h2 className="border-bottom my-4">
           <button type="button" className="btn btn-outline-secondary btn-sm pull-right" onClick={this.openAssociateModal}>
             <i className="icon-plus" aria-hidden="true" />
-          Add
+            Add
           </button>
           { t('admin:user_management.external_accounts') }
         </h2>
@@ -93,7 +93,7 @@ class ExternalAccountLinkedMe extends React.Component {
                 key={account._id}
                 openDisassociateModal={this.openDisassociateModal}
               />
-                ))}
+            ))}
           </tbody>
         </table>
 
@@ -104,11 +104,11 @@ class ExternalAccountLinkedMe extends React.Component {
 
         {this.state.accountForDisassociate != null
         && (
-        <DisassociateModal
-          isOpen={this.state.isDisassociateModalOpen}
-          onClose={this.closeDisassociateModal}
-          accountForDisassociate={this.state.accountForDisassociate}
-        />
+          <DisassociateModal
+            isOpen={this.state.isDisassociateModalOpen}
+            onClose={this.closeDisassociateModal}
+            accountForDisassociate={this.state.accountForDisassociate}
+          />
         )}
 
       </Fragment>

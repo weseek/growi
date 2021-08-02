@@ -163,16 +163,16 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
           <li>
             <p
               className="ml-2"
-                // eslint-disable-next-line react/no-danger
+              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_growi_register_on_slack') }}
             />
           </li>
           <li>
             <p
               className="ml-2"
-                // TODO: Add dynamic link
-                // TODO: Add logo
-                // eslint-disable-next-line react/no-danger
+              // TODO: Add dynamic link
+              // TODO: Add logo
+              // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.paste_growi_url') }}
             />
             <div className="input-group align-items-center pl-2 mb-3">
@@ -370,7 +370,7 @@ const WithProxyAccordions = (props) => {
                 {t(`admin:slack_integration.accordion.${value.title}`)}
                 {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}
               </>
-)}
+            )}
             key={key}
           >
             {value.content}

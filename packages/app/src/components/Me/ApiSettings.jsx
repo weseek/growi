@@ -44,20 +44,20 @@ class ApiSettings extends React.Component {
           <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>
           <div className="col-md-6">
             {personalContainer.state.apiToken != null
-            ? (
-              <input
-                className="form-control"
-                type="text"
-                name="apiToken"
-                value={personalContainer.state.apiToken}
-                readOnly
-              />
-            )
-            : (
-              <p>
-                { t('page_me_apitoken.notice.apitoken_issued') }
-              </p>
-            )}
+              ? (
+                <input
+                  className="form-control"
+                  type="text"
+                  name="apiToken"
+                  value={personalContainer.state.apiToken}
+                  readOnly
+                />
+              )
+              : (
+                <p>
+                  { t('page_me_apitoken.notice.apitoken_issued') }
+                </p>
+              )}
           </div>
         </div>
 

@@ -158,11 +158,11 @@ class LoginForm extends React.Component {
     return (
       <React.Fragment>
         {registrationMode === 'Restricted' && (
-        <p className="alert alert-warning">
-          {t('page_register.notice.restricted')}
-          <br />
-          {t('page_register.notice.restricted_defail')}
-        </p>
+          <p className="alert alert-warning">
+            {t('page_register.notice.restricted')}
+            <br />
+            {t('page_register.notice.restricted_defail')}
+          </p>
         )}
         <form role="form" action="/register" method="post" id="register-form">
           <div className="input-group" id="input-group-username">
@@ -196,18 +196,18 @@ class LoginForm extends React.Component {
           </div>
 
           {registrationWhiteList.length > 0 && (
-          <>
-            <p className="form-text">{t('page_register.form_help.email')}</p>
-            <ul>
-              {registrationWhiteList.map((elem) => {
+            <>
+              <p className="form-text">{t('page_register.form_help.email')}</p>
+              <ul>
+                {registrationWhiteList.map((elem) => {
                   return (
                     <li key={elem}>
                       <code>{elem}</code>
                     </li>
                   );
                 })}
-            </ul>
-          </>
+              </ul>
+            </>
           )}
 
           <div className="input-group">
@@ -273,7 +273,7 @@ class LoginForm extends React.Component {
                       </a>
                     </div>
                   </div>
-              )}
+                )}
               </div>
               <div className="back">
                 {isRegistrationEnabled && this.renderRegisterForm()}

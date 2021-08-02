@@ -54,9 +54,9 @@ class BookmarkButton extends React.Component {
         </button>
 
         {isGuestUser && (
-        <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
+          <UncontrolledTooltip placement="top" target="bookmark-button" fade={false}>
+            {t('Not available for guest')}
+          </UncontrolledTooltip>
         )}
       </div>
     );
