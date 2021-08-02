@@ -49,12 +49,12 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn test:lint for plugins
+    - name: lerna run test:lint for plugins
       run: |
         yarn lerna run test:lint --scope @growi/plugin-pukiwiki-like-linker
-    - name: yarn test:lint for app
+    - name: lerna run test:lint for app
       run: |
-        yarn lerna run test:lint --scope @growi/slack --scope @growi/app
+        yarn lerna run test:lint --scope @growi/app
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
