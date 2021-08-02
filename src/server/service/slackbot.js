@@ -63,7 +63,7 @@ class SlackBotService extends S2sMessageHandlable {
   /**
    * Handle /commands endpoint
    */
-  async handleCommand(command, client, body, ...opt) {
+  async handleCommandRequest(command, client, body, ...opt) {
     let module;
     try {
       module = `./slack-command-handler/${command}`;
@@ -81,8 +81,7 @@ class SlackBotService extends S2sMessageHandlable {
     }
   }
 
-  // handleBlockActions(), handleViewSubmission()
-  async handleBlockActions(client, payload) {
+  async handleBlockActionsRequest(client, payload) {
     const { action_id: actionId } = payload.actions[0];
     const commandName = actionId.split(':')[0];
     const handlerMethodName = actionId.split(':')[1];
@@ -98,7 +97,7 @@ class SlackBotService extends S2sMessageHandlable {
     return;
   }
 
-  async handleViewSubmission(client, payload) {
+  async handleViewSubmissionRequest(client, payload) {
     const { callback_id: callbackId } = payload.view;
     const commandName = callbackId.split(':')[0];
     const handlerMethodName = callbackId.split(':')[1];

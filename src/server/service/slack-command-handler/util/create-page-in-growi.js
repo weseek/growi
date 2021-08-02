@@ -2,10 +2,10 @@ const { markdownSectionBlock } = require('@growi/slack');
 const logger = require('@alias/logger')('growi:util:createPageInGrowi');
 const { reshapeContentsBody } = require('@growi/slack');
 const mongoose = require('mongoose');
+const pathUtils = require('growi-commons').pathUtils;
 
 module.exports = crowi => async(client, payload, path, channelId, contentsBody) => {
   const Page = crowi.model('Page');
-  const pathUtils = require('growi-commons').pathUtils;
   const reshapedContentsBody = reshapeContentsBody(contentsBody);
   try {
     // sanitize path

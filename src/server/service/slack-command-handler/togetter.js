@@ -6,7 +6,7 @@ const axios = require('axios');
 const logger = require('@alias/logger')('growi:service:SlackBotService:togetter');
 
 module.exports = (crowi) => {
-  const createPageInGrowi = require('../../util/createPageInGrowi')(crowi);
+  const createPageInGrowi = require('./util/create-page-in-growi')(crowi);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
