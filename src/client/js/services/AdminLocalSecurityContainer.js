@@ -22,6 +22,7 @@ export default class AdminLocalSecurityContainer extends Container {
       registrationMode: this.dummyRegistrationMode,
       registrationWhiteList: [],
       useOnlyEnvVars: false,
+      isPasswordResetEnabled: false,
     };
 
   }
@@ -34,6 +35,7 @@ export default class AdminLocalSecurityContainer extends Container {
         useOnlyEnvVars: localSetting.useOnlyEnvVarsForSomeOptions,
         registrationMode: localSetting.registrationMode,
         registrationWhiteList: localSetting.registrationWhiteList,
+        isPasswordResetEnabled: localSetting.isPasswordResetEnabled,
       });
     }
     catch (err) {
@@ -67,13 +69,21 @@ export default class AdminLocalSecurityContainer extends Container {
   }
 
   /**
+   * Switch password reset enabled
+   */
+  switchIsPasswordResetEnabled() {
+    this.setState({ isPasswordResetEnabled: !this.state.isPasswordResetEnabled });
+  }
+
+  /**
    * update local security setting
    */
   async updateLocalSecuritySetting() {
-    const { registrationWhiteList } = this.state;
+    const { registrationWhiteList, isPasswordResetEnabled } = this.state;
     const response = await this.appContainer.apiv3.put('/security-setting/local-setting', {
       registrationMode: this.state.registrationMode,
       registrationWhiteList,
+      isPasswordResetEnabled,
     });
 
     const { localSettingParams } = response.data;
@@ -81,6 +91,7 @@ export default class AdminLocalSecurityContainer extends Container {
     this.setState({
       registrationMode: localSettingParams.registrationMode,
       registrationWhiteList: localSettingParams.registrationWhiteList,
+      isPasswordResetEnabled: localSettingParams.isPasswordResetEnabled,
     });
 
     return localSettingParams;

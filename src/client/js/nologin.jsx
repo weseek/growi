@@ -40,6 +40,7 @@ if (loginFormElem) {
   const email = loginFormElem.dataset.email;
   const isRegistrationEnabled = loginFormElem.dataset.isRegistrationEnabled === 'true';
   const registrationMode = loginFormElem.dataset.registrationMode;
+  const isPasswordResetEnabled = loginFormElem.dataset.isPasswordResetEnabled === 'true';
 
 
   let registrationWhiteList = loginFormElem.dataset.registrationWhiteList;
@@ -70,6 +71,7 @@ if (loginFormElem) {
           isRegistrationEnabled={isRegistrationEnabled}
           registrationMode={registrationMode}
           registrationWhiteList={registrationWhiteList}
+          isPasswordResetEnabled={isPasswordResetEnabled}
           isLocalStrategySetup={isLocalStrategySetup}
           isLdapStrategySetup={isLdapStrategySetup}
           objOfIsExternalAuthEnableds={objOfIsExternalAuthEnableds}
