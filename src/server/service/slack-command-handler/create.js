@@ -2,7 +2,8 @@ const { markdownSectionBlock, inputSectionBlock } = require('@growi/slack');
 const logger = require('@alias/logger')('growi:service:SlackCommandHandler:create');
 
 module.exports = (crowi) => {
-  const createPageInGrowi = require('./util/create-page-in-growi')(crowi);
+  const SlackCommandUtil = require('./slack-command-util');
+  const util = new SlackCommandUtil(crowi);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
@@ -57,7 +58,7 @@ module.exports = (crowi) => {
     const path = payload.view.state.values.path.path_input.value;
     const channelId = JSON.parse(payload.view.private_metadata).channelId;
     const contentsBody = payload.view.state.values.contents.contents_input.value;
-    await createPageInGrowi(client, payload, path, channelId, contentsBody);
+    await util.createPageInGrowi(client, payload, path, channelId, contentsBody);
   };
 
   return handler;
