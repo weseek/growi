@@ -70,12 +70,8 @@ const ManageCommandsProcess = ({
       <div className="d-flex flex-column align-items-center">
 
         <div>
-
-
-          <p className="mb-2 font-weight-bold">
-            Multiple GROWI
-            <small className="text-muted ml-4">{t('admin:slack_integration.accordion.multiple_growi_command')}</small>
-          </p>
+          <p className="font-weight-bold mb-0">Multiple GROWI</p>
+          <p className="text-muted mb-2">{t('admin:slack_integration.accordion.multiple_growi_command')}</p>
           <div className="custom-control custom-checkbox">
             <div className="row mb-5">
               {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
@@ -99,10 +95,8 @@ const ManageCommandsProcess = ({
             </div>
           </div>
 
-          <p className="mb-2 font-weight-bold">
-            Single GROWI
-            <small className="text-muted ml-4">{t('admin:slack_integration.accordion.single_growi_command')}</small>
-          </p>
+          <p className="font-weight-bold mb-0">Single GROWI</p>
+          <p className="text-muted mb-2">{t('admin:slack_integration.accordion.single_growi_command')}</p>
           <div className="custom-control custom-checkbox">
             <div className="row mb-5">
               {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
