@@ -2,14 +2,15 @@
 const logger = require('@alias/logger')('growi:service:SlackBotService');
 const mongoose = require('mongoose');
 const axios = require('axios');
-const { formatDistanceStrict } = require('date-fns');
 
-const PAGINGLIMIT = 10;
-
+const { markdownSectionBlock, divider } = require('@growi/slack');
 const { reshapeContentsBody } = require('@growi/slack');
+const { formatDistanceStrict, parse, format } = require('date-fns');
 
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
+
+const PAGINGLIMIT = 10;
 
 class SlackBotService extends S2sMessageHandlable {
 
@@ -67,6 +68,20 @@ class SlackBotService extends S2sMessageHandlable {
     }
   }
 
+  /**
+   * Handle /commands endpoint
+   */
+  async handleCommand(command, client, body, ...opt) {
+    const module = `./slack-command-handler/${command}`;
+    try {
+      const handler = require(module)(this.crowi);
+      await handler.handleCommand(client, body, ...opt);
+    }
+    catch (err) {
+      this.notCommand(client, body);
+    }
+  }
+
   async notCommand(client, body) {
     logger.error('Invalid first argument');
     client.chat.postEphemeral({
@@ -74,89 +89,10 @@ class SlackBotService extends S2sMessageHandlable {
       user: body.user_id,
       text: 'No command',
       blocks: [
-        this.generateMarkdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
+        markdownSectionBlock('*No command.*\n Hint\n `/growi [command] [keyword]`'),
       ],
     });
     return;
-  }
-
-  async helpCommand(client, body) {
-    const message = '*Help*\n growi-bot usage\n `/growi [command] [args]`\n\n Create new page\n `create`\n\n Search pages\n `search [keyword]`';
-    client.chat.postEphemeral({
-      channel: body.channel_id,
-      user: body.user_id,
-      text: 'Help',
-      blocks: [
-        this.generateMarkdownSectionBlock(message),
-      ],
-    });
-    return;
-  }
-
-  getKeywords(args) {
-    const keywordsArr = args.slice(1);
-    const keywords = keywordsArr.join(' ');
-    return keywords;
-  }
-
-  async retrieveSearchResults(client, body, args, offset = 0) {
-    const firstKeyword = args[1];
-    if (firstKeyword == null) {
-      client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Input keywords',
-        blocks: [
-          this.generateMarkdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
-        ],
-      });
-      return;
-    }
-
-    const keywords = this.getKeywords(args);
-
-    const { searchService } = this.crowi;
-    const options = { limit: 10, offset };
-    const results = await searchService.searchKeyword(keywords, null, {}, options);
-    const resultsTotal = results.meta.total;
-
-    // no search results
-    if (results.data.length === 0) {
-      logger.info(`No page found with "${keywords}"`);
-      client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: `No page found with "${keywords}"`,
-        blocks: [
-          this.generateMarkdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
-          this.generateMarkdownSectionBlock(':mag: *Help: Searching*'),
-          this.divider(),
-          this.generateMarkdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
-          this.divider(),
-          this.generateMarkdownSectionBlock('`"This is GROWI"` (surround with double quotes) \n Search pages that include the phrase "This is GROWI"'),
-          this.divider(),
-          this.generateMarkdownSectionBlock('`-keyword` \n Exclude pages that include keyword in the title or body'),
-          this.divider(),
-          this.generateMarkdownSectionBlock('`prefix:/user/` \n Search only the pages that the title start with /user/'),
-          this.divider(),
-          this.generateMarkdownSectionBlock('`-prefix:/user/` \n Exclude the pages that the title start with /user/'),
-          this.divider(),
-          this.generateMarkdownSectionBlock('`tag:wiki` \n Search for pages with wiki tag'),
-          this.divider(),
-          this.generateMarkdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
-        ],
-      });
-      return { pages: [] };
-    }
-
-    const pages = results.data.map((data) => {
-      const { path, updated_at: updatedAt, comment_count: commentCount } = data._source;
-      return { path, updatedAt, commentCount };
-    });
-
-    return {
-      pages, offset, resultsTotal,
-    };
   }
 
   generatePageLinkMrkdwn(pathname, href) {
@@ -178,6 +114,7 @@ class SlackBotService extends S2sMessageHandlable {
     return '';
   }
 
+
   async shareSinglePage(client, payload) {
     const { channel, user, actions } = payload;
 
@@ -197,7 +134,7 @@ class SlackBotService extends S2sMessageHandlable {
       channel: channelId,
       blocks: [
         { type: 'divider' },
-        this.generateMarkdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
+        markdownSectionBlock(`${this.appendSpeechBaloon(`*${this.generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`),
         {
           type: 'context',
           elements: [
@@ -220,7 +157,6 @@ class SlackBotService extends S2sMessageHandlable {
   }
 
   async showEphemeralSearchResults(client, body, args, offsetNum) {
-
     let searchResult;
     try {
       searchResult = await this.retrieveSearchResults(client, body, args, offsetNum);
@@ -232,7 +168,7 @@ class SlackBotService extends S2sMessageHandlable {
         user: body.user_id,
         text: 'Failed To Search',
         blocks: [
-          this.generateMarkdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
+          markdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
       throw new Error('/growi command:search: Failed to search');
@@ -273,7 +209,7 @@ class SlackBotService extends S2sMessageHandlable {
 
     const now = new Date();
     const blocks = [
-      this.generateMarkdownSectionBlock(`:mag: <${decodeURI(appUrl)}|*${appTitle}*>\n${searchResultsDesc}`),
+      markdownSectionBlock(`:mag: <${decodeURI(appUrl)}|*${appTitle}*>\n${searchResultsDesc}`),
       contextBlock,
       { type: 'divider' },
       // create an array by map and extract
@@ -365,126 +301,252 @@ class SlackBotService extends S2sMessageHandlable {
         user: body.user_id,
         text: 'Failed to post ephemeral message.',
         blocks: [
-          this.generateMarkdownSectionBlock(err.toString()),
+          markdownSectionBlock(err.toString()),
         ],
       });
       throw new Error(err);
     }
   }
 
-  async createModal(client, body) {
-    try {
-      await client.views.open({
-        trigger_id: body.trigger_id,
-
-        view: {
-          type: 'modal',
-          callback_id: 'createPage',
-          title: {
-            type: 'plain_text',
-            text: 'Create Page',
-          },
-          submit: {
-            type: 'plain_text',
-            text: 'Submit',
-          },
-          close: {
-            type: 'plain_text',
-            text: 'Cancel',
-          },
-          blocks: [
-            this.generateMarkdownSectionBlock('Create new page.'),
-            this.generateInputSectionBlock('path', 'Path', 'path_input', false, '/path'),
-            this.generateInputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
-          ],
-          private_metadata: JSON.stringify({ channelId: body.channel_id }),
-        },
-      });
-    }
-    catch (err) {
-      logger.error('Failed to create a page.');
-      await client.chat.postEphemeral({
+  async retrieveSearchResults(client, body, args, offset = 0) {
+    const firstKeyword = args[1];
+    if (firstKeyword == null) {
+      client.chat.postEphemeral({
         channel: body.channel_id,
         user: body.user_id,
-        text: 'Failed To Create',
+        text: 'Input keywords',
         blocks: [
-          this.generateMarkdownSectionBlock(`*Failed to create new page.*\n ${err}`),
+          markdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
-      throw err;
+      return;
     }
+
+    const keywords = this.getKeywords(args);
+
+    const { searchService } = this.crowi;
+    const options = { limit: 10, offset };
+    const results = await searchService.searchKeyword(keywords, null, {}, options);
+    const resultsTotal = results.meta.total;
+
+    // no search results
+    if (results.data.length === 0) {
+      logger.info(`No page found with "${keywords}"`);
+      client.chat.postEphemeral({
+        channel: body.channel_id,
+        user: body.user_id,
+        text: `No page found with "${keywords}"`,
+        blocks: [
+          markdownSectionBlock(`*No page that matches your keyword(s) "${keywords}".*`),
+          markdownSectionBlock(':mag: *Help: Searching*'),
+          divider(),
+          markdownSectionBlock('`word1` `word2` (divide with space) \n Search pages that include both word1, word2 in the title or body'),
+          divider(),
+          markdownSectionBlock('`"This is GROWI"` (surround with double quotes) \n Search pages that include the phrase "This is GROWI"'),
+          divider(),
+          markdownSectionBlock('`-keyword` \n Exclude pages that include keyword in the title or body'),
+          divider(),
+          markdownSectionBlock('`prefix:/user/` \n Search only the pages that the title start with /user/'),
+          divider(),
+          markdownSectionBlock('`-prefix:/user/` \n Exclude the pages that the title start with /user/'),
+          divider(),
+          markdownSectionBlock('`tag:wiki` \n Search for pages with wiki tag'),
+          divider(),
+          markdownSectionBlock('`-tag:wiki` \n Exclude pages with wiki tag'),
+        ],
+      });
+      return { pages: [] };
+    }
+
+    const pages = results.data.map((data) => {
+      const { path, updated_at: updatedAt, comment_count: commentCount } = data._source;
+      return { path, updatedAt, commentCount };
+    });
+
+    return {
+      pages, offset, resultsTotal,
+    };
+  }
+
+  getKeywords(args) {
+    const keywordsArr = args.slice(1);
+    const keywords = keywordsArr.join(' ');
+    return keywords;
   }
 
   // Submit action in create Modal
-  async createPageInGrowi(client, payload) {
+  async createPage(client, payload, path, channelId, contentsBody) {
     const Page = this.crowi.model('Page');
     const pathUtils = require('growi-commons').pathUtils;
-    const contentsBody = reshapeContentsBody(payload.view.state.values.contents.contents_input.value);
-
+    const reshapedContentsBody = reshapeContentsBody(contentsBody);
     try {
-      let path = payload.view.state.values.path.path_input.value;
       // sanitize path
-      path = this.crowi.xss.process(path);
-      path = pathUtils.normalizePath(path);
+      const sanitizedPath = this.crowi.xss.process(path);
+      const normalizedPath = pathUtils.normalizePath(sanitizedPath);
 
       // generate a dummy id because Operation to create a page needs ObjectId
       const dummyObjectIdOfUser = new mongoose.Types.ObjectId();
-      const page = await Page.create(path, contentsBody, dummyObjectIdOfUser, {});
+      const page = await Page.create(normalizedPath, reshapedContentsBody, dummyObjectIdOfUser, {});
 
       // Send a message when page creation is complete
       const growiUri = this.crowi.appService.getSiteUrl();
-      const channelId = JSON.parse(payload.view.private_metadata).channelId;
       await client.chat.postEphemeral({
         channel: channelId,
         user: payload.user.id,
-        text: `The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + path)}`)}> has been created.`,
+        text: `The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`,
       });
     }
     catch (err) {
       client.chat.postMessage({
         channel: payload.user.id,
         blocks: [
-          this.generateMarkdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${contentsBody}`)],
+          markdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${reshapedContentsBody}`)],
       });
       logger.error('Failed to create page in GROWI.');
       throw err;
     }
   }
 
-  generateMarkdownSectionBlock(blocks) {
-    return {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: blocks,
-      },
-    };
+  async createPageInGrowi(client, payload) {
+    const path = payload.view.state.values.path.path_input.value;
+    const channelId = JSON.parse(payload.view.private_metadata).channelId;
+    const contentsBody = payload.view.state.values.contents.contents_input.value;
+    await this.createPage(client, payload, path, channelId, contentsBody);
   }
 
-  divider() {
-    return {
-      type: 'divider',
-    };
+  async togetterCreatePageInGrowi(client, payload) {
+    let result = [];
+    const channel = payload.channel.id;
+    try {
+      // validate form
+      const { path, oldest, latest } = await this.togetterValidateForm(client, payload);
+      // get messages
+      result = await this.togetterGetMessages(client, payload, channel, path, latest, oldest);
+      // clean messages
+      const cleanedContents = await this.togetterCleanMessages(result.messages);
+
+      const contentsBody = cleanedContents.join('');
+      // create and send url message
+      await this.togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody);
+    }
+    catch (err) {
+      await client.chat.postMessage({
+        channel: payload.user.id,
+        text: err.message,
+        blocks: [
+          markdownSectionBlock(err.message),
+        ],
+      });
+      return;
+    }
   }
 
-  generateInputSectionBlock(blockId, labelText, actionId, isMultiline, placeholder) {
-    return {
-      type: 'input',
-      block_id: blockId,
-      label: {
-        type: 'plain_text',
-        text: labelText,
-      },
-      element: {
-        type: 'plain_text_input',
-        action_id: actionId,
-        multiline: isMultiline,
-        placeholder: {
-          type: 'plain_text',
-          text: placeholder,
-        },
-      },
-    };
+  async togetterGetMessages(client, payload, channel, path, latest, oldest) {
+    const result = await client.conversations.history({
+      channel,
+      latest,
+      oldest,
+      limit: 100,
+      inclusive: true,
+    });
+
+    // return if no message found
+    if (!result.messages.length) {
+      throw new Error('No message found from togetter command. Try again.');
+    }
+    return result;
+  }
+
+  async togetterValidateForm(client, payload) {
+    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
+    const path = payload.state.values.page_path.page_path.value;
+    let oldest = payload.state.values.oldest.oldest.value;
+    let latest = payload.state.values.latest.latest.value;
+    oldest = oldest.trim();
+    latest = latest.trim();
+    if (!path) {
+      throw new Error('Page path is required.');
+    }
+    /**
+     * RegExp for datetime yyyy/MM/dd-HH:mm
+     * @see https://regex101.com/r/XbxdNo/1
+     */
+    const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])-([01][0-9]|2[0123]):[0-5][0-9]$/);
+
+    if (!regexpDatetime.test(oldest)) {
+      throw new Error('Datetime format for oldest must be yyyy/MM/dd-HH:mm');
+    }
+    if (!regexpDatetime.test(latest)) {
+      throw new Error('Datetime format for latest must be yyyy/MM/dd-HH:mm');
+    }
+    oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
+    // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
+    latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
+
+    if (oldest > latest) {
+      throw new Error('Oldest datetime must be older than the latest date time.');
+    }
+
+    return { path, oldest, latest };
+  }
+
+  async togetterCleanMessages(messages) {
+    const cleanedContents = [];
+    let lastMessage = {};
+    const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
+    messages
+      .sort((a, b) => {
+        return a.ts - b.ts;
+      })
+      .forEach((message) => {
+        // increment contentsBody while removing the same headers
+        // exclude header
+        const lastMessageTs = Math.floor(lastMessage.ts / 60);
+        const messageTs = Math.floor(message.ts / 60);
+        if (lastMessage.user === message.user && lastMessageTs === messageTs) {
+          cleanedContents.push(`${message.text}\n`);
+        }
+        // include header
+        else {
+          const ts = (parseInt(message.ts) - grwTzoffset) * 1000;
+          const time = format(new Date(ts), 'h:mm a');
+          cleanedContents.push(`${message.user}  ${time}\n${message.text}\n`);
+          lastMessage = message;
+        }
+      });
+    return cleanedContents;
+  }
+
+  async togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody) {
+    try {
+      await this.createPage(client, payload, path, channel, contentsBody);
+      // send preview to dm
+      await client.chat.postMessage({
+        channel: payload.user.id,
+        text: 'Preview from togetter command',
+        blocks: [
+          markdownSectionBlock('*Preview*'),
+          divider(),
+          markdownSectionBlock(contentsBody),
+          divider(),
+        ],
+      });
+      // dismiss message
+      const responseUrl = payload.response_url;
+      axios.post(responseUrl, {
+        delete_original: true,
+      });
+    }
+    catch (err) {
+      throw new Error('Error occurred while creating a page.');
+    }
+  }
+
+  async togetterCancel(client, payload) {
+    const responseUrl = payload.response_url;
+    axios.post(responseUrl, {
+      delete_original: true,
+    });
   }
 
 }
