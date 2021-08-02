@@ -83,16 +83,15 @@ class RecentChanges extends React.Component {
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
               {locked}
             </h5>
-            <div className="float-left small">
+            <div className="text-left">
               <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
               <span className="seen-user-count">{page.seenUsers.length}</span>
               <i className="icon-bubble"></i>
-              <span>{page.commentCount}</span>
+              <span className="comment-count">{page.commentCount}</span>
               { tagElements }
-              <br />
-            </div>
-            <div className="float-right small">
-              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+              <div className="float-right small">
+                <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+              </div>
             </div>
           </div>
         </div>

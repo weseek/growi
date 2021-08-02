@@ -14,6 +14,30 @@
           background-color: $bgcolor-active;
         }
       }
+
+      .footstamp-icon {
+        margin-right: 2.03px;
+
+        svg {
+          width: 13.92px;
+          height: 13.95px;
+          viewbox: 0 0 13.9 13.9;
+        }
+      }
+
+      .seen-user-count {
+        margin-right: 7px;
+        font-size: 12px;
+      }
+
+      .icon-bubble {
+        margin-right: 2px;
+      }
+
+      .comment-count {
+        margin-right: 7px;
+        font-size: 12px;
+      }
     }
   }
 }
