@@ -1,16 +1,26 @@
 # CHANGES
 
-## v4.3.2-RC
+## v4.3.3-RC
 
-* 
+*
+* Support: Upgrade libs
+    * escape-string-regexp
+## v4.3.2
+
+* Feature: Hufflpuff theme
+* Improvement: CodeMirror header styles
+* Improvement: CodeMirror syntax-highlighting fenced code blocks
+* Improvement: Slack Integration Settings
+    * Error behavior when getting connection statuses
+    * Add links to docs
+* Improvement: /_api/v3/recent can be accessed with access token
+* Support: Using http-errors
 
 ## v4.3.1
 
 * Fix: Build script for production
 
-
-
-## v4.3.0-RC
+## v4.3.0
 
 ### BREAKING CHANGES
 

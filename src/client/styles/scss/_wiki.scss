@@ -8,6 +8,15 @@ div.body {
 }
 
 .wiki {
+  @mixin add-left-border($width) {
+    &:before {
+      margin-right: 0.4em;
+      content: '';
+      border-left: $width solid;
+      opacity: 0.2;
+    }
+  }
+
   @extend .text-break;
 
   font-size: 15px;
@@ -29,29 +38,40 @@ div.body {
   h1 {
     padding: 0.5em 0;
     margin-top: 2em;
-    font-size: 1.8em;
+    font-size: 1.9em;
     line-height: 1.1em;
+    // style
     border-bottom: solid 1px transparent;
   }
   h2 {
-    // padding-top: 0.5em;
-    padding-bottom: 0.5em;
-    font-size: 1.4em;
+    padding-bottom: 0.3em;
+    font-size: 1.6em;
     font-weight: bold;
     line-height: 1.225;
-    border-bottom: 1px solid transparent;
+    // style
+    border-bottom: solid 1px transparent;
   }
   h3 {
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: bold;
   }
   h4 {
-    font-size: 1.1em;
+    font-size: 1.35em;
     font-weight: normal;
+    // style
+    @include add-left-border(6px);
   }
   h5 {
-    font-size: 1.05em;
+    font-size: 1.25em;
     font-weight: normal;
+    // style
+    @include add-left-border(4px);
+  }
+  h6 {
+    font-size: 1.2em;
+    font-weight: normal;
+    // style
+    @include add-left-border(2px);
   }
 
   p {
