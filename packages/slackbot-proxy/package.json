@@ -16,9 +16,8 @@
     "start:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config dist/index.js",
     "postbuild": "yarn cp:public && yarn cp:views && yarn cp:bootstrap",
     "predev": "yarn cp:bootstrap:dev",
-    "test": "yarn test:lint && yarn test:coverage",
+    "test": "yarn test:lint && yarn test:unit",
     "test:unit": "cross-env NODE_ENV=test jest --passWithNoTests",
-    "test:coverage": "yarn test:unit",
     "test:lint": "eslint src --ext .ts",
     "test:lint:fix": "eslint src --ext .ts --fix",
     "version": "node -p \"require('./package.json').version\""
