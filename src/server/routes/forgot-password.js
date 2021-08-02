@@ -56,7 +56,7 @@ module.exports = function(crowi, app) {
     const { reason } = req.params;
 
     if (reason === 'password-reset-order') {
-      return res.render('reset-password/error', { reason });
+      return res.render('forgot-password/error', { reason });
     }
   };
 
