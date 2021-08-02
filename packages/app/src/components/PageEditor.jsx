@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '~/utils/logger';
 import detectIndent from 'detect-indent';
 
 import { throttle, debounce } from 'throttle-debounce';
 import { envUtils } from 'growi-commons';
+import loggerFactory from '~/utils/logger';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';

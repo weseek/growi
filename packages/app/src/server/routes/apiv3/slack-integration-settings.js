@@ -1,9 +1,10 @@
+import loggerFactory from '~/utils/logger';
+
 const mongoose = require('mongoose');
 const express = require('express');
 const { body, query } = require('express-validator');
 const axios = require('axios');
 const urljoin = require('url-join');
-import loggerFactory from '~/utils/logger';
 
 const { getConnectionStatus, getConnectionStatuses, sendSuccessMessage } = require('@growi/slack');
 

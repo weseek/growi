@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '~/utils/logger';
 import canvasToBlob from 'async-canvas-to-blob';
 
 import {
@@ -11,6 +10,7 @@ import {
 } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import ReactCrop from 'react-image-crop';
+import loggerFactory from '~/utils/logger';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import 'react-image-crop/dist/ReactCrop.css';

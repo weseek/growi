@@ -266,7 +266,7 @@ class ElasticsearchDelegator {
   }
 
   async createIndex(index) {
-    const body = require('@root/resource/search/mappings.json');
+    const body = require('^/resource/search/mappings.json');
     return this.client.indices.create({ index, body });
   }
 

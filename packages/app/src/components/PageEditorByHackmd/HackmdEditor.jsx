@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import connectToChild from 'penpal/lib/connectToChild';
 import loggerFactory from '~/utils/logger';
 
-import connectToChild from 'penpal/lib/connectToChild';
 
 const DEBUG_PENPAL = false;
 

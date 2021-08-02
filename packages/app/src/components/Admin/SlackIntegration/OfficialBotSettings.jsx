@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '~/utils/logger';
 import { useTranslation } from 'react-i18next';
+import loggerFactory from '~/utils/logger';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';

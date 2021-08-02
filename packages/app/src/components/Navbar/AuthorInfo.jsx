@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { userPageRoot } from '~/utils/path-utils';
 import { format } from 'date-fns';
+import { userPageRoot } from '~/utils/path-utils';
 
 import UserPicture from '../User/UserPicture';
 

@@ -1,8 +1,8 @@
+import loggerFactory from '~/utils/logger';
+
 const express = require('express');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
-
-import loggerFactory from '~/utils/logger';
 
 const { verifySlackRequest, generateWebClient } = require('@growi/slack');
 
