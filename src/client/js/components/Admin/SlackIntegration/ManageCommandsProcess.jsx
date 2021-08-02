@@ -66,51 +66,65 @@ const ManageCommandsProcess = ({
 
   return (
     <div className="py-4 px-5">
-      <p className="mb-4">{t('admin:slack_integration.accordion.manage_commands')}</p>
-      <span className="mb-2">Broadcast Use</span>
-      <div className="custom-control custom-checkbox">
-        <div className="row mb-5">
-          {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
-            return (
-              <div className="col-sm-6 my-1" key={commandName}>
-                <input
-                  type="checkbox"
-                  className="custom-control-input"
-                  id={commandName}
-                  name={commandName}
-                  value={commandName}
-                  checked={selectedCommandsForBroadcastUse.has(commandName)}
-                  onChange={toggleCheckboxForBroadcast}
-                />
-                <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
-                  {commandName}
-                </label>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <span className="mb-2">Single Use</span>
-      <div className="custom-control custom-checkbox">
-        <div className="row mb-5">
-          {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
-            return (
-              <div className="col-sm-6 my-1" key={commandName}>
-                <input
-                  type="checkbox"
-                  className="custom-control-input"
-                  id={commandName}
-                  name={commandName}
-                  value={commandName}
-                  checked={selectedCommandsForSingleUse.has(commandName)}
-                  onChange={toggleCheckboxForSingleUse}
-                />
-                <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
-                  {commandName}
-                </label>
-              </div>
-            );
-          })}
+      <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.manage_commands')}</p>
+      <div className="d-flex flex-column align-items-center">
+
+        <div>
+
+
+          <p className="mb-2 font-weight-bold">
+            Multiple GROWI
+            <small className="text-muted ml-4">{t('admin:slack_integration.accordion.multiple_growi_command')}</small>
+          </p>
+          <div className="custom-control custom-checkbox">
+            <div className="row mb-5">
+              {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
+                return (
+                  <div className="col-sm-6 my-1" key={commandName}>
+                    <input
+                      type="checkbox"
+                      className="custom-control-input"
+                      id={commandName}
+                      name={commandName}
+                      value={commandName}
+                      checked={selectedCommandsForBroadcastUse.has(commandName)}
+                      onChange={toggleCheckboxForBroadcast}
+                    />
+                    <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
+                      {commandName}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <p className="mb-2 font-weight-bold">
+            Single GROWI
+            <small className="text-muted ml-4">{t('admin:slack_integration.accordion.single_growi_command')}</small>
+          </p>
+          <div className="custom-control custom-checkbox">
+            <div className="row mb-5">
+              {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
+                return (
+                  <div className="col-sm-6 my-1" key={commandName}>
+                    <input
+                      type="checkbox"
+                      className="custom-control-input"
+                      id={commandName}
+                      name={commandName}
+                      value={commandName}
+                      checked={selectedCommandsForSingleUse.has(commandName)}
+                      onChange={toggleCheckboxForSingleUse}
+                    />
+                    <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
+                      {commandName}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
       <div className="row">
