@@ -35,7 +35,7 @@
     "browser-bunyan": "^1.6.3",
     "cross-env": "^7.0.0",
     "eslint": "^7.31.0",
-    "eslint-config-weseek": "^1.0.11",
+    "eslint-config-weseek": "^1.0.14",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jest": "^24.3.2",

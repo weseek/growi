@@ -61,7 +61,7 @@
     "bootstrap": "^5.0.2",
     "browser-bunyan": "^1.6.3",
     "eslint": "^7.31.0",
-    "eslint-config-weseek": "^1.0.11",
+    "eslint-config-weseek": "^1.0.14",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.23.4",
     "morgan": "^1.10.0",
