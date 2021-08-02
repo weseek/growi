@@ -25,7 +25,6 @@ describe('User', () => {
 
   describe('Create and Find.', () => {
     describe('The user', () => {
-      /* eslint-disable jest/no-test-callback */
       test('should created with createUserByEmailAndPassword', (done) => {
         User.createUserByEmailAndPassword('Example2 for User Test', 'usertest2', 'usertest2@example.com', 'usertest2pass', 'en_US', (err, userData) => {
           expect(err).toBeNull();
@@ -34,7 +33,6 @@ describe('User', () => {
           done();
         });
       });
-      /* eslint-enable jest/no-test-callback */
 
       test('should be found by findUserByUsername', async() => {
         const user = await User.findUserByUsername('usertest');

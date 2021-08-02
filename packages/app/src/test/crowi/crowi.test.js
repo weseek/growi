@@ -1,3 +1,5 @@
+import packageJson from '^/package.json';
+
 const { getInstance } = require('../setup-crowi');
 
 describe('Test for Crowi application context', () => {
@@ -5,7 +7,7 @@ describe('Test for Crowi application context', () => {
   describe('construction', () => {
     test('initialize crowi context', async() => {
       const crowi = await getInstance();
-      expect(crowi.version).toBe(require('@root/package.json').version);
+      expect(crowi.version).toBe(packageJson.version);
       expect(typeof crowi.env).toBe('object');
     });
 

@@ -23,5 +23,6 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': ['warn'],
     '@typescript-eslint/no-this-alias': ['warn'],
     '@typescript-eslint/no-var-requires': ['warn'],
+    'jest/no-done-callback': ['warn'],
   },
 };

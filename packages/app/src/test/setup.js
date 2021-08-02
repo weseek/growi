@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
-const { getMongoUri, mongoOptions } = require('~/utils/mongoose-utils');
+const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 

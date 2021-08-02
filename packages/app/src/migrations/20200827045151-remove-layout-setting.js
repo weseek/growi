@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import Config from '~/server/models/config';
 import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 
 const logger = loggerFactory('growi:migrate:remove-layout-setting');
 

@@ -1,3 +1,5 @@
+import { mongoUri, mongodb } from '^/config/migrate';
+
 describe('config/migrate.js', () => {
 
   beforeEach(async(done) => {
@@ -22,8 +24,6 @@ describe('config/migrate.js', () => {
           },
         };
       });
-
-      const { mongoUri, mongodb } = require('@root/config/migrate');
 
       jest.dontMock('~/utils/mongoose-utils');
 
