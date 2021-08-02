@@ -52,6 +52,13 @@ module.exports = function(crowi, app) {
     }
   };
 
+  actions.error = function(req, res) {
+    const { reason } = req.params;
+
+    if (reason === 'password-reset-order') {
+      return res.render('reset-password/error', { reason });
+    }
+  };
 
   return actions;
 };
