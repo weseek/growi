@@ -172,7 +172,7 @@ class ShareLinkSetting extends React.Component {
             onClickDeleteButton={this.deleteLinkById}
             isAdmin
           />
-          )
+        )
           : (<p className="text-center">{t('share_links.No_share_links')}</p>
           )
         }

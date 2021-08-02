@@ -63,12 +63,12 @@ class ManageExternalAccount extends React.Component {
             <ExternalAccountTable />
             {pager}
           </>
-         )
-         : (
-           <>
-             {t('admin:user_management.external_account_none')}
-           </>
-)}
+        )
+          : (
+            <>
+              {t('admin:user_management.external_account_none')}
+            </>
+          )}
 
       </Fragment>
     );

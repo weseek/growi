@@ -120,8 +120,8 @@ class LdapSecuritySettingContents extends React.Component {
                     aria-expanded="true"
                   >
                     {adminLdapSecurityContainer.state.isUserBind
-                        ? <span className="pull-left">{t('security_setting.ldap.bind_user')}</span>
-                        : <span className="pull-left">{t('security_setting.ldap.bind_manager')}</span>}
+                      ? <span className="pull-left">{t('security_setting.ldap.bind_user')}</span>
+                      : <span className="pull-left">{t('security_setting.ldap.bind_manager')}</span>}
                   </button>
                   <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <button className="dropdown-item" type="button" onClick={() => { adminLdapSecurityContainer.changeLdapBindMode(true) }}>

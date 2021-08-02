@@ -135,11 +135,11 @@ class GrowiArchiveSection extends React.Component {
             />
           </div>
         )
-        : (
-          <UploadForm
-            onUpload={this.handleUpload}
-            onVersionMismatch={this.handleMismatchedVersions}
-          />
+          : (
+            <UploadForm
+              onUpload={this.handleUpload}
+              onVersionMismatch={this.handleMismatchedVersions}
+            />
           )}
       </Fragment>
     );

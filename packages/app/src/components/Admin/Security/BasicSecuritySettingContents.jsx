@@ -42,9 +42,9 @@ class BasicSecurityManagementContents extends React.Component {
         </h2>
 
         {adminBasicSecurityContainer.state.retrieveError != null && (
-        <div className="alert alert-danger">
-          <p>{t('Error occurred')} : {adminBasicSecurityContainer.state.retrieveError}</p>
-        </div>
+          <div className="alert alert-danger">
+            <p>{t('Error occurred')} : {adminBasicSecurityContainer.state.retrieveError}</p>
+          </div>
         )}
 
         <div className="form-group row">
@@ -73,38 +73,43 @@ class BasicSecurityManagementContents extends React.Component {
         </div>
 
         {isBasicEnabled && (
-        <React.Fragment>
-          <div className="row mb-5">
-            <div className="offset-md-3 col-md-6">
-              <div className="custom-control custom-checkbox custom-checkbox-success">
-                <input
-                  id="bindByEmail-basic"
-                  className="custom-control-input"
-                  type="checkbox"
-                  checked={adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
-                  onChange={() => { adminBasicSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor="bindByEmail-basic"
-                  dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical', 'username') }}
-                />
+          <React.Fragment>
+            <div className="row mb-5">
+              <div className="offset-md-3 col-md-6">
+                <div className="custom-control custom-checkbox custom-checkbox-success">
+                  <input
+                    id="bindByEmail-basic"
+                    className="custom-control-input"
+                    type="checkbox"
+                    checked={adminBasicSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
+                    onChange={() => { adminBasicSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                  />
+                  <label
+                    className="custom-control-label"
+                    htmlFor="bindByEmail-basic"
+                    dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical', 'username') }}
+                  />
+                </div>
+                <p className="form-text text-muted">
+                  <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn', 'username') }} />
+                </p>
               </div>
-              <p className="form-text text-muted">
-                <small dangerouslySetInnerHTML={{ __html: t('security_setting.Treat username matching as identical_warn', 'username') }} />
-              </p>
             </div>
-          </div>
 
-          <div className="row my-3">
-            <div className="offset-4 col-5">
-              <button type="button" className="btn btn-primary" disabled={adminBasicSecurityContainer.state.retrieveError != null} onClick={this.onClickSubmit}>
-                {t('Update')}
-              </button>
+            <div className="row my-3">
+              <div className="offset-4 col-5">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  disabled={adminBasicSecurityContainer.state.retrieveError != null}
+                  onClick={this.onClickSubmit}
+                >
+                  {t('Update')}
+                </button>
+              </div>
             </div>
-          </div>
 
-        </React.Fragment>
+          </React.Fragment>
         )}
 
       </React.Fragment>

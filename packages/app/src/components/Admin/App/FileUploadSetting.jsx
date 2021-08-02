@@ -49,21 +49,21 @@ function FileUploadSetting(props) {
 
         <div className="col-md-6 py-2">
           {fileUploadTypes.map((type) => {
-              return (
-                <div key={type} className="custom-control custom-radio custom-control-inline">
-                  <input
-                    type="radio"
-                    className="custom-control-input"
-                    name="file-upload-type"
-                    id={`file-upload-type-radio-${type}`}
-                    checked={adminAppContainer.state.fileUploadType === type}
-                    disabled={adminAppContainer.state.isFixedFileUploadByEnvVar}
-                    onChange={() => { adminAppContainer.changeFileUploadType(type) }}
-                  />
-                  <label className="custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
-                </div>
-              );
-            })}
+            return (
+              <div key={type} className="custom-control custom-radio custom-control-inline">
+                <input
+                  type="radio"
+                  className="custom-control-input"
+                  name="file-upload-type"
+                  id={`file-upload-type-radio-${type}`}
+                  checked={adminAppContainer.state.fileUploadType === type}
+                  disabled={adminAppContainer.state.isFixedFileUploadByEnvVar}
+                  onChange={() => { adminAppContainer.changeFileUploadType(type) }}
+                />
+                <label className="custom-control-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
+              </div>
+            );
+          })}
         </div>
         {adminAppContainer.state.isFixedFileUploadByEnvVar && (
           <p className="alert alert-warning mt-2 text-left offset-3 col-6">

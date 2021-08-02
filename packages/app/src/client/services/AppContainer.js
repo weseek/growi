@@ -1,8 +1,8 @@
 import { Container } from 'unstated';
 
-import axios from 'axios';
 import urljoin from 'url-join';
 
+import axios from '~/utils/axios';
 import InterceptorManager from '~/services/interceptor-manager';
 
 import emojiStrategy from '../util/emojione/emoji_strategy_shrinked.json';

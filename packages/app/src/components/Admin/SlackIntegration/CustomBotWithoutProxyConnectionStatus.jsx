@@ -29,7 +29,7 @@ const CustomBotWithoutProxyConnectionStatus = (props) => {
                 <img width={20} height={20} src="/images/slack-integration/growi-bot-kun-icon.png" />
               </div>
             </div>
-         ) : ''}
+          ) : ''}
         </div>
       </div>
 

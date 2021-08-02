@@ -1,9 +1,9 @@
 import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import loggerFactory from '~/utils/logger';
 
 import { debounce } from 'throttle-debounce';
 import StickyEvents from 'sticky-events';
+import loggerFactory from '~/utils/logger';
 
 import NavigationContainer from '~/client/services/NavigationContainer';
 import { withUnstatedContainers } from './UnstatedUtils';

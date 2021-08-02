@@ -154,7 +154,7 @@ Crowi.highlightSelectedSection = function(hash) {
   }
 };
 
-window.addEventListener('load', (e) => {
+window.addEventListener('load', () => {
   const { appContainer } = window;
   const pageContainer = appContainer.getContainer('PageContainer');
 
@@ -181,7 +181,7 @@ window.addEventListener('load', (e) => {
   }
 });
 
-window.addEventListener('load', (e) => {
+window.addEventListener('load', () => {
   const crowi = window.crowi;
   if (crowi && crowi.users && crowi.users.length !== 0) {
     const totalUsers = crowi.users.length;

@@ -50,15 +50,15 @@ const BotTypeCard = (props) => {
 
           {/*  A recommended badge is shown on official bot card, supplementary names are shown on Custom bot cards   */}
           {props.botType === 'officialBot'
-          ? (
-            <span className="badge badge-info mr-2">
-              {t('admin:slack_integration.selecting_bot_types.recommended')}
-            </span>
-          ) : (
-            <span className="supplementary-bot-name mr-2">
-              {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].supplementaryBotName}`)}
-            </span>
-          )}
+            ? (
+              <span className="badge badge-info mr-2">
+                {t('admin:slack_integration.selecting_bot_types.recommended')}
+              </span>
+            ) : (
+              <span className="supplementary-bot-name mr-2">
+                {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].supplementaryBotName}`)}
+              </span>
+            )}
 
           <i className={props.isActive ? 'grw-botcard-title-active' : ''} aria-hidden="true"></i>
         </h3>

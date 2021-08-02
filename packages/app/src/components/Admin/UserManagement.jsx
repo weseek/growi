@@ -144,11 +144,11 @@ class UserManagement extends React.Component {
       <Fragment>
         {adminUsersContainer.state.userForPasswordResetModal != null
         && (
-        <PasswordResetModal
-          isOpen={adminUsersContainer.state.isPasswordResetModalShown}
-          onClose={adminUsersContainer.hidePasswordResetModal}
-          userForPasswordResetModal={adminUsersContainer.state.userForPasswordResetModal}
-        />
+          <PasswordResetModal
+            isOpen={adminUsersContainer.state.isPasswordResetModalShown}
+            onClose={adminUsersContainer.hidePasswordResetModal}
+            userForPasswordResetModal={adminUsersContainer.state.userForPasswordResetModal}
+          />
         )}
         <p>
           <InviteUserControl />

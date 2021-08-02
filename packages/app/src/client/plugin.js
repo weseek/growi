@@ -12,6 +12,7 @@ export default class GrowiPlugin {
    *
    * @memberof CrowiPlugin
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   installAll(appContainer, originRenderer) {
     // import plugin definitions
     let definitions = [];

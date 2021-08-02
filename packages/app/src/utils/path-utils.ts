@@ -109,14 +109,14 @@ export const encodeSpaces = (path?:string): string | undefined => {
 
   // Encode SPACE and IDEOGRAPHIC SPACE
   return path.replace(/ /g, '%20').replace(/\u3000/g, '%E3%80%80');
-}
+};
 
 /**
  * Generate editor path
  * @param {string} paths
  * @returns {string}
  */
-export const generateEditorPath=(...paths)=> {
+export const generateEditorPath = (...paths) => {
   const joinedPath = [...paths].join('/');
 
   if (!isCreatablePage(joinedPath)) {
@@ -130,4 +130,4 @@ export const generateEditorPath=(...paths)=> {
   catch (err) {
     throw new Error('Invalid path format');
   }
-}
+};

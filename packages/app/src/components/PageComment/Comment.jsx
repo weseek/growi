@@ -219,7 +219,7 @@ class Comment extends React.PureComponent {
             </div>
           </div>
         )
-      }
+        }
       </React.Fragment>
     );
   }

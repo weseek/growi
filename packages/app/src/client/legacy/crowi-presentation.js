@@ -1,7 +1,7 @@
 const Reveal = require('reveal.js');
 
-require('reveal.js/lib/js/head.min.js');
-require('reveal.js/lib/js/html5shiv.js');
+require('reveal.js/lib/js/head.min');
+require('reveal.js/lib/js/html5shiv');
 
 if (!window) {
   window = {};
@@ -30,19 +30,19 @@ Reveal.initialize({
 });
 
 require.ensure([], () => {
-  require('reveal.js/lib/js/classList.js');
-  require('reveal.js/plugin/zoom-js/zoom.js');
-  require('reveal.js/plugin/notes/notes.js');
-  require('../util/reveal/plugins/growi-renderer.js');
+  require('reveal.js/lib/js/classList');
+  require('reveal.js/plugin/zoom-js/zoom');
+  require('reveal.js/plugin/notes/notes');
+  require('../util/reveal/plugins/growi-renderer');
 
   // fix https://github.com/weseek/crowi-plus/issues/96
   Reveal.slide(0, 0);
   Reveal.sync();
 });
 
-Reveal.addEventListener('ready', (event) => {
+Reveal.addEventListener('ready', () => {
   // event.currentSlide, event.indexh, event.indexv
-  $('.reveal section').each(function(e) {
+  $('.reveal section').each(function() {
     const $self = $(this);
     if ($self.children().length !== 1) {
       $self.addClass('only');

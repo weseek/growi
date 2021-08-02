@@ -13,9 +13,9 @@ export default class CommentPreview extends React.Component {
       <div
         className="page-comment-preview-body"
         ref={(elm) => {
-            this.previewElement = elm;
-            this.props.inputRef(elm);
-          }}
+          this.previewElement = elm;
+          this.props.inputRef(elm);
+        }}
       >
 
         <RevisionBody

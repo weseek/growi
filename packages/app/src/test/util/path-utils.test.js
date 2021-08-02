@@ -6,7 +6,7 @@ describe('TopPage Path test', () => {
     const result = isTopPage('/');
     expect(result).toBe(true);
   });
-  test('Path is not match string ', () => {
+  test('Path is not match string', () => {
     const result = isTopPage('/test');
     expect(result).toBe(false);
   });

@@ -74,7 +74,7 @@ const EditorNavbarBottom = (props) => {
             />
           </nav>
         </Collapse>
-        )
+      )
       }
       <div className={`navbar navbar-expand border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
         <form className="form-inline">

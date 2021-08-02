@@ -136,23 +136,23 @@ const PageDuplicateModal = (props) => {
             </div>
             <div className="flex-fill">
               {isReachable
-              ? (
-                <PagePathAutoComplete
-                  initializedPath={path}
-                  onSubmit={ppacSubmitHandler}
-                  onInputChange={ppacInputChangeHandler}
-                  autoFocus
-                />
-              )
-              : (
-                <input
-                  type="text"
-                  value={pageNameInput}
-                  className="form-control"
-                  onChange={e => inputChangeHandler(e.target.value)}
-                  required
-                />
-              )}
+                ? (
+                  <PagePathAutoComplete
+                    initializedPath={path}
+                    onSubmit={ppacSubmitHandler}
+                    onInputChange={ppacInputChangeHandler}
+                    autoFocus
+                  />
+                )
+                : (
+                  <input
+                    type="text"
+                    value={pageNameInput}
+                    className="form-control"
+                    onChange={e => inputChangeHandler(e.target.value)}
+                    required
+                  />
+                )}
             </div>
           </div>
         </div>
@@ -172,19 +172,19 @@ const PageDuplicateModal = (props) => {
 
           <div>
             {isDuplicateRecursively && existingPaths.length !== 0 && (
-            <div className="custom-control custom-checkbox custom-checkbox-warning">
-              <input
-                className="custom-control-input"
-                name="withoutExistRecursively"
-                id="cbDuplicatewithoutExistRecursively"
-                type="checkbox"
-                checked={isDuplicateRecursivelyWithoutExistPath}
-                onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
-              />
-              <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
-                { t('modal_duplicate.label.Duplicate without exist path') }
-              </label>
-            </div>
+              <div className="custom-control custom-checkbox custom-checkbox-warning">
+                <input
+                  className="custom-control-input"
+                  name="withoutExistRecursively"
+                  id="cbDuplicatewithoutExistRecursively"
+                  type="checkbox"
+                  checked={isDuplicateRecursivelyWithoutExistPath}
+                  onChange={changeIsDuplicateRecursivelyWithoutExistPathHandler}
+                />
+                <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+                  { t('modal_duplicate.label.Duplicate without exist path') }
+                </label>
+              </div>
             )}
           </div>
           <div>

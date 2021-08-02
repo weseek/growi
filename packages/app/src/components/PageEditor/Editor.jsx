@@ -221,10 +221,10 @@ export default class Editor extends AbstractEditor {
       <div className="overlay overlay-dropzone-active">
         {this.state.isUploading
           && (
-          <span className="overlay-content">
-            <div className="speeding-wheel d-inline-block"></div>
-            <span className="sr-only">Uploading...</span>
-          </span>
+            <span className="overlay-content">
+              <div className="speeding-wheel d-inline-block"></div>
+              <span className="sr-only">Uploading...</span>
+            </span>
           )
         }
         {!this.state.isUploading && <span className="overlay-content"></span>}
@@ -338,20 +338,20 @@ export default class Editor extends AbstractEditor {
 
         { this.props.isUploadable
           && (
-          <button
-            type="button"
-            className="btn btn-outline-secondary btn-block btn-open-dropzone"
-            onClick={() => { this.dropzone.open() }}
-          >
-            <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
-            Attach files
-            <span className="d-none d-sm-inline">
+            <button
+              type="button"
+              className="btn btn-outline-secondary btn-block btn-open-dropzone"
+              onClick={() => { this.dropzone.open() }}
+            >
+              <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
+              Attach files
+              <span className="d-none d-sm-inline">
               &nbsp;by dragging &amp; dropping,&nbsp;
-              <span className="btn-link">selecting them</span>,&nbsp;
-              or pasting from the clipboard.
-            </span>
+                <span className="btn-link">selecting them</span>,&nbsp;
+                or pasting from the clipboard.
+              </span>
 
-          </button>
+            </button>
           )
         }
 

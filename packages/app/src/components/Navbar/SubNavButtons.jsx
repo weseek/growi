@@ -41,10 +41,10 @@ const SubnavButtons = (props) => {
   return (
     <>
       {isViewMode && (
-      <>
-        { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
-        { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
-      </>
+        <>
+          { pageContainer.isAbleToShowPageReactionButtons && <PageReactionButtons appContainer={appContainer} pageContainer={pageContainer} /> }
+          { pageContainer.isAbleToShowPageManagement && <PageManagement isCompactMode={isCompactMode} /> }
+        </>
       )}
     </>
   );

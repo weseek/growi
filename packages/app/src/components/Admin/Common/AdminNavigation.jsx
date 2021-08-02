@@ -84,12 +84,12 @@ const AdminNavigation = (props) => {
         <MenuLink menu="search"       isListGroupItems isActive={isActiveMenu('/search')} />
         {growiCloudUri != null && growiAppIdForGrowiCloud != null
           && (
-          <a
-            href={`${growiCloudUri}/my/apps/${growiAppIdForGrowiCloud}`}
-            className="list-group-item list-group-item-action border-0 round-corner"
-          >
-            <MenuLabel menu="cloud" />
-          </a>
+            <a
+              href={`${growiCloudUri}/my/apps/${growiAppIdForGrowiCloud}`}
+              className="list-group-item list-group-item-action border-0 round-corner"
+            >
+              <MenuLabel menu="cloud" />
+            </a>
           )
         }
       </>

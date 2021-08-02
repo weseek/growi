@@ -65,7 +65,7 @@ class PageRevisionTable extends React.Component {
                   </button>
                 </div>
               </div>
-           )}
+            )}
           </div>
         </td>
         <td className="col-1">

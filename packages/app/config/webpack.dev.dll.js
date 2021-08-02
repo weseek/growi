@@ -1,7 +1,7 @@
 /**
  * @author: Yuki Takei <yuki@weseek.co.jp>
  */
- const path = require('path');
+const path = require('path');
 const webpack = require('webpack');
 
 

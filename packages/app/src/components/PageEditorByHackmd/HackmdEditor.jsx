@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import connectToChild from 'penpal/lib/connectToChild';
 import loggerFactory from '~/utils/logger';
 
-import connectToChild from 'penpal/lib/connectToChild';
 
 const DEBUG_PENPAL = false;
 
@@ -27,6 +27,7 @@ export default class HackmdEditor extends React.PureComponent {
   }
 
   async initHackmdWithPenpal() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const _this = this; // for in methods scope
 
     const iframe = document.createElement('iframe');

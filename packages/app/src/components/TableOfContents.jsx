@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import loggerFactory from '~/utils/logger';
 
-import { withTranslation } from 'react-i18next';
 
 import PageContainer from '~/client/services/PageContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
@@ -60,22 +60,22 @@ const TableOfContents = (props) => {
       calcViewHeightFunc={calcViewHeight}
     >
       { tocHtml !== ''
-      ? (
-        <div
-          id="revision-toc-content"
-          className="revision-toc-content mb-3"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: tocHtml }}
-        />
-      )
-      : (
-        <div
-          id="revision-toc-content"
-          className="revision-toc-content mb-2"
-        >
-          <span className="text-muted">({t('page_table_of_contents.empty')})</span>
-        </div>
-      ) }
+        ? (
+          <div
+            id="revision-toc-content"
+            className="revision-toc-content mb-3"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: tocHtml }}
+          />
+        )
+        : (
+          <div
+            id="revision-toc-content"
+            className="revision-toc-content mb-2"
+          >
+            <span className="text-muted">({t('page_table_of_contents.empty')})</span>
+          </div>
+        ) }
 
     </StickyStretchableScroller>
   );

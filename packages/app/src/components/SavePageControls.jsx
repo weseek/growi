@@ -76,15 +76,15 @@ class SavePageControls extends React.Component {
 
         {this.isAclEnabled
           && (
-          <div className="mr-2">
-            <GrantSelector
-              disabled={isRootPage}
-              grant={editorContainer.state.grant}
-              grantGroupId={editorContainer.state.grantGroupId}
-              grantGroupName={editorContainer.state.grantGroupName}
-              onUpdateGrant={this.updateGrantHandler}
-            />
-          </div>
+            <div className="mr-2">
+              <GrantSelector
+                disabled={isRootPage}
+                grant={editorContainer.state.grant}
+                grantGroupId={editorContainer.state.grantGroupId}
+                grantGroupName={editorContainer.state.grantGroupName}
+                onUpdateGrant={this.updateGrantHandler}
+              />
+            </div>
           )
         }
 

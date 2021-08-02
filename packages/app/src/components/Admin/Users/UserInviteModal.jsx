@@ -176,7 +176,7 @@ class UserInviteModal extends React.Component {
             <div className="my-1" key={user.email}>
               <CopyToClipboard text={copyText} onCopy={this.showToaster}>
                 <li className="btn btn-outline-secondary">
-                Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong>
+                  Email: <strong className="mr-3">{user.email}</strong> Password: <strong>{user.password}</strong>
                 </li>
               </CopyToClipboard>
             </div>
@@ -269,11 +269,11 @@ class UserInviteModal extends React.Component {
         </ModalHeader>
         <ModalBody>
           {invitedEmailList == null ? this.renderModalBody()
-           : this.renderCreatedModalBody()}
+            : this.renderCreatedModalBody()}
         </ModalBody>
         <ModalFooter className="d-flex">
           {invitedEmailList == null ? this.renderModalFooter()
-           : this.renderCreatedModalFooter()}
+            : this.renderCreatedModalFooter()}
         </ModalFooter>
       </Modal>
     );

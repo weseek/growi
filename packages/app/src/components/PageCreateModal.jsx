@@ -7,10 +7,10 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import { format } from 'date-fns';
 
+import { pathUtils } from 'growi-commons';
 import {
   userPageRoot, isCreatablePage, generateEditorPath,
 } from '~/utils/path-utils';
-import { pathUtils } from 'growi-commons';
 
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';

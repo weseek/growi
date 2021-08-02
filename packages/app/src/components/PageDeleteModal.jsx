@@ -99,9 +99,9 @@ const PageDeleteModal = (props) => {
         </label>
         {!isAbleToDeleteCompletely
         && (
-        <p className="alert alert-warning p-2 my-0">
-          <i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }
-        </p>
+          <p className="alert alert-warning p-2 my-0">
+            <i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }
+          </p>
         )}
       </div>
     );

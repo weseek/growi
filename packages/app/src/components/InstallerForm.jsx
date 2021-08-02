@@ -99,12 +99,12 @@ class InstallerForm extends React.Component {
                 />
                 <div className="dropdown-menu" aria-labelledby="dropdownLanguage">
                   {
-                  localeMetadatas.map(meta => (
-                    <button key={meta.id} className="dropdown-item" type="button" onClick={() => { this.changeLanguage(meta) }}>
-                      {meta.displayName}
-                    </button>
-                  ))
-                }
+                    localeMetadatas.map(meta => (
+                      <button key={meta.id} className="dropdown-item" type="button" onClick={() => { this.changeLanguage(meta) }}>
+                        {meta.displayName}
+                      </button>
+                    ))
+                  }
                 </div>
               </div>
             </div>

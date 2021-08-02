@@ -54,9 +54,9 @@ class LikeButton extends React.Component {
         </button>
 
         {isGuestUser && (
-        <UncontrolledTooltip placement="top" target="like-button" fade={false}>
-          {t('Not available for guest')}
-        </UncontrolledTooltip>
+          <UncontrolledTooltip placement="top" target="like-button" fade={false}>
+            {t('Not available for guest')}
+          </UncontrolledTooltip>
         )}
       </div>
     );
