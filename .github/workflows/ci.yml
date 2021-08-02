@@ -6,17 +6,6 @@ on:
       - release/**
       - rc/**
       - tmp/**
-    paths:
-      - .github/workflows/ci.yml
-      - packages/app/**
-      - .eslint*
-      - .prettier*
-      - .stylelint*
-      - config/**
-      - resource/**
-      - src/**
-      - package.json
-      - yarn.lock
 
 jobs:
 

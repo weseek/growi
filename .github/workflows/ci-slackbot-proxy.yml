@@ -6,12 +6,6 @@ on:
       - release/**
       - rc/**
       - tmp/**
-    paths:
-      - .github/workflows/ci-slackbot-proxy.yml
-      - packages/slack/**
-      - packages/slackbot-proxy/**
-      - package.json
-      - yarn.lock
 
 jobs:
 
@@ -57,7 +51,7 @@ jobs:
         yarn list --depth=0
     - name: yarn test
       run: |
-        yarn lerna run test
+        yarn lerna run test --scope @growi/slack --scope @growi/slackbot-proxy
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
