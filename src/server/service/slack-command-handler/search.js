@@ -25,7 +25,7 @@ module.exports = (crowi) => {
           markdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
-      throw new Error('/growi command:search: Failed to search');
+      throw new Error('Failed to search.');
     }
 
     const appUrl = crowi.appService.getSiteUrl();

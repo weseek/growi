@@ -36,16 +36,8 @@ module.exports = (crowi) => {
       });
     }
     catch (err) {
-      logger.error('Failed to create a page.');
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Failed To Create',
-        blocks: [
-          markdownSectionBlock(`*Failed to create new page.*\n ${err}`),
-        ],
-      });
-      throw err;
+      logger.error(err);
+      throw new Error('Failed to create page.');
     }
   };
 
