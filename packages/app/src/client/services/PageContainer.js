@@ -564,6 +564,7 @@ export default class PageContainer extends Container {
   }
 
   addWebSocketEventHandlers() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const pageContainer = this;
     const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
     const socket = socketIoContainer.getSocket();

@@ -3,6 +3,7 @@
  *
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
+/*
 require('module-alias/register');
 
 const fs = require('graceful-fs');
@@ -30,3 +31,4 @@ Object.keys(emojiStrategy).forEach((unicode) => {
 
 // write
 fs.writeFileSync(OUT, JSON.stringify(shrinkedMap));
+*/
