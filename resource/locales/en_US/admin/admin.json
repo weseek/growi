@@ -321,7 +321,7 @@
       "register_secret_and_token": "Set Signing Secret and Bot Token",
       "manage_commands": "Manage GROWI commands",
       "multiple_growi_command": "Commands that could be sent to multiple GROWI instances at once",
-      "single_growi_command": "Commands that could be sent to one GROWI instance at a time",
+      "single_growi_command": "Commands that could be sent to single GROWI instance at a time",
       "test_connection": "Test Connection",
       "test_connection_by_pressing_button": "Press the button to test the connection",
       "error_check_logs_below": "An error has occurred. Please check the logs below.",
