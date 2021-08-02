@@ -5,7 +5,13 @@ module.exports = () => {
   const handler = new BaseSlackCommandHandler();
 
   handler.handleCommand = (client, body) => {
-    const message = '*Help*\n growi-bot usage\n `/growi [command] [args]`\n\n Create new page\n `create`\n\n Search pages\n `search [keyword]`';
+    // adjust spacing
+    let message = '*Help*\n\n';
+    message += 'Usage:     `/growi [command] [args]`\n\n';
+    message += 'Commands:\n\n';
+    message += '`/growi create`                          Create new page\n\n';
+    message += '`/growi search [keyword]`       Search pages\n\n';
+    message += '`/growi togetter`                      Create new page with existing slack conversations\n\n';
     client.chat.postEphemeral({
       channel: body.channel_id,
       user: body.user_id,
