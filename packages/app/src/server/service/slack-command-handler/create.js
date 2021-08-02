@@ -1,5 +1,8 @@
+import loggerFactory from '~/utils/logger';
+
 const { markdownSectionBlock, inputSectionBlock } = require('@growi/slack');
-const logger = require('@alias/logger')('growi:service:SlackCommandHandler:create');
+
+const logger = loggerFactory('growi:service:SlackCommandHandler:create');
 
 module.exports = () => {
   const BaseSlackCommandHandler = require('./slack-command-handler');

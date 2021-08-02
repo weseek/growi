@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:service:SlackCommandHandler:search');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
 const { markdownSectionBlock, divider } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
