@@ -9,6 +9,7 @@
     "prebuild": "run-p prebuild:*",
     "dev:client": "env-cmd -f config/env.dev.js webpack --config config/webpack.dev.js --progress --watch",
     "dev:server": "env-cmd -f config/env.dev.js yarn ts-node-dev src/server/app.ts --expose_gc --inspect",
+    "dev:server:ci": "env-cmd -f config/env.dev.js yarn ts-node src/server/app.ts --ci",
     "dev": "run-p dev:*",
     "predev:client": "yarn prebuild",
     "test:lint:js": "eslint \"**/*.{js,jsx,ts,tsx}\"",

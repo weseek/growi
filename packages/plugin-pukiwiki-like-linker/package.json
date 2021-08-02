@@ -2,6 +2,7 @@
   "name": "@growi/plugin-pukiwiki-like-linker",
   "version": "4.3.3-RC",
   "description": "GROWI plugin to add PukiwikiLikeLinker",
+  "license": "MIT",
   "keywords": [
     "growi",
     "growi-plugin"
@@ -14,11 +15,8 @@
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
     "tsc": "tsc -p tsconfig.build.json",
     "tsc:w": "yarn tsc -w",
-    "lint:js:fix": "eslint **/*.{js,jsx} --fix",
     "lint:js": "eslint **/*.{js,jsx}",
-    "lint:styles:fix": "stylelint --fix src/**/*.scss",
-    "lint:styles": "stylelint src/**/*.scss",
-    "lint": "npm-run-all -p lint:js lint:styles",
+    "test:lint": "run-p lint:*",
     "test": ""
   },
   "repository": {
