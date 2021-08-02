@@ -37,6 +37,10 @@
         <div class="alert alert-success">
           <h2>{{ t('login.Registration successful') }}</h2>
         </div>
+        {% elseif reason === 'passwordResetOrder' %}
+        <div class="alert alert-warning">
+            <h2>{{ t('forgot_password.incorrect_token_or_expired_url') }}</h2>
+        </div>
         {% else %}
         <div class="alert alert-warning">
             <h2>{{ t('login.Sign in error') }}</h2>

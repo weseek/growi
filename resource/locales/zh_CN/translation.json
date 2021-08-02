@@ -860,6 +860,7 @@
     "new_password": "新密码",
     "confirm_new_password": "确认新密码",
     "email_is_required": "电子邮件是必需的",
-    "success_to_send_email": "我发了一封电子邮件"
+    "success_to_send_email": "我发了一封电子邮件",
+    "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。请重新发出密码重置页面中的链接"
   }
 }
