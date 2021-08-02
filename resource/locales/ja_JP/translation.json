@@ -850,6 +850,7 @@
     "confirm_new_password": "新しいパスワードの確認",
     "email_is_required": "メールを入力してください",
     "success_to_send_email": "メールを送信しました",
-    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。"
+    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
+    "new_password_and_confirmation_are_not_same": "新しいパスワードと確認用のパスワードが同じではありません"
   }
 }

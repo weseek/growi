@@ -856,6 +856,7 @@
     "confirm_new_password": "Confirm the new password",
     "email_is_required": "Email is required",
     "success_to_send_email": "Success to send email",
-    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below."
+    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
+    "new_password_and_confirmation_are_not_same": "new Password and the Confirmation are not the same"
   }
 }
