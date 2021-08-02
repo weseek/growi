@@ -2,7 +2,7 @@ module.exports = (crowi, app) => {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
 
   return async(req, res, next) => {
-    const { token } = req.query;
+    const { token } = req.params;
 
     if (token == null) {
       return res.redirect('/login');
