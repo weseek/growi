@@ -17,7 +17,7 @@ const DisplaySwitcher = (props) => {
   const TableOfContents = dynamic(() => import('../TableOfContents'), { ssr: false });
   const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
   // const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd'), { ssr: false });
-  // const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
+  const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 
   return (
     <>
@@ -58,7 +58,7 @@ const DisplaySwitcher = (props) => {
           </div>
         </TabPane>
       </TabContent>
-      {/* {editorMode !== 'view' && <EditorNavbarBottom /> } */}
+      {editorMode !== 'view' && <EditorNavbarBottom /> }
     </>
   );
 };
