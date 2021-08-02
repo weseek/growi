@@ -11,7 +11,7 @@ module.exports = (crowi, app) => {
     const passwordResetOrder = await PasswordResetOrder.findOne({ token });
     // check the oneTimeToken is valid
     if (passwordResetOrder == null || passwordResetOrder.isExpired()) {
-      return res.redirect('/login/error/password-reset-order');
+      return res.redirect('/reset-password/error/password-reset-order');
     }
 
     req.DataFromPasswordResetOrderMiddleware = passwordResetOrder;
