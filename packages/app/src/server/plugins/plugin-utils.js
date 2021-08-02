@@ -2,7 +2,6 @@ import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
 const fs = require('graceful-fs');
-const packageInstalledVersionSync = require('package-installed-version-sync');
 
 const PluginUtilsV2 = require('./plugin-utils-v2');
 
@@ -73,14 +72,14 @@ class PluginUtils {
     const deps = json.dependencies || {};
 
     const pluginNames = Object.keys(deps).filter((name) => {
-      return /^(crowi|growi)-plugin-/.test(name);
+      return /^@growi\/plugin-/.test(name);
     });
 
     return pluginNames.map((name) => {
       return {
         name,
         requiredVersion: deps[name],
-        installedVersion: packageInstalledVersionSync(name),
+        installedVersion: this.getVersion(name),
       };
     });
   }
@@ -95,6 +94,15 @@ class PluginUtils {
   listPluginNames() {
     const plugins = this.listPlugins();
     return plugins.map((plugin) => { return plugin.name });
+  }
+
+  getVersion(packageName) {
+    const packagePath = resolveFromRoot(`../../node_modules/${packageName}/package.json`);
+
+    // Read package.json and find version
+    const content = fs.readFileSync(packagePath);
+    const json = JSON.parse(content);
+    return json.version || '';
   }
 
 }
