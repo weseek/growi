@@ -1,6 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:AclService');
 
 /**

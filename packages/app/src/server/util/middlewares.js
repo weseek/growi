@@ -9,6 +9,7 @@ const pathUtils = require('growi-commons').pathUtils;
 const md5 = require('md5');
 const entities = require('entities');
 
+// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:lib:middlewares');
 
 module.exports = (crowi) => {

@@ -1,5 +1,8 @@
-/* eslint-disable no-unused-vars */
+import { body } from 'express-validator';
+
 import loggerFactory from '~/utils/logger';
+
+import { listLocaleIds } from '~/utils/locale-utils';
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -7,12 +10,7 @@ const express = require('express');
 
 const passport = require('passport');
 
-const { listLocaleIds } = require('~/utils/locale-utils');
-
 const router = express.Router();
-
-const { body } = require('express-validator');
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
  * @swagger

@@ -11,6 +11,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const { addSeconds } = require('date-fns');
 
+// eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:models:attachment');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;

@@ -1,8 +1,10 @@
 import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:routes:apiv3:docs'); // eslint-disable-line no-unused-vars
+import swaggerDefinition from '^/config/swagger-definition';
 
 const express = require('express');
+const swaggerJSDoc = require('swagger-jsdoc');
+
+const logger = loggerFactory('growi:routes:apiv3:docs'); // eslint-disable-line no-unused-vars
 
 const router = express.Router();
 
@@ -18,9 +20,6 @@ module.exports = (crowi) => {
   if (!crowi.configManager.getConfig('crowi', 'app:publishOpenAPI')) {
     return router;
   }
-
-  const swaggerJSDoc = require('swagger-jsdoc');
-  const swaggerDefinition = require('@root/config/swagger-definition');
 
   // generate swagger spec
   const options = {

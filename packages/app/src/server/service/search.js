@@ -46,12 +46,12 @@ class SearchService {
 
     if (this.isSearchboxEnabled) {
       logger.info('Searchbox is enabled');
-      const SearchboxDelegator = require('./search-delegator/searchbox.js');
+      const SearchboxDelegator = require('./search-delegator/searchbox');
       return new SearchboxDelegator(this.configManager, this.crowi.socketIoService);
     }
     if (this.isElasticsearchEnabled) {
       logger.info('Elasticsearch (not Searchbox) is enabled');
-      const ElasticsearchDelegator = require('./search-delegator/elasticsearch.js');
+      const ElasticsearchDelegator = require('./search-delegator/elasticsearch');
       return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
     }
   }

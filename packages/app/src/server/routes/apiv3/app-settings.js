@@ -1,3 +1,4 @@
+import { body } from 'express-validator';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
@@ -11,7 +12,6 @@ const { listLocaleIds } = require('~/utils/locale-utils');
 
 const router = express.Router();
 
-const { body } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
