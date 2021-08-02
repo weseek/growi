@@ -14,7 +14,9 @@ module.exports = function(crowi, app) {
   };
 
   actions.resetPassword = async function(req, res) {
-    return res.render('reset-password');
+
+    const { email } = req.DataFromPasswordResetOrderMiddleware;
+    return res.render('reset-password', { email });
   };
 
   async function sendPasswordResetEmail(email, url, i18n) {
@@ -50,6 +52,13 @@ module.exports = function(crowi, app) {
     }
   };
 
+  actions.error = function(req, res) {
+    const { reason } = req.params;
+
+    if (reason === 'password-reset-order') {
+      return res.render('forgot-password/error', { reason });
+    }
+  };
 
   return actions;
 };
