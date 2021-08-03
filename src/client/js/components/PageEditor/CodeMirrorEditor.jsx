@@ -26,8 +26,8 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-const createValidator = require('codemirror-textlint');
-const presetJapanese = require('textlint-rule-preset-japanese');
+// const createValidator = require('codemirror-textlint');
+// const presetJapanese = require('textlint-rule-preset-japanese');
 
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
@@ -58,6 +58,8 @@ require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/lint/lint');
+require('codemirror/addon/lint/lint.css');
+require('codemirror/addon/lint/javascript-lint');
 require('../../util/codemirror/autorefresh.ext');
 require('../../util/codemirror/gfm-growi.mode');
 // import modes to highlight
@@ -854,11 +856,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    const validator = createValidator({
-      rules: {
-        'preset-japanese': presetJapanese,
-      },
-    });
+    // const validator = createValidator({
+    //   rules: {
+    //     'preset-japanese': presetJapanese,
+    //   },
+    // });
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
@@ -903,10 +905,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
             },
-            lint: {
-              getAnnotations: validator,
-              async: true,
-            },
+            // lint: {
+            //   getAnnotations: validator,
+            //   async: true,
+            // },
+            lint: true,
           }}
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
