@@ -27,7 +27,7 @@ import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
 const createValidator = require('codemirror-textlint');
-const noTodo = require('textlint-rule-no-todo');
+const presetJapanese = require('textlint-rule-preset-japanese');
 
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
@@ -856,7 +856,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const validator = createValidator({
       rules: {
-        'no-todo': noTodo,
+        'preset-japanese': presetJapanese,
       },
     });
 
