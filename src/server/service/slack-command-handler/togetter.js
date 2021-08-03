@@ -4,7 +4,7 @@ const {
 const { parse, format } = require('date-fns');
 const axios = require('axios');
 const logger = require('@alias/logger')('growi:service:SlackBotService:togetter');
-const SlackbotError = require('../../models/vo/slack-bot-error');
+const SlackbotError = require('../../models/vo/slackbot-error');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');

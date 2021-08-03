@@ -2,7 +2,7 @@ const logger = require('@alias/logger')('growi:service:CreatePageService');
 const { reshapeContentsBody } = require('@growi/slack');
 const mongoose = require('mongoose');
 const pathUtils = require('growi-commons').pathUtils;
-const SlackbotError = require('../../models/vo/slack-bot-error');
+const SlackbotError = require('../../models/vo/slackbot-error');
 
 class CreatePageService {
 

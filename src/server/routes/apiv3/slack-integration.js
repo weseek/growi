@@ -9,7 +9,7 @@ const { verifySlackRequest, generateWebClient } = require('@growi/slack');
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-const slackBotResponse = require('../../service/slack-command-handler/slack-bot-response');
+const slackBotResponse = require('../../service/slack-command-handler/slackbot-response');
 
 module.exports = (crowi) => {
   this.app = crowi.express;

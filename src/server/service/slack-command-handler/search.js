@@ -3,7 +3,7 @@ const logger = require('@alias/logger')('growi:service:SlackCommandHandler:searc
 const { markdownSectionBlock, divider } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 const axios = require('axios');
-const SlackbotError = require('../../models/vo/slack-bot-error');
+const SlackbotError = require('../../models/vo/slackbot-error');
 
 const PAGINGLIMIT = 10;
 

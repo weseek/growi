@@ -1,6 +1,6 @@
 const logger = require('@alias/logger')('growi:service:SlackCommandHandler:slack-bot-response');
 const { markdownSectionBlock } = require('@growi/slack');
-const SlackbotError = require('../../models/vo/slack-bot-error');
+const SlackbotError = require('../../models/vo/slackbot-error');
 
 module.exports = async function(client, body, callback) {
   const isInteraction = !body.channel_id;
