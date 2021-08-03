@@ -2,8 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import dateFnsFormat from 'date-fns/format';
-import parse from 'date-fns/parse';
+import { dateFnsFormat, parse } from 'date-fns';
 
 import { isInteger } from 'core-js/fn/number';
 import { withUnstatedContainers } from '../UnstatedUtils';
