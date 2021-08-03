@@ -1,10 +1,7 @@
-import { mongoUri, mongodb } from '^/config/migrate';
-
 describe('config/migrate.js', () => {
 
-  beforeEach(async(done) => {
+  beforeEach(async() => {
     jest.resetModules();
-    done();
   });
 
   /* eslint-disable indent */
@@ -17,7 +14,7 @@ describe('config/migrate.js', () => {
     test(`when 'MONGO_URI' is '${MONGO_URI}`, () => {
 
       // mock for mongoose-utils
-      jest.doMock('~/utils/mongoose-utils', () => {
+      jest.doMock('~/server/util/mongoose-utils', () => {
         return {
           getMongoUri: () => {
             return MONGO_URI;
@@ -25,7 +22,9 @@ describe('config/migrate.js', () => {
         };
       });
 
-      jest.dontMock('~/utils/mongoose-utils');
+      const { mongoUri, mongodb } = require('^/config/migrate');
+
+      jest.dontMock('~/server/util/mongoose-utils');
 
       expect(mongoUri).toBe(MONGO_URI);
       expect(mongodb.url).toBe(expectedUrl);
