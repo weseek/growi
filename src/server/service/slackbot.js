@@ -4,6 +4,7 @@ const { markdownSectionBlock } = require('@growi/slack');
 const S2sMessage = require('../models/vo/s2s-message');
 const S2sMessageHandlable = require('./s2s-messaging/handlable');
 
+
 class SlackBotService extends S2sMessageHandlable {
 
   constructor(crowi) {
