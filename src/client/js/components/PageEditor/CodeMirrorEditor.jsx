@@ -26,6 +26,9 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
+const createValidator = require('codemirror-textlint');
+const noTodo = require('textlint-rule-no-todo');
+
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
 // set save handler
@@ -54,6 +57,7 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
+require('codemirror/addon/lint/lint');
 require('../../util/codemirror/autorefresh.ext');
 require('../../util/codemirror/gfm-growi.mode');
 // import modes to highlight
@@ -850,6 +854,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
+    const validator = createValidator({
+      rules: {
+        'no-todo': noTodo,
+      },
+    });
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
@@ -893,6 +902,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
               Tab: 'indentMore',
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
+            },
+            lint: {
+              getAnnotations: validator,
+              async: true,
             },
           }}
           onCursor={this.cursorHandler}
