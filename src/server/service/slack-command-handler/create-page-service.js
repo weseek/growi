@@ -1,10 +1,10 @@
 const { markdownSectionBlock } = require('@growi/slack');
-const logger = require('@alias/logger')('growi:util:createPageInGrowi');
+const logger = require('@alias/logger')('growi:service:CreatePageService');
 const { reshapeContentsBody } = require('@growi/slack');
 const mongoose = require('mongoose');
 const pathUtils = require('growi-commons').pathUtils;
 
-class SlackCommandUtil {
+class CreatePageService {
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -43,4 +43,4 @@ class SlackCommandUtil {
 
 }
 
-module.exports = SlackCommandUtil;
+module.exports = CreatePageService;

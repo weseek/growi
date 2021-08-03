@@ -6,8 +6,8 @@ const axios = require('axios');
 const logger = require('@alias/logger')('growi:service:SlackBotService:togetter');
 
 module.exports = (crowi) => {
-  const SlackCommandUtil = require('./slack-command-util');
-  const util = new SlackCommandUtil(crowi);
+  const CreatePageService = require('./create-page-service');
+  const createPageService = new CreatePageService(crowi);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
@@ -145,7 +145,7 @@ module.exports = (crowi) => {
 
   handler.togetterCreatePageAndSendPreview = async function(client, payload, path, channel, contentsBody) {
     try {
-      await util.createPageInGrowi(client, payload, path, channel, contentsBody);
+      await createPageService.createPageInGrowi(client, payload, path, channel, contentsBody);
       // send preview to dm
       await client.chat.postMessage({
         channel: payload.user.id,
