@@ -66,7 +66,7 @@ class RecentChanges extends React.Component {
     const tags = page.tags;
     const tagElements = tags.map((tag) => {
       return (
-        <a key={tag} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2">
+        <a key={tag} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
           {tag.name}
         </a>
       );
@@ -83,13 +83,13 @@ class RecentChanges extends React.Component {
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
               {locked}
             </h5>
-            <div className="text-left">
-              <span className="mr-1 footstamp-icon"><FootstampIcon /></span>
-              <span className="seen-user-count">{page.seenUsers.length}</span>
-              <i className="icon-bubble"></i>
-              <span className="comment-count">{page.commentCount}</span>
+            <div className="my-2">
+              <span className="footstamp-icon mr-1"><FootstampIcon /></span>
+              <span className="seen-user-count mr-2">{page.seenUsers.length}</span>
+              <i className="icon-bubble mr-1"></i>
+              <span className="mr-2">{page.commentCount}</span>
               { tagElements }
-              <div className="float-right small">
+              <div className="pull-right small">
                 <FormattedDistanceDate id={page.id} date={page.updatedAt} />
               </div>
             </div>
