@@ -10,6 +10,7 @@ const PasswordResetExecutionForm = (props) => {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
 
+  // TODO: delete the following comments by GW-6778
   // console.log(newPassword);
   // console.log(newPasswordConfirm);
 
@@ -27,14 +28,18 @@ const PasswordResetExecutionForm = (props) => {
     }
 
     try {
+      /*
+      * TODO: hit an api to change password by GW-6778
+      * the following code is just a reference
+      */
+
       // await appContainer.apiv3Put('/personal-setting/password', {
       //   oldPassword, newPassword, newPasswordConfirm,
       // });
 
-      setNewPassword();
-      setNewPasswordConfirm();
-      // this.setState({ oldPassword: '', newPassword: '', newPasswordConfirm: '' });
-      // await personalContainer.retrievePersonalData();
+      setNewPassword('');
+      setNewPasswordConfirm('');
+
       toastSuccess(t('toaster.update_successed', { target: t('Password') }));
     }
     catch (err) {
