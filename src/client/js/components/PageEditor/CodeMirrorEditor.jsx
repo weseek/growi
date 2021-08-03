@@ -9,6 +9,7 @@ import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
 import InterceptorManager from '@commons/service/interceptor-manager';
 
+import { JSHINT } from 'jshint';
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
 
@@ -26,8 +27,10 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-// const createValidator = require('codemirror-textlint');
-// const presetJapanese = require('textlint-rule-preset-japanese');
+const createValidator = require('codemirror-textlint');
+const presetJapanese = require('textlint-rule-preset-japanese');
+
+window.JSHINT = JSHINT;
 
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
@@ -856,11 +859,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    // const validator = createValidator({
-    //   rules: {
-    //     'preset-japanese': presetJapanese,
-    //   },
-    // });
+    const validator = createValidator({
+      rules: {
+        'preset-japanese': presetJapanese,
+      },
+    });
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
@@ -893,6 +896,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
+            // Todo: Hide lint marker gutters when disabled
             gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers'] : ['CodeMirror-lint-markers'],
             // match-highlighter, matchesonscrollbar, annotatescrollbar options
             highlightSelectionMatches: { annotateScrollbar: true },
@@ -905,11 +909,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
             },
-            // lint: {
-            //   getAnnotations: validator,
-            //   async: true,
-            // },
-            lint: true,
+            lint: {
+              getAnnotations: validator,
+              async: true,
+            },
           }}
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
