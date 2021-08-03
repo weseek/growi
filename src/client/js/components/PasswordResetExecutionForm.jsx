@@ -13,7 +13,7 @@ const PasswordResetExecutionForm = (props) => {
   // console.log(newPassword);
   // console.log(newPasswordConfirm);
 
-  const onClickSubmit = async(e) => {
+  const changePassword = async(e) => {
     e.preventDefault();
 
     if (newPassword === '' || newPasswordConfirm === '') {
@@ -22,7 +22,7 @@ const PasswordResetExecutionForm = (props) => {
     }
 
     if (newPassword !== newPasswordConfirm) {
-      toastError('err', t('forgot_password.new_password_and_confirmation_are_not_same'));
+      toastError('err', t('forgot_password.password_and_confirm_password_does_not_match'));
       return;
     }
 
@@ -44,7 +44,7 @@ const PasswordResetExecutionForm = (props) => {
   };
 
   return (
-    <form role="form" className="form" onSubmit={onClickSubmit}>
+    <form role="form" onSubmit={changePassword}>
       <div className="form-group">
         <div className="input-group">
           <input
