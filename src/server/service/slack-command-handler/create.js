@@ -1,7 +1,9 @@
 const { markdownSectionBlock, inputSectionBlock } = require('@growi/slack');
 const logger = require('@alias/logger')('growi:service:SlackCommandHandler:create');
 
-module.exports = () => {
+module.exports = (crowi) => {
+  const CreatePageService = require('./create-page-service');
+  const createPageService = new CreatePageService(crowi);
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
@@ -12,7 +14,7 @@ module.exports = () => {
 
         view: {
           type: 'modal',
-          callback_id: 'createPage',
+          callback_id: 'create:createPage',
           title: {
             type: 'plain_text',
             text: 'Create Page',
@@ -46,6 +48,17 @@ module.exports = () => {
       });
       throw err;
     }
+  };
+
+  handler.handleBlockActions = async function(client, payload, handlerMethodName) {
+    await this[handlerMethodName](client, payload);
+  };
+
+  handler.createPage = async function(client, payload) {
+    const path = payload.view.state.values.path.path_input.value;
+    const channelId = JSON.parse(payload.view.private_metadata).channelId;
+    const contentsBody = payload.view.state.values.contents.contents_input.value;
+    await createPageService.createPageInGrowi(client, payload, path, channelId, contentsBody);
   };
 
   return handler;

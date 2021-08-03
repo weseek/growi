@@ -104,7 +104,7 @@ module.exports = (crowi) => {
     const command = args[0];
 
     try {
-      await crowi.slackBotService.handleCommand(command, client, body, args);
+      await crowi.slackBotService.handleCommandRequest(command, client, body, args);
     }
     catch (error) {
       logger.error(error);
@@ -126,61 +126,6 @@ module.exports = (crowi) => {
 
     return handleCommands(req, res);
   });
-
-
-  const handleBlockActions = async(client, payload) => {
-    const { action_id: actionId } = payload.actions[0];
-
-    switch (actionId) {
-      case 'shareSingleSearchResult': {
-        await crowi.slackBotService.shareSinglePage(client, payload);
-        break;
-      }
-      case 'dismissSearchResults': {
-        await crowi.slackBotService.dismissSearchResults(client, payload);
-        break;
-      }
-      case 'showNextResults': {
-        const parsedValue = JSON.parse(payload.actions[0].value);
-
-        const { body, args, offset } = parsedValue;
-        const newOffset = offset + 10;
-        await crowi.slackBotService.showEphemeralSearchResults(client, body, args, newOffset);
-        break;
-      }
-      case 'togetterShowMore': {
-        const parsedValue = JSON.parse(payload.actions[0].value);
-        const togetterHandler = require('../../service/slack-command-handler/togetter')(crowi);
-
-        const { body, args, limit } = parsedValue;
-        const newLimit = limit + 1;
-        await togetterHandler.handleCommand(client, body, args, newLimit);
-        break;
-      }
-      case 'togetter:createPage': {
-        await crowi.slackBotService.togetterCreatePageInGrowi(client, payload);
-        break;
-      }
-      case 'togetter:cancel': {
-        await crowi.slackBotService.togetterCancel(client, payload);
-        break;
-      }
-      default:
-        break;
-    }
-  };
-
-  const handleViewSubmission = async(client, payload) => {
-    const { callback_id: callbackId } = payload.view;
-
-    switch (callbackId) {
-      case 'createPage':
-        await crowi.slackBotService.createPageInGrowi(client, payload);
-        break;
-      default:
-        break;
-    }
-  };
 
   async function handleInteractions(req, res) {
 
@@ -206,10 +151,10 @@ module.exports = (crowi) => {
     try {
       switch (type) {
         case 'block_actions':
-          await handleBlockActions(client, payload);
+          await crowi.slackBotService.handleBlockActionsRequest(client, payload);
           break;
         case 'view_submission':
-          await handleViewSubmission(client, payload);
+          await crowi.slackBotService.handleViewSubmissionRequest(client, payload);
           break;
         default:
           break;
