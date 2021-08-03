@@ -92,7 +92,6 @@ class SlackBotService extends S2sMessageHandlable {
       await handler.handleBlockActions(client, payload, handlerMethodName);
     }
     catch (err) {
-      // response
       throw err;
     }
     return;
@@ -108,7 +107,6 @@ class SlackBotService extends S2sMessageHandlable {
       await handler.handleBlockActions(client, payload, handlerMethodName);
     }
     catch (err) {
-      // response
       throw err;
     }
     return;

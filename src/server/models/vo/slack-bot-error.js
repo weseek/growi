@@ -3,7 +3,9 @@
  */
 class SlackbotError extends Error {
 
-  constructor(method, to, popupMessage, mainMessage) {
+  constructor({
+    method, to, popupMessage, mainMessage,
+  } = {}) {
     super();
     this.method = method;
     this.to = to;

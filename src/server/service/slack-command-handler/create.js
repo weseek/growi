@@ -1,5 +1,4 @@
 const { markdownSectionBlock, inputSectionBlock } = require('@growi/slack');
-const logger = require('@alias/logger')('growi:service:SlackCommandHandler:create');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
@@ -8,38 +7,32 @@ module.exports = (crowi) => {
   const handler = new BaseSlackCommandHandler();
 
   handler.handleCommand = async(client, body) => {
-    try {
-      await client.views.open({
-        trigger_id: body.trigger_id,
+    await client.views.open({
+      trigger_id: body.trigger_id,
 
-        view: {
-          type: 'modal',
-          callback_id: 'create:createPage',
-          title: {
-            type: 'plain_text',
-            text: 'Create Page',
-          },
-          submit: {
-            type: 'plain_text',
-            text: 'Submit',
-          },
-          close: {
-            type: 'plain_text',
-            text: 'Cancel',
-          },
-          blocks: [
-            markdownSectionBlock('Create new page.'),
-            inputSectionBlock('path', 'Path', 'path_input', false, '/path'),
-            inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
-          ],
-          private_metadata: JSON.stringify({ channelId: body.channel_id }),
+      view: {
+        type: 'modal',
+        callback_id: 'create:createPage',
+        title: {
+          type: 'plain_text',
+          text: 'Create Page',
         },
-      });
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to create page.');
-    }
+        submit: {
+          type: 'plain_text',
+          text: 'Submit',
+        },
+        close: {
+          type: 'plain_text',
+          text: 'Cancel',
+        },
+        blocks: [
+          markdownSectionBlock('Create new page.'),
+          inputSectionBlock('path', 'Path', 'path_input', false, '/path'),
+          inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
+        ],
+        private_metadata: JSON.stringify({ channelId: body.channel_id }),
+      },
+    });
   };
 
   handler.handleBlockActions = async function(client, payload, handlerMethodName) {
