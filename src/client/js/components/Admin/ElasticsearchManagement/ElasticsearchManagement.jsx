@@ -1,34 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { withUnstatedContainers } from '../../UnstatedUtils';
-import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
+import { useSearchIndicesInfoSWR } from '~/stores/search';
+// TODO: GW-5134 Migrate SocketIoContainer to SWR
+// TODO: GW-6816 Add SocketIo to ElasticsearchManagement
+// import AdminSocketIoContainer from '../../../services/AdminSocketIoContainer';
 import { toastSuccess, toastError } from '../../../util/apiNotification';
 
 import StatusTable from './StatusTable';
 import ReconnectControls from './ReconnectControls';
 import NormalizeIndicesControls from './NormalizeIndicesControls';
-import RebuildIndexControls from './RebuildIndexControls';
-import { apiv3Get, apiv3Post, apiv3Put } from '~/utils/apiv3-client';
+// import RebuildIndexControls from './RebuildIndexControls';
+import { apiv3Post, apiv3Put } from '~/utils/apiv3-client';
 
-class ElasticsearchManagement extends React.Component {
-
+class ElasticsearchManagementBody extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isInitialized: false,
-
-      isConnected: false,
-      isConfigured: false,
       isReconnectingProcessing: false,
       isRebuildingProcessing: false,
       isRebuildingCompleted: false,
-
-      isNormalized: null,
-      indicesData: null,
-      aliasesData: null,
     };
 
     this.reconnect = this.reconnect.bind(this);
@@ -36,64 +28,28 @@ class ElasticsearchManagement extends React.Component {
     this.rebuildIndices = this.rebuildIndices.bind(this);
   }
 
-  async componentWillMount() {
-    this.retrieveIndicesStatus();
-  }
+  // TODO: GW-5134 Migrate SocketIoContainer to SWR
+  // TODO: GW-6816 Add SocketIo to ElasticsearchManagement
+  // initWebSockets() {
+  //   const socket = this.props.adminSocketIoContainer.getSocket();
 
-  componentDidMount() {
-    this.initWebSockets();
-  }
+  //   socket.on('addPageProgress', (data) => {
+  //     this.setState({
+  //       isRebuildingProcessing: true,
+  //     });
+  //   });
 
-  initWebSockets() {
-    const socket = this.props.adminSocketIoContainer.getSocket();
+  //   socket.on('finishAddPage', (data) => {
+  //     this.setState({
+  //       isRebuildingProcessing: false,
+  //       isRebuildingCompleted: true,
+  //     });
+  //   });
 
-    socket.on('addPageProgress', (data) => {
-      this.setState({
-        isRebuildingProcessing: true,
-      });
-    });
-
-    socket.on('finishAddPage', (data) => {
-      this.setState({
-        isRebuildingProcessing: false,
-        isRebuildingCompleted: true,
-      });
-    });
-
-    socket.on('rebuildingFailed', (data) => {
-      toastError(new Error(data.error), 'Rebuilding Index has failed.');
-    });
-  }
-
-  async retrieveIndicesStatus() {
-    try {
-      const { info } = await apiv3Get('/search/indices');
-
-      this.setState({
-        isConnected: true,
-        isConfigured: true,
-
-        indicesData: info.indices,
-        aliasesData: info.aliases,
-        isNormalized: info.isNormalized,
-      });
-    }
-    catch (errors) {
-      this.setState({ isConnected: false });
-
-      // evaluate whether configured or not
-      for (const error of errors) {
-        if (error.code === 'search-service-unconfigured') {
-          this.setState({ isConfigured: false });
-        }
-      }
-
-      toastError(errors);
-    }
-    finally {
-      this.setState({ isInitialized: true });
-    }
-  }
+  //   socket.on('rebuildingFailed', (data) => {
+  //     toastError(new Error(data.error), 'Rebuilding Index has failed.');
+  //   });
+  // }
 
   async reconnect() {
     this.setState({ isReconnectingProcessing: true });
@@ -118,7 +74,7 @@ class ElasticsearchManagement extends React.Component {
       toastError(e);
     }
 
-    await this.retrieveIndicesStatus();
+    await this.props.onUpdateIndices();
 
     toastSuccess('Normalizing has succeeded');
   }
@@ -134,18 +90,14 @@ class ElasticsearchManagement extends React.Component {
       toastError(e);
     }
 
-    await this.retrieveIndicesStatus();
+    await this.props.onUpdateIndices();
   }
 
   render() {
-    const { t } = this.props;
-    const {
-      isInitialized,
-      isConnected, isConfigured, isReconnectingProcessing, isRebuildingProcessing, isRebuildingCompleted,
-      isNormalized, indicesData, aliasesData,
-    } = this.state;
+    const { t, isInitialized, isConnected, isConfigured, isNormalized, indicesData, aliasesData } = this.props;
+    const { isReconnectingProcessing, isRebuildingProcessing, isRebuildingCompleted } = this.state;
 
-    // TODO: GW- retrieve from SWR
+    // TODO: GW-6857 retrieve from SWR
     // const isErrorOccuredOnSearchService = !appContainer.config.isSearchServiceReachable;
     const isErrorOccuredOnSearchService = true;
 
@@ -169,9 +121,8 @@ class ElasticsearchManagement extends React.Component {
 
         <hr />
 
-        {/* Controls */}
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.reconnect') }</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.reconnect')}</label>
           <div className="col-md-6">
             <ReconnectControls
               isEnabled={isReconnectBtnEnabled}
@@ -184,7 +135,7 @@ class ElasticsearchManagement extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.normalize') }</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.normalize')}</label>
           <div className="col-md-6">
             <NormalizeIndicesControls
               isRebuildingProcessing={isRebuildingProcessing}
@@ -198,31 +149,60 @@ class ElasticsearchManagement extends React.Component {
         <hr />
 
         <div className="row">
-          <label className="col-md-3 col-form-label text-left text-md-right">{ t('full_text_search_management.rebuild') }</label>
+          <label className="col-md-3 col-form-label text-left text-md-right">{t('full_text_search_management.rebuild')}</label>
           <div className="col-md-6">
-            <RebuildIndexControls
+            {/* TODO: GW-5134 Migrate SocketIoContainer to SWR */}
+            {/* <RebuildIndexControls
               isRebuildingProcessing={isRebuildingProcessing}
               isRebuildingCompleted={isRebuildingCompleted}
               isNormalized={isNormalized}
               onRebuildingRequested={this.rebuildIndices}
-            />
+            /> */}
           </div>
         </div>
-
       </>
     );
   }
-
 }
 
-/**
- * Wrapper component for using unstated
- */
-const ElasticsearchManagementWrapper = withUnstatedContainers(ElasticsearchManagement, [AdminSocketIoContainer]);
+export default function ElasticsearchManagement() {
+  const { t } = useTranslation();
+  // TODO: GW-6857 retrieve isErrorOccuredOnSearchService from SWR
 
-ElasticsearchManagement.propTypes = {
-  t: PropTypes.func.isRequired, // i18next
-  adminSocketIoContainer: PropTypes.instanceOf(AdminSocketIoContainer).isRequired,
-};
+  let isConfigured = false;
+  let isConnected = false;
+  let isInitialized = false;
+  let isNormalized = false;
+  let indicesData = {};
+  let aliasesData = {};
 
-export default withTranslation()(ElasticsearchManagementWrapper);
+  const { data, error, mutate } = useSearchIndicesInfoSWR();
+
+  if (data?.info != null) {
+    indicesData = data.info.indices;
+    aliasesData = data.info.aliases;
+    isNormalized = data.info.isNormalized;
+    isConfigured = true
+    isConnected = true;
+    isInitialized = true;
+
+  }
+
+  if (error != null) {
+    isConnected = false;
+    isConfigured = error.isConfigured;
+  }
+
+  return (
+    <ElasticsearchManagementBody
+      indicesData={indicesData}
+      aliasesData={aliasesData}
+      isNormalized={isNormalized}
+      onUpdateIndices={mutate}
+      t={t}
+      isInitialized={isInitialized}
+      isConnected={isConnected}
+      isConfigured={isConfigured}
+    />
+  );
+}

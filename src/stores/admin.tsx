@@ -1,5 +1,9 @@
-import useSWR, { responseInterface } from 'swr';
+import useSWR, { SWRResponse } from 'swr';
 import { apiv3Get } from '~/client/js/util/apiv3-client';
+import {
+  UserGroup as IUserGroup,
+  UserGroupRelation as IUserGroupRelation
+} from '~/interfaces/user';
 import {
   appParams as IAppParams,
   markdownParams as IMarkdownParams,
@@ -7,7 +11,14 @@ import {
   securityParamsGeneralSetting as ISecurityParamsGeneralSetting,
 } from '~/interfaces/admin';
 
-export const useAppSettingsSWR = (): responseInterface<IAppParams, Error> => {
+type GetUserGroupsOptions = {
+  pagination?: boolean,
+  page?: number,
+  limit?: number,
+  offset?: number,
+}
+
+export const useAppSettingsSWR = (): SWRResponse<IAppParams, Error> => {
   return useSWR(
     '/app-settings',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.appSettingsParams),
@@ -15,7 +26,7 @@ export const useAppSettingsSWR = (): responseInterface<IAppParams, Error> => {
   );
 };
 
-export const useMarkdownSettingsSWR = (): responseInterface<IMarkdownParams, Error> => {
+export const useMarkdownSettingsSWR = (): SWRResponse<IMarkdownParams, Error> => {
   return useSWR(
     '/markdown-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.markdownParams),
@@ -23,7 +34,7 @@ export const useMarkdownSettingsSWR = (): responseInterface<IMarkdownParams, Err
   );
 };
 
-export const useCustomizeSettingsSWR = (): responseInterface<ICustomizeParams, Error> => {
+export const useCustomizeSettingsSWR = (): SWRResponse<ICustomizeParams, Error> => {
   return useSWR(
     '/customize-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.customizeParams),
@@ -31,10 +42,27 @@ export const useCustomizeSettingsSWR = (): responseInterface<ICustomizeParams, E
   );
 };
 
-export const useSecuritySettingGeneralSWR = (): responseInterface<ISecurityParamsGeneralSetting, Error> => {
+export const useSecuritySettingGeneralSWR = (): SWRResponse<ISecurityParamsGeneralSetting, Error> => {
   return useSWR(
     '/security-setting',
     (endpoint, path) => apiv3Get(endpoint, { path }).then(result => result.data.securityParams.generalSetting),
+    { revalidateOnFocus: false },
+  );
+};
+
+export const useUserGroupSWR = ({ pagination }: GetUserGroupsOptions): SWRResponse<IUserGroup[], Error> => {
+  return useSWR(
+    ['/user-groups', pagination],
+    (endpoint, pagination) => apiv3Get(endpoint, { pagination })
+      .then(result => result.data),
+    { revalidateOnFocus: false },
+  );
+};
+
+export const useUserGroupRelationsSWR = (): SWRResponse<IUserGroupRelation[], Error> => {
+  return useSWR(
+    '/user-group-relations',
+    (endpoint) => apiv3Get(endpoint).then(result => result.data.userGroupRelations),
     { revalidateOnFocus: false },
   );
 };

@@ -74,6 +74,7 @@ export const PagePathAutoComplete:VFC<Props> = (props:Props) => {
       onChange={inputChangeHandler}
       onInputChange={props.onInputChange}
       inputName="new_path"
+      behaviorOfResetBtn="clear"
       renderMenu={renderMenu}
       placeholder="Input page path"
       keywordOnInit={getKeywordOnInit(initializedPath)}

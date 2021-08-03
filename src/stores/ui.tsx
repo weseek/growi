@@ -1,4 +1,4 @@
-import { mutate, responseInterface, cache } from 'swr';
+import { mutate, SWRResponse, cache } from 'swr';
 import { Breakpoint } from '~/interfaces/breakpoints';
 import { addBreakpointListener } from '~/utils/browser-utils';
 
@@ -35,7 +35,7 @@ export type SidebarContents = typeof SidebarContents[keyof typeof SidebarContent
  *                Determined value by context
  *********************************************************** */
 
-export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Error> => {
+export const useIsAbleToShowEmptyTrashButton = (): SWRResponse<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: descendantsCount } = useDescendantsCount(currentPagePath as string);
@@ -46,14 +46,14 @@ export const useIsAbleToShowEmptyTrashButton = (): responseInterface<boolean, Er
   return useStaticSWR('isAbleToShowEmptyTrashButton', isAbleToShowEmptyTrashButton);
 };
 
-export const useIsAbleToShowTrashPageManagementButtons = (): responseInterface<boolean, Error> => {
+export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: isDeleted } = useCurrentPageDeleted();
 
   return useStaticSWR('isAbleToShowTrashPageManagementButtons', isDeleted && currentUser != null);
 };
 
-export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean, any> => {
+export const useIsAbleToShowPageReactionButtons = (): SWRResponse<boolean, any> => {
   const { data: isTrashPage } = useTrash();
   const { data: isNotFoundPage } = useNotFound();
   const { data: isSharedUser } = useIsSharedUser();
@@ -61,7 +61,7 @@ export const useIsAbleToShowPageReactionButtons = (): responseInterface<boolean,
   return useStaticSWR('isAbleToShowPageReactionButtons', !isTrashPage && !isNotFoundPage && !isSharedUser);
 };
 
-export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => {
+export const useIsAbleToShowLikeButton = (): SWRResponse<boolean, any> => {
   const key = 'isAbleToShowLikeButton';
   const { data: isSharedUser } = useIsSharedUser();
   const { data: page } = useCurrentPageSWR();
@@ -76,7 +76,7 @@ export const useIsAbleToShowLikeButton = (): responseInterface<boolean, any> => 
   return useStaticSWR(key);
 };
 
-export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
+export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, any> => {
   const key = 'isAbleToShowTagLabel';
   const { data: page } = useCurrentPageSWR();
   const { data: isNotFoundPage } = useNotFound();
@@ -94,7 +94,7 @@ export const useIsAbleToShowTagLabel = (): responseInterface<boolean, any> => {
   return useStaticSWR(key);
 };
 
-export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> => {
+export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, any> => {
   const key = 'isAbleToShowPageAuthors';
   const { data: page } = useCurrentPageSWR();
   const { data: isNotFoundPage } = useNotFound();
@@ -109,7 +109,7 @@ export const useIsAbleToShowPageAuthors = (): responseInterface<boolean, any> =>
   return useStaticSWR(key);
 };
 
-export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any> => {
+export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, any> => {
   const { data: isNotFoundPage } = useNotFound();
   const { data: isTrashPage } = useTrash();
   const { data: isSharedUser } = useIsSharedUser();
@@ -117,7 +117,7 @@ export const useIsAbleToShowPageManagement = (): responseInterface<boolean, any>
   return useStaticSWR('isAbleToShowPageManagement', !isNotFoundPage && !isTrashPage && !isSharedUser);
 };
 
-export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolean, any> => {
+export const useIsAbleToShowPageEditorModeManager = (): SWRResponse<boolean, any> => {
   const key = 'isAbleToShowPageEditorModeManager';
 
   const { data: isForbidden } = useForbidden();
@@ -141,7 +141,7 @@ export const useIsAbleToShowPageEditorModeManager = (): responseInterface<boolea
  *                      for switching UI
  *********************************************************** */
 
-export const useIsMobile = (): responseInterface<boolean, any> => {
+export const useIsMobile = (): SWRResponse<boolean, any> => {
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'isMobile';
 
@@ -153,7 +153,7 @@ export const useIsMobile = (): responseInterface<boolean, any> => {
   return useStaticSWR(key);
 };
 
-export const useEditorMode = (editorMode?: EditorMode): responseInterface<EditorMode, any> => {
+export const useEditorMode = (editorMode?: EditorMode): SWRResponse<EditorMode, any> => {
   const key = 'editorMode';
 
   if (editorMode == null) {
@@ -168,7 +168,7 @@ export const useEditorMode = (editorMode?: EditorMode): responseInterface<Editor
   return useStaticSWR(key);
 };
 
-export const useIsDeviceSmallerThanMd = (): responseInterface<boolean, any> => {
+export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, any> => {
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'isDeviceSmallerThanMd';
 
@@ -184,7 +184,7 @@ export const useIsDeviceSmallerThanMd = (): responseInterface<boolean, any> => {
   return useStaticSWR(key);
 };
 
-export const usePreferDrawerModeByUser = (isPrefered?: boolean): responseInterface<boolean, any> => {
+export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boolean, any> => {
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'preferDrawerModeByUser';
 
@@ -203,7 +203,7 @@ export const usePreferDrawerModeByUser = (isPrefered?: boolean): responseInterfa
   return res;
 };
 
-export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): responseInterface<boolean, any> => {
+export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRResponse<boolean, any> => {
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'preferDrawerModeOnEditByUser';
 
@@ -222,7 +222,7 @@ export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): responseI
   return res;
 };
 
-export const useDrawerMode = (): responseInterface<boolean, any> => {
+export const useDrawerMode = (): SWRResponse<boolean, any> => {
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'isDrawerMode';
 
@@ -241,7 +241,7 @@ export const useDrawerMode = (): responseInterface<boolean, any> => {
   return useStaticSWR(key);
 };
 
-export const useDrawerOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
+export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, any> => {
   const key = 'isDrawerOpened';
 
   if (isOpened == null) {
@@ -256,7 +256,7 @@ export const useDrawerOpened = (isOpened?: boolean): responseInterface<boolean, 
   return useStaticSWR(key);
 };
 
-export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<boolean, any> => {
+export const usePageCreateModalOpened = (isOpened?: boolean): SWRResponse<boolean, any> => {
   const key = 'isPageCreateModalOpened';
 
   if (isOpened == null) {
@@ -271,7 +271,7 @@ export const usePageCreateModalOpened = (isOpened?: boolean): responseInterface<
   return useStaticSWR(key);
 };
 
-export const useCurrentSidebarContents = (sidebarContents?: SidebarContents): responseInterface<SidebarContents, any> => {
+export const useCurrentSidebarContents = (sidebarContents?: SidebarContents): SWRResponse<SidebarContents, any> => {
   const key = 'sidebarContents';
 
   if (sidebarContents == null) {
