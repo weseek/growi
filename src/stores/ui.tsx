@@ -285,3 +285,21 @@ export const useCurrentSidebarContents = (sidebarContents?: SidebarContents): re
 
   return useStaticSWR(key);
 };
+
+
+export const useCurrentProductNavWidth = (productNavWidth?: number): responseInterface<number, any> => {
+  const isServer = typeof window === 'undefined';
+  const key = isServer ? null : 'productNavWidth';
+  const sidebarDefaultWidth = 320;
+
+  if (productNavWidth == null) {
+    if (!cache.has(key)) {
+      mutate(key, sidebarDefaultWidth, false);
+    }
+  }
+  else {
+    mutate(key, productNavWidth);
+  }
+
+  return useStaticSWR(key);
+};

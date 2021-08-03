@@ -10,7 +10,7 @@ import {
 } from '@atlaskit/navigation-next';
 
 import {
-  useCurrentSidebarContents, useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
+  useCurrentSidebarContents, useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser, useCurrentProductNavWidth,
 } from '~/stores/ui';
 
 import SidebarNav from './Sidebar/SidebarNav';
@@ -92,6 +92,7 @@ const Sidebar = (props: Props) => {
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
+  const { data: productNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
 
   const { navigationUIController } = props;
 
@@ -176,8 +177,7 @@ const Sidebar = (props: Props) => {
 
   const [isHover, setHover] = useState(false);
   const [isDragging, setDrag] = useState(false);
-  // TODO global state
-  const [sidebarWidthCached, setSidebarWidthCached] = useState(sidebarDefaultWidth);
+  const [sidebarWidthCached, setSidebarWidthCached] = useState(productNavWidth);
 
   const resizableContainer = useRef<HTMLDivElement>(null);
   const setContentWidth = useCallback((newWidth) => {
@@ -185,7 +185,8 @@ const Sidebar = (props: Props) => {
       return;
     }
     resizableContainer.current.style.width = `${newWidth}px`;
-  }, []);
+    mutateProductNavWidth(newWidth);
+  }, [mutateProductNavWidth]);
 
   const hoverHandler = useCallback((isHover: boolean) => {
     if (!navigationUIController.state.isCollapsed) {
@@ -374,6 +375,7 @@ const SidebarWithNavigation = (props) => {
 const SkeltonSidebar = (props: Props) => {
 
   // TODO get sidebar width and collapse state server side code
+  const { data: productNavWidth } = useCurrentProductNavWidth();
 
   return (
     <>
@@ -392,7 +394,7 @@ const SkeltonSidebar = (props: Props) => {
                   <SidebarNav onItemSelected={() => {}} />
                 </div>
                 <div
-                  style={{ width: sidebarMinWidth }}
+                  style={{ width: productNavWidth }}
                   className="grw-contextual-navigation"
                 >
                 </div>
