@@ -1,4 +1,4 @@
-const Crowi = require('~/server/crowi');
+import Crowi from '~/server/crowi';
 
 let _instance = null;
 
