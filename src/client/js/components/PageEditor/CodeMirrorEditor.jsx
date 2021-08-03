@@ -891,7 +891,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
-            gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
+            gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers'] : ['CodeMirror-lint-markers'],
             // match-highlighter, matchesonscrollbar, annotatescrollbar options
             highlightSelectionMatches: { annotateScrollbar: true },
             // continuelist, indentlist
