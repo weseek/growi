@@ -9,7 +9,7 @@ const axios = require('axios');
 const router = express.Router();
 const { isAfter, addHours } = require('date-fns');
 
-const contributors = require('../../../../resource/Contributor');
+const contributors = require('^/resource/Contributor');
 
 let expiredAt;
 const contributorsCache = contributors;
