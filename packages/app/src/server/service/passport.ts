@@ -184,7 +184,7 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   getSetupStrategies() {
-    const setupStrategies = [];
+    const setupStrategies: string[] = [];
 
     if (this.isLocalStrategySetup) { setupStrategies.push('local') }
     if (this.isLdapStrategySetup) { setupStrategies.push('ldap') }
@@ -317,7 +317,7 @@ class PassportService implements S2sMessageHandlable {
         logger.debug('LDAP authentication has succeeded', ldapAccountInfo);
 
         // store ldapAccountInfo to req
-        req.ldapAccountInfo = ldapAccountInfo;
+        (req as IncomingMessageWithLdapAccountInfo).ldapAccountInfo = ldapAccountInfo;
 
         done(null, ldapAccountInfo);
       }));
@@ -751,7 +751,7 @@ class PassportService implements S2sMessageHandlable {
    * return the keys of the configs mandatory for SAML whose value are empty.
    */
   getSamlMissingMandatoryConfigKeys() {
-    const missingRequireds = [];
+    const missingRequireds: string[] = [];
     for (const key of this.mandatoryConfigKeysForSaml) {
       if (this.crowi.configManager.getConfig('crowi', key) === null) {
         missingRequireds.push(key);
@@ -940,7 +940,8 @@ class PassportService implements S2sMessageHandlable {
     const User = this.crowi.model('User');
 
     passport.serializeUser((user, done) => {
-      done(null, user.id);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      done(null, (user as any).id);
     });
     passport.deserializeUser(async(id, done) => {
       try {
