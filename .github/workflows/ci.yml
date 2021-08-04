@@ -54,7 +54,9 @@ jobs:
         yarn lerna run test:lint --scope @growi/plugin-pukiwiki-like-linker
     - name: lerna run test:lint for app
       run: |
-        yarn lerna run test:lint --scope @growi/app
+        yarn lerna run test:lint:styles --scope @growi/app
+        yarn lerna run test:lint:js --scope @growi/app
+        yarn lerna run test:lint:swagger2openapi --scope @growi/app
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
