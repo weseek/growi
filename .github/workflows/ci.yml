@@ -148,6 +148,12 @@ jobs:
       matrix:
         node-version: [14.x]
 
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+        - 27017/tcp
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -201,6 +207,8 @@ jobs:
       working-directory: ./packages/app
       run: |
         yarn dev:ci
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_dev
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
