@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
 import React from 'react';
 import { TabContent, TabPane } from 'reactstrap';
-
 import { useEditorMode } from '~/stores/ui';
 
 import Page from '../Page';
@@ -18,7 +17,7 @@ const DisplaySwitcher = (props) => {
   const TableOfContents = dynamic(() => import('../TableOfContents'), { ssr: false });
   const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
   // const PageEditorByHackmd = dynamic(() => import('../PageEditorByHackmd'), { ssr: false });
-  // const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
+  const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 
   return (
     <>
@@ -48,7 +47,7 @@ const DisplaySwitcher = (props) => {
 
           </div>
         </TabPane>
-        <TabPane tabId="edit">
+        <TabPane tabId="editor">
           <div id="page-editor">
             <PageEditor />
           </div>
@@ -59,7 +58,7 @@ const DisplaySwitcher = (props) => {
           </div>
         </TabPane>
       </TabContent>
-      {/* {editorMode !== 'view' && <EditorNavbarBottom /> } */}
+      {editorMode !== 'view' && <EditorNavbarBottom /> }
     </>
   );
 };

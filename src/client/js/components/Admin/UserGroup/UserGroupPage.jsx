@@ -19,7 +19,9 @@ class UserGroupPage extends React.Component {
       isDeleteModalShow: false,
     };
 
-    this.xss = window.xss;
+    if (typeof window !== "undefined") {
+      this.xss = window.xss;
+    }
 
     this.showDeleteModal = this.showDeleteModal.bind(this);
     this.hideDeleteModal = this.hideDeleteModal.bind(this);
@@ -31,9 +33,9 @@ class UserGroupPage extends React.Component {
     await this.syncUserGroupAndRelations();
   }
 
-  async showDeleteModal(group) {
+  showDeleteModal(group) {
     try {
-      await this.syncUserGroupAndRelations();
+      this.syncUserGroupAndRelations();
 
       this.setState({
         selectedUserGroup: group,
@@ -121,7 +123,7 @@ class UserGroupPage extends React.Component {
           onCreate={this.addUserGroup}
         />
         <UserGroupTable
-          userGroups={this.state.userGroups}
+          userGroups={this.props.userGroupsData.userGroups}
           isAclEnabled={isAclEnabled}
           onDelete={this.showDeleteModal}
           userGroupRelations={this.state.userGroupRelations}
@@ -138,6 +140,23 @@ class UserGroupPage extends React.Component {
     );
   }
 
+}
+
+const UserGroupPage = () => {
+  const { data: userGroupsData, mutate: mutateGroups } = useUserGroupSWR({ pagination: false });
+  const { data: userGroupRelationsData, mutate: mutateRelations } = useUserGroupRelationsSWR();
+  return (
+    <>
+      {userGroupRelationsData != null &&
+        <UserGroupPageBody
+          userGroupsData={userGroupsData}
+          userGroupRelationsData={userGroupRelationsData}
+          mutateRelations={mutateRelations}
+          mutateGroups={mutateGroups}
+        />
+      }
+    </>
+  )
 }
 
 export default UserGroupPage;

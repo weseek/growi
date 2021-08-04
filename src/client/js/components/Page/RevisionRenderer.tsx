@@ -28,7 +28,7 @@ const RevisionRenderer: VFC<Props> = (props: Props) => {
   // initCurrentRenderingContext() {
   //   this.currentRenderingContext = {
   //     markdown: this.props.markdown,
-  //     currentPagePath: this.props.pageContainer.state.path,
+  //     currentPagePath: decodeURIComponent(window.location.pathname),
   //   };
   // }
 

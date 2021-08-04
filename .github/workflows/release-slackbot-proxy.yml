@@ -1,0 +1,68 @@
+name: Release Docker Image for @growi/slackbot-proxy
+
+on:
+  push:
+    branches:
+      - release/slackbot-proxy/**
+
+jobs:
+
+  build-and-push-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Get version
+      working-directory: ./packages/slackbot-proxy
+      run: |
+        export RELEASE_VERSION=`npm run version --silent`
+        echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to docker.io registry
+      run: |
+        echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
+
+    - name: Setup gcloud
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: ${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}
+        service_account_key: ${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}
+        export_default_credentials: true
+
+    - name: Configure docker for gcloud
+      run: |
+        gcloud auth configure-docker --quiet
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./packages/slackbot-proxy/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          weseek/growi-slackbot-proxy:latest
+          weseek/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
+          ghcr.io/weseek/growi-slackbot-proxy:latest
+          ghcr.io/weseek/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
+          asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy:latest
+          asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy:${{ env.RELEASE_VERSION }}
+
+    - name: Update Docker Hub Description
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: wsmoogle
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        repository: weseek/growi-slackbot-proxy
+        readme-filepath: ./packages/slackbot-proxy/docker/README.md

@@ -975,9 +975,8 @@ module.exports = function(crowi) {
     savedPage = await this.findByPath(revision.path);
     await savedPage.populateDataToShowRevision();
 
-    if (socketClientId != null) {
-      pageEvent.emit('create', savedPage, user, socketClientId);
-    }
+    pageEvent.emit('create', savedPage, user, socketClientId);
+
     return savedPage;
   };
 
@@ -1003,9 +1002,7 @@ module.exports = function(crowi) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
-    if (socketClientId != null) {
-      pageEvent.emit('update', savedPage, user, socketClientId);
-    }
+    pageEvent.emit('update', savedPage, user, socketClientId);
 
     return savedPage;
   };

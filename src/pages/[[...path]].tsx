@@ -29,11 +29,12 @@ import {
   useForbidden, useNotFound, useTrash, useShared, useShareLinkId, useIsSharedUser, useIsAbleToDeleteCompletely,
   useAppTitle, useSiteUrl, useConfidential, useIsEnabledStaleNotification,
   useSearchServiceConfigured, useSearchServiceReachable, useIsMailerSetup,
-  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri,
+  useAclEnabled, useHasSlackConfig, useDrawioUri, useHackmdUri, useMathJax, useNoCdn, useEditorConfig
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { useIndentSize } from '~/stores/editor';
 
 
 const logger = loggerFactory('growi:pages:all');
@@ -61,9 +62,12 @@ type Props = CommonProps & {
   hasSlackConfig: boolean,
   drawioUri: string,
   hackmdUri: string,
+  mathJax: string,
+  noCdn: string,
   highlightJsStyle: string,
   isAllReplyShown: boolean,
   isContainerFluid: boolean,
+  editorConfig: any,
   isEnabledStaleNotification: boolean,
   isEnabledLinebreaks: boolean,
   isEnabledLinebreaksInComments: boolean,
@@ -89,6 +93,7 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
 
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
+  useEditorConfig(props.editorConfig);
   useConfidential(props.confidential);
   useSearchServiceConfigured(props.isSearchServiceConfigured);
   useSearchServiceReachable(props.isSearchServiceReachable);
@@ -97,6 +102,9 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
   useHasSlackConfig(props.hasSlackConfig);
   useDrawioUri(props.drawioUri);
   useHackmdUri(props.hackmdUri);
+  useMathJax(props.mathJax)
+  useNoCdn(props.noCdn)
+  useIndentSize(props.adminPreferredIndentSize);
 
   useRendererSettings({
     isEnabledLinebreaks: props.isEnabledLinebreaks,
@@ -268,12 +276,20 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
   props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
+  props.mathJax = configManager.getConfig('crowi', 'app:mathJax');
+  props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.isEnabledLinebreaks = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks');
   props.isEnabledLinebreaksInComments = configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments');
+  props.editorConfig = {
+    upload: {
+      image: crowi.fileUploadService.getIsUploadable(),
+      file: crowi.fileUploadService.getFileUploadEnabled(),
+    },
+  };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 

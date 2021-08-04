@@ -5,17 +5,17 @@ import { Collapse, Button } from 'reactstrap';
 
 import { useHasSlackConfig } from '~/stores/context';
 
-import NavigationContainer from '../../services/NavigationContainer';
-import EditorContainer from '../../services/EditorContainer';
+// import NavigationContainer from '../../services/NavigationContainer';
+// import EditorContainer from '../../services/EditorContainer';
 import SlackNotification from '../SlackNotification';
 import SlackLogo from '../SlackLogo';
-import { withUnstatedContainers } from '../UnstatedUtils';
+// import { withUnstatedContainers } from '../UnstatedUtils';
 
 import SavePageControls from '../SavePageControls';
 
 import OptionsSelector from './OptionsSelector';
 
-const EditorNavbarBottom = (props) => {
+const EditorNavbarBottomSubstance = (props) => {
 
   const { data: hasSlackConfig } = useHasSlackConfig();
 
@@ -23,10 +23,10 @@ const EditorNavbarBottom = (props) => {
 
   const [isSlackExpanded, setSlackExpanded] = useState(false);
 
-  const {
-    navigationContainer,
-  } = props;
-  const { editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
+  // const {
+  //   navigationContainer,
+  // } = props;
+  // const { editorMode, isDeviceSmallerThanMd } = navigationContainer.state;
 
   const additionalClasses = ['grw-editor-navbar-bottom'];
 
@@ -36,13 +36,13 @@ const EditorNavbarBottom = (props) => {
     </button>
   );
 
-  const slackEnabledFlagChangedHandler = (isSlackEnabled) => {
-    props.editorContainer.setState({ isSlackEnabled });
-  };
+  // const slackEnabledFlagChangedHandler = (isSlackEnabled) => {
+  //   props.editorContainer.setState({ isSlackEnabled });
+  // };
 
-  const slackChannelsChangedHandler = (slackChannels) => {
-    props.editorContainer.setState({ slackChannels });
-  };
+  // const slackChannelsChangedHandler = (slackChannels) => {
+  //   props.editorContainer.setState({ slackChannels });
+  // };
 
   // eslint-disable-next-line react/prop-types
   const renderExpandButton = () => (
@@ -57,36 +57,37 @@ const EditorNavbarBottom = (props) => {
     </div>
   );
 
-  const isOptionsSelectorEnabled = editorMode !== 'hackmd';
-  const isCollapsedOptionsSelectorEnabled = isOptionsSelectorEnabled && isDeviceSmallerThanMd;
+  // const isOptionsSelectorEnabled = editorMode !== 'hackmd';
+  // const isCollapsedOptionsSelectorEnabled = isOptionsSelectorEnabled && isDeviceSmallerThanMd;
 
   return (
-    <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
+    <div /* className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `} */>
       {/* Collapsed SlackNotification */}
       {hasSlackConfig && (
-        <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd}>
+        <Collapse isOpen={isSlackExpanded/*  && isDeviceSmallerThanMd */}>
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
-            <SlackNotification
+            {/* <SlackNotification
               isSlackEnabled={props.editorContainer.state.isSlackEnabled}
               slackChannels={props.editorContainer.state.slackChannels}
               onEnabledFlagChange={slackEnabledFlagChangedHandler}
               onChannelChange={slackChannelsChangedHandler}
               id="idForEditorNavbarBottomForMobile"
               popUp
-            />
+            /> */}
           </nav>
         </Collapse>
         )
       }
+
       <div className={`navbar navbar-expand border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
         <form className="form-inline">
-          { isDeviceSmallerThanMd && renderDrawerButton() }
-          { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
+          { /* isDeviceSmallerThanMd &&  renderDrawerButton() */ }
+          { /* isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> */ }
         </form>
         <form className="form-inline flex-nowrap ml-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
-          {hasSlackConfig && (isDeviceSmallerThanMd ? (
+          {/* {hasSlackConfig && (isDeviceSmallerThanMd ? (
             <Button
               className="grw-btn-slack border mr-2"
               onClick={() => (setSlackExpanded(!isSlackExpanded))}
@@ -108,29 +109,36 @@ const EditorNavbarBottom = (props) => {
               />
             </div>
           ))}
-          <SavePageControls />
-          { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
+          <SavePageControls /> */}
+          { /* isCollapsedOptionsSelectorEnabled && */ renderExpandButton() }
         </form>
       </div>
       {/* Collapsed OptionsSelector */}
-      { isCollapsedOptionsSelectorEnabled && (
+      {/* { isCollapsedOptionsSelectorEnabled && (
         <Collapse isOpen={isExpanded}>
-          <div className="px-2"> {/* set padding for border-top */}
+          <div className="px-2">  {/* set padding for border-top /*}
             <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
               <form className="form-inline ml-auto">
-                <OptionsSelector />
+                 <OptionsSelector />
               </form>
             </div>
           </div>
         </Collapse>
-      ) }
+      ) } */}
     </div>
   );
 };
 
-EditorNavbarBottom.propTypes = {
-  navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
-  editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
-};
+// EditorNavbarBottomSubstance.propTypes = {
+//   navigationContainer: PropTypes.instanceOf(NavigationContainer).isRequired,
+//   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
+// };
 
-export default withUnstatedContainers(EditorNavbarBottom, [NavigationContainer, EditorContainer]);
+
+const EditorNavbarBottom = () => {
+  return <EditorNavbarBottomSubstance />
+}
+
+export default EditorNavbarBottom
+
+// export default withUnstatedContainers(EditorNavbarBottom, [NavigationContainer, EditorContainer]);
