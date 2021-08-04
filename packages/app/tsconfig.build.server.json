@@ -1,7 +1,6 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "./src",
     "outDir": "dist",
     "declaration": true,
     "noResolve": false,
@@ -9,10 +8,11 @@
     "sourceMap": true,
     "noEmit": false,
     "inlineSources": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "~/*": ["./*"],
-      "debug": ["./server/utils/logger/alias-for-debug"]
+      "~/*": ["./src/*"],
+      "^/*": ["./*"],
+      "debug": ["./src/utils/logger/alias-for-debug"]
     }
   },
   "include": [
