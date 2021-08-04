@@ -55,7 +55,7 @@ module.exports = (crowi) => {
       await this.togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody);
     }
     catch (err) {
-      logger.err('Error occured by togetter.');
+      logger.error('Error occured by togetter.');
       throw err;
     }
   };

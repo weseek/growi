@@ -3,11 +3,14 @@ const { markdownSectionBlock } = require('@growi/slack');
 const SlackbotError = require('../../models/vo/slackbot-error');
 
 module.exports = async function(client, body, callback) {
+  // check if the request is to /commands OR /interactions
   const isInteraction = !body.channel_id;
+
   try {
     await callback();
   }
   catch (err) {
+    // throw non-SlackbotError
     if (!SlackbotError.isSlackbotError(err)) {
       logger.error(`A non-SlackbotError error occured.\n${err.toString()}`);
       throw err;
@@ -32,11 +35,11 @@ module.exports = async function(client, body, callback) {
         break;
     }
 
-    // argumentMap object to pass
-    let argumentsMap = {};
+    // argumentObj object to pass to postMessage OR postEphemeral
+    let argumentsObj = {};
     switch (err.method) {
       case 'postMessage':
-        argumentsMap = {
+        argumentsObj = {
           channel: toChannel,
           text: err.popupMessage,
           blocks: [
@@ -45,7 +48,7 @@ module.exports = async function(client, body, callback) {
         };
         break;
       case 'postEphemeral':
-        argumentsMap = {
+        argumentsObj = {
           channel: toChannel,
           user: toUser,
           text: err.popupMessage,
@@ -59,6 +62,6 @@ module.exports = async function(client, body, callback) {
         break;
     }
 
-    await client.chat[err.method](argumentsMap);
+    await client.chat[err.method](argumentsObj);
   }
 };
