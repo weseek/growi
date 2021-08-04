@@ -214,7 +214,6 @@
     "swagger-jsdoc": "^3.4.0",
     "swagger2openapi": "^5.3.1",
     "terser-webpack-plugin": "^4.1.0",
-    "textlint": "^12.0.2",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
     "unstated": "^2.1.1",
