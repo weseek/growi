@@ -173,10 +173,10 @@ export class SlackCtrl {
       }
     }));
 
-    let didAnyCommandRun = false;
+    let isCommandPermitted = false;
 
     if (relationsForSingleUse.length > 0) {
-      didAnyCommandRun = true;
+      isCommandPermitted = true;
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
@@ -193,11 +193,11 @@ export class SlackCtrl {
      * forward to GROWI server
      */
     if (relationsForBroadcastUse.length > 0) {
-      didAnyCommandRun = true;
+      isCommandPermitted = true;
       this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
-    if (!didAnyCommandRun) {
+    if (!isCommandPermitted) {
       const botToken = relations[0].installation?.data.bot?.token;
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
