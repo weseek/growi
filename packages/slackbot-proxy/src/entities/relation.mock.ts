@@ -31,7 +31,7 @@ export class Relation {
   growiUri: string;
 
   @Column({ type: 'simple-json' })
-  permittedChannel: { create: string[], search: string[], toggeter: string[]}
+  permittedChannels: { create: string[], search: string[], toggeter: string[] }
 
   @Column('simple-array')
   siglePostCommands: string[];
