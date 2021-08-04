@@ -8,7 +8,7 @@ export default function createValidator(options = {}) {
   textlint.setupRules(rules, rulesConfig);
   Processors.forEach((Processor) => {
     textlint.setupPlugins({
-      yourPluginName: Processor,
+      Processor,
     });
   });
   function convertSeverity(severity) {

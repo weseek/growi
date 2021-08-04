@@ -27,7 +27,7 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-const createValidator = require('codemirror-textlint');
+import createValidator from '../../util/codemirror/codemirror-textlint';
 // const presetJapanese = require('textlint-rule-preset-japanese');
 
 const loadScript = require('simple-load-script');
