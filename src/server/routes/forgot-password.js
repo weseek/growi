@@ -63,7 +63,7 @@ module.exports = function(crowi, app) {
 
 
   api.put = async(req, res) => {
-    const { email, newPassword } = req.body.params;
+    const { email, newPassword } = req.body;
 
     const user = await User.findOne({ email });
 

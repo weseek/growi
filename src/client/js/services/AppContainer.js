@@ -310,7 +310,7 @@ export default class AppContainer extends Container {
   }
 
   async apiPut(path, params) {
-    return this.apiRequest('put', path, { params });
+    return this.apiRequest('put', path, params);
   }
 
   async apiPost(path, params) {
