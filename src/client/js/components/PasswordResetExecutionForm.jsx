@@ -9,17 +9,18 @@ const PasswordResetExecutionForm = (props) => {
 
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [validationErrorI18n, setValidationErrorI18n] = useState('');
 
   const changePassword = async(e) => {
     e.preventDefault();
 
     if (newPassword === '' || newPasswordConfirm === '') {
-      toastError('err', t('personal_settings.password_is_not_set'));
+      setValidationErrorI18n('personal_settings.password_is_not_set');
       return;
     }
 
     if (newPassword !== newPasswordConfirm) {
-      toastError('err', t('forgot_password.password_and_confirm_password_does_not_match'));
+      setValidationErrorI18n('forgot_password.password_and_confirm_password_does_not_match');
       return;
     }
 
@@ -35,6 +36,7 @@ const PasswordResetExecutionForm = (props) => {
 
       setNewPassword('');
       setNewPasswordConfirm('');
+      setValidationErrorI18n('');
 
       toastSuccess(t('toaster.update_successed', { target: t('Password') }));
     }
@@ -67,6 +69,9 @@ const PasswordResetExecutionForm = (props) => {
             onChange={e => setNewPasswordConfirm(e.target.value)}
           />
         </div>
+        {validationErrorI18n !== '' && (
+          <p className="text-danger mt-2">{t(validationErrorI18n)}</p>
+        )}
       </div>
       <div className="form-group">
         <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value={t('forgot_password.reset_password')} type="submit" />
