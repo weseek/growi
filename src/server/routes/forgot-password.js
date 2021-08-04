@@ -60,5 +60,27 @@ module.exports = function(crowi, app) {
     }
   };
 
+
+  api.put = async(req, res) => {
+    console.log('hoooge');
+    // const { body, user } = req;
+    // const { oldPassword, newPassword } = body;
+
+    //  findOne User
+
+    // if (user.isPasswordSet() && !user.isPasswordValid(oldPassword)) {
+    //   return res.apiv3Err('wrong-current-password', 400);
+    // }
+    // try {
+    //   const userData = await user.updatePassword(newPassword);
+    //   return res.apiv3({ userData });
+    // }
+    // catch (err) {
+    //   logger.error(err);
+    //   return res.apiv3Err('update-password-failed');
+    // }
+  };
+
+
   return actions;
 };
