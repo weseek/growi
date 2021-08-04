@@ -9,7 +9,7 @@ import { withUnstatedContainers } from './UnstatedUtils';
 
 const PasswordResetRequestForm = (props) => {
   const { t, appContainer } = props;
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState('');
 
   const changeEmail = (inputValue) => {
     setEmail(inputValue);
@@ -17,7 +17,7 @@ const PasswordResetRequestForm = (props) => {
 
   const sendPasswordResetRequestMail = async(e) => {
     e.preventDefault();
-    if (email == null) {
+    if (email === '') {
       toastError('err', t('forgot_password.email_is_required'));
       return;
     }
