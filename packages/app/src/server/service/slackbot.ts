@@ -261,7 +261,8 @@ class SlackBotService implements S2sMessageHandlable {
     //     },
     //   ],
     // };
-    const actionBlocks = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const actionBlocks: any = {
       type: 'actions',
       elements: [
         {
@@ -428,7 +429,8 @@ class SlackBotService implements S2sMessageHandlable {
       // get messages
       result = await this.togetterGetMessages(client, payload, channel, path, latest, oldest);
       // clean messages
-      const cleanedContents = await this.togetterCleanMessages(result.messages);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const cleanedContents = await this.togetterCleanMessages((result as any).messages);
 
       const contentsBody = cleanedContents.join('');
       // create and send url message
@@ -496,8 +498,9 @@ class SlackBotService implements S2sMessageHandlable {
   }
 
   async togetterCleanMessages(messages) {
-    const cleanedContents = [];
-    let lastMessage = {};
+    const cleanedContents: string[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let lastMessage: any = {};
     const grwTzoffset = this.crowi.appService.getTzoffset() * 60;
     messages
       .sort((a, b) => {

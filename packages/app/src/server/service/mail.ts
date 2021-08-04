@@ -8,6 +8,13 @@ import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
 
+type MailConfig = {
+  to?: string,
+  from?: string,
+  text?: string,
+  subject?: string,
+}
+
 class MailService implements S2sMessageHandlable {
 
   appService!: any;
@@ -16,7 +23,7 @@ class MailService implements S2sMessageHandlable {
 
   s2sMessagingService!: any;
 
-  mailConfig: any = {};
+  mailConfig: MailConfig = {};
 
   mailer: any = {};
 
@@ -106,7 +113,7 @@ class MailService implements S2sMessageHandlable {
     logger.debug('mailer initialized');
   }
 
-  createSMTPClient(option) {
+  createSMTPClient(option?) {
     const { configManager } = this;
 
     logger.debug('createSMTPClient option', option);
@@ -141,7 +148,7 @@ class MailService implements S2sMessageHandlable {
     return client;
   }
 
-  createSESClient(option) {
+  createSESClient(option?) {
     const { configManager } = this;
 
     if (!option) {
@@ -167,7 +174,7 @@ class MailService implements S2sMessageHandlable {
   setupMailConfig(overrideConfig) {
     const c = overrideConfig;
 
-    let mc = {};
+    let mc: MailConfig = {};
     mc = this.mailConfig;
 
     mc.to = c.to;

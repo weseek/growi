@@ -693,4 +693,4 @@ Crowi.prototype.setupSlackBotService = async function() {
   }
 };
 
-module.exports = Crowi;
+export default Crowi;
