@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
 import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import { toastSuccess, toastError } from '../util/apiNotification';
 
+const logger = loggerFactory('growi:passwordReset');
+
 
 const PasswordResetExecutionForm = (props) => {
-  const { t, appContainer /* personalContainer */ } = props;
+  const { t, appContainer } = props;
 
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
@@ -47,6 +50,7 @@ const PasswordResetExecutionForm = (props) => {
     }
     catch (err) {
       toastError(err);
+      logger.error(err);
     }
 
   };
