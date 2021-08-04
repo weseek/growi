@@ -3,6 +3,7 @@ const ApiResponse = require('../util/apiResponse');
 
 module.exports = function(crowi, app) {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
+  const User = crowi.model('User');
   const { appService, mailService, configManager } = crowi;
   const path = require('path');
   const actions = {};
@@ -62,23 +63,22 @@ module.exports = function(crowi, app) {
 
 
   api.put = async(req, res) => {
-    console.log('hoooge');
-    // const { body, user } = req;
-    // const { oldPassword, newPassword } = body;
+    const { newPassword, email } = req.body;
 
     //  findOne User
+    const user = User.findOne({ email });
 
     // if (user.isPasswordSet() && !user.isPasswordValid(oldPassword)) {
     //   return res.apiv3Err('wrong-current-password', 400);
     // }
-    // try {
-    //   const userData = await user.updatePassword(newPassword);
-    //   return res.apiv3({ userData });
-    // }
-    // catch (err) {
-    //   logger.error(err);
-    //   return res.apiv3Err('update-password-failed');
-    // }
+    try {
+      const userData = await user.updatePassword(newPassword);
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.json(ApiResponse.error('update-password-failed'));
+    }
   };
 
 

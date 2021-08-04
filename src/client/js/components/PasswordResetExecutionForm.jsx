@@ -33,7 +33,7 @@ const PasswordResetExecutionForm = (props) => {
       */
 
       await appContainer.apiPut('/forgot-password', {
-        newPassword, newPasswordConfirm,
+        newPassword,
       });
 
       setNewPassword('');
