@@ -11,7 +11,7 @@ const permittedChannelSchema = new mongoose.Schema({
 const schema = new mongoose.Schema({
   tokenGtoP: { type: String, required: true, unique: true },
   tokenPtoG: { type: String, required: true, unique: true },
-  permittedChannel: [permittedChannelSchema],
+  permittedChannel: permittedChannelSchema,
 });
 
 class SlackAppIntegration {
