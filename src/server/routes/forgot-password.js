@@ -65,12 +65,8 @@ module.exports = function(crowi, app) {
   api.put = async(req, res) => {
     const { email, newPassword } = req.body.params;
 
-    //  findOne User
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
 
-    // if (user.isPasswordSet() && !user.isPasswordValid(oldPassword)) {
-    //   return res.apiv3Err('wrong-current-password', 400);
-    // }
     try {
       const userData = await user.updatePassword(newPassword);
       return res.apiv3({ userData });
