@@ -14,6 +14,12 @@ module.exports = {
     ScrollPosStyler: true,
     window: true,
   },
+  settings: {
+    // resolve path aliases by eslint-import-resolver-typescript
+    'import/resolver': {
+      typescript: {},
+    },
+  },
   rules: {
     'no-restricted-imports': ['error', {
       name: 'axios',
