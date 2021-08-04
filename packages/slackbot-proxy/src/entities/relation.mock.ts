@@ -4,6 +4,20 @@ import {
 import { Installation } from './installation';
 
 @Entity()
+class PermittedChannel {
+
+  @Column()
+  create: string[]
+
+  @Column()
+  search: string[]
+
+  @Column()
+  togetter: string[]
+
+}
+
+@Entity()
 @Index(['installation', 'growiUri'], { unique: true })
 export class Relation {
 
@@ -30,8 +44,8 @@ export class Relation {
   @Column()
   growiUri: string;
 
-  @Column({ type: 'simple-json' })
-  permittedChannels: { create: string[], search: string[], toggeter: string[] }
+  @Column({ type: 'json' })
+  permittedChannel: PermittedChannel
 
   @Column('simple-array')
   siglePostCommands: string[];
