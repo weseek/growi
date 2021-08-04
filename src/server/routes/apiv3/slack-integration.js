@@ -43,6 +43,44 @@ module.exports = (crowi) => {
     next();
   }
 
+  async function CheckCommandPermission(req, res, next) {
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+
+    const relation = await SlackAppIntegration.findOne({ tokenPtoG });
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
+    const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
+
+    // get command name from req.body
+    let command = '';
+    let payload;
+    if (req.body.payload) {
+      payload = JSON.parse(req.body.payload);
+    }
+
+    if (req.body.text == null) { // when /relation-test
+      return next();
+    }
+
+    if (!payload) { // when request is to /commands
+      command = req.body.text.split(' ')[0];
+    }
+    else if (payload.actions) { // when request is to /interactions && block_actions
+      const actionId = payload.actions[0].action_id;
+      command = actionId.split(':')[0];
+    }
+    else { // when request is to /interactions && view_submission
+      const callbackId = payload.view.callback_id;
+      command = callbackId.split(':')[0];
+    }
+
+    // validate
+    if (!supportedCommands.includes(command)) {
+      return res.status(403).send(`You are not allowded to run '${command}' command to this GROWI.`);
+    }
+
+    next();
+  }
+
   const addSigningSecretToReq = (req, res, next) => {
     req.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
     return next();
@@ -128,7 +166,7 @@ module.exports = (crowi) => {
     return handleCommands(req, res);
   });
 
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, async(req, res) => {
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, CheckCommandPermission, async(req, res) => {
     const { body } = req;
 
     // eslint-disable-next-line max-len
@@ -221,7 +259,7 @@ module.exports = (crowi) => {
     return handleInteractions(req, res);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, CheckCommandPermission, async(req, res) => {
     return handleInteractions(req, res);
   });
 
