@@ -6,13 +6,7 @@ import { Installation } from './installation';
 
 // set PermittedChannel interface this file because this is mock
 interface PermittedChannel {
-
-  create?: string[];
-
-  search?: string[];
-
-  togetter?: string[];
-
+  channelsObject: { [channels: string]: string[] };
 }
 
 @Entity()
