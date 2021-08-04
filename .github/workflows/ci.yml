@@ -203,10 +203,14 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn dev:ci
+    - name: Build
       working-directory: ./packages/app
       run: |
-        yarn dev:ci
+        yarn dev:ci:client
+    - name: yarn dev:ci:server
+      working-directory: ./packages/app
+      run: |
+        yarn dev:ci:server
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
