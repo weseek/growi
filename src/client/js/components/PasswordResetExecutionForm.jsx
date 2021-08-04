@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import AppContainer from '../services/AppContainer';
 import { toastSuccess, toastError } from '../util/apiNotification';
 
 
 const PasswordResetExecutionForm = (props) => {
-  const { t /* appContainer, personalContainer */ } = props;
+  const { t, appContainer /* personalContainer */ } = props;
 
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
@@ -30,9 +31,9 @@ const PasswordResetExecutionForm = (props) => {
       * the following code is just a reference
       */
 
-      // await appContainer.apiv3Put('/personal-setting/password', {
-      //   oldPassword, newPassword, newPasswordConfirm,
-      // });
+      await appContainer.apiPut('/forgot-password', {
+        newPassword, newPasswordConfirm,
+      });
 
       setNewPassword('');
       setNewPasswordConfirm('');
@@ -85,6 +86,7 @@ const PasswordResetExecutionForm = (props) => {
 
 PasswordResetExecutionForm.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
 export default withTranslation()(PasswordResetExecutionForm);
