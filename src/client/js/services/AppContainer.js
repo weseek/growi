@@ -331,7 +331,7 @@ export default class AppContainer extends Container {
 
   async apiRequest(method, path, params) {
     const res = await axios[method](`/_api${path}`, params);
-    if (res.data.ok) {
+    if (res.data.ok || res.statusText === 'OK') {
       return res.data;
     }
 
