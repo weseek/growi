@@ -10,10 +10,6 @@ const PasswordResetExecutionForm = (props) => {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
 
-  // TODO: delete the following comments by GW-6778
-  // console.log(newPassword);
-  // console.log(newPasswordConfirm);
-
   const changePassword = async(e) => {
     e.preventDefault();
 
