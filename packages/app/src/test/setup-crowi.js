@@ -2,21 +2,17 @@ import Crowi from '~/server/crowi';
 
 let _instance = null;
 
-async function createInstance() {
-  const crowi = new Crowi();
-  await crowi.initForTest();
-
-  return crowi;
-}
-
 async function getInstance(isNewInstance) {
   if (isNewInstance) {
-    return createInstance();
+    const crowi = new Crowi();
+    await crowi.initForTest();
+    return crowi;
   }
 
   // initialize singleton instance
   if (_instance == null) {
-    _instance = await createInstance();
+    _instance = new Crowi();
+    await _instance.initForTest();
   }
   return _instance;
 }
