@@ -20,13 +20,11 @@ const PasswordResetExecutionForm = (props) => {
 
     if (newPassword === '' || newPasswordConfirm === '') {
       setValidationErrorI18n('personal_settings.password_is_not_set');
-      toastError('err', t('personal_settings.password_is_not_set'));
       return;
     }
 
     if (newPassword !== newPasswordConfirm) {
       setValidationErrorI18n('forgot_password.password_and_confirm_password_does_not_match');
-      toastError('err', t('forgot_password.password_and_confirm_password_does_not_match'));
       return;
     }
 
