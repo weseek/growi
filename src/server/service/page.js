@@ -64,6 +64,11 @@ class PageService {
       update.lastUpdateUser = user;
       update.updatedAt = Date.now();
     }
+
+    if (isRecursively) {
+      this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
+
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
     // update Rivisions
@@ -72,10 +77,6 @@ class PageService {
     if (createRedirectPage) {
       const body = `redirect ${newPagePath}`;
       await Page.create(path, body, user, { redirectTo: newPagePath });
-    }
-
-    if (isRecursively) {
-      this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
     this.pageEvent.emit('delete', page, user, socketClientId);
