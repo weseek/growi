@@ -10,7 +10,7 @@ module.exports = (crowi, app) => {
 
     const passwordResetOrder = await PasswordResetOrder.findOne({ token });
     // check the oneTimeToken is valid
-    if (passwordResetOrder == null /* || passwordResetOrder.isExpired() */) {
+    if (passwordResetOrder == null || passwordResetOrder.isExpired()) {
       return res.redirect('/forgot-password/error/password-reset-order');
     }
 
