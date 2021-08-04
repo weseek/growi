@@ -208,7 +208,7 @@ jobs:
       run: |
         yarn dev:ci
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_dev
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
