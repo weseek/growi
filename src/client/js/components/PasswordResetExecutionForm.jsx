@@ -9,6 +9,7 @@ const PasswordResetExecutionForm = (props) => {
 
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [validationErrorI18n, setValidationErrorI18n] = useState('');
 
   // TODO: delete the following comments by GW-6778
   // console.log(newPassword);
@@ -18,11 +19,13 @@ const PasswordResetExecutionForm = (props) => {
     e.preventDefault();
 
     if (newPassword === '' || newPasswordConfirm === '') {
+      setValidationErrorI18n('personal_settings.password_is_not_set');
       toastError('err', t('personal_settings.password_is_not_set'));
       return;
     }
 
     if (newPassword !== newPasswordConfirm) {
+      setValidationErrorI18n('forgot_password.password_and_confirm_password_does_not_match');
       toastError('err', t('forgot_password.password_and_confirm_password_does_not_match'));
       return;
     }
@@ -71,6 +74,11 @@ const PasswordResetExecutionForm = (props) => {
             onChange={e => setNewPasswordConfirm(e.target.value)}
           />
         </div>
+        {validationErrorI18n !== '' && (
+          <div>
+            <p>{t(validationErrorI18n)}</p>
+          </div>
+        )}
       </div>
       <div className="form-group">
         <input name="reset-password-btn" className="btn btn-lg btn-primary btn-block" value={t('forgot_password.reset_password')} type="submit" />
