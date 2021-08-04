@@ -9,7 +9,7 @@ describe('accessTokenParser', () => {
   let User;
   let targetUser;
 
-  beforeAll(async(done) => {
+  beforeAll(async() => {
     crowi = await getInstance();
     User = mongoose.model('User');
     accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
@@ -21,9 +21,6 @@ describe('accessTokenParser', () => {
       lang: 'en_US',
       apiToken: 'N4xPDjh48TBsC7ahUN+ajjL5asnGpwtA5VAR+EhIDeg=',
     });
-
-
-    done();
   });
 
   crowi = {

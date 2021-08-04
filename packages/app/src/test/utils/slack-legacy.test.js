@@ -5,10 +5,9 @@ describe('Slack Util', () => {
   let crowi;
   let slackLegacy;
 
-  beforeEach(async(done) => {
+  beforeEach(async() => {
     crowi = await getInstance();
     slackLegacy = require('~/server/util/slack-legacy')(crowi);
-    done();
   });
 
   test('post comment method exists', () => {

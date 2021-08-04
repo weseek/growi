@@ -49,7 +49,7 @@ describe('PageService', () => {
   let ShareLink;
   let xssSpy;
 
-  beforeAll(async(done) => {
+  beforeAll(async() => {
     crowi = await getInstance();
 
     User = mongoose.model('User');
@@ -230,9 +230,6 @@ describe('PageService', () => {
     ]);
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
-
-
-    done();
   });
 
   describe('rename page', () => {
@@ -243,10 +240,9 @@ describe('PageService', () => {
     const dateToUse = new Date();
     const socketClientId = null;
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
       renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
-      done();
     });
 
     describe('renamePage()', () => {
@@ -408,9 +404,8 @@ describe('PageService', () => {
     const { serializePageSecurely } = require('../../server/models/serializers/page-serializer');
     serializePageSecurely.mockImplementation(page => page);
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       duplicateDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'duplicateDescendantsWithStream').mockImplementation();
-      done();
     });
 
     test('duplicate page (isRecursively: false)', async() => {
@@ -491,12 +486,11 @@ describe('PageService', () => {
     const dateToUse = new Date('2000-01-01');
     const socketClientId = null;
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
       getDeletedPageNameSpy = jest.spyOn(Page, 'getDeletedPageName');
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
       deleteDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteDescendantsWithStream').mockImplementation();
-      done();
     });
 
     test('delete page without options', async() => {
@@ -593,7 +587,7 @@ describe('PageService', () => {
     let deleteManyPageSpy;
     let removeAllAttachmentsSpy;
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
       deleteCompletelyOperationSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyOperation');
       deleteCompletelyDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyDescendantsWithStream').mockImplementation();
@@ -605,7 +599,6 @@ describe('PageService', () => {
       deleteManyRevisionSpy = jest.spyOn(Revision, 'deleteMany').mockImplementation();
       deleteManyPageSpy = jest.spyOn(Page, 'deleteMany').mockImplementation();
       removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
-      done();
     });
     test('deleteCompletelyOperation', async() => {
       await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
@@ -650,11 +643,10 @@ describe('PageService', () => {
     let deleteCompletelySpy;
     let revertDeletedDescendantsWithStreamSpy;
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       getRevertDeletedPageNameSpy = jest.spyOn(Page, 'getRevertDeletedPageName');
       deleteCompletelySpy = jest.spyOn(crowi.pageService, 'deleteCompletely').mockImplementation();
       revertDeletedDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'revertDeletedDescendantsWithStream').mockImplementation();
-      done();
     });
 
     test('revert deleted page when the redirect from page exists', async() => {

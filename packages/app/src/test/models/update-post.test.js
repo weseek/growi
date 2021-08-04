@@ -7,14 +7,12 @@ describe('UpdatePost', () => {
   let crowi;
   let UpdatePost;
 
-  beforeAll(async(done) => {
+  beforeAll(async() => {
     crowi = await getInstance();
-    done();
   });
 
-  beforeEach(async(done) => {
+  beforeEach(async() => {
     UpdatePost = mongoose.model('UpdatePost');
-    done();
   });
 
   describe('.createPrefixesByPathPattern', () => {

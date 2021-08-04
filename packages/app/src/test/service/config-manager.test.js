@@ -16,9 +16,8 @@ describe('ConfigManager test', () => {
 
   describe('updateConfigsInTheSameNamespace()', () => {
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       configManager.s2sMessagingService = {};
-      done();
     });
 
     test('invoke publishUpdateMessage()', async() => {

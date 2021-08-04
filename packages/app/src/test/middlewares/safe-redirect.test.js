@@ -8,9 +8,8 @@ describe('safeRedirect', () => {
     'white2.example.com',
   ];
 
-  beforeEach(async(done) => {
+  beforeEach(async() => {
     registerSafeRedirect = require('~/server/middlewares/safe-redirect')(whitelistOfHosts);
-    done();
   });
 
   describe('res.safeRedirect', () => {

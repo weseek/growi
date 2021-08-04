@@ -10,12 +10,11 @@ describe('loginRequired', () => {
   let loginRequired;
   let loginRequiredWithFallback;
 
-  beforeEach(async(done) => {
+  beforeEach(async() => {
     crowi = await getInstance();
     loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
     loginRequired = require('~/server/middlewares/login-required')(crowi, true);
     loginRequiredWithFallback = require('~/server/middlewares/login-required')(crowi, false, fallbackMock);
-    done();
   });
 
   describe('not strict mode', () => {
@@ -92,12 +91,11 @@ describe('loginRequired', () => {
 
     let isGuestAllowedToReadSpy;
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       // reset session object
       req.session = {};
       // spy for AclService.isGuestAllowedToRead
       isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead');
-      done();
     });
 
     test('send status 403 when \'req.path\' starts with \'_api\'', () => {
@@ -210,13 +208,12 @@ describe('loginRequired', () => {
 
     let isGuestAllowedToReadSpy;
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       // reset session object
       req.session = {};
       // spy for AclService.isGuestAllowedToRead
       isGuestAllowedToReadSpy = jest.spyOn(crowi.aclService, 'isGuestAllowedToRead');
-      done();
-    });
+          });
 
     test('invoke fallback when \'req.path\' starts with \'_api\'', () => {
       req.path = '/_api/someapi';

@@ -3,9 +3,8 @@ const { getInstance } = require('../setup-crowi');
 describe('PassportService test', () => {
   let crowi;
 
-  beforeEach(async(done) => {
+  beforeEach(async() => {
     crowi = await getInstance();
-    done();
   });
 
 
@@ -14,12 +13,11 @@ describe('PassportService test', () => {
     let getConfigSpy;
     let extractAttributesFromSAMLResponseSpy;
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       // prepare spy for ConfigManager.getConfig
       getConfigSpy = jest.spyOn(crowi.configManager, 'getConfig');
       // prepare spy for extractAttributesFromSAMLResponse method
       extractAttributesFromSAMLResponseSpy = jest.spyOn(crowi.passportService, 'extractAttributesFromSAMLResponse');
-      done();
     });
 
     /* eslint-disable indent */

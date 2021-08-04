@@ -8,7 +8,7 @@ describe('User', () => {
   let crowi;
   let User;
 
-  beforeAll(async(done) => {
+  beforeAll(async() => {
     crowi = await getInstance();
     User = mongoose.model('User');
 
@@ -19,8 +19,6 @@ describe('User', () => {
       password: 'usertestpass',
       lang: 'en_US',
     });
-
-    done();
   });
 
   describe('Create and Find.', () => {

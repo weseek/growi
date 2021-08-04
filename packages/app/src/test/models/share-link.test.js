@@ -6,13 +6,10 @@ describe('ShareLink', () => {
   let ShareLink;
   let Page;
 
-  beforeAll(async(done) => {
+  beforeAll(async() => {
     crowi = await getInstance();
     ShareLink = crowi.model('ShareLink');
     Page = require('~/server/routes/page')(crowi);
-
-
-    done();
   });
 
   describe('accessShareLink', () => {

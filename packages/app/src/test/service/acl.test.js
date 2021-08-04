@@ -5,10 +5,9 @@ describe('AclService test', () => {
 
   const initialEnv = process.env;
 
-  beforeEach(async(done) => {
+  beforeEach(async() => {
     crowi = await getInstance();
     process.env = initialEnv;
-    done();
   });
 
 
@@ -129,10 +128,9 @@ describe('AclService test', () => {
   describe('isGuestAllowedToRead()', () => {
     let getConfigSpy;
 
-    beforeEach(async(done) => {
+    beforeEach(async() => {
       // prepare spy for ConfigManager.getConfig
       getConfigSpy = jest.spyOn(crowi.configManager, 'getConfig');
-      done();
     });
 
     test('to be false when FORCE_WIKI_MODE=private', async() => {

@@ -4,9 +4,8 @@ describe('Config model test', () => {
   // eslint-disable-next-line no-unused-vars
   let crowi;
 
-  beforeAll(async(done) => {
+  beforeAll(async() => {
     crowi = await getInstance();
-    done();
   });
 
   describe('.CONSTANTS', () => {

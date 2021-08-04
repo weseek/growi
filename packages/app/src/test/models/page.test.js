@@ -17,7 +17,7 @@ describe('Page', () => {
   let UserGroup;
   let UserGroupRelation;
 
-  beforeAll(async(done) => {
+  beforeAll(async() => {
     crowi = await getInstance();
 
     User = mongoose.model('User');
@@ -122,8 +122,6 @@ describe('Page', () => {
     ]);
 
     parentPage = await Page.findOne({ path: '/grant' });
-
-    done();
   });
 
   describe('.isPublic', () => {
