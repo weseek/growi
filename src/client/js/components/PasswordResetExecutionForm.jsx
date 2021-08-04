@@ -42,6 +42,7 @@ const PasswordResetExecutionForm = (props) => {
 
       setNewPassword('');
       setNewPasswordConfirm('');
+      setValidationErrorI18n('');
 
       toastSuccess(t('toaster.update_successed', { target: t('Password') }));
     }
@@ -75,9 +76,7 @@ const PasswordResetExecutionForm = (props) => {
           />
         </div>
         {validationErrorI18n !== '' && (
-          <div>
-            <p>{t(validationErrorI18n)}</p>
-          </div>
+          <p className="text-danger mt-2">{t(validationErrorI18n)}</p>
         )}
       </div>
       <div className="form-group">
