@@ -75,7 +75,7 @@ module.exports = (crowi) => {
 
     // validate
     if (!supportedCommands.includes(command)) {
-      return res.status(403).send(`You are not allowed to run '${command}' command to this GROWI.`);
+      return res.status(403).send(`It is not allowed to run '${command}' command from this channel.`);
     }
 
     next();
