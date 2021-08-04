@@ -65,6 +65,7 @@ class PageService {
       update.updatedAt = Date.now();
     }
 
+    // create descendants first
     if (isRecursively) {
       this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
