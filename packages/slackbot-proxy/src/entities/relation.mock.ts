@@ -3,17 +3,15 @@ import {
 } from 'typeorm';
 import { Installation } from './installation';
 
-@Entity()
-class PermittedChannel {
 
-  @Column()
-  create: string[]
+// set PermittedChannel interface this file because this is mock
+interface PermittedChannel {
 
-  @Column()
-  search: string[]
+  create?: string[];
 
-  @Column()
-  togetter: string[]
+  search?: string[];
+
+  togetter?: string[];
 
 }
 
