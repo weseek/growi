@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import { toastSuccess, toastError } from '../util/apiNotification';
 
@@ -84,9 +85,11 @@ const PasswordResetExecutionForm = (props) => {
   );
 };
 
+const PasswordResetExecutionFormWrapper = withUnstatedContainers(PasswordResetExecutionForm, [AppContainer]);
+
 PasswordResetExecutionForm.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(PasswordResetExecutionForm);
+export default withTranslation()(PasswordResetExecutionFormWrapper);

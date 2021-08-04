@@ -104,7 +104,9 @@ if (passwordResetExecutionFormElem) {
 
   ReactDOM.render(
     <I18nextProvider i18n={i18n}>
-      <PasswordResetExecutionForm />
+      <Provider inject={[appContainer]}>
+        <PasswordResetExecutionForm />
+      </Provider>
     </I18nextProvider>,
     passwordResetExecutionFormElem,
   );
