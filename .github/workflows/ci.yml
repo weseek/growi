@@ -141,7 +141,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  build-dev:
+  launch-dev:
     runs-on: ubuntu-latest
 
     strategy:
@@ -198,8 +198,13 @@ jobs:
         echo -n "npm " && npm -v
         yarn list --depth=0
     - name: yarn dev:client
+      working-directory: ./packages/app
       run: |
         yarn dev:client
+    - name: yarn dev:server:ci
+      working-directory: ./packages/app
+      run: |
+        yarn dev:server:ci
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -212,7 +217,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  build-prod:
+  launch-prod:
     runs-on: ubuntu-latest
 
     strategy:
@@ -284,14 +289,16 @@ jobs:
       id: getdbname
       run: |
         echo ::set-output name=suffix::$(echo '${{ matrix.node-version }}' | sed s/\\.//)
-    - name: yarn server:prod:ci
+    - name: yarn server:ci
+      working-directory: ./packages/app
       run: |
-        yarn server:prod:ci
+        yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
-    - name: yarn server:prod:ci with MongoDB 3.6
+    - name: yarn server:ci with MongoDB 3.6
+      working-directory: ./packages/app
       run: |
-        yarn server:prod:ci
+        yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
     - name: Upload report as artifact

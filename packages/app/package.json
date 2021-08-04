@@ -7,6 +7,8 @@
     "prebuild:plugin": "yarn ts-node bin/generate-plugin-definitions-source.ts",
     "prebuild:dl-resources": "yarn ts-node bin/download-cdn-resources.ts",
     "prebuild": "run-p prebuild:*",
+    "server:ci": "yarn server -- --ci",
+    "server": "env-cmd -f config/env.prod.js node --expose_gc src/server/app.js",
     "dev:client": "env-cmd -f config/env.dev.js webpack --config config/webpack.dev.js --progress --watch",
     "dev:server": "env-cmd -f config/env.dev.js yarn ts-node-dev src/server/app.ts --expose_gc --inspect",
     "dev:server:ci": "env-cmd -f config/env.dev.js yarn ts-node src/server/app.ts --ci",
