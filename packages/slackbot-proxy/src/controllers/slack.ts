@@ -208,7 +208,7 @@ export class SlackCtrl {
         channel: body.channel_id,
         user: body.user_id,
         blocks: [
-          generateMarkdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command from this channel.`),
+          generateMarkdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
         ],
       });
     }
