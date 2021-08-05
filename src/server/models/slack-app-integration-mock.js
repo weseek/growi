@@ -2,10 +2,10 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 const permittedChannelsSchema = new mongoose.Schema({
-  // create: [{ type: String }],
-  // search: [{ type: String }],
-  // togetter: [{ type: String }],
-  channelsObject: { channels: { type: [String] } },
+  create: [{ type: String }],
+  search: [{ type: String }],
+  togetter: [{ type: String }],
+  // channelsObject: { channels: { type: [String] } },
 });
 
 
@@ -15,7 +15,7 @@ const schema = new mongoose.Schema({
   permittedChannels: permittedChannelsSchema,
 });
 
-class SlackAppIntegration {
+class SlackAppIntegrationMock {
 
   static generateAccessTokens() {
     const now = new Date().getTime();
@@ -47,7 +47,7 @@ class SlackAppIntegration {
 }
 
 module.exports = function(crowi) {
-  SlackAppIntegration.crowi = crowi;
-  schema.loadClass(SlackAppIntegration);
-  return mongoose.model('SlackAppIntegration', schema);
+  SlackAppIntegrationMock.crowi = crowi;
+  schema.loadClass(SlackAppIntegrationMock);
+  return mongoose.model('SlackAppIntegrationMock', schema);
 };
