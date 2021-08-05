@@ -16,6 +16,7 @@ const PasswordResetExecutionForm = (props) => {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
   const [validationErrorI18n, setValidationErrorI18n] = useState('');
 
+  // get token from URL
   const pathname = window.location.pathname.split('/');
   const token = pathname[2];
 
