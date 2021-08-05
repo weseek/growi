@@ -60,7 +60,7 @@ class RecentChanges extends React.Component {
 
     let locked;
     if (page.grant !== 1) {
-      locked = <span><i className="icon-lock" /></span>;
+      locked = <span><i className="icon-lock ml-2" /></span>;
     }
 
     const tags = page.tags;
