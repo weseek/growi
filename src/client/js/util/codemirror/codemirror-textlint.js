@@ -34,7 +34,8 @@ const textlintOptions = {
   ],
 };
 
-kernel.lintText('TODO: text', textlintOptions)
+kernel
+  .lintText('TODO: text', textlintOptions)
   .then((result) => {
     assert.ok(typeof result.filePath === 'string');
     assert.ok(result.messages.length === 1);
