@@ -7,6 +7,7 @@ module.exports = (crowi, fallback = null) => {
   return async(req, res, next) => {
     if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
       if (req.user.admin) {
+        console.log("This user is admin."); // TODO: remove log debug later
         next();
         return;
       }
