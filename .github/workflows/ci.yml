@@ -49,12 +49,12 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: lerna run test:lint for plugins
+    - name: lerna run lint for plugins
       run: |
-        yarn lerna run test:lint --scope @growi/plugin-pukiwiki-like-linker
-    - name: lerna run test:lint for app
+        yarn lerna run lint --scope @growi/plugin-pukiwiki-like-linker
+    - name: lerna run lint for app
       run: |
-        yarn lerna run test:lint --scope @growi/app
+        yarn lerna run lint --scope @growi/app
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -117,16 +117,16 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn test:test
+    - name: yarn test
       working-directory: ./packages/app
       run: |
-        yarn test:test
+        yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
-    - name: yarn test:test with MongoDB 3.6
+    - name: yarn test with MongoDB 3.6
       working-directory: ./packages/app
       run: |
-        yarn test:test
+        yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_test
 

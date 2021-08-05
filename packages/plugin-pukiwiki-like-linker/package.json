@@ -16,7 +16,7 @@
     "tsc": "tsc -p tsconfig.build.json",
     "tsc:w": "yarn tsc -w",
     "lint:js": "eslint **/*.{js,jsx}",
-    "test:lint": "run-p lint:*",
+    "lint": "run-p lint:*",
     "test": ""
   },
   "repository": {

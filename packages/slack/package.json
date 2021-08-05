@@ -8,10 +8,9 @@
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
     "tsc": "tsc -p tsconfig.build.json",
     "tsc:w": "yarn tsc -w",
-    "test": "yarn test:lint && yarn test:unit",
-    "test:unit": "cross-env NODE_ENV=test jest --passWithNoTests",
-    "test:lint": "eslint src --ext .ts",
-    "test:lint:fix": "eslint src --ext .ts --fix"
+    "test": "cross-env NODE_ENV=test jest --passWithNoTests",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "dependencies": {
     "axios": "^0.21.1",

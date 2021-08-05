@@ -49,6 +49,9 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+    - name: yarn lint
+      run: |
+        yarn lerna run lint --scope @growi/slack --scope @growi/slackbot-proxy
     - name: yarn test
       run: |
         yarn lerna run test --scope @growi/slack --scope @growi/slackbot-proxy
