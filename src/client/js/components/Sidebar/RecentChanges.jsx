@@ -85,9 +85,9 @@ class RecentChanges extends React.Component {
             </h5>
             <div className="my-2">
               <span className="footstamp-icon mr-1"><FootstampIcon /></span>
-              <span className="seen-user-count mr-2 list-counts">{page.seenUsers.length}</span>
+              <span className="mr-2 grw-list-counts">{page.seenUsers.length}</span>
               <i className="icon-bubble mr-1"></i>
-              <span className="mr-2 list-counts">{page.commentCount}</span>
+              <span className="mr-2 grw-list-counts">{page.commentCount}</span>
               { tagElements }
               <div className="pull-right small">
                 <FormattedDistanceDate id={page.id} date={page.updatedAt} />
