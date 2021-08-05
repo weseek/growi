@@ -31,6 +31,6 @@ export class Relation {
   growiUri: string;
 
   @Column('simple-array')
-  siglePostCommands: string[];
+  singlePostCommands: string[];
 
 }

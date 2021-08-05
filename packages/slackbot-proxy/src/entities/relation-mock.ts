@@ -40,6 +40,6 @@ export class Relation {
   permittedChannel: PermittedChannel
 
   @Column('simple-array')
-  siglePostCommands: string[];
+  singlePostCommands: string[];
 
 }
