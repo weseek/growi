@@ -19,6 +19,7 @@ module.exports = (crowi) => {
       body('newPassword').isString().not().isEmpty()
         .isLength({ min: 6 })
         .withMessage('password must be at least 6 characters long'),
+      // checking if password confirmation matches password
       body('newPasswordConfirm').isString().not().isEmpty()
         .custom((value, { req }) => {
           return (value === req.body.newPassword);
