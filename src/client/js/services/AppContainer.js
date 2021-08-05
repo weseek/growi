@@ -61,7 +61,6 @@ export default class AppContainer extends Container {
     this.rendererInstances = {};
 
     this.apiGet = this.apiGet.bind(this);
-    this.apiPut = this.apiPut.bind(this);
     this.apiPost = this.apiPost.bind(this);
     this.apiDelete = this.apiDelete.bind(this);
     this.apiRequest = this.apiRequest.bind(this);
@@ -307,10 +306,6 @@ export default class AppContainer extends Container {
 
   async apiGet(path, params) {
     return this.apiRequest('get', path, { params });
-  }
-
-  async apiPut(path, params) {
-    return this.apiRequest('put', path, params);
   }
 
   async apiPost(path, params) {
