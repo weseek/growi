@@ -16,8 +16,8 @@ const PasswordResetExecutionForm = (props) => {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
   const [validationErrorI18n, setValidationErrorI18n] = useState('');
 
-  const passwordResetElem = document.getElementById('email-for-password-reset');
-  const email = passwordResetElem.textContent;
+  const pathname = window.location.pathname.split('/');
+  const token = pathname[2];
 
   const changePassword = async(e) => {
     e.preventDefault();
@@ -34,7 +34,7 @@ const PasswordResetExecutionForm = (props) => {
 
     try {
       await appContainer.apiv3Put('/forgot-password', {
-        email, newPassword, newPasswordConfirm,
+        token, newPassword, newPasswordConfirm,
       });
 
       setNewPassword('');
