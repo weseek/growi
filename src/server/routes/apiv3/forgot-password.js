@@ -12,6 +12,7 @@ module.exports = (crowi) => {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
   const User = crowi.model('User');
   const path = require('path');
+  const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const validator = {
