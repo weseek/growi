@@ -855,10 +855,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   render() {
-    const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
+    // TODO: Fix mode after adding textlint
+    // const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
 
-    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
+    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
     return (
       <React.Fragment>
@@ -874,7 +875,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         }}
           value={this.state.value}
           options={{
-            mode,
+            // TODO: Fix mode after adding textlint
+            // mode,
+            mode: 'javascript',
             theme: this.props.editorOptions.theme,
             styleActiveLine: this.props.editorOptions.styleActiveLine,
             lineNumbers: this.props.lineNumbers,
