@@ -5,8 +5,13 @@ import { Installation } from './installation';
 
 
 // set PermittedChannel interface this file because this is mock
+// expected data
+// channelsObject:{
+//   create: ['srv', 'admin'],
+//   search: ['admin'],
+// }
 interface PermittedChannel {
-  channelsObject: { [channels: string]: string[] };
+  commandToChannelMap: { [command: string]: string[] };
 }
 
 @Entity()
