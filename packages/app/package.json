@@ -100,6 +100,7 @@
     "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
     "swig-templates": "^2.0.2",
+    "textlint": "^12.0.2",
     "textlint-message-to-codemirror": "^1.0.0",
     "textlint-rule-no-todo": "^2.0.1",
     "uglifycss": "^0.0.29",
