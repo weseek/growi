@@ -23,7 +23,7 @@ const PasswordResetRequestForm = (props) => {
     }
 
     try {
-      await appContainer.apiPost('/forgot-password', { email });
+      await appContainer.apiv3Post('/forgot-password', { email });
       toastSuccess(t('forgot_password.success_to_send_email'));
     }
     catch (err) {

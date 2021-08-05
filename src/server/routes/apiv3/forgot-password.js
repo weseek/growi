@@ -42,7 +42,7 @@ module.exports = (crowi) => {
     });
   }
 
-  router.put('/', async(req, res) => {
+  router.post('/', async(req, res) => {
     const { email } = req.body;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = req.language || grobalLang;
@@ -62,7 +62,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', validator.password, async(req, res) => {
+  router.put('/', /* validator.password, */ async(req, res) => {
     const { email, newPassword } = req.body;
 
     const user = await User.findOne({ email });
