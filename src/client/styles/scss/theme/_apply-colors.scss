@@ -263,6 +263,14 @@ ul.pagination {
       }
     }
   }
+
+  .list-group {
+    .list-group-item {
+      .icon-lock {
+        color: $color-link;
+      }
+    }
+  }
 }
 
 /*
