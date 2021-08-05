@@ -27,6 +27,7 @@
 import { TextlintKernel } from '@textlint/kernel';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
 
+
 const kernel = new TextlintKernel();
 
 let textlintOption = {};
@@ -36,9 +37,13 @@ export default function createValidator() {
     {},
     {
       rules: [
+        // {
+        //   ruleId: 'no-todo',
+        //   rule: require('textlint-rule-no-todo').default,
+        // },
         {
           ruleId: 'preset-japanese',
-          rule: require('textlint-rule-preset-japanese').default,
+          rule: require('textlint-rule-preset-japanese'),
         },
       ],
       plugins: [

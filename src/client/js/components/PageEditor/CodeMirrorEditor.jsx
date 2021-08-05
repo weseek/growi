@@ -62,7 +62,6 @@ require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
 require('codemirror/addon/lint/lint');
 require('codemirror/addon/lint/lint.css');
-require('codemirror/addon/lint/javascript-lint');
 require('../../util/codemirror/autorefresh.ext');
 require('../../util/codemirror/gfm-growi.mode');
 // import modes to highlight
