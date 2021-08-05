@@ -117,16 +117,16 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn test:unit
+    - name: yarn test:test
       working-directory: ./packages/app
       run: |
-        yarn test:unit
+        yarn test:test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
-    - name: yarn test:unit with MongoDB 3.6
+    - name: yarn test:test with MongoDB 3.6
       working-directory: ./packages/app
       run: |
-        yarn test:unit
+        yarn test:test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_test
 

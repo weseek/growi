@@ -28,7 +28,7 @@
     "test:lint:styles": "stylelint src/**/*.scss",
     "test:lint:swagger2openapi": "node node_modules/.bin/oas-validate tmp/swagger.json",
     "test:lint": "run-p test:lint:*",
-    "test:unit": "cross-env NODE_ENV=test jest --passWithNoTests -- ",
+    "test:test": "cross-env NODE_ENV=test jest --passWithNoTests -- ",
     "pretest:lint:eslint": "yarn resources:plugin",
     "pretest:lint:swagger2openapi": "yarn openapi:v3",
     "//// misc": "",
