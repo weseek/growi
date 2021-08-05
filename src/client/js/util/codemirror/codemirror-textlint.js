@@ -1,42 +1,73 @@
+
+
+// const textlintOptions = {
+//   plugins: [
+//     {
+//       pluginId: 'markdown',
+//       plugin: require('@textlint/textlint-plugin-markdown'),
+//     },
+//   ],
+//   rules: [
+//     {
+//       ruleId: 'no-todo',
+//       rule: require('textlint-rule-no-todo').default,
+//     },
+//   ],
+// };
+// kernel.lintText(text, textlintOptions)
+//   .then((result) => {
+//     const lintMessages = result.messages;
+//     const lintErrors = lintMessages.map(textlintToCodeMirror);
+//     callback(lintErrors);
+//   })
+//   .catch((error) => {
+//     console.error(error);
+//   });
+
 import { TextlintKernel } from '@textlint/kernel';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
 
-// const textlintKernel = new TextlintKernel();
-
-//     textlintKernel
-//       .lintText(text, textlintOption)
-//       .then((result) => {
-//         const lintMessages = result.messages;
-//         const lintErrors = lintMessages.map(textlintToCodeMirror);
-//         callback(lintErrors);
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//       });
-//   };
-// }
-
-
 const kernel = new TextlintKernel();
 
-const textlintOptions = {
-  plugins: [
-    {
-      pluginId: 'markdown',
-      plugin: require('@textlint/textlint-plugin-markdown'),
-    },
-  ],
-  rules: [
-    {
-      ruleId: 'no-todo',
-      rule: require('textlint-rule-no-todo').default,
-    },
-  ],
-};
+let textlintOption = {};
 
-kernel
-  .lintText('TODO: text', textlintOptions)
-  .then((result) => {
-    assert.ok(typeof result.filePath === 'string');
-    assert.ok(result.messages.length === 1);
-  });
+export default function createValidator({ rules, rulesOption }) {
+  textlintOption = Object.assign(
+    {},
+    {
+      rules: [
+        {
+          ruleId: 'no-todo',
+          rule: require('textlint-rule-no-todo').default,
+        },
+        {
+          ruleId: 'preset-japanese',
+          rule: require('textlint-rule-preset-japanese'),
+        },
+      ],
+      plugins: [
+        {
+          pluginId: 'markdown',
+          plugin: require('textlint-plugin-markdown'),
+        },
+      ],
+      ext: '.md',
+    },
+  );
+  return (text, callback) => {
+    if (!text) {
+      callback([]);
+      return;
+    }
+    kernel
+      .lintText(text, textlintOption)
+      .then((result) => {
+        const lintMessages = result.messages;
+        const lintErrors = lintMessages.map(textlintToCodeMirror);
+        callback(lintErrors);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+}
