@@ -10,9 +10,13 @@ export default function createValidator() {
     {},
     {
       rules: [
+        // {
+        //   ruleId: 'no-mix-dearu-desumasu',
+        //   rule: require('textlint-rule-no-mix-dearu-desumasu'),
+        // },
         {
-          ruleId: 'no-mix-dearu-desumasu',
-          rule: require('textlint-rule-no-mix-dearu-desumasu'),
+          ruleId: 'no-todo',
+          rule: require('textlint-rule-no-todo'),
         },
       ],
       plugins: [
