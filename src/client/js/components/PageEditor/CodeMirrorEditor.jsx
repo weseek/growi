@@ -29,7 +29,6 @@ import DrawioModal from './DrawioModal';
 
 import createValidator from '../../util/codemirror/codemirror-textlint';
 
-
 const loadScript = require('simple-load-script');
 const loadCssSync = require('load-css-file');
 
