@@ -27,7 +27,7 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-import createValidator from '../../util/codemirror/codemirror-textlint';
+import validator from '../../util/codemirror/codemirror-textlint';
 // const presetJapanese = require('textlint-rule-preset-japanese');
 
 const loadScript = require('simple-load-script');
@@ -860,11 +860,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    // const validator = createValidator({
-    //   rules: {
-    //     'preset-japanese': presetJapanese,
-    //   },
-    // });
 
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
@@ -910,10 +905,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
             },
-            // lint: {
-            //   getAnnotations: validator,
-            //   async: true,
-            // },
+            lint: {
+              getAnnotations: validator,
+              async: true,
+            },
           }}
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {

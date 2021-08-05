@@ -19696,6 +19696,11 @@ textlint-formatter@^1.7.3:
     try-resolve "^1.0.1"
     xml-escape "^1.0.0"
 
+textlint-message-to-codemirror@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/textlint-message-to-codemirror/-/textlint-message-to-codemirror-1.0.0.tgz#5d4c17aa3e0bb0659669c100920066cd7c7f4fc5"
+  integrity sha1-XUwXqj4LsGWWacEAkgBmzXx/T8U=
+
 textlint-plugin-markdown@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/textlint-plugin-markdown/-/textlint-plugin-markdown-2.0.5.tgz#42277deca6feddba2712fb83570614631a7e21d0"
