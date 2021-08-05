@@ -46,7 +46,6 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-  const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 
   const validator = {
     BotType: [
