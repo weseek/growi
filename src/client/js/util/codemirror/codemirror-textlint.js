@@ -11,8 +11,8 @@ export default function createValidator() {
     {
       rules: [
         {
-          ruleId: 'no-todo',
-          rule: require('textlint-rule-no-todo').default,
+          ruleId: 'no-mix-dearu-desumasu',
+          rule: require('textlint-rule-no-mix-dearu-desumasu'),
         },
       ],
       plugins: [
