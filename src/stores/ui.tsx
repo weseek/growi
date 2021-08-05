@@ -188,6 +188,11 @@ export const usePreferDrawerModeByUser = (isPrefered?: boolean): SWRResponse<boo
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'preferDrawerModeByUser';
 
+  // FIXME
+  if (isServer) {
+    return useStaticSWR(key);
+  }
+
   const res = useLocalStorageSyncedSWR<boolean, any>(
     key,
     {
@@ -225,6 +230,11 @@ export const usePreferDrawerModeOnEditByUser = (isPrefered?: boolean): SWRRespon
 export const useDrawerMode = (): SWRResponse<boolean, any> => {
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'isDrawerMode';
+
+  // FIXME
+  if (isServer) {
+    return useStaticSWR(key);
+  }
 
   const { data: editorMode } = useEditorMode();
   const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
@@ -287,7 +297,7 @@ export const useCurrentSidebarContents = (sidebarContents?: SidebarContents): SW
 };
 
 
-export const useCurrentProductNavWidth = (productNavWidth?: number): responseInterface<number, any> => {
+export const useCurrentProductNavWidth = (productNavWidth?: number): SWRResponse<number, any> => {
   const isServer = typeof window === 'undefined';
   const key = isServer ? null : 'productNavWidth';
   const sidebarDefaultWidth = 320;
