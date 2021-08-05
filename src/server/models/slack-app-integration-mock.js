@@ -2,10 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 const permittedChannelsSchema = new mongoose.Schema({
-  create: [{ type: String }],
-  search: [{ type: String }],
-  togetter: [{ type: String }],
-  // channelsObject: { channels: { type: [String] } },
+  channelsObject: {},
 });
 
 
