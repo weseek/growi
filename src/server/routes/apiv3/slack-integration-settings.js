@@ -592,12 +592,15 @@ module.exports = (crowi) => {
     return res.apiv3();
   });
 
+  // temp api for creating sample db
   router.post('/mock-test', async(req, res) => {
-    console.log('hoge');
     const tokenGtoP = 'hoge';
     const tokenPtoG = 'fuga';
     const permittedChannels = {
-      search: ['admin'],
+      channelsObject: {
+        search: ['admin'],
+        create: ['srv'],
+      },
     };
     const slackAppTokens = await SlackAppIntegrationMock.create({ tokenGtoP, tokenPtoG, permittedChannels });
     return slackAppTokens;
