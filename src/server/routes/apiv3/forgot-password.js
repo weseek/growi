@@ -61,7 +61,10 @@ module.exports = (crowi) => {
   });
 
   router.put('/', validator.password, apiV3FormValidator, async(req, res) => {
-    const { email, newPassword } = req.body;
+    const { token, newPassword } = req.body;
+
+    const passwordResetOrder = await PasswordResetOrder.findOne({ token });
+    const { email } = passwordResetOrder;
 
     const user = await User.findOne({ email });
 
