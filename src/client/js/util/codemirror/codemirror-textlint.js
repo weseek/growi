@@ -1,7 +1,6 @@
 import { TextlintKernel } from '@textlint/kernel';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
 
-
 const kernel = new TextlintKernel();
 
 let textlintOption = {};
