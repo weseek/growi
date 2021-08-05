@@ -46,6 +46,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+  const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 
   const validator = {
     BotType: [
@@ -589,6 +590,18 @@ module.exports = (crowi) => {
     }
 
     return res.apiv3();
+  });
+
+  router.post('/mock-test', async(req, res) => {
+    console.log('hoge');
+    const tokenGtoP = 'hoge';
+    const tokenPtoG = 'fuga';
+    const permittedChannels = {
+      search: ['admin'],
+    };
+    const slackAppTokens = await SlackAppIntegrationMock.create({ tokenGtoP, tokenPtoG, permittedChannels });
+    return slackAppTokens;
+
   });
 
   return router;
