@@ -10,8 +10,6 @@ import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 import InterceptorManager from '@commons/service/interceptor-manager';
 
 import { JSHINT } from 'jshint';
-import noTodo from 'textlint-rule-no-todo';
-import presetJapanese from 'textlint-rule-preset-japanese';
 import AbstractEditor from './AbstractEditor';
 import SimpleCheatsheet from './SimpleCheatsheet';
 
@@ -862,12 +860,13 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    const validator = createValidator({
-      rules: {
-        'no-todo': noTodo,
-        'preset-japanese': presetJapanese,
-      },
-    });
+    // const validator = createValidator({
+    //   rules: {
+    //     'no-todo': noTodo,
+    //     'preset-japanese': presetJapanese,
+    //   },
+    // });
+    const validator = createValidator();
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return (

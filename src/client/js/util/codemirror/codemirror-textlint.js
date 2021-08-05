@@ -31,7 +31,7 @@ const kernel = new TextlintKernel();
 
 let textlintOption = {};
 
-export default function createValidator({ rules, rulesOption }) {
+export default function createValidator() {
   textlintOption = Object.assign(
     {},
     {
@@ -39,10 +39,6 @@ export default function createValidator({ rules, rulesOption }) {
         {
           ruleId: 'no-todo',
           rule: require('textlint-rule-no-todo').default,
-        },
-        {
-          ruleId: 'preset-japanese',
-          rule: require('textlint-rule-preset-japanese'),
         },
       ],
       plugins: [
