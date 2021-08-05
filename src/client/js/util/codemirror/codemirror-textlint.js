@@ -37,8 +37,8 @@ export default function createValidator() {
     {
       rules: [
         {
-          ruleId: 'no-todo',
-          rule: require('textlint-rule-no-todo').default,
+          ruleId: 'preset-japanese',
+          rule: require('textlint-rule-preset-japanese').default,
         },
       ],
       plugins: [
