@@ -16,7 +16,7 @@ export default function createValidator() {
         // },
         {
           ruleId: 'no-todo',
-          rule: require('textlint-rule-no-todo'),
+          rule: require('textlint-rule-no-todo').default,
         },
       ],
       plugins: [
