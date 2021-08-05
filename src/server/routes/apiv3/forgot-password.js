@@ -6,9 +6,6 @@ const express = require('express');
 const { body } = require('express-validator');
 
 const router = express.Router();
-// const { query } = require('express-validator');
-// const ErrorV3 = require('../../models/vo/error-apiv3');
-
 
 module.exports = (crowi) => {
   const { appService, mailService, configManager } = crowi;
@@ -62,7 +59,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', /* validator.password, */ async(req, res) => {
+  router.put('/', validator.password, async(req, res) => {
     const { email, newPassword } = req.body;
 
     const user = await User.findOne({ email });

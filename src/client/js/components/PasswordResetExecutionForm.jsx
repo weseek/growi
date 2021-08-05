@@ -33,11 +33,6 @@ const PasswordResetExecutionForm = (props) => {
     }
 
     try {
-      /*
-      * TODO: hit an api to change password by GW-6778
-      * the following code is just a reference
-      */
-
       await appContainer.apiv3Put('/forgot-password', {
         email, newPassword,
       });
