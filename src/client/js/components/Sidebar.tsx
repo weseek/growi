@@ -280,7 +280,7 @@ const Sidebar = (props: Props) => {
                   <div
                     ref={resizableContainer}
                     className="grw-contextual-navigation"
-                    onMouseEnter={() => !isDrawerMode && hoverHandler(true)}
+                    onMouseEnter={() => hoverHandler(true)}
                     onMouseLeave={() => hoverHandler(false)}
                     onMouseMove={draggableAreaMoveHandler}
                     onMouseUp={dragableAreaMouseUpHandler}
@@ -298,7 +298,7 @@ const Sidebar = (props: Props) => {
                 <div className="grw-navigation-draggable">
                   <div className="grw-navigation-draggable-sub"></div>
                   <div
-                    className={`${!isDrawerMode ? 'resizable' : ''}'grw-navigation-draggable-hitarea'`}
+                    className={`${!isDrawerMode ? 'resizable' : ''} grw-navigation-draggable-hitarea`}
                     onMouseDown={dragableAreaClickHandler}
                   >
                     <div className="grw-navigation-draggable-hitarea-child"></div>
@@ -306,7 +306,7 @@ const Sidebar = (props: Props) => {
                   <div>
                     <div>
                       <button
-                        className={`ak-navigation-resize-button ${!isDrawerMode ? 'resizable' : 'disabled'} ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
+                        className={`ak-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
                         type="button"
                         aria-expanded="true"
                         aria-label="Toggle navigation"
