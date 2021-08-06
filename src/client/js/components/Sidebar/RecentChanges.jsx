@@ -84,14 +84,16 @@ class RecentChanges extends React.Component {
               {locked}
             </h5>
             <div className="my-2">
+              { tagElements }
+            </div>
+            <div className="pull-left">
               <span className="footstamp-icon mr-1"><FootstampIcon /></span>
               <span className="mr-2 grw-list-counts">{page.seenUsers.length}</span>
               <i className="icon-bubble mr-1"></i>
               <span className="mr-2 grw-list-counts">{page.commentCount}</span>
-              { tagElements }
-              <div className="pull-right small">
-                <FormattedDistanceDate id={page.id} date={page.updatedAt} />
-              </div>
+            </div>
+            <div className="pull-right small">
+              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
             </div>
           </div>
         </div>
