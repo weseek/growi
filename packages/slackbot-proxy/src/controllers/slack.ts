@@ -175,6 +175,14 @@ export class SlackCtrl {
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
+    const relationsForBroadcastUse:Relation[] = [];
+    await Promise.all(relations.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupported) {
+        relationsForBroadcastUse.push(relation);
+      }
+    }));
+
     /*
      * forward to GROWI server
      */
