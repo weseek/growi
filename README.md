@@ -97,13 +97,11 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 ## Command details
 
-| command                | desc                                                    |
-| ---------------------- | ------------------------------------------------------- |
-| `yarn run build:prod`  | Build the client                                        |
-| `yarn run server:prod` | Launch the server                                       |
-| `yarn start`           | Invoke `yarn run build:prod` and `yarn run server:prod` |
-
-<!-- The following links do not exist -->
+| command           | desc                                                    |
+| ------------------| ------------------------------------------------------- |
+| `yarn app:build`  | Build GROWI app client                                  |
+| `yarn app:server` | Launch GROWI app server                                 |
+| `yarn start`      | Invoke `yarn app:build` and `yarn app:server`           |
 
 For more info, see [GROWI Docs: List of npm Commands](https://docs.growi.org/en/dev/startup-v2/launch-system.html#list-of-npm-commands).
 
