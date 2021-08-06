@@ -157,7 +157,7 @@ RUN rm node_modules.tar packages.tar
 
 USER root
 
-COPY docker/docker-entrypoint.sh /
+COPY packages/app/docker/docker-entrypoint.sh /
 RUN chmod 700 /docker-entrypoint.sh
 RUN chown node:node ${appDir}
 
