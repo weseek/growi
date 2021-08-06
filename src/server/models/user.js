@@ -64,6 +64,7 @@ module.exports = function(crowi) {
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
+    isTextLintEnable: { type: Boolean, default: true },
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
@@ -689,6 +690,12 @@ module.exports = function(crowi) {
 
     user.isInvitationEmailSended = true;
     user.save();
+  };
+
+  userSchema.methods.updateIsTextLintEnable = async function(isTextLintEnable) {
+    this.isGravatarEnabled = isTextLintEnable;
+    const userData = await this.save();
+    return userData;
   };
 
   class UserUpperLimitException {
