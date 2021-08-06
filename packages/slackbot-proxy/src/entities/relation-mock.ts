@@ -16,7 +16,7 @@ interface PermittedChannel {
 
 @Entity()
 @Index(['installation', 'growiUri'], { unique: true })
-export class Relation {
+export class RelationMock {
 
   @PrimaryGeneratedColumn()
   readonly id: number;
