@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "4.3.3-RC",
+  "version": "4.3.3",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
@@ -55,8 +55,8 @@
   "dependencies": {
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "@google-cloud/storage": "^5.8.5",
-    "@growi/plugin-pukiwiki-like-linker": "^4.3.3-RC",
-    "@growi/slack": "^4.3.3-RC",
+    "@growi/plugin-pukiwiki-like-linker": "^4.3.3",
+    "@growi/slack": "^4.3.3",
     "@kobalab/socket.io-session": "^1.0.3",
     "@promster/express": "^5.0.1",
     "@promster/server": "^6.0.0",
