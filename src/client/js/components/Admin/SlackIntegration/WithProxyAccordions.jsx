@@ -11,6 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import Accordion from '../Common/Accordion';
 import { addLogs } from './slak-integration-util';
 import MessageBasedOnConnection from './MessageBasedOnConnection';
+import ManageCommandsProcess from './ManageCommandsProcess';
 
 const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
@@ -287,7 +288,6 @@ const WithProxyAccordions = (props) => {
       props.onSubmitForm();
     }
   };
-
   const submitFormFailed = () => {
     setIsLatestConnectionSuccess(false);
   };
@@ -309,6 +309,15 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
+        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
+      />,
+    },
+    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -344,6 +353,15 @@ const WithProxyAccordions = (props) => {
       content: <RegisteringProxyUrlProcess />,
     },
     '⑤': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
+        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
+      />,
+    },
+    '⑥': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -370,7 +388,7 @@ const WithProxyAccordions = (props) => {
                 {t(`admin:slack_integration.accordion.${value.title}`)}
                 {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}
               </>
-)}
+            )}
             key={key}
           >
             {value.content}
@@ -392,6 +410,8 @@ WithProxyAccordions.propTypes = {
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
+  supportedCommandsForBroadcastUse: PropTypes.arrayOf(PropTypes.string),
+  supportedCommandsForSingleUse: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default WithProxyAccordionsWrapper;
