@@ -11,14 +11,18 @@ export default function createValidator() {
     {},
     {
       rules: [
-        {
-          ruleId: 'max-ten',
-          rule: require('textlint-rule-max-ten'),
-        },
+        // {
+        //   ruleId: 'max-ten',
+        //   rule: require('textlint-rule-max-ten'),
+        // },
         // {
         //   ruleId: 'no-mix-dearu-desumasu',
         //   rule: moduleInterop(require('textlint-rule-no-mix-dearu-desumasu')),
         // },
+        {
+          ruleId: 'prefer-tari-tari',
+          rule: require('textlint-rule-prefer-tari-tari'),
+        },
         {
           ruleId: 'common-misspellings',
           rule: moduleInterop(require('textlint-rule-common-misspellings')),
