@@ -117,7 +117,7 @@ class RecentChanges extends React.Component {
             <i className="icon icon-reload"></i>
           </button>
         </div>
-        <div className="grw-sidebar-content-body p-3">
+        <div className="grw-sidebar-content-body grw-recent-changes p-3">
           <ul className="list-group list-group-flush">
             { recentlyUpdatedPages.map(page => <PageItem key={page.id} page={page} />) }
           </ul>
