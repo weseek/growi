@@ -2,9 +2,11 @@
 
 ## v4.3.3-RC
 
-*
 * Support: Upgrade libs
+    * @slack/web-api
     * escape-string-regexp
+    * morgan
+
 ## v4.3.2
 
 * Feature: Hufflpuff theme
