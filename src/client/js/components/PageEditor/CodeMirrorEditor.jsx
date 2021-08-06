@@ -858,12 +858,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    // const validator = createValidator({
-    //   rules: {
-    //     'no-todo': noTodo,
-    //     'preset-japanese': presetJapanese,
-    //   },
-    // });
     const textlintValidator = createValidator();
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
@@ -910,7 +904,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
             },
             lint: {
-              getAnnotations: validator,
+              getAnnotations: textlintValidator,
               async: true,
             },
           }}
