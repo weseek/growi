@@ -11,9 +11,11 @@ import {
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
+import { RelationMock } from '~/entities/relation-mock';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
+import { RelationMockRepository } from '~/repositories/relation-mock';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
@@ -42,6 +44,9 @@ export class SlackCtrl {
   relationRepository: RelationRepository;
 
   @Inject()
+  relationMockRepository: RelationMockRepository;
+
+  @Inject()
   orderRepository: OrderRepository;
 
   @Inject()
@@ -66,7 +71,7 @@ export class SlackCtrl {
     }
     const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
 
-    const promises = relations.map((relation: Relation) => {
+    const promises = relations.map((relation: RelationMock) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
       return axios.post(url.toString(), {
@@ -131,7 +136,7 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationRepository.createQueryBuilder('relation')
+    const relations = await this.relationMockRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
@@ -232,7 +237,7 @@ export class SlackCtrl {
     /*
     * forward to GROWI server
     */
-    const relation = await this.relationRepository.findOne({ installation, growiUri: req.growiUri });
+    const relation = await this.relationMockRepository.findOne({ installation, growiUri: req.growiUri });
 
     if (relation == null) {
       logger.error('*No relation found.*');
