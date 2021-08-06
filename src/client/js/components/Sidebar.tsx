@@ -189,7 +189,7 @@ const Sidebar = (props: Props) => {
   }, [mutateProductNavWidth]);
 
   const hoverHandler = useCallback((isHover: boolean) => {
-    if (!navigationUIController.state.isCollapsed) {
+    if (!navigationUIController.state.isCollapsed || isDrawerMode) {
       return;
     }
 
@@ -250,7 +250,7 @@ const Sidebar = (props: Props) => {
   }, [navigationUIController, draggableAreaMoveHandler, setContentWidth]);
 
   const dragableAreaClickHandler = useCallback(() => {
-    if (navigationUIController.state.isCollapsed) {
+    if (navigationUIController.state.isCollapsed || isDrawerMode) {
       return;
     }
     setDrag(true);
@@ -280,7 +280,7 @@ const Sidebar = (props: Props) => {
                   <div
                     ref={resizableContainer}
                     className="grw-contextual-navigation"
-                    onMouseEnter={() => hoverHandler(true)}
+                    onMouseEnter={() => !isDrawerMode && hoverHandler(true)}
                     onMouseLeave={() => hoverHandler(false)}
                     onMouseMove={draggableAreaMoveHandler}
                     onMouseUp={dragableAreaMouseUpHandler}
@@ -298,7 +298,7 @@ const Sidebar = (props: Props) => {
                 <div className="grw-navigation-draggable">
                   <div className="grw-navigation-draggable-sub"></div>
                   <div
-                    className="grw-navigation-draggable-hitarea"
+                    className={`${!isDrawerMode ? 'resizable' : ''}'grw-navigation-draggable-hitarea'`}
                     onMouseDown={dragableAreaClickHandler}
                   >
                     <div className="grw-navigation-draggable-hitarea-child"></div>
@@ -306,7 +306,7 @@ const Sidebar = (props: Props) => {
                   <div>
                     <div>
                       <button
-                        className={`ak-navigation-resize-button ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
+                        className={`ak-navigation-resize-button ${!isDrawerMode ? 'resizable' : 'disabled'} ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
                         type="button"
                         aria-expanded="true"
                         aria-label="Toggle navigation"

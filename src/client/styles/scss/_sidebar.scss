@@ -79,7 +79,7 @@
     bottom: 0px;
     left: 0px;
     z-index: 200;
-    &:hover .ak-navigation-resize-button.normal-state {
+    &:hover .ak-navigation-resize-button.resizable.normal-state {
       opacity: 1;
     }
     .grw-navigation-wrap {
@@ -167,7 +167,7 @@
         transition-duration: 0.22s;
         transition-property: left, opacity, width;
       }
-      .grw-navigation-draggable-hitarea {
+      .resizable.grw-navigation-draggable-hitarea {
         position: relative;
         left: -4px;
         width: 24px;
