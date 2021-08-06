@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:service:SlackCommandHandler:slack-bot-response');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:SlackCommandHandler:slack-bot-response');
 const { markdownSectionBlock } = require('@growi/slack');
 const SlackbotError = require('../../models/vo/slackbot-error');
 

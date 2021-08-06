@@ -1,4 +1,6 @@
-const logger = require('@alias/logger')('growi:service:CreatePageService');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:CreatePageService');
 const { reshapeContentsBody } = require('@growi/slack');
 const mongoose = require('mongoose');
 const pathUtils = require('growi-commons').pathUtils;

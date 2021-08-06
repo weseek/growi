@@ -1,9 +1,11 @@
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:service:SlackBotService:togetter');
 const {
   inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider,
 } = require('@growi/slack');
 const { parse, format } = require('date-fns');
 const axios = require('axios');
-const logger = require('@alias/logger')('growi:service:SlackBotService:togetter');
 const SlackbotError = require('../../models/vo/slackbot-error');
 
 module.exports = (crowi) => {
