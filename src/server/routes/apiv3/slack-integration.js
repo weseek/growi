@@ -9,7 +9,7 @@ const { verifySlackRequest, generateWebClient } = require('@growi/slack');
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-const { slackbotResponse } = require('../../service/slack-command-handler/slackbot-response');
+const { respondIfSlackbotError } = require('../../service/slack-command-handler/slackbot-response');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
@@ -108,7 +108,7 @@ module.exports = (crowi) => {
       await crowi.slackBotService.handleCommandRequest(command, client, body, args);
     }
     catch (err) {
-      await slackbotResponse(client, body, err);
+      await respondIfSlackbotError(client, body, err);
     }
 
   }
@@ -157,7 +157,7 @@ module.exports = (crowi) => {
             await crowi.slackBotService.handleBlockActionsRequest(client, payload);
           }
           catch (err) {
-            await slackbotResponse(client, req.body, err);
+            await respondIfSlackbotError(client, req.body, err);
           }
           break;
         case 'view_submission':
@@ -165,7 +165,7 @@ module.exports = (crowi) => {
             await crowi.slackBotService.handleViewSubmissionRequest(client, payload);
           }
           catch (err) {
-            await slackbotResponse(client, req.body, err);
+            await respondIfSlackbotError(client, req.body, err);
           }
           break;
         default:
