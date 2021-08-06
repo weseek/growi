@@ -12,7 +12,7 @@ export default function createValidator() {
       rules: [
         {
           ruleId: 'common-misspellings',
-          rule: require('textlint-rule-common-misspellings'),
+          rule: require('textlint-rule-common-misspellings').default,
         },
       ],
       plugins: [
