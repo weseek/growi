@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import loggerFactory from '@alias/logger';
-
 import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
-import { toastSuccess, toastError } from '../../../util/apiNotification';
+import loggerFactory from '~/utils/logger';
+
+import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
 const logger = loggerFactory('growi:SlackIntegration:ManageCommandsProcess');
 

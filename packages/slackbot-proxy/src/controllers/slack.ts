@@ -7,7 +7,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -173,7 +173,10 @@ export class SlackCtrl {
       }
     }));
 
+    let isCommandPermitted = false;
+
     if (relationsForSingleUse.length > 0) {
+      isCommandPermitted = true;
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
@@ -190,7 +193,24 @@ export class SlackCtrl {
      * forward to GROWI server
      */
     if (relationsForBroadcastUse.length > 0) {
+      isCommandPermitted = true;
       this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+    }
+
+    if (!isCommandPermitted) {
+      const botToken = relations[0].installation?.data.bot?.token;
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(botToken!);
+
+      return client.chat.postEphemeral({
+        text: 'Error occured.',
+        channel: body.channel_id,
+        user: body.user_id,
+        blocks: [
+          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+        ],
+      });
     }
   }
 
