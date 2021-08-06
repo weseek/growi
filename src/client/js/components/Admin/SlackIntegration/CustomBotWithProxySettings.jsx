@@ -103,7 +103,9 @@ const CustomBotWithProxySettings = (props) => {
 
       <div className="mx-3">
         {slackAppIntegrations.map((slackAppIntegration, i) => {
-          const { tokenGtoP, tokenPtoG, _id } = slackAppIntegration;
+          const {
+            tokenGtoP, tokenPtoG, _id, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
+          } = slackAppIntegration;
           const workspaceName = connectionStatuses[_id]?.workspaceName;
           return (
             <React.Fragment key={slackAppIntegration._id}>
@@ -125,6 +127,8 @@ const CustomBotWithProxySettings = (props) => {
                 slackAppIntegrationId={slackAppIntegration._id}
                 tokenGtoP={tokenGtoP}
                 tokenPtoG={tokenPtoG}
+                supportedCommandsForBroadcastUse={supportedCommandsForBroadcastUse}
+                supportedCommandsForSingleUse={supportedCommandsForSingleUse}
                 onUpdateTokens={onUpdateTokens}
                 onSubmitForm={onSubmitForm}
               />
