@@ -1,9 +1,8 @@
 import {
-  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put,
+  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams,
 } from '@tsed/common';
 import axios from 'axios';
 import createError from 'http-errors';
-import { addHours } from 'date-fns';
 
 import { WebAPICallResult } from '@slack/web-api';
 
@@ -26,6 +25,9 @@ import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/Sect
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
+
+// temporarily save for selection to growi
+const temporarySinglePostCommands = ['create', 'togetter'];
 
 @Controller('/g2s')
 export class GrowiToSlackCtrl {
@@ -92,24 +94,7 @@ export class GrowiToSlackCtrl {
     return res.send({ connectionStatuses });
   }
 
-  @Put('/supported-commands')
-  @UseBefore(verifyGrowiToSlackRequest)
-  async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
-    // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
-    const { tokenGtoPs } = req;
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
-
-    if (tokenGtoPs.length !== 1) {
-      throw createError(400, 'installation is invalid');
-    }
-
-    const tokenGtoP = tokenGtoPs[0];
-    const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
-
-    return res.send({ relation });
-  }
-
-  @Post('/relation-test')
+  @Get('/relation-test')
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
@@ -185,9 +170,6 @@ export class GrowiToSlackCtrl {
 
     logger.debug('relation test is success', order);
 
-    // temporary cache for 48 hours
-    const expiredAtCommands = addHours(new Date(), 48);
-
     // Transaction is not considered because it is used infrequently,
     const response = await this.relationRepository.createQueryBuilder('relation')
       .insert()
@@ -196,15 +178,10 @@ export class GrowiToSlackCtrl {
         tokenGtoP: order.tokenGtoP,
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
-        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
-        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
-        expiredAtCommands,
+        siglePostCommands: temporarySinglePostCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
-      .orUpdate({
-        conflict_target: ['installation', 'growiUri'],
-        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
-      })
+      .orUpdate({ conflict_target: ['installation', 'growiUri'], overwrite: ['tokenGtoP', 'tokenPtoG', 'siglePostCommands'] })
       .execute();
 
     // Find the generated relation

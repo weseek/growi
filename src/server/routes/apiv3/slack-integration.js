@@ -4,7 +4,7 @@ const urljoin = require('url-join');
 
 const loggerFactory = require('@alias/logger');
 
-const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps } = require('@growi/slack');
+const { verifySlackRequest, generateWebClient } = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -38,52 +38,6 @@ module.exports = (crowi) => {
         + 'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. '
         + 'Please unregister the information registered in the proxy and setup `/growi register` again.',
       });
-    }
-
-    next();
-  }
-
-  async function checkCommandPermission(req, res, next) {
-    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-
-    const relation = await SlackAppIntegration.findOne({ tokenPtoG });
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
-    const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
-    const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
-
-    // get command name from req.body
-    let command = '';
-    let actionId = '';
-    let callbackId = '';
-    let payload;
-    if (req.body.payload) {
-      payload = JSON.parse(req.body.payload);
-    }
-
-    if (req.body.text == null) { // when /relation-test
-      return next();
-    }
-
-    if (!payload) { // when request is to /commands
-      command = req.body.text.split(' ')[0];
-    }
-    else if (payload.actions) { // when request is to /interactions && block_actions
-      actionId = payload.actions[0].action_id;
-    }
-    else { // when request is to /interactions && view_submission
-      callbackId = payload.view.callback_id;
-    }
-
-    let isActionSupported = false;
-    supportedGrowiActionsRegExps.forEach((regexp) => {
-      if (regexp.test(actionId) || regexp.test(callbackId)) {
-        isActionSupported = true;
-      }
-    });
-
-    // validate
-    if (!supportedCommands.includes(command) || isActionSupported) {
-      return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
     }
 
     next();
@@ -161,7 +115,7 @@ module.exports = (crowi) => {
     return handleCommands(req, res);
   });
 
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, async(req, res) => {
     const { body } = req;
 
     // eslint-disable-next-line max-len
@@ -271,15 +225,8 @@ module.exports = (crowi) => {
     return handleInteractions(req, res);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, async(req, res) => {
     return handleInteractions(req, res);
-  });
-
-  router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
-    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-
-    return res.send(slackAppIntegration);
   });
 
   return router;
