@@ -864,7 +864,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     //     'preset-japanese': presetJapanese,
     //   },
     // });
-    const validator = createValidator();
+    const textlintValidator = createValidator();
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return (
