@@ -7,6 +7,8 @@ import * as codemirror from 'codemirror';
 import { Button } from 'reactstrap';
 import { UnControlled as ReactCodeMirror } from 'react-codemirror2';
 
+import { JSHINT } from 'jshint';
+
 import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
@@ -29,6 +31,10 @@ import LinkEditModal from './LinkEditModal';
 import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
+
+import createValidator from '../../client/util/codemirror/codemirror-textlint';
+
+window.JSHINT = JSHINT;
 
 // set save handler
 codemirror.commands.save = (instance) => {
@@ -56,6 +62,8 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
+require('codemirror/addon/lint/lint');
+require('codemirror/addon/lint/lint.css');
 require('~/client/util/codemirror/autorefresh.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
 // import modes to highlight
@@ -852,7 +860,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-
+    const textlintValidator = createValidator();
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return (
@@ -884,7 +892,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
-            gutters: this.props.lineNumbers ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'] : [],
+            // Todo: Hide lint marker gutters when disabled
+            gutters: this.props.lineNumbers
+              ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers']
+              : ['CodeMirror-lint-markers'],
             // match-highlighter, matchesonscrollbar, annotatescrollbar options
             highlightSelectionMatches: { annotateScrollbar: true },
             // continuelist, indentlist
@@ -895,6 +906,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
               Tab: 'indentMore',
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
+            },
+            lint: {
+              getAnnotations: textlintValidator,
+              async: true,
             },
           }}
           onCursor={this.cursorHandler}
