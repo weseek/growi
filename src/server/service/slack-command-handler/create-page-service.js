@@ -1,8 +1,8 @@
-const { markdownSectionBlock } = require('@growi/slack');
 const logger = require('@alias/logger')('growi:service:CreatePageService');
 const { reshapeContentsBody } = require('@growi/slack');
 const mongoose = require('mongoose');
 const pathUtils = require('growi-commons').pathUtils;
+const SlackbotError = require('../../models/vo/slackbot-error');
 
 class CreatePageService {
 
@@ -31,13 +31,13 @@ class CreatePageService {
       });
     }
     catch (err) {
-      client.chat.postMessage({
-        channel: payload.user.id,
-        blocks: [
-          markdownSectionBlock(`Cannot create new page to existed path\n *Contents* :memo:\n ${reshapedContentsBody}`)],
+      logger.error('Failed to create page in GROWI.', err);
+      throw new SlackbotError({
+        method: 'postMessage',
+        to: 'dm',
+        popupMessage: 'Cannot create new page to existed path.',
+        mainMessage: `Cannot create new page to existed path\n *Contents* :memo:\n ${reshapedContentsBody}`,
       });
-      logger.error('Failed to create page in GROWI.');
-      throw err;
     }
   }
 

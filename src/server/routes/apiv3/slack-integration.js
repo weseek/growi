@@ -9,6 +9,7 @@ const { verifySlackRequest, generateWebClient } = require('@growi/slack');
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
@@ -106,9 +107,10 @@ module.exports = (crowi) => {
     try {
       await crowi.slackBotService.handleCommandRequest(command, client, body, args);
     }
-    catch (error) {
-      logger.error(error);
+    catch (err) {
+      await respondIfSlackbotError(client, body, err);
     }
+
   }
 
   router.post('/commands', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
@@ -151,10 +153,20 @@ module.exports = (crowi) => {
     try {
       switch (type) {
         case 'block_actions':
-          await crowi.slackBotService.handleBlockActionsRequest(client, payload);
+          try {
+            await crowi.slackBotService.handleBlockActionsRequest(client, payload);
+          }
+          catch (err) {
+            await respondIfSlackbotError(client, req.body, err);
+          }
           break;
         case 'view_submission':
-          await crowi.slackBotService.handleViewSubmissionRequest(client, payload);
+          try {
+            await crowi.slackBotService.handleViewSubmissionRequest(client, payload);
+          }
+          catch (err) {
+            await respondIfSlackbotError(client, req.body, err);
+          }
           break;
         default:
           break;

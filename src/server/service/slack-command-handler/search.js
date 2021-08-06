@@ -3,6 +3,7 @@ const logger = require('@alias/logger')('growi:service:SlackCommandHandler:searc
 const { markdownSectionBlock, divider } = require('@growi/slack');
 const { formatDistanceStrict } = require('date-fns');
 const axios = require('axios');
+const SlackbotError = require('../../models/vo/slackbot-error');
 
 const PAGINGLIMIT = 10;
 
@@ -17,15 +18,12 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Failed to get search results.', err);
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Failed To Search',
-        blocks: [
-          markdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
-        ],
+      throw new SlackbotError({
+        method: 'postEphemeral',
+        to: 'channel',
+        popupMessage: 'Failed To Search',
+        mainMessage: '*Failed to search.*\n Hint\n `/growi search [keyword]`',
       });
-      throw new Error('/growi command:search: Failed to search');
     }
 
     const appUrl = crowi.appService.getSiteUrl();
@@ -140,26 +138,12 @@ module.exports = (crowi) => {
     }
     blocks.push(actionBlocks);
 
-    try {
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Successed To Search',
-        blocks,
-      });
-    }
-    catch (err) {
-      logger.error('Failed to post ephemeral message.', err);
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Failed to post ephemeral message.',
-        blocks: [
-          markdownSectionBlock(err.toString()),
-        ],
-      });
-      throw new Error(err.message);
-    }
+    await client.chat.postEphemeral({
+      channel: body.channel_id,
+      user: body.user_id,
+      text: 'Successed To Search',
+      blocks,
+    });
   };
 
   handler.handleBlockActions = async function(client, payload, handlerMethodName) {
@@ -210,15 +194,12 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Failed to get search results.', err);
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Failed To Search',
-        blocks: [
-          markdownSectionBlock('*Failed to search.*\n Hint\n `/growi search [keyword]`'),
-        ],
+      throw new SlackbotError({
+        method: 'postEphemeral',
+        to: 'channel',
+        popupMessage: 'Failed To Search',
+        mainMessage: '*Failed to search.*\n Hint\n `/growi search [keyword]`',
       });
-      throw new Error('/growi command:search: Failed to search');
     }
 
     const appUrl = crowi.appService.getSiteUrl();
@@ -333,26 +314,12 @@ module.exports = (crowi) => {
     }
     blocks.push(actionBlocks);
 
-    try {
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Successed To Search',
-        blocks,
-      });
-    }
-    catch (err) {
-      logger.error('Failed to post ephemeral message.', err);
-      await client.chat.postEphemeral({
-        channel: body.channel_id,
-        user: body.user_id,
-        text: 'Failed to post ephemeral message.',
-        blocks: [
-          markdownSectionBlock(err.toString()),
-        ],
-      });
-      throw new Error(err.message);
-    }
+    await client.chat.postEphemeral({
+      channel: body.channel_id,
+      user: body.user_id,
+      text: 'Successed To Search',
+      blocks,
+    });
   };
 
   handler.dismissSearchResults = async function(client, payload) {

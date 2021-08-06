@@ -4,6 +4,7 @@ const {
 const { parse, format } = require('date-fns');
 const axios = require('axios');
 const logger = require('@alias/logger')('growi:service:SlackBotService:togetter');
+const SlackbotError = require('../../models/vo/slackbot-error');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
@@ -54,16 +55,8 @@ module.exports = (crowi) => {
       await this.togetterCreatePageAndSendPreview(client, payload, path, channel, contentsBody);
     }
     catch (err) {
-      logger.error(err);
-      // upcoming GW-6853 will change: just throw Error() here and handle in slackbot.js
-      await client.chat.postMessage({
-        channel: payload.user.id,
-        text: err.message,
-        blocks: [
-          markdownSectionBlock(err.message),
-        ],
-      });
-      return;
+      logger.error('Error occured by togetter.');
+      throw err;
     }
   };
 
@@ -75,7 +68,12 @@ module.exports = (crowi) => {
     oldest = oldest.trim();
     latest = latest.trim();
     if (!path) {
-      throw new Error('Page path is required.');
+      throw new SlackbotError({
+        method: 'postMessage',
+        to: 'dm',
+        popupMessage: 'Page path is required.',
+        mainMessage: 'Page path is required.',
+      });
     }
     /**
      * RegExp for datetime yyyy/MM/dd-HH:mm
@@ -84,17 +82,32 @@ module.exports = (crowi) => {
     const regexpDatetime = new RegExp(/^[12]\d\d\d\/(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])-([01][0-9]|2[0123]):[0-5][0-9]$/);
 
     if (!regexpDatetime.test(oldest)) {
-      throw new Error('Datetime format for oldest must be yyyy/MM/dd-HH:mm');
+      throw new SlackbotError({
+        method: 'postMessage',
+        to: 'dm',
+        popupMessage: 'Datetime format for oldest must be yyyy/MM/dd-HH:mm',
+        mainMessage: 'Datetime format for oldest must be yyyy/MM/dd-HH:mm',
+      });
     }
     if (!regexpDatetime.test(latest)) {
-      throw new Error('Datetime format for latest must be yyyy/MM/dd-HH:mm');
+      throw new SlackbotError({
+        method: 'postMessage',
+        to: 'dm',
+        popupMessage: 'Datetime format for latest must be yyyy/MM/dd-HH:mm',
+        mainMessage: 'Datetime format for latest must be yyyy/MM/dd-HH:mm',
+      });
     }
     oldest = parse(oldest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset;
     // + 60s in order to include messages between hh:mm.00s and hh:mm.59s
     latest = parse(latest, 'yyyy/MM/dd-HH:mm', new Date()).getTime() / 1000 + grwTzoffset + 60;
 
     if (oldest > latest) {
-      throw new Error('Oldest datetime must be older than the latest date time.');
+      throw new SlackbotError({
+        method: 'postMessage',
+        to: 'dm',
+        popupMessage: 'Oldest datetime must be older than the latest date time.',
+        mainMessage: 'Oldest datetime must be older than the latest date time.',
+      });
     }
 
     return { path, oldest, latest };
@@ -111,7 +124,12 @@ module.exports = (crowi) => {
 
     // return if no message found
     if (!result.messages.length) {
-      throw new Error('No message found from togetter command. Try again.');
+      throw new SlackbotError({
+        method: 'postMessage',
+        to: 'dm',
+        popupMessage: 'No message found from togetter command. Try different datetime.',
+        mainMessage: 'No message found from togetter command. Try different datetime.',
+      });
     }
     return result;
   };
@@ -164,7 +182,13 @@ module.exports = (crowi) => {
       });
     }
     catch (err) {
-      throw new Error('Error occurred while creating a page.');
+      logger.error('Error occurred while creating a page.', err);
+      throw new SlackbotError({
+        method: 'postMessage',
+        to: 'dm',
+        popupMessage: 'Error occurred while creating a page.',
+        mainMessage: 'Error occurred while creating a page.',
+      });
     }
   };
 
