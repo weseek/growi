@@ -12,9 +12,13 @@ export default function createValidator() {
     {
       rules: [
         {
-          ruleId: 'no-mix-dearu-desumasu',
-          rule: moduleInterop(require('textlint-rule-no-mix-dearu-desumasu')),
+          ruleId: 'max-ten',
+          rule: require('textlint-rule-max-ten'),
         },
+        // {
+        //   ruleId: 'no-mix-dearu-desumasu',
+        //   rule: moduleInterop(require('textlint-rule-no-mix-dearu-desumasu')),
+        // },
         {
           ruleId: 'common-misspellings',
           rule: moduleInterop(require('textlint-rule-common-misspellings')),
