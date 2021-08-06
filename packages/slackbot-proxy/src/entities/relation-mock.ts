@@ -5,7 +5,7 @@ import { Installation } from './installation';
 
 
 // set PermittedChannel interface this file because this is mock
-// expected data
+// expected data see below
 // channelsObject:{
 //   create: ['srv', 'admin'],
 //   search: ['admin'],
