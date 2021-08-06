@@ -9,6 +9,7 @@ const webpack = require('webpack');
   */
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 /*
   * Webpack configuration
@@ -62,11 +63,12 @@ module.exports = (options) => {
     },
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
-      // modules: ((options.resolve && options.resolve.modules) || []).concat([path.resolve(__dirname, 'node_modules')]),
-      alias: {
-        '~': path.resolve(__dirname, '../src'), // src
-        '^': path.resolve(__dirname, '../'), // project root
-      },
+      plugins: [
+        new TsconfigPathsPlugin({
+          configFile: path.resolve(__dirname, '../tsconfig.build.client.json'),
+          extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
+        }),
+      ],
     },
     node: {
       fs: 'empty',
