@@ -96,13 +96,11 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 ## コマンド詳細
 
-| コマンド               | 説明                                                             |
-| ---------------------- | ---------------------------------------------------------------- |
-| `yarn run build:prod`  | クライアントをビルドします。                                     |
-| `yarn run server:prod` | サーバーを起動します。                                           |
-| `yarn start`           | `yarn run build:prod` と `yarn run server:prod` を呼び出します。 |
-
-  <!-- 以下のリンクは存在しない (ja と en 両方) -->
+| コマンド          | 説明                                                    |
+| ------------------| ------------------------------------------------------- |
+| `yarn app:build`  | GROWI app クライアントをビルドします。                  |
+| `yarn app:server` | GROWI app サーバーを起動します。                        |
+| `yarn start`      | `yarn app:build` と `yarn app:server` を呼び出します。  |
 
 詳しくは [GROWI Docs: List of npm Commands](https://docs.growi.org/ja/dev/startup-v2/launch-system.html#npm-コマンドリスト)をご覧ください。
 
