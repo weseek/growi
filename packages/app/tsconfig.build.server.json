@@ -1,0 +1,30 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "transpiled",
+    "declaration": true,
+    "noResolve": false,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "noEmit": false,
+    "inlineSources": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"],
+      "^/*": ["./*"],
+      "debug": ["./src/utils/logger/alias-for-debug"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "src/client",
+    "src/components",
+    "src/linter-checker",
+    "src/migrations",
+    "src/styles",
+    "src/styles-hackmd",
+    "src/test"
+  ]
+}

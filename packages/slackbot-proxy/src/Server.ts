@@ -11,13 +11,14 @@ import methodOverride from 'method-override';
 import helmet from 'helmet';
 import { Express } from 'express';
 import expressBunyanLogger from 'express-bunyan-logger';
-import gracefulExit from 'express-graceful-exit';
 
-import { ConnectionOptions } from 'typeorm';
+import { ConnectionOptions, getConnectionManager } from 'typeorm';
 import { createTerminus } from '@godaddy/terminus';
 
 import swaggerSettingsForDev from '~/config/swagger/config.dev';
 import swaggerSettingsForProd from '~/config/swagger/config.prod';
+import { GlobalHttpErrorHandlingMiddleware } from './middlewares/GlobalHttpErrorHandlingMiddleware';
+import './filters/CustomHttpErrorFilter';
 import './filters/ResourceNotFoundFilter';
 import loggerFactory from '~/utils/logger';
 
@@ -105,6 +106,7 @@ const helmetOptions = isProduction ? {} : {
     ],
   },
 })
+
 export class Server {
 
   @Inject()
@@ -122,19 +124,11 @@ export class Server {
     if (serverUri === undefined) {
       throw new Error('The environment variable \'SERVER_URI\' must be defined.');
     }
-
-    const server = this.injector.get<HttpServer>(HttpServer);
-
-    // init express-graceful-exit
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    gracefulExit.init(server!);
   }
 
   $beforeRoutesInit(): void {
-    const expressApp = this.app.getApp();
 
     this.app
-      .use(gracefulExit.middleware(expressApp))
       .use(cookieParser())
       .use(compress({}))
       .use(methodOverride())
@@ -146,16 +140,20 @@ export class Server {
     this.setupLogger();
   }
 
+  $afterRoutesInit(): void {
+    this.app.use(GlobalHttpErrorHandlingMiddleware);
+  }
+
   $beforeListen(): void {
-    const expressApp = this.app.getApp();
     const server = this.injector.get<HttpServer>(HttpServer);
 
     // init terminus
     createTerminus(server, {
       onSignal: async() => {
         logger.info('server is starting cleanup');
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        gracefulExit.gracefulExitHandler(expressApp, server!);
+        const connectionManager = getConnectionManager();
+        const defaultConnection = connectionManager.get('default');
+        await defaultConnection.close();
       },
       onShutdown: async() => {
         logger.info('cleanup finished, server is shutting down');
