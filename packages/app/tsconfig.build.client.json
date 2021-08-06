@@ -11,7 +11,8 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "debug": ["./src/utils/logger/alias-for-debug"]
+      "@growi/*": ["../*/src"],
+      "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
   }
 }
