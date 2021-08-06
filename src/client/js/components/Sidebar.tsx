@@ -310,6 +310,7 @@ const Sidebar = (props: Props) => {
                         type="button"
                         aria-expanded="true"
                         aria-label="Toggle navigation"
+                        disabled={isDrawerMode}
                         onClick={toggleNavigationBtnClickHandler}
                       >
                         <div className="css-z8pkji"></div>
