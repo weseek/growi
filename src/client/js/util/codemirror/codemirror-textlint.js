@@ -1,4 +1,5 @@
 import { TextlintKernel } from '@textlint/kernel';
+import { moduleInterop } from '@textlint/module-interop';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
 
 const kernel = new TextlintKernel();
@@ -10,19 +11,23 @@ export default function createValidator() {
     {},
     {
       rules: [
-        // {
-        //   ruleId: 'no-mix-dearu-desumasu',
-        //   rule: require('textlint-rule-no-mix-dearu-desumasu'),
-        // },
+        {
+          ruleId: 'no-mix-dearu-desumasu',
+          rule: moduleInterop(require('textlint-rule-no-mix-dearu-desumasu')),
+        },
+        {
+          ruleId: 'common-misspellings',
+          rule: moduleInterop(require('textlint-rule-common-misspellings')),
+        },
         {
           ruleId: 'no-todo',
-          rule: require('textlint-rule-no-todo').default,
+          rule: moduleInterop(require('textlint-rule-no-todo')),
         },
       ],
       plugins: [
         {
           pluginId: 'markdown',
-          plugin: require('textlint-plugin-markdown'),
+          plugin: moduleInterop(require('textlint-plugin-markdown')),
         },
       ],
       ext: '.md',
