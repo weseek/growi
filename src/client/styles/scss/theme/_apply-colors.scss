@@ -264,15 +264,17 @@ ul.pagination {
     }
   }
 
-  .list-group {
-    .list-group-item {
-      .grw-tag-label {
-        color: $secondary;
-        background-color: $gray-200;
-      }
+  .grw-recent-changes {
+    .list-group {
+      .list-group-item {
+        .grw-tag-label {
+          color: $secondary;
+          background-color: $gray-200;
+        }
 
-      .icon-lock {
-        color: $color-link;
+        .icon-lock {
+          color: $color-link;
+        }
       }
     }
   }
