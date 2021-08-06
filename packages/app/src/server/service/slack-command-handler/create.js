@@ -1,11 +1,8 @@
 import loggerFactory from '~/utils/logger';
 
 const { markdownSectionBlock, inputSectionBlock } = require('@growi/slack');
-<<<<<<< HEAD:src/server/service/slack-command-handler/create.js
-=======
 
 const logger = loggerFactory('growi:service:SlackCommandHandler:create');
->>>>>>> master:packages/app/src/server/service/slack-command-handler/create.js
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');

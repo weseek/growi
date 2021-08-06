@@ -1,8 +1,3 @@
-
-<<<<<<< HEAD:src/server/service/slackbot.js
-const logger = require('@alias/logger')('growi:service:SlackBotService');
-const { markdownSectionBlock } = require('@growi/slack');
-=======
 import loggerFactory from '~/utils/logger';
 import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
@@ -15,7 +10,6 @@ const { markdownSectionBlock, divider } = require('@growi/slack');
 const { reshapeContentsBody } = require('@growi/slack');
 const { formatDistanceStrict, parse, format } = require('date-fns');
 
->>>>>>> master:packages/app/src/server/service/slackbot.ts
 const S2sMessage = require('../models/vo/s2s-message');
 
 
