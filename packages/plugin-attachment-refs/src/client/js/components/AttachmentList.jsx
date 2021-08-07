@@ -33,7 +33,6 @@ export default class AttachmentList extends React.Component {
     this.tagCacheManager = TagCacheManagerFactory.getInstance();
   }
 
-  // eslint-disable-next-line react/no-deprecated
   async componentWillMount() {
     const { refsContext } = this.props;
 
