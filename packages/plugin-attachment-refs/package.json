@@ -23,7 +23,6 @@
   "dependencies": {
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
-    "dotenv-flow": "^3.2.0",
     "growi-commons": "^5.0.4",
     "http-errors": "^1.8.0",
     "react-images": "~1.0.0",
