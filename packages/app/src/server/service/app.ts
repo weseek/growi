@@ -1,4 +1,4 @@
-import { pathUtils } from 'growi-commons';
+import { pathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
