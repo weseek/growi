@@ -1,13 +1,13 @@
 import { WebAPICallResult } from '@slack/web-api';
 
-import { generateMarkdownSectionBlock } from './block-creater';
+import { markdownSectionBlock } from './block-kit-builder';
 import { generateWebClient } from './webclient-factory';
 
 export const postEphemeralErrors = async(
-  rejectedResults: PromiseRejectedResult[],
-  channelId: string,
-  userId: string,
-  botToken: string,
+    rejectedResults: PromiseRejectedResult[],
+    channelId: string,
+    userId: string,
+    botToken: string,
 ): Promise<WebAPICallResult|void> => {
 
   if (rejectedResults.length > 0) {
@@ -19,7 +19,7 @@ export const postEphemeralErrors = async(
       channel: channelId,
       user: userId,
       blocks: [
-        generateMarkdownSectionBlock('*Error occured:*'),
+        markdownSectionBlock('*Error occured:*'),
         ...rejectedResults.map((rejectedResult) => {
           const reason = rejectedResult.reason.toString();
           const resData = rejectedResult.reason.response?.data;
@@ -30,7 +30,7 @@ export const postEphemeralErrors = async(
             errorMessage += `\n  Cause: ${resDataMessage}`;
           }
 
-          return generateMarkdownSectionBlock(errorMessage);
+          return markdownSectionBlock(errorMessage);
         }),
       ],
     });

@@ -1,0 +1,5558 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "GROWI REST API v3",
+    "version": "4.3.0-RC"
+  },
+  "servers": [
+    {
+      "url": "https://demo.growi.org{basePath}",
+      "variables": {
+        "basePath": {
+          "default": "/_api/v3",
+          "description": "base path"
+        }
+      }
+    }
+  ],
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "access_token",
+        "in": "query"
+      }
+    },
+    "schemas": {
+      "SystemInformationParams": {
+        "type": "object",
+        "properties": {
+          "growiVersion": {
+            "type": "string",
+            "description": "version of growi"
+          },
+          "nodeVersion": {
+            "type": "string",
+            "description": "version of node"
+          },
+          "npmVersion": {
+            "type": "string",
+            "description": "version of npm"
+          },
+          "yarnVersion": {
+            "type": "string",
+            "description": "version of yarn"
+          }
+        }
+      },
+      "InstalledPluginsParams": {
+        "type": "object",
+        "properties": {
+          "installedPlugins": {
+            "type": "object",
+            "description": "installed plugins"
+          }
+        }
+      },
+      "AppSettingParams": {
+        "description": "AppSettingParams",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "site name show on page header and tilte of HTML"
+          },
+          "confidential": {
+            "type": "string",
+            "description": "confidential show on page header"
+          },
+          "globalLang": {
+            "type": "string",
+            "description": "language set when create user"
+          },
+          "isEmailPublishedForNewUser": {
+            "type": "boolean",
+            "description": "default email show/hide setting when create user"
+          },
+          "fileUpload": {
+            "type": "boolean",
+            "description": "enable upload file except image file"
+          }
+        }
+      },
+      "SiteUrlSettingParams": {
+        "description": "SiteUrlSettingParams",
+        "type": "object",
+        "properties": {
+          "siteUrl": {
+            "type": "string",
+            "description": "Site URL. e.g. https://example.com, https://example.com:8080"
+          },
+          "envSiteUrl": {
+            "type": "string",
+            "description": "environment variable 'APP_SITE_URL'"
+          }
+        }
+      },
+      "MailSetting": {
+        "description": "MailSettingParams",
+        "type": "object",
+        "properties": {
+          "fromAddress": {
+            "type": "string",
+            "description": "e-mail address used as from address of mail which sent from GROWI app"
+          },
+          "transmissionMethod": {
+            "type": "string",
+            "description": "transmission method"
+          }
+        }
+      },
+      "SmtpSettingParams": {
+        "description": "SmtpSettingParams",
+        "type": "object",
+        "properties": {
+          "smtpHost": {
+            "type": "string",
+            "description": "host name of client's smtp server"
+          },
+          "smtpPort": {
+            "type": "string",
+            "description": "port of client's smtp server"
+          },
+          "smtpUser": {
+            "type": "string",
+            "description": "user name of client's smtp server"
+          },
+          "smtpPassword": {
+            "type": "string",
+            "description": "password of client's smtp server"
+          }
+        }
+      },
+      "SesSettingParams": {
+        "description": "SesSettingParams",
+        "type": "object",
+        "properties": {
+          "accessKeyId": {
+            "type": "string",
+            "description": "accesskey id for authentification of AWS"
+          },
+          "secretAccessKey": {
+            "type": "string",
+            "description": "secret key for authentification of AWS"
+          }
+        }
+      },
+      "FileUploadSettingParams": {
+        "description": "FileUploadTypeParams",
+        "type": "object",
+        "properties": {
+          "fileUploadType": {
+            "type": "string",
+            "description": "fileUploadType"
+          },
+          "s3Region": {
+            "type": "string",
+            "description": "region of AWS S3"
+          },
+          "s3CustomEndpoint": {
+            "type": "string",
+            "description": "custom endpoint of AWS S3"
+          },
+          "s3Bucket": {
+            "type": "string",
+            "description": "AWS S3 bucket name"
+          },
+          "s3AccessKeyId": {
+            "type": "string",
+            "description": "accesskey id for authentification of AWS"
+          },
+          "s3SecretAccessKey": {
+            "type": "string",
+            "description": "secret key for authentification of AWS"
+          },
+          "s3ReferenceFileWithRelayMode": {
+            "type": "boolean",
+            "description": "is enable internal stream system for s3 file request"
+          },
+          "gcsApiKeyJsonPath": {
+            "type": "string",
+            "description": "apiKeyJsonPath of gcp"
+          },
+          "gcsBucket": {
+            "type": "string",
+            "description": "bucket name of gcs"
+          },
+          "gcsUploadNamespace": {
+            "type": "string",
+            "description": "name space of gcs"
+          },
+          "gcsReferenceFileWithRelayMode": {
+            "type": "boolean",
+            "description": "is enable internal stream system for gcs file request"
+          },
+          "envGcsApiKeyJsonPath": {
+            "type": "string",
+            "description": "Path of the JSON file that contains service account key to authenticate to GCP API"
+          },
+          "envGcsBucket": {
+            "type": "string",
+            "description": "Name of the GCS bucket"
+          },
+          "envGcsUploadNamespace": {
+            "type": "string",
+            "description": "Directory name to create in the bucket"
+          }
+        }
+      },
+      "PluginSettingParams": {
+        "description": "PluginSettingParams",
+        "type": "object",
+        "properties": {
+          "isEnabledPlugins": {
+            "type": "string",
+            "description": "enable use plugins"
+          }
+        }
+      },
+      "Bookmark": {
+        "description": "Bookmark",
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "page ID",
+            "example": "5e07345972560e001761fa63"
+          },
+          "__v": {
+            "type": "number",
+            "description": "DB record version",
+            "example": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "date created at",
+            "example": "2010-01-01T00:00:00.000Z"
+          },
+          "page": {
+            "$ref": "#/components/schemas/Page/properties/_id"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User/properties/_id"
+          }
+        }
+      },
+      "BookmarkParams": {
+        "description": "BookmarkParams",
+        "type": "object",
+        "properties": {
+          "pageId": {
+            "type": "string",
+            "description": "page ID",
+            "example": "5e07345972560e001761fa63"
+          },
+          "bool": {
+            "type": "boolean",
+            "description": "boolean for bookmark status"
+          }
+        }
+      },
+      "BookmarkInfo": {
+        "description": "BookmarkInfo",
+        "type": "object",
+        "properties": {
+          "sumOfBookmarks": {
+            "type": "number",
+            "description": "how many people bookmarked the page"
+          },
+          "isBookmarked": {
+            "type": "boolean",
+            "description": "Whether the request user bookmarked (will be returned if the user is included in the request)"
+          }
+        }
+      },
+      "CustomizeLayout": {
+        "description": "CustomizeLayout",
+        "type": "object",
+        "properties": {
+          "isContainerFluid": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CustomizeTheme": {
+        "description": "CustomizeTheme",
+        "type": "object",
+        "properties": {
+          "themeType": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomizeFunction": {
+        "description": "CustomizeFunction",
+        "type": "object",
+        "properties": {
+          "isEnabledTimeline": {
+            "type": "boolean"
+          },
+          "isSavedStatesOfTabChanges": {
+            "type": "boolean"
+          },
+          "isEnabledAttachTitleHeader": {
+            "type": "boolean"
+          },
+          "pageLimitationS": {
+            "type": "number"
+          },
+          "pageLimitationM": {
+            "type": "number"
+          },
+          "isEnabledStaleNotification": {
+            "type": "boolean"
+          },
+          "isAllReplyShown": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CustomizeHighlight": {
+        "description": "CustomizeHighlight",
+        "type": "object",
+        "properties": {
+          "styleName": {
+            "type": "string"
+          },
+          "styleBorder": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CustomizeTitle": {
+        "description": "CustomizeTitle",
+        "type": "object",
+        "properties": {
+          "customizeTitle": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomizeHeader": {
+        "description": "CustomizeHeader",
+        "type": "object",
+        "properties": {
+          "customizeHeader": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomizeCss": {
+        "description": "CustomizeCss",
+        "type": "object",
+        "properties": {
+          "customizeCss": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomizeScript": {
+        "description": "CustomizeScript",
+        "type": "object",
+        "properties": {
+          "customizeScript": {
+            "type": "string"
+          }
+        }
+      },
+      "ExportStatus": {
+        "description": "ExportStatus",
+        "type": "object",
+        "properties": {
+          "zipFileStats": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "the property of each file"
+            }
+          },
+          "progressList": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "progress data for each exporting collections"
+            }
+          },
+          "isExporting": {
+            "type": "boolean",
+            "description": "whether the current exporting job exists or not"
+          }
+        }
+      },
+      "HealthcheckInfo": {
+        "description": "Information of middlewares",
+        "type": "object",
+        "properties": {
+          "mongo": {
+            "type": "string",
+            "description": "OK",
+            "example": "OK"
+          },
+          "searchInfo": {
+            "type": "object",
+            "example": {
+              "esVersion": "6.6.1",
+              "esNodeInfos": {
+                "6pnILIqFT_Cjbs4mwQfcmA": {
+                  "name": "6pnILIq",
+                  "version": "6.6.1",
+                  "plugins": [
+                    {
+                      "name": "analysis-icu",
+                      "version": "6.6.1"
+                    },
+                    {
+                      "name": "analysis-kuromoji",
+                      "version": "6.6.1"
+                    },
+                    {
+                      "name": "ingest-geoip",
+                      "version": "6.6.1"
+                    },
+                    {
+                      "name": "ingest-user-agent",
+                      "version": "6.6.1"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "ImportStatus": {
+        "description": "ImportStatus",
+        "type": "object",
+        "properties": {
+          "zipFileStat": {
+            "type": "object",
+            "description": "the property object"
+          },
+          "progressList": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "progress data for each exporting collections"
+            }
+          },
+          "isImporting": {
+            "type": "boolean",
+            "description": "whether the current importing job exists or not"
+          }
+        }
+      },
+      "LineBreakParams": {
+        "description": "LineBreakParams",
+        "type": "object",
+        "properties": {
+          "isEnabledLinebreaks": {
+            "type": "boolean",
+            "description": "enable lineBreak"
+          },
+          "isEnabledLinebreaksInComments": {
+            "type": "boolean",
+            "description": "enable lineBreak in comment"
+          }
+        }
+      },
+      "PresentationParams": {
+        "description": "PresentationParams",
+        "type": "object",
+        "properties": {
+          "pageBreakSeparator": {
+            "type": "number",
+            "description": "number of pageBreakSeparator"
+          },
+          "pageBreakCustomSeparator": {
+            "type": "string",
+            "description": "string of pageBreakCustomSeparator"
+          }
+        }
+      },
+      "XssParams": {
+        "description": "XssParams",
+        "type": "object",
+        "properties": {
+          "isEnabledPrevention": {
+            "type": "boolean",
+            "description": "enable xss"
+          },
+          "xssOption": {
+            "type": "number",
+            "description": "number of xss option"
+          },
+          "tagWhiteList": {
+            "type": "array",
+            "description": "array of tag whiteList",
+            "items": {
+              "type": "string",
+              "description": "tag whitelist"
+            }
+          },
+          "attrWhiteList": {
+            "type": "array",
+            "description": "array of attr whiteList",
+            "items": {
+              "type": "string",
+              "description": "attr whitelist"
+            }
+          }
+        }
+      },
+      "SlackConfigurationParams": {
+        "type": "object",
+        "properties": {
+          "webhookUrl": {
+            "type": "string",
+            "description": "incoming webhooks url"
+          },
+          "isIncomingWebhookPrioritized": {
+            "type": "boolean",
+            "description": "use incoming webhooks even if Slack App settings are enabled"
+          },
+          "slackToken": {
+            "type": "string",
+            "description": "OAuth access token"
+          }
+        }
+      },
+      "UserNotificationParams": {
+        "type": "object",
+        "properties": {
+          "pathPattern": {
+            "type": "string",
+            "description": "path name of wiki"
+          },
+          "channel": {
+            "type": "string",
+            "description": "slack channel name without '#'"
+          }
+        }
+      },
+      "NotifyForPageGrant": {
+        "type": "object",
+        "properties": {
+          "isNotificationForOwnerPageEnabled": {
+            "type": "string",
+            "description": "Whether to notify on owner page"
+          },
+          "isNotificationForGroupPageEnabled": {
+            "type": "string",
+            "description": "Whether to notify on group page"
+          }
+        }
+      },
+      "GlobalNotificationParams": {
+        "type": "object",
+        "properties": {
+          "notifyToType": {
+            "type": "string",
+            "description": "What is type for notify"
+          },
+          "toEmail": {
+            "type": "string",
+            "description": "email for notify"
+          },
+          "slackChannels": {
+            "type": "string",
+            "description": "channels for notify"
+          },
+          "triggerPath": {
+            "type": "string",
+            "description": "trigger path for notify"
+          },
+          "triggerEvents": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "trigger events for notify"
+            }
+          }
+        }
+      },
+      "Page": {
+        "description": "Page",
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "page ID",
+            "example": "5e07345972560e001761fa63"
+          },
+          "__v": {
+            "type": "number",
+            "description": "DB record version",
+            "example": 0
+          },
+          "commentCount": {
+            "type": "number",
+            "description": "count of comments",
+            "example": 3
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "date created at",
+            "example": "2010-01-01T00:00:00.000Z"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/User"
+          },
+          "extended": {
+            "type": "object",
+            "description": "extend data",
+            "example": {}
+          },
+          "grant": {
+            "type": "number",
+            "description": "grant",
+            "example": 1
+          },
+          "grantedUsers": {
+            "type": "array",
+            "description": "granted users",
+            "items": {
+              "type": "string",
+              "description": "user ID"
+            },
+            "example": [
+              "5ae5fccfc5577b0004dbd8ab"
+            ]
+          },
+          "lastUpdateUser": {
+            "$ref": "#/components/schemas/User"
+          },
+          "liker": {
+            "type": "array",
+            "description": "granted users",
+            "items": {
+              "type": "string",
+              "description": "user ID"
+            },
+            "example": []
+          },
+          "path": {
+            "type": "string",
+            "description": "page path",
+            "example": "/"
+          },
+          "redirectTo": {
+            "type": "string",
+            "description": "redirect path",
+            "example": ""
+          },
+          "revision": {
+            "type": "string",
+            "description": "revision ID",
+            "example": [
+              "5ae5fccfc5577b0004dbd8ab"
+            ]
+          },
+          "seenUsers": {
+            "type": "array",
+            "description": "granted users",
+            "items": {
+              "type": "string",
+              "description": "user ID"
+            },
+            "example": [
+              "5ae5fccfc5577b0004dbd8ab"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "status",
+            "enum": [
+              "wip",
+              "published",
+              "deleted",
+              "deprecated"
+            ],
+            "example": "published"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "date updated at",
+            "example": "2010-01-01T00:00:00.000Z"
+          }
+        }
+      },
+      "LikeParams": {
+        "description": "LikeParams",
+        "type": "object",
+        "properties": {
+          "pageId": {
+            "type": "string",
+            "description": "page ID",
+            "example": "5e07345972560e001761fa63"
+          },
+          "bool": {
+            "type": "boolean",
+            "description": "boolean for like status"
+          }
+        }
+      },
+      "LikeInfo": {
+        "description": "LikeInfo",
+        "type": "object",
+        "properties": {
+          "sumOfLikers": {
+            "type": "number",
+            "description": "how many people liked the page"
+          },
+          "isLiked": {
+            "type": "boolean",
+            "description": "Whether the request user liked (will be returned if the user is included in the request)"
+          }
+        }
+      },
+      "PersonalSettings": {
+        "description": "personal settings",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "lang": {
+            "type": "string"
+          },
+          "isEmailPublished": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Passwords": {
+        "description": "passwords for update",
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          },
+          "newPasswordConfirm": {
+            "type": "string"
+          }
+        }
+      },
+      "AssociateUser": {
+        "description": "Ldap account for associate",
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "DisassociateUser": {
+        "description": "Ldap account for disassociate",
+        "type": "object",
+        "properties": {
+          "providerType": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          }
+        }
+      },
+      "Revision": {
+        "description": "Revision",
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "revision ID",
+            "example": "5e0734e472560e001761fa68"
+          },
+          "__v": {
+            "type": "number",
+            "description": "DB record version",
+            "example": 0
+          },
+          "author": {
+            "$ref": "#/components/schemas/User/properties/_id"
+          },
+          "body": {
+            "type": "string",
+            "description": "content body",
+            "example": "# test\n\ntest\n"
+          },
+          "format": {
+            "type": "string",
+            "description": "format",
+            "example": "markdown"
+          },
+          "path": {
+            "type": "string",
+            "description": "path",
+            "example": "/user/alice/test"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "date created at",
+            "example": "2010-01-01T00:00:00.000Z"
+          }
+        }
+      },
+      "GeneralSetting": {
+        "type": "object",
+        "properties": {
+          "restrictGuestMode": {
+            "type": "string",
+            "description": "type of restrictGuestMode"
+          },
+          "pageCompleteDeletionAuthority": {
+            "type": "string",
+            "description": "type of pageDeletionAuthority"
+          },
+          "hideRestrictedByOwner": {
+            "type": "boolean",
+            "description": "enable hide by owner"
+          },
+          "hideRestrictedByGroup": {
+            "type": "boolean",
+            "description": "enable hide by group"
+          }
+        }
+      },
+      "LocalSetting": {
+        "type": "object",
+        "properties": {
+          "isLocalEnabled": {
+            "type": "boolean",
+            "description": "local setting mode"
+          },
+          "registrationMode": {
+            "type": "string",
+            "description": "type of registrationMode"
+          },
+          "registrationWhiteList": {
+            "type": "array",
+            "description": "array of regsitrationList",
+            "items": {
+              "type": "string",
+              "description": "registration whiteList"
+            }
+          }
+        }
+      },
+      "MikanAuthSetting": {
+        "type": "object",
+        "properties": {
+          "mikanApiUrl": {
+            "type": "string",
+            "description": "api url for mikan"
+          },
+          "mikanLoginUrl": {
+            "type": "string",
+            "description": "login url in mikan"
+          },
+          "mikanCookieName": {
+            "type": "string",
+            "description": "token key in cookie for mikan"
+          }
+        }
+      },
+      "LdapAuthSetting": {
+        "type": "object",
+        "properties": {
+          "serverUrl": {
+            "type": "string",
+            "description": "server url for ldap"
+          },
+          "isUserBind": {
+            "type": "boolean",
+            "description": "enable user bind"
+          },
+          "ldapBindDN": {
+            "type": "string",
+            "description": "the query used to bind with the directory service"
+          },
+          "ldapBindDNPassword": {
+            "type": "string",
+            "description": "the password that is entered in the login page will be used to bind"
+          },
+          "ldapSearchFilter": {
+            "type": "string",
+            "description": "the query used to locate the authenticated user"
+          },
+          "ldapAttrMapUsername": {
+            "type": "string",
+            "description": "specification of mappings for username when creating new users"
+          },
+          "isSameUsernameTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the user name matched"
+          },
+          "ldapAttrMapMail": {
+            "type": "string",
+            "description": "specification of mappings for mail address when creating new users"
+          },
+          "ldapAttrMapName": {
+            "type": "string",
+            "description": "Specification of mappings for full name address when creating new users"
+          },
+          "ldapGroupSearchBase": {
+            "type": "string",
+            "description": "the base DN from which to search for groups."
+          },
+          "ldapGroupSearchFilter": {
+            "type": "string",
+            "description": "the query used to filter for groups"
+          },
+          "ldapGroupDnProperty": {
+            "type": "string",
+            "description": "The property of user object to use in dn interpolation of Group Search Filter"
+          }
+        }
+      },
+      "SamlAuthSetting": {
+        "type": "object",
+        "properties": {
+          "samlEntryPoint": {
+            "type": "string",
+            "description": "entry point for saml"
+          },
+          "samlIssuer": {
+            "type": "string",
+            "description": "issuer for saml"
+          },
+          "samlCert": {
+            "type": "string",
+            "description": "certificate for saml"
+          },
+          "samlAttrMapId": {
+            "type": "string",
+            "description": "attribute mapping id for saml"
+          },
+          "samlAttrMapUserName": {
+            "type": "string",
+            "description": "attribute mapping user name for saml"
+          },
+          "samlAttrMapMail": {
+            "type": "string",
+            "description": "attribute mapping mail for saml"
+          },
+          "samlAttrMapFirstName": {
+            "type": "string",
+            "description": "attribute mapping first name for saml"
+          },
+          "samlAttrMapLastName": {
+            "type": "string",
+            "description": "attribute mapping last name for saml"
+          },
+          "isSameUsernameTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the user name matched"
+          },
+          "isSameEmailTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the email matched"
+          },
+          "samlABLCRule": {
+            "type": "string",
+            "description": "ABLCRule for saml"
+          }
+        }
+      },
+      "OidcAuthSetting": {
+        "type": "object",
+        "properties": {
+          "oidcProviderName": {
+            "type": "string",
+            "description": "provider name for oidc"
+          },
+          "oidcIssuerHost": {
+            "type": "string",
+            "description": "issuer host for oidc"
+          },
+          "oidcAuthorizationEndpoint": {
+            "type": "string",
+            "description": "authorization endpoint for oidc"
+          },
+          "oidcTokenEndpoint": {
+            "type": "string",
+            "description": "token endpoint for oidc"
+          },
+          "oidcRevocationEndpoint": {
+            "type": "string",
+            "description": "revocation endpoint for oidc"
+          },
+          "oidcIntrospectionEndpoint": {
+            "type": "string",
+            "description": "introspection endpoint for oidc"
+          },
+          "oidcUserInfoEndpoint": {
+            "type": "string",
+            "description": "userinfo endpoint for oidc"
+          },
+          "oidcEndSessionEndpoint": {
+            "type": "string",
+            "description": "end session endpoint for oidc"
+          },
+          "oidcRegistrationEndpoint": {
+            "type": "string",
+            "description": "registration endpoint for oidc"
+          },
+          "oidcJWKSUri": {
+            "type": "string",
+            "description": "JSON Web Key Set URI for oidc"
+          },
+          "oidcClientId": {
+            "type": "string",
+            "description": "client id for oidc"
+          },
+          "oidcClientSecret": {
+            "type": "string",
+            "description": "client secret for oidc"
+          },
+          "oidcAttrMapId": {
+            "type": "string",
+            "description": "attr map id for oidc"
+          },
+          "oidcAttrMapUserName": {
+            "type": "string",
+            "description": "attr map username for oidc"
+          },
+          "oidcAttrMapName": {
+            "type": "string",
+            "description": "attr map name for oidc"
+          },
+          "oidcAttrMapMail": {
+            "type": "string",
+            "description": "attr map mail for oidc"
+          },
+          "isSameUsernameTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the user name matched"
+          },
+          "isSameEmailTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the email matched"
+          }
+        }
+      },
+      "BasicAuthSetting": {
+        "type": "object",
+        "properties": {
+          "isSameUsernameTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the email matched"
+          }
+        }
+      },
+      "GitHubOAuthSetting": {
+        "type": "object",
+        "properties": {
+          "githubClientId": {
+            "type": "string",
+            "description": "key of comsumer"
+          },
+          "githubClientSecret": {
+            "type": "string",
+            "description": "password of comsumer"
+          },
+          "isSameUsernameTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the email matched"
+          }
+        }
+      },
+      "GoogleOAuthSetting": {
+        "type": "object",
+        "properties": {
+          "googleClientId": {
+            "type": "string",
+            "description": "key of comsumer"
+          },
+          "googleClientSecret": {
+            "type": "string",
+            "description": "password of comsumer"
+          },
+          "isSameUsernameTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the email matched"
+          }
+        }
+      },
+      "TwitterOAuthSetting": {
+        "type": "object",
+        "properties": {
+          "twitterConsumerKey": {
+            "type": "string",
+            "description": "key of comsumer"
+          },
+          "twitterConsumerSecret": {
+            "type": "string",
+            "description": "password of comsumer"
+          },
+          "isSameUsernameTreatedAsIdenticalUser": {
+            "type": "boolean",
+            "description": "local account automatically linked the email matched"
+          }
+        }
+      },
+      "BotType": {
+        "description": "BotType",
+        "properties": {
+          "currentBotType": {
+            "type": "string"
+          }
+        }
+      },
+      "SlackIntegration": {
+        "description": "SlackIntegration",
+        "type": "object",
+        "properties": {
+          "currentBotType": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "description": "User",
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "user ID",
+            "example": "5ae5fccfc5577b0004dbd8ab"
+          },
+          "lang": {
+            "type": "string",
+            "description": "language",
+            "example": "en_US"
+          },
+          "status": {
+            "type": "integer",
+            "description": "status",
+            "example": 0
+          },
+          "admin": {
+            "type": "boolean",
+            "description": "whether the admin",
+            "example": false
+          },
+          "email": {
+            "type": "string",
+            "description": "E-Mail address",
+            "example": "alice@aaa.aaa"
+          },
+          "username": {
+            "type": "string",
+            "description": "username",
+            "example": "alice"
+          },
+          "name": {
+            "type": "string",
+            "description": "full name",
+            "example": "Alice"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "date created at",
+            "example": "2010-01-01T00:00:00.000Z"
+          }
+        }
+      },
+      "PaginateResult": {
+        "description": "PaginateResult",
+        "type": "object",
+        "properties": {
+          "docs": {
+            "type": "array",
+            "description": "Array of documents",
+            "items": {
+              "type": "object"
+            }
+          },
+          "totalDocs": {
+            "type": "number",
+            "description": "Total number of documents in collection that match a query"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Limit that was used"
+          },
+          "hasPrevPage": {
+            "type": "number",
+            "description": "Availability of prev page."
+          },
+          "hasNextPage": {
+            "type": "number",
+            "description": "Availability of next page."
+          },
+          "page": {
+            "type": "number",
+            "description": "Current page number"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total number of pages."
+          },
+          "offset": {
+            "type": "number",
+            "description": "Only if specified or default page/offset values were used"
+          },
+          "prefPage": {
+            "type": "number",
+            "description": "Previous page number if available or NULL"
+          },
+          "nextPage": {
+            "type": "number",
+            "description": "Next page number if available or NULL"
+          },
+          "pagingCounter": {
+            "type": "number",
+            "description": "The starting sl. number of first document."
+          },
+          "meta": {
+            "type": "number",
+            "description": "Object of pagination meta data (Default false)."
+          }
+        }
+      },
+      "V1PaginateResult": {
+        "description": "Paginate result v1",
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer",
+                "description": "Total number of documents in collection that match a query",
+                "example": 35
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Limit that was used",
+                "example": 10
+              },
+              "offset": {
+                "type": "integer",
+                "description": "Only if specified or default page/offset values were used",
+                "example": 20
+              }
+            }
+          },
+          "data": {
+            "type": "object",
+            "description": "Object of pagination meta data."
+          }
+        }
+      },
+      "V1Response": {
+        "description": "Response v1",
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "description": "API is succeeded",
+            "example": true
+          }
+        }
+      },
+      "ErrorV3": {
+        "description": "Error for APIv3",
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "error message"
+          },
+          "code": {
+            "type": "string",
+            "example": "someapi-error-with-something"
+          },
+          "stack": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "responses": {
+      "403": {
+        "description": "Forbidden"
+      },
+      "500": {
+        "description": "Internal Server Error"
+      }
+    }
+  },
+  "paths": {
+    "/admin-home/": {
+      "get": {
+        "tags": [
+          "AdminHome"
+        ],
+        "operationId": "getAdminHome",
+        "summary": "/admin-home",
+        "description": "Get adminHome parameters",
+        "responses": {
+          "200": {
+            "description": "params of adminHome",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "adminHomeParams": {
+                      "type": "object",
+                      "description": "adminHome params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app-settings": {
+      "get": {
+        "tags": [
+          "AppSettings"
+        ],
+        "operationId": "getAppSettings",
+        "summary": "/app-settings",
+        "description": "get app setting params",
+        "responses": {
+          "200": {
+            "description": "Resources are available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "appSettingsParams": {
+                      "type": "object",
+                      "description": "app settings params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app-settings/app-setting": {
+      "put": {
+        "tags": [
+          "AppSettings"
+        ],
+        "summary": "/app-settings/app-setting",
+        "operationId": "updateAppSettings",
+        "description": "Update app setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppSettingParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update app setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppSettingParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app-settings/site-url-setting": {
+      "put": {
+        "tags": [
+          "AppSettings"
+        ],
+        "operationId": "updateAppSettingSiteUrlSetting",
+        "summary": "/app-settings/site-url-setting",
+        "description": "Update site url setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiteUrlSettingParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update site url setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteUrlSettingParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app-settings/smtp-setting": {
+      "put": {
+        "tags": [
+          "AppSettings"
+        ],
+        "operationId": "updateAppSettingSmtpSetting",
+        "summary": "/app-settings/smtp-setting",
+        "description": "Update smtp setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SmtpSettingParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update smtp setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmtpSettingParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app-settings/smtp-test": {
+      "post": {
+        "tags": [
+          "AppSettings"
+        ],
+        "operationId": "postSmtpTest",
+        "summary": "/app-settings/smtp-setting",
+        "description": "Send test mail for smtp",
+        "responses": {
+          "200": {
+            "description": "Succeeded to send test mail for smtp"
+          }
+        }
+      }
+    },
+    "/app-settings/ses-setting": {
+      "put": {
+        "tags": [
+          "AppSettings"
+        ],
+        "operationId": "updateAppSettingSesSetting",
+        "summary": "/app-settings/ses-setting",
+        "description": "Update ses setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SesSettingParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update ses setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesSettingParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app-settings/file-upload-settings": {
+      "put": {
+        "tags": [
+          "AppSettings"
+        ],
+        "operationId": "updateAppSettingFileUploadSetting",
+        "summary": "/app-settings/file-upload-setting",
+        "description": "Update fileUploadSetting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadSettingParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update fileUploadSetting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadSettingParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/app-settings/plugin-setting": {
+      "put": {
+        "tags": [
+          "AppSettings"
+        ],
+        "operationId": "updateAppSettingPluginSetting",
+        "summary": "/app-settings/plugin-setting",
+        "description": "Update plugin setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PluginSettingParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update plugin setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PluginSettingParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attachment/list": {
+      "get": {
+        "tags": [
+          "Attachment"
+        ],
+        "description": "Get attachment list",
+        "responses": {
+          "200": {
+            "description": "Return attachment list"
+          }
+        },
+        "parameters": [
+          {
+            "name": "page_id",
+            "in": "query",
+            "required": true,
+            "description": "page id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/bookmarks/info": {
+      "get": {
+        "tags": [
+          "Bookmarks"
+        ],
+        "summary": "/bookmarks/info",
+        "description": "Get bookmarked info",
+        "operationId": "getBookmarkedInfo",
+        "parameters": [
+          {
+            "name": "pageId",
+            "in": "query",
+            "description": "page id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to get bookmark info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookmarkInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookmarks/{userId}": {
+      "get": {
+        "tags": [
+          "Bookmarks"
+        ],
+        "summary": "/bookmarks/{userId}",
+        "description": "Get my bookmarked status",
+        "operationId": "getMyBookmarkedStatus",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "user id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "selected page number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "page item limit",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "page item offset",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to get my bookmarked status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bookmark"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookmarks": {
+      "put": {
+        "tags": [
+          "Bookmarks"
+        ],
+        "summary": "/bookmarks",
+        "description": "Update bookmarked status",
+        "operationId": "updateBookmarkedStatus",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookmarkParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update bookmarked status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bookmark"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting": {
+      "get": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "getCustomizeSetting",
+        "summary": "/customize-setting",
+        "description": "Get customize parameters",
+        "responses": {
+          "200": {
+            "description": "params of customize",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "customizeParams": {
+                      "type": "object",
+                      "description": "customize params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/layout": {
+      "get": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "getLayoutCustomizeSetting",
+        "summary": "/customize-setting/layout",
+        "description": "Get layout",
+        "responses": {
+          "200": {
+            "description": "Succeeded to get layout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeLayout"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "updateLayoutCustomizeSetting",
+        "summary": "/customize-setting/layout",
+        "description": "Update layout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomizeLayout"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update layout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeLayout"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/theme/asset-path": {
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "getThemeAssetPath",
+        "summary": "/customize-setting/theme/asset-path",
+        "description": "Get theme asset path",
+        "parameters": [
+          {
+            "name": "themeName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to get theme asset path",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "assetPath": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/theme": {
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "updateThemeCustomizeSetting",
+        "summary": "/customize-setting/theme",
+        "description": "Update theme",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomizeTheme"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update theme",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeTheme"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/function": {
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "updateFunctionCustomizeSetting",
+        "summary": "/customize-setting/function",
+        "description": "Update function",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomizeFunction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update function",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeFunction"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/highlight": {
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "updateHighlightCustomizeSetting",
+        "summary": "/customize-setting/highlight",
+        "description": "Update highlight",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomizeHighlight"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update highlight",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeHighlight"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/customizeTitle": {
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "updateCustomizeTitleCustomizeSetting",
+        "summary": "/customize-setting/customizeTitle",
+        "description": "Update customizeTitle",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomizeTitle"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update customizeTitle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeTitle"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/customizeHeader": {
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "updateCustomizeHeaderCustomizeSetting",
+        "summary": "/customize-setting/customizeHeader",
+        "description": "Update customizeHeader",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomizeHeader"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update customize header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeHeader"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/customizeCss": {
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "updateCustomizeCssCustomizeSetting",
+        "summary": "/customize-setting/customizeCss",
+        "description": "Update customizeCss",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomizeCss"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update customize css",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeCss"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customize-setting/customizeScript": {
+      "put": {
+        "tags": [
+          "CustomizeSetting"
+        ],
+        "operationId": "updateCustomizeScriptCustomizeSetting",
+        "summary": "/customize-setting/customizeScript",
+        "description": "Update customizeScript",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomizeScript"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update customize script",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomizeScript"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export/status": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "operationId": "getExportStatus",
+        "summary": "/export/status",
+        "description": "get properties of stored zip files for export",
+        "responses": {
+          "200": {
+            "description": "the zip file statuses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/ExportStatus"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export": {
+      "post": {
+        "tags": [
+          "Export"
+        ],
+        "operationId": "createExport",
+        "summary": "/export",
+        "description": "generate zipped jsons for collections",
+        "responses": {
+          "200": {
+            "description": "a zip file is generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/ExportStatus"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export/{fileName}": {
+      "delete": {
+        "tags": [
+          "Export"
+        ],
+        "operationId": "deleteExport",
+        "summary": "/export/{fileName}",
+        "description": "delete the file",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "path",
+            "description": "the file name of zip file",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "the file is deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/healthcheck": {
+      "get": {
+        "tags": [
+          "Healthcheck"
+        ],
+        "operationId": "getHealthcheck",
+        "summary": "/healthcheck",
+        "description": "Check whether the server is healthy or not",
+        "parameters": [
+          {
+            "name": "checkServices",
+            "in": "query",
+            "description": "The list of services to check health",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "mongo",
+                  "search"
+                ]
+              }
+            }
+          },
+          {
+            "name": "strictly",
+            "in": "query",
+            "description": "Check services and responds 503 if either of these is unhealthy",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "info": {
+                      "$ref": "#/components/schemas/HealthcheckInfo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unhealthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "description": "Errors",
+                      "items": {
+                        "$ref": "#/components/schemas/ErrorV3"
+                      }
+                    },
+                    "info": {
+                      "$ref": "#/components/schemas/HealthcheckInfo"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/import": {
+      "get": {
+        "tags": [
+          "Import"
+        ],
+        "operationId": "getImportSettingsParams",
+        "summary": "/import",
+        "description": "Get import settings params",
+        "responses": {
+          "200": {
+            "description": "import settings params",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "importSettingsParams": {
+                      "type": "object",
+                      "description": "import settings params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Import"
+        ],
+        "operationId": "executeImport",
+        "summary": "/import",
+        "description": "import a collection from a zipped json",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fileName": {
+                    "description": "the file name of zip file",
+                    "type": "string"
+                  },
+                  "collections": {
+                    "description": "collection names to import",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "optionsMap": {
+                    "description": "the map object of importing option that have collection name as the key\n",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "mode": {
+                          "description": "Import mode",
+                          "type": "string",
+                          "enum": [
+                            "insert",
+                            "upsert",
+                            "flushAndInsert"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Import process has requested"
+          }
+        }
+      }
+    },
+    "/import/status": {
+      "get": {
+        "tags": [
+          "Import"
+        ],
+        "operationId": "getImportStatus",
+        "summary": "/import/status",
+        "description": "Get properties of stored zip files for import",
+        "responses": {
+          "200": {
+            "description": "the zip file statuses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "$ref": "#/components/schemas/ImportStatus"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/import/upload": {
+      "post": {
+        "tags": [
+          "Import"
+        ],
+        "operationId": "uploadImport",
+        "summary": "/import/upload",
+        "description": "upload a zip file",
+        "responses": {
+          "200": {
+            "description": "the file is uploaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "meta": {
+                      "type": "object",
+                      "description": "the meta data of the uploaded file"
+                    },
+                    "fileName": {
+                      "type": "string",
+                      "description": "the base name of the uploaded file"
+                    },
+                    "fileStats": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "description": "the property of each extracted file"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/import/all": {
+      "delete": {
+        "tags": [
+          "Import"
+        ],
+        "operationId": "deleteImportAll",
+        "summary": "/import/all",
+        "description": "Delete all zip files",
+        "responses": {
+          "200": {
+            "description": "all files are deleted"
+          }
+        }
+      }
+    },
+    "/markdown-setting": {
+      "get": {
+        "tags": [
+          "MarkDownSetting"
+        ],
+        "operationId": "getMarkdownSetting",
+        "summary": "/markdown-setting",
+        "description": "Get markdown parameters",
+        "responses": {
+          "200": {
+            "description": "params of markdown",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "markdownParams": {
+                      "type": "object",
+                      "description": "markdown params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/markdown-setting/lineBreak": {
+      "put": {
+        "tags": [
+          "MarkDownSetting"
+        ],
+        "operationId": "updateLineBreakMarkdownSetting",
+        "summary": "/markdown-setting/lineBreak",
+        "description": "Update lineBreak setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LineBreakParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update lineBreak setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LineBreakParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/markdown-setting/presentation": {
+      "put": {
+        "tags": [
+          "MarkDownSetting"
+        ],
+        "operationId": "updatePresentationMarkdownSetting",
+        "summary": "/markdown-setting/presentation",
+        "description": "Update presentation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PresentationParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update presentation setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PresentationParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/markdown-setting/xss": {
+      "put": {
+        "tags": [
+          "MarkDownSetting"
+        ],
+        "operationId": "updateXssMarkdownSetting",
+        "summary": "/markdown-setting/xss",
+        "description": "Update xss",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/XssParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update xss setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/XssParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/mongo/collections": {
+      "get": {
+        "tags": [
+          "Mongo"
+        ],
+        "operationId": "getMongoCollections",
+        "summary": "/mongo/collections",
+        "description": "get mongodb collections names",
+        "responses": {
+          "200": {
+            "description": "a list of collections in mongoDB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "collections": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification-setting/": {
+      "get": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "Get notification paramators",
+        "responses": {
+          "200": {
+            "description": "params of notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "notificationParams": {
+                      "type": "object",
+                      "description": "notification params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification-setting/slack-configuration": {
+      "put": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "Update slack configuration setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlackConfigurationParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update slack configuration setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SlackConfigurationParams"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification-setting/user-notification": {
+      "post": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "add user notification setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserNotificationParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to add user notification setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createdUser": {
+                      "type": "object",
+                      "description": "user who set notification"
+                    },
+                    "userNotifications": {
+                      "type": "object",
+                      "description": "user trigger notifications for updated"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification-setting/user-notification/{id}": {
+      "delete": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "delete user trigger notification pattern",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of user trigger notification",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to delete user trigger notification pattern",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deletedNotificaton": {
+                      "type": "object",
+                      "description": "deleted notification"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification-setting/global-notification": {
+      "post": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "add global notification",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GlobalNotificationParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to add global notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createdNotification": {
+                      "type": "object",
+                      "description": "notification param created"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification-setting/global-notification/{id}": {
+      "put": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "update global notification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "global notification id for updated",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GlobalNotificationParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update global notification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createdNotification": {
+                      "type": "object",
+                      "description": "notification param updated"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "delete global notification pattern",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of global notification",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to delete global notification pattern",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deletedNotificaton": {
+                      "type": "object",
+                      "description": "deleted notification"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification-setting/notify-for-page-grant": {
+      "put": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "Update settings for notify for page grant",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotifyForPageGrant"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to settings for notify for page grant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotifyForPageGrant"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notification-setting/global-notification/{id}/enabled": {
+      "put": {
+        "tags": [
+          "NotificationSetting"
+        ],
+        "description": "toggle enabled global notification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "notification id for updated",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "isEnabled": {
+                    "type": "boolean",
+                    "description": "is notification enabled"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to delete global notification pattern",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "deletedNotificaton": {
+                      "type": "object",
+                      "description": "notification id for updated"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/page/likes": {
+      "put": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "/page/likes",
+        "description": "Update liked status",
+        "operationId": "updateLikedStatus",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LikeParams"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update liked status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/page/like-info": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "/page/like-info",
+        "description": "Get like info",
+        "operationId": "getLikeInfo",
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "query",
+            "description": "page id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to get bookmark info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LikeInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pages/export": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "description": "return page's markdown",
+        "responses": {
+          "200": {
+            "description": "Return page's markdown"
+          }
+        }
+      }
+    },
+    "/page/exist-paths": {
+      "get": {
+        "tags": [
+          "Page"
+        ],
+        "summary": "/page/exist-paths",
+        "description": "Get already exist paths",
+        "operationId": "getAlreadyExistPaths",
+        "parameters": [
+          {
+            "name": "fromPath",
+            "in": "query",
+            "description": "old parent path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toPath",
+            "in": "query",
+            "description": "new parent path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to retrieve pages.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "existPaths": {
+                      "type": "object",
+                      "description": "Paths are already exist in DB"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/pages/create": {
+      "post": {
+        "tags": [
+          "Pages"
+        ],
+        "operationId": "createPage",
+        "description": "Create page",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "Text of page"
+                  },
+                  "path": {
+                    "$ref": "#/components/schemas/Page/properties/path"
+                  },
+                  "grant": {
+                    "$ref": "#/components/schemas/Page/properties/grant"
+                  }
+                },
+                "required": [
+                  "body",
+                  "path"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Succeeded to create page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "page path is already existed"
+          }
+        }
+      }
+    },
+    "/pages/recent": {
+      "get": {
+        "tags": [
+          "Pages"
+        ],
+        "description": "Get recently updated pages",
+        "responses": {
+          "200": {
+            "description": "Return pages recently updated"
+          }
+        }
+      }
+    },
+    "/pages/rename": {
+      "post": {
+        "tags": [
+          "Pages"
+        ],
+        "operationId": "renamePage",
+        "description": "Rename page",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "pageId": {
+                    "$ref": "#/components/schemas/Page/properties/_id"
+                  },
+                  "path": {
+                    "$ref": "#/components/schemas/Page/properties/path"
+                  },
+                  "revisionId": {
+                    "type": "string",
+                    "description": "revision ID",
+                    "example": "5e07345972560e001761fa63"
+                  },
+                  "newPagePath": {
+                    "type": "string",
+                    "description": "new path",
+                    "example": "/user/alice/new_test"
+                  },
+                  "isRenameRedirect": {
+                    "type": "boolean",
+                    "description": "whether redirect page"
+                  },
+                  "isRemainMetadata": {
+                    "type": "boolean",
+                    "description": "whether remain meta data"
+                  },
+                  "isRecursively": {
+                    "type": "boolean",
+                    "description": "whether rename page with descendants"
+                  }
+                },
+                "required": [
+                  "pageId",
+                  "revisionId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to rename page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "page id is invalid"
+          },
+          "409": {
+            "description": "page path is already existed"
+          }
+        }
+      }
+    },
+    "/pages/empty-trash": {
+      "delete": {
+        "tags": [
+          "Pages"
+        ],
+        "description": "empty trash",
+        "responses": {
+          "200": {
+            "description": "Succeeded to remove all trash pages"
+          }
+        }
+      }
+    },
+    "/pages/duplicate": {
+      "post": {
+        "tags": [
+          "Pages"
+        ],
+        "operationId": "duplicatePage",
+        "description": "Duplicate page",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "pageId": {
+                    "$ref": "#/components/schemas/Page/properties/_id"
+                  },
+                  "pageNameInput": {
+                    "$ref": "#/components/schemas/Page/properties/path"
+                  },
+                  "isRecursively": {
+                    "type": "boolean",
+                    "description": "whether duplicate page with descendants"
+                  }
+                },
+                "required": [
+                  "pageId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to duplicate page.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden to duplicate page."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/pages/subordinated-list": {
+      "get": {
+        "tags": [
+          "Pages"
+        ],
+        "operationId": "subordinatedList",
+        "description": "Get subordinated pages",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "description": "Parent path of search",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit of acquisitions",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to retrieve pages.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "subordinatedPaths": {
+                      "type": "object",
+                      "description": "descendants page"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/personal-setting": {
+      "get": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "getPersonalSetting",
+        "summary": "/personal-setting",
+        "description": "Get personal parameters",
+        "responses": {
+          "200": {
+            "description": "params of personal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "currentUser": {
+                      "type": "object",
+                      "description": "personal params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "updatePersonalSetting",
+        "summary": "/personal-setting",
+        "description": "Update personal setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonalSettings"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "params of personal",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "currentUser": {
+                      "type": "object",
+                      "description": "personal params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/is-password-set": {
+      "get": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "getIsPasswordSet",
+        "summary": "/personal-setting",
+        "description": "Get whether a password has been set",
+        "responses": {
+          "200": {
+            "description": "Whether a password has been set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "isPasswordSet": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/image-type": {
+      "put": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "putUserImageType",
+        "summary": "/personal-setting/image-type",
+        "description": "Update user image type",
+        "responses": {
+          "200": {
+            "description": "succeded to update user image type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "user data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/external-accounts": {
+      "get": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "getExternalAccounts",
+        "summary": "/personal-setting/external-accounts",
+        "description": "Get external accounts that linked current user",
+        "responses": {
+          "200": {
+            "description": "external accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "externalAccounts": {
+                      "type": "object",
+                      "description": "array of external accounts"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/password": {
+      "put": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "putUserPassword",
+        "summary": "/personal-setting/password",
+        "description": "Update user password",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Passwords"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "user password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "user data updated"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/api-token": {
+      "put": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "putUserApiToken",
+        "summary": "/personal-setting/api-token",
+        "description": "Update user api token",
+        "responses": {
+          "200": {
+            "description": "succeded to update user api token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "user data"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/associate-ldap": {
+      "put": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "associateLdapAccount",
+        "summary": "/personal-setting/associate-ldap",
+        "description": "associate Ldap account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssociateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "succeded to associate Ldap account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "associateUser": {
+                      "type": "object",
+                      "description": "Ldap account associate to me"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/disassociate-ldap": {
+      "put": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "disassociateLdapAccount",
+        "summary": "/personal-setting/disassociate-ldap",
+        "description": "disassociate Ldap account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisassociateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "succeded to disassociate Ldap account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "disassociateUser": {
+                      "type": "object",
+                      "description": "Ldap account disassociate to me"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/associate-mikan": {
+      "put": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "associateMikanAccount",
+        "summary": "/personal-setting/associate-mikan",
+        "description": "associate Mikan account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssociateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "succeded to associate Mikan account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "associateUser": {
+                      "type": "object",
+                      "description": "Mikan account associate to me"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/personal-setting/disassociate-mikan": {
+      "put": {
+        "tags": [
+          "PersonalSetting"
+        ],
+        "operationId": "disassociateMikanAccount",
+        "summary": "/personal-setting/disassociate-mikan",
+        "description": "disassociate Mikan account",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisassociateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "succeded to disassociate Mikan account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "disassociateUser": {
+                      "type": "object",
+                      "description": "Mikan account disassociate to me"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/revisions/list": {
+      "get": {
+        "tags": [
+          "Revisions"
+        ],
+        "description": "Get revisions by page id",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pageId",
+            "schema": {
+              "type": "string",
+              "description": "page id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "selected page number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "page item limit",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return revisions belong to page"
+          }
+        }
+      }
+    },
+    "/revisions/{id}": {
+      "get": {
+        "tags": [
+          "Revisions"
+        ],
+        "description": "Get one revision by id",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pageId",
+            "required": true,
+            "description": "page id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "revision id",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return revision"
+          }
+        }
+      }
+    },
+    "/search/indices": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "/search/indices",
+        "description": "Get current status of indices",
+        "responses": {
+          "200": {
+            "description": "Status of indices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "info": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "/search/indices",
+        "description": "Operate indices",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "operation": {
+                    "type": "string",
+                    "description": "Operation type against to indices > * `normalize` - Normalize indices * `rebuild` - Rebuild indices",
+                    "enum": [
+                      "normalize",
+                      "rebuild"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return 200"
+          }
+        }
+      }
+    },
+    "/search/connection": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "/search/connection",
+        "description": "Reconnect to Elasticsearch",
+        "responses": {
+          "200": {
+            "description": "Successfully connected"
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/": {
+      "get": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Get security paramators",
+        "responses": {
+          "200": {
+            "description": "params of security",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "securityParams": {
+                      "type": "object",
+                      "description": "security params"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/authentication/enabled": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update authentication isEnabled",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "isEnabled": {
+                    "type": "boolean"
+                  },
+                  "target": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to enable authentication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "updated param"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/authentication": {
+      "get": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Get setup strategies for passport",
+        "responses": {
+          "200": {
+            "description": "params of setup strategies",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "setupStrategies": {
+                      "type": "array",
+                      "description": "setup strategies list",
+                      "items": {
+                        "type": "string",
+                        "description": "setup strategie"
+                      },
+                      "example": [
+                        "local"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/general-setting": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update GeneralSetting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GeneralSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update general Setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/all-share-links": {
+      "get": {
+        "tags": [
+          "ShareLinkSettings",
+          "apiv3"
+        ],
+        "description": "Get All ShareLinks at Share Link Setting",
+        "responses": {
+          "200": {
+            "description": "all share links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "securityParams": {
+                      "type": "object",
+                      "description": "suceed to get all share links"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ShareLinkSettings",
+          "apiv3"
+        ],
+        "description": "Delete All ShareLinks at Share Link Setting",
+        "responses": {
+          "200": {
+            "description": "succeed to delete all share links"
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/local-setting": {
+      "put": {
+        "tags": [
+          "LocalSetting",
+          "apiv3"
+        ],
+        "description": "Update LocalSetting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update local Setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LocalSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/mikan": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update Mikan setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MikanAuthSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update Mikan setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MikanAuthSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/ldap": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update LDAP setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LdapAuthSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update LDAP setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LdapAuthSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/saml": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update SAML setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SamlAuthSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update SAML setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SamlAuthSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/oidc": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update OpenID Connect setting",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcAuthSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update OpenID Connect setting",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcAuthSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/basic": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update basic",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BasicAuthSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update basic",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicAuthSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/google-oauth": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update google OAuth",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleOAuthSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to google OAuth",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoogleOAuthSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/github-oauth": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update github OAuth",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GitHubOAuthSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to github OAuth",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitHubOAuthSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_api/v3/security-setting/twitter-oauth": {
+      "put": {
+        "tags": [
+          "SecuritySetting",
+          "apiv3"
+        ],
+        "description": "Update twitter OAuth",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TwitterOAuthSetting"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to update twitter OAuth",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TwitterOAuthSetting"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/share-links/": {
+      "get": {
+        "tags": [
+          "ShareLink"
+        ],
+        "description": "get share links",
+        "parameters": [
+          {
+            "name": "relatedPage",
+            "in": "query",
+            "required": true,
+            "description": "page id of share link",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to get share links"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ShareLink"
+        ],
+        "description": "Create new share link",
+        "parameters": [
+          {
+            "name": "relatedPage",
+            "in": "query",
+            "required": true,
+            "description": "page id of share link",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expiredAt",
+            "in": "query",
+            "description": "expiration date of share link",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "description of share link",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to create one share link"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ShareLinks"
+        ],
+        "summary": "/share-links/",
+        "description": "delete all share links related one page",
+        "parameters": [
+          {
+            "name": "relatedPage",
+            "in": "query",
+            "required": true,
+            "description": "page id of share link",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to delete o all share links related one page"
+          }
+        }
+      }
+    },
+    "/share-links/all": {
+      "delete": {
+        "tags": [
+          "ShareLinks"
+        ],
+        "description": "delete all share links",
+        "responses": {
+          "200": {
+            "description": "Succeeded to remove all share links"
+          }
+        }
+      }
+    },
+    "/share-links/{id}": {
+      "delete": {
+        "tags": [
+          "ShareLinks"
+        ],
+        "description": "delete one share link related one page",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of share link",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Succeeded to delete one share link"
+          }
+        }
+      }
+    },
+    "/slack-integration-settings/": {
+      "get": {
+        "tags": [
+          "SlackBotSettingParams"
+        ],
+        "operationId": "getSlackBotSettingParams",
+        "summary": "get /slack-integration",
+        "description": "Get current settings and connection statuses.",
+        "responses": {
+          "200": {
+            "description": "Succeeded to get info."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "SlackIntegration"
+        ],
+        "operationId": "putSlackIntegration",
+        "summary": "put /slack-integration",
+        "description": "Put SlackIntegration setting.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlackIntegration"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to put Slack Integration setting."
+          }
+        }
+      }
+    },
+    "/slack-integration-settings/bot-type/": {
+      "put": {
+        "tags": [
+          "botType"
+        ],
+        "operationId": "putBotType",
+        "summary": "/slack-integration/bot-type",
+        "description": "Put botType setting.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BotType"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to put botType setting."
+          }
+        }
+      }
+    },
+    "/slack-integration/bot-type/": {
+      "delete": {
+        "tags": [
+          "botType"
+        ],
+        "operationId": "deleteBotType",
+        "summary": "/slack-integration/bot-type",
+        "description": "Delete botType setting.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BotType"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to delete botType setting."
+          }
+        }
+      }
+    },
+    "/slack-integration-settings/without-proxy/update-settings/": {
+      "put": {
+        "tags": [
+          "UpdateWithoutProxySettings"
+        ],
+        "operationId": "putWithoutProxySettings",
+        "summary": "update customBotWithoutProxy settings",
+        "description": "Update customBotWithoutProxy setting.",
+        "responses": {
+          "200": {
+            "description": "Succeeded to put CustomBotWithoutProxy setting."
+          }
+        }
+      }
+    },
+    "/slack-integration-settings/slack-app-integrations": {
+      "put": {
+        "tags": [
+          "SlackIntegration"
+        ],
+        "operationId": "putSlackAppIntegrations",
+        "summary": "/slack-integration",
+        "description": "Generate SlackAppIntegrations",
+        "responses": {
+          "200": {
+            "description": "Succeeded to create slack app integration"
+          }
+        }
+      }
+    },
+    "/slack-integration-settings/regenerate-tokens": {
+      "put": {
+        "tags": [
+          "SlackIntegration"
+        ],
+        "operationId": "putRegenerateTokens",
+        "summary": "/slack-integration",
+        "description": "Regenerate SlackAppTokens",
+        "responses": {
+          "200": {
+            "description": "Succeeded to regenerate slack app tokens"
+          }
+        }
+      }
+    },
+    "/slack-integration-settings/slack-app-integration": {
+      "delete": {
+        "tags": [
+          "SlackIntegration"
+        ],
+        "operationId": "deleteAccessTokens",
+        "summary": "delete accessTokens",
+        "description": "Delete accessTokens",
+        "responses": {
+          "200": {
+            "description": "Succeeded to delete access tokens for slack"
+          }
+        }
+      }
+    },
+    "/slack-integration-settings/with-proxy/relation-test": {
+      "post": {
+        "tags": [
+          "botType"
+        ],
+        "operationId": "postRelationTest",
+        "summary": "/slack-integration/bot-type",
+        "description": "Delete botType setting.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "slackAppIntegrationId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to delete botType setting."
+          }
+        }
+      }
+    },
+    "/slack-integration-settings/without-proxy/test": {
+      "post": {
+        "tags": [
+          "botType"
+        ],
+        "operationId": "postTest",
+        "summary": "test the connection",
+        "description": "Test the connection with slack work space.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "testChannel": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succeeded to connect to slack work space."
+          }
+        }
+      }
+    },
+    "/statistics/user": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "operationId": "getStatisticsUser",
+        "summary": "/statistics/user",
+        "description": "Get statistics for user",
+        "responses": {
+          "200": {
+            "description": "Statistics for user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "description": "Statistics for all user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-group-relations": {
+      "get": {
+        "tags": [
+          "UserGroupRelation"
+        ],
+        "operationId": "listUserGroupRelations",
+        "summary": "/user-group-relations",
+        "description": "Gets the user group relations",
+        "responses": {
+          "200": {
+            "description": "user group relations are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userGroupRelations": {
+                      "type": "object",
+                      "description": "contains arrays user objects related"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-groups": {
+      "get": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "getUserGroup",
+        "summary": "/user-groups",
+        "description": "Get usergroups",
+        "responses": {
+          "200": {
+            "description": "usergroups are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userGroups": {
+                      "type": "object",
+                      "description": "a result of `UserGroup.find`"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "createUserGroup",
+        "summary": "/user-groups",
+        "description": "Adds userGroup",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "name of the userGroup trying to be added"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "userGroup is added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userGroup": {
+                      "type": "object",
+                      "description": "A result of `UserGroup.createGroupByName`"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-groups/{id}": {
+      "delete": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "deleteUserGroup",
+        "summary": "/user-groups/{id}",
+        "description": "Deletes userGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of userGroup",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "actionName",
+            "in": "query",
+            "description": "name of action",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "transferToUserGroupId",
+            "in": "query",
+            "description": "userGroup id that will be transferred to",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "userGroup is removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userGroups": {
+                      "type": "object",
+                      "description": "A result of `UserGroup.removeCompletelyById`"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "updateUserGroups",
+        "summary": "/user-groups/{id}",
+        "description": "Update userGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of userGroup",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "userGroup is updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userGroup": {
+                      "type": "object",
+                      "description": "A result of `UserGroup.updateName`"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-groups/{id}/users": {
+      "get": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "getUsersUserGroups",
+        "summary": "/user-groups/{id}/users",
+        "description": "Get users related to the userGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of userGroup",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "users are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "description": "user objects"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "addUserUserGroups",
+        "summary": "/user-groups/{id}/users",
+        "description": "Add a user to the userGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of userGroup",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a user is added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "description": "the user added to the group"
+                    },
+                    "userGroup": {
+                      "type": "object",
+                      "description": "the group to which a user was added"
+                    },
+                    "userGroupRelation": {
+                      "type": "object",
+                      "description": "the associative entity between user and userGroup"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "deleteUsersUserGroups",
+        "summary": "/user-groups/{id}/users",
+        "description": "remove a user from the userGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of userGroup",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a user was removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "description": "the user removed from the group"
+                    },
+                    "userGroup": {
+                      "type": "object",
+                      "description": "the group from which a user was removed"
+                    },
+                    "userGroupRelation": {
+                      "type": "object",
+                      "description": "the associative entity between user and userGroup"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-groups/{id}/unrelated-users": {
+      "get": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "getUnrelatedUsersUserGroups",
+        "summary": "/user-groups/{id}/unrelated-users",
+        "description": "Get users unrelated to the userGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of userGroup",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "users are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "description": "user objects"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-groups/{id}/user-group-relations": {
+      "get": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "getUserGroupRelationsUserGroups",
+        "summary": "/user-groups/{id}/user-group-relations",
+        "description": "Get the user group relations for the userGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of userGroup",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user group relations are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userGroupRelations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "description": "userGroupRelation objects"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user-groups/{id}/pages": {
+      "get": {
+        "tags": [
+          "UserGroup"
+        ],
+        "operationId": "getPagesUserGroups",
+        "summary": "/user-groups/{id}/pages",
+        "description": "Get closed pages for the userGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of userGroup",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "pages are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "description": "page objects"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "listUsers",
+        "summary": "/users",
+        "description": "Select selected columns from users order by asc or desc",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "page number",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "selectedStatusList",
+            "in": "query",
+            "description": "status list",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchText",
+            "in": "query",
+            "description": "For incremental search value from input box",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "asc or desc",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "sorting column",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "users are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "paginateResult": {
+                      "$ref": "#/components/schemas/PaginateResult"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{id}/recent": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "recent created page of user id",
+        "summary": "/usersIdReacent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "users recent created pages are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "paginateResult": {
+                      "$ref": "#/components/schemas/PaginateResult"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/invite": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "inviteUser",
+        "summary": "/users/invite",
+        "description": "Create new users and send Emails",
+        "parameters": [
+          {
+            "name": "shapedEmailList",
+            "in": "query",
+            "description": "Invitation emailList",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "sendEmail",
+            "in": "query",
+            "description": "Whether to send mail",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inviting user success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "createdUserList": {
+                      "type": "object",
+                      "description": "Users successfully created"
+                    },
+                    "existingEmailList": {
+                      "type": "object",
+                      "description": "Users email that already exists"
+                    },
+                    "failedEmailList": {
+                      "type": "object",
+                      "description": "Users email that failed to create or send email"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/giveAdmin": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "giveAdminUser",
+        "summary": "/users/{id}/giveAdmin",
+        "description": "Give user admin",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of user for admin",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Give user admin success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "data of admin user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/removeAdmin": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "removeAdminUser",
+        "summary": "/users/{id}/removeAdmin",
+        "description": "Remove user admin",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of user for removing admin",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Remove user admin success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "data of removed admin user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/activate": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "activateUser",
+        "summary": "/users/{id}/activate",
+        "description": "Activate user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of activate user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activationg user success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "data of activate user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/deactivate": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "deactivateUser",
+        "summary": "/users/{id}/deactivate",
+        "description": "Deactivate user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of deactivate user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deactivationg user success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "data of deactivate user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/remove": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "removeUser",
+        "summary": "/users/{id}/remove",
+        "description": "Delete user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of delete user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleting user success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "data of delete user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/external-accounts": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "listExternalAccountsUsers",
+        "summary": "/users/external-accounts",
+        "description": "Get external-account",
+        "responses": {
+          "200": {
+            "description": "external-account are fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "paginateResult": {
+                      "$ref": "#/components/schemas/PaginateResult"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/external-accounts/{id}/remove": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "removeExternalAccountUser",
+        "summary": "/users/external-accounts/{id}/remove",
+        "description": "Delete ExternalAccount",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "id of ExternalAccount",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "External Account is removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "externalAccount": {
+                      "type": "object",
+                      "description": "A result of `ExtenralAccount.findByIdAndRemove`"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/update.imageUrlCache": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "update.imageUrlCache",
+        "summary": "/users/update.imageUrlCache",
+        "description": "update imageUrlCache",
+        "parameters": [
+          {
+            "name": "userIds",
+            "in": "query",
+            "description": "user id list",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success creating imageUrlCached",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "userData": {
+                      "type": "object",
+                      "description": "users updated with imageUrlCached"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/reset-password": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "resetPassword",
+        "summary": "/users/reset-password",
+        "description": "update imageUrlCache",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "user id for reset password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success resrt password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "newPassword": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "description": "Target user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/send-invitation-email": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "sendInvitationEmail",
+        "summary": "/users/send-invitation-email",
+        "description": "send invitation email",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "user id for send invitation email"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success send invitation email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "failedToSendEmail": {
+                      "type": "object",
+                      "description": "email and reasons for email sending failure"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "adminHome"
+    },
+    {
+      "name": "AppSettings"
+    },
+    {
+      "name": "Attachment"
+    },
+    {
+      "name": "Bookmarks"
+    },
+    {
+      "name": "CustomizeSetting"
+    },
+    {
+      "name": "Export"
+    },
+    {
+      "name": "Healthcheck"
+    },
+    {
+      "name": "Import"
+    },
+    {
+      "name": "MarkDownSetting"
+    },
+    {
+      "name": "Mongo"
+    },
+    {
+      "name": "NotificationSetting"
+    },
+    {
+      "name": "Page"
+    },
+    {
+      "name": "Pages"
+    },
+    {
+      "name": "PsersonalSetting"
+    },
+    {
+      "name": "Revisions"
+    },
+    {
+      "name": "Search"
+    },
+    {
+      "name": "SecuritySetting"
+    },
+    {
+      "name": "ShareLink"
+    },
+    {
+      "name": "SlackIntegrationSettings"
+    },
+    {
+      "name": "Statistics"
+    },
+    {
+      "name": "UserGroupRelation"
+    },
+    {
+      "name": "UserGroup"
+    },
+    {
+      "name": "Users"
+    }
+  ]
+}

@@ -8,36 +8,6 @@ node_modules
 # testing
 coverage
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# dist
-/packages/**/dist/
-/report/
-/public/static/js
-/public/static/styles
-/public/uploads
-/tmp/
-
-# dist (for GROWI v4.x and below)
-/public/*.chunk.js
-/public/*.chunk.js.LICENSE
-/public/*.bundle.js
-/public/manifest.json
-/public/dll
-/public/js
-/public/styles
-/src/*/__build__/
-/__build__/**
-/src/*/dist/
-/.awcache
-.webpack.json
-/compiled/
-
 # misc
 .DS_Store
 *.pem
