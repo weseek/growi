@@ -75,12 +75,7 @@ class Lsx {
    *
    * @memberOf Lsx
    */
-  static addSortCondition(query, pagePath, optionsSort, optionsReverse) {
-    // the default sort key
-    if (optionsSort == null) {
-      optionsSort = 'path';
-    }
-
+  static addSortCondition(query, pagePath, optionsSort = 'path', optionsReverse) {
     // the default sort order
     let isReversed = false;
 

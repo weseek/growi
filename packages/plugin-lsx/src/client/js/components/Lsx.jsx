@@ -27,7 +27,6 @@ export class Lsx extends React.Component {
     };
   }
 
-  // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
     const lsxContext = this.props.lsxContext;
     lsxContext.parse();

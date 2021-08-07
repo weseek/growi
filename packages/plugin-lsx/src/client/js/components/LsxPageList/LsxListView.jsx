@@ -18,7 +18,7 @@ export class LsxListView extends React.Component {
     });
 
     // no contents
-    if (this.props.nodeTree.length == 0) {
+    if (this.props.nodeTree.length === 0) {
       return <div className="text-muted">
         <small>
           <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>

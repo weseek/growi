@@ -22,7 +22,6 @@ export class LsxPage extends React.Component {
     };
   }
 
-  // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
     const pageNode = this.props.pageNode;
 

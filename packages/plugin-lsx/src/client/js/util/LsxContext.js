@@ -31,11 +31,11 @@ export class LsxContext {
         firstArgsValue;
 
       splittedArgs.forEach((arg, index) => {
-        arg = arg.trim();
+        const trimedArg = arg.trim();
 
         // parse string like 'key1=value1, key2=value2, ...'
         // see https://regex101.com/r/pYHcOM/1
-        const match = arg.match(/([^=]+)=?(.+)?/);
+        const match = trimedArg.match(/([^=]+)=?(.+)?/);
         const key = match[1];
         const value = match[2] || true;
         this.options[key] = value;
@@ -71,6 +71,7 @@ export class LsxContext {
   }
 
   getOptDepth() {
+    // eslint-disable-next-line eqeqeq
     if (this.options.depth == undefined) {
       return undefined;
     }
@@ -78,6 +79,7 @@ export class LsxContext {
   }
 
   parseNum(str) {
+    // eslint-disable-next-line eqeqeq
     if (str == undefined) {
       return undefined;
     }
@@ -93,6 +95,7 @@ export class LsxContext {
     let end;
 
     // has operator
+    // eslint-disable-next-line eqeqeq
     if (match[3] != undefined) {
       start = +match[1];
       const operator = match[3];
