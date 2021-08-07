@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
-import { toastError } from '.~/client/util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
