@@ -19,11 +19,6 @@
     "lint": "run-p lint:*",
     "test": ""
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/weseek/growi-plugin-pukiwiki-like-linker.git"
-  },
-  "author": "Yuki Takei <yuki@weseek.co.jp>",
   "devDependencies": {
     "@types/jest": "^26.0.22",
     "browser-bunyan": "^1.6.3",
