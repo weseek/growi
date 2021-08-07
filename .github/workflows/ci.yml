@@ -51,7 +51,7 @@ jobs:
         yarn list --depth=0
     - name: lerna run lint for plugins
       run: |
-        yarn lerna run lint --scope @growi/plugin-pukiwiki-like-linker
+        yarn lerna run lint --scope @growi/plugin-*
     - name: lerna run lint for app
       run: |
         yarn lerna run lint --scope @growi/app
