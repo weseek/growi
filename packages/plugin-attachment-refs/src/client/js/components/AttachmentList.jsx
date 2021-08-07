@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import axios from 'axios'; // import axios from growi dependencies
 
-import Attachment from '@client/js/components/PageAttachment/Attachment';
+import { Attachment } from '@growi/ui';
 
 import RefsContext from '../util/RefsContext';
 import TagCacheManagerFactory from '../util/TagCacheManagerFactory';

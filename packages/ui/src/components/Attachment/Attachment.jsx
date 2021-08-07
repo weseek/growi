@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { UserPicture } from '@growi/ui';
+import { UserPicture } from '../User/UserPicture';
 
-export default class Attachment extends React.Component {
+export class Attachment extends React.Component {
 
   constructor(props) {
     super(props);
