@@ -23,8 +23,8 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
    */
   isInterceptWhen(contextName) {
     return (
-      contextName === 'postRenderHtml' ||
-      contextName === 'postRenderPreviewHtml'
+      contextName === 'postRenderHtml'
+      || contextName === 'postRenderPreviewHtml'
     );
   }
 
@@ -32,7 +32,7 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   process(contextName, ...args) {
-    const context = Object.assign(args[0]);   // clone
+    const context = Object.assign(args[0]); // clone
 
     // forEach keys of lsxContextMap
     Object.keys(context.lsxContextMap).forEach((renderId) => {
@@ -40,7 +40,7 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
 
       if (elem) {
         // get LsxContext instance from context
-        let lsxContext = context.lsxContextMap[renderId];
+        const lsxContext = context.lsxContextMap[renderId];
 
         // check cache exists
         const cacheKey = LsxCacheHelper.generateCacheKeyFromContext(lsxContext);
@@ -56,7 +56,7 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
   renderReactDOM(lsxContext, lsxStateCache, elem) {
     ReactDOM.render(
       <Lsx crowi={this.crowi} lsxContext={lsxContext} lsxStateCache={lsxStateCache} />,
-      elem
+      elem,
     );
   }
 

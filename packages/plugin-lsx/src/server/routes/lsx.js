@@ -1,4 +1,5 @@
 const { customTagUtils } = require('growi-commons');
+
 const { OptionParser } = customTagUtils;
 
 class Lsx {
@@ -25,11 +26,11 @@ class Lsx {
 
     // count slash
     const slashNum = pagePath.split('/').length - 1;
-    const depthStart = slashNum;            // start is not affect to fetch page
+    const depthStart = slashNum; // start is not affect to fetch page
     const depthEnd = slashNum + end - 1;
 
     return query.and({
-      path: new RegExp(`^(\\/[^\\/]*){${depthStart},${depthEnd}}$`)
+      path: new RegExp(`^(\\/[^\\/]*){${depthStart},${depthEnd}}$`),
     });
   }
 
@@ -96,16 +97,17 @@ class Lsx {
       isReversed = (optionsReverse === 'true');
     }
 
-    let sortOption = {};
+    const sortOption = {};
     sortOption[optionsSort] = isReversed ? -1 : 1;
     return query.sort(sortOption);
   }
+
 }
 
 module.exports = (crowi, app) => {
-  const Page = crowi.model('Page')
-    , ApiResponse = crowi.require('../util/apiResponse')
-    , actions = {};
+  const Page = crowi.model('Page');
+  const ApiResponse = crowi.require('../util/apiResponse');
+  const actions = {};
 
   /**
    *
@@ -117,7 +119,7 @@ module.exports = (crowi, app) => {
   async function generateBaseQueryBuilder(pagePath, user) {
     let baseQuery = Page.find();
     if (Page.PageQueryBuilder == null) {
-      if (Page.generateQueryToListWithDescendants != null) {  // for Backward compatibility (<= GROWI v3.2.x)
+      if (Page.generateQueryToListWithDescendants != null) { // for Backward compatibility (<= GROWI v3.2.x)
         baseQuery = Page.generateQueryToListWithDescendants(pagePath, user, {});
       }
       else if (Page.generateQueryToListByStartWith != null) { // for Backward compatibility (<= crowi-plus v2.0.7)
@@ -145,9 +147,9 @@ module.exports = (crowi, app) => {
   }
 
   actions.listPages = async(req, res) => {
-    let user = req.user;
-    let pagePath = req.query.pagePath;
-    let options = JSON.parse(req.query.options);
+    const user = req.user;
+    const pagePath = req.query.pagePath;
+    const options = JSON.parse(req.query.options);
 
     const builder = await generateBaseQueryBuilder(pagePath, user);
 
@@ -165,7 +167,7 @@ module.exports = (crowi, app) => {
       query = Lsx.addSortCondition(query, pagePath, options.sort, options.reverse);
 
       const pages = await query.exec();
-      res.json(ApiResponse.success({pages}));
+      res.json(ApiResponse.success({ pages }));
     }
     catch (error) {
       return res.json(ApiResponse.error(error));

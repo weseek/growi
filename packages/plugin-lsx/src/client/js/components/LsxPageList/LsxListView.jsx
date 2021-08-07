@@ -20,21 +20,22 @@ export class LsxListView extends React.Component {
     // no contents
     if (this.props.nodeTree.length == 0) {
       return <div className="text-muted">
-          <small>
-            <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+        <small>
+          <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
             $lsx(<a href={this.props.lsxContext.pagePath}>{this.props.lsxContext.pagePath}</a>) has no contents
-          </small>
-        </div>;
+        </small>
+      </div>;
     }
 
     return (
       <div className="page-list lsx">
         <ul className="page-list-ul">
-        {listView}
+          {listView}
         </ul>
       </div>
     );
   }
+
 }
 
 LsxListView.propTypes = {

@@ -67,7 +67,7 @@ export class LsxCacheHelper {
    * @memberOf LsxCacheHelper
    */
   static cacheState(key, lsxState) {
-    let cacheObj = LsxCacheHelper.retrieveFromSessionStorage();
+    const cacheObj = LsxCacheHelper.retrieveFromSessionStorage();
     cacheObj[key] = lsxState;
 
     LsxCacheHelper.saveToSessionStorage(cacheObj);
@@ -83,4 +83,5 @@ export class LsxCacheHelper {
   static clearAllStateCaches() {
     LsxCacheHelper.saveToSessionStorage({});
   }
+
 }

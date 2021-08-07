@@ -27,7 +27,8 @@ export class LsxContext {
 
     if (this.lsxArgs.length > 0) {
       const splittedArgs = this.lsxArgs.split(',');
-      let firstArgsKey, firstArgsValue;
+      let firstArgsKey; let
+        firstArgsValue;
 
       splittedArgs.forEach((arg, index) => {
         arg = arg.trim();
@@ -50,10 +51,9 @@ export class LsxContext {
       //   1: lsx(prefix=..., ...)
       //   2: lsx(firstArgs, ...)
       //   3: fromPagePath
-      specifiedPath =
-          this.options.prefix ||
-          ((firstArgsValue === true) ? firstArgsKey : undefined) ||
-          this.fromPagePath;
+      specifiedPath = this.options.prefix
+          || ((firstArgsValue === true) ? firstArgsKey : undefined)
+          || this.fromPagePath;
     }
 
     // resolve pagePath
@@ -63,9 +63,9 @@ export class LsxContext {
     //        `pagePath` to be /fuga
     //   when `fromPagePath`=/hoge and `specifiedPath`=undefined,
     //        `pagePath` to be /hoge
-    this.pagePath = (specifiedPath !== undefined) ?
-      decodeURIComponent(url.resolve(pathUtils.addTrailingSlash(this.fromPagePath), specifiedPath)):
-      this.fromPagePath;
+    this.pagePath = (specifiedPath !== undefined)
+      ? decodeURIComponent(url.resolve(pathUtils.addTrailingSlash(this.fromPagePath), specifiedPath))
+      : this.fromPagePath;
 
     this.isParsed = true;
   }
@@ -99,10 +99,10 @@ export class LsxContext {
 
       // determine end
       if (operator === ':') {
-        end = +match[4] || -1;  // set last(-1) if undefined
+        end = +match[4] || -1; // set last(-1) if undefined
       }
       else if (operator === '+') {
-        end = +match[4] || 0;   // plus zero if undefined
+        end = +match[4] || 0; // plus zero if undefined
         end += start;
       }
     }
@@ -114,4 +114,5 @@ export class LsxContext {
 
     return { start, end };
   }
+
 }

@@ -27,16 +27,16 @@ export class LsxPage extends React.Component {
     const pageNode = this.props.pageNode;
 
     if (pageNode.page !== undefined) {
-      this.setState({isExists: true});
+      this.setState({ isExists: true });
     }
     if (pageNode.children.length > 0) {
-      this.setState({hasChildren: true});
+      this.setState({ hasChildren: true });
     }
 
     // process depth option
     const optDepth = this.props.lsxContext.getOptDepth();
     if (optDepth === undefined) {
-      this.setState({isLinkable: true});
+      this.setState({ isLinkable: true });
     }
     else {
       const depth = this.props.depth;
@@ -45,7 +45,7 @@ export class LsxPage extends React.Component {
       // console.log(pageNode.pagePath, {depth, decGens, 'optDepth.start': optDepth.start, 'optDepth.end': optDepth.end});
 
       const isLinkable = optDepth.start <= depth;
-      this.setState({isLinkable});
+      this.setState({ isLinkable });
     }
   }
 
@@ -96,6 +96,7 @@ export class LsxPage extends React.Component {
       </li>
     );
   }
+
 }
 
 LsxPage.propTypes = {

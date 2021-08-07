@@ -21,8 +21,8 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
    */
   isInterceptWhen(contextName) {
     return (
-      contextName === 'preRenderHtml' ||
-      contextName === 'preRenderPreviewHtml'
+      contextName === 'preRenderHtml'
+      || contextName === 'preRenderPreviewHtml'
     );
   }
 
@@ -30,7 +30,7 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
    * @inheritdoc
    */
   process(contextName, ...args) {
-    const context = Object.assign(args[0]);   // clone
+    const context = Object.assign(args[0]); // clone
     const parsedHTML = context.parsedHTML;
     const currentPagePath = context.currentPagePath;
     this.initializeCache(contextName);
@@ -48,13 +48,13 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
       lsxArgs = lsxArgs.trim();
 
       // create contexts
-      let lsxContext = new LsxContext();
+      const lsxContext = new LsxContext();
       lsxContext.currentPagePath = currentPagePath;
       lsxContext.tagExpression = tagExpression;
       lsxContext.fromPagePath = fromPagePath;
       lsxContext.lsxArgs = lsxArgs;
 
-      const renderId = 'lsx-' + this.createRandomStr(8);
+      const renderId = `lsx-${this.createRandomStr(8)}`;
 
       context.lsxContextMap[renderId] = lsxContext;
 
@@ -99,4 +99,5 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
     }
     return generated;
   }
+
 }

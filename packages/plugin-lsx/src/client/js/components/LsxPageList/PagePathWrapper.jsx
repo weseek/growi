@@ -7,7 +7,7 @@ export class PagePathWrapper extends React.Component {
 
   render() {
 
-    let classNames = [];
+    const classNames = [];
     if (!this.props.isExists) {
       classNames.push('lsx-page-not-exist');
     }
@@ -16,6 +16,7 @@ export class PagePathWrapper extends React.Component {
       <PagePath page={{ path: this.props.pagePath }} isShortPathOnly={true} additionalClassNames={classNames} />
     );
   }
+
 }
 
 PagePathWrapper.propTypes = {
