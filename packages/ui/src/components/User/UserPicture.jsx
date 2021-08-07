@@ -2,13 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip } from 'reactstrap';
-import { userPageRoot } from '~/utils/path-utils';
+// import { userPageRoot } from '~/utils/path-utils';
 
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
-// TODO UserComponent?
-export default class UserPicture extends React.Component {
+export class UserPicture extends React.Component {
 
   getClassName() {
     const className = ['rounded-circle', 'picture'];
@@ -36,7 +35,8 @@ export default class UserPicture extends React.Component {
 
   RootElmWithLink = (props) => {
     const { user } = this.props;
-    const href = userPageRoot(user);
+    // const href = userPageRoot(user);
+    const href = 'dummypath';
 
     return <a href={href} {...props}>{props.children}</a>;
   }

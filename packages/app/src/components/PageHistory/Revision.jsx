@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { UserPicture } from '@growi/ui';
 import UserDate from '../User/UserDate';
 import Username from '../User/Username';
-import UserPicture from '../User/UserPicture';
 
 export default class Revision extends React.Component {
 
