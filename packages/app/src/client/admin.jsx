@@ -37,6 +37,7 @@ import AdminImportContainer from '~/client/services/AdminImportContainer';
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
+import AdminMikanSecurityContainer from '~/client/services/AdminMikanSecurityContainer';
 import AdminLdapSecurityContainer from '~/client/services/AdminLdapSecurityContainer';
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
 import AdminSamlSecurityContainer from '~/client/services/AdminSamlSecurityContainer';
