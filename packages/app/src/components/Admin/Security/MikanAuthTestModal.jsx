@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import {
   Modal,
   ModalHeader,
-  ModalBody
+  ModalBody,
 } from 'reactstrap';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';

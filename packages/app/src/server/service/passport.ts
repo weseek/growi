@@ -2,7 +2,7 @@ import urljoin from 'url-join';
 import luceneQueryParser from 'lucene-query-parser';
 
 import passport from 'passport';
-import axios from 'axios';
+import axios from '~/utils/axios';
 import LdapStrategy from 'passport-ldapauth';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as CookieStrategy } from 'passport-cookie';
