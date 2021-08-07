@@ -1,4 +1,4 @@
-const loggerFactory = require('@alias/logger');
+import loggerFactory from '../../utils/logger';
 
 const { customTagUtils } = require('growi-commons');
 
