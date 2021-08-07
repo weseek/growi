@@ -17,7 +17,7 @@ function matchSlashes(path) {
  * @returns {boolean}
  * @memberof pathUtils
  */
-function hasHeadingSlash(path) {
+export function hasHeadingSlash(path) {
   if (path === '') {
     return false;
   }
@@ -31,7 +31,7 @@ function hasHeadingSlash(path) {
  * @returns {boolean}
  * @memberof pathUtils
  */
-function hasTrailingSlash(path) {
+export function hasTrailingSlash(path) {
   if (path === '') {
     return false;
   }
@@ -45,7 +45,7 @@ function hasTrailingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
-function addHeadingSlash(path) {
+export function addHeadingSlash(path) {
   if (path === '/') {
     return path;
   }
@@ -62,7 +62,7 @@ function addHeadingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
-function addTrailingSlash(path) {
+export function addTrailingSlash(path) {
   if (path === '/') {
     return path;
   }
@@ -79,7 +79,7 @@ function addTrailingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
-function removeTrailingSlash(path) {
+export function removeTrailingSlash(path) {
   if (path === '/') {
     return path;
   }
@@ -95,7 +95,7 @@ function removeTrailingSlash(path) {
  * @returns {string}
  * @memberof pathUtils
  */
-function normalizePath(path) {
+export function normalizePath(path) {
   if (path === '' || path === '/') {
     return '/';
   }
@@ -106,15 +106,3 @@ function normalizePath(path) {
   }
   return `/${match[3]}`;
 }
-
-/**
- * @namespace pathUtils
- */
-module.exports = {
-  hasHeadingSlash,
-  hasTrailingSlash,
-  addHeadingSlash,
-  addTrailingSlash,
-  removeTrailingSlash,
-  normalizePath,
-};

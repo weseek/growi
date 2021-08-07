@@ -1,7 +1,12 @@
+import * as _pathUtils from './utils/path-utils';
+
+// export utils
+export const pathUtils = _pathUtils;
+
+
 module.exports = {
-  BasicInterceptor: require('./util/basic-interceptor'),
-  pathUtils: require('./util/path-utils'),
-  envUtils: require('./util/env-utils'),
+  BasicInterceptor: require('./utils/basic-interceptor'),
+  envUtils: require('./utils/env-utils'),
   // plugin
   customTagUtils: require('./plugin/util/custom-tag-utils'),
   TagCacheManager: require('./plugin/service/tag-cache-manager'),
