@@ -1,4 +1,8 @@
+import rewire from 'rewire';
+
 import customTagUtils from '~/plugin/util/custom-tag-utils';
+
+const rewiredCustomTagUtils = rewire('../../../plugin/util/custom-tag-utils');
 
 describe('customTagUtils', () => {
 
@@ -19,7 +23,7 @@ describe('customTagUtils', () => {
 
   test('.createRandomStr(10) returns random string', () => {
     // get private resource
-    const createRandomStr = customTagUtils.__get__('createRandomStr');
+    const createRandomStr = rewiredCustomTagUtils.__get__('createRandomStr');
     expect(createRandomStr(10)).toMatch(/^[a-z0-9]{10}$/);
   });
 
@@ -45,14 +49,14 @@ describe('customTagUtils', () => {
 
   test('.findTagAndReplace() works correctly', () => {
     // setup mocks for private function
-    customTagUtils.__Rewire__('createRandomStr', (length) => {
+    rewiredCustomTagUtils.__set__('createRandomStr', (length) => {
       return 'dummyDomId';
     });
 
     const tagPattern = /ls|lsx/;
     const html = '<section><h1>header</h1>\n$ls(/)</section>';
 
-    const result = customTagUtils.findTagAndReplace(tagPattern, html);
+    const result = rewiredCustomTagUtils.findTagAndReplace(tagPattern, html);
 
     expect(result.html).toMatch(/<section><h1>header<\/h1>\n<div id="ls-dummyDomId"><\/div>/);
     expect(result.tagContextMap).toEqual({
