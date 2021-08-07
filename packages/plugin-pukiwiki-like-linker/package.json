@@ -35,5 +35,8 @@
     "ts-jest": "^27.0.4",
     "tsc-alias": "^1.2.9",
     "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "passport-cookie": "^1.0.9"
   }
 }

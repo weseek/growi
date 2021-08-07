@@ -45,6 +45,7 @@
     "http-errors": "^1.8.0",
     "method-override": "^3.0.0",
     "mysql2": "^2.2.5",
+    "passport-cookie": "^1.0.9",
     "typeorm": "^0.2.31",
     "universal-bunyan": "^0.9.2"
   },
