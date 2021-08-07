@@ -1,6 +1,4 @@
-require('module-alias/register');
-
-const pathUtils = require('@src/util/path-utils');
+import pathUtils from '~/util/path-utils';
 
 
 describe('page-utils', () => {

@@ -1,8 +1,6 @@
 import each from 'jest-each';
 
-require('module-alias/register');
-
-const OptionParser = require('@src/plugin/util/option-parser');
+import OptionParser from '~/plugin/util/option-parser';
 
 describe('option-parser', () => {
 

@@ -1,6 +1,4 @@
-require('module-alias/register');
-
-const LocalStorageManager = require('@src/service/localstorage-manager');
+import LocalStorageManager from '~/service/localstorage-manager';
 
 let localStorageManager = null;
 

@@ -1,12 +1,11 @@
+/* eslint-disable import/first */
+
 // import each from 'jest-each';
+jest.mock('~/service/localstorage-manager');
 
-require('module-alias/register');
-
-jest.mock('@src/service/localstorage-manager');
-
-const LocalStorageManager = require('@src/service/localstorage-manager');
-const TagCacheManager = require('@src/plugin/service/tag-cache-manager');
-
+import LocalStorageManager from '~/service/localstorage-manager';
+import TagCacheManager from '~/plugin/service/tag-cache-manager';
+/* eslint-enable import/first */
 
 describe('TagCacheManager.constructor', () => {
 
@@ -89,7 +88,7 @@ describe('TagCacheManager', () => {
     expect(retrieveFromSessionStorageMockCalls[0][1]).toBe('dummy key');
   });
 
-  test('.getStateCache', () => {
+  test('.getStateCache with state object', () => {
     // partial mock
     tagCacheManager.generateCacheKey = jest.fn().mockReturnValue('dummy key');
 

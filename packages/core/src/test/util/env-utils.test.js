@@ -1,6 +1,4 @@
-require('module-alias/register');
-
-const envUtils = require('@src/util/env-utils');
+import envUtils from '~/util/env-utils';
 
 
 describe('env-utils', () => {

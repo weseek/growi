@@ -1,6 +1,4 @@
-require('module-alias/register');
-
-const customTagUtils = require('@src/plugin/util/custom-tag-utils');
+import customTagUtils from '~/plugin/util/custom-tag-utils';
 
 describe('customTagUtils', () => {
 
