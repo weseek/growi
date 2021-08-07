@@ -2,6 +2,7 @@ import {
   Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams,
 } from '@tsed/common';
 import axios from 'axios';
+import createError from 'http-errors';
 
 import { WebAPICallResult } from '@slack/web-api';
 
@@ -26,7 +27,7 @@ import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/Sect
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
 
 // temporarily save for selection to growi
-const temporarySinglePostCommands = ['create'];
+const temporarySinglePostCommands = ['create', 'togetter'];
 
 @Controller('/g2s')
 export class GrowiToSlackCtrl {
@@ -99,7 +100,7 @@ export class GrowiToSlackCtrl {
     const { tokenGtoPs } = req;
 
     if (tokenGtoPs.length !== 1) {
-      return res.status(400).send({ message: 'installation is invalid' });
+      throw createError(400, 'installation is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
@@ -116,7 +117,7 @@ export class GrowiToSlackCtrl {
 
       const token = relation.installation.data.bot?.token;
       if (token == null) {
-        return res.status(400).send({ message: 'installation is invalid' });
+        throw createError(400, 'installation is invalid');
       }
 
       try {
@@ -124,12 +125,12 @@ export class GrowiToSlackCtrl {
       }
       catch (err) {
         logger.error(err);
-        return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
+        throw createError(400, `failed to request to GROWI. err: ${err.message}`);
       }
 
       const status = await getConnectionStatus(token);
       if (status.error != null) {
-        return res.status(400).send({ message: `failed to get connection. err: ${status.error}` });
+        throw createError(400, `failed to get connection. err: ${status.error}`);
       }
 
       return res.send({ relation, slackBotToken: token });
@@ -143,7 +144,7 @@ export class GrowiToSlackCtrl {
       .getOne();
 
     if (order == null || order.isExpired()) {
-      return res.status(400).send({ message: 'order has expired or does not exist.' });
+      throw createError(400, 'order has expired or does not exist.');
     }
 
     // Access the GROWI URL saved in the Order record and check if the GtoP token is valid.
@@ -152,19 +153,19 @@ export class GrowiToSlackCtrl {
     }
     catch (err) {
       logger.error(err);
-      return res.status(400).send({ message: `failed to request to GROWI. err: ${err.message}` });
+      throw createError(400, `failed to request to GROWI. err: ${err.message}`);
     }
 
     logger.debug('order found', order);
 
     const token = order.installation.data.bot?.token;
     if (token == null) {
-      return res.status(400).send({ message: 'installation is invalid' });
+      throw createError(400, 'installation is invalid');
     }
 
     const status = await getConnectionStatus(token);
     if (status.error != null) {
-      return res.status(400).send({ message: `failed to get connection. err: ${status.error}` });
+      throw createError(400, `failed to get connection. err: ${status.error}`);
     }
 
     logger.debug('relation test is success', order);
