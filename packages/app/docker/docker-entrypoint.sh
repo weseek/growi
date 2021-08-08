@@ -11,4 +11,4 @@ fi
 chown -R node:node /data/uploads
 chown -h node:node ./public/uploads
 
-gosu node $@
+su-exec node $@
