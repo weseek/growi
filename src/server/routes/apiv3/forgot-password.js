@@ -71,6 +71,7 @@ module.exports = (crowi) => {
 
     try {
       const userData = await user.updatePassword(newPassword);
+      passwordResetOrder.revokeOneTimeToken();
       return res.apiv3({ userData });
     }
     catch (err) {
