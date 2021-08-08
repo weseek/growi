@@ -4,6 +4,7 @@ const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-dis
 
 const express = require('express');
 const { body } = require('express-validator');
+const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
@@ -71,7 +72,8 @@ module.exports = (crowi) => {
 
     try {
       const userData = await user.updatePassword(newPassword);
-      return res.apiv3({ userData });
+      const serializedUserData = serializeUserSecurely(userData);
+      return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
       logger.error(err);
