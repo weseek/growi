@@ -70,6 +70,10 @@ module.exports = (crowi) => {
 
     const user = await User.findOne({ email });
 
+    if (user == null || user.status !== 2) {
+      return res.apiv3Err('update-password-failed');
+    }
+
     try {
       const userData = await user.updatePassword(newPassword);
       const serializedUserData = serializeUserSecurely(userData);
