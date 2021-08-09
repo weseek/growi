@@ -15,11 +15,6 @@ import AttachmentList from '../../components/AttachmentList';
  */
 export default class RefsPostRenderInterceptor extends BasicInterceptor {
 
-  constructor(appContainer) {
-    super();
-    this.appContainer = appContainer;
-  }
-
   /**
    * @inheritdoc
    */

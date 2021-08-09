@@ -194,6 +194,5 @@ export default class AttachmentList extends React.Component {
 }
 
 AttachmentList.propTypes = {
-  appContainer: PropTypes.object.isRequired,
   refsContext: PropTypes.instanceOf(RefsContext).isRequired,
 };

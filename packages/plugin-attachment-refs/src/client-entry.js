@@ -5,6 +5,6 @@ export default (appContainer) => {
   // add interceptors
   appContainer.interceptorManager.addInterceptors([
     new RefsPreRenderInterceptor(),
-    new RefsPostRenderInterceptor(appContainer),
+    new RefsPostRenderInterceptor(),
   ]);
 };
