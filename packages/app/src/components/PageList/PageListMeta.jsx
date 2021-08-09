@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { pagePathUtils } from '@growi/core';
 import templateChecker from '~/utils/template-checker';
-import { isTopPage } from '~/utils/path-utils';
+
+const { isTopPage } = pagePathUtils;
 
 export default class PageListMeta extends React.Component {
 

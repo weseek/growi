@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { UncontrolledTooltip } from 'reactstrap';
-// import { userPageRoot } from '~/utils/path-utils';
+import { pagePathUtils } from '@growi/core';
+
+const { userPageRoot } = pagePathUtils;
 
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
@@ -35,8 +37,7 @@ export class UserPicture extends React.Component {
 
   RootElmWithLink = (props) => {
     const { user } = this.props;
-    // const href = userPageRoot(user);
-    const href = 'dummypath';
+    const href = userPageRoot(user);
 
     return <a href={href} {...props}>{props.children}</a>;
   }

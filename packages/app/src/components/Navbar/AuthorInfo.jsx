@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import { UserPicture } from '@growi/ui';
-import { userPageRoot } from '~/utils/path-utils';
+import { pagePathUtils } from '@growi/core';
+
+const { userPageRoot } = pagePathUtils;
 
 
 const formatType = 'yyyy/MM/dd HH:mm';
