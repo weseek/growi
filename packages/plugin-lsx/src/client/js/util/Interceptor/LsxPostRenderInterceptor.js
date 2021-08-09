@@ -34,6 +34,10 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
   process(contextName, ...args) {
     const context = Object.assign(args[0]); // clone
 
+    if (context.lsxContextMap == null) {
+      return Promise.resolve();
+    }
+
     // forEach keys of lsxContextMap
     Object.keys(context.lsxContextMap).forEach((renderId) => {
       const elem = document.getElementById(renderId);
