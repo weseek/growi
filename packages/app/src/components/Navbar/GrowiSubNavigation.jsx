@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
-import DevidedPagePath from '~/models/devided-page-path';
+import { DevidedPagePath } from '@growi/core';
 import LinkedPagePath from '~/models/linked-page-path';
 
 import { withUnstatedContainers } from '../UnstatedUtils';

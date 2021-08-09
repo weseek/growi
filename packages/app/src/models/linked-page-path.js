@@ -1,10 +1,6 @@
-import { pagePathUtils } from '@growi/core';
-
-const { pathUtils } = require('growi-commons');
+import { pagePathUtils, DevidedPagePath, pathUtils } from '@growi/core';
 
 const { isTrashPage } = pagePathUtils;
-
-const DevidedPagePath = require('./devided-page-path');
 
 /**
  * Linked Array Structured PagePath Model
