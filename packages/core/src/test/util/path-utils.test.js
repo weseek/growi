@@ -1,4 +1,4 @@
-import pathUtils from '~/util/path-utils';
+import * as pathUtils from '~/utils/path-utils';
 
 
 describe('page-utils', () => {

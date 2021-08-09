@@ -1,4 +1,4 @@
-import envUtils from '~/util/env-utils';
+import envUtils from '~/utils/env-utils';
 
 
 describe('env-utils', () => {
