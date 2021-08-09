@@ -1,5 +1,6 @@
-const { isTopPage, convertToNewAffiliationPath, isCreatablePage } = require('~/utils/path-utils');
+import { pagePathUtils } from '~/utils/page-path-utils';
 
+const { isTopPage, convertToNewAffiliationPath, isCreatablePage } = pagePathUtils;
 
 describe('TopPage Path test', () => {
   test('Path is only "/"', () => {
