@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { templateChecker, pagePathUtils } from '@growi/core';
 
 const { isTopPage } = pagePathUtils;
+const { checkTemplatePath } = templateChecker;
 
 export class PageListMeta extends React.Component {
 
@@ -17,7 +18,7 @@ export class PageListMeta extends React.Component {
 
     // template check
     let templateLabel;
-    if (templateChecker(page.path)) {
+    if (checkTemplatePath(page.path)) {
       templateLabel = <span className="badge badge-info">TMPL</span>;
     }
 

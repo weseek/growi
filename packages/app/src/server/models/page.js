@@ -18,6 +18,7 @@ const { pathUtils } = require('growi-commons');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const { isTopPage, isTrashPage } = pagePathUtils;
+const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
 
@@ -312,7 +313,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isTemplate = function() {
-    return templateChecker(this.path);
+    return checkTemplatePath(this.path);
   };
 
   pageSchema.methods.isLatestRevision = function() {
