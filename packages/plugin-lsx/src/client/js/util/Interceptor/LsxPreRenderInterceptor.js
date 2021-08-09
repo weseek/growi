@@ -29,8 +29,6 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
     const currentPagePath = context.currentPagePath;
     this.initializeCache(contextName);
 
-    console.log('LsxPreRenderInterceptor');
-
     context.lsxContextMap = {};
 
     // TODO retrieve from args for interceptor
