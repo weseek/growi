@@ -13,9 +13,9 @@ import { LsxCacheHelper } from '../LsxCacheHelper';
  */
 export class LsxPostRenderInterceptor extends BasicInterceptor {
 
-  constructor(crowi) {
+  constructor(appContainer) {
     super();
-    this.crowi = crowi;
+    this.appContainer = appContainer;
   }
 
   /**
@@ -55,7 +55,7 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
 
   renderReactDOM(lsxContext, lsxStateCache, elem) {
     ReactDOM.render(
-      <Lsx crowi={this.crowi} lsxContext={lsxContext} lsxStateCache={lsxStateCache} />,
+      <Lsx appContainer={this.appContainer} lsxContext={lsxContext} lsxStateCache={lsxStateCache} />,
       elem,
     );
   }

@@ -10,12 +10,6 @@ import { LsxCacheHelper } from '../LsxCacheHelper';
  */
 export class LsxPreRenderInterceptor extends BasicInterceptor {
 
-  constructor(crowi) {
-    super();
-    this.crowi = crowi;
-    this.crowiForJquery = crowi.getCrowiForJquery();
-  }
-
   /**
    * @inheritdoc
    */
@@ -34,6 +28,8 @@ export class LsxPreRenderInterceptor extends BasicInterceptor {
     const parsedHTML = context.parsedHTML;
     const currentPagePath = context.currentPagePath;
     this.initializeCache(contextName);
+
+    console.log('LsxPreRenderInterceptor');
 
     context.lsxContextMap = {};
 

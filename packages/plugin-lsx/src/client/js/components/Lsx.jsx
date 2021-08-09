@@ -46,7 +46,7 @@ export class Lsx extends React.Component {
     // ex: '/Java/' not to match to '/JavaScript'
     const pagePath = pathUtils.addTrailingSlash(lsxContext.pagePath);
 
-    this.props.crowi.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options })
+    this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options })
       .then((res) => {
         if (res.ok) {
           const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
@@ -200,7 +200,7 @@ export class Lsx extends React.Component {
 }
 
 Lsx.propTypes = {
-  crowi: PropTypes.object.isRequired,
+  appContainer: PropTypes.object.isRequired,
 
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
   lsxStateCache: PropTypes.object,
