@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import PagePath from '@client/js/components/PageList/PagePath';
+import { PagePathLabel } from '@growi/ui';
 
 export class PagePathWrapper extends React.Component {
 
@@ -13,7 +13,7 @@ export class PagePathWrapper extends React.Component {
     }
 
     return (
-      <PagePath page={{ path: this.props.pagePath }} isShortPathOnly={true} additionalClassNames={classNames} />
+      <PagePathLabel page={{ path: this.props.pagePath }} isLatterOnly additionalClassNames={classNames} />
     );
   }
 

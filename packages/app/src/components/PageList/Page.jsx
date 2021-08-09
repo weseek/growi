@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { UserPicture } from '@growi/ui';
-import PageListMeta from './PageListMeta';
-import PagePathLabel from './PagePathLabel';
+import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
+
 
 export default class Page extends React.Component {
 

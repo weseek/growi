@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import DevidedPagePath from '~/models/devided-page-path';
+import { DevidedPagePath } from '@growi/core';
 
-const PagePathLabel = (props) => {
+export const PagePathLabel = (props) => {
 
   const dPagePath = new DevidedPagePath(props.page.path, false, true);
 
@@ -30,5 +30,3 @@ PagePathLabel.propTypes = {
 PagePathLabel.defaultProps = {
   additionalClassNames: [],
 };
-
-export default PagePathLabel;

@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { pagePathUtils } from '@growi/core';
-import templateChecker from '~/utils/template-checker';
+import { templateChecker, pagePathUtils } from '@growi/core';
 
 const { isTopPage } = pagePathUtils;
 
-export default class PageListMeta extends React.Component {
+export class PageListMeta extends React.Component {
 
   render() {
     const { page } = this.props;
