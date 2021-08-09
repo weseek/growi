@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
-import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import { DevidedPagePath } from '@growi/core';
+import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import LinkedPagePath from '~/models/linked-page-path';
 
 import { withUnstatedContainers } from '../UnstatedUtils';

@@ -76,6 +76,7 @@ export const isCreatablePage = (path: string): boolean => {
  * return user path
  * @param user
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const userPageRoot = (user: any): string => {
   if (!user || !user.username) {
     return '';
@@ -116,7 +117,7 @@ export const encodeSpaces = (path?:string): string | undefined => {
  * @param {string} paths
  * @returns {string}
  */
-export const generateEditorPath = (...paths) => {
+export const generateEditorPath = (...paths: string[]): string => {
   const joinedPath = [...paths].join('/');
 
   if (!isCreatablePage(joinedPath)) {
