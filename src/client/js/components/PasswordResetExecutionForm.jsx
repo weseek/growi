@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import loggerFactory from '@alias/logger';
+import { withUnstatedContainers } from './UnstatedUtils';
+import AppContainer from '../services/AppContainer';
 import { toastSuccess, toastError } from '../util/apiNotification';
+
+const logger = loggerFactory('growi:passwordReset');
 
 
 const PasswordResetExecutionForm = (props) => {
-  const { t /* appContainer, personalContainer */ } = props;
+  const { t, appContainer } = props;
 
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
   const [validationErrorI18n, setValidationErrorI18n] = useState('');
 
-  // TODO: delete the following comments by GW-6778
-  // console.log(newPassword);
-  // console.log(newPasswordConfirm);
+  // get token from URL
+  const pathname = window.location.pathname.split('/');
+  const token = pathname[2];
 
   const changePassword = async(e) => {
     e.preventDefault();
@@ -29,14 +34,9 @@ const PasswordResetExecutionForm = (props) => {
     }
 
     try {
-      /*
-      * TODO: hit an api to change password by GW-6778
-      * the following code is just a reference
-      */
-
-      // await appContainer.apiv3Put('/personal-setting/password', {
-      //   oldPassword, newPassword, newPasswordConfirm,
-      // });
+      await appContainer.apiv3Put('/forgot-password', {
+        token, newPassword, newPasswordConfirm,
+      });
 
       setNewPassword('');
       setNewPasswordConfirm('');
@@ -46,6 +46,7 @@ const PasswordResetExecutionForm = (props) => {
     }
     catch (err) {
       toastError(err);
+      logger.error(err);
     }
 
   };
@@ -87,8 +88,11 @@ const PasswordResetExecutionForm = (props) => {
   );
 };
 
+const PasswordResetExecutionFormWrapper = withUnstatedContainers(PasswordResetExecutionForm, [AppContainer]);
+
 PasswordResetExecutionForm.propTypes = {
   t: PropTypes.func.isRequired, //  i18next
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };
 
-export default withTranslation()(PasswordResetExecutionForm);
+export default withTranslation()(PasswordResetExecutionFormWrapper);

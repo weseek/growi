@@ -178,7 +178,6 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.get('/forgot-password', forgotPassword.forgotPassword);
-  app.post('/_api/forgot-password', forgotPassword.api.post);
   app.get('/forgot-password/:token'      , passwordReset, forgotPassword.resetPassword);
   app.get('/forgot-password/error/:reason'      , applicationInstalled, forgotPassword.error);
 
