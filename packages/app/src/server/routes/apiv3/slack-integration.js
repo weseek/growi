@@ -11,17 +11,6 @@ const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
-// MOCK DATA DELETE THIS
-const MOCK_OBJECT_SLACKAPP_INTEGRATION = {
-  supportedCommandsForBroadcastUse: ['search'],
-  supportedCommandsForSingleUse: ['create', 'togetter'],
-  permittedChannels: {
-    search: ['admin'],
-    create: ['admin'],
-    togetter: ['admin'],
-  },
-};
-
 module.exports = (crowi) => {
   this.app = crowi.express;
 
