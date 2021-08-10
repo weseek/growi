@@ -49,7 +49,6 @@ module.exports = (crowi) => {
     const appUrl = appService.getSiteUrl();
 
     try {
-      // need to handle passwordResetOrderData when user not found and not active by GW7060
       const user = await User.findOne({ email });
 
       // when the user is not found or active
