@@ -87,7 +87,7 @@ class SocketIoService {
    */
   setupAdminRequiredMiddleware() {
     const adminRequired = require('../middlewares/admin-required')(this.crowi, (req, res, next) => {
-      // next(new Error('Admin priviledge is required to connect.'));  // TODO: this line returns error "next not a function" but the middleware works fine, should we do "try catch" condition?
+      next(new Error('Admin priviledge is required to connect.'));
     });
 
     // convert Connect/Express middleware to Socket.io middleware
@@ -117,25 +117,10 @@ class SocketIoService {
     });
   }
 
-  // TODO: remove this function,
-  // since version >= 3.x namespace.clients() removed and changed to allSockets() that returns promise
-  async getClients(namespace) {
-    return new Promise((resolve, reject) => {
-      namespace.clients((error, clients) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(clients);
-      });
-    });
-  }
-
   async checkConnectionLimitsForAdmin(socket, next) {
     const namespaceName = socket.nsp.name;
 
     if (namespaceName === '/admin') {
-      // OLD: await this.getClients(this.getAdminSocket());
-      // Change get clients method for socket.io v >= 3.x
       const clients = await this.getAdminSocket().allSockets();
       const clientsCount = clients.length;
 
@@ -182,8 +167,6 @@ class SocketIoService {
       next();
     }
 
-    // OLD: await this.getClients(this.getDefaultSocket());
-    // Change get clients method for socket.io v >= 3.x
     const clients = await this.getDefaultSocket().allSockets();
     const clientsCount = clients.length;
 
