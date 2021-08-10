@@ -297,12 +297,14 @@ jobs:
     - name: yarn server:ci
       working-directory: ./packages/app
       run: |
+        cp config/ci/.env.local.for-ci .env.local
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
     - name: yarn server:ci with MongoDB 3.6
       working-directory: ./packages/app
       run: |
+        cp config/ci/.env.local.for-ci .env.local
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
