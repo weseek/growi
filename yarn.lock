@@ -18362,6 +18362,11 @@ text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
+textlint-message-to-codemirror@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/textlint-message-to-codemirror/-/textlint-message-to-codemirror-1.0.0.tgz#5d4c17aa3e0bb0659669c100920066cd7c7f4fc5"
+  integrity sha1-XUwXqj4LsGWWacEAkgBmzXx/T8U=
+
 tfunk@^3.0.1:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/tfunk/-/tfunk-3.1.0.tgz#38e4414fc64977d87afdaa72facb6d29f82f7b5b"
