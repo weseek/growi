@@ -4,7 +4,7 @@ import { addHours } from 'date-fns';
 
 // import { Relation } from '~/entities/relation';
 import { RelationMock } from '~/entities/relation-mock';
-import { RelationRepository } from '~/repositories/relation';
+// import { RelationRepository } from '~/repositories/relation';
 import { RelationMockRepository } from '~/repositories/relation-mock';
 
 import loggerFactory from '~/utils/logger';
@@ -15,7 +15,7 @@ const logger = loggerFactory('slackbot-proxy:services:RelationsService');
 export class RelationsService {
 
   @Inject()
-  relationRepository: RelationRepository;
+  // relationRepository: RelationRepository;
 
   relationMockRepository: RelationMockRepository;
 
@@ -36,7 +36,7 @@ export class RelationsService {
     relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
     relation.expiredAtCommands = addHours(new Date(), 48);
 
-    return this.relationRepository.save(relation);
+    return this.relationMockRepository.save(relation);
   }
 
   async syncRelation(relation:RelationMock, baseDate:Date):Promise<RelationMock|null> {
