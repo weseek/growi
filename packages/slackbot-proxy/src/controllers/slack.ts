@@ -10,10 +10,12 @@ import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
 } from '@growi/slack';
 
-import { Relation } from '~/entities/relation';
+// import { Relation } from '~/entities/relation';
+import { RelationMock } from '~/entities/relation-mock';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallationRepository } from '~/repositories/installation';
-import { RelationRepository } from '~/repositories/relation';
+// import { RelationRepository } from '~/repositories/relation';
+import { RelationMockRepository } from '~/repositories/relation-mock';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
@@ -39,8 +41,11 @@ export class SlackCtrl {
   @Inject()
   installationRepository: InstallationRepository;
 
+  // @Inject()
+  // relationRepository: RelationRepository;
+
   @Inject()
-  relationRepository: RelationRepository;
+  relationMockRepository: RelationMockRepository;
 
   @Inject()
   orderRepository: OrderRepository;
@@ -64,13 +69,13 @@ export class SlackCtrl {
    * @param body
    * @returns
    */
-  private async sendCommand(growiCommand: GrowiCommand, relations: Relation[], body: any) {
+  private async sendCommand(growiCommand: GrowiCommand, relations: RelationMock[], body: any) {
     if (relations.length === 0) {
       throw new Error('relations must be set');
     }
     const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
 
-    const promises = relations.map((relation: Relation) => {
+    const promises = relations.map((relation: RelationMock) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
       return axios.post(url.toString(), {
@@ -135,7 +140,7 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationRepository.createQueryBuilder('relation')
+    const relations = await this.relationMockRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
@@ -165,7 +170,7 @@ export class SlackCtrl {
 
     const baseDate = new Date();
 
-    const relationsForSingleUse:Relation[] = [];
+    const relationsForSingleUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
@@ -181,7 +186,7 @@ export class SlackCtrl {
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
-    const relationsForBroadcastUse:Relation[] = [];
+    const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
@@ -270,7 +275,7 @@ export class SlackCtrl {
     /*
     * forward to GROWI server
     */
-    const relation = await this.relationRepository.findOne({ installation, growiUri: req.growiUri });
+    const relation = await this.relationMockRepository.findOne({ installation, growiUri: req.growiUri });
 
     if (relation == null) {
       logger.error('*No relation found.*');
