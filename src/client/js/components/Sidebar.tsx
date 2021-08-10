@@ -132,7 +132,7 @@ const Sidebar = (props: Props) => {
       navigationUIController.disableResize();
 
       // fix width
-      navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
+      navigationUIController.setState({ productNavWidth: productNavWidth });
     }
     // Drawer --> Dock
     else {
@@ -164,11 +164,11 @@ const Sidebar = (props: Props) => {
     mutateDrawerOpened(false);
   }, [mutateDrawerOpened]);
 
-  const [showSkelton, setSkelton] = useState(true);
+  const [isMounted, setMounted] = useState(false);
 
   useEffect(() => {
     // this.hackUIController();
-    setSkelton(false);
+    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -177,7 +177,6 @@ const Sidebar = (props: Props) => {
 
   const [isHover, setHover] = useState(false);
   const [isDragging, setDrag] = useState(false);
-  const [sidebarWidthCached, setSidebarWidthCached] = useState(productNavWidth);
 
   const resizableContainer = useRef<HTMLDivElement>(null);
   const setContentWidth = useCallback((newWidth) => {
@@ -185,8 +184,7 @@ const Sidebar = (props: Props) => {
       return;
     }
     resizableContainer.current.style.width = `${newWidth}px`;
-    mutateProductNavWidth(newWidth);
-  }, [mutateProductNavWidth]);
+  }, []);
 
   const hoverHandler = useCallback((isHover: boolean) => {
     if (!navigationUIController.state.isCollapsed || isDrawerMode) {
@@ -196,12 +194,12 @@ const Sidebar = (props: Props) => {
     setHover(isHover);
 
     if (isHover) {
-      setContentWidth(sidebarWidthCached);
+      setContentWidth(productNavWidth);
     }
     if (!isHover) {
       setContentWidth(sidebarMinimizeWidth);
     }
-  }, [navigationUIController.state.isCollapsed, sidebarWidthCached, setContentWidth]);
+  }, [navigationUIController.state.isCollapsed, setContentWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     navigationUIController.toggleCollapse();
@@ -212,20 +210,20 @@ const Sidebar = (props: Props) => {
       setContentWidth(sidebarMinimizeWidth);
     }
     else {
-      setContentWidth(sidebarWidthCached);
+      setContentWidth(productNavWidth);
     }
-  }, [navigationUIController.state.isCollapsed, sidebarWidthCached, setContentWidth]);
+  }, [navigationUIController.state.isCollapsed, setContentWidth]);
 
   const draggableAreaMoveHandler = useCallback((event) => {
     if (isDragging) {
       event.preventDefault();
-      const newWitdh = event.pageX - 60;
+      const newWidth = event.pageX - 60;
       if (resizableContainer.current != null) {
-        setContentWidth(newWitdh);
+        setContentWidth(newWidth);
         resizableContainer.current.classList.add('dragging');
       }
     }
-  }, [isDragging, setContentWidth]);
+  }, [isDragging, setContentWidth, mutateProductNavWidth]);
 
   const dragableAreaMouseUpHandler = useCallback(() => {
     if (resizableContainer.current == null) {
@@ -235,19 +233,19 @@ const Sidebar = (props: Props) => {
     setDrag(false);
 
     if (resizableContainer.current.clientWidth < sidebarMinWidth) {
-      setSidebarWidthCached(sidebarMinWidth);
       navigationUIController.collapse();
-      setContentWidth(sidebarMinimizeWidth);
+      mutateProductNavWidth(sidebarMinWidth);
     }
     else {
-      setSidebarWidthCached(resizableContainer.current.clientWidth);
+      mutateProductNavWidth(resizableContainer.current.clientWidth);
     }
+
     resizableContainer.current.classList.remove('dragging');
 
     document.removeEventListener('mousemove', draggableAreaMoveHandler);
     document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
 
-  }, [navigationUIController, draggableAreaMoveHandler, setContentWidth]);
+  }, [navigationUIController, draggableAreaMoveHandler]);
 
   const dragableAreaClickHandler = useCallback(() => {
     if (navigationUIController.state.isCollapsed || isDrawerMode) {
@@ -261,7 +259,7 @@ const Sidebar = (props: Props) => {
     document.addEventListener('mouseup', dragableAreaMouseUpHandler);
   }, [draggableAreaMoveHandler, dragableAreaMouseUpHandler]);
 
-  return (showSkelton ? <SkeltonSidebar {...props} />
+  return (!isMounted ? <SkeltonSidebar {...props} />
     : (
       <>
         <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>

@@ -298,8 +298,7 @@ export const useCurrentSidebarContents = (sidebarContents?: SidebarContents): SW
 
 
 export const useCurrentProductNavWidth = (productNavWidth?: number): SWRResponse<number, any> => {
-  const isServer = typeof window === 'undefined';
-  const key = isServer ? null : 'productNavWidth';
+  const key = 'productNavWidth';
   const sidebarDefaultWidth = 320;
 
   if (productNavWidth == null) {
