@@ -140,9 +140,10 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationMockRepository.createQueryBuilder('relation')
-      .where('relation.installationId = :id', { id: installation?.id })
-      .leftJoinAndSelect('relation.installation', 'installation')
+    // console.log(installation);
+    const relations = await this.relationMockRepository.createQueryBuilder('relation_mock')
+      .where('relation_mock.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation_mock.installation', 'installation')
       .getMany();
 
     if (relations.length === 0) {
@@ -207,6 +208,22 @@ export class SlackCtrl {
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(botToken!);
+
+      // HARDCORD;
+      // const permittedChannelsForEachCommand = {
+      //   create: ['srv'],
+      //   search: ['srv', 'admin'],
+      // };
+
+      console.log('hoge');
+      // console.log(relations);
+      // const relationMock = await this.relationMockRepository.findOne({
+      //   where: { installation },
+      // });
+      // const permittedChannelsForEachCommand = relationMock?.permittedChannelsForEachCommand;
+      // console.log(relationMock);
+      // console.log(permittedChannelsForEachCommand);
+      console.log('hogedone');
 
       return client.chat.postEphemeral({
         text: 'Error occured.',
