@@ -48,6 +48,10 @@ module.exports = (crowi) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
     const relation = await SlackAppIntegration.findOne({ tokenPtoG });
+    // MOCK DATA DELETE THIS GW-6972 ---------------
+    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const relationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    // MOCK DATA DELETE THIS GW-6972 ---------------
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
     const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
     const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
@@ -75,6 +79,26 @@ module.exports = (crowi) => {
       callbackId = payload.view.callback_id;
     }
 
+    let flag = false;
+
+    // check permission at channel level
+    const { permittedChannels } = relationMock;
+    const fromChannel = req.body.channel_name;
+    for (const commandName of Object.keys(permittedChannels)) {
+      // RegExp for action_id or callback_id ex. togetter:anything
+      const supportedGrowiActionsRegExp = new RegExp(`^${commandName}:\\w+`);
+
+      const channels = permittedChannels[commandName];
+      if (supportedGrowiActionsRegExp.test(actionId) || supportedGrowiActionsRegExp.test(callbackId)) {
+        flag = channels.includes(fromChannel);
+      }
+    }
+
+    if (flag) {
+      return next();
+    }
+
+    // check permission at command level
     let isActionSupported = false;
     supportedGrowiActionsRegExps.forEach((regexp) => {
       if (regexp.test(actionId) || regexp.test(callbackId)) {
@@ -89,9 +113,6 @@ module.exports = (crowi) => {
     if ((actionId || callbackId) && !isActionSupported) {
       return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
     }
-
-    // validate using permittedChannels column
-
 
     next();
   }
