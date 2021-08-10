@@ -1,4 +1,6 @@
-const { isCreatablePage } = require('~/utils/path-utils');
+import { pagePathUtils } from '@growi/core';
+
+const { isCreatablePage } = pagePathUtils;
 
 module.exports = (crowi) => {
   const Page = crowi.model('Page');

@@ -3,8 +3,8 @@ import { Container } from 'unstated';
 
 import * as entities from 'entities';
 import * as toastr from 'toastr';
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
-import { isTrashPage } from '~/utils/path-utils';
 import { toastError } from '../util/apiNotification';
 
 import {
@@ -15,6 +15,8 @@ import {
 import {
   DrawioInterceptor,
 } from '../util/interceptor/drawio-interceptor';
+
+const { isTrashPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:services:PageContainer');
 

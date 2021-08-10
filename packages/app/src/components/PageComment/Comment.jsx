@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
+import { UserPicture } from '@growi/ui';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 
@@ -13,7 +14,6 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import RevisionBody from '../Page/RevisionBody';
-import UserPicture from '../User/UserPicture';
 import Username from '../User/Username';
 import CommentEditor from './CommentEditor';
 import CommentControl from './CommentControl';

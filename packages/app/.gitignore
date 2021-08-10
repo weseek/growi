@@ -13,7 +13,7 @@
 
 # dist (for GROWI v4.x and below)
 /public/*.chunk.js
-/public/*.chunk.js.LICENSE
+/public/*.chunk.js.LICENSE.txt
 /public/*.bundle.js
 /public/manifest.json
 /public/dll
