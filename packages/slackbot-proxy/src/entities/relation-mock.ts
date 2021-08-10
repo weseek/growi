@@ -10,7 +10,7 @@ import { Installation } from './installation';
 //     create: ['srv', 'admin'],
 //     search: ['admin'],
 //   }
-interface PermittedChannels {
+interface PermittedChannelsForEachCommand {
   commandToChannelMap: { [command: string]: string[] };
 }
 
@@ -48,7 +48,7 @@ export class RelationMock {
   supportedCommandsForSingleUse: string[];
 
   @Column({ type: 'json' })
-  permittedChannels: PermittedChannels
+  permittedChannelsForEachCommand : PermittedChannelsForEachCommand
 
   @CreateDateColumn()
   expiredAtCommands: Date;
