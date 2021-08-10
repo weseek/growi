@@ -71,6 +71,7 @@ module.exports = (crowi) => {
 
     const user = await User.findOne({ email });
 
+    // when the user is not found or active
     if (user == null || user.status !== 2) {
       return res.apiv3Err('update-password-failed');
     }
