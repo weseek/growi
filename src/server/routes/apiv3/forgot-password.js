@@ -54,7 +54,7 @@ module.exports = (crowi) => {
 
       // when the user is not found or active
       if (user == null || user.status !== 2) {
-        return;
+        return res.apiv3Err('user not found or active');
       }
 
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
