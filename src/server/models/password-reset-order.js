@@ -8,7 +8,6 @@ const schema = new mongoose.Schema({
   token: { type: String, required: true, unique: true },
   email: { type: String, required: true },
   relatedUser: { type: ObjectId, ref: 'User' },
-  isRevoked: { type: Boolean, default: false, required: true },
   createdAt: { type: Date, default: Date.now, required: true },
   expiredAt: { type: Date, default: Date.now() + 600000, required: true },
 });
@@ -40,12 +39,6 @@ class PasswordResetOrder {
 
   isExpired() {
     return this.expiredAt.getTime() < Date.now();
-  }
-
-  revokeOneTimeToken() {
-    this.isRevoked = true;
-    this.save();
-    return;
   }
 
 }
