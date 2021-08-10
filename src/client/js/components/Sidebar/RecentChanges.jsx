@@ -86,7 +86,7 @@ class RecentChanges extends React.Component {
             <div className="mt-2">
               { tagElements }
             </div>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between grw-recent-changes-item-lower">
               <div className="mt-2">
                 <span className="footstamp-icon mr-1"><FootstampIcon /></span>
                 <span className="mr-2 grw-list-counts">{page.seenUsers.length}</span>
