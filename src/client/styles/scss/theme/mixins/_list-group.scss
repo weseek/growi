@@ -2,8 +2,8 @@
   .list-group {
     .list-group-item {
       color: $color;
-      // background-color: $bgcolor;
-      // border-color: $border-color-global;
+      background-color: $bgcolor;
+      border-color: $border-color-global;
 
       &.list-group-item-action {
         &:hover {
