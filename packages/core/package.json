@@ -6,11 +6,13 @@
   "keywords": [
     "growi"
   ],
-  "main": "src/index.js",
-  "files": [
-    "src"
-  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "files": ["dist"],
   "scripts": {
+    "build": "run-p build:*",
+    "build:cjs": "tsc -p tsconfig.build.cjs.json && tsc-alias -p tsconfig.build.cjs.json",
+    "build:esm": "tsc -p tsconfig.build.esm.json && tsc-alias -p tsconfig.build.esm.json",
     "lint:js": "eslint **/*.{js,ts}",
     "lint:styles": "stylelint src/styles/scss/**/*.scss",
     "lint": "npm-run-all -p lint:*",

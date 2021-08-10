@@ -1,8 +1,10 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "module": "esnext",
+
     "rootDir": "./src",
-    "outDir": "dist",
+    "outDir": "dist/esm",
     "declaration": true,
     "noResolve": false,
     "preserveConstEnums": true,

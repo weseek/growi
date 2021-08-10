@@ -6,10 +6,8 @@
   "keywords": [
     "growi"
   ],
-  "main": "src/index.js",
-  "files": [
-    "src"
-  ],
+  "module": "dist/esm/index.js",
+  "files": ["dist"],
   "scripts": {
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint src/styles/scss/**/*.scss",
