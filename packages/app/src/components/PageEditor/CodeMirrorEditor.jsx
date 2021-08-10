@@ -860,15 +860,23 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
+    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
+
+    // TODO: Get config from db
     const textlintValidator = createValidator([
       {
         name: 'max-comma',
+      },
+      {
+        name: 'common-misspellings',
         options: {
-          max: 2,
+          ignore: [
+            'isnt',
+            'yuo',
+          ],
         },
       },
-      'common-misspellings']);
-    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
+    ]);
 
     return (
       <React.Fragment>
