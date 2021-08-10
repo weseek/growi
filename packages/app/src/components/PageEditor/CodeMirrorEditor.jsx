@@ -860,7 +860,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    const textlintValidator = createValidator();
+    const textlintValidator = createValidator([
+      {
+        name: 'max-comma',
+        options: {
+          max: 2,
+        },
+      },
+      'common-misspellings']);
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
 
     return (

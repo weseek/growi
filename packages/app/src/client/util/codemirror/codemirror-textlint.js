@@ -1,30 +1,35 @@
 import { TextlintKernel } from '@textlint/kernel';
+import { moduleInterop } from '@textlint/module-interop';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
 
 const kernel = new TextlintKernel();
 
 let textlintOption = {};
 
-const createSetupRules = (rules, ruleOptions) => (
-  Object.keys(rules).map(ruleName => (
-    {
+const createSetupRules = (rules, ruleOptions) => {
+  return Object.keys(rules).map((ruleName) => {
+    console.log(ruleName);
+    return {
       ruleId: ruleName,
       rule: rules[ruleName],
       options: ruleOptions[ruleName],
-    }
-  ))
-);
+    };
+  });
+};
 
 
 export default function createValidator() {
   const enabledRules = [
     {
       name: 'max-comma',
-      rule: require('textlint-rule-max-comma').default,
+      rule: moduleInterop(require('textlint-rule-max-comma')),
+      options: {
+        max: 2,
+      },
     },
     {
       name: 'common-misspellings',
-      rule: require('textlint-rule-common-misspellings').default,
+      rule: moduleInterop(require('textlint-rule-common-misspellings')),
       options: {
         ignore: [
           'isnt',
@@ -33,7 +38,6 @@ export default function createValidator() {
         ],
       },
     },
-
   ];
 
 
@@ -43,20 +47,13 @@ export default function createValidator() {
   }, {});
 
   const rulesOption = enabledRules.reduce((rules, rule) => {
-    rules[rule.name] = rule.options;
+    rules[rule.name] = rule.options || {};
     return rules;
   }, {});
 
   textlintOption = Object.assign(
     {},
     {
-      // rules: [
-      //   {
-      //     ruleId: 'common-misspellings',
-      //     rule: require('textlint-rule-common-misspellings').default,
-      //     enable: true,
-      //   },
-      // ],
       rules: createSetupRules(rules, rulesOption),
       plugins: [
         {
