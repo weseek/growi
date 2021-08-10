@@ -209,21 +209,11 @@ export class SlackCtrl {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(botToken!);
 
-      // HARDCORD;
-      // const permittedChannelsForEachCommand = {
-      //   create: ['srv'],
-      //   search: ['srv', 'admin'],
-      // };
-
-      console.log('hoge');
-      // console.log(relations);
-      // const relationMock = await this.relationMockRepository.findOne({
-      //   where: { installation },
-      // });
-      // const permittedChannelsForEachCommand = relationMock?.permittedChannelsForEachCommand;
-      // console.log(relationMock);
-      // console.log(permittedChannelsForEachCommand);
-      console.log('hogedone');
+      const relationMock = await this.relationMockRepository.findOne({
+        where: { installation },
+      });
+      const permittedChannelsForEachCommand = relationMock?.permittedChannelsForEachCommand;
+      console.log(permittedChannelsForEachCommand);
 
       return client.chat.postEphemeral({
         text: 'Error occured.',
