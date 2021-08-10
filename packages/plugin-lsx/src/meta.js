@@ -1,11 +1,11 @@
-const path = require('path');
+const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  pluginSchemaVersion: 3,
+  pluginSchemaVersion: 4,
   serverEntries: [
-    path.join(__dirname, 'server-entry.js'),
+    isProd ? 'dist/cjs/server-entry.js' : 'src/server-entry.js',
   ],
   clientEntries: [
-    path.join(__dirname, 'client-entry.js'),
+    'src/client-entry.js',
   ],
 };
