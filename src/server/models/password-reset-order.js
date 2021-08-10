@@ -42,10 +42,9 @@ class PasswordResetOrder {
     return this.expiredAt.getTime() < Date.now();
   }
 
-  revokeOneTimeToken() {
+  async revokeOneTimeToken() {
     this.isRevoked = true;
-    this.save();
-    return;
+    return this.save();
   }
 
 }
