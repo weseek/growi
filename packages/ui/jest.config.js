@@ -3,6 +3,7 @@
 
 const MODULE_NAME_MAPPING = {
   '^~/(.+)$': '<rootDir>/src/$1',
+  '^@growi/(.+)$': '<rootDir>/../$1/src',
 };
 
 module.exports = {
