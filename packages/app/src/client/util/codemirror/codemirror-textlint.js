@@ -47,7 +47,6 @@ export default function createValidator(rulesConfigArray) {
     },
   );
 
-
   return (text, callback) => {
     if (!text) {
       callback([]);
