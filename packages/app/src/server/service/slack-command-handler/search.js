@@ -343,7 +343,7 @@ module.exports = (crowi) => {
           markdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
         ],
       });
-      return;
+      return { pages: [] };
     }
 
     const keywords = this.getKeywords(args);
