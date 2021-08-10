@@ -18,6 +18,7 @@ COPY ./yarn.lock .
 COPY ./lerna.json .
 COPY ./packages/app/package.json packages/app/
 COPY ./packages/slack/package.json packages/slack/
+COPY ./packages/plugin-pukiwiki-like-linker/package.json packages/plugin-pukiwiki-like-linker/
 
 # setup
 RUN yarn config set network-timeout 300000
@@ -26,7 +27,8 @@ RUN npx lerna bootstrap
 # make artifacts
 RUN tar cf node_modules.tar node_modules \
   packages/app/node_modules \
-  packages/slack/node_modules
+  packages/slack/node_modules \
+  packages/plugin-pukiwiki-like-linker/node_modules
 
 
 
@@ -41,7 +43,8 @@ RUN yarn install --production
 # make artifacts
 RUN tar cf node_modules.tar node_modules \
   packages/app/node_modules \
-  packages/slack/node_modules
+  packages/slack/node_modules \
+  packages/plugin-pukiwiki-like-linker/node_modules
 
 
 
@@ -88,16 +91,10 @@ COPY ./package.json ./
 COPY ./yarn.lock ./
 COPY ./lerna.json ./
 COPY ./tsconfig.base.json ./
-COPY ./babel.config.js ./
-COPY ./bin ./bin
-COPY ./config ./config
-COPY ./public ./public
-COPY ./resource ./resource
-COPY ./src ./src
-COPY ./tmp ./tmp
 # copy all related packages
 COPY packages/slack packages/slack
 COPY packages/app packages/app
+COPY packages/plugin-pukiwiki-like-linker packages/plugin-pukiwiki-like-linker
 
 # build
 RUN yarn lerna run build
@@ -106,12 +103,16 @@ RUN yarn lerna run build
 RUN tar cf packages.tar \
   package.json \
   yarn.lock \
-  config \
-  public \
-  resource \
-  src \
-  tmp \
+  tsconfig.base.json \
   packages/app/package.json \
+  packages/app/config \
+  packages/app/dist \
+  packages/app/public \
+  packages/app/resource \
+  packages/app/tmp \
+  packages/app/.env.production \
+  packages/app/tsconfig.base.json \
+  packages/app/tsconfig.json \
   packages/slack/package.json \
   packages/slack/dist
 
@@ -123,6 +124,8 @@ RUN tar cf packages.tar \
 ##
 FROM node:14-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+
+ENV NODE_ENV production
 
 ENV appDir /opt/growi
 
@@ -154,12 +157,14 @@ RUN rm node_modules.tar packages.tar
 
 USER root
 
-COPY docker/docker-entrypoint.sh /
+COPY packages/app/docker/docker-entrypoint.sh /
 RUN chmod 700 /docker-entrypoint.sh
 RUN chown node:node ${appDir}
+
+WORKDIR ${appDir}/packages/app
 
 VOLUME /data
 EXPOSE 3000
 
 ENTRYPOINT ["/tini", "-e", "143", "--", "/docker-entrypoint.sh"]
-CMD ["yarn", "server:prod"]
+CMD ["node", "-r", "dotenv-flow/config", "--expose_gc", "dist/server/app.js"]
