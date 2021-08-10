@@ -11,6 +11,17 @@ const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
+// MOCK DATA DELETE THIS
+const MOCK_OBJECT_SLACKAPP_INTEGRATION = {
+  supportedCommandsForBroadcastUse: ['search'],
+  supportedCommandsForSingleUse: ['create', 'togetter'],
+  permittedChannels: {
+    search: ['admin'],
+    create: ['admin'],
+    togetter: ['admin'],
+  },
+};
+
 module.exports = (crowi) => {
   this.app = crowi.express;
 
@@ -89,6 +100,9 @@ module.exports = (crowi) => {
     if ((actionId || callbackId) && !isActionSupported) {
       return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
     }
+
+    // validate using permittedChannels column
+
 
     next();
   }
