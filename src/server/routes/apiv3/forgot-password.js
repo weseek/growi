@@ -51,6 +51,11 @@ module.exports = (crowi) => {
     try {
       // need to handle passwordResetOrderData when user not found and not active by GW7060
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
+
+      if (passwordResetOrderData == null || passwordResetOrderData.isRevoked) {
+        return res.apiv3Err('update-password-failed');
+      }
+
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
       await sendPasswordResetEmail(email, oneTimeUrl, i18n);
