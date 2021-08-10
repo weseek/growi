@@ -1,6 +1,8 @@
 module.exports = (crowi, app) => {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
 
+  // need refuctoring with http-error by GW-7091
+
   return async(req, res, next) => {
     const { token } = req.params;
 
