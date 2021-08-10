@@ -240,6 +240,7 @@
     "swagger2openapi": "^5.3.1",
     "terser-webpack-plugin": "^4.1.0",
     "textlint-message-to-codemirror": "^1.0.0",
+    "textlint-plugin-markdown": "^4.0.6",
     "throttle-debounce": "^2.0.0",
     "toastr": "^2.1.2",
     "ts-jest": "^27.0.4",
