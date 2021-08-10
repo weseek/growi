@@ -49,6 +49,13 @@ module.exports = (crowi) => {
     const appUrl = appService.getSiteUrl();
 
     try {
+      const user = await User.findOne({ email });
+
+      // when the user is not found or active
+      if (user == null || user.status !== 2) {
+        return res.apiv3Err('User not found or active');
+      }
+
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
@@ -69,6 +76,11 @@ module.exports = (crowi) => {
     const { email } = passwordResetOrder;
 
     const user = await User.findOne({ email });
+
+    // when the user is not found or active
+    if (user == null || user.status !== 2) {
+      return res.apiv3Err('update-password-failed');
+    }
 
     try {
       const userData = await user.updatePassword(newPassword);
