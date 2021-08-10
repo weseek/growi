@@ -1,6 +1,8 @@
 import loggerFactory from '~/utils/logger';
 import { toArrayIfNot } from '~/utils/array-utils';
 
+import ConfigLoader from './config-loader';
+
 const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 
 const fs = require('fs');
@@ -9,7 +11,6 @@ const mongoose = require('mongoose');
 const { Transform } = require('stream');
 const streamToPromise = require('stream-to-promise');
 const archiver = require('archiver');
-const ConfigLoader = require('../service/config-loader');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
@@ -91,7 +92,7 @@ class ExportService {
       url: this.appService.getSiteUrl(),
       passwordSeed,
       exportedAt: new Date(),
-      envVars: ConfigLoader.getEnvVarsForDisplay(),
+      envVars: await ConfigLoader.getEnvVarsForDisplay(),
     };
 
     writeStream.write(JSON.stringify(metaData));
