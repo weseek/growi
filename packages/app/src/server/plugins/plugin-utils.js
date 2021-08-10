@@ -1,13 +1,13 @@
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
-const fs = require('graceful-fs');
+import { PluginUtilsV4 } from './plugin-utils-v4';
 
-const PluginUtilsV2 = require('./plugin-utils-v2');
+const fs = require('graceful-fs');
 
 const logger = loggerFactory('growi:plugins:plugin-utils');
 
-const pluginUtilsV2 = new PluginUtilsV2();
+const pluginUtilsV4 = new PluginUtilsV4();
 
 class PluginUtils {
 
@@ -26,19 +26,27 @@ class PluginUtils {
    * @return
    * @memberOf PluginService
    */
-  generatePluginDefinition(name, isForClient = false) {
+  async generatePluginDefinition(name, isForClient = false) {
     const meta = require(name);
     let definition;
 
     switch (meta.pluginSchemaVersion) {
-      // v1 is deprecated
+      // v1, v2 and v3 is deprecated
       case 1:
         logger.debug('pluginSchemaVersion 1 is deprecated');
         break;
-      // v2 or above
       case 2:
+        logger.debug('pluginSchemaVersion 2 is deprecated');
+        break;
+      case 3:
+        logger.debug('pluginSchemaVersion 3 is deprecated');
+        break;
+      // v4 or above
+      case 4:
+        definition = await pluginUtilsV4.generatePluginDefinition(name, isForClient);
+        break;
       default:
-        definition = pluginUtilsV2.generatePluginDefinition(name, isForClient);
+        logger.warn('Unsupported schema version', meta.pluginSchemaVersion);
     }
 
     return definition;
