@@ -17,11 +17,24 @@ const createSetupRules = (rules, ruleOptions) => (
 
 
 export default function createValidator() {
-  const enabledRules = [{
-    name: 'common-misspellings',
-    rule: require('textlint-rule-common-misspellings').default,
-    enable: true,
-  }];
+  const enabledRules = [
+    {
+      name: 'max-comma',
+      rule: require('textlint-rule-max-comma').default,
+    },
+    {
+      name: 'common-misspellings',
+      rule: require('textlint-rule-common-misspellings').default,
+      options: {
+        ignore: [
+          'isnt',
+          'yuo',
+          'carefull',
+        ],
+      },
+    },
+
+  ];
 
 
   const rules = enabledRules.reduce((rules, rule) => {
@@ -30,11 +43,9 @@ export default function createValidator() {
   }, {});
 
   const rulesOption = enabledRules.reduce((rules, rule) => {
-    rules[rule.name] = rule.options || true;
+    rules[rule.name] = rule.options;
     return rules;
   }, {});
-
-  console.log(createSetupRules(rules, rulesOption));
 
   textlintOption = Object.assign(
     {},
