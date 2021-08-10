@@ -12,6 +12,7 @@ import * as _templateChecker from './utils/template-checker';
 //   LocalStorageManager: require('./service/localstorage-manager'),
 // };
 
+export * from './plugin/interfaces/plugin-definition-v4';
 export * from './models/devided-page-path';
 
 // export utils
