@@ -119,7 +119,7 @@ class AppService implements S2sMessageHandlable {
   }
 
   async setupAfterInstall() {
-    this.crowi.pluginService.autoDetectAndLoadPlugins();
+    await this.crowi.pluginService.autoDetectAndLoadPlugins();
     this.crowi.setupRoutesAtLast();
     this.crowi.setupGlobalErrorHandlers();
 
