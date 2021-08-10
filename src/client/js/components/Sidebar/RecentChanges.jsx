@@ -74,20 +74,20 @@ class RecentChanges extends React.Component {
 
 
     return (
-      <li className="list-group-item p-2">
+      <li className="list-group-item py-3 px-0">
         <div className="d-flex w-100">
           <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
           <div className="flex-grow-1 ml-2">
             { !dPagePath.isRoot && <FormerLink /> }
-            <h5 className="mb-1">
+            <h5 className="my-2">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
               {locked}
             </h5>
-            <div className="mt-2">
+            <div>
               { tagElements }
             </div>
-            <div className="d-flex justify-content-between grw-recent-changes-item-lower">
-              <div className="mt-2">
+            <div className="d-flex justify-content-between grw-recent-changes-item-lower mt-1">
+              <div>
                 <span className="footstamp-icon mr-1"><FootstampIcon /></span>
                 <span className="mr-2 grw-list-counts">{page.seenUsers.length}</span>
                 <i className="icon-bubble mr-1"></i>
