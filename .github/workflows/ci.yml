@@ -130,6 +130,12 @@ jobs:
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_test
 
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Coverage Report
+        path: packages/app/coverage
+
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
@@ -308,11 +314,6 @@ jobs:
         yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
-    - name: Upload report as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Report
-        path: report
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
