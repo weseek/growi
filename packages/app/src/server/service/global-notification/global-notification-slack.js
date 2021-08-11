@@ -1,9 +1,11 @@
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:service:GlobalNotificationSlackService'); // eslint-disable-line no-unused-vars
 const urljoin = require('url-join');
 
-const { encodeSpaces } = require('~/utils/path-utils');
+const { encodeSpaces } = pagePathUtils;
 
 /**
  * sub service class of GlobalNotificationSetting

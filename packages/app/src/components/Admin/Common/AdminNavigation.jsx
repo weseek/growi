@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { pathUtils } from 'growi-commons';
+import { pathUtils } from '@growi/core';
 
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';

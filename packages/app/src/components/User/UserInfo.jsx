@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import UserPicture from './UserPicture';
+import { UserPicture } from '@growi/ui';
 
 const UserInfo = (props) => {
   const { pageUser } = props;

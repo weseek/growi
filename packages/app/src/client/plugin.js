@@ -29,15 +29,17 @@ export default class GrowiPlugin {
       const meta = definition.meta;
 
       switch (meta.pluginSchemaVersion) {
-        // v1 is deprecated
+        // v1, v2 and v3 is deprecated
         case 1:
           logger.warn('pluginSchemaVersion 1 is deprecated', definition);
           break;
-        // v2 is deprecated
         case 2:
           logger.warn('pluginSchemaVersion 2 is deprecated', definition);
           break;
         case 3:
+          logger.warn('pluginSchemaVersion 2 is deprecated', definition);
+          break;
+        case 4:
           definition.entries.forEach((entry) => {
             entry(appContainer);
           });

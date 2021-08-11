@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import { pagePathUtils } from '@growi/core';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import PageContainer from '~/client/services/PageContainer';
-import { convertToNewAffiliationPath } from '~/utils/path-utils';
+
+const { convertToNewAffiliationPath } = pagePathUtils;
 
 function ComparePathsTable(props) {
   const {
