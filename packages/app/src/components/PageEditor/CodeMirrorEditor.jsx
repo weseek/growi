@@ -32,7 +32,7 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-import createValidator from '../../client/util/codemirror/codemirror-textlint';
+import { createValidator } from '../../client/util/codemirror/codemirror-textlint';
 
 window.JSHINT = JSHINT;
 
@@ -860,8 +860,26 @@ export default class CodeMirrorEditor extends AbstractEditor {
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
-    const textlintValidator = createValidator();
-    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plane Text..';
+    const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
+
+    // TODO: Get config from db
+    const textlintValidator = createValidator([
+      {
+        name: 'max-comma',
+      },
+      {
+        name: 'dummy-rule',
+      },
+      {
+        name: 'common-misspellings',
+        options: {
+          ignore: [
+            'isnt',
+            'yuo',
+          ],
+        },
+      },
+    ]);
 
     return (
       <React.Fragment>
