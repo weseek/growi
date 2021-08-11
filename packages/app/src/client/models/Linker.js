@@ -1,3 +1,8 @@
+
+import { pagePathUtils } from '@growi/core';
+
+const { encodeSpaces } = pagePathUtils;
+
 export default class Linker {
 
   constructor(
@@ -5,9 +10,14 @@ export default class Linker {
       label = '',
       link = '',
   ) {
+
     this.type = type;
     this.label = label;
     this.link = link;
+
+    if (type === Linker.types.markdownLink) {
+      this.initWhenMarkdownLink();
+    }
 
     this.generateMarkdownText = this.generateMarkdownText.bind(this);
   }
@@ -23,6 +33,15 @@ export default class Linker {
     pukiwikiLinkWithoutLabel: /^\[\[(?<label>.+)\]\]$/, // https://regex101.com/r/S7w5Xu/1
     growiLink: /^\[(?<label>\/.+)\]$/, // https://regex101.com/r/DJfkYf/3
     markdownLink: /^\[(?<label>.*)\]\((?<link>.*)\)$/, // https://regex101.com/r/DZCKP3/2
+  }
+
+  initWhenMarkdownLink() {
+    // fill label with link if empty
+    if (this.label === '') {
+      this.label = this.link;
+    }
+    // encode spaces
+    this.link = encodeSpaces(this.link);
   }
 
   generateMarkdownText() {
