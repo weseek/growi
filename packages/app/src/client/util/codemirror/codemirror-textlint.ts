@@ -1,4 +1,4 @@
-import { TextlintKernel, TextlintRuleOptions } from '@textlint/kernel';
+import { TextlintKernel, TextlintKernelRule, TextlintRuleOptions } from '@textlint/kernel';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
 import textlintRuleMaxComma from 'textlint-rule-max-comma';
 import textlintRuleCommonMisspellings from 'textlint-rule-common-misspellings';
@@ -33,7 +33,7 @@ const textlintOption: TextlintRuleOptions<RuleExtension> = {
   ],
 };
 
-const createSetupRules = (rules, ruleOptions) => (
+const createSetupRules = (rules, ruleOptions): TextlintKernelRule[] => (
   Object.keys(rules).map(ruleName => (
     {
       ruleId: ruleName,
