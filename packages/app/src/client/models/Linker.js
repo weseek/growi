@@ -27,7 +27,7 @@ export default class Linker {
 
   generateMarkdownText() {
     if (this.type === Linker.types.pukiwikiLink) {
-      if (this.label === this.link) return `[[${this.link}]]`;
+      if (this.label === '') return `[[${this.link}]]`;
       return `[[${this.label}>${this.link}]]`;
     }
     if (this.type === Linker.types.growiLink) {
