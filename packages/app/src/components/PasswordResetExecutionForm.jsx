@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-// import loggerFactory from '@alias/logger';
 import loggerFactory from '~/utils/logger';
 import { withUnstatedContainers } from './UnstatedUtils';
-// import AppContainer from '../services/AppContainer';
 import AppContainer from '~/client/services/AppContainer';
-// import { toastSuccess, toastError } from '../util/apiNotification';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 const logger = loggerFactory('growi:passwordReset');
