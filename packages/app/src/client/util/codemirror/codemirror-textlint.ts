@@ -14,8 +14,6 @@ type RuleExtension = {
   ext: string
 }
 
-type RulesConfigArray = Array<RulesConfigObj>
-
 const ruleModulesList = {
   'max-comma': textlintRuleMaxComma,
   'common-misspellings': textlintRuleCommonMisspellings,
@@ -44,7 +42,7 @@ const createSetupRules = (rules, ruleOptions): TextlintKernelRule[] => (
 );
 
 
-export const createValidator = (rulesConfigArray: RulesConfigArray): AsyncLinter<RulesConfigArray> => {
+export const createValidator = (rulesConfigArray: RulesConfigObj[]): AsyncLinter<RulesConfigObj[]> => {
 
   const filteredConfigArray = rulesConfigArray
     .filter((rule) => {
