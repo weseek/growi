@@ -32,7 +32,7 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-import createValidator from '../../client/util/codemirror/codemirror-textlint';
+import { createValidator } from '../../client/util/codemirror/codemirror-textlint';
 
 window.JSHINT = JSHINT;
 
@@ -866,6 +866,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const textlintValidator = createValidator([
       {
         name: 'max-comma',
+      },
+      {
+        name: 'dummy-rule',
       },
       {
         name: 'common-misspellings',
