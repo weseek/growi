@@ -130,9 +130,6 @@ const Sidebar = (props: Props) => {
       // }
 
       navigationUIController.disableResize();
-
-      // fix width
-      navigationUIController.setState({ productNavWidth: productNavWidth });
     }
     // Drawer --> Dock
     else {
@@ -282,6 +279,7 @@ const Sidebar = (props: Props) => {
                     onMouseLeave={() => hoverHandler(false)}
                     onMouseMove={draggableAreaMoveHandler}
                     onMouseUp={dragableAreaMouseUpHandler}
+                    style={{ width: navigationUIController.state.isCollapsed ? sidebarMinimizeWidth : productNavWidth }}
                   >
                     <div className="grw-contextual-navigation-child">
                       <div role="group" className="grw-contextual-navigation-sub"></div>
