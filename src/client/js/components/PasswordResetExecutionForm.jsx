@@ -34,8 +34,9 @@ const PasswordResetExecutionForm = (props) => {
     }
 
     try {
-      await appContainer.apiv3Put('/forgot-password', {
-        token, newPassword, newPasswordConfirm,
+      // get endpoint by /forgot-password/${token} or window.location.pathname
+      await appContainer.apiv3Put(`/forgot-password/${token}`, {
+        /* token, */ newPassword, newPasswordConfirm,
       });
 
       setNewPassword('');

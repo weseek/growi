@@ -85,6 +85,7 @@ module.exports = (crowi) => {
     try {
       const userData = await user.updatePassword(newPassword);
       const serializedUserData = serializeUserSecurely(userData);
+      passwordResetOrder.isRevoked = true;
       return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
