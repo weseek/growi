@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 
 import { UncontrolledTooltip } from 'reactstrap';
 
+import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
@@ -18,7 +19,6 @@ import {
   updateUserPreferenceWithOsSettings,
 } from '~/client/util/color-scheme';
 
-import UserPicture from '../User/UserPicture';
 
 import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
 import SidebarDockIcon from '../Icons/SidebarDockIcon';

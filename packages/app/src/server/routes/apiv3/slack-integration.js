@@ -4,11 +4,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
-const { verifySlackRequest, generateWebClient } = require('@growi/slack');
+const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps } = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
@@ -38,6 +39,55 @@ module.exports = (crowi) => {
         + 'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. '
         + 'Please unregister the information registered in the proxy and setup `/growi register` again.',
       });
+    }
+
+    next();
+  }
+
+  async function checkCommandPermission(req, res, next) {
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+
+    const relation = await SlackAppIntegration.findOne({ tokenPtoG });
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
+    const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
+    const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
+
+    // get command name from req.body
+    let command = '';
+    let actionId = '';
+    let callbackId = '';
+    let payload;
+    if (req.body.payload) {
+      payload = JSON.parse(req.body.payload);
+    }
+
+    if (req.body.text == null && !payload) { // when /relation-test
+      return next();
+    }
+
+    if (!payload) { // when request is to /commands
+      command = req.body.text.split(' ')[0];
+    }
+    else if (payload.actions) { // when request is to /interactions && block_actions
+      actionId = payload.actions[0].action_id;
+    }
+    else { // when request is to /interactions && view_submission
+      callbackId = payload.view.callback_id;
+    }
+
+    let isActionSupported = false;
+    supportedGrowiActionsRegExps.forEach((regexp) => {
+      if (regexp.test(actionId) || regexp.test(callbackId)) {
+        isActionSupported = true;
+      }
+    });
+
+    // validate
+    if (command && !supportedCommands.includes(command)) {
+      return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+    }
+    if ((actionId || callbackId) && !isActionSupported) {
+      return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
     }
 
     next();
@@ -104,18 +154,19 @@ module.exports = (crowi) => {
     const command = args[0];
 
     try {
-      await crowi.slackBotService.handleCommand(command, client, body, args);
+      await crowi.slackBotService.handleCommandRequest(command, client, body, args);
     }
-    catch (error) {
-      logger.error(error);
+    catch (err) {
+      await respondIfSlackbotError(client, body, err);
     }
+
   }
 
   router.post('/commands', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
     return handleCommands(req, res);
   });
 
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, async(req, res) => {
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
     const { body } = req;
 
     // eslint-disable-next-line max-len
@@ -126,61 +177,6 @@ module.exports = (crowi) => {
 
     return handleCommands(req, res);
   });
-
-
-  const handleBlockActions = async(client, payload) => {
-    const { action_id: actionId } = payload.actions[0];
-
-    switch (actionId) {
-      case 'shareSingleSearchResult': {
-        await crowi.slackBotService.shareSinglePage(client, payload);
-        break;
-      }
-      case 'dismissSearchResults': {
-        await crowi.slackBotService.dismissSearchResults(client, payload);
-        break;
-      }
-      case 'showNextResults': {
-        const parsedValue = JSON.parse(payload.actions[0].value);
-
-        const { body, args, offset } = parsedValue;
-        const newOffset = offset + 10;
-        await crowi.slackBotService.showEphemeralSearchResults(client, body, args, newOffset);
-        break;
-      }
-      case 'togetterShowMore': {
-        const parsedValue = JSON.parse(payload.actions[0].value);
-        const togetterHandler = require('../../service/slack-command-handler/togetter')(crowi);
-
-        const { body, args, limit } = parsedValue;
-        const newLimit = limit + 1;
-        await togetterHandler.handleCommand(client, body, args, newLimit);
-        break;
-      }
-      case 'togetter:createPage': {
-        await crowi.slackBotService.togetterCreatePageInGrowi(client, payload);
-        break;
-      }
-      case 'togetter:cancel': {
-        await crowi.slackBotService.togetterCancel(client, payload);
-        break;
-      }
-      default:
-        break;
-    }
-  };
-
-  const handleViewSubmission = async(client, payload) => {
-    const { callback_id: callbackId } = payload.view;
-
-    switch (callbackId) {
-      case 'createPage':
-        await crowi.slackBotService.createPageInGrowi(client, payload);
-        break;
-      default:
-        break;
-    }
-  };
 
   async function handleInteractions(req, res) {
 
@@ -206,10 +202,20 @@ module.exports = (crowi) => {
     try {
       switch (type) {
         case 'block_actions':
-          await handleBlockActions(client, payload);
+          try {
+            await crowi.slackBotService.handleBlockActionsRequest(client, payload);
+          }
+          catch (err) {
+            await respondIfSlackbotError(client, req.body, err);
+          }
           break;
         case 'view_submission':
-          await handleViewSubmission(client, payload);
+          try {
+            await crowi.slackBotService.handleViewSubmissionRequest(client, payload);
+          }
+          catch (err) {
+            await respondIfSlackbotError(client, req.body, err);
+          }
           break;
         default:
           break;
@@ -225,8 +231,15 @@ module.exports = (crowi) => {
     return handleInteractions(req, res);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
     return handleInteractions(req, res);
+  });
+
+  router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+
+    return res.send(slackAppIntegration);
   });
 
   return router;

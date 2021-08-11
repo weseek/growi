@@ -7,7 +7,7 @@ import {
 
 import { format } from 'date-fns';
 
-import UserPicture from '../User/UserPicture';
+import { UserPicture } from '@growi/ui';
 import Username from '../User/Username';
 
 export default class DeleteCommentModal extends React.Component {

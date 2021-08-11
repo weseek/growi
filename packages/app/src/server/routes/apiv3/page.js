@@ -1,4 +1,6 @@
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -6,8 +8,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-
-const { convertToNewAffiliationPath } = require('~/utils/path-utils');
+const { convertToNewAffiliationPath } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
