@@ -33,7 +33,7 @@ RUN tar cf node_modules.tar node_modules \
   packages/app/node_modules \
   packages/core/node_modules \
   packages/plugin-attachment-refs/node_modules \
-  packages/plugin-lsx \
+  packages/plugin-lsx//node_modules \
   packages/plugin-pukiwiki-like-linker/node_modules \
   packages/slack/node_modules \
   packages/ui/node_modules
