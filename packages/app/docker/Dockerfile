@@ -29,14 +29,9 @@ RUN yarn config set network-timeout 300000
 RUN npx lerna bootstrap
 
 # make artifacts
-RUN tar cf node_modules.tar node_modules \
-  packages/app/node_modules \
-  packages/core/node_modules \
-  packages/plugin-attachment-refs/node_modules \
-  packages/plugin-lsx//node_modules \
-  packages/plugin-pukiwiki-like-linker/node_modules \
-  packages/slack/node_modules \
-  packages/ui/node_modules
+RUN tar cf node_modules.tar \
+  node_modules \
+  packages/*/node_modules
 
 
 
@@ -49,14 +44,9 @@ FROM deps-resolver AS deps-resolver-prod
 RUN yarn install --production
 
 # make artifacts
-RUN tar cf node_modules.tar node_modules \
-  packages/app/node_modules \
-  packages/core/node_modules \
-  packages/plugin-attachment-refs/node_modules \
-  packages/plugin-lsx/node_modules \
-  packages/plugin-pukiwiki-like-linker/node_modules \
-  packages/slack/node_modules \
-  packages/ui/node_modules
+RUN tar cf node_modules.tar \
+  node_modules \
+  packages/*/node_modules
 
 
 
@@ -129,18 +119,8 @@ RUN tar cf packages.tar \
   packages/app/.env.production \
   packages/app/tsconfig.base.json \
   packages/app/tsconfig.json \
-  packages/core/package.json \
-  packages/core/dist \
-  packages/plugin-attachment-refs/package.json \
-  packages/plugin-attachment-refs/dist \
-  packages/plugin-lsx/package.json \
-  packages/plugin-lsx/dist \
-  packages/plugin-pukiwiki-like-linker/package.json \
-  packages/plugin-pukiwiki-like-linker/dist \
-  packages/slack/package.json \
-  packages/slack/dist \
-  packages/ui/package.json \
-  packages/ui/dist
+  packages/*/package.json \
+  packages/*/dist
 
 
 
