@@ -6,13 +6,15 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-import { encodeSpaces } from '~/utils/path-utils';
+import { pagePathUtils } from '@growi/core';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
 
 import RevisionComparerContainer from '~/client/services/RevisionComparerContainer';
 
 import RevisionDiff from '../PageHistory/RevisionDiff';
+
+const { encodeSpaces } = pagePathUtils;
 
 /* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (
