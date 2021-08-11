@@ -70,12 +70,11 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', csrf, passwordReset, validator.password, apiV3FormValidator, async(req, res) => {
-    const { email } = req.DataFromPasswordResetOrderMiddleware;
+  router.put('/:token', csrf, passwordReset, validator.password, apiV3FormValidator, async(req, res) => {
+    const passwordResetOrder = req.DataFromPasswordResetOrderMiddleware;
     const { newPassword } = req.body;
 
-
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: passwordResetOrder.email });
 
     // when the user is not found or active
     if (user == null || user.status !== 2) {
