@@ -199,7 +199,7 @@ const Sidebar = (props: Props) => {
     if (!isHover) {
       setContentWidth(sidebarMinimizeWidth);
     }
-  }, [navigationUIController.state.isCollapsed, setContentWidth]);
+  }, [navigationUIController.state.isCollapsed, isDrawerMode, productNavWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     navigationUIController.toggleCollapse();
@@ -212,7 +212,7 @@ const Sidebar = (props: Props) => {
     else {
       setContentWidth(productNavWidth);
     }
-  }, [navigationUIController.state.isCollapsed, setContentWidth]);
+  }, [navigationUIController.state.isCollapsed]);
 
   const draggableAreaMoveHandler = useCallback((event) => {
     if (isDragging) {
@@ -223,7 +223,7 @@ const Sidebar = (props: Props) => {
         resizableContainer.current.classList.add('dragging');
       }
     }
-  }, [isDragging, setContentWidth, mutateProductNavWidth]);
+  }, [isDragging]);
 
   const dragableAreaMouseUpHandler = useCallback(() => {
     if (resizableContainer.current == null) {
@@ -252,7 +252,7 @@ const Sidebar = (props: Props) => {
       return;
     }
     setDrag(true);
-  }, [navigationUIController.state.isCollapsed]);
+  }, [navigationUIController.state.isCollapsed, isDrawerMode]);
 
   useEffect(() => {
     document.addEventListener('mousemove', draggableAreaMoveHandler);
