@@ -15,6 +15,7 @@ module.exports = (crowi) => {
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  const passwordReset = require('../../middlewares/password-reset')(crowi);
 
   const validator = {
     password: [
@@ -69,11 +70,10 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', csrf, validator.password, apiV3FormValidator, async(req, res) => {
-    const { token, newPassword } = req.body;
+  router.put('/', csrf, passwordReset, validator.password, apiV3FormValidator, async(req, res) => {
+    const { email } = req.DataFromPasswordResetOrderMiddleware;
+    const { newPassword } = req.body;
 
-    const passwordResetOrder = await PasswordResetOrder.findOne({ token });
-    const { email } = passwordResetOrder;
 
     const user = await User.findOne({ email });
 
