@@ -6,17 +6,6 @@ on:
       - release/**
       - rc/**
       - tmp/**
-    paths:
-      - .github/workflows/ci.yml
-      - packages/app/**
-      - .eslint*
-      - .prettier*
-      - .stylelint*
-      - config/**
-      - resource/**
-      - src/**
-      - package.json
-      - yarn.lock
 
 jobs:
 
@@ -60,9 +49,12 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn lint
+    - name: lerna run lint for plugins
       run: |
-        yarn lint
+        yarn lerna run lint --scope @growi/plugin-*
+    - name: lerna run lint for app
+      run: |
+        yarn lerna run lint --scope @growi/app --scope @growi/core --scope @growi/ui
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -126,15 +118,23 @@ jobs:
         echo -n "npm " && npm -v
         yarn list --depth=0
     - name: yarn test
+      working-directory: ./packages/app
       run: |
         yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
     - name: yarn test with MongoDB 3.6
+      working-directory: ./packages/app
       run: |
         yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_test
+
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Coverage Report
+        path: packages/app/coverage
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -147,12 +147,18 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  build-dev:
+  launch-dev:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [14.x]
+
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+        - 27017/tcp
 
     steps:
     - uses: actions/checkout@v2
@@ -203,9 +209,13 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:dev
+    - name: yarn dev:ci
+      working-directory: ./packages/app
       run: |
-        yarn build:dev
+        cp config/ci/.env.local.for-ci .env.development.local
+        yarn dev:ci
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -218,7 +228,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  build-prod:
+  launch-prod:
     runs-on: ubuntu-latest
 
     strategy:
@@ -277,8 +287,7 @@ jobs:
         yarn list --depth=0
     - name: Build
       run: |
-        yarn lerna run build --scope @growi/slack
-        yarn lerna run build --scope @growi/app
+        yarn lerna run build --scope @growi/core --scope @growi/slack --scope @growi/plugin-* --scope @growi/app
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production
@@ -291,21 +300,20 @@ jobs:
       id: getdbname
       run: |
         echo ::set-output name=suffix::$(echo '${{ matrix.node-version }}' | sed s/\\.//)
-    - name: yarn server:prod:ci
+    - name: yarn server:ci
+      working-directory: ./packages/app
       run: |
-        yarn server:prod:ci
+        cp config/ci/.env.local.for-ci .env.production.local
+        yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
-    - name: yarn server:prod:ci with MongoDB 3.6
+    - name: yarn server:ci with MongoDB 3.6
+      working-directory: ./packages/app
       run: |
-        yarn server:prod:ci
+        cp config/ci/.env.local.for-ci .env.production.local
+        yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
-    - name: Upload report as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Report
-        path: report
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master

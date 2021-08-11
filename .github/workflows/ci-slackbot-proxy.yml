@@ -6,12 +6,6 @@ on:
       - release/**
       - rc/**
       - tmp/**
-    paths:
-      - .github/workflows/ci-slackbot-proxy.yml
-      - packages/slack/**
-      - packages/slackbot-proxy/**
-      - package.json
-      - yarn.lock
 
 jobs:
 
@@ -55,9 +49,12 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+    - name: yarn lint
+      run: |
+        yarn lerna run lint --scope @growi/slack --scope @growi/slackbot-proxy
     - name: yarn test
       run: |
-        yarn lerna run test
+        yarn lerna run test --scope @growi/slack --scope @growi/slackbot-proxy
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -123,7 +120,7 @@ jobs:
     - name: yarn dev:ci
       working-directory: ./packages/slackbot-proxy
       run: |
-        cp config/ci/.env.local.for-ci .env.local
+        cp config/ci/.env.local.for-ci .env.development.local
         yarn dev:ci
       env:
         TYPEORM_CONNECTION: mysql
@@ -202,7 +199,7 @@ jobs:
         yarn list --depth=0
     - name: lerna run build
       run: |
-        yarn lerna run build
+        yarn lerna run build --scope @growi/slack --scope @growi/slackbot-proxy
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production
@@ -214,7 +211,7 @@ jobs:
     - name: yarn start:prod:ci
       working-directory: ./packages/slackbot-proxy
       run: |
-        cp config/ci/.env.local.for-ci .env.local
+        cp config/ci/.env.local.for-ci .env.production.local
         yarn start:prod:ci
       env:
         TYPEORM_CONNECTION: mysql
