@@ -16,6 +16,7 @@
 	"extensions": [
 		"dbaeumer.vscode-eslint",
 		"eamodio.gitlens",
+    "firsttris.vscode-jest-runner",
 		"msjsdiag.debugger-for-chrome",
 		"firefox-devtools.vscode-firefox-debug",
 		"editorconfig.editorconfig",

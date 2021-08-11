@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'crypto';
 import { stringify } from 'qs';
 import { Response, NextFunction } from 'express';
 
+import createError from 'http-errors';
 import loggerFactory from '../utils/logger';
 import { RequestFromSlack } from '../interfaces/request-from-slack';
 
@@ -17,7 +18,7 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
   if (signingSecret == null) {
     const message = 'No signing secret.';
     logger.warn(message, { body: req.body });
-    return res.status(400).send({ message });
+    return next(createError(400, message));
   }
 
   // take out slackSignature and timestamp from header
@@ -27,7 +28,7 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
   if (slackSignature == null || timestamp == null) {
     const message = 'Forbidden. Enter from Slack workspace';
     logger.warn(message, { body: req.body });
-    return res.status(403).send({ message });
+    return next(createError(403, message));
   }
 
   // protect against replay attacks
@@ -35,7 +36,7 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
   if (Math.abs(time - timestamp) > 300) {
     const message = 'Verification failed.';
     logger.warn(message, { body: req.body });
-    return res.status(403).send({ message });
+    return next(createError(403, message));
   }
 
   // generate growi signature
@@ -52,5 +53,5 @@ export const verifySlackRequest = (req: RequestFromSlack, res: Response, next: N
 
   const message = 'Verification failed.';
   logger.warn(message, { body: req.body });
-  return res.status(403).send({ message });
+  return next(createError(403, message));
 };

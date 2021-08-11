@@ -7,7 +7,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  generateMarkdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -21,6 +21,7 @@ import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-gro
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
+import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
@@ -49,6 +50,9 @@ export class SlackCtrl {
 
   @Inject()
   registerService: RegisterService;
+
+  @Inject()
+  relationsService: RelationsService;
 
   @Inject()
   unregisterService: UnregisterService;
@@ -139,8 +143,8 @@ export class SlackCtrl {
     if (relations.length === 0) {
       return res.json({
         blocks: [
-          generateMarkdownSectionBlock('*No relation found.*'),
-          generateMarkdownSectionBlock('Run `/growi register` first.'),
+          markdownSectionBlock('*No relation found.*'),
+          markdownSectionBlock('Run `/growi register` first.'),
         ],
       });
     }
@@ -149,8 +153,8 @@ export class SlackCtrl {
     if (growiCommand.growiCommandType === 'status') {
       return res.json({
         blocks: [
-          generateMarkdownSectionBlock('*Found Relations to GROWI.*'),
-          ...relations.map(relation => generateMarkdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
+          markdownSectionBlock('*Found Relations to GROWI.*'),
+          ...relations.map(relation => markdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
         ],
       });
     }
@@ -159,21 +163,55 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    body.growiUris = [];
-    relations.forEach((relation) => {
-      if (relation.siglePostCommands.includes(growiCommand.growiCommandType)) {
-        body.growiUris.push(relation.growiUri);
-      }
-    });
+    const baseDate = new Date();
 
-    if (body.growiUris != null && body.growiUris.length > 0) {
+    const relationsForSingleUse:Relation[] = [];
+    await Promise.all(relations.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupported) {
+        relationsForSingleUse.push(relation);
+      }
+    }));
+
+    let isCommandPermitted = false;
+
+    if (relationsForSingleUse.length > 0) {
+      isCommandPermitted = true;
+      body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
+
+    const relationsForBroadcastUse:Relation[] = [];
+    await Promise.all(relations.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupported) {
+        relationsForBroadcastUse.push(relation);
+      }
+    }));
 
     /*
      * forward to GROWI server
      */
-    this.sendCommand(growiCommand, relations, body);
+    if (relationsForBroadcastUse.length > 0) {
+      isCommandPermitted = true;
+      this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+    }
+
+    if (!isCommandPermitted) {
+      const botToken = relations[0].installation?.data.bot?.token;
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(botToken!);
+
+      return client.chat.postEphemeral({
+        text: 'Error occured.',
+        channel: body.channel_id,
+        user: body.user_id,
+        blocks: [
+          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+        ],
+      });
+    }
   }
 
   @Post('/interactions')
@@ -256,7 +294,7 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  async handleEvent(@BodyParams() body:{[key:string]:string}, @Res() res: Res): Promise<void|string> {
+  async handleEvent(@BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {

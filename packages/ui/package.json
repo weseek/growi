@@ -1,0 +1,21 @@
+{
+  "name": "@growi/ui",
+  "version": "4.3.3-RC",
+  "description": "GROWI UI Libraries",
+  "license": "MIT",
+  "keywords": [
+    "growi"
+  ],
+  "module": "dist/esm/index.js",
+  "files": ["dist"],
+  "scripts": {
+    "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
+    "lint:styles": "stylelint src/styles/scss/**/*.scss",
+    "lint": "npm-run-all -p lint:*",
+    "test": "jest --verbose"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "react": "^16.8.3"
+  }
+}
