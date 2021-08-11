@@ -23,7 +23,15 @@ const ruleModulesList = {
 
 const logger = loggerFactory('growi:codemirror:codemirror-textlint');
 const kernel = new TextlintKernel();
-const textlintOption: TextlintRuleOptions<RuleExtension> = { ext: '.md' };
+const textlintOption: TextlintRuleOptions<RuleExtension> = {
+  ext: '.md',
+  plugins: [
+    {
+      pluginId: 'markdown',
+      plugin: require('textlint-plugin-markdown'),
+    },
+  ],
+};
 
 const createSetupRules = (rules, ruleOptions) => (
   Object.keys(rules).map(ruleName => (
@@ -60,15 +68,7 @@ export const createValidator = (rulesConfigArray: RulesConfigArray): AsyncLinter
 
   Object.assign(
     textlintOption,
-    {
-      rules: createSetupRules(rules, rulesOption),
-      plugins: [
-        {
-          pluginId: 'markdown',
-          plugin: require('textlint-plugin-markdown'),
-        },
-      ],
-    },
+    { rules: createSetupRules(rules, rulesOption) },
   );
 
 
