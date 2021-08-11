@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { pathUtils } from 'growi-commons';
+import { pathUtils } from '@growi/core';
 
 import config from '^/config/migrate';
 import loggerFactory from '~/utils/logger';

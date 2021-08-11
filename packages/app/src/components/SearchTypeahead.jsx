@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 import { noop } from 'lodash/noop';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
-import UserPicture from './User/UserPicture';
-import PageListMeta from './PageList/PageListMeta';
-import PagePathLabel from './PageList/PagePathLabel';
+import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui';
+
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 

@@ -34,17 +34,3 @@ Level 3 page is <a href="/Level1/Level2/Level3">here</a>
 <!-- HTML -->
 <a href="https://example.com/">example.com</a>
 ```
-
-Install
---------
-
-1. install plugin
-
-    ```
-    $ npm install --save growi-plugin-pukiwiki-like-linker
-    ```
-
-1. build client app (see [GROWI][growi])
-
-
-[growi]: https://github.com/weseek/growi

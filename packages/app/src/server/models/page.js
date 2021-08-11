@@ -1,3 +1,4 @@
+import { templateChecker, pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 // disable no-return-await for model functions
@@ -15,8 +16,9 @@ const differenceInYears = require('date-fns/differenceInYears');
 
 const { pathUtils } = require('growi-commons');
 const escapeStringRegexp = require('escape-string-regexp');
-const templateChecker = require('~/utils/template-checker');
-const { isTopPage, isTrashPage } = require('~/utils/path-utils');
+
+const { isTopPage, isTrashPage } = pagePathUtils;
+const { checkTemplatePath } = templateChecker;
 
 const logger = loggerFactory('growi:models:page');
 
@@ -311,7 +313,7 @@ module.exports = function(crowi) {
   };
 
   pageSchema.methods.isTemplate = function() {
-    return templateChecker(this.path);
+    return checkTemplatePath(this.path);
   };
 
   pageSchema.methods.isLatestRevision = function() {

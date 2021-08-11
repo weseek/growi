@@ -1,8 +1,8 @@
 // eslint-disable-next-line no-unused-vars
 import uglifycss from 'uglifycss';
 
+import { DevidedPagePath } from '@growi/core';
 import loggerFactory from '~/utils/logger';
-import DevidedPagePath from '~/models/devided-page-path';
 
 import S2sMessage from '../models/vo/s2s-message';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
