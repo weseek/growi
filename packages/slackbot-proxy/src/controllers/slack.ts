@@ -162,50 +162,63 @@ export class SlackCtrl {
 
     const baseDate = new Date();
 
-    const relationsForSingleUse:Relation[] = [];
+    const allowedRelationsForSingleUse:Relation[] = [];
+    const disallowedGrowiUrls: Set<string> = new Set();
+
+    // check permission for single use
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
-        relationsForSingleUse.push(relation);
+        allowedRelationsForSingleUse.push(relation);
+      }
+      else {
+        disallowedGrowiUrls.add(relation.growiUri);
       }
     }));
 
-    let isCommandPermitted = false;
-
-    if (relationsForSingleUse.length > 0) {
-      isCommandPermitted = true;
-      body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
+    // select GROWI
+    if (allowedRelationsForSingleUse.length > 0) {
+      body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
+    // check permission for broadcast use
     const relationsForBroadcastUse:Relation[] = [];
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
         relationsForBroadcastUse.push(relation);
       }
+      else {
+        disallowedGrowiUrls.add(relation.growiUri);
+      }
     }));
 
-    /*
-     * forward to GROWI server
-     */
+    // forward to GROWI server
     if (relationsForBroadcastUse.length > 0) {
-      isCommandPermitted = true;
       this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
-    if (!isCommandPermitted) {
-      const botToken = relations[0].installation?.data.bot?.token;
-
+    // when all of GROWI disallowed
+    if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(botToken!);
+      const client = generateWebClient(authorizeResult.botToken!);
+
+      const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
+        return '\n'
+          + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
+      });
 
       return client.chat.postEphemeral({
         text: 'Error occured.',
         channel: body.channel_id,
         user: body.user_id,
         blocks: [
-          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+          markdownSectionBlock('*None of GROWI permitted the command.*'),
+          markdownSectionBlock(`*'${growiCommand.growiCommandType}'* command was not allowed.`),
+          markdownSectionBlock(
+            `To use this command, modify settings from following pages: ${linkUrlList}`,
+          ),
         ],
       });
     }
