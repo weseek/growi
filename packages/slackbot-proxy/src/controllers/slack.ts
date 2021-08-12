@@ -342,7 +342,7 @@ export class SlackCtrl {
         + '<a class="btn btn-outline-primary" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
         + 'How to set up ?'
         + '</a>'
-        // + '</div>'
+        + '</div>'
         + '</body></html>');
       },
       failure: (error, installOptions, req, res) => {
