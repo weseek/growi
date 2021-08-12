@@ -217,17 +217,6 @@ export class SlackCtrl {
       const canSearchArray = permittedChannelsForEachCommand?.search;
 
 
-      if (canCreateArray?.length === 0 || canSearchArray?.length === 0) {
-        return client.chat.postEphemeral({
-          text: 'Error occured.',
-          channel: body.channel_id,
-          user: body.user_id,
-          blocks: [
-            markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
-          ],
-        });
-      }
-
       const isCreate = canCreateArray?.includes(body.channel_name);
       if (isCreate) {
         console.log('isCreate 内部');
@@ -237,6 +226,16 @@ export class SlackCtrl {
         console.log(relations[0].permittedChannelsForEachCommand);
         return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
       }
+
+      console.log('230');
+      return client.chat.postEphemeral({
+        text: 'Error occured.',
+        channel: body.channel_id,
+        user: body.user_id,
+        blocks: [
+          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+        ],
+      });
     }
   }
 
