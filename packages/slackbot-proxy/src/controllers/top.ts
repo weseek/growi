@@ -19,13 +19,13 @@ export class TopCtrl {
     const url = await this.installerService.installer.generateInstallUrl({
       // Add the scopes your app needs
       scopes: [
-        'channels:history',
         'commands',
+        'team:read',
+        'chat:write',
+        'channels:history',
         'groups:history',
         'im:history',
         'mpim:history',
-        'chat:write',
-        'team:read',
       ],
     });
 

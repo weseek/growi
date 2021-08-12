@@ -45,11 +45,12 @@ const testSlackApiServer = async(client: WebClient): Promise<any> => {
 
 const checkSlackScopes = (resultTestSlackApiServer: any) => {
   const slackScopes = resultTestSlackApiServer.response_metadata.scopes;
-  const correctScopes = ['commands', 'team:read', 'chat:write'];
+  const correctScopes = ['commands', 'team:read', 'chat:write', 'channels:history', 'groups:history', 'im:history', 'mpim:history'];
   const isPassedScopeCheck = correctScopes.every(e => slackScopes.includes(e));
 
   if (!isPassedScopeCheck) {
-    throw new Error('The scopes is not appropriate. Required scopes is [\'commands\', \'team:read\', \'chat:write\']');
+    // eslint-disable-next-line max-len
+    throw new Error('The scopes is not appropriate. Required scopes is [\'commands\', \'team:read\', \'chat:write\', \'channels:history\', \'groups:history\', \'im:history\' , \'mpim:history\' ]');
   }
 };
 
