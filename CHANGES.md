@@ -10,6 +10,7 @@
 * Support: Include official plugins as sub packages
 * Support: Upgrade libs
     * @slack/web-api
+    * date-fns
     * escape-string-regexp
     * morgan
 
