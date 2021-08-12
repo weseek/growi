@@ -329,13 +329,20 @@ export class SlackCtrl {
 
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end('<html>'
-        + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
+        + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">'
+        + '</head>'
         + '<body style="text-align:center; padding-top:20%;">'
         + '<h1>Congratulations!</h1>'
         + '<p>GROWI Bot installation has succeeded.</p>'
-        + `<a href="${appPageUrl}">`
+        + '<div class="d-inline-flex flex-column">'
+        + `<a class="mb-3" href="${appPageUrl}">`
         + 'Access to Slack App detail page.'
         + '</a>'
+        + '<a class="btn btn-outline-success" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
+        + 'Getting started'
+        + '</a>'
+        + '</div>'
         + '</body></html>');
       },
       failure: (error, installOptions, req, res) => {
