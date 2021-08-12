@@ -37,6 +37,7 @@
     "bunyan": "^1.8.15",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
+    "date-fns": "^2.23.0",
     "express-bunyan-logger": "^1.3.3",
     "extensible-custom-error": "^0.0.7",
     "helmet": "^4.6.0",
