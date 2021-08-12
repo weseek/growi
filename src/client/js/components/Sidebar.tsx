@@ -98,7 +98,6 @@ type Props = {
 
 const Sidebar = (props: Props) => {
 
-  // TODO get CurrentProductNavWidth
   const { navigationUIController, productNavWidth } = props;
 
   const { data: isDrawerMode } = useDrawerMode();
