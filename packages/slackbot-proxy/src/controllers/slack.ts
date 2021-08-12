@@ -78,6 +78,8 @@ export class SlackCtrl {
     const promises = relations.map((relation: RelationMock) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
+      console.log('in sendcommand');
+      // console.log(relation);
       return axios.post(url.toString(), {
         ...body,
         growiCommand,
@@ -140,7 +142,6 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    // console.log(installation);
     const relations = await this.relationMockRepository.createQueryBuilder('relation_mock')
       .where('relation_mock.installationId = :id', { id: installation?.id })
       .leftJoinAndSelect('relation_mock.installation', 'installation')
@@ -213,16 +214,41 @@ export class SlackCtrl {
         where: { installation },
       });
       const permittedChannelsForEachCommand = relationMock?.permittedChannelsForEachCommand;
-      console.log(permittedChannelsForEachCommand);
 
-      return client.chat.postEphemeral({
-        text: 'Error occured.',
-        channel: body.channel_id,
-        user: body.user_id,
-        blocks: [
-          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
-        ],
-      });
+      const canCreateArray = permittedChannelsForEachCommand?.create;
+      const canSearchArray = permittedChannelsForEachCommand?.search;
+
+      if (canCreateArray == null || canSearchArray == null) {
+        return client.chat.postEphemeral({
+          text: 'Error occured.',
+          channel: body.channel_id,
+          user: body.user_id,
+          blocks: [
+            markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+          ],
+        });
+      }
+
+      const isCreate = canCreateArray.includes(body.channel_name);
+      if (isCreate) {
+        console.log('isCreate 内部');
+        console.log(growiCommand);
+
+        const relationsForBroadcastUse:RelationMock[] = [];
+
+        await Promise.all(relations.map(async(relation) => {
+          await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+          relationsForBroadcastUse.push(relation);
+          console.log(relation);
+          // await this.relationMockRepository.update({ tokenGtop: relation.tokenGtoP }, { supportedCommandsForBroadcastUse: ['create'] });
+
+        }));
+
+        console.log(relationsForBroadcastUse);
+
+
+        return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+      }
     }
   }
 
