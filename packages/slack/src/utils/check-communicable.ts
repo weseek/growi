@@ -50,7 +50,7 @@ const checkSlackScopes = (resultTestSlackApiServer: any) => {
 
   if (!isPassedScopeCheck) {
     // eslint-disable-next-line max-len
-    throw new Error('The scopes is not appropriate. Required scopes is [\'commands\', \'team:read\', \'chat:write\', \'channels:history\', \'groups:history\', \'im:history\' , \'mpim:history\' ]');
+    throw new Error('The scopes are not appropriate. Required scopes are [\'commands\', \'team:read\', \'chat:write\', \'channels:history\', \'groups:history\', \'im:history\' , \'mpim:history\' ]');
   }
 };
 
