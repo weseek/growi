@@ -15,7 +15,6 @@ import {
 
 import SidebarNav from './Sidebar/SidebarNav';
 
-const sidebarDefaultWidth = 320;
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 
@@ -94,15 +93,17 @@ const SidebarSkeltonContents = (props: Props) => {
 
 type Props = {
   navigationUIController: any,
+  productNavWidth: number
 }
 
 const Sidebar = (props: Props) => {
 
+  // TODO get CurrentProductNavWidth
+  const { navigationUIController, productNavWidth } = props;
+
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: productNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
-
-  const { navigationUIController } = props;
+  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth(productNavWidth);
 
   /**
    * hack and override UIController.storeState
@@ -199,12 +200,12 @@ const Sidebar = (props: Props) => {
     setHover(isHover);
 
     if (isHover) {
-      setContentWidth(productNavWidth);
+      setContentWidth(currentProductNavWidth);
     }
     if (!isHover) {
       setContentWidth(sidebarMinimizeWidth);
     }
-  }, [navigationUIController.state.isCollapsed, isDrawerMode, productNavWidth]);
+  }, [navigationUIController.state.isCollapsed, isDrawerMode, currentProductNavWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     navigationUIController.toggleCollapse();
@@ -215,7 +216,7 @@ const Sidebar = (props: Props) => {
       setContentWidth(sidebarMinimizeWidth);
     }
     else {
-      setContentWidth(productNavWidth);
+      setContentWidth(currentProductNavWidth);
     }
   }, [navigationUIController.state.isCollapsed]);
 
@@ -240,9 +241,11 @@ const Sidebar = (props: Props) => {
     if (resizableContainer.current.clientWidth < sidebarMinWidth) {
       navigationUIController.collapse();
       mutateProductNavWidth(sidebarMinWidth);
+      // TODO call API and save DB
     }
     else {
       mutateProductNavWidth(resizableContainer.current.clientWidth);
+      // TODO call API and save DB
     }
 
     resizableContainer.current.classList.remove('dragging');
@@ -286,7 +289,7 @@ const Sidebar = (props: Props) => {
                   onMouseLeave={() => hoverHandler(false)}
                   onMouseMove={draggableAreaMoveHandler}
                   onMouseUp={dragableAreaMouseUpHandler}
-                  style={{ width: navigationUIController.state.isCollapsed ? sidebarMinimizeWidth : productNavWidth }}
+                  style={{ width: navigationUIController.state.isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
                 >
                   <div className="grw-contextual-navigation-child">
                     <div role="group" className="grw-contextual-navigation-sub"></div>
@@ -362,7 +365,7 @@ const SidebarWithNavigation = (props) => {
     ? {
       isCollapsed: false,
       isResizeDisabled: true,
-      productNavWidth: sidebarDefaultWidth,
+      productNavWidth: props.productNavWidth,
     }
     // set undefined (should be initialized by cache)
     : undefined;
