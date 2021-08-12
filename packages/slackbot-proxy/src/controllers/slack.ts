@@ -232,21 +232,12 @@ export class SlackCtrl {
       const isCreate = canCreateArray.includes(body.channel_name);
       if (isCreate) {
         console.log('isCreate 内部');
-        console.log(growiCommand);
-
+        console.log(relations[0]);
         const relationsForBroadcastUse:RelationMock[] = [];
-
-        await Promise.all(relations.map(async(relation) => {
-          await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
-          relationsForBroadcastUse.push(relation);
-          console.log(relation);
-          // await this.relationMockRepository.update({ tokenGtop: relation.tokenGtoP }, { supportedCommandsForBroadcastUse: ['create'] });
-
-        }));
-
-        console.log(relationsForBroadcastUse);
-
-
+        body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
+        relationsForBroadcastUse.push(relations[0]);
+        console.log(relations[0].permittedChannelsForEachCommand);
+        console.log(body);
         return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
       }
     }
