@@ -78,8 +78,6 @@ export class SlackCtrl {
     const promises = relations.map((relation: RelationMock) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
-      console.log('in sendcommand');
-      // console.log(relation);
       return axios.post(url.toString(), {
         ...body,
         growiCommand,
@@ -218,7 +216,8 @@ export class SlackCtrl {
       const canCreateArray = permittedChannelsForEachCommand?.create;
       const canSearchArray = permittedChannelsForEachCommand?.search;
 
-      if (canCreateArray == null || canSearchArray == null) {
+
+      if (canCreateArray?.length === 0 || canSearchArray?.length === 0) {
         return client.chat.postEphemeral({
           text: 'Error occured.',
           channel: body.channel_id,
@@ -229,15 +228,13 @@ export class SlackCtrl {
         });
       }
 
-      const isCreate = canCreateArray.includes(body.channel_name);
+      const isCreate = canCreateArray?.includes(body.channel_name);
       if (isCreate) {
         console.log('isCreate 内部');
-        console.log(relations[0]);
         const relationsForBroadcastUse:RelationMock[] = [];
         body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
         relationsForBroadcastUse.push(relations[0]);
         console.log(relations[0].permittedChannelsForEachCommand);
-        console.log(body);
         return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
       }
     }

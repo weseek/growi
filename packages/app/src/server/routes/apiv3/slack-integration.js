@@ -49,9 +49,11 @@ module.exports = (crowi) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
     const relation = await SlackAppIntegrationMock.findOne({ tokenPtoG });
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse, permittedChannelsForEachCommand } = relation;
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
+    const { permittedChannelsForEachCommand } = req.body;
+    const { create, search } = permittedChannelsForEachCommand;
+
     const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
-    console.log(relation);
     const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
 
     // get command name from req.body
@@ -62,6 +64,8 @@ module.exports = (crowi) => {
     if (req.body.payload) {
       payload = JSON.parse(req.body.payload);
     }
+
+    console.log(req.body);
 
     if (req.body.text == null && !payload) { // when /relation-test
       return next();
@@ -83,6 +87,10 @@ module.exports = (crowi) => {
         isActionSupported = true;
       }
     });
+
+    if (create.includes(req.body.channel_name)) {
+      next();
+    }
 
     // validate
     if (command && !supportedCommands.includes(command)) {
@@ -170,7 +178,6 @@ module.exports = (crowi) => {
 
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
     const { body } = req;
-
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {
