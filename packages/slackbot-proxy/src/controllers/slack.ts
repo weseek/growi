@@ -105,6 +105,13 @@ export class SlackCtrl {
       return 'No text.';
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const client = generateWebClient(authorizeResult.botToken!);
+    const joinResult = await client.conversations.join({ channel: body.channel_id });
+    if (!joinResult.ok) {
+      logger.error(joinResult.error, joinResult);
+    }
+
     const growiCommand = parseSlashCommand(body);
 
     // register
