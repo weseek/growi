@@ -330,7 +330,7 @@ export class SlackCtrl {
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end('<html>'
         + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
-        + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" >'
+        + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">'
         + '</head>'
         + '<body style="text-align:center; padding-top:20%;">'
         + '<h1>Congratulations!</h1>'
