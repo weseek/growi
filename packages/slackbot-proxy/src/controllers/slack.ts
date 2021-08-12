@@ -105,7 +105,21 @@ export class SlackCtrl {
       return 'No text.';
     }
 
-    const growiCommand = parseSlashCommand(body);
+    let growiCommand;
+
+    try {
+      growiCommand = parseSlashCommand(body);
+    }
+    catch (e) {
+      console.log('errorでたaaa');
+      res.json({
+        blocks: [
+          markdownSectionBlock('*No relation found.*'),
+          markdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
+      // res.send();
+    }
 
     // register
     if (growiCommand.growiCommandType === 'register') {
