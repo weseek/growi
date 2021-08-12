@@ -293,7 +293,7 @@ const Sidebar = (props: Props) => {
                   </div>
                   <div className="grw-contextual-navigation-child2">
                     <div role="group" className={`grw-contextual-navigation-sub ${!isHover && navigationUIController.state.isCollapsed ? 'collapsed' : ''}`}>
-                    { !isMounted ? <SidebarSkeltonContents {...props} /> : <SidebarContents></SidebarContents> }
+                    { isMounted ? <SidebarContents></SidebarContents> : <SidebarSkeltonContents {...props} /> }
                     </div>
                   </div>
                 </div>
