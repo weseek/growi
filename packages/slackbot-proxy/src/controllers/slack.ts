@@ -328,8 +328,7 @@ export class SlackCtrl {
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
 
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(
-          '<html>'
+        res.end('<html>'
         + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
         + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" >'
         + '</head>'
@@ -344,8 +343,7 @@ export class SlackCtrl {
         + 'How to set up ?'
         + '</a>'
         // + '</div>'
-        + '</body></html>',
-        );
+        + '</body></html>');
       },
       failure: (error, installOptions, req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
