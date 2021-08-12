@@ -12,7 +12,9 @@
     * @slack/web-api
     * date-fns
     * escape-string-regexp
+    * helmet
     * morgan
+    * socket.io
 
 ## v4.3.2
 
