@@ -42,6 +42,18 @@ const GlobalNavigation = withNavigationUIController((props: GlobalNavigationProp
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 });
 
+// dummy skelton contents
+const GlobalNavigationSkelton = (props: Props) => {
+  return (
+    <div className="grw-sidebar-nav">
+      <div className="grw-sidebar-nav-primary-container">
+      </div>
+      <div className="grw-sidebar-nav-secondary-container">
+      </div>
+    </div>
+  );
+};
+
 
 const SidebarContents = () => {
   const scrollTargetSelector = '#grw-sidebar-contents-scroll-target';
@@ -98,11 +110,11 @@ type Props = {
 
 const Sidebar = (props: Props) => {
 
-  const { navigationUIController, productNavWidth } = props;
+  const { navigationUIController } = props;
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth(productNavWidth);
+  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
 
   /**
    * hack and override UIController.storeState
@@ -279,7 +291,7 @@ const Sidebar = (props: Props) => {
             <div className="navigation">
               <div className="grw-navigation-wrap">
                 <div className="grw-global-navigation">
-                  <GlobalNavigation></GlobalNavigation>
+                { isMounted ? <GlobalNavigation></GlobalNavigation> : <GlobalNavigationSkelton {...props} /> }
                 </div>
                 <div
                   ref={resizableContainer}

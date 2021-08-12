@@ -44,8 +44,6 @@ type Props = CommonProps & {
 
   siteUrl: string,
 
-  productNavWidth: number;
-
 };
 
 const AdminMarkdownSettingsPage: NextPage<Props> = (props: Props) => {
@@ -162,9 +160,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
-
-  // TODO get CurrentProductNavWidth
-  props.productNavWidth = 320;
 
   return {
     props,
