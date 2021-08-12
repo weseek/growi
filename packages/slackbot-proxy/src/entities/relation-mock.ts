@@ -6,7 +6,7 @@ import { Installation } from './installation';
 
 
 // expected data see below
-//   commandToChannelMap: {
+//   {
 //     create: ['srv', 'admin'],
 //     search: ['admin'],
 //   }
