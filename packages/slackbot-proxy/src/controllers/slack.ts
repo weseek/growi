@@ -317,10 +317,6 @@ export class SlackCtrl {
       + '<h1>Illegal state, try it again.</h1>'
       + '<a href="/">'
       + 'Go to install page'
-      + '</a>'
-      + '<a href="https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
-      + 'How to set up ?'
-      + '</a>'
       + '</body></html>');
     }
 
@@ -331,15 +327,24 @@ export class SlackCtrl {
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
 
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end('<html>'
-        + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        res.end(
+          '<html>'
+        + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
+        + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" >'
+        + '</head>'
         + '<body style="text-align:center; padding-top:20%;">'
         + '<h1>Congratulations!</h1>'
         + '<p>GROWI Bot installation has succeeded.</p>'
-        + `<a href="${appPageUrl}">`
+        + '<div class="d-inline-flex flex-column">'
+        + `<a class="btn btn-outline-primary mb-3" href="${appPageUrl}">`
         + 'Access to Slack App detail page.'
         + '</a>'
-        + '</body></html>');
+        + '<a class="btn btn-outline-primary" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
+        + 'How to set up ?'
+        + '</a>'
+        // + '</div>'
+        + '</body></html>',
+        );
       },
       failure: (error, installOptions, req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
