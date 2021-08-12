@@ -8,6 +8,7 @@ import { WebAPICallResult } from '@slack/web-api';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
+  InvalidGrowiCommandError,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -110,15 +111,17 @@ export class SlackCtrl {
     try {
       growiCommand = parseSlashCommand(body);
     }
-    catch (e) {
-      console.log('errorでたaaa');
-      res.json({
-        blocks: [
-          markdownSectionBlock('*No relation found.*'),
-          markdownSectionBlock('Run `/growi register` first.'),
-        ],
-      });
-      // res.send();
+    catch (err) {
+      if (err instanceof InvalidGrowiCommandError) {
+        res.json({
+          blocks: [
+            markdownSectionBlock('*Command type is not specified.*'),
+            markdownSectionBlock('Run `/growi help` to check the commands you can use.'),
+          ],
+        });
+      }
+      logger.error(err.message);
+      return;
     }
 
     // register
