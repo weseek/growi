@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 
 import GrowiNavbar from '~/client/js/components/Navbar/GrowiNavbar';
 import GrowiNavbarBottom from '~/client/js/components/Navbar/GrowiNavbarBottom';
+import Sidebar from '~/client/js/components/Sidebar';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import RawLayout from './RawLayout';
@@ -16,7 +17,6 @@ type Props = {
 
 const BasicLayout = ({ children, title, className }: Props): JSX.Element => {
 
-  const Sidebar = dynamic(() => import('../client/js/components/Sidebar'), { ssr: false });
   const HotkeysManager = dynamic(() => import('../client/js/components/Hotkeys/HotkeysManager'), { ssr: false });
   const PageCreateModal = dynamic(() => import('../client/js/components/PageCreateModal'), { ssr: false });
   const SystemVersion = dynamic(() => import('./SystemVersion'), { ssr: false });

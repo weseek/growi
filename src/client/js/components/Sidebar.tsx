@@ -10,12 +10,11 @@ import {
 } from '@atlaskit/navigation-next';
 
 import {
-  useCurrentSidebarContents, useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser,
+  useCurrentSidebarContents, useDrawerMode, useDrawerOpened, usePreferDrawerModeByUser, useCurrentProductNavWidth,
 } from '~/stores/ui';
 
 import SidebarNav from './Sidebar/SidebarNav';
 
-const sidebarDefaultWidth = 320;
 const sidebarMinWidth = 240;
 const sidebarMinimizeWidth = 20;
 
@@ -42,6 +41,18 @@ const GlobalNavigation = withNavigationUIController((props: GlobalNavigationProp
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 });
+
+// dummy skelton contents
+const GlobalNavigationSkelton = (props: Props) => {
+  return (
+    <div className="grw-sidebar-nav">
+      <div className="grw-sidebar-nav-primary-container">
+      </div>
+      <div className="grw-sidebar-nav-secondary-container">
+      </div>
+    </div>
+  );
+};
 
 
 const SidebarContents = () => {
@@ -83,17 +94,27 @@ const SidebarContents = () => {
   );
 };
 
+// dummy skelton contents
+const SidebarSkeltonContents = (props: Props) => {
+  return (
+      <div>Skelton Contents!!!</div>
+  );
+};
+
+
 
 type Props = {
   navigationUIController: any,
+  productNavWidth: number
 }
 
 const Sidebar = (props: Props) => {
 
+  const { navigationUIController } = props;
+
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
-
-  const { navigationUIController } = props;
+  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
 
   /**
    * hack and override UIController.storeState
@@ -129,9 +150,6 @@ const Sidebar = (props: Props) => {
       // }
 
       navigationUIController.disableResize();
-
-      // fix width
-      navigationUIController.setState({ productNavWidth: sidebarDefaultWidth });
     }
     // Drawer --> Dock
     else {
@@ -163,8 +181,11 @@ const Sidebar = (props: Props) => {
     mutateDrawerOpened(false);
   }, [mutateDrawerOpened]);
 
+  const [isMounted, setMounted] = useState(false);
+
   useEffect(() => {
     // this.hackUIController();
+    setMounted(true);
   }, []);
 
   useEffect(() => {
@@ -173,8 +194,6 @@ const Sidebar = (props: Props) => {
 
   const [isHover, setHover] = useState(false);
   const [isDragging, setDrag] = useState(false);
-  // TODO global state
-  const [sidebarWidthCached, setSidebarWidthCached] = useState(sidebarDefaultWidth);
 
   const resizableContainer = useRef<HTMLDivElement>(null);
   const setContentWidth = useCallback((newWidth) => {
@@ -185,19 +204,19 @@ const Sidebar = (props: Props) => {
   }, []);
 
   const hoverHandler = useCallback((isHover: boolean) => {
-    if (!navigationUIController.state.isCollapsed) {
+    if (!navigationUIController.state.isCollapsed || isDrawerMode) {
       return;
     }
 
     setHover(isHover);
 
     if (isHover) {
-      setContentWidth(sidebarWidthCached);
+      setContentWidth(currentProductNavWidth);
     }
     if (!isHover) {
       setContentWidth(sidebarMinimizeWidth);
     }
-  }, [navigationUIController.state.isCollapsed, sidebarWidthCached, setContentWidth]);
+  }, [navigationUIController.state.isCollapsed, isDrawerMode, currentProductNavWidth]);
 
   const toggleNavigationBtnClickHandler = useCallback(() => {
     navigationUIController.toggleCollapse();
@@ -208,20 +227,20 @@ const Sidebar = (props: Props) => {
       setContentWidth(sidebarMinimizeWidth);
     }
     else {
-      setContentWidth(sidebarWidthCached);
+      setContentWidth(currentProductNavWidth);
     }
-  }, [navigationUIController.state.isCollapsed, sidebarWidthCached, setContentWidth]);
+  }, [navigationUIController.state.isCollapsed]);
 
   const draggableAreaMoveHandler = useCallback((event) => {
     if (isDragging) {
       event.preventDefault();
-      const newWitdh = event.pageX - 60;
+      const newWidth = event.pageX - 60;
       if (resizableContainer.current != null) {
-        setContentWidth(newWitdh);
+        setContentWidth(newWidth);
         resizableContainer.current.classList.add('dragging');
       }
     }
-  }, [isDragging, setContentWidth]);
+  }, [isDragging]);
 
   const dragableAreaMouseUpHandler = useCallback(() => {
     if (resizableContainer.current == null) {
@@ -231,26 +250,28 @@ const Sidebar = (props: Props) => {
     setDrag(false);
 
     if (resizableContainer.current.clientWidth < sidebarMinWidth) {
-      setSidebarWidthCached(sidebarMinWidth);
       navigationUIController.collapse();
-      setContentWidth(sidebarMinimizeWidth);
+      mutateProductNavWidth(sidebarMinWidth);
+      // TODO call API and save DB
     }
     else {
-      setSidebarWidthCached(resizableContainer.current.clientWidth);
+      mutateProductNavWidth(resizableContainer.current.clientWidth);
+      // TODO call API and save DB
     }
+
     resizableContainer.current.classList.remove('dragging');
 
     document.removeEventListener('mousemove', draggableAreaMoveHandler);
     document.removeEventListener('mouseup', dragableAreaMouseUpHandler);
 
-  }, [navigationUIController, draggableAreaMoveHandler, setContentWidth]);
+  }, [navigationUIController, draggableAreaMoveHandler]);
 
   const dragableAreaClickHandler = useCallback(() => {
-    if (navigationUIController.state.isCollapsed) {
+    if (navigationUIController.state.isCollapsed || isDrawerMode) {
       return;
     }
     setDrag(true);
-  }, [navigationUIController.state.isCollapsed]);
+  }, [navigationUIController.state.isCollapsed, isDrawerMode]);
 
   useEffect(() => {
     document.addEventListener('mousemove', draggableAreaMoveHandler);
@@ -262,15 +283,15 @@ const Sidebar = (props: Props) => {
       <div className={`grw-sidebar d-print-none ${isDrawerMode ? 'grw-sidebar-drawer' : ''} ${isDrawerOpened ? 'open' : ''}`}>
         <ThemeProvider
           theme={theme => ({
-            ...theme,
-            context: 'product',
-          })}
+          ...theme,
+          context: 'product',
+        })}
         >
           <div className="data-layout-container">
             <div className="navigation">
               <div className="grw-navigation-wrap">
                 <div className="grw-global-navigation">
-                  <GlobalNavigation></GlobalNavigation>
+                { isMounted ? <GlobalNavigation></GlobalNavigation> : <GlobalNavigationSkelton {...props} /> }
                 </div>
                 <div
                   ref={resizableContainer}
@@ -279,13 +300,14 @@ const Sidebar = (props: Props) => {
                   onMouseLeave={() => hoverHandler(false)}
                   onMouseMove={draggableAreaMoveHandler}
                   onMouseUp={dragableAreaMouseUpHandler}
+                  style={{ width: navigationUIController.state.isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
                 >
                   <div className="grw-contextual-navigation-child">
                     <div role="group" className="grw-contextual-navigation-sub"></div>
                   </div>
                   <div className="grw-contextual-navigation-child2">
                     <div role="group" className={`grw-contextual-navigation-sub ${!isHover && navigationUIController.state.isCollapsed ? 'collapsed' : ''}`}>
-                      <SidebarContents></SidebarContents>
+                    { isMounted ? <SidebarContents></SidebarContents> : <SidebarSkeltonContents {...props} /> }
                     </div>
                   </div>
                 </div>
@@ -293,7 +315,7 @@ const Sidebar = (props: Props) => {
               <div className="grw-navigation-draggable">
                 <div className="grw-navigation-draggable-sub"></div>
                 <div
-                  className="grw-navigation-draggable-hitarea"
+                  className={`${!isDrawerMode ? 'resizable' : ''} grw-navigation-draggable-hitarea`}
                   onMouseDown={dragableAreaClickHandler}
                 >
                   <div className="grw-navigation-draggable-hitarea-child"></div>
@@ -301,10 +323,11 @@ const Sidebar = (props: Props) => {
                 <div>
                   <div>
                     <button
-                      className={`ak-navigation-resize-button ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
+                      className={`ak-navigation-resize-button ${!isDrawerMode ? 'resizable' : ''} ${navigationUIController.state.isCollapsed ? 'collapse-state' : 'normal-state'} `}
                       type="button"
                       aria-expanded="true"
                       aria-label="Toggle navigation"
+                      disabled={isDrawerMode}
                       onClick={toggleNavigationBtnClickHandler}
                     >
                       <div className="css-z8pkji"></div>
@@ -312,8 +335,8 @@ const Sidebar = (props: Props) => {
                         <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation">
                           <path
                             d="M13.706 9.698a.988.988 0 0 0 0-1.407
-                             1.01 1.01 0 0 0-1.419 0l-2.965 2.94a1.09 1.09 0 0 0 0 1.548l2.955
-                             2.93a1.01 1.01 0 0 0 1.42 0 .988.988 0 0 0 0-1.407l-2.318-2.297 2.327-2.307z"
+                            1.01 1.01 0 0 0-1.419 0l-2.965 2.94a1.09 1.09 0 0 0 0 1.548l2.955
+                            2.93a1.01 1.01 0 0 0 1.42 0 .988.988 0 0 0 0-1.407l-2.318-2.297 2.327-2.307z"
                             fill="currentColor"
                             fillRule="evenodd"
                           >
@@ -330,7 +353,7 @@ const Sidebar = (props: Props) => {
       </div>
 
       { isDrawerOpened && (
-        <div className="grw-sidebar-backdrop modal-backdrop show" onClick={backdropClickedHandler}></div>
+      <div className="grw-sidebar-backdrop modal-backdrop show" onClick={backdropClickedHandler}></div>
       ) }
     </>
   );
@@ -353,7 +376,7 @@ const SidebarWithNavigation = (props) => {
     ? {
       isCollapsed: false,
       isResizeDisabled: true,
-      productNavWidth: sidebarDefaultWidth,
+      productNavWidth: props.productNavWidth,
     }
     // set undefined (should be initialized by cache)
     : undefined;

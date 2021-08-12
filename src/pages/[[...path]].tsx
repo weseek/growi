@@ -33,7 +33,7 @@ import {
 } from '../stores/context';
 import { useCurrentPageSWR } from '../stores/page';
 import { useRendererSettings } from '~/stores/renderer';
-import { EditorMode, useEditorMode, useIsMobile } from '~/stores/ui';
+import { EditorMode, useCurrentProductNavWidth, useEditorMode, useIsMobile } from '~/stores/ui';
 import { useIndentSize } from '~/stores/editor';
 
 
@@ -73,6 +73,8 @@ type Props = CommonProps & {
   isEnabledLinebreaksInComments: boolean,
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
+
+  productNavWidth: number;
 };
 
 const GrowiPage: NextPage<Props> = (props: Props) => {
@@ -112,6 +114,8 @@ const GrowiPage: NextPage<Props> = (props: Props) => {
     adminPreferredIndentSize: props.adminPreferredIndentSize,
     isIndentSizeForced: props.isIndentSizeForced,
   });
+
+  useCurrentProductNavWidth(props.productNavWidth);
 
   const { data: editorMode } = useEditorMode();
 
@@ -292,6 +296,9 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+
+  // TODO get CurrentProductNavWidth
+  props.productNavWidth = 320;
 
   return {
     props,
