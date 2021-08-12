@@ -318,6 +318,9 @@ export class SlackCtrl {
       + '<a href="/">'
       + 'Go to install page'
       + '</a>'
+      + '<a href="https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
+      + 'How to set up ?'
+      + '</a>'
       + '</body></html>');
     }
 
