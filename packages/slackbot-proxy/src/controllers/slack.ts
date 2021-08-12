@@ -317,6 +317,7 @@ export class SlackCtrl {
       + '<h1>Illegal state, try it again.</h1>'
       + '<a href="/">'
       + 'Go to install page'
+      + '</a>'
       + '</body></html>');
     }
 
