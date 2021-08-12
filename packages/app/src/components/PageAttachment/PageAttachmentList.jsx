@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Attachment from './Attachment';
+import { Attachment } from '@growi/ui';
 
 export default class PageAttachmentList extends React.Component {
 

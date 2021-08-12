@@ -1,3 +1,4 @@
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
@@ -7,7 +8,8 @@ const logger = loggerFactory('growi:models:page');
 const debug = require('debug')('growi:models:page');
 const { Writable } = require('stream');
 const { createBatchStream } = require('~/server/util/batch-stream');
-const { isTrashPage } = require('~/utils/path-utils');
+
+const { isTrashPage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 
 const BULK_REINDEX_SIZE = 100;

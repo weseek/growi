@@ -117,22 +117,11 @@ class SocketIoService {
     });
   }
 
-  async getClients(namespace) {
-    return new Promise((resolve, reject) => {
-      namespace.clients((error, clients) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(clients);
-      });
-    });
-  }
-
   async checkConnectionLimitsForAdmin(socket, next) {
     const namespaceName = socket.nsp.name;
 
     if (namespaceName === '/admin') {
-      const clients = await this.getClients(this.getAdminSocket());
+      const clients = await this.getAdminSocket().allSockets();
       const clientsCount = clients.length;
 
       logger.debug('Current count of clients for \'/admin\':', clientsCount);
@@ -178,7 +167,7 @@ class SocketIoService {
       next();
     }
 
-    const clients = await this.getClients(this.getDefaultSocket());
+    const clients = await this.getDefaultSocket().allSockets();
     const clientsCount = clients.length;
 
     logger.debug('Current count of clients for \'/\':', clientsCount);
