@@ -8,6 +8,7 @@ import { WebAPICallResult } from '@slack/web-api';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
+  InvalidGrowiCommandError,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -102,7 +103,23 @@ export class SlackCtrl {
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
-    const growiCommand = parseSlashCommand(body);
+    let growiCommand;
+
+    try {
+      growiCommand = parseSlashCommand(body);
+    }
+    catch (err) {
+      if (err instanceof InvalidGrowiCommandError) {
+        res.json({
+          blocks: [
+            markdownSectionBlock('*Command type is not specified.*'),
+            markdownSectionBlock('Run `/growi help` to check the commands you can use.'),
+          ],
+        });
+      }
+      logger.error(err.message);
+      return;
+    }
 
     // register
     if (growiCommand.growiCommandType === 'register') {
