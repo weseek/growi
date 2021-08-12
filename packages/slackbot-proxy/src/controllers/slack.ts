@@ -336,11 +336,11 @@ export class SlackCtrl {
         + '<h1>Congratulations!</h1>'
         + '<p>GROWI Bot installation has succeeded.</p>'
         + '<div class="d-inline-flex flex-column">'
-        + `<a class="btn btn-outline-primary mb-3" href="${appPageUrl}">`
+        + `<a class="mb-3" href="${appPageUrl}">`
         + 'Access to Slack App detail page.'
         + '</a>'
-        + '<a class="btn btn-outline-primary" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
-        + 'How to set up ?'
+        + '<a class="btn btn-outline-success" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
+        + 'Getting started'
         + '</a>'
         + '</div>'
         + '</body></html>');
