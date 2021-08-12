@@ -2,8 +2,8 @@ import {
   Controller, Get, Inject, View,
 } from '@tsed/common';
 
+import { requiredScopes } from '@growi/slack';
 import { InstallerService } from '~/services/InstallerService';
-import { requiredScopes } from '../../../slack/src/utils/required-scopes';
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
