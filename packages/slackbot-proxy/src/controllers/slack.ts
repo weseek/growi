@@ -25,6 +25,7 @@ import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
+import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-to-conversation';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
@@ -97,13 +98,9 @@ export class SlackCtrl {
   }
 
   @Post('/commands')
-  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, JoinToConversationMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
-
-    if (body.text == null) {
-      return 'No text.';
-    }
 
     const growiCommand = parseSlashCommand(body);
 
