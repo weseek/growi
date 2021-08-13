@@ -8,6 +8,7 @@ import { WebAPICallResult } from '@slack/web-api';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
+  InvalidGrowiCommandError,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -25,6 +26,7 @@ import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
+import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-to-conversation';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
@@ -97,15 +99,27 @@ export class SlackCtrl {
   }
 
   @Post('/commands')
-  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, JoinToConversationMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
-    if (body.text == null) {
-      return 'No text.';
-    }
+    let growiCommand;
 
-    const growiCommand = parseSlashCommand(body);
+    try {
+      growiCommand = parseSlashCommand(body);
+    }
+    catch (err) {
+      if (err instanceof InvalidGrowiCommandError) {
+        res.json({
+          blocks: [
+            markdownSectionBlock('*Command type is not specified.*'),
+            markdownSectionBlock('Run `/growi help` to check the commands you can use.'),
+          ],
+        });
+      }
+      logger.error(err.message);
+      return;
+    }
 
     // register
     if (growiCommand.growiCommandType === 'register') {
@@ -165,50 +179,63 @@ export class SlackCtrl {
 
     const baseDate = new Date();
 
-    const relationsForSingleUse:Relation[] = [];
+    const allowedRelationsForSingleUse:Relation[] = [];
+    const disallowedGrowiUrls: Set<string> = new Set();
+
+    // check permission for single use
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
-        relationsForSingleUse.push(relation);
+        allowedRelationsForSingleUse.push(relation);
+      }
+      else {
+        disallowedGrowiUrls.add(relation.growiUri);
       }
     }));
 
-    let isCommandPermitted = false;
-
-    if (relationsForSingleUse.length > 0) {
-      isCommandPermitted = true;
-      body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
+    // select GROWI
+    if (allowedRelationsForSingleUse.length > 0) {
+      body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
+    // check permission for broadcast use
     const relationsForBroadcastUse:Relation[] = [];
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
         relationsForBroadcastUse.push(relation);
       }
+      else {
+        disallowedGrowiUrls.add(relation.growiUri);
+      }
     }));
 
-    /*
-     * forward to GROWI server
-     */
+    // forward to GROWI server
     if (relationsForBroadcastUse.length > 0) {
-      isCommandPermitted = true;
       this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
-    if (!isCommandPermitted) {
-      const botToken = relations[0].installation?.data.bot?.token;
-
+    // when all of GROWI disallowed
+    if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(botToken!);
+      const client = generateWebClient(authorizeResult.botToken!);
+
+      const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
+        return '\n'
+          + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
+      });
 
       return client.chat.postEphemeral({
         text: 'Error occured.',
         channel: body.channel_id,
         user: body.user_id,
         blocks: [
-          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+          markdownSectionBlock('*None of GROWI permitted the command.*'),
+          markdownSectionBlock(`*'${growiCommand.growiCommandType}'* command was not allowed.`),
+          markdownSectionBlock(
+            `To use this command, modify settings from following pages: ${linkUrlList}`,
+          ),
         ],
       });
     }
@@ -329,13 +356,20 @@ export class SlackCtrl {
 
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end('<html>'
-        + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
+        + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">'
+        + '</head>'
         + '<body style="text-align:center; padding-top:20%;">'
         + '<h1>Congratulations!</h1>'
         + '<p>GROWI Bot installation has succeeded.</p>'
-        + `<a href="${appPageUrl}">`
+        + '<div class="d-inline-flex flex-column">'
+        + `<a class="mb-3" href="${appPageUrl}">`
         + 'Access to Slack App detail page.'
         + '</a>'
+        + '<a class="btn btn-outline-success" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
+        + 'Getting started'
+        + '</a>'
+        + '</div>'
         + '</body></html>');
       },
       failure: (error, installOptions, req, res) => {
