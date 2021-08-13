@@ -56,14 +56,14 @@ Add two spaces before break.
 ***This behaviour can be modified in the options menu.***
 
 ```
-hoge
-fuga(two spaces)
-piyo
+foo
+bar(two spaces)
+baz
 ```
 
-hoge
-fuga
-piyo
+foo
+bar
+baz
 
 ## Blockquotes
 
@@ -84,7 +84,7 @@ Add one `>` per level at the start of the line
 Wrap code with three back quotes or tildes.
 
 ```
-print 'hoge'
+print 'foo'
 ```
 
 ### Syntax highlight and file name
@@ -131,16 +131,16 @@ This is  `Inline Code`.
 Code blocks should be preceded by four spaces or one tab.
 
 ```
-    class Hoge
-        def hoge
-            print 'hoge'
+    class Foo
+        def foo
+            print 'foo'
         end
     end
 ```
 
-    class Hoge
-        def hoge
-            print 'hoge'
+    class Foo
+        def foo
+            print 'foo'
         end
     end
 
