@@ -6,7 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const helmet = require('helmet');
+const noCache = require('nocache');
 
 const USER_STATUS_MASTER = {
   1: 'registered',
@@ -97,7 +97,7 @@ module.exports = (crowi) => {
    *                    type: object
    *                    description: Statistics for all user
    */
-  router.get('/user', helmet.noCache(), async(req, res) => {
+  router.get('/user', noCache(), async(req, res) => {
     const data = req.user == null ? await getUserStatisticsForNotLoggedIn() : await getUserStatistics();
     res.status(200).send({ data });
   });

@@ -4,6 +4,7 @@ import { WebClient } from '@slack/web-api';
 
 import { generateWebClient } from './webclient-factory';
 import { ConnectionStatus } from '../interfaces/connection-status';
+import { requiredScopes } from './required-scopes';
 
 /**
  * Check whether the HTTP server responds or not.
@@ -45,11 +46,10 @@ const testSlackApiServer = async(client: WebClient): Promise<any> => {
 
 const checkSlackScopes = (resultTestSlackApiServer: any) => {
   const slackScopes = resultTestSlackApiServer.response_metadata.scopes;
-  const correctScopes = ['commands', 'team:read', 'chat:write'];
-  const isPassedScopeCheck = correctScopes.every(e => slackScopes.includes(e));
+  const isPassedScopeCheck = requiredScopes.every(e => slackScopes.includes(e));
 
   if (!isPassedScopeCheck) {
-    throw new Error('The scopes is not appropriate. Required scopes is [\'commands\', \'team:read\', \'chat:write\']');
+    throw new Error(`The scopes you registered are not appropriate. Required scopes are ${requiredScopes}`);
   }
 };
 
