@@ -341,54 +341,6 @@ export class SlackCtrl {
     await this.installerService.installer.handleCallback(req, res, {
       success: async(installation, metadata, req, res) => {
         logger.info('Success to install', { installation, metadata });
-
-        if (installation.bot == null) {
-          return;
-        }
-
-        const client = generateWebClient(installation.bot.token);
-        try {
-          // Call the views.publish method using the WebClient passed to listeners
-          await client.views.publish({
-            user_id: installation.user.id,
-            view: {
-              // Home tabs must be enabled in your app configuration page under "App Home"
-              type: 'home',
-              blocks: [
-                {
-                  type: 'section',
-                  text: {
-                    type: 'mrkdwn',
-                    text: `*Welcome home, <@${installation.user.id}> :house:*`,
-                  },
-                },
-                {
-                  type: 'section',
-                  text: {
-                    type: 'mrkdwn',
-                    text: 'Learn how home tabs can be more useful and interactive <https://api.slack.com/surfaces/tabs/using|*in the documentation*>.',
-                  },
-                },
-                {
-                  type: 'divider',
-                },
-                {
-                  type: 'context',
-                  elements: [
-                    {
-                      type: 'mrkdwn',
-                      text: 'Psssst this home tab was designed using <https://api.slack.com/tools/block-kit-builder|*Block Kit Builder*>',
-                    },
-                  ],
-                },
-              ],
-            },
-          });
-        }
-        catch (error) {
-          console.error(error);
-        }
-
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
 
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -408,6 +360,35 @@ export class SlackCtrl {
         + '</a>'
         + '</div>'
         + '</body></html>');
+
+        if (installation.bot == null) {
+          return;
+        }
+        const client = generateWebClient(installation.bot.token);
+        await client.views.publish({
+          user_id: installation.user.id,
+          view: {
+            type: 'home',
+            blocks: [
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: `*Welcome home, <@${installation.user.id}> :house:*`,
+                },
+              },
+            ],
+          },
+        });
+
+        if (installation.appId == null) {
+          return;
+        }
+        await client.chat.postMessage({
+          channel: 'test', // 取得したい
+          user: installation.bot.userId,
+          text: 'yeeeah hooo',
+        });
       },
       failure: (error, installOptions, req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
