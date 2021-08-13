@@ -16,6 +16,7 @@ import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/slack-to-
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
+import { RelationMockRepository } from '~/repositories/relation-mock';
 import { OrderRepository } from '~/repositories/order';
 
 import { InstallerService } from '~/services/InstallerService';
@@ -38,6 +39,9 @@ export class GrowiToSlackCtrl {
 
   @Inject()
   relationRepository: RelationRepository;
+
+  @Inject()
+  relationMockRepository: RelationMockRepository;
 
   @Inject()
   orderRepository: OrderRepository;
@@ -97,14 +101,15 @@ export class GrowiToSlackCtrl {
   async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+    // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse, permittedChannelsForEachCommand } = req.body;
 
     if (tokenGtoPs.length !== 1) {
       throw createError(400, 'installation is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
-    const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+    const relation = await this.relationMockRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
 
     return res.send({ relation });
   }
@@ -206,6 +211,32 @@ export class GrowiToSlackCtrl {
         overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
       })
       .execute();
+
+    // MOCK DATA DELETE THIS GW-6972 7004 ---------------
+    /**
+     * this code represents the creation of cache (Relation schema) using request from GROWI
+     */
+    await this.relationMockRepository.createQueryBuilder('relation_mock')
+      .insert()
+      .values({
+        installation: order.installation,
+        tokenGtoP: order.tokenGtoP,
+        tokenPtoG: order.tokenPtoG,
+        growiUri: order.growiUrl,
+        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
+        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
+        permittedChannelsForEachCommand: {
+          search: ['random'],
+        },
+        expiredAtCommands,
+      })
+      // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
+      .orUpdate({
+        conflict_target: ['installation', 'growiUri'],
+        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+      })
+      .execute();
+    // MOCK DATA DELETE THIS GW-6972 7004 ---------------
 
     // Find the generated relation
     const generatedRelation = await this.relationRepository.findOne({ id: response.identifiers[0].id });
