@@ -216,10 +216,8 @@ export class SlackCtrl {
       const permittedCreateCommandArray = permittedChannelsForEachCommand?.create;
       const permittedSearchCommandArray = permittedChannelsForEachCommand?.search;
 
-
       const isCreate = permittedCreateCommandArray?.includes(body.channel_name);
       if (isCreate) {
-        console.log('isCreate 内部');
         const relationsForBroadcastUse:RelationMock[] = [];
         body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
         relationsForBroadcastUse.push(relations[0]);
@@ -227,7 +225,15 @@ export class SlackCtrl {
         return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
       }
 
-      console.log('230');
+      const isSearch = permittedSearchCommandArray?.includes(body.channel_name);
+      if (isSearch) {
+        console.log('isSearch');
+        const relationsForBroadcastUse:RelationMock[] = [];
+        body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
+        relationsForBroadcastUse.push(relations[0]);
+        console.log(relations[0].permittedChannelsForEachCommand);
+        return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+      }
       return client.chat.postEphemeral({
         text: 'Error occured.',
         channel: body.channel_id,

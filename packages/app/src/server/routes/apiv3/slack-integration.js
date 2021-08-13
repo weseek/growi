@@ -65,7 +65,6 @@ module.exports = (crowi) => {
       payload = JSON.parse(req.body.payload);
     }
 
-    console.log(req.body);
 
     if (req.body.text == null && !payload) { // when /relation-test
       return next();
@@ -92,6 +91,10 @@ module.exports = (crowi) => {
       next();
     }
 
+    if (search.includes(req.body.channel_name)) {
+      next();
+    }
+
     // validate
     if (command && !supportedCommands.includes(command)) {
       return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
@@ -99,7 +102,6 @@ module.exports = (crowi) => {
     if ((actionId || callbackId) && !isActionSupported) {
       return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
     }
-
     next();
   }
 
