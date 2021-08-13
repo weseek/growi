@@ -2,7 +2,6 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "esnext",
-    "jsx": "react",
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -11,7 +10,8 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "debug": ["./src/utils/logger/alias-for-debug"]
+      "@growi/*": ["../*/src"],
+      "debug": ["./src/server/utils/logger/alias-for-debug"]
     }
   }
 }

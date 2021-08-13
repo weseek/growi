@@ -42,7 +42,12 @@ const connectionOptions: ConnectionOptions = {
 } as ConnectionOptions;
 
 const swaggerSettings = isProduction ? swaggerSettingsForProd : swaggerSettingsForDev;
-const helmetOptions = isProduction ? {} : {
+const helmetOptions = isProduction ? {
+  contentSecurityPolicy: false,
+  expectCt: false,
+  referrerPolicy: false,
+  permittedCrossDomainPolicies: false,
+} : {
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ['\'self\''],
@@ -51,6 +56,9 @@ const helmetOptions = isProduction ? {} : {
       scriptSrc: ['\'self\'', 'https: \'unsafe-inline\''],
     },
   },
+  expectCt: false,
+  referrerPolicy: false,
+  permittedCrossDomainPolicies: false,
 };
 
 @Configuration({

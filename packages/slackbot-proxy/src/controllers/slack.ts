@@ -7,7 +7,8 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
+  InvalidGrowiCommandError,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -21,9 +22,11 @@ import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-gro
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
+import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
+import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-to-conversation';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
@@ -49,6 +52,9 @@ export class SlackCtrl {
 
   @Inject()
   registerService: RegisterService;
+
+  @Inject()
+  relationsService: RelationsService;
 
   @Inject()
   unregisterService: UnregisterService;
@@ -93,15 +99,27 @@ export class SlackCtrl {
   }
 
   @Post('/commands')
-  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, JoinToConversationMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
-    if (body.text == null) {
-      return 'No text.';
-    }
+    let growiCommand;
 
-    const growiCommand = parseSlashCommand(body);
+    try {
+      growiCommand = parseSlashCommand(body);
+    }
+    catch (err) {
+      if (err instanceof InvalidGrowiCommandError) {
+        res.json({
+          blocks: [
+            markdownSectionBlock('*Command type is not specified.*'),
+            markdownSectionBlock('Run `/growi help` to check the commands you can use.'),
+          ],
+        });
+      }
+      logger.error(err.message);
+      return;
+    }
 
     // register
     if (growiCommand.growiCommandType === 'register') {
@@ -159,21 +177,68 @@ export class SlackCtrl {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    body.growiUris = [];
-    relations.forEach((relation) => {
-      if (relation.siglePostCommands.includes(growiCommand.growiCommandType)) {
-        body.growiUris.push(relation.growiUri);
-      }
-    });
+    const baseDate = new Date();
 
-    if (body.growiUris != null && body.growiUris.length > 0) {
+    const allowedRelationsForSingleUse:Relation[] = [];
+    const disallowedGrowiUrls: Set<string> = new Set();
+
+    // check permission for single use
+    await Promise.all(relations.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupported) {
+        allowedRelationsForSingleUse.push(relation);
+      }
+      else {
+        disallowedGrowiUrls.add(relation.growiUri);
+      }
+    }));
+
+    // select GROWI
+    if (allowedRelationsForSingleUse.length > 0) {
+      body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
-    /*
-     * forward to GROWI server
-     */
-    this.sendCommand(growiCommand, relations, body);
+    // check permission for broadcast use
+    const relationsForBroadcastUse:Relation[] = [];
+    await Promise.all(relations.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupported) {
+        relationsForBroadcastUse.push(relation);
+      }
+      else {
+        disallowedGrowiUrls.add(relation.growiUri);
+      }
+    }));
+
+    // forward to GROWI server
+    if (relationsForBroadcastUse.length > 0) {
+      this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+    }
+
+    // when all of GROWI disallowed
+    if (relations.length === disallowedGrowiUrls.size) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(authorizeResult.botToken!);
+
+      const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
+        return '\n'
+          + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
+      });
+
+      return client.chat.postEphemeral({
+        text: 'Error occured.',
+        channel: body.channel_id,
+        user: body.user_id,
+        blocks: [
+          markdownSectionBlock('*None of GROWI permitted the command.*'),
+          markdownSectionBlock(`*'${growiCommand.growiCommandType}'* command was not allowed.`),
+          markdownSectionBlock(
+            `To use this command, modify settings from following pages: ${linkUrlList}`,
+          ),
+        ],
+      });
+    }
   }
 
   @Post('/interactions')
@@ -291,13 +356,20 @@ export class SlackCtrl {
 
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end('<html>'
-        + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
+        + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
+        + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">'
+        + '</head>'
         + '<body style="text-align:center; padding-top:20%;">'
         + '<h1>Congratulations!</h1>'
         + '<p>GROWI Bot installation has succeeded.</p>'
-        + `<a href="${appPageUrl}">`
+        + '<div class="d-inline-flex flex-column">'
+        + `<a class="mb-3" href="${appPageUrl}">`
         + 'Access to Slack App detail page.'
         + '</a>'
+        + '<a class="btn btn-outline-success" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
+        + 'Getting started'
+        + '</a>'
+        + '</div>'
         + '</body></html>');
       },
       failure: (error, installOptions, req, res) => {

@@ -12,13 +12,13 @@ class PluginService {
     this.pluginUtils = new PluginUtils();
   }
 
-  autoDetectAndLoadPlugins() {
+  async autoDetectAndLoadPlugins() {
     const isEnabledPlugins = this.crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins');
 
     // import plugins
     if (isEnabledPlugins) {
       logger.debug('Plugins are enabled');
-      this.loadPlugins(this.pluginUtils.listPluginNames(this.crowi.rootDir));
+      return this.loadPlugins(this.pluginUtils.listPluginNames(this.crowi.rootDir));
     }
 
   }
@@ -28,29 +28,34 @@ class PluginService {
    *
    * @memberOf PluginService
    */
-  loadPlugins(pluginNames) {
-    pluginNames
-      .map((name) => {
-        return this.pluginUtils.generatePluginDefinition(name);
-      })
-      .forEach((definition) => {
+  async loadPlugins(pluginNames) {
+    // get definitions
+    const definitions = [];
+    for (const pluginName of pluginNames) {
+      // eslint-disable-next-line no-await-in-loop
+      const definition = await this.pluginUtils.generatePluginDefinition(pluginName);
+      if (definition != null) {
         this.loadPlugin(definition);
-      });
+      }
+    }
   }
 
   loadPlugin(definition) {
     const meta = definition.meta;
 
     switch (meta.pluginSchemaVersion) {
-      // v1 is deprecated
+      // v1, v2 and v3 is deprecated
       case 1:
         logger.warn('pluginSchemaVersion 1 is deprecated', definition);
         break;
-      // v2 is deprecated
       case 2:
         logger.warn('pluginSchemaVersion 2 is deprecated', definition);
         break;
       case 3:
+        logger.warn('pluginSchemaVersion 3 is deprecated', definition);
+        break;
+      // v4 or above
+      case 4:
         logger.info(`load plugin '${definition.name}'`);
         definition.entries.forEach((entryPath) => {
           const entry = require(entryPath);

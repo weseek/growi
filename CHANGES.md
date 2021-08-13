@@ -2,10 +2,19 @@
 
 ## v4.3.3-RC
 
+* Fix: Encode spaces in page path in LinkEditModal
+* Fix: Layout is broken when editing users page ([#4128](https://github.com/weseek/growi/issues/4128))
+* Support: Create @growi/core package
+* Support: Create @growi/ui package
+* Support: Improve error handling for @growi/slackbot-proxy
+* Support: Include official plugins as sub packages
 * Support: Upgrade libs
     * @slack/web-api
+    * date-fns
     * escape-string-regexp
+    * helmet
     * morgan
+    * socket.io
 
 ## v4.3.2
 

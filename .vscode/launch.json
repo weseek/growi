@@ -45,6 +45,26 @@
         "webRoot": "${workspaceFolder}/packages/app/public",
         "pathMappings": [
           {
+            "url": "webpack:///core",
+            "path": "${workspaceFolder}/packages/core"
+          },
+          {
+            "url": "webpack:///plugin-attachment-refs",
+            "path": "${workspaceFolder}/packages/plugin-attachment-refs"
+          },
+          {
+            "url": "webpack:///plugin-pukiwiki-like-linker",
+            "path": "${workspaceFolder}/packages/plugin-pukiwiki-like-linker"
+          },
+          {
+            "url": "webpack:///plugin-lsx",
+            "path": "${workspaceFolder}/packages/plugin-lsx"
+          },
+          {
+            "url": "webpack:///ui",
+            "path": "${workspaceFolder}/packages/ui"
+          },
+          {
             "url": "webpack:///src",
             "path": "${workspaceFolder}/packages/app/src"
           },

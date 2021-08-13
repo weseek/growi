@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
-import { dateFnsFormat, parse } from 'date-fns';
+import { format, parse } from 'date-fns';
 
 import { isInteger } from 'core-js/fn/number';
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -20,8 +20,8 @@ class ShareLinkForm extends React.Component {
       expirationType: 'unlimited',
       numberOfDays: '7',
       description: '',
-      customExpirationDate: dateFnsFormat(new Date(), 'yyyy-MM-dd'),
-      customExpirationTime: dateFnsFormat(new Date(), 'HH:mm'),
+      customExpirationDate: format(new Date(), 'yyyy-MM-dd'),
+      customExpirationTime: format(new Date(), 'HH:mm'),
     };
 
     this.handleChangeExpirationType = this.handleChangeExpirationType.bind(this);

@@ -1,6 +1,6 @@
 import { Container } from 'unstated';
 
-import { pathUtils } from 'growi-commons';
+import { pathUtils } from '@growi/core';
 import urljoin from 'url-join';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';

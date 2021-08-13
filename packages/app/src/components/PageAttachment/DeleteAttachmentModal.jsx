@@ -6,7 +6,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import UserPicture from '../User/UserPicture';
+import { UserPicture } from '@growi/ui';
 import Username from '../User/Username';
 
 export default class DeleteAttachmentModal extends React.Component {

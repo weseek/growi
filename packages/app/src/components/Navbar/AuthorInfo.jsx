@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { userPageRoot } from '~/utils/path-utils';
+import { UserPicture } from '@growi/ui';
+import { pagePathUtils } from '@growi/core';
 
-import UserPicture from '../User/UserPicture';
+const { userPageRoot } = pagePathUtils;
+
 
 const formatType = 'yyyy/MM/dd HH:mm';
 const AuthorInfo = (props) => {
