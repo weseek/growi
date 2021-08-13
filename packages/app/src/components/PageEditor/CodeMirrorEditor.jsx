@@ -872,6 +872,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
         name: 'dummy-rule',
       },
       {
+        name: 'no-dropping-the-ra',
+      },
+      {
         name: 'common-misspellings',
         options: {
           ignore: [
