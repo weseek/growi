@@ -311,7 +311,8 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  async handleEvent(@BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
+  @UseBefore(AuthorizeCommandMiddleware)
+  async handleEvent(@BodyParams() body:{[key:string]:string}, @Req() req: SlackOauthReq/* , @Res() res: Res */): Promise<void|string> {
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {
@@ -319,6 +320,20 @@ export class SlackCtrl {
     }
 
     logger.info('receive event', body);
+
+    if (req.authorizeResult.botToken == null) {
+      return;
+    }
+
+    const client = generateWebClient(req.authorizeResult.botToken);
+    const user = req.user;
+    const channel = req.body.event.channel;
+
+    await client.chat.postMessage({
+      channel,
+      user,
+      text: 'yeeeah hooo',
+    });
 
     return;
   }
@@ -379,15 +394,6 @@ export class SlackCtrl {
               },
             ],
           },
-        });
-
-        if (installation.appId == null) {
-          return;
-        }
-        await client.chat.postMessage({
-          channel: 'test', // 取得したい
-          user: installation.bot.userId,
-          text: 'yeeeah hooo',
         });
       },
       failure: (error, installOptions, req, res) => {
