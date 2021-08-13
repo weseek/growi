@@ -862,8 +862,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
-    // TODO: Get config from db
-    const textlintValidator = createValidator([
+    // TODO: Get configs from db
+    const isLintEnabled = true;
+    const textlintConfig = [
       {
         name: 'max-comma',
       },
@@ -879,7 +880,25 @@ export default class CodeMirrorEditor extends AbstractEditor {
           ],
         },
       },
-    ]);
+    ];
+
+    const textlintValidator = createValidator(textlintConfig);
+
+    const lint = {};
+    if (isLintEnabled === true) {
+      Object.assign(lint, {
+        getAnnotations: textlintValidator,
+        async: true,
+      });
+    }
+
+    const gutters = [];
+    if (this.props.lineNumbers != null) {
+      gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
+    }
+    if (isLintEnabled === true) {
+      gutters.push('CodeMirror-lint-markers');
+    }
 
     return (
       <React.Fragment>
@@ -910,10 +929,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
-            // Todo: Hide lint marker gutters when disabled
-            gutters: this.props.lineNumbers
-              ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers']
-              : ['CodeMirror-lint-markers'],
+            gutters,
             // match-highlighter, matchesonscrollbar, annotatescrollbar options
             highlightSelectionMatches: { annotateScrollbar: true },
             // continuelist, indentlist
@@ -925,10 +941,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
             },
-            lint: {
-              getAnnotations: textlintValidator,
-              async: true,
-            },
+            lint,
           }}
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
