@@ -380,6 +380,11 @@ export class SlackCtrl {
           return;
         }
         const client = generateWebClient(installation.bot.token);
+        await client.chat.postMessage({
+          channel: installation.user.id,
+          user: installation.user.id,
+          text: 'yeeeah hooo',
+        });
         await client.views.publish({
           user_id: installation.user.id,
           view: {
