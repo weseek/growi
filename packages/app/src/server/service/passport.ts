@@ -1,8 +1,9 @@
 import urljoin from 'url-join';
 import luceneQueryParser from 'lucene-query-parser';
 
+// eslint-disable-next-line import/no-unresolved
+import axios from 'axios'; // import axios from growi dependencies
 import passport from 'passport';
-import axios from '~/utils/axios';
 import LdapStrategy from 'passport-ldapauth';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as CookieStrategy } from 'passport-cookie';
