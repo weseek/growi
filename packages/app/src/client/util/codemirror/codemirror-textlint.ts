@@ -18,7 +18,7 @@ type RuleExtension = {
 const ruleModulesList = {
   'max-comma': textlintRuleMaxComma,
   'common-misspellings': textlintRuleCommonMisspellings,
-  'textlint-rule-no-dropping-the-ra': textlintRuleNoDroppingTheRa,
+  'no-dropping-the-ra': textlintRuleNoDroppingTheRa,
 };
 
 const logger = loggerFactory('growi:codemirror:codemirror-textlint');
