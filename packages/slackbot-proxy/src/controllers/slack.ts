@@ -415,6 +415,14 @@ export class SlackCtrl {
                   text: 'Welcome home',
                 },
               },
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  // eslint-disable-next-line max-len
+                  text: 'Learn how to use GROWI Official bot. See See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
+                },
+              },
             ],
           },
         });
