@@ -377,14 +377,32 @@ export class SlackCtrl {
         + '</body></html>');
 
         if (installation.bot == null) {
-          return;
+          res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
+          return res.end('html'
+          + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
+          + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">'
+          + '</head>'
+          + '<body style="text-align:center; padding-top:20%;">'
+          + '<p>Installation setting is not correct.</p>'
+          + '</body></html>');
         }
+
         const client = generateWebClient(installation.bot.token);
         await client.chat.postMessage({
           channel: installation.user.id,
           user: installation.user.id,
-          text: 'yeeeah hooo',
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                // eslint-disable-next-line max-len
+                text: 'You have successfully installed GROWI Official Bot on this Slack workspace. At first you do `/growi register` in the channel that you want to use. Looking for additional help? See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
+              },
+            },
+          ],
         });
+
         await client.views.publish({
           user_id: installation.user.id,
           view: {
@@ -394,7 +412,7 @@ export class SlackCtrl {
                 type: 'section',
                 text: {
                   type: 'mrkdwn',
-                  text: `*Welcome home, <@${installation.user.id}> :house:*`,
+                  text: 'Welcome home',
                 },
               },
             ],
