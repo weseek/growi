@@ -412,7 +412,7 @@ export class SlackCtrl {
                 type: 'section',
                 text: {
                   type: 'mrkdwn',
-                  text: 'Welcome home',
+                  text: 'Welcome GROWI Official Bot Home',
                 },
               },
               {
