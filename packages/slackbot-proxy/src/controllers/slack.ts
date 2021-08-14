@@ -403,6 +403,7 @@ export class SlackCtrl {
           ],
         });
 
+        // TODO fix Home later
         await client.views.publish({
           user_id: installation.user.id,
           view: {
