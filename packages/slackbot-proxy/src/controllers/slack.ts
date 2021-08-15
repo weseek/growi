@@ -349,14 +349,14 @@ export class SlackCtrl {
     await this.installerService.installer.handleCallback(req, serverRes, {
       success: async(installation, metadata, req, res) => {
 
+        logger.info('Success to install', { installation, metadata });
+
         // check whether bot is not null
         if (installation.bot == null) {
-          const result = await platformRes.render('install-failed.ejs', { url: addToSlackUrl });
+          const result = await platformRes.render('install-succeeded-but-has-problem.ejs', { reason: '`installation.bot` is null' });
           res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
           return res.end(result);
         }
-
-        logger.info('Success to install', { installation, metadata });
 
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
         const result = await platformRes.render('install-succeeded.ejs', { appPageUrl });
