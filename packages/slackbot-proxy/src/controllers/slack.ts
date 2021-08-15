@@ -1,8 +1,10 @@
 import {
-  BodyParams, Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
+  BodyParams, Constant, Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
 } from '@tsed/common';
 
+import path from 'path';
 import axios from 'axios';
+import ejs from 'ejs';
 
 import { WebAPICallResult } from '@slack/web-api';
 
@@ -34,6 +36,9 @@ const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
 @Controller('/slack')
 export class SlackCtrl {
+
+  @Constant('views.root')
+  readonly viewsRoot: string;
 
   @Inject()
   installerService: InstallerService;
@@ -353,16 +358,16 @@ export class SlackCtrl {
 
         // check whether bot is not null
         if (installation.bot == null) {
-          const result = await platformRes.render('install-succeeded-but-has-problem.ejs', { reason: '`installation.bot` is null' });
+          const html = await ejs.renderFile(path.join(this.viewsRoot, 'install-succeeded-but-has-problem.ejs'), { reason: '`installation.bot` is null' });
           res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-          return res.end(result);
+          return res.end(html);
         }
 
         // render success page
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
-        const result = await platformRes.render('install-succeeded.ejs', { appPageUrl });
+        const html = await ejs.renderFile(path.join(this.viewsRoot, 'install-succeeded.ejs'), { appPageUrl });
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(result);
+        res.end(html);
 
         // generate client
         const client = generateWebClient(installation.bot.token);
@@ -377,10 +382,10 @@ export class SlackCtrl {
         ]);
       },
       failure: async(error, installOptions, req, res) => {
-        const result = await platformRes.status(500).render('install-failed.ejs', { url: addToSlackUrl });
+        const html = await ejs.renderFile(path.join(this.viewsRoot, 'install-failed.ejs'), { url: addToSlackUrl });
 
         res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(result);
+        res.end(html);
       },
     });
   }
