@@ -391,8 +391,11 @@ export class SlackCtrl {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                // eslint-disable-next-line max-len
-                text: 'You have successfully installed GROWI Official Bot on this Slack workspace. At first you do `/growi register` in the channel that you want to use. Looking for additional help? See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
+                text: 'You have successfully installed GROWI Official bot on this Slack workspace.'
+                  + 'At first you do `/growi register` in the channel that you want to use.'
+                  + 'Looking for additional help?'
+                  // eslint-disable-next-line max-len
+                  + 'See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
               },
             },
           ],
@@ -415,8 +418,9 @@ export class SlackCtrl {
                 type: 'section',
                 text: {
                   type: 'mrkdwn',
+                  text: 'Learn how to use GROWI Official bot.'
                   // eslint-disable-next-line max-len
-                  text: 'Learn how to use GROWI Official bot. See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
+                    + 'See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
                 },
               },
             ],
