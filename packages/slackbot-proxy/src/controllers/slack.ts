@@ -1,5 +1,5 @@
 import {
-  BodyParams, Constant, Controller, Get, Inject, PlatformResponse, PlatformViews, Post, Req, Res, UseBefore,
+  BodyParams, Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
 } from '@tsed/common';
 
 import axios from 'axios';
@@ -36,12 +36,6 @@ const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
 @Controller('/slack')
 export class SlackCtrl {
-
-  @Constant('views.root')
-  readonly viewsRoot: string;
-
-  @Inject()
-  platformViews: PlatformViews;
 
   @Inject()
   installerService: InstallerService;

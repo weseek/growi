@@ -2661,11 +2661,6 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
   integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
-"@types/ejs@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@types/ejs/-/ejs-3.0.7.tgz#4f2af032f65c54e2bc0b32abce0125af7923b143"
-  integrity sha512-AUxAGNIPr7wQmzdFMNhHy/RkR5kk8gSzAZIuCYY//6ZYJKHvnjezmoEYP34coPleUPnqrUWt03cCq7NzNaA/qg==
-
 "@types/express-serve-static-core@^4.17.18":
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.19.tgz#00acfc1632e729acac4f1530e9e16f6dd1508a1d"
@@ -7034,7 +7029,7 @@ ejs@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
 
-ejs@^3.1.5, ejs@^3.1.6:
+ejs@^3.1.5:
   version "3.1.6"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-3.1.6.tgz#5bfd0a0689743bb5268b3550cceeebbc1702822a"
   integrity sha512-9lt9Zse4hPucPkoP7FHDF0LQAlGyF9JVpnClFLFH3aSSbxmyoqINRpp/9wePWJTUl4KOQwRL72Iw3InHPDkoGw==
