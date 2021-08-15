@@ -29,7 +29,7 @@ module.exports = (crowi) => {
     ],
   };
 
-  async function sendPasswordResetEmail(email, i18n, txtFile, url) {
+  async function sendPasswordResetEmail(txtFile, i18n, email, url) {
     return mailService.send({
       to: email,
       subject: 'Password Reset',
@@ -59,7 +59,7 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      await sendPasswordResetEmail(email, i18n, 'passwordReset', oneTimeUrl);
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
       return res.apiv3();
     }
     catch (err) {
@@ -87,7 +87,7 @@ module.exports = (crowi) => {
     try {
       const userData = await user.updatePassword(newPassword);
       const serializedUserData = serializeUserSecurely(userData);
-      await sendPasswordResetEmail(email, i18n, 'passwordResetSuccessful');
+      await sendPasswordResetEmail('passwordResetSuccessful', i18n, email);
       return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
