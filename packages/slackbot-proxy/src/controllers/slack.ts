@@ -336,35 +336,32 @@ export class SlackCtrl {
   @Get('/oauth_redirect')
   async handleOauthRedirect(@Req() req: Req, @Res() serverRes: Res, @Res() platformRes: PlatformResponse): Promise<void|string> {
 
+    // create 'Add to Slack' url
+    const addToSlackUrl = await this.installerService.installer.generateInstallUrl({
+      scopes: requiredScopes,
+    });
+
     const state = req.query.state;
     if (state == null || state === '') {
-      // create 'Add to Slack' url
-      const url = await this.installerService.installer.generateInstallUrl({
-        scopes: requiredScopes,
-      });
-
-      return platformRes.status(400).render('install-failed.ejs', { url });
+      return platformRes.status(400).render('install-failed.ejs', { url: addToSlackUrl });
     }
 
     await this.installerService.installer.handleCallback(req, serverRes, {
       success: async(installation, metadata, req, res) => {
-        logger.info('Success to install', { installation, metadata });
-        const appPageUrl = `https://slack.com/apps/${installation.appId}`;
 
+        // check whether bot is not null
+        if (installation.bot == null) {
+          const result = await platformRes.render('install-failed.ejs', { url: addToSlackUrl });
+          res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
+          return res.end(result);
+        }
+
+        logger.info('Success to install', { installation, metadata });
+
+        const appPageUrl = `https://slack.com/apps/${installation.appId}`;
         const result = await platformRes.render('install-succeeded.ejs', { appPageUrl });
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(result);
-
-        if (installation.bot == null) {
-          res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-          return res.end('html'
-          + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
-          + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">'
-          + '</head>'
-          + '<body style="text-align:center; padding-top:20%;">'
-          + '<p>Installation setting is not correct.</p>'
-          + '</body></html>');
-        }
 
         const client = generateWebClient(installation.bot.token);
         await client.chat.postMessage({
@@ -412,12 +409,7 @@ export class SlackCtrl {
         });
       },
       failure: async(error, installOptions, req, res) => {
-        // create 'Add to Slack' url
-        const url = await this.installerService.installer.generateInstallUrl({
-          scopes: requiredScopes,
-        });
-
-        const result = await platformRes.status(500).render('install-failed.ejs', { url });
+        const result = await platformRes.status(500).render('install-failed.ejs', { url: addToSlackUrl });
 
         res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(result);
