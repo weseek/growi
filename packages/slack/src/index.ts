@@ -26,6 +26,7 @@ export * from './utils/block-kit-builder';
 export * from './utils/check-communicable';
 export * from './utils/get-supported-growi-actions-regexps';
 export * from './utils/post-ephemeral-errors';
+export * from './utils/publish-initial-home-view';
 export * from './utils/reshape-contents-body';
 export * from './utils/slash-command-parser';
 export * from './utils/webclient-factory';

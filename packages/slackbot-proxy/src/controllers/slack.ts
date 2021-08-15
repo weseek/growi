@@ -8,7 +8,7 @@ import { WebAPICallResult } from '@slack/web-api';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
-  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage,
+  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, publishInitialHomeView,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -369,34 +369,12 @@ export class SlackCtrl {
 
         const userId = installation.user.id;
 
-        // post message
-        await postWelcomeMessage(client, userId);
-
-        // publish home
-        await client.views.publish({
-          user_id: installation.user.id,
-          view: {
-            type: 'home',
-            blocks: [
-              {
-                type: 'section',
-                text: {
-                  type: 'mrkdwn',
-                  text: 'Welcome GROWI Official Bot Home',
-                },
-              },
-              {
-                type: 'section',
-                text: {
-                  type: 'mrkdwn',
-                  text: 'Learn how to use GROWI Official bot.'
-                  // eslint-disable-next-line max-len
-                    + 'See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
-                },
-              },
-            ],
-          },
-        });
+        await Promise.all([
+          // post message
+          postWelcomeMessage(client, userId),
+          // publish home
+          publishInitialHomeView(client, userId),
+        ]);
       },
       failure: async(error, installOptions, req, res) => {
         const result = await platformRes.status(500).render('install-failed.ejs', { url: addToSlackUrl });
