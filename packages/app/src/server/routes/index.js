@@ -1,5 +1,13 @@
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
+const rateLimit = require('express-rate-limit');
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 requests per windowMs
+  message:
+    'Too many requests sent from this IP, please try again after 15 minutes',
+});
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
@@ -178,7 +186,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.get('/forgot-password', forgotPassword.forgotPassword);
-  app.get('/forgot-password/:token'      , passwordReset, forgotPassword.resetPassword);
+  app.get('/forgot-password/:token'      ,apiLimiter, passwordReset, forgotPassword.resetPassword);
   app.get('/forgot-password/error/:reason'      , applicationInstalled, forgotPassword.error);
 
   app.get('/share/:linkId', page.showSharedPage);
