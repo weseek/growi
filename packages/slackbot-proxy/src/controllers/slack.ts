@@ -351,23 +351,9 @@ export class SlackCtrl {
         logger.info('Success to install', { installation, metadata });
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
 
+        const result = await platformRes.render('install-succeeded.ejs', { appPageUrl });
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end('<html>'
-        + '<head><meta name="viewport" content="width=device-width,initial-scale=1">'
-        + '<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">'
-        + '</head>'
-        + '<body style="text-align:center; padding-top:20%;">'
-        + '<h1>Congratulations!</h1>'
-        + '<p>GROWI Bot installation has succeeded.</p>'
-        + '<div class="d-inline-flex flex-column">'
-        + `<a class="mb-3" href="${appPageUrl}">`
-        + 'Access to Slack App detail page.'
-        + '</a>'
-        + '<a class="btn btn-outline-success" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">'
-        + 'Getting started'
-        + '</a>'
-        + '</div>'
-        + '</body></html>');
+        res.end(result);
 
         if (installation.bot == null) {
           res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
