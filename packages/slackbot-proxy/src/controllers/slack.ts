@@ -1,12 +1,12 @@
 import {
-  BodyParams, Constant, Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
+  BodyParams, Constant, Controller, Get, Inject, PlatformResponse, PlatformViews, Post, Req, Res, UseBefore,
 } from '@tsed/common';
 
-import path from 'path';
 import axios from 'axios';
-import ejs from 'ejs';
 
 import { WebAPICallResult } from '@slack/web-api';
+import { Installation } from '@slack/oauth';
+
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
@@ -39,6 +39,9 @@ export class SlackCtrl {
 
   @Constant('views.root')
   readonly viewsRoot: string;
+
+  @Inject()
+  platformViews: PlatformViews;
 
   @Inject()
   installerService: InstallerService;
@@ -351,23 +354,34 @@ export class SlackCtrl {
       return platformRes.status(400).render('install-failed.ejs', { url: addToSlackUrl });
     }
 
-    await this.installerService.installer.handleCallback(req, serverRes, {
-      success: async(installation, metadata, req, res) => {
+    // promisify
+    const installPromise = new Promise<Installation>((resolve, reject) => {
+      this.installerService.installer.handleCallback(req, serverRes, {
+        success: async(installation, metadata) => {
+          logger.info('Success to install', { installation, metadata });
+          resolve(installation);
+        },
+        failure: async(error) => {
+          reject(error); // go to catch block
+        },
+      });
+    });
 
-        logger.info('Success to install', { installation, metadata });
+    let httpStatus = 200;
+    let httpBody;
+    try {
+      const installation = await installPromise;
 
-        // check whether bot is not null
-        if (installation.bot == null) {
-          const html = await ejs.renderFile(path.join(this.viewsRoot, 'install-succeeded-but-has-problem.ejs'), { reason: '`installation.bot` is null' });
-          res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-          return res.end(html);
-        }
-
-        // render success page
+      // check whether bot is not null
+      if (installation.bot == null) {
+        logger.warn('Success to install but something wrong. `installation.bot` is null.');
+        httpStatus = 500;
+        httpBody = await platformRes.render('install-succeeded-but-has-problem.ejs', { reason: '`installation.bot` is null' });
+      }
+      // MAIN PATH: everything is fine
+      else {
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
-        const html = await ejs.renderFile(path.join(this.viewsRoot, 'install-succeeded.ejs'), { appPageUrl });
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(html);
+        httpBody = await platformRes.render('install-succeeded.ejs', { appPageUrl });
 
         // generate client
         const client = generateWebClient(installation.bot.token);
@@ -380,14 +394,16 @@ export class SlackCtrl {
           // publish home
           publishInitialHomeView(client, userId),
         ]);
-      },
-      failure: async(error, installOptions, req, res) => {
-        const html = await ejs.renderFile(path.join(this.viewsRoot, 'install-failed.ejs'), { url: addToSlackUrl });
+      }
+    }
+    catch (error) {
+      logger.error(error);
+      httpStatus = 500;
+      httpBody = await platformRes.status(400).render('install-failed.ejs', { url: addToSlackUrl });
+    }
 
-        res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(html);
-      },
-    });
+    platformRes.status(httpStatus);
+    return httpBody;
   }
 
 }
