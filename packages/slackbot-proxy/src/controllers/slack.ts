@@ -8,7 +8,7 @@ import { WebAPICallResult } from '@slack/web-api';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
-  InvalidGrowiCommandError, requiredScopes,
+  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -358,31 +358,21 @@ export class SlackCtrl {
           return res.end(result);
         }
 
+        // render success page
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
         const result = await platformRes.render('install-succeeded.ejs', { appPageUrl });
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(result);
 
+        // generate client
         const client = generateWebClient(installation.bot.token);
-        await client.chat.postMessage({
-          channel: installation.user.id,
-          user: installation.user.id,
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: ':tada: You have successfully installed GROWI Official bot on this Slack workspace.\n'
-                  + 'At first you do `/growi register` in the channel that you want to use.\n'
-                  + 'Looking for additional help?'
-                  // eslint-disable-next-line max-len
-                  + 'See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
-              },
-            },
-          ],
-        });
 
-        // TODO fix Home later
+        const userId = installation.user.id;
+
+        // post message
+        await postWelcomeMessage(client, userId);
+
+        // publish home
         await client.views.publish({
           user_id: installation.user.id,
           view: {

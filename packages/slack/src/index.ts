@@ -29,4 +29,5 @@ export * from './utils/post-ephemeral-errors';
 export * from './utils/reshape-contents-body';
 export * from './utils/slash-command-parser';
 export * from './utils/webclient-factory';
+export * from './utils/welcome-message';
 export * from './utils/required-scopes';
