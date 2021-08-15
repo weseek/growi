@@ -1,5 +1,5 @@
 import {
-  BodyParams, Controller, Get, Inject, Post, Req, Res, UseBefore,
+  BodyParams, Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
 } from '@tsed/common';
 
 import axios from 'axios';
@@ -8,7 +8,7 @@ import { WebAPICallResult } from '@slack/web-api';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
-  InvalidGrowiCommandError,
+  InvalidGrowiCommandError, requiredScopes,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -334,21 +334,19 @@ export class SlackCtrl {
   }
 
   @Get('/oauth_redirect')
-  async handleOauthRedirect(@Req() req: Req, @Res() res: Res): Promise<void> {
+  async handleOauthRedirect(@Req() req: Req, @Res() serverRes: Res, @Res() platformRes: PlatformResponse): Promise<void|string> {
 
-    if (req.query.state === '') {
-      res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end('<html>'
-      + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
-      + '<body style="text-align:center; padding-top:20%;">'
-      + '<h1>Illegal state, try it again.</h1>'
-      + '<a href="/">'
-      + 'Go to install page'
-      + '</a>'
-      + '</body></html>');
+    const state = req.query.state;
+    if (state == null || state === '') {
+      // create 'Add to Slack' url
+      const url = await this.installerService.installer.generateInstallUrl({
+        scopes: requiredScopes,
+      });
+
+      return platformRes.status(400).render('install-failed.ejs', { url });
     }
 
-    await this.installerService.installer.handleCallback(req, res, {
+    await this.installerService.installer.handleCallback(req, serverRes, {
       success: async(installation, metadata, req, res) => {
         logger.info('Success to install', { installation, metadata });
         const appPageUrl = `https://slack.com/apps/${installation.appId}`;
@@ -391,8 +389,8 @@ export class SlackCtrl {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: 'You have successfully installed GROWI Official bot on this Slack workspace.'
-                  + 'At first you do `/growi register` in the channel that you want to use.'
+                text: ':tada: You have successfully installed GROWI Official bot on this Slack workspace.\n'
+                  + 'At first you do `/growi register` in the channel that you want to use.\n'
                   + 'Looking for additional help?'
                   // eslint-disable-next-line max-len
                   + 'See <https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html#official-bot-settings | Docs>.',
@@ -427,17 +425,16 @@ export class SlackCtrl {
           },
         });
       },
-      failure: (error, installOptions, req, res) => {
+      failure: async(error, installOptions, req, res) => {
+        // create 'Add to Slack' url
+        const url = await this.installerService.installer.generateInstallUrl({
+          scopes: requiredScopes,
+        });
+
+        const result = await platformRes.status(500).render('install-failed.ejs', { url });
+
         res.writeHead(500, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end('<html>'
-        + '<head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
-        + '<body style="text-align:center; padding-top:20%;">'
-        + '<h1>GROWI Bot installation failed</h1>'
-        + '<p>Please contact administrators of your workspace</p>'
-        + 'Reference: <a href="https://slack.com/help/articles/222386767-Manage-app-installation-settings-for-your-workspace">'
-        + 'Manage app installation settings for your workspace'
-        + '</a>'
-        + '</body></html>');
+        res.end(result);
       },
     });
   }
