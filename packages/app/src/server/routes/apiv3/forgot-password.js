@@ -34,7 +34,7 @@ module.exports = (crowi) => {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5, // limit each IP to 5 requests per windowMs
     message:
-      'Too many requests sent from this IP, please try again after 15 minutes',
+      'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
 
   async function sendPasswordResetEmail(email, url, i18n) {
