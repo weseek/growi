@@ -1,3 +1,4 @@
+import rateLimit from 'express-rate-limit';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
@@ -28,6 +29,13 @@ module.exports = (crowi) => {
         }),
     ],
   };
+
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // limit each IP to 5 requests per windowMs
+    message:
+      'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
+  });
 
   async function sendPasswordResetEmail(email, url, i18n) {
     return mailService.send({
@@ -69,7 +77,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', csrf, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/', apiLimiter, csrf, validator.password, apiV3FormValidator, async(req, res) => {
     const { token, newPassword } = req.body;
 
     const passwordResetOrder = await PasswordResetOrder.findOne({ token });
