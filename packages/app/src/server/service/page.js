@@ -65,7 +65,7 @@ class PageService {
 
     // create descendants first
     if (isRecursively) {
-      this.renameDescendantsWithStream(page, newPagePath, user, options);
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
     const update = {};
