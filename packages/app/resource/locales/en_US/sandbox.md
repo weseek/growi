@@ -37,7 +37,7 @@ Add one `#` per level at the start of the line
 
 ## Block paragraph
 
-Pararaphs are created by inserting a newline character
+Paragraphs are created by inserting a newline character
 A paragraph can be created by pressing Enter at the end of the previous paragraph.
 
 ```
@@ -53,7 +53,7 @@ paragraph2
 ## Br new line
 
 Add two spaces before break.
-***This behaviour can be modified in the options menu.***
+***This behavior can be modified in the options menu.***
 
 ```
 foo
@@ -166,7 +166,7 @@ ___
 
 ### Italic
 
-To italicize text, add One asterisk or underscores before and after a word or phrase.
+To italicize text, add one asterisk or underscores before and after a word or phrase.
 
 ```
 This is *Italic* .
@@ -178,7 +178,7 @@ This is _Italic_ .
 
 ### Bold
 
-To bold text, add two asterisks or underscores before and after a word or phrase.
+To make text bold, add two asterisks or underscores before and after a word or phrase.
 
 ```
 This is **bold**.
@@ -263,7 +263,7 @@ Example of Bootstrap4 is[[here>./Bootstrap4]]
 
 ## Ul Bulleted list
 
-To create an unordered list, add dashes (-), asterisks (*), or plus signs (+) in front of line items. 
+To create an unordered list, add dashes (-), asterisks (*), or plus signs (+) in front of line items.
 Items can be nested using indentation.
 
 ```
@@ -286,7 +286,7 @@ Items can be nested using indentation.
 
 ## Ol Numbered List
 
-To create an ordered list, add line items with numbers followed by periods. 
+To create an ordered list, add line items with numbers followed by periods.
 The numbers don’t have to be in numerical order, but the list should start with the number one.
 
 ```
@@ -449,9 +449,9 @@ See [emojione](https://www.emojione.com/)
 
 # :heavy_plus_sign: More..
 
-- Try to attach Bootstrap4 Tags?
+- Want to attach Bootstrap4 Tags?
     - :arrow_right: [/Sandbox/Bootstrap4]
-- Try to draw Diagrams?
+- Want to draw Diagrams?
     - :arrow_right: [/Sandbox/Diagrams]
-- Try to write Math Formulas?
+- Want to write Math Formulas?
     - :arrow_right: [/Sandbox/Math]
