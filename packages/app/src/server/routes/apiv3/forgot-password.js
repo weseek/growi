@@ -37,11 +37,11 @@ module.exports = (crowi) => {
       'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
 
-  async function sendPasswordResetEmail(txtFile, i18n, email, url) {
+  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
     return mailService.send({
       to: email,
-      subject: txtFile,
-      template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFile}.txt`),
+      subject: txtFileName,
+      template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
       vars: {
         appTitle: appService.getAppTitle(),
         email,
