@@ -37,11 +37,11 @@ module.exports = (crowi) => {
       'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
   });
 
-  async function sendPasswordResetEmail(email, url, i18n) {
+  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
     return mailService.send({
       to: email,
-      subject: 'Password Reset',
-      template: path.join(crowi.localeDir, `${i18n}/notifications/passwordReset.txt`),
+      subject: txtFileName,
+      template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
       vars: {
         appTitle: appService.getAppTitle(),
         email,
@@ -67,7 +67,7 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      await sendPasswordResetEmail(email, oneTimeUrl, i18n);
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
       return res.apiv3();
     }
     catch (err) {
@@ -78,6 +78,8 @@ module.exports = (crowi) => {
   });
 
   router.put('/', apiLimiter, csrf, validator.password, apiV3FormValidator, async(req, res) => {
+    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const i18n = req.language || grobalLang;
     const { token, newPassword } = req.body;
 
     const passwordResetOrder = await PasswordResetOrder.findOne({ token });
@@ -93,6 +95,7 @@ module.exports = (crowi) => {
     try {
       const userData = await user.updatePassword(newPassword);
       const serializedUserData = serializeUserSecurely(userData);
+      await sendPasswordResetEmail('passwordResetSuccessful', i18n, email);
       return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
