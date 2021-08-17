@@ -59,7 +59,7 @@ module.exports = (crowi) => {
     // MOCK DATA DELETE THIS GW-6972 ---------------
     const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
     const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
-    const permittedChannelsForEachCommand = slackAppIntegrationMock.permittedChannelsForEachCommand._doc;
+    const channelsObject = slackAppIntegrationMock.permittedChannelsForEachCommand._doc.channelsObject;
     // MOCK DATA DELETE THIS GW-6972 ---------------
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
     const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
@@ -82,10 +82,8 @@ module.exports = (crowi) => {
 
     // code below checks permission at channel level
     const fromChannel = req.body.channel_name || payload.channel.name;
-    for (const commandName of Object.keys(permittedChannelsForEachCommand)) {
-      if (commandName === '_id') continue;
-
-      const permittedChannels = permittedChannelsForEachCommand[commandName];
+    [...channelsObject.keys()].forEach((commandName) => {
+      const permittedChannels = channelsObject.get(commandName);
       // ex. search OR search:hogehoge
       const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
 
@@ -94,7 +92,7 @@ module.exports = (crowi) => {
         // check if the channel is permitted
         if (permittedChannels.includes(fromChannel)) return next();
       }
-    }
+    });
 
     // code below checks permission at command level
     let isActionSupported = false;
