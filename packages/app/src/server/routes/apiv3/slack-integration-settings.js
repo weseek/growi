@@ -415,6 +415,18 @@ module.exports = (crowi) => {
         supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
         supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
       });
+      // MOCK DATA DELETE THIS GW-6972 ---------------
+      const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+      const MOCK = await SlackAppIntegrationMock.create({
+        tokenGtoP,
+        tokenPtoG,
+        supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
+        supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
+        permittedChannelsForEachCommand: {
+          channelsObject: new Map(),
+        },
+      });
+      // MOCK DATA DELETE THIS GW-6972 ---------------
       return res.apiv3(slackAppTokens, 200);
     }
     catch (error) {
