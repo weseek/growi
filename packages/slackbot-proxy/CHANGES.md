@@ -1,6 +1,6 @@
 # CHANGES
 
-## v1.0.1-RC
+## v1.0.1
 
 * Improvement: Automatically add GROWI bot user to the channel where the command was executed
 * Improvement: Post a welcome message when the installation is successful
