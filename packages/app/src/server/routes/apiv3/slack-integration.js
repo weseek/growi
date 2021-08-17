@@ -45,6 +45,14 @@ module.exports = (crowi) => {
   }
 
   async function checkCommandPermission(req, res, next) {
+    let payload;
+    if (req.body.payload) {
+      payload = JSON.parse(req.body.payload);
+    }
+    if (req.body.text == null && !payload) { // when /relation-test
+      return next();
+    }
+
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
     const relation = await SlackAppIntegration.findOne({ tokenPtoG });
@@ -61,14 +69,6 @@ module.exports = (crowi) => {
     let command = '';
     let actionId = '';
     let callbackId = '';
-    let payload;
-    if (req.body.payload) {
-      payload = JSON.parse(req.body.payload);
-    }
-
-    if (req.body.text == null && !payload) { // when /relation-test
-      return next();
-    }
 
     if (!payload) { // when request is to /commands
       command = req.body.text.split(' ')[0];
