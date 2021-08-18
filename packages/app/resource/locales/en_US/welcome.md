@@ -1,9 +1,8 @@
-# Welcome to GROWI :anchor:
+# :tada: Welcome to GROWI
 
 [![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-<div class="card border-primary">
 GROWI is a Wiki for Individuals and Corporations | A knowledge base tool.
 Knowledge in companies, university laboratories, and clubs can be easily shared and anyone can edit the page.
 
@@ -24,11 +23,15 @@ Let's increase the information exchange everyday.
 For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide/tutorial/create_page.html#create-new-page)
 
 <div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">Tips</div>
-  <div class="card-body"><ul>
-    <li>Ctrl(⌘) + "/" to show quick help.</li>
-    <li>We can write HTML with <a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4</a>.</li>
-  </ul></div>
+  <div class="card-header bg-primary text-light">
+    Tips
+  </div>
+  <div class="card-body">
+    <ul>
+      <li>Ctrl(⌘) + "/" to show quick help.</li>
+      <li>We can write HTML with <a href="https://getbootstrap.com/docs/4.5/components/">Bootstrap 4</a>.</li>
+    </ul>
+  </div>
 </div>
 
 # :anchor: For administrator <small>〜if you create a Wiki〜</small>
