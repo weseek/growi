@@ -26,18 +26,7 @@ export class RelationsService {
   }
 
   async syncSupportedGrowiCommands(relation:Relation): Promise<Relation> {
-    // assure forward compatibility GROWI version <= 4.3.0
-    let res;
-    try {
-      res = await this.getSupportedGrowiCommands(relation);
-    }
-    catch (err) {
-      if (err.response && err.response.status === 403) {
-        // this code runs if GROWI version <= 4.3.0
-        return relation;
-      }
-      throw err;
-    }
+    const res = await this.getSupportedGrowiCommands(relation);
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
     relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
     relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
