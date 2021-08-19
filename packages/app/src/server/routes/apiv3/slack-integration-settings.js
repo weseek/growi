@@ -428,8 +428,16 @@ module.exports = (crowi) => {
   router.delete('/slack-app-integration', validator.deleteIntegration, apiV3FormValidator, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { integrationIdToDelete } = req.query;
+
     try {
       const response = await SlackAppIntegration.findOneAndDelete({ _id: integrationIdToDelete });
+
+      // update primary
+      const countOfPrimary = await SlackAppIntegration.countDocuments({ isPrimary: true });
+      if (countOfPrimary === 0) {
+        await SlackAppIntegration.updateOne({}, { isPrimary: true });
+      }
+
       return res.apiv3({ response });
     }
     catch (error) {
