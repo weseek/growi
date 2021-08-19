@@ -11,10 +11,13 @@ class SlackNotificationService {
   }
 
   hasSlackConfig() {
+    // for legacy util
     const hasSlackToken = !!this.configManager.getConfig('notification', 'slack:token');
     const hasSlackIwhUrl = !!this.configManager.getConfig('notification', 'slack:incomingWebhookUrl');
+    // for slackbot
+    const hasSlackbotType = !!this.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
-    return hasSlackToken || hasSlackIwhUrl;
+    return hasSlackToken || hasSlackIwhUrl || hasSlackbotType;
   }
 
 }
