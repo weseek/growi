@@ -1,4 +1,7 @@
 import loggerFactory from '~/utils/logger';
+import S2sMessage from '../models/vo/s2s-message';
+
+import ConfigManager from './config-manager';
 import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
@@ -6,8 +9,8 @@ const logger = loggerFactory('growi:service:SlackBotService');
 
 const { markdownSectionBlock } = require('@growi/slack');
 
-const S2sMessage = require('../models/vo/s2s-message');
 
+type S2sMessageForSlackIntegration = S2sMessage & { updatedAt: Date };
 
 export class SlackIntegrationService implements S2sMessageHandlable {
 
@@ -31,7 +34,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * @inheritdoc
    */
-  shouldHandleS2sMessage(s2sMessage) {
+  shouldHandleS2sMessage(s2sMessage: S2sMessageForSlackIntegration): boolean {
     const { eventName, updatedAt } = s2sMessage;
     if (eventName !== 'slackIntegrationServiceUpdated' || updatedAt == null) {
       return false;
@@ -44,7 +47,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   /**
    * @inheritdoc
    */
-  async handleS2sMessage() {
+  async handleS2sMessage(): Promise<void> {
     const { configManager } = this.crowi;
 
     logger.info('Reset slack bot by pubsub notification');
@@ -52,7 +55,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     this.initialize();
   }
 
-  async publishUpdatedMessage() {
+  async publishUpdatedMessage(): Promise<void> {
     const { s2sMessagingService } = this;
 
     if (s2sMessagingService != null) {
