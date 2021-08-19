@@ -40,7 +40,6 @@ module.exports = (crowi) => {
         + 'Please unregister the information registered in the proxy and setup `/growi register` again.',
       });
     }
-
     next();
   }
 
@@ -166,8 +165,10 @@ module.exports = (crowi) => {
       client = generateClientForResponse();
     }
     else {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-      client = generateClientForResponse(slackAppIntegration.tokenGtoP);
+      const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+      const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+      // const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+      client = generateClientForResponse(slackAppIntegrationMock.tokenGtoP);
     }
 
     const args = body.text.split(' ');

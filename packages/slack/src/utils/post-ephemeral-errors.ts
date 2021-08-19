@@ -9,6 +9,7 @@ export const postEphemeralErrors = async(
     userId: string,
     botToken: string,
 ): Promise<WebAPICallResult|void> => {
+  console.log(12);
 
   if (rejectedResults.length > 0) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

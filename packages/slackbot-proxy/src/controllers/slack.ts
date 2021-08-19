@@ -199,7 +199,7 @@ export class SlackCtrl {
      */
     if (relationsForBroadcastUse.length > 0) {
       isCommandPermitted = true;
-      this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+      return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
     if (!isCommandPermitted) {
