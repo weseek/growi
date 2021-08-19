@@ -857,49 +857,42 @@ export default class CodeMirrorEditor extends AbstractEditor {
     ];
   }
 
+  // TODO: Get configs from db
+  isLintEnabled = true;
+
+  textlintConfig = [
+    {
+      name: 'max-comma',
+    },
+    {
+      name: 'dummy-rule',
+    },
+    {
+      name: 'common-misspellings',
+      options: {
+        ignore: [
+          'isnt',
+          'yuo',
+        ],
+      },
+    },
+  ];
+
+  textlintValidator = createValidator(this.textlintConfig);
+
+  codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
+
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
+    const lint = this.codemirrorLintConfig;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
-
-    // TODO: Get configs from db
-    const isLintEnabled = true;
-    const textlintConfig = [
-      {
-        name: 'max-comma',
-      },
-      {
-        name: 'dummy-rule',
-      },
-      {
-        name: 'no-dropping-the-ra',
-      },
-      {
-        name: 'common-misspellings',
-        options: {
-          ignore: [
-            'isnt',
-            'yuo',
-          ],
-        },
-      },
-    ];
-
-    const textlintValidator = createValidator(textlintConfig);
-
-    const lint = {};
-    if (isLintEnabled === true) {
-      Object.assign(lint, {
-        getAnnotations: textlintValidator,
-        async: true,
-      });
-    }
 
     const gutters = [];
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
     }
-    if (isLintEnabled === true) {
+    if (this.isLintEnabled === true) {
       gutters.push('CodeMirror-lint-markers');
     }
 
