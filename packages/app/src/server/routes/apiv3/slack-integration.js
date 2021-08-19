@@ -8,8 +8,7 @@ const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps }
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
-// const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
 module.exports = (crowi) => {
@@ -27,7 +26,7 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
+    const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
@@ -58,14 +57,11 @@ module.exports = (crowi) => {
 
     const relation = await SlackAppIntegration.findOne({ tokenPtoG });
     // MOCK DATA DELETE THIS GW-6972 ---------------
-    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
-    const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
-    const channelsObject = slackAppIntegrationMock.permittedChannelsForEachCommand._doc.channelsObject;
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    const channelsObject = slackAppIntegration.permittedChannelsForEachCommand._doc.channelsObject;
     // MOCK DATA DELETE THIS GW-6972 ---------------
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
-    const { permittedChannelsForEachCommand } = req.body;
-    const { create, search } = permittedChannelsForEachCommand;
-
     const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
     const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
 
@@ -106,14 +102,6 @@ module.exports = (crowi) => {
       }
     });
 
-    if (create.includes(req.body.channel_name)) {
-      next();
-    }
-
-    if (search.includes(req.body.channel_name)) {
-      next();
-    }
-
     // validate
     if (command && !supportedCommands.includes(command)) {
       return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
@@ -121,6 +109,7 @@ module.exports = (crowi) => {
     if ((actionId || callbackId) && !isActionSupported) {
       return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
     }
+
     next();
   }
 
@@ -177,7 +166,7 @@ module.exports = (crowi) => {
       client = generateClientForResponse();
     }
     else {
-      const slackAppIntegration = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
       client = generateClientForResponse(slackAppIntegration.tokenGtoP);
     }
 
@@ -222,7 +211,7 @@ module.exports = (crowi) => {
       client = generateClientForResponse();
     }
     else {
-      const slackAppIntegration = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
       client = generateClientForResponse(slackAppIntegration.tokenGtoP);
     }
 
@@ -267,7 +256,7 @@ module.exports = (crowi) => {
 
   router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const slackAppIntegration = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
 
     return res.send(slackAppIntegration);
   });
