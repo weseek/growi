@@ -1,18 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import 'kuromoji/dict/base.dat.gz';
-import 'kuromoji/dict/cc.dat.gz';
-import 'kuromoji/dict/check.dat.gz';
-import 'kuromoji/dict/tid_map.dat.gz';
-import 'kuromoji/dict/tid_pos.dat.gz';
-import 'kuromoji/dict/tid.dat.gz';
-import 'kuromoji/dict/unk_char.dat.gz';
-import 'kuromoji/dict/unk_compat.dat.gz';
-import 'kuromoji/dict/unk_invoke.dat.gz';
-import 'kuromoji/dict/unk_map.dat.gz';
-import 'kuromoji/dict/unk_pos.dat.gz';
-import 'kuromoji/dict/unk.dat.gz';
-
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
@@ -48,7 +35,7 @@ import DrawioModal from './DrawioModal';
 import { createValidator } from '../../client/util/codemirror/codemirror-textlint';
 
 window.JSHINT = JSHINT;
-// window.kuromojin = { dicPath: '/node' };
+window.kuromojin = { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
 
 // set save handler
 codemirror.commands.save = (instance) => {
