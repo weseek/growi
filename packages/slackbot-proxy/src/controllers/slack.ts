@@ -222,17 +222,14 @@ export class SlackCtrl {
         const relationsForBroadcastUse:RelationMock[] = [];
         body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
         relationsForBroadcastUse.push(relations[0]);
-        console.log(relations[0].permittedChannelsForEachCommand);
         return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
       }
 
       const isSearch = permittedSearchCommandArray?.includes(body.channel_name);
       if (isSearch) {
-        console.log('isSearch');
         const relationsForBroadcastUse:RelationMock[] = [];
         body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
         relationsForBroadcastUse.push(relations[0]);
-        console.log(relations[0].permittedChannelsForEachCommand);
         return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
       }
       return client.chat.postEphemeral({
