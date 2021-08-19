@@ -217,6 +217,7 @@ export class SlackCtrl {
       const permittedSearchCommandArray = permittedChannelsForEachCommand?.search;
 
       const isCreate = permittedCreateCommandArray?.includes(body.channel_name);
+
       if (isCreate) {
         const relationsForBroadcastUse:RelationMock[] = [];
         body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
