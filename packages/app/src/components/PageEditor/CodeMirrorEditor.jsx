@@ -904,7 +904,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           className={additionalClasses}
           placeholder="search"
           editorDidMount={(editor) => {
-            // add event handlers
+          // add event handlers
             editor.on('paste', this.pasteHandler);
             editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
           }}
@@ -942,7 +942,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
             if (this.props.onScroll != null) {
-              // add line data
+            // add line data
               const line = editor.lineAtHeight(data.top, 'local');
               data.line = line;
               this.props.onScroll(data);
@@ -956,9 +956,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
         />
 
-        {this.renderLoadingKeymapOverlay()}
+        { this.renderLoadingKeymapOverlay() }
 
-        {this.renderCheatsheetOverlay()}
+        { this.renderCheatsheetOverlay() }
 
         <GridEditModal
           ref={this.gridEditModal}
