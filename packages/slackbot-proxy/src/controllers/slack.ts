@@ -110,9 +110,6 @@ export class SlackCtrl {
       return 'No text.';
     }
 
-    console.log('113');
-
-
     const growiCommand = parseSlashCommand(body);
 
     // register
@@ -184,7 +181,6 @@ export class SlackCtrl {
     let isCommandPermitted = false;
 
     if (relationsForSingleUse.length > 0) {
-      console.log('relationsForSingleUser.length');
       isCommandPermitted = true;
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
@@ -207,7 +203,6 @@ export class SlackCtrl {
     }
 
     if (!isCommandPermitted) {
-      console.log('210');
       const botToken = relations[0].installation?.data.bot?.token;
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
