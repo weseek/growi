@@ -96,54 +96,78 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return hasSlackToken || hasSlackIwhUrl;
   }
 
+  private isCheckTypeValid(): boolean {
+    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    if (currentBotType == null) {
+      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
+    }
+
+    return true;
+  }
+
   /**
    * generate WebClient instance for 'customBotWithoutProxy' type
    */
-  async generateClient(): Promise<WebClient>;
+  async generateClientForCustomBotWithoutProxy(): Promise<WebClient> {
+    this.isCheckTypeValid();
+
+    const token = this.configManager.getConfig('crowi', 'slackbot:token');
+
+    if (token == null) {
+      throw new Error('The config \'SLACK_BOT_TOKEN\'(ns: \'crowi\', key: \'slackbot:token\') must be set.');
+    }
+
+    return generateWebClient(token);
+  }
 
   /**
    * generate WebClient instance by tokenPtoG
    * @param tokenPtoG
    */
-  async generateClient(tokenPtoG: string): Promise<WebClient>;
+  async generateClientByTokenPtoG(tokenPtoG: string): Promise<WebClient> {
+    this.isCheckTypeValid();
+
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+
+    if (slackAppIntegration == null) {
+      throw new Error('No SlackAppIntegration exists that corresponds to the tokenPtoG specified.');
+    }
+
+    return this.generateClientBySlackAppIntegration(slackAppIntegration as unknown as { tokenGtoP: string; });
+  }
+
+  /**
+   * generate WebClient instance by tokenPtoG
+   * @param tokenPtoG
+   */
+  async generateClientForPrimaryWorkspace(): Promise<WebClient> {
+    this.isCheckTypeValid();
+
+    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    if (currentBotType === 'customBotWithoutProxy') {
+      return this.generateClientForCustomBotWithoutProxy();
+    }
+
+    // retrieve primary SlackAppIntegration
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+    const slackAppIntegration = await SlackAppIntegration.findOne({ isPrimary: true });
+
+    if (slackAppIntegration == null) {
+      throw new Error('None of the primary SlackAppIntegration exists.');
+    }
+
+    return this.generateClientBySlackAppIntegration(slackAppIntegration as unknown as { tokenGtoP: string; });
+  }
 
   /**
    * generate WebClient instance by SlackAppIntegration
    * @param slackAppIntegration
    */
-  async generateClient(slackAppIntegration?: { tokenGtoP: string }): Promise<WebClient>;
-
-  async generateClient(arg?: string | { tokenGtoP: string }): Promise<WebClient> {
-    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-
-    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
-
-    if (currentBotType == null) {
-      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
-    }
-
-    // connect directly
-    if (currentBotType === 'customBotWithoutProxy') {
-      if (arg != null) {
-        throw new Error('This method cannot be used with non-null argument under \'customBotWithoutProxy\' type.');
-      }
-
-      const token = this.configManager.getConfig('crowi', 'slackbot:token');
-      return generateWebClient(token);
-    }
-
-    if (arg == null) {
-      throw new Error('This method cannot be used with null argument under \'officialBot / customBotWithProxy\' type.');
-    }
-
-
-    let slackAppIntegration;
-    if (typeof arg === 'string') {
-      slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG: arg });
-    }
-    else {
-      slackAppIntegration = arg;
-    }
+  async generateClientBySlackAppIntegration(slackAppIntegration: { tokenGtoP: string }): Promise<WebClient> {
+    this.isCheckTypeValid();
 
     // connect to proxy
     const proxyServerUri = this.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
@@ -155,15 +179,15 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return generateWebClient(undefined, serverUri.toString(), headers);
   }
 
-  async postMessage(messageArgs: ChatPostMessageArguments): Promise<void> {
+  async postMessage(messageArgs: ChatPostMessageArguments, slackAppIntegration?: { tokenGtoP: string; }): Promise<void> {
     // use legacy slack configuration
     if (this.isSlackLegacyConfigured && !this.isSlackbotConfigured) {
       return this.postMessageWithLegacyUtil(messageArgs);
     }
 
-    // TODO: determine target slack workspace
-    const tokenPtoG = '...';
-    const client = await this.generateClient(tokenPtoG);
+    const client = slackAppIntegration == null
+      ? await this.generateClientForPrimaryWorkspace()
+      : await this.generateClientBySlackAppIntegration(slackAppIntegration);
 
     try {
       await client.chat.postMessage(messageArgs);

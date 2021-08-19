@@ -98,7 +98,7 @@ module.exports = (crowi) => {
     return next();
   };
 
-  async function handleCommands(req, res) {
+  async function handleCommands(req, res, client) {
     const { body } = req;
 
     if (body.text == null) {
@@ -113,9 +113,6 @@ module.exports = (crowi) => {
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
 
-    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const client = await slackIntegrationService.generateClient(tokenPtoG);
-
     const args = body.text.split(' ');
     const command = args[0];
 
@@ -129,7 +126,8 @@ module.exports = (crowi) => {
   }
 
   router.post('/commands', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
-    return handleCommands(req, res);
+    const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
+    return handleCommands(req, res, client);
   });
 
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
@@ -141,18 +139,17 @@ module.exports = (crowi) => {
       return res.send({ challenge: body.challenge });
     }
 
-    return handleCommands(req, res);
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
+
+    return handleCommands(req, res, client);
   });
 
-  async function handleInteractions(req, res) {
+  async function handleInteractions(req, res, client) {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
     res.send();
-
-
-    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const client = await slackIntegrationService.generateClient(tokenPtoG);
 
     const payload = JSON.parse(req.body.payload);
     const { type } = payload;
@@ -186,11 +183,15 @@ module.exports = (crowi) => {
   }
 
   router.post('/interactions', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
-    return handleInteractions(req, res);
+    const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
+    return handleInteractions(req, res, client);
   });
 
   router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
-    return handleInteractions(req, res);
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
+
+    return handleInteractions(req, res, client);
   });
 
   router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
