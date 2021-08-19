@@ -359,7 +359,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *    /slack-integration-settings/slack-app-integrations:
-   *      put:
+   *      post:
    *        tags: [SlackIntegration]
    *        operationId: putSlackAppIntegrations
    *        summary: /slack-integration
@@ -368,7 +368,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to create slack app integration
    */
-  router.put('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
+  router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
     try {
       const count = await SlackAppIntegration.countDocuments();
