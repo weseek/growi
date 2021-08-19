@@ -41,7 +41,7 @@ export class RelationsService {
 
   async syncSupportedGrowiCommands(relation:Relation): Promise<RelationMock> {
     const res = await this.getSupportedGrowiCommands(relation);
-
+    console.log(res);
     // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
     // relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
     // relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
@@ -80,7 +80,7 @@ export class RelationsService {
 
     const distanceMillisecondsToExpiredAt = relationMock.getDistanceInMillisecondsToExpiredAt(baseDate);
 
-    if (true) {
+    if (distanceMillisecondsToExpiredAt < 0) {
       try {
         return await this.syncSupportedGrowiCommands(relationMock);
       }
@@ -91,16 +91,16 @@ export class RelationsService {
     }
 
     // 24 hours
-    // if (distanceMillisecondsToExpiredAt < 1000 * 60 * 60 * 24) {
-    //   try {
-    //     this.syncSupportedGrowiCommands(relationMock);
-    //   }
-    //   catch (err) {
-    //     logger.error(err);
-    //   }
-    // }
+    if (distanceMillisecondsToExpiredAt < 1000 * 60 * 60 * 24) {
+      try {
+        this.syncSupportedGrowiCommands(relationMock);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
 
-    // return relationMock;
+    return relationMock;
   }
 
   async isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
