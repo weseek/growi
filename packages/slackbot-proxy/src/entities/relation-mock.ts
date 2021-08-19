@@ -11,7 +11,7 @@ import { Installation } from './installation';
 //     search: ['admin'],
 //   }
 interface PermittedChannelsForEachCommand {
-  [command: string]: string[] ;
+  channelsObject: { [command: string]: string[] }
 }
 
 @Entity()

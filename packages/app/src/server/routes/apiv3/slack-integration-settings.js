@@ -557,9 +557,9 @@ module.exports = (crowi) => {
        * permittedChannelsForEachCommandFromClient represents the data sent from client
        */
       const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
-      // assume that these data were sent from client
+      // MOCK DATA FROM CLIENT assume that these data were sent from client
       const permittedChannelsForEachCommandFromClient = {
-        search: ['random'],
+        channelsObject: { search: ['random'] },
       };
       const slackAppIntegrationMock = await SlackAppIntegrationMock.findOneAndUpdate(
         { tokenPtoG: slackAppIntegration.tokenPtoG },

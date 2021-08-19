@@ -101,15 +101,25 @@ export class GrowiToSlackCtrl {
   async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
+
     // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+
+    // MOCK DATA DELETE THIS GW 6972 -----------
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse, permittedChannelsForEachCommand } = req.body;
+    // MOCK DATA DELETE THIS GW 6972 -----------
 
     if (tokenGtoPs.length !== 1) {
       throw createError(400, 'installation is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
-    const relation = await this.relationMockRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+    // const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+
+    // MOCK DATA DELETE THIS GW 6972 -----------
+    const relation = await this.relationMockRepository.update(
+      { tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse, permittedChannelsForEachCommand },
+    );
+    // MOCK DATA DELETE THIS GW 6972 -----------
 
     return res.send({ relation });
   }
@@ -226,7 +236,7 @@ export class GrowiToSlackCtrl {
         supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
         supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
         permittedChannelsForEachCommand: {
-          search: ['random'],
+          channelsObject: {},
         },
         expiredAtCommands,
       })

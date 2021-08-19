@@ -21,7 +21,7 @@ export class RelationsService {
   @Inject()
   relationMockRepository: RelationMockRepository;
 
-  // DELETE THIS METHOD GW-6972
+  // MOCK DATA DELETE THIS METHOD GW-6972
   async getMockFromRelation(relation: Relation): Promise<RelationMock|null> {
     const tokenGtoP = relation.tokenGtoP;
     const relationMock = await this.relationMockRepository.findOne({ where: [{ tokenGtoP }] });
@@ -41,6 +41,7 @@ export class RelationsService {
 
   async syncSupportedGrowiCommands(relation:Relation): Promise<RelationMock> {
     const res = await this.getSupportedGrowiCommands(relation);
+
     // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
     // relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
     // relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
@@ -60,7 +61,7 @@ export class RelationsService {
       relationMock.permittedChannelsForEachCommand = permittedChannelsForEachCommand;
       relationMock.expiredAtCommands = addHours(new Date(), 48);
 
-      // MODIFY THIS ORIGINAL OPERATION GW-6972
+      // NOT MOCK DATA MODIFY THIS ORIGINAL OPERATION GW-6972
       relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
       relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
       relation.expiredAtCommands = addHours(new Date(), 48);
@@ -68,7 +69,7 @@ export class RelationsService {
 
       return this.relationMockRepository.save(relationMock);
     }
-    throw Error('No relation mock is null.');
+    throw Error('No relation mock exists.');
     // MOCK DATA MODIFY THIS GW-6972 ---------------
   }
 
@@ -79,7 +80,7 @@ export class RelationsService {
 
     const distanceMillisecondsToExpiredAt = relationMock.getDistanceInMillisecondsToExpiredAt(baseDate);
 
-    if (distanceMillisecondsToExpiredAt < 0) {
+    if (true) {
       try {
         return await this.syncSupportedGrowiCommands(relationMock);
       }
@@ -90,16 +91,16 @@ export class RelationsService {
     }
 
     // 24 hours
-    if (distanceMillisecondsToExpiredAt < 1000 * 60 * 60 * 24) {
-      try {
-        this.syncSupportedGrowiCommands(relationMock);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    }
+    // if (distanceMillisecondsToExpiredAt < 1000 * 60 * 60 * 24) {
+    //   try {
+    //     this.syncSupportedGrowiCommands(relationMock);
+    //   }
+    //   catch (err) {
+    //     logger.error(err);
+    //   }
+    // }
 
-    return relationMock;
+    // return relationMock;
   }
 
   async isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
