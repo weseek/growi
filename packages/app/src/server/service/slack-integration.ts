@@ -78,7 +78,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
   }
 
-  hasSlackConfig(): boolean {
+  get isSlackConfigured(): boolean {
     // for legacy util
     const hasSlackToken = !!this.configManager.getConfig('notification', 'slack:token');
     const hasSlackIwhUrl = !!this.configManager.getConfig('notification', 'slack:incomingWebhookUrl');
@@ -145,6 +145,19 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     };
 
     return generateWebClient(undefined, serverUri.toString(), headers);
+  }
+
+
+  async postToSlackForPage(page, user, channel, updateType, previousRevision): Promise<void> {
+
+  }
+
+  async postToSlackForComment(comment, user, channel, path): Promise<void> {
+
+  }
+
+  async sendGlobalNotification(messageBody, attachmentBody, slackChannel): Promise<void> {
+
   }
 
   /**

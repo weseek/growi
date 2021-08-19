@@ -160,7 +160,7 @@ module.exports = function(crowi, app) {
     const code = req.query.code;
     const { t } = req;
 
-    if (!code || !slackIntegrationService.hasSlackConfig()) {
+    if (!code || !slackIntegrationService.isSlackConfigured()) {
       return res.redirect('/admin/notification');
     }
 

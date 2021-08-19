@@ -33,7 +33,7 @@ class UserNotificationService {
 
     await page.updateSlackChannels(slackChannelsStr);
 
-    if (!slackIntegrationService.hasSlackConfig()) {
+    if (!slackIntegrationService.isSlackConfigured) {
       throw new Error('slackIntegrationService has not been set up');
     }
 
