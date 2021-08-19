@@ -1,5 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import 'kuromoji/dict/base.dat.gz';
+import 'kuromoji/dict/cc.dat.gz';
+import 'kuromoji/dict/check.dat.gz';
+import 'kuromoji/dict/tid_map.dat.gz';
+import 'kuromoji/dict/tid_pos.dat.gz';
+import 'kuromoji/dict/tid.dat.gz';
+import 'kuromoji/dict/unk_char.dat.gz';
+import 'kuromoji/dict/unk_compat.dat.gz';
+import 'kuromoji/dict/unk_invoke.dat.gz';
+import 'kuromoji/dict/unk_map.dat.gz';
+import 'kuromoji/dict/unk_pos.dat.gz';
+import 'kuromoji/dict/unk.dat.gz';
+
 
 import urljoin from 'url-join';
 import * as codemirror from 'codemirror';
@@ -35,6 +48,7 @@ import DrawioModal from './DrawioModal';
 import { createValidator } from '../../client/util/codemirror/codemirror-textlint';
 
 window.JSHINT = JSHINT;
+// window.kuromojin = { dicPath: '/node' };
 
 // set save handler
 codemirror.commands.save = (instance) => {
@@ -148,6 +162,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
+
   }
 
   init() {
@@ -861,6 +876,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
   isLintEnabled = true;
 
   textlintConfig = [
+    {
+      name: 'no-dropping-the-ra',
+    },
     {
       name: 'max-comma',
     },
