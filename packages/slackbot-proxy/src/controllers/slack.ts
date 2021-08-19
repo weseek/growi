@@ -110,6 +110,9 @@ export class SlackCtrl {
       return 'No text.';
     }
 
+    console.log('113');
+
+
     const growiCommand = parseSlashCommand(body);
 
     // register
@@ -181,6 +184,7 @@ export class SlackCtrl {
     let isCommandPermitted = false;
 
     if (relationsForSingleUse.length > 0) {
+      console.log('relationsForSingleUser.length');
       isCommandPermitted = true;
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
@@ -203,6 +207,7 @@ export class SlackCtrl {
     }
 
     if (!isCommandPermitted) {
+      console.log('210');
       const botToken = relations[0].installation?.data.bot?.token;
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -215,23 +220,30 @@ export class SlackCtrl {
 
       const permittedCreateCommandArray = permittedChannelsForEachCommand?.channelsObject.create;
       const permittedSearchCommandArray = permittedChannelsForEachCommand?.channelsObject.search;
-
       const isCreate = permittedCreateCommandArray?.includes(body.channel_name);
-
-      if (isCreate) {
-        const relationsForBroadcastUse:RelationMock[] = [];
-        body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
-        relationsForBroadcastUse.push(relations[0]);
-        return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
-      }
-
       const isSearch = permittedSearchCommandArray?.includes(body.channel_name);
-      if (isSearch) {
-        const relationsForBroadcastUse:RelationMock[] = [];
-        body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
-        relationsForBroadcastUse.push(relations[0]);
-        return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+
+      switch (growiCommand.growiCommandType) {
+        case 'create':
+          if (isCreate) {
+            const relationsForBroadcastUse:RelationMock[] = [];
+            body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
+            relationsForBroadcastUse.push(relations[0]);
+            return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+          }
+          break;
+        case 'search':
+          if (isSearch) {
+            const relationsForBroadcastUse:RelationMock[] = [];
+            body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
+            relationsForBroadcastUse.push(relations[0]);
+            return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+          }
+          break;
+        default:
+          break;
       }
+
       return client.chat.postEphemeral({
         text: 'Error occured.',
         channel: body.channel_id,
