@@ -46,9 +46,22 @@ module.exports = (crowi) => {
   }
 
   async function checkCommandPermission(req, res, next) {
+    let payload;
+    if (req.body.payload) {
+      payload = JSON.parse(req.body.payload);
+    }
+    if (req.body.text == null && !payload) { // when /relation-test
+      return next();
+    }
+
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
-    const relation = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    const relation = await SlackAppIntegration.findOne({ tokenPtoG });
+    // MOCK DATA DELETE THIS GW-6972 ---------------
+    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    const channelsObject = slackAppIntegrationMock.permittedChannelsForEachCommand._doc.channelsObject;
+    // MOCK DATA DELETE THIS GW-6972 ---------------
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
     const { permittedChannelsForEachCommand } = req.body;
     const { create, search } = permittedChannelsForEachCommand;
@@ -60,15 +73,6 @@ module.exports = (crowi) => {
     let command = '';
     let actionId = '';
     let callbackId = '';
-    let payload;
-    if (req.body.payload) {
-      payload = JSON.parse(req.body.payload);
-    }
-
-
-    if (req.body.text == null && !payload) { // when /relation-test
-      return next();
-    }
 
     if (!payload) { // when request is to /commands
       command = req.body.text.split(' ')[0];
@@ -80,6 +84,21 @@ module.exports = (crowi) => {
       callbackId = payload.view.callback_id;
     }
 
+    // code below checks permission at channel level
+    const fromChannel = req.body.channel_name || payload.channel.name;
+    [...channelsObject.keys()].forEach((commandName) => {
+      const permittedChannels = channelsObject.get(commandName);
+      // ex. search OR search:hogehoge
+      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+
+      // RegExp check
+      if (commandRegExp.test(commandName) || commandRegExp.test(actionId) || commandRegExp.test(callbackId)) {
+        // check if the channel is permitted
+        if (permittedChannels.includes(fromChannel)) return next();
+      }
+    });
+
+    // code below checks permission at command level
     let isActionSupported = false;
     supportedGrowiActionsRegExps.forEach((regexp) => {
       if (regexp.test(actionId) || regexp.test(callbackId)) {

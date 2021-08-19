@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 
-const permittedChannelsSchema = new mongoose.Schema({
-  channelsObject: {},
+const permittedChannelsForEachCommandSchema = new mongoose.Schema({
+  channelsObject: Map,
 });
 
 
@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
   tokenPtoG: { type: String, required: true, unique: true },
   supportedCommandsForBroadcastUse: { type: [String], default: [] },
   supportedCommandsForSingleUse: { type: [String], default: [] },
-  permittedChannels: permittedChannelsSchema,
+  permittedChannelsForEachCommand: permittedChannelsForEachCommandSchema,
 });
 
 class SlackAppIntegrationMock {
