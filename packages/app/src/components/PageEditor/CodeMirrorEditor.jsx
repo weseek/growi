@@ -35,7 +35,9 @@ import DrawioModal from './DrawioModal';
 import { createValidator } from '../../client/util/codemirror/codemirror-textlint';
 
 window.JSHINT = JSHINT;
-window.kuromojin = { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
+window.kuromojin = this.props.noCdn
+  ? { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' }
+  : { dicPath: '' };
 
 // set save handler
 codemirror.commands.save = (instance) => {
