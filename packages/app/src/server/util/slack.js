@@ -134,7 +134,7 @@ export const prepareSlackMessageForComment = (comment, user, appTitle, siteUrl, 
     channel: (channel != null) ? `#${channel}` : undefined,
     username: appTitle,
     text,
-    attachments: JSON.stringify([attachment]),
+    attachments: [attachment],
   };
 
   return message;
