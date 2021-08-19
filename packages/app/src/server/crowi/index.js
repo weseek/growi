@@ -13,6 +13,7 @@ import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import ConfigManager from '../service/config-manager';
+import AppService from '../service/app';
 import AclService from '../service/acl';
 import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
@@ -93,12 +94,10 @@ Crowi.prototype.init = async function() {
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
-  // slack depends on setupSlackIntegrationService
   // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
-    this.setupSlackIntegrationService(),
     this.setUpGrowiBridge(),
   ]);
 
@@ -107,8 +106,7 @@ Crowi.prototype.init = async function() {
     this.setupPassport(),
     this.setupSearcher(),
     this.setupMailer(),
-    this.setupSlack(),
-    this.setupSlackLegacy(),
+    this.setupSlackIntegrationService(),
     this.setupCsrf(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
@@ -136,11 +134,9 @@ Crowi.prototype.initForTest = async function() {
 
   // // customizeService depends on AppService and XssService
   // // passportService depends on appService
-  // // slack depends on setUpSlacklNotification
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
-    // this.setUpSlacklNotification(),
     // this.setUpGrowiBridge(),
   ]);
 
@@ -149,7 +145,7 @@ Crowi.prototype.initForTest = async function() {
     this.setupPassport(),
     // this.setupSearcher(),
     // this.setupMailer(),
-    // this.setupSlack(),
+    // this.setupSlackIntegrationService(),
     // this.setupCsrf(),
     // this.setUpFileUpload(),
     this.setupAttachmentService(),
@@ -382,24 +378,6 @@ Crowi.prototype.setupMailer = async function() {
   }
 };
 
-Crowi.prototype.setupSlack = async function() {
-  const self = this;
-
-  return new Promise(((resolve, reject) => {
-    self.slack = require('../util/slack')(self);
-    resolve();
-  }));
-};
-
-Crowi.prototype.setupSlackLegacy = async function() {
-  const self = this;
-
-  return new Promise(((resolve, reject) => {
-    self.slackLegacy = require('../util/slack-legacy')(self);
-    resolve();
-  }));
-};
-
 Crowi.prototype.setupCsrf = async function() {
   const Tokens = require('csrf');
   this.tokens = new Tokens();
@@ -570,7 +548,6 @@ Crowi.prototype.setUpCustomize = async function() {
  * setup AppService
  */
 Crowi.prototype.setUpApp = async function() {
-  const AppService = require('../service/app');
   if (this.appService == null) {
     this.appService = new AppService(this);
 

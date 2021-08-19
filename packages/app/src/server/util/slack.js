@@ -7,219 +7,160 @@ const urljoin = require('url-join');
 
 /* eslint-disable no-use-before-define */
 
-module.exports = function(crowi) {
-  const { WebClient } = require('@slack/web-api');
+const convertMarkdownToMarkdown = function(body, siteUrl) {
+  return body
+    .replace(/\n\*\s(.+)/g, '\n• $1')
+    .replace(/#{1,}\s?(.+)/g, '\n*$1*')
+    .replace(/(\[(.+)\]\((https?:\/\/.+)\))/g, '<$3|$2>')
+    .replace(/(\[(.+)\]\((\/.+)\))/g, `<${siteUrl}$3|$2>`);
+};
 
-  const { configManager } = crowi;
-  const slack = {};
+const prepareAttachmentTextForCreate = function(page, siteUrl) {
+  let body = page.revision.body;
+  if (body.length > 2000) {
+    body = `${body.substr(0, 2000)}...`;
+  }
 
-  const postWithWebApi = async(messageObj) => {
-    const client = new WebClient(configManager.getConfig('notification', 'slack:token'));
-    // stringify attachments
-    if (messageObj.attachments != null) {
-      messageObj.attachments = JSON.stringify(messageObj.attachments);
+  return convertMarkdownToMarkdown(body, siteUrl);
+};
+
+const prepareAttachmentTextForUpdate = function(page, siteUrl, previousRevision) {
+  const diff = require('diff');
+  let diffText = '';
+
+  diff.diffLines(previousRevision.body, page.revision.body).forEach((line) => {
+    debug('diff line', line);
+    const value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
+    if (line.added) {
+      diffText += `${line.value} ... :lower_left_fountain_pen:`;
     }
-    try {
-      await client.chat.postMessage(messageObj);
-    }
-    catch (error) {
-      debug('Post error', error);
-      debug('Sent data to slack is:', messageObj);
-      throw error;
-    }
-  };
-
-  const convertMarkdownToMarkdown = function(body) {
-    const url = crowi.appService.getSiteUrl();
-
-    return body
-      .replace(/\n\*\s(.+)/g, '\n• $1')
-      .replace(/#{1,}\s?(.+)/g, '\n*$1*')
-      .replace(/(\[(.+)\]\((https?:\/\/.+)\))/g, '<$3|$2>')
-      .replace(/(\[(.+)\]\((\/.+)\))/g, `<${url}$3|$2>`);
-  };
-
-  const prepareAttachmentTextForCreate = function(page, user) {
-    let body = page.revision.body;
-    if (body.length > 2000) {
-      body = `${body.substr(0, 2000)}...`;
-    }
-
-    return convertMarkdownToMarkdown(body);
-  };
-
-  const prepareAttachmentTextForUpdate = function(page, user, previousRevision) {
-    const diff = require('diff');
-    let diffText = '';
-
-    diff.diffLines(previousRevision.body, page.revision.body).forEach((line) => {
-      debug('diff line', line);
-      const value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
-      if (line.added) {
-        diffText += `${line.value} ... :lower_left_fountain_pen:`;
+    else if (line.removed) {
+      // diffText += '-' + line.value.replace(/(.+)?\n/g, '- $1\n');
+      // 1以下は無視
+      if (line.count > 1) {
+        diffText += `:wastebasket: ... ${line.count} lines\n`;
       }
-      else if (line.removed) {
-        // diffText += '-' + line.value.replace(/(.+)?\n/g, '- $1\n');
-        // 1以下は無視
-        if (line.count > 1) {
-          diffText += `:wastebasket: ... ${line.count} lines\n`;
-        }
-      }
-      else {
-        // diffText += '...\n';
-      }
-    });
-
-    debug('diff is', diffText);
-
-    return diffText;
-  };
-
-  const prepareAttachmentTextForComment = function(comment) {
-    let body = comment.comment;
-    if (body.length > 2000) {
-      body = `${body.substr(0, 2000)}...`;
-    }
-
-    if (comment.isMarkdown) {
-      return convertMarkdownToMarkdown(body);
-    }
-
-    return body;
-  };
-
-  slack.prepareSlackMessageForPage = (page, user, channel, updateType, previousRevision) => {
-    const appTitle = crowi.appService.getAppTitle();
-    const url = crowi.appService.getSiteUrl();
-    let body = page.revision.body;
-
-    if (updateType === 'create') {
-      body = prepareAttachmentTextForCreate(page, user);
     }
     else {
-      body = prepareAttachmentTextForUpdate(page, user, previousRevision);
+      // diffText += '...\n';
     }
+  });
 
-    const attachment = {
-      color: '#263a3c',
-      author_name: `@${user.username}`,
-      author_link: urljoin(url, 'user', user.username),
-      author_icon: user.image,
-      title: page.path,
-      title_link: urljoin(url, page.id),
-      text: body,
-      mrkdwn_in: ['text'],
-    };
-    if (user.image) {
-      attachment.author_icon = user.image;
-    }
+  debug('diff is', diffText);
 
-    const message = {
-      channel: (channel != null) ? `#${channel}` : undefined,
-      username: appTitle,
-      text: getSlackMessageTextForPage(page.path, page.id, user, updateType),
-      attachments: [attachment],
-    };
+  return diffText;
+};
 
-    return message;
+const prepareAttachmentTextForComment = function(comment) {
+  let body = comment.comment;
+  if (body.length > 2000) {
+    body = `${body.substr(0, 2000)}...`;
+  }
+
+  if (comment.isMarkdown) {
+    return convertMarkdownToMarkdown(body);
+  }
+
+  return body;
+};
+
+const generateSlackMessageTextForPage = function(path, pageId, user, siteUrl, updateType) {
+  let text;
+
+  const pageUrl = `<${urljoin(siteUrl, pageId)}|${path}>`;
+  if (updateType === 'create') {
+    text = `:rocket: ${user.username} created a new page! ${pageUrl}`;
+  }
+  else {
+    text = `:heavy_check_mark: ${user.username} updated ${pageUrl}`;
+  }
+
+  return text;
+};
+
+export const prepareSlackMessageForPage = (page, user, appTitle, siteUrl, channel, updateType, previousRevision) => {
+  let body = page.revision.body;
+
+  if (updateType === 'create') {
+    body = prepareAttachmentTextForCreate(page, siteUrl);
+  }
+  else {
+    body = prepareAttachmentTextForUpdate(page, siteUrl, previousRevision);
+  }
+
+  const attachment = {
+    color: '#263a3c',
+    author_name: `@${user.username}`,
+    author_link: urljoin(siteUrl, 'user', user.username),
+    author_icon: user.image,
+    title: page.path,
+    title_link: urljoin(siteUrl, page.id),
+    text: body,
+    mrkdwn_in: ['text'],
+  };
+  if (user.image) {
+    attachment.author_icon = user.image;
+  }
+
+  const message = {
+    channel: (channel != null) ? `#${channel}` : undefined,
+    username: appTitle,
+    text: generateSlackMessageTextForPage(page.path, page.id, user, siteUrl, updateType),
+    attachments: [attachment],
   };
 
-  slack.prepareSlackMessageForComment = (comment, user, channel, path) => {
-    const appTitle = crowi.appService.getAppTitle();
-    const url = crowi.appService.getSiteUrl();
-    const body = prepareAttachmentTextForComment(comment);
+  return message;
+};
 
-    const attachment = {
-      color: '#263a3c',
-      author_name: `@${user.username}`,
-      author_link: urljoin(url, 'user', user.username),
-      author_icon: user.image,
-      text: body,
-      mrkdwn_in: ['text'],
-    };
-    if (user.image) {
-      attachment.author_icon = user.image;
-    }
+export const prepareSlackMessageForComment = (comment, user, appTitle, siteUrl, channel, path) => {
+  const body = prepareAttachmentTextForComment(comment);
 
-    const message = {
-      channel: (channel != null) ? `#${channel}` : undefined,
-      username: appTitle,
-      text: getSlackMessageTextForComment(path, String(comment.page), user),
-      attachments: [attachment],
-    };
+  const attachment = {
+    color: '#263a3c',
+    author_name: `@${user.username}`,
+    author_link: urljoin(siteUrl, 'user', user.username),
+    author_icon: user.image,
+    text: body,
+    mrkdwn_in: ['text'],
+  };
+  if (user.image) {
+    attachment.author_icon = user.image;
+  }
 
-    return message;
+  const pageUrl = `<${urljoin(siteUrl, String(comment.page))}|${path}>`;
+  const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
+
+  const message = {
+    channel: (channel != null) ? `#${channel}` : undefined,
+    username: appTitle,
+    text,
+    attachments: JSON.stringify([attachment]),
   };
 
-  /**
+  return message;
+};
+
+/**
    * For GlobalNotification
    *
    * @param {string} messageBody
    * @param {string} attachmentBody
    * @param {string} slackChannel
   */
-  slack.prepareSlackMessageForGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
-    const appTitle = crowi.appService.getAppTitle();
+export const prepareSlackMessageForGlobalNotification = (messageBody, attachmentBody, appTitle, slackChannel) => {
 
-    const attachment = {
-      color: '#263a3c',
-      text: attachmentBody,
-      mrkdwn_in: ['text'],
-    };
-
-    const message = {
-      channel: (slackChannel != null) ? `#${slackChannel}` : undefined,
-      username: appTitle,
-      text: messageBody,
-      attachments: [attachment],
-    };
-
-    return message;
+  const attachment = {
+    color: '#263a3c',
+    text: attachmentBody,
+    mrkdwn_in: ['text'],
   };
 
-  const getSlackMessageTextForPage = function(path, pageId, user, updateType) {
-    let text;
-    const url = crowi.appService.getSiteUrl();
-
-    const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
-    if (updateType === 'create') {
-      text = `:rocket: ${user.username} created a new page! ${pageUrl}`;
-    }
-    else {
-      text = `:heavy_check_mark: ${user.username} updated ${pageUrl}`;
-    }
-
-    return text;
+  const message = {
+    channel: (slackChannel != null) ? `#${slackChannel}` : undefined,
+    username: appTitle,
+    text: messageBody,
+    attachments: JSON.stringify([attachment]),
   };
 
-  const getSlackMessageTextForComment = function(path, pageId, user) {
-    const url = crowi.appService.getSiteUrl();
-    const pageUrl = `<${urljoin(url, pageId)}|${path}>`;
-    const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
-
-    return text;
-  };
-
-  slack.postPage = (page, user, channel, updateType, previousRevision) => {
-    const messageObj = slack.prepareSlackMessageForPage(page, user, channel, updateType, previousRevision);
-
-    return slackPost(messageObj);
-  };
-
-  slack.postComment = (comment, user, channel, path) => {
-    const messageObj = slack.prepareSlackMessageForComment(comment, user, channel, path);
-
-    return slackPost(messageObj);
-  };
-
-  slack.sendGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
-    const messageObj = await slack.prepareSlackMessageForGlobalNotification(messageBody, attachmentBody, slackChannel);
-    return slackPost(messageObj);
-  };
-
-  const slackPost = (messageObj) => {
-    return postWithWebApi(messageObj);
-  };
-
-  return slack;
+  return message;
 };

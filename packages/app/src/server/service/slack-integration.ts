@@ -147,17 +147,19 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return generateWebClient(undefined, serverUri.toString(), headers);
   }
 
+  async postMessage(messageArgs: ChatPostMessageArguments): Promise<void> {
+    // TODO: determine target slack workspace
+    const tokenPtoG = '...';
+    const client = await this.generateClient(tokenPtoG);
 
-  async postToSlackForPage(page, user, channel, updateType, previousRevision): Promise<void> {
-
+    try {
+      await client.chat.postMessage(messageArgs);
   }
-
-  async postToSlackForComment(comment, user, channel, path): Promise<void> {
-
+    catch (error) {
+      logger.debug('Post error', error);
+      logger.debug('Sent data to slack is:', messageArgs);
+      throw error;
   }
-
-  async sendGlobalNotification(messageBody, attachmentBody, slackChannel): Promise<void> {
-
   }
 
   /**

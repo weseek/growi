@@ -1,4 +1,9 @@
-const toArrayFromCsv = require('~/utils/to-array-from-csv');
+import { toArrayFromCsv } from '~/utils/to-array-from-csv';
+
+import {
+  prepareSlackMessageForPage,
+  prepareSlackMessageForComment,
+} from '../../util/slack';
 
 /**
  * service class of UserNotification
@@ -25,7 +30,7 @@ class UserNotificationService {
    */
   async fire(page, user, slackChannelsStr, mode, option, comment = {}) {
     const {
-      slackIntegrationService, slackLegacy, slack,
+      appService, slackIntegrationService,
     } = this.crowi;
 
     const opt = option || {};
@@ -40,17 +45,19 @@ class UserNotificationService {
     // "dev,slacktest" => [dev,slacktest]
     const slackChannels = toArrayFromCsv(slackChannelsStr);
 
+    const appTitle = appService.getAppTitle();
+    const siteUrl = appService.getSiteUrl();
+
     const promises = slackChannels.map(async(chan) => {
-      let res;
+      let messageObj;
       if (mode === 'comment') {
-        res = await slack.postComment(comment, user, chan, page.path);
-        res = await slackLegacy.postComment(comment, user, chan, page.path);
+        messageObj = prepareSlackMessageForComment(comment, user, appTitle, siteUrl, chan, page.path);
       }
       else {
-        res = await slack.postPage(page, user, chan, mode, previousRevision);
-        res = await slackLegacy.postPage(page, user, chan, mode, previousRevision);
+        messageObj = prepareSlackMessageForPage(page, user, appTitle, siteUrl, chan, mode, previousRevision);
       }
-      return res;
+
+      return slackIntegrationService.postMessage(messageObj);
     });
 
     return Promise.allSettled(promises);
