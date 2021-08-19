@@ -16,6 +16,8 @@ const logger = loggerFactory('growi:routes:apiv3:slack-integration-settings');
 
 const router = express.Router();
 
+const OFFICIAL_SLACKBOT_PROXY_URI = 'https://slackbot-proxy.growi.org';
+
 /**
  * @swagger
  *  tags:
@@ -80,24 +82,28 @@ module.exports = (crowi) => {
     ],
   };
 
-  async function resetAllBotSettings() {
-    await SlackAppIntegration.deleteMany();
-
-    const params = {
-      'slackbot:currentBotType': null,
-      'slackbot:signingSecret': null,
-      'slackbot:token': null,
-      'slackbot:proxyServerUri': null,
-    };
+  async function updateSlackBotSettings(params) {
     const { configManager } = crowi;
     // update config without publishing S2sMessage
     return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
   }
 
-  async function updateSlackBotSettings(params) {
-    const { configManager } = crowi;
-    // update config without publishing S2sMessage
-    return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+  async function resetAllBotSettings(initializedType) {
+    await SlackAppIntegration.deleteMany();
+
+    const params = {
+      'slackbot:currentBotType': initializedType,
+      'slackbot:signingSecret': null,
+      'slackbot:token': null,
+      'slackbot:proxyServerUri': null,
+    };
+
+    // set url if officialBot is specified
+    if (initializedType === 'officialBot') {
+      params['slackbot:proxyServerUri'] = OFFICIAL_SLACKBOT_PROXY_URI;
+  }
+
+    return updateSlackBotSettings(params);
   }
 
   async function getConnectionStatusesFromProxy(tokens) {
@@ -218,6 +224,16 @@ module.exports = (crowi) => {
     });
   });
 
+
+  const handleBotTypeChanging = async(req, res, initializedBotType) => {
+    await resetAllBotSettings(initializedBotType);
+    crowi.slackIntegrationService.publishUpdatedMessage();
+
+    // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
+    const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
+    return res.apiv3({ slackBotTypeParam });
+  };
+
   /**
    * @swagger
    *
@@ -240,20 +256,12 @@ module.exports = (crowi) => {
   router.put('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.BotType, apiV3FormValidator, async(req, res) => {
     const { currentBotType } = req.body;
 
-    await resetAllBotSettings();
-    const requestParams = { 'slackbot:currentBotType': currentBotType };
-
-    if (currentBotType === 'officialBot') {
-      requestParams['slackbot:proxyServerUri'] = 'https://slackbot-proxy.growi.org';
+    if (currentBotType == null) {
+      return res.apiv3Err(new ErrorV3('The param \'currentBotType\' must be specified.', 'update-CustomBotSetting-failed'), 400);
     }
 
     try {
-      await updateSlackBotSettings(requestParams);
-      crowi.slackIntegrationService.publishUpdatedMessage();
-
-      // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
-      const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
-      return res.apiv3({ slackBotTypeParam });
+      await handleBotTypeChanging(req, res, currentBotType);
     }
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';
@@ -281,17 +289,8 @@ module.exports = (crowi) => {
    *             description: Succeeded to delete botType setting.
    */
   router.delete('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, apiV3FormValidator, async(req, res) => {
-
-    await resetAllBotSettings();
-    const params = { 'slackbot:currentBotType': null };
-
     try {
-      await updateSlackBotSettings(params);
-      crowi.slackIntegrationService.publishUpdatedMessage();
-
-      // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
-      const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
-      return res.apiv3({ slackBotTypeParam });
+      await handleBotTypeChanging(req, res, null);
     }
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';
