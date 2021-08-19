@@ -624,7 +624,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     return (
       <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
-        { this.state.isSimpleCheatsheetShown
+        {this.state.isSimpleCheatsheetShown
           ? (
             <div className="text-right">
               {cheatsheetModalButton}
@@ -857,46 +857,42 @@ export default class CodeMirrorEditor extends AbstractEditor {
     ];
   }
 
+  // TODO: Get configs from db
+  isLintEnabled = true;
+
+  textlintConfig = [
+    {
+      name: 'max-comma',
+    },
+    {
+      name: 'dummy-rule',
+    },
+    {
+      name: 'common-misspellings',
+      options: {
+        ignore: [
+          'isnt',
+          'yuo',
+        ],
+      },
+    },
+  ];
+
+  textlintValidator = createValidator(this.textlintConfig);
+
+  codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
+
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
+    const lint = this.codemirrorLintConfig;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
-
-    // TODO: Get configs from db
-    const isLintEnabled = true;
-    const textlintConfig = [
-      {
-        name: 'max-comma',
-      },
-      {
-        name: 'dummy-rule',
-      },
-      {
-        name: 'common-misspellings',
-        options: {
-          ignore: [
-            'isnt',
-            'yuo',
-          ],
-        },
-      },
-    ];
-
-    const textlintValidator = createValidator(textlintConfig);
-
-    const lint = {};
-    if (isLintEnabled === true) {
-      Object.assign(lint, {
-        getAnnotations: textlintValidator,
-        async: true,
-      });
-    }
 
     const gutters = [];
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
     }
-    if (isLintEnabled === true) {
+    if (this.isLintEnabled === true) {
       gutters.push('CodeMirror-lint-markers');
     }
 
@@ -908,7 +904,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           className={additionalClasses}
           placeholder="search"
           editorDidMount={(editor) => {
-          // add event handlers
+            // add event handlers
             editor.on('paste', this.pasteHandler);
             editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
           }}
@@ -946,7 +942,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
             if (this.props.onScroll != null) {
-            // add line data
+              // add line data
               const line = editor.lineAtHeight(data.top, 'local');
               data.line = line;
               this.props.onScroll(data);
@@ -960,9 +956,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
         />
 
-        { this.renderLoadingKeymapOverlay() }
+        {this.renderLoadingKeymapOverlay()}
 
-        { this.renderCheatsheetOverlay() }
+        {this.renderCheatsheetOverlay()}
 
         <GridEditModal
           ref={this.gridEditModal}
