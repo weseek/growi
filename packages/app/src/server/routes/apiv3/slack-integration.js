@@ -98,31 +98,6 @@ module.exports = (crowi) => {
     return next();
   };
 
-  // const generateClientForResponse = (tokenGtoP) => {
-  //   const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-
-  //   if (currentBotType == null) {
-  //     throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
-  //   }
-
-  //   let token;
-
-  //   // connect directly
-  //   if (tokenGtoP == null) {
-  //     token = crowi.configManager.getConfig('crowi', 'slackbot:token');
-  //     return generateWebClient(token);
-  //   }
-
-  //   // connect to proxy
-  //   const proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
-  //   const serverUri = urljoin(proxyServerUri, '/g2s');
-  //   const headers = {
-  //     'x-growi-gtop-tokens': tokenGtoP,
-  //   };
-
-  //   return generateWebClient(token, serverUri, headers);
-  // };
-
   async function handleCommands(req, res) {
     const { body } = req;
 
