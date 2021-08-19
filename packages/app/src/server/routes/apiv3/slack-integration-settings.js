@@ -56,10 +56,10 @@ module.exports = (crowi) => {
   const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 
   const validator = {
-    BotType: [
+    botType: [
       body('currentBotType').isString(),
     ],
-    SlackIntegration: [
+    slackIntegration: [
       body('currentBotType')
         .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
     ],
@@ -72,14 +72,17 @@ module.exports = (crowi) => {
       body('supportedCommandsForBroadcastUse').toArray(),
       param('id').isMongoId().withMessage('id is required'),
     ],
-    RelationTest: [
-      body('slackAppIntegrationId').isMongoId(),
+    relationTest: [
+      param('id').isMongoId(),
       body('channel').trim().isString(),
     ],
-    deleteIntegration: [
-      query('integrationIdToDelete').isMongoId(),
+    regenerateTokens: [
+      param('id').isMongoId(),
     ],
-    SlackChannel: [
+    deleteIntegration: [
+      param('id').isMongoId(),
+    ],
+    slackChannel: [
       body('channel').trim().not().isEmpty()
         .isString(),
     ],
@@ -130,18 +133,18 @@ module.exports = (crowi) => {
     }
 
     try {
-    const result = await axios[method](
-      urljoin(proxyUri, endpoint),
-      body, {
-        headers: {
-      'x-growi-gtop-tokens': token,
+      const result = await axios[method](
+        urljoin(proxyUri, endpoint),
+        body, {
+          headers: {
+            'x-growi-gtop-tokens': token,
+          },
+          timeout: REQUEST_TIMEOUT_FOR_GTOP,
         },
-        timeout: REQUEST_TIMEOUT_FOR_GTOP,
-      },
-    );
+      );
 
-    return result.data;
-  }
+      return result.data;
+    }
     catch (err) {
       throw new Error(`Requesting to proxy server failed: ${err.message}`);
     }
@@ -266,7 +269,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to put botType setting.
    */
-  router.put('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.BotType, apiV3FormValidator, async(req, res) => {
+  router.put('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.botType, apiV3FormValidator, async(req, res) => {
     const { currentBotType } = req.body;
 
     if (currentBotType == null) {
@@ -397,37 +400,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/regenerate-tokens:
-   *      put:
-   *        tags: [SlackIntegration]
-   *        operationId: putRegenerateTokens
-   *        summary: /slack-integration
-   *        description: Regenerate SlackAppTokens
-   *        responses:
-   *          200:
-   *            description: Succeeded to regenerate slack app tokens
-   */
-  router.put('/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-
-    const { slackAppIntegrationId } = req.body;
-
-    try {
-      const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
-      const slackAppTokens = await SlackAppIntegration.findByIdAndUpdate(slackAppIntegrationId, { tokenGtoP, tokenPtoG });
-
-      return res.apiv3(slackAppTokens, 200);
-    }
-    catch (error) {
-      const msg = 'Error occurred during regenerating slack app tokens';
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'regenerating-slackAppTokens-failed'), 500);
-    }
-  });
-
-  /**
-   * @swagger
-   *
-   *    /slack-integration-settings/slack-app-integration:
+   *    /slack-integration-settings/slack-app-integrations/:id
    *      delete:
    *        tags: [SlackIntegration]
    *        operationId: deleteAccessTokens
@@ -437,12 +410,12 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to delete access tokens for slack
    */
-  router.delete('/slack-app-integration', validator.deleteIntegration, apiV3FormValidator, async(req, res) => {
+  router.delete('/slack-app-integrations/:id', validator.deleteIntegration, apiV3FormValidator, async(req, res) => {
     const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-    const { integrationIdToDelete } = req.query;
+    const { id } = req.params;
 
     try {
-      const response = await SlackAppIntegration.findOneAndDelete({ _id: integrationIdToDelete });
+      const response = await SlackAppIntegration.findOneAndDelete({ _id: id });
 
       // update primary
       const countOfPrimary = await SlackAppIntegration.countDocuments({ isPrimary: true });
@@ -480,7 +453,38 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/:id/supported-commands:
+   *    /slack-integration-settings/slack-app-integrations/:id/regenerate-tokens:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: putRegenerateTokens
+   *        summary: /slack-integration
+   *        description: Regenerate SlackAppTokens
+   *        responses:
+   *          200:
+   *            description: Succeeded to regenerate slack app tokens
+   */
+  // eslint-disable-next-line max-len
+  router.put('/slack-app-integrations/:id/regenerate-tokens', loginRequiredStrictly, adminRequired, csrf, validator.regenerateTokens, apiV3FormValidator, async(req, res) => {
+
+    const { id } = req.params;
+
+    try {
+      const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+      const slackAppTokens = await SlackAppIntegration.findByIdAndUpdate(id, { tokenGtoP, tokenPtoG });
+
+      return res.apiv3(slackAppTokens, 200);
+    }
+    catch (error) {
+      const msg = 'Error occurred during regenerating slack app tokens';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'regenerating-slackAppTokens-failed'), 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/slack-app-integrations/:id/supported-commands:
    *      put:
    *        tags: [SlackIntegration]
    *        operationId: putSupportedCommands
@@ -490,7 +494,8 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to update supported commands
    */
-  router.put('/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.put('/slack-app-integrations/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
     const { id } = req.params;
 
@@ -501,15 +506,18 @@ module.exports = (crowi) => {
         { new: true },
       );
 
-      await requestToProxyServer(
-        slackAppIntegration.tokenGtoP,
-        'put',
-        '/g2s/supported-commands',
-        {
-          supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
-          supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
-        },
-      );
+      const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+      if (proxyUri != null) {
+        await requestToProxyServer(
+          slackAppIntegration.tokenGtoP,
+          'put',
+          '/g2s/supported-commands',
+          {
+            supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
+            supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+          },
+        );
+      }
 
       return res.apiv3({ slackAppIntegration });
     }
@@ -523,34 +531,33 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/with-proxy/relation-test:
+   *    /slack-integration-settings/slack-app-integrations/:id/relation-test:
    *      post:
    *        tags: [botType]
    *        operationId: postRelationTest
-   *        summary: /slack-integration/bot-type
+   *        summary: Test relation
    *        description: Delete botType setting.
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  slackAppIntegrationId:
-   *                    type: string
    *        responses:
    *           200:
    *             description: Succeeded to delete botType setting.
    */
-  router.post('/with-proxy/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.RelationTest, apiV3FormValidator, async(req, res) => {
+  // eslint-disable-next-line max-len
+  router.post('/slack-app-integrations/:id/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.relationTest, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType === 'customBotWithoutProxy') {
       const msg = 'Not Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'not-proxy-type'), 400);
     }
 
-    const { slackAppIntegrationId } = req.body;
+    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    if (proxyUri == null) {
+      return res.apiv3Err(new ErrorV3('Proxy URL is null.', 'not-proxy-Uri'), 400);
+    }
+
+    const { id } = req.params;
     let slackBotToken;
     try {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: id });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
@@ -609,7 +616,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to connect to slack work space.
    */
-  router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.SlackChannel, apiV3FormValidator, async(req, res) => {
+  router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.slackChannel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType !== 'customBotWithoutProxy') {
       const msg = 'Select Without Proxy Type';

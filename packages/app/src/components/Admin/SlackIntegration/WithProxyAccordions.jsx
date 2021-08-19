@@ -107,7 +107,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 
   const regenerateTokensHandler = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/regenerate-tokens', { slackAppIntegrationId });
+      await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/regenerate-tokens`);
       if (props.onUpdateTokens != null) {
         props.onUpdateTokens();
       }
@@ -215,7 +215,7 @@ const TestProcess = ({
   const submitForm = async(e) => {
     e.preventDefault();
     try {
-      await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+      await apiv3Post(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/relation-test`, { channel: testChannel });
       const newLogs = addLogs(logsValue, successMessage, null);
       setLogsValue(newLogs);
 

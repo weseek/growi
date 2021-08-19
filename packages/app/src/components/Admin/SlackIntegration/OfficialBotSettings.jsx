@@ -9,7 +9,7 @@ import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionSt
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
-const logger = loggerFactory('growi:SlackBotSettings');
+const logger = loggerFactory('growi:cli:SlackIntegration:OfficialBotSettings');
 
 const OfficialBotSettings = (props) => {
   const {
@@ -26,7 +26,7 @@ const OfficialBotSettings = (props) => {
   };
 
   const deleteSlackAppIntegrationHandler = async() => {
-    await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { integrationIdToDelete });
+    await appContainer.apiv3.delete(`/slack-integration-settings/slack-app-integrations/${integrationIdToDelete}`);
     try {
       if (props.onDeleteSlackAppIntegration != null) {
         props.onDeleteSlackAppIntegration();
@@ -34,8 +34,8 @@ const OfficialBotSettings = (props) => {
       toastSuccess(t('toaster.delete_slack_integration_procedure'));
     }
     catch (err) {
-      toastError(err);
-      logger.error(err);
+      toastError('Failed to delete');
+      logger.error('Failed to delete', err);
     }
   };
 

@@ -9,7 +9,7 @@ import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionSt
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 
-const logger = loggerFactory('growi:SlackBotSettings');
+const logger = loggerFactory('growi:cli:SlackIntegration:CustomBotWithProxySettings');
 
 const CustomBotWithProxySettings = (props) => {
   const {
@@ -33,15 +33,15 @@ const CustomBotWithProxySettings = (props) => {
 
   const deleteSlackAppIntegrationHandler = async() => {
     try {
-      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { integrationIdToDelete });
+      await appContainer.apiv3.delete(`/slack-integration-settings/slack-app-integrations/${integrationIdToDelete}`);
       if (props.onDeleteSlackAppIntegration != null) {
         props.onDeleteSlackAppIntegration();
       }
       toastSuccess(t('toaster.delete_slack_integration_procedure'));
     }
     catch (err) {
-      toastError(err);
-      logger.error(err);
+      toastError(err, 'Failed to delete');
+      logger.error('Failed to delete', err);
     }
   };
 
@@ -53,8 +53,8 @@ const CustomBotWithProxySettings = (props) => {
       toastSuccess(t('toaster.update_successed', { target: 'Proxy URL' }));
     }
     catch (err) {
-      toastError(err);
-      logger.error(err);
+      toastError(err, 'Failed to update');
+      logger.error('Failed to update', err);
     }
   };
 
