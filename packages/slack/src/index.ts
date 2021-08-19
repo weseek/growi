@@ -1,3 +1,7 @@
+export const REQUEST_TIMEOUT_FOR_GTOP = 10000;
+
+export const REQUEST_TIMEOUT_FOR_PTOG = 10000;
+
 export const supportedSlackCommands: string[] = [
   '/growi',
 ];

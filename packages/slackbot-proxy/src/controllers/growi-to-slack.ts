@@ -8,7 +8,7 @@ import { addHours } from 'date-fns';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient,
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient, REQUEST_TIMEOUT_FOR_PTOG,
 } from '@growi/slack';
 
 import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/slack-to-growi/add-webclient-response-to-res';
@@ -61,6 +61,7 @@ export class GrowiToSlackCtrl {
       headers: {
         'x-growi-ptog-tokens': tokenPtoG,
       },
+      timeout: REQUEST_TIMEOUT_FOR_PTOG,
     });
   }
 

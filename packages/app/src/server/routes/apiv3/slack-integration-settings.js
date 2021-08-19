@@ -7,7 +7,10 @@ const axios = require('axios');
 const urljoin = require('url-join');
 
 const {
-  getConnectionStatus, getConnectionStatuses, sendSuccessMessage, defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse,
+  getConnectionStatus, getConnectionStatuses,
+  sendSuccessMessage,
+  defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse,
+  REQUEST_TIMEOUT_FOR_GTOP,
 } = require('@growi/slack');
 
 const ErrorV3 = require('../../models/vo/error-apiv3');
@@ -113,6 +116,7 @@ module.exports = (crowi) => {
     const result = await axios.get(urljoin(proxyUri, '/g2s/connection-status'), {
       headers: {
         'x-growi-gtop-tokens': csv,
+        timeout: REQUEST_TIMEOUT_FOR_GTOP,
       },
     });
 
@@ -125,11 +129,15 @@ module.exports = (crowi) => {
       throw new Error('Proxy URL is not registered');
     }
 
-    const headers = {
+    const result = await axios[method](
+      urljoin(proxyUri, endpoint),
+      body, {
+        headers: {
       'x-growi-gtop-tokens': token,
-    };
-
-    const result = await axios[method](urljoin(proxyUri, endpoint), body, { headers });
+        },
+        timeout: REQUEST_TIMEOUT_FOR_GTOP,
+      },
+    );
 
     return result.data;
   }
@@ -212,7 +220,7 @@ module.exports = (crowi) => {
           });
         }
         catch (e) {
-          errorMsg = 'Incorrect Proxy URL';
+          errorMsg = 'Something went wrong when retrieving information from Proxy Server.';
           errorCode = 'test-connection-failed';
           logger.error(errorMsg, e);
         }

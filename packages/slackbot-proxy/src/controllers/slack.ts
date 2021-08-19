@@ -10,7 +10,7 @@ import { Installation } from '@slack/oauth';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
-  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, publishInitialHomeView,
+  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, publishInitialHomeView, REQUEST_TIMEOUT_FOR_PTOG,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -84,6 +84,7 @@ export class SlackCtrl {
         headers: {
           'x-growi-ptog-tokens': relation.tokenPtoG,
         },
+        timeout: REQUEST_TIMEOUT_FOR_PTOG,
       });
     });
 
@@ -315,6 +316,7 @@ export class SlackCtrl {
         headers: {
           'x-growi-ptog-tokens': relation.tokenPtoG,
         },
+        timeout: REQUEST_TIMEOUT_FOR_PTOG,
       });
     }
     catch (err) {
