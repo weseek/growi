@@ -624,7 +624,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     return (
       <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
-        {this.state.isSimpleCheatsheetShown
+        { this.state.isSimpleCheatsheetShown
           ? (
             <div className="text-right">
               {cheatsheetModalButton}
