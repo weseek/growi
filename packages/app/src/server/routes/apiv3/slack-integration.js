@@ -139,7 +139,7 @@ module.exports = (crowi) => {
     res.send();
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const client = slackIntegrationService.generateClientForResponse(tokenPtoG);
+    const client = slackIntegrationService.generateClient(tokenPtoG);
 
     const args = body.text.split(' ');
     const command = args[0];
@@ -177,7 +177,7 @@ module.exports = (crowi) => {
 
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const client = slackIntegrationService.generateClientForResponse(tokenPtoG);
+    const client = slackIntegrationService.generateClient(tokenPtoG);
 
     const payload = JSON.parse(req.body.payload);
     const { type } = payload;
