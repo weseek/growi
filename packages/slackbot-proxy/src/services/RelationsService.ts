@@ -41,7 +41,6 @@ export class RelationsService {
 
   async syncSupportedGrowiCommands(relation:Relation): Promise<RelationMock> {
     const res = await this.getSupportedGrowiCommands(relation);
-    console.log(res);
     // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
     // relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
     // relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
