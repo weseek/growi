@@ -48,8 +48,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  // const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-  const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+  const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 
   const validator = {
     BotType: [
@@ -82,7 +81,7 @@ module.exports = (crowi) => {
   };
 
   async function resetAllBotSettings() {
-    await SlackAppIntegrationMock.deleteMany();
+    await SlackAppIntegration.deleteMany();
 
     const params = {
       'slackbot:currentBotType': null,
@@ -183,7 +182,7 @@ module.exports = (crowi) => {
     }
     else {
       try {
-        const slackAppIntegrations = await SlackAppIntegrationMock.find();
+        const slackAppIntegrations = await SlackAppIntegration.find();
         settings.slackAppIntegrations = slackAppIntegrations;
       }
       catch (e) {
@@ -401,24 +400,24 @@ module.exports = (crowi) => {
    *            description: Succeeded to create slack app integration
    */
   router.put('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    const SlackAppIntegrationRecordsNum = await SlackAppIntegrationMock.countDocuments();
+    const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
     if (SlackAppIntegrationRecordsNum >= 10) {
       const msg = 'Not be able to create more than 10 slack workspace integration settings';
       logger.error('Error', msg);
       return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
     }
 
-    const { tokenGtoP, tokenPtoG } = await SlackAppIntegrationMock.generateUniqueAccessTokens();
+    const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
     try {
-      const slackAppTokens = await SlackAppIntegrationMock.create({
+      const slackAppTokens = await SlackAppIntegration.create({
         tokenGtoP,
         tokenPtoG,
         supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
         supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
       });
       // MOCK DATA DELETE THIS GW-6972 ---------------
-      const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
-      const MOCK = await SlackAppIntegrationMock.create({
+      const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+      const MOCK = await SlackAppIntegration.create({
         tokenGtoP,
         tokenPtoG,
         supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
@@ -455,8 +454,8 @@ module.exports = (crowi) => {
     const { slackAppIntegrationId } = req.body;
 
     try {
-      const { tokenGtoP, tokenPtoG } = await SlackAppIntegrationMock.generateUniqueAccessTokens();
-      const slackAppTokens = await SlackAppIntegrationMock.findByIdAndUpdate(slackAppIntegrationId, { tokenGtoP, tokenPtoG });
+      const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+      const slackAppTokens = await SlackAppIntegration.findByIdAndUpdate(slackAppIntegrationId, { tokenGtoP, tokenPtoG });
 
       return res.apiv3(slackAppTokens, 200);
     }
@@ -530,7 +529,7 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
-      const slackAppIntegration = await SlackAppIntegrationMock.findByIdAndUpdate(
+      const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
         id,
         { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse },
         { new: true },
@@ -585,7 +584,7 @@ module.exports = (crowi) => {
     const { slackAppIntegrationId } = req.body;
     let slackBotToken;
     try {
-      const slackAppIntegration = await SlackAppIntegrationMock.findOne({ _id: slackAppIntegrationId });
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
