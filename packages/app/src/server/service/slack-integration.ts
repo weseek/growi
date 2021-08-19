@@ -1,3 +1,9 @@
+import mongoose from 'mongoose';
+
+import { WebClient } from '@slack/web-api';
+import { generateWebClient, markdownSectionBlock } from '@growi/slack';
+
+
 import loggerFactory from '~/utils/logger';
 import S2sMessage from '../models/vo/s2s-message';
 
@@ -5,9 +11,8 @@ import ConfigManager from './config-manager';
 import { S2sMessagingService } from './s2s-messaging/base';
 import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
-const logger = loggerFactory('growi:service:SlackBotService');
 
-const { markdownSectionBlock } = require('@growi/slack');
+const logger = loggerFactory('growi:service:SlackBotService');
 
 
 type S2sMessageForSlackIntegration = S2sMessage & { updatedAt: Date };
@@ -81,6 +86,60 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     const hasSlackbotType = !!this.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
     return hasSlackToken || hasSlackIwhUrl || hasSlackbotType;
+  }
+
+  /**
+   * generate WebClient instance for 'customBotWithoutProxy' type
+   */
+  async generateClient(): Promise<WebClient>;
+
+  /**
+   * generate WebClient instance by tokenPtoG
+   * @param tokenPtoG
+   */
+  async generateClient(tokenPtoG: string): Promise<WebClient>;
+
+  /**
+   * generate WebClient instance by SlackAppIntegration
+   * @param slackAppIntegration
+   */
+  async generateClient(slackAppIntegration?: { tokenGtoP: string }): Promise<WebClient>;
+
+  async generateClient(arg?: string | { tokenGtoP: string }): Promise<WebClient> {
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+
+    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    if (currentBotType == null) {
+      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
+    }
+
+    // connect directly
+    if (currentBotType === 'customBotWithoutProxy') {
+      if (arg != null) {
+        throw new Error('This method cannot be used with non-null argument under \'customBotWithoutProxy\' type.');
+      }
+
+      const token = this.configManager.getConfig('crowi', 'slackbot:token');
+      return generateWebClient(token);
+    }
+
+    let slackAppIntegration;
+    if (typeof arg === 'string') {
+      slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG: arg });
+    }
+    else {
+      slackAppIntegration = arg;
+    }
+
+    // connect to proxy
+    const proxyServerUri = this.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    const serverUri = new URL('/g2s', proxyServerUri);
+    const headers = {
+      'x-growi-gtop-tokens': slackAppIntegration.tokenGtoP,
+    };
+
+    return generateWebClient(undefined, serverUri.toString(), headers);
   }
 
   /**

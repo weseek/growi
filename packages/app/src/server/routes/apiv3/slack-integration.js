@@ -14,7 +14,7 @@ const { respondIfSlackbotError } = require('../../service/slack-command-handler/
 module.exports = (crowi) => {
   this.app = crowi.express;
 
-  const { configManager } = crowi;
+  const { configManager, slackIntegrationService } = crowi;
 
   // Check if the access token is correct
   async function verifyAccessTokenFromProxy(req, res, next) {
@@ -98,30 +98,30 @@ module.exports = (crowi) => {
     return next();
   };
 
-  const generateClientForResponse = (tokenGtoP) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+  // const generateClientForResponse = (tokenGtoP) => {
+  //   const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
-    if (currentBotType == null) {
-      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
-    }
+  //   if (currentBotType == null) {
+  //     throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
+  //   }
 
-    let token;
+  //   let token;
 
-    // connect directly
-    if (tokenGtoP == null) {
-      token = crowi.configManager.getConfig('crowi', 'slackbot:token');
-      return generateWebClient(token);
-    }
+  //   // connect directly
+  //   if (tokenGtoP == null) {
+  //     token = crowi.configManager.getConfig('crowi', 'slackbot:token');
+  //     return generateWebClient(token);
+  //   }
 
-    // connect to proxy
-    const proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
-    const serverUri = urljoin(proxyServerUri, '/g2s');
-    const headers = {
-      'x-growi-gtop-tokens': tokenGtoP,
-    };
+  //   // connect to proxy
+  //   const proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+  //   const serverUri = urljoin(proxyServerUri, '/g2s');
+  //   const headers = {
+  //     'x-growi-gtop-tokens': tokenGtoP,
+  //   };
 
-    return generateWebClient(token, serverUri, headers);
-  };
+  //   return generateWebClient(token, serverUri, headers);
+  // };
 
   async function handleCommands(req, res) {
     const { body } = req;
@@ -139,16 +139,7 @@ module.exports = (crowi) => {
     res.send();
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-
-    // generate client
-    let client;
-    if (tokenPtoG == null) {
-      client = generateClientForResponse();
-    }
-    else {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-      client = generateClientForResponse(slackAppIntegration.tokenGtoP);
-    }
+    const client = slackIntegrationService.generateClientForResponse(tokenPtoG);
 
     const args = body.text.split(' ');
     const command = args[0];
@@ -186,15 +177,7 @@ module.exports = (crowi) => {
 
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    // generate client
-    let client;
-    if (tokenPtoG == null) {
-      client = generateClientForResponse();
-    }
-    else {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-      client = generateClientForResponse(slackAppIntegration.tokenGtoP);
-    }
+    const client = slackIntegrationService.generateClientForResponse(tokenPtoG);
 
     const payload = JSON.parse(req.body.payload);
     const { type } = payload;
