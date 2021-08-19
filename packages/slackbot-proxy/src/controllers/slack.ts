@@ -222,7 +222,7 @@ export class SlackCtrl {
         const relationsForBroadcastUse:RelationMock[] = [];
         body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
         relationsForBroadcastUse.push(relations[0]);
-        // console.log(relations[0].permittedChannelsForEachCommand);
+        console.log(relations[0].permittedChannelsForEachCommand);
         return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
       }
 
