@@ -57,9 +57,9 @@ module.exports = (crowi) => {
 
     const relation = await SlackAppIntegration.findOne({ tokenPtoG });
     // MOCK DATA DELETE THIS GW-6972 ---------------
-    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-    const channelsObject = slackAppIntegration.permittedChannelsForEachCommand._doc.channelsObject;
+    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    const channelsObject = slackAppIntegrationMock.permittedChannelsForEachCommand._doc.channelsObject;
     // MOCK DATA DELETE THIS GW-6972 ---------------
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
     const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
