@@ -215,7 +215,7 @@ export class SlackCtrl {
 
     // forward to GROWI server
     if (relationsForBroadcastUse.length > 0) {
-      this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+      return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
     // when all of GROWI disallowed
