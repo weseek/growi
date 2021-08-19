@@ -1,6 +1,5 @@
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
-import { addHours } from 'date-fns';
 
 import { Relation } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
@@ -30,7 +29,8 @@ export class RelationsService {
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
     relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
     relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
-    relation.expiredAtCommands = addHours(new Date(), 48);
+    const nowDate = new Date();
+    relation.expiredAtCommands = nowDate.getTime() + 48 * 60 * 60 * 1000;
 
     return this.relationRepository.save(relation);
   }
@@ -49,7 +49,7 @@ export class RelationsService {
     }
 
     // 24 hours
-    if (distanceMillisecondsToExpiredAt < 1000 * 60 * 60 * 24) {
+    if (distanceMillisecondsToExpiredAt < 24 * 60 * 60 * 1000) {
       try {
         this.syncSupportedGrowiCommands(relation);
       }

@@ -1,7 +1,6 @@
 import {
   Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, Index,
 } from 'typeorm';
-import { differenceInMilliseconds } from 'date-fns';
 import { Installation } from './installation';
 
 
@@ -50,11 +49,11 @@ export class RelationMock {
   @Column({ type: 'json' })
   permittedChannelsForEachCommand : PermittedChannelsForEachCommand
 
-  @CreateDateColumn()
-  expiredAtCommands: Date;
+  @Column({ type: 'bigint' })
+  expiredAtCommands: number;
 
   getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {
-    return differenceInMilliseconds(this.expiredAtCommands, baseDate);
+    return this.expiredAtCommands - baseDate.getTime();
   }
 
 }
