@@ -204,7 +204,7 @@ export class GrowiToSlackCtrl {
         supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
         expiredAtCommands,
         // HARD CORDING
-        permittedChannelsForEachCommand: { create: ['srv'], search: ['srv', 'admin'] },
+        permittedChannelsForEachCommand: { channelsObject: { create: ['admin', 'srv'], search: ['admin'] } },
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
       .orUpdate({

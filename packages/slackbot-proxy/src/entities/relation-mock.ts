@@ -6,7 +6,7 @@ import { Installation } from './installation';
 
 
 // expected data see below
-//   {
+//   channelsObject: {
 //     create: ['srv', 'admin'],
 //     search: ['admin'],
 //   }
