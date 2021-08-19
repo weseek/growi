@@ -221,49 +221,6 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /slack-integration-settings/:
-   *      put:
-   *        tags: [SlackIntegration]
-   *        operationId: putSlackIntegration
-   *        summary: put /slack-integration
-   *        description: Put SlackIntegration setting.
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/SlackIntegration'
-   *        responses:
-   *           200:
-   *             description: Succeeded to put Slack Integration setting.
-   */
-  router.put('/', accessTokenParser, loginRequiredStrictly, adminRequired, csrf, validator.SlackIntegration, apiV3FormValidator, async(req, res) => {
-    const { currentBotType } = req.body;
-
-    const requestParams = {
-      'slackbot:currentBotType': currentBotType,
-    };
-
-    try {
-      await updateSlackBotSettings(requestParams);
-      crowi.slackIntegrationService.publishUpdatedMessage();
-
-      const slackIntegrationSettingsParams = {
-        currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
-      };
-      return res.apiv3({ slackIntegrationSettingsParams });
-    }
-    catch (error) {
-      const msg = 'Error occured in updating Slack bot setting';
-      logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-SlackIntegrationSetting-failed'), 500);
-    }
-  });
-
-
-  /**
-   * @swagger
-   *
    *    /slack-integration-settings/bot-type/:
    *      put:
    *        tags: [botType]
