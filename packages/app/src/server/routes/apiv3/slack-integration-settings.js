@@ -129,6 +129,7 @@ module.exports = (crowi) => {
       throw new Error('Proxy URL is not registered');
     }
 
+    try {
     const result = await axios[method](
       urljoin(proxyUri, endpoint),
       body, {
@@ -140,6 +141,10 @@ module.exports = (crowi) => {
     );
 
     return result.data;
+  }
+    catch (err) {
+      throw new Error(`Requesting to proxy server failed: ${err.message}`);
+    }
   }
 
   /**
@@ -509,7 +514,7 @@ module.exports = (crowi) => {
       return res.apiv3({ slackAppIntegration });
     }
     catch (error) {
-      const msg = 'Error occured in updating Custom bot setting';
+      const msg = `Error occured in updating settings. Cause: ${error.message}`;
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'update-supported-commands-failed'), 500);
     }
