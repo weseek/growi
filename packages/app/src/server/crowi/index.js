@@ -46,7 +46,6 @@ function Crowi() {
   this.passportService = null;
   this.globalNotificationService = null;
   this.userNotificationService = null;
-  this.slackNotificationService = null;
   this.xssService = null;
   this.aclService = null;
   this.appService = null;
@@ -94,12 +93,12 @@ Crowi.prototype.init = async function() {
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
-  // slack depends on setUpSlacklNotification
+  // slack depends on setupSlackIntegrationService
   // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
-    this.setUpSlacklNotification(),
+    this.setupSlackIntegrationService(),
     this.setUpGrowiBridge(),
   ]);
 
@@ -122,7 +121,6 @@ Crowi.prototype.init = async function() {
     this.setupImport(),
     this.setupPageService(),
     this.setupSyncPageStatusService(),
-    this.setupSlackIntegrationService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -529,16 +527,6 @@ Crowi.prototype.setUpUserNotification = async function() {
   const UserNotificationService = require('../service/user-notification');
   if (this.userNotificationService == null) {
     this.userNotificationService = new UserNotificationService(this);
-  }
-};
-
-/**
- * setup SlackNotificationService
- */
-Crowi.prototype.setUpSlacklNotification = async function() {
-  const SlackNotificationService = require('../service/slack-notification');
-  if (this.slackNotificationService == null) {
-    this.slackNotificationService = new SlackNotificationService(this.configManager);
   }
 };
 

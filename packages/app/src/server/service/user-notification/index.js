@@ -25,7 +25,7 @@ class UserNotificationService {
    */
   async fire(page, user, slackChannelsStr, mode, option, comment = {}) {
     const {
-      slackNotificationService, slackLegacy, slack,
+      slackIntegrationService, slackLegacy, slack,
     } = this.crowi;
 
     const opt = option || {};
@@ -33,8 +33,8 @@ class UserNotificationService {
 
     await page.updateSlackChannels(slackChannelsStr);
 
-    if (!slackNotificationService.hasSlackConfig()) {
-      throw new Error('slackNotificationService has not been set up');
+    if (!slackIntegrationService.hasSlackConfig()) {
+      throw new Error('slackIntegrationService has not been set up');
     }
 
     // "dev,slacktest" => [dev,slacktest]

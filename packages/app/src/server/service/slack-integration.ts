@@ -16,12 +16,15 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
   crowi!: any;
 
+  configManager!: ConfigManager;
+
   s2sMessagingService!: S2sMessagingService;
 
   lastLoadedAt?: Date;
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
 
     this.initialize();
@@ -68,6 +71,16 @@ export class SlackIntegrationService implements S2sMessageHandlable {
         logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
+  }
+
+  hasSlackConfig(): boolean {
+    // for legacy util
+    const hasSlackToken = !!this.configManager.getConfig('notification', 'slack:token');
+    const hasSlackIwhUrl = !!this.configManager.getConfig('notification', 'slack:incomingWebhookUrl');
+    // for slackbot
+    const hasSlackbotType = !!this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    return hasSlackToken || hasSlackIwhUrl || hasSlackbotType;
   }
 
   /**

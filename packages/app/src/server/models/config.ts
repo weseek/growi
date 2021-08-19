@@ -216,7 +216,7 @@ schema.statics.getLocalconfig = function(crowi) {
     isSavedStatesOfTabChanges: crowi.configManager.getConfig('crowi', 'customize:isSavedStatesOfTabChanges'),
     isEnabledAttachTitleHeader: crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
     customizeScript: crowi.configManager.getConfig('crowi', 'customize:script'),
-    hasSlackConfig: crowi.slackNotificationService.hasSlackConfig(),
+    hasSlackConfig: crowi.slackIntegrationService.hasSlackConfig(),
     env: {
       PLANTUML_URI: env.PLANTUML_URI || null,
       BLOCKDIAG_URI: env.BLOCKDIAG_URI || null,

@@ -14,7 +14,7 @@ module.exports = function(crowi, app) {
   const {
     configManager,
     aclService,
-    slackNotificationService,
+    slackIntegrationService,
     exportService,
   } = crowi;
 
@@ -160,7 +160,7 @@ module.exports = function(crowi, app) {
     const code = req.query.code;
     const { t } = req;
 
-    if (!code || !slackNotificationService.hasSlackConfig()) {
+    if (!code || !slackIntegrationService.hasSlackConfig()) {
       return res.redirect('/admin/notification');
     }
 
