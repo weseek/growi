@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 
 const permittedChannelsForEachCommandSchema = new mongoose.Schema({
-  channelsObject: {},
+  channelsObject: Map,
 });
 
 

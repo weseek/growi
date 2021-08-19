@@ -425,7 +425,9 @@ module.exports = (crowi) => {
         tokenPtoG,
         supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
         supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
-        permittedChannelsForEachCommand: {},
+        permittedChannelsForEachCommand: {
+          channelsObject: new Map(),
+        },
       });
       // MOCK DATA DELETE THIS GW-6972 ---------------
       return res.apiv3(slackAppTokens, 200);
