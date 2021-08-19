@@ -416,8 +416,8 @@ module.exports = (crowi) => {
         supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
       });
       // MOCK DATA DELETE THIS GW-6972 ---------------
-      const SlackAppIntegration = mongoose.model('SlackAppIntegration');
-      const MOCK = await SlackAppIntegration.create({
+      const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+      const MOCK = await SlackAppIntegrationMock.create({
         tokenGtoP,
         tokenPtoG,
         supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
