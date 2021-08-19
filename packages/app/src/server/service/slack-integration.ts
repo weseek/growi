@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-import { WebClient } from '@slack/web-api';
+import { IncomingWebhookSendArguments } from '@slack/webhook';
+import { ChatPostMessageArguments, ChatPostMessageResponse, WebClient } from '@slack/web-api';
 import { generateWebClient, markdownSectionBlock } from '@growi/slack';
 
 
@@ -79,13 +80,20 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   get isSlackConfigured(): boolean {
+    return this.isSlackbotConfigured || this.isSlackLegacyConfigured;
+  }
+
+  get isSlackbotConfigured(): boolean {
+    const hasSlackbotType = !!this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    return hasSlackbotType;
+  }
+
+  get isSlackLegacyConfigured(): boolean {
     // for legacy util
     const hasSlackToken = !!this.configManager.getConfig('notification', 'slack:token');
     const hasSlackIwhUrl = !!this.configManager.getConfig('notification', 'slack:incomingWebhookUrl');
-    // for slackbot
-    const hasSlackbotType = !!this.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
-    return hasSlackToken || hasSlackIwhUrl || hasSlackbotType;
+    return hasSlackToken || hasSlackIwhUrl;
   }
 
   /**
@@ -148,18 +156,36 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   async postMessage(messageArgs: ChatPostMessageArguments): Promise<void> {
+    // use legacy slack configuration
+    if (this.isSlackLegacyConfigured && !this.isSlackbotConfigured) {
+      return this.postMessageWithLegacyUtil(messageArgs);
+    }
+
     // TODO: determine target slack workspace
     const tokenPtoG = '...';
     const client = await this.generateClient(tokenPtoG);
 
     try {
       await client.chat.postMessage(messageArgs);
-  }
+    }
     catch (error) {
       logger.debug('Post error', error);
       logger.debug('Sent data to slack is:', messageArgs);
       throw error;
+    }
   }
+
+  private async postMessageWithLegacyUtil(messageArgs: ChatPostMessageArguments | IncomingWebhookSendArguments): Promise<void> {
+    const slackLegacyUtil = require('../util/slack-legacy')(this.crowi);
+
+    try {
+      await slackLegacyUtil.postMessage(messageArgs);
+    }
+    catch (error) {
+      logger.debug('Post error', error);
+      logger.debug('Sent data to slack is:', messageArgs);
+      throw error;
+    }
   }
 
   /**
