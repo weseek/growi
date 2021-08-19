@@ -213,8 +213,8 @@ export class SlackCtrl {
       });
       const permittedChannelsForEachCommand = relationMock?.permittedChannelsForEachCommand;
 
-      const permittedCreateCommandArray = permittedChannelsForEachCommand?.create;
-      const permittedSearchCommandArray = permittedChannelsForEachCommand?.search;
+      const permittedCreateCommandArray = permittedChannelsForEachCommand?.channelsObject.create;
+      const permittedSearchCommandArray = permittedChannelsForEachCommand?.channelsObject.search;
 
       const isCreate = permittedCreateCommandArray?.includes(body.channel_name);
 
