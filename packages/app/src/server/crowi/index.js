@@ -15,6 +15,7 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import ConfigManager from '../service/config-manager';
 import AclService from '../service/acl';
 import AttachmentService from '../service/attachment';
+import { SlackIntegrationService } from '../service/slack-integration';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -60,7 +61,7 @@ function Crowi() {
   this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
-  this.slackBotService = null;
+  this.slackIntegrationService = null;
   this.xss = new Xss();
 
   this.tokens = null;
@@ -121,7 +122,7 @@ Crowi.prototype.init = async function() {
     this.setupImport(),
     this.setupPageService(),
     this.setupSyncPageStatusService(),
-    this.setupSlackBotService(),
+    this.setupSlackIntegrationService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -681,15 +682,14 @@ Crowi.prototype.setupSyncPageStatusService = async function() {
   }
 };
 
-Crowi.prototype.setupSlackBotService = async function() {
-  const SlackBotService = require('../service/slackbot');
-  if (this.slackBotService == null) {
-    this.slackBotService = new SlackBotService(this);
+Crowi.prototype.setupSlackIntegrationService = async function() {
+  if (this.slackIntegrationService == null) {
+    this.slackIntegrationService = new SlackIntegrationService(this);
   }
 
   // add as a message handler
   if (this.s2sMessagingService != null) {
-    this.s2sMessagingService.addMessageHandler(this.slackBotService);
+    this.s2sMessagingService.addMessageHandler(this.slackIntegrationService);
   }
 };
 

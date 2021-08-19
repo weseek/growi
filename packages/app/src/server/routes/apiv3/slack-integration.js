@@ -154,7 +154,7 @@ module.exports = (crowi) => {
     const command = args[0];
 
     try {
-      await crowi.slackBotService.handleCommandRequest(command, client, body, args);
+      await crowi.slackIntegrationService.handleCommandRequest(command, client, body, args);
     }
     catch (err) {
       await respondIfSlackbotError(client, body, err);
@@ -203,7 +203,7 @@ module.exports = (crowi) => {
       switch (type) {
         case 'block_actions':
           try {
-            await crowi.slackBotService.handleBlockActionsRequest(client, payload);
+            await crowi.slackIntegrationService.handleBlockActionsRequest(client, payload);
           }
           catch (err) {
             await respondIfSlackbotError(client, req.body, err);
@@ -211,7 +211,7 @@ module.exports = (crowi) => {
           break;
         case 'view_submission':
           try {
-            await crowi.slackBotService.handleViewSubmissionRequest(client, payload);
+            await crowi.slackIntegrationService.handleViewSubmissionRequest(client, payload);
           }
           catch (err) {
             await respondIfSlackbotError(client, req.body, err);

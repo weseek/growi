@@ -9,7 +9,7 @@ const { markdownSectionBlock } = require('@growi/slack');
 const S2sMessage = require('../models/vo/s2s-message');
 
 
-class SlackBotService implements S2sMessageHandlable {
+export class SlackIntegrationService implements S2sMessageHandlable {
 
   crowi!: any;
 
@@ -33,7 +33,7 @@ class SlackBotService implements S2sMessageHandlable {
    */
   shouldHandleS2sMessage(s2sMessage) {
     const { eventName, updatedAt } = s2sMessage;
-    if (eventName !== 'slackBotServiceUpdated' || updatedAt == null) {
+    if (eventName !== 'slackIntegrationServiceUpdated' || updatedAt == null) {
       return false;
     }
 
@@ -56,7 +56,7 @@ class SlackBotService implements S2sMessageHandlable {
     const { s2sMessagingService } = this;
 
     if (s2sMessagingService != null) {
-      const s2sMessage = new S2sMessage('slackBotServiceUpdated', { updatedAt: new Date() });
+      const s2sMessage = new S2sMessage('slackIntegrationServiceUpdated', { updatedAt: new Date() });
 
       try {
         await s2sMessagingService.publish(s2sMessage);
@@ -132,5 +132,3 @@ class SlackBotService implements S2sMessageHandlable {
   }
 
 }
-
-module.exports = SlackBotService;

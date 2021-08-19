@@ -246,7 +246,7 @@ module.exports = (crowi) => {
 
     try {
       await updateSlackBotSettings(requestParams);
-      crowi.slackBotService.publishUpdatedMessage();
+      crowi.slackIntegrationService.publishUpdatedMessage();
 
       const slackIntegrationSettingsParams = {
         currentBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
@@ -292,7 +292,7 @@ module.exports = (crowi) => {
 
     try {
       await updateSlackBotSettings(requestParams);
-      crowi.slackBotService.publishUpdatedMessage();
+      crowi.slackIntegrationService.publishUpdatedMessage();
 
       // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
       const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
@@ -330,7 +330,7 @@ module.exports = (crowi) => {
 
     try {
       await updateSlackBotSettings(params);
-      crowi.slackBotService.publishUpdatedMessage();
+      crowi.slackIntegrationService.publishUpdatedMessage();
 
       // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
       const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
@@ -370,7 +370,7 @@ module.exports = (crowi) => {
     };
     try {
       await updateSlackBotSettings(requestParams);
-      crowi.slackBotService.publishUpdatedMessage();
+      crowi.slackIntegrationService.publishUpdatedMessage();
 
       const customBotWithoutProxySettingParams = {
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
@@ -488,7 +488,7 @@ module.exports = (crowi) => {
 
     try {
       await updateSlackBotSettings(requestParams);
-      crowi.slackBotService.publishUpdatedMessage();
+      crowi.slackIntegrationService.publishUpdatedMessage();
       return res.apiv3({});
     }
     catch (error) {
