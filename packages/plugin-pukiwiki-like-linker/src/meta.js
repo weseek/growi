@@ -1,10 +1,8 @@
-const path = require('path');
-
 module.exports = {
-  pluginSchemaVersion: 3,
+  pluginSchemaVersion: 4,
   serverEntries: [
   ],
   clientEntries: [
-    path.join(__dirname, 'client-entry.js'),
+    'src/client-entry.js',
   ],
 };

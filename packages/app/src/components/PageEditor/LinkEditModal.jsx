@@ -13,16 +13,17 @@ import {
 import path from 'path';
 import validator from 'validator';
 import { withTranslation } from 'react-i18next';
-import PreviewWithSuspense from './PreviewWithSuspense';
-import PagePreviewIcon from '../Icons/PagePreviewIcon';
 
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-
-import SearchTypeahead from '../SearchTypeahead';
 import Linker from '~/client/models/Linker';
 
+import PreviewWithSuspense from './PreviewWithSuspense';
+import PagePreviewIcon from '../Icons/PagePreviewIcon';
+import SearchTypeahead from '../SearchTypeahead';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
+
 
 class LinkEditModal extends React.PureComponent {
 
@@ -175,22 +176,8 @@ class LinkEditModal extends React.PureComponent {
     this.setState({ markdown, previewError, permalink });
   }
 
-  getLinkForPreview() {
-    const linker = this.generateLink();
-
-    if (this.isUsePermanentLink && this.permalink != null) {
-      linker.link = this.permalink;
-    }
-
-    if (linker.label === '') {
-      linker.label = linker.link;
-    }
-
-    return linker;
-  }
-
   renderLinkPreview() {
-    const linker = this.getLinkForPreview();
+    const linker = this.generateLink();
     return (
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
         <div className="card card-disabled w-100 p-1 mb-0">
@@ -245,7 +232,7 @@ class LinkEditModal extends React.PureComponent {
   }
 
   save() {
-    const linker = this.getLinkForPreview();
+    const linker = this.generateLink();
 
     if (this.props.onSave != null) {
       this.props.onSave(linker.generateMarkdownText());

@@ -25,7 +25,6 @@ services:
       - ..:/workspace/growi:delegated
       - node_modules:/workspace/growi/node_modules
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
-      - ../../node_modules:/workspace/node_modules:delegated
 
     tty: true
 

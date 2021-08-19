@@ -427,7 +427,7 @@ Crowi.prototype.start = async function() {
 
   // setup plugins
   this.pluginService = new PluginService(this, express);
-  this.pluginService.autoDetectAndLoadPlugins();
+  await this.pluginService.autoDetectAndLoadPlugins();
 
   const server = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
