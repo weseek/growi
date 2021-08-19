@@ -86,17 +86,27 @@ const RegisteringProxyUrlProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="container w-75 py-5">
-      <p
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
-      />
-      <img className="mb-5 border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
-      <span
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-      />
-      <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-      <img className="mb-3 border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
+      <ol>
+        <li>
+          <p
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+          />
+          <p>
+            <img className="border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
+          </p>
+        </li>
+        <li>
+          <p
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+          />
+          <p>
+            <img className="border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
+          </p>
+          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+        </li>
+      </ol>
     </div>
   );
 };
