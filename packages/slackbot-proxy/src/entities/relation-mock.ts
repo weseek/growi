@@ -53,11 +53,6 @@ export class RelationMock {
   @CreateDateColumn()
   expiredAtCommands: Date;
 
-  isExpiredCommands():boolean {
-    const now = Date.now();
-    return this.expiredAtCommands.getTime() < now;
-  }
-
   getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {
     return differenceInMilliseconds(this.expiredAtCommands, baseDate);
   }
