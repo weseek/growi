@@ -124,6 +124,11 @@ export class SlackIntegrationService implements S2sMessageHandlable {
       return generateWebClient(token);
     }
 
+    if (arg == null) {
+      throw new Error('This method cannot be used with null argument under \'officialBot / customBotWithProxy\' type.');
+    }
+
+
     let slackAppIntegration;
     if (typeof arg === 'string') {
       slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG: arg });
