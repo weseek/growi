@@ -49,7 +49,7 @@ export class RelationMock {
   @Column({ type: 'json' })
   permittedChannelsForEachCommand : PermittedChannelsForEachCommand
 
-  @Column({ type: 'bigint' })
+  @Column({ type: 'timestamp' })
   expiredAtCommands: number;
 
   getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {

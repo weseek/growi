@@ -36,7 +36,7 @@ export class Relation {
   @Column('simple-array')
   supportedCommandsForSingleUse: string[];
 
-  @Column({ type: 'bigint' })
+  @Column({ type: 'timestamp' })
   expiredAtCommands: number;
 
   getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {
