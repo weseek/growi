@@ -101,7 +101,7 @@ module.exports = (crowi) => {
     // set url if officialBot is specified
     if (initializedType === 'officialBot') {
       params['slackbot:proxyServerUri'] = OFFICIAL_SLACKBOT_PROXY_URI;
-  }
+    }
 
     return updateSlackBotSettings(params);
   }
@@ -293,9 +293,9 @@ module.exports = (crowi) => {
       await handleBotTypeChanging(req, res, null);
     }
     catch (error) {
-      const msg = 'Error occured in updating Custom bot setting';
+      const msg = 'Error occured in resetting all';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'resetting-all-failed'), 500);
     }
   });
 
@@ -360,10 +360,10 @@ module.exports = (crowi) => {
     try {
       const count = await SlackAppIntegration.countDocuments();
       if (count >= 10) {
-      const msg = 'Not be able to create more than 10 slack workspace integration settings';
-      logger.error('Error', msg);
-      return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
-    }
+        const msg = 'Not be able to create more than 10 slack workspace integration settings';
+        logger.error('Error', msg);
+        return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
+      }
 
       const slackAppTokens = await SlackAppIntegration.create({
         tokenGtoP,
@@ -459,7 +459,7 @@ module.exports = (crowi) => {
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-SlackAppIntegration-failed'), 500);
     }
 
   });
@@ -503,7 +503,7 @@ module.exports = (crowi) => {
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'update-supported-commands-failed'), 500);
     }
   });
 
