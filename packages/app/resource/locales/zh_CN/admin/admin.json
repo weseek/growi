@@ -292,6 +292,9 @@
       "cancel": "取消",
       "change": "改变"
     },
+    "toastr": {
+      "delete_slack_integration_procedure": "删除了 Slack 集成程序"
+    },
     "use_env_var_if_empty": "如果数据库中的值为空，则环境变量的值 <code>{{variable}}</code> 启用。",
     "access_token_settings": {
       "regenerate": "再生"

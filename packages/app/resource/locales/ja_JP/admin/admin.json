@@ -282,6 +282,9 @@
       "cancel": "取消",
       "change": "変更する"
     },
+    "toastr": {
+      "delete_slack_integration_procedure": "Slack 連携手順を削除しました"
+    },
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
     "access_token_settings": {
       "regenerate": "再発行"

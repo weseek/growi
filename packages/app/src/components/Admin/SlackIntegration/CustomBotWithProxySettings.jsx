@@ -56,7 +56,7 @@ const CustomBotWithProxySettings = (props) => {
       if (props.onDeleteSlackAppIntegration != null) {
         props.onDeleteSlackAppIntegration();
       }
-      toastSuccess(t('toaster.delete_slack_integration_procedure'));
+      toastSuccess(t('admin:slack_integration.toastr.delete_slack_integration_procedure'));
     }
     catch (err) {
       toastError(err, 'Failed to delete');
