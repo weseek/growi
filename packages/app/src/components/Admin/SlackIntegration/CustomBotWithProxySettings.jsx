@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+
 import loggerFactory from '~/utils/logger';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -8,6 +9,7 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import { SlackAppIntegrationControl } from './SlackAppIntegrationControl';
 
 const logger = loggerFactory('growi:cli:SlackIntegration:CustomBotWithProxySettings');
 
@@ -30,6 +32,16 @@ const CustomBotWithProxySettings = (props) => {
       onClickAddSlackWorkspaceBtn();
     }
   };
+
+  const isPrimaryChangedHandler = useCallback(async(slackIntegrationToChange, newValue) => {
+    try {
+      console.log({ slackIntegrationToChange, newValue });
+    }
+    catch (err) {
+      toastError(err, 'Failed to change isPrimary');
+      logger.error('Failed to change isPrimary', err);
+    }
+  }, []);
 
   const deleteSlackAppIntegrationHandler = async() => {
     try {
@@ -113,28 +125,12 @@ const CustomBotWithProxySettings = (props) => {
                 <h2 id={_id || `settings-accordions-${i}`}>
                   {(workspaceName != null) ? `${workspaceName} Work Space` : `Settings #${i}`}
                 </h2>
-                <div className="d-flex align-items-center">
-                  <div className="my-1 custom-control custom-switch">
-                    <input
-                      className="custom-control-input"
-                      id="cb-primary"
-                      type="checkbox"
-                      checked
-                      onChange={() => {}}
-                    />
-                    <label className="custom-control-label" htmlFor="cb-primary">
-                      Primary
-                    </label>
-                  </div>
-                  <button
-                    className="btn btn-outline-danger ml-3"
-                    type="button"
-                    onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
-                  >
-                    <i className="icon-trash mr-1" />
-                    {t('admin:slack_integration.delete')}
-                  </button>
-                </div>
+                <SlackAppIntegrationControl
+                  slackAppIntegration={slackAppIntegration}
+                  onIsPrimaryChanged={isPrimaryChangedHandler}
+                  // set state to open DeleteSlackBotSettingsModal
+                  onDeleteButtonClicked={saiToDelete => setIntegrationIdToDelete(saiToDelete._id)}
+                />
               </div>
               <WithProxyAccordions
                 botType="customBotWithProxy"
