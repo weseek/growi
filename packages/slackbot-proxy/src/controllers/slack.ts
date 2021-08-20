@@ -195,12 +195,6 @@ export class SlackCtrl {
       }
     }));
 
-    // select GROWI
-    if (allowedRelationsForSingleUse.length > 0) {
-      body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
-      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
-    }
-
     // check permission for broadcast use
     const relationsForBroadcastUse:Relation[] = [];
     await Promise.all(relations.map(async(relation) => {
@@ -212,11 +206,6 @@ export class SlackCtrl {
         disallowedGrowiUrls.add(relation.growiUri);
       }
     }));
-
-    // forward to GROWI server
-    if (relationsForBroadcastUse.length > 0) {
-      return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
-    }
 
     // when all of GROWI disallowed
     if (relations.length === disallowedGrowiUrls.size) {
@@ -241,10 +230,21 @@ export class SlackCtrl {
             `To use this command, modify settings from following pages: ${linkUrlList}`,
           ),
           markdownSectionBlock(
-            `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands: ${growiDocsLink}`,
+            `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
           ),
         ],
       });
+    }
+
+    // select GROWI
+    if (allowedRelationsForSingleUse.length > 0) {
+      body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
+      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
+    }
+
+    // forward to GROWI server
+    if (relationsForBroadcastUse.length > 0) {
+      return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
   }
 
