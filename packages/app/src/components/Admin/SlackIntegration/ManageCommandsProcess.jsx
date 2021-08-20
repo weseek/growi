@@ -18,8 +18,6 @@ const ManageCommandsProcess = ({
   const toggleCheckboxForBroadcast = (e) => {
     const { target } = e;
     const { name, checked } = target;
-    console.log('おらあ');
-    console.log(name);
 
     setSelectedCommandsForBroadcastUse((prevState) => {
       const selectedCommands = new Set(prevState);
@@ -37,8 +35,6 @@ const ManageCommandsProcess = ({
   const toggleCheckboxForSingleUse = (e) => {
     const { target } = e;
     const { name, checked } = target;
-    console.log('おらあ');
-    console.log(name);
 
     setSelectedCommandsForSingleUse((prevState) => {
       const selectedCommands = new Set(prevState);
@@ -79,18 +75,19 @@ const ManageCommandsProcess = ({
           <div className="custom-control custom-checkbox">
             <div className="row mb-5">
               {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
+                const checkboxId = `${commandName}-${slackAppIntegrationId}`;
                 return (
                   <div className="col-sm-6 my-1" key={commandName}>
                     <input
                       type="checkbox"
                       className="custom-control-input"
-                      id={`${commandName}`}
+                      id={checkboxId}
                       name={commandName}
                       value={commandName}
                       checked={selectedCommandsForBroadcastUse.has(commandName)}
                       onChange={toggleCheckboxForBroadcast}
                     />
-                    <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
+                    <label className="text-capitalize custom-control-label ml-3" htmlFor={checkboxId}>
                       {commandName}
                     </label>
                   </div>
@@ -104,18 +101,19 @@ const ManageCommandsProcess = ({
           <div className="custom-control custom-checkbox">
             <div className="row mb-5">
               {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
+                const checkboxId = `${commandName}-${slackAppIntegrationId}`;
                 return (
                   <div className="col-sm-6 my-1" key={commandName}>
                     <input
                       type="checkbox"
                       className="custom-control-input"
-                      id={`${commandName}`}
+                      id={checkboxId}
                       name={commandName}
                       value={commandName}
                       checked={selectedCommandsForSingleUse.has(commandName)}
                       onChange={toggleCheckboxForSingleUse}
                     />
-                    <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
+                    <label className="text-capitalize custom-control-label ml-3" htmlFor={checkboxId}>
                       {commandName}
                     </label>
                   </div>
