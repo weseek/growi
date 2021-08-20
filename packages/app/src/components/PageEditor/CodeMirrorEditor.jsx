@@ -148,8 +148,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
-
-    this.initTextlintSettings = this.initTextlintSettings.bind(this);
   }
 
   init() {
@@ -218,7 +216,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   initTextlintSettings() {
-    console.log('init!');
     this.textlintValidator = createValidator(this.textlintConfig);
     this.codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
   }
