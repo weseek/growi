@@ -18,6 +18,8 @@ const ManageCommandsProcess = ({
   const toggleCheckboxForBroadcast = (e) => {
     const { target } = e;
     const { name, checked } = target;
+    console.log('おらあ');
+    console.log(name);
 
     setSelectedCommandsForBroadcastUse((prevState) => {
       const selectedCommands = new Set(prevState);
@@ -35,6 +37,8 @@ const ManageCommandsProcess = ({
   const toggleCheckboxForSingleUse = (e) => {
     const { target } = e;
     const { name, checked } = target;
+    console.log('おらあ');
+    console.log(name);
 
     setSelectedCommandsForSingleUse((prevState) => {
       const selectedCommands = new Set(prevState);
@@ -80,7 +84,7 @@ const ManageCommandsProcess = ({
                     <input
                       type="checkbox"
                       className="custom-control-input"
-                      id={commandName}
+                      id={`${commandName}`}
                       name={commandName}
                       value={commandName}
                       checked={selectedCommandsForBroadcastUse.has(commandName)}
@@ -105,7 +109,7 @@ const ManageCommandsProcess = ({
                     <input
                       type="checkbox"
                       className="custom-control-input"
-                      id={commandName}
+                      id={`${commandName}`}
                       name={commandName}
                       value={commandName}
                       checked={selectedCommandsForSingleUse.has(commandName)}
