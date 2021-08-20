@@ -221,10 +221,10 @@ export class SlackCtrl {
       switch (growiCommand.growiCommandType) {
         case 'create':
           if (isCreate) {
-            const relationsForBroadcastUse:RelationMock[] = [];
+            const relationsForSingleUse:RelationMock[] = [];
             body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
-            relationsForBroadcastUse.push(relations[0]);
-            return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+            relationsForSingleUse.push(relations[0]);
+            return this.sendCommand(growiCommand, relationsForSingleUse, body);
           }
           break;
         case 'search':
@@ -238,6 +238,7 @@ export class SlackCtrl {
         default:
           break;
       }
+      console.log(241);
 
       return client.chat.postEphemeral({
         text: 'Error occured.',
@@ -325,6 +326,7 @@ export class SlackCtrl {
       });
     }
     catch (err) {
+      console.log(329);
       logger.error(err);
     }
   }
