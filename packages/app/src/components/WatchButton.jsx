@@ -9,7 +9,7 @@ const WatchButton = (props) => {
   const [isWatching, setIsWatching] = useState(true);
 
   const handleClick = () => {
-    console.log('watch button clicked!');
+    setIsWatching(!isWatching);
   };
 
   return (
@@ -18,7 +18,7 @@ const WatchButton = (props) => {
         type="button"
         id="bookmark-button"
         onClick={handleClick}
-        className={`btn btn-bookmark border-0 ${`btn-${props.size}`}`}
+        className={`btn btn-bookmark border-0 ${`btn-${props.size}`} ${isWatching ? 'active' : ''}`}
       >
         {isWatching && (
           <i className="fa fa-eye"></i>
