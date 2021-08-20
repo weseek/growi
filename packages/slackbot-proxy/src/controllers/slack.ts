@@ -187,8 +187,17 @@ export class SlackCtrl {
 
     // check permission
     await Promise.all(relations.map(async(relation) => {
-      const isSupportedForSingleUse = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
-      const isSupportedForBroadcastUse = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      const isSupportedForSingleUse = await this.relationsService.isSupportedGrowiCommandForSingleUse(
+        relation, growiCommand.growiCommandType, baseDate,
+      );
+
+      let isSupportedForBroadcastUse = false;
+      if (!isSupportedForSingleUse) {
+        isSupportedForBroadcastUse = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(
+          relation, growiCommand.growiCommandType, baseDate,
+        );
+      }
+
       if (isSupportedForSingleUse) {
         allowedRelationsForSingleUse.push(relation);
       }
