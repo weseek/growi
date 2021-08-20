@@ -260,7 +260,7 @@ module.exports = (crowi) => {
     // MOCK DATA DELETE THIS GW-6972 ---------
     const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
     const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
-    return res.send(slackAppIntegrationMock);
+    return res.apiv3({ slackAppIntegrationMock });
     // MOCK DATA DELETE THIS GW-6972 ---------
 
     // const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
