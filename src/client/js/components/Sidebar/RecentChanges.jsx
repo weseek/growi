@@ -87,13 +87,11 @@ class RecentChanges extends React.Component {
               { tagElements }
             </div>
             <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
-              <div>
-                <div className="d-flex">
-                  <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
-                  <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
-                  <div className="icon-bubble mr-1 d-inline-block"></div>
-                  <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
-                </div>
+              <div className="d-flex">
+                <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
+                <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
+                <div className="icon-bubble mr-1 d-inline-block"></div>
+                <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
               </div>
               <div className="grw-formatted-distance-date small mt-auto">
                 <FormattedDistanceDate id={page.id} date={page.updatedAt} />
