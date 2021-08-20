@@ -155,6 +155,24 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.cmNoCdnScriptRoot = '/js/cdn';
     this.cmNoCdnStyleRoot = '/styles/cdn';
 
+    // TODO: Get configs from db
+    this.isLintEnabled = true;
+
+    this.textlintConfig = [
+      {
+        name: 'max-comma',
+      },
+      {
+        name: 'common-misspellings',
+        options: {
+          ignore: [
+            'isnt',
+            'yuo',
+          ],
+        },
+      },
+    ];
+
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
       new PreventMarkdownListInterceptor(),
@@ -170,6 +188,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
       this.setState({ isEnabledEmojiAutoComplete: true });
     }
+
+    this.initTextlintSettings();
   }
 
   componentDidMount() {
@@ -193,6 +213,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+  }
+
+  initTextlintSettings() {
+    this.textlintValidator = createValidator(this.textlintConfig);
+    this.codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
   }
 
   getCodeMirror() {
@@ -859,27 +884,17 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
+    const lint = this.codemirrorLintConfig;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
-    // TODO: Get config from db
-    const textlintValidator = createValidator([
-      {
-        name: 'max-comma',
-      },
-      {
-        name: 'dummy-rule',
-      },
-      {
-        name: 'common-misspellings',
-        options: {
-          ignore: [
-            'isnt',
-            'yuo',
-          ],
-        },
-      },
-    ]);
+    const gutters = [];
+    if (this.props.lineNumbers != null) {
+      gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
+    }
+    if (this.isLintEnabled === true) {
+      gutters.push('CodeMirror-lint-markers');
+    }
 
     return (
       <React.Fragment>
@@ -910,10 +925,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
             matchTags: { bothTags: true },
             // folding
             foldGutter: this.props.lineNumbers,
-            // Todo: Hide lint marker gutters when disabled
-            gutters: this.props.lineNumbers
-              ? ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers']
-              : ['CodeMirror-lint-markers'],
+            gutters,
             // match-highlighter, matchesonscrollbar, annotatescrollbar options
             highlightSelectionMatches: { annotateScrollbar: true },
             // continuelist, indentlist
@@ -925,10 +937,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
               'Shift-Tab': 'indentLess',
               'Ctrl-Q': (cm) => { cm.foldCode(cm.getCursor()) },
             },
-            lint: {
-              getAnnotations: textlintValidator,
-              async: true,
-            },
+            lint,
           }}
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
