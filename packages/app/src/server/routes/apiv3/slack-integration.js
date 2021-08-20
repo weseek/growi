@@ -45,6 +45,7 @@ module.exports = (crowi) => {
 
   async function checkCommandPermission(req, res, next) {
     let payload;
+    console.log('hoge');
     if (req.body.payload) {
       payload = JSON.parse(req.body.payload);
     }
@@ -80,7 +81,7 @@ module.exports = (crowi) => {
     }
 
     // code below checks permission at channel level
-    const fromChannel = req.body.channel_name || payload.channel.name;
+    const fromChannel = req.body.channel_name/*  || payload.channel.name; */;
     [...channelsObject.keys()].forEach((commandName) => {
       const permittedChannels = channelsObject.get(commandName);
       // ex. search OR search:hogehoge
@@ -189,7 +190,7 @@ module.exports = (crowi) => {
 
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
     const { body } = req;
-
+    console.log(body);
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {
@@ -253,6 +254,7 @@ module.exports = (crowi) => {
   });
 
   router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+    console.log(req);
     return handleInteractions(req, res);
   });
 
