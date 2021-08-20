@@ -18,7 +18,7 @@
     "dev": "run-p dev:client dev:server",
     "dev:client": "yarn cross-env NODE_ENV=development webpack --config config/webpack.dev.js --progress --watch",
     "dev:client:nowatch": "cross-env NODE_ENV=development webpack --config config/webpack.dev.js",
-    "dev:server": "yarn cross-env NODE_ENV=development yarn ts-node-dev src/server/app.ts --expose_gc --inspect",
+    "dev:server": "yarn cross-env NODE_ENV=development yarn ts-node-dev src/server/app.ts --expose_gc",
     "predev:client": "run-p resources:*",
     "predev:server": "yarn migrate",
     "//// for CI": "",
@@ -45,7 +45,7 @@
     "migrate:up": "yarn ts-node node_modules/.bin/migrate-mongo up -f config/migrate.js",
     "migrate:down": "yarn ts-node node_modules/.bin/migrate-mongo down -f config/migrate.js",
     "ts-node": "ts-node -r tsconfig-paths/register -r dotenv-flow/config --transpile-only",
-    "ts-node-dev": "ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --transpile-only"
+    "ts-node-dev": "ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --inspect --transpile-only"
   },
   "// comments for dependencies": {
     "openid-client": "Node.js 12 or higher is required for openid-client@3 and above.",
