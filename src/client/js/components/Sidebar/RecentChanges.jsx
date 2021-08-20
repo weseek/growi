@@ -83,17 +83,19 @@ class RecentChanges extends React.Component {
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
               {locked}
             </h5>
-            <div>
+            <div className="mt-1 mb-2">
               { tagElements }
             </div>
-            <div className="d-flex justify-content-between grw-recent-changes-item-lower mt-1">
+            <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
               <div>
-                <span className="footstamp-icon mr-1"><FootstampIcon /></span>
-                <span className="mr-2 grw-list-counts">{page.seenUsers.length}</span>
-                <i className="icon-bubble mr-1"></i>
-                <span className="mr-2 grw-list-counts">{page.commentCount}</span>
+                <div className="d-flex">
+                  <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
+                  <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
+                  <div className="icon-bubble mr-1 d-inline-block"></div>
+                  <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
+                </div>
               </div>
-              <div className="small mt-auto">
+              <div className="grw-formatted-distance-date small mt-auto">
                 <FormattedDistanceDate id={page.id} date={page.updatedAt} />
               </div>
             </div>
