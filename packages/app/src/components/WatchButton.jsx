@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
 
 const WatchButton = (props) => {
+
+  const [watching, setWatching] = useState(true);
 
   const handleClick = () => {
     console.log('watch button clicked!');
@@ -18,7 +20,13 @@ const WatchButton = (props) => {
         onClick={handleClick}
         className={`btn btn-bookmark border-0 ${`btn-${props.size}`}`}
       >
-        <i className="fa fa-eye"></i>
+        {watching && (
+          <i className="fa fa-eye"></i>
+        )}
+
+        {!watching && (
+          <i className="fa fa-eye-slash"></i>
+        )}
       </button>
 
     </>
