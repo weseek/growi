@@ -34,14 +34,21 @@ const CustomBotWithProxySettings = (props) => {
   };
 
   const isPrimaryChangedHandler = useCallback(async(slackIntegrationToChange, newValue) => {
+    // do nothing when turning off
+    if (!newValue) {
+      return;
+    }
+
     try {
-      console.log({ slackIntegrationToChange, newValue });
+      await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackIntegrationToChange._id}/make-primary`);
+      // toastSuccess(t('toaster.delete_slack_integration_procedure'));
+      toastSuccess('success to make it primary');
     }
     catch (err) {
       toastError(err, 'Failed to change isPrimary');
       logger.error('Failed to change isPrimary', err);
     }
-  }, []);
+  }, [appContainer.apiv3]);
 
   const deleteSlackAppIntegrationHandler = async() => {
     try {

@@ -14,22 +14,24 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const { slackAppIntegration, onIsPrimaryChanged, onDeleteButtonClicked } = props;
+  const inputId = `cb-primary-${slackAppIntegration._id}`;
 
   return (
     <div className="d-flex align-items-center">
       <div className="my-1 custom-control custom-switch">
         <input
           className="custom-control-input"
-          id="cb-primary"
+          id={inputId}
           type="checkbox"
           defaultChecked={slackAppIntegration.isPrimary}
+          disabled={slackAppIntegration.isPrimary}
           onChange={(e) => {
             if (onIsPrimaryChanged != null) {
               onIsPrimaryChanged(slackAppIntegration, e.target.checked);
             }
           }}
         />
-        <label className="custom-control-label" htmlFor="cb-primary">
+        <label className="custom-control-label" htmlFor={inputId}>
           Primary
         </label>
       </div>

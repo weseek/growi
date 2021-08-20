@@ -67,6 +67,9 @@ module.exports = (crowi) => {
       body('proxyUri').if(value => value !== '').trim().matches(/^(https?:\/\/)/)
         .isURL({ require_tld: false }),
     ],
+    makePrimary: [
+      param('id').isMongoId().withMessage('id is required'),
+    ],
     updateSupportedCommands: [
       body('supportedCommandsForSingleUse').toArray(),
       body('supportedCommandsForBroadcastUse').toArray(),
@@ -448,6 +451,51 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'delete-SlackAppIntegration-failed'), 500);
     }
 
+  });
+
+  /**
+   * @swagger
+   *
+   *    /slack-integration-settings/slack-app-integrations/:id/makeprimary:
+   *      put:
+   *        tags: [SlackIntegration]
+   *        operationId: makePrimary
+   *        summary: /slack-integration
+   *        description: Make SlackAppTokens primary
+   *        responses:
+   *          200:
+   *            description: Succeeded to make it primary
+   */
+  // eslint-disable-next-line max-len
+  router.put('/slack-app-integrations/:id/make-primary', loginRequiredStrictly, adminRequired, csrf, validator.makePrimary, apiV3FormValidator, async(req, res) => {
+
+    const { id } = req.params;
+
+    try {
+      await SlackAppIntegration.bulkWrite([
+        // unset isPrimary for others
+        {
+          updateMany: {
+            filter: { _id: { $ne: id } },
+            update: { $unset: { isPrimary: '' } },
+          },
+        },
+        // set primary
+        {
+          updateOne: {
+            filter: { _id: id },
+            update: { isPrimary: true },
+          },
+        },
+      ]);
+
+      return res.apiv3();
+    }
+    catch (error) {
+      const msg = 'Error occurred during making SlackAppIntegration primary';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'making-primary-failed'), 500);
+    }
   });
 
   /**
