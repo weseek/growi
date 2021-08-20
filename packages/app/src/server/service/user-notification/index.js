@@ -44,6 +44,10 @@ class UserNotificationService {
 
     // "dev,slacktest" => [dev,slacktest]
     const slackChannels = toArrayFromCsv(slackChannelsStr);
+    // insert null if empty to notify once
+    if (slackChannels.length === 0) {
+      slackChannels.push(null);
+    }
 
     const appTitle = appService.getAppTitle();
     const siteUrl = appService.getSiteUrl();
