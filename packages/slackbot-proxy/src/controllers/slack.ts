@@ -182,25 +182,18 @@ export class SlackCtrl {
     const baseDate = new Date();
 
     const allowedRelationsForSingleUse:Relation[] = [];
+    const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
 
-    // check permission for single use
+    // check permission
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
-      if (isSupported) {
+      const isSupportedForSingleUse = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
+      const isSupportedForBroadcastUse = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupportedForSingleUse) {
         allowedRelationsForSingleUse.push(relation);
       }
-      else {
-        disallowedGrowiUrls.add(relation.growiUri);
-      }
-    }));
-
-    // check permission for broadcast use
-    const relationsForBroadcastUse:Relation[] = [];
-    await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
-      if (isSupported) {
-        relationsForBroadcastUse.push(relation);
+      else if (isSupportedForBroadcastUse) {
+        allowedRelationsForBroadcastUse.push(relation);
       }
       else {
         disallowedGrowiUrls.add(relation.growiUri);
@@ -243,8 +236,8 @@ export class SlackCtrl {
     }
 
     // forward to GROWI server
-    if (relationsForBroadcastUse.length > 0) {
-      return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+    if (allowedRelationsForBroadcastUse.length > 0) {
+      return this.sendCommand(growiCommand, allowedRelationsForBroadcastUse, body);
     }
   }
 
