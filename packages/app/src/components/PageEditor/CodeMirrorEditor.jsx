@@ -148,12 +148,32 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
+
+    this.initTextlintSettings = this.initTextlintSettings.bind(this);
   }
 
   init() {
     this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
     this.cmNoCdnScriptRoot = '/js/cdn';
     this.cmNoCdnStyleRoot = '/styles/cdn';
+
+    // TODO: Get configs from db
+    this.isLintEnabled = true;
+
+    this.textlintConfig = [
+      {
+        name: 'max-comma',
+      },
+      {
+        name: 'common-misspellings',
+        options: {
+          ignore: [
+            'isnt',
+            'yuo',
+          ],
+        },
+      },
+    ];
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
@@ -170,6 +190,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
       this.setState({ isEnabledEmojiAutoComplete: true });
     }
+
+    this.initTextlintSettings();
   }
 
   componentDidMount() {
@@ -193,6 +215,12 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+  }
+
+  initTextlintSettings() {
+    console.log('init!');
+    this.textlintValidator = createValidator(this.textlintConfig);
+    this.codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
   }
 
   getCodeMirror() {
@@ -856,31 +884,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       </Button>,
     ];
   }
-
-  // TODO: Get configs from db
-  isLintEnabled = true;
-
-  textlintConfig = [
-    {
-      name: 'max-comma',
-    },
-    {
-      name: 'dummy-rule',
-    },
-    {
-      name: 'common-misspellings',
-      options: {
-        ignore: [
-          'isnt',
-          'yuo',
-        ],
-      },
-    },
-  ];
-
-  textlintValidator = createValidator(this.textlintConfig);
-
-  codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
 
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
