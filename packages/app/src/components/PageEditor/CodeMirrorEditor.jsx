@@ -838,6 +838,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="CheckList" />
       </Button>,
       <Button
+        key="nav-item-attachment"
+        color={null}
+        size="sm"
+        title="Attachment"
+        onClick={this.props.onAddAttachmentButtonClicked}
+      >
+        <EditorIcon icon="Attachment" />
+      </Button>,
+      <Button
         key="nav-item-link"
         color={null}
         size="sm"
@@ -992,6 +1001,7 @@ CodeMirrorEditor.propTypes = Object.assign({
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
+  onAddAttachmentButtonClicked: PropTypes.func,
 }, AbstractEditor.propTypes);
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
