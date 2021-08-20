@@ -130,6 +130,7 @@ const SlackIntegration = (props) => {
         <OfficialBotSettings
           slackAppIntegrations={slackAppIntegrations}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+          onPrimaryUpdated={fetchSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
           onUpdateTokens={fetchSlackIntegrationData}
@@ -156,6 +157,7 @@ const SlackIntegration = (props) => {
           slackAppIntegrations={slackAppIntegrations}
           proxyServerUri={proxyServerUri}
           onClickAddSlackWorkspaceBtn={createSlackIntegrationData}
+          onPrimaryUpdated={fetchSlackIntegrationData}
           onDeleteSlackAppIntegration={fetchSlackIntegrationData}
           connectionStatuses={connectionStatuses}
           onUpdateTokens={fetchSlackIntegrationData}

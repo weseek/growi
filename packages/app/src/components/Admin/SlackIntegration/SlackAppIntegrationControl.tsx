@@ -15,6 +15,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
 
   const { slackAppIntegration, onIsPrimaryChanged, onDeleteButtonClicked } = props;
   const inputId = `cb-primary-${slackAppIntegration._id}`;
+  const isPrimary = slackAppIntegration.isPrimary === true;
 
   return (
     <div className="d-flex align-items-center">
@@ -23,8 +24,8 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
           className="custom-control-input"
           id={inputId}
           type="checkbox"
-          defaultChecked={slackAppIntegration.isPrimary}
-          disabled={slackAppIntegration.isPrimary}
+          checked={isPrimary}
+          disabled={isPrimary}
           onChange={(e) => {
             if (onIsPrimaryChanged != null) {
               onIsPrimaryChanged(slackAppIntegration, e.target.checked);

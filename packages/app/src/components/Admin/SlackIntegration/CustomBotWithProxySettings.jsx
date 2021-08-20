@@ -15,7 +15,9 @@ const logger = loggerFactory('growi:cli:SlackIntegration:CustomBotWithProxySetti
 
 const CustomBotWithProxySettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onSubmitForm,
+    appContainer, slackAppIntegrations, proxyServerUri,
+    onClickAddSlackWorkspaceBtn, onPrimaryUpdated,
+    connectionStatuses, onUpdateTokens, onSubmitForm,
   } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
@@ -41,14 +43,16 @@ const CustomBotWithProxySettings = (props) => {
 
     try {
       await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackIntegrationToChange._id}/make-primary`);
-      // toastSuccess(t('toaster.delete_slack_integration_procedure'));
-      toastSuccess('success to make it primary');
+      if (onPrimaryUpdated != null) {
+        onPrimaryUpdated();
+      }
+      toastSuccess(t('toaster.update_successed', { target: 'Primary' }));
     }
     catch (err) {
       toastError(err, 'Failed to change isPrimary');
       logger.error('Failed to change isPrimary', err);
     }
-  }, [appContainer.apiv3]);
+  }, [appContainer.apiv3, t, onPrimaryUpdated]);
 
   const deleteSlackAppIntegrationHandler = async() => {
     try {
@@ -185,6 +189,7 @@ CustomBotWithProxySettings.propTypes = {
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
+  onPrimaryUpdated: PropTypes.func,
   onDeleteSlackAppIntegration: PropTypes.func,
   onSubmitForm: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,
