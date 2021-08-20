@@ -19,6 +19,7 @@ module.exports = (crowi) => {
   // Check if the access token is correct
   async function verifyAccessTokenFromProxy(req, res, next) {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    console.log(22, tokenPtoG);
 
     if (tokenPtoG == null) {
       const message = 'The value of header \'x-growi-ptog-tokens\' must not be empty.';
@@ -45,7 +46,7 @@ module.exports = (crowi) => {
 
   async function checkCommandPermission(req, res, next) {
     let payload;
-    console.log('hoge');
+    console.log(48);
     if (req.body.payload) {
       payload = JSON.parse(req.body.payload);
     }
@@ -55,9 +56,9 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
-    const relation = await SlackAppIntegration.findOne({ tokenPtoG });
     // MOCK DATA DELETE THIS GW-6972 ---------------
     const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const relation = await SlackAppIntegrationMock.findOne({ tokenPtoG });
     const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
     const channelsObject = slackAppIntegrationMock.permittedChannelsForEachCommand._doc.channelsObject;
     // MOCK DATA DELETE THIS GW-6972 ---------------
@@ -140,6 +141,7 @@ module.exports = (crowi) => {
       'x-growi-gtop-tokens': tokenGtoP,
     };
 
+
     return generateWebClient(token, serverUri, headers);
   };
 
@@ -190,7 +192,7 @@ module.exports = (crowi) => {
 
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
     const { body } = req;
-    console.log(body);
+    console.log(195, body);
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {
