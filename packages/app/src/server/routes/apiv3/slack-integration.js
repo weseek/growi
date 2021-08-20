@@ -257,9 +257,14 @@ module.exports = (crowi) => {
 
   router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    // MOCK DATA DELETE THIS GW-6972 ---------
+    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    return res.apiv3({ slackAppIntegrationMock });
+    // MOCK DATA DELETE THIS GW-6972 ---------
 
-    return res.send(slackAppIntegration);
+    // const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    // return res.send(slackAppIntegration);
   });
 
   return router;
