@@ -228,6 +228,8 @@ export class SlackCtrl {
           + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
       });
 
+      const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
+
       return client.chat.postEphemeral({
         text: 'Error occured.',
         channel: body.channel_id,
@@ -237,6 +239,9 @@ export class SlackCtrl {
           markdownSectionBlock(`*'${growiCommand.growiCommandType}'* command was not allowed.`),
           markdownSectionBlock(
             `To use this command, modify settings from following pages: ${linkUrlList}`,
+          ),
+          markdownSectionBlock(
+            `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands: ${growiDocsLink}`,
           ),
         ],
       });
