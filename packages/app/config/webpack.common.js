@@ -132,8 +132,8 @@ module.exports = (options) => {
       }),
 
       new webpack.ProvidePlugin({ // refs externals
-        jQuery: 'jquery',
-        $: 'jquery',
+        $: require.resolve('jquery'),
+        jQuery: require.resolve('jquery'),
       }),
 
     ]),
