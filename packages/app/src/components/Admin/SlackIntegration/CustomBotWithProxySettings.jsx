@@ -113,14 +113,28 @@ const CustomBotWithProxySettings = (props) => {
                 <h2 id={_id || `settings-accordions-${i}`}>
                   {(workspaceName != null) ? `${workspaceName} Work Space` : `Settings #${i}`}
                 </h2>
-                <button
-                  className="btn btn-outline-danger"
-                  type="button"
-                  onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
-                >
-                  <i className="icon-trash mr-1" />
-                  {t('admin:slack_integration.delete')}
-                </button>
+                <div className="d-flex align-items-center">
+                  <div className="my-1 custom-control custom-switch">
+                    <input
+                      className="custom-control-input"
+                      id="cb-primary"
+                      type="checkbox"
+                      checked
+                      onChange={() => {}}
+                    />
+                    <label className="custom-control-label" htmlFor="cb-primary">
+                      Primary
+                    </label>
+                  </div>
+                  <button
+                    className="btn btn-outline-danger ml-3"
+                    type="button"
+                    onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
+                  >
+                    <i className="icon-trash mr-1" />
+                    {t('admin:slack_integration.delete')}
+                  </button>
+                </div>
               </div>
               <WithProxyAccordions
                 botType="customBotWithProxy"
