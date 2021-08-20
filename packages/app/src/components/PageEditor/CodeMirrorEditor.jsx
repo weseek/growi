@@ -35,9 +35,6 @@ import DrawioModal from './DrawioModal';
 import { createValidator } from '../../client/util/codemirror/codemirror-textlint';
 
 window.JSHINT = JSHINT;
-window.kuromojin = this.props.noCdn
-  ? { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' }
-  : { dicPath: '' };
 
 // set save handler
 codemirror.commands.save = (instance) => {
@@ -151,13 +148,33 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.showLinkEditHandler = this.showLinkEditHandler.bind(this);
     this.showHandsonTableHandler = this.showHandsonTableHandler.bind(this);
     this.showDrawioHandler = this.showDrawioHandler.bind(this);
-
   }
 
   init() {
     this.cmCdnRoot = 'https://cdn.jsdelivr.net/npm/codemirror@5.42.0';
     this.cmNoCdnScriptRoot = '/js/cdn';
     this.cmNoCdnStyleRoot = '/styles/cdn';
+
+    // TODO: Get configs from db
+    this.isLintEnabled = true;
+
+    this.textlintConfig = [
+      {
+        name: 'max-comma',
+      },
+      {
+        name: 'no-dropping-the-ra',
+      },
+      {
+        name: 'common-misspellings',
+        options: {
+          ignore: [
+            'isnt',
+            'yuo',
+          ],
+        },
+      },
+    ];
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
@@ -174,6 +191,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
       this.emojiAutoCompleteHelper = new EmojiAutoCompleteHelper(this.props.emojiStrategy);
       this.setState({ isEnabledEmojiAutoComplete: true });
     }
+
+    this.initTextlintSettings();
   }
 
   componentDidMount() {
@@ -197,6 +216,11 @@ export default class CodeMirrorEditor extends AbstractEditor {
     // set keymap
     const keymapMode = nextProps.editorOptions.keymapMode;
     this.setKeymapMode(keymapMode);
+  }
+
+  initTextlintSettings() {
+    this.textlintValidator = createValidator(this.textlintConfig);
+    this.codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
   }
 
   getCodeMirror() {
@@ -628,7 +652,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     return (
       <div className="overlay overlay-gfm-cheatsheet mt-1 p-3">
-        { this.state.isSimpleCheatsheetShown
+        {this.state.isSimpleCheatsheetShown
           ? (
             <div className="text-right">
               {cheatsheetModalButton}
@@ -861,34 +885,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     ];
   }
 
-  // TODO: Get configs from db
-  isLintEnabled = true;
-
-  textlintConfig = [
-    {
-      name: 'no-dropping-the-ra',
-    },
-    {
-      name: 'max-comma',
-    },
-    {
-      name: 'dummy-rule',
-    },
-    {
-      name: 'common-misspellings',
-      options: {
-        ignore: [
-          'isnt',
-          'yuo',
-        ],
-      },
-    },
-  ];
-
-  textlintValidator = createValidator(this.textlintConfig);
-
-  codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
-
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
     const lint = this.codemirrorLintConfig;
@@ -911,7 +907,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           className={additionalClasses}
           placeholder="search"
           editorDidMount={(editor) => {
-          // add event handlers
+            // add event handlers
             editor.on('paste', this.pasteHandler);
             editor.on('scrollCursorIntoView', this.scrollCursorIntoViewHandler);
           }}
@@ -949,7 +945,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
           onCursor={this.cursorHandler}
           onScroll={(editor, data) => {
             if (this.props.onScroll != null) {
-            // add line data
+              // add line data
               const line = editor.lineAtHeight(data.top, 'local');
               data.line = line;
               this.props.onScroll(data);
@@ -963,9 +959,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
           }}
         />
 
-        { this.renderLoadingKeymapOverlay() }
+        {this.renderLoadingKeymapOverlay()}
 
-        { this.renderCheatsheetOverlay() }
+        {this.renderCheatsheetOverlay()}
 
         <GridEditModal
           ref={this.gridEditModal}
