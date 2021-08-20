@@ -16,9 +16,9 @@ const WatchButton = (props) => {
     <>
       <button
         type="button"
-        id="bookmark-button"
+        id="watch-button"
         onClick={handleClick}
-        className={`btn btn-bookmark border-0 ${`btn-${props.size}`} ${isWatching ? 'active' : ''}`}
+        className={`btn btn-watch border-0 ${`btn-${props.size}`} ${isWatching ? 'active' : ''} `}
       >
         {isWatching && (
           <i className="fa fa-eye"></i>
