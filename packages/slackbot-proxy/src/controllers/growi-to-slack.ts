@@ -246,7 +246,7 @@ export class GrowiToSlackCtrl {
   @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
   async callSlackApi(
     @PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
-  ): Promise<void|string|Res|WebAPICallResult> {
+  ): Promise<void|WebAPICallResult> {
     const { tokenGtoPs } = req;
 
     logger.debug('Slack API called: ', { method });
@@ -280,7 +280,8 @@ export class GrowiToSlackCtrl {
       const opt = req.body;
       opt.headers = req.headers;
 
-      return client.apiCall(method, opt);
+      // !! DO NOT REMOVE `await ` or it does not enter catch block even when error occured !! -- 2021.08.22 Yuki Takei
+      return await client.apiCall(method, opt);
     }
     catch (err) {
       logger.error(err);
