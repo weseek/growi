@@ -250,7 +250,7 @@ describe('PageService', () => {
 
     beforeEach(async() => {
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
-      renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
+      // renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
     });
 
     describe('renamePage()', () => {
