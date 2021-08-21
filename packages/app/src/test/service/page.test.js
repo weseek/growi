@@ -338,7 +338,7 @@ describe('PageService', () => {
 
       test('rename page with different tree with isRecursively', async() => {
 
-        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, true);
+        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, {}, true);
         const wrongPage = await Page.findOne({ path: '/parentForRename5/renamedChild/renamedChild' });
         const expectPage = await Page.findOne({ path: '/parentForRename5/renamedChild' });
 

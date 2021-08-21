@@ -81,7 +81,7 @@ class PageService {
     }
 
     if (isRecursively) {
-      this.renameDescendantsWithStream(page, newPagePath, user, options);
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
     this.pageEvent.emit('delete', page, user, socketClientId);
