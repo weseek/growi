@@ -50,7 +50,6 @@ class PageService {
     return this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping, pagePaths);
   }
 
-
   async renamePage(page, newPagePath, user, options, isRecursively = false) {
 
     const Page = this.crowi.model('Page');
@@ -62,6 +61,11 @@ class PageService {
 
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
+    // create descendants first
+    if (isRecursively) {
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
 
     const update = {};
     // update Page
@@ -80,56 +84,11 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    if (isRecursively) {
-      await this.renameDescendantsWithStream(page, newPagePath, user, options);
-    }
-
     this.pageEvent.emit('delete', page, user, socketClientId);
     this.pageEvent.emit('create', renamedPage, user, socketClientId);
 
     return renamedPage;
   }
-
-
-  // async renamePage(page, newPagePath, user, options, isRecursively = false) {
-
-  //   const Page = this.crowi.model('Page');
-  //   const Revision = this.crowi.model('Revision');
-  //   const path = page.path;
-  //   const createRedirectPage = options.createRedirectPage || false;
-  //   const updateMetadata = options.updateMetadata || false;
-  //   const socketClientId = options.socketClientId || null;
-
-  //   // sanitize path
-  //   newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
-
-  //   // create descendants first
-  //   if (isRecursively) {
-  //     await this.renameDescendantsWithStream(page, newPagePath, user, options);
-  //   }
-
-  //   const update = {};
-  //   // update Page
-  //   update.path = newPagePath;
-  //   if (updateMetadata) {
-  //     update.lastUpdateUser = user;
-  //     update.updatedAt = Date.now();
-  //   }
-  //   const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
-
-  //   // update Rivisions
-  //   await Revision.updateRevisionListByPath(path, { path: newPagePath }, {});
-
-  //   if (createRedirectPage) {
-  //     const body = `redirect ${newPagePath}`;
-  //     await Page.create(path, body, user, { redirectTo: newPagePath });
-  //   }
-
-  //   this.pageEvent.emit('delete', page, user, socketClientId);
-  //   this.pageEvent.emit('create', renamedPage, user, socketClientId);
-
-  //   return renamedPage;
-  // }
 
 
   async renameDescendants(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
