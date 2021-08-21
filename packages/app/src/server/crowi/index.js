@@ -17,6 +17,7 @@ import AppService from '../service/app';
 import AclService from '../service/acl';
 import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
+import { UserNotificationService } from '../service/user-notification';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -502,7 +503,6 @@ Crowi.prototype.setUpGlobalNotification = async function() {
  * setup UserNotificationService
  */
 Crowi.prototype.setUpUserNotification = async function() {
-  const UserNotificationService = require('../service/user-notification');
   if (this.userNotificationService == null) {
     this.userNotificationService = new UserNotificationService(this);
   }

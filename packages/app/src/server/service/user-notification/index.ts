@@ -1,4 +1,7 @@
+import mongoose from 'mongoose';
+
 import { toArrayFromCsv } from '~/utils/to-array-from-csv';
+
 
 import {
   prepareSlackMessageForPage,
@@ -8,12 +11,13 @@ import {
 /**
  * service class of UserNotification
  */
-class UserNotificationService {
+export class UserNotificationService {
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  crowi!: any;
 
   constructor(crowi) {
     this.crowi = crowi;
-
-    this.Page = this.crowi.model('Page');
   }
 
   /**
@@ -28,26 +32,25 @@ class UserNotificationService {
    * @param {string} previousRevision
    * @param {Comment} comment
    */
-  async fire(page, user, slackChannelsStr, mode, option, comment = {}) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async fire(page, user, slackChannelsStr, mode, option, comment = {}): Promise<PromiseSettledResult<any>[]> {
     const {
       appService, slackIntegrationService,
     } = this.crowi;
-
-    const opt = option || {};
-    const previousRevision = opt.previousRevision || '';
-
-    await page.updateSlackChannels(slackChannelsStr);
 
     if (!slackIntegrationService.isSlackConfigured) {
       throw new Error('slackIntegrationService has not been set up');
     }
 
+    // update slackChannels attribute asynchronously
+    page.updateSlackChannels(slackChannelsStr);
+
+    const opt = option || {};
+    const previousRevision = opt.previousRevision || '';
+
     // "dev,slacktest" => [dev,slacktest]
-    const slackChannels = toArrayFromCsv(slackChannelsStr);
-    // insert null if empty to notify once
-    if (slackChannels.length === 0) {
-      slackChannels.push(null);
-    }
+    const slackChannels: (string|null)[] = toArrayFromCsv(slackChannelsStr);
+    await this.putDefaultChannelIfEmpty(page.path, slackChannels);
 
     const appTitle = appService.getAppTitle();
     const siteUrl = appService.getSiteUrl();
@@ -67,6 +70,16 @@ class UserNotificationService {
     return Promise.allSettled(promises);
   }
 
-}
+  private async putDefaultChannelIfEmpty(pagePath:string, slackChannels: (string|null)[]): Promise<void> {
+    const UpdatePost = mongoose.model('UpdatePost');
 
-module.exports = UserNotificationService;
+    const updatePosts = await UpdatePost.findSettingsByPath(pagePath);
+    slackChannels.push(...(updatePosts).map(up => up.channel));
+
+    // insert null if empty to notify once
+    if (slackChannels.length === 0) {
+      slackChannels.push(null);
+    }
+  }
+
+}
