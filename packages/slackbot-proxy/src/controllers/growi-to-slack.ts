@@ -11,7 +11,7 @@ import {
   verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient, REQUEST_TIMEOUT_FOR_PTOG,
 } from '@growi/slack';
 
-import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/slack-to-growi/add-webclient-response-to-res';
+import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
