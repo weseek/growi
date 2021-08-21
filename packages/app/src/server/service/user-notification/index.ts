@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import { UpdatePostDocument, UpdatePostModel } from '~/server/models/update-post';
 import { toArrayFromCsv } from '~/utils/to-array-from-csv';
 
 
@@ -71,7 +72,7 @@ export class UserNotificationService {
   }
 
   private async putDefaultChannelIfEmpty(pagePath:string, slackChannels: (string|null)[]): Promise<void> {
-    const UpdatePost = mongoose.model('UpdatePost');
+    const UpdatePost = mongoose.model<UpdatePostDocument, UpdatePostModel>('UpdatePost');
 
     const updatePosts = await UpdatePost.findSettingsByPath(pagePath);
     slackChannels.push(...(updatePosts).map(up => up.channel));
