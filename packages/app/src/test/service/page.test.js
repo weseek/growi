@@ -14,6 +14,7 @@ let parentForRename1;
 let parentForRename2;
 let parentForRename3;
 let parentForRename4;
+let parentForRename5;
 
 let childForRename1;
 let childForRename2;
@@ -90,6 +91,12 @@ describe('PageService', () => {
       },
       {
         path: '/parentForRename4',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename5',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
@@ -183,6 +190,7 @@ describe('PageService', () => {
     parentForRename2 = await Page.findOne({ path: '/parentForRename2' });
     parentForRename3 = await Page.findOne({ path: '/parentForRename3' });
     parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
+    parentForRename5 = await Page.findOne({ path: '/parentForRename5' });
 
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
 
@@ -326,6 +334,16 @@ describe('PageService', () => {
 
         expect(redirectedFromPage).toBeNull();
         expect(redirectedFromPageRevision).toBeNull();
+      });
+
+      test('rename page with different tree with isRecursively', async() => {
+
+        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, true);
+        const wrongPage = await Page.findOne({ path: '/parentForRename5/renamedChild/renamedChild' });
+        const expectPage = await Page.findOne({ path: '/parentForRename5/renamedChild' });
+
+        expect(resultPage.path).toEqual(expectPage.path);
+        expect(wrongPage).toBeNull();
       });
 
     });
