@@ -325,7 +325,9 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  async handleEvent(@BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
+  @UseBefore(AddSigningSecretToReq, AuthorizeCommandMiddleware)
+  async handleEvent(@Req() req: SlackOauthReq, @BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
+
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {
@@ -333,6 +335,25 @@ export class SlackCtrl {
     }
 
     logger.info('receive event', body);
+
+    const { authorizeResult } = req;
+
+    if (authorizeResult.botToken == null) {
+      return;
+    }
+    console.log(344);
+
+
+    const client = generateWebClient(authorizeResult.botToken);
+
+    const userId = body.authorizations[0];
+
+    await client.chat.postMessage({
+      channel: 'xxxx',
+      userId: 'xxxx',
+      text: 'hoge',
+    });
+    console.log('361');
 
     return;
   }
