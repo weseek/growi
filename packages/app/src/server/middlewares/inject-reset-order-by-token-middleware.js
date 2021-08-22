@@ -21,7 +21,7 @@ module.exports = (crowi, app) => {
       return next(createError(400, 'passwordResetOrder is null or expired or revoked'));
     }
 
-    req.DataFromPasswordResetOrderMiddleware = passwordResetOrder;
+    req.passwordResetOrder = passwordResetOrder;
 
     return next();
   };

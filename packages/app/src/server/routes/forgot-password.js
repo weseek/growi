@@ -9,7 +9,7 @@ module.exports = function(crowi, app) {
 
   actions.resetPassword = async function(req, res) {
 
-    const { email } = req.DataFromPasswordResetOrderMiddleware;
+    const { email } = req.passwordResetOrder;
     return res.render('reset-password', { email });
   };
 

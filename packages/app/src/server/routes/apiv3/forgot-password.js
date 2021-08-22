@@ -80,7 +80,7 @@ module.exports = (crowi) => {
   });
 
   router.put('/:token', apiLimiter, csrf, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
-    const passwordResetOrder = req.DataFromPasswordResetOrderMiddleware;
+    const passwordResetOrder = req.passwordResetOrder;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = req.language || grobalLang;
