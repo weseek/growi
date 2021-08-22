@@ -1,3 +1,4 @@
+import rateLimit from 'express-rate-limit';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
@@ -30,11 +31,18 @@ module.exports = (crowi) => {
     ],
   };
 
-  async function sendPasswordResetEmail(email, url, i18n) {
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // limit each IP to 5 requests per windowMs
+    message:
+      'Too many requests were sent from this IP. Please try a password reset request again on the password reset request form',
+  });
+
+  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
     return mailService.send({
       to: email,
-      subject: 'Password Reset',
-      template: path.join(crowi.localeDir, `${i18n}/notifications/passwordReset.txt`),
+      subject: txtFileName,
+      template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
       vars: {
         appTitle: appService.getAppTitle(),
         email,
@@ -60,7 +68,8 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      await sendPasswordResetEmail(email, oneTimeUrl, i18n);
+      console.log('oneTimeUrl', oneTimeUrl);
+      await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
       return res.apiv3();
     }
     catch (err) {
@@ -70,11 +79,14 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/:token', csrf, passwordReset, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/:token', apiLimiter, csrf, passwordReset, validator.password, apiV3FormValidator, async(req, res) => {
     const passwordResetOrder = req.DataFromPasswordResetOrderMiddleware;
+    const { email } = passwordResetOrder;
+    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const i18n = req.language || grobalLang;
     const { newPassword } = req.body;
 
-    const user = await User.findOne({ email: passwordResetOrder.email });
+    const user = await User.findOne({ email });
 
     // when the user is not found or active
     if (user == null || user.status !== 2) {
@@ -85,6 +97,7 @@ module.exports = (crowi) => {
       const userData = await user.updatePassword(newPassword);
       const serializedUserData = serializeUserSecurely(userData);
       passwordResetOrder.revokeOneTimeToken();
+      await sendPasswordResetEmail('passwordResetSuccessful', i18n, email);
       return res.apiv3({ userData: serializedUserData });
     }
     catch (err) {
