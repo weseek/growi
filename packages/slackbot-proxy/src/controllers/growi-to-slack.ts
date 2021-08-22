@@ -280,6 +280,7 @@ export class GrowiToSlackCtrl {
       const opt = req.body;
       opt.headers = req.headers;
 
+      logger.debug({ method, opt });
       // !! DO NOT REMOVE `await ` or it does not enter catch block even when error occured !! -- 2021.08.22 Yuki Takei
       return await client.apiCall(method, opt);
     }
