@@ -5,10 +5,10 @@ import axios from 'axios';
 import createError from 'http-errors';
 import { addHours } from 'date-fns';
 
-import { WebAPICallResult } from '@slack/web-api';
+import { ErrorCode, WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient, REQUEST_TIMEOUT_FOR_PTOG,
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient,
 } from '@growi/slack';
 
 import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
@@ -246,13 +246,13 @@ export class GrowiToSlackCtrl {
   @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
   async callSlackApi(
     @PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
-  ): Promise<void|WebAPICallResult> {
+  ): Promise<WebclientRes> {
     const { tokenGtoPs } = req;
 
     logger.debug('Slack API called: ', { method });
 
     if (tokenGtoPs.length !== 1) {
-      return res.webClientErr('tokenGtoPs is invalid', 'invalid_tokenGtoP');
+      return res.simulateWebAPIPlatformError('tokenGtoPs is invalid', 'invalid_tokenGtoP');
     }
 
     const tokenGtoP = tokenGtoPs[0];
@@ -264,15 +264,18 @@ export class GrowiToSlackCtrl {
       .getOne();
 
     if (relation == null) {
-      return res.webClientErr('relation is invalid', 'invalid_relation');
+      return res.simulateWebAPIPlatformError('relation is invalid', 'invalid_relation');
     }
 
     const token = relation.installation.data.bot?.token;
     if (token == null) {
-      return res.webClientErr('installation is invalid', 'invalid_installation');
+      return res.simulateWebAPIPlatformError('installation is invalid', 'invalid_installation');
     }
 
-    const client = generateWebClient(token);
+    // generate WebClient with no retry because GROWI main side will do
+    const client = generateWebClient(token, {
+      retryConfig: { retries: 0 },
+    });
 
     try {
       this.injectGrowiUri(req, relation.growiUri);
@@ -282,11 +285,18 @@ export class GrowiToSlackCtrl {
 
       logger.debug({ method, opt });
       // !! DO NOT REMOVE `await ` or it does not enter catch block even when error occured !! -- 2021.08.22 Yuki Takei
-      return await client.apiCall(method, opt);
+      const result = await client.apiCall(method, opt);
+
+      return res.send(result);
     }
     catch (err) {
       logger.error(err);
-      return res.webClientErr(`failed to send to slack. err: ${err.message}`, 'fail_api_call');
+
+      if (err.code === ErrorCode.PlatformError) {
+        return res.simulateWebAPIPlatformError(err.message, err.code);
+      }
+
+      return res.simulateWebAPIRequestError(err.message, err.response?.status);
     }
   }
 
