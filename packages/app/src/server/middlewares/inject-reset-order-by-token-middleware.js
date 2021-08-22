@@ -2,12 +2,12 @@ const createError = require('http-errors');
 
 module.exports = (crowi, app) => {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
+  const forgotPassword = require('../routes/forgot-password')(crowi, app);
 
   return async(req, res, next) => {
     const token = req.params.token || req.body.token;
 
     if (token == null) {
-      res.redirect('/login');
       return next(createError(400, 'Token not found'));
     }
 
@@ -15,8 +15,11 @@ module.exports = (crowi, app) => {
 
     // check if the token is valid
     if (passwordResetOrder == null || passwordResetOrder.isExpired() || passwordResetOrder.isRevoked) {
-      res.redirect('/forgot-password/error/password-reset-order');
-      return next(createError(400, 'passwordResetOrder is null or expired or revoked'));
+      console.log('bbb');
+      const err = 'passwordResetOrder is null or expired or revoked';
+      // req.err = err;
+      forgotPassword.error(err);
+      return next(createError(400, err));
     }
 
     req.passwordResetOrder = passwordResetOrder;
