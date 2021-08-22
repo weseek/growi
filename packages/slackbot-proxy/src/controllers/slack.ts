@@ -325,7 +325,7 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  @UseBefore(AddSigningSecretToReq, AuthorizeCommandMiddleware)
+  @UseBefore(AuthorizeCommandMiddleware)
   async handleEvent(@Req() req: SlackOauthReq, @BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
 
     // eslint-disable-next-line max-len
@@ -341,18 +341,16 @@ export class SlackCtrl {
     if (authorizeResult.botToken == null) {
       return;
     }
-    console.log(344);
 
     const client = generateWebClient(authorizeResult.botToken);
 
-    const userId = body.authorizations[0];
+    if (authorizeResult.botId == null) {
+      return;
+    }
 
-    await client.chat.postMessage({
-      channel: 'xxxx',
-      userId: 'xxxx',
-      text: 'hoge',
-    });
-    console.log('361');
+    const event: any = body.event;
+
+    await postWelcomeMessage(client, event.channel);
 
     return;
   }
