@@ -10,7 +10,7 @@ import { Installation } from '@slack/oauth';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
-  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, publishInitialHomeView, REQUEST_TIMEOUT_FOR_PTOG,
+  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -387,8 +387,9 @@ export class SlackCtrl {
         await Promise.all([
           // post message
           postWelcomeMessage(client, userId),
+          // TODO When Home tab show off, use and write detail
           // publish home
-          publishInitialHomeView(client, userId),
+          // publishInitialHomeView(client, userId),
         ]);
       }
     }
