@@ -343,7 +343,6 @@ export class SlackCtrl {
     }
     console.log(344);
 
-
     const client = generateWebClient(authorizeResult.botToken);
 
     const userId = body.authorizations[0];
