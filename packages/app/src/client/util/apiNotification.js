@@ -34,8 +34,12 @@ const toastrOption = {
 export const toastError = (err, header = 'Error', option = toastrOption.error) => {
   const errs = toArrayIfNot(err);
 
+  if (err.length === 0) {
+    toastr.error('', header);
+  }
+
   for (const err of errs) {
-    toastr.error(err.message, header, option);
+    toastr.error(err.message || err, header, option);
   }
 };
 

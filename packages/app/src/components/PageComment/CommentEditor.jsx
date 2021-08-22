@@ -62,7 +62,7 @@ class CommentEditor extends React.Component {
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
-      hasSlackConfig: config.hasSlackConfig,
+      isSlackConfigured: config.isSlackConfigured,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -354,7 +354,7 @@ class CommentEditor extends React.Component {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
 
-            { this.state.hasSlackConfig
+            { this.state.isSlackConfigured
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification
