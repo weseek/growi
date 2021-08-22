@@ -387,8 +387,8 @@ export class SlackCtrl {
         await Promise.all([
           // post message
           postWelcomeMessage(client, userId),
-          // TODO When Home tab show off, use and write detail
           // publish home
+          // TODO When Home tab show off, use bellow.
           // publishInitialHomeView(client, userId),
         ]);
       }
