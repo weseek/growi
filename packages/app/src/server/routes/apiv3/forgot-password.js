@@ -16,7 +16,7 @@ module.exports = (crowi) => {
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-  const passwordReset = require('../../middlewares/password-reset')(crowi);
+  const injectResetOrderByTokenMiddleware = require('../../middlewares/inject-reset-order-by-token-middleware')(crowi);
 
   const validator = {
     password: [
@@ -79,7 +79,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/:token', apiLimiter, csrf, passwordReset, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/:token', apiLimiter, csrf, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
     const passwordResetOrder = req.DataFromPasswordResetOrderMiddleware;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
