@@ -21,7 +21,7 @@ export interface UpdatePostModel extends Model<UpdatePostDocument> {
   normalizeChannelName(channel): any
   createPrefixesByPathPattern(pathPattern): any
   getRegExpByPattern(pattern): any
-  findSettingsByPath(path): UpdatePostDocument[]
+  findSettingsByPath(path): Promise<UpdatePostDocument[]>
   findAll(offset?: number): Promise<UpdatePostDocument[]>
   createUpdatePost(pathPattern: string, channel: string, creator: Types.ObjectId): Promise<UpdatePostDocument>
 }
