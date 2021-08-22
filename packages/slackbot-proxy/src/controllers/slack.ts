@@ -337,16 +337,10 @@ export class SlackCtrl {
     logger.info('receive event', body);
 
     const { authorizeResult } = req;
-
     if (authorizeResult.botToken == null) {
       return;
     }
-
     const client = generateWebClient(authorizeResult.botToken);
-
-    if (authorizeResult.botId == null) {
-      return;
-    }
 
     const event: any = body.event;
 
