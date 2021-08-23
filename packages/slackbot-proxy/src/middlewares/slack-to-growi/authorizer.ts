@@ -27,9 +27,6 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
     const { body } = req;
-
-    console.log(body);
-
     // extract id from body
     const teamId = body.team_id;
     const enterpriseId = body.enterprise_id;
@@ -150,6 +147,12 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
   }
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
+
+    // eslint-disable-next-line max-len
+    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
+    if (req.body.type === 'url_verification') {
+      return req.body.challenge;
+    }
 
     const { body } = req;
     // extract id from body

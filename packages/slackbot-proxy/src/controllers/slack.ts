@@ -1,5 +1,5 @@
 import {
-  BodyParams, Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
+  Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
 } from '@tsed/common';
 
 import axios from 'axios';
@@ -325,16 +325,8 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  @UseBefore(AuthorizeCommandMiddleware)
-  async handleEvent(@Req() req: SlackOauthReq, @BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
-
-    // eslint-disable-next-line max-len
-    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
-    if (body.type === 'url_verification') {
-      return body.challenge;
-    }
-
-    logger.info('receive event', body);
+  @UseBefore(AuthorizeEventsMiddleware)
+  async handleEvent(@Req() req: SlackOauthReq): Promise<void|string> {
 
     const { authorizeResult } = req;
     if (authorizeResult.botToken == null) {
@@ -342,9 +334,7 @@ export class SlackCtrl {
     }
     const client = generateWebClient(authorizeResult.botToken);
 
-    const event: any = body.event;
-
-    await postWelcomeMessage(client, event.channel);
+    await postWelcomeMessage(client, req.body.event.channel);
 
     return;
   }
