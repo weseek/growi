@@ -6,6 +6,7 @@
 /dist/
 /transpiled/
 /public/static/js
+/public/static/dist
 /public/static/styles
 /public/uploads
 /tmp/
