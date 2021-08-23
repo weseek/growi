@@ -10,7 +10,7 @@ import { InstallationRepository } from '~/repositories/installation';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
-class CreateInstallationQueryClass {
+class AuthorizerService {
 
   @Inject()
   installerService: InstallerService;
@@ -24,8 +24,9 @@ class CreateInstallationQueryClass {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeCommandMiddleware');
   }
 
-   createInstallationQuery = async(req:SlackOauthReq, res:Res):Promise<InstallationQuery<boolean>|void> => {
+   setAuthorizedData = async(req:SlackOauthReq, res:Res):Promise<InstallationQuery<boolean>|void> => {
      const { body } = req;
+
      // extract id from body
      const teamId = body.team_id;
      const enterpriseId = body.enterprise_id;
@@ -69,10 +70,10 @@ class CreateInstallationQueryClass {
 export class AuthorizeCommandMiddleware implements IMiddleware {
 
   @Inject()
-  createInstallation: CreateInstallationQueryClass;
+  setAuthorizedData: AuthorizerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
-    await this.createInstallation.createInstallationQuery(req, res);
+    await this.setAuthorizedData.setAuthorizedData(req, res);
   }
 
 }
@@ -146,7 +147,7 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
 export class AuthorizeEventsMiddleware implements IMiddleware {
 
   @Inject()
-  createInstallation: CreateInstallationQueryClass;
+  authorizerService: AuthorizerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<string|void> {
 
@@ -157,7 +158,7 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
       return;
     }
 
-    await this.createInstallation.createInstallationQuery(req, res);
+    await this.authorizerService.setAuthorizedData(req, res);
   }
 
 }
