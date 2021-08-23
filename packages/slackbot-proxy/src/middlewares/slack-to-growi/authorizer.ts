@@ -146,19 +146,19 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeInteractionMiddleware');
   }
 
-  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
+  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<string|void> {
 
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (req.body.type === 'url_verification') {
-      return req.body.challenge;
+      res.send(req.body.challenge);
+      return;
     }
 
-    const { body } = req;
     // extract id from body
-    const teamId = body.team_id;
-    const enterpriseId = body.enterprise_id;
-    const isEnterpriseInstall = body.is_enterprise_install === 'true';
+    const teamId = req.body.team_id;
+    const enterpriseId = req.body.enterprise_id;
+    const isEnterpriseInstall = req.body.is_enterprise_install === 'true';
 
     if (teamId == null && enterpriseId == null) {
       res.writeHead(400, 'No installation found');

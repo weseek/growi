@@ -333,7 +333,6 @@ export class SlackCtrl {
       return;
     }
     const client = generateWebClient(authorizeResult.botToken);
-
     await postWelcomeMessage(client, req.body.event.channel);
 
     return;
