@@ -6,6 +6,7 @@
 /dist/
 /transpiled/
 /public/static/js
+/public/static/dict
 /public/static/styles
 /public/uploads
 /tmp/
@@ -18,5 +19,4 @@
 /public/manifest.json
 /public/dll
 /public/js
-/public/dict
 /public/styles
