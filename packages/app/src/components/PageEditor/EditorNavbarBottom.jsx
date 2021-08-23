@@ -19,7 +19,7 @@ const EditorNavbarBottom = (props) => {
   const [isExpanded, setExpanded] = useState(false);
 
   const [isSlackExpanded, setSlackExpanded] = useState(false);
-  const hasSlackConfig = props.appContainer.getConfig().hasSlackConfig;
+  const isSlackConfigured = props.appContainer.getConfig().isSlackConfigured;
 
   const {
     navigationContainer,
@@ -61,7 +61,7 @@ const EditorNavbarBottom = (props) => {
   return (
     <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
       {/* Collapsed SlackNotification */}
-      {hasSlackConfig && (
+      {isSlackConfigured && (
         <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd}>
           <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
             <SlackNotification
@@ -84,7 +84,7 @@ const EditorNavbarBottom = (props) => {
         <form className="form-inline flex-nowrap ml-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
-          {hasSlackConfig && (isDeviceSmallerThanMd ? (
+          {isSlackConfigured && (isDeviceSmallerThanMd ? (
             <Button
               className="grw-btn-slack border mr-2"
               onClick={() => (setSlackExpanded(!isSlackExpanded))}

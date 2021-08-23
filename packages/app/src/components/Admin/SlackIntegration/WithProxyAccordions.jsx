@@ -86,17 +86,27 @@ const RegisteringProxyUrlProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="container w-75 py-5">
-      <p
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
-      />
-      <img className="mb-5 border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
-      <span
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-      />
-      <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-      <img className="mb-3 border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
+      <ol>
+        <li>
+          <p
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+          />
+          <p>
+            <img className="border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
+          </p>
+        </li>
+        <li>
+          <p
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+          />
+          <p>
+            <img className="border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
+          </p>
+          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+        </li>
+      </ol>
     </div>
   );
 };
@@ -107,7 +117,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 
   const regenerateTokensHandler = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/regenerate-tokens', { slackAppIntegrationId });
+      await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/regenerate-tokens`);
       if (props.onUpdateTokens != null) {
         props.onUpdateTokens();
       }
@@ -215,7 +225,7 @@ const TestProcess = ({
   const submitForm = async(e) => {
     e.preventDefault();
     try {
-      await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+      await apiv3Post(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/relation-test`, { channel: testChannel });
       const newLogs = addLogs(logsValue, successMessage, null);
       setLogsValue(newLogs);
 
@@ -309,15 +319,6 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
-      />,
-    },
-    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -325,6 +326,15 @@ const WithProxyAccordions = (props) => {
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}
         isLatestConnectionSuccess={isLatestConnectionSuccess}
+      />,
+    },
+    '④': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
+        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
       />,
     },
   };
@@ -353,15 +363,6 @@ const WithProxyAccordions = (props) => {
       content: <RegisteringProxyUrlProcess />,
     },
     '⑤': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
-      />,
-    },
-    '⑥': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -369,6 +370,15 @@ const WithProxyAccordions = (props) => {
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}
         isLatestConnectionSuccess={isLatestConnectionSuccess}
+      />,
+    },
+    '⑥': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
+        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
       />,
     },
   };

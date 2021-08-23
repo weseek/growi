@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+
 import loggerFactory from '~/utils/logger';
 import AppContainer from '~/client/services/AppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -8,12 +9,15 @@ import { toastSuccess, toastError } from '~/client/util/apiNotification';
 import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
 import WithProxyAccordions from './WithProxyAccordions';
 import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import { SlackAppIntegrationControl } from './SlackAppIntegrationControl';
 
-const logger = loggerFactory('growi:SlackBotSettings');
+const logger = loggerFactory('growi:cli:SlackIntegration:CustomBotWithProxySettings');
 
 const CustomBotWithProxySettings = (props) => {
   const {
-    appContainer, slackAppIntegrations, proxyServerUri, onClickAddSlackWorkspaceBtn, connectionStatuses, onUpdateTokens, onSubmitForm,
+    appContainer, slackAppIntegrations, proxyServerUri,
+    onClickAddSlackWorkspaceBtn, onPrimaryUpdated,
+    connectionStatuses, onUpdateTokens, onSubmitForm,
   } = props;
   const [newProxyServerUri, setNewProxyServerUri] = useState();
   const [integrationIdToDelete, setIntegrationIdToDelete] = useState(null);
@@ -31,17 +35,36 @@ const CustomBotWithProxySettings = (props) => {
     }
   };
 
+  const isPrimaryChangedHandler = useCallback(async(slackIntegrationToChange, newValue) => {
+    // do nothing when turning off
+    if (!newValue) {
+      return;
+    }
+
+    try {
+      await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackIntegrationToChange._id}/make-primary`);
+      if (onPrimaryUpdated != null) {
+        onPrimaryUpdated();
+      }
+      toastSuccess(t('toaster.update_successed', { target: 'Primary' }));
+    }
+    catch (err) {
+      toastError(err, 'Failed to change isPrimary');
+      logger.error('Failed to change isPrimary', err);
+    }
+  }, [appContainer.apiv3, t, onPrimaryUpdated]);
+
   const deleteSlackAppIntegrationHandler = async() => {
     try {
-      await appContainer.apiv3.delete('/slack-integration-settings/slack-app-integration', { integrationIdToDelete });
+      await appContainer.apiv3.delete(`/slack-integration-settings/slack-app-integrations/${integrationIdToDelete}`);
       if (props.onDeleteSlackAppIntegration != null) {
         props.onDeleteSlackAppIntegration();
       }
-      toastSuccess(t('toaster.delete_slack_integration_procedure'));
+      toastSuccess(t('admin:slack_integration.toastr.delete_slack_integration_procedure'));
     }
     catch (err) {
-      toastError(err);
-      logger.error(err);
+      toastError(err, 'Failed to delete');
+      logger.error('Failed to delete', err);
     }
   };
 
@@ -53,8 +76,8 @@ const CustomBotWithProxySettings = (props) => {
       toastSuccess(t('toaster.update_successed', { target: 'Proxy URL' }));
     }
     catch (err) {
-      toastError(err);
-      logger.error(err);
+      toastError(err, 'Failed to update');
+      logger.error('Failed to update', err);
     }
   };
 
@@ -113,14 +136,12 @@ const CustomBotWithProxySettings = (props) => {
                 <h2 id={_id || `settings-accordions-${i}`}>
                   {(workspaceName != null) ? `${workspaceName} Work Space` : `Settings #${i}`}
                 </h2>
-                <button
-                  className="btn btn-outline-danger"
-                  type="button"
-                  onClick={() => setIntegrationIdToDelete(slackAppIntegration._id)}
-                >
-                  <i className="icon-trash mr-1" />
-                  {t('admin:slack_integration.delete')}
-                </button>
+                <SlackAppIntegrationControl
+                  slackAppIntegration={slackAppIntegration}
+                  onIsPrimaryChanged={isPrimaryChangedHandler}
+                  // set state to open DeleteSlackBotSettingsModal
+                  onDeleteButtonClicked={saiToDelete => setIntegrationIdToDelete(saiToDelete._id)}
+                />
               </div>
               <WithProxyAccordions
                 botType="customBotWithProxy"
@@ -168,6 +189,7 @@ CustomBotWithProxySettings.propTypes = {
   slackAppIntegrations: PropTypes.array,
   proxyServerUri: PropTypes.string,
   onClickAddSlackWorkspaceBtn: PropTypes.func,
+  onPrimaryUpdated: PropTypes.func,
   onDeleteSlackAppIntegration: PropTypes.func,
   onSubmitForm: PropTypes.func,
   connectionStatuses: PropTypes.object.isRequired,

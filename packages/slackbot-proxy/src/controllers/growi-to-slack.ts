@@ -8,10 +8,10 @@ import { addHours } from 'date-fns';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient,
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient, REQUEST_TIMEOUT_FOR_PTOG,
 } from '@growi/slack';
 
-import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/slack-to-growi/add-webclient-response-to-res';
+import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
@@ -61,6 +61,7 @@ export class GrowiToSlackCtrl {
       headers: {
         'x-growi-ptog-tokens': tokenPtoG,
       },
+      timeout: REQUEST_TIMEOUT_FOR_PTOG,
     });
   }
 
@@ -245,7 +246,7 @@ export class GrowiToSlackCtrl {
   @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
   async callSlackApi(
     @PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
-  ): Promise<void|string|Res|WebAPICallResult> {
+  ): Promise<void|WebAPICallResult> {
     const { tokenGtoPs } = req;
 
     logger.debug('Slack API called: ', { method });
@@ -279,7 +280,9 @@ export class GrowiToSlackCtrl {
       const opt = req.body;
       opt.headers = req.headers;
 
-      return client.apiCall(method, opt);
+      logger.debug({ method, opt });
+      // !! DO NOT REMOVE `await ` or it does not enter catch block even when error occured !! -- 2021.08.22 Yuki Takei
+      return await client.apiCall(method, opt);
     }
     catch (err) {
       logger.error(err);

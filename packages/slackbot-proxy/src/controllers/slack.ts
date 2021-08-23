@@ -10,7 +10,7 @@ import { Installation } from '@slack/oauth';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
-  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, publishInitialHomeView,
+  InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -84,6 +84,7 @@ export class SlackCtrl {
         headers: {
           'x-growi-ptog-tokens': relation.tokenPtoG,
         },
+        timeout: REQUEST_TIMEOUT_FOR_PTOG,
       });
     });
 
@@ -182,41 +183,32 @@ export class SlackCtrl {
     const baseDate = new Date();
 
     const allowedRelationsForSingleUse:Relation[] = [];
+    const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
 
-    // check permission for single use
+    // check permission
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
-      if (isSupported) {
+      const isSupportedForSingleUse = await this.relationsService.isSupportedGrowiCommandForSingleUse(
+        relation, growiCommand.growiCommandType, baseDate,
+      );
+
+      let isSupportedForBroadcastUse = false;
+      if (!isSupportedForSingleUse) {
+        isSupportedForBroadcastUse = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(
+          relation, growiCommand.growiCommandType, baseDate,
+        );
+      }
+
+      if (isSupportedForSingleUse) {
         allowedRelationsForSingleUse.push(relation);
       }
-      else {
-        disallowedGrowiUrls.add(relation.growiUri);
-      }
-    }));
-
-    // select GROWI
-    if (allowedRelationsForSingleUse.length > 0) {
-      body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
-      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
-    }
-
-    // check permission for broadcast use
-    const relationsForBroadcastUse:Relation[] = [];
-    await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
-      if (isSupported) {
-        relationsForBroadcastUse.push(relation);
+      else if (isSupportedForBroadcastUse) {
+        allowedRelationsForBroadcastUse.push(relation);
       }
       else {
         disallowedGrowiUrls.add(relation.growiUri);
       }
     }));
-
-    // forward to GROWI server
-    if (relationsForBroadcastUse.length > 0) {
-      return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
-    }
 
     // when all of GROWI disallowed
     if (relations.length === disallowedGrowiUrls.size) {
@@ -228,6 +220,8 @@ export class SlackCtrl {
           + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
       });
 
+      const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
+
       return client.chat.postEphemeral({
         text: 'Error occured.',
         channel: body.channel_id,
@@ -238,8 +232,22 @@ export class SlackCtrl {
           markdownSectionBlock(
             `To use this command, modify settings from following pages: ${linkUrlList}`,
           ),
+          markdownSectionBlock(
+            `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
+          ),
         ],
       });
+    }
+
+    // select GROWI
+    if (allowedRelationsForSingleUse.length > 0) {
+      body.growiUrisForSingleUse = allowedRelationsForSingleUse.map(v => v.growiUri);
+      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
+    }
+
+    // forward to GROWI server
+    if (allowedRelationsForBroadcastUse.length > 0) {
+      return this.sendCommand(growiCommand, allowedRelationsForBroadcastUse, body);
     }
   }
 
@@ -315,6 +323,7 @@ export class SlackCtrl {
         headers: {
           'x-growi-ptog-tokens': relation.tokenPtoG,
         },
+        timeout: REQUEST_TIMEOUT_FOR_PTOG,
       });
     }
     catch (err) {
@@ -386,7 +395,8 @@ export class SlackCtrl {
           // post message
           postWelcomeMessage(client, userId),
           // publish home
-          publishInitialHomeView(client, userId),
+          // TODO When Home tab show off, use bellow.
+          // publishInitialHomeView(client, userId),
         ]);
       }
     }
