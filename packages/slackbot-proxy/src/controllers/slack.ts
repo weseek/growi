@@ -329,9 +329,6 @@ export class SlackCtrl {
   async handleEvent(@Req() req: SlackOauthReq): Promise<void|string> {
 
     const { authorizeResult } = req;
-    if (authorizeResult.botToken == null) {
-      return;
-    }
     const client = generateWebClient(authorizeResult.botToken);
     await postWelcomeMessage(client, req.body.event.channel);
 
