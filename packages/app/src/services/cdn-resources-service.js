@@ -57,16 +57,6 @@ class CdnResourcesService {
       const outDir = resolveFromRoot(cdnLocalScriptRoot);
       return new CdnResource(manifest.name, manifest.url, outDir);
     });
-
-    const cdnGzResources = this.cdnManifests.gz.map((manifest) => {
-      const outDir = resolveFromRoot(cdnLocalScriptRoot);
-      return new CdnResource(manifest.name, manifest.url, outDir);
-    });
-
-    const gzExtensionOptions = {
-      ext: 'gz',
-    };
-
     const cdnStyleResources = this.cdnManifests.style.map((manifest) => {
       const outDir = resolveFromRoot(cdnLocalStyleRoot);
       return new CdnResource(manifest.name, manifest.url, outDir);
@@ -80,7 +70,6 @@ class CdnResourcesService {
 
     return Promise.all([
       cdnResourceDownloader.downloadScripts(cdnScriptResources),
-      cdnResourceDownloader.downloadScripts(cdnGzResources, gzExtensionOptions),
       cdnResourceDownloader.downloadStyles(cdnStyleResources, dlStylesOptions),
     ]);
   }
