@@ -155,7 +155,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.cmNoCdnScriptRoot = '/js/cdn';
     this.cmNoCdnStyleRoot = '/styles/cdn';
     window.kuromojin = this.props.noCdn
-      ? { dicPath: '/js/cdn' }
+      ? { dicPath: '/dict/cdn' }
       : { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
 
     // TODO: Get configs from db
