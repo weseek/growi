@@ -19,9 +19,9 @@ export default class CdnResourcesDownloader {
     const cdnScriptResources: CdnResource[] = cdnManifests.js.map((manifest: CdnManifest) => {
       return { manifest, outDir: cdnLocalScriptRoot };
     });
-    const cdnGzResources: CdnResource[] = cdnManifests.gz.map((manifest: CdnManifest) => {
-      return { manifest, outDir: cdnLocalScriptRoot };
-    });
+    // const cdnGzResources: CdnResource[] = cdnManifests.gz.map((manifest: CdnManifest) => {
+    //   return { manifest, outDir: cdnLocalScriptRoot };
+    // });
     const cdnStyleResources: CdnResource[] = cdnManifests.style.map((manifest) => {
       return { manifest, outDir: cdnLocalStyleRoot };
     });
@@ -34,7 +34,7 @@ export default class CdnResourcesDownloader {
 
     return Promise.all([
       this.downloadScripts(cdnScriptResources),
-      this.downloadGz(cdnGzResources),
+      // this.downloadGz(cdnGzResources),
       this.downloadStyles(cdnStyleResources, dlStylesOptions),
     ]);
   }
@@ -66,31 +66,31 @@ export default class CdnResourcesDownloader {
   }
 
 
-  /**
-   * Download gz files from CDN
-   * @param cdnResources JavaScript resource data
-   * @param options
-   */
-  private async downloadGz(cdnResources: CdnResource[], options?: any): Promise<any> {
-    logger.debug('Downloading scripts', cdnResources);
+  // /**
+  //  * Download gz files from CDN
+  //  * @param cdnResources JavaScript resource data
+  //  * @param options
+  //  */
+  // private async downloadGz(cdnResources: CdnResource[], options?: any): Promise<any> {
+  //   logger.debug('Downloading scripts', cdnResources);
 
-    const opts = Object.assign({}, options);
-    const ext = opts.ext || 'gz';
+  //   const opts = Object.assign({}, options);
+  //   const ext = opts.ext || 'gz';
 
-    const promises = cdnResources.map((cdnResource) => {
-      const { manifest } = cdnResource;
+  //   const promises = cdnResources.map((cdnResource) => {
+  //     const { manifest } = cdnResource;
 
-      logger.info(`Processing CdnResource '${manifest.name}'`);
+  //     logger.info(`Processing CdnResource '${manifest.name}'`);
 
-      return downloadTo(
-        manifest.url,
-        cdnResource.outDir,
-        `${manifest.name}.${ext}`,
-      );
-    });
+  //     return downloadTo(
+  //       manifest.url,
+  //       cdnResource.outDir,
+  //       `${manifest.name}.${ext}`,
+  //     );
+  //   });
 
-    return Promise.all(promises);
-  }
+  //   return Promise.all(promises);
+  // }
 
   /**
    * Download style sheet file from CDN
