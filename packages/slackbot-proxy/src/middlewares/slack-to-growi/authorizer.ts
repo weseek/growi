@@ -1,6 +1,6 @@
 import { AuthorizeResult, InstallationQuery } from '@slack/oauth';
 import {
-  IMiddleware, Inject, Middleware, Req, Res, BodyParams,
+  IMiddleware, Inject, Middleware, Req, Res,
 } from '@tsed/common';
 
 import Logger from 'bunyan';
@@ -9,6 +9,27 @@ import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallationRepository } from '~/repositories/installation';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
+
+const createInstallationQuery = async(req:Req, res:Res):Promise<InstallationQuery<boolean>|void> => {
+  const { body } = req;
+  // extract id from body
+  const teamId = body.team_id;
+  const enterpriseId = body.enterprise_id;
+  const isEnterpriseInstall = body.is_enterprise_install === 'true';
+
+  if (teamId == null && enterpriseId == null) {
+    res.writeHead(400, 'No installation found');
+    return res.end();
+  }
+
+  // create query from body
+  const query: InstallationQuery<boolean> = {
+    teamId,
+    enterpriseId,
+    isEnterpriseInstall,
+  };
+  return query;
+};
 
 @Middleware()
 export class AuthorizeCommandMiddleware implements IMiddleware {
@@ -26,30 +47,18 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
   }
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
-    const { body } = req;
-    // extract id from body
-    const teamId = body.team_id;
-    const enterpriseId = body.enterprise_id;
-    const isEnterpriseInstall = body.is_enterprise_install === 'true';
+    const query = await createInstallationQuery(req, res);
 
-    if (teamId == null && enterpriseId == null) {
-      res.writeHead(400, 'No installation found');
-      return res.end();
+    if (query == null) {
+      return;
     }
-
-    // create query from body
-    const query: InstallationQuery<boolean> = {
-      teamId,
-      enterpriseId,
-      isEnterpriseInstall,
-    };
 
     let result: AuthorizeResult;
     try {
       result = await this.installerService.installer.authorize(query);
 
       if (result.botToken == null) {
-        res.writeHead(403, `The installation for the team(${teamId || enterpriseId}) has no botToken`);
+        res.writeHead(403, `The installation for the team(${query.teamId || query.enterpriseId}) has no botToken`);
         return res.end();
       }
     }
@@ -155,29 +164,18 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
       return;
     }
 
-    // extract id from body
-    const teamId = req.body.team_id;
-    const enterpriseId = req.body.enterprise_id;
-    const isEnterpriseInstall = req.body.is_enterprise_install === 'true';
+    const query = await createInstallationQuery(req, res);
 
-    if (teamId == null && enterpriseId == null) {
-      res.writeHead(400, 'No installation found');
-      return res.end();
+    if (query == null) {
+      return;
     }
-
-    // create query from body
-    const query: InstallationQuery<boolean> = {
-      teamId,
-      enterpriseId,
-      isEnterpriseInstall,
-    };
 
     let result: AuthorizeResult;
     try {
       result = await this.installerService.installer.authorize(query);
 
       if (result.botToken == null) {
-        res.writeHead(403, `The installation for the team(${teamId || enterpriseId}) has no botToken`);
+        res.writeHead(403, `The installation for the team(${query.teamId || query.enterpriseId}) has no botToken`);
         return res.end();
       }
     }
