@@ -89,7 +89,7 @@ module.exports = {
       },
     },
   ],
-  gz: [
+  dict: [
     {
       name: 'base.dat',
       url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/base.dat.gz',
