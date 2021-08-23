@@ -326,7 +326,7 @@ export class SlackCtrl {
 
   @Post('/events')
   @UseBefore(AuthorizeEventsMiddleware)
-  async handleEvent(@Req() req: SlackOauthReq): Promise<void|string> {
+  async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
 
     const { authorizeResult } = req;
     const client = generateWebClient(authorizeResult.botToken);
