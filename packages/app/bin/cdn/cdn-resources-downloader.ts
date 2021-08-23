@@ -19,6 +19,15 @@ export default class CdnResourcesDownloader {
     const cdnScriptResources: CdnResource[] = cdnManifests.js.map((manifest: CdnManifest) => {
       return { manifest, outDir: cdnLocalScriptRoot };
     });
+
+    const cdnGzResources: CdnResource[] = cdnManifests.gz.map((manifest: CdnManifest) => {
+      return { manifest, outDir: cdnLocalScriptRoot };
+    });
+
+    const gzExtensionOptions = {
+      ext: 'gz',
+    };
+
     const cdnStyleResources: CdnResource[] = cdnManifests.style.map((manifest) => {
       return { manifest, outDir: cdnLocalStyleRoot };
     });
@@ -31,6 +40,7 @@ export default class CdnResourcesDownloader {
 
     return Promise.all([
       this.downloadScripts(cdnScriptResources),
+      this.downloadScripts(cdnGzResources, gzExtensionOptions),
       this.downloadStyles(cdnStyleResources, dlStylesOptions),
     ]);
   }
