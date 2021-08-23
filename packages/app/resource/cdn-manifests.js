@@ -88,24 +88,55 @@ module.exports = {
         integrity: '',
       },
     },
+  ],
+  gz: [
     {
-      name: 'kuromoji-dict',
-      url: 'https://cdn.jsdelivr.net/combine/'
-        + 'npm/kuromoji@0.1.2/dict/base.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/cc.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/check.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/tid_map.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/tid_pos.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/tid.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/unk_char.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/unk_compat.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/unk_invoke.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/unk_map.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/unk_pos.dat.gz,'
-        + 'npm/kuromoji@0.1.2/dict/unk.dat.gz',
-      args: {
-        integrity: '',
-      },
+      name: 'base.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/base.dat.gz,',
+    },
+    {
+      name: 'cc.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/cc.dat.gz,',
+    },
+    {
+      name: 'check.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/check.dat.gz,',
+    },
+    {
+      name: 'tid_map.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid_map.dat.gz,',
+    },
+    {
+      name: 'tid_pos.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid_pos.dat.gz,',
+    },
+    {
+      name: 'tid.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/tid.dat.gz,',
+    },
+    {
+      name: 'unk_char.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_char.dat.gz,',
+    },
+    {
+      name: 'unk_compat.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_compat.dat.gz,',
+    },
+    {
+      name: 'unk_invoke.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_invoke.dat.gz,',
+    },
+    {
+      name: 'unk_map.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_map.dat.gz,',
+    },
+    {
+      name: 'unk_pos.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk_pos.dat.gz,',
+    },
+    {
+      name: 'unk.dat',
+      url: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/unk.dat.gz',
     },
   ],
   style: [
