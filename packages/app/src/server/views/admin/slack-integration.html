@@ -1,5 +1,7 @@
 {% extends '../layout/admin.html' %}
 
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName(t('slack_integration')) }}{% endblock %}
+
 {% block content_header %}
 <h1 class="title">{{ t('slack_integration') }}</h1>
 {% endblock %}
