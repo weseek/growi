@@ -40,7 +40,7 @@ For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide
 - :heavy_check_mark: Let's invite some members.
     - [Add/invite new members to the Wiki](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#temporary-issuance-of-a-new-user)
 ### :arrow_right: Work with Slack to receive page and comment notifications.
-- :heavy_check_mark:  [Slack integration](https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/#overview)
+- :heavy_check_mark:  [Slack integration](https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/#overview)
 ### :arrow_right: Are you switching from another system?
 - :heavy_check_mark: It's possible to import data from other GROWI, esa.io, Qiita:Team.
     -  [Import Data](https://docs.growi.org/en/admin-guide/management-cookbook/import.html)
