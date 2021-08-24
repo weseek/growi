@@ -217,53 +217,28 @@ export class SlackCtrl {
         return;
       }
 
+      // check permission at channel level
       Object.keys(channelsObject).forEach((commandName) => {
         const permittedChannels = channelsObject[commandName];
         const fromChannel = body.channel_name;
 
+        // permitted channel
         if (permittedChannels.includes(fromChannel)) {
-          console.log(239);
           const relationsForSingleUse:RelationMock[] = [];
           body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
           relationsForSingleUse.push(relations[0]);
           return this.sendCommand(growiCommand, relationsForSingleUse, body);
         }
+
+        return client.chat.postEphemeral({
+          text: 'Error occured.',
+          channel: body.channel_id,
+          user: body.user_id,
+          blocks: [
+            markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+          ],
+        });
       });
-
-      return client.chat.postEphemeral({
-        text: 'Error occured.',
-        channel: body.channel_id,
-        user: body.user_id,
-        blocks: [
-          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
-        ],
-      });
-
-      // const permittedCreateCommandArray = permittedChannelsForEachCommand?.channelsObject.create;
-      // const permittedSearchCommandArray = permittedChannelsForEachCommand?.channelsObject.search;
-      // const hasCreatePermission = permittedCreateCommandArray?.includes(body.channel_name);
-      // const hasSearchPermission = permittedSearchCommandArray?.includes(body.channel_name);
-
-      // switch (growiCommand.growiCommandType) {
-      //   case 'create':
-      //     if (hasCreatePermission) {
-      //       const relationsForSingleUse:RelationMock[] = [];
-      //       body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
-      //       relationsForSingleUse.push(relations[0]);
-      //       return this.sendCommand(growiCommand, relationsForSingleUse, body);
-      //     }
-      //     break;
-      //   case 'search':
-      //     if (hasSearchPermission) {
-      //       const relationsForBroadcastUse:RelationMock[] = [];
-      //       body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
-      //       relationsForBroadcastUse.push(relations[0]);
-      //       return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
-      //     }
-      //     break;
-      //   default:
-      //     break;
-      // }
     }
   }
 
@@ -290,7 +265,6 @@ export class SlackCtrl {
 
     const payload = JSON.parse(body.payload);
     const callBackId = payload?.view?.callback_id;
-    // check permission at channel level
 
     // register
     if (callBackId === 'register') {
@@ -315,18 +289,27 @@ export class SlackCtrl {
       return;
     }
 
+
     // forward to GROWI server
     if (callBackId === 'select_growi') {
       const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
-    if (payload?.actions[0].action_id) {
-      const actionId = payload.actions[0]?.action_id;
-      const actionsValue = JSON.parse(payload.actions[0]?.value);
-      const fromChannel = actionsValue?.body.channel_name;
-      const command = actionsValue?.body.command;
-      const channelsObject = actionsValue?.body.permittedChannelsForEachCommand.channelsObject;
+    // check permission at channel level
+    if (payload?.actions != null) {
+      const actionId = payload?.actions[0].action_id;
+      const fromChannel = payload?.channel.name;
+
+      const relationMock = await this.relationMockRepository.findOne({
+        where: { installation },
+      });
+
+      const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
+
+      if (channelsObject == null) {
+        return;
+      }
 
       Object.keys(channelsObject).forEach((commandName) => {
         const permittedChannels = channelsObject[commandName];
@@ -336,14 +319,11 @@ export class SlackCtrl {
         if (commandRegExp.test(actionId) || commandRegExp.test(callBackId)) {
           // check if the channel is permitted
           if (permittedChannels.includes(fromChannel) == null) {
-            res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+            return res.status(403).send(`It is not allowed to run '${commandName}' command to this GROWI.`);
           }
         }
-
       });
-
     }
-
 
     /*
     * forward to GROWI server
