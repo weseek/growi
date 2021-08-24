@@ -289,40 +289,37 @@ export class SlackCtrl {
       return;
     }
 
+    // check permission at channel level
+    let actionId:string;
+    let fromChannel:string;
+    if (payload?.actions != null) {
+      actionId = payload?.actions[0].action_id;
+      fromChannel = payload?.channel.name;
+    }
+
+    const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
+    const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
+    if (channelsObject == null) return;
+
+    Object.keys(channelsObject).forEach((commandName) => {
+      const permittedChannels = channelsObject[commandName];
+
+      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+      // RegExp check
+      if (commandRegExp.test(actionId) || commandRegExp.test(callBackId)) {
+        // check if the channel is permitted
+        const isPermittedChannel = permittedChannels.includes(fromChannel);
+        if (!isPermittedChannel) {
+          return res.status(403).send(`It is not allowed to run '${commandName}' command to this GROWI.`);
+        }
+      }
+    });
+
 
     // forward to GROWI server
     if (callBackId === 'select_growi') {
       const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
-    }
-
-    // check permission at channel level
-    if (payload?.actions != null) {
-      const actionId = payload?.actions[0].action_id;
-      const fromChannel = payload?.channel.name;
-
-      const relationMock = await this.relationMockRepository.findOne({
-        where: { installation },
-      });
-
-      const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
-
-      if (channelsObject == null) {
-        return;
-      }
-
-      Object.keys(channelsObject).forEach((commandName) => {
-        const permittedChannels = channelsObject[commandName];
-
-        const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
-        // RegExp check
-        if (commandRegExp.test(actionId) || commandRegExp.test(callBackId)) {
-          // check if the channel is permitted
-          if (permittedChannels.includes(fromChannel) == null) {
-            return res.status(403).send(`It is not allowed to run '${commandName}' command to this GROWI.`);
-          }
-        }
-      });
     }
 
     /*
