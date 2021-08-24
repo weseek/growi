@@ -2,6 +2,7 @@ import { TextlintKernel, TextlintKernelRule, TextlintRuleOptions } from '@textli
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
 import textlintRuleMaxComma from 'textlint-rule-max-comma';
 import textlintRuleCommonMisspellings from 'textlint-rule-common-misspellings';
+import textlintRuleNoDroppingTheRa from 'textlint-rule-no-dropping-the-ra';
 import { AsyncLinter, Annotation } from 'codemirror/addon/lint/lint';
 import loggerFactory from '../../../utils/logger';
 
@@ -17,6 +18,7 @@ type RuleExtension = {
 const ruleModulesList = {
   'max-comma': textlintRuleMaxComma,
   'common-misspellings': textlintRuleCommonMisspellings,
+  'no-dropping-the-ra': textlintRuleNoDroppingTheRa,
 };
 
 const logger = loggerFactory('growi:codemirror:codemirror-textlint');
