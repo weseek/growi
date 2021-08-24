@@ -80,6 +80,16 @@ module.exports = (crowi) => {
   });
 
   router.put('/', apiLimiter, csrf, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
+    if (req.error != null) {
+      if (req.error === 'Token not found') {
+        return res.json({ status: 404, error: req.error });
+      }
+
+      if (req.error === 'passwordResetOrder is null or expired or revoked') {
+        return res.json({ status: 400, error: req.error });
+      }
+    }
+
     const passwordResetOrder = req.passwordResetOrder;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');

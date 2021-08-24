@@ -8,18 +8,14 @@ module.exports = (crowi, app) => {
     const token = req.params.token || req.body.token;
 
     if (token == null) {
-      return next(createError(400, 'Token not found'));
+      req.error = 'Token not found';
     }
 
     const passwordResetOrder = await PasswordResetOrder.findOne({ token });
 
     // check if the token is valid
     if (passwordResetOrder == null || passwordResetOrder.isExpired() || passwordResetOrder.isRevoked) {
-      console.log('bbb');
-      const err = 'passwordResetOrder is null or expired or revoked';
-      // req.err = err;
-      forgotPassword.error(err);
-      return next(createError(400, err));
+      req.error = 'Token not found';
     }
 
     req.passwordResetOrder = passwordResetOrder;
