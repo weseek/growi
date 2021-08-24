@@ -1,6 +1,4 @@
-
 module.exports = function(crowi, app) {
-
   const actions = {};
   const api = {};
   actions.api = api;
