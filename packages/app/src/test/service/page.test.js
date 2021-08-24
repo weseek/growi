@@ -404,6 +404,24 @@ describe('PageService', () => {
     });
   });
 
+  describe('rename page without using renameDescendantsWithStreamSpy', () => {
+    let pageEventSpy;
+    beforeEach(async() => {
+      pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
+    });
+
+    describe('renamePage()', () => {
+      test('rename page with different tree with isRecursively', async() => {
+        const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, {}, true);
+        const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
+        const expectPage = await Page.findOne({ path: '/parentForRename6/renamedChild' });
+
+        expect(resultPage.path).toEqual(expectPage.path);
+        expect(wrongPage).toBeNull();
+      });
+    });
+
+  });
 
   describe('duplicate page', () => {
     let duplicateDescendantsWithStreamSpy;
