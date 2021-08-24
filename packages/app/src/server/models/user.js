@@ -70,7 +70,6 @@ module.exports = function(crowi) {
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
-    // isTextLintEnable: { type: Boolean, default: true },
     editorSettings: editorSchema,
   }, {
     toObject: {
@@ -699,8 +698,8 @@ module.exports = function(crowi) {
     user.save();
   };
 
-  userSchema.methods.updateIsTextLintEnable = async function(isTextLintEnable) {
-    this.isGravatarEnabled = isTextLintEnable;
+  userSchema.methods.updateEditorSettings = async function(editorSettings) {
+    this.editorSettings = editorSettings;
     const userData = await this.save();
     return userData;
   };
