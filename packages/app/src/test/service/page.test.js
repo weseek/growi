@@ -308,7 +308,7 @@ describe('PageService', () => {
       await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {}, true);
       const expectPage1 = await Page.findOne({ path: '/level1' });
       const expectPage2 = await Page.findOne({ path: '/level1/child' });
-      const expectPage3 = await Page.findOne({ path: '/level1/level2' });
+      const expectPage3 = await Page.findOne({ path: '/level1/level2/level2' });
       const expectPage4 = await Page.findOne({ path: '/level1-2021H1' });
 
       expect(expectPage1).not.toBeNull();
