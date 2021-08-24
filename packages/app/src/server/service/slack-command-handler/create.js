@@ -11,6 +11,7 @@ module.exports = (crowi) => {
   const handler = new BaseSlackCommandHandler();
 
   handler.handleCommand = async(client, body) => {
+    console.log(14);
     await client.views.open({
       trigger_id: body.trigger_id,
 

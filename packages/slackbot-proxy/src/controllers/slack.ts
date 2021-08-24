@@ -11,6 +11,7 @@ import {
 } from '@growi/slack';
 
 // import { Relation } from '~/entities/relation';
+import { objectKeys } from '@tsed/core';
 import { RelationMock } from '~/entities/relation-mock';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallationRepository } from '~/repositories/installation';
@@ -165,7 +166,7 @@ export class SlackCtrl {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
+    // res.send();
 
     const baseDate = new Date();
 
@@ -202,36 +203,42 @@ export class SlackCtrl {
     }
 
     if (!isCommandPermitted) {
+      console.log(206);
+
       // check permission at channel level
       const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
       const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
       if (channelsObject == null) return;
 
-      Object.keys(channelsObject).forEach((commandName) => {
-        const permittedChannels = channelsObject[commandName];
-        const fromChannel = body.channel_name;
+      const permittedCommandsForChannel = Object.keys(channelsObject);
+      const fromChannel = body.channel_name;
 
-        // permitted channel
-        const isPermittedChannel = permittedChannels.includes(fromChannel);
-        if (!isPermittedChannel) {
-          const botToken = relations[0].installation?.data.bot?.token;
+      const targetCommand = permittedCommandsForChannel.find(e => e === growiCommand.growiCommandType);
 
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const client = generateWebClient(botToken!);
-          return client.chat.postEphemeral({
-            text: 'Error occured.',
-            channel: body.channel_id,
-            user: body.user_id,
-            blocks: [
-              markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
-            ],
-          });
-        }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const permittedChannels = channelsObject[targetCommand!];
 
+      // permitted channel
+      const isPermittedChannel = permittedChannels.includes(fromChannel);
+
+      if (isPermittedChannel) {
         const relationsForSingleUse:RelationMock[] = [];
         body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
         relationsForSingleUse.push(relations[0]);
         return this.sendCommand(growiCommand, relationsForSingleUse, body);
+      }
+
+      const botToken = relations[0].installation?.data.bot?.token;
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(botToken!);
+      return client.chat.postEphemeral({
+        text: 'Error occured.',
+        channel: body.channel_id,
+        user: body.user_id,
+        blocks: [
+          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+        ],
       });
     }
   }
@@ -256,6 +263,19 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+    const relations = await this.relationMockRepository.createQueryBuilder('relation_mock')
+      .where('relation_mock.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation_mock.installation', 'installation')
+      .getMany();
+
+    if (relations.length === 0) {
+      return res.json({
+        blocks: [
+          markdownSectionBlock('*No relation found.*'),
+          markdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
+    }
 
     const payload = JSON.parse(body.payload);
     const callBackId = payload?.view?.callback_id;
@@ -305,9 +325,20 @@ export class SlackCtrl {
       if (commandRegExp.test(actionId) || commandRegExp.test(callBackId)) {
         const isPermittedChannel = permittedChannels.includes(fromChannel);
 
-        if (!isPermittedChannel) {
-          return res.status(403).send(`It is not allowed to run '${commandName}' command to this GROWI.`);
-        }
+        if (isPermittedChannel) return;
+
+        const botToken = relations[0].installation?.data.bot?.token;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const client = generateWebClient(botToken!);
+        return client.chat.postEphemeral({
+          text: 'Error occured.',
+          channel: body.channel_id,
+          user: body.user_id,
+          blocks: [
+            markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
+          ],
+        });
+
       }
     });
 
