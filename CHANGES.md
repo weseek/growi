@@ -2,9 +2,13 @@
 
 ## v4.3.3-RC
 
+* Improvement: Welcome page markdown
+* Fix: Some recursive operation exclude descendant pages that are restricted for groups
+    * Rename / Delete / Delete completely / Put back / Duplicate
 * Fix: Layout is broken when editing users page ([#4128](https://github.com/weseek/growi/issues/4128))
 * Support: Upgrade libs
     * escape-string-regexp
+
 ## v4.3.2
 
 * Feature: Hufflpuff theme
