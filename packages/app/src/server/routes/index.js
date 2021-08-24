@@ -21,7 +21,7 @@ module.exports = function(crowi, app) {
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
-  const passwordReset = require('../middlewares/password-reset')(crowi);
+  const injectResetOrderByTokenMiddleware = require('../middlewares/inject-reset-order-by-token-middleware')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const form = require('../form');
@@ -186,8 +186,7 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
   app.get('/forgot-password', forgotPassword.forgotPassword);
-  app.get('/forgot-password/:token'      ,apiLimiter, passwordReset, forgotPassword.resetPassword);
-  app.get('/forgot-password/error/:reason'      , applicationInstalled, forgotPassword.error);
+  app.get('/forgot-password/:token'      ,apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword);
 
   app.get('/share/:linkId', page.showSharedPage);
 

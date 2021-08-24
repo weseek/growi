@@ -16,6 +16,7 @@ module.exports = (crowi) => {
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
+  const injectResetOrderByTokenMiddleware = require('../../middlewares/inject-reset-order-by-token-middleware')(crowi);
 
   const validator = {
     password: [
@@ -77,13 +78,17 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', apiLimiter, csrf, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/', apiLimiter, csrf, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
+
+    if (req.error != null) {
+      return res.apiv3Err(req.error.message);
+    }
+
+    const { passwordResetOrder } = req;
+    const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = req.language || grobalLang;
-    const { token, newPassword } = req.body;
-
-    const passwordResetOrder = await PasswordResetOrder.findOne({ token });
-    const { email } = passwordResetOrder;
+    const { newPassword } = req.body;
 
     const user = await User.findOne({ email });
 
@@ -95,6 +100,7 @@ module.exports = (crowi) => {
     try {
       const userData = await user.updatePassword(newPassword);
       const serializedUserData = serializeUserSecurely(userData);
+      passwordResetOrder.revokeOneTimeToken();
       await sendPasswordResetEmail('passwordResetSuccessful', i18n, email);
       return res.apiv3({ userData: serializedUserData });
     }
