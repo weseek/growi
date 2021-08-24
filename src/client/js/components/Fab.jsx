@@ -62,7 +62,7 @@ const Fab = (props) => {
   }
 
   return (
-    <div className="grw-fab d-none d-md-block">
+    <div className="grw-fab d-none d-md-block d-edit-none">
       {currentUser != null && renderPageCreateButton()}
       <div className={`rounded-circle position-absolute ${animateClasses}`} style={{ bottom: 0, right: 0 }}>
         <button
