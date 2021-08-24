@@ -9,7 +9,7 @@ Knowledge in companies, university laboratories, and clubs can be easily shared 
 We can easily write what we know and edit it together, we can **simplify the tacit knowledge (knowledge which is hard to explain with words) in our team**.  
 Let's increase the information exchange everyday.
 
-### :beginner: How to create a simple page
+### :beginner: How to create a page easily 
 
 - Start from "**Create**" button on the upper right, or the **Pencil Icon** on the lower right.
     - The page title can be edited again later, don't worry about the title.
@@ -34,7 +34,7 @@ For more information: [Tutorial#Create New Page](https://docs.growi.org/en/guide
   </div>
 </div>
 
-# :anchor: For administrator <small>〜if you create a Wiki〜</small>
+# :anchor: For administrator <small>〜After you construct the site〜</small>
 
 ### :arrow_right: Do you will use a Wiki with more than one person?
 - :heavy_check_mark: Let's invite some members.
