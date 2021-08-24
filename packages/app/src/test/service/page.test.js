@@ -190,7 +190,7 @@ describe('PageService', () => {
     parentForRename2 = await Page.findOne({ path: '/parentForRename2' });
     parentForRename3 = await Page.findOne({ path: '/parentForRename3' });
     parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
-    parentForRename6 = await Page.findOne({ path: '/parentForRename5' });
+    parentForRename6 = await Page.findOne({ path: '/parentForRename6' });
 
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
 
