@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.3.3-RC",
+  "version": "4.3.3",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -21,8 +21,12 @@
   },
   "private": true,
   "workspaces": {
-    "packages": ["packages/*"],
-    "nohoist": ["**/slackbot-proxy/bootstrap"]
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/slackbot-proxy/bootstrap"
+    ]
   },
   "scripts": {
     "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
@@ -73,8 +77,7 @@
     "version": "node -p \"require('./package.json').version\"",
     "webpack": "webpack"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "lerna": "^4.0.0"
   },
