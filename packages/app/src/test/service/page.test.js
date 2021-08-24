@@ -14,6 +14,7 @@ let parentForRename1;
 let parentForRename2;
 let parentForRename3;
 let parentForRename4;
+let parentForRename6;
 
 let childForRename1;
 let childForRename2;
@@ -90,6 +91,12 @@ describe('PageService', () => {
       },
       {
         path: '/parentForRename4',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/parentForRename6',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
         lastUpdateUser: testUser1,
@@ -183,6 +190,7 @@ describe('PageService', () => {
     parentForRename2 = await Page.findOne({ path: '/parentForRename2' });
     parentForRename3 = await Page.findOne({ path: '/parentForRename3' });
     parentForRename4 = await Page.findOne({ path: '/parentForRename4' });
+    parentForRename6 = await Page.findOne({ path: '/parentForRename5' });
 
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
 
