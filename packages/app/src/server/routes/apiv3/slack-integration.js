@@ -40,6 +40,7 @@ module.exports = (crowi) => {
         + 'Please unregister the information registered in the proxy and setup `/growi register` again.',
       });
     }
+
     next();
   }
 
