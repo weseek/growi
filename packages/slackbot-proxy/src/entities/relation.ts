@@ -38,10 +38,10 @@ export class Relation {
   supportedCommandsForSingleUse: string[];
 
   @Column({ type: 'timestamp' })
-  expiredAtCommands: number;
+  expiredAtCommands: Date;
 
   getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {
-    // differenceInMilliseconds uses Date.getTime() internally
+    // differenceInMilliseconds uses Date.prototype.getTime() internally
     return differenceInMilliseconds(this.expiredAtCommands, baseDate);
   }
 
