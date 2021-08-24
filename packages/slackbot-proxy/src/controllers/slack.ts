@@ -289,6 +289,8 @@ export class SlackCtrl {
       return;
     }
 
+    // TOD0 Imple isSupportedGrowiCommandForSingleCastuse isSupportedGrowiCommandForBroadCastuse
+
     // check permission at channel level
     let actionId:string;
     let fromChannel:string;
