@@ -312,3 +312,34 @@ export const useCurrentProductNavWidth = (productNavWidth?: number): SWRResponse
 
   return useStaticSWR(key);
 };
+
+export const useSidebarCollapsed = (isCollapsed?: boolean): SWRResponse<boolean, any> => {
+  const key = 'isSidebarCollapsed';
+
+  if (isCollapsed == null) {
+    if (!cache.has(key)) {
+      mutate(key, false, false);
+    }
+  }
+  else {
+    mutate(key, isCollapsed);
+  }
+
+  return useStaticSWR(key);
+};
+
+export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, any> => {
+  const key = 'isSidebarResizeDisabled';
+
+  if (isDisabled == null) {
+    if (!cache.has(key)) {
+      mutate(key, false, false);
+    }
+  }
+  else {
+    mutate(key, isDisabled);
+  }
+
+  return useStaticSWR(key);
+};
+
