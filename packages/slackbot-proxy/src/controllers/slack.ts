@@ -74,7 +74,6 @@ export class SlackCtrl {
       throw new Error('relations must be set');
     }
     const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
-    console.log(77);
     const promises = relations.map((relation: RelationMock) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
@@ -88,7 +87,6 @@ export class SlackCtrl {
       });
     });
 
-    console.log(91);
 
     // pickup PromiseRejectedResult only
     const results = await Promise.allSettled(promises);
@@ -240,7 +238,6 @@ export class SlackCtrl {
         default:
           break;
       }
-      console.log(241);
 
       return client.chat.postEphemeral({
         text: 'Error occured.',
@@ -328,7 +325,6 @@ export class SlackCtrl {
       });
     }
     catch (err) {
-      console.log(329);
       logger.error(err);
     }
   }
