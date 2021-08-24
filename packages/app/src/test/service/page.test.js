@@ -18,7 +18,6 @@ let parentForRename6;
 let parentForRename7;
 let parentForRename8;
 let parentForRename9;
-
 let childForRename1;
 let childForRename2;
 let childForRename3;
@@ -265,33 +264,25 @@ describe('PageService', () => {
   });
 
   describe('rename page without using renameDescendantsWithStreamSpy', () => {
-    let pageEventSpy;
-    beforeEach(async() => {
-      pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
+    test('rename page with different tree with isRecursively [deeper]', async() => {
+      const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, {}, true);
+      const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
+      const expectPage = await Page.findOne({ path: '/parentForRename6/renamedChild' });
+
+      expect(resultPage.path).toEqual(expectPage.path);
+      expect(wrongPage).toBeNull();
     });
 
-    describe('renamePage()', () => {
-      test('rename page with different tree with isRecursively [deeper]', async() => {
-        const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, {}, true);
-        const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
-        const expectPage = await Page.findOne({ path: '/parentForRename6/renamedChild' });
+    test('rename page with different tree with isRecursively [shallower]', async() => {
+      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {}, true);
+      const expectPage1 = await Page.findOne({ path: '/level1' });
+      const expectPage2 = await Page.findOne({ path: '/level1/child' });
+      const expectPage3 = await Page.findOne({ path: '/level1/level2' });
 
-        expect(resultPage.path).toEqual(expectPage.path);
-        expect(wrongPage).toBeNull();
-      });
-
-      test('rename page with different tree with isRecursively [shallower]', async() => {
-        await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {}, true);
-        const expectPage1 = await Page.findOne({ path: '/level1' });
-        const expectPage2 = await Page.findOne({ path: '/level1/child' });
-        const expectPage3 = await Page.findOne({ path: '/level1/level2' });
-
-        expect(expectPage1).not.toBeNull();
-        expect(expectPage2).not.toBeNull();
-        expect(expectPage3).not.toBeNull();
-      });
+      expect(expectPage1).not.toBeNull();
+      expect(expectPage2).not.toBeNull();
+      expect(expectPage3).not.toBeNull();
     });
-
   });
 
   describe('rename page', () => {
