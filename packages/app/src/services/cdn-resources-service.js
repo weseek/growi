@@ -7,9 +7,9 @@ const urljoin = require('url-join');
 const { envUtils } = require('growi-commons');
 
 const cdnLocalScriptRoot = 'public/js/cdn';
-const cdnLocalScriptWebRoot = '/js/cdn';
+const cdnLocalScriptWebRoot = 'static/js/cdn';
 const cdnLocalStyleRoot = 'public/styles/cdn';
-const cdnLocalStyleWebRoot = '/styles/cdn';
+const cdnLocalStyleWebRoot = 'static/styles/cdn';
 
 
 class CdnResourcesService {
