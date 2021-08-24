@@ -140,7 +140,6 @@ module.exports = (crowi) => {
       'x-growi-gtop-tokens': tokenGtoP,
     };
 
-
     return generateWebClient(token, serverUri, headers);
   };
 
