@@ -357,7 +357,7 @@ class PageService {
 
   async duplicateDescendantsWithStream(page, newPagePath, user) {
 
-    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
