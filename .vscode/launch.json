@@ -14,10 +14,11 @@
         "type": "node",
         "request": "launch",
         "name": "Debug: Server",
+        "cwd": "${workspaceFolder}/packages/app",
         "runtimeExecutable": "npm",
         "runtimeArgs": [
           "run",
-          "server:nolazy"
+          "dev:server"
         ],
         "port": 9229,
         "restart": true,
@@ -30,9 +31,9 @@
         "name": "Debug: Chrome",
         "sourceMaps": true,
         "sourceMapPathOverrides": {
-          "webpack:///*": "${workspaceFolder}/*"
+          "webpack:///*": "${workspaceFolder}/packages/app/*"
         },
-        "webRoot": "${workspaceFolder}/public",
+        "webRoot": "${workspaceFolder}/packages/app/public",
         "url": "http://localhost:3000"
       },
       {
@@ -41,15 +42,35 @@
         "name": "Debug: Firefox",
         "reAttach": true,
         "url": "http://localhost:3000",
-        "webRoot": "${workspaceFolder}/public",
+        "webRoot": "${workspaceFolder}/packages/app/public",
         "pathMappings": [
           {
+            "url": "webpack:///core",
+            "path": "${workspaceFolder}/packages/core"
+          },
+          {
+            "url": "webpack:///plugin-attachment-refs",
+            "path": "${workspaceFolder}/packages/plugin-attachment-refs"
+          },
+          {
+            "url": "webpack:///plugin-pukiwiki-like-linker",
+            "path": "${workspaceFolder}/packages/plugin-pukiwiki-like-linker"
+          },
+          {
+            "url": "webpack:///plugin-lsx",
+            "path": "${workspaceFolder}/packages/plugin-lsx"
+          },
+          {
+            "url": "webpack:///ui",
+            "path": "${workspaceFolder}/packages/ui"
+          },
+          {
             "url": "webpack:///src",
-            "path": "${workspaceFolder}/src"
+            "path": "${workspaceFolder}/packages/app/src"
           },
           {
             "url": "http://localhost:3000",
-            "path": "${workspaceFolder}/public"
+            "path": "${workspaceFolder}/packages/app/public"
           }
         ]
       }

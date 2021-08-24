@@ -4,10 +4,10 @@ import { markdownSectionBlock } from './block-kit-builder';
 import { generateWebClient } from './webclient-factory';
 
 export const postEphemeralErrors = async(
-  rejectedResults: PromiseRejectedResult[],
-  channelId: string,
-  userId: string,
-  botToken: string,
+    rejectedResults: PromiseRejectedResult[],
+    channelId: string,
+    userId: string,
+    botToken: string,
 ): Promise<WebAPICallResult|void> => {
 
   if (rejectedResults.length > 0) {

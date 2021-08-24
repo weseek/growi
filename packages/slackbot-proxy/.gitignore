@@ -1,1 +1,2 @@
-src/public/bootstrap
+/dist
+/src/public/bootstrap

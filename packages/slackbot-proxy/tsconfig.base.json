@@ -2,10 +2,14 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules",
     "config",
     "dist",
+    "src/public/**",
     "**/*.test.ts"
   ]
 }

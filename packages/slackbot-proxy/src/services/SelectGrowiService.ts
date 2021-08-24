@@ -21,7 +21,7 @@ export class SelectGrowiService implements GrowiCommandProcessor {
   @Inject()
   relationRepository: RelationRepository;
 
-  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUris:string[]}): Promise<void> {
+  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]}): Promise<void> {
     const { botToken } = authorizeResult;
 
     if (botToken == null) {
@@ -60,7 +60,7 @@ export class SelectGrowiService implements GrowiCommandProcessor {
             element: {
               type: 'static_select',
               action_id: 'growi_app',
-              options: body.growiUris.map((growiUri) => {
+              options: body.growiUrisForSingleUse.map((growiUri) => {
                 return ({
                   text: {
                     type: 'plain_text',
