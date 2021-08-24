@@ -2,7 +2,7 @@
 
 ## v4.3.3-RC
 
-*
+* Fix: Layout is broken when editing users page ([#4128](https://github.com/weseek/growi/issues/4128))
 * Support: Upgrade libs
     * escape-string-regexp
 ## v4.3.2
