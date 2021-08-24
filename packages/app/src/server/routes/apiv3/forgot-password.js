@@ -68,7 +68,6 @@ module.exports = (crowi) => {
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
-      console.log('oneTimeUrl', oneTimeUrl);
       await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
       return res.apiv3();
     }
