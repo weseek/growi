@@ -1,3 +1,7 @@
+export const REQUEST_TIMEOUT_FOR_GTOP = 10000;
+
+export const REQUEST_TIMEOUT_FOR_PTOG = 10000;
+
 export const supportedSlackCommands: string[] = [
   '/growi',
 ];
@@ -5,6 +9,7 @@ export const supportedSlackCommands: string[] = [
 export const supportedGrowiCommands: string[] = [
   'search',
   'create',
+  'togetter',
   'help',
 ];
 
@@ -14,6 +19,7 @@ export const defaultSupportedCommandsNameForBroadcastUse: string[] = [
 
 export const defaultSupportedCommandsNameForSingleUse: string[] = [
   'create',
+  'togetter',
 ];
 
 export * from './interfaces/growi-command';

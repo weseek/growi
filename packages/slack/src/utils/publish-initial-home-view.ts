@@ -1,3 +1,6 @@
+// Now Home tab is disabled
+// TODO Imple Home tab
+
 import { ViewsPublishResponse, WebClient } from '@slack/web-api';
 
 export const publishInitialHomeView = (client: WebClient, userId: string): Promise<ViewsPublishResponse> => {

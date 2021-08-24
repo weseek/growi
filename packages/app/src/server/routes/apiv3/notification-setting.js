@@ -1,6 +1,8 @@
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
+import UpdatePost from '../../models/update-post';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 
@@ -107,7 +109,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const GlobalNotificationMailSetting = crowi.models.GlobalNotificationMailSetting;
@@ -181,7 +182,6 @@ module.exports = (crowi) => {
         isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
         slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
       };
-      await crowi.setupSlackLegacy();
       return res.apiv3({ responseParams });
     }
     catch (err) {
@@ -221,12 +221,11 @@ module.exports = (crowi) => {
   */
   router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
-    const UpdatePost = crowi.model('UpdatePost');
 
     try {
       logger.info('notification.add', pathPattern, channel);
       const responseParams = {
-        createdUser: await UpdatePost.create(pathPattern, channel, req.user),
+        createdUser: await UpdatePost.createUpdatePost(pathPattern, channel, req.user),
         userNotifications: await UpdatePost.findAll(),
       };
       return res.apiv3({ responseParams }, 201);
@@ -268,7 +267,7 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
-      const deletedNotificaton = await UpdatePost.remove(id);
+      const deletedNotificaton = await UpdatePost.findOneAndRemove({ _id: id });
       return res.apiv3(deletedNotificaton);
     }
     catch (err) {
