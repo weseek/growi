@@ -187,7 +187,6 @@ module.exports = function(crowi, app) {
 
   app.get('/forgot-password', forgotPassword.forgotPassword);
   app.get('/forgot-password/:token'      ,apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword);
-  app.get('/forgot-password/error/:reason'      , applicationInstalled, forgotPassword.error);
 
   app.get('/share/:linkId', page.showSharedPage);
 
