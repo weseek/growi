@@ -32,7 +32,7 @@ const GlobalNavigation = () => {
     else {
       mutateSidebarCollapsed(false);
     }
-  }, [currentContents, useSidebarCollapsed]);
+  }, [currentContents, isCollapsed]);
 
   return <SidebarNav onItemSelected={itemSelectedHandler} />;
 };
@@ -160,7 +160,7 @@ const Sidebar = (props: Props) => {
       //   navigationUIController.setState({ productNavWidth: this.sidebarWidthCached });
       // }
     }
-  }, [useSidebarResizeDisabled]);
+  }, [isResizeDisabled]);
 
   // addCssClassTemporary(className) {
   //   // clear
