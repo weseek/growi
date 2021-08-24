@@ -291,6 +291,8 @@ describe('PageService', () => {
 
       expect(resultPage.path).toEqual(expectPage1.path);
       expect(expectPage2.path).not.toBeNull();
+
+      // Check that pages that are not to be renamed have not been renamed
       expect(wrongPage).toBeNull();
     });
 
@@ -304,6 +306,8 @@ describe('PageService', () => {
       expect(expectPage1).not.toBeNull();
       expect(expectPage2).not.toBeNull();
       expect(expectPage3).not.toBeNull();
+
+      // Check that pages that are not to be renamed have not been renamed
       expect(expectPage4).not.toBeNull();
     });
   });
