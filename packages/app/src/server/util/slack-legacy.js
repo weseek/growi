@@ -1,20 +1,15 @@
-const debug = require('debug')('growi:util:slack');
-// const slack = require('./slack');
+import { IncomingWebhook } from '@slack/webhook';
+import { WebClient } from '@slack/web-api';
 
-/**
- * slack
- */
+import loggerFactory from '~/utils/logger';
 
-/* eslint-disable no-use-before-define */
+const logger = loggerFactory('growi:util:slack-legacy');
 
 module.exports = function(crowi) {
-  const { IncomingWebhook } = require('@slack/webhook');
-  const { WebClient } = require('@slack/web-api');
 
   const { configManager } = crowi;
-  const slack = crowi.getSlack();
 
-  const slackLegacy = {};
+  const slackUtilLegacy = {};
 
   const postWithIwh = async(messageObj) => {
     const webhook = new IncomingWebhook(configManager.getConfig('notification', 'slack:incomingWebhookUrl'));
@@ -22,71 +17,48 @@ module.exports = function(crowi) {
       await webhook.send(messageObj);
     }
     catch (error) {
-      debug('Post error', error);
-      debug('Sent data to slack is:', messageObj);
+      logger.debug('Post error', error);
+      logger.debug('Sent data to slack is:', messageObj);
       throw error;
     }
   };
 
   const postWithWebApi = async(messageObj) => {
     const client = new WebClient(configManager.getConfig('notification', 'slack:token'));
-    // stringify attachments
-    if (messageObj.attachments != null) {
-      messageObj.attachments = JSON.stringify(messageObj.attachments);
-    }
     try {
       await client.chat.postMessage(messageObj);
     }
     catch (error) {
-      debug('Post error', error);
-      debug('Sent data to slack is:', messageObj);
+      logger.debug('Post error', error);
+      logger.debug('Sent data to slack is:', messageObj);
       throw error;
     }
   };
 
-  // slackLegacy.post = function (channel, message, opts) {
-  slackLegacy.postPage = (page, user, channel, updateType, previousRevision) => {
-    const messageObj = slack.prepareSlackMessageForPage(page, user, channel, updateType, previousRevision);
-
-    return slackPost(messageObj);
-  };
-
-  slackLegacy.postComment = (comment, user, channel, path) => {
-    const messageObj = slack.prepareSlackMessageForComment(comment, user, channel, path);
-
-    return slackPost(messageObj);
-  };
-
-  slackLegacy.sendGlobalNotification = async(messageBody, attachmentBody, slackChannel) => {
-    const messageObj = await slack.prepareSlackMessageForGlobalNotification(messageBody, attachmentBody, slackChannel);
-
-    return slackPost(messageObj);
-  };
-
-  const slackPost = (messageObj) => {
+  slackUtilLegacy.postMessage = async(messageObj) => {
     // when incoming Webhooks is prioritized
     if (configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized')) {
       if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
-        debug('posting message with IncomingWebhook');
+        logger.debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }
       if (configManager.getConfig('notification', 'slack:token')) {
-        debug('posting message with Web API');
+        logger.debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }
     }
     // else
     else {
       if (configManager.getConfig('notification', 'slack:token')) {
-        debug('posting message with Web API');
+        logger.debug('posting message with Web API');
         return postWithWebApi(messageObj);
       }
       if (configManager.getConfig('notification', 'slack:incomingWebhookUrl')) {
-        debug('posting message with IncomingWebhook');
+        logger.debug('posting message with IncomingWebhook');
         return postWithIwh(messageObj);
       }
     }
   };
 
-  return slackLegacy;
+  return slackUtilLegacy;
 };
