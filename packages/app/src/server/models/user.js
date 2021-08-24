@@ -35,6 +35,10 @@ module.exports = function(crowi) {
     userEvent.on('activated', userEvent.onActivated);
   }
 
+  const editorSchema = new mongoose.Schema({
+    isTextLintEnable: { type: Boolean, default: true },
+  });
+
   const userSchema = new mongoose.Schema({
     userId: String,
     image: String,
@@ -66,7 +70,8 @@ module.exports = function(crowi) {
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
-    isTextLintEnable: { type: Boolean, default: true },
+    // isTextLintEnable: { type: Boolean, default: true },
+    editorSettings: editorSchema,
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
