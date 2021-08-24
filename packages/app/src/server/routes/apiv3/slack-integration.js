@@ -19,7 +19,6 @@ module.exports = (crowi) => {
   // Check if the access token is correct
   async function verifyAccessTokenFromProxy(req, res, next) {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    console.log(22, tokenPtoG);
 
     if (tokenPtoG == null) {
       const message = 'The value of header \'x-growi-ptog-tokens\' must not be empty.';
@@ -46,7 +45,6 @@ module.exports = (crowi) => {
 
   async function checkCommandPermission(req, res, next) {
     let payload;
-    console.log(48);
     if (req.body.payload) {
       payload = JSON.parse(req.body.payload);
     }
@@ -82,7 +80,7 @@ module.exports = (crowi) => {
     }
 
     // code below checks permission at channel level
-    const fromChannel = req.body.channel_name/*  || payload.channel.name; */;
+    const fromChannel = req.body.channel_name || payload.channel.name;
     [...channelsObject.keys()].forEach((commandName) => {
       const permittedChannels = channelsObject.get(commandName);
       // ex. search OR search:hogehoge
@@ -255,7 +253,6 @@ module.exports = (crowi) => {
   });
 
   router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
-    console.log(req);
     return handleInteractions(req, res);
   });
 
