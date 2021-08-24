@@ -18,6 +18,10 @@ let parentForRename6;
 let parentForRename7;
 let parentForRename8;
 let parentForRename9;
+
+let irrelevantPage1;
+let irrelevantPage2;
+
 let childForRename1;
 let childForRename2;
 let childForRename3;
@@ -122,6 +126,18 @@ describe('PageService', () => {
         lastUpdateUser: testUser1,
       },
       {
+        path: '/parentForRename6-2021H1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
+        path: '/level1-2021H1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+      },
+      {
         path: '/parentForRename1/child',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
@@ -215,6 +231,9 @@ describe('PageService', () => {
     parentForRename8 = await Page.findOne({ path: '/level1/level2/child' });
     parentForRename9 = await Page.findOne({ path: '/level1/level2/level2' });
 
+    irrelevantPage1 = await Page.findOne({ path: '/parentForRename6-2021H1' });
+    irrelevantPage2 = await Page.findOne({ path: '/level1-2021H1' });
+
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
 
     parentForDelete1 = await Page.findOne({ path: '/parentForDelete1' });
@@ -267,9 +286,11 @@ describe('PageService', () => {
     test('rename page with different tree with isRecursively [deeper]', async() => {
       const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, {}, true);
       const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
-      const expectPage = await Page.findOne({ path: '/parentForRename6/renamedChild' });
+      const expectPage1 = await Page.findOne({ path: '/parentForRename6/renamedChild' });
+      const expectPage2 = await Page.findOne({ path: '/parentForRename6-2021H1' });
 
-      expect(resultPage.path).toEqual(expectPage.path);
+      expect(resultPage.path).toEqual(expectPage1.path);
+      expect(expectPage2.path).not.toBeNull();
       expect(wrongPage).toBeNull();
     });
 
@@ -278,10 +299,12 @@ describe('PageService', () => {
       const expectPage1 = await Page.findOne({ path: '/level1' });
       const expectPage2 = await Page.findOne({ path: '/level1/child' });
       const expectPage3 = await Page.findOne({ path: '/level1/level2' });
+      const expectPage4 = await Page.findOne({ path: '/level1-2021H1' });
 
       expect(expectPage1).not.toBeNull();
       expect(expectPage2).not.toBeNull();
       expect(expectPage3).not.toBeNull();
+      expect(expectPage4).not.toBeNull();
     });
   });
 
