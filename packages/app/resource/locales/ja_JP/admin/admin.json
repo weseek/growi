@@ -321,6 +321,7 @@
       "manage_commands": "使用可能なGROWIコマンドを設定する",
       "multiple_growi_command": "複数のGROWIに対して送信できるコマンド",
       "single_growi_command": "一つのGROWIに対して送信できるコマンド",
+      "allowed_channels_description": "{{commandName}} コマンドの使用を許可するチャンネルを \",\" 区切りで入力してください。ユーザーはここに記入されているチャンネルから {{commandName}} コマンドを使用することができます。",
       "test_connection": "連携状況のテストをする",
       "test_connection_by_pressing_button": "以下のテストボタンを押して、Slack連携が完了しているかの確認をしましょう",
       "error_check_logs_below": "エラーが発生しました。下記のログを確認してください。",

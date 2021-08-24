@@ -331,6 +331,7 @@
       "manage_commands": "管理 GROWI 命令",
       "multiple_growi_command": "可以一次发送到多个 GROWI 实例的命令",
       "single_growi_command": "可以一次发送到一个 GROWI 实例的命令",
+      "allowed_channels_description": "为 {{commandName}} 命令输入允许的通道。每个通道之间用 \",\" 隔开。用户可以从这里写入的通道中使用 {{commandName}}。",
       "test_connection": "测试连接",
       "test_connection_by_pressing_button": "按下按钮以测试连接",
       "error_check_logs_below": "发生了错误。请检查以下日志。",

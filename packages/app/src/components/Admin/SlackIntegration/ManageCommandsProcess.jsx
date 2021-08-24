@@ -15,7 +15,7 @@ const ManageCommandsProcess = ({
   const [selectedCommandsForBroadcastUse, setSelectedCommandsForBroadcastUse] = useState(new Set(supportedCommandsForBroadcastUse));
   const [selectedCommandsForSingleUse, setSelectedCommandsForSingleUse] = useState(new Set(supportedCommandsForSingleUse));
 
-  const toggleCheckboxForBroadcast = (e) => {
+  const toggleCheckboxForBroadcastUse = (e) => {
     const { target } = e;
     const { name, checked } = target;
 
@@ -73,22 +73,38 @@ const ManageCommandsProcess = ({
           <p className="font-weight-bold mb-0">Multiple GROWI</p>
           <p className="text-muted mb-2">{t('admin:slack_integration.accordion.multiple_growi_command')}</p>
           <div className="custom-control custom-checkbox">
-            <div className="row mb-5">
+            <div className="row mb-5 d-block">
               {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
                 return (
-                  <div className="col-sm-6 my-1" key={commandName}>
-                    <input
-                      type="checkbox"
-                      className="custom-control-input"
-                      id={commandName}
-                      name={commandName}
-                      value={commandName}
-                      checked={selectedCommandsForBroadcastUse.has(commandName)}
-                      onChange={toggleCheckboxForBroadcast}
-                    />
-                    <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
-                      {commandName}
-                    </label>
+                  <div className="row-6 my-1" key={commandName}>
+                    <div className="row-6 my-3">
+                      <input
+                        type="checkbox"
+                        className="custom-control-input"
+                        id={commandName}
+                        name={commandName}
+                        value={commandName}
+                        checked={selectedCommandsForBroadcastUse.has(commandName)}
+                        onChange={toggleCheckboxForBroadcastUse}
+                      />
+                      <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
+                        {commandName}
+                      </label>
+                    </div>
+                    <div className="row-12 row-md-6">
+                      <textarea
+                        className="form-control"
+                        type="textarea"
+                        name="permittedChannelsForEachCommand"
+                        // TODO: TAICHI implement data interactions
+                        // defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
+                        // onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
+                      />
+                      <p className="form-text text-muted small">
+                        {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
+                        <br />
+                      </p>
+                    </div>
                   </div>
                 );
               })}
@@ -101,19 +117,35 @@ const ManageCommandsProcess = ({
             <div className="row mb-5">
               {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
                 return (
-                  <div className="col-sm-6 my-1" key={commandName}>
-                    <input
-                      type="checkbox"
-                      className="custom-control-input"
-                      id={commandName}
-                      name={commandName}
-                      value={commandName}
-                      checked={selectedCommandsForSingleUse.has(commandName)}
-                      onChange={toggleCheckboxForSingleUse}
-                    />
-                    <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
-                      {commandName}
-                    </label>
+                  <div className="row-6 my-1" key={commandName}>
+                    <div className="row-6 my-3">
+                      <input
+                        type="checkbox"
+                        className="custom-control-input"
+                        id={commandName}
+                        name={commandName}
+                        value={commandName}
+                        checked={selectedCommandsForSingleUse.has(commandName)}
+                        onChange={toggleCheckboxForSingleUse}
+                      />
+                      <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
+                        {commandName}
+                      </label>
+                    </div>
+                    <div className="row-12 row-md-6">
+                      <textarea
+                        className="form-control"
+                        type="textarea"
+                        name="permittedChannelsForEachCommand"
+                        // TODO: TAICHI
+                        // defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
+                        // onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
+                      />
+                      <p className="form-text text-muted small">
+                        {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
+                        <br />
+                      </p>
+                    </div>
                   </div>
                 );
               })}
