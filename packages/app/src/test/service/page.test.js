@@ -15,6 +15,9 @@ let parentForRename2;
 let parentForRename3;
 let parentForRename4;
 let parentForRename6;
+let parentForRename7;
+let parentForRename8;
+let parentForRename9;
 
 let childForRename1;
 let childForRename2;
@@ -247,7 +250,7 @@ describe('PageService', () => {
     });
 
     describe('renamePage()', () => {
-      test('rename page with different tree with isRecursively', async() => {
+      test('rename page with different tree with isRecursively [deeper]', async() => {
         const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, {}, true);
         const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
         const expectPage = await Page.findOne({ path: '/parentForRename6/renamedChild' });
