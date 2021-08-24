@@ -147,10 +147,13 @@ class PageService {
     const { PageQueryBuilder } = Page;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
-    const readStream = new PageQueryBuilder(Page.find())
+    const builder = new PageQueryBuilder(Page.find())
       .addConditionToExcludeRedirect()
       .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
+
+    await Page.addConditionToFilteringByViewerToEdit(builder, user)
+
+    const readStream = builder
       .query
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
