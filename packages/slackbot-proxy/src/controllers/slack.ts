@@ -126,10 +126,6 @@ export class SlackCtrl {
 
     // register
     if (growiCommand.growiCommandType === 'register') {
-      // Send response immediately to avoid opelation_timeout error
-      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-      res.send();
-
       return this.registerService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
 
@@ -141,10 +137,6 @@ export class SlackCtrl {
       if (!growiCommand.growiCommandArgs.every(v => v.match(/^(https?:\/\/)/))) {
         return 'GROWI Urls must be urls.';
       }
-
-      // Send response immediately to avoid opelation_timeout error
-      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-      res.send();
 
       return this.unregisterService.process(growiCommand, authorizeResult, body as {[key:string]:string});
     }
@@ -178,7 +170,12 @@ export class SlackCtrl {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
+    // For commands other than register, unregister, and status
+    // res.send()
+    res.send({
+      response_type: 'ephemeral',
+      text: 'Processing your request ...',
+    });
 
     const baseDate = new Date();
 
