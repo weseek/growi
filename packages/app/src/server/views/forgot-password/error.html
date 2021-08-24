@@ -33,7 +33,7 @@
             <div class="text-center">
               <h1><i class="icon-lock-open large"></i></h1>
               <h2 class="text-center">{{ t('forgot_password.reset_password') }}</h2>
-                {% if reason === 'password-reset-order' %}
+                {% if key === 'password-reset-order-is-not-appropriate' %}
                 <div>
                   <div class="alert alert-warning mb-3">
                     <h2>{{ t('forgot_password.incorrect_token_or_expired_url') }}</h2>
