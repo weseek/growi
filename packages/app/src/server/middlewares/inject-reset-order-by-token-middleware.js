@@ -2,7 +2,6 @@ const createError = require('http-errors');
 
 module.exports = (crowi, app) => {
   const PasswordResetOrder = crowi.model('PasswordResetOrder');
-  const forgotPassword = require('../routes/forgot-password')(crowi, app);
 
   return async(req, res, next) => {
     const token = req.params.token || req.body.token;
