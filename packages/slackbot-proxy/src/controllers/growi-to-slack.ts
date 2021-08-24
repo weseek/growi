@@ -113,15 +113,15 @@ export class GrowiToSlackCtrl {
     }
 
     const tokenGtoP = tokenGtoPs[0];
-    // const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+    const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
 
     // MOCK DATA DELETE THIS GW 6972 -----------
-    const relation = await this.relationMockRepository.update(
+    const relationMock = await this.relationMockRepository.update(
       { tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse, permittedChannelsForEachCommand },
     );
     // MOCK DATA DELETE THIS GW 6972 -----------
 
-    return res.send({ relation });
+    return res.send({ relationMock });
   }
 
   @Post('/relation-test')

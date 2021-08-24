@@ -61,6 +61,7 @@ module.exports = (crowi) => {
     const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
     const channelsObject = slackAppIntegrationMock.permittedChannelsForEachCommand._doc.channelsObject;
     // MOCK DATA DELETE THIS GW-6972 ---------------
+
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
     const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
     const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
@@ -69,26 +70,29 @@ module.exports = (crowi) => {
     let command = '';
     let actionId = '';
     let callbackId = '';
+    let fromChannel = '';
 
     if (!payload) { // when request is to /commands
       command = req.body.text.split(' ')[0];
+      fromChannel = req.body.channel_name;
     }
     else if (payload.actions) { // when request is to /interactions && block_actions
       actionId = payload.actions[0].action_id;
+      fromChannel = payload.channel.name;
     }
     else { // when request is to /interactions && view_submission
       callbackId = payload.view.callback_id;
+      fromChannel = JSON.parse(payload.view.private_metadata).channelName;
     }
 
     // code below checks permission at channel level
-    const fromChannel = req.body.channel_name || payload.channel.name;
     [...channelsObject.keys()].forEach((commandName) => {
       const permittedChannels = channelsObject.get(commandName);
       // ex. search OR search:hogehoge
       const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
 
       // RegExp check
-      if (commandRegExp.test(commandName) || commandRegExp.test(actionId) || commandRegExp.test(callbackId)) {
+      if (commandRegExp.test(command) || commandRegExp.test(actionId) || commandRegExp.test(callbackId)) {
         // check if the channel is permitted
         if (permittedChannels.includes(fromChannel)) return next();
       }
