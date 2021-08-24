@@ -90,7 +90,7 @@ export class RelationsService {
     }
 
     // 24 hours
-    if (distanceMillisecondsToExpiredAt < 1000 * 60 * 60 * 24) {
+    if (distanceMillisecondsToExpiredAt < 24 * 60 * 60 * 1000) {
       try {
         this.syncSupportedGrowiCommands(relationMock);
       }
