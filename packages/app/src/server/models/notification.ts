@@ -3,7 +3,7 @@ import {
 } from 'mongoose';
 import Debug from 'debug';
 import { subDays } from 'date-fns';
-import ActivityDefine from 'server/util/activityDefine';
+import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 import { ActivityDocument } from './activity';
 import { UserDocument } from './user';
