@@ -214,12 +214,12 @@ export class SlackCtrl {
 
       const permittedCreateCommandArray = permittedChannelsForEachCommand?.channelsObject.create;
       const permittedSearchCommandArray = permittedChannelsForEachCommand?.channelsObject.search;
-      const isCreate = permittedCreateCommandArray?.includes(body.channel_name);
-      const isSearch = permittedSearchCommandArray?.includes(body.channel_name);
+      const hasCreatePermission = permittedCreateCommandArray?.includes(body.channel_name);
+      const hasSearchPermission = permittedSearchCommandArray?.includes(body.channel_name);
 
       switch (growiCommand.growiCommandType) {
         case 'create':
-          if (isCreate) {
+          if (hasCreatePermission) {
             const relationsForSingleUse:RelationMock[] = [];
             body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
             relationsForSingleUse.push(relations[0]);
@@ -227,7 +227,7 @@ export class SlackCtrl {
           }
           break;
         case 'search':
-          if (isSearch) {
+          if (hasSearchPermission) {
             const relationsForBroadcastUse:RelationMock[] = [];
             body.permittedChannelsForEachCommand = relations[0].permittedChannelsForEachCommand;
             relationsForBroadcastUse.push(relations[0]);
