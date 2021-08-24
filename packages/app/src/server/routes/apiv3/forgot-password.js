@@ -78,7 +78,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', /* apiLimiter, */ csrf, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/', apiLimiter, csrf, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
 
     if (req.error != null) {
       return res.apiv3Err(req.error.message);
