@@ -87,7 +87,6 @@ export class SlackCtrl {
       });
     });
 
-
     // pickup PromiseRejectedResult only
     const results = await Promise.allSettled(promises);
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
