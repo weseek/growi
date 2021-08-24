@@ -1,4 +1,6 @@
+
 module.exports = function(crowi, app) {
+
   const actions = {};
   const api = {};
   actions.api = api;
@@ -10,14 +12,7 @@ module.exports = function(crowi, app) {
   actions.resetPassword = async function(req, res) {
 
     if (req.error != null) {
-      return res.render('forgot-password/error', { reason: 'password-reset-order' });
-      // if (req.error === 'token-not-found') {
-      //   return res.json({ status: 404, error: passwordResetOrder.message });
-      // }
-
-      // if (req.error === 'password-reset-order-is-not-appropriate') {
-      //   return res.json({ status: 400, error: passwordResetOrder.message });
-      // }
+      return res.render('forgot-password/error', { key: req.error.key });
     }
 
     console.log('req.passwordResetOrder', req.passwordResetOrder);
