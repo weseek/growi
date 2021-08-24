@@ -303,12 +303,12 @@ export class SlackCtrl {
 
     Object.keys(channelsObject).forEach((commandName) => {
       const permittedChannels = channelsObject[commandName];
-
       const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+
       // RegExp check
       if (commandRegExp.test(actionId) || commandRegExp.test(callBackId)) {
-        // check if the channel is permitted
         const isPermittedChannel = permittedChannels.includes(fromChannel);
+
         if (!isPermittedChannel) {
           return res.status(403).send(`It is not allowed to run '${commandName}' command to this GROWI.`);
         }
