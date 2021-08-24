@@ -3,7 +3,6 @@ import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
-const streamToPromise = require('stream-to-promise');
 
 const logger = loggerFactory('growi:models:page');
 const debug = require('debug')('growi:models:page');
@@ -85,7 +84,7 @@ class PageService {
     }
 
     if (isRecursively) {
-      await this.renameDescendantsWithStream(page, newPagePath, user, options);
+      this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
     this.pageEvent.emit('delete', page, user, socketClientId);
@@ -194,8 +193,6 @@ class PageService {
     readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
-
-    await streamToPromise(readStream);
   }
 
 
