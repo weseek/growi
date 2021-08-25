@@ -26,7 +26,8 @@ export class SelectGrowiService implements GrowiCommandProcessor {
   @Inject()
   relationMockRepository: RelationMockRepository;
 
-  async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]}): Promise<void> {
+  // eslint-disable-next-line max-len
+  async process(growiCommand: GrowiCommand | string, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]}): Promise<void> {
     const { botToken } = authorizeResult;
 
     if (botToken == null) {

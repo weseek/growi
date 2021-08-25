@@ -64,13 +64,13 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     }
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
+    // res.send();
 
     const baseDate = new Date();
-
+    let isSupported;
     // const relationsForSingleUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
+      isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
         console.log(75);
         return next();
@@ -79,9 +79,8 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
     // const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
-        console.log(85);
         return next();
       }
     }));
