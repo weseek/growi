@@ -349,7 +349,8 @@
     }
   },
   "slack_integration_legacy": {
-    "alert_deplicated": "この 'Slack連携 (レガシー)' は将来廃止されます。新しいSlack連携機能はこちら: "
+    "alert_disabled": "<a href='/admin/slack-integration'>新しい設定</a>が有効になっているため、この 'Slack連携 (レガシー)' は現在無効になっています。",
+    "alert_deplicated": "この 'Slack連携 (レガシー)' は将来廃止されます。代わりに<a href='/admin/slack-integration'>新しいSlack連携機能</a>を利用してください。"
   },
   "user_management": {
     "invite_users": "新規ユーザーの仮発行",

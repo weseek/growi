@@ -350,7 +350,8 @@
     }
   },
   "slack_integration_legacy": {
-    "alert_deplicated": "This 'Legacy Slack Integration' is outdated and will be discontinued in the future. To use new settings: "
+    "alert_disabled": "This 'Legacy Slack Integration' is currently disabled because <a href='/admin/slack-integration'>the new settings</a> is enabled.",
+    "alert_deplicated": "This 'Legacy Slack Integration' is outdated and will be discontinued in the future. Use <a href='/admin/slack-integration'>the new settings</a> instead. "
   },
   "user_management": {
     "invite_users": "Temporarily issue a new user",

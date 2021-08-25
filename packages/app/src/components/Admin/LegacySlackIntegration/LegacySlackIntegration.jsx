@@ -41,10 +41,16 @@ function LegacySlackIntegration(props) {
 
   return (
     <>
+      <div className="alert alert-danger">
+        <i className="icon-minus icon-fw"></i>
+        {/* eslint-disable-next-line react/no-danger */}
+        <span dangerouslySetInnerHTML={{ __html: t('admin:slack_integration_legacy.alert_disabled') }}></span>
+      </div>
+
       <div className="alert alert-warning">
         <i className="icon-info icon-fw"></i>
-        {t('admin:slack_integration_legacy.alert_deplicated')}
-        <strong><a href="/admin/slack-integration">{t('slack_integration')}</a> <i className="icon-login"></i></strong>
+        {/* eslint-disable-next-line react/no-danger */}
+        <span dangerouslySetInnerHTML={{ __html: t('admin:slack_integration_legacy.alert_deplicated') }}></span>
       </div>
 
       <SlackConfiguration />
