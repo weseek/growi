@@ -13,7 +13,7 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:slackAppConfiguration');
 
-class SlackAppConfiguration extends React.Component {
+class SlackConfiguration extends React.Component {
 
   constructor(props) {
     super(props);
@@ -170,13 +170,13 @@ class SlackAppConfiguration extends React.Component {
 
 }
 
-const SlackAppConfigurationWrapper = withUnstatedContainers(SlackAppConfiguration, [AppContainer, AdminNotificationContainer]);
+const SlackConfigurationWrapper = withUnstatedContainers(SlackConfiguration, [AppContainer, AdminNotificationContainer]);
 
-SlackAppConfiguration.propTypes = {
+SlackConfiguration.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 
 };
 
-export default withTranslation()(SlackAppConfigurationWrapper);
+export default withTranslation()(SlackConfigurationWrapper);

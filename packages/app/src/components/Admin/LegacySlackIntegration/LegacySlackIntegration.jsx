@@ -13,12 +13,12 @@ import AdminNotificationContainer from '~/client/services/AdminNotificationConta
 
 import { CustomNavTab } from '../../CustomNavigation/CustomNav';
 
-import SlackAppConfiguration from './SlackAppConfiguration';
+import SlackConfiguration from './SlackConfiguration';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
 let retrieveErrors = null;
-function NotificationSetting(props) {
+function LegacySlackIntegration(props) {
   const { adminNotificationContainer } = props;
 
   const [activeTab, setActiveTab] = useState('slack_configuration');
@@ -64,17 +64,17 @@ function NotificationSetting(props) {
 
       <TabContent activeTab={activeTab} className="p-5">
         <TabPane tabId="slack_configuration">
-          {activeComponents.has('slack_configuration') && <SlackAppConfiguration />}
+          {activeComponents.has('slack_configuration') && <SlackConfiguration />}
         </TabPane>
       </TabContent>
     </>
   );
 }
 
-const NotificationSettingWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(NotificationSetting), [AdminNotificationContainer]);
+const LegacySlackIntegrationWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LegacySlackIntegration), [AdminNotificationContainer]);
 
-NotificationSetting.propTypes = {
+LegacySlackIntegration.propTypes = {
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
 };
 
-export default NotificationSettingWithUnstatedContainer;
+export default LegacySlackIntegrationWithUnstatedContainer;
