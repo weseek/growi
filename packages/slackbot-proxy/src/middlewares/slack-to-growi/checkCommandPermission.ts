@@ -1,7 +1,9 @@
 import {
   IMiddleware, Inject, Middleware, Next, Req, Res,
 } from '@tsed/common';
-import { parseSlashCommand, generateWebClient, markdownSectionBlock } from '@growi/slack';
+import {
+  generateWebClient, markdownSectionBlock, GrowiCommand,
+} from '@growi/slack';
 import { RelationMock } from '~/entities/relation-mock';
 
 import { RelationsService } from '~/services/RelationsService';
@@ -33,15 +35,46 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
   async use(@Req() req:SlackOauthReq & Request, @Res() res:Res, @Next() next: Next):Promise<void> {
     const { body, authorizeResult } = req;
 
-    console.log(12, body);
-    console.log(authorizeResult);
+    let payload:any;
+    let command:string;
+    let actionId:string;
+    let callbackId:string;
+    let growiCommand:GrowiCommand;
 
-    const growiCommand = parseSlashCommand(body);
-    console.log(growiCommand);
+    if (body.payload) {
+      payload = JSON.parse(req.body.payload);
+
+      console.log(49, payload);
+      const privateMeta = JSON.parse(payload.view.private_metadata);
+
+      // first payload
+      if (privateMeta.body != null) {
+        command = privateMeta.body.text.split(' ')[0];
+      }
+      // second payload
+      else {
+        console.log(56, payload.view.callback_id);
+
+        command = payload.view.callback_id!.split(':')[0];
+      }
+      console.log(37, command);
+
+
+    }
+    else if (body.payload == null) {
+      command = body.text.split(' ')[0];
+      console.log(command);
+
+    }
+    else {
+      callbackId = payload.view.callback_id;
+
+    }
 
     const passCommandArray = ['status', 'register', 'unregister', 'help'];
+    console.log(command!);
 
-    if (passCommandArray.includes(growiCommand.growiCommandType)) {
+    if (passCommandArray.includes(command!)) {
       console.log(22);
       return next();
     }
@@ -69,7 +102,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     const baseDate = new Date();
     // const relationsForSingleUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, command, baseDate);
       if (isSupported) {
         console.log(75);
         return next();
@@ -79,7 +112,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     // const relationsForBroadcastUse:RelationMock[] = [];
     // check cache
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, command, baseDate);
       if (isSupported) {
         return next();
       }
@@ -91,11 +124,28 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
-    const targetCommand = permittedCommandsForChannel.find(e => e === growiCommand.growiCommandType);
+    console.log(112, permittedCommandsForChannel);
+
+
+    const targetCommand = permittedCommandsForChannel.find(e => e === command);
+    console.log(command!);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    console.log(118, targetCommand);
+
+
     const permittedChannels = channelsObject![targetCommand!];
-    const fromChannel = body.channel_name;
+    console.log(permittedChannels);
+
+    let fromChannel:string;
+    if (body.channel_name != null) {
+      fromChannel = body.channel_name;
+    }
+    else {
+      const privateMeta = JSON.parse(payload.view.private_metadata);
+      fromChannel = privateMeta.channelName;
+
+    }
     const isPermittedChannel = permittedChannels.includes(fromChannel);
 
     if (isPermittedChannel) {
@@ -114,7 +164,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       channel: body.channel_id,
       user: body.user_id,
       blocks: [
-        markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+        markdownSectionBlock(`It is not allowed to run *'${command!}'* command to this GROWI.`),
       ],
     });
 

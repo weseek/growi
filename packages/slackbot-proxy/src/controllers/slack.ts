@@ -197,7 +197,7 @@ export class SlackCtrl {
   }
 
   @Post('/interactions')
-  @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
+  @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq, checkCommandPermissionMiddleware)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.authorizeResult);
     logger.debug('receive interaction', req.body);
