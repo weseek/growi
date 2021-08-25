@@ -70,7 +70,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       else {
         console.log(56, payload.view.callback_id);
 
-        command = payload.view.callback_id!.split(':')[0];
+        command = payload.view.callback_id.split(':')[0];
       }
       console.log(37, command);
     }
@@ -106,22 +106,25 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
     const baseDate = new Date();
     // const relationsForSingleUse:RelationMock[] = [];
-    await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, command, baseDate);
-      if (isSupported) {
-        console.log(75);
-        return next();
-      }
-    }));
+    // await Promise.all(relations.map(async(relation) => {
+    //   const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, command, baseDate);
+    //   if (isSupported) {
+    //     console.log(75);
+    //     return next();
+    //   }
+    // }));
+    const isSupportedSingle = await relations.map(async(relation) => {
+      await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, command, baseDate);
+      return;
+    });
+    if (isSupportedSingle) return next();
 
-    // const relationsForBroadcastUse:RelationMock[] = [];
-    // check cache
-    await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, command, baseDate);
-      if (isSupported) {
-        return next();
-      }
-    }));
+
+    const isSupportedBroadCast = await relations.map(async(relation) => {
+      await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, command, baseDate);
+      return;
+    });
+    if (isSupportedBroadCast) return next();
 
     // check permission at channel level
     const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
@@ -156,15 +159,12 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       fromChannel = privateMeta.channelName;
 
     }
+
     const isPermittedChannel = permittedChannels.includes(fromChannel);
     console.log(151, isPermittedChannel);
     if (isPermittedChannel) {
       return next();
     }
-
-
-    console.log(payload);
-    console.log(req);
 
 
     if (payload != null) {
@@ -177,7 +177,8 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     // send postEphemral message for not permitted
     const botToken = relations[0].installation?.data.bot?.token;
 
-    console.log(111);
+
+    console.log(179);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const client = generateWebClient(botToken!);
@@ -190,6 +191,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       ],
     });
     return;
+
   }
 
 }
