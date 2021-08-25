@@ -2,7 +2,7 @@ import {
   IMiddleware, Inject, Middleware, Next, Req, Res,
 } from '@tsed/common';
 import { parseSlashCommand, generateWebClient, markdownSectionBlock } from '@growi/slack';
-// import { RelationMock } from '~/entities/relation-mock';
+import { RelationMock } from '~/entities/relation-mock';
 
 import { RelationsService } from '~/services/RelationsService';
 import { InstallerService } from '~/services/InstallerService';
@@ -77,6 +77,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     }));
 
     // const relationsForBroadcastUse:RelationMock[] = [];
+    // check cache
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
@@ -90,7 +91,6 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
-
     const targetCommand = permittedCommandsForChannel.find(e => e === growiCommand.growiCommandType);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -99,7 +99,6 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     const isPermittedChannel = permittedChannels.includes(fromChannel);
 
     if (isPermittedChannel) {
-      console.log(104);
       return next();
     }
 
