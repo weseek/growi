@@ -35,7 +35,7 @@ module.exports = (crowi) => {
           inputSectionBlock('path', 'Path', 'path_input', false, '/path'),
           inputSectionBlock('contents', 'Contents', 'contents_input', true, 'Input with Markdown...'),
         ],
-        private_metadata: JSON.stringify({ channelId: body.channel_id }),
+        private_metadata: JSON.stringify({ channelId: body.channel_id, channelName: body.channel_name }),
       },
     });
   };

@@ -11,7 +11,6 @@ import {
 } from '@growi/slack';
 
 // import { Relation } from '~/entities/relation';
-import { objectKeys } from '@tsed/core';
 import { RelationMock } from '~/entities/relation-mock';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallationRepository } from '~/repositories/installation';
@@ -100,6 +99,7 @@ export class SlackCtrl {
       logger.error(err);
     }
   }
+
 
   @Post('/commands')
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
@@ -203,22 +203,18 @@ export class SlackCtrl {
     }
 
     if (!isCommandPermitted) {
-      console.log(206);
-
       // check permission at channel level
       const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
       const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
-      if (channelsObject == null) return;
 
-      const permittedCommandsForChannel = Object.keys(channelsObject);
-      const fromChannel = body.channel_name;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
 
       const targetCommand = permittedCommandsForChannel.find(e => e === growiCommand.growiCommandType);
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const permittedChannels = channelsObject[targetCommand!];
-
-      // permitted channel
+      const permittedChannels = channelsObject![targetCommand!];
+      const fromChannel = body.channel_name;
       const isPermittedChannel = permittedChannels.includes(fromChannel);
 
       if (isPermittedChannel) {
@@ -228,11 +224,15 @@ export class SlackCtrl {
         return this.sendCommand(growiCommand, relationsForSingleUse, body);
       }
 
+      console.log('hoge');
+
+
+      // send postEphemral message for not permitted
       const botToken = relations[0].installation?.data.bot?.token;
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(botToken!);
-      return client.chat.postEphemeral({
+      await client.chat.postEphemeral({
         text: 'Error occured.',
         channel: body.channel_id,
         user: body.user_id,
@@ -278,6 +278,8 @@ export class SlackCtrl {
     }
 
     const payload = JSON.parse(body.payload);
+    console.log(payload);
+
     const callBackId = payload?.view?.callback_id;
 
     // register
@@ -306,41 +308,60 @@ export class SlackCtrl {
     // TOD0 Imple isSupportedGrowiCommandForSingleCastuse isSupportedGrowiCommandForBroadCastuse
 
     // check permission at channel level
-    let actionId:string;
-    let fromChannel:string;
-    if (payload?.actions != null) {
-      actionId = payload?.actions[0].action_id;
-      fromChannel = payload?.channel.name;
-    }
-
     const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
     const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
-    if (channelsObject == null) return;
 
-    Object.keys(channelsObject).forEach((commandName) => {
-      const permittedChannels = channelsObject[commandName];
-      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
 
-      // RegExp check
-      if (commandRegExp.test(actionId) || commandRegExp.test(callBackId)) {
-        const isPermittedChannel = permittedChannels.includes(fromChannel);
+    let actionId:any;
+    let fromChannel:string;
+    let extractCommandName:string;
 
-        if (isPermittedChannel) return;
+    if (payload?.actions != null) {
+      actionId = payload?.actions[0].action_id;
+      const splitActionId = payload?.actions[0].action_id.split(':');
+      extractCommandName = splitActionId[0];
+      fromChannel = payload?.channel.name;
+    }
+    else {
+      actionId = null;
+      const splitCallBackId = callBackId.split(':');
+      extractCommandName = splitCallBackId[0];
 
+      const privateMeta = JSON.parse(payload?.view.private_metadata);
+      fromChannel = privateMeta.channelName;
+    }
+
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
+    const targetCommand = permittedCommandsForChannel.find(e => e === extractCommandName);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const permittedChannels = channelsObject![targetCommand!];
+
+    const commandRegExp = new RegExp(`(^${extractCommandName}$)|(^${extractCommandName}:\\w+)`);
+
+    if (commandRegExp.test(actionId) || commandRegExp.test(callBackId)) {
+      console.log(fromChannel);
+
+      const isPermittedChannel = permittedChannels.includes(fromChannel);
+
+      if (!isPermittedChannel) {
         const botToken = relations[0].installation?.data.bot?.token;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const client = generateWebClient(botToken!);
-        return client.chat.postEphemeral({
+        console.log(body);
+
+        await client.chat.postEphemeral({
           text: 'Error occured.',
           channel: body.channel_id,
           user: body.user_id,
           blocks: [
-            markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
+            markdownSectionBlock(`It is not allowed to run *'${extractCommandName}'* command to this GROWI.`),
           ],
         });
-
+        return;
       }
-    });
+    }
 
 
     // forward to GROWI server
@@ -373,6 +394,7 @@ export class SlackCtrl {
     catch (err) {
       logger.error(err);
     }
+
   }
 
   @Post('/events')
