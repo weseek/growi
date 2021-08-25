@@ -38,6 +38,7 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
     const { slackIntegrationParams } = response.data;
 
     this.setState({
+      isSlackbotConfigured: slackIntegrationParams.isSlackbotConfigured,
       webhookUrl: slackIntegrationParams.webhookUrl,
       isIncomingWebhookPrioritized: slackIntegrationParams.isIncomingWebhookPrioritized,
       slackToken: slackIntegrationParams.slackToken,

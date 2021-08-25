@@ -39,13 +39,17 @@ function LegacySlackIntegration(props) {
     throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
+  const isDisabled = adminSlackIntegrationLegacyContainer.state.isSlackbotConfigured;
+
   return (
     <>
-      <div className="alert alert-danger">
-        <i className="icon-minus icon-fw"></i>
-        {/* eslint-disable-next-line react/no-danger */}
-        <span dangerouslySetInnerHTML={{ __html: t('admin:slack_integration_legacy.alert_disabled') }}></span>
-      </div>
+      { isDisabled && (
+        <div className="alert alert-danger">
+          <i className="icon-minus icon-fw"></i>
+          {/* eslint-disable-next-line react/no-danger */}
+          <span dangerouslySetInnerHTML={{ __html: t('admin:slack_integration_legacy.alert_disabled') }}></span>
+        </div>
+      ) }
 
       <div className="alert alert-warning">
         <i className="icon-info icon-fw"></i>

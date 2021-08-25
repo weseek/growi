@@ -70,6 +70,7 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const slackIntegrationParams = {
+      isSlackbotConfigured: crowi.slackIntegrationService.isSlackbotConfigured,
       webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
       isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
       slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
