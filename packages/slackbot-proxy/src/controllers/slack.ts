@@ -106,8 +106,6 @@ export class SlackCtrl {
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, checkCommandPermissionMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
-    console.log(149, 'commands');
-
 
     if (body.text == null) {
       return 'No text.';
@@ -172,7 +170,6 @@ export class SlackCtrl {
     res.send();
 
     const baseDate = new Date();
-    console.log(215);
 
     const relationsForSingleUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
@@ -197,7 +194,6 @@ export class SlackCtrl {
      */
 
     return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
-
   }
 
   @Post('/interactions')
