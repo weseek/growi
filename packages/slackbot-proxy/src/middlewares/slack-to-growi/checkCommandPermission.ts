@@ -92,12 +92,13 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       .getMany();
 
     if (relations.length === 0) {
-      // return res.json({
-      //   blocks: [
-      //     markdownSectionBlock('*No relation found.*'),
-      //     markdownSectionBlock('Run `/growi register` first.'),
-      //   ],
-      // });
+      res.json({
+        blocks: [
+          markdownSectionBlock('*No relation found.*'),
+          markdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
+      return;
     }
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
