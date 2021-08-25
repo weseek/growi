@@ -35,7 +35,7 @@ module.exports = function(crowi) {
     userEvent.on('activated', userEvent.onActivated);
   }
 
-  const editorDefaultSettingsForNewPageSchema = new mongoose.Schema({
+  const editorCurrentSettingsSchema = new mongoose.Schema({
     isTextLintEnable: { type: Boolean, default: true },
   });
 
@@ -70,7 +70,7 @@ module.exports = function(crowi) {
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
-    editorDefaultSettingsForNewPage: editorDefaultSettingsForNewPageSchema,
+    editorCurrentSettings: editorCurrentSettingsSchema,
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
