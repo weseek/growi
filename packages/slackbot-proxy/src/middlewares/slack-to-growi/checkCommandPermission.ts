@@ -108,6 +108,8 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     // send postEphemral message for not permitted
     const botToken = relations[0].installation?.data.bot?.token;
 
+    console.log(111);
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const client = generateWebClient(botToken!);
     await client.chat.postEphemeral({
@@ -120,6 +122,5 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     });
 
   }
-
 
 }
