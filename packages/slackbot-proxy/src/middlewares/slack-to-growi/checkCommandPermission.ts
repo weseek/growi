@@ -67,10 +67,9 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     // res.send();
 
     const baseDate = new Date();
-    let isSupported;
     // const relationsForSingleUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
         console.log(75);
         return next();
@@ -79,7 +78,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
     // const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
         return next();
       }
