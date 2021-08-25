@@ -1,12 +1,12 @@
 import {
   IMiddleware, Inject, Middleware, Next, Req, Res,
 } from '@tsed/common';
-import { parseSlashCommand } from '@growi/slack';
-import { RelationMock } from '~/entities/relation-mock';
+import { parseSlashCommand, generateWebClient, markdownSectionBlock } from '@growi/slack';
+// import { RelationMock } from '~/entities/relation-mock';
 
 import { RelationsService } from '~/services/RelationsService';
 import { InstallerService } from '~/services/InstallerService';
-import { SelectGrowiService } from '~/services/SelectGrowiService';
+// import { SelectGrowiService } from '~/services/SelectGrowiService';
 
 import { InstallationRepository } from '~/repositories/installation';
 import { RelationMockRepository } from '~/repositories/relation-mock';
@@ -105,7 +105,19 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       return next();
     }
 
-    console.log(108);
+    // send postEphemral message for not permitted
+    const botToken = relations[0].installation?.data.bot?.token;
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const client = generateWebClient(botToken!);
+    await client.chat.postEphemeral({
+      text: 'Error occured.',
+      channel: body.channel_id,
+      user: body.user_id,
+      blocks: [
+        markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+      ],
+    });
 
   }
 
