@@ -135,7 +135,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     console.log(118, targetCommand);
 
-    const permittedChannels = channelsObject![targetCommand!];
+    const permittedChannels = channelsObject?.[targetCommand!];
     console.log(permittedChannels);
 
     let fromChannel:string;
@@ -153,7 +153,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
     }
 
-    const isPermittedChannel = permittedChannels.includes(fromChannel);
+    const isPermittedChannel = permittedChannels?.includes(fromChannel);
     console.log(151, isPermittedChannel);
     if (isPermittedChannel) {
       return next();
@@ -161,7 +161,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
 
     if (payload != null) {
-      const isPermittedChannel = permittedChannels.includes(fromChannel);
+      const isPermittedChannel = permittedChannels?.includes(fromChannel);
       if (isPermittedChannel) {
         return next();
       }
