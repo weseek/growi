@@ -8,7 +8,7 @@ import { toastError } from '~/client/util/apiNotification';
 import { toArrayIfNot } from '~/utils/array-utils';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 
 import SlackConfiguration from './SlackConfiguration';
 
@@ -16,24 +16,24 @@ const logger = loggerFactory('growi:NotificationSetting');
 
 let retrieveErrors = null;
 function LegacySlackIntegration(props) {
-  const { adminNotificationContainer } = props;
+  const { adminSlackIntegrationLegacyContainer } = props;
 
-  if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
+  if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrl) {
     throw (async() => {
       try {
-        await adminNotificationContainer.retrieveNotificationData();
+        await adminSlackIntegrationLegacyContainer.retrieveNotificationData();
       }
       catch (err) {
         const errs = toArrayIfNot(err);
         toastError(errs);
         logger.error(errs);
         retrieveErrors = errs;
-        adminNotificationContainer.setState({ webhookUrl: adminNotificationContainer.dummyWebhookUrlForError });
+        adminSlackIntegrationLegacyContainer.setState({ webhookUrl: adminSlackIntegrationLegacyContainer.dummyWebhookUrlForError });
       }
     })();
   }
 
-  if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrlForError) {
+  if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrlForError) {
     throw new Error(`${retrieveErrors.length} errors occured`);
   }
 
@@ -42,10 +42,10 @@ function LegacySlackIntegration(props) {
   );
 }
 
-const LegacySlackIntegrationWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LegacySlackIntegration), [AdminNotificationContainer]);
+const LegacySlackIntegrationWithUnstatedContainer = withUnstatedContainers(withLoadingSppiner(LegacySlackIntegration), [AdminSlackIntegrationLegacyContainer]);
 
 LegacySlackIntegration.propTypes = {
-  adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
+  adminSlackIntegrationLegacyContainer: PropTypes.instanceOf(AdminSlackIntegrationLegacyContainer).isRequired,
 };
 
 export default LegacySlackIntegrationWithUnstatedContainer;

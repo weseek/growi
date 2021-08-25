@@ -46,6 +46,7 @@ import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityC
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 
 import { appContainer, componentMappings } from './base';
 
@@ -65,6 +66,7 @@ const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
 const adminNotificationContainer = new AdminNotificationContainer(appContainer);
+const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
 const injectableContainers = [
@@ -78,7 +80,7 @@ const injectableContainers = [
   adminUsersContainer,
   adminExternalAccountsContainer,
   adminNotificationContainer,
-  adminNotificationContainer,
+  adminSlackIntegrationLegacyContainer,
   adminMarkDownContainer,
   adminUserGroupDetailContainer,
 ];
