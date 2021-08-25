@@ -33,7 +33,7 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
   /**
    * Retrieve notificationData
    */
-  async retrieveNotificationData() {
+  async retrieveData() {
     const response = await this.appContainer.apiv3.get('/slack-integration-legacy-settings/');
     const { slackIntegrationParams } = response.data;
 

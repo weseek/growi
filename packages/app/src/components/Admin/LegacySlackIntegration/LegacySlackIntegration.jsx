@@ -23,7 +23,7 @@ function LegacySlackIntegration(props) {
   if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrl) {
     throw (async() => {
       try {
-        await adminSlackIntegrationLegacyContainer.retrieveNotificationData();
+        await adminSlackIntegrationLegacyContainer.retrieveData();
       }
       catch (err) {
         const errs = toArrayIfNot(err);
