@@ -36,15 +36,30 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     const { body, authorizeResult } = req;
 
     let payload:any;
-    let command:string;
-    let actionId:string;
-    let callbackId:string;
-    let growiCommand:GrowiCommand;
+    if (body.payload != null) {
+      payload = JSON.parse(req.body.payload);
+    }
+    // if (req.body.text == null && !payload) { // when /relation-test
+    //   return next();
+    // }
 
-    if (body.payload) {
+
+    let command:string;
+    if (body.payload == null) { // when request is to /commands
+      command = body.text.split(' ')[0];
+      console.log(command);
+    }
+    else if (payload.actions != null) { // when request is to /interactions && block_actions
+      console.log(58);
+
+      const actionId = payload.actions[0].action_id;
+      command = actionId.split(':')[0];
+    }
+    else { // when request is to /interactions && view_submission
       payload = JSON.parse(req.body.payload);
 
       console.log(49, payload);
+
       const privateMeta = JSON.parse(payload.view.private_metadata);
 
       // first payload
@@ -58,23 +73,12 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
         command = payload.view.callback_id!.split(':')[0];
       }
       console.log(37, command);
-
-
-    }
-    else if (body.payload == null) {
-      command = body.text.split(' ')[0];
-      console.log(command);
-
-    }
-    else {
-      callbackId = payload.view.callback_id;
-
     }
 
     const passCommandArray = ['status', 'register', 'unregister', 'help'];
-    console.log(command!);
+    console.log(command);
 
-    if (passCommandArray.includes(command!)) {
+    if (passCommandArray.includes(command)) {
       console.log(22);
       return next();
     }
@@ -122,34 +126,51 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
     const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
 
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
     console.log(112, permittedCommandsForChannel);
 
 
     const targetCommand = permittedCommandsForChannel.find(e => e === command);
-    console.log(command!);
+    console.log(command);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     console.log(118, targetCommand);
-
 
     const permittedChannels = channelsObject![targetCommand!];
     console.log(permittedChannels);
 
     let fromChannel:string;
-    if (body.channel_name != null) {
+    if (body.channel_name != null) { // commands
       fromChannel = body.channel_name;
     }
+    else if (payload.channel.name != null) { // interactions
+      fromChannel = payload.channel.name;
+    }
     else {
+      console.log(payload, 154);
+
       const privateMeta = JSON.parse(payload.view.private_metadata);
       fromChannel = privateMeta.channelName;
 
     }
     const isPermittedChannel = permittedChannels.includes(fromChannel);
-
+    console.log(151, isPermittedChannel);
     if (isPermittedChannel) {
       return next();
+    }
+
+
+    console.log(payload);
+    console.log(req);
+
+
+    if (payload != null) {
+      const isPermittedChannel = permittedChannels.includes(fromChannel);
+      if (isPermittedChannel) {
+        return next();
+      }
     }
 
     // send postEphemral message for not permitted
@@ -164,10 +185,10 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       channel: body.channel_id,
       user: body.user_id,
       blocks: [
-        markdownSectionBlock(`It is not allowed to run *'${command!}'* command to this GROWI.`),
+        markdownSectionBlock(`It is not allowed to run *'${command}'* command to this GROWI.`),
       ],
     });
-
+    return;
   }
 
 }
