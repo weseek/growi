@@ -100,6 +100,28 @@ export class SlackCtrl {
     }
   }
 
+  async getPermittedChannels(req:SlackOauthReq, extractCommandName:string):Promise<Array<string>> {
+
+    const { authorizeResult } = req;
+
+    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+
+    const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
+    const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
+    const targetCommand = permittedCommandsForChannel.find(e => e === extractCommandName);
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const permittedChannels = channelsObject![targetCommand!];
+
+    return permittedChannels;
+  }
+
   async sendNotPermissionMessage(body: {[key:string]:string}, relations:RelationMock[], extractCommandName:string):Promise<void> {
     console.log(body);
 
@@ -223,16 +245,17 @@ export class SlackCtrl {
 
     if (!isCommandPermitted) {
       // check permission at channel level
-      const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
-      const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
+      // const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
+      // const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
+      // // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
 
-      const targetCommand = permittedCommandsForChannel.find(e => e === growiCommand.growiCommandType);
+      // const targetCommand = permittedCommandsForChannel.find(e => e === growiCommand.growiCommandType);
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const permittedChannels = channelsObject![targetCommand!];
+      // // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      // const permittedChannels = channelsObject![targetCommand!];
+      const permittedChannels = await this.getPermittedChannels(req, growiCommand.growiCommandType);
       const fromChannel = body.channel_name;
       const isPermittedChannel = permittedChannels.includes(fromChannel);
 
@@ -340,10 +363,11 @@ export class SlackCtrl {
 
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
-    const targetCommand = permittedCommandsForChannel.find(e => e === extractCommandName);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const permittedChannels = channelsObject![targetCommand!];
+    // const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
+    // const targetCommand = permittedCommandsForChannel.find(e => e === extractCommandName);
+    // // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    // const permittedChannels = channelsObject![targetCommand!];
+    const permittedChannels = await this.getPermittedChannels(req, extractCommandName);
 
     const commandRegExp = new RegExp(`(^${extractCommandName}$)|(^${extractCommandName}:\\w+)`);
 
