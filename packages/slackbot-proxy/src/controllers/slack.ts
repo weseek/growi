@@ -100,6 +100,25 @@ export class SlackCtrl {
     }
   }
 
+  async sendNotPermissionMessage(body: {[key:string]:string}, relations:RelationMock[], extractCommandName:string):Promise<void> {
+    console.log(body);
+
+
+    // send postEphemral message for not permitted
+    const botToken = relations[0].installation?.data.bot?.token;
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const client = generateWebClient(botToken!);
+    await client.chat.postEphemeral({
+      text: 'Error occured.',
+      channel: body.channel_id,
+      user: body.user_id,
+      blocks: [
+        markdownSectionBlock(`It is not allowed to run *'${extractCommandName}'* command to this GROWI.`),
+      ],
+    });
+  }
+
 
   @Post('/commands')
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
@@ -351,15 +370,7 @@ export class SlackCtrl {
         const client = generateWebClient(botToken!);
         console.log(body);
 
-        await client.chat.postEphemeral({
-          text: 'Error occured.',
-          channel: body.channel_id,
-          user: body.user_id,
-          blocks: [
-            markdownSectionBlock(`It is not allowed to run *'${extractCommandName}'* command to this GROWI.`),
-          ],
-        });
-        return;
+        await this.sendNotPermissionMessage(body, relations, extractCommandName);
       }
     }
 
