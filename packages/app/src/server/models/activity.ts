@@ -2,9 +2,12 @@ import { DeleteWriteOpResultObject } from 'mongodb';
 import {
   Types, Document, Model, Schema, model,
 } from 'mongoose';
-import Debug from 'debug';
+import loggerFactory from '~/utils/logger';
+
 import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
+
+const logger = loggerFactory('growi:models:activity');
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
@@ -31,7 +34,6 @@ export interface ActivityModel extends Model<ActivityDocument> {
 }
 
 export default (crowi: Crowi) => {
-  const debug = Debug('crowi:models:activity');
   const activityEvent = crowi.event('Activity');
 
   // TODO: add revision id
@@ -203,7 +205,7 @@ export default (crowi: Crowi) => {
       return;
     }
     catch (err) {
-      debug(err);
+      logger.error(err);
     }
   });
 
@@ -216,7 +218,7 @@ export default (crowi: Crowi) => {
       await Notification.removeActivity(activity);
     }
     catch (err) {
-      debug(err);
+      logger.error(err);
     }
   });
 
