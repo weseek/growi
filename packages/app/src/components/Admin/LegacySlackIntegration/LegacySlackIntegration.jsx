@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 import loggerFactory from '~/utils/logger';
 
@@ -16,6 +17,7 @@ const logger = loggerFactory('growi:NotificationSetting');
 
 let retrieveErrors = null;
 function LegacySlackIntegration(props) {
+  const { t } = useTranslation();
   const { adminSlackIntegrationLegacyContainer } = props;
 
   if (adminSlackIntegrationLegacyContainer.state.webhookUrl === adminSlackIntegrationLegacyContainer.dummyWebhookUrl) {
@@ -38,7 +40,15 @@ function LegacySlackIntegration(props) {
   }
 
   return (
-    <SlackConfiguration />
+    <>
+      <div className="alert alert-warning">
+        <i className="icon-info icon-fw"></i>
+        {t('admin:slack_integration_legacy.alert_deplicated')}
+        <strong><a href="/admin/slack-integration">{t('slack_integration')}</a> <i className="icon-login"></i></strong>
+      </div>
+
+      <SlackConfiguration />
+    </>
   );
 }
 
