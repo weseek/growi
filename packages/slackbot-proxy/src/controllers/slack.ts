@@ -106,6 +106,8 @@ export class SlackCtrl {
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, checkCommandPermissionMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
+    console.log(109);
+
 
     if (body.text == null) {
       return 'No text.';
@@ -180,9 +182,17 @@ export class SlackCtrl {
     }));
 
     if (relationsForSingleUse.length > 0 || growiCommand.growiCommandType === 'create') {
+      console.log(185);
+
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
-      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
+      console.log(authorizeResult);
+
+      await this.selectGrowiService.process(growiCommand, authorizeResult, body);
+      return;
     }
+
+    console.log(189);
+
 
     const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
@@ -260,24 +270,6 @@ export class SlackCtrl {
     // check permission at channel level
     // const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
     // const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
-
-    let actionId:any;
-    let fromChannel:string;
-    let extractCommandName:string;
-
-    if (payload?.actions != null) {
-      actionId = payload?.actions[0].action_id;
-      const splitActionId = payload?.actions[0].action_id.split(':');
-      extractCommandName = splitActionId[0];
-      fromChannel = payload?.channel.name;
-    }
-    else {
-      actionId = null;
-      const splitCallBackId = callBackId.split(':');
-      extractCommandName = splitCallBackId[0];
-      const privateMeta = JSON.parse(payload?.view.private_metadata);
-      fromChannel = privateMeta.channel_name;
-    }
 
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
