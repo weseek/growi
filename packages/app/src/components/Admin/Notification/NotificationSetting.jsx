@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import { TabContent, TabPane } from 'reactstrap';
@@ -30,24 +32,21 @@ function NotificationSetting(props) {
     setActiveComponents(activeComponents.add(selectedTab));
   };
 
-  if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrl) {
-    throw (async() => {
-      try {
-        await adminNotificationContainer.retrieveNotificationData();
-      }
-      catch (err) {
-        const errs = toArrayIfNot(err);
-        toastError(errs);
-        logger.error(errs);
-        retrieveErrors = errs;
-        adminNotificationContainer.setState({ webhookUrl: adminNotificationContainer.dummyWebhookUrlForError });
-      }
-    })();
-  }
+  const fetchData = useCallback(async() => {
+    try {
+      await adminNotificationContainer.retrieveNotificationData();
+    }
+    catch (err) {
+      const errs = toArrayIfNot(err);
+      toastError(errs);
+      logger.error(errs);
+      retrieveErrors = errs;
+    }
+  }, [adminNotificationContainer]);
 
-  if (adminNotificationContainer.state.webhookUrl === adminNotificationContainer.dummyWebhookUrlForError) {
-    throw new Error(`${retrieveErrors.length} errors occured`);
-  }
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const navTabMapping = useMemo(() => {
     return {
