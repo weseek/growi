@@ -267,30 +267,6 @@ export class SlackCtrl {
       return;
     }
 
-    // check permission at channel level
-    // const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
-    // const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
-
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    // const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
-    // const targetCommand = permittedCommandsForChannel.find(e => e === extractCommandName);
-    // // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    // const permittedChannels = channelsObject![targetCommand!];
-    // const permittedChannels = await this.getPermittedChannels(req, extractCommandName);
-
-    // const commandRegExp = new RegExp(`(^${extractCommandName}$)|(^${extractCommandName}:\\w+)`);
-
-    // if (commandRegExp.test(actionId) || commandRegExp.test(callBackId)) {
-    //   console.log(fromChannel);
-
-    //   const isPermittedChannel = permittedChannels.includes(fromChannel);
-
-    //   if (!isPermittedChannel) {
-    //     await this.sendNotPermissionMessage(body, relations, extractCommandName);
-    //   }
-    // }
-
 
     // forward to GROWI server
     if (callBackId === 'select_growi') {
