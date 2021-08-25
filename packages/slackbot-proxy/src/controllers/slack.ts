@@ -102,46 +102,6 @@ export class SlackCtrl {
   }
 
 
-  async checkCommandPermision(req:Request & SlackOauthReq, extractCommandName:string):Promise<Array<string>> {
-
-    const { authorizeResult } = req;
-
-    const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-
-    const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
-    const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
-    const targetCommand = permittedCommandsForChannel.find(e => e === extractCommandName);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const permittedChannels = channelsObject![targetCommand!];
-
-    return permittedChannels;
-  }
-
-  async sendNotPermissionMessage(body: {[key:string]:string}, relations:RelationMock[], extractCommandName:string):Promise<void> {
-
-    // send postEphemral message for not permitted
-    const botToken = relations[0].installation?.data.bot?.token;
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const client = generateWebClient(botToken!);
-    await client.chat.postEphemeral({
-      text: 'Error occured.',
-      channel: body.channel_id,
-      user: body.user_id,
-      blocks: [
-        markdownSectionBlock(`It is not allowed to run *'${extractCommandName}'* command to this GROWI.`),
-      ],
-    });
-  }
-
-
   @Post('/commands')
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, checkCommandPermissionMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
