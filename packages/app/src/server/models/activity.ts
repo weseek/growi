@@ -199,7 +199,8 @@ export default (crowi: Crowi) => {
     try {
       const notificationUsers = await savedActivity.getNotificationTargetUsers();
 
-      return Promise.all(notificationUsers.map(user => Notification.upsertByActivity(user, savedActivity)));
+      await Promise.all(notificationUsers.map(user => Notification.upsertByActivity(user, savedActivity)));
+      return;
     }
     catch (err) {
       debug(err);
