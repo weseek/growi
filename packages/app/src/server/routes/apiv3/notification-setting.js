@@ -118,6 +118,10 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const notificationParams = {
+      // status of slack intagration
+      isSlackbotConfigured: crowi.slackIntegrationService.isSlackbotConfigured,
+      isSlackLegacyConfigured: crowi.slackIntegrationService.isSlackLegacyConfigured,
+
       userNotifications: await UpdatePost.findAll(),
       isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
       isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),

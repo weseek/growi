@@ -36,6 +36,9 @@ export default class AdminNotificationContainer extends Container {
     const { notificationParams } = response.data;
 
     this.setState({
+      isSlackbotConfigured: notificationParams.isSlackbotConfigured,
+      isSlackLegacyConfigured: notificationParams.isSlackLegacyConfigured,
+
       userNotifications: notificationParams.userNotifications,
       isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled,
       isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled,
