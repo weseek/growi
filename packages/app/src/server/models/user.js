@@ -698,12 +698,6 @@ module.exports = function(crowi) {
     user.save();
   };
 
-  userSchema.methods.updatedefaultSettingsForNewPage = async function(defaultSettingsForNewPage) {
-    this.defaultSettingsForNewPage = defaultSettingsForNewPage;
-    const userData = await this.save();
-    return userData;
-  };
-
   class UserUpperLimitException {
 
     constructor() {
