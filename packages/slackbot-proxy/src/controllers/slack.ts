@@ -246,19 +246,7 @@ export class SlackCtrl {
       console.log('hoge');
 
 
-      // send postEphemral message for not permitted
-      const botToken = relations[0].installation?.data.bot?.token;
-
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(botToken!);
-      await client.chat.postEphemeral({
-        text: 'Error occured.',
-        channel: body.channel_id,
-        user: body.user_id,
-        blocks: [
-          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
-        ],
-      });
+      await this.sendNotPermissionMessage(body, relations, growiCommand.growiCommandType);
     }
   }
 
