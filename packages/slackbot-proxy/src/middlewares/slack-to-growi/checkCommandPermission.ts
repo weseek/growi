@@ -54,22 +54,21 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       payload = JSON.parse(req.body.payload);
       const privateMeta = JSON.parse(payload.view.private_metadata);
 
-      // first payload
+      // first payload input enter url
       if (privateMeta.body != null) {
         command = privateMeta.body.text.split(' ')[0];
       }
-      // second payload
+      // second payload after input contents
       else {
         command = payload.view.callback_id.split(':')[0];
       }
     }
 
+    // skip permission bellow command
     const passCommandArray = ['status', 'register', 'unregister', 'help'];
+    if (passCommandArray.includes(command)) return next();
 
-    if (passCommandArray.includes(command)) {
-      return next();
-    }
-
+    // check if isSupportedSingle and isSupportedBroadCast
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -87,46 +86,54 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       });
       return;
     }
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    // res.send();
 
     const baseDate = new Date();
 
-    const isSupportedSingle = await relations.map(async(relation) => {
-      await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, command, baseDate);
-      return;
-    });
-    if (isSupportedSingle) return next();
+    const isSupportedSingle = await Promise.all(relations.map(async(relation) => {
+      return this.relationsService.isSupportedGrowiCommandForSingleUse(relation, command, baseDate);
+
+    }));
+    console.log(isSupportedSingle);
+
+    if (isSupportedSingle.includes(true)) {
+      console.log(99);
+      return next();
+    }
 
 
-    const isSupportedBroadCast = await relations.map(async(relation) => {
-      await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, command, baseDate);
-      return;
-    });
-    if (isSupportedBroadCast) return next();
+    const isSupportedBroadCast = await Promise.all(relations.map(async(relation) => {
+      return this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, command, baseDate);
+    }));
+    if (isSupportedBroadCast.includes(true)) return next();
+
 
     // check permission at channel level
     const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
     const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
 
-
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
-
     const targetCommand = permittedCommandsForChannel.find(e => e === command);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const permittedChannels = channelsObject?.[targetCommand!];
 
     let fromChannel:string;
+    console.log(117);
+
     if (body.channel_name != null) { // commands
+      console.log(118);
+
       fromChannel = body.channel_name;
     }
-    else if (payload.channel.name != null) { // interactions
+    else if (payload.channel.name != null) { // first interactions
+      console.log(123);
+
       fromChannel = payload.channel.name;
     }
     else {
+      console.log(128);
+
       const privateMeta = JSON.parse(payload.view.private_metadata);
       fromChannel = privateMeta.channelName;
     }
@@ -145,7 +152,6 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
     // send postEphemral message for not permitted
     const botToken = relations[0].installation?.data.bot?.token;
-
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const client = generateWebClient(botToken!);
     await client.chat.postEphemeral({
