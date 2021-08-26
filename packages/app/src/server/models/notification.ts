@@ -95,8 +95,8 @@ export default (crowi: Crowi) => {
     user: 1, target: 1, action: 1, createdAt: 1,
   });
 
-  notificationSchema.statics.findLatestNotificationsByUser = function(user, limit, offset) {
-    limit = limit || 10;
+  notificationSchema.statics.findLatestNotificationsByUser = function(user, limitNum, offset) {
+    const limit = limitNum || 10;
 
     return Notification.find({ user })
       .sort({ createdAt: -1 })
@@ -192,15 +192,22 @@ export default (crowi: Crowi) => {
   };
 
   notificationEvent.on('update', (user) => {
-    const io = crowi.getIo();
-    if (io) {
-      io.sockets.emit('notification updated', { user });
-    }
+    // TODO: be able to use getIo method by GW7221
+    // const io = crowi.getIo();
+    // if (io) {
+    //   io.sockets.emit('notification updated', { user });
+    // }
   });
 
-  notificationSchema.statics.STATUS_UNOPENED = STATUS_UNOPENED;
-  notificationSchema.statics.STATUS_UNREAD = STATUS_UNREAD;
-  notificationSchema.statics.STATUS_OPENED = STATUS_OPENED;
+  notificationSchema.statics.STATUS_UNOPENED = function() {
+    return STATUS_UNOPENED;
+  };
+  notificationSchema.statics.STATUS_UNREAD = function() {
+    return STATUS_UNREAD;
+  };
+  notificationSchema.statics.STATUS_OPENED = function() {
+    return STATUS_OPENED;
+  };
 
   const Notification = model<NotificationDocument, NotificationModel>('Notification', notificationSchema);
 
