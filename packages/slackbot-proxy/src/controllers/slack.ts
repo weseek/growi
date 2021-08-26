@@ -314,6 +314,7 @@ export class SlackCtrl {
     }
 
     try {
+      // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/interactions', req.growiUri);
       await axios.post(url.toString(), {
         ...body,
