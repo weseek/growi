@@ -11,7 +11,13 @@
     "installed_version": "Installed version",
     "list_of_env_vars":"List of environment variables",
     "env_var_priority": "For environment variables other than security, the value of the database is obtained preferentially.",
-    "about_security": "Check <a href='/admin/security'>Securtiy Settings</a> for security environment variables."
+    "about_security": "Check <a href='/admin/security'>Securtiy Settings</a> for security environment variables.",
+    "copy_bug_report": {
+      "default": "Copy prefilled bug report",
+      "done": "Copied to clipboard!"
+    },
+    "bug_report": "Submitting a bug report",
+    "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>then submit your issue to GitHub.</a>"
   },
   "app_setting": {
     "site_name": "Site name",

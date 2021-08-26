@@ -24,8 +24,11 @@ export default class AdminHomeContainer extends Container {
       nodeVersion: '',
       npmVersion: '',
       yarnVersion: '',
+      copyState: 'default',
       installedPlugins: [],
     };
+
+    this.timer = null;
 
   }
 
@@ -36,6 +39,10 @@ export default class AdminHomeContainer extends Container {
     return 'AdminHomeContainer';
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+
   /**
    * retrieve admin home data
    */
@@ -44,19 +51,113 @@ export default class AdminHomeContainer extends Container {
       const response = await this.appContainer.apiv3.get('/admin-home/');
       const { adminHomeParams } = response.data;
 
-      this.setState({
+      this.setState(prevState => ({
+        ...prevState,
         growiVersion: adminHomeParams.growiVersion,
         nodeVersion: adminHomeParams.nodeVersion,
         npmVersion: adminHomeParams.npmVersion,
         yarnVersion: adminHomeParams.yarnVersion,
         installedPlugins: adminHomeParams.installedPlugins,
         envVars: adminHomeParams.envVars,
-      });
+      }));
     }
     catch (err) {
       logger.error(err);
       toastError(new Error('Failed to fetch data'));
     }
+  }
+
+  /**
+   * used to set button text when copying bug report
+   */
+  onCopyBugReport() {
+    this.setState(prevState => ({
+      ...prevState,
+      copyState: 'done',
+    }));
+
+    this.timer = setTimeout(() => {
+      this.setState(prevState => ({
+        ...prevState,
+        copyState: 'default',
+      }));
+    }, 500);
+  }
+
+  /**
+   * generates bug report with prefilled system information
+   */
+  generatePrefilledBugReport() {
+    return `Environment
+------------
+
+### Host
+
+| item     | version |
+| ---      | --- |
+|OS        ||
+|GROWI     |${this.state.growiVersion}|
+|node.js   |${this.state.nodeVersion}|
+|npm       |${this.state.npmVersion}|
+|yarn      |${this.state.yarnVersion}|
+|Using Docker|yes/no|
+|Using [growi-docker-compose][growi-docker-compose]|yes/no|
+
+[growi-docker-compose]: https://github.com/weseek/growi-docker-compose
+
+*(Accessing https://{GROWI_HOST}/admin helps you to fill in above versions)*
+
+
+### Client
+
+| item     | version |
+| ---      | --- |
+|OS        ||
+|browser   |x.y.z|
+
+
+
+How to reproduce? (再現手順)
+---------------------------
+
+1. process 1
+1. process 2
+1. process 3
+    \`\`\`bash
+
+    \`\`\`
+
+1. process 4
+    \`\`\`bash
+
+    \`\`\`
+
+What happens? (症状)
+---------------------
+
+- symptom 1
+- symptom 2
+
+\`\`\`
+Stack Trace
+\`\`\`
+
+
+
+What is the expected result? (期待される動作)
+-------------------------------------------
+
+-
+-
+
+
+
+Note
+----
+
+-
+-
+`;
   }
 
 }
