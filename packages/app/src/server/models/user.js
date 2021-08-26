@@ -698,6 +698,12 @@ module.exports = function(crowi) {
     user.save();
   };
 
+  userSchema.methods.updateEditorCurrentSettings = async function(editorSettings) {
+    this.editorCurrentSettings = editorSettings;
+    const userData = await this.save();
+    return userData;
+  };
+
   class UserUpperLimitException {
 
     constructor() {

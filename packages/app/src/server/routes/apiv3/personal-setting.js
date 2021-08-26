@@ -15,7 +15,7 @@ const router = express.Router();
 /**
  * @swagger
  *  tags:
- *    name: PsersonalSetting
+ *    name: PersonalSetting
  */
 
 /**
@@ -457,6 +457,39 @@ module.exports = (crowi) => {
       return res.apiv3Err('disassociate-ldap-account-failed');
     }
 
+  });
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting:
+   *      get:
+   *        tags: [PersonalSetting]
+   *        operationId: getPersonalSetting
+   *        summary: /personal-setting
+   *        description: Get editor preferences
+   *        responses:
+   *          200:
+   *            description: editor preferences
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    editorCurrentSettings:
+   *                      type: object
+   *                      description: editor preferences
+   */
+  router.get('/editor-current-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { body, user } = req;
+    const { editorSettings } = body;
+    try {
+      const userData = await user.updateEditorCurrentSettings(editorSettings);
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('retrieving-update-personal-settings-failed');
+    }
   });
 
   return router;
