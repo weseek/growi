@@ -8,12 +8,17 @@ import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
 const logger = loggerFactory('growi:SlackIntegration:ManageCommandsProcess');
 
+// TODO: Add permittedChannelsForEachCommand to use data from server (props must have it) GW-7006
 const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
 }) => {
   const { t } = useTranslation();
   const [selectedCommandsForBroadcastUse, setSelectedCommandsForBroadcastUse] = useState(new Set(supportedCommandsForBroadcastUse));
   const [selectedCommandsForSingleUse, setSelectedCommandsForSingleUse] = useState(new Set(supportedCommandsForSingleUse));
+  // TODO: Use data from server GW-7006
+  const [permittedChannelsForEachCommand, setPermittedChannelsForEachCommand] = useState({
+    channelsObject: {},
+  });
 
   const toggleCheckboxForBroadcastUse = (e) => {
     const { target } = e;
@@ -63,6 +68,21 @@ const ManageCommandsProcess = ({
     }
   };
 
+  const updatePermittedChannelsForEachCommand = (e) => {
+    const commandName = e.target.name;
+    const allowedChannelsString = e.target.value;
+    // remove all whitespace
+    const spaceRemovedAllowedChannelsString = allowedChannelsString.replace(/\s+/g, '');
+    // string to array
+    const allowedChannelsArray = spaceRemovedAllowedChannelsString.split(',');
+    setPermittedChannelsForEachCommand((prevState) => {
+      const channelsObject = prevState.channelsObject;
+      channelsObject[commandName] = allowedChannelsArray;
+      prevState.channelsObject = channelsObject;
+      return prevState;
+    });
+  };
+
 
   return (
     <div className="py-4 px-5">
@@ -75,6 +95,16 @@ const ManageCommandsProcess = ({
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
+
+                const allowedChannels = permittedChannelsForEachCommand.channelsObject[commandName];
+                let defaultAllowedChannels;
+                if (allowedChannels) {
+                  defaultAllowedChannels = permittedChannelsForEachCommand.channelsObject[commandName].join();
+                }
+                else {
+                  defaultAllowedChannels = '';
+                }
+
                 return (
                   <div className="row-6 my-1" key={commandName}>
                     <div className="row-6 my-3">
@@ -95,10 +125,9 @@ const ManageCommandsProcess = ({
                       <textarea
                         className="form-control"
                         type="textarea"
-                        name="permittedChannelsForEachCommand"
-                        // TODO: TAICHI implement data interactions
-                        // defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
-                        // onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
+                        name={commandName}
+                        defaultValue={defaultAllowedChannels}
+                        onChange={updatePermittedChannelsForEachCommand}
                       />
                       <p className="form-text text-muted small">
                         {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
@@ -116,6 +145,16 @@ const ManageCommandsProcess = ({
           <div className="custom-control custom-checkbox">
             <div className="row mb-5">
               {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
+
+                const allowedChannels = permittedChannelsForEachCommand.channelsObject[commandName];
+                let defaultAllowedChannels;
+                if (allowedChannels) {
+                  defaultAllowedChannels = permittedChannelsForEachCommand.channelsObject[commandName].join();
+                }
+                else {
+                  defaultAllowedChannels = '';
+                }
+
                 return (
                   <div className="row-6 my-1" key={commandName}>
                     <div className="row-6 my-3">
@@ -136,10 +175,9 @@ const ManageCommandsProcess = ({
                       <textarea
                         className="form-control"
                         type="textarea"
-                        name="permittedChannelsForEachCommand"
-                        // TODO: TAICHI
-                        // defaultValue={adminLocalSecurityContainer.state.registrationWhiteList.join('\n')}
-                        // onChange={e => adminLocalSecurityContainer.changeRegistrationWhiteList(e.target.value)}
+                        name={commandName}
+                        defaultValue={defaultAllowedChannels}
+                        onChange={updatePermittedChannelsForEachCommand}
                       />
                       <p className="form-text text-muted small">
                         {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
@@ -171,6 +209,8 @@ ManageCommandsProcess.propTypes = {
   slackAppIntegrationId: PropTypes.string.isRequired,
   supportedCommandsForBroadcastUse: PropTypes.arrayOf(PropTypes.string),
   supportedCommandsForSingleUse: PropTypes.arrayOf(PropTypes.string),
+  // TODO: validate props originally from SlackIntegration.jsx. Use PropTypes.shape() maybe GW-7006
+  // permittedChannelsForEachCommand: PropTypes.object.isRequired,
 };
 
 export default ManageCommandsProcess;
