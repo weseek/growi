@@ -53,7 +53,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       payload = JSON.parse(req.body.payload);
       const privateMeta = JSON.parse(payload.view.private_metadata);
 
-      // first payload input enter url
+      // first payload after input url
       if (privateMeta.body != null) {
         command = privateMeta.body.text.split(' ')[0];
       }
@@ -116,7 +116,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     const permittedChannels = channelsObject?.[targetCommand!];
 
     let fromChannel:string;
-    if (body.channel_name != null) { // when request is /commands,
+    if (body.channel_name != null) { // when request is /commands
       fromChannel = body.channel_name;
     }
     else if (payload.actions != null) { // when request is to /interactions && view_submission
@@ -124,10 +124,12 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     }
     else { // when request is to /interactions && block_actions
       const privateMeta = JSON.parse(payload.view.private_metadata);
-      if (privateMeta.body != null) { // create first interactions
+
+      // first payload input url
+      if (privateMeta.body != null) {
         fromChannel = privateMeta.body.channel_name;
       }
-      else { // second interactions
+      else { // second payload after input contents
         fromChannel = privateMeta.channelName;
       }
 
