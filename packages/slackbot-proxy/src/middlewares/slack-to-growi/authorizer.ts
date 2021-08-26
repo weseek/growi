@@ -24,13 +24,25 @@ class AuthorizerService {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeCommandMiddleware');
   }
 
-   setAuthorizedData = async(req:SlackOauthReq, res:Res):Promise<InstallationQuery<boolean>|void> => {
+   pushAuthorizedResultToRequest = async(req:SlackOauthReq, res:Res):Promise<InstallationQuery<boolean>|void> => {
      const { body } = req;
 
+     let teamId;
+     let enterpriseId;
+     let isEnterpriseInstall;
+
      // extract id from body
-     const teamId = body.team_id;
-     const enterpriseId = body.enterprise_id;
-     const isEnterpriseInstall = body.is_enterprise_install === 'true';
+     if (body.payload != null) {
+       const payload = JSON.parse(body.payload);
+       teamId = payload.team?.id;
+       enterpriseId = payload.enterprise?.id;
+       isEnterpriseInstall = payload.is_enterprise_install === 'true';
+     }
+     else {
+       teamId = body.team_id;
+       enterpriseId = body.enterprise_id;
+       isEnterpriseInstall = body.is_enterprise_install === 'true';
+     }
 
      if (teamId == null && enterpriseId == null) {
        res.writeHead(400, 'No installation found');
@@ -70,29 +82,25 @@ class AuthorizerService {
 export class AuthorizeCommandMiddleware implements IMiddleware {
 
   @Inject()
-  setAuthorizedData: AuthorizerService;
+  authorizerService: AuthorizerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
-    await this.setAuthorizedData.setAuthorizedData(req, res);
+    await this.authorizerService.pushAuthorizedResultToRequest(req, res);
   }
 
 }
 
-
 @Middleware()
 export class AuthorizeInteractionMiddleware implements IMiddleware {
-
-  @Inject()
-  installerService: InstallerService;
-
-  @Inject()
-  installationRepository: InstallationRepository;
 
   private logger: Logger;
 
   constructor() {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeInteractionMiddleware');
   }
+
+  @Inject()
+  authorizerService: AuthorizerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
     const { body } = req;
@@ -103,46 +111,10 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
       return;
     }
 
-    const payload = JSON.parse(body.payload);
-    // extract id from body
-    const teamId = payload.team?.id;
-    const enterpriseId = payload.enterprise?.id;
-    const isEnterpriseInstall = payload.is_enterprise_install === 'true';
-
-    if (teamId == null && enterpriseId == null) {
-      res.writeHead(400, 'No installation found');
-      return res.end();
-    }
-
-    // create query from body
-    const query: InstallationQuery<boolean> = {
-      teamId,
-      enterpriseId,
-      isEnterpriseInstall,
-    };
-
-    let result: AuthorizeResult;
-    try {
-      result = await this.installerService.installer.authorize(query);
-
-      if (result.botToken == null) {
-        res.writeHead(403, `The installation for the team(${teamId || enterpriseId}) has no botToken`);
-        return res.end();
-      }
-    }
-    catch (e) {
-      this.logger.error(e.message);
-
-      res.writeHead(500, e.message);
-      return res.end();
-    }
-
-    // set authorized data
-    req.authorizeResult = result;
+    await this.authorizerService.pushAuthorizedResultToRequest(req, res);
   }
 
 }
-
 @Middleware()
 export class AuthorizeEventsMiddleware implements IMiddleware {
 
@@ -158,7 +130,7 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
       return;
     }
 
-    await this.authorizerService.setAuthorizedData(req, res);
+    await this.authorizerService.pushAuthorizedResultToRequest(req, res);
   }
 
 }
