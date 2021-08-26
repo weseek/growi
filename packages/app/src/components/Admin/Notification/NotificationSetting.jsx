@@ -45,17 +45,19 @@ const SkeltonListItem = () => (
 );
 
 // eslint-disable-next-line react/prop-types
-const SlackIntegrationListItem = ({ isEnabled }) => {
+const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
   const { t } = useTranslation();
+
+  const isCautionVisible = currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy';
 
   return (
     <li className="list-group-item">
-      <h4 className="mb-2">
+      <h4>
         <Badge isEnabled={isEnabled} />
         <a href="/admin/slack-integration" className="ml-2">{t('slack_integration')}</a>
       </h4>
-      { isEnabled && (
-        <ul className="pl-4">
+      { isCautionVisible && (
+        <ul className="mt-2 pl-4">
           {/* eslint-disable-next-line react/no-danger */}
           <li dangerouslySetInnerHTML={{ __html: t('admin:external_notification.caution_enabled') }} />
         </ul>
@@ -70,12 +72,12 @@ const LegacySlackIntegrationListItem = ({ isEnabled }) => {
 
   return (
     <li className="list-group-item">
-      <h4 className="mb-1">
+      <h4>
         <Badge isEnabled={isEnabled} />
         <a href="/admin/slack-integration-legacy" className="ml-2">{t('legacy_slack_integration')}</a>
       </h4>
       { isEnabled && (
-        <ul className="pl-4">
+        <ul className="mt-2 pl-4">
           <li>
             {/* eslint-disable-next-line react/no-danger */}
             <span className="text-danger" dangerouslySetInnerHTML={{ __html: t('admin:slack_integration_legacy.alert_deplicated') }}></span>
@@ -134,7 +136,7 @@ function NotificationSetting(props) {
     };
   }, []);
 
-  const { isSlackbotConfigured, isSlackLegacyConfigured } = adminNotificationContainer.state;
+  const { isSlackbotConfigured, isSlackLegacyConfigured, currentBotType } = adminNotificationContainer.state;
   const isSlackEnabled = isSlackbotConfigured;
   const isSlackLegacyEnabled = !isSlackbotConfigured && isSlackLegacyConfigured;
 
@@ -145,7 +147,7 @@ function NotificationSetting(props) {
         { !isMounted && <SkeltonListItem />}
         { isMounted && (
           <>
-            <SlackIntegrationListItem isEnabled={isSlackEnabled} />
+            <SlackIntegrationListItem isEnabled={isSlackEnabled} currentBotType={currentBotType} />
             {/* Legacy Slack Integration become visible only when new Slack Integration is disabled */}
             { !isSlackEnabled && <LegacySlackIntegrationListItem isEnabled={isSlackLegacyEnabled} /> }
           </>

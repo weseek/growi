@@ -121,6 +121,7 @@ module.exports = (crowi) => {
       // status of slack intagration
       isSlackbotConfigured: crowi.slackIntegrationService.isSlackbotConfigured,
       isSlackLegacyConfigured: crowi.slackIntegrationService.isSlackLegacyConfigured,
+      currentBotType: await crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
 
       userNotifications: await UpdatePost.findAll(),
       isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
