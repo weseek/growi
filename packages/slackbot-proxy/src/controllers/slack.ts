@@ -20,8 +20,9 @@ import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import {
-  AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware, UrlVerificationMiddleware, AuthorizeEventsMiddleware,
+  AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware, AuthorizeEventsMiddleware,
 } from '~/middlewares/slack-to-growi/authorizer';
+import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
