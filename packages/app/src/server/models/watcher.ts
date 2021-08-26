@@ -27,9 +27,6 @@ export interface WatcherModel extends Model<WatcherDocument> {
   watchByPageId(user: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getWatchers(target: Types.ObjectId): Promise<Types.ObjectId[]>
   getIgnorers(target: Types.ObjectId): Promise<Types.ObjectId[]>
-
-  STATUS_WATCH: string
-  STATUS_IGNORE: string
 }
 
 export default (crowi: Crowi) => {
@@ -92,8 +89,13 @@ export default (crowi: Crowi) => {
     return Watcher.find({ target, status: STATUS_IGNORE }).distinct('user');
   };
 
-  watcherSchema.statics.STATUS_WATCH = STATUS_WATCH;
-  watcherSchema.statics.STATUS_IGNORE = STATUS_IGNORE;
+  watcherSchema.statics.STATUS_WATCH = function() {
+    return STATUS_WATCH;
+  };
+
+  watcherSchema.statics.STATUS_IGNORE = function() {
+    return STATUS_IGNORE;
+  };
 
   const Watcher = model<WatcherDocument, WatcherModel>('Watcher', watcherSchema);
 
