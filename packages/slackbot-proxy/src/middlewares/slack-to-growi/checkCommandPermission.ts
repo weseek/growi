@@ -116,13 +116,13 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     const permittedChannels = channelsObject?.[targetCommand!];
 
     let fromChannel:string;
-    if (body.channel_name != null) { // commands, payload is undefined
+    if (body.channel_name != null) { // when request is /commands,
       fromChannel = body.channel_name;
     }
-    else if (payload.actions != null) { // search
+    else if (payload.actions != null) { // when request is to /interactions && view_submission
       fromChannel = payload.channel.name;
     }
-    else {
+    else { // when request is to /interactions && block_actions
       const privateMeta = JSON.parse(payload.view.private_metadata);
       if (privateMeta.body != null) { // create first interactions
         fromChannel = privateMeta.body.channel_name;
