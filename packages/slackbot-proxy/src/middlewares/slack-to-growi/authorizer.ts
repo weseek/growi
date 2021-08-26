@@ -24,7 +24,7 @@ class AuthorizerService {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeCommandMiddleware');
   }
 
-   pushAuthorizedResultToRequest = async(req:SlackOauthReq, res:Res):Promise<void> => {
+   pushAuthorizedResultToRequest = async(req:SlackOauthReq, res:Res):Promise<void|Res> => {
      const { body } = req;
 
      let teamId;
@@ -84,7 +84,7 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
   @Inject()
   authorizerService: AuthorizerService;
 
-  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
+  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
     await this.authorizerService.pushAuthorizedResultToRequest(req, res);
   }
 
@@ -102,7 +102,7 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
   @Inject()
   authorizerService: AuthorizerService;
 
-  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void> {
+  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
     const { body } = req;
 
     if (body.payload == null) {
@@ -121,7 +121,7 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
   @Inject()
   authorizerService: AuthorizerService;
 
-  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<string|void> {
+  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
     await this.authorizerService.pushAuthorizedResultToRequest(req, res);
   }
 
