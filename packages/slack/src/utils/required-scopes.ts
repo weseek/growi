@@ -2,6 +2,7 @@ export const requiredScopes: string[] = [
   'commands',
   'team:read',
   'chat:write',
+  'chat:write.public',
   'channels:join',
   'channels:history',
   'groups:history',

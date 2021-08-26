@@ -358,6 +358,10 @@
       "custom_bot_with_proxy_setting": "https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/custom-bot-with-proxy-settings.html"
     }
   },
+  "slack_integration_legacy": {
+    "alert_disabled": "由于<a href='/admin/slack-integration'>新设置</a>已启用，因此该'旧版Slack一体化'目前已被禁用。",
+    "alert_deplicated": "这个 '旧版Slack一体化' 已经过时了，将来会停止使用。使用<a href='/admin/slack-integration'>新的设置</a>来代替。"
+  },
   "user_management": {
     "invite_users": "临时发布新用户",
     "click_twice_same_checkbox": "您应该至少选中一个复选框。",

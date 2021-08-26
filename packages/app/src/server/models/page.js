@@ -832,6 +832,11 @@ module.exports = function(crowi) {
   pageSchema.statics.addConditionToFilteringByViewerForList = addConditionToFilteringByViewerForList;
 
   /**
+   * export addConditionToFilteringByViewerToEdit as static method
+   */
+  pageSchema.statics.addConditionToFilteringByViewerToEdit = addConditionToFilteringByViewerToEdit;
+
+  /**
    * Throw error for growi-lsx-plugin (v1.x)
    */
   pageSchema.statics.generateQueryToListByStartWith = function(path, user, option) {
