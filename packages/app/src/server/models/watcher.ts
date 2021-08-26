@@ -20,7 +20,9 @@ export interface IWatcher {
   isIgnoring(): boolean
 }
 
-export interface WatcherDocument extends IWatcher, Document {}
+export interface WatcherDocument extends IWatcher, Document {
+  _id: Types.ObjectId
+}
 
 export interface WatcherModel extends Model<WatcherDocument> {
   findByUserIdAndTargetId(userId: Types.ObjectId, targetId: Types.ObjectId): any
