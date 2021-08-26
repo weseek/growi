@@ -18,17 +18,21 @@ export default class AdminHomeContainer extends Container {
 
     this.appContainer = appContainer;
 
+    this.copyStateValues = {
+      DEFAULT: 'default',
+      DONE: 'done',
+    };
+    this.timer = null;
+
     this.state = {
       retrieveError: null,
       growiVersion: '',
       nodeVersion: '',
       npmVersion: '',
       yarnVersion: '',
-      copyState: 'default',
+      copyState: this.copyStateValues.DEFAULT,
       installedPlugins: [],
     };
-
-    this.timer = null;
 
   }
 
@@ -73,13 +77,13 @@ export default class AdminHomeContainer extends Container {
   onCopyBugReport() {
     this.setState(prevState => ({
       ...prevState,
-      copyState: 'done',
+      copyState: this.copyStateValues.DONE,
     }));
 
     this.timer = setTimeout(() => {
       this.setState(prevState => ({
         ...prevState,
-        copyState: 'default',
+        copyState: this.copyStateValues.DEFAULT,
       }));
     }, 500);
   }

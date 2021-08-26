@@ -71,7 +71,9 @@ class AdminHome extends React.Component {
             <p>
               <CopyToClipboard text={adminHomeContainer.generatePrefilledBugReport()} onCopy={() => adminHomeContainer.onCopyBugReport()}>
                 <button type="button" className="btn btn-primary">
-                  {adminHomeContainer.state.copyState === 'default' ? t('admin:admin_top:copy_bug_report:default') : t('admin:admin_top:copy_bug_report:done')}
+                  {adminHomeContainer.state.copyState === adminHomeContainer.copyStateValues.DEFAULT
+                    ? t('admin:admin_top:copy_bug_report:default')
+                    : t('admin:admin_top:copy_bug_report:done')}
                 </button>
               </CopyToClipboard>{' '}
               {/* eslint-disable-next-line react/no-danger */}
