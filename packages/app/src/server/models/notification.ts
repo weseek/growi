@@ -1,12 +1,14 @@
 import {
   Types, Document, Model, Schema /* , Query */, model,
 } from 'mongoose';
-import Debug from 'debug';
 import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
+import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { ActivityDocument } from './activity';
 import User = require('./user');
+
+const logger = loggerFactory('growi:models:notification');
 
 const STATUS_UNREAD = 'UNREAD';
 const STATUS_UNOPENED = 'UNOPENED';
@@ -41,7 +43,6 @@ export interface NotificationModel extends Model<NotificationDocument> {
 }
 
 export default (crowi: Crowi) => {
-  const debug = Debug('crowi:models:notification');
   const notificationEvent = crowi.event('Notification');
 
   const notificationSchema = new Schema<NotificationDocument, NotificationModel>({
@@ -188,7 +189,7 @@ export default (crowi: Crowi) => {
       return count;
     }
     catch (err) {
-      debug('Error on getUnreadCountByUser', err);
+      logger.error('Error on getUnreadCountByUser', err);
       throw err;
     }
   };
