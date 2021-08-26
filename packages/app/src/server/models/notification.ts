@@ -1,12 +1,12 @@
 import {
-  Types, Document, Model, Schema, Query, model,
+  Types, Document, Model, Schema /* , Query */, model,
 } from 'mongoose';
 import Debug from 'debug';
 import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 import { ActivityDocument } from './activity';
-import { UserDocument } from './user';
+import User = require('./user');
 
 const STATUS_UNREAD = 'UNREAD';
 const STATUS_UNOPENED = 'UNOPENED';
@@ -28,9 +28,11 @@ export interface NotificationModel extends Model<NotificationDocument> {
   findLatestNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<NotificationDocument[]>
   upsertByActivity(user: Types.ObjectId, activity: ActivityDocument, createdAt?: Date | null): Promise<NotificationDocument | null>
   removeActivity(activity: any): any
-  removeEmpty(): Query<any>
-  read(user: UserDocument): Promise<Query<any>>
-  open(user: UserDocument, id: Types.ObjectId): Promise<NotificationDocument | null>
+  // commented out type 'Query' temporary to avoid ts error
+  removeEmpty()/* : Query<any> */
+  read(user: typeof User) /* : Promise<Query<any>> */
+
+  open(user: typeof User, id: Types.ObjectId): Promise<NotificationDocument | null>
   getUnreadCountByUser(user: Types.ObjectId): Promise<number | undefined>
 
   STATUS_UNREAD: string
