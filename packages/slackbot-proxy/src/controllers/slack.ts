@@ -240,7 +240,6 @@ export class SlackCtrl {
       return;
     }
 
-
     // forward to GROWI server
     if (callBackId === 'select_growi') {
       const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
