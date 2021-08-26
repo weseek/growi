@@ -70,7 +70,7 @@ export class SlackCtrl {
    * @param body
    * @returns
    */
-  private async sendCommand(growiCommand: GrowiCommand | string, relations: RelationMock[], body: any) {
+  private async sendCommand(growiCommand: GrowiCommand, relations: RelationMock[], body: any) {
     if (relations.length === 0) {
       throw new Error('relations must be set');
     }
@@ -146,14 +146,6 @@ export class SlackCtrl {
       .leftJoinAndSelect('relation_mock.installation', 'installation')
       .getMany();
 
-    if (relations.length === 0) {
-      return res.json({
-        blocks: [
-          markdownSectionBlock('*No relation found.*'),
-          markdownSectionBlock('Run `/growi register` first.'),
-        ],
-      });
-    }
 
     // status
     if (growiCommand.growiCommandType === 'status') {
@@ -222,19 +214,6 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationMockRepository.createQueryBuilder('relation_mock')
-      .where('relation_mock.installationId = :id', { id: installation?.id })
-      .leftJoinAndSelect('relation_mock.installation', 'installation')
-      .getMany();
-
-    if (relations.length === 0) {
-      return res.json({
-        blocks: [
-          markdownSectionBlock('*No relation found.*'),
-          markdownSectionBlock('Run `/growi register` first.'),
-        ],
-      });
-    }
 
     const payload = JSON.parse(body.payload);
 
