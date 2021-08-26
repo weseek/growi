@@ -2,7 +2,6 @@ import {
   Types, Document, Model, Schema, model,
 } from 'mongoose';
 
-import Crowi from '../crowi';
 import ActivityDefine from '../util/activityDefine';
 
 const STATUS_WATCH = 'WATCH';
@@ -29,7 +28,7 @@ export interface WatcherModel extends Model<WatcherDocument> {
   getIgnorers(target: Types.ObjectId): Promise<Types.ObjectId[]>
 }
 
-export default (crowi: Crowi) => {
+export default (): WatcherModel => {
 
   const watcherSchema = new Schema<WatcherDocument, WatcherModel>({
     user: {
