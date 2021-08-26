@@ -10,7 +10,63 @@ import { InstallationRepository } from '~/repositories/installation';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
-class AuthorizerService {
+
+const getCommomMiddleware = (req, res) => {
+
+  return async(req:SlackOauthReq, res:Res):Promise<void|Res> => {
+    const { body } = req;
+
+    let teamId;
+    let enterpriseId;
+    let isEnterpriseInstall;
+
+    // extract id from body
+    if (body.payload != null) {
+      const payload = JSON.parse(body.payload);
+      teamId = payload.team?.id;
+      enterpriseId = payload.enterprise?.id;
+      isEnterpriseInstall = payload.is_enterprise_install === 'true';
+    }
+    else {
+      teamId = body.team_id;
+      enterpriseId = body.enterprise_id;
+      isEnterpriseInstall = body.is_enterprise_install === 'true';
+    }
+
+    if (teamId == null && enterpriseId == null) {
+      res.writeHead(400, 'No installation found');
+      return res.end();
+    }
+
+    // create query from body
+    const query: InstallationQuery<boolean> = {
+      teamId,
+      enterpriseId,
+      isEnterpriseInstall,
+    };
+
+    let result: AuthorizeResult;
+    try {
+      result = await installerService.installer.authorize(query);
+
+      if (result.botToken == null) {
+        res.writeHead(403, `The installation for the team(${query.teamId || query.enterpriseId}) has no botToken`);
+        return res.end();
+      }
+    }
+    catch (e) {
+      // logger.error(e.message);
+
+      res.writeHead(500, e.message);
+      return res.end();
+    }
+
+    // set authorized data
+    req.authorizeResult = result;
+  };
+};
+@Middleware()
+export class AuthorizeCommandMiddleware implements IMiddleware {
 
   @Inject()
   installerService: InstallerService;
@@ -18,74 +74,9 @@ class AuthorizerService {
   @Inject()
   installationRepository: InstallationRepository;
 
-  private logger: Logger;
-
-  constructor() {
-    this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeCommandMiddleware');
-  }
-
-   pushAuthorizedResultToRequest = async(req:SlackOauthReq, res:Res):Promise<void|Res> => {
-     const { body } = req;
-
-     let teamId;
-     let enterpriseId;
-     let isEnterpriseInstall;
-
-     // extract id from body
-     if (body.payload != null) {
-       const payload = JSON.parse(body.payload);
-       teamId = payload.team?.id;
-       enterpriseId = payload.enterprise?.id;
-       isEnterpriseInstall = payload.is_enterprise_install === 'true';
-     }
-     else {
-       teamId = body.team_id;
-       enterpriseId = body.enterprise_id;
-       isEnterpriseInstall = body.is_enterprise_install === 'true';
-     }
-
-     if (teamId == null && enterpriseId == null) {
-       res.writeHead(400, 'No installation found');
-       return res.end();
-     }
-
-     // create query from body
-     const query: InstallationQuery<boolean> = {
-       teamId,
-       enterpriseId,
-       isEnterpriseInstall,
-     };
-
-     let result: AuthorizeResult;
-     try {
-       result = await this.installerService.installer.authorize(query);
-
-       if (result.botToken == null) {
-         res.writeHead(403, `The installation for the team(${query.teamId || query.enterpriseId}) has no botToken`);
-         return res.end();
-       }
-     }
-     catch (e) {
-       this.logger.error(e.message);
-
-       res.writeHead(500, e.message);
-       return res.end();
-     }
-
-     // set authorized data
-     req.authorizeResult = result;
-   };
-
-}
-
-@Middleware()
-export class AuthorizeCommandMiddleware implements IMiddleware {
-
-  @Inject()
-  authorizerService: AuthorizerService;
-
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
-    await this.authorizerService.pushAuthorizedResultToRequest(req, res);
+    const commonMiddleware = getCommomMiddleware(this.installerService, this.installationRepository);
+    await commonMiddleware(req, res);
   }
 
 }
@@ -99,20 +90,23 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
     this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeInteractionMiddleware');
   }
 
-  @Inject()
-  authorizerService: AuthorizerService;
+    @Inject()
+    installerService: InstallerService;
 
-  async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
-    const { body } = req;
+    @Inject()
+    installationRepository: InstallationRepository;
 
-    if (body.payload == null) {
+    async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
+      const { body } = req;
+
+      if (body.payload == null) {
       // do nothing
-      this.logger.info('body does not have payload');
-      return;
-    }
+        this.logger.info('body does not have payload');
+        return;
+      }
 
-    await this.authorizerService.pushAuthorizedResultToRequest(req, res);
-  }
+      await this.getCommonMiddleware(this.installerService, this.installationRepository);
+    }
 
 }
 @Middleware()
