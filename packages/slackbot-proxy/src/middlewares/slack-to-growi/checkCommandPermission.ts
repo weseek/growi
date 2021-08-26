@@ -41,7 +41,6 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     //   return next();
     // }
 
-
     let command:string;
     if (body.payload == null) { // when request is to /commands
       command = body.text.split(' ')[0];
@@ -120,22 +119,33 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
 
     let fromChannel:string;
     console.log(117);
+    console.log(payload);
 
-    if (body.channel_name != null) { // commands
+    if (body.channel_name != null) { // commands, payload is undefined
       console.log(118);
 
       fromChannel = body.channel_name;
     }
-    else if (payload.channel.name != null) { // first interactions
-      console.log(123);
-
+    else if (payload.actions != null) { // search
+      console.log(payload.actions);
+      console.log(payload, 131);
       fromChannel = payload.channel.name;
     }
     else {
-      console.log(128);
-
       const privateMeta = JSON.parse(payload.view.private_metadata);
-      fromChannel = privateMeta.channelName;
+      if (privateMeta.body != null) { // create first interactions
+        console.log(136);
+
+        fromChannel = privateMeta.body.channel_name;
+      }
+      else { // second interactions
+        fromChannel = privateMeta.channelName;
+      }
+      console.log(privateMeta, 136);
+      console.log(fromChannel);
+
+      // fromChannel = payload.channel.name;
+      // console.log(128);
     }
 
     const isPermittedChannel = permittedChannels?.includes(fromChannel);
