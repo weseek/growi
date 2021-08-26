@@ -177,25 +177,34 @@ export class SlackCtrl {
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
+        return relationsForSingleUse.push(relation);
+      }
+
+      if (growiCommand.growiCommandType === 'create') {
         relationsForSingleUse.push(relation);
       }
+
     }));
 
-    if (relationsForSingleUse.length > 0 || growiCommand.growiCommandType === 'create') {
+
+    if (relationsForSingleUse.length > 0) {
       console.log(185);
 
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
+      console.log(growiCommand);
       console.log(authorizeResult);
+      console.log(body);
 
-      await this.selectGrowiService.process(growiCommand, authorizeResult, body);
-      return;
+
+      return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
     console.log(189);
 
-
     const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
+      console.log(relations, 198);
+
       relationsForBroadcastUse.push(relation);
     }));
 
