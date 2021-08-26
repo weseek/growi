@@ -1,9 +1,9 @@
-import Crowi from 'server/crowi';
 import {
   Types, Document, Model, Schema, model,
 } from 'mongoose';
-import ActivityDefine from 'server/util/activityDefine';
-// import Debug from 'debug'
+
+import Crowi from '../crowi';
+import ActivityDefine from '../util/activityDefine';
 
 const STATUS_WATCH = 'WATCH';
 const STATUS_IGNORE = 'IGNORE';
@@ -33,7 +33,6 @@ export interface WatcherModel extends Model<WatcherDocument> {
 }
 
 export default (crowi: Crowi) => {
-  // const debug = Debug('crowi:models:watcher')
 
   const watcherSchema = new Schema<WatcherDocument, WatcherModel>({
     user: {
