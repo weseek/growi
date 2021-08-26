@@ -214,9 +214,7 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-
     const payload = JSON.parse(body.payload);
-
     const callBackId = payload?.view?.callback_id;
 
     // register
@@ -273,7 +271,6 @@ export class SlackCtrl {
     catch (err) {
       logger.error(err);
     }
-
   }
 
   @Post('/events')
