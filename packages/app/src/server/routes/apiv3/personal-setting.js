@@ -465,21 +465,21 @@ module.exports = (crowi) => {
    *    /personal-setting:
    *      put:
    *        tags: [PersonalSetting]
-   *        operationId: getPersonalSetting
+   *        operationId: putEditorSettings
    *        summary: /personal-setting
-   *        description: Get editor preferences
+   *        description: Change editor preferences
    *        responses:
    *          200:
-   *            description: editor preferences
+   *            description: params of personal info
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
-   *                    editorCurrentSettings:
+   *                    currentUser:
    *                      type: object
-   *                      description: editor preferences
+   *                      description: personal params
    */
-  router.put('/editor-current-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const { editorSettings } = req.body;
     try {
       const userData = await req.user.updateEditorCurrentSettings(editorSettings);
