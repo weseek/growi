@@ -13,6 +13,11 @@ export default class AdminNotificationContainer extends Container {
 
     this.state = {
       retrieveError: null,
+
+      isSlackbotConfigured: null,
+      isSlackLegacyConfigured: null,
+      currentBotType: null,
+
       userNotifications: [],
       isNotificationForOwnerPageEnabled: false,
       isNotificationForGroupPageEnabled: false,
@@ -36,6 +41,10 @@ export default class AdminNotificationContainer extends Container {
     const { notificationParams } = response.data;
 
     this.setState({
+      isSlackbotConfigured: notificationParams.isSlackbotConfigured,
+      isSlackLegacyConfigured: notificationParams.isSlackLegacyConfigured,
+      currentBotType: notificationParams.currentBotType,
+
       userNotifications: notificationParams.userNotifications,
       isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled,
       isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled,
