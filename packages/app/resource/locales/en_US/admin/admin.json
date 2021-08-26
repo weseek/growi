@@ -11,7 +11,7 @@
     "installed_version": "Installed version",
     "list_of_env_vars":"List of environment variables",
     "env_var_priority": "For environment variables other than security, the value of the database is obtained preferentially.",
-    "about_security": "Check <a href='/admin/security'>Securtiy Settings</a> for security environment variables.",
+    "about_security": "Check <a href='/admin/security'>Security Settings</a> for security environment variables.",
     "copy_bug_report": {
       "default": "Copy prefilled bug report",
       "done": "Copied to clipboard!"
