@@ -99,7 +99,7 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      body('isTextlintEnabled').isBoolean(),
+      body('isTextlintEnabled').isBoolean().not().isEmpty(),
     ],
   };
 
