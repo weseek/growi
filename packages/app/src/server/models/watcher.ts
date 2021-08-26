@@ -8,7 +8,7 @@ const STATUS_WATCH = 'WATCH';
 const STATUS_IGNORE = 'IGNORE';
 const STATUSES = [STATUS_WATCH, STATUS_IGNORE];
 
-export interface WatcherDocument extends Document {
+export interface IWatcher {
   _id: Types.ObjectId
   user: Types.ObjectId
   targetModel: string
@@ -19,6 +19,8 @@ export interface WatcherDocument extends Document {
   isWatching(): boolean
   isIgnoring(): boolean
 }
+
+export interface WatcherDocument extends IWatcher, Document {}
 
 export interface WatcherModel extends Model<WatcherDocument> {
   findByUserIdAndTargetId(userId: Types.ObjectId, targetId: Types.ObjectId): any
