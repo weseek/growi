@@ -8,12 +8,12 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 import AppContainer from '~/client/services/AppContainer';
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:slackAppConfiguration');
 
-class SlackAppConfiguration extends React.Component {
+class SlackConfiguration extends React.Component {
 
   constructor(props) {
     super(props);
@@ -22,10 +22,10 @@ class SlackAppConfiguration extends React.Component {
   }
 
   async onClickSubmit() {
-    const { t, adminNotificationContainer } = this.props;
+    const { t, adminSlackIntegrationLegacyContainer } = this.props;
 
     try {
-      await adminNotificationContainer.updateSlackAppConfiguration();
+      await adminSlackIntegrationLegacyContainer.updateSlackAppConfiguration();
       toastSuccess(t('notification_setting.updated_slackApp'));
     }
     catch (err) {
@@ -35,7 +35,7 @@ class SlackAppConfiguration extends React.Component {
   }
 
   render() {
-    const { t, adminNotificationContainer } = this.props;
+    const { t, adminSlackIntegrationLegacyContainer } = this.props;
 
     return (
       <React.Fragment>
@@ -50,18 +50,18 @@ class SlackAppConfiguration extends React.Component {
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                {`Slack ${adminNotificationContainer.state.selectSlackOption}`}
+                {`Slack ${adminSlackIntegrationLegacyContainer.state.selectSlackOption}`}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button className="dropdown-item" type="button" onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}>
+                <button className="dropdown-item" type="button" onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}>
                   Slack Incoming Webhooks
                 </button>
-                <button className="dropdown-item" type="button" onClick={() => adminNotificationContainer.switchSlackOption('App')}>Slack App</button>
+                <button className="dropdown-item" type="button" onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('App')}>Slack App</button>
               </div>
             </div>
           </div>
         </div>
-        {adminNotificationContainer.state.selectSlackOption === 'Incoming Webhooks' ? (
+        {adminSlackIntegrationLegacyContainer.state.selectSlackOption === 'Incoming Webhooks' ? (
           <React.Fragment>
             <h2 className="border-bottom mb-5">{t('notification_setting.slack_incoming_configuration')}</h2>
 
@@ -71,8 +71,8 @@ class SlackAppConfiguration extends React.Component {
                 <input
                   className="form-control"
                   type="text"
-                  defaultValue={adminNotificationContainer.state.webhookUrl || ''}
-                  onChange={e => adminNotificationContainer.changeWebhookUrl(e.target.value)}
+                  defaultValue={adminSlackIntegrationLegacyContainer.state.webhookUrl || ''}
+                  onChange={e => adminSlackIntegrationLegacyContainer.changeWebhookUrl(e.target.value)}
                 />
               </div>
             </div>
@@ -84,8 +84,8 @@ class SlackAppConfiguration extends React.Component {
                     type="checkbox"
                     className="custom-control-input"
                     id="cbPrioritizeIWH"
-                    checked={adminNotificationContainer.state.isIncomingWebhookPrioritized || false}
-                    onChange={() => { adminNotificationContainer.switchIsIncomingWebhookPrioritized() }}
+                    checked={adminSlackIntegrationLegacyContainer.state.isIncomingWebhookPrioritized || false}
+                    onChange={() => { adminSlackIntegrationLegacyContainer.switchIsIncomingWebhookPrioritized() }}
                   />
                   <label className="custom-control-label" htmlFor="cbPrioritizeIWH">
                     {t('notification_setting.prioritize_webhook')}
@@ -111,7 +111,7 @@ class SlackAppConfiguration extends React.Component {
                 <a
                   href="#slack-incoming-webhooks"
                   data-toggle="tab"
-                  onClick={() => adminNotificationContainer.switchSlackOption('Incoming Webhooks')}
+                  onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}
                 >
                   {t('notification_setting.use_instead')}
                 </a>
@@ -123,8 +123,8 @@ class SlackAppConfiguration extends React.Component {
                   <input
                     className="form-control"
                     type="text"
-                    defaultValue={adminNotificationContainer.state.slackToken || ''}
-                    onChange={e => adminNotificationContainer.changeSlackToken(e.target.value)}
+                    defaultValue={adminSlackIntegrationLegacyContainer.state.slackToken || ''}
+                    onChange={e => adminSlackIntegrationLegacyContainer.changeSlackToken(e.target.value)}
                   />
                 </div>
               </div>
@@ -135,7 +135,7 @@ class SlackAppConfiguration extends React.Component {
 
         <AdminUpdateButtonRow
           onClick={this.onClickSubmit}
-          disabled={adminNotificationContainer.state.retrieveError != null}
+          disabled={adminSlackIntegrationLegacyContainer.state.retrieveError != null}
         />
 
         <hr />
@@ -170,13 +170,13 @@ class SlackAppConfiguration extends React.Component {
 
 }
 
-const SlackAppConfigurationWrapper = withUnstatedContainers(SlackAppConfiguration, [AppContainer, AdminNotificationContainer]);
+const SlackConfigurationWrapper = withUnstatedContainers(SlackConfiguration, [AppContainer, AdminSlackIntegrationLegacyContainer]);
 
-SlackAppConfiguration.propTypes = {
+SlackConfiguration.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
+  adminSlackIntegrationLegacyContainer: PropTypes.instanceOf(AdminSlackIntegrationLegacyContainer).isRequired,
 
 };
 
-export default withTranslation()(SlackAppConfigurationWrapper);
+export default withTranslation()(SlackConfigurationWrapper);

@@ -3,6 +3,7 @@ import loggerFactory from '~/utils/logger';
 
 const mongoose = require('mongoose');
 const escapeStringRegexp = require('escape-string-regexp');
+const streamToPromise = require('stream-to-promise');
 
 const logger = loggerFactory('growi:models:page');
 const debug = require('debug')('growi:models:page');
@@ -49,6 +50,26 @@ class PageService {
     return this.prepareShoudDeletePagesByRedirectTo(pagePath, redirectToPagePathMapping, pagePaths);
   }
 
+  /**
+   * Generate read stream to operate descendants of the specified page path
+   * @param {string} targetPagePath
+   * @param {User} viewer
+   */
+  async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
+    const Page = this.crowi.model('Page');
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.find())
+      .addConditionToExcludeRedirect()
+      .addConditionToListOnlyDescendants(targetPagePath);
+
+    await Page.addConditionToFilteringByViewerToEdit(builder, userToOperate);
+
+    return builder
+      .query
+      .lean()
+      .cursor({ batchSize: BULK_REINDEX_SIZE });
+  }
 
   async renamePage(page, newPagePath, user, options, isRecursively = false) {
 
@@ -61,6 +82,11 @@ class PageService {
 
     // sanitize path
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+
+    // create descendants first
+    if (isRecursively) {
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
+    }
 
     const update = {};
     // update Page
@@ -80,7 +106,7 @@ class PageService {
     }
 
     if (isRecursively) {
-      this.renameDescendantsWithStream(page, newPagePath, user, options);
+      await this.renameDescendantsWithStream(page, newPagePath, user, options);
     }
 
     this.pageEvent.emit('delete', page, user, socketClientId);
@@ -147,18 +173,11 @@ class PageService {
    * Create rename stream
    */
   async renameDescendantsWithStream(targetPage, newPagePath, user, options = {}) {
-    const Page = this.crowi.model('Page');
-    const newPagePathPrefix = newPagePath;
-    const { PageQueryBuilder } = Page;
-    const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
-    const readStream = new PageQueryBuilder(Page.find())
-      .addConditionToExcludeRedirect()
-      .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
-      .query
-      .lean()
-      .cursor({ batchSize: BULK_REINDEX_SIZE });
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+
+    const newPagePathPrefix = newPagePath;
+    const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
     const renameDescendants = this.renameDescendants.bind(this);
     const pageEvent = this.pageEvent;
@@ -189,6 +208,8 @@ class PageService {
     readStream
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(writeStream);
+
+    await streamToPromise(readStream);
   }
 
 
@@ -348,19 +369,11 @@ class PageService {
   }
 
   async duplicateDescendantsWithStream(page, newPagePath, user) {
-    const Page = this.crowi.model('Page');
+
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
+
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
-
-    const { PageQueryBuilder } = Page;
-
-    const readStream = new PageQueryBuilder(Page.find())
-      .addConditionToExcludeRedirect()
-      .addConditionToListOnlyDescendants(page.path)
-      .addConditionToFilteringByViewer(user)
-      .query
-      .lean()
-      .cursor({ batchSize: BULK_REINDEX_SIZE });
 
     const duplicateDescendants = this.duplicateDescendants.bind(this);
     const pageEvent = this.pageEvent;
@@ -486,16 +499,8 @@ class PageService {
    * Create delete stream
    */
   async deleteDescendantsWithStream(targetPage, user, options = {}) {
-    const Page = this.crowi.model('Page');
-    const { PageQueryBuilder } = Page;
 
-    const readStream = new PageQueryBuilder(Page.find())
-      .addConditionToExcludeRedirect()
-      .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
-      .query
-      .lean()
-      .cursor({ batchSize: BULK_REINDEX_SIZE });
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
@@ -562,16 +567,8 @@ class PageService {
    * Create delete completely stream
    */
   async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}) {
-    const Page = this.crowi.model('Page');
-    const { PageQueryBuilder } = Page;
 
-    const readStream = new PageQueryBuilder(Page.find())
-      .addConditionToExcludeRedirect()
-      .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
-      .query
-      .lean()
-      .cursor({ batchSize: BULK_REINDEX_SIZE });
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     let count = 0;
@@ -688,16 +685,8 @@ class PageService {
    * Create revert stream
    */
   async revertDeletedDescendantsWithStream(targetPage, user, options = {}) {
-    const Page = this.crowi.model('Page');
-    const { PageQueryBuilder } = Page;
 
-    const readStream = new PageQueryBuilder(Page.find())
-      .addConditionToExcludeRedirect()
-      .addConditionToListOnlyDescendants(targetPage.path)
-      .addConditionToFilteringByViewer(user)
-      .query
-      .lean()
-      .cursor({ batchSize: BULK_REINDEX_SIZE });
+    const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
