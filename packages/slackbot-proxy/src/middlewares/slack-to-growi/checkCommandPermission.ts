@@ -107,11 +107,9 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     // check permission at channel level
     const relationMock = await this.relationMockRepository.findOne({ where: { installation } });
     const channelsObject = relationMock?.permittedChannelsForEachCommand.channelsObject;
-
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const permittedCommandsForChannel = Object.keys(channelsObject!); // eg. [ 'create', 'search', 'togetter', ... ]
     const targetCommand = permittedCommandsForChannel.find(e => e === command);
-
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const permittedChannels = channelsObject?.[targetCommand!];
 
