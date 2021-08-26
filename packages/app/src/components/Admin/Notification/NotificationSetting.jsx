@@ -26,8 +26,14 @@ const logger = loggerFactory('growi:NotificationSetting');
 let retrieveErrors = null;
 
 
-const EnabledBadge = () => <span className="badge badge-success">Enabled</span>;
-const DisabledBadge = () => <span className="badge badge-secondary">Disabled</span>;
+// eslint-disable-next-line react/prop-types
+const Badge = ({ isEnabled }) => {
+  const { t } = useTranslation();
+
+  return isEnabled
+    ? <span className="badge badge-success">{t('admin:external_notification.enabled')}</span>
+    : <span className="badge badge-secondary">{t('admin:external_notification.disabled')}</span>;
+};
 
 const SkeltonListItem = () => (
   <li className="list-group-item">
@@ -39,21 +45,19 @@ const SkeltonListItem = () => (
 );
 
 // eslint-disable-next-line react/prop-types
-const SlackIntegrationListItem = ({ isSlackEnabled }) => {
+const SlackIntegrationListItem = ({ isEnabled }) => {
   const { t } = useTranslation();
 
   return (
     <li className="list-group-item">
       <h4 className="mb-2">
-        { isSlackEnabled ? <EnabledBadge /> : <DisabledBadge /> }
+        <Badge isEnabled={isEnabled} />
         <a href="/admin/slack-integration" className="ml-2">{t('slack_integration')}</a>
       </h4>
-      { isSlackEnabled && (
+      { isEnabled && (
         <ul className="pl-4">
-          <li>
-            CAUTION: Currently, notifications that are configurable in this page
-            will notify only to the primary Slack Workspace.
-          </li>
+          {/* eslint-disable-next-line react/no-danger */}
+          <li dangerouslySetInnerHTML={{ __html: t('admin:external_notification.caution_enabled') }} />
         </ul>
       ) }
     </li>
@@ -61,16 +65,16 @@ const SlackIntegrationListItem = ({ isSlackEnabled }) => {
 };
 
 // eslint-disable-next-line react/prop-types
-const LegacySlackIntegrationListItem = ({ isSlackLegacyEnabled }) => {
+const LegacySlackIntegrationListItem = ({ isEnabled }) => {
   const { t } = useTranslation();
 
   return (
     <li className="list-group-item">
       <h4 className="mb-1">
-        { isSlackLegacyEnabled ? <EnabledBadge /> : <DisabledBadge /> }
+        <Badge isEnabled={isEnabled} />
         <a href="/admin/slack-integration-legacy" className="ml-2">{t('legacy_slack_integration')}</a>
       </h4>
-      { isSlackLegacyEnabled && (
+      { isEnabled && (
         <ul className="pl-4">
           <li>
             {/* eslint-disable-next-line react/no-danger */}
@@ -136,14 +140,14 @@ function NotificationSetting(props) {
 
   return (
     <>
-      <h2 className="admin-setting-header">Slack Integration Status</h2>
+      <h2 className="admin-setting-header">{t('admin:external_notification.header_status')}</h2>
       <ul className="list-group">
         { !isMounted && <SkeltonListItem />}
         { isMounted && (
           <>
-            <SlackIntegrationListItem isSlackEnabled />
+            <SlackIntegrationListItem isEnabled={isSlackEnabled} />
             {/* Legacy Slack Integration become visible only when new Slack Integration is disabled */}
-            { !isSlackEnabled && <LegacySlackIntegrationListItem isSlackLegacyEnabled /> }
+            { !isSlackEnabled && <LegacySlackIntegrationListItem isEnabled={isSlackLegacyEnabled} /> }
           </>
         ) }
       </ul>

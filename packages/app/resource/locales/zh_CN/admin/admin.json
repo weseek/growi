@@ -262,6 +262,12 @@
     "download": "下载",
     "delete": "删除"
   },
+  "external_notification": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "header_status": "Slack整合状态",
+    "caution_enabled": "CAUTION: 目前，在此页面中配置的通知只会通知设置为主要的 Slack 工作区。 "
+  },
   "slack_integration": {
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
