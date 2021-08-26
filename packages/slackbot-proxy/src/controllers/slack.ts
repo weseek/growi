@@ -7,7 +7,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
 } from '@growi/slack';
 
 // import { Relation } from '~/entities/relation';
@@ -106,8 +106,6 @@ export class SlackCtrl {
   @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, checkCommandPermissionMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
-    console.log(109);
-
 
     if (body.text == null) {
       return 'No text.';
@@ -188,23 +186,12 @@ export class SlackCtrl {
 
 
     if (relationsForSingleUse.length > 0) {
-      console.log(185);
-
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
-      console.log(growiCommand);
-      console.log(authorizeResult);
-      console.log(body);
-
-
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
-    console.log(189);
-
     const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      console.log(relations, 198);
-
       relationsForBroadcastUse.push(relation);
     }));
 

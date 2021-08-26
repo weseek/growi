@@ -92,10 +92,8 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
       return this.relationsService.isSupportedGrowiCommandForSingleUse(relation, command, baseDate);
 
     }));
-    console.log(isSupportedSingle);
 
     if (isSupportedSingle.includes(true)) {
-      console.log(99);
       return next();
     }
 
@@ -118,34 +116,21 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     const permittedChannels = channelsObject?.[targetCommand!];
 
     let fromChannel:string;
-    console.log(117);
-    console.log(payload);
-
     if (body.channel_name != null) { // commands, payload is undefined
-      console.log(118);
-
       fromChannel = body.channel_name;
     }
     else if (payload.actions != null) { // search
-      console.log(payload.actions);
-      console.log(payload, 131);
       fromChannel = payload.channel.name;
     }
     else {
       const privateMeta = JSON.parse(payload.view.private_metadata);
       if (privateMeta.body != null) { // create first interactions
-        console.log(136);
-
         fromChannel = privateMeta.body.channel_name;
       }
       else { // second interactions
         fromChannel = privateMeta.channelName;
       }
-      console.log(privateMeta, 136);
-      console.log(fromChannel);
 
-      // fromChannel = payload.channel.name;
-      // console.log(128);
     }
 
     const isPermittedChannel = permittedChannels?.includes(fromChannel);
