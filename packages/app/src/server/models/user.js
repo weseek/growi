@@ -343,7 +343,9 @@ module.exports = function(crowi) {
   };
 
   userSchema.methods.updateEditorCurrentSettings = async function(editorSettings) {
-    this.editorCurrentSettings = editorSettings;
+    if (editorSettings.isTextlint != null) {
+      this.editorCurrentSettings.isTextlintEnabled = editorSettings.isTextlintEnabled;
+    }
     const userData = await this.save();
     return userData;
   };
