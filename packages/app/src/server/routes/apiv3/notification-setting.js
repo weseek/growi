@@ -1,6 +1,8 @@
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
+import UpdatePost from '../../models/update-post';
+
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:notification-setting');
 
@@ -13,11 +15,6 @@ const { body } = require('express-validator');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 const validator = {
-  slackConfiguration: [
-    body('webhookUrl').if(value => value != null).isString().trim(),
-    body('isIncomingWebhookPrioritized').isBoolean(),
-    body('slackToken').if(value => value != null).isString().trim(),
-  ],
   userNotification: [
     body('pathPattern').isString().trim(),
     body('channel').isString().trim(),
@@ -50,18 +47,6 @@ const validator = {
  *
  *  components:
  *    schemas:
- *      SlackConfigurationParams:
- *        type: object
- *        properties:
- *          webhookUrl:
- *            type: string
- *            description: incoming webhooks url
- *          isIncomingWebhookPrioritized:
- *            type: boolean
- *            description: use incoming webhooks even if Slack App settings are enabled
- *          slackToken:
- *            type: string
- *            description: OAuth access token
  *      UserNotificationParams:
  *        type: object
  *        properties:
@@ -107,7 +92,6 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const UpdatePost = crowi.model('UpdatePost');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const GlobalNotificationMailSetting = crowi.models.GlobalNotificationMailSetting;
@@ -134,62 +118,17 @@ module.exports = (crowi) => {
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const notificationParams = {
-      webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
-      isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
-      slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
+      // status of slack intagration
+      isSlackbotConfigured: crowi.slackIntegrationService.isSlackbotConfigured,
+      isSlackLegacyConfigured: crowi.slackIntegrationService.isSlackLegacyConfigured,
+      currentBotType: await crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
+
       userNotifications: await UpdatePost.findAll(),
       isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
       isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
       globalNotifications: await GlobalNotificationSetting.findAll(),
     };
     return res.apiv3({ notificationParams });
-  });
-
-  /**
-   * @swagger
-   *
-   *    /notification-setting/slack-configuration:
-   *      put:
-   *        tags: [NotificationSetting]
-   *        description: Update slack configuration setting
-   *        requestBody:
-   *          required: true
-   *          content:
-   *            application/json:
-   *              schema:
-   *                $ref: '#/components/schemas/SlackConfigurationParams'
-   *        responses:
-   *          200:
-   *            description: Succeeded to update slack configuration setting
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  $ref: '#/components/schemas/SlackConfigurationParams'
-   */
-  router.put('/slack-configuration', loginRequiredStrictly, adminRequired, csrf, validator.slackConfiguration, apiV3FormValidator, async(req, res) => {
-
-    const requestParams = {
-      'slack:incomingWebhookUrl': req.body.webhookUrl,
-      'slack:isIncomingWebhookPrioritized': req.body.isIncomingWebhookPrioritized,
-      'slack:token': req.body.slackToken,
-    };
-
-    try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('notification', requestParams);
-      const responseParams = {
-        webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
-        isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
-        slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
-      };
-      await crowi.setupSlackLegacy();
-      return res.apiv3({ responseParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating slack configuration';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-slackConfiguration-failed'));
-    }
-
   });
 
   /**
@@ -221,12 +160,11 @@ module.exports = (crowi) => {
   */
   router.post('/user-notification', loginRequiredStrictly, adminRequired, csrf, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
-    const UpdatePost = crowi.model('UpdatePost');
 
     try {
       logger.info('notification.add', pathPattern, channel);
       const responseParams = {
-        createdUser: await UpdatePost.create(pathPattern, channel, req.user),
+        createdUser: await UpdatePost.createUpdatePost(pathPattern, channel, req.user),
         userNotifications: await UpdatePost.findAll(),
       };
       return res.apiv3({ responseParams }, 201);
@@ -268,7 +206,7 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
-      const deletedNotificaton = await UpdatePost.remove(id);
+      const deletedNotificaton = await UpdatePost.findOneAndRemove({ _id: id });
       return res.apiv3(deletedNotificaton);
     }
     catch (err) {
