@@ -3,19 +3,22 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="col text-center">
+      <div class="col text-center" style="width: auto;">
         <h1 class="my-5">Congratulations!</h1>
         <h2 class="my-5">GROWI Bot installation has succeeded!</h2>
-        <p>
-          Access to
-          <a href=<%- appPageUrl %>>
-            Slack App detail page.
-          </a>
-        </p>
-        <p>
-          <a class="btn btn-outline-success" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">Getting started</a>
-        </p>
       </div>
     </div>
+    <div class="row mx-auto" style="width: 500px;">
+      <h5>The steps required to configure GROWI Slack app</h5>
+      <ol>
+        <li>First, <code>/growi register</code> in any slack channel.</li>
+        <li>Looking for additional help? Try <code>/growi help</code></li>
+      </ol>
+      <p>Need more infomation? See Getting started.</p>
+      <p><a class="btn btn-outline-success" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">Getting started</a></p>
+      <hr>
+      <p></p>Access to<a href=<%- appPageUrl %>>Slack App detail page.</a></p>
+    </div>
+
   </div>
 </body>
