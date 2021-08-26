@@ -120,7 +120,7 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     else { // when request is to /interactions && block_actions
       const privateMeta = JSON.parse(payload.view.private_metadata);
 
-      // first payload input url
+      // first payload after input url
       if (privateMeta.body != null) {
         fromChannel = privateMeta.body.channel_name;
       }
