@@ -322,7 +322,7 @@
       "manage_commands": "Manage GROWI commands",
       "multiple_growi_command": "Commands that could be sent to multiple GROWI instances at once",
       "single_growi_command": "Commands that could be sent to single GROWI instance at a time",
-      "allowed_channels_description": "Input allowed channels for {{commandName}} command. Separate each channel with \",\" . Users can will be able to use {{commandName}} from channels written here.",
+      "allowed_channels_description": "Input allowed channels for \"{{commandName}}\" command. Separate each channel with \",\" . Users can will be able to use \"{{commandName}}\" command from channels written here.",
       "test_connection": "Test Connection",
       "test_connection_by_pressing_button": "Press the button to test the connection",
       "error_check_logs_below": "An error has occurred. Please check the logs below.",

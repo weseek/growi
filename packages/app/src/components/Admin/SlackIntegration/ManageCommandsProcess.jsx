@@ -87,14 +87,19 @@ const ManageCommandsProcess = ({
   return (
     <div className="py-4 px-5">
       <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.manage_commands')}</p>
-      <div className="d-flex flex-column align-items-center">
+      <div className="row d-flex flex-column align-items-center">
 
-        <div>
+        <div className="col-md-6">
           <p className="font-weight-bold mb-0">Multiple GROWI</p>
           <p className="text-muted mb-2">{t('admin:slack_integration.accordion.multiple_growi_command')}</p>
-          <div className="custom-control custom-checkbox">
+          <div className="pl-5 custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
+
+                let hiddenClass = '';
+                if (selectedCommandsForBroadcastUse.has(commandName)) {
+                  hiddenClass = 'd-none';
+                }
 
                 const allowedChannels = permittedChannelsForEachCommand.channelsObject[commandName];
                 let defaultAllowedChannels;
@@ -121,7 +126,7 @@ const ManageCommandsProcess = ({
                         {commandName}
                       </label>
                     </div>
-                    <div className="row-12 row-md-6">
+                    <div className={`row-12 row-md-6 ${hiddenClass}`}>
                       <textarea
                         className="form-control"
                         type="textarea"
@@ -140,11 +145,16 @@ const ManageCommandsProcess = ({
             </div>
           </div>
 
-          <p className="font-weight-bold mb-0">Single GROWI</p>
+          <p className="font-weight-bold mb-0 mt-4">Single GROWI</p>
           <p className="text-muted mb-2">{t('admin:slack_integration.accordion.single_growi_command')}</p>
-          <div className="custom-control custom-checkbox">
-            <div className="row mb-5">
-              {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
+          <div className="pl-5 custom-control custom-checkbox">
+            <div className="row mb-5 d-block">
+              {['create', 'togetter'].map((commandName) => {
+
+                let hiddenClass = '';
+                if (selectedCommandsForSingleUse.has(commandName)) {
+                  hiddenClass = 'd-none';
+                }
 
                 const allowedChannels = permittedChannelsForEachCommand.channelsObject[commandName];
                 let defaultAllowedChannels;
@@ -156,7 +166,7 @@ const ManageCommandsProcess = ({
                 }
 
                 return (
-                  <div className="row-6 my-1" key={commandName}>
+                  <div className="row-6 my-1 mb-2" key={commandName}>
                     <div className="row-6 my-3">
                       <input
                         type="checkbox"
@@ -171,7 +181,7 @@ const ManageCommandsProcess = ({
                         {commandName}
                       </label>
                     </div>
-                    <div className="row-12 row-md-6">
+                    <div className={`row-12 row-md-6 ${hiddenClass}`}>
                       <textarea
                         className="form-control"
                         type="textarea"
