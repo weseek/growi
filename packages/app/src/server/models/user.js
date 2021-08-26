@@ -36,7 +36,7 @@ module.exports = function(crowi) {
   }
 
   const editorCurrentSettingsSchema = new mongoose.Schema({
-    isTextLintEnable: { type: Boolean, default: true },
+    isTextlintEnabled: { type: Boolean, default: true },
   });
 
   const userSchema = new mongoose.Schema({
@@ -340,6 +340,12 @@ module.exports = function(crowi) {
     this.isGravatarEnabled = false;
     this.image = null;
     return this.save();
+  };
+
+  userSchema.methods.updateEditorCurrentSettings = async function(editorSettings) {
+    this.editorCurrentSettings = editorSettings;
+    const userData = await this.save();
+    return userData;
   };
 
   userSchema.statics.getUserStatusLabels = function() {
@@ -696,12 +702,6 @@ module.exports = function(crowi) {
 
     user.isInvitationEmailSended = true;
     user.save();
-  };
-
-  userSchema.methods.updateEditorCurrentSettings = async function(editorSettings) {
-    this.editorCurrentSettings = editorSettings;
-    const userData = await this.save();
-    return userData;
   };
 
   class UserUpperLimitException {

@@ -463,7 +463,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *    /personal-setting:
-   *      get:
+   *      put:
    *        tags: [PersonalSetting]
    *        operationId: getPersonalSetting
    *        summary: /personal-setting
@@ -479,16 +479,15 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor preferences
    */
-  router.get('/editor-current-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const { body, user } = req;
-    const { editorSettings } = body;
+  router.put('/editor-current-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+    const { editorSettings } = req.body;
     try {
-      const userData = await user.updateEditorCurrentSettings(editorSettings);
+      const userData = await req.user.updateEditorCurrentSettings(editorSettings);
       return res.apiv3({ userData });
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err('retrieving-update-personal-settings-failed');
+      return res.apiv3Err('updating-editor-settings-failed');
     }
   });
 
