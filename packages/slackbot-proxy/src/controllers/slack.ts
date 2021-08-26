@@ -170,9 +170,7 @@ export class SlackCtrl {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    // This is for select_growi. This is necessary because select_growi process might update cache
-    // res.send()
-    res.send({
+    res.json({
       response_type: 'ephemeral',
       text: 'Processing your request ...',
     });
@@ -256,10 +254,6 @@ export class SlackCtrl {
 
     const { body, authorizeResult } = req;
 
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
-
     // pass
     if (body.ssl_check != null) {
       return;
@@ -274,7 +268,6 @@ export class SlackCtrl {
 
     // register
     if (callBackId === 'register') {
-      // TODO: CHECK
       try {
         await this.registerService.insertOrderRecord(installation, authorizeResult.botToken, payload);
       }
@@ -292,17 +285,23 @@ export class SlackCtrl {
 
     // unregister
     if (callBackId === 'unregister') {
-      // TODO: CHECK
       await this.unregisterService.unregister(installation, authorizeResult, payload);
       return;
     }
 
     // forward to GROWI server
     if (callBackId === 'select_growi') {
-      // TODO: CHECK
+      // Send response immediately to avoid opelation_timeout error
+      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+      res.send();
+
       const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.send();
 
     /*
     * forward to GROWI server
@@ -315,13 +314,6 @@ export class SlackCtrl {
     }
 
     try {
-      // generate API URL
-      // Send response immediately to avoid opelation_timeout error
-      // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-      res.send({
-        response_type: 'ephemeral',
-        text: 'Processing your request ...',
-      });
       const url = new URL('/_api/v3/slack-integration/proxied/interactions', req.growiUri);
       await axios.post(url.toString(), {
         ...body,
