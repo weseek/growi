@@ -37,9 +37,9 @@ export class checkCommandPermissionMiddleware implements IMiddleware {
     if (body.payload != null) {
       payload = JSON.parse(req.body.payload);
     }
-    // if (req.body.text == null && !payload) { // when /relation-test
-    //   return next();
-    // }
+    if (req.body.text == null && !payload) { // when /relation-test
+      return next();
+    }
 
     let command:string;
     if (body.payload == null) { // when request is to /commands
