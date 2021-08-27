@@ -162,21 +162,26 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.isLintEnabled = true;
 
     this.textlintConfig = [
-      {
-        name: 'max-comma',
-      },
-      {
-        name: 'no-dropping-the-ra',
-      },
-      {
-        name: 'common-misspellings',
-        options: {
-          ignore: [
-            'isnt',
-            'yuo',
-          ],
-        },
-      },
+      { name: 'common-misspellings' },
+      { name: 'ja-hiragana-fukushi' },
+      { name: 'ja-hiragana-hojodoushi' },
+      { name: 'ja-hiragana-keishikimeishi' },
+      { name: 'ja-no-abusage' },
+      { name: 'ja-no-inappropriate-words' },
+      { name: 'ja-no-mixed-period' },
+      { name: 'ja-no-redundant-expression' },
+      { name: 'max-comma' },
+      { name: 'max-kanji-continuous-len' },
+      { name: 'max-ten' },
+      { name: 'no-double-negative-ja' },
+      { name: 'no-doubled-conjunction' },
+      { name: 'no-doubled-conjunctive-particle-ga' },
+      { name: 'no-doubled-joshi' },
+      { name: 'no-dropping-the-ra' },
+      { name: 'no-hankaku-kana' },
+      { name: 'no-hoso-kinshi-yogo' },
+      { name: 'prefer-tari-tari' },
+      { name: 'sentence-length' },
     ];
 
     this.interceptorManager = new InterceptorManager();
