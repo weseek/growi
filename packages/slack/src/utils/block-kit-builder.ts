@@ -1,5 +1,5 @@
 import {
-  SectionBlock, InputBlock, DividerBlock, ActionsBlock,
+  SectionBlock, HeaderBlock, InputBlock, DividerBlock, ActionsBlock,
   Button, Overflow, Datepicker, Select, RadioButtons, Checkboxes, Action, MultiSelect, PlainTextInput, Option,
 } from '@slack/types';
 
@@ -7,6 +7,16 @@ import {
 export function divider(): DividerBlock {
   return {
     type: 'divider',
+  };
+}
+
+export function markdownHeaderBlock(text: string): HeaderBlock {
+  return {
+    type: 'header',
+    text: {
+      type: 'plain_text',
+      text,
+    },
   };
 }
 

@@ -5,6 +5,7 @@ import { WebClient } from '@slack/web-api';
 import { generateWebClient } from './webclient-factory';
 import { ConnectionStatus } from '../interfaces/connection-status';
 import { requiredScopes } from './required-scopes';
+import { markdownSectionBlock } from './block-kit-builder';
 
 /**
  * Check whether the HTTP server responds or not.
@@ -121,6 +122,10 @@ export const sendSuccessMessage = async(token:string, channel:string, appSiteUrl
   const client = generateWebClient(token);
   await client.chat.postMessage({
     channel,
-    text: `Successfully tested with ${appSiteUrl}.`,
+    text: 'Success',
+    blocks: [
+      markdownSectionBlock(`:tada: Successfully tested with ${appSiteUrl}.`),
+      markdownSectionBlock('Now your GROWI and Slack integration is ready to use :+1:'),
+    ],
   });
 };

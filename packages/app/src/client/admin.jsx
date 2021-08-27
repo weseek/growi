@@ -10,7 +10,7 @@ import ErrorBoundary from '../components/ErrorBoudary';
 import AdminHome from '../components/Admin/AdminHome/AdminHome';
 import UserGroupDetailPage from '../components/Admin/UserGroupDetail/UserGroupDetailPage';
 import NotificationSetting from '../components/Admin/Notification/NotificationSetting';
-import SlackIntegrationNotificationSetting from '../components/Admin/Notification/SlackIntegrationNotificationSetting';
+import LegacySlackIntegration from '../components/Admin/LegacySlackIntegration/LegacySlackIntegration';
 import SlackIntegration from '../components/Admin/SlackIntegration/SlackIntegration';
 import ManageGlobalNotification from '../components/Admin/Notification/ManageGlobalNotification';
 import MarkdownSetting from '../components/Admin/MarkdownSetting/MarkDownSetting';
@@ -46,6 +46,7 @@ import AdminGoogleSecurityContainer from '~/client/services/AdminGoogleSecurityC
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import AdminTwitterSecurityContainer from '~/client/services/AdminTwitterSecurityContainer';
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
+import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
 
 import { appContainer, componentMappings } from './base';
 
@@ -65,6 +66,7 @@ const adminCustomizeContainer = new AdminCustomizeContainer(appContainer);
 const adminUsersContainer = new AdminUsersContainer(appContainer);
 const adminExternalAccountsContainer = new AdminExternalAccountsContainer(appContainer);
 const adminNotificationContainer = new AdminNotificationContainer(appContainer);
+const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer(appContainer);
 const adminMarkDownContainer = new AdminMarkDownContainer(appContainer);
 const adminUserGroupDetailContainer = new AdminUserGroupDetailContainer(appContainer);
 const injectableContainers = [
@@ -78,7 +80,7 @@ const injectableContainers = [
   adminUsersContainer,
   adminExternalAccountsContainer,
   adminNotificationContainer,
-  adminNotificationContainer,
+  adminSlackIntegrationLegacyContainer,
   adminMarkDownContainer,
   adminUserGroupDetailContainer,
 ];
@@ -99,7 +101,7 @@ Object.assign(componentMappings, {
   'admin-export-page': <ExportArchiveDataPage />,
   'admin-notification-setting': <NotificationSetting />,
   'admin-slack-integration': <SlackIntegration />,
-  'admin-slack-integration-notification-setting': <SlackIntegrationNotificationSetting />,
+  'admin-slack-integration-legacy': <LegacySlackIntegration />,
   'admin-global-notification-setting': <ManageGlobalNotification />,
   'admin-user-page': <UserManagement />,
   'admin-external-account-setting': <ManageExternalAccount />,
