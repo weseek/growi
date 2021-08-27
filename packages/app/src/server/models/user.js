@@ -36,7 +36,7 @@ module.exports = function(crowi) {
   }
 
   const editorCurrentSettingsSchema = new mongoose.Schema({
-    isTextLintEnable: { type: Boolean, default: true },
+    isTextlintEnabled: { type: Boolean, default: true },
   });
 
   const userSchema = new mongoose.Schema({
