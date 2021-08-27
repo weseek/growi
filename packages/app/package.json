@@ -157,7 +157,6 @@
     "@atlaskit/navigation-next": "^8.0.5",
     "@growi/ui": "^4.3.3-RC",
     "@handsontable/react": "=2.1.0",
-    "@types/codemirror": "^5.60.2",
     "@types/compression": "^1.7.0",
     "@types/express": "^4.17.11",
     "@types/multer": "^1.4.5",
