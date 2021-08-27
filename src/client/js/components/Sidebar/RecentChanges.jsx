@@ -36,9 +36,12 @@ class RecentChanges extends React.Component {
     this.reloadData = this.reloadData.bind(this);
   }
 
+  componentWillMount() {
+    this.retrieveSizePreferenceFromLocalStorage();
+  }
+
   async componentDidMount() {
     this.reloadData();
-    this.retrieveSizePreferenceFromLocalStorage();
   }
 
   async reloadData() {
