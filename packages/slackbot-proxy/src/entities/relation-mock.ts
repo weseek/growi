@@ -10,8 +10,8 @@ import { Installation } from './installation';
 //     create: ['srv', 'admin'],
 //     search: ['admin'],
 //   }
-interface PermittedChannelsForEachCommand {
-   channelsObject:{[command: string]: string[]}
+interface supportedCommandInterface {
+   [commandName: string]: boolean | string[]
 }
 
 @Entity()
@@ -42,13 +42,10 @@ export class RelationMock {
   growiUri: string;
 
   @Column('simple-array')
-  supportedCommandsForBroadcastUse: string[];
+  supportedCommandsForBroadcastUse: supportedCommandInterface;
 
   @Column('simple-array')
-  supportedCommandsForSingleUse: string[];
-
-  @Column({ type: 'json' })
-  permittedChannelsForEachCommand : PermittedChannelsForEachCommand
+  supportedCommandsForSingleUse: supportedCommandInterface;
 
   @CreateDateColumn()
   expiredAtCommands: Date;
