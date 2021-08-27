@@ -11978,6 +11978,13 @@ kuromojin@^1.3.2, kuromojin@^1.4.0:
   dependencies:
     kuromoji "0.1.1"
 
+kuromojin@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/kuromojin/-/kuromojin-2.1.1.tgz#5de1dbec4ffcc7cce57a10e75e751cd1ca384e38"
+  integrity sha512-bd5dfE9CdRBoRPiquE5uhzBrDOn2K3WuFeOWqZgM7DNtQhvS7P9IALy5MtDxXcnw7DLBAZ1A7DByPO5BhXdgew==
+  dependencies:
+    kuromoji "0.1.1"
+
 kuromojin@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/kuromojin/-/kuromojin-3.0.0.tgz#54a1a6643110f49f741c4beb82fef400d1cd498b"
@@ -19658,6 +19665,14 @@ textlint-rule-ja-hiragana-hojodoushi@^1.0.4:
   dependencies:
     js-yaml "^3.8.2"
     kuromojin "^1.3.2"
+    morpheme-match-all "^1.1.0"
+
+textlint-rule-ja-hiragana-keishikimeishi@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-ja-hiragana-keishikimeishi/-/textlint-rule-ja-hiragana-keishikimeishi-1.1.0.tgz#f152c24869b328e4a1904da47a34e323d830fc97"
+  integrity sha512-rNwTzQdwGopLxesjXMYQi1MVzZbQOx7fap7dAcbajtvMCKMtucYcvOIptgegagpHctaRa303NqbHLhqMv3OIeg==
+  dependencies:
+    kuromojin "^2.1.1"
     morpheme-match-all "^1.1.0"
 
 textlint-rule-ja-no-abusage@^3.0.0:
