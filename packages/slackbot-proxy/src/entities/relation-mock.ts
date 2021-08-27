@@ -6,10 +6,9 @@ import { Installation } from './installation';
 
 
 // expected data see below
-//   channelsObject: {
 //     create: ['srv', 'admin'],
+//     togetter: false,
 //     search: ['admin'],
-//   }
 interface supportedCommandInterface {
    [commandName: string]: boolean | string[]
 }
