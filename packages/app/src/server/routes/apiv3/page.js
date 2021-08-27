@@ -132,7 +132,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page, GlobalNotificationSetting } = crowi.models;
+  const { Page, Watcher, GlobalNotificationSetting } = crowi.models;
   const { exportService } = crowi;
 
   const validator = {
@@ -264,6 +264,22 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('get-like-count-failed', err);
       return res.apiv3Err(err, 500);
+    }
+  });
+
+
+  router.post('/watch', accessTokenParser, loginRequired, async(req, res) => {
+    const { userId, pageId } = req.body;
+
+    const status = req.body.status ? Watcher.STATUS_WATCH : Watcher.STATUS_IGNORE;
+    try {
+      const watcher = await Watcher.watchByPageId(userId, pageId, status);
+      const result = { watcher };
+      return res.apiv3({ result });
+    }
+    catch (err) {
+      logger.error('rror occured while update watch status', err);
+      return res.apiv3(new ErrorV3('Failed to update page.', 'unknown'));
     }
   });
 

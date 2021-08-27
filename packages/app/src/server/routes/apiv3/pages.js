@@ -117,7 +117,6 @@ module.exports = (crowi) => {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Watcher = crowi.model('Watcher');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
@@ -620,21 +619,4 @@ module.exports = (crowi) => {
     }
 
   });
-
-  router.post('/watch', accessTokenParser, loginRequired, async(req, res) => {
-    const { userId, pageId } = req.body;
-
-    const status = req.body.status ? Watcher.STATUS_WATCH : Watcher.STATUS_IGNORE;
-    try {
-      const watcher = await Watcher.watchByPageId(userId, pageId, status);
-      const result = { watcher };
-      return res.apiv3({ result });
-    }
-    catch (err) {
-      logger.error('rror occured while update watch status', err);
-      return res.apiv3(new ErrorV3('Failed to update page.', 'unknown'));
-    }
-  });
-
-  return router;
 };
