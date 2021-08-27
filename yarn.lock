@@ -19488,6 +19488,16 @@ textlint-rule-no-doubled-conjunctive-particle-ga@^2.0.3:
     textlint-rule-helper "^2.2.0"
     textlint-util-to-string "^3.1.1"
 
+textlint-rule-no-doubled-joshi@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-doubled-joshi/-/textlint-rule-no-doubled-joshi-4.0.0.tgz#4e0776125ee244e05492e642a75d564baec728f8"
+  integrity sha512-IUlJBlvzdkiJhbxqw3KlvI/o+qUIrk2AltV1P67gQqLT1XMuxVUVftCMmKdGrH4tDN5nrD4TkcW+yoFxnBCEvQ==
+  dependencies:
+    kuromojin "^3.0.0"
+    sentence-splitter "^3.2.1"
+    textlint-rule-helper "^2.1.1"
+    textlint-util-to-string "^3.0.0"
+
 textlint-rule-no-dropping-the-ra@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/textlint-rule-no-dropping-the-ra/-/textlint-rule-no-dropping-the-ra-3.0.0.tgz#cc408b719302818e52917f5dee537e1007c206e2"
@@ -19506,7 +19516,7 @@ textlint-rule-sentence-length@^3.0.0:
     textlint-rule-helper "^2.1.1"
     textlint-util-to-string "^3.1.1"
 
-textlint-util-to-string@^3.1.1:
+textlint-util-to-string@^3.0.0, textlint-util-to-string@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/textlint-util-to-string/-/textlint-util-to-string-3.1.1.tgz#666c8b0f2e00a92b29c8b168b453a9b8aeb48381"
   integrity sha512-mHE7/pDw/Hk+Q6YdSMNRrZPl5bCuWnFLbF+bxW+MsWQ64dw+Ia9irkammYbH5I0hVMMcfwb0MQc5nbsjqgWeyQ==
