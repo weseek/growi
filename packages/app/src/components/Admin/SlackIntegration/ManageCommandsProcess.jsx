@@ -71,10 +71,10 @@ const ManageCommandsProcess = ({
   const updatePermittedChannelsForEachCommand = (e) => {
     const commandName = e.target.name;
     const allowedChannelsString = e.target.value;
-    // remove all whitespace
-    const spaceRemovedAllowedChannelsString = allowedChannelsString.replace(/\s+/g, '');
     // string to array
-    const allowedChannelsArray = spaceRemovedAllowedChannelsString.split(',');
+    const allowedChannelsArray = allowedChannelsString.split(',');
+    // trim whitespace from all elements
+    const trimedAllowedChannelsArray = allowedChannelsArray.map(channelName => channelName.trim());
     setPermittedChannelsForEachCommand((prevState) => {
       const channelsObject = prevState.channelsObject;
       channelsObject[commandName] = allowedChannelsArray;
