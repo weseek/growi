@@ -6,12 +6,12 @@ import {
 import Logger from 'bunyan';
 
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
-import { InstallationRepository } from '~/repositories/installation';
+// import { InstallationRepository } from '~/repositories/installation';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
 
-const getCommomMiddleware = (req, res) => {
+const getCommomMiddleware = (installerService, logger) => {
 
   return async(req:SlackOauthReq, res:Res):Promise<void|Res> => {
     const { body } = req;
@@ -19,6 +19,7 @@ const getCommomMiddleware = (req, res) => {
     let teamId;
     let enterpriseId;
     let isEnterpriseInstall;
+
 
     // extract id from body
     if (body.payload != null) {
@@ -55,7 +56,7 @@ const getCommomMiddleware = (req, res) => {
       }
     }
     catch (e) {
-      // logger.error(e.message);
+      logger.error(e.message);
 
       res.writeHead(500, e.message);
       return res.end();
@@ -68,14 +69,17 @@ const getCommomMiddleware = (req, res) => {
 @Middleware()
 export class AuthorizeCommandMiddleware implements IMiddleware {
 
+  private logger: Logger;
+
+  constructor() {
+    this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeCommandMiddleware');
+  }
+
   @Inject()
   installerService: InstallerService;
 
-  @Inject()
-  installationRepository: InstallationRepository;
-
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
-    const commonMiddleware = getCommomMiddleware(this.installerService, this.installationRepository);
+    const commonMiddleware = getCommomMiddleware(this.installerService, this.logger);
     await commonMiddleware(req, res);
   }
 
@@ -93,10 +97,7 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
     @Inject()
     installerService: InstallerService;
 
-    @Inject()
-    installationRepository: InstallationRepository;
-
-    async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
+    async use(@Req() req: SlackOauthReq, @Res() res:Res): Promise<void> {
       const { body } = req;
 
       if (body.payload == null) {
@@ -105,18 +106,26 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
         return;
       }
 
-      await this.getCommonMiddleware(this.installerService, this.installationRepository);
+      const commonMiddleware = getCommomMiddleware(this.installerService, this.logger);
+      await commonMiddleware(req, res);
     }
 
 }
 @Middleware()
 export class AuthorizeEventsMiddleware implements IMiddleware {
 
+  private logger: Logger;
+
+  constructor() {
+    this.logger = loggerFactory('slackbot-proxy:middlewares:AuthorizeEventsMiddleware');
+  }
+
   @Inject()
-  authorizerService: AuthorizerService;
+  installerService: InstallerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
-    await this.authorizerService.pushAuthorizedResultToRequest(req, res);
+    const commonMiddleware = getCommomMiddleware(this.installerService, this.logger);
+    await commonMiddleware(req, res);
   }
 
 }
