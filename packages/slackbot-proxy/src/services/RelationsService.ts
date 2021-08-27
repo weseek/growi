@@ -1,6 +1,9 @@
 import { Inject, Service } from '@tsed/di';
+
 import axios from 'axios';
 import { addHours } from 'date-fns';
+
+import { REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
@@ -22,6 +25,7 @@ export class RelationsService {
       headers: {
         'x-growi-ptog-tokens': relation.tokenPtoG,
       },
+      timeout: REQUEST_TIMEOUT_FOR_PTOG,
     });
   }
 
