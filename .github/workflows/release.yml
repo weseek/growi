@@ -113,7 +113,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: ./docker/Dockerfile
+        file: ./packages/app/docker/Dockerfile
         platforms: linux/amd64
         push: true
         cache-from: type=local,src=/tmp/.buildx-cache
@@ -131,7 +131,7 @@ jobs:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         repository: weseek/growi
-        readme-filepath: ./docker/README.md
+        readme-filepath: ./packages/app/docker/README.md
 
     - name: Slack Notification
       uses: weseek/ghaction-release-slack-notification@master

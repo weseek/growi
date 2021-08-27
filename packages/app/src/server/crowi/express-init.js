@@ -53,7 +53,12 @@ module.exports = function(crowi, app) {
       nsSeparator: '::',
     });
 
-  app.use(helmet());
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    expectCt: false,
+    referrerPolicy: false,
+    permittedCrossDomainPolicies: false,
+  }));
 
   app.use((req, res, next) => {
     const now = new Date();
