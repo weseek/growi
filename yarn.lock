@@ -19694,6 +19694,13 @@ textlint-rule-ja-no-abusage@^3.0.0:
     morpheme-match-textlint "^2.0.6"
     textlint-rule-prh "^5.3.0"
 
+textlint-rule-ja-no-inappropriate-words@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-ja-no-inappropriate-words/-/textlint-rule-ja-no-inappropriate-words-2.0.0.tgz#8b229614f71e24cced888514cf5456bfe2141b35"
+  integrity sha512-gS2g8BqXv33D0QDz301aZh7EgWc2Vz70qBGJG0T3Dbtzxj/omqQCpxJtpVs5JKoGIBNkmxN5L+l0nf5TZ/luAw==
+  dependencies:
+    kuromojin "^3.0.0"
+
 textlint-rule-ja-no-mixed-period@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/textlint-rule-ja-no-mixed-period/-/textlint-rule-ja-no-mixed-period-2.1.1.tgz#6c63446de0bab9870041f38b1a339d54328f4c60"

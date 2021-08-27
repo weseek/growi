@@ -239,6 +239,7 @@
     "textlint-rule-ja-hiragana-hojodoushi": "^1.0.4",
     "textlint-rule-ja-hiragana-keishikimeishi": "^1.1.0",
     "textlint-rule-ja-no-abusage": "^3.0.0",
+    "textlint-rule-ja-no-inappropriate-words": "^2.0.0",
     "textlint-rule-ja-no-mixed-period": "^2.1.1",
     "textlint-rule-ja-no-redundant-expression": "^4.0.0",
     "textlint-rule-max-comma": "^2.0.2",
