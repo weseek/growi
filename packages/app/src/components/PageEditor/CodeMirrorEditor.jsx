@@ -163,8 +163,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     this.textlintConfig = [
       { name: 'common-misspellings' },
-      { name: 'ja-hiragana-fukushi' },
-      { name: 'ja-hiragana-hojodoushi' },
+      // { name: 'ja-hiragana-fukushi' },
+      // { name: 'ja-hiragana-hojodoushi' },
       { name: 'ja-hiragana-keishikimeishi' },
       { name: 'ja-no-abusage' },
       { name: 'ja-no-inappropriate-words' },
@@ -179,7 +179,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       { name: 'no-doubled-joshi' },
       { name: 'no-dropping-the-ra' },
       { name: 'no-hankaku-kana' },
-      { name: 'no-hoso-kinshi-yogo' },
+      // { name: 'no-hoso-kinshi-yogo' },
       { name: 'prefer-tari-tari' },
       { name: 'sentence-length' },
     ];

@@ -1,8 +1,8 @@
 import { TextlintKernel, TextlintKernelRule, TextlintRuleOptions } from '@textlint/kernel';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
 import textlintRuleCommonMisspellings from 'textlint-rule-common-misspellings';
-import textlintRuleJaHiraganaFukushi from 'textlint-rule-ja-hiragana-fukushi';
-import textlintRuleJaHiraganaHojodoushi from 'textlint-rule-ja-hiragana-hojodoushi';
+// import textlintRuleJaHiraganaFukushi from 'textlint-rule-ja-hiragana-fukushi';
+// import textlintRuleJaHiraganaHojodoushi from 'textlint-rule-ja-hiragana-hojodoushi';
 import textlintRuleJaHiraganaKeishikimeishi from 'textlint-rule-ja-hiragana-keishikimeishi';
 import textlintRuleJaNoAbusage from 'textlint-rule-ja-no-abusage';
 import textlintRuleJaNoInappropriateWords from 'textlint-rule-ja-no-inappropriate-words';
@@ -17,7 +17,7 @@ import textlintRuleNoConjunctiveParticleGa from 'textlint-rule-no-doubled-conjun
 import textlintRuleNoDoubledJoshi from 'textlint-rule-no-doubled-joshi';
 import textlintRuleNoDroppingTheRa from 'textlint-rule-no-dropping-the-ra';
 import textlintRuleNoHankakuKana from 'textlint-rule-no-hankaku-kana';
-import textlintRuleNoKinshiYogo from 'textlint-rule-no-hoso-kinshi-yogo';
+// import textlintRuleNoKinshiYogo from 'textlint-rule-no-hoso-kinshi-yogo';
 import textlintRulePreferTariTari from 'textlint-rule-prefer-tari-tari';
 import textlintRuleSentenceLength from 'textlint-rule-sentence-length';
 
@@ -35,8 +35,8 @@ type RuleExtension = {
 
 const ruleModulesList = {
   'common-misspellings': textlintRuleCommonMisspellings,
-  'ja-hiragana-fukushi': textlintRuleJaHiraganaFukushi,
-  'ja-hiragana-hojodoushi': textlintRuleJaHiraganaHojodoushi,
+  // 'ja-hiragana-fukushi': textlintRuleJaHiraganaFukushi,
+  // 'ja-hiragana-hojodoushi': textlintRuleJaHiraganaHojodoushi,
   'ja-hiragana-keishikimeishi': textlintRuleJaHiraganaKeishikimeishi,
   'ja-no-abusage': textlintRuleJaNoAbusage,
   'ja-no-inappropriate-words': textlintRuleJaNoInappropriateWords,
@@ -51,7 +51,7 @@ const ruleModulesList = {
   'no-doubled-joshi': textlintRuleNoDoubledJoshi,
   'no-dropping-the-ra': textlintRuleNoDroppingTheRa,
   'no-hankaku-kana': textlintRuleNoHankakuKana,
-  'no-hoso-kinshi-yogo': textlintRuleNoKinshiYogo,
+  // 'no-hoso-kinshi-yogo': textlintRuleNoKinshiYogo,
   'prefer-tari-tari': textlintRulePreferTariTari,
   'sentence-length': textlintRuleSentenceLength,
 };
