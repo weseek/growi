@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "debug": ["../server/utils/logger/alias-for-debug"]
+    }
+  }
+}
