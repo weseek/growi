@@ -117,6 +117,7 @@ module.exports = (crowi) => {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
+  const Watcher = crowi.model('Watcher');
   const PageTagRelation = crowi.model('PageTagRelation');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
