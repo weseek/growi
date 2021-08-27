@@ -52,7 +52,7 @@ const helmetOptions = isProduction ? {
     directives: {
       defaultSrc: ['\'self\''],
       styleSrc: ['\'self\'', '\'unsafe-inline\''],
-      imgSrc: ['\'self\'', 'data:', 'validator.swagger.io', 'https://docs.growi.org/'],
+      imgSrc: ['\'self\'', 'data:', 'https:'],
       scriptSrc: ['\'self\'', 'https: \'unsafe-inline\''],
     },
   },
