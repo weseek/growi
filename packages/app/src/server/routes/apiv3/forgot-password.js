@@ -62,9 +62,7 @@ module.exports = (crowi) => {
 
       // when the user is not found or active
       if (user == null || user.status !== 2) {
-        console.log('hogeeee');
         await sendPasswordResetEmail('notActiveUser', i18n, email);
-
         return;
       }
 
