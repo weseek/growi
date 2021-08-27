@@ -19506,6 +19506,14 @@ textlint-rule-no-dropping-the-ra@^3.0.0:
     kuromojin "^3.0.0"
     textlint-rule-helper "^2.1.1"
 
+textlint-rule-no-hankaku-kana@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-hankaku-kana/-/textlint-rule-no-hankaku-kana-1.0.2.tgz#6d3a936b18cd7021ebffca8d4111181dc159f4c8"
+  integrity sha1-bTqTaxjNcCHr/8qNQREYHcFZ9Mg=
+  dependencies:
+    match-index "^1.0.1"
+    textlint-rule-helper "^1.1.5"
+
 textlint-rule-sentence-length@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/textlint-rule-sentence-length/-/textlint-rule-sentence-length-3.0.0.tgz#72587bc05a1e02f9d0f0099c01fc36aa8740556e"
