@@ -28,8 +28,16 @@ class RecentChanges extends React.Component {
 
   constructor(props) {
     super(props);
-
+    this.state = {
+      // TODO: 7092 connect to state
+      // eslint-disable-next-line react/no-unused-state
+      isRecentChangesSidebarSmall: false,
+    };
     this.reloadData = this.reloadData.bind(this);
+  }
+
+  componentWillMount() {
+    this.retrieveSizePreferenceFromLocalStorage();
   }
 
   async componentDidMount() {
@@ -46,6 +54,25 @@ class RecentChanges extends React.Component {
       logger.error('failed to save', error);
       toastError(error, 'Error occurred in updating History');
     }
+  }
+
+  retrieveSizePreferenceFromLocalStorage() {
+    if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
+      this.setState({
+        // TODO: 7092 connect to state
+        // eslint-disable-next-line react/no-unused-state
+        isRecentChangesSidebarSmall: true,
+      });
+    }
+  }
+
+  changeSizeHandler = (e) => {
+    this.setState({
+      // TODO: 7092 connect to state
+      // eslint-disable-next-line react/no-unused-state
+      isRecentChangesSidebarSmall: e.target.checked,
+    });
+    window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
   }
 
   PageItem = ({ page }) => {
