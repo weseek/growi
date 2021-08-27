@@ -622,17 +622,17 @@ module.exports = (crowi) => {
   });
 
   router.post('/watch', accessTokenParser, loginRequired, async(req, res) => {
-    const { page_id: pageId } = req.body;
-    const { _id: userId } = req.user as UserDocument;
+    const { userId, pageId } = req.body;
+
     const status = req.body.status ? Watcher.STATUS_WATCH : Watcher.STATUS_IGNORE;
     try {
       const watcher = await Watcher.watchByPageId(userId, pageId, status);
       const result = { watcher };
-      return res.json(ApiResponse.success(result));
+      return res.apiv3({ result });
     }
     catch (err) {
-      debug('Error occured while update watch status', err, err.stack);
-      return res.json(ApiResponse.error('Failed to watch this page.'));
+      logger.error('rror occured while update watch status', err);
+      return res.apiv3(new ErrorV3('Failed to update page.', 'unknown'));
     }
   });
 
