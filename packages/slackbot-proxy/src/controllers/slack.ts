@@ -7,7 +7,7 @@ import axios from 'axios';
 import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
 } from '@growi/slack';
 
 // import { Relation } from '~/entities/relation';
@@ -19,7 +19,6 @@ import { RelationMockRepository } from '~/repositories/relation-mock';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
-import { checkCommandPermissionMiddleware } from '~/middlewares/slack-to-growi/checkCommandPermission';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
@@ -103,7 +102,7 @@ export class SlackCtrl {
 
 
   @Post('/commands')
-  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware, checkCommandPermissionMiddleware)
+  @UseBefore(AddSigningSecretToReq, verifySlackRequest, AuthorizeCommandMiddleware)
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
@@ -146,6 +145,14 @@ export class SlackCtrl {
       .leftJoinAndSelect('relation_mock.installation', 'installation')
       .getMany();
 
+    if (relations.length === 0) {
+      return res.json({
+        blocks: [
+          markdownSectionBlock('*No relation found.*'),
+          markdownSectionBlock('Run `/growi register` first.'),
+        ],
+      });
+    }
 
     // status
     if (growiCommand.growiCommandType === 'status') {
@@ -169,33 +176,52 @@ export class SlackCtrl {
       if (isSupported) {
         return relationsForSingleUse.push(relation);
       }
-
-      if (growiCommand.growiCommandType === 'create') {
-        relationsForSingleUse.push(relation);
-      }
-
     }));
 
+    let isCommandPermitted = false;
 
     if (relationsForSingleUse.length > 0) {
+      isCommandPermitted = true;
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
     const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      relationsForBroadcastUse.push(relation);
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
+      if (isSupported) {
+        relationsForBroadcastUse.push(relation);
+      }
     }));
 
     /*
      * forward to GROWI server
      */
+    if (relationsForBroadcastUse.length > 0) {
+      isCommandPermitted = true;
+      return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+    }
 
-    return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
+    if (!isCommandPermitted) {
+      const botToken = relations[0].installation?.data.bot?.token;
+
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(botToken!);
+
+      return client.chat.postEphemeral({
+        text: 'Error occured.',
+        channel: body.channel_id,
+        user: body.user_id,
+        blocks: [
+          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+        ],
+      });
+    }
   }
 
+
   @Post('/interactions')
-  @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq, checkCommandPermissionMiddleware)
+  @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.authorizeResult);
     logger.debug('receive interaction', req.body);
