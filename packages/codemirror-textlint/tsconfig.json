@@ -1,8 +1,9 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "debug": ["../server/utils/logger/alias-for-debug"]
+      "~/*": ["./src/*"]
     }
   }
 }
