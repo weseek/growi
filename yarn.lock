@@ -19484,6 +19484,18 @@ textlint-rule-ja-no-mixed-period@^2.1.1:
     check-ends-with-period "^1.0.1"
     textlint-rule-helper "^2.0.0"
 
+textlint-rule-ja-no-redundant-expression@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-ja-no-redundant-expression/-/textlint-rule-ja-no-redundant-expression-4.0.0.tgz#5385a58424dc4b8ec48edc0f5eb0864c9f2bcf4d"
+  integrity sha512-Wb6g/uwd7fL3v+BCvOMuiQONdL1JSvrDVnM4k5X7guQQggmA8R0lWCFZZuMUO5Mb0VuDX9bYptJL5AblzR1YVg==
+  dependencies:
+    "@textlint/regexp-string-matcher" "^1.1.0"
+    kuromojin "^3.0.0"
+    morpheme-match "^2.0.4"
+    morpheme-match-all "^2.0.5"
+    textlint-rule-helper "^2.1.1"
+    textlint-util-to-string "^3.1.1"
+
 textlint-rule-max-comma@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/textlint-rule-max-comma/-/textlint-rule-max-comma-2.0.2.tgz#c204ae840b436d572d5c24e3a3056776992a882b"

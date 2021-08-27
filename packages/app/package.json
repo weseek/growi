@@ -237,6 +237,7 @@
     "textlint-rule-common-misspellings": "^1.0.1",
     "textlint-rule-ja-no-abusage": "^3.0.0",
     "textlint-rule-ja-no-mixed-period": "^2.1.1",
+    "textlint-rule-ja-no-redundant-expression": "^4.0.0",
     "textlint-rule-max-comma": "^2.0.2",
     "textlint-rule-max-kanji-continuous-len": "^1.1.1",
     "textlint-rule-max-ten": "^4.0.2",
