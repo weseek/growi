@@ -96,4 +96,4 @@ watcherSchema.statics.STATUS_IGNORE = function() {
   return STATUS_IGNORE;
 };
 
-export default getOrCreateModel<WatcherDocument, WatcherModel>('Wather', watcherSchema);
+export default getOrCreateModel<WatcherDocument, WatcherModel>('Watcher', watcherSchema);
