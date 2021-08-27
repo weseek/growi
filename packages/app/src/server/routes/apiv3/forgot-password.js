@@ -60,6 +60,14 @@ module.exports = (crowi) => {
     try {
       const user = await User.findOne({ email });
 
+      // when the user is not found or active
+      if (user == null || user.status !== 2) {
+        console.log('hogeeee');
+        await sendPasswordResetEmail('notActiveUser', i18n, email);
+
+        return;
+      }
+
       const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(email);
       const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
       const oneTimeUrl = url.href;
