@@ -95,7 +95,7 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
     @Inject()
     installerService: InstallerService;
 
-    async use(@Req() req: SlackOauthReq, @Res() res:Res): Promise<void> {
+    async use(@Req() req: SlackOauthReq, @Res() res:Res): Promise<void|Res> {
       const { body } = req;
 
       if (body.payload == null) {
