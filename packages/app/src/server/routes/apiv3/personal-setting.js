@@ -483,16 +483,12 @@ module.exports = (crowi) => {
    *                      description: personal params
    */
   router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
-    // userSchema.methods.updateEditorCurrentSettings = async function(editorSettings) {
-    //   if (editorSettings.isTextlintEnabled != null) {
-    //     this.editorCurrentSettings.isTextlintEnabled = editorSettings.isTextlintEnabled;
-    //   }
-    //   const userData = await this.save();
-    //   return userData;
-    // };
     try {
-      const userData = await req.user.updateEditorCurrentSettings(req.body);
-      return res.apiv3({ userData });
+      const user = await User.findOne({ _id: req.user.id });
+      user.editorSettings = req.body.editorSettings;
+
+      const { editorSettings } = await user.save();
+      return res.apiv3({ editorSettings });
     }
     catch (err) {
       logger.error(err);
