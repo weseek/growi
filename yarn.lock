@@ -19468,6 +19468,16 @@ textlint-rule-no-double-negative-ja@^2.0.0:
   dependencies:
     kuromojin "^3.0.0"
 
+textlint-rule-no-doubled-conjunction@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-doubled-conjunction/-/textlint-rule-no-doubled-conjunction-2.0.2.tgz#cab9aec5d24ea5f477d7d14f6a6fe4d9ab7f80f0"
+  integrity sha512-w9J2Tp8hpvlfQj9UXEgXMuUZ8lqWFcLl6y1FQDD8SadXOsKyJl4+U9h/YH3ruTi2/F+vCksY8vAytnck/ApSWg==
+  dependencies:
+    kuromojin "^3.0.0"
+    sentence-splitter "^3.2.1"
+    textlint-rule-helper "^2.2.0"
+    textlint-util-to-string "^3.1.1"
+
 textlint-rule-no-doubled-conjunctive-particle-ga@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/textlint-rule-no-doubled-conjunctive-particle-ga/-/textlint-rule-no-doubled-conjunctive-particle-ga-2.0.3.tgz#c28f491e6b455c460a132d1a6a16d1020613f732"
