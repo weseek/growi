@@ -38,8 +38,6 @@ const PasswordResetExecutionForm = (props) => {
         token, newPassword, newPasswordConfirm,
       });
 
-      setNewPassword('');
-      setNewPasswordConfirm('');
       setValidationErrorI18n('');
 
       toastSuccess(t('toaster.update_successed', { target: t('Password') }));
