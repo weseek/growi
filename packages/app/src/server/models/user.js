@@ -342,14 +342,6 @@ module.exports = function(crowi) {
     return this.save();
   };
 
-  userSchema.methods.updateEditorCurrentSettings = async function(editorSettings) {
-    if (editorSettings.isTextlintEnabled != null) {
-      this.editorCurrentSettings.isTextlintEnabled = editorSettings.isTextlintEnabled;
-    }
-    const userData = await this.save();
-    return userData;
-  };
-
   userSchema.statics.getUserStatusLabels = function() {
     const userStatus = {};
     userStatus[STATUS_REGISTERED] = 'Approval Pending';
