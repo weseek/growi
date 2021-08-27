@@ -12,7 +12,6 @@ import loggerFactory from '~/utils/logger';
 
 
 const getCommomMiddleware = (installerService, logger) => {
-
   return async(req:SlackOauthReq, res:Res):Promise<void|Res> => {
     const { body } = req;
 
@@ -20,15 +19,14 @@ const getCommomMiddleware = (installerService, logger) => {
     let enterpriseId;
     let isEnterpriseInstall;
 
-
     // extract id from body
-    if (body.payload != null) {
+    if (body.payload != null) { // case: interactions
       const payload = JSON.parse(body.payload);
       teamId = payload.team?.id;
       enterpriseId = payload.enterprise?.id;
       isEnterpriseInstall = payload.is_enterprise_install === 'true';
     }
-    else {
+    else { // case: commands, events
       teamId = body.team_id;
       enterpriseId = body.enterprise_id;
       isEnterpriseInstall = body.is_enterprise_install === 'true';
