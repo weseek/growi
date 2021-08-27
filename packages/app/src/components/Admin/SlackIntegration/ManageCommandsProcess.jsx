@@ -167,8 +167,9 @@ const ManageCommandsProcess = ({
 
                 return (
                   <div className="row-6 my-1 mb-2" key={commandName}>
+                    {/* Rewrite after DB arch is defined */}
                     <div className="row-6 my-3">
-                      <input
+                      {/* <input
                         type="checkbox"
                         className="custom-control-input"
                         id={commandName}
@@ -179,20 +180,62 @@ const ManageCommandsProcess = ({
                       />
                       <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
                         {commandName}
-                      </label>
-                    </div>
-                    <div className={`row-12 row-md-6 ${hiddenClass}`}>
-                      <textarea
-                        className="form-control"
-                        type="textarea"
-                        name={commandName}
-                        defaultValue={defaultAllowedChannels}
-                        onChange={updatePermittedChannelsForEachCommand}
-                      />
-                      <p className="form-text text-muted small">
-                        {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
-                        <br />
-                      </p>
+                      </label> */}
+                      <div className="row">
+                        <input
+                          type="radio"
+                          id={`${commandName}-deny`}
+                          className="custom-control-input"
+                          name={commandName}
+                          value={commandName}
+                          checked={!selectedCommandsForSingleUse.has(commandName)}
+                          onChange={toggleCheckboxForSingleUse}
+                        />
+                        <label className="text-capitalize custom-control-label ml-3" htmlFor={`${commandName}-deny`}>
+                          Deny
+                        </label>
+                      </div>
+                      <div className="row">
+                        <input
+                          type="radio"
+                          id={`${commandName}-allow-all`}
+                          className="custom-control-input"
+                          name={commandName}
+                          value={commandName}
+                          checked={selectedCommandsForSingleUse.has(commandName)}
+                          onChange={toggleCheckboxForSingleUse}
+                        />
+                        <label className="text-capitalize custom-control-label ml-3" htmlFor={`${commandName}-allow-all`}>
+                          Allow from all
+                        </label>
+                      </div>
+                      <div className="row">
+                        <input
+                          type="radio"
+                          id={`${commandName}-allow-specified`}
+                          className="custom-control-input"
+                          name={commandName}
+                          value={commandName}
+                          checked={!selectedCommandsForSingleUse.has(commandName)}
+                          onChange={toggleCheckboxForSingleUse}
+                        />
+                        <label className="text-capitalize custom-control-label ml-3" htmlFor={`${commandName}-allow-specified`}>
+                          Allow from only specified channels
+                        </label>
+                      </div>
+                      <div className={`row-12 row-md-6 ${hiddenClass}`}>
+                        <textarea
+                          className="form-control"
+                          type="textarea"
+                          name={commandName}
+                          defaultValue={defaultAllowedChannels}
+                          onChange={updatePermittedChannelsForEachCommand}
+                        />
+                        <p className="form-text text-muted small">
+                          {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
+                          <br />
+                        </p>
+                      </div>
                     </div>
                   </div>
                 );
