@@ -251,6 +251,7 @@
     "textlint-rule-no-doubled-joshi": "^4.0.0",
     "textlint-rule-no-dropping-the-ra": "^3.0.0",
     "textlint-rule-no-hankaku-kana": "^1.0.2",
+    "textlint-rule-no-hoso-kinshi-yogo": "^1.3.2",
     "textlint-rule-prefer-tari-tari": "^1.0.3",
     "textlint-rule-sentence-length": "^3.0.0",
     "throttle-debounce": "^2.0.0",
