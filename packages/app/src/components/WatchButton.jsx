@@ -2,14 +2,26 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
+import { withUnstatedContainers } from './UnstatedUtils';
+
+import { toastError } from '~/client/util/apiNotification';
+import AppContainer from '~/client/services/AppContainer';
+import PageContainer from '~/client/services/PageContainer';
 
 
 const WatchButton = (props) => {
 
+  const { appContainer, pageContainer } = props;
   const [isWatching, setIsWatching] = useState(true);
 
   const handleClick = () => {
-    setIsWatching(!isWatching);
+    try {
+      pageContainer.toggleWatch(isWatching);
+      setIsWatching(!isWatching);
+    }
+    catch (err) {
+      toastError(err);
+    }
   };
 
   return (
@@ -36,10 +48,14 @@ const WatchButton = (props) => {
 
 WatchButton.propTypes = {
   size: PropTypes.string,
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
+  pageContainer: PropTypes.instanceOf(PageContainer).isRequired,
 };
 
 WatchButton.defaultProps = {
   size: 'md',
 };
 
-export default withTranslation()(WatchButton);
+const WatchButtonWrapper = withUnstatedContainers(WatchButton, [AppContainer, PageContainer]);
+
+export default withTranslation()(WatchButtonWrapper);

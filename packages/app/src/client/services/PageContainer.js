@@ -299,6 +299,12 @@ export default class PageContainer extends Container {
     return this.retrieveBookmarkInfo();
   }
 
+  async toggleWatch(watching) {
+    // TODO: GW-7222
+    console.log('watch button pusshed!!');
+    await this.appContainer.apiv3Post('page/watch', { pageId: this.state.pageId, status: watching });
+  }
+
   async checkAndUpdateImageUrlCached(users) {
     const noImageCacheUsers = users.filter((user) => { return user.imageUrlCached == null });
     if (noImageCacheUsers.length === 0) {
