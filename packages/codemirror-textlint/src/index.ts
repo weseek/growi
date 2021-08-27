@@ -18,7 +18,7 @@ import textlintRulePreferTariTari from 'textlint-rule-prefer-tari-tari';
 import textlintRuleSentenceLength from 'textlint-rule-sentence-length';
 
 import { AsyncLinter, Annotation } from 'codemirror/addon/lint/lint';
-import loggerFactory from 'debug';
+import { loggerFactory } from '../utils/logger';
 
 type RulesConfigObj = {
   name: string,
