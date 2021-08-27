@@ -12,7 +12,7 @@ const logger = loggerFactory('growi:service:AppService');
 /**
  * the service class of AppService
  */
-class AppService implements S2sMessageHandlable {
+export default class AppService implements S2sMessageHandlable {
 
   crowi!: any;
 
@@ -131,5 +131,3 @@ class AppService implements S2sMessageHandlable {
   }
 
 }
-
-module.exports = AppService;
