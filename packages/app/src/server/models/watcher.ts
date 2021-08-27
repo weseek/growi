@@ -92,13 +92,8 @@ export default (): WatcherModel => {
     return Watcher.find({ target, status: STATUS_IGNORE }).distinct('user');
   };
 
-  watcherSchema.statics.STATUS_WATCH = function() {
-    return STATUS_WATCH;
-  };
-
-  watcherSchema.statics.STATUS_IGNORE = function() {
-    return STATUS_IGNORE;
-  };
+  watcherSchema.statics.STATUS_WATCH = STATUS_WATCH;
+  watcherSchema.statics.STATUS_IGNORE = STATUS_IGNORE;
 
   const Watcher = model<WatcherDocument, WatcherModel>('Watcher', watcherSchema);
 
