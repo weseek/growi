@@ -207,6 +207,7 @@ class OptionsSelector extends React.Component {
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
             {this.renderMarkdownTableAutoFormattingMenuItem()}
+            {this.renderIsTextlintEnabledMenuItem()}
             {/* <DropdownItem divider /> */}
           </DropdownMenu>
 
@@ -280,6 +281,28 @@ class OptionsSelector extends React.Component {
         <div className="d-flex justify-content-between">
           <span className="icon-container"></span>
           <span className="menuitem-label">{ t('page_edit.auto_format_table') }</span>
+          <span className="icon-container"><i className={iconClassName}></i></span>
+        </div>
+      </DropdownItem>
+    );
+  }
+
+  renderIsTextlintEnabledMenuItem() {
+    // TODO: GW-6988 connect to back end
+    const isActive = true;
+    const iconClasses = ['text-info'];
+    if (isActive) {
+      iconClasses.push('ti-check');
+    }
+    const iconClassName = iconClasses.join(' ');
+
+    return (
+      // TODO: GW-6988 connect to back end
+      // eslint-disable-next-line no-console
+      <DropdownItem toggle={false} onClick={console.log('Lint button pressed')}>
+        <div className="d-flex justify-content-between">
+          <span className="icon-container"></span>
+          <span className="menuitem-label">Textlint</span>
           <span className="icon-container"><i className={iconClassName}></i></span>
         </div>
       </DropdownItem>
