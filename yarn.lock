@@ -19658,6 +19658,16 @@ textlint-rule-helper@^2.0.0, textlint-rule-helper@^2.1.1, textlint-rule-helper@^
     structured-source "^3.0.2"
     unist-util-visit "^1.1.0"
 
+textlint-rule-ja-hiragana-fukushi@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-ja-hiragana-fukushi/-/textlint-rule-ja-hiragana-fukushi-1.3.0.tgz#fbc7af15788c5947eb9937c3647a42891864075c"
+  integrity sha512-j8+5XUDnUKbc87GUklCEOl/UrR9HPvokgKJmPN52Ask1y67rQT594pjGkiRvdmv3wESqe6PKOKK8mUFKCwiDYw==
+  dependencies:
+    js-yaml "^3.8.2"
+    kuromojin "^2.1.1"
+    morpheme-match-all "^1.1.0"
+    untildify "^4.0.0"
+
 textlint-rule-ja-hiragana-hojodoushi@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/textlint-rule-ja-hiragana-hojodoushi/-/textlint-rule-ja-hiragana-hojodoushi-1.0.4.tgz#39495f512a50b873e034b55d33df8d9c68b9e64d"
@@ -20645,6 +20655,11 @@ untildify@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/untildify/-/untildify-3.0.3.tgz#1e7b42b140bcfd922b22e70ca1265bfe3634c7c9"
   integrity sha512-iSk/J8efr8uPT/Z4eSUywnqyrQU7DSdMfdqK4iWEaUVVmcP5JcnpRqmVMwcwcnmI1ATFNgC5V90u09tBynNFKA==
+
+untildify@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/untildify/-/untildify-4.0.0.tgz#2bc947b953652487e4600949fb091e3ae8cd919b"
+  integrity sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==
 
 unzip-response@^2.0.1:
   version "2.0.1"
