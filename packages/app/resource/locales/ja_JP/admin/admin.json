@@ -252,6 +252,12 @@
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
+  "external_notification": {
+    "enabled": "有効",
+    "disabled": "無効",
+    "header_status": "Slack 連携の状態",
+    "caution_enabled": "CAUTION: このページで設定される通知は、Primary として設定された Slack ワークスペースにのみ送信されます。 "
+  },
   "slack_integration": {
     "selecting_bot_types": {
       "slack_bot": "Slack bot",

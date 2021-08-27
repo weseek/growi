@@ -14,6 +14,7 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
     this.dummyWebhookUrlForError = 1;
 
     this.state = {
+      isSlackbotConfigured: false,
       retrieveError: null,
       selectSlackOption: 'Incoming Webhooks',
       webhookUrl: this.dummyWebhookUrl,

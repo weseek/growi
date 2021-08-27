@@ -111,7 +111,11 @@ module.exports = (crowi) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.send();
+    res.json({
+      response_type: 'ephemeral',
+      text: 'Processing your request ...',
+    });
+
 
     const args = body.text.split(' ');
     const command = args[0];
