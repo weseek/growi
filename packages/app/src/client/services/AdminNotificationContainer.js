@@ -10,15 +10,14 @@ export default class AdminNotificationContainer extends Container {
     super();
 
     this.appContainer = appContainer;
-    this.dummyWebhookUrl = 0;
-    this.dummyWebhookUrlForError = 1;
 
     this.state = {
       retrieveError: null,
-      selectSlackOption: 'Incoming Webhooks',
-      webhookUrl: this.dummyWebhookUrl,
-      isIncomingWebhookPrioritized: false,
-      slackToken: '',
+
+      isSlackbotConfigured: null,
+      isSlackLegacyConfigured: null,
+      currentBotType: null,
+
       userNotifications: [],
       isNotificationForOwnerPageEnabled: false,
       isNotificationForGroupPageEnabled: false,
@@ -42,42 +41,15 @@ export default class AdminNotificationContainer extends Container {
     const { notificationParams } = response.data;
 
     this.setState({
-      webhookUrl: notificationParams.webhookUrl,
-      isIncomingWebhookPrioritized: notificationParams.isIncomingWebhookPrioritized,
-      slackToken: notificationParams.slackToken,
+      isSlackbotConfigured: notificationParams.isSlackbotConfigured,
+      isSlackLegacyConfigured: notificationParams.isSlackLegacyConfigured,
+      currentBotType: notificationParams.currentBotType,
+
       userNotifications: notificationParams.userNotifications,
       isNotificationForOwnerPageEnabled: notificationParams.isNotificationForOwnerPageEnabled,
       isNotificationForGroupPageEnabled: notificationParams.isNotificationForGroupPageEnabled,
       globalNotifications: notificationParams.globalNotifications,
     });
-  }
-
-  /**
-   * Switch slackOption
-   */
-  switchSlackOption(slackOption) {
-    this.setState({ selectSlackOption: slackOption });
-  }
-
-  /**
-   * Change webhookUrl
-   */
-  changeWebhookUrl(webhookUrl) {
-    this.setState({ webhookUrl });
-  }
-
-  /**
-   * Switch incomingWebhookPrioritized
-   */
-  switchIsIncomingWebhookPrioritized() {
-    this.setState({ isIncomingWebhookPrioritized: !this.state.isIncomingWebhookPrioritized });
-  }
-
-  /**
-   * Change slackToken
-   */
-  changeSlackToken(slackToken) {
-    this.setState({ slackToken });
   }
 
   /**

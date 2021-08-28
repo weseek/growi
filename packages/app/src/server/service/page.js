@@ -105,10 +105,6 @@ class PageService {
       await Page.create(path, body, user, { redirectTo: newPagePath });
     }
 
-    if (isRecursively) {
-      await this.renameDescendantsWithStream(page, newPagePath, user, options);
-    }
-
     this.pageEvent.emit('delete', page, user, socketClientId);
     this.pageEvent.emit('create', renamedPage, user, socketClientId);
 
