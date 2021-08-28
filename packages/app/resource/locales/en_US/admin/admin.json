@@ -252,6 +252,12 @@
     "download": "Download",
     "delete": "Delete"
   },
+  "external_notification": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "header_status": "Slack Integration Status",
+    "caution_enabled": "CAUTION: Currently, notifications that are configured in this page will send only to the Slack Workspace set as primary."
+  },
   "slack_integration": {
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
