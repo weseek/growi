@@ -11,9 +11,9 @@ import loggerFactory from '~/utils/logger';
 
 
 const extractInstallationQueryFromBody = (body): InstallationQuery<boolean> => {
-  let teamId;
-  let enterpriseId;
-  let isEnterpriseInstall;
+  let teamId: string;
+  let enterpriseId: string;
+  let isEnterpriseInstall: boolean;
 
   // extract id from body
   if (body.payload != null) { // case: interactions
