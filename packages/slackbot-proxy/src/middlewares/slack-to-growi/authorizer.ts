@@ -11,7 +11,7 @@ import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
 
-const getCommomMiddleware = (installerService, logger) => {
+const getCommonMiddleware = (installerService, logger) => {
   return async(req:SlackOauthReq, res:Res):Promise<void|Res> => {
     const { body } = req;
 
@@ -77,7 +77,7 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
   installerService: InstallerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
-    const commonMiddleware = getCommomMiddleware(this.installerService, this.logger);
+    const commonMiddleware = getCommonMiddleware(this.installerService, this.logger);
     await commonMiddleware(req, res);
   }
 
@@ -104,7 +104,7 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
         return;
       }
 
-      const commonMiddleware = getCommomMiddleware(this.installerService, this.logger);
+      const commonMiddleware = getCommonMiddleware(this.installerService, this.logger);
       await commonMiddleware(req, res);
     }
 
@@ -122,7 +122,7 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
   installerService: InstallerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
-    const commonMiddleware = getCommomMiddleware(this.installerService, this.logger);
+    const commonMiddleware = getCommonMiddleware(this.installerService, this.logger);
     await commonMiddleware(req, res);
   }
 
