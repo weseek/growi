@@ -6,43 +6,44 @@ import {
 import Logger from 'bunyan';
 
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
-// import { InstallationRepository } from '~/repositories/installation';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
 
+const extractInstallationQueryFromBody = (body): InstallationQuery<boolean> => {
+  let teamId;
+  let enterpriseId;
+  let isEnterpriseInstall;
+
+  // extract id from body
+  if (body.payload != null) { // case: interactions
+    const payload = JSON.parse(body.payload);
+    teamId = payload.team?.id;
+    enterpriseId = payload.enterprise?.id;
+    isEnterpriseInstall = payload.is_enterprise_install === 'true';
+  }
+  else { // case: commands, events
+    teamId = body.team_id;
+    enterpriseId = body.enterprise_id;
+    isEnterpriseInstall = body.is_enterprise_install === 'true';
+  }
+
+  return { teamId, enterpriseId, isEnterpriseInstall };
+
+};
+
+
 const getCommonMiddleware = (installerService, logger) => {
-  return async(req:SlackOauthReq, res:Res):Promise<void|Res> => {
+  return async(req: SlackOauthReq, res: Res): Promise<void|Res> => {
     const { body } = req;
 
-    let teamId;
-    let enterpriseId;
-    let isEnterpriseInstall;
+    // create query from body
+    const query: InstallationQuery<boolean> = extractInstallationQueryFromBody(body);
 
-    // extract id from body
-    if (body.payload != null) { // case: interactions
-      const payload = JSON.parse(body.payload);
-      teamId = payload.team?.id;
-      enterpriseId = payload.enterprise?.id;
-      isEnterpriseInstall = payload.is_enterprise_install === 'true';
-    }
-    else { // case: commands, events
-      teamId = body.team_id;
-      enterpriseId = body.enterprise_id;
-      isEnterpriseInstall = body.is_enterprise_install === 'true';
-    }
-
-    if (teamId == null && enterpriseId == null) {
+    if (query.teamId == null && query.enterpriseId == null) {
       res.writeHead(400, 'No installation found');
       return res.end();
     }
-
-    // create query from body
-    const query: InstallationQuery<boolean> = {
-      teamId,
-      enterpriseId,
-      isEnterpriseInstall,
-    };
 
     let result: AuthorizeResult;
     try {
