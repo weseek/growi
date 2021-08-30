@@ -39,6 +39,12 @@ const PersonalSettings = (props) => {
         i18n: t('API Settings'),
         index: 3,
       },
+      editor_settings: {
+        Icon: () => <i className="icon-fw icon-pencil"></i>,
+        Content: ApiSettings,
+        i18n: t(' Settings'),
+        index: 4,
+      },
     };
   }, [t]);
 
