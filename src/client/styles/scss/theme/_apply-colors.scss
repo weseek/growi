@@ -273,6 +273,29 @@ ul.pagination {
     .grw-btn-reload-cs {
       color: $reload-btn-cs-color;
     }
+
+    .grw-recent-changes-resize-button {
+      .custom-control-label::before {
+        background-color: $primary;
+      }
+
+      .custom-control-label::after {
+        background-color: $bgcolor-global;
+      }
+
+      .custom-control-input:not(:checked) + .custom-control-label::before {
+        color: $bgcolor-global;
+      }
+
+      .custom-control-input:checked + .custom-control-label::before {
+        color: $bgcolor-global;
+        background-color: $primary;
+        // border-color: $primary !important;
+      }
+      .custom-control-input:checked + .custom-control-label::after {
+        color: $bgcolor-global;
+      }
+    }
   }
 
   .grw-recent-changes {
