@@ -118,11 +118,10 @@ class OptionsSelector extends React.Component {
 
   async onClickTextLintToggle(event) {
     const { appContainer, t } = this.props;
-
     this.setState({ isTextlintEnabled: !this.state.isTextlintEnabled });
 
     try {
-      await appContainer.apiv3Put('/personal-setting/editor-settings', { editorCurrentSettings: { isTextlintEnabled: this.state.isTextlintEnabled } });
+      await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: this.state.isTextlintEnabled });
       toastSuccess(t('toaster.update_successed'));
     }
     catch (err) {
