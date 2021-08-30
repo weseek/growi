@@ -10,6 +10,7 @@ import {
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 
 export const defaultEditorOptions = {
@@ -33,6 +34,7 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
+      editorCurrentSettings: { isTextlintEnabled: false },
     };
 
     this.availableThemes = [
@@ -51,6 +53,7 @@ class OptionsSelector extends React.Component {
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
+    this.onClickTextLintToggle = this.onClickTextLintToggle.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
   }
@@ -109,6 +112,22 @@ class OptionsSelector extends React.Component {
 
     // save to localStorage
     editorContainer.saveOptsToLocalStorage();
+
+
+  }
+
+  async onClickTextLintToggle(event) {
+    const { appContainer, t } = this.props;
+
+    this.setState({ editorCurrentSettings: !this.state.editorCurrentSettings.isTextlintEnabled });
+
+    try {
+      await appContainer.apiv3Put('/personal-setting/editor-settings', { editorCurrentSettings: { isTextlintEnabled: this.state.isTextlintEnabled } });
+      toastSuccess(t('toaster.update_successed'));
+    }
+    catch (err) {
+      toastError(err);
+    }
   }
 
   onToggleConfigurationDropdown(newValue) {
@@ -288,8 +307,11 @@ class OptionsSelector extends React.Component {
   }
 
   renderIsTextlintEnabledMenuItem() {
-    // TODO: GW-6988 connect to back end
-    const isActive = true;
+    const { t, editorContainer } = this.props;
+
+    const isActive = this.state.isLintEnabled;
+
+    console.log('this.state.isLintEnabled', this.state.isLintEnabled);
     const iconClasses = ['text-info'];
     if (isActive) {
       iconClasses.push('ti-check');
@@ -297,9 +319,8 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      // TODO: GW-6988 connect to back end
       // eslint-disable-next-line no-console
-      <DropdownItem toggle={false} onClick={console.log('Lint button pressed')}>
+      <DropdownItem toggle={false} onClick={this.onClickTextLintToggle}>
         <div className="d-flex justify-content-between">
           <span className="icon-container"></span>
           <span className="menuitem-label">Textlint</span>
