@@ -34,7 +34,7 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
-      editorCurrentSettings: { isTextlintEnabled: false },
+      isTextlintEnabled: false,
     };
 
     this.availableThemes = [
@@ -119,7 +119,7 @@ class OptionsSelector extends React.Component {
   async onClickTextLintToggle(event) {
     const { appContainer, t } = this.props;
 
-    this.setState({ editorCurrentSettings: !this.state.editorCurrentSettings.isTextlintEnabled });
+    this.setState({ isTextlintEnabled: !this.state.isTextlintEnabled });
 
     try {
       await appContainer.apiv3Put('/personal-setting/editor-settings', { editorCurrentSettings: { isTextlintEnabled: this.state.isTextlintEnabled } });
@@ -226,7 +226,7 @@ class OptionsSelector extends React.Component {
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
             {this.renderMarkdownTableAutoFormattingMenuItem()}
-            {this.renderIsTextlintEnabledMenuItem()}
+            {this.renderisTextlintEnabledMenuItem()}
             {/* <DropdownItem divider /> */}
           </DropdownMenu>
 
@@ -306,12 +306,12 @@ class OptionsSelector extends React.Component {
     );
   }
 
-  renderIsTextlintEnabledMenuItem() {
+  renderisTextlintEnabledMenuItem() {
     const { t, editorContainer } = this.props;
 
-    const isActive = this.state.isLintEnabled;
+    const isActive = this.state.isTextlintEnabled;
 
-    console.log('this.state.isLintEnabled', this.state.isLintEnabled);
+    console.log('this.state.isTextlintEnabled', this.state.isTextlintEnabled);
     const iconClasses = ['text-info'];
     if (isActive) {
       iconClasses.push('ti-check');

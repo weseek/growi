@@ -159,7 +159,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       : { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
 
     // TODO: Get configs from db
-    this.isLintEnabled = true;
+    this.isTextlintEnabled = true;
 
     this.textlintConfig = [
       { name: 'common-misspellings' },
@@ -224,7 +224,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   initTextlintSettings() {
     this.textlintValidator = createValidator(this.textlintConfig);
-    this.codemirrorLintConfig = this.isLintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
+    this.codemirrorLintConfig = this.isTextlintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
   }
 
   getCodeMirror() {
@@ -908,7 +908,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
     }
-    if (this.isLintEnabled === true) {
+    if (this.isTextlintEnabled === true) {
       gutters.push('CodeMirror-lint-markers');
     }
 
