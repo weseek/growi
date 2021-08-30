@@ -27,7 +27,6 @@ import textlintRuleNoZeroWidthSpaces from 'textlint-rule-no-zero-width-spaces';
 import textlintRulePeriodInListItem from 'textlint-rule-period-in-list-item';
 import textlintRulePreferTariTari from 'textlint-rule-prefer-tari-tari';
 import textlintRuleSentenceLength from 'textlint-rule-sentence-length';
-import textlintRuleTerminology from 'textlint-rule-terminology';
 import textlintRuleUseSiUnits from 'textlint-rule-use-si-units';
 
 import { AsyncLinter, Annotation } from 'codemirror/addon/lint/lint';
@@ -70,7 +69,6 @@ const ruleModulesList = {
   'period-in-list-item': textlintRulePeriodInListItem,
   'prefer-tari-tari': textlintRulePreferTariTari,
   'sentence-length': textlintRuleSentenceLength,
-  terminology: textlintRuleTerminology,
   'use-si-units': textlintRuleUseSiUnits,
 };
 

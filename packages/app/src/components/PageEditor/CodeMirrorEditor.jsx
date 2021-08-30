@@ -189,7 +189,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       { name: 'period-in-list-item' },
       { name: 'prefer-tari-tari' },
       { name: 'sentence-length' },
-      { name: 'terminology' },
       { name: 'use-si-units' },
     ];
 
