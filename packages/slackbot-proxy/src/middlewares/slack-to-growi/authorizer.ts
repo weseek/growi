@@ -13,7 +13,6 @@ import loggerFactory from '~/utils/logger';
 const getCommonMiddleware = (query, installerService, logger) => {
   return async(req: SlackOauthReq, res: Res): Promise<void|Res> => {
 
-
     if (query.teamId == null && query.enterpriseId == null) {
       res.writeHead(400, 'No installation found');
       return res.end();
@@ -95,7 +94,6 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
         this.logger.info('body does not have payload');
         return;
       }
-
 
       // create query from body
       const query: InstallationQuery<boolean> = {
