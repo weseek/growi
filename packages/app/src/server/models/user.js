@@ -39,37 +39,34 @@ module.exports = function(crowi) {
     isTextlintEnabled: { type: Boolean, default: true },
     enabledCommonTextlintRules: {
       type: [
-        { name: { type: String }, options: { type: Object } },
+        { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
       ],
       default: [
-        { name: 'common-misspellings', options: {} },
-        { name: 'max-comma', options: {} },
-        { name: 'sentence-length', options: {} },
+        { name: 'common-misspellings', options: {}, isEnabled: true },
+        { name: 'max-comma', options: {}, isEnabled: true },
+        { name: 'sentence-length', options: {}, isEnabled: true },
       ],
     },
     enabledJapaneseTextlintRules: {
       type: [
-        { name: { type: String }, options: { type: Object } },
+        { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
       ],
       default: [
-        { name: 'ja-hiragana-keishikimeishi', options: {} },
-        { name: 'ja-no-abusage', options: {} },
-        { name: 'ja-no-inappropriate-words', options: {} },
-        { name: 'ja-no-mixed-period', options: {} },
-        { name: 'ja-no-redundant-expression', options: {} },
-        { name: 'max-kanji-continuous-len', options: {} },
-        { name: 'max-ten', options: {} },
-        { name: 'no-double-negative-ja', options: {} },
-        { name: 'no-doubled-conjunction', options: {} },
-        { name: 'no-doubled-joshi', options: {} },
-        { name: 'no-dropping-the-ra', options: {} },
-        { name: 'no-hankaku-kana', options: {} },
-        { name: 'prefer-tari-tari', options: {} },
+        { name: 'ja-hiragana-keishikimeishi', options: {}, isEnabled: true },
+        { name: 'ja-no-abusage', options: {}, isEnabled: true },
+        { name: 'ja-no-inappropriate-words', options: {}, isEnabled: true },
+        { name: 'ja-no-mixed-period', options: {}, isEnabled: true },
+        { name: 'ja-no-redundant-expression', options: {}, isEnabled: true },
+        { name: 'max-kanji-continuous-len', options: {}, isEnabled: true },
+        { name: 'max-ten', options: {}, isEnabled: true },
+        { name: 'no-double-negative-ja', options: {}, isEnabled: true },
+        { name: 'no-doubled-conjunction', options: {}, isEnabled: true },
+        { name: 'no-doubled-joshi', options: {}, isEnabled: true },
+        { name: 'no-dropping-the-ra', options: {}, isEnabled: true },
+        { name: 'no-hankaku-kana', options: {}, isEnabled: true },
+        { name: 'prefer-tari-tari', options: {}, isEnabled: true },
       ],
     },
-    // enabledJapaneseTextlintRules: [
-    //   { name: { type: String }, options: { type: Object } },
-    // ],
   });
 
   const userSchema = new mongoose.Schema({
