@@ -170,7 +170,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     this.isCheckTypeValid();
 
     // connect to proxy
-    const proxyServerUri = this.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    const proxyServerUri = this.configManager.getConfig('crowi', 'slackbot:proxyUri');
     const serverUri = new URL('/g2s', proxyServerUri);
     const headers = {
       'x-growi-gtop-tokens': slackAppIntegration.tokenGtoP,

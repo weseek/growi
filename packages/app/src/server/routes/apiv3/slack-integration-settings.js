@@ -107,12 +107,12 @@ module.exports = (crowi) => {
       'slackbot:currentBotType': initializedType,
       'slackbot:signingSecret': null,
       'slackbot:token': null,
-      'slackbot:proxyServerUri': null,
+      'slackbot:proxyUri': null,
     };
 
     // set url if officialBot is specified
     if (initializedType === SlackbotType.OFFICIAL) {
-      params['slackbot:proxyServerUri'] = OFFICIAL_SLACKBOT_PROXY_URI;
+      params['slackbot:proxyUri'] = OFFICIAL_SLACKBOT_PROXY_URI;
     }
 
     return updateSlackBotSettings(params);
@@ -120,7 +120,7 @@ module.exports = (crowi) => {
 
   async function getConnectionStatusesFromProxy(tokens) {
     const csv = tokens.join(',');
-    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
 
     const result = await axios.get(urljoin(proxyUri, '/g2s/connection-status'), {
       headers: {
@@ -133,7 +133,7 @@ module.exports = (crowi) => {
   }
 
   async function requestToProxyServer(token, method, endpoint, body) {
-    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
     if (proxyUri == null) {
       throw new Error('Proxy URL is not registered');
     }
@@ -183,8 +183,8 @@ module.exports = (crowi) => {
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
     }
     else {
-      settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
-      settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:proxyServerUri');
+      settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
+      settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:proxyUri');
     }
 
     // retrieve connection statuses
@@ -441,7 +441,7 @@ module.exports = (crowi) => {
   router.put('/proxy-uri', loginRequiredStrictly, adminRequired, csrf, validator.proxyUri, apiV3FormValidator, async(req, res) => {
     const { proxyUri } = req.body;
 
-    const requestParams = { 'slackbot:proxyServerUri': proxyUri };
+    const requestParams = { 'slackbot:proxyUri': proxyUri };
 
     try {
       await updateSlackBotSettings(requestParams);
@@ -557,7 +557,7 @@ module.exports = (crowi) => {
         { new: true },
       );
 
-      const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+      const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
       if (proxyUri != null) {
         await requestToProxyServer(
           slackAppIntegration.tokenGtoP,
@@ -600,7 +600,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'not-proxy-type'), 400);
     }
 
-    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
+    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
     if (proxyUri == null) {
       return res.apiv3Err(new ErrorV3('Proxy URL is null.', 'not-proxy-Uri'), 400);
     }
