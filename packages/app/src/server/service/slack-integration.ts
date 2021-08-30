@@ -106,7 +106,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   /**
-   * generate WebClient instance for 'customBotWithoutProxy' type
+   * generate WebClient instance for CUSTOM_WITHOUT_PROXY type
    */
   async generateClientForCustomBotWithoutProxy(): Promise<WebClient> {
     this.isCheckTypeValid();
@@ -147,7 +147,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
     const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
-    if (currentBotType === 'customBotWithoutProxy') {
+    if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       return this.generateClientForCustomBotWithoutProxy();
     }
 

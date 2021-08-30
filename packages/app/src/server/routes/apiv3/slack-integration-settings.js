@@ -1,4 +1,7 @@
+import { SlackbotType } from '@growi/slack';
+
 import loggerFactory from '~/utils/logger';
+
 
 const mongoose = require('mongoose');
 const express = require('express');
@@ -61,7 +64,7 @@ module.exports = (crowi) => {
     ],
     slackIntegration: [
       body('currentBotType')
-        .isIn(['officialBot', 'customBotWithoutProxy', 'customBotWithProxy']),
+        .isIn(Object.values(SlackbotType)),
     ],
     proxyUri: [
       body('proxyUri').if(value => value !== '').trim().matches(/^(https?:\/\/)/)
@@ -108,7 +111,7 @@ module.exports = (crowi) => {
     };
 
     // set url if officialBot is specified
-    if (initializedType === 'officialBot') {
+    if (initializedType === SlackbotType.OFFICIAL) {
       params['slackbot:proxyServerUri'] = OFFICIAL_SLACKBOT_PROXY_URI;
     }
 
@@ -173,7 +176,7 @@ module.exports = (crowi) => {
 
     // retrieve settings
     const settings = {};
-    if (currentBotType === 'customBotWithoutProxy') {
+    if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
       settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
@@ -191,7 +194,7 @@ module.exports = (crowi) => {
     if (currentBotType == null) {
       // no need to do anything
     }
-    else if (currentBotType === 'customBotWithoutProxy') {
+    else if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const token = settings.slackBotToken;
       // check the token is not null
       if (token != null) {
@@ -333,7 +336,7 @@ module.exports = (crowi) => {
    */
   router.put('/without-proxy/update-settings', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-    if (currentBotType !== 'customBotWithoutProxy') {
+    if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
       return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
     }
@@ -592,7 +595,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.post('/slack-app-integrations/:id/relation-test', loginRequiredStrictly, adminRequired, csrf, validator.relationTest, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-    if (currentBotType === 'customBotWithoutProxy') {
+    if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'not-proxy-type'), 400);
     }
@@ -666,7 +669,7 @@ module.exports = (crowi) => {
    */
   router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, csrf, validator.slackChannel, apiV3FormValidator, async(req, res) => {
     const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
-    if (currentBotType !== 'customBotWithoutProxy') {
+    if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
     }
