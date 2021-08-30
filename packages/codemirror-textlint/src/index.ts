@@ -1,7 +1,7 @@
 import { TextlintKernel, TextlintKernelRule, TextlintRuleOptions } from '@textlint/kernel';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
-import textlintRuleTextlintRuleNoInvalidControlCharacter from '@textlint-rule/textlint-rule-no-invalid-control-character';
-import textlintRuleTextlintRuleNoUnmatchedPair from '@textlint-rule/textlint-rule-no-unmatched-pair';
+import textlintRuleNoInvalidControlCharacter from '@textlint-rule/textlint-rule-no-invalid-control-character';
+import textlintRuleNoUnmatchedPair from '@textlint-rule/textlint-rule-no-unmatched-pair';
 import textlintRuleCommonMisspellings from 'textlint-rule-common-misspellings';
 import textlintRuleDateWeekdayMismatch from 'textlint-rule-date-weekday-mismatch';
 import textlintRuleEnCapitalization from 'textlint-rule-en-capitalization';
@@ -45,37 +45,37 @@ type RuleExtension = {
 }
 
 const ruleModulesList = {
-  'textlint-rule-no-invalid-control-character': textlintRuleTextlintRuleNoInvalidControlCharacter,
-  'textlint-rule-no-unmatched-pair': textlintRuleTextlintRuleNoUnmatchedPair,
-  'textlint-rule-common-misspellings': textlintRuleCommonMisspellings,
-  'textlint-rule-date-weekday-mismatch': textlintRuleDateWeekdayMismatch,
-  'textlint-rule-en-capitalization': textlintRuleEnCapitalization,
-  'textlint-rule-ginger': textlintRuleGinger,
-  'textlint-rule-ja-hiragana-keishikimeishi': textlintRuleJaHiraganaKeishikimeishi,
-  'textlint-rule-ja-no-abusage': textlintRuleJaNoAbusage,
-  'textlint-rule-ja-no-inappropriate-words': textlintRuleJaNoInappropriateWords,
-  'textlint-rule-ja-no-mixed-period': textlintRuleJaNoMixedPeriod,
-  'textlint-rule-ja-no-redundant-expression': textlintRuleJaNoRedundantExpression,
-  'textlint-rule-ja-unnatural-alphabet': textlintRuleJaUnnaturalAlphabet,
-  'textlint-rule-max-comma': textlintRuleMaxComma,
-  'textlint-rule-max-kanji-continuous-len': textlintRuleMaxKanjiContinuousLen,
-  'textlint-rule-max-ten': textlintRuleMaxTen,
-  'textlint-rule-no-dead-link': textlintRuleNoDeadLink,
-  'textlint-rule-no-double-negative-ja': textlintRuleNoDoubleNegativeJa,
-  'textlint-rule-no-doubled-conjunction': textlintRuleNoDoubledConjunction,
-  'textlint-rule-no-doubled-joshi': textlintRuleNoDoubledJoshi,
-  'textlint-rule-no-dropping-the-ra': textlintRuleNoDroppingTheRa,
-  'textlint-rule-no-hankaku-kana': textlintRuleNoHankakuKana,
-  'textlint-rule-no-kangxi-radicals': textlintRuleNoKangxiRadicals,
-  'textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet': textlintRuleNoMixedZenkakuAndHankakuAlphabet,
-  'textlint-rule-no-nfd': textlintRuleNoNfd,
-  'textlint-rule-no-surrogate-pair': textlintRuleNoSurrogatePair,
-  'textlint-rule-no-zero-width-spaces': textlintRuleNoZeroWidthSpaces,
-  'textlint-rule-period-in-list-item': textlintRulePeriodInListItem,
-  'textlint-rule-prefer-tari-tari': textlintRulePreferTariTari,
-  'textlint-rule-sentence-length': textlintRuleSentenceLength,
-  'textlint-rule-terminology': textlintRuleTerminology,
-  'textlint-rule-use-si-units': textlintRuleUseSiUnits,
+  'no-invalid-control-character': textlintRuleNoInvalidControlCharacter,
+  'no-unmatched-pair': textlintRuleNoUnmatchedPair,
+  'common-misspellings': textlintRuleCommonMisspellings,
+  'date-weekday-mismatch': textlintRuleDateWeekdayMismatch,
+  'en-capitalization': textlintRuleEnCapitalization,
+  ginger: textlintRuleGinger,
+  'ja-hiragana-keishikimeishi': textlintRuleJaHiraganaKeishikimeishi,
+  'ja-no-abusage': textlintRuleJaNoAbusage,
+  'ja-no-inappropriate-words': textlintRuleJaNoInappropriateWords,
+  'ja-no-mixed-period': textlintRuleJaNoMixedPeriod,
+  'ja-no-redundant-expression': textlintRuleJaNoRedundantExpression,
+  'ja-unnatural-alphabet': textlintRuleJaUnnaturalAlphabet,
+  'max-comma': textlintRuleMaxComma,
+  'max-kanji-continuous-len': textlintRuleMaxKanjiContinuousLen,
+  'max-ten': textlintRuleMaxTen,
+  'no-dead-link': textlintRuleNoDeadLink,
+  'no-double-negative-ja': textlintRuleNoDoubleNegativeJa,
+  'no-doubled-conjunction': textlintRuleNoDoubledConjunction,
+  'no-doubled-joshi': textlintRuleNoDoubledJoshi,
+  'no-dropping-the-ra': textlintRuleNoDroppingTheRa,
+  'no-hankaku-kana': textlintRuleNoHankakuKana,
+  'no-kangxi-radicals': textlintRuleNoKangxiRadicals,
+  'no-mixed-zenkaku-and-hankaku-alphabet': textlintRuleNoMixedZenkakuAndHankakuAlphabet,
+  'no-nfd': textlintRuleNoNfd,
+  'no-surrogate-pair': textlintRuleNoSurrogatePair,
+  'no-zero-width-spaces': textlintRuleNoZeroWidthSpaces,
+  'period-in-list-item': textlintRulePeriodInListItem,
+  'prefer-tari-tari': textlintRulePreferTariTari,
+  'sentence-length': textlintRuleSentenceLength,
+  terminology: textlintRuleTerminology,
+  'use-si-units': textlintRuleUseSiUnits,
 };
 
 const logger = loggerFactory('growi:codemirror:codemirror-textlint');
