@@ -1,8 +1,15 @@
 {
   "name": "@growi/codemirror-textlint",
   "version": "4.3.3-RC",
-  "main": "index.js",
   "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "tsc": "tsc -p tsconfig.build.json",
+    "tsc:w": "yarn tsc -w",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
+  },
   "dependencies": {
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "browser-bunyan": "^1.6.3",
