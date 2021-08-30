@@ -55,7 +55,7 @@
   "dependencies": {
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "@google-cloud/storage": "^5.8.5",
-    "@growi/codemirror-textlint": "^1.0.0",
+    "@growi/codemirror-textlint": "^4.3.3-RC",
     "@growi/plugin-attachment-refs": "^4.3.3-RC",
     "@growi/plugin-lsx": "^4.3.3-RC",
     "@growi/plugin-pukiwiki-like-linker": "^4.3.3-RC",
