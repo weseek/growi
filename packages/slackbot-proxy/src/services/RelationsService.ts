@@ -65,24 +65,42 @@ export class RelationsService {
     return relation;
   }
 
-  async isSupportedGrowiCommandForSingleUse(relation:RelationMock, growiCommandType:string, baseDate:Date):Promise<void> {
+  async isSupportedGrowiCommandForSingleUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
+
     if (syncedRelation == null) {
-      // return false;
+      return false;
     }
-    console.log(growiCommandType);
-    console.log(relation.supportedCommandsForSingleUse[growiCommandType], 73);
-    // return relation.supportedCommandsForSingleUse.includes(growiCommandType);
+
+    const boolOrArrayString = relation.supportedCommandsForSingleUse[growiCommandType];
+
+    if (boolOrArrayString == null) {
+      return false;
+    }
+
+    if (Array.isArray(boolOrArrayString)) {
+      return boolOrArrayString.includes(channelName);
+    }
+
+    return boolOrArrayString;
   }
 
-  async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, baseDate:Date):Promise<void> {
+  async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
-      // return false;
+      return false;
     }
-    console.log(relation.supportedCommandsForSingleUse);
+    const boolOrArrayString = relation.supportedCommandsForBroadcastUse[growiCommandType];
 
-    // return relation.supportedCommandsForBroadcastUse.includes(growiCommandType);
+    if (boolOrArrayString == null) {
+      return false;
+    }
+
+    if (Array.isArray(boolOrArrayString)) {
+      return boolOrArrayString.includes(channelName);
+    }
+
+    return boolOrArrayString;
   }
 
 }
