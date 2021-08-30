@@ -17279,6 +17279,11 @@ registry-url@^3.0.3:
   dependencies:
     rc "^1.0.1"
 
+regx@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/regx/-/regx-1.0.4.tgz#a0ee32c308910902019ca1117ed41b9ddd041b2f"
+  integrity sha1-oO4ywwiRCQIBnKERftQbnd0EGy8=
+
 rehype-parse@^6.0.1:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/rehype-parse/-/rehype-parse-6.0.2.tgz#aeb3fdd68085f9f796f1d3137ae2b85a98406964"
@@ -19898,6 +19903,15 @@ textlint-rule-ja-no-redundant-expression@^4.0.0:
     morpheme-match-all "^2.0.5"
     textlint-rule-helper "^2.1.1"
     textlint-util-to-string "^3.1.1"
+
+textlint-rule-ja-unnatural-alphabet@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/textlint-rule-ja-unnatural-alphabet/-/textlint-rule-ja-unnatural-alphabet-2.0.1.tgz#fa95591312834a7788dbc6880e2f7a7e68633c00"
+  integrity sha512-n93V8qh6OKdh8OB6yLT+9Xl8DSoZ7gWi51tWdhlLEPIWgBm18nLMgm6Ck+nVc3eENOdRcQURWUpCGotI8wTemA==
+  dependencies:
+    "@textlint/regexp-string-matcher" "^1.0.2"
+    match-index "^1.0.1"
+    regx "^1.0.4"
 
 textlint-rule-max-comma@^2.0.2:
   version "2.0.2"
