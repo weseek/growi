@@ -65,20 +65,24 @@ export class RelationsService {
     return relation;
   }
 
-  async isSupportedGrowiCommandForSingleUse(relation:RelationMock, growiCommandType:string, baseDate:Date):Promise<boolean> {
+  async isSupportedGrowiCommandForSingleUse(relation:RelationMock, growiCommandType:string, baseDate:Date):Promise<void> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
-      return false;
+      // return false;
     }
-    return relation.supportedCommandsForSingleUse.includes(growiCommandType);
+    console.log(growiCommandType);
+    console.log(relation.supportedCommandsForSingleUse[growiCommandType], 73);
+    // return relation.supportedCommandsForSingleUse.includes(growiCommandType);
   }
 
-  async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, baseDate:Date):Promise<boolean> {
+  async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, baseDate:Date):Promise<void> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
-      return false;
+      // return false;
     }
-    return relation.supportedCommandsForBroadcastUse.includes(growiCommandType);
+    console.log(relation.supportedCommandsForSingleUse);
+
+    // return relation.supportedCommandsForBroadcastUse.includes(growiCommandType);
   }
 
 }

@@ -40,10 +40,10 @@ export class RelationMock {
   @Column()
   growiUri: string;
 
-  @Column('simple-array')
+  @Column({ type: 'json' })
   supportedCommandsForBroadcastUse: supportedCommandInterface;
 
-  @Column('simple-array')
+  @Column({ type: 'json' })
   supportedCommandsForSingleUse: supportedCommandInterface;
 
   @CreateDateColumn()
