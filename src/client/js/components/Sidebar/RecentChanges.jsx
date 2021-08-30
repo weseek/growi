@@ -72,7 +72,6 @@ class RecentChanges extends React.Component {
       );
     });
 
-
     return (
       <li className="list-group-item py-3 px-0">
         <div className="d-flex w-100">
@@ -113,8 +112,8 @@ class RecentChanges extends React.Component {
         <div className="grw-sidebar-content-header p-3 d-flex">
           <h3 className="mb-0">{t('Recent Changes')}</h3>
           {/* <h3 className="mb-0">{t('Recent Created')}</h3> */} {/* TODO: impl switching */}
-          <button type="button" className="btn btn-sm ml-auto" onClick={this.reloadData}>
-            <i className="icon icon-reload grw-icon-reload"></i>
+          <button type="button" className="btn btn-sm ml-auto grw-btn-reload-rc" onClick={this.reloadData}>
+            <i className="icon icon-reload"></i>
           </button>
         </div>
         <div className="grw-sidebar-content-body grw-recent-changes p-3">
