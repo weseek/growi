@@ -99,7 +99,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   private isCheckTypeValid(): boolean {
     const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType == null) {
-      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
+      throw new Error('The config \'SLACKBOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
     }
 
     return true;
