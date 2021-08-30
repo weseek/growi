@@ -61,7 +61,7 @@ const CustomSidebar = (props) => {
           Custom Sidebar
           <a className="h6 ml-2" href="/Sidebar"><i className="icon-pencil"></i></a>
         </h3>
-        <button type="button" className="btn btn-sm btn-outline-secondary ml-auto" onClick={fetchDataAndRenderHtml}>
+        <button type="button" className="btn btn-sm ml-auto grw-btn-reload-cs" onClick={fetchDataAndRenderHtml}>
           <i className="icon icon-reload"></i>
         </button>
       </div>
