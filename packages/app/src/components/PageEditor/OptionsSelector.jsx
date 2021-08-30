@@ -308,7 +308,6 @@ class OptionsSelector extends React.Component {
   renderisTextlintEnabledMenuItem() {
     const isActive = this.state.isTextlintEnabled;
 
-    console.log('this.state.isTextlintEnabled', this.state.isTextlintEnabled);
     const iconClasses = ['text-info'];
     if (isActive) {
       iconClasses.push('ti-check');
