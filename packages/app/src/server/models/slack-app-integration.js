@@ -11,17 +11,14 @@ const schema = new mongoose.Schema({
 
 class SlackAppIntegration {
 
-  static setSalts(saltForGtoP, saltForPtoG) {
-    this.saltForGtoP = saltForGtoP;
-    this.saltForPtoG = saltForPtoG;
-  }
+  crowi;
 
-  static generateAccessTokens() {
+  static generateAccessTokens(saltForGtoP, saltForPtoG) {
     const now = new Date().getTime();
     const hasher1 = crypto.createHash('sha512');
     const hasher2 = crypto.createHash('sha512');
-    const tokenGtoP = hasher1.update(`gtop${now.toString()}${this.saltForGtoP}`).digest('base64');
-    const tokenPtoG = hasher2.update(`ptog${now.toString()}${this.saltForPtoG}`).digest('base64');
+    const tokenGtoP = hasher1.update(`gtop-${saltForGtoP}-${now.toString()}`).digest('base64');
+    const tokenPtoG = hasher2.update(`ptog-${saltForPtoG}-${now.toString()}`).digest('base64');
     return [tokenGtoP, tokenPtoG];
   }
 
@@ -31,8 +28,12 @@ class SlackAppIntegration {
     let tokenPtoG;
     let generateTokens;
 
+    // get salt strings
+    const saltForGtoP = this.crowi.configManager.getConfig('crowi', 'slackbot:withProxy:saltForGtoP');
+    const saltForPtoG = this.crowi.configManager.getConfig('crowi', 'slackbot:withProxy:saltForPtoG');
+
     do {
-      generateTokens = this.generateAccessTokens();
+      generateTokens = this.generateAccessTokens(saltForGtoP, saltForPtoG);
       tokenGtoP = generateTokens[0];
       tokenPtoG = generateTokens[1];
       // eslint-disable-next-line no-await-in-loop
@@ -46,11 +47,8 @@ class SlackAppIntegration {
 }
 
 module.exports = function(crowi) {
-  // get salt strings
-  const saltForGtoP = crowi.configManager.getConfig('crowi', 'slackbot:withProxy:saltForGtoP');
-  const saltForPtoG = crowi.configManager.getConfig('crowi', 'slackbot:withProxy:saltForPtoG');
 
-  SlackAppIntegration.setSalts(saltForGtoP, saltForPtoG);
+  SlackAppIntegration.crowi = crowi;
 
   schema.loadClass(SlackAppIntegration);
   return mongoose.model('SlackAppIntegration', schema);
