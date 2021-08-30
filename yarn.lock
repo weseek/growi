@@ -13311,6 +13311,13 @@ modify-values@^1.0.0:
   resolved "https://registry.yarnpkg.com/modify-values/-/modify-values-1.0.1.tgz#b3939fa605546474e3e3e3c63d64bd43b4ee6022"
   integrity sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==
 
+moji@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/moji/-/moji-0.5.1.tgz#088eecd1c22c8f31a240adcf9c95e54f33eb54fb"
+  integrity sha1-CI7s0cIsjzGiQK3PnJXlTzPrVPs=
+  dependencies:
+    object-assign "^3.0.0"
+
 moment@2.20.1, moment@^2.10.6:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
@@ -14263,6 +14270,11 @@ oauth@0.9.x:
 object-additions@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/object-additions/-/object-additions-0.5.1.tgz#ac624e0995e696c94cc69b41f316462b16a3bda4"
+
+object-assign@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-3.0.0.tgz#9bedd5ca0897949bca47e7ff408062d549f587f2"
+  integrity sha1-m+3VygiXlJvKR+f/QIBi1Un1h/I=
 
 object-assign@^4, object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
@@ -19772,6 +19784,15 @@ textlint-rule-no-hankaku-kana@^1.0.2:
   dependencies:
     match-index "^1.0.1"
     textlint-rule-helper "^1.1.5"
+
+textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet/-/textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet-1.0.1.tgz#2d1b0d3cefa5f526e649c8d7d1af2cdda6a9333b"
+  integrity sha1-LRsNPO+l9SbmScjX0a8s3aapMzs=
+  dependencies:
+    match-index "^1.0.1"
+    moji "^0.5.1"
+    textlint-rule-helper "^2.0.0"
 
 textlint-rule-prefer-tari-tari@^1.0.3:
   version "1.0.3"
