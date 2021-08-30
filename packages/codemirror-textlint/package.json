@@ -22,6 +22,7 @@
     "textlint-message-to-codemirror": "^1.0.0",
     "textlint-plugin-markdown": "^4.0.6",
     "textlint-rule-common-misspellings": "^1.0.1",
+    "textlint-rule-ginger": "^2.2.1",
     "textlint-rule-ja-hiragana-keishikimeishi": "^1.1.0",
     "textlint-rule-ja-no-abusage": "^3.0.0",
     "textlint-rule-ja-no-inappropriate-words": "^2.0.0",
