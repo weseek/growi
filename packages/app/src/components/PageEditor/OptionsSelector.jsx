@@ -10,7 +10,7 @@ import {
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
-import { toastSuccess, toastError } from '~/client/util/apiNotification';
+import { toastError } from '~/client/util/apiNotification';
 
 
 export const defaultEditorOptions = {
@@ -122,7 +122,6 @@ class OptionsSelector extends React.Component {
 
     try {
       await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: this.state.isTextlintEnabled });
-      toastSuccess(t('toaster.update_successed', { target: 'Textlint' }));
     }
     catch (err) {
       toastError(err);
