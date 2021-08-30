@@ -37,34 +37,34 @@ module.exports = function(crowi) {
 
   const editorCurrentSettingsSchema = new mongoose.Schema({
     isTextlintEnabled: { type: Boolean, default: true },
-    enabledCommonTextlintRules: {
+    commonTextlintRules: {
       type: [
         { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
       ],
       default: [
-        { name: 'common-misspellings', options: {}, isEnabled: true },
-        { name: 'max-comma', options: {}, isEnabled: true },
-        { name: 'sentence-length', options: {}, isEnabled: true },
+        { name: 'common-misspellings', isEnabled: true },
+        { name: 'max-comma', isEnabled: true },
+        { name: 'sentence-length', isEnabled: true },
       ],
     },
-    enabledJapaneseTextlintRules: {
+    japaneseTextlintRules: {
       type: [
         { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
       ],
       default: [
-        { name: 'ja-hiragana-keishikimeishi', options: {}, isEnabled: true },
-        { name: 'ja-no-abusage', options: {}, isEnabled: true },
-        { name: 'ja-no-inappropriate-words', options: {}, isEnabled: true },
-        { name: 'ja-no-mixed-period', options: {}, isEnabled: true },
-        { name: 'ja-no-redundant-expression', options: {}, isEnabled: true },
-        { name: 'max-kanji-continuous-len', options: {}, isEnabled: true },
-        { name: 'max-ten', options: {}, isEnabled: true },
-        { name: 'no-double-negative-ja', options: {}, isEnabled: true },
-        { name: 'no-doubled-conjunction', options: {}, isEnabled: true },
-        { name: 'no-doubled-joshi', options: {}, isEnabled: true },
-        { name: 'no-dropping-the-ra', options: {}, isEnabled: true },
-        { name: 'no-hankaku-kana', options: {}, isEnabled: true },
-        { name: 'prefer-tari-tari', options: {}, isEnabled: true },
+        { name: 'ja-hiragana-keishikimeishi', isEnabled: true },
+        { name: 'ja-no-abusage', isEnabled: true },
+        { name: 'ja-no-inappropriate-words', isEnabled: true },
+        { name: 'ja-no-mixed-period', isEnabled: true },
+        { name: 'ja-no-redundant-expression', isEnabled: true },
+        { name: 'max-kanji-continuous-len', isEnabled: true },
+        { name: 'max-ten', isEnabled: true },
+        { name: 'no-double-negative-ja', isEnabled: true },
+        { name: 'no-doubled-conjunction', isEnabled: true },
+        { name: 'no-doubled-joshi', isEnabled: true },
+        { name: 'no-dropping-the-ra', isEnabled: true },
+        { name: 'no-hankaku-kana', isEnabled: true },
+        { name: 'prefer-tari-tari', isEnabled: true },
       ],
     },
   });
