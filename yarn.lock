@@ -2472,6 +2472,14 @@
   dependencies:
     execall "^1.0.0"
 
+"@textlint-rule/textlint-rule-no-unmatched-pair@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@textlint-rule/textlint-rule-no-unmatched-pair/-/textlint-rule-no-unmatched-pair-1.0.8.tgz#28538c422c35899fbe331c1652976eb8e50a1477"
+  integrity sha512-C+ejNcHFKWGQ9aoMnk7jL815iUXg4soIdK/gpN2wJWiwbtThw6mglIhvI+5qkFoUNCYjmWZbN0I3F4YUgoAHaw==
+  dependencies:
+    sentence-splitter "^3.0.11"
+    textlint-rule-helper "2.0.1"
+
 "@textlint/ast-node-types@^12.0.0":
   version "12.0.0"
   resolved "https://registry.yarnpkg.com/@textlint/ast-node-types/-/ast-node-types-12.0.0.tgz#23bd683f9fc04209ae28bff72954c8aa67c6b1ca"
@@ -19822,6 +19830,13 @@ textlint-rule-ginger@^2.2.1:
     gingerbread "^0.5.0"
     textlint-rule-helper "^2.0.0"
     textlint-util-to-string "^2.1.1"
+
+textlint-rule-helper@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/textlint-rule-helper/-/textlint-rule-helper-2.0.1.tgz#f28dc20d3e06f60373aa04a97b965daa77d196b9"
+  integrity sha512-QNGSOemLVxm1b0qnH5VpRY8uyHgfx/8M+St8wSy/d6mZh0abd+KAvhQSuO8cxmVeRKr/LRkhAB3+0QU5LKhLGw==
+  dependencies:
+    unist-util-visit "^1.1.0"
 
 textlint-rule-helper@^1.1.5:
   version "1.2.0"
