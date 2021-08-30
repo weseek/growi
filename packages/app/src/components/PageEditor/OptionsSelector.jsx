@@ -53,7 +53,7 @@ class OptionsSelector extends React.Component {
     this.onClickStyleActiveLine = this.onClickStyleActiveLine.bind(this);
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
-    this.switchTextlintHandler = this.switchTextlintHandler.bind(this);
+    this.switchTextlintEnabledHandler = this.switchTextlintEnabledHandler.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
   }
@@ -116,7 +116,7 @@ class OptionsSelector extends React.Component {
 
   }
 
-  async switchTextlintHandler(event) {
+  async switchTextlintEnabledHandler(event) {
     const { appContainer, t } = this.props;
     this.setState({ isTextlintEnabled: !this.state.isTextlintEnabled });
 
@@ -317,7 +317,7 @@ class OptionsSelector extends React.Component {
 
     return (
       // eslint-disable-next-line no-console
-      <DropdownItem toggle={false} onClick={this.switchTextlintHandler}>
+      <DropdownItem toggle={false} onClick={this.switchTextlintEnabledHandler}>
         <div className="d-flex justify-content-between">
           <span className="icon-container"></span>
           <span className="menuitem-label">Textlint</span>
