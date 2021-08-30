@@ -10,35 +10,9 @@ import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
 
-const extractInstallationQueryFromBody = (body): InstallationQuery<boolean> => {
-  let teamId: string;
-  let enterpriseId: string;
-  let isEnterpriseInstall: boolean;
-
-  // extract id from body
-  if (body.payload != null) { // case: interactions
-    const payload = JSON.parse(body.payload);
-    teamId = payload.team?.id;
-    enterpriseId = payload.enterprise?.id;
-    isEnterpriseInstall = payload.is_enterprise_install === 'true';
-  }
-  else { // case: commands, events
-    teamId = body.team_id;
-    enterpriseId = body.enterprise_id;
-    isEnterpriseInstall = body.is_enterprise_install === 'true';
-  }
-
-  return { teamId, enterpriseId, isEnterpriseInstall };
-
-};
-
-
-const getCommonMiddleware = (installerService, logger) => {
+const getCommonMiddleware = (query, installerService, logger) => {
   return async(req: SlackOauthReq, res: Res): Promise<void|Res> => {
-    const { body } = req;
 
-    // create query from body
-    const query: InstallationQuery<boolean> = extractInstallationQueryFromBody(body);
 
     if (query.teamId == null && query.enterpriseId == null) {
       res.writeHead(400, 'No installation found');
@@ -78,7 +52,17 @@ export class AuthorizeCommandMiddleware implements IMiddleware {
   installerService: InstallerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
-    const commonMiddleware = getCommonMiddleware(this.installerService, this.logger);
+    const { body } = req;
+    const teamId = body.team_id;
+    const enterpriseId = body.enterprise_id;
+    const isEnterpriseInstall = body.is_enterprise_install === 'true';
+    const query: InstallationQuery<boolean> = {
+      teamId,
+      enterpriseId,
+      isEnterpriseInstall,
+    };
+
+    const commonMiddleware = getCommonMiddleware(query, this.installerService, this.logger);
     await commonMiddleware(req, res);
   }
 
@@ -99,13 +83,28 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
     async use(@Req() req: SlackOauthReq, @Res() res:Res): Promise<void|Res> {
       const { body } = req;
 
+      const payload = JSON.parse(body.payload);
+
+      // extract id from body
+      const teamId = payload.team?.id;
+      const enterpriseId = payload.enterprise?.id;
+      const isEnterpriseInstall = payload.is_enterprise_install === 'true';
+
       if (body.payload == null) {
       // do nothing
         this.logger.info('body does not have payload');
         return;
       }
 
-      const commonMiddleware = getCommonMiddleware(this.installerService, this.logger);
+
+      // create query from body
+      const query: InstallationQuery<boolean> = {
+        teamId,
+        enterpriseId,
+        isEnterpriseInstall,
+      };
+
+      const commonMiddleware = getCommonMiddleware(query, this.installerService, this.logger);
       await commonMiddleware(req, res);
     }
 
@@ -123,7 +122,17 @@ export class AuthorizeEventsMiddleware implements IMiddleware {
   installerService: InstallerService;
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|Res> {
-    const commonMiddleware = getCommonMiddleware(this.installerService, this.logger);
+    const { body } = req;
+    const teamId = body.team_id;
+    const enterpriseId = body.enterprise_id;
+    const isEnterpriseInstall = body.is_enterprise_install === 'true';
+    const query: InstallationQuery<boolean> = {
+      teamId,
+      enterpriseId,
+      isEnterpriseInstall,
+    };
+
+    const commonMiddleware = getCommonMiddleware(query, this.installerService, this.logger);
     await commonMiddleware(req, res);
   }
 

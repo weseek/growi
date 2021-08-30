@@ -340,7 +340,7 @@ export class SlackCtrl {
     const { authorizeResult } = req;
     const client = generateWebClient(authorizeResult.botToken);
 
-    if (req.body.event.type) {
+    if (req.body.event.type === 'app_home_opened') {
       await postWelcomeMessage(client, req.body.event.channel);
     }
 
