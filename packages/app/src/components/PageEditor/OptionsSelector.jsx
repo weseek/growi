@@ -54,6 +54,7 @@ class OptionsSelector extends React.Component {
     this.onClickRenderMathJaxInRealtime = this.onClickRenderMathJaxInRealtime.bind(this);
     this.onClickMarkdownTableAutoFormatting = this.onClickMarkdownTableAutoFormatting.bind(this);
     this.switchTextlintEnabledHandler = this.switchTextlintEnabledHandler.bind(this);
+    this.updateIsTextlintEnabledToDB = this.updateIsTextlintEnabledToDB.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
   }
@@ -116,16 +117,20 @@ class OptionsSelector extends React.Component {
 
   }
 
-  async switchTextlintEnabledHandler(event) {
-    const { appContainer, t } = this.props;
-    this.setState({ isTextlintEnabled: !this.state.isTextlintEnabled });
-
+  async updateIsTextlintEnabledToDB() {
+    const { appContainer } = this.props;
     try {
       await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: this.state.isTextlintEnabled });
     }
     catch (err) {
       toastError(err);
     }
+
+  }
+
+  async switchTextlintEnabledHandler() {
+    this.setState({ isTextlintEnabled: !this.state.isTextlintEnabled });
+    this.updateIsTextlintEnabledToDB();
   }
 
   onToggleConfigurationDropdown(newValue) {
