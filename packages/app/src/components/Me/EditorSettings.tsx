@@ -21,7 +21,7 @@ export const WithoutJapaneseTextLintRulesSettings: FC<Props> = () => {
 
 export const EditorSettings: FC<Props> = () => {
   const { t } = useTranslation();
-  // TODO: apply i18n
+  // TODO: apply i18n byGW-7244
 
   return (
     <>
@@ -230,6 +230,33 @@ export const EditorSettings: FC<Props> = () => {
               <strong>Border</strong>
             </label>
           </div>
+
+          <div className="custom-control custom-switch custom-checkbox-success">
+            <input
+              type="checkbox"
+              className="custom-control-input"
+              id="highlightBorder"
+              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
+              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+            />
+            <label className="custom-control-label" htmlFor="highlightBorder">
+              <strong>Border</strong>
+            </label>
+          </div>
+
+          <div className="custom-control custom-switch custom-checkbox-success">
+            <input
+              type="checkbox"
+              className="custom-control-input"
+              id="highlightBorder"
+              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
+              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+            />
+            <label className="custom-control-label" htmlFor="highlightBorder">
+              <strong>Border</strong>
+            </label>
+          </div>
+
         </div>
       </div>
     </>
