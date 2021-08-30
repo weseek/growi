@@ -122,7 +122,7 @@ class OptionsSelector extends React.Component {
 
     try {
       await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: this.state.isTextlintEnabled });
-      toastSuccess(t('toaster.update_successed'));
+      toastSuccess(t('toaster.update_successed', { target: 'Textlint' }));
     }
     catch (err) {
       toastError(err);
