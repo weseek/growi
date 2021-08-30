@@ -167,7 +167,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       { name: 'common-misspellings' },
       { name: 'date-weekday-mismatch' },
       { name: 'en-capitalization' },
-      { name: 'ginger' },
       { name: 'ja-hiragana-keishikimeishi' },
       { name: 'ja-no-abusage' },
       { name: 'ja-no-inappropriate-words' },

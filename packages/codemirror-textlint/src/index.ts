@@ -5,7 +5,6 @@ import textlintRuleNoUnmatchedPair from '@textlint-rule/textlint-rule-no-unmatch
 import textlintRuleCommonMisspellings from 'textlint-rule-common-misspellings';
 import textlintRuleDateWeekdayMismatch from 'textlint-rule-date-weekday-mismatch';
 import textlintRuleEnCapitalization from 'textlint-rule-en-capitalization';
-import textlintRuleGinger from 'textlint-rule-ginger';
 import textlintRuleJaHiraganaKeishikimeishi from 'textlint-rule-ja-hiragana-keishikimeishi';
 import textlintRuleJaNoAbusage from 'textlint-rule-ja-no-abusage';
 import textlintRuleJaNoInappropriateWords from 'textlint-rule-ja-no-inappropriate-words';
@@ -50,7 +49,6 @@ const ruleModulesList = {
   'common-misspellings': textlintRuleCommonMisspellings,
   'date-weekday-mismatch': textlintRuleDateWeekdayMismatch,
   'en-capitalization': textlintRuleEnCapitalization,
-  ginger: textlintRuleGinger,
   'ja-hiragana-keishikimeishi': textlintRuleJaHiraganaKeishikimeishi,
   'ja-no-abusage': textlintRuleJaNoAbusage,
   'ja-no-inappropriate-words': textlintRuleJaNoInappropriateWords,
