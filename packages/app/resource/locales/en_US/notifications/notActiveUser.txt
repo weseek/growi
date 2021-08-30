@@ -6,3 +6,8 @@ A request has been received to change the password from {{ appTitle }}.
 However, this email is not registerd. Please try again with different email.
 
 If you did not request a password reset, you can safely ignore this email.
+
+-------------------------------------------------------------------------
+
+GROWI: {{ appTitle }}
+Site URL: {{ url }}
