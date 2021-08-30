@@ -244,7 +244,7 @@ const ManageCommandsProcess = ({
           <p className="text-muted mb-2">{t('admin:slack_integration.accordion.single_growi_command')}</p>
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
-              {['create', 'togetter'].map((commandName) => {
+              {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
                 const hiddenClass = currentPermissionTypes[commandName] === permissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
                 return (
