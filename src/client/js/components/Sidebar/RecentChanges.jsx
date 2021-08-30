@@ -142,6 +142,18 @@ class RecentChanges extends React.Component {
           <button type="button" className="btn btn-sm ml-auto grw-btn-reload-rc" onClick={this.reloadData}>
             <i className="icon icon-reload"></i>
           </button>
+          <div className="grw-recent-changes-resize-button custom-control custom-switch ml-2">
+            <input
+              id="recentChangesResize"
+              className="custom-control-input"
+              type="checkbox"
+              // checked={}
+              // disabled={}
+              // onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
+            />
+            <label className="custom-control-label" htmlFor="recentChangesResize">
+            </label>
+          </div>
         </div>
         <div className="grw-sidebar-content-body grw-recent-changes p-3">
           <ul className="list-group list-group-flush">
