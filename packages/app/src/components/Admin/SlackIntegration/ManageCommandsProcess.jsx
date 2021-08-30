@@ -13,52 +13,102 @@ const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
 }) => {
   const { t } = useTranslation();
-  const [selectedCommandsForBroadcastUse, setSelectedCommandsForBroadcastUse] = useState(new Set(supportedCommandsForBroadcastUse));
-  const [selectedCommandsForSingleUse, setSelectedCommandsForSingleUse] = useState(new Set(supportedCommandsForSingleUse));
-  // TODO: Use data from server GW-7006
-  const [permittedChannelsForEachCommand, setPermittedChannelsForEachCommand] = useState({
-    channelsObject: {},
-  });
+  // TODO: use data from server GW-7006
+  const [permissionSettingsForBroadcastUseCommands, setPermissionSettingsForBroadcastUseCommands] = useState({});
+  const [permissionSettingsForSingleUseCommands, setPermissionSettingsForSingleUseCommands] = useState({});
 
-  const toggleCheckboxForBroadcastUse = (e) => {
+  const permissionTypes = {
+    ALLOW_ALL: 'allowAll',
+    DENY_ALL: 'denyAll',
+    ALLOW_SPECIFIED: 'allowSpecified',
+  };
+
+  const getCurrentPermissionTypeOfCommand = (state, commandName) => {
+    if (state[commandName] === true) {
+      return permissionTypes.ALLOW_ALL;
+    }
+    if (state[commandName] === false) {
+      return permissionTypes.DENY_ALL;
+    }
+    if (Array.isArray(state[commandName])) {
+      return permissionTypes.ALLOW_SPECIFIED;
+    }
+    return new Error('Not implemented');
+  };
+
+  const getUpdatedPermissionSettings = (prevState, commandName, value) => {
+    switch (value) {
+      case permissionTypes.ALLOW_ALL:
+        prevState[commandName] = true;
+        break;
+      case permissionTypes.DENY_ALL:
+        prevState[commandName] = false;
+        break;
+      case permissionTypes.ALLOW_SPECIFIED:
+        prevState[commandName] = [];
+        break;
+      default:
+        logger.error('Not implemented');
+        break;
+    }
+
+    return prevState;
+  };
+
+  const updatePermissionSettingsForBroadcastUseCommands = (e) => {
     const { target } = e;
-    const { name, checked } = target;
+    const { name: commandName, value } = target;
 
-    setSelectedCommandsForBroadcastUse((prevState) => {
-      const selectedCommands = new Set(prevState);
-      if (checked) {
-        selectedCommands.add(name);
-      }
-      else {
-        selectedCommands.delete(name);
-      }
-
-      return selectedCommands;
+    // update state
+    setPermissionSettingsForBroadcastUseCommands((prevState) => {
+      return getUpdatedPermissionSettings(prevState, commandName, value);
     });
   };
 
-  const toggleCheckboxForSingleUse = (e) => {
+  const updatePermissionSettingsForSingleUseCommands = (e) => {
     const { target } = e;
-    const { name, checked } = target;
+    const { name: commandName, value } = target;
 
-    setSelectedCommandsForSingleUse((prevState) => {
-      const selectedCommands = new Set(prevState);
-      if (checked) {
-        selectedCommands.add(name);
-      }
-      else {
-        selectedCommands.delete(name);
-      }
-
-      return selectedCommands;
+    // update state
+    setPermissionSettingsForSingleUseCommands((prevState) => {
+      return getUpdatedPermissionSettings(prevState, commandName, value);
     });
   };
 
+  const getUpdatedChannelsList = (prevState, commandName, value) => {
+    // string to array
+    const allowedChannelsArray = value.split(',');
+    // trim whitespace from all elements
+    const trimedAllowedChannelsArray = allowedChannelsArray.map(channelName => channelName.trim());
+
+    prevState[commandName] = trimedAllowedChannelsArray;
+    return prevState;
+  };
+
+  const updateChannelsListForBroadcastUseCommands = (e) => {
+    const { target } = e;
+    const { name: commandName, value } = target;
+    // update state
+    setPermissionSettingsForBroadcastUseCommands((prevState) => {
+      return getUpdatedChannelsList(prevState, commandName, value);
+    });
+  };
+
+  const updateChannelsListForSingleUseCommands = (e) => {
+    const { target } = e;
+    const { name: commandName, value } = target;
+    // update state
+    setPermissionSettingsForSingleUseCommands((prevState) => {
+      return getUpdatedChannelsList(prevState, commandName, value);
+    });
+  };
+
+  // TODO: UPDATE API AND REWRITE HERE GW-7006
   const updateCommandsHandler = async() => {
     try {
       await apiv3Put(`/slack-integration-settings/${slackAppIntegrationId}/supported-commands`, {
-        supportedCommandsForBroadcastUse: Array.from(selectedCommandsForBroadcastUse),
-        supportedCommandsForSingleUse: Array.from(selectedCommandsForSingleUse),
+        supportedCommandsForBroadcastUse: ['REWRITE'],
+        supportedCommandsForSingleUse: ['REWRITE'],
       });
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
@@ -66,21 +116,6 @@ const ManageCommandsProcess = ({
       toastError(err);
       logger.error(err);
     }
-  };
-
-  const updatePermittedChannelsForEachCommand = (e) => {
-    const commandName = e.target.name;
-    const allowedChannelsString = e.target.value;
-    // string to array
-    const allowedChannelsArray = allowedChannelsString.split(',');
-    // trim whitespace from all elements
-    const trimedAllowedChannelsArray = allowedChannelsArray.map(channelName => channelName.trim());
-    setPermittedChannelsForEachCommand((prevState) => {
-      const channelsObject = prevState.channelsObject;
-      channelsObject[commandName] = allowedChannelsArray;
-      prevState.channelsObject = channelsObject;
-      return prevState;
-    });
   };
 
 
@@ -95,52 +130,7 @@ const ManageCommandsProcess = ({
           <div className="pl-5 custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
-
-                let hiddenClass = '';
-                if (selectedCommandsForBroadcastUse.has(commandName)) {
-                  hiddenClass = 'd-none';
-                }
-
-                const allowedChannels = permittedChannelsForEachCommand.channelsObject[commandName];
-                let defaultAllowedChannels;
-                if (allowedChannels) {
-                  defaultAllowedChannels = permittedChannelsForEachCommand.channelsObject[commandName].join();
-                }
-                else {
-                  defaultAllowedChannels = '';
-                }
-
-                return (
-                  <div className="row-6 my-1" key={commandName}>
-                    <div className="row-6 my-3">
-                      <input
-                        type="checkbox"
-                        className="custom-control-input"
-                        id={commandName}
-                        name={commandName}
-                        value={commandName}
-                        checked={selectedCommandsForBroadcastUse.has(commandName)}
-                        onChange={toggleCheckboxForBroadcastUse}
-                      />
-                      <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
-                        {commandName}
-                      </label>
-                    </div>
-                    <div className={`row-12 row-md-6 ${hiddenClass}`}>
-                      <textarea
-                        className="form-control"
-                        type="textarea"
-                        name={commandName}
-                        defaultValue={defaultAllowedChannels}
-                        onChange={updatePermittedChannelsForEachCommand}
-                      />
-                      <p className="form-text text-muted small">
-                        {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
-                        <br />
-                      </p>
-                    </div>
-                  </div>
-                );
+                return (<div></div>);
               })}
             </div>
           </div>
@@ -150,86 +140,71 @@ const ManageCommandsProcess = ({
           <div className="pl-5 custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {['create', 'togetter'].map((commandName) => {
-
-                let hiddenClass = '';
-                if (selectedCommandsForSingleUse.has(commandName)) {
-                  hiddenClass = 'd-none';
-                }
-
-                const allowedChannels = permittedChannelsForEachCommand.channelsObject[commandName];
-                let defaultAllowedChannels;
-                if (allowedChannels) {
-                  defaultAllowedChannels = permittedChannelsForEachCommand.channelsObject[commandName].join();
-                }
-                else {
-                  defaultAllowedChannels = '';
-                }
+                const hiddenClass = '' || 'd-hidden';
+                const currentPermissionType = getCurrentPermissionTypeOfCommand(permissionSettingsForSingleUseCommands, commandName);
 
                 return (
                   <div className="row-6 my-1 mb-2" key={commandName}>
-                    {/* Rewrite after DB arch is defined */}
-                    <div className="row-6 my-3">
-                      {/* <input
-                        type="checkbox"
-                        className="custom-control-input"
-                        id={commandName}
-                        name={commandName}
-                        value={commandName}
-                        checked={selectedCommandsForSingleUse.has(commandName)}
-                        onChange={toggleCheckboxForSingleUse}
-                      />
-                      <label className="text-capitalize custom-control-label ml-3" htmlFor={commandName}>
-                        {commandName}
-                      </label> */}
-                      <div className="row">
-                        <input
-                          type="radio"
-                          id={`${commandName}-deny`}
-                          className="custom-control-input"
-                          name={commandName}
-                          value={commandName}
-                          checked={!selectedCommandsForSingleUse.has(commandName)}
-                          onChange={toggleCheckboxForSingleUse}
-                        />
-                        <label className="text-capitalize custom-control-label ml-3" htmlFor={`${commandName}-deny`}>
-                          Deny
-                        </label>
+                    <div className="row">
+                      <div className="col">
+                        <p className="text-capitalize text-center">{commandName}</p>
                       </div>
-                      <div className="row">
-                        <input
-                          type="radio"
-                          id={`${commandName}-allow-all`}
-                          className="custom-control-input"
-                          name={commandName}
-                          value={commandName}
-                          checked={selectedCommandsForSingleUse.has(commandName)}
-                          onChange={toggleCheckboxForSingleUse}
-                        />
-                        <label className="text-capitalize custom-control-label ml-3" htmlFor={`${commandName}-allow-all`}>
-                          Allow from all
-                        </label>
+                      <div className="col dropdown">
+                        <button
+                          className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+                          type="button"
+                          id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="true"
+                        >
+                          <span className="float-left">
+                            {/* TODO: IMPLEMENT THIS */}
+                            {true && t('MUST BE IMPLEMENTED')}
+                            {currentPermissionType === permissionTypes.ALLOW_ALL && t('MUST BE IMPLEMENTED')}
+                            {currentPermissionType === permissionTypes.DENY_ALL && t('MUST BE IMPLEMENTED')}
+                            {currentPermissionType === permissionTypes.ALLOW_SPECIFIED && t('MUST BE IMPLEMENTED')}
+                          </span>
+                        </button>
+                        <div className="dropdown-menu">
+                          <button
+                            className="dropdown-item"
+                            type="button"
+                            name={commandName}
+                            value={permissionTypes.ALLOW_ALL}
+                            onClick={updatePermissionSettingsForSingleUseCommands}
+                          >
+                            TRANSLATE ALLOW FROM ALL
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            type="button"
+                            name={commandName}
+                            value={permissionTypes.DENY_ALL}
+                            onClick={updatePermissionSettingsForSingleUseCommands}
+                          >
+                            TRANSLATE DENY FROM ALL
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            type="button"
+                            name={commandName}
+                            value={permissionTypes.ALLOW_SPECIFIED}
+                            onClick={updatePermissionSettingsForSingleUseCommands}
+                          >
+                            TRANSLATE ALLOW FROM ONLY SPECIFIED CHANNELS
+                          </button>
+                        </div>
                       </div>
-                      <div className="row">
-                        <input
-                          type="radio"
-                          id={`${commandName}-allow-specified`}
-                          className="custom-control-input"
-                          name={commandName}
-                          value={commandName}
-                          checked={!selectedCommandsForSingleUse.has(commandName)}
-                          onChange={toggleCheckboxForSingleUse}
-                        />
-                        <label className="text-capitalize custom-control-label ml-3" htmlFor={`${commandName}-allow-specified`}>
-                          Allow from only specified channels
-                        </label>
-                      </div>
+                    </div>
+                    <div className="row HIDDEN_FALSE_WHEN_ALLOW_SPECIFIED">
                       <div className={`row-12 row-md-6 ${hiddenClass}`}>
                         <textarea
                           className="form-control"
                           type="textarea"
                           name={commandName}
-                          defaultValue={defaultAllowedChannels}
-                          onChange={updatePermittedChannelsForEachCommand}
+                          defaultValue="GET FROM DATA"
+                          onChange={updateChannelsListForSingleUseCommands}
                         />
                         <p className="form-text text-muted small">
                           {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
@@ -239,6 +214,7 @@ const ManageCommandsProcess = ({
                     </div>
                   </div>
                 );
+
               })}
             </div>
           </div>
