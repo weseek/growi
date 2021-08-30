@@ -10,7 +10,7 @@ import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
 
-const getCommonMiddleware = (query, installerService, logger) => {
+const getCommonMiddleware = (query:InstallationQuery<boolean>, installerService:InstallerService, logger:Logger) => {
   return async(req: SlackOauthReq, res: Res): Promise<void|Res> => {
 
     if (query.teamId == null && query.enterpriseId == null) {
