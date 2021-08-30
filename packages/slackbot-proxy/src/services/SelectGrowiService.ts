@@ -109,7 +109,6 @@ export class SelectGrowiService implements GrowiCommandProcessor {
       // TODO: postEphemeralErrors
       throw new Error('No relation found.');
     }
-    console.log(112, relation);
 
     return {
       relation,

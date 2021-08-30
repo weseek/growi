@@ -243,12 +243,18 @@ export class SlackCtrl {
     if (body.ssl_check != null) {
       return;
     }
-
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
+
+    // const relation = await this.relationMockRepository.findOne({ installation, growiUri: req.growiUri });
+    console.log(req.growiUri, 251);
+
     const payload = JSON.parse(body.payload);
+    console.log(installation, payload);
+
     const callBackId = payload?.view?.callback_id;
+    // const actionId = payload?.actions[0].action_id;
 
     // register
     if (callBackId === 'register') {
@@ -272,6 +278,8 @@ export class SlackCtrl {
       await this.unregisterService.unregister(installation, authorizeResult, payload);
       return;
     }
+
+    // const baseDate = new Date();
 
     // forward to GROWI server
     if (callBackId === 'select_growi') {
