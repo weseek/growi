@@ -105,7 +105,7 @@ module.exports = (crowi) => {
 
     const params = {
       'slackbot:currentBotType': initializedType,
-      'slackbot:signingSecret': null,
+      'slackbot:withoutProxy:signingSecret': null,
       'slackbot:token': null,
       'slackbot:proxyUri': null,
     };
@@ -177,9 +177,9 @@ module.exports = (crowi) => {
     // retrieve settings
     const settings = {};
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
-      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:signingSecret');
+      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:signingSecret');
       settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
-      settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
+      settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
     }
     else {
@@ -343,7 +343,7 @@ module.exports = (crowi) => {
 
     const { slackSigningSecret, slackBotToken } = req.body;
     const requestParams = {
-      'slackbot:signingSecret': slackSigningSecret,
+      'slackbot:withoutProxy:signingSecret': slackSigningSecret,
       'slackbot:token': slackBotToken,
     };
     try {
@@ -351,7 +351,7 @@ module.exports = (crowi) => {
       crowi.slackIntegrationService.publishUpdatedMessage();
 
       const customBotWithoutProxySettingParams = {
-        slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:signingSecret'),
+        slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
       };
       return res.apiv3({ customBotWithoutProxySettingParams });
