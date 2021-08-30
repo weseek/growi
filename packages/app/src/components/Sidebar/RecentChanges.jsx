@@ -75,7 +75,7 @@ class RecentChanges extends React.Component {
     window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
   }
 
-  PageItem = ({ page }) => {
+  LargePageItem = ({ page }) => {
     const dPagePath = new DevidedPagePath(page.path, false, true);
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -144,28 +144,16 @@ class RecentChanges extends React.Component {
       locked = <span><i className="icon-lock ml-2" /></span>;
     }
 
-    const tags = page.tags;
-    const tagElements = tags.map((tag) => {
-      return (
-        <a key={tag} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
-          {tag.name}
-        </a>
-      );
-    });
-
     return (
-      <li className="list-group-item py-3 px-0">
+      <li className="list-group-item py-2 px-0">
         <div className="d-flex w-100">
           <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
           <div className="flex-grow-1 ml-2">
             { !dPagePath.isRoot && <FormerLink /> }
-            <h5 className="my-2">
+            <h5 className="my-0">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
               {locked}
             </h5>
-            <div className="mt-1 mb-2">
-              { tagElements }
-            </div>
             <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
               <div className="d-flex">
                 <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
@@ -182,7 +170,6 @@ class RecentChanges extends React.Component {
       </li>
     );
   }
-
 
   render() {
     // const { LargePageItem } = this;
