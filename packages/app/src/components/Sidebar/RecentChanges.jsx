@@ -19,6 +19,102 @@ import { toastError } from '~/client/util/apiNotification';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 
 const logger = loggerFactory('growi:History');
+
+function LargePageItem ({ page }) {
+  const dPagePath = new DevidedPagePath(page.path, false, true);
+  const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
+  const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+  const FormerLink = () => (
+    <div className="grw-page-path-text-muted-container small">
+      <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
+    </div>
+  );
+
+  let locked;
+  if (page.grant !== 1) {
+    locked = <span><i className="icon-lock ml-2" /></span>;
+  }
+
+  const tags = page.tags;
+  const tagElements = tags.map((tag) => {
+    return (
+      <a key={tag} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
+        {tag.name}
+      </a>
+    );
+  });
+
+  return (
+    <li className="list-group-item py-3 px-0">
+      <div className="d-flex w-100">
+        <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
+        <div className="flex-grow-1 ml-2">
+          { !dPagePath.isRoot && <FormerLink /> }
+          <h5 className="my-2">
+            <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
+            {locked}
+          </h5>
+          <div className="mt-1 mb-2">
+            { tagElements }
+          </div>
+          <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
+            <div className="d-flex">
+              <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
+              <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
+              <div className="icon-bubble mr-1 d-inline-block"></div>
+              <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
+            </div>
+            <div className="grw-formatted-distance-date small mt-auto">
+              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+}
+
+function SmallPageItem ({ page }) {
+  const dPagePath = new DevidedPagePath(page.path, false, true);
+  const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
+  const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+  const FormerLink = () => (
+    <div className="grw-page-path-text-muted-container small">
+      <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
+    </div>
+  );
+
+  let locked;
+  if (page.grant !== 1) {
+    locked = <span><i className="icon-lock ml-2" /></span>;
+  }
+
+  return (
+    <li className="list-group-item py-2 px-0">
+      <div className="d-flex w-100">
+        <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
+        <div className="flex-grow-1 ml-2">
+          { !dPagePath.isRoot && <FormerLink /> }
+          <h5 className="my-0">
+            <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
+            {locked}
+          </h5>
+          <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
+            <div className="d-flex">
+              <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
+              <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
+              <div className="icon-bubble mr-1 d-inline-block"></div>
+              <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
+            </div>
+            <div className="grw-formatted-distance-date small mt-auto">
+              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+}
 class RecentChanges extends React.Component {
 
   static propTypes = {
@@ -75,105 +171,9 @@ class RecentChanges extends React.Component {
     window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
   }
 
-  LargePageItem = ({ page }) => {
-    const dPagePath = new DevidedPagePath(page.path, false, true);
-    const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-    const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-    const FormerLink = () => (
-      <div className="grw-page-path-text-muted-container small">
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
-      </div>
-    );
-
-    let locked;
-    if (page.grant !== 1) {
-      locked = <span><i className="icon-lock ml-2" /></span>;
-    }
-
-    const tags = page.tags;
-    const tagElements = tags.map((tag) => {
-      return (
-        <a key={tag} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
-          {tag.name}
-        </a>
-      );
-    });
-
-    return (
-      <li className="list-group-item py-3 px-0">
-        <div className="d-flex w-100">
-          <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
-          <div className="flex-grow-1 ml-2">
-            { !dPagePath.isRoot && <FormerLink /> }
-            <h5 className="my-2">
-              <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
-              {locked}
-            </h5>
-            <div className="mt-1 mb-2">
-              { tagElements }
-            </div>
-            <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
-              <div className="d-flex">
-                <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
-                <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
-                <div className="icon-bubble mr-1 d-inline-block"></div>
-                <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
-              </div>
-              <div className="grw-formatted-distance-date small mt-auto">
-                <FormattedDistanceDate id={page.id} date={page.updatedAt} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-    );
-  }
-
-  SmallPageItem = ({ page }) => {
-    const dPagePath = new DevidedPagePath(page.path, false, true);
-    const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-    const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-    const FormerLink = () => (
-      <div className="grw-page-path-text-muted-container small">
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
-      </div>
-    );
-
-    let locked;
-    if (page.grant !== 1) {
-      locked = <span><i className="icon-lock ml-2" /></span>;
-    }
-
-    return (
-      <li className="list-group-item py-2 px-0">
-        <div className="d-flex w-100">
-          <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
-          <div className="flex-grow-1 ml-2">
-            { !dPagePath.isRoot && <FormerLink /> }
-            <h5 className="my-0">
-              <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
-              {locked}
-            </h5>
-            <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
-              <div className="d-flex">
-                <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
-                <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
-                <div className="icon-bubble mr-1 d-inline-block"></div>
-                <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
-              </div>
-              <div className="grw-formatted-distance-date small mt-auto">
-                <FormattedDistanceDate id={page.id} date={page.updatedAt} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </li>
-    );
-  }
-
   render() {
     // const { LargePageItem } = this;
-    const { SmallPageItem } = this;
+    // const { SmallPageItem } = this;
     const { t } = this.props;
     const { recentlyUpdatedPages } = this.props.appContainer.state;
 
@@ -207,7 +207,6 @@ class RecentChanges extends React.Component {
       </>
     );
   }
-
 }
 
 /**
