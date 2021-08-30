@@ -40,6 +40,7 @@
     "textlint-rule-no-doubled-joshi": "^4.0.0",
     "textlint-rule-no-dropping-the-ra": "^3.0.0",
     "textlint-rule-no-hankaku-kana": "^1.0.2",
+    "textlint-rule-no-kangxi-radicals": "^0.2.0",
     "textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet": "^1.0.1",
     "textlint-rule-no-nfd": "^1.0.2",
     "textlint-rule-no-zero-width-spaces": "^1.0.1",

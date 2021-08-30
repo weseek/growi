@@ -19984,6 +19984,13 @@ textlint-rule-no-hankaku-kana@^1.0.2:
     match-index "^1.0.1"
     textlint-rule-helper "^1.1.5"
 
+textlint-rule-no-kangxi-radicals@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-kangxi-radicals/-/textlint-rule-no-kangxi-radicals-0.2.0.tgz#58b4074bcecd0d010be8582747be2dbe077938b5"
+  integrity sha512-oWW4r1tcxqHFAjgAbJoSr00xCbXKKtAnpU4q22YcvqD3G3VcT5fZE+qNfVQ7ePjrS2hCS6xhd0TPWEVvO0FTKg==
+  dependencies:
+    match-index "^1.0.3"
+
 textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet/-/textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet-1.0.1.tgz#2d1b0d3cefa5f526e649c8d7d1af2cdda6a9333b"
