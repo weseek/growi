@@ -8,6 +8,8 @@
 
 ### Updates
 
+* Feature: Password resetting by user
+* Feature: User trigger notification and Global notification are available by new Slack integration
 * Improvement: Add attachment button in editor navbar
 * Fix: Recursive rename operation from `/parent` to `/parent/child` ([#4101](https://github.com/weseek/growi/pull/4101))
 * Fix: Encode spaces in page path in LinkEditModal
