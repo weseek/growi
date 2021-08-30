@@ -458,7 +458,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   SLACKBOT_TYPE: {
     ns:      'crowi',
-    key:     'slackbot:currentType', // enum SlackbotType
+    key:     'slackbot:currentBotType', // enum SlackbotType
     type:    ValueType.STRING,
     default: null,
   },
