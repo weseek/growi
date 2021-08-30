@@ -37,6 +37,12 @@ module.exports = function(crowi) {
 
   const editorCurrentSettingsSchema = new mongoose.Schema({
     isTextlintEnabled: { type: Boolean, default: true },
+    enabledEnglishTextlintRules: [
+      { name: String, options: Object },
+    ],
+    enabledJapaneseTextlintRules: [
+      { name: String, options: Object },
+    ],
   });
 
   const userSchema = new mongoose.Schema({
