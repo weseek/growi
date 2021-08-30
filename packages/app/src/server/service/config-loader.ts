@@ -444,28 +444,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
-  SLACK_SIGNING_SECRET: {
-    ns:      'crowi',
-    key:     'slackbot:signingSecret',
-    type:    ValueType.STRING,
-    default: null,
-  },
-  SLACK_BOT_TOKEN: {
-    ns:      'crowi',
-    key:     'slackbot:token',
-    type:    ValueType.STRING,
-    default: null,
-  },
-  SLACK_INTEGRATION_PROXY_URI: {
-    ns:      'crowi',
-    key:     'slackbot:proxyServerUri',
-    type:    ValueType.STRING,
-    default: null,
-  },
-  SLACK_BOT_TYPE: {
-    ns:      'crowi',
-    key:     'slackbot:currentBotType', // 'officialBot' || 'customBotWithoutProxy' || 'customBotWithProxy'
-  },
   GROWI_APP_ID_FOR_GROWI_CLOUD: {
     ns:      'crowi',
     key:     'app:growiAppIdForCloud',
@@ -477,6 +455,30 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'customize:isEmailPublishedForNewUser',
     type:    ValueType.BOOLEAN,
     default: true,
+  },
+  SLACKBOT_TYPE: {
+    ns:      'crowi',
+    key:     'slackbot:currentType', // enum SlackbotType
+    type:    ValueType.STRING,
+    default: null,
+  },
+  SLACKBOT_INTEGRATION_PROXY_URI: {
+    ns:      'crowi',
+    key:     'slackbot:proxyUri',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  SLACKBOT_WITHOUT_PROXY_SIGNING_SECRET: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:signingSecret',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  SLACKBOT_WITHOUT_PROXY_BOT_TOKEN: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:botToken',
+    type:    ValueType.STRING,
+    default: null,
   },
 };
 
