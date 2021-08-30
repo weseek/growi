@@ -14,7 +14,6 @@ import textlintRuleJaUnnaturalAlphabet from 'textlint-rule-ja-unnatural-alphabet
 import textlintRuleMaxComma from 'textlint-rule-max-comma';
 import textlintRuleMaxKanjiContinuousLen from 'textlint-rule-max-kanji-continuous-len';
 import textlintRuleMaxTen from 'textlint-rule-max-ten';
-import textlintRuleNoDeadLink from 'textlint-rule-no-dead-link';
 import textlintRuleNoDoubleNegativeJa from 'textlint-rule-no-double-negative-ja';
 import textlintRuleNoDoubledConjunction from 'textlint-rule-no-doubled-conjunction';
 import textlintRuleNoDoubledJoshi from 'textlint-rule-no-doubled-joshi';
@@ -58,7 +57,6 @@ const ruleModulesList = {
   'max-comma': textlintRuleMaxComma,
   'max-kanji-continuous-len': textlintRuleMaxKanjiContinuousLen,
   'max-ten': textlintRuleMaxTen,
-  'no-dead-link': textlintRuleNoDeadLink,
   'no-double-negative-ja': textlintRuleNoDoubleNegativeJa,
   'no-doubled-conjunction': textlintRuleNoDoubledConjunction,
   'no-doubled-joshi': textlintRuleNoDoubledJoshi,

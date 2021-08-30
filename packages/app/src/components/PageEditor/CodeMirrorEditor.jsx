@@ -176,7 +176,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       { name: 'max-comma' },
       { name: 'max-kanji-continuous-len' },
       { name: 'max-ten' },
-      { name: 'no-dead-link' },
       { name: 'no-double-negative-ja' },
       { name: 'no-doubled-conjunction' },
       { name: 'no-doubled-joshi' },
