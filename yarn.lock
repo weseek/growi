@@ -12860,7 +12860,7 @@ markdown-table@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-1.1.1.tgz#4b3dd3a133d1518b8ef0dbc709bf2a1b4824bc8c"
 
-match-index@^1.0.1:
+match-index@^1.0.1, match-index@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/match-index/-/match-index-1.0.3.tgz#752ec60c6586ea5dd440d5e62cfbff25838c071a"
   integrity sha512-1XjyBWqCvEFFUDW/MPv0RwbITRD4xQXOvKoPYtLDq8IdZTfdF/cQSo5Yn4qvhfSSZgjgkTFsqJD2wOUG4ovV8Q==
@@ -19957,6 +19957,15 @@ textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet@^1.0.1:
     moji "^0.5.1"
     textlint-rule-helper "^2.0.0"
 
+textlint-rule-no-nfd@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-nfd/-/textlint-rule-no-nfd-1.0.2.tgz#8c5793b57caada6e620b89d7a1d2886487dbbe2e"
+  integrity sha512-n6tUx40/V6koDo78qqePHxSovuwSIKO0xwY3FCqVDbcfg9GxQCjde1twQJ99T3bs4LabhPOo/Pt3USaQ9XcTRQ==
+  dependencies:
+    match-index "^1.0.3"
+    textlint-rule-helper "^2.1.1"
+    unorm "^1.4.1"
+
 textlint-rule-period-in-list-item@^0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/textlint-rule-period-in-list-item/-/textlint-rule-period-in-list-item-0.3.2.tgz#17f7461554f596408e384d34b12e42d7d3506949"
@@ -20799,6 +20808,11 @@ universalify@^2.0.0:
 "unorm@>= 1.0.0":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/unorm/-/unorm-1.4.1.tgz#364200d5f13646ca8bcd44490271335614792300"
+
+unorm@^1.4.1:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/unorm/-/unorm-1.6.0.tgz#029b289661fba714f1a9af439eb51d9b16c205af"
+  integrity sha512-b2/KCUlYZUeA7JFUuRJZPUtr4gZvBh7tavtv4fvk4+KV9pfGiR6CQAQAWl49ZpR3ts2dk4FYkP7EIgDJoiOLDA==
 
 unpipe@1.0.0, unpipe@~1.0.0:
   version "1.0.0"
