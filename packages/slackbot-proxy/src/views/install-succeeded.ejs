@@ -1,0 +1,33 @@
+<%- include('commons/head'); %>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <h1 class="my-5">Congratulations!</h1>
+        <h2 class="my-5">GROWI Bot installation has succeeded!</h2>
+      </div>
+    </div>
+
+    <div class="row justify-content-md-center">
+      <div class="col col-xl-6 col-md-8">
+        <h4>The steps required to configure GROWI Slack app.</h4>
+        <ol>
+          <li>First, <code>/growi register</code> in any slack channel.</li>
+          <img class="w-100" src="https://docs.growi.org/assets/images/slack-bot-growi-register.png" alt="growi-register"/>
+          <li>Looking for additional help? Try <code>/growi help</code></li>
+        </ol>
+        <h4 class="mt-5">Need more infomation?</h4>
+        <p>Please refer to the document below.</p>
+        <p class="text-center">
+          <a class="btn btn-success my-4" href="https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/official-bot-settings.html">Getting started</a>
+        </p>
+        <hr>
+        <p class="text-center">
+          <a href=<%- appPageUrl %>>Slack App detail page.</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
+</body>

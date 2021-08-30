@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "importHelpers": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+
+    /* Strict Type-Checking Options */
+    // "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": false,
+
+    /* Additional Checks */
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+
+    /* Module Resolution Options */
+    "moduleResolution": "node",
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+
+    /* Misc */
+    "preserveConstEnums": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+
+    /* Experimental Options */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    /* default path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@growi/*": ["packages/*/src"],
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts"
+  ]
+}

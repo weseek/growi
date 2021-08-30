@@ -1,8 +1,1 @@
-/.github/**
-/.vscode/**
-/node_modules/**
-/public/**
-/src/client/js/legacy/thirdparty-js/**
-/src/client/js/util/reveal/plugins/markdown.js
-/src/linter-checker/**
-/tmp/**
+node_modules/**
