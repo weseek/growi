@@ -12,6 +12,7 @@ import { JSHINT } from 'jshint';
 import * as loadScript from 'simple-load-script';
 import * as loadCssSync from 'load-css-file';
 
+import { createValidator } from '@growi/codemirror-textlint';
 import InterceptorManager from '~/services/interceptor-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -32,7 +33,6 @@ import HandsontableModal from './HandsontableModal';
 import EditorIcon from './EditorIcon';
 import DrawioModal from './DrawioModal';
 
-import { createValidator } from '../../client/util/codemirror/codemirror-textlint';
 
 window.JSHINT = JSHINT;
 
