@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 
 import { IncomingWebhookSendArguments } from '@slack/webhook';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
-import { generateWebClient, markdownSectionBlock } from '@growi/slack';
 
+import { generateWebClient, markdownSectionBlock, SlackbotType } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
+
 import S2sMessage from '../models/vo/s2s-message';
 
 import ConfigManager from './config-manager';
