@@ -106,7 +106,7 @@ module.exports = (crowi) => {
     const params = {
       'slackbot:currentBotType': initializedType,
       'slackbot:withoutProxy:signingSecret': null,
-      'slackbot:token': null,
+      'slackbot:withoutProxy:botToken': null,
       'slackbot:proxyUri': null,
     };
 
@@ -178,9 +178,9 @@ module.exports = (crowi) => {
     const settings = {};
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:signingSecret');
-      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:token');
+      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:botToken');
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
-      settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:token');
+      settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
     }
     else {
       settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
@@ -344,7 +344,7 @@ module.exports = (crowi) => {
     const { slackSigningSecret, slackBotToken } = req.body;
     const requestParams = {
       'slackbot:withoutProxy:signingSecret': slackSigningSecret,
-      'slackbot:token': slackBotToken,
+      'slackbot:withoutProxy:botToken': slackBotToken,
     };
     try {
       await updateSlackBotSettings(requestParams);
@@ -352,7 +352,7 @@ module.exports = (crowi) => {
 
       const customBotWithoutProxySettingParams = {
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret'),
-        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:token'),
+        slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken'),
       };
       return res.apiv3({ customBotWithoutProxySettingParams });
     }
@@ -674,7 +674,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
     }
 
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:token');
+    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
     const status = await getConnectionStatus(slackBotToken);
     if (status.error != null) {
       return res.apiv3Err(new ErrorV3(`Error occured while getting connection. ${status.error}`, 'send-message-failed'));

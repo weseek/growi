@@ -111,10 +111,10 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   async generateClientForCustomBotWithoutProxy(): Promise<WebClient> {
     this.isCheckTypeValid();
 
-    const token = this.configManager.getConfig('crowi', 'slackbot:token');
+    const token = this.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
 
     if (token == null) {
-      throw new Error('The config \'SLACK_BOT_TOKEN\'(ns: \'crowi\', key: \'slackbot:token\') must be set.');
+      throw new Error('The config \'SLACK_BOT_TOKEN\'(ns: \'crowi\', key: \'slackbot:withoutProxy:botToken\') must be set.');
     }
 
     return generateWebClient(token);
