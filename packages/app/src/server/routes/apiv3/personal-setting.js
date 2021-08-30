@@ -482,8 +482,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
-  router.put('/editor-settings', async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     try {
       const user = await User.findOne({ _id: req.user.id });
       user.editorCurrentSettings = req.body;
