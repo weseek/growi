@@ -11,8 +11,6 @@ import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';
 import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
 import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
-// import InstallerForm from '../components/InstallerForm';
-// import LoginForm from '../components/LoginForm';
 
 const i18n = i18nFactory();
 
@@ -100,7 +98,7 @@ if (passwordResetRequestFormElem) {
   );
 }
 
-// render PasswordResetRequestForm
+// render PasswordResetExecutionForm
 const passwordResetExecutionFormElem = document.getElementById('password-reset-execution-form');
 if (passwordResetExecutionFormElem) {
 
