@@ -225,7 +225,7 @@ class OptionsSelector extends React.Component {
             {this.renderActiveLineMenuItem()}
             {this.renderRealtimeMathJaxMenuItem()}
             {this.renderMarkdownTableAutoFormattingMenuItem()}
-            {this.renderisTextlintEnabledMenuItem()}
+            {this.renderIsTextlintEnabledMenuItem()}
             {/* <DropdownItem divider /> */}
           </DropdownMenu>
 
@@ -305,7 +305,7 @@ class OptionsSelector extends React.Component {
     );
   }
 
-  renderisTextlintEnabledMenuItem() {
+  renderIsTextlintEnabledMenuItem() {
     const isActive = this.state.isTextlintEnabled;
 
     const iconClasses = ['text-info'];
