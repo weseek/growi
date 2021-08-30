@@ -480,6 +480,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  SLACKBOT_WITH_PROXY_SALT_FOR_GTOP: {
+    ns:      'crowi',
+    key:     'slackbot:withProxy:saltForGtoP',
+    type:    ValueType.STRING,
+    default: 'gtop',
+  },
+  SLACKBOT_WITH_PROXY_SALT_FOR_PTOG: {
+    ns:      'crowi',
+    key:     'slackbot:withProxy:saltForPtoG',
+    type:    ValueType.STRING,
+    default: 'ptog',
+  },
 };
 
 
