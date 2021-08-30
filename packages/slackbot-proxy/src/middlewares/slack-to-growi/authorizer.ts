@@ -84,7 +84,7 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
 
       const payload = JSON.parse(body.payload);
 
-      // extract id from body
+      // extract id from body.payload
       const teamId = payload.team?.id;
       const enterpriseId = payload.enterprise?.id;
       const isEnterpriseInstall = payload.is_enterprise_install === 'true';
@@ -95,7 +95,6 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
         return;
       }
 
-      // create query from body
       const query: InstallationQuery<boolean> = {
         teamId,
         enterpriseId,
