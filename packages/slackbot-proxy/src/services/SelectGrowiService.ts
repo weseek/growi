@@ -99,16 +99,17 @@ export class SelectGrowiService implements GrowiCommandProcessor {
     // ovverride trigger_id
     sendCommandBody.trigger_id = triggerId;
 
-    const relation = await this.relationMockRepository.createQueryBuilder('relation')
-      .where('relation.growiUri =:growiUri', { growiUri })
-      .andWhere('relation.installationId = :id', { id: installation?.id })
-      .leftJoinAndSelect('relation.installation', 'installation')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation_mock')
+      .where('relation_mock.growiUri =:growiUri', { growiUri })
+      .andWhere('relation_mock.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation_mock.installation', 'installation')
       .getOne();
 
     if (relation == null) {
       // TODO: postEphemeralErrors
       throw new Error('No relation found.');
     }
+    console.log(112, relation);
 
     return {
       relation,

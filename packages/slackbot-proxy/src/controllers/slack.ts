@@ -182,21 +182,23 @@ export class SlackCtrl {
       }
     }));
 
-    let isCommandPermitted = false;
 
     if (relationsForSingleUse.length > 0) {
-      isCommandPermitted = true;
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
     const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
+
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(
         relation, growiCommand.growiCommandType, body.channel_name, baseDate,
       );
+      console.log(isSupported);
       if (isSupported) {
         relationsForBroadcastUse.push(relation);
+        console.log(relationsForBroadcastUse);
+
       }
     }));
 
@@ -204,25 +206,24 @@ export class SlackCtrl {
      * forward to GROWI server
      */
     if (relationsForBroadcastUse.length > 0) {
-      isCommandPermitted = true;
+      body.growiUrisForBroadcastUse = relationsForBroadcastUse.map(v => v.growiUri);
       return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
-    if (!isCommandPermitted) {
-      const botToken = relations[0].installation?.data.bot?.token;
+    const botToken = relations[0].installation?.data.bot?.token;
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(botToken!);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const client = generateWebClient(botToken!);
 
-      return client.chat.postEphemeral({
-        text: 'Error occured.',
-        channel: body.channel_id,
-        user: body.user_id,
-        blocks: [
-          markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
-        ],
-      });
-    }
+    return client.chat.postEphemeral({
+      text: 'Error occured.',
+      channel: body.channel_id,
+      user: body.user_id,
+      blocks: [
+        markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
+      ],
+    });
+
   }
 
 
