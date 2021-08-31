@@ -1,11 +1,15 @@
 import { TextlintKernel, TextlintKernelRule, TextlintRuleOptions } from '@textlint/kernel';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
+import textlintRuleNoUnmatchedPair from '@textlint-rule/textlint-rule-no-unmatched-pair';
 import textlintRuleCommonMisspellings from 'textlint-rule-common-misspellings';
+import textlintRuleDateWeekdayMismatch from 'textlint-rule-date-weekday-mismatch';
+import textlintRuleEnCapitalization from 'textlint-rule-en-capitalization';
 import textlintRuleJaHiraganaKeishikimeishi from 'textlint-rule-ja-hiragana-keishikimeishi';
 import textlintRuleJaNoAbusage from 'textlint-rule-ja-no-abusage';
 import textlintRuleJaNoInappropriateWords from 'textlint-rule-ja-no-inappropriate-words';
 import textlintRuleJaNoMixedPeriod from 'textlint-rule-ja-no-mixed-period';
 import textlintRuleJaNoRedundantExpression from 'textlint-rule-ja-no-redundant-expression';
+import textlintRuleJaUnnaturalAlphabet from 'textlint-rule-ja-unnatural-alphabet';
 import textlintRuleMaxComma from 'textlint-rule-max-comma';
 import textlintRuleMaxKanjiContinuousLen from 'textlint-rule-max-kanji-continuous-len';
 import textlintRuleMaxTen from 'textlint-rule-max-ten';
@@ -14,8 +18,15 @@ import textlintRuleNoDoubledConjunction from 'textlint-rule-no-doubled-conjuncti
 import textlintRuleNoDoubledJoshi from 'textlint-rule-no-doubled-joshi';
 import textlintRuleNoDroppingTheRa from 'textlint-rule-no-dropping-the-ra';
 import textlintRuleNoHankakuKana from 'textlint-rule-no-hankaku-kana';
+import textlintRuleNoKangxiRadicals from 'textlint-rule-no-kangxi-radicals';
+import textlintRuleNoMixedZenkakuAndHankakuAlphabet from 'textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet';
+import textlintRuleNoNfd from 'textlint-rule-no-nfd';
+import textlintRuleNoSurrogatePair from 'textlint-rule-no-surrogate-pair';
+import textlintRuleNoZeroWidthSpaces from 'textlint-rule-no-zero-width-spaces';
+import textlintRulePeriodInListItem from 'textlint-rule-period-in-list-item';
 import textlintRulePreferTariTari from 'textlint-rule-prefer-tari-tari';
 import textlintRuleSentenceLength from 'textlint-rule-sentence-length';
+import textlintRuleUseSiUnits from 'textlint-rule-use-si-units';
 
 import { AsyncLinter, Annotation } from 'codemirror/addon/lint/lint';
 import { loggerFactory } from './utils/logger';
@@ -30,12 +41,16 @@ type RuleExtension = {
 }
 
 const ruleModulesList = {
+  'no-unmatched-pair': textlintRuleNoUnmatchedPair,
   'common-misspellings': textlintRuleCommonMisspellings,
+  'date-weekday-mismatch': textlintRuleDateWeekdayMismatch,
+  'en-capitalization': textlintRuleEnCapitalization,
   'ja-hiragana-keishikimeishi': textlintRuleJaHiraganaKeishikimeishi,
   'ja-no-abusage': textlintRuleJaNoAbusage,
   'ja-no-inappropriate-words': textlintRuleJaNoInappropriateWords,
   'ja-no-mixed-period': textlintRuleJaNoMixedPeriod,
   'ja-no-redundant-expression': textlintRuleJaNoRedundantExpression,
+  'ja-unnatural-alphabet': textlintRuleJaUnnaturalAlphabet,
   'max-comma': textlintRuleMaxComma,
   'max-kanji-continuous-len': textlintRuleMaxKanjiContinuousLen,
   'max-ten': textlintRuleMaxTen,
@@ -44,8 +59,15 @@ const ruleModulesList = {
   'no-doubled-joshi': textlintRuleNoDoubledJoshi,
   'no-dropping-the-ra': textlintRuleNoDroppingTheRa,
   'no-hankaku-kana': textlintRuleNoHankakuKana,
+  'no-kangxi-radicals': textlintRuleNoKangxiRadicals,
+  'no-mixed-zenkaku-and-hankaku-alphabet': textlintRuleNoMixedZenkakuAndHankakuAlphabet,
+  'no-nfd': textlintRuleNoNfd,
+  'no-surrogate-pair': textlintRuleNoSurrogatePair,
+  'no-zero-width-spaces': textlintRuleNoZeroWidthSpaces,
+  'period-in-list-item': textlintRulePeriodInListItem,
   'prefer-tari-tari': textlintRulePreferTariTari,
   'sentence-length': textlintRuleSentenceLength,
+  'use-si-units': textlintRuleUseSiUnits,
 };
 
 const logger = loggerFactory('growi:codemirror:codemirror-textlint');
