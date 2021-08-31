@@ -21,9 +21,6 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 const logger = loggerFactory('growi:History');
 
 function LargePageItem({ page }) {
-  propTypes: {
-    page: PropTypes.any
-  };
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -75,6 +72,9 @@ function LargePageItem({ page }) {
       </div>
     </li>
   );
+}
+LargePageItem.propTypes = {
+  page: PropTypes.any
 }
 
 function SmallPageItem({ page }) {
