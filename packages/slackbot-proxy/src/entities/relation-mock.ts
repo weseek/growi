@@ -4,12 +4,6 @@ import {
 } from 'typeorm';
 import { Installation } from './installation';
 
-
-// expected data see below
-//   commandToChannelMap: {
-//     create: ['srv', 'admin'],
-//     search: ['admin'],
-//   }
 interface PermissionSettingsInterface {
   [commandName: string]: boolean | string[],
 }
