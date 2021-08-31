@@ -94,7 +94,7 @@ module.exports = (crowi) => {
   }
 
   const addSigningSecretToReq = (req, res, next) => {
-    req.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:signingSecret');
+    req.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
     return next();
   };
 
