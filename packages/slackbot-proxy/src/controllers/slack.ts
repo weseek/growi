@@ -175,8 +175,6 @@ export class SlackCtrl {
 
     await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
-      console.log(isSupported);
-
       if (isSupported) {
         return relationsForSingleUse.push(relation);
       }
@@ -194,11 +192,8 @@ export class SlackCtrl {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(
         relation, growiCommand.growiCommandType, body.channel_name, baseDate,
       );
-      console.log(isSupported);
       if (isSupported) {
         relationsForBroadcastUse.push(relation);
-        console.log(relationsForBroadcastUse);
-
       }
     }));
 
