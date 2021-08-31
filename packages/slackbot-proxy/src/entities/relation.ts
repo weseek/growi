@@ -1,7 +1,7 @@
+import { differenceInMilliseconds } from 'date-fns';
 import {
   Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, Index,
 } from 'typeorm';
-import { differenceInMilliseconds } from 'date-fns';
 import { Installation } from './installation';
 
 @Entity()
@@ -37,15 +37,11 @@ export class Relation {
   @Column('simple-array')
   supportedCommandsForSingleUse: string[];
 
-  @CreateDateColumn()
+  @Column({ type: 'timestamp' })
   expiredAtCommands: Date;
 
-  isExpiredCommands():boolean {
-    const now = Date.now();
-    return this.expiredAtCommands.getTime() < now;
-  }
-
   getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {
+    // differenceInMilliseconds uses Date.prototype.getTime() internally
     return differenceInMilliseconds(this.expiredAtCommands, baseDate);
   }
 
