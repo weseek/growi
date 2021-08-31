@@ -22,7 +22,7 @@
   position: sticky;
   top: $grw-navbar-border-width;
 
-  .ak-navigation-resize-button {
+  .grw-navigation-resize-button {
     position: fixed;
 
     // locate to the center of screen
@@ -70,7 +70,7 @@
     bottom: 0px;
     left: 0px;
     z-index: 200;
-    &:hover .ak-navigation-resize-button.resizable.normal-state {
+    &:hover .grw-navigation-resize-button.resizable.normal-state {
       cursor: pointer;
       opacity: 1;
     }
