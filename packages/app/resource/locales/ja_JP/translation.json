@@ -262,9 +262,9 @@
     "editor_settings": "エディター設定",
     "common_settings": {
       "common_settings": "共通設定",
-      "common_misspellings": "Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.",
-      "max_comma": "Textlint rule is that limit maximum ten(、) count of sentence. <br />Default: 4",
-      "sentence_length": "Textlint rules that limit Maximum Length of Sentence."
+      "common_misspellings": "ウィキペディアから一般的なスペルミスを見つけるためのTextlintルールです。",
+      "max_comma": "文の読点（、）を最大10個に制限するTextlintのルールです。 <br />初期値: 4",
+      "sentence_length": "文の最大文字数を制限するTextlintルールです。"
       },
     "japanese_settings": {
       "japanese_settings": "日本語設定",
