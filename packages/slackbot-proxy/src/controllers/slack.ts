@@ -4,10 +4,10 @@ import {
 
 import axios from 'axios';
 
-import { WebAPICallResult, ChatPostEphemeralResponse } from '@slack/web-api';
+import { WebAPICallResult } from '@slack/web-api';
 
 import {
-  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest,
 } from '@growi/slack';
 
 // import { Relation } from '~/entities/relation';
@@ -30,22 +30,6 @@ import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
-
-
-const postNotPermissionMessage = (relations:RelationMock[], commandName:string, body:any):Promise<ChatPostEphemeralResponse> => {
-  const botToken = relations[0].installation?.data.bot?.token;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const client = generateWebClient(botToken!);
-
-  return client.chat.postEphemeral({
-    text: 'Error occured.',
-    channel: body.channel_id,
-    user: body.user_id,
-    blocks: [
-      markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
-    ],
-  });
-};
 @Controller('/slack')
 export class SlackCtrl {
 
@@ -209,7 +193,7 @@ export class SlackCtrl {
         return relationsForBroadcastUse.push(relation);
       }
 
-      postNotPermissionMessage(relations, growiCommand.growiCommandType, body);
+      this.relationsService.postNotPermissionMessage(relations, growiCommand.growiCommandType, body);
     }));
 
     /*
@@ -299,43 +283,10 @@ export class SlackCtrl {
       });
     }
 
-    let isPermitted = false;
-    let permission:boolean|string[];
+
     await Promise.all(relations.map(async(relation) => {
-      const singleUse = Object.keys(relation.supportedCommandsForSingleUse);
-      const broadCastUse = Object.keys(relation.supportedCommandsForBroadcastUse);
 
-      [...singleUse, ...broadCastUse].forEach(async(commandName) => {
-        permission = relation.supportedCommandsForSingleUse[commandName];
-
-        if (permission == null) {
-          permission = relation.supportedCommandsForBroadcastUse[commandName];
-        }
-
-        // permission check
-        if (permission === true) {
-          isPermitted = true;
-          return;
-        }
-
-        if (Array.isArray(permission)) {
-          isPermitted = permission.includes(channelName);
-          return;
-        }
-
-        // ex. search OR search:handlerName
-        const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
-
-        // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommandskey
-        if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
-          return;
-        }
-
-        if (!isPermitted) {
-          postNotPermissionMessage(relations, commandName, body);
-        }
-      });
-
+      await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId, body, relations);
 
       /*
        * forward to GROWI server
