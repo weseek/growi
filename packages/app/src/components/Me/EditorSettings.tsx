@@ -283,9 +283,8 @@ export const EditorSettings: FC<Props> = () => {
               <strong>max-comma</strong>
             </label>
             <p className="form-text text-muted small">
-              max: maximum number of , <br />
+              textlint rule is that limit maximum ten(、) count of sentence. <br />
               Default: 4
-
             </p>
           </div>
 
