@@ -28,33 +28,24 @@
     // locate to the center of screen
     top: calc(50vh - 20px);
 
-    /*
-     * styles
-     */
-    // unset originalhover color
-    > div:hover {
-      background-color: unset;
-    }
-
-    $box-shadow: 0 1px 1px rgba(96, 96, 96, 0.75);
+    $box-shadow: 0 0 0 0 rgba(96, 96, 96, 0.75);
     @include hexagonize(24px, white, $box-shadow);
 
     // rotate 30deg
     transform: translate(-50%) rotate(30deg);
-    > div,
-    > span svg {
+    > span {
+      top: -2px;
       transform: rotate(-30deg);
+      &::after {
+        // override
+        content: none;
+      }
     }
 
-    // centering icon
-    > span svg {
-      position: relative;
-      z-index: 1;
-      margin-top: -5.5px;
-    }
-    // reverse icon at the time of collapsed
+    // reverse and center icon at the time of collapsed
     &.collapse-state {
-      > span svg {
+      > span {
+        left: 2px;
         transform: rotate(-210deg);
       }
     }
@@ -358,12 +349,4 @@
   transition: background-color 100ms linear 0s, color 100ms linear 0s, opacity 300ms cubic-bezier(0.2, 0, 0, 1) 0s,
     transform 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
   transform: translate(-50%);
-}
-
-.jMDUxe {
-  display: inline-block;
-  flex-shrink: 0;
-  line-height: 1;
-  color: currentcolor;
-  fill: rgb(255, 255, 255);
 }

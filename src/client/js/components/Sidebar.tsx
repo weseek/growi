@@ -310,17 +310,8 @@ const Sidebar = (props: Props) => {
                 disabled={isDrawerMode}
                 onClick={toggleNavigationBtnClickHandler}
               >
-                <span role="presentation" className="jMDUxe">
-                  <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" role="presentation">
-                    <path
-                      d="M13.706 9.698a.988.988 0 0 0 0-1.407
-                      1.01 1.01 0 0 0-1.419 0l-2.965 2.94a1.09 1.09 0 0 0 0 1.548l2.955
-                      2.93a1.01 1.01 0 0 0 1.42 0 .988.988 0 0 0 0-1.407l-2.318-2.297 2.327-2.307z"
-                      fill="currentColor"
-                      fillRule="evenodd"
-                    >
-                    </path>
-                  </svg>
+                <span role="presentation">
+                  <i className="ml-1 fa fa-fw fa-angle-right text-white"></i>
                 </span>
               </button>
             </div>
