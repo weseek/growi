@@ -238,18 +238,21 @@ export class SlackCtrl {
     if (body.ssl_check != null) {
       return;
     }
+
+    const payload = JSON.parse(body.payload);
+
+    const callBackId = payload?.view?.callback_id;
+    const actionId = payload?.actions?.[0].action_id;
+
+    const privateMeta = JSON.parse(payload?.view?.private_metadata);
+    const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
+    const growiUri = privateMeta?.body?.growiUrisForSingleUse[0] || privateMeta?.body?.growiUrisForBroadcastUse[0];
+
+    const growiCommandType = actionId?.split(':')[0] || callBackId?.split(':')[0];
+
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-
-    // const relation = await this.relationMockRepository.findOne({ installation, growiUri: req.growiUri });
-    console.log(req.growiUri, 251);
-
-    const payload = JSON.parse(body.payload);
-    console.log(installation, payload);
-
-    const callBackId = payload?.view?.callback_id;
-    // const actionId = payload?.actions[0].action_id;
 
     // register
     if (callBackId === 'register') {
@@ -274,38 +277,113 @@ export class SlackCtrl {
       return;
     }
 
-    // const baseDate = new Date();
-
     // forward to GROWI server
     if (callBackId === 'select_growi') {
       const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
-    /*
-    * forward to GROWI server
-    */
-    const relation = await this.relationMockRepository.findOne({ installation, growiUri: req.growiUri });
+    // check permission
+    const relations = await this.relationMockRepository.createQueryBuilder('relation_mock')
+      .where('relation_mock.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation_mock.installation', 'installation')
+      .getMany();
 
-    if (relation == null) {
-      logger.error('*No relation found.*');
-      return;
-    }
-
-    try {
-      // generate API URL
-      const url = new URL('/_api/v3/slack-integration/proxied/interactions', req.growiUri);
-      await axios.post(url.toString(), {
-        ...body,
-      }, {
-        headers: {
-          'x-growi-ptog-tokens': relation.tokenPtoG,
-        },
+    if (relations.length === 0) {
+      return res.json({
+        blocks: [
+          markdownSectionBlock('*No relation found.*'),
+          markdownSectionBlock('Run `/growi register` first.'),
+        ],
       });
     }
-    catch (err) {
-      logger.error(err);
-    }
+
+    let isPermitted = false;
+    let permission:boolean|string[];
+    console.log(303, relations);
+
+    await Promise.all(relations.map(async(relation) => {
+      const single = Object.keys(relation.supportedCommandsForSingleUse);
+      const broad = Object.keys(relation.supportedCommandsForBroadcastUse);
+      console.log(305);
+
+      [...single, ...broad].forEach(async(commandName) => {
+
+        permission = relation.supportedCommandsForSingleUse[commandName];
+
+
+        if (permission == null) {
+          permission = relation.supportedCommandsForBroadcastUse[commandName];
+        }
+
+        // permission check
+        if (permission === true) {
+          isPermitted = true;
+        }
+
+        if (Array.isArray(permission)) {
+          isPermitted = permission.includes(channelName);
+
+        }
+
+        // ex. search OR search:handlerName
+        const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+        console.log(commandRegExp);
+        console.log(actionId);
+        console.log(callBackId);
+
+
+        // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
+        if (!commandRegExp.test(actionId) && !commandRegExp.test(callBackId)) {
+          return;
+        }
+
+        if (!isPermitted) {
+          const botToken = relations[0].installation?.data.bot?.token;
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const client = generateWebClient(botToken!);
+
+          return client.chat.postEphemeral({
+            text: 'Error occured.',
+            channel: body.channel_id,
+            user: body.user_id,
+            blocks: [
+              markdownSectionBlock(`It is not allowed to run *'${growiCommandType}'* command to this GROWI.`),
+            ],
+          });
+        }
+        if (relation == null) {
+          logger.error('*No relation found.*');
+          return;
+        }
+
+        /*
+         * forward to GROWI server
+         */
+        console.log(payload);
+        console.log('--------');
+
+
+        try {
+        // generate API URL
+          const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
+          await axios.post(url.toString(), {
+            ...body,
+          }, {
+            headers: {
+              'x-growi-ptog-tokens': relation.tokenPtoG,
+            },
+          });
+        }
+        catch (err) {
+          logger.error(err);
+        }
+
+      });
+
+
+    }));
+
   }
 
   @Post('/events')

@@ -73,14 +73,18 @@ export class RelationsService {
     }
 
     const boolOrArrayString = relation.supportedCommandsForSingleUse[growiCommandType];
+    console.log(boolOrArrayString);
 
     if (boolOrArrayString == null) {
       return false;
     }
+    console.log(81, channelName);
 
     if (Array.isArray(boolOrArrayString)) {
+
       return boolOrArrayString.includes(channelName);
     }
+    console.log(84);
 
     return boolOrArrayString;
   }
