@@ -75,9 +75,9 @@ module.exports = (crowi) => {
       return res.apiv3();
     }
     catch (err) {
-      const msg = 'Error occurred during password reset request procedure';
+      const msg = 'Error occurred during password reset request procedure.';
       logger.error(err);
-      return res.apiv3Err(msg);
+      return res.apiv3Err(`${msg} Cause: ${err}`);
     }
   });
 
