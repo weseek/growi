@@ -102,26 +102,23 @@ export class GrowiToSlackCtrl {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
 
-    // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
-
-    // MOCK DATA DELETE THIS GW 6972 -----------
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse, permittedChannelsForEachCommand } = req.body;
-    // MOCK DATA DELETE THIS GW 6972 -----------
+    // MOCK DATA SO FAR BUT THIS CAN BE USED AS AN ACTUAL CODE AS WELL GW 6972 -----------
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
+    // MOCK DATA SO FAR BUT THIS CAN BE USED AS AN ACTUAL CODE AS WELL GW 6972 -----------
 
     if (tokenGtoPs.length !== 1) {
       throw createError(400, 'installation is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
-    // const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
 
-    // MOCK DATA DELETE THIS GW 6972 -----------
-    const relation = await this.relationMockRepository.update(
-      { tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse, permittedChannelsForEachCommand },
+    // MOCK DATA MODIFY THIS GW 6972 -----------
+    const relationMock = await this.relationMockRepository.update(
+      { tokenGtoP }, { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands },
     );
-    // MOCK DATA DELETE THIS GW 6972 -----------
+    // MOCK DATA MODIFY THIS GW 6972 -----------
 
-    return res.send({ relation });
+    return res.send({ relationMock });
   }
 
   @Post('/relation-test')
@@ -233,11 +230,8 @@ export class GrowiToSlackCtrl {
         tokenGtoP: order.tokenGtoP,
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
-        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
-        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
-        permittedChannelsForEachCommand: {
-          channelsObject: {},
-        },
+        permissionsForBroadcastUseCommands: req.body.permissionsForBroadcastUseCommands,
+        permissionsForSingleUseCommands: req.body.permissionsForBroadcastUseCommands,
         expiredAtCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487

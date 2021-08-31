@@ -541,19 +541,7 @@ module.exports = (crowi) => {
         { new: true },
       );
 
-      // await requestToProxyServer(
-      //   slackAppIntegration.tokenGtoP,
-      //   'put',
-      //   '/g2s/supported-commands',
-      //   {
-      //     supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
-      //     supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
-      //   },
-      // );
-
-      // return res.apiv3({ slackAppIntegration });
-
-      // MOCK DATA DELETE THIS GW-6972 ---------------
+      // MOCK DATA MODIFY THIS GW-6972 ---------------
       /**
        * this code represents the update operation using request from client (slackapp integration settings page)
        * , then send request to proxy to update cache
@@ -561,15 +549,18 @@ module.exports = (crowi) => {
        */
       const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
       // MOCK DATA FROM CLIENT assume that these data were sent from client
-      const permittedChannelsForEachCommandFromClient = {
-        channelsObject: { search: ['random'] },
+      const permissionsForBroadcastUseCommandsFromClient = {
+        search: true,
+      };
+      const permissionsForSingleUseCommandsFromClient = {
+        create: false,
+        togetter: ['random', 'admin'],
       };
       const slackAppIntegrationMock = await SlackAppIntegrationMock.findOneAndUpdate(
         { tokenPtoG: slackAppIntegration.tokenPtoG },
         {
-          supportedCommandsForBroadcastUse,
-          supportedCommandsForSingleUse,
-          permittedChannelsForEachCommand: permittedChannelsForEachCommandFromClient,
+          permissionsForBroadcastUseCommands: permissionsForBroadcastUseCommandsFromClient,
+          permissionsForSingleUseCommands: permissionsForSingleUseCommandsFromClient,
         },
         { new: true },
       );
@@ -579,12 +570,11 @@ module.exports = (crowi) => {
         'put',
         '/g2s/supported-commands',
         {
-          supportedCommandsForBroadcastUse: slackAppIntegrationMock.supportedCommandsForBroadcastUse,
-          supportedCommandsForSingleUse: slackAppIntegrationMock.supportedCommandsForSingleUse,
-          permittedChannelsForEachCommand: slackAppIntegrationMock.permittedChannelsForEachCommand,
+          permissionsForBroadcastUseCommands: slackAppIntegrationMock.permissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: slackAppIntegrationMock.permissionsForSingleUseCommands,
         },
       );
-      // MOCK DATA DELETE THIS GW-6972 ---------------
+      // MOCK DATA MODIFY THIS GW-6972 ---------------
 
       return res.apiv3({ slackAppIntegrationMock });
     }
@@ -626,6 +616,10 @@ module.exports = (crowi) => {
     let slackBotToken;
     try {
       const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
+      // MOCK DATA DELETE THIS GW-6972 ---------------
+      const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+      const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ _id: slackAppIntegrationId });
+      // MOCK DATA DELETE THIS GW-6972 ---------------
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
@@ -637,7 +631,7 @@ module.exports = (crowi) => {
         'post',
         '/g2s/relation-test',
         {
-          supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
+          permissionsForBroadcastUseCommands: slackAppIntegration.permissionsForBroadcastUseCommands,
           supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
         },
       );
