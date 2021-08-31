@@ -252,6 +252,12 @@
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
+  "external_notification": {
+    "enabled": "有効",
+    "disabled": "無効",
+    "header_status": "Slack 連携の状態",
+    "caution_enabled": "CAUTION: このページで設定される通知は、Primary として設定された Slack ワークスペースにのみ送信されます。 "
+  },
   "slack_integration": {
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
@@ -350,6 +356,10 @@
       "custom_bot_without_proxy_setting": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/custom-bot-without-proxy-settings.html",
       "custom_bot_with_proxy_setting": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/custom-bot-with-proxy-settings.html"
     }
+  },
+  "slack_integration_legacy": {
+    "alert_disabled": "<a href='/admin/slack-integration'>新しい設定</a>が有効になっているため、この 'Slack連携 (レガシー)' は現在無効になっています。",
+    "alert_deplicated": "この 'Slack連携 (レガシー)' は将来廃止されます。代わりに<a href='/admin/slack-integration'>新しいSlack連携機能</a>を利用してください。"
   },
   "user_management": {
     "invite_users": "新規ユーザーの仮発行",

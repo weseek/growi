@@ -1,6 +1,6 @@
 {
   "name": "@growi/plugin-attachment-refs",
-  "version": "4.3.3-RC",
+  "version": "4.4.0-RC",
   "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
   "license": "MIT",
   "keywords": [

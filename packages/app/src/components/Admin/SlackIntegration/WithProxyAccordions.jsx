@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+import { SlackbotType } from '@growi/slack';
+
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -384,7 +387,7 @@ const WithProxyAccordions = (props) => {
     },
   };
 
-  const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
+  const integrationProcedureMapping = props.botType === SlackbotType.OFFICIAL ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
   return (
     <div
@@ -417,7 +420,7 @@ const WithProxyAccordions = (props) => {
 const WithProxyAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  botType: PropTypes.string.isRequired,
+  botType: PropTypes.oneOf(Object.values(SlackbotType)).isRequired,
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
