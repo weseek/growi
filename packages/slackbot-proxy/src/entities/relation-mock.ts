@@ -4,14 +4,8 @@ import {
 import { differenceInMilliseconds } from 'date-fns';
 import { Installation } from './installation';
 
-
-// expected data see below
-//   commandToChannelMap: {
-//     create: ['srv', 'admin'],
-//     search: ['admin'],
-//   }
-interface PermittedChannelsForEachCommand {
-  commandToChannelMap: { [command: string]: string[] };
+interface PermissionSettingsInterface {
+  [commandName: string]: boolean | string[],
 }
 
 @Entity()
@@ -41,14 +35,11 @@ export class RelationMock {
   @Column()
   growiUri: string;
 
-  @Column('simple-array')
-  supportedCommandsForBroadcastUse: string[];
-
-  @Column('simple-array')
-  supportedCommandsForSingleUse: string[];
+  @Column({ type: 'json' })
+  permissionsForBroadcastUseCommands: PermissionSettingsInterface;
 
   @Column({ type: 'json' })
-  permittedChannelsForEachCommand : PermittedChannelsForEachCommand
+  permissionsForSingleUseCommands: PermissionSettingsInterface;
 
   @CreateDateColumn()
   expiredAtCommands: Date;
