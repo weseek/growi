@@ -43,7 +43,7 @@ const PersonalSettings = (props) => {
       editor_settings: {
         Icon: () => <i className="icon-fw icon-pencil"></i>,
         Content: EditorSettings,
-        i18n: t('Editor Settings'),
+        i18n: t('editor_settings.editor_settings'),
         index: 4,
       },
     };
