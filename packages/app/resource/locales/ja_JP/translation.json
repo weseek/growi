@@ -262,25 +262,25 @@
     "editor_settings": "エディター設定",
     "common_settings": {
       "common_settings": "共通設定",
-      "common-misspellings": "Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.",
-      "max-comma": "Textlint rule is that limit maximum ten(、) count of sentence. <br />Default: 4",
-      "sentence-length": "Textlint rules that limit Maximum Length of Sentence."
+      "common_misspellings": "Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.",
+      "max_comma": "Textlint rule is that limit maximum ten(、) count of sentence. <br />Default: 4",
+      "sentence_length": "Textlint rules that limit Maximum Length of Sentence."
       },
     "japanese_settings": {
       "japanese_settings": "日本語設定",
-      "ja-hiragana-keishikimeishi": "漢字よりひらがなで書かれた読みやすい形式名詞をチェックする。",
-      "ja-no-abusage": "よくある誤用をチェックするtextlintルールです。",
-      "ja-no-inappropriate-words": "不適切表現をチェックするtextlintルールです。",
-      "ja-no-mixed-period": "パラグラフの末尾に必ず句点記号を付けていることをチェックするルールです。",
-      "ja-no-redundant-expression": "冗長な表現を禁止するtextlintルールです。冗長な表現とは、その文から省いても意味が通じるような表現を示しています。",
-      "max-kanji-continuous-len": "漢字が連続する最大文字数を制限するtextlintルールです。",
-      "max-ten": "一文に利用できる、の数を制限するtextlintルール。一文の読点の数が多いと冗長で読みにくい文章となるため、読点の数を一定数以下にするルールです。 読点の数を減らすためには、句点(。)で文を区切る必要があります。",
-      "no-double-negative-ja": "二重否定 を検出するtextlintルールです。",
-      "no-doubled-conjunction": "同じ接続詞が連続して出現していないかどうかをチェックするためのtextlintルールです。",
-      "no-doubled-joshi": "1つの文中に同じ助詞が連続して出てくるのをチェックするtextlintルールです。",
-      "no-dropping-the-ra": "ら抜き言葉を検出するtextlintルールです。",
-      "no-hankaku-kana": "半角カナの利用を禁止するtextlintルールです。",
-      "prefer-tari-tari": "「〜たり〜たりする」をチェックするtextlintルールです。"
+      "ja_hiragana_keishikimeishi": "漢字よりひらがなで書かれた読みやすい形式名詞をチェックする。",
+      "ja_no_abusage": "よくある誤用をチェックするtextlintルールです。",
+      "ja_no_inappropriate_words": "不適切表現をチェックするtextlintルールです。",
+      "ja_no_mixed_period": "パラグラフの末尾に必ず句点記号を付けていることをチェックするルールです。",
+      "ja_no_redundant_expression": "冗長な表現を禁止するtextlintルールです。冗長な表現とは、その文から省いても意味が通じるような表現を示しています。",
+      "max_kanji_continuous_len": "漢字が連続する最大文字数を制限するtextlintルールです。",
+      "max_ten": "一文に利用できる、の数を制限するtextlintルール。一文の読点の数が多いと冗長で読みにくい文章となるため、読点の数を一定数以下にするルールです。 読点の数を減らすためには、句点(。)で文を区切る必要があります。",
+      "no_double_negative_ja": "二重否定 を検出するtextlintルールです。",
+      "no_doubled_conjunction": "同じ接続詞が連続して出現していないかどうかをチェックするためのtextlintルールです。",
+      "no_doubled_joshi": "1つの文中に同じ助詞が連続して出てくるのをチェックするtextlintルールです。",
+      "no_dropping_the_ra": "ら抜き言葉を検出するtextlintルールです。",
+      "no_hankaku_kana": "半角カナの利用を禁止するtextlintルールです。",
+      "prefer_tari_tari": "「〜たり〜たりする」をチェックするtextlintルールです。"
     }
   },
   "copy_to_clipboard": {
