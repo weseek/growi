@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
 
 
 type Props = {
@@ -20,8 +19,8 @@ export const WithoutJapaneseTextLintRulesSettings: FC<Props> = () => {
 
 
 export const EditorSettings: FC<Props> = () => {
+  // TODO: apply i18n by GW-7244
   const { t } = useTranslation();
-  // TODO: apply i18n byGW-7244
 
   return (
     <>
@@ -41,6 +40,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="ja-hiragana-keishikimeishi">
               <strong>ja-hiragana-keishikimeishi</strong>
             </label>
+            <p className="form-text text-muted small">
+              Textlint rules to check easy-to-read Keishikimeishi(pronouns) written in Hiragana than Kanji.
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -54,6 +56,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="ja-no-abusage">
               <strong>ja-no-abusage</strong>
             </label>
+            <p className="form-text text-muted small">
+              Textlint rules to check for common misuse
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -67,6 +72,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="ja-no-inappropriate-words">
               <strong>ja-no-inappropriate-words</strong>
             </label>
+            <p className="form-text text-muted small">
+              Textlint rule to check for inappropriate expressions
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -80,6 +88,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="ja-no-mixed-period">
               <strong>ja-no-mixed-period</strong>
             </label>
+            <p className="form-text text-muted small">
+              A rule to check that a paragraph always has a punctuation mark at the end
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -93,6 +104,10 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="ja-no-redundant-expression">
               <strong>ja-no-redundant-expression</strong>
             </label>
+            <p className="form-text text-muted small">
+              A textlint rule that prohibits redundant expressions.
+              Redundant expressions are expressions that make sense even if they are omitted from the sentence.
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -106,6 +121,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="max-kanji-continuous-len">
               <strong>max-kanji-continuous-len</strong>
             </label>
+            <p className="form-text text-muted small">
+              {t('admin:app_setting.file_delivery_method_redirect_info')}
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -119,6 +137,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="max-ten">
               <strong>max-ten</strong>
             </label>
+            <p className="form-text text-muted small">
+              textlint rule is that limit maximum ten(、) count of sentence.
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -132,6 +153,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="no-double-negative-ja">
               <strong>no-double-negative-ja</strong>
             </label>
+            <p className="form-text text-muted small">
+              A textlint rule that detects double negation.
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -145,6 +169,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="no-doubled-conjunction">
               <strong>no-doubled-conjunction</strong>
             </label>
+            <p className="form-text text-muted small">
+              This module is a textlint plugin to check duplicated same conjunctions.
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -158,6 +185,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="no-doubled-joshi">
               <strong>no-doubled-joshi</strong>
             </label>
+            <p className="form-text text-muted small">
+              A textlint rule that checks that the same particle appears consecutively in one sentence.
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -171,6 +201,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="no-dropping-the-ra">
               <strong>no-dropping-the-ra</strong>
             </label>
+            <p className="form-text text-muted small">
+              A textlint rule that disallow to use Half-width kana.
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -184,6 +217,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="no-hankaku-kana">
               <strong>no-hankaku-kana</strong>
             </label>
+            <p className="form-text text-muted small">
+              A textlint rule that checks tari tari.
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -197,6 +233,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="prefer-tari-tari">
               <strong>prefer-tari-tari</strong>
             </label>
+            <p className="form-text text-muted small">
+              {t('admin:app_setting.file_delivery_method_redirect_info')}
+            </p>
           </div>
 
           <div className="row my-3">
@@ -227,6 +266,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="common-misspellings">
               <strong>common-misspellings</strong>
             </label>
+            <p className="form-text text-muted small">
+              {t('admin:app_setting.file_delivery_method_redirect_info')}
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -240,6 +282,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="max-comma">
               <strong>max-comma</strong>
             </label>
+            <p className="form-text text-muted small">
+              {t('admin:app_setting.file_delivery_method_redirect_info')}
+            </p>
           </div>
 
           <div className="custom-control custom-switch custom-checkbox-success">
@@ -253,6 +298,9 @@ export const EditorSettings: FC<Props> = () => {
             <label className="custom-control-label" htmlFor="sentence-length">
               <strong>sentence-length</strong>
             </label>
+            <p className="form-text text-muted small">
+              {t('admin:app_setting.file_delivery_method_redirect_info')}
+            </p>
           </div>
 
           <div className="row my-3">
