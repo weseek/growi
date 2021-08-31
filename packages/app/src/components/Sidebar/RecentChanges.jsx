@@ -21,6 +21,9 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 const logger = loggerFactory('growi:History');
 
 function LargePageItem({ page }) {
+  propTypes: {
+    page: PropTypes.any
+  };
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -74,7 +77,7 @@ function LargePageItem({ page }) {
   );
 }
 
-function SmallPageItem ({ page }) {
+function SmallPageItem({ page }) {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -201,7 +204,7 @@ class RecentChanges extends React.Component {
         <div className="grw-sidebar-content-body grw-recent-changes p-3">
           <ul className="list-group list-group-flush">
             {/* tentative */}
-            { recentlyUpdatedPages.map(page => <SmallPageItem key={page.id} page={page} />) }
+            { recentlyUpdatedPages.map(page => <LargePageItem key={page.id} page={page} />) }
           </ul>
         </div>
       </>
