@@ -69,11 +69,14 @@ class AdminHome extends React.Component {
           <div className="col-md-12">
             <h2 className="admin-setting-header">{t('admin:admin_top.bug_report')}</h2>
             <p>
-              <CopyToClipboard text={adminHomeContainer.generatePrefilledBugReport()} onCopy={() => adminHomeContainer.onCopyBugReport()}>
+              <CopyToClipboard
+                text={adminHomeContainer.generatePrefilledHostInformationMarkdown()}
+                onCopy={() => adminHomeContainer.onCopyPrefilledHostInformation()}
+              >
                 <button type="button" className="btn btn-primary">
                   {adminHomeContainer.state.copyState === adminHomeContainer.copyStateValues.DEFAULT
-                    ? t('admin:admin_top:copy_bug_report:default')
-                    : t('admin:admin_top:copy_bug_report:done')}
+                    ? t('admin:admin_top:copy_prefilled_host_information:default')
+                    : t('admin:admin_top:copy_prefilled_host_information:done')}
                 </button>
               </CopyToClipboard>{' '}
               {/* eslint-disable-next-line react/no-danger */}

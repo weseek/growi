@@ -72,9 +72,9 @@ export default class AdminHomeContainer extends Container {
   }
 
   /**
-   * used to set button text when copying bug report
+   * sets button text when copying system information
    */
-  onCopyBugReport() {
+  onCopyPrefilledHostInformation() {
     this.setState(prevState => ({
       ...prevState,
       copyState: this.copyStateValues.DONE,
@@ -89,15 +89,10 @@ export default class AdminHomeContainer extends Container {
   }
 
   /**
-   * generates bug report with prefilled system information
+   * generates prefilled host information as markdown
    */
-  generatePrefilledBugReport() {
-    return `Environment
-------------
-
-### Host
-
-| item     | version |
+  generatePrefilledHostInformationMarkdown() {
+    return `| item     | version |
 | ---      | --- |
 |OS        ||
 |GROWI     |${this.state.growiVersion}|
@@ -109,59 +104,7 @@ export default class AdminHomeContainer extends Container {
 
 [growi-docker-compose]: https://github.com/weseek/growi-docker-compose
 
-*(Accessing https://{GROWI_HOST}/admin helps you to fill in above versions)*
-
-
-### Client
-
-| item     | version |
-| ---      | --- |
-|OS        ||
-|browser   |x.y.z|
-
-
-
-How to reproduce? (再現手順)
----------------------------
-
-1. process 1
-1. process 2
-1. process 3
-    \`\`\`bash
-
-    \`\`\`
-
-1. process 4
-    \`\`\`bash
-
-    \`\`\`
-
-What happens? (症状)
----------------------
-
-- symptom 1
-- symptom 2
-
-\`\`\`
-Stack Trace
-\`\`\`
-
-
-
-What is the expected result? (期待される動作)
--------------------------------------------
-
--
--
-
-
-
-Note
-----
-
--
--
-`;
+*(Accessing https://{GROWI_HOST}/admin helps you to fill in above versions)*`;
   }
 
 }
