@@ -203,7 +203,7 @@ export default class EditorContainer extends Container {
    */
   async retrieveEditorSettings() {
     const res = await this.appContainer.apiv3.get('/personal-setting');
-    const { isTextlintEnabled } = res.data.currentUser.editorCurrentSettings;
+    const isTextlintEnabled = res.data.currentUser.editorCurrentSettings?.isTextlintEnabled;
     this.setState({
       isTextlintEnabled,
     });
