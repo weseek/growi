@@ -240,21 +240,20 @@ export class SlackCtrl {
     }
 
     const payload = JSON.parse(body.payload);
-
-    const callBackId = payload?.view?.callback_id;
+    const callbackId = payload?.view?.callback_id;
     const actionId = payload?.actions?.[0].action_id;
 
     const privateMeta = JSON.parse(payload?.view?.private_metadata);
     const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
 
-    const growiCommandType = actionId?.split(':')[0] || callBackId?.split(':')[0];
+    const growiCommandType = actionId?.split(':')[0] || callbackId?.split(':')[0];
 
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
     // register
-    if (callBackId === 'register') {
+    if (callbackId === 'register') {
       try {
         await this.registerService.insertOrderRecord(installation, authorizeResult.botToken, payload);
       }
@@ -271,13 +270,13 @@ export class SlackCtrl {
     }
 
     // unregister
-    if (callBackId === 'unregister') {
+    if (callbackId === 'unregister') {
       await this.unregisterService.unregister(installation, authorizeResult, payload);
       return;
     }
 
     // forward to GROWI server
-    if (callBackId === 'select_growi') {
+    if (callbackId === 'select_growi') {
       const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
       return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
@@ -329,11 +328,11 @@ export class SlackCtrl {
         const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
         console.log(commandRegExp);
         console.log(actionId);
-        console.log(callBackId);
+        console.log(callbackId);
 
 
         // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
-        if (!commandRegExp.test(actionId) && !commandRegExp.test(callBackId)) {
+        if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
           return;
         }
 
