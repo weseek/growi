@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 type Props = {
 }
 
-export const JapaneseTextLintRuleSettings: FC<Props> = () => {
+export const ClickJapaneseTextLintRuleSettingsHandler: FC<Props> = () => {
   return (
     <></>
   );
 };
 
-export const WithoutJapaneseTextLintRulesSettings: FC<Props> = () => {
+export const ClickCommonTextLintRulesSettingsHandler: FC<Props> = () => {
   return (
     <></>
   );
@@ -138,7 +138,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>max-ten</strong>
             </label>
             <p className="form-text text-muted small">
-              textlint rule is that limit maximum ten(、) count of sentence.
+              Textlint rule is that limit maximum ten(、) count of sentence.
             </p>
           </div>
 
@@ -283,7 +283,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>max-comma</strong>
             </label>
             <p className="form-text text-muted small">
-              textlint rule is that limit maximum ten(、) count of sentence. <br />
+              Textlint rule is that limit maximum ten(、) count of sentence. <br />
               Default: 4
             </p>
           </div>
