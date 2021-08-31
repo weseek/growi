@@ -8,13 +8,16 @@ module.exports = function(crowi, app) {
   };
 
   actions.resetPassword = async function(req, res) {
-    const { error, passwordResetOrder } = req;
-
-    if (error != null) {
-      return res.render('forgot-password/error', { key: error.key });
-    }
-
+    const { passwordResetOrder } = req;
     return res.render('reset-password', { email: passwordResetOrder.email });
+  };
+
+  // middleware to handle error
+  actions.handleHttpErrosMiddleware = (error, req, res, next) => {
+    if (error != null) {
+      return res.render('forgot-password/error', { key: error.code });
+    }
+    next();
   };
 
   return actions;

@@ -1,3 +1,5 @@
+import express from 'express';
+
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
 const rateLimit = require('express-rate-limit');
@@ -185,8 +187,10 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
 
-  app.get('/forgot-password', forgotPassword.forgotPassword);
-  app.get('/forgot-password/:token'      ,apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword);
+  app.use('/forgot-password', express.Router()
+    .get('/', forgotPassword.forgotPassword)
+    .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
+    .use(forgotPassword.handleHttpErrosMiddleware));
 
   app.get('/share/:linkId', page.showSharedPage);
 

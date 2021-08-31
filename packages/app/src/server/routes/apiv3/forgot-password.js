@@ -1,4 +1,5 @@
 import rateLimit from 'express-rate-limit';
+import ErrorV3 from '~/server/models/vo/error-apiv3';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
@@ -79,12 +80,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/', apiLimiter, csrf, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, async(req, res) => {
-
-    if (req.error != null) {
-      return res.apiv3Err(req.error.message);
-    }
-
+  router.put('/', injectResetOrderByTokenMiddleware, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
@@ -109,6 +105,14 @@ module.exports = (crowi) => {
       logger.error(err);
       return res.apiv3Err('update-password-failed');
     }
+  });
+
+  // middleware to handle error
+  router.use((error, req, res, next) => {
+    if (error != null) {
+      return res.apiv3Err(new ErrorV3(error.message, error.code));
+    }
+    next();
   });
 
   return router;
