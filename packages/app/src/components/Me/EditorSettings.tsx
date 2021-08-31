@@ -35,8 +35,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="ja-hiragana-keishikimeishi"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="ja-hiragana-keishikimeishi">
               <strong>ja-hiragana-keishikimeishi</strong>
@@ -48,8 +48,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="ja-no-abusage"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="ja-no-abusage">
               <strong>ja-no-abusage</strong>
@@ -61,8 +61,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="ja-no-inappropriate-words"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="ja-no-inappropriate-words">
               <strong>ja-no-inappropriate-words</strong>
@@ -74,8 +74,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="ja-no-mixed-period"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="ja-no-mixed-period">
               <strong>ja-no-mixed-period</strong>
@@ -87,8 +87,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="ja-no-redundant-expression"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="ja-no-redundant-expression">
               <strong>ja-no-redundant-expression</strong>
@@ -100,8 +100,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="max-kanji-continuous-len"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="max-kanji-continuous-len">
               <strong>max-kanji-continuous-len</strong>
@@ -113,8 +113,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="max-ten"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="max-ten">
               <strong>max-ten</strong>
@@ -126,8 +126,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="no-double-negative-ja"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="no-double-negative-ja">
               <strong>no-double-negative-ja</strong>
@@ -139,8 +139,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="no-doubled-conjunction"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="no-doubled-conjunction">
               <strong>no-doubled-conjunction</strong>
@@ -152,8 +152,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="no-doubled-joshi"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="no-doubled-joshi">
               <strong>no-doubled-joshi</strong>
@@ -165,8 +165,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="no-dropping-the-ra"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="no-dropping-the-ra">
               <strong>no-dropping-the-ra</strong>
@@ -178,8 +178,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="no-hankaku-kana"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="no-hankaku-kana">
               <strong>no-hankaku-kana</strong>
@@ -191,8 +191,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="prefer-tari-tari"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="prefer-tari-tari">
               <strong>prefer-tari-tari</strong>
@@ -221,8 +221,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="common-misspellings"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="common-misspellings">
               <strong>common-misspellings</strong>
@@ -234,8 +234,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="max-comma"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="max-comma">
               <strong>max-comma</strong>
@@ -247,8 +247,8 @@ export const EditorSettings: FC<Props> = () => {
               type="checkbox"
               className="custom-control-input"
               id="sentence-length"
-              // checked={adminCustomizeContainer.state.isHighlightJsStyleBorderEnabled}
-              // onChange={() => { adminCustomizeContainer.switchHighlightJsStyleBorder() }}
+              // checked={}
+              // onChange={}
             />
             <label className="custom-control-label" htmlFor="sentence-length">
               <strong>sentence-length</strong>
