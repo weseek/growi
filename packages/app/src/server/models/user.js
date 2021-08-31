@@ -35,20 +35,6 @@ module.exports = function(crowi) {
     userEvent.on('activated', userEvent.onActivated);
   }
 
-  const editorCurrentSettingsSchema = new mongoose.Schema({
-    isTextlintEnabled: { type: Boolean, default: true },
-    commonTextlintRules: {
-      type: [
-        { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
-      ],
-    },
-    japaneseTextlintRules: {
-      type: [
-        { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
-      ],
-    },
-  });
-
   const userSchema = new mongoose.Schema({
     userId: String,
     image: String,
@@ -80,7 +66,6 @@ module.exports = function(crowi) {
     lastLoginAt: { type: Date },
     admin: { type: Boolean, default: 0, index: true },
     isInvitationEmailSended: { type: Boolean, default: false },
-    editorCurrentSettings: editorCurrentSettingsSchema,
   }, {
     toObject: {
       transform: (doc, ret, opt) => {
