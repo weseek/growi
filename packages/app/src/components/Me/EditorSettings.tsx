@@ -24,7 +24,7 @@ export const EditorSettings: FC<Props> = () => {
 
   return (
     <>
-      <h2 className="border-bottom my-4">Common Settings</h2>
+      <h2 className="border-bottom my-4">{t('editor_settings.common_settings.common_settings')}</h2>
 
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
@@ -41,7 +41,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>common-misspellings</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.
+              {t('editor_settings.common_settings.common_misspellings')}
             </p>
           </div>
 
@@ -57,8 +57,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>max-comma</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rule is that limit maximum ten(、) count of sentence. <br />
-              Default: 4
+              {t('editor_settings.common_settings.max_comma')}
             </p>
           </div>
 
@@ -74,7 +73,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>sentence-length</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules that limit Maximum Length of Sentence.
+              {t('editor_settings.common_settings.sentence_length')}
             </p>
           </div>
 
@@ -107,7 +106,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>ja-hiragana-keishikimeishi</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules to check easy-to-read Keishikimeishi(pronouns) written in Hiragana than Kanji.
+              {t('editor_settings.japanese_settings.ja_hiragana_keishikimeishi')}
             </p>
           </div>
 
@@ -123,7 +122,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>ja-no-abusage</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules to check for common misuse
+              {t('editor_settings.japanese_settings.ja_no_abusage')}
             </p>
           </div>
 
@@ -139,7 +138,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>ja-no-inappropriate-words</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules to check for inappropriate expressions
+              {t('editor_settings.japanese_settings.ja_no_inappropriate_words')}
             </p>
           </div>
 
@@ -155,7 +154,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>ja-no-mixed-period</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules to check that a paragraph always has a punctuation mark at the end
+              {t('editor_settings.japanese_settings.ja_no_mixed_period')}
             </p>
           </div>
 
@@ -171,8 +170,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>ja-no-redundant-expression</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules that prohibits redundant expressions.
-              Redundant expressions are expressions that make sense even if they are omitted from the sentence.
+              {t('editor_settings.japanese_settings.ja_no_redundant_expression')}
             </p>
           </div>
 
@@ -188,7 +186,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>max-kanji-continuous-len</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules that limits the maximum number of consecutive Kanji.
+              {t('editor_settings.japanese_settings.max_kanji_continuous_len')}
             </p>
           </div>
 
@@ -204,7 +202,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>max-ten</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rule is that limit maximum ten(、) count of sentence.
+              {t('editor_settings.japanese_settings.max_ten')}
             </p>
           </div>
 
@@ -220,7 +218,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>no-double-negative-ja</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules that detects double negation.
+              {t('editor_settings.japanese_settings.no_double_negative_ja')}
             </p>
           </div>
 
@@ -236,7 +234,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>no-doubled-conjunction</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules to check duplicated same conjunctions.
+              {t('editor_settings.japanese_settings.no_doubled_conjunction')}
             </p>
           </div>
 
@@ -252,7 +250,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>no-doubled-joshi</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules that checks that the same particle appears consecutively in one sentence.
+              {t('editor_settings.japanese_settings.no_doubled_joshi')}
             </p>
           </div>
 
@@ -268,7 +266,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>no-dropping-the-ra</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules that detects the word dropping the ra.
+              {t('editor_settings.japanese_settings.no_dropping_the_ra')}
             </p>
           </div>
 
@@ -284,7 +282,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>no-hankaku-kana</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules that disallow to use Half-width kana.
+              {t('editor_settings.japanese_settings.no_hankaku_kana')}
             </p>
           </div>
 
@@ -300,7 +298,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>prefer-tari-tari</strong>
             </label>
             <p className="form-text text-muted small">
-              Textlint rules that checks tari tari.
+              {t('editor_settings.japanese_settings.prefer_tari_tari')}
             </p>
           </div>
 
