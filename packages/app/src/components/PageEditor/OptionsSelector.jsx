@@ -12,10 +12,6 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { toastError } from '~/client/util/apiNotification';
 
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:OptionSelector');
-
 
 export const defaultEditorOptions = {
   theme: 'elegant',
