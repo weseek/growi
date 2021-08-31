@@ -308,10 +308,10 @@ export class SlackCtrl {
     let isPermitted = false;
     let permission:boolean|string[];
     await Promise.all(relations.map(async(relation) => {
-      const single = Object.keys(relation.supportedCommandsForSingleUse);
-      const broad = Object.keys(relation.supportedCommandsForBroadcastUse);
+      const singleUse = Object.keys(relation.supportedCommandsForSingleUse);
+      const broadCastUse = Object.keys(relation.supportedCommandsForBroadcastUse);
 
-      [...single, ...broad].forEach(async(commandName) => {
+      [...singleUse, ...broadCastUse].forEach(async(commandName) => {
         permission = relation.supportedCommandsForSingleUse[commandName];
 
         if (permission == null) {
