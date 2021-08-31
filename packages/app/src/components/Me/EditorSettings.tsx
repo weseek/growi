@@ -89,7 +89,7 @@ export const EditorSettings: FC<Props> = () => {
       </div>
 
 
-      <h2 className="border-bottom my-4">Japanese Settings</h2>
+      <h2 className="border-bottom my-4">{t('editor_settings.japanese_settings.japanese_settings')}</h2>
 
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
