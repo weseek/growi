@@ -270,7 +270,7 @@
       "ja_no_inappropriate_words": "Textlint rules to check for inappropriate expressions",
       "ja_no_mixed_period": "Textlint rules to check that a paragraph always has a punctuation mark at the end.",
       "ja_no_redundant_expression": "Textlint rules that prohibits redundant expressions. Redundant expressions are expressions that make sense even if they are omitted from the sentence.",
-      "max_kanji_continuous_len": "Textlint rules that limits the maximum number of consecutive Kanji.",
+      "max_kanji_continuous_len": "Textlint rules that limits the maximum number of consecutive Kanji. Default: 5",
       "max_ten": "Textlint rule is that limit maximum ten(、) count of sentence.",
       "no_double_negative_ja": "Textlint rules that detects double negation.",
       "no_doubled_conjunction": "Textlint rules to check duplicated same conjunctions.",

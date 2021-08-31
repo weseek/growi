@@ -252,7 +252,7 @@
       "ja_no_inappropriate_words": "Textlint 规则来检查不适当的表达",
       "ja_no_mixed_period": "Textlint 规则用于检查段落末尾是否总是有标点符号。",
       "ja_no_redundant_expression": "禁止冗余表达式的 Textlint 规则。冗余表达式是即使从句子中省略也有意义的表达式。",
-      "max_kanji_continuous_len": "限制连续汉字的最大数量的 Textlint 规则。",
+      "max_kanji_continuous_len": "限制连续汉字的最大数量的 Textlint 规则。默认：5。",
       "max_ten": "Textlint 规则是限制句子的最大十（、）个计数。",
       "no_double_negative_ja": "检测双重否定的 Textlint 规则。",
       "no_doubled_conjunction": "Textlint 规则来检查重复的相同连词。",
