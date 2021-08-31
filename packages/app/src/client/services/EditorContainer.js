@@ -202,18 +202,11 @@ export default class EditorContainer extends Container {
    * Retrieve Editor Settings
    */
   async retrieveEditorSettings() {
-    try {
-      const { data } = await this.appContainer.apiv3.get('/personal-setting');
-      const { isTextlintEnabled } = data.currentUser.editorCurrentSettings;
-      this.setState({
-        isTextlintEnabled,
-      });
-      return { isTextlintEnabled };
-    }
-    catch (error) {
-      logger.error('failed to retrieve editor settings', error);
-      // toastError(error);
-    }
+    const res = await this.appContainer.apiv3.get('/personal-setting');
+    const { isTextlintEnabled } = res.data.currentUser.editorCurrentSettings;
+    this.setState({
+      isTextlintEnabled,
+    });
   }
 
 }
