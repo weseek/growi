@@ -140,9 +140,7 @@ class OptionsSelector extends React.Component {
 
   async switchTextlintEnabledHandler() {
     const { editorContainer } = this.props;
-    console.log('isTextlintEnabled-before-click', editorContainer.state.isTextlintEnabled);
     editorContainer.setState({ isTextlintEnabled: !editorContainer.state.isTextlintEnabled });
-    console.log('isTextlintEnabled-after-click', editorContainer.state.isTextlintEnabled);
     this.updateIsTextlintEnabledToDB();
   }
 
@@ -325,7 +323,6 @@ class OptionsSelector extends React.Component {
   renderIsTextlintEnabledMenuItem() {
     const { editorContainer } = this.props;
     const isActive = editorContainer.state.isTextlintEnabled;
-    console.log('isActive', isActive);
 
     const iconClasses = ['text-info'];
     if (isActive) {

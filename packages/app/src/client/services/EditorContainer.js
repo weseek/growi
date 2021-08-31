@@ -205,7 +205,6 @@ export default class EditorContainer extends Container {
     try {
       const { data } = await this.appContainer.apiv3.get('/personal-setting');
       const { isTextlintEnabled } = data.currentUser.editorCurrentSettings;
-      console.log('isTextlintEnabled-fetch', isTextlintEnabled);
       this.setState({
         isTextlintEnabled,
       });
