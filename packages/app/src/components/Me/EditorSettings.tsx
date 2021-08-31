@@ -24,6 +24,72 @@ export const EditorSettings: FC<Props> = () => {
 
   return (
     <>
+      <h2 className="border-bottom my-4">Common Settings</h2>
+
+      <div className="form-group row">
+        <div className="offset-md-3 col-md-6 text-left">
+
+          <div className="custom-control custom-switch custom-checkbox-success">
+            <input
+              type="checkbox"
+              className="custom-control-input"
+              id="common-misspellings"
+              // checked={}
+              // onChange={}
+            />
+            <label className="custom-control-label" htmlFor="common-misspellings">
+              <strong>common-misspellings</strong>
+            </label>
+            <p className="form-text text-muted small">
+              Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.
+            </p>
+          </div>
+
+          <div className="custom-control custom-switch custom-checkbox-success">
+            <input
+              type="checkbox"
+              className="custom-control-input"
+              id="max-comma"
+              // checked={}
+              // onChange={}
+            />
+            <label className="custom-control-label" htmlFor="max-comma">
+              <strong>max-comma</strong>
+            </label>
+            <p className="form-text text-muted small">
+              Textlint rule is that limit maximum ten(、) count of sentence. <br />
+              Default: 4
+            </p>
+          </div>
+
+          <div className="custom-control custom-switch custom-checkbox-success">
+            <input
+              type="checkbox"
+              className="custom-control-input"
+              id="sentence-length"
+              // checked={}
+              // onChange={}
+            />
+            <label className="custom-control-label" htmlFor="sentence-length">
+              <strong>sentence-length</strong>
+            </label>
+            <p className="form-text text-muted small">
+              Textlint rules that limit Maximum Length of Sentence.
+            </p>
+          </div>
+
+          <div className="row my-3">
+            <div className="offset-4 col-5">
+              <button type="button" className="btn btn-primary">
+                {t('Update')}
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
       <h2 className="border-bottom my-4">Japanese Settings</h2>
 
       <div className="form-group row">
@@ -250,70 +316,6 @@ export const EditorSettings: FC<Props> = () => {
       </div>
 
 
-      <h2 className="border-bottom my-4">Common Settings</h2>
-
-      <div className="form-group row">
-        <div className="offset-md-3 col-md-6 text-left">
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="common-misspellings"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="common-misspellings">
-              <strong>common-misspellings</strong>
-            </label>
-            <p className="form-text text-muted small">
-              Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="max-comma"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="max-comma">
-              <strong>max-comma</strong>
-            </label>
-            <p className="form-text text-muted small">
-              Textlint rule is that limit maximum ten(、) count of sentence. <br />
-              Default: 4
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="sentence-length"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="sentence-length">
-              <strong>sentence-length</strong>
-            </label>
-            <p className="form-text text-muted small">
-              Textlint rules that limit Maximum Length of Sentence.
-            </p>
-          </div>
-
-          <div className="row my-3">
-            <div className="offset-4 col-5">
-              <button type="button" className="btn btn-primary">
-                {t('Update')}
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </div>
     </>
   );
 };
