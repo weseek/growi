@@ -84,7 +84,10 @@ module.exports = (crowi) => {
     let isPermitted = false;
     [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
       // boolean or string[]
-      const permission = permissionsForBroadcastUseCommands.get(commandName);
+      let permission = permissionsForBroadcastUseCommands.get(commandName);
+      if (permission === undefined) {
+        permission = permissionsForSingleUseCommands.get(commandName);
+      }
 
       // ex. search OR search:handlerName
       const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
