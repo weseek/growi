@@ -260,7 +260,7 @@
     "common_settings": {
       "common_settings": "Common Settings",
       "common_misspellings": "Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.",
-      "max_comma": "Textlint rule is that limit maximum ten(、) count of sentence. <br />Default: 4",
+      "max_comma": "Textlint rule is that limit maximum ten(、) count of sentence. Default: 4",
       "sentence_length": "Textlint rules that limit Maximum Length of Sentence."
       },
     "japanese_settings": {

@@ -263,7 +263,7 @@
     "common_settings": {
       "common_settings": "共通設定",
       "common_misspellings": "ウィキペディアから一般的なスペルミスを見つけるためのTextlintルールです。",
-      "max_comma": "文の読点（、）を最大10個に制限するTextlintのルールです。 <br />初期値: 4",
+      "max_comma": "文の読点（、）を最大10個に制限するTextlintのルールです。初期値: 4",
       "sentence_length": "文の最大文字数を制限するTextlintルールです。"
       },
     "japanese_settings": {

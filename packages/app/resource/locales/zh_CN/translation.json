@@ -242,7 +242,7 @@
     "common_settings": {
       "common_settings": "常用设置",
       "common_misspellings": "从 Wikipedia 中查找常见拼写错误的 Textlint 规则：常见拼写错误列表。",
-      "max_comma": "Textlint 规则是限制句子的最大十（、）个计数。 <br />默认：4",
+      "max_comma": "Textlint 规则是限制句子的最大十（、）个计数。默认：4",
       "sentence_length": "限制最大句子长度的 Textlint 规则。"
       },
     "japanese_settings": {
