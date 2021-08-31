@@ -71,22 +71,35 @@ export class RelationsService {
     if (syncedRelation == null) {
       return false;
     }
+    console.log(growiCommandType, 74);
 
-    const boolOrArrayString = relation.supportedCommandsForSingleUse[growiCommandType];
-    console.log(boolOrArrayString);
+    const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
 
-    if (boolOrArrayString == null) {
+    // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands
+    if (!commandRegExp.test(growiCommandType)) {
+      console.log(209);
+      return false;
+    }
+    console.log(relation.supportedCommandsForSingleUse, 83);
+    console.log(relation.supportedCommandsForSingleUse[growiCommandType], 84);
+
+    const permission = relation.supportedCommandsForSingleUse[growiCommandType];
+    console.log(permission, 76);
+
+    if (permission == null) {
+      console.log(88);
+
       return false;
     }
     console.log(81, channelName);
 
-    if (Array.isArray(boolOrArrayString)) {
+    if (Array.isArray(permission)) {
 
-      return boolOrArrayString.includes(channelName);
+      return permission.includes(channelName);
     }
     console.log(84);
 
-    return boolOrArrayString;
+    return permission;
   }
 
   async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
@@ -94,17 +107,30 @@ export class RelationsService {
     if (syncedRelation == null) {
       return false;
     }
-    const boolOrArrayString = relation.supportedCommandsForBroadcastUse[growiCommandType];
 
-    if (boolOrArrayString == null) {
+    const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
+
+    // skip this forEach loop if the requested command is not in permissionsForSingleUseCommandskey
+    if (!commandRegExp.test(growiCommandType)) {
+      console.log(183);
+
+      return false;
+    }
+    console.log(119);
+
+    const permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
+    console.log(permission);
+
+
+    if (permission == null) {
       return false;
     }
 
-    if (Array.isArray(boolOrArrayString)) {
-      return boolOrArrayString.includes(channelName);
+    if (Array.isArray(permission)) {
+      return permission.includes(channelName);
     }
 
-    return boolOrArrayString;
+    return permission;
   }
 
 }

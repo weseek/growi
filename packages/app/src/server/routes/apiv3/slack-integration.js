@@ -253,7 +253,6 @@ module.exports = (crowi) => {
   });
 
   router.post('/proxied/interactions', verifyAccessTokenFromProxy, /* checkCommandPermission, */ async(req, res) => {
-    console.log(256);
     return handleInteractions(req, res);
   });
 

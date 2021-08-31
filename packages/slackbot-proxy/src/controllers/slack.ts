@@ -171,11 +171,15 @@ export class SlackCtrl {
     const baseDate = new Date();
 
     const relationsForSingleUse:RelationMock[] = [];
-    // console.log(body);
 
     await Promise.all(relations.map(async(relation) => {
+      console.log(176);
+
       const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
+
       if (isSupported) {
+        console.log(179);
+
         return relationsForSingleUse.push(relation);
       }
     }));
@@ -192,7 +196,9 @@ export class SlackCtrl {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(
         relation, growiCommand.growiCommandType, body.channel_name, baseDate,
       );
+
       if (isSupported) {
+        console.log(196);
         relationsForBroadcastUse.push(relation);
       }
     }));
@@ -202,6 +208,8 @@ export class SlackCtrl {
      */
     if (relationsForBroadcastUse.length > 0) {
       body.growiUrisForBroadcastUse = relationsForBroadcastUse.map(v => v.growiUri);
+      console.log(body.growiUrisForBroadcastUse, 211);
+
       return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
@@ -242,8 +250,12 @@ export class SlackCtrl {
     const payload = JSON.parse(body.payload);
     const callbackId = payload?.view?.callback_id;
     const actionId = payload?.actions?.[0].action_id;
+    let privateMeta:any;
 
-    const privateMeta = JSON.parse(payload?.view?.private_metadata);
+    if (payload.view != null) {
+      privateMeta = JSON.parse(payload?.view?.private_metadata);
+    }
+
     const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -313,17 +325,12 @@ export class SlackCtrl {
 
         if (Array.isArray(permission)) {
           isPermitted = permission.includes(channelName);
-
         }
 
         // ex. search OR search:handlerName
         const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
-        console.log(commandRegExp);
-        console.log(actionId);
-        console.log(callbackId);
 
-
-        // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
+        // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommandskey
         if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
           return;
         }
@@ -350,9 +357,6 @@ export class SlackCtrl {
         /*
          * forward to GROWI server
          */
-        console.log(payload);
-        console.log('--------');
-
 
         try {
         // generate API URL
@@ -370,8 +374,6 @@ export class SlackCtrl {
         }
 
       });
-
-
     }));
 
   }
