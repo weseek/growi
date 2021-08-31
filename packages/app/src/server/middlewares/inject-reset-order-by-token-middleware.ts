@@ -1,24 +1,27 @@
-const createError = require('http-errors');
+import { NextFunction, Request, Response } from 'express';
+import createError from 'http-errors';
 
-module.exports = (crowi, app) => {
-  const PasswordResetOrder = crowi.model('PasswordResetOrder');
+import PasswordResetOrder, { IPasswordResetOrder } from '../models/password-reset-order';
 
-  return async(req, res, next) => {
-    const token = req.params.token || req.body.token;
+export type ReqWithPasswordResetOrder = Request & {
+  passwordResetOrder: IPasswordResetOrder,
+};
 
-    if (token == null) {
-      return next(createError(400, 'Token not found', { code: 'token-not-found' }));
-    }
+export default async(req: ReqWithPasswordResetOrder, res: Response, next: NextFunction): Promise<void> => {
+  const token = req.params.token || req.body.token;
 
-    const passwordResetOrder = await PasswordResetOrder.findOne({ token });
+  if (token == null) {
+    return next(createError(400, 'Token not found', { code: 'token-not-found' }));
+  }
 
-    // check if the token is valid
-    if (passwordResetOrder == null || passwordResetOrder.isExpired() || passwordResetOrder.isRevoked) {
-      return next(createError(400, 'passwordResetOrder is null or expired or revoked', { code: 'password-reset-order-is-not-appropriate' }));
-    }
+  const passwordResetOrder = await PasswordResetOrder.findOne({ token });
 
-    req.passwordResetOrder = passwordResetOrder;
+  // check if the token is valid
+  if (passwordResetOrder == null || passwordResetOrder.isExpired() || passwordResetOrder.isRevoked) {
+    return next(createError(400, 'passwordResetOrder is null or expired or revoked', { code: 'password-reset-order-is-not-appropriate' }));
+  }
 
-    return next();
-  };
+  req.passwordResetOrder = passwordResetOrder;
+
+  return next();
 };

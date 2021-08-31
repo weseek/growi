@@ -1,5 +1,9 @@
 import express from 'express';
 
+import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
+
+import * as forgotPassword from './forgot-password';
+
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
 const rateLimit = require('express-rate-limit');
@@ -23,7 +27,6 @@ module.exports = function(crowi, app) {
   const adminRequired = require('../middlewares/admin-required')(crowi);
   const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const csrf = require('../middlewares/csrf')(crowi);
-  const injectResetOrderByTokenMiddleware = require('../middlewares/inject-reset-order-by-token-middleware')(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const form = require('../form');
@@ -39,7 +42,6 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
-  const forgotPassword = require('./forgot-password')(crowi, app);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 

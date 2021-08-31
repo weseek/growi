@@ -1,5 +1,8 @@
 import rateLimit from 'express-rate-limit';
+
+import PasswordResetOrder from '~/server/models/password-reset-order';
 import ErrorV3 from '~/server/models/vo/error-apiv3';
+import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
@@ -12,12 +15,10 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   const { appService, mailService, configManager } = crowi;
-  const PasswordResetOrder = crowi.model('PasswordResetOrder');
   const User = crowi.model('User');
   const path = require('path');
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-  const injectResetOrderByTokenMiddleware = require('../../middlewares/inject-reset-order-by-token-middleware')(crowi);
 
   const validator = {
     password: [
