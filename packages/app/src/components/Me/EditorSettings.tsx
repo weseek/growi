@@ -202,7 +202,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>no-dropping-the-ra</strong>
             </label>
             <p className="form-text text-muted small">
-              A textlint rule that disallow to use Half-width kana.
+              A textlint rule that detects the word dropping the ra.
             </p>
           </div>
 
@@ -218,7 +218,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>no-hankaku-kana</strong>
             </label>
             <p className="form-text text-muted small">
-              A textlint rule that checks tari tari.
+              A textlint rule that disallow to use Half-width kana.
             </p>
           </div>
 
@@ -234,7 +234,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>prefer-tari-tari</strong>
             </label>
             <p className="form-text text-muted small">
-              {t('admin:app_setting.file_delivery_method_redirect_info')}
+              A textlint rule that checks tari tari.
             </p>
           </div>
 
