@@ -68,7 +68,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const { User, ExternalAccount } = crowi.models;
+  const { User, ExternalAccount, EditorSettings } = crowi.models;
 
   const validator = {
     personal: [
@@ -482,11 +482,14 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/editor-settings', async(req, res) => {
     try {
-      const user = await User.findOne({ _id: req.user.id });
-      user.editorCurrentSettings = req.body;
-      const { editorCurrentSettings } = await user.save();
+      // const user = await User.findOne({ _id: req.user.id });
+      console.log(EditorSettings);
+      console.log(User);
+      EditorSettings.isTextlintEnabled = req.body.isTextlintEnabled;
+      const { editorCurrentSettings } = await EditorSettings.save();
       return res.apiv3({ editorCurrentSettings });
     }
     catch (err) {
