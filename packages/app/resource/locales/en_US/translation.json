@@ -255,6 +255,31 @@
       "This tree": "Only children of this tree"
     }
   },
+  "editor_settings": {
+    "editor_settings": "Editor Settings",
+    "common_settings": {
+      "common_settings": "Common Settings",
+      "common-misspellings": "Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.",
+      "max-comma": "Textlint rule is that limit maximum ten(、) count of sentence. <br />Default: 4",
+      "sentence-length": "Textlint rules that limit Maximum Length of Sentence."
+      },
+    "japanese_settings": {
+      "japanese_settings": "Japanese Settings",
+      "ja-no-abusage": "Textlint rules to check for common misuse.",
+      "ja-hiragana-keishikimeishi": "Textlint rules to check easy-to-read Keishikimeishi(pronouns) written in Hiragana than Kanji.",
+      "ja-no-inappropriate-words": "Textlint rules to check for inappropriate expressions",
+      "ja-no-mixed-period": "Textlint rules to check that a paragraph always has a punctuation mark at the end.",
+      "ja-no-redundant-expression": "Textlint rules that prohibits redundant expressions. Redundant expressions are expressions that make sense even if they are omitted from the sentence.",
+      "max-kanji-continuous-len": "Textlint rules that limits the maximum number of consecutive Kanji.",
+      "max-ten": "Textlint rule is that limit maximum ten(、) count of sentence.",
+      "no-double-negative-ja": "Textlint rules that detects double negation.",
+      "no-doubled-conjunction": "Textlint rules to check duplicated same conjunctions.",
+      "no-doubled-joshi": "Textlint rules that checks that the same particle appears consecutively in one sentence.",
+      "no-dropping-the-ra": "Textlint rules that detects the word dropping the ra.",
+      "no-hankaku-kana": "Textlint rules that disallow to use Half-width kana.",
+      "prefer-tari-tari": "Textlint rules that checks tari tari."
+    }
+  },
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",
