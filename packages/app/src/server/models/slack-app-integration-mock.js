@@ -9,8 +9,8 @@ const permittedChannelsForEachCommandSchema = new mongoose.Schema({
 const schema = new mongoose.Schema({
   tokenGtoP: { type: String, required: true, unique: true },
   tokenPtoG: { type: String, required: true, unique: true },
-  supportedCommandsForBroadcastUse: Map,
-  supportedCommandsForSingleUse: Map,
+  permissionsForBroadcastUseCommands: Map,
+  permissionsForSingleUseCommands: Map,
 });
 
 class SlackAppIntegrationMock {

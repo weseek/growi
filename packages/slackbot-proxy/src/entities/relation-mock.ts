@@ -36,10 +36,10 @@ export class RelationMock {
   growiUri: string;
 
   @Column({ type: 'json' })
-  permissionSettingsForBroadcastUseCommands: PermissionSettingsInterface;
+  permissionsForBroadcastUseCommands: PermissionSettingsInterface;
 
   @Column({ type: 'json' })
-  permissionSettingsForSingleUseCommands: PermissionSettingsInterface;
+  permissionsForSingleUseCommands: PermissionSettingsInterface;
 
   @CreateDateColumn()
   expiredAtCommands: Date;
