@@ -24,7 +24,7 @@ export const EditorSettings: FC<Props> = () => {
 
   return (
     <>
-      <h4 className="mt-4">Japanese Settings</h4>
+      <h2 className="border-bottom my-4">Japanese Settings</h2>
 
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
@@ -250,7 +250,7 @@ export const EditorSettings: FC<Props> = () => {
       </div>
 
 
-      <h4 className="mt-4">Common Settings</h4>
+      <h2 className="border-bottom my-4">Common Settings</h2>
 
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
