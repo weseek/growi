@@ -74,8 +74,8 @@ function LargePageItem({ page }) {
   );
 }
 LargePageItem.propTypes = {
-  page: PropTypes.any
-}
+  page: PropTypes.any,
+};
 
 function SmallPageItem({ page }) {
   const dPagePath = new DevidedPagePath(page.path, false, true);
@@ -118,6 +118,9 @@ function SmallPageItem({ page }) {
     </li>
   );
 }
+SmallPageItem.propTypes = {
+  page: PropTypes.any,
+};
 class RecentChanges extends React.Component {
 
   static propTypes = {
