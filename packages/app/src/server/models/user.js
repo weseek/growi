@@ -41,30 +41,10 @@ module.exports = function(crowi) {
       type: [
         { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
       ],
-      default: [
-        { name: 'common-misspellings', isEnabled: true },
-        { name: 'max-comma', isEnabled: true },
-        { name: 'sentence-length', isEnabled: true },
-      ],
     },
     japaneseTextlintRules: {
       type: [
         { name: { type: String }, options: { type: Object }, isEnabled: { type: Boolean } },
-      ],
-      default: [
-        { name: 'ja-hiragana-keishikimeishi', isEnabled: true },
-        { name: 'ja-no-abusage', isEnabled: true },
-        { name: 'ja-no-inappropriate-words', isEnabled: true },
-        { name: 'ja-no-mixed-period', isEnabled: true },
-        { name: 'ja-no-redundant-expression', isEnabled: true },
-        { name: 'max-kanji-continuous-len', isEnabled: true },
-        { name: 'max-ten', isEnabled: true },
-        { name: 'no-double-negative-ja', isEnabled: true },
-        { name: 'no-doubled-conjunction', isEnabled: true },
-        { name: 'no-doubled-joshi', isEnabled: true },
-        { name: 'no-dropping-the-ra', isEnabled: true },
-        { name: 'no-hankaku-kana', isEnabled: true },
-        { name: 'prefer-tari-tari', isEnabled: true },
       ],
     },
   });

@@ -160,25 +160,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
     // TODO: Get configs from db
     this.isTextlintEnabled = true;
-
-    this.textlintConfig = [
-      { name: 'common-misspellings' },
-      { name: 'ja-hiragana-keishikimeishi' },
-      { name: 'ja-no-abusage' },
-      { name: 'ja-no-inappropriate-words' },
-      { name: 'ja-no-mixed-period' },
-      { name: 'ja-no-redundant-expression' },
-      { name: 'max-comma' },
-      { name: 'max-kanji-continuous-len' },
-      { name: 'max-ten' },
-      { name: 'no-double-negative-ja' },
-      { name: 'no-doubled-conjunction' },
-      { name: 'no-doubled-joshi' },
-      { name: 'no-dropping-the-ra' },
-      { name: 'no-hankaku-kana' },
-      { name: 'prefer-tari-tari' },
-      { name: 'sentence-length' },
-    ];
+    this.textlintConfig = [];
 
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
