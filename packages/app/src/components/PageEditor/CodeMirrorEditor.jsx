@@ -162,12 +162,16 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.isTextlintEnabled = true;
 
     this.textlintConfig = [
+      { name: 'no-unmatched-pair' },
       { name: 'common-misspellings' },
+      { name: 'date-weekday-mismatch' },
+      { name: 'en-capitalization' },
       { name: 'ja-hiragana-keishikimeishi' },
       { name: 'ja-no-abusage' },
       { name: 'ja-no-inappropriate-words' },
       { name: 'ja-no-mixed-period' },
       { name: 'ja-no-redundant-expression' },
+      { name: 'ja-unnatural-alphabet' },
       { name: 'max-comma' },
       { name: 'max-kanji-continuous-len' },
       { name: 'max-ten' },
@@ -176,8 +180,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
       { name: 'no-doubled-joshi' },
       { name: 'no-dropping-the-ra' },
       { name: 'no-hankaku-kana' },
+      { name: 'no-kangxi-radicals' },
+      { name: 'no-mixed-zenkaku-and-hankaku-alphabet' },
+      { name: 'no-nfd' },
+      { name: 'no-surrogate-pair' },
+      { name: 'no-zero-width-spaces' },
+      { name: 'period-in-list-item' },
       { name: 'prefer-tari-tari' },
       { name: 'sentence-length' },
+      { name: 'use-si-units' },
     ];
 
     this.interceptorManager = new InterceptorManager();
