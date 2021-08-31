@@ -66,26 +66,13 @@ class OptionsSelector extends React.Component {
 
 
   async componentWillMount() {
-    this.retrieveEditorSettings();
+  // this.retrieveEditorSettings();
+    const { editorContainer } = this.props;
+    const { isTextlintEnabled } = await editorContainer.retrieveEditorSettings();
+    // const isTextlintEnabled = editorContainer.state;
+    // this.setState({ isTextlintEnabled });
   }
 
-  /**
-   * Retrieve Editor Settings
-   */
-  async retrieveEditorSettings() {
-    const { appContainer } = this.props;
-    try {
-      const { data } = await appContainer.apiv3.get('/personal-setting');
-      const { isTextlintEnabled } = data.currentUser.editorCurrentSettings;
-      this.setState({
-        isTextlintEnabled,
-      });
-    }
-    catch (error) {
-      logger.error('failed to retrieve editor settings', error);
-      toastError(error);
-    }
-  }
 
   onChangeTheme(newValue) {
     const { editorContainer } = this.props;
@@ -146,9 +133,9 @@ class OptionsSelector extends React.Component {
   }
 
   async updateIsTextlintEnabledToDB() {
-    const { appContainer } = this.props;
+    const { appContainer, editorContainer } = this.props;
     try {
-      await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: this.state.isTextlintEnabled });
+      await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: editorContainer.state.isTextlintEnabled });
     }
     catch (err) {
       toastError(err);
@@ -157,7 +144,10 @@ class OptionsSelector extends React.Component {
   }
 
   async switchTextlintEnabledHandler() {
-    this.setState({ isTextlintEnabled: !this.state.isTextlintEnabled });
+    const { editorContainer } = this.props;
+    // console.log('isTextlintEnabled-before-click', editorContainer.state.isTextlintEnabled);
+    editorContainer.setState({ isTextlintEnabled: !editorContainer.state.isTextlintEnabled });
+    // console.log('isTextlintEnabled-after-click', editorContainer.state.isTextlintEnabled);
     this.updateIsTextlintEnabledToDB();
   }
 
@@ -338,7 +328,10 @@ class OptionsSelector extends React.Component {
   }
 
   renderIsTextlintEnabledMenuItem() {
-    const isActive = this.state.isTextlintEnabled;
+    const { editorContainer } = this.props;
+    // const isActive = editorContainer.state.isTextlintEnabled;
+    const isActive = editorContainer.state.isTextlintEnabled;
+    console.log('isActive', isActive);
 
     const iconClasses = ['text-info'];
     if (isActive) {
