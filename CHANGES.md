@@ -24,7 +24,7 @@
     * morgan
     * socket.io
 
-## v4.3.3-RC
+## v4.3.3
 
 * Improvement: Welcome page markdown
 * Fix: Some recursive operation exclude descendant pages that are restricted for groups
