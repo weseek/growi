@@ -57,13 +57,13 @@ module.exports = (crowi) => {
 
     // const relation = await SlackAppIntegration.findOne({ tokenPtoG });
     // MOCK DATA DELETE THIS GW-6972 ---------------
-    // const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
-    // const relation = await SlackAppIntegrationMock.findOne({ tokenPtoG });
-    // const channelsObject = relation.permittedChannelsForEachCommand._doc.channelsObject;
-    // // MOCK DATA DELETE THIS GW-6972 ---------------
-    // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
-    // const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
-    // const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
+    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const relation = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    const channelsObject = relation.permittedChannelsForEachCommand._doc.channelsObject;
+    // MOCK DATA DELETE THIS GW-6972 ---------------
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
+    const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
+    const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
 
     // get command name from req.body
     let command = '';
@@ -81,34 +81,34 @@ module.exports = (crowi) => {
     }
 
     // code below checks permission at channel level
-    // const fromChannel = req.body.channel_name; /* || payload.channel.name; */
-    // [...channelsObject.keys()].forEach((commandName) => {
-    //   const permittedChannels = channelsObject.get(commandName);
-    //   // ex. search OR search:hogehoge
-    //   const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+    const fromChannel = req.body.channel_name; /* || payload.channel.name; */
+    [...channelsObject.keys()].forEach((commandName) => {
+      const permittedChannels = channelsObject.get(commandName);
+      // ex. search OR search:hogehoge
+      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
 
-    //   // RegExp check
-    //   if (commandRegExp.test(commandName) || commandRegExp.test(actionId) || commandRegExp.test(callbackId)) {
-    //     // check if the channel is permitted
-    //     if (permittedChannels.includes(fromChannel)) return next();
-    //   }
-    // });
+      // RegExp check
+      if (commandRegExp.test(commandName) || commandRegExp.test(actionId) || commandRegExp.test(callbackId)) {
+        // check if the channel is permitted
+        if (permittedChannels.includes(fromChannel)) return next();
+      }
+    });
 
     // code below checks permission at command level
-    // let isActionSupported = false;
-    // supportedGrowiActionsRegExps.forEach((regexp) => {
-    //   if (regexp.test(actionId) || regexp.test(callbackId)) {
-    //     isActionSupported = true;
-    //   }
-    // });
+    let isActionSupported = false;
+    supportedGrowiActionsRegExps.forEach((regexp) => {
+      if (regexp.test(actionId) || regexp.test(callbackId)) {
+        isActionSupported = true;
+      }
+    });
 
-    // // validate
-    // if (command && !supportedCommands.includes(command)) {
-    //   return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
-    // }
-    // if ((actionId || callbackId) && !isActionSupported) {
-    //   return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
-    // }
+    // validate
+    if (command && !supportedCommands.includes(command)) {
+      return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+    }
+    if ((actionId || callbackId) && !isActionSupported) {
+      return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+    }
 
     next();
   }
@@ -252,7 +252,8 @@ module.exports = (crowi) => {
     return handleInteractions(req, res);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, /* checkCommandPermission, */ async(req, res) => {
+    console.log(256);
     return handleInteractions(req, res);
   });
 
