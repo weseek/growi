@@ -267,7 +267,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>common-misspellings</strong>
             </label>
             <p className="form-text text-muted small">
-              {t('admin:app_setting.file_delivery_method_redirect_info')}
+              A textlint rule to find common misspellings from Wikipedia: Lists of common misspellings.
             </p>
           </div>
 
@@ -283,7 +283,9 @@ export const EditorSettings: FC<Props> = () => {
               <strong>max-comma</strong>
             </label>
             <p className="form-text text-muted small">
-              {t('admin:app_setting.file_delivery_method_redirect_info')}
+              max: maximum number of , <br />
+              Default: 4
+
             </p>
           </div>
 
@@ -299,7 +301,7 @@ export const EditorSettings: FC<Props> = () => {
               <strong>sentence-length</strong>
             </label>
             <p className="form-text text-muted small">
-              {t('admin:app_setting.file_delivery_method_redirect_info')}
+              A textlint rule that limit Maximum Length of Sentence.
             </p>
           </div>
 
