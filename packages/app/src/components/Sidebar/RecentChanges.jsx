@@ -20,7 +20,7 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 
 const logger = loggerFactory('growi:History');
 
-function LargePageItem ({ page }) {
+function LargePageItem({ page }) {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
