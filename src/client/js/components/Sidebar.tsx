@@ -289,9 +289,6 @@ const Sidebar = (props: Props) => {
                 style={{ width: isCollapsed ? sidebarMinimizeWidth : currentProductNavWidth }}
               >
                 <div className="grw-contextual-navigation-child">
-                  <div role="group" className="grw-contextual-navigation-sub"></div>
-                </div>
-                <div className="grw-contextual-navigation-child2">
                   <div role="group" className={`grw-contextual-navigation-sub ${!isHover && isCollapsed ? 'collapsed' : ''}`}>
                   { isMounted ? <SidebarContents></SidebarContents> : <SidebarSkeltonContents></SidebarSkeltonContents> }
                   </div>
