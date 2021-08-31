@@ -35,6 +35,8 @@ export default class EditorContainer extends Container {
 
       editorOptions: {},
       previewOptions: {},
+      isTextlintEnabled: false,
+
       indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
 
@@ -193,6 +195,18 @@ export default class EditorContainer extends Container {
     }
 
     return null;
+  }
+
+
+  /**
+   * Retrieve Editor Settings
+   */
+  async retrieveEditorSettings() {
+    const res = await this.appContainer.apiv3.get('/personal-setting');
+    const isTextlintEnabled = res.data.currentUser.editorCurrentSettings?.isTextlintEnabled;
+    this.setState({
+      isTextlintEnabled,
+    });
   }
 
 }
