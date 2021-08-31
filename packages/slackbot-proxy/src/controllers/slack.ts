@@ -245,9 +245,6 @@ export class SlackCtrl {
 
     const privateMeta = JSON.parse(payload?.view?.private_metadata);
     const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
-
-    const growiCommandType = actionId?.split(':')[0] || callbackId?.split(':')[0];
-
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -298,17 +295,12 @@ export class SlackCtrl {
 
     let isPermitted = false;
     let permission:boolean|string[];
-    console.log(303, relations);
-
     await Promise.all(relations.map(async(relation) => {
       const single = Object.keys(relation.supportedCommandsForSingleUse);
       const broad = Object.keys(relation.supportedCommandsForBroadcastUse);
-      console.log(305);
 
       [...single, ...broad].forEach(async(commandName) => {
-
         permission = relation.supportedCommandsForSingleUse[commandName];
-
 
         if (permission == null) {
           permission = relation.supportedCommandsForBroadcastUse[commandName];
@@ -346,7 +338,7 @@ export class SlackCtrl {
             channel: body.channel_id,
             user: body.user_id,
             blocks: [
-              markdownSectionBlock(`It is not allowed to run *'${growiCommandType}'* command to this GROWI.`),
+              markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
             ],
           });
         }
