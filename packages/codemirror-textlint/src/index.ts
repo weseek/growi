@@ -1,6 +1,5 @@
 import { TextlintKernel, TextlintKernelRule, TextlintRuleOptions } from '@textlint/kernel';
 import textlintToCodeMirror from 'textlint-message-to-codemirror';
-import textlintRuleNoInvalidControlCharacter from '@textlint-rule/textlint-rule-no-invalid-control-character';
 import textlintRuleNoUnmatchedPair from '@textlint-rule/textlint-rule-no-unmatched-pair';
 import textlintRuleCommonMisspellings from 'textlint-rule-common-misspellings';
 import textlintRuleDateWeekdayMismatch from 'textlint-rule-date-weekday-mismatch';
@@ -42,7 +41,6 @@ type RuleExtension = {
 }
 
 const ruleModulesList = {
-  'no-invalid-control-character': textlintRuleNoInvalidControlCharacter,
   'no-unmatched-pair': textlintRuleNoUnmatchedPair,
   'common-misspellings': textlintRuleCommonMisspellings,
   'date-weekday-mismatch': textlintRuleDateWeekdayMismatch,

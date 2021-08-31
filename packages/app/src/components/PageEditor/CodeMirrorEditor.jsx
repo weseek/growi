@@ -162,7 +162,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.isLintEnabled = true;
 
     this.textlintConfig = [
-      { name: 'no-invalid-control-character' },
       { name: 'no-unmatched-pair' },
       { name: 'common-misspellings' },
       { name: 'date-weekday-mismatch' },
