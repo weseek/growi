@@ -485,12 +485,11 @@ module.exports = (crowi) => {
   // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
   router.put('/editor-settings', async(req, res) => {
     try {
-      // const user = await User.findOne({ _id: req.user.id });
-      console.log(EditorSettings);
-      console.log(User);
-      EditorSettings.isTextlintEnabled = req.body.isTextlintEnabled;
-      const { editorCurrentSettings } = await EditorSettings.save();
-      return res.apiv3({ editorCurrentSettings });
+      const query = { userId: req.user.id };
+      const update = { expire: new Date() };
+      const options = { upsert: true, new: true };
+      const response = await EditorSettings.findOneAndUpdate(query, update, options);
+      return res.apiv3(response);
     }
     catch (err) {
       logger.error(err);
