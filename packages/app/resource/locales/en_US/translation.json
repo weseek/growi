@@ -259,7 +259,7 @@
     "editor_settings": "Editor Settings",
     "common_settings": {
       "common_settings": "Common Settings",
-      "common_misspellings": "Textlint rules to find common misspellings from Wikipedia: Lists of common misspellings.",
+      "common_misspellings": "Textlint rules to find common misspellings from Wikipedia.",
       "max_comma": "Textlint rule is that limit maximum ten(、) count of sentence. Default: 4",
       "sentence_length": "Textlint rules that limit Maximum Length of Sentence. Default: 100"
       },
