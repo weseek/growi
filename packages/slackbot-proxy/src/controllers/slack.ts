@@ -4,7 +4,7 @@ import {
 
 import axios from 'axios';
 
-import { WebAPICallResult } from '@slack/web-api';
+import { WebAPICallResult, ChatPostEphemeralResponse } from '@slack/web-api';
 
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
@@ -32,6 +32,20 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
 
+const postNotPermissionMessage = (relations:RelationMock[], commandName:string, body:any):Promise<ChatPostEphemeralResponse> => {
+  const botToken = relations[0].installation?.data.bot?.token;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const client = generateWebClient(botToken!);
+
+  return client.chat.postEphemeral({
+    text: 'Error occured.',
+    channel: body.channel_id,
+    user: body.user_id,
+    blocks: [
+      markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
+    ],
+  });
+};
 @Controller('/slack')
 export class SlackCtrl {
 
@@ -173,13 +187,8 @@ export class SlackCtrl {
     const relationsForSingleUse:RelationMock[] = [];
 
     await Promise.all(relations.map(async(relation) => {
-      console.log(176);
-
       const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
-
       if (isSupported) {
-        console.log(179);
-
         return relationsForSingleUse.push(relation);
       }
     }));
@@ -192,15 +201,15 @@ export class SlackCtrl {
 
     const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(
         relation, growiCommand.growiCommandType, body.channel_name, baseDate,
       );
 
       if (isSupported) {
-        console.log(196);
-        relationsForBroadcastUse.push(relation);
+        return relationsForBroadcastUse.push(relation);
       }
+
+      postNotPermissionMessage(relations, growiCommand.growiCommandType, body);
     }));
 
     /*
@@ -208,24 +217,9 @@ export class SlackCtrl {
      */
     if (relationsForBroadcastUse.length > 0) {
       body.growiUrisForBroadcastUse = relationsForBroadcastUse.map(v => v.growiUri);
-      console.log(body.growiUrisForBroadcastUse, 211);
-
       return this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
-    const botToken = relations[0].installation?.data.bot?.token;
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const client = generateWebClient(botToken!);
-
-    return client.chat.postEphemeral({
-      text: 'Error occured.',
-      channel: body.channel_id,
-      user: body.user_id,
-      blocks: [
-        markdownSectionBlock(`It is not allowed to run *'${growiCommand.growiCommandType}'* command to this GROWI.`),
-      ],
-    });
 
   }
 
@@ -321,10 +315,12 @@ export class SlackCtrl {
         // permission check
         if (permission === true) {
           isPermitted = true;
+          return;
         }
 
         if (Array.isArray(permission)) {
           isPermitted = permission.includes(channelName);
+          return;
         }
 
         // ex. search OR search:handlerName
@@ -336,44 +332,35 @@ export class SlackCtrl {
         }
 
         if (!isPermitted) {
-          const botToken = relations[0].installation?.data.bot?.token;
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          const client = generateWebClient(botToken!);
-
-          return client.chat.postEphemeral({
-            text: 'Error occured.',
-            channel: body.channel_id,
-            user: body.user_id,
-            blocks: [
-              markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
-            ],
-          });
+          postNotPermissionMessage(relations, commandName, body);
         }
-        if (relation == null) {
-          logger.error('*No relation found.*');
-          return;
-        }
-
-        /*
-         * forward to GROWI server
-         */
-
-        try {
-        // generate API URL
-          const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
-          await axios.post(url.toString(), {
-            ...body,
-          }, {
-            headers: {
-              'x-growi-ptog-tokens': relation.tokenPtoG,
-            },
-          });
-        }
-        catch (err) {
-          logger.error(err);
-        }
-
       });
+
+
+      /*
+       * forward to GROWI server
+       */
+
+
+      if (relation == null) {
+        logger.error('*No relation found.*');
+        return;
+      }
+
+      try {
+        // generate API URL
+        const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
+        await axios.post(url.toString(), {
+          ...body,
+        }, {
+          headers: {
+            'x-growi-ptog-tokens': relation.tokenPtoG,
+          },
+        });
+      }
+      catch (err) {
+        logger.error(err);
+      }
     }));
 
   }

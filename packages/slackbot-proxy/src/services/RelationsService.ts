@@ -71,33 +71,23 @@ export class RelationsService {
     if (syncedRelation == null) {
       return false;
     }
-    console.log(growiCommandType, 74);
 
     const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
 
     // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands
     if (!commandRegExp.test(growiCommandType)) {
-      console.log(209);
       return false;
     }
-    console.log(relation.supportedCommandsForSingleUse, 83);
-    console.log(relation.supportedCommandsForSingleUse[growiCommandType], 84);
 
     const permission = relation.supportedCommandsForSingleUse[growiCommandType];
-    console.log(permission, 76);
 
     if (permission == null) {
-      console.log(88);
-
       return false;
     }
-    console.log(81, channelName);
 
     if (Array.isArray(permission)) {
-
       return permission.includes(channelName);
     }
-    console.log(84);
 
     return permission;
   }
@@ -112,15 +102,10 @@ export class RelationsService {
 
     // skip this forEach loop if the requested command is not in permissionsForSingleUseCommandskey
     if (!commandRegExp.test(growiCommandType)) {
-      console.log(183);
-
       return false;
     }
-    console.log(119);
 
     const permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
-    console.log(permission);
-
 
     if (permission == null) {
       return false;
