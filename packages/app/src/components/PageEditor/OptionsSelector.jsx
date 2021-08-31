@@ -12,6 +12,10 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { toastError } from '~/client/util/apiNotification';
 
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:OptionSelector');
+
 
 export const defaultEditorOptions = {
   theme: 'elegant',
@@ -57,6 +61,30 @@ class OptionsSelector extends React.Component {
     this.updateIsTextlintEnabledToDB = this.updateIsTextlintEnabledToDB.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
+    this.retrieveEditorSettings = this.retrieveEditorSettings.bind(this);
+  }
+
+
+  async componentWillMount() {
+    this.retrieveEditorSettings();
+  }
+
+  /**
+   * Retrieve Editor Settings
+   */
+  async retrieveEditorSettings() {
+    const { appContainer } = this.props;
+    try {
+      const { data } = await appContainer.apiv3.get('/personal-setting');
+      const { isTextlintEnabled } = data.currentUser.editorCurrentSettings;
+      this.setState({
+        isTextlintEnabled,
+      });
+    }
+    catch (error) {
+      logger.error('failed to retrieve editor settings', error);
+      toastError(error);
+    }
   }
 
   onChangeTheme(newValue) {
