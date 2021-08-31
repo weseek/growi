@@ -38,7 +38,6 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
-      isTextlintEnabled: false,
     };
 
     this.availableThemes = [
@@ -61,16 +60,12 @@ class OptionsSelector extends React.Component {
     this.updateIsTextlintEnabledToDB = this.updateIsTextlintEnabledToDB.bind(this);
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
-    this.retrieveEditorSettings = this.retrieveEditorSettings.bind(this);
   }
 
 
-  async componentWillMount() {
-  // this.retrieveEditorSettings();
+  async componentDidMount() {
     const { editorContainer } = this.props;
-    const { isTextlintEnabled } = await editorContainer.retrieveEditorSettings();
-    // const isTextlintEnabled = editorContainer.state;
-    // this.setState({ isTextlintEnabled });
+    await editorContainer.retrieveEditorSettings();
   }
 
 
@@ -145,9 +140,9 @@ class OptionsSelector extends React.Component {
 
   async switchTextlintEnabledHandler() {
     const { editorContainer } = this.props;
-    // console.log('isTextlintEnabled-before-click', editorContainer.state.isTextlintEnabled);
+    console.log('isTextlintEnabled-before-click', editorContainer.state.isTextlintEnabled);
     editorContainer.setState({ isTextlintEnabled: !editorContainer.state.isTextlintEnabled });
-    // console.log('isTextlintEnabled-after-click', editorContainer.state.isTextlintEnabled);
+    console.log('isTextlintEnabled-after-click', editorContainer.state.isTextlintEnabled);
     this.updateIsTextlintEnabledToDB();
   }
 
@@ -329,7 +324,6 @@ class OptionsSelector extends React.Component {
 
   renderIsTextlintEnabledMenuItem() {
     const { editorContainer } = this.props;
-    // const isActive = editorContainer.state.isTextlintEnabled;
     const isActive = editorContainer.state.isTextlintEnabled;
     console.log('isActive', isActive);
 
