@@ -246,7 +246,6 @@ export class SlackCtrl {
 
     const privateMeta = JSON.parse(payload?.view?.private_metadata);
     const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
-    const growiUri = privateMeta?.body?.growiUrisForSingleUse[0] || privateMeta?.body?.growiUrisForBroadcastUse[0];
 
     const growiCommandType = actionId?.split(':')[0] || callBackId?.split(':')[0];
 
