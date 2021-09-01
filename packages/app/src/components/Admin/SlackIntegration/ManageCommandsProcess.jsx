@@ -13,7 +13,7 @@ const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
 }) => {
   const { t } = useTranslation();
-  const permissionTypes = {
+  const PermissionTypes = {
     ALLOW_ALL: 'allowAll',
     DENY_ALL: 'denyAll',
     ALLOW_SPECIFIED: 'allowSpecified',
@@ -30,13 +30,13 @@ const ManageCommandsProcess = ({
   const getInitialCurrentPermissionTypes = () => {
     const getPermissionTypeFromValue = (value) => {
       if (value === true) {
-        return permissionTypes.ALLOW_ALL;
+        return PermissionTypes.ALLOW_ALL;
       }
       if (value === false) {
-        return permissionTypes.DENY_ALL;
+        return PermissionTypes.DENY_ALL;
       }
       if (Array.isArray(value)) {
-        return permissionTypes.ALLOW_SPECIFIED;
+        return PermissionTypes.ALLOW_SPECIFIED;
       }
     };
     const initialValue = {};
@@ -56,13 +56,13 @@ const ManageCommandsProcess = ({
   const getUpdatedPermissionSettings = (prevState, commandName, value) => {
     const newState = { ...prevState };
     switch (value) {
-      case permissionTypes.ALLOW_ALL:
+      case PermissionTypes.ALLOW_ALL:
         newState[commandName] = true;
         break;
-      case permissionTypes.DENY_ALL:
+      case PermissionTypes.DENY_ALL:
         newState[commandName] = false;
         break;
-      case permissionTypes.ALLOW_SPECIFIED:
+      case PermissionTypes.ALLOW_SPECIFIED:
         newState[commandName] = [];
         break;
       default:
@@ -166,7 +166,7 @@ const ManageCommandsProcess = ({
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
-                const hiddenClass = currentPermissionTypes[commandName] === permissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
+                const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
                 return (
                   <div className="row-5 my-1 mb-2" key={commandName}>
@@ -182,11 +182,11 @@ const ManageCommandsProcess = ({
                           aria-expanded="true"
                         >
                           <span className="float-left">
-                            {currentPermissionTypes[commandName] === permissionTypes.ALLOW_ALL
+                            {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_ALL
                             && t('admin:slack_integration.accordion.allow_all')}
-                            {currentPermissionTypes[commandName] === permissionTypes.DENY_ALL
+                            {currentPermissionTypes[commandName] === PermissionTypes.DENY_ALL
                             && t('admin:slack_integration.accordion.deny_all')}
-                            {currentPermissionTypes[commandName] === permissionTypes.ALLOW_SPECIFIED
+                            {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED
                             && t('admin:slack_integration.accordion.allow_specified')}
                           </span>
                         </button>
@@ -195,7 +195,7 @@ const ManageCommandsProcess = ({
                             className="dropdown-item"
                             type="button"
                             name={commandName}
-                            value={permissionTypes.ALLOW_ALL}
+                            value={PermissionTypes.ALLOW_ALL}
                             onClick={updatepermissionsForBroadcastUseCommandsState}
                           >
                             {t('admin:slack_integration.accordion.allow_all_long')}
@@ -204,7 +204,7 @@ const ManageCommandsProcess = ({
                             className="dropdown-item"
                             type="button"
                             name={commandName}
-                            value={permissionTypes.DENY_ALL}
+                            value={PermissionTypes.DENY_ALL}
                             onClick={updatepermissionsForBroadcastUseCommandsState}
                           >
                             {t('admin:slack_integration.accordion.deny_all_long')}
@@ -213,7 +213,7 @@ const ManageCommandsProcess = ({
                             className="dropdown-item"
                             type="button"
                             name={commandName}
-                            value={permissionTypes.ALLOW_SPECIFIED}
+                            value={PermissionTypes.ALLOW_SPECIFIED}
                             onClick={updatepermissionsForBroadcastUseCommandsState}
                           >
                             {t('admin:slack_integration.accordion.allow_specified_long')}
@@ -245,7 +245,7 @@ const ManageCommandsProcess = ({
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
-                const hiddenClass = currentPermissionTypes[commandName] === permissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
+                const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
                 return (
                   <div className="row-5 my-1 mb-2" key={commandName}>
@@ -261,11 +261,11 @@ const ManageCommandsProcess = ({
                           aria-expanded="true"
                         >
                           <span className="float-left">
-                            {currentPermissionTypes[commandName] === permissionTypes.ALLOW_ALL
+                            {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_ALL
                             && t('admin:slack_integration.accordion.allow_all')}
-                            {currentPermissionTypes[commandName] === permissionTypes.DENY_ALL
+                            {currentPermissionTypes[commandName] === PermissionTypes.DENY_ALL
                             && t('admin:slack_integration.accordion.deny_all')}
-                            {currentPermissionTypes[commandName] === permissionTypes.ALLOW_SPECIFIED
+                            {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED
                             && t('admin:slack_integration.accordion.allow_specified')}
                           </span>
                         </button>
@@ -274,7 +274,7 @@ const ManageCommandsProcess = ({
                             className="dropdown-item"
                             type="button"
                             name={commandName}
-                            value={permissionTypes.ALLOW_ALL}
+                            value={PermissionTypes.ALLOW_ALL}
                             onClick={updatepermissionsForSingleUseCommandsState}
                           >
                             {t('admin:slack_integration.accordion.allow_all_long')}
@@ -283,7 +283,7 @@ const ManageCommandsProcess = ({
                             className="dropdown-item"
                             type="button"
                             name={commandName}
-                            value={permissionTypes.DENY_ALL}
+                            value={PermissionTypes.DENY_ALL}
                             onClick={updatepermissionsForSingleUseCommandsState}
                           >
                             {t('admin:slack_integration.accordion.deny_all_long')}
@@ -292,7 +292,7 @@ const ManageCommandsProcess = ({
                             className="dropdown-item"
                             type="button"
                             name={commandName}
-                            value={permissionTypes.ALLOW_SPECIFIED}
+                            value={PermissionTypes.ALLOW_SPECIFIED}
                             onClick={updatepermissionsForSingleUseCommandsState}
                           >
                             {t('admin:slack_integration.accordion.allow_specified_long')}
