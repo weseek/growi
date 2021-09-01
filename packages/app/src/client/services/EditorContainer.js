@@ -200,20 +200,19 @@ export default class EditorContainer extends Container {
   }
 
 
-  // /**
-  //  * Retrieve Editor Settings
-  //  */
-  // async retrieveEditorSettings() {
-  //   console.log('retrieve');
-  //   const { data } = await this.appContainer.apiv3.get('/personal-setting/editor-settings');
-  //   const isTextlintEnabled = data?.isTextlintEnabled;
-  //   const commonTextlintRules = data?.commonTextlintRules;
-  //   const japaneseTextlintRules = data?.japaneseTextlintRules;
-  //   this.setState({
-  //     isTextlintEnabled,
-  //     commonTextlintRules,
-  //     japaneseTextlintRules,
-  //   });
-  // }
+  /**
+   * Retrieve Editor Settings
+   */
+  async retrieveEditorSettings() {
+    const { data } = await this.appContainer.apiv3.get('/personal-setting/editor-settings');
+    const isTextlintEnabled = data?.isTextlintEnabled;
+    const commonTextlintRules = data?.commonTextlintRules;
+    const japaneseTextlintRules = data?.japaneseTextlintRules;
+    this.setState({
+      isTextlintEnabled,
+      commonTextlintRules,
+      japaneseTextlintRules,
+    });
+  }
 
 }

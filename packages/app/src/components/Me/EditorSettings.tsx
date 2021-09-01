@@ -8,15 +8,11 @@ import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
+
 type Props = {
   appContainer: AppContainer,
 }
-
-// type MenuItem = {
-//   name: string,
-//   description: string
-// }
-
 
 const commonRulesMenuItems = [
   {
@@ -97,7 +93,6 @@ type LintRules = {
 
 
 const EditorSettingsBody: FC<Props> = (props) => {
-  // TODO: apply i18n by GW-7244
   const { t } = useTranslation();
   const { appContainer } = props;
   const [commonTextlintRules, setCommonTextlintRules] = useState<LintRules[]>([]);
@@ -107,7 +102,6 @@ const EditorSettingsBody: FC<Props> = (props) => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
 
     if (data?.commonTextlintRules != null) {
-
       setCommonTextlintRules(data?.commonTextlintRules);
     }
     if (data?.japaneseTextlintRules != null) {
@@ -124,7 +118,6 @@ const EditorSettingsBody: FC<Props> = (props) => {
       ));
       setCommonTextlintRules(defaultCommonRules);
     }
-
     if (data?.japaneseTextlintRules.length === 0 || data?.japaneseTextlintRules == null) {
       const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => (
         {
@@ -136,16 +129,8 @@ const EditorSettingsBody: FC<Props> = (props) => {
     }
   };
 
-  const updateEditorSettings = async() => {
-    const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { commonTextlintRules, japaneseTextlintRules });
-    setCommonTextlintRules(data?.commonTextlintRules);
-    setJapaneseTextlintRules(data?.japaneseTextlintRules);
-  };
-
   useEffect(() => {
     initializeEditorSettings();
-    console.log(commonTextlintRules);
-    console.log(japaneseTextlintRules);
   }, []);
 
   const commonRuleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
@@ -165,24 +150,37 @@ const EditorSettingsBody: FC<Props> = (props) => {
 
   const updateCommonRuleHandler = async() => {
     try {
-      await updateEditorSettings();
-      console.log(commonTextlintRules);
-
+      const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { commonTextlintRules });
+      setCommonTextlintRules(data?.commonTextlintRules);
+      toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
     }
     catch (err) {
-      console.log(err);
+      toastError(err);
     }
   };
 
   const updateJapaneseRuleHandler = async() => {
     try {
-      await updateEditorSettings();
-      console.log(japaneseTextlintRules);
+      const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { japaneseTextlintRules });
+      setJapaneseTextlintRules(data?.japaneseTextlintRules);
+      toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
     }
     catch (err) {
-      console.log(err);
+      toastError(err);
     }
   };
+
+  const isCheckedInCommonRules = (ruleName: string) => (
+    commonTextlintRules.filter(stateRule => (
+      stateRule.name === ruleName
+    ))[0]?.isEnabled
+  );
+
+  const isCheckedInJapaneseRules = (ruleName: string) => (
+    japaneseTextlintRules.filter(stateRule => (
+      stateRule.name === ruleName
+    ))[0]?.isEnabled
+  );
 
   return (
     <>
@@ -198,7 +196,7 @@ const EditorSettingsBody: FC<Props> = (props) => {
                 type="checkbox"
                 className="custom-control-input"
                 id={rule.name}
-                // checked={editorContainer.}
+                checked={isCheckedInCommonRules(rule.name)}
                 onChange={e => commonRuleCheckboxHandler(e.target.checked, rule.name)}
               />
               <label className="custom-control-label" htmlFor={rule.name}>
@@ -239,7 +237,7 @@ const EditorSettingsBody: FC<Props> = (props) => {
                 type="checkbox"
                 className="custom-control-input"
                 id={rule.name}
-                // checked={}
+                checked={isCheckedInJapaneseRules(rule.name)}
                 onChange={e => japaneseRuleCheckboxHandler(e.target.checked, rule.name)}
               />
               <label className="custom-control-label" htmlFor={rule.name}>

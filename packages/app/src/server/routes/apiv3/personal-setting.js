@@ -485,7 +485,8 @@ module.exports = (crowi) => {
   // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
   router.put('/editor-settings', async(req, res) => {
     try {
-      const query = { userId: req.user.id };
+      // const query = { userId: req.user.id };
+      const query = { userId: '611f3aecea729b066107bf20' };
       const update = req.body;
       const options = { upsert: true, new: true };
       const response = await EditorSettings.findOneAndUpdate(query, update, options);
