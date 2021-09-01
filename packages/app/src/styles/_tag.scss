@@ -6,7 +6,7 @@
 
 .grw-tag-labels {
   .grw-tag-label {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: normal;
     border-radius: $border-radius-sm;
   }
@@ -15,5 +15,11 @@
 #edit-tag-modal {
   .form-control {
     height: auto;
+  }
+}
+
+.grw-recent-changes {
+  .grw-tag-label {
+    font-size: 10px;
   }
 }
