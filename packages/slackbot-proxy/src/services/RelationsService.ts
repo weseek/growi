@@ -2,9 +2,6 @@ import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 import { addHours } from 'date-fns';
 
-import { Relation } from '~/entities/relation';
-import { RelationRepository } from '~/repositories/relation';
-
 import { RelationMock } from '~/entities/relation-mock';
 import { RelationMockRepository } from '~/repositories/relation-mock';
 
@@ -16,55 +13,30 @@ const logger = loggerFactory('slackbot-proxy:services:RelationsService');
 export class RelationsService {
 
   @Inject()
-  relationRepository: RelationRepository;
-
-  @Inject()
   relationMockRepository: RelationMockRepository;
 
-  // MOCK DATA DELETE THIS METHOD GW-6972
-  async getMockFromRelation(relation: Relation): Promise<RelationMock|null> {
-    const tokenGtoP = relation.tokenGtoP;
-    const relationMock = await this.relationMockRepository.findOne({ where: [{ tokenGtoP }] });
-
-    return relationMock || null;
-  }
-
-  async getSupportedGrowiCommands(relation:Relation):Promise<any> {
+  async getSupportedGrowiCommands(relationMock:RelationMock):Promise<any> {
     // generate API URL
-    const url = new URL('/_api/v3/slack-integration/supported-commands', relation.growiUri);
+    const url = new URL('/_api/v3/slack-integration/supported-commands', relationMock.growiUri);
     return axios.get(url.toString(), {
       headers: {
-        'x-growi-ptog-tokens': relation.tokenPtoG,
+        'x-growi-ptog-tokens': relationMock.tokenPtoG,
       },
     });
   }
 
-  async syncSupportedGrowiCommands(relation:Relation): Promise<RelationMock> {
-    const res = await this.getSupportedGrowiCommands(relation);
-    // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
-    // relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
-    // relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
-    // relation.expiredAtCommands = addHours(new Date(), 48);
-
-    // return this.relationRepository.save(relation);
+  async syncSupportedGrowiCommands(relationMock:RelationMock): Promise<RelationMock> {
+    const res = await this.getSupportedGrowiCommands(relationMock);
 
     // MOCK DATA MODIFY THIS GW-6972 ---------------
     /**
      * this code represents the update of cache (Relation schema) using request from GROWI
      */
-    const relationMock = await this.getMockFromRelation(relation);
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse, permittedChannelsForEachCommand } = res.data;
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data;
     if (relationMock !== null) {
-      relationMock.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
-      relationMock.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
-      relationMock.permittedChannelsForEachCommand = permittedChannelsForEachCommand;
+      relationMock.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
+      relationMock.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
       relationMock.expiredAtCommands = addHours(new Date(), 48);
-
-      // NOT MOCK DATA MODIFY THIS ORIGINAL OPERATION GW-6972
-      relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
-      relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
-      relation.expiredAtCommands = addHours(new Date(), 48);
-      this.relationRepository.save(relation);
 
       return this.relationMockRepository.save(relationMock);
     }
@@ -73,8 +45,7 @@ export class RelationsService {
   }
 
   // MODIFY THIS METHOD USING ORIGINAL RELATION MODEL GW-6972
-  async syncRelation(relation:Relation, baseDate:Date):Promise<RelationMock|null> {
-    const relationMock = await this.getMockFromRelation(relation);
+  async syncRelation(relationMock:RelationMock, baseDate:Date):Promise<RelationMock|null> {
     if (relationMock == null) return null;
 
     const distanceMillisecondsToExpiredAt = relationMock.getDistanceInMillisecondsToExpiredAt(baseDate);
@@ -102,20 +73,26 @@ export class RelationsService {
     return relationMock;
   }
 
-  async isSupportedGrowiCommandForSingleUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
-    const syncedRelation = await this.syncRelation(relation, baseDate);
+  async isSupportedGrowiCommandForSingleUse(relationMock:RelationMock, growiCommandType:string, baseDate:Date):Promise<boolean> {
+    const syncedRelation = await this.syncRelation(relationMock, baseDate);
     if (syncedRelation == null) {
       return false;
     }
-    return relation.supportedCommandsForSingleUse.includes(growiCommandType);
+    // MOCK DATA THIS CODE SHOULD BE IMPLEMENTED IN GW-7017
+    // return relationMock.supportedCommandsForSingleUse.includes(growiCommandType);
+    return true;
+    // MOCK DATA THIS CODE SHOULD BE IMPLEMENTED IN GW-7017
   }
 
-  async isSupportedGrowiCommandForBroadcastUse(relation:Relation, growiCommandType:string, baseDate:Date):Promise<boolean> {
-    const syncedRelation = await this.syncRelation(relation, baseDate);
+  async isSupportedGrowiCommandForBroadcastUse(relationMock:RelationMock, growiCommandType:string, baseDate:Date):Promise<boolean> {
+    const syncedRelation = await this.syncRelation(relationMock, baseDate);
     if (syncedRelation == null) {
       return false;
     }
-    return relation.supportedCommandsForBroadcastUse.includes(growiCommandType);
+    // MOCK DATA THIS CODE SHOULD BE IMPLEMENTED IN GW-7017
+    // return relationMock.supportedCommandsForBroadcastUse.includes(growiCommandType);
+    return true;
+    // MOCK DATA THIS CODE SHOULD BE IMPLEMENTED IN GW-7017
   }
 
 }

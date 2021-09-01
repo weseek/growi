@@ -5,12 +5,12 @@ import { AuthorizeResult } from '@slack/oauth';
 
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { Installation } from '~/entities/installation';
-import { Relation } from '~/entities/relation';
-import { RelationRepository } from '~/repositories/relation';
+import { RelationMock } from '~/entities/relation-mock';
+import { RelationMockRepository } from '~/repositories/relation-mock';
 
 
 export type SelectedGrowiInformation = {
-  relation: Relation,
+  relationMock: RelationMock,
   growiCommand: GrowiCommand,
   sendCommandBody: any,
 }
@@ -19,7 +19,7 @@ export type SelectedGrowiInformation = {
 export class SelectGrowiService implements GrowiCommandProcessor {
 
   @Inject()
-  relationRepository: RelationRepository;
+  relationMockRepository: RelationMockRepository;
 
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]}): Promise<void> {
     const { botToken } = authorizeResult;
@@ -93,19 +93,19 @@ export class SelectGrowiService implements GrowiCommandProcessor {
     // ovverride trigger_id
     sendCommandBody.trigger_id = triggerId;
 
-    const relation = await this.relationRepository.createQueryBuilder('relation')
-      .where('relation.growiUri =:growiUri', { growiUri })
-      .andWhere('relation.installationId = :id', { id: installation?.id })
-      .leftJoinAndSelect('relation.installation', 'installation')
+    const relationMock = await this.relationMockRepository.createQueryBuilder('relation_mock')
+      .where('relation_mock.growiUri =:growiUri', { growiUri })
+      .andWhere('relation_mock.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation_mock.installation', 'installation')
       .getOne();
 
-    if (relation == null) {
+    if (relationMock == null) {
       // TODO: postEphemeralErrors
       throw new Error('No relation found.');
     }
 
     return {
-      relation,
+      relationMock,
       growiCommand,
       sendCommandBody,
     };

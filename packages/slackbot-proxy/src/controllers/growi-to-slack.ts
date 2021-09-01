@@ -133,22 +133,22 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relation = await this.relationRepository.createQueryBuilder('relation')
+    const relationMock = await this.relationMockRepository.createQueryBuilder('relation_mock')
       .where('tokenGtoP = :token', { token: tokenGtoP })
-      .leftJoinAndSelect('relation.installation', 'installation')
+      .leftJoinAndSelect('relation_mock.installation', 'installation')
       .getOne();
 
     // Returns the result of the test if it already exists
-    if (relation != null) {
-      logger.debug('relation found', relation);
+    if (relationMock != null) {
+      logger.debug('relation found', relationMock);
 
-      const token = relation.installation.data.bot?.token;
+      const token = relationMock.installation.data.bot?.token;
       if (token == null) {
         throw createError(400, 'installation is invalid');
       }
 
       try {
-        await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
+        await this.requestToGrowi(relationMock.growiUri, relationMock.tokenPtoG);
       }
       catch (err) {
         logger.error(err);
@@ -160,7 +160,7 @@ export class GrowiToSlackCtrl {
         throw createError(400, `failed to get connection. err: ${status.error}`);
       }
 
-      return res.send({ relation, slackBotToken: token });
+      return res.send({ relationMock, slackBotToken: token });
     }
 
     // retrieve latest Order with Installation
@@ -200,30 +200,12 @@ export class GrowiToSlackCtrl {
     // temporary cache for 48 hours
     const expiredAtCommands = addHours(new Date(), 48);
 
-    // Transaction is not considered because it is used infrequently,
-    const response = await this.relationRepository.createQueryBuilder('relation')
-      .insert()
-      .values({
-        installation: order.installation,
-        tokenGtoP: order.tokenGtoP,
-        tokenPtoG: order.tokenPtoG,
-        growiUri: order.growiUrl,
-        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
-        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
-        expiredAtCommands,
-      })
-      // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
-      .orUpdate({
-        conflict_target: ['installation', 'growiUri'],
-        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
-      })
-      .execute();
-
     // MOCK DATA DELETE THIS GW-6972 7004 ---------------
     /**
      * this code represents the creation of cache (Relation schema) using request from GROWI
      */
-    await this.relationMockRepository.createQueryBuilder('relation_mock')
+    // Transaction is not considered because it is used infrequently
+    const response = await this.relationMockRepository.createQueryBuilder('relation_mock')
       .insert()
       .values({
         installation: order.installation,
@@ -237,7 +219,7 @@ export class GrowiToSlackCtrl {
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
       .orUpdate({
         conflict_target: ['installation', 'growiUri'],
-        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+        overwrite: ['tokenGtoP', 'tokenPtoG', 'permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
       })
       .execute();
     // MOCK DATA DELETE THIS GW-6972 7004 ---------------

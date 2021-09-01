@@ -400,24 +400,18 @@ module.exports = (crowi) => {
    *            description: Succeeded to create slack app integration
    */
   router.put('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
-    if (SlackAppIntegrationRecordsNum >= 10) {
+    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const SlackAppIntegrationMockRecordsNum = await SlackAppIntegrationMock.countDocuments();
+    if (SlackAppIntegrationMockRecordsNum >= 10) {
       const msg = 'Not be able to create more than 10 slack workspace integration settings';
       logger.error('Error', msg);
       return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
     }
 
-    const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+    const { tokenGtoP, tokenPtoG } = await SlackAppIntegrationMock.generateUniqueAccessTokens();
     try {
-      const slackAppTokens = await SlackAppIntegration.create({
-        tokenGtoP,
-        tokenPtoG,
-        supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
-        supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
-      });
       // MOCK DATA DELETE THIS GW-6972 ---------------
       /* This code represents the creation of the new SlackAppIntegration model instance. */
-      const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
       const initialSupportedCommandsForBroadcastUse = new Map();
       const initialSupportedCommandsForSingleUse = new Map();
       defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
@@ -426,14 +420,16 @@ module.exports = (crowi) => {
       defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
         initialSupportedCommandsForSingleUse.set(commandName, true);
       });
-      const MOCK = await SlackAppIntegrationMock.create({
+      const slackAppTokensMOCK = await SlackAppIntegrationMock.create({
         tokenGtoP,
         tokenPtoG,
         permissionsForBroadcastUseCommands: initialSupportedCommandsForBroadcastUse,
         permissionsForSingleUseCommands: initialSupportedCommandsForSingleUse,
       });
+      console.log('ここやでえ');
+      console.log(slackAppTokensMOCK);
       // MOCK DATA DELETE THIS GW-6972 ---------------
-      return res.apiv3(slackAppTokens, 200);
+      return res.apiv3(slackAppTokensMOCK, 200);
     }
     catch (error) {
       const msg = 'Error occurred during creating slack integration settings procedure';
