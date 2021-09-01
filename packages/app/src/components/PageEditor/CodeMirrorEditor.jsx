@@ -57,6 +57,7 @@ require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/display/placeholder');
 require('~/client/util/codemirror/autorefresh.ext');
+require('~/client/util/codemirror/drawio-fold.ext');
 require('~/client/util/codemirror/gfm-growi.mode');
 // import modes to highlight
 require('codemirror/mode/clike/clike');

@@ -103,11 +103,18 @@ export class DrawioInterceptor extends BasicInterceptor {
    */
   drawioPostRender(contextName, context) {
     const isPreview = (contextName === 'postRenderPreviewHtml');
+    const editorContainer = this.appContainer.getContainer('EditorContainer');
+    const renderDrawioInRealtime = editorContainer.state.previewOptions.renderDrawioInRealtime;
 
     Object.keys(context.DrawioMap).forEach((domId) => {
       const elem = document.getElementById(domId);
       if (elem) {
-        this.renderReactDOM(context.DrawioMap[domId], elem, isPreview);
+        if (isPreview && !renderDrawioInRealtime) {
+          this.renderDisabledDrawioReactDOM(context.DrawioMap[domId], elem, isPreview);
+        }
+        else {
+          this.renderReactDOM(context.DrawioMap[domId], elem, isPreview);
+        }
       }
     });
   }
@@ -125,6 +132,14 @@ export class DrawioInterceptor extends BasicInterceptor {
           rangeLineNumberOfMarkdown={drawioMapEntry.rangeLineNumberOfMarkdown}
         />
       </Provider>,
+      elem,
+    );
+  }
+
+  renderDisabledDrawioReactDOM(drawioMapEntry, elem, isPreview) {
+    ReactDOM.render(
+      // eslint-disable-next-line react/jsx-filename-extension
+      <div className="alert alert-light text-dark">Rendering of draw.io is disabled.</div>,
       elem,
     );
   }
