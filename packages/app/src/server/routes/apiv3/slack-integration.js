@@ -62,7 +62,6 @@ module.exports = (crowi) => {
     const permissionsForBroadcastUseCommands = slackAppIntegrationMock.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegrationMock.permissionsForSingleUseCommands;
     // MOCK DATA DELETE THIS GW-6972 ---------------
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
 
     // get command name from req.body
     let command = '';
