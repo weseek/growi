@@ -20,10 +20,10 @@ const ManageCommandsProcess = ({
   };
 
   // TODO: use data from server GW-7006
-  const [permissionSettingsForBroadcastUseCommands, setPermissionSettingsForBroadcastUseCommands] = useState({
+  const [permissionsForBroadcastUseCommands, setPermissionsForBroadcastUseCommands] = useState({
     search: true,
   });
-  const [permissionSettingsForSingleUseCommands, setPermissionSettingsForSingleUseCommands] = useState({
+  const [permissionsForSingleUseCommands, setPermissionsForSingleUseCommands] = useState({
     create: false,
     togetter: [],
   });
@@ -40,11 +40,11 @@ const ManageCommandsProcess = ({
       }
     };
     const initialValue = {};
-    Object.entries(permissionSettingsForBroadcastUseCommands).forEach((entry) => {
+    Object.entries(permissionsForBroadcastUseCommands).forEach((entry) => {
       const [commandName, value] = entry;
       initialValue[commandName] = getPermissionTypeFromValue(value);
     });
-    Object.entries(permissionSettingsForSingleUseCommands).forEach((entry) => {
+    Object.entries(permissionsForSingleUseCommands).forEach((entry) => {
       const [commandName, value] = entry;
       initialValue[commandName] = getPermissionTypeFromValue(value);
     });
@@ -73,12 +73,12 @@ const ManageCommandsProcess = ({
     return newState;
   };
 
-  const updatePermissionSettingsForBroadcastUseCommands = (e) => {
+  const updatepermissionsForBroadcastUseCommands = (e) => {
     const { target } = e;
     const { name: commandName, value } = target;
 
     // update state
-    setPermissionSettingsForBroadcastUseCommands((prevState) => {
+    setPermissionsForBroadcastUseCommands((prevState) => {
       return getUpdatedPermissionSettings(prevState, commandName, value);
     });
     setCurrentPermissionTypes((prevState) => {
@@ -88,12 +88,12 @@ const ManageCommandsProcess = ({
     });
   };
 
-  const updatePermissionSettingsForSingleUseCommands = (e) => {
+  const updatepermissionsForSingleUseCommands = (e) => {
     const { target } = e;
     const { name: commandName, value } = target;
 
     // update state
-    setPermissionSettingsForSingleUseCommands((prevState) => {
+    setPermissionsForSingleUseCommands((prevState) => {
       return getUpdatedPermissionSettings(prevState, commandName, value);
     });
     setCurrentPermissionTypes((prevState) => {
@@ -118,7 +118,7 @@ const ManageCommandsProcess = ({
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setPermissionSettingsForBroadcastUseCommands((prevState) => {
+    setPermissionsForBroadcastUseCommands((prevState) => {
       return getUpdatedChannelsList(prevState, commandName, value);
     });
   };
@@ -127,7 +127,7 @@ const ManageCommandsProcess = ({
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setPermissionSettingsForSingleUseCommands((prevState) => {
+    setPermissionsForSingleUseCommands((prevState) => {
       return getUpdatedChannelsList(prevState, commandName, value);
     });
   };
@@ -169,7 +169,7 @@ const ManageCommandsProcess = ({
                 const hiddenClass = currentPermissionTypes[commandName] === permissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
                 return (
-                  <div className="row-6 my-1 mb-2" key={commandName}>
+                  <div className="row-5 my-1 mb-2" key={commandName}>
                     <div className="row align-items-center mb-3">
                       <p className="col my-auto text-capitalize align-middle">{commandName}</p>
                       <div className="col dropdown">
@@ -196,7 +196,7 @@ const ManageCommandsProcess = ({
                             type="button"
                             name={commandName}
                             value={permissionTypes.ALLOW_ALL}
-                            onClick={updatePermissionSettingsForBroadcastUseCommands}
+                            onClick={updatepermissionsForBroadcastUseCommands}
                           >
                             {t('admin:slack_integration.accordion.allow_all_long')}
                           </button>
@@ -205,7 +205,7 @@ const ManageCommandsProcess = ({
                             type="button"
                             name={commandName}
                             value={permissionTypes.DENY_ALL}
-                            onClick={updatePermissionSettingsForBroadcastUseCommands}
+                            onClick={updatepermissionsForBroadcastUseCommands}
                           >
                             {t('admin:slack_integration.accordion.deny_all_long')}
                           </button>
@@ -214,7 +214,7 @@ const ManageCommandsProcess = ({
                             type="button"
                             name={commandName}
                             value={permissionTypes.ALLOW_SPECIFIED}
-                            onClick={updatePermissionSettingsForBroadcastUseCommands}
+                            onClick={updatepermissionsForBroadcastUseCommands}
                           >
                             {t('admin:slack_integration.accordion.allow_specified_long')}
                           </button>
@@ -226,7 +226,7 @@ const ManageCommandsProcess = ({
                         className="form-control"
                         type="textarea"
                         name={commandName}
-                        defaultValue={getDefaultValueForChannelsTextArea(permissionSettingsForBroadcastUseCommands, commandName)}
+                        defaultValue={getDefaultValueForChannelsTextArea(permissionsForBroadcastUseCommands, commandName)}
                         onChange={updateChannelsListForBroadcastUseCommands}
                       />
                       <p className="form-text text-muted small">
@@ -248,7 +248,7 @@ const ManageCommandsProcess = ({
                 const hiddenClass = currentPermissionTypes[commandName] === permissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
                 return (
-                  <div className="row-6 my-1 mb-2" key={commandName}>
+                  <div className="row-5 my-1 mb-2" key={commandName}>
                     <div className="row align-items-center mb-3">
                       <p className="col my-auto text-capitalize align-middle">{commandName}</p>
                       <div className="col dropdown">
@@ -275,7 +275,7 @@ const ManageCommandsProcess = ({
                             type="button"
                             name={commandName}
                             value={permissionTypes.ALLOW_ALL}
-                            onClick={updatePermissionSettingsForSingleUseCommands}
+                            onClick={updatepermissionsForSingleUseCommands}
                           >
                             {t('admin:slack_integration.accordion.allow_all_long')}
                           </button>
@@ -284,7 +284,7 @@ const ManageCommandsProcess = ({
                             type="button"
                             name={commandName}
                             value={permissionTypes.DENY_ALL}
-                            onClick={updatePermissionSettingsForSingleUseCommands}
+                            onClick={updatepermissionsForSingleUseCommands}
                           >
                             {t('admin:slack_integration.accordion.deny_all_long')}
                           </button>
@@ -293,7 +293,7 @@ const ManageCommandsProcess = ({
                             type="button"
                             name={commandName}
                             value={permissionTypes.ALLOW_SPECIFIED}
-                            onClick={updatePermissionSettingsForSingleUseCommands}
+                            onClick={updatepermissionsForSingleUseCommands}
                           >
                             {t('admin:slack_integration.accordion.allow_specified_long')}
                           </button>
@@ -305,7 +305,7 @@ const ManageCommandsProcess = ({
                         className="form-control"
                         type="textarea"
                         name={commandName}
-                        defaultValue={getDefaultValueForChannelsTextArea(permissionSettingsForSingleUseCommands, commandName)}
+                        defaultValue={getDefaultValueForChannelsTextArea(permissionsForSingleUseCommands, commandName)}
                         onChange={updateChannelsListForSingleUseCommands}
                       />
                       <p className="form-text text-muted small">
