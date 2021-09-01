@@ -535,6 +535,7 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
+      // NOT MOCK DATA BUT REFER THIS GW-7006
       const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
         id,
         { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse },
@@ -557,6 +558,7 @@ module.exports = (crowi) => {
         togetter: ['random', 'admin'],
       };
       const slackAppIntegrationMock = await SlackAppIntegrationMock.findOneAndUpdate(
+        // MOCK DATA USE id IN req.params LIKE ABOVE
         { tokenPtoG: slackAppIntegration.tokenPtoG },
         {
           permissionsForBroadcastUseCommands: permissionsForBroadcastUseCommandsFromClient,
@@ -615,24 +617,23 @@ module.exports = (crowi) => {
     const { slackAppIntegrationId } = req.body;
     let slackBotToken;
     try {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
       // MOCK DATA DELETE THIS GW-6972 ---------------
       const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
       const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ _id: slackAppIntegrationId });
       // MOCK DATA DELETE THIS GW-6972 ---------------
-      if (slackAppIntegration == null) {
+      if (slackAppIntegrationMock == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
 
       // USE MOCK DATA HERE FOR cache creation at /relation-test GW-7021
       const result = await requestToProxyServer(
-        slackAppIntegration.tokenGtoP,
+        slackAppIntegrationMock.tokenGtoP,
         'post',
         '/g2s/relation-test',
         {
-          permissionsForBroadcastUseCommands: slackAppIntegration.permissionsForBroadcastUseCommands,
-          supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+          permissionsForBroadcastUseCommands: slackAppIntegrationMock.permissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: slackAppIntegrationMock.permissionsForSingleUseCommands,
         },
       );
 
