@@ -136,12 +136,12 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relationMocks = await this.relationMockRepository.createQueryBuilder('relation')
+    const relations = await this.relationMockRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
-    if (relationMocks.length === 0) {
+    if (relations.length === 0) {
       return res.json({
         blocks: [
           markdownSectionBlock('*No relation found.*'),
@@ -155,7 +155,7 @@ export class SlackCtrl {
       return res.json({
         blocks: [
           markdownSectionBlock('*Found Relations to GROWI.*'),
-          ...relationMocks.map(relation => markdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
+          ...relations.map(relation => markdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
         ],
       });
     }
@@ -166,40 +166,40 @@ export class SlackCtrl {
 
     const baseDate = new Date();
 
-    const relationMocksForSingleUse:RelationMock[] = [];
-    await Promise.all(relationMocks.map(async(relation) => {
+    const relationsForSingleUse:RelationMock[] = [];
+    await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
-        relationMocksForSingleUse.push(relation);
+        relationsForSingleUse.push(relation);
       }
     }));
 
     let isCommandPermitted = false;
 
-    if (relationMocksForSingleUse.length > 0) {
+    if (relationsForSingleUse.length > 0) {
       isCommandPermitted = true;
-      body.growiUrisForSingleUse = relationMocksForSingleUse.map(v => v.growiUri);
+      body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
       return this.selectGrowiService.process(growiCommand, authorizeResult, body);
     }
 
-    const relationMocksForBroadcastUse:RelationMock[] = [];
-    await Promise.all(relationMocks.map(async(relation) => {
+    const relationsForBroadcastUse:RelationMock[] = [];
+    await Promise.all(relations.map(async(relation) => {
       const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
-        relationMocksForBroadcastUse.push(relation);
+        relationsForBroadcastUse.push(relation);
       }
     }));
 
     /*
      * forward to GROWI server
      */
-    if (relationMocksForBroadcastUse.length > 0) {
+    if (relationsForBroadcastUse.length > 0) {
       isCommandPermitted = true;
-      this.sendCommand(growiCommand, relationMocksForBroadcastUse, body);
+      this.sendCommand(growiCommand, relationsForBroadcastUse, body);
     }
 
     if (!isCommandPermitted) {
-      const botToken = relationMocks[0].installation?.data.bot?.token;
+      const botToken = relations[0].installation?.data.bot?.token;
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(botToken!);
