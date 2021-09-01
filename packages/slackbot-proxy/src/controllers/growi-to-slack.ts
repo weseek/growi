@@ -133,9 +133,9 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relation = await this.relationMockRepository.createQueryBuilder('relation_mock')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation')
       .where('tokenGtoP = :token', { token: tokenGtoP })
-      .leftJoinAndSelect('relation_mock.installation', 'installation')
+      .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
 
     // Returns the result of the test if it already exists
@@ -205,7 +205,7 @@ export class GrowiToSlackCtrl {
      * this code represents the creation of cache (Relation schema) using request from GROWI
      */
     // Transaction is not considered because it is used infrequently
-    const response = await this.relationMockRepository.createQueryBuilder('relation_mock')
+    const response = await this.relationMockRepository.createQueryBuilder('relation')
       .insert()
       .values({
         installation: order.installation,
