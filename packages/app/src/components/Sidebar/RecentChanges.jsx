@@ -54,7 +54,7 @@ function LargePageItem({ page }) {
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
-          <div className="mt-1 mb-2">
+          <div className="grw-tag-labels mt-1 mb-2">
             { tagElements }
           </div>
           <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
