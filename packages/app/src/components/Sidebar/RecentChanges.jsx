@@ -213,6 +213,7 @@ class RecentChanges extends React.Component {
       </>
     );
   }
+
 }
 
 /**
