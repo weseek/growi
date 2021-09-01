@@ -29,15 +29,13 @@ const ManageCommandsProcess = ({
   });
   const getInitialCurrentPermissionTypes = () => {
     const getPermissionTypeFromValue = (value) => {
-      if (value === true) {
-        return PermissionTypes.ALLOW_ALL;
-      }
-      if (value === false) {
-        return PermissionTypes.DENY_ALL;
-      }
       if (Array.isArray(value)) {
         return PermissionTypes.ALLOW_SPECIFIED;
       }
+      if (typeof value === 'boolean') {
+        return value ? PermissionTypes.ALLOW_ALL : PermissionTypes.DENY_ALL;
+      }
+      logger.error('The value type must be boolean or string[]');
     };
     const initialValue = {};
     Object.entries(permissionsForBroadcastUseCommandsState).forEach((entry) => {
@@ -133,7 +131,7 @@ const ManageCommandsProcess = ({
   };
 
   const getDefaultValueForChannelsTextArea = (permissionSettings, commandName) => {
-    if (permissionSettings[commandName] === undefined) throw new Error('Must be implemented');
+    if (permissionSettings[commandName] === undefined) logger.error('Must be implemented');
     if (typeof permissionSettings[commandName] === 'boolean') return '';
 
     return permissionSettings[commandName].join(',');
