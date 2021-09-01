@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:SlackIntegration:ManageCommandsProcess');
 
 // TODO: Add permittedChannelsForEachCommand to use data from server (props must have it) GW-7006
 const ManageCommandsProcess = ({
-  apiv3Put, slackAppIntegrationId, supportedCommandsForBroadcastUse, supportedCommandsForSingleUse,
+  apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
 }) => {
   const { t } = useTranslation();
   const permissionTypes = {
@@ -143,8 +143,8 @@ const ManageCommandsProcess = ({
   const updateCommandsHandler = async() => {
     try {
       await apiv3Put(`/slack-integration-settings/${slackAppIntegrationId}/supported-commands`, {
-        supportedCommandsForBroadcastUse: ['REWRITE'],
-        supportedCommandsForSingleUse: ['REWRITE'],
+        permissionsForBroadcastUseCommands: ['REWRITE'],
+        permissionsForSingleUseCommands: ['REWRITE'],
       });
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
@@ -337,11 +337,8 @@ const ManageCommandsProcess = ({
 ManageCommandsProcess.propTypes = {
   apiv3Put: PropTypes.func,
   slackAppIntegrationId: PropTypes.string.isRequired,
-  // TODO: DEFINE PROP TYPES GW-7006
-  // supportedCommandsForBroadcastUse: PropTypes.object.isRequired,
-  // supportedCommandsForSingleUse: PropTypes.object.isRequired,
-  supportedCommandsForBroadcastUse: PropTypes.arrayOf(PropTypes.string),
-  supportedCommandsForSingleUse: PropTypes.arrayOf(PropTypes.string),
+  permissionsForBroadcastUseCommands: PropTypes.object.isRequired,
+  permissionsForSingleUseCommands: PropTypes.object.isRequired,
 };
 
 export default ManageCommandsProcess;

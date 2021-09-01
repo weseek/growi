@@ -313,8 +313,8 @@ const WithProxyAccordions = (props) => {
       content: <ManageCommandsProcess
         apiv3Put={props.appContainer.apiv3.put}
         slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
+        permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
+        permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
       />,
     },
     '④': {
@@ -357,8 +357,8 @@ const WithProxyAccordions = (props) => {
       content: <ManageCommandsProcess
         apiv3Put={props.appContainer.apiv3.put}
         slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
+        permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
+        permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
       />,
     },
     '⑥': {
@@ -410,8 +410,8 @@ WithProxyAccordions.propTypes = {
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
-  supportedCommandsForBroadcastUse: PropTypes.arrayOf(PropTypes.string),
-  supportedCommandsForSingleUse: PropTypes.arrayOf(PropTypes.string),
+  permissionsForBroadcastUseCommands: PropTypes.arrayOf(PropTypes.string),
+  permissionsForSingleUseCommands: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default WithProxyAccordionsWrapper;
