@@ -207,6 +207,7 @@ export default class EditorContainer extends Container {
     this.setState({
       isTextlintEnabled,
     });
+    return isTextlintEnabled;
   }
 
 }
