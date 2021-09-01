@@ -138,7 +138,7 @@ class OptionsSelector extends React.Component {
 
   async switchTextlintEnabledHandler() {
     const newVal = !this.state.isEnabledTextlint;
-    await this.setState({ isEnabledTextlint: newVal });
+    this.setState({ isEnabledTextlint: newVal });
     this.updateIsTextlintEnabledToDB(newVal);
   }
 
