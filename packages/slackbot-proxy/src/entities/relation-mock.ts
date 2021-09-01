@@ -4,13 +4,8 @@ import {
 import { differenceInMilliseconds } from 'date-fns';
 import { Installation } from './installation';
 
-
-// expected data see below
-//     create: ['srv', 'admin'],
-//     togetter: false,
-//     search: ['admin'],
-interface supportedCommandInterface {
-   [commandName: string]: boolean | string[]
+interface PermissionSettingsInterface {
+  [commandName: string]: boolean | string[],
 }
 
 @Entity()
@@ -41,10 +36,10 @@ export class RelationMock {
   growiUri: string;
 
   @Column({ type: 'json' })
-  permissionsForBroadcastUseCommands: supportedCommandInterface;
+  permissionsForBroadcastUseCommands: PermissionSettingsInterface;
 
   @Column({ type: 'json' })
-  permissionsForSingleUseCommands: supportedCommandInterface;
+  permissionsForSingleUseCommands: PermissionSettingsInterface;
 
   @CreateDateColumn()
   expiredAtCommands: Date;
