@@ -120,8 +120,28 @@ export class RelationsService {
     return permission;
   }
 
+
+  async checkPermissionForCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
+    const syncedRelation = await this.syncRelation(relation, baseDate);
+    if (syncedRelation == null) {
+      return false;
+    }
+
+    const permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
+
+    if (permission == null) {
+      return false;
+    }
+
+    if (Array.isArray(permission)) {
+      return permission.includes(channelName);
+    }
+
+    return permission;
+  }
+
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  postNotPermissionMessage(relations:RelationMock[], commandName:string, body:any):Promise<ChatPostEphemeralResponse> {
+  postNotAllowedMessage(relations:RelationMock[], commandName:string, body:any):Promise<ChatPostEphemeralResponse> {
     const botToken = relations[0].installation?.data.bot?.token;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const client = generateWebClient(botToken!);
@@ -136,9 +156,9 @@ export class RelationsService {
     });
   }
 
-  isPermitted = false;
+  isPermittedForInteractions = false;
 
-  permission:boolean|string[];
+  permissionForInteractions:boolean|string[];
 
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -149,27 +169,27 @@ export class RelationsService {
     const syncedRelation = await this.syncRelation(relation, baseDate);
 
     if (syncedRelation == null) {
-      this.isPermitted = false;
+      this.isPermittedForInteractions = false;
       return;
     }
     const singleUse = Object.keys(relation.supportedCommandsForSingleUse);
     const broadCastUse = Object.keys(relation.supportedCommandsForBroadcastUse);
 
     [...singleUse, ...broadCastUse].forEach(async(commandName) => {
-      this.permission = relation.supportedCommandsForSingleUse[commandName];
+      this.permissionForInteractions = relation.supportedCommandsForSingleUse[commandName];
 
-      if (this.permission == null) {
-        this.permission = relation.supportedCommandsForBroadcastUse[commandName];
+      if (this.permissionForInteractions == null) {
+        this.permissionForInteractions = relation.supportedCommandsForBroadcastUse[commandName];
       }
 
       // permission check
-      if (this.permission === true) {
-        this.isPermitted = true;
+      if (this.permissionForInteractions === true) {
+        this.isPermittedForInteractions = true;
         return;
       }
 
-      if (Array.isArray(this.permission)) {
-        this.isPermitted = this.permission.includes(channelName);
+      if (Array.isArray(this.permissionForInteractions)) {
+        this.isPermittedForInteractions = this.permissionForInteractions.includes(channelName);
         return;
       }
 
@@ -181,8 +201,8 @@ export class RelationsService {
         return;
       }
 
-      if (!this.isPermitted) {
-        this.postNotPermissionMessage(relations, commandName, body);
+      if (!this.isPermittedForInteractions) {
+        this.postNotAllowedMessage(relations, commandName, body);
       }
     });
   }

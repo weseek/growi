@@ -169,14 +169,12 @@ export class SlackCtrl {
     const baseDate = new Date();
 
     const relationsForSingleUse:RelationMock[] = [];
-
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
+      const isSupported = await this.relationsService.checkPermissionForCommands(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
       if (isSupported) {
         return relationsForSingleUse.push(relation);
       }
     }));
-
 
     if (relationsForSingleUse.length > 0) {
       body.growiUrisForSingleUse = relationsForSingleUse.map(v => v.growiUri);
@@ -185,15 +183,13 @@ export class SlackCtrl {
 
     const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(
-        relation, growiCommand.growiCommandType, body.channel_name, baseDate,
-      );
+      const isSupported = await this.relationsService.checkPermissionForCommands(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
 
       if (isSupported) {
         return relationsForBroadcastUse.push(relation);
       }
 
-      this.relationsService.postNotPermissionMessage(relations, growiCommand.growiCommandType, body);
+      this.relationsService.postNotAllowedMessage(relations, growiCommand.growiCommandType, body);
     }));
 
     /*
