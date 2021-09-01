@@ -234,6 +234,35 @@ const ManageCommandsProcess = ({
     );
   };
 
+  PermissionSettingForEachCommandComponent.propTypes = {
+    commandName: PropTypes.string,
+    commandUsageType: PropTypes.string,
+  };
+
+  const PermissionSettingsForEachCommandTypeComponent = ({ commandUsageType }) => {
+    const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
+    const defaultCommandsName = isCommandBroadcastUse ? defaultSupportedCommandsNameForBroadcastUse : defaultSupportedCommandsNameForSingleUse;
+    return (
+      <>
+        <p className="font-weight-bold mb-0">{isCommandBroadcastUse ? 'Multiple GROWI' : 'Single GROWI'}</p>
+        <p className="text-muted mb-2">
+          {isCommandBroadcastUse ? t('admin:slack_integration.accordion.multiple_growi_command') : t('admin:slack_integration.accordion.single_growi_command')}
+        </p>
+        <div className="custom-control custom-checkbox">
+          <div className="row mb-5 d-block">
+            {defaultCommandsName.map((commandName) => {
+              return <PermissionSettingForEachCommandComponent commandName={commandName} commandUsageType={commandUsageType} />;
+            })}
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  PermissionSettingsForEachCommandTypeComponent.propTypes = {
+    commandUsageType: PropTypes.string,
+  };
+
 
   return (
     <div className="py-4 px-5">
@@ -241,25 +270,9 @@ const ManageCommandsProcess = ({
       <div className="row d-flex flex-column align-items-center">
 
         <div className="col-8">
-          <p className="font-weight-bold mb-0">Multiple GROWI</p>
-          <p className="text-muted mb-2">{t('admin:slack_integration.accordion.multiple_growi_command')}</p>
-          <div className="custom-control custom-checkbox">
-            <div className="row mb-5 d-block">
-              {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
-                return <PermissionSettingForEachCommandComponent commandName={commandName} commandUsageType={CommandUsageTypes.BROADCAST_USE} />;
-              })}
-            </div>
-          </div>
-
-          <p className="font-weight-bold mb-0 mt-4">Single GROWI</p>
-          <p className="text-muted mb-2">{t('admin:slack_integration.accordion.single_growi_command')}</p>
-          <div className="custom-control custom-checkbox">
-            <div className="row mb-5 d-block">
-              {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
-                return <PermissionSettingForEachCommandComponent commandName={commandName} commandUsageType={CommandUsageTypes.SINGLE_USE} />;
-              })}
-            </div>
-          </div>
+          {Object.values(CommandUsageTypes).map((commandUsageType) => {
+            return <PermissionSettingsForEachCommandTypeComponent commandUsageType={commandUsageType} />;
+          })}
         </div>
       </div>
       <div className="row">
