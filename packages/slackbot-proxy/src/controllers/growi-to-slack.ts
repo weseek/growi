@@ -113,12 +113,12 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // MOCK DATA MODIFY THIS GW 6972 -----------
-    const relationMock = await this.relationMockRepository.update(
+    const relation = await this.relationMockRepository.update(
       { tokenGtoP }, { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands },
     );
     // MOCK DATA MODIFY THIS GW 6972 -----------
 
-    return res.send({ relationMock });
+    return res.send({ relation });
   }
 
   @Post('/relation-test')
@@ -133,22 +133,22 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relationMock = await this.relationMockRepository.createQueryBuilder('relation_mock')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation_mock')
       .where('tokenGtoP = :token', { token: tokenGtoP })
       .leftJoinAndSelect('relation_mock.installation', 'installation')
       .getOne();
 
     // Returns the result of the test if it already exists
-    if (relationMock != null) {
-      logger.debug('relation found', relationMock);
+    if (relation != null) {
+      logger.debug('relation found', relation);
 
-      const token = relationMock.installation.data.bot?.token;
+      const token = relation.installation.data.bot?.token;
       if (token == null) {
         throw createError(400, 'installation is invalid');
       }
 
       try {
-        await this.requestToGrowi(relationMock.growiUri, relationMock.tokenPtoG);
+        await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
       }
       catch (err) {
         logger.error(err);
@@ -160,7 +160,7 @@ export class GrowiToSlackCtrl {
         throw createError(400, `failed to get connection. err: ${status.error}`);
       }
 
-      return res.send({ relationMock, slackBotToken: token });
+      return res.send({ relation, slackBotToken: token });
     }
 
     // retrieve latest Order with Installation
@@ -227,7 +227,7 @@ export class GrowiToSlackCtrl {
     // Find the generated relation
     const generatedRelationMock = await this.relationMockRepository.findOne({ id: response.identifiers[0].id });
 
-    return res.send({ relationMock: generatedRelationMock, slackBotToken: token });
+    return res.send({ relation: generatedRelationMock, slackBotToken: token });
   }
 
   injectGrowiUri(req: GrowiReq, growiUri: string): void {
@@ -274,16 +274,16 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relationMock = await this.relationMockRepository.createQueryBuilder('relation')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation')
       .where('tokenGtoP = :token', { token: tokenGtoP })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
 
-    if (relationMock == null) {
+    if (relation == null) {
       return res.webClientErr('relation is invalid', 'invalid_relation');
     }
 
-    const token = relationMock.installation.data.bot?.token;
+    const token = relation.installation.data.bot?.token;
     if (token == null) {
       return res.webClientErr('installation is invalid', 'invalid_installation');
     }
@@ -291,7 +291,7 @@ export class GrowiToSlackCtrl {
     const client = generateWebClient(token);
 
     try {
-      this.injectGrowiUri(req, relationMock.growiUri);
+      this.injectGrowiUri(req, relation.growiUri);
 
       const opt = req.body;
       opt.headers = req.headers;

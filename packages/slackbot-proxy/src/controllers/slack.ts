@@ -65,21 +65,21 @@ export class SlackCtrl {
    * @param body
    * @returns
    */
-  private async sendCommand(growiCommand: GrowiCommand, relationMocks: RelationMock[], body: any) {
-    if (relationMocks.length === 0) {
+  private async sendCommand(growiCommand: GrowiCommand, relations: RelationMock[], body: any) {
+    if (relations.length === 0) {
       throw new Error('relations must be set');
     }
-    const botToken = relationMocks[0].installation?.data.bot?.token; // relations[0] should be exist
+    const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
 
-    const promises = relationMocks.map((relationMock: RelationMock) => {
+    const promises = relations.map((relation: RelationMock) => {
       // generate API URL
-      const url = new URL('/_api/v3/slack-integration/proxied/commands', relationMock.growiUri);
+      const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
       return axios.post(url.toString(), {
         ...body,
         growiCommand,
       }, {
         headers: {
-          'x-growi-ptog-tokens': relationMock.tokenPtoG,
+          'x-growi-ptog-tokens': relation.tokenPtoG,
         },
       });
     });
@@ -155,7 +155,7 @@ export class SlackCtrl {
       return res.json({
         blocks: [
           markdownSectionBlock('*Found Relations to GROWI.*'),
-          ...relationMocks.map(relationMock => markdownSectionBlock(`GROWI url: ${relationMock.growiUri}`)),
+          ...relationMocks.map(relation => markdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
         ],
       });
     }
@@ -167,10 +167,10 @@ export class SlackCtrl {
     const baseDate = new Date();
 
     const relationMocksForSingleUse:RelationMock[] = [];
-    await Promise.all(relationMocks.map(async(relationMock) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relationMock, growiCommand.growiCommandType, baseDate);
+    await Promise.all(relationMocks.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForSingleUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
-        relationMocksForSingleUse.push(relationMock);
+        relationMocksForSingleUse.push(relation);
       }
     }));
 
@@ -183,10 +183,10 @@ export class SlackCtrl {
     }
 
     const relationMocksForBroadcastUse:RelationMock[] = [];
-    await Promise.all(relationMocks.map(async(relationMock) => {
-      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relationMock, growiCommand.growiCommandType, baseDate);
+    await Promise.all(relationMocks.map(async(relation) => {
+      const isSupported = await this.relationsService.isSupportedGrowiCommandForBroadcastUse(relation, growiCommand.growiCommandType, baseDate);
       if (isSupported) {
-        relationMocksForBroadcastUse.push(relationMock);
+        relationMocksForBroadcastUse.push(relation);
       }
     }));
 
@@ -265,7 +265,7 @@ export class SlackCtrl {
     // forward to GROWI server
     if (callBackId === 'select_growi') {
       const selectedGrowiInformation = await this.selectGrowiService.handleSelectInteraction(installation, payload);
-      return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relationMock], selectedGrowiInformation.sendCommandBody);
+      return this.sendCommand(selectedGrowiInformation.growiCommand, [selectedGrowiInformation.relation], selectedGrowiInformation.sendCommandBody);
     }
 
     /*
