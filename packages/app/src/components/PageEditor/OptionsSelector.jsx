@@ -34,7 +34,7 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
-      isEnabledTextlint: false,
+      isTextlintEnabled: false,
     };
 
     this.availableThemes = [
@@ -63,7 +63,7 @@ class OptionsSelector extends React.Component {
   async componentDidMount() {
     const { editorContainer } = this.props;
     const isTextlintEnabled = await editorContainer.retrieveEditorSettings();
-    this.setState({ isEnabledTextlint: isTextlintEnabled });
+    this.setState({ isTextlintEnabled });
   }
 
 
@@ -137,8 +137,8 @@ class OptionsSelector extends React.Component {
   }
 
   async switchTextlintEnabledHandler() {
-    const newVal = !this.state.isEnabledTextlint;
-    this.setState({ isEnabledTextlint: newVal });
+    const newVal = !this.state.isTextlintEnabled;
+    this.setState({ isTextlintEnabled: newVal });
     this.updateIsTextlintEnabledToDB(newVal);
   }
 
@@ -319,7 +319,7 @@ class OptionsSelector extends React.Component {
   }
 
   renderIsTextlintEnabledMenuItem() {
-    const isActive = this.state.isEnabledTextlint;
+    const isActive = this.state.isTextlintEnabled;
 
     const iconClasses = ['text-info'];
     if (isActive) {
