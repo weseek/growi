@@ -426,8 +426,6 @@ module.exports = (crowi) => {
         permissionsForBroadcastUseCommands: initialSupportedCommandsForBroadcastUse,
         permissionsForSingleUseCommands: initialSupportedCommandsForSingleUse,
       });
-      console.log('ここやでえ');
-      console.log(slackAppTokensMOCK);
       // MOCK DATA DELETE THIS GW-6972 ---------------
       return res.apiv3(slackAppTokensMOCK, 200);
     }
@@ -547,11 +545,10 @@ module.exports = (crowi) => {
       const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
       // MOCK DATA FROM CLIENT assume that these data were sent from client
       const permissionsForBroadcastUseCommandsFromClient = {
-        search: true,
+        search: false,
       };
       const permissionsForSingleUseCommandsFromClient = {
-        create: false,
-        togetter: ['random', 'admin'],
+        create: ['random'],
       };
       const slackAppIntegrationMock = await SlackAppIntegrationMock.findOneAndUpdate(
         // MOCK DATA USE id IN req.params LIKE ABOVE

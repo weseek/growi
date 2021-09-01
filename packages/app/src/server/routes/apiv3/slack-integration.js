@@ -8,7 +8,8 @@ const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps }
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
-const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+const SlackAppIntegration = mongoose.model('SlackAppIntegrationMock');
+const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
 module.exports = (crowi) => {
@@ -26,14 +27,15 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
+    // MOCK DATA MODIFY THIS WITH SlackAppIntegration GW-7006 --------------
+    const slackAppIntegrationMockCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
-      slackAppIntegrationCount,
+      slackAppIntegrationMockCount,
     });
 
-    if (slackAppIntegrationCount === 0) {
+    if (slackAppIntegrationMockCount === 0) {
       return res.status(403).send({
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`.\n'
         + 'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. '
@@ -260,7 +262,8 @@ module.exports = (crowi) => {
     // MOCK DATA DELETE THIS GW-6972 ---------
     const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
     const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
-    return res.apiv3({ slackAppIntegrationMock });
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegrationMock;
+    return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
     // MOCK DATA DELETE THIS GW-6972 ---------
 
     // const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });

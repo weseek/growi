@@ -213,7 +213,7 @@ export class GrowiToSlackCtrl {
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
         permissionsForBroadcastUseCommands: req.body.permissionsForBroadcastUseCommands,
-        permissionsForSingleUseCommands: req.body.permissionsForBroadcastUseCommands,
+        permissionsForSingleUseCommands: req.body.permissionsForSingleUseCommands,
         expiredAtCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
@@ -225,9 +225,9 @@ export class GrowiToSlackCtrl {
     // MOCK DATA DELETE THIS GW-6972 7004 ---------------
 
     // Find the generated relation
-    const generatedRelation = await this.relationRepository.findOne({ id: response.identifiers[0].id });
+    const generatedRelationMock = await this.relationMockRepository.findOne({ id: response.identifiers[0].id });
 
-    return res.send({ relation: generatedRelation, slackBotToken: token });
+    return res.send({ relationMock: generatedRelationMock, slackBotToken: token });
   }
 
   injectGrowiUri(req: GrowiReq, growiUri: string): void {
@@ -274,16 +274,16 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relation = await this.relationRepository.createQueryBuilder('relation')
+    const relationMock = await this.relationMockRepository.createQueryBuilder('relation')
       .where('tokenGtoP = :token', { token: tokenGtoP })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
 
-    if (relation == null) {
+    if (relationMock == null) {
       return res.webClientErr('relation is invalid', 'invalid_relation');
     }
 
-    const token = relation.installation.data.bot?.token;
+    const token = relationMock.installation.data.bot?.token;
     if (token == null) {
       return res.webClientErr('installation is invalid', 'invalid_installation');
     }
@@ -291,7 +291,7 @@ export class GrowiToSlackCtrl {
     const client = generateWebClient(token);
 
     try {
-      this.injectGrowiUri(req, relation.growiUri);
+      this.injectGrowiUri(req, relationMock.growiUri);
 
       const opt = req.body;
       opt.headers = req.headers;

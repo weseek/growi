@@ -32,12 +32,11 @@ export class RelationsService {
     /**
      * this code represents the update of cache (Relation schema) using request from GROWI
      */
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data;
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data.data;
     if (relationMock !== null) {
       relationMock.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
       relationMock.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
       relationMock.expiredAtCommands = addHours(new Date(), 48);
-
       return this.relationMockRepository.save(relationMock);
     }
     throw Error('No relation mock exists.');
@@ -80,7 +79,7 @@ export class RelationsService {
     }
     // MOCK DATA THIS CODE SHOULD BE IMPLEMENTED IN GW-7017
     // return relationMock.supportedCommandsForSingleUse.includes(growiCommandType);
-    return true;
+    return false;
     // MOCK DATA THIS CODE SHOULD BE IMPLEMENTED IN GW-7017
   }
 
