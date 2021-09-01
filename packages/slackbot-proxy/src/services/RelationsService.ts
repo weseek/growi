@@ -15,43 +15,43 @@ export class RelationsService {
   @Inject()
   relationMockRepository: RelationMockRepository;
 
-  async getSupportedGrowiCommands(relationMock:RelationMock):Promise<any> {
+  async getSupportedGrowiCommands(relation:RelationMock):Promise<any> {
     // generate API URL
-    const url = new URL('/_api/v3/slack-integration/supported-commands', relationMock.growiUri);
+    const url = new URL('/_api/v3/slack-integration/supported-commands', relation.growiUri);
     return axios.get(url.toString(), {
       headers: {
-        'x-growi-ptog-tokens': relationMock.tokenPtoG,
+        'x-growi-ptog-tokens': relation.tokenPtoG,
       },
     });
   }
 
-  async syncSupportedGrowiCommands(relationMock:RelationMock): Promise<RelationMock> {
-    const res = await this.getSupportedGrowiCommands(relationMock);
+  async syncSupportedGrowiCommands(relation:RelationMock): Promise<RelationMock> {
+    const res = await this.getSupportedGrowiCommands(relation);
 
     // MOCK DATA MODIFY THIS GW-6972 ---------------
     /**
      * this code represents the update of cache (Relation schema) using request from GROWI
      */
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data.data;
-    if (relationMock !== null) {
-      relationMock.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
-      relationMock.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
-      relationMock.expiredAtCommands = addHours(new Date(), 48);
-      return this.relationMockRepository.save(relationMock);
+    if (relation !== null) {
+      relation.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
+      relation.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
+      relation.expiredAtCommands = addHours(new Date(), 48);
+      return this.relationMockRepository.save(relation);
     }
-    throw Error('No relation mock exists.');
+    throw Error('No relation exists.');
     // MOCK DATA MODIFY THIS GW-6972 ---------------
   }
 
   // MODIFY THIS METHOD USING ORIGINAL RELATION MODEL GW-6972
-  async syncRelation(relationMock:RelationMock, baseDate:Date):Promise<RelationMock|null> {
-    if (relationMock == null) return null;
+  async syncRelation(relation:RelationMock, baseDate:Date):Promise<RelationMock|null> {
+    if (relation == null) return null;
 
-    const distanceMillisecondsToExpiredAt = relationMock.getDistanceInMillisecondsToExpiredAt(baseDate);
+    const distanceMillisecondsToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
 
     if (distanceMillisecondsToExpiredAt < 0) {
       try {
-        return await this.syncSupportedGrowiCommands(relationMock);
+        return await this.syncSupportedGrowiCommands(relation);
       }
       catch (err) {
         logger.error(err);
@@ -62,18 +62,18 @@ export class RelationsService {
     // 24 hours
     if (distanceMillisecondsToExpiredAt < 24 * 60 * 60 * 1000) {
       try {
-        this.syncSupportedGrowiCommands(relationMock);
+        this.syncSupportedGrowiCommands(relation);
       }
       catch (err) {
         logger.error(err);
       }
     }
 
-    return relationMock;
+    return relation;
   }
 
-  async isSupportedGrowiCommandForSingleUse(relationMock:RelationMock, growiCommandType:string, baseDate:Date):Promise<boolean> {
-    const syncedRelation = await this.syncRelation(relationMock, baseDate);
+  async isSupportedGrowiCommandForSingleUse(relation:RelationMock, growiCommandType:string, baseDate:Date):Promise<boolean> {
+    const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
       return false;
     }
@@ -83,8 +83,8 @@ export class RelationsService {
     // MOCK DATA THIS CODE SHOULD BE IMPLEMENTED IN GW-7017
   }
 
-  async isSupportedGrowiCommandForBroadcastUse(relationMock:RelationMock, growiCommandType:string, baseDate:Date):Promise<boolean> {
-    const syncedRelation = await this.syncRelation(relationMock, baseDate);
+  async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, baseDate:Date):Promise<boolean> {
+    const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
       return false;
     }

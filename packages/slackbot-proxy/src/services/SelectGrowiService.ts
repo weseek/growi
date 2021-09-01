@@ -10,7 +10,7 @@ import { RelationMockRepository } from '~/repositories/relation-mock';
 
 
 export type SelectedGrowiInformation = {
-  relationMock: RelationMock,
+  relation: RelationMock,
   growiCommand: GrowiCommand,
   sendCommandBody: any,
 }
@@ -93,19 +93,19 @@ export class SelectGrowiService implements GrowiCommandProcessor {
     // ovverride trigger_id
     sendCommandBody.trigger_id = triggerId;
 
-    const relationMock = await this.relationMockRepository.createQueryBuilder('relation_mock')
-      .where('relation_mock.growiUri =:growiUri', { growiUri })
-      .andWhere('relation_mock.installationId = :id', { id: installation?.id })
-      .leftJoinAndSelect('relation_mock.installation', 'installation')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation')
+      .where('relation.growiUri =:growiUri', { growiUri })
+      .andWhere('relation.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
 
-    if (relationMock == null) {
+    if (relation == null) {
       // TODO: postEphemeralErrors
       throw new Error('No relation found.');
     }
 
     return {
-      relationMock,
+      relation,
       growiCommand,
       sendCommandBody,
     };
