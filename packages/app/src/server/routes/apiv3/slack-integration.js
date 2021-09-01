@@ -80,7 +80,7 @@ module.exports = (crowi) => {
     }
 
     // code below checks permission at channel level
-    const fromChannel = req.body.channel_name || payload.channel.name;
+    const fromChannel = req.body.channel_name; /* || payload.channel.name; */
     let isPermitted = false;
     [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
       // boolean or string[]
