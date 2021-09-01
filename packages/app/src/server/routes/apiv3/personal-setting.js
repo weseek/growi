@@ -486,7 +486,7 @@ module.exports = (crowi) => {
   router.put('/editor-settings', async(req, res) => {
     try {
       const query = { userId: req.user.id };
-      const update = { expire: new Date() };
+      const update = req.body;
       const options = { upsert: true, new: true };
       const response = await EditorSettings.findOneAndUpdate(query, update, options);
       return res.apiv3(response);
@@ -494,6 +494,41 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error(err);
       return res.apiv3Err('updating-editor-settings-failed');
+    }
+  });
+
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting:
+   *      get:
+   *        tags: [PersonalSetting]
+   *        operationId: getEditorSettings
+   *        summary: /personal-setting
+   *        description: Change editor preferences
+   *        responses:
+   *          200:
+   *            description: params of personal info
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: personal params
+   */
+  // router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  router.get('/editor-settings', async(req, res) => {
+    try {
+      // const query = { userId: req.user.id };
+      const query = { userId: '611f3aecea729b066107bf20' };
+      const response = await EditorSettings.findOne(query);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('getting-editor-settings-failed');
     }
   });
 

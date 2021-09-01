@@ -36,6 +36,8 @@ export default class EditorContainer extends Container {
       editorOptions: {},
       previewOptions: {},
       isTextlintEnabled: false,
+      commonTextlintRules: [],
+      japaneseTextlintRules: [],
 
       indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
@@ -198,15 +200,20 @@ export default class EditorContainer extends Container {
   }
 
 
-  /**
-   * Retrieve Editor Settings
-   */
-  async retrieveEditorSettings() {
-    const res = await this.appContainer.apiv3.get('/personal-setting');
-    const isTextlintEnabled = res.data.currentUser.editorCurrentSettings?.isTextlintEnabled;
-    this.setState({
-      isTextlintEnabled,
-    });
-  }
+  // /**
+  //  * Retrieve Editor Settings
+  //  */
+  // async retrieveEditorSettings() {
+  //   console.log('retrieve');
+  //   const { data } = await this.appContainer.apiv3.get('/personal-setting/editor-settings');
+  //   const isTextlintEnabled = data?.isTextlintEnabled;
+  //   const commonTextlintRules = data?.commonTextlintRules;
+  //   const japaneseTextlintRules = data?.japaneseTextlintRules;
+  //   this.setState({
+  //     isTextlintEnabled,
+  //     commonTextlintRules,
+  //     japaneseTextlintRules,
+  //   });
+  // }
 
 }
