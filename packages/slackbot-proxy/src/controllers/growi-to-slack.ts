@@ -101,14 +101,14 @@ export class GrowiToSlackCtrl {
   async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
 
     if (tokenGtoPs.length !== 1) {
       throw createError(400, 'installation is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
-    const relation = await this.relationMockRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+    const relation = await this.relationMockRepository.update({ tokenGtoP }, { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
 
     return res.send({ relation });
   }
@@ -200,8 +200,8 @@ export class GrowiToSlackCtrl {
         tokenGtoP: order.tokenGtoP,
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
-        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
-        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
+        permissionsForBroadcastUseCommands: req.body.permissionsForBroadcastUseCommands,
+        permissionsForSingleUseCommands: req.body.permissionsForSingleUseCommands,
         expiredAtCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487

@@ -67,60 +67,6 @@ export class RelationsService {
     return relation;
   }
 
-  // async isSupportedGrowiCommandForSingleUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
-  //   const syncedRelation = await this.syncRelation(relation, baseDate);
-
-  //   if (syncedRelation == null) {
-  //     return false;
-  //   }
-
-  //   const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
-
-  //   // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands
-  //   if (!commandRegExp.test(growiCommandType)) {
-  //     return false;
-  //   }
-
-  //   const permission = relation.supportedCommandsForSingleUse[growiCommandType];
-
-  //   if (permission == null) {
-  //     return false;
-  //   }
-
-  //   if (Array.isArray(permission)) {
-  //     return permission.includes(channelName);
-  //   }
-
-  //   return permission;
-  // }
-
-  // async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
-  //   const syncedRelation = await this.syncRelation(relation, baseDate);
-  //   if (syncedRelation == null) {
-  //     return false;
-  //   }
-
-  //   const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
-
-  //   // skip this forEach loop if the requested command is not in permissionsForSingleUseCommandskey
-  //   if (!commandRegExp.test(growiCommandType)) {
-  //     return false;
-  //   }
-
-  //   const permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
-
-  //   if (permission == null) {
-  //     return false;
-  //   }
-
-  //   if (Array.isArray(permission)) {
-  //     return permission.includes(channelName);
-  //   }
-
-  //   return permission;
-  // }
-
-
   async checkPermissionForCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
