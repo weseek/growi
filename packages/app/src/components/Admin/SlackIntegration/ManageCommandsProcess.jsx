@@ -13,10 +13,16 @@ const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
 }) => {
   const { t } = useTranslation();
+
   const PermissionTypes = {
     ALLOW_ALL: 'allowAll',
     DENY_ALL: 'denyAll',
     ALLOW_SPECIFIED: 'allowSpecified',
+  };
+
+  const CommandUsageTypes = {
+    BROADCAST_USE: 'broadcastUse',
+    SINGLE_USE: 'singleUse',
   };
 
   // TODO: use data from server GW-7006
@@ -71,7 +77,7 @@ const ManageCommandsProcess = ({
     return newState;
   };
 
-  const updatepermissionsForBroadcastUseCommandsState = (e) => {
+  const updatePermissionsForBroadcastUseCommandsState = (e) => {
     const { target } = e;
     const { name: commandName, value } = target;
 
@@ -86,7 +92,7 @@ const ManageCommandsProcess = ({
     });
   };
 
-  const updatepermissionsForSingleUseCommandsState = (e) => {
+  const updatePermissionsForSingleUseCommandsState = (e) => {
     const { target } = e;
     const { name: commandName, value } = target;
 
@@ -152,6 +158,82 @@ const ManageCommandsProcess = ({
     }
   };
 
+  const PermissionSettingForEachCommandComponent = ({ commandName, commandUsageType }) => {
+    const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
+    const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
+    return (
+      <div className="row-5 my-1 mb-2" key={commandName}>
+        <div className="row align-items-center mb-3">
+          <p className="col my-auto text-capitalize align-middle">{commandName}</p>
+          <div className="col dropdown">
+            <button
+              className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="true"
+            >
+              <span className="float-left">
+                {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_ALL
+                && t('admin:slack_integration.accordion.allow_all')}
+                {currentPermissionTypes[commandName] === PermissionTypes.DENY_ALL
+                && t('admin:slack_integration.accordion.deny_all')}
+                {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED
+                && t('admin:slack_integration.accordion.allow_specified')}
+              </span>
+            </button>
+            <div className="dropdown-menu">
+              <button
+                className="dropdown-item"
+                type="button"
+                name={commandName}
+                value={PermissionTypes.ALLOW_ALL}
+                onClick={isCommandBroadcastUse ? updatePermissionsForBroadcastUseCommandsState : updatePermissionsForSingleUseCommandsState}
+              >
+                {t('admin:slack_integration.accordion.allow_all_long')}
+              </button>
+              <button
+                className="dropdown-item"
+                type="button"
+                name={commandName}
+                value={PermissionTypes.DENY_ALL}
+                onClick={isCommandBroadcastUse ? updatePermissionsForBroadcastUseCommandsState : updatePermissionsForSingleUseCommandsState}
+              >
+                {t('admin:slack_integration.accordion.deny_all_long')}
+              </button>
+              <button
+                className="dropdown-item"
+                type="button"
+                name={commandName}
+                value={PermissionTypes.ALLOW_SPECIFIED}
+                onClick={isCommandBroadcastUse ? updatePermissionsForBroadcastUseCommandsState : updatePermissionsForSingleUseCommandsState}
+              >
+                {t('admin:slack_integration.accordion.allow_specified_long')}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className={`row-12 row-md-6 ${hiddenClass}`}>
+          <textarea
+            className="form-control"
+            type="textarea"
+            name={commandName}
+            defaultValue={getDefaultValueForChannelsTextArea(
+              isCommandBroadcastUse ? permissionsForBroadcastUseCommandsState : permissionsForSingleUseCommandsState,
+              commandName,
+            )}
+            onClick={isCommandBroadcastUse ? updateChannelsListForBroadcastUseCommandsState : updateChannelsListForSingleUseCommandsState}
+          />
+          <p className="form-text text-muted small">
+            {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
+            <br />
+          </p>
+        </div>
+      </div>
+    );
+  };
+
 
   return (
     <div className="py-4 px-5">
@@ -164,76 +246,7 @@ const ManageCommandsProcess = ({
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {defaultSupportedCommandsNameForBroadcastUse.map((commandName) => {
-                const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
-
-                return (
-                  <div className="row-5 my-1 mb-2" key={commandName}>
-                    <div className="row align-items-center mb-3">
-                      <p className="col my-auto text-capitalize align-middle">{commandName}</p>
-                      <div className="col dropdown">
-                        <button
-                          className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
-                          type="button"
-                          id="dropdownMenuButton"
-                          data-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="true"
-                        >
-                          <span className="float-left">
-                            {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_ALL
-                            && t('admin:slack_integration.accordion.allow_all')}
-                            {currentPermissionTypes[commandName] === PermissionTypes.DENY_ALL
-                            && t('admin:slack_integration.accordion.deny_all')}
-                            {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED
-                            && t('admin:slack_integration.accordion.allow_specified')}
-                          </span>
-                        </button>
-                        <div className="dropdown-menu">
-                          <button
-                            className="dropdown-item"
-                            type="button"
-                            name={commandName}
-                            value={PermissionTypes.ALLOW_ALL}
-                            onClick={updatepermissionsForBroadcastUseCommandsState}
-                          >
-                            {t('admin:slack_integration.accordion.allow_all_long')}
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            type="button"
-                            name={commandName}
-                            value={PermissionTypes.DENY_ALL}
-                            onClick={updatepermissionsForBroadcastUseCommandsState}
-                          >
-                            {t('admin:slack_integration.accordion.deny_all_long')}
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            type="button"
-                            name={commandName}
-                            value={PermissionTypes.ALLOW_SPECIFIED}
-                            onClick={updatepermissionsForBroadcastUseCommandsState}
-                          >
-                            {t('admin:slack_integration.accordion.allow_specified_long')}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`row-12 row-md-6 ${hiddenClass}`}>
-                      <textarea
-                        className="form-control"
-                        type="textarea"
-                        name={commandName}
-                        defaultValue={getDefaultValueForChannelsTextArea(permissionsForBroadcastUseCommandsState, commandName)}
-                        onChange={updateChannelsListForBroadcastUseCommandsState}
-                      />
-                      <p className="form-text text-muted small">
-                        {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
-                        <br />
-                      </p>
-                    </div>
-                  </div>
-                );
+                return <PermissionSettingForEachCommandComponent commandName={commandName} commandUsageType={CommandUsageTypes.BROADCAST_USE} />;
               })}
             </div>
           </div>
@@ -243,77 +256,7 @@ const ManageCommandsProcess = ({
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {defaultSupportedCommandsNameForSingleUse.map((commandName) => {
-                const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
-
-                return (
-                  <div className="row-5 my-1 mb-2" key={commandName}>
-                    <div className="row align-items-center mb-3">
-                      <p className="col my-auto text-capitalize align-middle">{commandName}</p>
-                      <div className="col dropdown">
-                        <button
-                          className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
-                          type="button"
-                          id="dropdownMenuButton"
-                          data-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="true"
-                        >
-                          <span className="float-left">
-                            {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_ALL
-                            && t('admin:slack_integration.accordion.allow_all')}
-                            {currentPermissionTypes[commandName] === PermissionTypes.DENY_ALL
-                            && t('admin:slack_integration.accordion.deny_all')}
-                            {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED
-                            && t('admin:slack_integration.accordion.allow_specified')}
-                          </span>
-                        </button>
-                        <div className="dropdown-menu">
-                          <button
-                            className="dropdown-item"
-                            type="button"
-                            name={commandName}
-                            value={PermissionTypes.ALLOW_ALL}
-                            onClick={updatepermissionsForSingleUseCommandsState}
-                          >
-                            {t('admin:slack_integration.accordion.allow_all_long')}
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            type="button"
-                            name={commandName}
-                            value={PermissionTypes.DENY_ALL}
-                            onClick={updatepermissionsForSingleUseCommandsState}
-                          >
-                            {t('admin:slack_integration.accordion.deny_all_long')}
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            type="button"
-                            name={commandName}
-                            value={PermissionTypes.ALLOW_SPECIFIED}
-                            onClick={updatepermissionsForSingleUseCommandsState}
-                          >
-                            {t('admin:slack_integration.accordion.allow_specified_long')}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={`row-12 row-md-6 ${hiddenClass}`}>
-                      <textarea
-                        className="form-control"
-                        type="textarea"
-                        name={commandName}
-                        defaultValue={getDefaultValueForChannelsTextArea(permissionsForSingleUseCommandsState, commandName)}
-                        onChange={updateChannelsListForSingleUseCommandsState}
-                      />
-                      <p className="form-text text-muted small">
-                        {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
-                        <br />
-                      </p>
-                    </div>
-                  </div>
-                );
-
+                return <PermissionSettingForEachCommandComponent commandName={commandName} commandUsageType={CommandUsageTypes.SINGLE_USE} />;
               })}
             </div>
           </div>
