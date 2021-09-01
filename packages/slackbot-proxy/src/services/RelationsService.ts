@@ -33,9 +33,9 @@ export class RelationsService {
 
   async syncSupportedGrowiCommands(relation:RelationMock): Promise<RelationMock> {
     const res = await this.getSupportedGrowiCommands(relation);
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = res.data;
-    relation.supportedCommandsForBroadcastUse = supportedCommandsForBroadcastUse;
-    relation.supportedCommandsForSingleUse = supportedCommandsForSingleUse;
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data;
+    relation.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
+    relation.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
     relation.expiredAtCommands = addHours(new Date(), 48);
 
     return this.relationMockRepository.save(relation);
@@ -67,58 +67,58 @@ export class RelationsService {
     return relation;
   }
 
-  async isSupportedGrowiCommandForSingleUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
-    const syncedRelation = await this.syncRelation(relation, baseDate);
+  // async isSupportedGrowiCommandForSingleUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
+  //   const syncedRelation = await this.syncRelation(relation, baseDate);
 
-    if (syncedRelation == null) {
-      return false;
-    }
+  //   if (syncedRelation == null) {
+  //     return false;
+  //   }
 
-    const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
+  //   const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
 
-    // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands
-    if (!commandRegExp.test(growiCommandType)) {
-      return false;
-    }
+  //   // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands
+  //   if (!commandRegExp.test(growiCommandType)) {
+  //     return false;
+  //   }
 
-    const permission = relation.supportedCommandsForSingleUse[growiCommandType];
+  //   const permission = relation.supportedCommandsForSingleUse[growiCommandType];
 
-    if (permission == null) {
-      return false;
-    }
+  //   if (permission == null) {
+  //     return false;
+  //   }
 
-    if (Array.isArray(permission)) {
-      return permission.includes(channelName);
-    }
+  //   if (Array.isArray(permission)) {
+  //     return permission.includes(channelName);
+  //   }
 
-    return permission;
-  }
+  //   return permission;
+  // }
 
-  async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
-    const syncedRelation = await this.syncRelation(relation, baseDate);
-    if (syncedRelation == null) {
-      return false;
-    }
+  // async isSupportedGrowiCommandForBroadcastUse(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
+  //   const syncedRelation = await this.syncRelation(relation, baseDate);
+  //   if (syncedRelation == null) {
+  //     return false;
+  //   }
 
-    const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
+  //   const commandRegExp = new RegExp(`(^${growiCommandType}$)|(^${growiCommandType}:\\w+)`);
 
-    // skip this forEach loop if the requested command is not in permissionsForSingleUseCommandskey
-    if (!commandRegExp.test(growiCommandType)) {
-      return false;
-    }
+  //   // skip this forEach loop if the requested command is not in permissionsForSingleUseCommandskey
+  //   if (!commandRegExp.test(growiCommandType)) {
+  //     return false;
+  //   }
 
-    const permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
+  //   const permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
 
-    if (permission == null) {
-      return false;
-    }
+  //   if (permission == null) {
+  //     return false;
+  //   }
 
-    if (Array.isArray(permission)) {
-      return permission.includes(channelName);
-    }
+  //   if (Array.isArray(permission)) {
+  //     return permission.includes(channelName);
+  //   }
 
-    return permission;
-  }
+  //   return permission;
+  // }
 
 
   async checkPermissionForCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
@@ -128,11 +128,11 @@ export class RelationsService {
     }
 
     // case: singleUse
-    let permission = relation.supportedCommandsForSingleUse[growiCommandType];
+    let permission = relation.permissionsForSingleUseCommands[growiCommandType];
 
     // case: broadCastUse
     if (permission == null) {
-      permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
+      permission = relation.permissionsForBroadcastUseCommands[growiCommandType];
     }
 
     // both case: null
@@ -181,17 +181,17 @@ export class RelationsService {
       return;
     }
 
-    const singleUse = Object.keys(relation.supportedCommandsForSingleUse);
-    const broadCastUse = Object.keys(relation.supportedCommandsForBroadcastUse);
+    const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
+    const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
 
     [...singleUse, ...broadCastUse].forEach(async(commandName) => {
 
       // case: singleUse
-      this.permissionForInteractions = relation.supportedCommandsForSingleUse[commandName];
+      this.permissionForInteractions = relation.permissionsForSingleUseCommands[commandName];
 
       // case: broadcastUse
       if (this.permissionForInteractions == null) {
-        this.permissionForInteractions = relation.supportedCommandsForBroadcastUse[commandName];
+        this.permissionForInteractions = relation.permissionsForBroadcastUseCommands[commandName];
       }
 
       if (this.permissionForInteractions === true) {

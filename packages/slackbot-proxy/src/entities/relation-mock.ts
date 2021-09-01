@@ -41,10 +41,10 @@ export class RelationMock {
   growiUri: string;
 
   @Column({ type: 'json' })
-  supportedCommandsForBroadcastUse: supportedCommandInterface;
+  permissionsForBroadcastUseCommands: supportedCommandInterface;
 
   @Column({ type: 'json' })
-  supportedCommandsForSingleUse: supportedCommandInterface;
+  permissionsForSingleUseCommands: supportedCommandInterface;
 
   @CreateDateColumn()
   expiredAtCommands: Date;
