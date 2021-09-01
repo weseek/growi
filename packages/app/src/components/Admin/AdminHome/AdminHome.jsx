@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import loggerFactory from '~/utils/logger';
 
 import { toastError } from '~/client/util/apiNotification';
@@ -61,6 +62,26 @@ class AdminHome extends React.Component {
             {/* eslint-disable-next-line react/no-danger */}
             <p dangerouslySetInnerHTML={{ __html: t('admin:admin_top.about_security') }} />
             {adminHomeContainer.state.envVars && <EnvVarsTable envVars={adminHomeContainer.state.envVars} />}
+          </div>
+        </div>
+
+        <div className="row mb-5">
+          <div className="col-md-12">
+            <h2 className="admin-setting-header">{t('admin:admin_top.bug_report')}</h2>
+            <p>
+              <CopyToClipboard
+                text={adminHomeContainer.generatePrefilledHostInformationMarkdown()}
+                onCopy={() => adminHomeContainer.onCopyPrefilledHostInformation()}
+              >
+                <button type="button" className="btn btn-primary">
+                  {adminHomeContainer.state.copyState === adminHomeContainer.copyStateValues.DEFAULT
+                    ? t('admin:admin_top:copy_prefilled_host_information:default')
+                    : t('admin:admin_top:copy_prefilled_host_information:done')}
+                </button>
+              </CopyToClipboard>{' '}
+              {/* eslint-disable-next-line react/no-danger */}
+              <span dangerouslySetInnerHTML={{ __html: t('admin:admin_top:submit_bug_report') }} />
+            </p>
           </div>
         </div>
       </Fragment>

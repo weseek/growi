@@ -67,8 +67,8 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
             readOnly
           />
           <p className="form-text text-muted">
-            {/* eslint-disable-next-line react/no-danger */}
-            <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_SIGNING_SECRET' }) }} />
+            {/* eslint-disable-next-line max-len, react/no-danger */}
+            <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACKBOT_WITHOUT_PROXY_SIGNING_SECRET' }) }} />
           </p>
         </div>
 
@@ -97,7 +97,7 @@ const CustomBotWithoutProxySecretTokenSection = (props) => {
           />
           <p className="form-text text-muted">
             {/* eslint-disable-next-line react/no-danger */}
-            <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACK_BOT_TOKEN' }) }} />
+            <small dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.use_env_var_if_empty', { variable: 'SLACKBOT_WITHOUT_PROXY_BOT_TOKEN' }) }} />
           </p>
         </div>
 
