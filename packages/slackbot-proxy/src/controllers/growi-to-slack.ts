@@ -207,7 +207,7 @@ export class GrowiToSlackCtrl {
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
       .orUpdate({
         conflict_target: ['installation', 'growiUri'],
-        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+        overwrite: ['tokenGtoP', 'tokenPtoG', 'permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
       })
       .execute();
 

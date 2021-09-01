@@ -49,6 +49,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+  const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 
   const validator = {
     BotType: [
@@ -590,7 +591,7 @@ module.exports = (crowi) => {
     const { slackAppIntegrationId } = req.body;
     let slackBotToken;
     try {
-      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: slackAppIntegrationId });
+      const slackAppIntegration = await SlackAppIntegrationMock.findOne({ _id: slackAppIntegrationId });
       if (slackAppIntegration == null) {
         const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
@@ -601,8 +602,8 @@ module.exports = (crowi) => {
         'post',
         '/g2s/relation-test',
         {
-          supportedCommandsForBroadcastUse: slackAppIntegration.supportedCommandsForBroadcastUse,
-          supportedCommandsForSingleUse: slackAppIntegration.supportedCommandsForSingleUse,
+          permissionsForBroadcastUseCommands: slackAppIntegration.permissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: slackAppIntegration.permissionsForSingleUseCommands,
         },
       );
 

@@ -170,7 +170,7 @@ export class SlackCtrl {
 
     const relationsForSingleUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.checkPermissionForCommands(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
+      const isSupported = await this.relationsService.isPermissionsForSingleUseCommands(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
       if (isSupported) {
         return relationsForSingleUse.push(relation);
       }
@@ -183,7 +183,7 @@ export class SlackCtrl {
 
     const relationsForBroadcastUse:RelationMock[] = [];
     await Promise.all(relations.map(async(relation) => {
-      const isSupported = await this.relationsService.checkPermissionForCommands(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
+      const isSupported = await this.relationsService.isPermissionsUseBroadcastCommands(relation, growiCommand.growiCommandType, body.channel_name, baseDate);
 
       if (isSupported) {
         return relationsForBroadcastUse.push(relation);

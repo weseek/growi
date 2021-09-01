@@ -67,26 +67,38 @@ export class RelationsService {
     return relation;
   }
 
-  async checkPermissionForCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
+  async isPermissionsForSingleUseCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
+    const syncedRelation = await this.syncRelation(relation, baseDate);
+
+    if (syncedRelation == null) {
+      return false;
+    }
+
+    const permission = relation.permissionsForSingleUseCommands[growiCommandType];
+
+    if (permission == null) {
+      return false;
+    }
+
+    if (Array.isArray(permission)) {
+      return permission.includes(channelName);
+    }
+
+    return permission;
+  }
+
+  async isPermissionsUseBroadcastCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
       return false;
     }
 
-    // case: singleUse
-    let permission = relation.permissionsForSingleUseCommands[growiCommandType];
+    const permission = relation.permissionsForBroadcastUseCommands[growiCommandType];
 
-    // case: broadCastUse
-    if (permission == null) {
-      permission = relation.permissionsForBroadcastUseCommands[growiCommandType];
-    }
-
-    // both case: null
     if (permission == null) {
       return false;
     }
 
-    // check permission at channel level
     if (Array.isArray(permission)) {
       return permission.includes(channelName);
     }
