@@ -319,8 +319,6 @@ class OptionsSelector extends React.Component {
   }
 
   renderIsTextlintEnabledMenuItem() {
-    const { editorContainer } = this.props;
-    // const isActive = editorContainer.state.isTextlintEnabled;
     const isActive = this.state.isEnabledTextlint;
 
     const iconClasses = ['text-info'];
