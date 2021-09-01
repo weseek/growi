@@ -221,9 +221,9 @@ export class SlackCtrl {
       return;
     }
 
-    const payload = JSON.parse(body.payload);
-    const callbackId = payload?.view?.callback_id;
-    const actionId = payload?.actions?.[0].action_id;
+    const payload:any = JSON.parse(body.payload);
+    const callbackId:string = payload?.view?.callback_id;
+    const actionId:string = payload?.actions?.[0].action_id;
     let privateMeta:any;
 
     if (payload.view != null) {
@@ -281,14 +281,11 @@ export class SlackCtrl {
 
 
     await Promise.all(relations.map(async(relation) => {
-
       await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId, body, relations);
 
       /*
        * forward to GROWI server
        */
-
-
       if (relation == null) {
         logger.error('*No relation found.*');
         return;

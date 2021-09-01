@@ -127,12 +127,20 @@ export class RelationsService {
       return false;
     }
 
-    const permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
+    // case: singleUse
+    let permission = relation.supportedCommandsForSingleUse[growiCommandType];
 
+    // case: broadCastUse
+    if (permission == null) {
+      permission = relation.supportedCommandsForBroadcastUse[growiCommandType];
+    }
+
+    // both case: null
     if (permission == null) {
       return false;
     }
 
+    // check permission at channel level
     if (Array.isArray(permission)) {
       return permission.includes(channelName);
     }
@@ -172,22 +180,26 @@ export class RelationsService {
       this.isPermittedForInteractions = false;
       return;
     }
+
     const singleUse = Object.keys(relation.supportedCommandsForSingleUse);
     const broadCastUse = Object.keys(relation.supportedCommandsForBroadcastUse);
 
     [...singleUse, ...broadCastUse].forEach(async(commandName) => {
+
+      // case: singleUse
       this.permissionForInteractions = relation.supportedCommandsForSingleUse[commandName];
 
+      // case: broadcastUse
       if (this.permissionForInteractions == null) {
         this.permissionForInteractions = relation.supportedCommandsForBroadcastUse[commandName];
       }
 
-      // permission check
       if (this.permissionForInteractions === true) {
         this.isPermittedForInteractions = true;
         return;
       }
 
+      // check permission at channel level
       if (Array.isArray(this.permissionForInteractions)) {
         this.isPermittedForInteractions = this.permissionForInteractions.includes(channelName);
         return;
