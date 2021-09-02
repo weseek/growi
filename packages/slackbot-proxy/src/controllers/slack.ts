@@ -4,7 +4,7 @@ import {
 
 import axios from 'axios';
 
-import { WebAPICallResult } from '@slack/web-api';
+import { WebAPICallResult, WebClient } from '@slack/web-api';
 import { Installation } from '@slack/oauth';
 
 
@@ -37,6 +37,34 @@ import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
+
+const postNotAllowedMessage = async(client:WebClient, body:any, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
+
+  const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
+    return '\n'
+      + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
+  });
+
+  const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
+
+  await client.chat.postEphemeral({
+    text: 'Error occured.',
+    channel: body.channel_id,
+    user: body.user_id,
+    blocks: [
+      markdownSectionBlock('*None of GROWI permitted the command.*'),
+      markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
+      markdownSectionBlock(
+        `To use this command, modify settings from following pages: ${linkUrlList}`,
+      ),
+      markdownSectionBlock(
+        `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
+      ),
+    ],
+  });
+
+  return;
+};
 @Controller('/slack')
 export class SlackCtrl {
 
@@ -215,29 +243,8 @@ export class SlackCtrl {
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(authorizeResult.botToken!);
-
-      const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
-        return '\n'
-          + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
-      });
-
-      const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
-
-      return client.chat.postEphemeral({
-        text: 'Error occured.',
-        channel: body.channel_id,
-        user: body.user_id,
-        blocks: [
-          markdownSectionBlock('*None of GROWI permitted the command.*'),
-          markdownSectionBlock(`*'${growiCommand.growiCommandType}'* command was not allowed.`),
-          markdownSectionBlock(
-            `To use this command, modify settings from following pages: ${linkUrlList}`,
-          ),
-          markdownSectionBlock(
-            `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
-          ),
-        ],
-      });
+      const commandName = this.relationsService.getCommandName();
+      return postNotAllowedMessage(client, body, disallowedGrowiUrls, commandName);
     }
 
     // select GROWI
@@ -336,34 +343,12 @@ export class SlackCtrl {
 
 
     const disallowedGrowiUrls = this.relationsService.getDisallowedGrowiUrls();
-    const notAllowedCommandName = this.relationsService.getCommandName();
+    const commandName = this.relationsService.getCommandName();
 
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(authorizeResult.botToken!);
-
-      const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
-        return '\n'
-      + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
-      });
-
-      const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
-
-      return client.chat.postEphemeral({
-        text: 'Error occured.',
-        channel: body.channel_id,
-        user: body.user_id,
-        blocks: [
-          markdownSectionBlock('*None of GROWI permitted the command.*'),
-          markdownSectionBlock(`*'${notAllowedCommandName}'* command was not allowed.`),
-          markdownSectionBlock(
-            `To use this command, modify settings from following pages: ${linkUrlList}`,
-          ),
-          markdownSectionBlock(
-            `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
-          ),
-        ],
-      });
+      return postNotAllowedMessage(client, body, disallowedGrowiUrls, commandName);
     }
 
     /*
