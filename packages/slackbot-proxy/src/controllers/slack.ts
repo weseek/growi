@@ -178,9 +178,9 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationMockRepository.createQueryBuilder('relation_mock')
-      .where('relation_mock.installationId = :id', { id: installation?.id })
-      .leftJoinAndSelect('relation_mock.installation', 'installation')
+    const relations = await this.relationMockRepository.createQueryBuilder('relation')
+      .where('relation.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
     if (relations.length === 0) {
@@ -320,9 +320,9 @@ export class SlackCtrl {
     }
 
     // check permission
-    const relations = await this.relationMockRepository.createQueryBuilder('relation_mock')
-      .where('relation_mock.installationId = :id', { id: installation?.id })
-      .leftJoinAndSelect('relation_mock.installation', 'installation')
+    const relations = await this.relationMockRepository.createQueryBuilder('relation')
+      .where('relation.installationId = :id', { id: installation?.id })
+      .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
     if (relations.length === 0) {

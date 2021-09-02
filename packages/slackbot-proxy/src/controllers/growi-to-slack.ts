@@ -76,9 +76,9 @@ export class GrowiToSlackCtrl {
     const { tokenGtoPs } = req;
 
     // retrieve Relation with Installation
-    const relations = await this.relationMockRepository.createQueryBuilder('relation_mock')
-      .where('relation_mock.tokenGtoP IN (:...tokens)', { tokens: tokenGtoPs })
-      .leftJoinAndSelect('relation_mock.installation', 'installation')
+    const relations = await this.relationMockRepository.createQueryBuilder('relation')
+      .where('relation.tokenGtoP IN (:...tokens)', { tokens: tokenGtoPs })
+      .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
 
     logger.debug(`${relations.length} relations found`, relations);
@@ -126,9 +126,9 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relation = await this.relationMockRepository.createQueryBuilder('relation_mock')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation')
       .where('tokenGtoP = :token', { token: tokenGtoP })
-      .leftJoinAndSelect('relation_mock.installation', 'installation')
+      .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
 
     // Returns the result of the test if it already exists
@@ -194,7 +194,7 @@ export class GrowiToSlackCtrl {
     const expiredAtCommands = addHours(new Date(), 48);
 
     // Transaction is not considered because it is used infrequently,
-    const response = await this.relationMockRepository.createQueryBuilder('relation_mock')
+    const response = await this.relationMockRepository.createQueryBuilder('relation')
       .insert()
       .values({
         installation: order.installation,
@@ -262,9 +262,9 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relation = await this.relationMockRepository.createQueryBuilder('relation_mock')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation')
       .where('tokenGtoP = :token', { token: tokenGtoP })
-      .leftJoinAndSelect('relation_mock.installation', 'installation')
+      .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
 
     if (relation == null) {
