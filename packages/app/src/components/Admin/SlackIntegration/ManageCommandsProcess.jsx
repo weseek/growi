@@ -170,7 +170,7 @@ const ManageCommandsProcess = ({
     const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
     return (
-      <div className="row my-1 mb-2" key={commandName}>
+      <div className="my-1 mb-2" key={commandName}>
         <div className="row align-items-center mb-3">
           <p className="col my-auto text-capitalize align-middle">{commandName}</p>
           <div className="col dropdown">
