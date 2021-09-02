@@ -122,8 +122,6 @@ export class RelationsService {
   }
 
 
-  permissionForInteractions:boolean|string[];
-
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       relation:RelationMock, channelName:string, callbackId:string, actionId:string, body:any, relations:RelationMock[],
@@ -141,25 +139,26 @@ export class RelationsService {
 
     const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
     const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
+    let permissionForInteractions:boolean|string[];
 
     [...singleUse, ...broadCastUse].forEach(async(commandName) => {
 
       // case: singleUse
-      this.permissionForInteractions = relation.permissionsForSingleUseCommands[commandName];
+      permissionForInteractions = relation.permissionsForSingleUseCommands[commandName];
 
       // case: broadcastUse
-      if (this.permissionForInteractions == null) {
-        this.permissionForInteractions = relation.permissionsForBroadcastUseCommands[commandName];
+      if (permissionForInteractions == null) {
+        permissionForInteractions = relation.permissionsForBroadcastUseCommands[commandName];
       }
 
-      if (this.permissionForInteractions === true) {
+      if (permissionForInteractions === true) {
         isPermittedForInteractions = true;
         return;
       }
 
       // check permission at channel level
-      if (Array.isArray(this.permissionForInteractions)) {
-        isPermittedForInteractions = this.permissionForInteractions.includes(channelName);
+      if (Array.isArray(permissionForInteractions)) {
+        isPermittedForInteractions = permissionForInteractions.includes(channelName);
         return;
       }
 
