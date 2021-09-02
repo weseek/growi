@@ -162,6 +162,13 @@ const ManageCommandsProcess = ({
   const PermissionSettingForEachCommandComponent = ({ commandName, commandUsageType }) => {
     const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
     const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
+
+    const permissionSettings = isCommandBroadcastUse ? permissionsForBroadcastUseCommandsState : permissionsForSingleUseCommandsState;
+    const permission = permissionSettings[commandName];
+    if (permission === undefined) logger.error('Must be implemented');
+
+    const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
+
     return (
       <div className="row my-1 mb-2" key={commandName}>
         <div className="row align-items-center mb-3">
@@ -220,10 +227,7 @@ const ManageCommandsProcess = ({
             className="form-control"
             type="textarea"
             name={commandName}
-            defaultValue={getDefaultValueForChannelsTextArea(
-              isCommandBroadcastUse ? permissionsForBroadcastUseCommandsState : permissionsForSingleUseCommandsState,
-              commandName,
-            )}
+            defaultValue={textareaDefaultValue}
             onClick={isCommandBroadcastUse ? updateChannelsListForBroadcastUseCommandsState : updateChannelsListForSingleUseCommandsState}
           />
           <p className="form-text text-muted small">
