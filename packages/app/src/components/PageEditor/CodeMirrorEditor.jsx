@@ -159,10 +159,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       ? { dicPath: '/static/dict/cdn' }
       : { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
 
-    // TODO: Get configs from db
-    // this.setState({ isTextlintEnabled: this.props.isTextlintEnabled });
     this.state.isTextlintEnabled = this.props.isTextlintEnabled;
-    // this.isTextlintEnabled = this.props.isTextlintEnabled;
 
     this.textlintConfig = [
       { name: 'no-unmatched-pair' },
