@@ -69,7 +69,6 @@ export class RelationsService {
 
   async isPermissionsForSingleUseCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
-
     if (syncedRelation == null) {
       return false;
     }
