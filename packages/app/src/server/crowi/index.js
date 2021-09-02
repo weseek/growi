@@ -13,8 +13,11 @@ import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import ConfigManager from '../service/config-manager';
+import AppService from '../service/app';
 import AclService from '../service/acl';
 import AttachmentService from '../service/attachment';
+import { SlackIntegrationService } from '../service/slack-integration';
+import { UserNotificationService } from '../service/user-notification';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -45,7 +48,6 @@ function Crowi() {
   this.passportService = null;
   this.globalNotificationService = null;
   this.userNotificationService = null;
-  this.slackNotificationService = null;
   this.xssService = null;
   this.aclService = null;
   this.appService = null;
@@ -60,7 +62,7 @@ function Crowi() {
   this.syncPageStatusService = null;
   this.cdnResourcesService = new CdnResourcesService();
   this.interceptorManager = new InterceptorManager();
-  this.slackBotService = null;
+  this.slackIntegrationService = null;
   this.xss = new Xss();
 
   this.tokens = null;
@@ -93,12 +95,10 @@ Crowi.prototype.init = async function() {
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
-  // slack depends on setUpSlacklNotification
   // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
-    this.setUpSlacklNotification(),
     this.setUpGrowiBridge(),
   ]);
 
@@ -107,8 +107,7 @@ Crowi.prototype.init = async function() {
     this.setupPassport(),
     this.setupSearcher(),
     this.setupMailer(),
-    this.setupSlack(),
-    this.setupSlackLegacy(),
+    this.setupSlackIntegrationService(),
     this.setupCsrf(),
     this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
@@ -121,7 +120,6 @@ Crowi.prototype.init = async function() {
     this.setupImport(),
     this.setupPageService(),
     this.setupSyncPageStatusService(),
-    this.setupSlackBotService(),
   ]);
 
   // globalNotification depends on slack and mailer
@@ -137,11 +135,9 @@ Crowi.prototype.initForTest = async function() {
 
   // // customizeService depends on AppService and XssService
   // // passportService depends on appService
-  // // slack depends on setUpSlacklNotification
   await Promise.all([
     this.setUpApp(),
     this.setUpXss(),
-    // this.setUpSlacklNotification(),
     // this.setUpGrowiBridge(),
   ]);
 
@@ -150,7 +146,7 @@ Crowi.prototype.initForTest = async function() {
     this.setupPassport(),
     // this.setupSearcher(),
     // this.setupMailer(),
-    // this.setupSlack(),
+    // this.setupSlackIntegrationService(),
     // this.setupCsrf(),
     // this.setUpFileUpload(),
     this.setupAttachmentService(),
@@ -383,24 +379,6 @@ Crowi.prototype.setupMailer = async function() {
   }
 };
 
-Crowi.prototype.setupSlack = async function() {
-  const self = this;
-
-  return new Promise(((resolve, reject) => {
-    self.slack = require('../util/slack')(self);
-    resolve();
-  }));
-};
-
-Crowi.prototype.setupSlackLegacy = async function() {
-  const self = this;
-
-  return new Promise(((resolve, reject) => {
-    self.slackLegacy = require('../util/slack-legacy')(self);
-    resolve();
-  }));
-};
-
 Crowi.prototype.setupCsrf = async function() {
   const Tokens = require('csrf');
   this.tokens = new Tokens();
@@ -427,7 +405,7 @@ Crowi.prototype.start = async function() {
 
   // setup plugins
   this.pluginService = new PluginService(this, express);
-  this.pluginService.autoDetectAndLoadPlugins();
+  await this.pluginService.autoDetectAndLoadPlugins();
 
   const server = (this.node_env === 'development') ? this.crowiDev.setupServer(express) : express;
 
@@ -525,19 +503,8 @@ Crowi.prototype.setUpGlobalNotification = async function() {
  * setup UserNotificationService
  */
 Crowi.prototype.setUpUserNotification = async function() {
-  const UserNotificationService = require('../service/user-notification');
   if (this.userNotificationService == null) {
     this.userNotificationService = new UserNotificationService(this);
-  }
-};
-
-/**
- * setup SlackNotificationService
- */
-Crowi.prototype.setUpSlacklNotification = async function() {
-  const SlackNotificationService = require('../service/slack-notification');
-  if (this.slackNotificationService == null) {
-    this.slackNotificationService = new SlackNotificationService(this.configManager);
   }
 };
 
@@ -581,7 +548,6 @@ Crowi.prototype.setUpCustomize = async function() {
  * setup AppService
  */
 Crowi.prototype.setUpApp = async function() {
-  const AppService = require('../service/app');
   if (this.appService == null) {
     this.appService = new AppService(this);
 
@@ -681,15 +647,14 @@ Crowi.prototype.setupSyncPageStatusService = async function() {
   }
 };
 
-Crowi.prototype.setupSlackBotService = async function() {
-  const SlackBotService = require('../service/slackbot');
-  if (this.slackBotService == null) {
-    this.slackBotService = new SlackBotService(this);
+Crowi.prototype.setupSlackIntegrationService = async function() {
+  if (this.slackIntegrationService == null) {
+    this.slackIntegrationService = new SlackIntegrationService(this);
   }
 
   // add as a message handler
   if (this.s2sMessagingService != null) {
-    this.s2sMessagingService.addMessageHandler(this.slackBotService);
+    this.s2sMessagingService.addMessageHandler(this.slackIntegrationService);
   }
 };
 

@@ -1,11 +1,39 @@
 # CHANGES
 
-## v4.3.3-RC
+## v4.4.0-RC
 
+### BREAKING CHANGES
+
+* Official plugins are now preinstalled
+
+### Updates
+
+* Feature: Password resetting by user
+* Feature: User trigger notification and Global notification are available by new Slack integration
+* Improvement: Add attachment button in editor navbar
+* Fix: Recursive rename operation from `/parent` to `/parent/child` ([#4101](https://github.com/weseek/growi/pull/4101))
+* Fix: Encode spaces in page path in LinkEditModal
+* Support: Create @growi/core package
+* Support: Create @growi/ui package
+* Support: Improve error handling for @growi/slackbot-proxy
+* Support: Include official plugins as sub packages
 * Support: Upgrade libs
     * @slack/web-api
-    * escape-string-regexp
+    * date-fns
+    * helmet
     * morgan
+    * socket.io
+
+## v4.3.3
+
+* Improvement: Welcome page markdown
+* Fix: Some recursive operation exclude descendant pages that are restricted for groups
+    * Rename / Delete / Delete completely / Put back / Duplicate
+* Fix: Layout is broken when editing users page ([#4128](https://github.com/weseek/growi/issues/4128))
+* Support: Upgrade libs
+    * @slack/web-api
+    * date-fns
+    * escape-string-regexp
 
 ## v4.3.2
 

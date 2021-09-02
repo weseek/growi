@@ -252,6 +252,12 @@
     "page_skip": "既に GROWI 側に同名のページが存在する場合、そのページはスキップされます",
     "Directory_hierarchy_tag": "ディレクトリ階層タグ"
   },
+  "external_notification": {
+    "enabled": "有効",
+    "disabled": "無効",
+    "header_status": "Slack 連携の状態",
+    "caution_enabled": "CAUTION: このページで設定される通知は、Primary として設定された Slack ワークスペースにのみ送信されます。 "
+  },
   "slack_integration": {
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
@@ -282,6 +288,9 @@
       "cancel": "取消",
       "change": "変更する"
     },
+    "toastr": {
+      "delete_slack_integration_procedure": "Slack 連携手順を削除しました"
+    },
     "use_env_var_if_empty": "データベース側の値が空の場合、環境変数 <code>{{variable}}</code> の値を利用します",
     "access_token_settings": {
       "regenerate": "再発行"
@@ -308,10 +317,13 @@
       "paste_growi_url": "モーダルが表示されるので、<b>GROWI URL</b> には下記のURLを入力します。",
       "enter_access_token_for_growi_and_proxy": "上記で発行した<b>Access Token Proxy to GROWI</b> と <b>Access Token GROWI to Proxy</b>を入れる",
       "set_proxy_url_on_growi": "ProxyのURLをGROWIに登録する",
-      "copy_proxy_url": "1. ②が正常に完了すると、モーダル内で選択したSlack ChannelにProxy URLが表示されるので、コピーします。",
-      "enter_proxy_url_and_update": "2. 連携手順③でコピーしたProxy URLを、このページの<b>Custom bot with proxy 連携</b>の<b>Proxy URL</b>に入力、更新します。",
+      "copy_proxy_url": "上の手順が正常に完了すると、モーダル内で選択したSlack ChannelにProxy URLが表示されるので、コピーします。",
+      "enter_proxy_url_and_update": "コピーしたProxy URLを、このページの<b>Custom bot with proxy 連携</b>の<b>Proxy URL</b>に入力、更新します。",
       "dont_need_update": "※既に値が入っている場合は更新する必要はありません",
       "select_install_your_app": "Install your app をクリックします。",
+      "go-to-manage-distribution": "作成した Slack App の Settings から Manage distribution をクリックします。",
+      "activate-public-distribution": "\"Share Your App with Other Workspaces\" の 4つの項目全てにチェックマークがついたら、\"Activate Public Distribution\" を押します。",
+      "click-add-to-slack-button": "\"Add to Slack\" ボタンをクリックします。",
       "select_install_to_workspace": "Install to Workspace をクリックします。",
       "register_proxy_url": "Proxy の URLをGROWIに登録する",
       "click_allow": "遷移先の画面にて、Allowをクリックします。",
@@ -344,6 +356,10 @@
       "custom_bot_without_proxy_setting": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/custom-bot-without-proxy-settings.html",
       "custom_bot_with_proxy_setting": "https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/custom-bot-with-proxy-settings.html"
     }
+  },
+  "slack_integration_legacy": {
+    "alert_disabled": "<a href='/admin/slack-integration'>新しい設定</a>が有効になっているため、この 'Slack連携 (レガシー)' は現在無効になっています。",
+    "alert_deplicated": "この 'Slack連携 (レガシー)' は将来廃止されます。代わりに<a href='/admin/slack-integration'>新しいSlack連携機能</a>を利用してください。"
   },
   "user_management": {
     "invite_users": "新規ユーザーの仮発行",

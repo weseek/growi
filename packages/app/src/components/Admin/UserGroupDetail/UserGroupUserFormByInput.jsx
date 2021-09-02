@@ -4,11 +4,11 @@ import { withTranslation } from 'react-i18next';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { debounce } from 'throttle-debounce';
+import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
-import UserPicture from '../../User/UserPicture';
 
 class UserGroupUserFormByInput extends React.Component {
 

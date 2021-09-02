@@ -438,7 +438,6 @@
     "initialize_successed": "Succeeded to initialize {{target}}",
     "give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin",
-    "delete_slack_integration_procedure": "Succeeded to delete the slack integration procedure",
     "activate_user_success": "Succeeded to activating {{username}}",
     "deactivate_user_success": "Succeeded to deactivate {{username}}",
     "remove_user_success": "Succeeded to removing {{username}}",
@@ -605,7 +604,10 @@
     "Local": {
       "name": "ID/Password",
       "note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
-      "enable_local": "Enable ID/Password"
+      "enable_local": "Enable ID/Password",
+      "password_reset_by_users": "Password reset by users",
+      "enable_password_reset_by_users": "Enable password reset by users",
+      "password_reset_desc": "when forgot password, users are able to reset it by themselves."
     },
     "ldap": {
       "enable_ldap": "Enable LDAP",
@@ -846,5 +848,20 @@
     "aws_region": "For the region, enter the AWS region name. ex):us-east-1",
     "aws_custom_endpoint":"For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required.",
     "failed_to_send_a_test_email":"Failed to send a test email using SMTP. Please check your settings."
+  },
+  "forgot_password":{
+    "forgot_password": "Forgot Password?",
+    "send": "Send",
+    "return_to_login": "Return to login",
+    "reset_password": "Reset Password",
+    "sign_in_instead": "Sign in instead",
+    "password_reset_request_desc": "You can reset your password here.",
+    "password_reset_excecution_desc": "Enter a new password",
+    "new_password": "New Password",
+    "confirm_new_password": "Confirm the new password",
+    "email_is_required": "Email is required",
+    "success_to_send_email": "Success to send email",
+    "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
+    "password_and_confirm_password_does_not_match": "Password and confirm password does not match"
   }
 }

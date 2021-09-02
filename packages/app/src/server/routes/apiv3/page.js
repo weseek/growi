@@ -1,4 +1,6 @@
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -6,8 +8,7 @@ const express = require('express');
 const { body, query } = require('express-validator');
 
 const router = express.Router();
-
-const { convertToNewAffiliationPath } = require('~/utils/path-utils');
+const { convertToNewAffiliationPath } = pagePathUtils;
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
@@ -184,7 +185,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
-    const { pageId, bool } = req.body;
+    const { pageId, bool: isLiked } = req.body;
 
     let page;
     try {
@@ -192,7 +193,8 @@ module.exports = (crowi) => {
       if (page == null) {
         return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
       }
-      if (bool) {
+
+      if (isLiked) {
         page = await page.like(req.user);
       }
       else {
@@ -204,17 +206,19 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    try {
-      // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
-    }
-    catch (err) {
-      logger.error('Like notification failed', err);
-    }
-
     const result = { page };
     result.seenUser = page.seenUsers;
-    return res.apiv3({ result });
+    res.apiv3({ result });
+
+    if (isLiked) {
+      try {
+        // global notification
+        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
+      }
+      catch (err) {
+        logger.error('Like notification failed', err);
+      }
+    }
   });
 
   /**

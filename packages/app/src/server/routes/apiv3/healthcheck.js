@@ -6,7 +6,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const helmet = require('helmet');
+const noCache = require('nocache');
 const ErrorV3 = require('../../models/vo/error-apiv3');
 
 /**
@@ -122,7 +122,7 @@ module.exports = (crowi) => {
    *                  info:
    *                    $ref: '#/components/schemas/HealthcheckInfo'
    */
-  router.get('/', helmet.noCache(), async(req, res) => {
+  router.get('/', noCache(), async(req, res) => {
     let checkServices = req.query.checkServices || [];
     let isStrictly = req.query.strictly != null;
 

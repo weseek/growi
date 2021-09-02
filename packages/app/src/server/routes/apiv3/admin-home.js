@@ -1,6 +1,7 @@
+import ConfigLoader from '../../service/config-loader';
+
 const express = require('express');
 const PluginUtils = require('../../plugins/plugin-utils');
-const ConfigLoader = require('../../service/config-loader');
 
 const pluginUtils = new PluginUtils();
 

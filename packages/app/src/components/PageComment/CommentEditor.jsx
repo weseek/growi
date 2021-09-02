@@ -8,6 +8,7 @@ import {
 
 import * as toastr from 'toastr';
 
+import { UserPicture } from '@growi/ui';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
 import CommentContainer from '~/client/services/CommentContainer';
@@ -15,7 +16,6 @@ import EditorContainer from '~/client/services/EditorContainer';
 import GrowiRenderer from '~/client/util/GrowiRenderer';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
-import UserPicture from '../User/UserPicture';
 import Editor from '../PageEditor/Editor';
 import SlackNotification from '../SlackNotification';
 
@@ -62,7 +62,7 @@ class CommentEditor extends React.Component {
       isUploadable,
       isUploadableFile,
       errorMessage: undefined,
-      hasSlackConfig: config.hasSlackConfig,
+      isSlackConfigured: config.isSlackConfigured,
     };
 
     this.updateState = this.updateState.bind(this);
@@ -354,7 +354,7 @@ class CommentEditor extends React.Component {
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{ this.state.errorMessage && errorMessage }</span>
 
-            { this.state.hasSlackConfig
+            { this.state.isSlackConfigured
               && (
                 <div className="form-inline align-self-center mr-md-2">
                   <SlackNotification

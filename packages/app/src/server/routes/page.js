@@ -1,6 +1,9 @@
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
-const { isCreatablePage } = require('~/utils/path-utils');
+import UpdatePost from '../models/update-post';
+
+const { isCreatablePage } = pagePathUtils;
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../models/serializers/user-serializer');
@@ -1117,7 +1120,6 @@ module.exports = function(crowi, app) {
    */
   api.getUpdatePost = function(req, res) {
     const path = req.query.path;
-    const UpdatePost = crowi.model('UpdatePost');
 
     if (!path) {
       return res.json(ApiResponse.error({}));

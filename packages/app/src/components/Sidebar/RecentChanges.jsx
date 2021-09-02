@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { UserPicture } from '@growi/ui';
+import { DevidedPagePath } from '@growi/core';
 import PagePathHierarchicalLink from '~/components/PagePathHierarchicalLink';
 import loggerFactory from '~/utils/logger';
 
-import DevidedPagePath from '~/models/devided-page-path';
 import LinkedPagePath from '~/models/linked-page-path';
 
 import { withUnstatedContainers } from '../UnstatedUtils';
@@ -14,7 +15,6 @@ import AppContainer from '~/client/services/AppContainer';
 import { toastError } from '~/client/util/apiNotification';
 
 import FormattedDistanceDate from '../FormattedDistanceDate';
-import UserPicture from '../User/UserPicture';
 
 const logger = loggerFactory('growi:History');
 class RecentChanges extends React.Component {

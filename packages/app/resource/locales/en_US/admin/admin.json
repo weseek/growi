@@ -11,7 +11,13 @@
     "installed_version": "Installed version",
     "list_of_env_vars":"List of environment variables",
     "env_var_priority": "For environment variables other than security, the value of the database is obtained preferentially.",
-    "about_security": "Check <a href='/admin/security'>Securtiy Settings</a> for security environment variables."
+    "about_security": "Check <a href='/admin/security'>Security Settings</a> for security environment variables.",
+    "copy_prefilled_host_information": {
+      "default": "Copy prefilled host information",
+      "done": "Copied to clipboard!"
+    },
+    "bug_report": "Submitting a bug report",
+    "submit_bug_report": "<a href='https://github.com/weseek/growi/issues/new?assignees=&labels=bug&template=bug-report.md&title=Bug%3A' target='_blank' rel='noreferrer'>then submit your issue to GitHub.</a>"
   },
   "app_setting": {
     "site_name": "Site name",
@@ -252,6 +258,12 @@
     "download": "Download",
     "delete": "Delete"
   },
+  "external_notification": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "header_status": "Slack Integration Status",
+    "caution_enabled": "CAUTION: Currently, notifications that are configured in this page will send only to the Slack Workspace set as primary."
+  },
   "slack_integration": {
     "selecting_bot_types": {
       "slack_bot": "Slack bot",
@@ -282,6 +294,9 @@
       "cancel": "Cancel",
       "change": "Change"
     },
+    "toastr": {
+      "delete_slack_integration_procedure": "Succeeded to delete the slack integration procedure"
+    },
     "use_env_var_if_empty": "If the value in the database is empty, the value of the environment variable <code>{{variable}}</code> is used.",
     "access_token_settings": {
       "regenerate": "Regenerate"
@@ -309,10 +324,13 @@
       "paste_growi_url": "Since a modal is displayed, enter the following URL in <b>GROWI URL</b>.",
       "enter_access_token_for_growi_and_proxy": "Enter <b>Access Token Proxy to GROWI</b> and <b>Access Token GROWI to Proxy</b>",
       "set_proxy_url_on_growi": "Set Proxy URL on GROWI",
-      "copy_proxy_url": "1. When the above step ② are completed successfully, the Proxy URL will be displayed in the Slack Channel you selected in the modal, so copy it.",
-      "enter_proxy_url_and_update": "2. Enter and update the Proxy URL that you copied in step ③ in the <b>Proxy URL</b>  of the <b>Custom bot with proxy integration</b> on this page.",
+      "copy_proxy_url": "When the above step are completed successfully, the Proxy URL will be displayed in the Slack Channel you selected in the modal, so copy it.",
+      "enter_proxy_url_and_update": "Enter and update the Proxy URL that you copied in the above step in the <b>Proxy URL</b> of the <b>Custom bot with proxy integration</b> on this page.",
       "dont_need_update": "※If the value is already in there, there is no need to update it.",
       "select_install_your_app": "Select \"Install your app\".",
+      "go-to-manage-distribution": "Go to \"Manage Settings\" > \"Manage distribution\" on your Slack App page.",
+      "activate-public-distribution": "In \"Share Your App with Other Workspaces\", make sure all items are checked and click \"Activate Public Distribution\"",
+      "click-add-to-slack-button": "Click \"Add to Slack\" button.",
       "select_install_to_workspace": "Select \"Install to Workspace\".",
       "register_proxy_url": "Register Proxy URL with GROWI",
       "click_allow": "Select \"Allow\".",
@@ -345,6 +363,10 @@
       "custom_bot_without_proxy_setting": "https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/custom-bot-without-proxy-settings.html",
       "custom_bot_with_proxy_setting": "https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/custom-bot-with-proxy-settings.html"
     }
+  },
+  "slack_integration_legacy": {
+    "alert_disabled": "This 'Legacy Slack Integration' is currently disabled because <a href='/admin/slack-integration'>the new settings</a> is enabled.",
+    "alert_deplicated": "This 'Legacy Slack Integration' is outdated and will be discontinued in the future. Use <a href='/admin/slack-integration'>the new settings</a> instead. "
   },
   "user_management": {
     "invite_users": "Temporarily issue a new user",
