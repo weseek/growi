@@ -316,6 +316,7 @@ export default class Editor extends AbstractEditor {
                         ref={(c) => { this.cmEditor = c }}
                         indentSize={editorContainer.state.indentSize}
                         editorOptions={editorContainer.state.editorOptions}
+                        isTextlintEnabled={editorContainer.state.isTextlintEnabled}
                         onPasteFiles={this.pasteFilesHandler}
                         onDragEnter={this.dragEnterHandler}
                         onMarkdownHelpButtonClicked={this.showMarkdownHelp}
