@@ -286,11 +286,6 @@ export class SlackCtrl {
       /*
        * forward to GROWI server
        */
-      if (relation == null) {
-        logger.error('*No relation found.*');
-        return;
-      }
-
       try {
         // generate API URL
         const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
