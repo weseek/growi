@@ -110,36 +110,39 @@ export class RelationsService {
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       relation:RelationMock, channelName:string, callbackId:string, actionId:string,
-  ):Promise<{isPermittedForInteractions:boolean, notAllowedCommandName:string}> {
+  ):Promise<{isPermittedForInteractions:boolean, commandName:string}> {
 
     const baseDate = new Date();
     const syncedRelation = await this.syncRelation(relation, baseDate);
     let isPermittedForInteractions!:boolean;
-    let notAllowedCommandName!:string;
+    let commandName!:string;
 
     const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
     const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
     let permissionForInteractions:boolean|string[];
 
-    [...singleUse, ...broadCastUse].forEach(async(commandName) => {
+    [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
 
       if (syncedRelation == null) {
-        return { isPermittedForInteractions: false, notAllowedCommandName: commandName };
+        return { isPermittedForInteractions: false, commandName: tempCommandName };
       }
+
       // ex. search OR search:handlerName
-      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+      const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
 
       // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
       if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
         return;
       }
 
+      commandName = tempCommandName;
+
       // case: singleUse
-      permissionForInteractions = relation.permissionsForSingleUseCommands[commandName];
+      permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
 
       // case: broadcastUse
       if (permissionForInteractions == null) {
-        permissionForInteractions = relation.permissionsForBroadcastUseCommands[commandName];
+        permissionForInteractions = relation.permissionsForBroadcastUseCommands[tempCommandName];
       }
 
       if (permissionForInteractions === true) {
@@ -152,12 +155,10 @@ export class RelationsService {
         isPermittedForInteractions = true;
         return;
       }
-
-      notAllowedCommandName = commandName;
-
     });
 
-    return { isPermittedForInteractions, notAllowedCommandName };
+
+    return { isPermittedForInteractions, commandName };
   }
 
 }
