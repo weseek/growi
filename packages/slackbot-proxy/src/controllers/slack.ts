@@ -330,7 +330,7 @@ export class SlackCtrl {
 
 
     await Promise.all(relations.map(async(relation) => {
-      await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId, body, relations);
+      await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
 
       /*
        * forward to GROWI server

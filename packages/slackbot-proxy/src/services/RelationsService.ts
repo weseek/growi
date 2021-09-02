@@ -107,26 +107,26 @@ export class RelationsService {
     return permission;
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  postNotAllowedMessage(relations:RelationMock[], commandName:string, body:any):Promise<ChatPostEphemeralResponse> {
-    const botToken = relations[0].installation?.data.bot?.token;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const client = generateWebClient(botToken!);
+  // // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // postNotAllowedMessage(relations:RelationMock[], commandName:string, body:any):Promise<ChatPostEphemeralResponse> {
+  //   const botToken = relations[0].installation?.data.bot?.token;
+  //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  //   const client = generateWebClient(botToken!);
 
-    return client.chat.postEphemeral({
-      text: 'Error occured.',
-      channel: body.channel_id,
-      user: body.user_id,
-      blocks: [
-        markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
-      ],
-    });
-  }
+  //   return client.chat.postEphemeral({
+  //     text: 'Error occured.',
+  //     channel: body.channel_id,
+  //     user: body.user_id,
+  //     blocks: [
+  //       markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
+  //     ],
+  //   });
+  // }
 
 
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      relation:RelationMock, channelName:string, callbackId:string, actionId:string, body:any, relations:RelationMock[],
+      relation:RelationMock, channelName:string, callbackId:string, actionId:string,
   ):Promise<void> {
 
     const baseDate = new Date();
@@ -171,9 +171,9 @@ export class RelationsService {
         return;
       }
 
-      if (!isPermittedForInteractions) {
-        this.postNotAllowedMessage(relations, commandName, body);
-      }
+      // if (!isPermittedForInteractions) {
+      //   this.postNotAllowedMessage(relations, commandName, body);
+      // }
     });
   }
 
