@@ -137,15 +137,12 @@ const EditorSettingsBody: FC<Props> = (props) => {
     setCommonTextlintRules(prevState => (
       prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
     ));
-    console.log(commonTextlintRules);
   };
 
   const japaneseRuleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
     setJapaneseTextlintRules(prevState => (
       prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
     ));
-    console.log(japaneseTextlintRules);
-
   };
 
   const updateCommonRuleHandler = async() => {
