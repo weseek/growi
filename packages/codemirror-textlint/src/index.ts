@@ -94,32 +94,45 @@ const createSetupRules = (rules, ruleOptions): TextlintKernelRule[] => (
 
 
 export const createValidator = (rulesConfigArray: RulesConfigObj[]): AsyncLinter<RulesConfigObj[]> => {
+  if (rulesConfigArray != null) {
+    const filteredConfigArray = rulesConfigArray
+      .filter((rule) => {
+        if (ruleModulesList[rule.name] == null) {
+          logger.error(`Textlint rule ${rule.name} is not installed`);
+        }
+        return ruleModulesList[rule.name] != null;
+      });
 
-  const filteredConfigArray = rulesConfigArray
-    .filter((rule) => {
-      if (ruleModulesList[rule.name] == null) {
-        logger.error(`Textlint rule ${rule.name} is not installed`);
-      }
-      return ruleModulesList[rule.name] != null;
-    });
+    const rules = filteredConfigArray
+      .reduce((rules, rule) => {
+        rules[rule.name] = ruleModulesList[rule.name];
+        return rules;
+      }, {});
 
-  const rules = filteredConfigArray
-    .reduce((rules, rule) => {
-      rules[rule.name] = ruleModulesList[rule.name];
-      return rules;
-    }, {});
+    const rulesOption = filteredConfigArray
+      .reduce((rules, rule) => {
+        rules[rule.name] = rule.options || {};
+        return rules;
+      }, {});
 
-  const rulesOption = filteredConfigArray
-    .reduce((rules, rule) => {
-      rules[rule.name] = rule.options || {};
-      return rules;
-    }, {});
+    Object.assign(
+      textlintOption,
+      { rules: createSetupRules(rules, rulesOption) },
+    );
+  }
 
-  Object.assign(
-    textlintOption,
-    { rules: createSetupRules(rules, rulesOption) },
-  );
+  const defaultSetupRules: TextlintKernelRule[] = Object.entries(ruleModulesList)
+    .map(ruleName => ({
+      ruleId: ruleName[0],
+      rule: ruleName[1],
+    }));
 
+  if (rulesConfigArray == null) {
+    Object.assign(
+      textlintOption,
+      { rules: defaultSetupRules },
+    );
+  }
 
   return (text, callback) => {
     if (!text) {
