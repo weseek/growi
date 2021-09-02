@@ -28,6 +28,7 @@ export default class Editor extends AbstractEditor {
       dropzoneActive: false,
       isUploading: false,
       isCheatsheetModalShown: false,
+      isTextlintEnabled: false,
     };
 
     this.getEditorSubstance = this.getEditorSubstance.bind(this);
