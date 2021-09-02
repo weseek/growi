@@ -242,7 +242,8 @@ const ManageCommandsProcess = ({
         <div className="custom-control custom-checkbox">
           <div className="row mb-5 d-block">
             {defaultCommandsName.map((commandName) => {
-              return <PermissionSettingForEachCommandComponent commandName={commandName} commandUsageType={commandUsageType} />;
+              // eslint-disable-next-line max-len
+              return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} commandUsageType={commandUsageType} />;
             })}
           </div>
         </div>
@@ -262,7 +263,7 @@ const ManageCommandsProcess = ({
 
         <div className="col-8">
           {Object.values(CommandUsageTypes).map((commandUsageType) => {
-            return <PermissionSettingsForEachCommandTypeComponent commandUsageType={commandUsageType} />;
+            return <PermissionSettingsForEachCommandTypeComponent key={commandUsageType} commandUsageType={commandUsageType} />;
           })}
         </div>
       </div>
