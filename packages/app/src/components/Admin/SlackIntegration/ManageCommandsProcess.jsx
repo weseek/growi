@@ -33,26 +33,28 @@ const ManageCommandsProcess = ({
     create: false,
     togetter: [],
   });
-
-  const getPermissionTypeFromValue = (value) => {
-    if (Array.isArray(value)) {
-      return PermissionTypes.ALLOW_SPECIFIED;
-    }
-    if (typeof value === 'boolean') {
-      return value ? PermissionTypes.ALLOW_ALL : PermissionTypes.DENY_ALL;
-    }
-    logger.error('The value type must be boolean or string[]');
+  const getInitialCurrentPermissionTypes = () => {
+    const getPermissionTypeFromValue = (value) => {
+      if (Array.isArray(value)) {
+        return PermissionTypes.ALLOW_SPECIFIED;
+      }
+      if (typeof value === 'boolean') {
+        return value ? PermissionTypes.ALLOW_ALL : PermissionTypes.DENY_ALL;
+      }
+      logger.error('The value type must be boolean or string[]');
+    };
+    const initialValue = {};
+    Object.entries(permissionsForBroadcastUseCommandsState).forEach((entry) => {
+      const [commandName, value] = entry;
+      initialValue[commandName] = getPermissionTypeFromValue(value);
+    });
+    Object.entries(permissionsForSingleUseCommandsState).forEach((entry) => {
+      const [commandName, value] = entry;
+      initialValue[commandName] = getPermissionTypeFromValue(value);
+    });
+    return initialValue;
   };
-  const initialValue = {};
-  Object.entries(permissionsForBroadcastUseCommandsState).forEach((entry) => {
-    const [commandName, value] = entry;
-    initialValue[commandName] = getPermissionTypeFromValue(value);
-  });
-  Object.entries(permissionsForSingleUseCommandsState).forEach((entry) => {
-    const [commandName, value] = entry;
-    initialValue[commandName] = getPermissionTypeFromValue(value);
-  });
-  const [currentPermissionTypes, setCurrentPermissionTypes] = useState(initialValue);
+  const [currentPermissionTypes, setCurrentPermissionTypes] = useState(getInitialCurrentPermissionTypes());
 
   // returns new state
   const getUpdatedPermissionSettings = (prevState, commandName, value) => {
