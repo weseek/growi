@@ -9,6 +9,7 @@ const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps }
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
 module.exports = (crowi) => {
@@ -26,7 +27,7 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
+    const slackAppIntegrationCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
@@ -80,7 +81,7 @@ module.exports = (crowi) => {
     }
 
     // code below checks permission at channel level
-    const fromChannel = req.body.channel_name; /* || payload.channel.name; */
+    const fromChannel = req.body.channel_name || payload.channel.name;
     let isPermitted = false;
     [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
       // boolean or string[]
@@ -252,7 +253,7 @@ module.exports = (crowi) => {
     return handleInteractions(req, res);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, /* checkCommandPermission, */ async(req, res) => {
     return handleInteractions(req, res);
   });
 
