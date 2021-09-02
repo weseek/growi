@@ -65,7 +65,7 @@ function LargePageItem({ page }) {
               <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
             </div>
             <div className="grw-formatted-distance-date small mt-auto">
-              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+              <FormattedDistanceDate id={page._id} date={page.updatedAt} />
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@ function SmallPageItem({ page }) {
               <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
             </div>
             <div className="grw-formatted-distance-date small mt-auto">
-              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+              <FormattedDistanceDate id={page._id} date={page.updatedAt} />
             </div>
           </div>
         </div>
@@ -188,9 +188,8 @@ class RecentChanges extends React.Component {
               id="recentChangesResize"
               className="custom-control-input"
               type="checkbox"
-              // checked={}
-              // disabled={}
-              // onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
+              checked={this.state.isRecentChangesSidebarSmall}
+              onChange={e => this.setState({ isRecentChangesSidebarSmall: e.target.checked })}
             />
             <label className="custom-control-label" htmlFor="recentChangesResize">
             </label>
@@ -199,8 +198,8 @@ class RecentChanges extends React.Component {
         <div className="grw-sidebar-content-body grw-recent-changes p-3">
           <ul className="list-group list-group-flush">
             {recentlyUpdatedPages.map(page => (this.state.isRecentChangesSidebarSmall
-              ? <SmallPageItem key={page.id} page={page} />
-              : <LargePageItem key={page.id} page={page} />))}
+              ? <SmallPageItem key={page._id} page={page} />
+              : <LargePageItem key={page._id} page={page} />))}
           </ul>
         </div>
       </>
