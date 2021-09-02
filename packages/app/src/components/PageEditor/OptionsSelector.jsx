@@ -34,6 +34,7 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
+      isTextlintEnabled: false,
     };
 
     this.availableThemes = [
@@ -61,7 +62,8 @@ class OptionsSelector extends React.Component {
 
   async componentDidMount() {
     const { editorContainer } = this.props;
-    await editorContainer.retrieveEditorSettings();
+    const isTextlintEnabled = await editorContainer.retrieveEditorSettings();
+    this.setState({ isTextlintEnabled });
   }
 
 
@@ -123,10 +125,10 @@ class OptionsSelector extends React.Component {
 
   }
 
-  async updateIsTextlintEnabledToDB() {
+  async updateIsTextlintEnabledToDB(newVal) {
     const { appContainer, editorContainer } = this.props;
     try {
-      await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: editorContainer.state.isTextlintEnabled });
+      await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: newVal });
     }
     catch (err) {
       toastError(err);
@@ -135,9 +137,9 @@ class OptionsSelector extends React.Component {
   }
 
   async switchTextlintEnabledHandler() {
-    const { editorContainer } = this.props;
-    editorContainer.setState({ isTextlintEnabled: !editorContainer.state.isTextlintEnabled });
-    this.updateIsTextlintEnabledToDB();
+    const newVal = !this.state.isTextlintEnabled;
+    this.setState({ isTextlintEnabled: newVal });
+    this.updateIsTextlintEnabledToDB(newVal);
   }
 
   onToggleConfigurationDropdown(newValue) {
@@ -317,8 +319,7 @@ class OptionsSelector extends React.Component {
   }
 
   renderIsTextlintEnabledMenuItem() {
-    const { editorContainer } = this.props;
-    const isActive = editorContainer.state.isTextlintEnabled;
+    const isActive = this.state.isTextlintEnabled;
 
     const iconClasses = ['text-info'];
     if (isActive) {
