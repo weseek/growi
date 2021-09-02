@@ -158,9 +158,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       ? { dicPath: '/static/dict/cdn' }
       : { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
 
-    // TODO: Get configs from db
-    this.isTextlintEnabled = true;
-
     this.textlintConfig = [
       { name: 'no-unmatched-pair' },
       { name: 'common-misspellings' },
@@ -235,7 +232,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   initTextlintSettings() {
     this.textlintValidator = createValidator(this.textlintConfig);
-    this.codemirrorLintConfig = this.isTextlintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
+    this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
   getCodeMirror() {
@@ -911,7 +908,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
-    const lint = this.codemirrorLintConfig;
+    const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
@@ -919,7 +916,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
     }
-    if (this.isTextlintEnabled === true) {
+    if (this.props.isTextlintEnabled === true) {
       gutters.push('CodeMirror-lint-markers');
     }
 
@@ -1013,6 +1010,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
+  isTextlintEnabled: PropTypes.bool.isRequired,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
