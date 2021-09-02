@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import dateFnsFormat from 'date-fns/format';
 
-import UserPicture from '../../User/UserPicture';
+import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import AdminUserGroupDetailContainer from '~/client/services/AdminUserGroupDetailContainer';

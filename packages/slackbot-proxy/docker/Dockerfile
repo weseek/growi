@@ -37,7 +37,10 @@ RUN tar cf node_modules.tar node_modules \
 FROM deps-resolver-base AS deps-resolver-prod
 RUN npx lerna bootstrap -- --production
 # make artifacts
-RUN tar cf dependencies.tar node_modules packages/slackbot-proxy/node_modules
+RUN tar cf dependencies.tar \
+  node_modules \
+  packages/slack/node_modules \
+  packages/slackbot-proxy/node_modules
 
 
 ##

@@ -42,7 +42,7 @@
   "Update": "更新",
 	"Update Page": "更新本页",
 	"Warning": "警告",
-	"Sign in": "登录",
+  "Sign in": "登录",
 	"Sign up is here": "注册",
 	"Sign in is here": "登录",
 	"Sign up": "注册",
@@ -418,7 +418,6 @@
     "initialize_successed": "Succeeded to initialize {{target}}",
 		"give_user_admin": "Succeeded to give {{username}} admin",
     "remove_user_admin": "Succeeded to remove {{username}} admin ",
-    "delete_slack_integration_procedure": "删除了 Slack 集成程序",
 		"activate_user_success": "Succeeded to activating {{username}}",
 		"deactivate_user_success": "Succeeded to deactivate {{username}}",
 		"remove_user_success": "Succeeded to removing {{username}} ",
@@ -593,7 +592,10 @@
 		"Local": {
 			"name": "ID/Password",
 			"note for the only env option": "The LOCAL authentication is limited by the value of environment variable.<br>To change this setting, please change to false or delete the value of the environment variable <code>{{env}}</code> .",
-			"enable_local": "Enable ID/Password"
+      "enable_local": "Enable ID/Password",
+      "password_reset_by_users": "用户重置密码",
+      "enable_password_reset_by_users": "启用用户重置密码",
+      "password_reset_desc": "忘记密码时，用户可以自行重置"
 		},
 		"ldap": {
 			"enable_ldap": "Enable LDAP",
@@ -851,5 +853,20 @@
     "aws_region": "关于地区，请输入AWS地区名，例如：ap-east-1",
     "aws_custom_endpoint": "关于自定义端点，请指定以http(s)://开头的URL，链接末尾不需要添加“/”",
     "failed_to_send_a_test_email":"SMTP方式测试邮件发送失败，请检查相关设定。"
+  },
+  "forgot_password":{
+    "forgot_password": "忘记密码？",
+    "send": "发送",
+    "return_to_login": "返回登录",
+    "reset_password": "重设密码",
+    "sign_in_instead": "改为登录",
+    "password_reset_request_desc": "您可以在此处重置密码",
+    "password_reset_excecution_desc": "输入新的密码",
+    "new_password": "新密码",
+    "confirm_new_password": "确认新密码",
+    "email_is_required": "电子邮件是必需的",
+    "success_to_send_email": "我发了一封电子邮件",
+    "incorrect_token_or_expired_url":"令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
+    "password_and_confirm_password_does_not_match": "密码和确认密码不匹配"
   }
 }

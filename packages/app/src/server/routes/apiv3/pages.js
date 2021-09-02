@@ -1,3 +1,4 @@
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
@@ -6,8 +7,10 @@ const pathUtils = require('growi-commons').pathUtils;
 
 const { body } = require('express-validator');
 const { query } = require('express-validator');
-const { isCreatablePage } = require('~/utils/path-utils');
+
 const ErrorV3 = require('../../models/vo/error-apiv3');
+
+const { isCreatablePage } = pagePathUtils;
 
 const router = express.Router();
 
@@ -458,7 +461,9 @@ module.exports = (crowi) => {
   ];
 
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
-    const { isTrashPage } = require('~/utils/path-utils');
+
+
+    const { isTrashPage } = pagePathUtils;
 
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;

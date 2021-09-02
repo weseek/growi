@@ -2,17 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
+import { SlackbotType } from '@growi/slack';
 
 const botDetails = {
   officialBot: {
-    botType: 'officialBot',
+    botType: SlackbotType.OFFICIAL,
     botTypeCategory: 'official_bot',
     setUp: 'easy',
     multiWSIntegration: 'possible',
     securityControl: 'impossible',
   },
   customBotWithoutProxy: {
-    botType: 'customBotWithoutProxy',
+    botType: SlackbotType.CUSTOM_WITHOUT_PROXY,
     botTypeCategory: 'custom_bot',
     supplementaryBotName: 'without_proxy',
     setUp: 'normal',
@@ -20,7 +21,7 @@ const botDetails = {
     securityControl: 'possible',
   },
   customBotWithProxy: {
-    botType: 'customBotWithProxy',
+    botType: SlackbotType.CUSTOM_WITH_PROXY,
     botTypeCategory: 'custom_bot',
     supplementaryBotName: 'with_proxy',
     setUp: 'hard',
@@ -32,6 +33,8 @@ const botDetails = {
 const BotTypeCard = (props) => {
   const { t } = useTranslation('admin');
 
+  const isBotTypeOfficial = props.botType === SlackbotType.OFFICIAL;
+
   return (
     <div
       className={`card admin-bot-card rounded border-radius-sm shadow ${props.isActive ? 'border-primary' : ''}`}
@@ -41,7 +44,7 @@ const BotTypeCard = (props) => {
     >
       <div>
         <h3 className={`card-header mb-0 py-3
-              ${props.botType === 'officialBot' ? 'd-flex align-items-center justify-content-center' : 'text-center'}
+              ${isBotTypeOfficial ? 'd-flex align-items-center justify-content-center' : 'text-center'}
               ${props.isActive ? 'bg-primary grw-botcard-title-active' : ''}`}
         >
           <span className="mr-2">
@@ -49,7 +52,7 @@ const BotTypeCard = (props) => {
           </span>
 
           {/*  A recommended badge is shown on official bot card, supplementary names are shown on Custom bot cards   */}
-          {props.botType === 'officialBot'
+          { isBotTypeOfficial
             ? (
               <span className="badge badge-info mr-2">
                 {t('admin:slack_integration.selecting_bot_types.recommended')}

@@ -39,6 +39,7 @@ export default class Editor extends AbstractEditor {
     this.dropHandler = this.dropHandler.bind(this);
 
     this.showMarkdownHelp = this.showMarkdownHelp.bind(this);
+    this.addAttachmentHandler = this.addAttachmentHandler.bind(this);
 
     this.getAcceptableType = this.getAcceptableType.bind(this);
     this.getDropzoneClassName = this.getDropzoneClassName.bind(this);
@@ -187,6 +188,10 @@ export default class Editor extends AbstractEditor {
     this.setState({ isCheatsheetModalShown: true });
   }
 
+  addAttachmentHandler() {
+    this.dropzone.open();
+  }
+
   getDropzoneClassName(isDragAccept, isDragReject) {
     let className = 'dropzone';
     if (!this.props.isUploadable) {
@@ -314,6 +319,7 @@ export default class Editor extends AbstractEditor {
                         onPasteFiles={this.pasteFilesHandler}
                         onDragEnter={this.dragEnterHandler}
                         onMarkdownHelpButtonClicked={this.showMarkdownHelp}
+                        onAddAttachmentButtonClicked={this.addAttachmentHandler}
                         {...this.props}
                       />
                     )}
@@ -341,7 +347,7 @@ export default class Editor extends AbstractEditor {
             <button
               type="button"
               className="btn btn-outline-secondary btn-block btn-open-dropzone"
-              onClick={() => { this.dropzone.open() }}
+              onClick={this.addAttachmentHandler}
             >
               <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
               Attach files

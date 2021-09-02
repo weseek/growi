@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import { isTopPage } from '~/utils/path-utils';
+import { pagePathUtils } from '@growi/core';
 import AppContainer from '~/client/services/AppContainer';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -9,6 +9,8 @@ import PageContainer from '~/client/services/PageContainer';
 import { withUnstatedContainers } from './UnstatedUtils';
 
 import RecentlyCreatedIcon from './Icons/RecentlyCreatedIcon';
+
+const { isTopPage } = pagePathUtils;
 
 const WIKI_HEADER_LINK = 120;
 

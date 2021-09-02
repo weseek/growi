@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+import { SlackbotType } from '@growi/slack';
+
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -67,15 +70,16 @@ const BotInstallProcessForCustomBotWithProxy = () => {
   const { t } = useTranslation();
   return (
     <div className="container w-75 py-5">
-      <p>1. {t('admin:slack_integration.accordion.select_install_your_app')}</p>
-      <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
-      <p>2. {t('admin:slack_integration.accordion.select_install_to_workspace')}</p>
-      <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
-      <p>3. {t('admin:slack_integration.accordion.click_allow')}</p>
+      <p>1. {t('admin:slack_integration.accordion.go-to-manage-distribution')}</p>
+      <p>2. {t('admin:slack_integration.accordion.activate-public-distribution')}</p>
+      <img src="/images/slack-integration/activate-public-dist.png" className="border border-light img-fluid mb-5" />
+      <p>3. {t('admin:slack_integration.accordion.click-add-to-slack-button')}</p>
+      <img src="/images/slack-integration/click-add-to-slack.png" className="border border-light img-fluid mb-5" />
+      <p>4. {t('admin:slack_integration.accordion.click_allow')}</p>
       <img src="/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
-      <p>4. {t('admin:slack_integration.accordion.install_complete_if_checked')}</p>
-      <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
-      <p>5. {t('admin:slack_integration.accordion.invite_bot_to_channel')}</p>
+      <p>5. {t('admin:slack_integration.accordion.install_complete_if_checked')}</p>
+      <img src="/images/slack-integration/basicinfo-all-checked.png" className="border border-light img-fluid mb-5" />
+      <p>6. {t('admin:slack_integration.accordion.invite_bot_to_channel')}</p>
       <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
       <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
     </div>
@@ -86,17 +90,27 @@ const RegisteringProxyUrlProcess = () => {
   const { t } = useTranslation();
   return (
     <div className="container w-75 py-5">
-      <p
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
-      />
-      <img className="mb-5 border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
-      <span
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
-      />
-      <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
-      <img className="mb-3 border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
+      <ol>
+        <li>
+          <p
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.copy_proxy_url') }}
+          />
+          <p>
+            <img className="border border-light img-fluid" src="/images/slack-integration/growi-register-sentence.png" />
+          </p>
+        </li>
+        <li>
+          <p
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.accordion.enter_proxy_url_and_update') }}
+          />
+          <p>
+            <img className="border border-light img-fluid" src="/images/slack-integration/growi-set-proxy-url.png" />
+          </p>
+          <p className="text-danger">{t('admin:slack_integration.accordion.dont_need_update')}</p>
+        </li>
+      </ol>
     </div>
   );
 };
@@ -107,7 +121,7 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = withUnstatedContainers
 
   const regenerateTokensHandler = async() => {
     try {
-      await appContainer.apiv3.put('/slack-integration-settings/regenerate-tokens', { slackAppIntegrationId });
+      await appContainer.apiv3.put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/regenerate-tokens`);
       if (props.onUpdateTokens != null) {
         props.onUpdateTokens();
       }
@@ -215,7 +229,7 @@ const TestProcess = ({
   const submitForm = async(e) => {
     e.preventDefault();
     try {
-      await apiv3Post('/slack-integration-settings/with-proxy/relation-test', { slackAppIntegrationId, channel: testChannel });
+      await apiv3Post(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/relation-test`, { channel: testChannel });
       const newLogs = addLogs(logsValue, successMessage, null);
       setLogsValue(newLogs);
 
@@ -309,15 +323,6 @@ const WithProxyAccordions = (props) => {
       />,
     },
     '③': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
-      />,
-    },
-    '④': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -325,6 +330,15 @@ const WithProxyAccordions = (props) => {
         onSubmitForm={submitForm}
         onSubmitFormFailed={submitFormFailed}
         isLatestConnectionSuccess={isLatestConnectionSuccess}
+      />,
+    },
+    '④': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
+        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
       />,
     },
   };
@@ -353,15 +367,6 @@ const WithProxyAccordions = (props) => {
       content: <RegisteringProxyUrlProcess />,
     },
     '⑤': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
-      />,
-    },
-    '⑥': {
       title: 'test_connection',
       content: <TestProcess
         apiv3Post={props.appContainer.apiv3.post}
@@ -371,9 +376,18 @@ const WithProxyAccordions = (props) => {
         isLatestConnectionSuccess={isLatestConnectionSuccess}
       />,
     },
+    '⑥': {
+      title: 'manage_commands',
+      content: <ManageCommandsProcess
+        apiv3Put={props.appContainer.apiv3.put}
+        slackAppIntegrationId={props.slackAppIntegrationId}
+        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
+        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
+      />,
+    },
   };
 
-  const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
+  const integrationProcedureMapping = props.botType === SlackbotType.OFFICIAL ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
   return (
     <div
@@ -406,7 +420,7 @@ const WithProxyAccordions = (props) => {
 const WithProxyAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  botType: PropTypes.string.isRequired,
+  botType: PropTypes.oneOf(Object.values(SlackbotType)).isRequired,
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,

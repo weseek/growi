@@ -1,9 +1,15 @@
+import { pagePathUtils } from '@growi/core';
 import loggerFactory from '~/utils/logger';
+
+
+import {
+  prepareSlackMessageForGlobalNotification,
+} from '../../util/slack';
 
 const logger = loggerFactory('growi:service:GlobalNotificationSlackService'); // eslint-disable-line no-unused-vars
 const urljoin = require('url-join');
 
-const { encodeSpaces } = require('~/utils/path-utils');
+const { encodeSpaces } = pagePathUtils;
 
 /**
  * sub service class of GlobalNotificationSetting
@@ -12,8 +18,7 @@ class GlobalNotificationSlackService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.slack = crowi.getSlack();
-    this.slackLegacy = crowi.getSlackLegacy();
+
     this.type = crowi.model('GlobalNotificationSetting').TYPE.SLACK;
     this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
@@ -31,19 +36,20 @@ class GlobalNotificationSlackService {
    * @param {{ comment: Comment, oldPath: string }} _ event specific vars
    */
   async fire(event, id, path, triggeredBy, vars) {
+    const { appService, slackIntegrationService } = this.crowi;
+
     const GlobalNotification = this.crowi.model('GlobalNotificationSetting');
     const notifications = await GlobalNotification.findSettingByPathAndEvent(event, path, this.type);
 
     const messageBody = this.generateMessageBody(event, id, path, triggeredBy, vars);
     const attachmentBody = this.generateAttachmentBody(event, id, path, triggeredBy, vars);
 
-    await Promise.all(notifications.map((notification) => {
-      return [
-        this.slack.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels),
-        this.slackLegacy.sendGlobalNotification(messageBody, attachmentBody, notification.slackChannels),
-      ];
-    }));
+    const appTitle = appService.getAppTitle();
 
+    await Promise.all(notifications.map((notification) => {
+      const messageObj = prepareSlackMessageForGlobalNotification(messageBody, attachmentBody, appTitle, notification.slackChannels);
+      return slackIntegrationService.postMessage(messageObj);
+    }));
 
   }
 

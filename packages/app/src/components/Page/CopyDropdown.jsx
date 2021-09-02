@@ -12,7 +12,9 @@ import {
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import { encodeSpaces } from '~/utils/path-utils';
+import { pagePathUtils } from '@growi/core';
+
+const { encodeSpaces } = pagePathUtils;
 
 /* eslint-disable react/prop-types */
 const DropdownItemContents = ({ title, contents }) => (

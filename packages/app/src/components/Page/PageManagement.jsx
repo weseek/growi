@@ -4,7 +4,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import urljoin from 'url-join';
 
-import { isTopPage } from '~/utils/path-utils';
+import { pagePathUtils } from '@growi/core';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
@@ -14,6 +14,8 @@ import PageDuplicateModal from '../PageDuplicateModal';
 import CreateTemplateModal from '../CreateTemplateModal';
 import PagePresentationModal from '../PagePresentationModal';
 import PresentationIcon from '../Icons/PresentationIcon';
+
+const { isTopPage } = pagePathUtils;
 
 
 const PageManagement = (props) => {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { withTranslation } from 'react-i18next';
-import { pathUtils } from 'growi-commons';
+import { pathUtils } from '@growi/core';
 import urljoin from 'url-join';
 import { withUnstatedContainers } from './UnstatedUtils';
 

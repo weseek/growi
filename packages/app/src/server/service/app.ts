@@ -1,4 +1,4 @@
-import { pathUtils } from 'growi-commons';
+import { pathUtils } from '@growi/core';
 
 import loggerFactory from '~/utils/logger';
 
@@ -12,7 +12,7 @@ const logger = loggerFactory('growi:service:AppService');
 /**
  * the service class of AppService
  */
-class AppService implements S2sMessageHandlable {
+export default class AppService implements S2sMessageHandlable {
 
   crowi!: any;
 
@@ -119,7 +119,7 @@ class AppService implements S2sMessageHandlable {
   }
 
   async setupAfterInstall() {
-    this.crowi.pluginService.autoDetectAndLoadPlugins();
+    await this.crowi.pluginService.autoDetectAndLoadPlugins();
     this.crowi.setupRoutesAtLast();
     this.crowi.setupGlobalErrorHandlers();
 
@@ -131,5 +131,3 @@ class AppService implements S2sMessageHandlable {
   }
 
 }
-
-module.exports = AppService;

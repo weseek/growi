@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import { withTranslation } from 'react-i18next';
 
+import { UserPicture } from '@growi/ui';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import AppContainer from '~/client/services/AppContainer';
 import PageContainer from '~/client/services/PageContainer';
-import UserPicture from '../User/UserPicture';
 import PutbackPageModal from '../PutbackPageModal';
 import EmptyTrashModal from '../EmptyTrashModal';
 import PageDeleteModal from '../PageDeleteModal';

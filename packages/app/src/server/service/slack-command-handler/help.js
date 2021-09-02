@@ -11,7 +11,7 @@ module.exports = () => {
     message += 'Commands:\n\n';
     message += '`/growi create`                          Create new page\n\n';
     message += '`/growi search [keyword]`       Search pages\n\n';
-    message += '`/growi togetter`                      Create new page with existing slack conversations\n\n';
+    message += '`/growi togetter`                      Create new page with existing slack conversations (Alpha)\n\n';
     client.chat.postEphemeral({
       channel: body.channel_id,
       user: body.user_id,
