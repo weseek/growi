@@ -19,16 +19,15 @@ const CommandUsageTypes = {
   SINGLE_USE: 'singleUse',
 };
 
-// A utility function that returns the new state
+// A utility function that returns the new state but identical to the previous state
 const getUpdatedChannelsList = (prevState, commandName, value) => {
-  const newState = { ...prevState };
   // string to array
   const allowedChannelsArray = value.split(',');
   // trim whitespace from all elements
   const trimedAllowedChannelsArray = allowedChannelsArray.map(channelName => channelName.trim());
 
   prevState[commandName] = trimedAllowedChannelsArray;
-  return newState;
+  return prevState;
 };
 
 // A utility function that returns the new state
@@ -120,22 +119,21 @@ const ManageCommandsProcess = ({
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setPermissionsForBroadcastUseCommandsState(getUpdatedChannelsList(permissionsForBroadcastUseCommandsState, commandName, value));
+    setPermissionsForBroadcastUseCommandsState(prev => getUpdatedChannelsList(prev, commandName, value));
   }, []);
 
   const updateChannelsListForSingleUseCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setPermissionsForSingleUseCommandsState(getUpdatedChannelsList(permissionsForSingleUseCommandsState, commandName, value));
+    setPermissionsForSingleUseCommandsState(prev => getUpdatedChannelsList(prev, commandName, value));
   }, []);
 
-  // TODO: UPDATE API AND REWRITE HERE GW-7006
-  const updateCommandsHandler = async() => {
+  const updateCommandsHandler = async(e) => {
     try {
       await apiv3Put(`/slack-integration-settings/${slackAppIntegrationId}/supported-commands`, {
-        permissionsForBroadcastUseCommands: ['REWRITE'],
-        permissionsForSingleUseCommands: ['REWRITE'],
+        permissionsForBroadcastUseCommands: permissionsForBroadcastUseCommandsState,
+        permissionsForSingleUseCommands: permissionsForSingleUseCommandsState,
       });
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
@@ -156,7 +154,7 @@ const ManageCommandsProcess = ({
     const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
     return (
-      <div className="my-1 mb-2" key={commandName}>
+      <div className="my-1 mb-2">
         <div className="row align-items-center mb-3">
           <p className="col my-auto text-capitalize align-middle">{commandName}</p>
           <div className="col dropdown">
@@ -214,7 +212,7 @@ const ManageCommandsProcess = ({
             type="textarea"
             name={commandName}
             defaultValue={textareaDefaultValue}
-            onClick={isCommandBroadcastUse ? updateChannelsListForBroadcastUseCommandsState : updateChannelsListForSingleUseCommandsState}
+            onChange={isCommandBroadcastUse ? updateChannelsListForBroadcastUseCommandsState : updateChannelsListForSingleUseCommandsState}
           />
           <p className="form-text text-muted small">
             {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
@@ -269,7 +267,7 @@ const ManageCommandsProcess = ({
       </div>
       <div className="row">
         <button
-          type="button"
+          type="submit"
           className="btn btn-primary mx-auto"
           onClick={updateCommandsHandler}
         >
