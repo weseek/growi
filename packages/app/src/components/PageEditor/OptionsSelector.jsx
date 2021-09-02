@@ -140,7 +140,7 @@ class OptionsSelector extends React.Component {
     const { editorContainer } = this.props;
     const newVal = !this.state.isTextlintEnabled;
     this.setState({ isTextlintEnabled: newVal });
-    await editorContainer.setState({ isTextlintEnabled: newVal });
+    editorContainer.setState({ isTextlintEnabled: newVal });
     this.updateIsTextlintEnabledToDB(newVal);
   }
 
