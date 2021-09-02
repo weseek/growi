@@ -121,7 +121,6 @@ export class RelationsService {
     });
   }
 
-  isPermittedForInteractions = false;
 
   permissionForInteractions:boolean|string[];
 
@@ -132,9 +131,11 @@ export class RelationsService {
 
     const baseDate = new Date();
     const syncedRelation = await this.syncRelation(relation, baseDate);
+    let isPermittedForInteractions = false;
+
 
     if (syncedRelation == null) {
-      this.isPermittedForInteractions = false;
+      isPermittedForInteractions = false;
       return;
     }
 
@@ -152,13 +153,13 @@ export class RelationsService {
       }
 
       if (this.permissionForInteractions === true) {
-        this.isPermittedForInteractions = true;
+        isPermittedForInteractions = true;
         return;
       }
 
       // check permission at channel level
       if (Array.isArray(this.permissionForInteractions)) {
-        this.isPermittedForInteractions = this.permissionForInteractions.includes(channelName);
+        isPermittedForInteractions = this.permissionForInteractions.includes(channelName);
         return;
       }
 
@@ -170,7 +171,7 @@ export class RelationsService {
         return;
       }
 
-      if (!this.isPermittedForInteractions) {
+      if (!isPermittedForInteractions) {
         this.postNotAllowedMessage(relations, commandName, body);
       }
     });
