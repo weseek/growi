@@ -371,6 +371,7 @@ export class SlackCtrl {
         ],
       });
     }
+
     /*
      * forward to GROWI server
      */
@@ -398,9 +399,7 @@ export class SlackCtrl {
   async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
 
     const { authorizeResult } = req;
-    if (authorizeResult.botToken == null) {
-      return;
-    }
+
     const client = generateWebClient(authorizeResult.botToken);
 
     if (req.body.event.type === 'app_home_opened') {
