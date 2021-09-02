@@ -162,7 +162,7 @@ const ManageCommandsProcess = ({
     const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
     const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
     return (
-      <div className="row-5 my-1 mb-2" key={commandName}>
+      <div className="row my-1 mb-2" key={commandName}>
         <div className="row align-items-center mb-3">
           <p className="col my-auto text-capitalize align-middle">{commandName}</p>
           <div className="col dropdown">
