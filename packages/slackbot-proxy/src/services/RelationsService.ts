@@ -131,7 +131,6 @@ export class RelationsService {
     const syncedRelation = await this.syncRelation(relation, baseDate);
     let isPermittedForInteractions = false;
 
-
     if (syncedRelation == null) {
       isPermittedForInteractions = false;
       return;
@@ -165,7 +164,7 @@ export class RelationsService {
       // ex. search OR search:handlerName
       const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
 
-      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommandskey
+      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
       if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
         return;
       }
