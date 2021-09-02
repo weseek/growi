@@ -127,7 +127,7 @@ export const createValidator = (rulesConfigArray: RulesConfigObj[]): AsyncLinter
       rule: ruleName[1],
     }));
 
-  if (rulesConfigArray.length === 0) {
+  if (rulesConfigArray == null) {
     Object.assign(
       textlintOption,
       { rules: defaultSetupRules },
