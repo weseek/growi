@@ -94,7 +94,7 @@ const ManageCommandsProcess = ({
     const { name: commandName, value } = target;
 
     // update state
-    setPermissionsForBroadcastUseCommandsState(getUpdatedPermissionSettings(permissionsForBroadcastUseCommandsState, commandName, value));
+    setPermissionsForBroadcastUseCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
     setCurrentPermissionTypes((prevState) => {
       const newState = { ...prevState };
       newState[commandName] = value;
@@ -107,7 +107,7 @@ const ManageCommandsProcess = ({
     const { name: commandName, value } = target;
 
     // update state
-    setPermissionsForSingleUseCommandsState(getUpdatedPermissionSettings(permissionsForSingleUseCommandsState, commandName, value));
+    setPermissionsForSingleUseCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
     setCurrentPermissionTypes((prevState) => {
       const newState = { ...prevState };
       newState[commandName] = value;
