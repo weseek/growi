@@ -8,22 +8,22 @@ import { toastSuccess, toastError } from '../../../client/util/apiNotification';
 
 const logger = loggerFactory('growi:SlackIntegration:ManageCommandsProcess');
 
+const PermissionTypes = {
+  ALLOW_ALL: 'allowAll',
+  DENY_ALL: 'denyAll',
+  ALLOW_SPECIFIED: 'allowSpecified',
+};
+
+const CommandUsageTypes = {
+  BROADCAST_USE: 'broadcastUse',
+  SINGLE_USE: 'singleUse',
+};
+
 // TODO: Add permittedChannelsForEachCommand to use data from server (props must have it) GW-7006
 const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
 }) => {
   const { t } = useTranslation();
-
-  const PermissionTypes = {
-    ALLOW_ALL: 'allowAll',
-    DENY_ALL: 'denyAll',
-    ALLOW_SPECIFIED: 'allowSpecified',
-  };
-
-  const CommandUsageTypes = {
-    BROADCAST_USE: 'broadcastUse',
-    SINGLE_USE: 'singleUse',
-  };
 
   // TODO: use data from server GW-7006
   const [permissionsForBroadcastUseCommandsState, setPermissionsForBroadcastUseCommandsState] = useState({
