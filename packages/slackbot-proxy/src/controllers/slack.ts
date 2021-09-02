@@ -268,14 +268,6 @@ export class SlackCtrl {
 
     const payload:any = JSON.parse(body.payload);
     const callbackId:string = payload?.view?.callback_id;
-    const actionId:string = payload?.actions?.[0].action_id;
-    let privateMeta:any;
-
-    if (payload.view != null) {
-      privateMeta = JSON.parse(payload?.view?.private_metadata);
-    }
-
-    const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
@@ -302,6 +294,14 @@ export class SlackCtrl {
       await this.unregisterService.unregister(installation, authorizeResult, payload);
       return;
     }
+
+    let privateMeta:any;
+
+    if (payload.view != null) {
+      privateMeta = JSON.parse(payload?.view?.private_metadata);
+    }
+
+    const channelName = payload.channel?.name || privateMeta?.body?.channel_name || privateMeta?.channelName;
 
     // forward to GROWI server
     if (callbackId === 'select_growi') {
@@ -331,6 +331,7 @@ export class SlackCtrl {
     const allowedRelations:RelationMock[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
     let notAllowedCommandName!:string;
+    const actionId:string = payload?.actions?.[0].action_id;
 
     await Promise.all(relations.map(async(relation) => {
       const permission = await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
