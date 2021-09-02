@@ -95,9 +95,7 @@ const ManageCommandsProcess = ({
     const { name: commandName, value } = target;
 
     // update state
-    setPermissionsForBroadcastUseCommandsState((prevState) => {
-      return getUpdatedPermissionSettings(prevState, commandName, value);
-    });
+    setPermissionsForBroadcastUseCommandsState(getUpdatedPermissionSettings(permissionsForBroadcastUseCommandsState, commandName, value));
     setCurrentPermissionTypes((prevState) => {
       const newState = { ...prevState };
       newState[commandName] = value;
@@ -110,9 +108,7 @@ const ManageCommandsProcess = ({
     const { name: commandName, value } = target;
 
     // update state
-    setPermissionsForSingleUseCommandsState((prevState) => {
-      return getUpdatedPermissionSettings(prevState, commandName, value);
-    });
+    setPermissionsForSingleUseCommandsState(getUpdatedPermissionSettings(permissionsForSingleUseCommandsState, commandName, value));
     setCurrentPermissionTypes((prevState) => {
       const newState = { ...prevState };
       newState[commandName] = value;
@@ -124,18 +120,14 @@ const ManageCommandsProcess = ({
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setPermissionsForBroadcastUseCommandsState((prevState) => {
-      return getUpdatedChannelsList(prevState, commandName, value);
-    });
+    setPermissionsForBroadcastUseCommandsState(getUpdatedChannelsList(permissionsForBroadcastUseCommandsState, commandName, value));
   }, []);
 
   const updateChannelsListForSingleUseCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setPermissionsForSingleUseCommandsState((prevState) => {
-      return getUpdatedChannelsList(prevState, commandName, value);
-    });
+    setPermissionsForSingleUseCommandsState(getUpdatedChannelsList(permissionsForSingleUseCommandsState, commandName, value));
   }, []);
 
   // TODO: UPDATE API AND REWRITE HERE GW-7006
