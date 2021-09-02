@@ -52,6 +52,17 @@ const getUpdatedPermissionSettings = (prevState, commandName, value) => {
   return newState;
 };
 
+// A utility function that returns the permission type from the permission value
+const getPermissionTypeFromValue = (value) => {
+  if (Array.isArray(value)) {
+    return PermissionTypes.ALLOW_SPECIFIED;
+  }
+  if (typeof value === 'boolean') {
+    return value ? PermissionTypes.ALLOW_ALL : PermissionTypes.DENY_ALL;
+  }
+  logger.error('The value type must be boolean or string[]');
+};
+
 // TODO: Add permittedChannelsForEachCommand to use data from server (props must have it) GW-7006
 const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
@@ -66,28 +77,18 @@ const ManageCommandsProcess = ({
     create: false,
     togetter: [],
   });
-  const getInitialCurrentPermissionTypes = () => {
-    const getPermissionTypeFromValue = (value) => {
-      if (Array.isArray(value)) {
-        return PermissionTypes.ALLOW_SPECIFIED;
-      }
-      if (typeof value === 'boolean') {
-        return value ? PermissionTypes.ALLOW_ALL : PermissionTypes.DENY_ALL;
-      }
-      logger.error('The value type must be boolean or string[]');
-    };
-    const initialValue = {};
+  const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
+    const initialState = {};
     Object.entries(permissionsForBroadcastUseCommandsState).forEach((entry) => {
       const [commandName, value] = entry;
-      initialValue[commandName] = getPermissionTypeFromValue(value);
+      initialState[commandName] = getPermissionTypeFromValue(value);
     });
     Object.entries(permissionsForSingleUseCommandsState).forEach((entry) => {
       const [commandName, value] = entry;
-      initialValue[commandName] = getPermissionTypeFromValue(value);
+      initialState[commandName] = getPermissionTypeFromValue(value);
     });
-    return initialValue;
-  };
-  const [currentPermissionTypes, setCurrentPermissionTypes] = useState(getInitialCurrentPermissionTypes());
+    return initialState;
+  });
 
   const updatePermissionsForBroadcastUseCommandsState = (e) => {
     const { target } = e;
