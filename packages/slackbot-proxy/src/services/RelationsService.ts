@@ -106,37 +106,16 @@ export class RelationsService {
     return permission;
   }
 
-  // // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  // postNotAllowedMessage(relations:RelationMock[], commandName:string, body:any):Promise<ChatPostEphemeralResponse> {
-  //   const botToken = relations[0].installation?.data.bot?.token;
-  //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //   const client = generateWebClient(botToken!);
-
-  //   return client.chat.postEphemeral({
-  //     text: 'Error occured.',
-  //     channel: body.channel_id,
-  //     user: body.user_id,
-  //     blocks: [
-  //       markdownSectionBlock(`It is not allowed to run *'${commandName}'* command to this GROWI.`),
-  //     ],
-  //   });
-  // }
-
 
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       relation:RelationMock, channelName:string, callbackId:string, actionId:string,
-  ):Promise<{isPermittedForInteractions:boolean, notAllowedCommandName:string|null}> {
+  ):Promise<{isPermittedForInteractions:boolean, notAllowedCommandName:string}> {
 
     const baseDate = new Date();
     const syncedRelation = await this.syncRelation(relation, baseDate);
-
     let isPermittedForInteractions!:boolean;
-    let notAllowedCommandName!:null|string;
-
-    if (syncedRelation == null) {
-      return { isPermittedForInteractions: false, notAllowedCommandName: null };
-    }
+    let notAllowedCommandName!:string;
 
     const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
     const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
@@ -144,6 +123,9 @@ export class RelationsService {
 
     [...singleUse, ...broadCastUse].forEach(async(commandName) => {
 
+      if (syncedRelation == null) {
+        return { isPermittedForInteractions: false, notAllowedCommandName: commandName };
+      }
       // ex. search OR search:handlerName
       const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
 

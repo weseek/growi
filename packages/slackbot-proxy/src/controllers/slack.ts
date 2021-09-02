@@ -327,9 +327,9 @@ export class SlackCtrl {
         ],
       });
     }
-    const allowedRelation:RelationMock[] = [];
+    const allowedRelations:RelationMock[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
-    let commandName!:string| null;
+    let commandName!:string;
 
     await Promise.all(relations.map(async(relation) => {
       const permission = await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
@@ -339,7 +339,7 @@ export class SlackCtrl {
         disallowedGrowiUrls.add(relation.growiUri);
         commandName = notAllowedCommandName;
       }
-      allowedRelation.push(relation);
+      allowedRelations.push(relation);
     }));
 
     if (relations.length === disallowedGrowiUrls.size) {
@@ -359,7 +359,7 @@ export class SlackCtrl {
         user: body.user_id,
         blocks: [
           markdownSectionBlock('*None of GROWI permitted the command.*'),
-          markdownSectionBlock(`*'${commandName!}'* command was not allowed.`),
+          markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
           markdownSectionBlock(
             `To use this command, modify settings from following pages: ${linkUrlList}`,
           ),
@@ -372,7 +372,7 @@ export class SlackCtrl {
     /*
      * forward to GROWI server
      */
-    allowedRelation.map(async(relation) => {
+    allowedRelations.map(async(relation) => {
       try {
         // generate API URL
         const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
