@@ -112,8 +112,6 @@ export class RelationsService {
       relation:RelationMock, channelName:string, callbackId:string, actionId:string,
   ):Promise<{isPermittedForInteractions:boolean, commandName:string}> {
 
-    const baseDate = new Date();
-    const syncedRelation = await this.syncRelation(relation, baseDate);
     let isPermittedForInteractions!:boolean;
     let commandName!:string;
 
@@ -122,10 +120,6 @@ export class RelationsService {
     let permissionForInteractions:boolean|string[];
 
     [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
-
-      if (syncedRelation == null) {
-        return { isPermittedForInteractions: false, commandName: tempCommandName };
-      }
 
       // ex. search OR search:handlerName
       const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
