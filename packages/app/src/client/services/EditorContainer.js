@@ -35,7 +35,7 @@ export default class EditorContainer extends Container {
 
       editorOptions: {},
       previewOptions: {},
-      isTextlintEnabled: true,
+      isTextlintEnabled: false,
 
       indentSize: this.appContainer.config.adminPreferredIndentSize || 4,
     };
