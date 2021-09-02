@@ -4,8 +4,7 @@ import axios from 'axios';
 import { addHours } from 'date-fns';
 
 // import { Relation } from '~/entities/relation';
-import { markdownSectionBlock, generateWebClient, REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
-import { ChatPostEphemeralResponse } from '@slack/web-api';
+import { REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
 import { RelationMock } from '~/entities/relation-mock';
 // import { RelationRepository } from '~/repositories/relation';
 import { RelationMockRepository } from '~/repositories/relation-mock';
@@ -127,15 +126,16 @@ export class RelationsService {
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       relation:RelationMock, channelName:string, callbackId:string, actionId:string,
-  ):Promise<void> {
+  ):Promise<{isPermittedForInteractions:boolean, notAllowedCommandName:string|null}> {
 
     const baseDate = new Date();
     const syncedRelation = await this.syncRelation(relation, baseDate);
-    let isPermittedForInteractions = false;
+
+    let isPermittedForInteractions!:boolean;
+    let notAllowedCommandName!:null|string;
 
     if (syncedRelation == null) {
-      isPermittedForInteractions = false;
-      return;
+      return { isPermittedForInteractions: false, notAllowedCommandName: null };
     }
 
     const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
@@ -143,6 +143,14 @@ export class RelationsService {
     let permissionForInteractions:boolean|string[];
 
     [...singleUse, ...broadCastUse].forEach(async(commandName) => {
+
+      // ex. search OR search:handlerName
+      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+
+      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
+      if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
+        return;
+      }
 
       // case: singleUse
       permissionForInteractions = relation.permissionsForSingleUseCommands[commandName];
@@ -159,22 +167,15 @@ export class RelationsService {
 
       // check permission at channel level
       if (Array.isArray(permissionForInteractions)) {
-        isPermittedForInteractions = permissionForInteractions.includes(channelName);
+        isPermittedForInteractions = true;
         return;
       }
 
-      // ex. search OR search:handlerName
-      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+      notAllowedCommandName = commandName;
 
-      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
-      if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
-        return;
-      }
-
-      // if (!isPermittedForInteractions) {
-      //   this.postNotAllowedMessage(relations, commandName, body);
-      // }
     });
+
+    return { isPermittedForInteractions, notAllowedCommandName };
   }
 
 }
