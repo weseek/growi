@@ -113,7 +113,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       isSimpleCheatsheetShown: this.props.isGfmMode && this.props.value.length === 0,
       isCheatsheetModalShown: false,
       additionalClassSet: new Set(),
-      isTextlintEnabled: false,
     };
 
     this.gridEditModal = React.createRef();
@@ -158,8 +157,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
     window.kuromojin = this.props.noCdn
       ? { dicPath: '/static/dict/cdn' }
       : { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
-
-    this.state.isTextlintEnabled = this.props.isTextlintEnabled;
 
     this.textlintConfig = [
       { name: 'no-unmatched-pair' },
