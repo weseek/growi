@@ -327,42 +327,52 @@ export class SlackCtrl {
         ],
       });
     }
-
+    const allowedRelation:RelationMock[] = [];
+    const disallowedGrowiUrls: Set<string> = new Set();
+    let commandName!:string| null;
 
     await Promise.all(relations.map(async(relation) => {
       const permission = await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
       const { isPermittedForInteractions, notAllowedCommandName } = permission;
 
       if (!isPermittedForInteractions) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const client = generateWebClient(authorizeResult.botToken!);
-
-        //   const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
-        //     return '\n'
-        // + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
-        //   });
-
-        const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
-
-        return client.chat.postEphemeral({
-          text: 'Error occured.',
-          channel: body.channel_id,
-          user: body.user_id,
-          blocks: [
-            markdownSectionBlock('*None of GROWI permitted the command.*'),
-            markdownSectionBlock(`*'${notAllowedCommandName}'* command was not allowed.`),
-            // markdownSectionBlock(
-            //   `To use this command, modify settings from following pages: ${linkUrlList}`,
-            // ),
-            markdownSectionBlock(
-              `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
-            ),
-          ],
-        });
+        disallowedGrowiUrls.add(relation.growiUri);
+        commandName = notAllowedCommandName;
       }
-      /*
-       * forward to GROWI server
-       */
+      allowedRelation.push(relation);
+    }));
+
+    if (relations.length === disallowedGrowiUrls.size) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(authorizeResult.botToken!);
+
+      const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
+        return '\n'
+      + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
+      });
+
+      const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
+
+      return client.chat.postEphemeral({
+        text: 'Error occured.',
+        channel: body.channel_id,
+        user: body.user_id,
+        blocks: [
+          markdownSectionBlock('*None of GROWI permitted the command.*'),
+          markdownSectionBlock(`*'${commandName!}'* command was not allowed.`),
+          markdownSectionBlock(
+            `To use this command, modify settings from following pages: ${linkUrlList}`,
+          ),
+          markdownSectionBlock(
+            `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
+          ),
+        ],
+      });
+    }
+    /*
+     * forward to GROWI server
+     */
+    allowedRelation.map(async(relation) => {
       try {
         // generate API URL
         const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
@@ -377,7 +387,7 @@ export class SlackCtrl {
       catch (err) {
         logger.error(err);
       }
-    }));
+    });
 
   }
 
