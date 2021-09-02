@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
@@ -90,7 +90,7 @@ const ManageCommandsProcess = ({
     return initialState;
   });
 
-  const updatePermissionsForBroadcastUseCommandsState = (e) => {
+  const updatePermissionsForBroadcastUseCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
 
@@ -103,9 +103,9 @@ const ManageCommandsProcess = ({
       newState[commandName] = value;
       return newState;
     });
-  };
+  }, []);
 
-  const updatePermissionsForSingleUseCommandsState = (e) => {
+  const updatePermissionsForSingleUseCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
 
@@ -118,25 +118,25 @@ const ManageCommandsProcess = ({
       newState[commandName] = value;
       return newState;
     });
-  };
+  }, []);
 
-  const updateChannelsListForBroadcastUseCommandsState = (e) => {
+  const updateChannelsListForBroadcastUseCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
     setPermissionsForBroadcastUseCommandsState((prevState) => {
       return getUpdatedChannelsList(prevState, commandName, value);
     });
-  };
+  }, []);
 
-  const updateChannelsListForSingleUseCommandsState = (e) => {
+  const updateChannelsListForSingleUseCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
     setPermissionsForSingleUseCommandsState((prevState) => {
       return getUpdatedChannelsList(prevState, commandName, value);
     });
-  };
+  }, []);
 
   // TODO: UPDATE API AND REWRITE HERE GW-7006
   const updateCommandsHandler = async() => {
