@@ -235,7 +235,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   initTextlintSettings() {
     this.textlintValidator = createValidator(this.textlintConfig);
-    this.codemirrorLintConfig = this.isTextlintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
+    this.codemirrorLintConfig = this.props.isTextlintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
   }
 
   getCodeMirror() {
@@ -919,7 +919,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
     if (this.props.lineNumbers != null) {
       gutters.push('CodeMirror-linenumbers', 'CodeMirror-foldgutter');
     }
-    if (this.isTextlintEnabled === true) {
+    if (this.props.isTextlintEnabled === true) {
       gutters.push('CodeMirror-lint-markers');
     }
 
@@ -1013,6 +1013,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
+  isTextlintEnabled: PropTypes.bool.isRequired,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
