@@ -232,7 +232,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   initTextlintSettings() {
     this.textlintValidator = createValidator(this.textlintConfig);
-    this.codemirrorLintConfig = this.props.isTextlintEnabled ? { getAnnotations: this.textlintValidator, async: true } : undefined;
+    this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
   getCodeMirror() {
