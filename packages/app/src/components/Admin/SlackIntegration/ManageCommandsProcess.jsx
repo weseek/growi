@@ -19,6 +19,39 @@ const CommandUsageTypes = {
   SINGLE_USE: 'singleUse',
 };
 
+// A utility function that returns the new state
+const getUpdatedChannelsList = (prevState, commandName, value) => {
+  const newState = { ...prevState };
+  // string to array
+  const allowedChannelsArray = value.split(',');
+  // trim whitespace from all elements
+  const trimedAllowedChannelsArray = allowedChannelsArray.map(channelName => channelName.trim());
+
+  prevState[commandName] = trimedAllowedChannelsArray;
+  return newState;
+};
+
+// A utility function that returns the new state
+const getUpdatedPermissionSettings = (prevState, commandName, value) => {
+  const newState = { ...prevState };
+  switch (value) {
+    case PermissionTypes.ALLOW_ALL:
+      newState[commandName] = true;
+      break;
+    case PermissionTypes.DENY_ALL:
+      newState[commandName] = false;
+      break;
+    case PermissionTypes.ALLOW_SPECIFIED:
+      newState[commandName] = [];
+      break;
+    default:
+      logger.error('Not implemented');
+      break;
+  }
+
+  return newState;
+};
+
 // TODO: Add permittedChannelsForEachCommand to use data from server (props must have it) GW-7006
 const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
@@ -56,27 +89,6 @@ const ManageCommandsProcess = ({
   };
   const [currentPermissionTypes, setCurrentPermissionTypes] = useState(getInitialCurrentPermissionTypes());
 
-  // returns new state
-  const getUpdatedPermissionSettings = (prevState, commandName, value) => {
-    const newState = { ...prevState };
-    switch (value) {
-      case PermissionTypes.ALLOW_ALL:
-        newState[commandName] = true;
-        break;
-      case PermissionTypes.DENY_ALL:
-        newState[commandName] = false;
-        break;
-      case PermissionTypes.ALLOW_SPECIFIED:
-        newState[commandName] = [];
-        break;
-      default:
-        logger.error('Not implemented');
-        break;
-    }
-
-    return newState;
-  };
-
   const updatePermissionsForBroadcastUseCommandsState = (e) => {
     const { target } = e;
     const { name: commandName, value } = target;
@@ -105,17 +117,6 @@ const ManageCommandsProcess = ({
       newState[commandName] = value;
       return newState;
     });
-  };
-
-  const getUpdatedChannelsList = (prevState, commandName, value) => {
-    const newState = { ...prevState };
-    // string to array
-    const allowedChannelsArray = value.split(',');
-    // trim whitespace from all elements
-    const trimedAllowedChannelsArray = allowedChannelsArray.map(channelName => channelName.trim());
-
-    prevState[commandName] = trimedAllowedChannelsArray;
-    return newState;
   };
 
   const updateChannelsListForBroadcastUseCommandsState = (e) => {
