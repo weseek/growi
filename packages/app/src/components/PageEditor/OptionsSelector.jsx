@@ -126,7 +126,7 @@ class OptionsSelector extends React.Component {
   }
 
   async updateIsTextlintEnabledToDB(newVal) {
-    const { appContainer, editorContainer } = this.props;
+    const { appContainer } = this.props;
     try {
       await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: newVal });
     }
@@ -137,8 +137,10 @@ class OptionsSelector extends React.Component {
   }
 
   async switchTextlintEnabledHandler() {
+    const { editorContainer } = this.props;
     const newVal = !this.state.isTextlintEnabled;
     this.setState({ isTextlintEnabled: newVal });
+    editorContainer.setState({ isTextlintEnabled: newVal });
     this.updateIsTextlintEnabledToDB(newVal);
   }
 
