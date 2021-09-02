@@ -107,17 +107,35 @@ export class RelationsService {
   }
 
 
+  allowedRelations:RelationMock[] = [];
+
+  getAllowedRelations():RelationMock[] {
+    return this.allowedRelations;
+  }
+
+  disallowedGrowiUrls: Set<string> = new Set();
+
+  getDisallowedGrowiUrls():Set<string> {
+    return this.disallowedGrowiUrls;
+  }
+
+  commandName:string;
+
+  getCommandName():string {
+    return this.commandName;
+  }
+
+
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       relation:RelationMock, channelName:string, callbackId:string, actionId:string,
-  ):Promise<{isPermittedForInteractions:boolean, commandName:string}> {
+  ):Promise<void>/* Promise<{isPermittedForInteractions:boolean, commandName:string, allowedRelations:RelationMock[], disallowedGrowiUrls:Set<string>}> */ {
 
-    let isPermittedForInteractions!:boolean;
-    let commandName!:string;
 
     const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
     const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
     let permissionForInteractions:boolean|string[];
+    let isPermittedForInteractions!:boolean;
 
     [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
 
@@ -129,7 +147,7 @@ export class RelationsService {
         return;
       }
 
-      commandName = tempCommandName;
+      this.commandName = tempCommandName;
 
       // case: singleUse
       permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
@@ -151,8 +169,11 @@ export class RelationsService {
       }
     });
 
+    if (!isPermittedForInteractions) {
+      this.disallowedGrowiUrls.add(relation.growiUri);
+    }
 
-    return { isPermittedForInteractions, commandName };
+    this.allowedRelations.push(relation);
   }
 
 }
