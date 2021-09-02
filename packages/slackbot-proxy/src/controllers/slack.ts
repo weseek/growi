@@ -243,8 +243,7 @@ export class SlackCtrl {
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(authorizeResult.botToken!);
-      const commandName = this.relationsService.getCommandName();
-      return postNotAllowedMessage(client, body, disallowedGrowiUrls, commandName);
+      return postNotAllowedMessage(client, body, disallowedGrowiUrls, growiCommand.growiCommandType);
     }
 
     // select GROWI
