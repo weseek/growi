@@ -914,7 +914,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   render() {
     const mode = this.state.isGfmMode ? 'gfm-growi' : undefined;
-    const lint = this.codemirrorLintConfig;
+    const lint = this.props.isTextlintEnabled ? this.codemirrorLintConfig : false;
     const additionalClasses = Array.from(this.state.additionalClassSet).join(' ');
     const placeholder = this.state.isGfmMode ? 'Input with Markdown..' : 'Input with Plain Text..';
 
