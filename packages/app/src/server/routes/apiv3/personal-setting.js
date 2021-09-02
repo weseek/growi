@@ -465,28 +465,26 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /personal-setting:
+   *    /personal-setting/editor-settings:
    *      put:
-   *        tags: [PersonalSetting]
+   *        tags: [EditorSetting]
    *        operationId: putEditorSettings
-   *        summary: /personal-setting
-   *        description: Change editor preferences
+   *        summary: /editor-setting
+   *        description: Put editor preferences
    *        responses:
    *          200:
-   *            description: params of personal info
+   *            description: params of editor settings
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    currentUser:
    *                      type: object
-   *                      description: personal params
+   *                      description: editor settings
    */
-  // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
-  router.put('/editor-settings', async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     try {
-      // const query = { userId: req.user.id };
-      const query = { userId: '611f3aecea729b066107bf20' };
+      const query = { userId: req.user.id };
       const update = req.body;
       const options = { upsert: true, new: true };
       const response = await EditorSettings.findOneAndUpdate(query, update, options);
@@ -502,28 +500,26 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /personal-setting:
+   *    /personal-setting/editor-settings:
    *      get:
-   *        tags: [PersonalSetting]
+   *        tags: [EditorSetting]
    *        operationId: getEditorSettings
-   *        summary: /personal-setting
-   *        description: Change editor preferences
+   *        summary: /editor-setting
+   *        description: Get editor preferences
    *        responses:
    *          200:
-   *            description: params of personal info
+   *            description: params of editor settings
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    currentUser:
    *                      type: object
-   *                      description: personal params
+   *                      description: editor settings
    */
-  // router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
-  router.get('/editor-settings', async(req, res) => {
+  router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     try {
-      // const query = { userId: req.user.id };
-      const query = { userId: '611f3aecea729b066107bf20' };
+      const query = { userId: req.user.id };
       const response = await EditorSettings.findOne(query);
       return res.apiv3(response);
     }
