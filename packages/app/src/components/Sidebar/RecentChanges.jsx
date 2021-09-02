@@ -65,7 +65,7 @@ function LargePageItem({ page }) {
               <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
             </div>
             <div className="grw-formatted-distance-date small mt-auto">
-              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+              <FormattedDistanceDate id={page._id} date={page.updatedAt} />
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@ function SmallPageItem({ page }) {
               <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
             </div>
             <div className="grw-formatted-distance-date small mt-auto">
-              <FormattedDistanceDate id={page.id} date={page.updatedAt} />
+              <FormattedDistanceDate id={page._id} date={page.updatedAt} />
             </div>
           </div>
         </div>
@@ -131,8 +131,6 @@ class RecentChanges extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // TODO: 7092 connect to state
-      // eslint-disable-next-line react/no-unused-state
       isRecentChangesSidebarSmall: false,
     };
     this.reloadData = this.reloadData.bind(this);
@@ -161,8 +159,6 @@ class RecentChanges extends React.Component {
   retrieveSizePreferenceFromLocalStorage() {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
       this.setState({
-        // TODO: 7092 connect to state
-        // eslint-disable-next-line react/no-unused-state
         isRecentChangesSidebarSmall: true,
       });
     }
@@ -170,16 +166,12 @@ class RecentChanges extends React.Component {
 
   changeSizeHandler = (e) => {
     this.setState({
-      // TODO: 7092 connect to state
-      // eslint-disable-next-line react/no-unused-state
       isRecentChangesSidebarSmall: e.target.checked,
     });
     window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
   }
 
   render() {
-    // const { LargePageItem } = this;
-    // const { SmallPageItem } = this;
     const { t } = this.props;
     const { recentlyUpdatedPages } = this.props.appContainer.state;
 
@@ -196,9 +188,8 @@ class RecentChanges extends React.Component {
               id="recentChangesResize"
               className="custom-control-input"
               type="checkbox"
-              // checked={}
-              // disabled={}
-              // onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
+              checked={this.state.isRecentChangesSidebarSmall}
+              onChange={e => this.setState({ isRecentChangesSidebarSmall: e.target.checked })}
             />
             <label className="custom-control-label" htmlFor="recentChangesResize">
             </label>
@@ -206,8 +197,9 @@ class RecentChanges extends React.Component {
         </div>
         <div className="grw-sidebar-content-body grw-recent-changes p-3">
           <ul className="list-group list-group-flush">
-            {/* tentative */}
-            { recentlyUpdatedPages.map(page => <LargePageItem key={page.id} page={page} />) }
+            {recentlyUpdatedPages.map(page => (this.state.isRecentChangesSidebarSmall
+              ? <SmallPageItem key={page._id} page={page} />
+              : <LargePageItem key={page._id} page={page} />))}
           </ul>
         </div>
       </>
