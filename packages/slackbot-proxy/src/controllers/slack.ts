@@ -399,7 +399,6 @@ export class SlackCtrl {
   async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
 
     const { authorizeResult } = req;
-
     const client = generateWebClient(authorizeResult.botToken);
 
     if (req.body.event.type === 'app_home_opened') {
