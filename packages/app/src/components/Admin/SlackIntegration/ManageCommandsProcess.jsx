@@ -137,13 +137,6 @@ const ManageCommandsProcess = ({
     });
   };
 
-  const getDefaultValueForChannelsTextArea = (permissionSettings, commandName) => {
-    if (permissionSettings[commandName] === undefined) logger.error('Must be implemented');
-    if (typeof permissionSettings[commandName] === 'boolean') return '';
-
-    return permissionSettings[commandName].join(',');
-  };
-
   // TODO: UPDATE API AND REWRITE HERE GW-7006
   const updateCommandsHandler = async() => {
     try {
