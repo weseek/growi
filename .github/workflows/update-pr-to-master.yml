@@ -1,17 +1,19 @@
-name: Update PR to master
+name: PR to master
 
 on:
   pull_request:
     branches:
       - master
     # Only following types are handled by the action, but one can default to all as well
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, edited, synchronize]
 
 jobs:
 
   # Refs: https://github.com/release-drafter/release-drafter
   auto-labeling:
     runs-on: ubuntu-latest
+
+    if: github.event.pull_request.merged == true
 
     steps:
       - uses: release-drafter/release-drafter@v5
@@ -20,9 +22,21 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  add-comment-history:
+  check-title:
     runs-on: ubuntu-latest
     steps:
-      - uses: technote-space/pr-commit-body-action@v1
+      - uses: amannn/action-semantic-pull-request@v3.4.2
         with:
-          COMMIT_TYPES: feat, imprv, fix, support, chore
+          types: |
+            feat
+            imprv
+            fix
+            support
+            chore
+            ci
+            docs
+            test
+          requireScope: false
+          validateSingleCommit: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
