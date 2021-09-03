@@ -1,85 +1,217 @@
-import React, { FC } from 'react';
+import React, {
+  FC, useEffect, useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
+import AppContainer from '~/client/services/AppContainer';
 
+import EditorContainer from '~/client/services/EditorContainer';
+import { withUnstatedContainers } from '../UnstatedUtils';
+
+import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 type Props = {
+  appContainer: AppContainer,
 }
 
-export const ClickJapaneseTextLintRuleSettingsHandler: FC<Props> = () => {
-  return (
-    <></>
-  );
-};
+const commonRulesMenuItems = [
+  {
+    name: 'common-misspellings',
+    description: 'editor_settings.common_settings.common_misspellings',
+  },
+  {
+    name: 'max-comma',
+    description: 'editor_settings.common_settings.max_comma',
+  },
+  {
+    name: 'sentence-length',
+    description: 'editor_settings.common_settings.sentence_length',
+  },
+];
 
-export const ClickCommonTextLintRulesSettingsHandler: FC<Props> = () => {
-  return (
-    <></>
-  );
-};
+const japaneseRulesMenuItems = [
+  {
+    name: 'ja-hiragana-keishikimeishi',
+    description: 'editor_settings.japanese_settings.ja_hiragana_keishikimeishi',
+  },
+  {
+    name: 'ja-no-abusage',
+    description: 'editor_settings.japanese_settings.ja_no_abusage',
+  },
+  {
+    name: 'ja-no-inappropriate-words',
+    description: 'editor_settings.japanese_settings.ja_no_inappropriate_words',
+  },
+  {
+    name: 'ja-no-mixed-period',
+    description: 'editor_settings.japanese_settings.ja_no_mixed_period',
+  },
+  {
+    name: 'ja-no-redundant-expression',
+    description: 'editor_settings.japanese_settings.ja_no_redundant_expression',
+  },
+  {
+    name: 'max-kanji-continuous-len',
+    description: 'editor_settings.japanese_settings.max_kanji_continuous_len',
+  },
+  {
+    name: 'max-ten',
+    description: 'editor_settings.japanese_settings.max_ten',
+  },
+  {
+    name: 'no-double-negative-ja',
+    description: 'editor_settings.japanese_settings.no_double_negative_ja',
+  },
+  {
+    name: 'no-doubled-conjunction',
+    description: 'editor_settings.japanese_settings.no_doubled_conjunction',
+  },
+  {
+    name: 'no-doubled-joshi',
+    description: 'editor_settings.japanese_settings.no_doubled_joshi',
+  },
+  {
+    name: 'no-dropping-the-ra',
+    description: 'editor_settings.japanese_settings.no_dropping_the_ra',
+  },
+  {
+    name: 'no-hankaku-kana',
+    description: 'editor_settings.japanese_settings.no_hankaku_kana',
+  },
+  {
+    name: 'prefer-tari-tari',
+    description: 'editor_settings.japanese_settings.prefer_tari_tari',
+  },
+
+];
+
+type LintRules = {
+  name: string;
+  options?: unknown;
+  isEnabled?: boolean;
+}
 
 
-export const EditorSettings: FC<Props> = () => {
-  // TODO: apply i18n by GW-7244
+const EditorSettingsBody: FC<Props> = (props) => {
   const { t } = useTranslation();
+  const { appContainer } = props;
+  const [commonTextlintRules, setCommonTextlintRules] = useState<LintRules[]>([]);
+  const [japaneseTextlintRules, setJapaneseTextlintRules] = useState<LintRules[]>([]);
+
+  const initializeEditorSettings = async() => {
+    const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
+
+    if (data?.commonTextlintRules != null) {
+      setCommonTextlintRules(data?.commonTextlintRules);
+    }
+    if (data?.japaneseTextlintRules != null) {
+      setJapaneseTextlintRules(data?.japaneseTextlintRules);
+    }
+
+    // If database is empty, add default rules to state
+    if (data?.commonTextlintRules.length === 0 || data?.commonTextlintRules == null) {
+      const defaultCommonRules = commonRulesMenuItems.map(rule => (
+        {
+          name: rule.name,
+          isEnabled: true,
+        }
+      ));
+      setCommonTextlintRules(defaultCommonRules);
+    }
+    if (data?.japaneseTextlintRules.length === 0 || data?.japaneseTextlintRules == null) {
+      const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => (
+        {
+          name: rule.name,
+          isEnabled: true,
+        }
+      ));
+      setJapaneseTextlintRules(defaultJapaneseRules);
+    }
+  };
+
+  useEffect(() => {
+    initializeEditorSettings();
+  }, []);
+
+  const commonRuleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
+    setCommonTextlintRules(prevState => (
+      prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
+    ));
+  };
+
+  const japaneseRuleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
+    setJapaneseTextlintRules(prevState => (
+      prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
+    ));
+  };
+
+  const updateCommonRuleHandler = async() => {
+    try {
+      const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { commonTextlintRules });
+      setCommonTextlintRules(data?.commonTextlintRules);
+      toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
+  const updateJapaneseRuleHandler = async() => {
+    try {
+      const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { japaneseTextlintRules });
+      setJapaneseTextlintRules(data?.japaneseTextlintRules);
+      toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+  };
+
+  const isCheckedInCommonRules = (ruleName: string) => (
+    commonTextlintRules.filter(stateRule => (
+      stateRule.name === ruleName
+    ))[0]?.isEnabled
+  );
+
+  const isCheckedInJapaneseRules = (ruleName: string) => (
+    japaneseTextlintRules.filter(stateRule => (
+      stateRule.name === ruleName
+    ))[0]?.isEnabled
+  );
 
   return (
     <>
       <h2 className="border-bottom my-4">{t('editor_settings.common_settings.common_settings')}</h2>
-
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="common-misspellings"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="common-misspellings">
-              <strong>common-misspellings</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.common_settings.common_misspellings')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="max-comma"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="max-comma">
-              <strong>max-comma</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.common_settings.max_comma')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="sentence-length"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="sentence-length">
-              <strong>sentence-length</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.common_settings.sentence_length')}
-            </p>
-          </div>
+          {commonRulesMenuItems.map(rule => (
+            <div
+              key={rule.name}
+              className="custom-control custom-switch custom-checkbox-success"
+            >
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id={rule.name}
+                checked={isCheckedInCommonRules(rule.name)}
+                onChange={e => commonRuleCheckboxHandler(e.target.checked, rule.name)}
+              />
+              <label className="custom-control-label" htmlFor={rule.name}>
+                <strong>{rule.name}</strong>
+              </label>
+              <p className="form-text text-muted small">
+                {t(rule.description)}
+              </p>
+            </div>
+          ))}
 
           <div className="row my-3">
             <div className="offset-4 col-5">
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={updateCommonRuleHandler}
+              >
                 {t('Update')}
               </button>
             </div>
@@ -93,218 +225,33 @@ export const EditorSettings: FC<Props> = () => {
 
       <div className="form-group row">
         <div className="offset-md-3 col-md-6 text-left">
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="ja-hiragana-keishikimeishi"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="ja-hiragana-keishikimeishi">
-              <strong>ja-hiragana-keishikimeishi</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.ja_hiragana_keishikimeishi')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="ja-no-abusage"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="ja-no-abusage">
-              <strong>ja-no-abusage</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.ja_no_abusage')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="ja-no-inappropriate-words"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="ja-no-inappropriate-words">
-              <strong>ja-no-inappropriate-words</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.ja_no_inappropriate_words')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="ja-no-mixed-period"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="ja-no-mixed-period">
-              <strong>ja-no-mixed-period</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.ja_no_mixed_period')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="ja-no-redundant-expression"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="ja-no-redundant-expression">
-              <strong>ja-no-redundant-expression</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.ja_no_redundant_expression')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="max-kanji-continuous-len"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="max-kanji-continuous-len">
-              <strong>max-kanji-continuous-len</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.max_kanji_continuous_len')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="max-ten"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="max-ten">
-              <strong>max-ten</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.max_ten')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="no-double-negative-ja"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="no-double-negative-ja">
-              <strong>no-double-negative-ja</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.no_double_negative_ja')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="no-doubled-conjunction"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="no-doubled-conjunction">
-              <strong>no-doubled-conjunction</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.no_doubled_conjunction')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="no-doubled-joshi"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="no-doubled-joshi">
-              <strong>no-doubled-joshi</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.no_doubled_joshi')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="no-dropping-the-ra"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="no-dropping-the-ra">
-              <strong>no-dropping-the-ra</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.no_dropping_the_ra')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="no-hankaku-kana"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="no-hankaku-kana">
-              <strong>no-hankaku-kana</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.no_hankaku_kana')}
-            </p>
-          </div>
-
-          <div className="custom-control custom-switch custom-checkbox-success">
-            <input
-              type="checkbox"
-              className="custom-control-input"
-              id="prefer-tari-tari"
-              // checked={}
-              // onChange={}
-            />
-            <label className="custom-control-label" htmlFor="prefer-tari-tari">
-              <strong>prefer-tari-tari</strong>
-            </label>
-            <p className="form-text text-muted small">
-              {t('editor_settings.japanese_settings.prefer_tari_tari')}
-            </p>
-          </div>
-
+          {japaneseRulesMenuItems.map(rule => (
+            <div
+              key={rule.name}
+              className="custom-control custom-switch custom-checkbox-success"
+            >
+              <input
+                type="checkbox"
+                className="custom-control-input"
+                id={rule.name}
+                checked={isCheckedInJapaneseRules(rule.name)}
+                onChange={e => japaneseRuleCheckboxHandler(e.target.checked, rule.name)}
+              />
+              <label className="custom-control-label" htmlFor={rule.name}>
+                <strong>{rule.name}</strong>
+              </label>
+              <p className="form-text text-muted small">
+                {t(rule.description)}
+              </p>
+            </div>
+          ))}
           <div className="row my-3">
             <div className="offset-4 col-5">
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={updateJapaneseRuleHandler}
+              >
                 {t('Update')}
               </button>
             </div>
@@ -316,4 +263,10 @@ export const EditorSettings: FC<Props> = () => {
 
     </>
   );
+};
+
+export const EditorSettings = withUnstatedContainers(EditorSettingsBody, [AppContainer, EditorContainer]);
+
+EditorSettingsBody.propTypes = {
+  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
 };

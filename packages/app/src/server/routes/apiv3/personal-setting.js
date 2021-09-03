@@ -68,7 +68,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const { User, ExternalAccount } = crowi.models;
+  const { User, ExternalAccount, EditorSettings } = crowi.models;
 
   const validator = {
     personal: [
@@ -465,33 +465,69 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /personal-setting:
+   *    /personal-setting/editor-settings:
    *      put:
-   *        tags: [PersonalSetting]
+   *        tags: [EditorSetting]
    *        operationId: putEditorSettings
-   *        summary: /personal-setting
-   *        description: Change editor preferences
+   *        summary: /editor-setting
+   *        description: Put editor preferences
    *        responses:
    *          200:
-   *            description: params of personal info
+   *            description: params of editor settings
    *            content:
    *              application/json:
    *                schema:
    *                  properties:
    *                    currentUser:
    *                      type: object
-   *                      description: personal params
+   *                      description: editor settings
    */
   router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     try {
-      const user = await User.findOne({ _id: req.user.id });
-      user.editorCurrentSettings = req.body;
-      const { editorCurrentSettings } = await user.save();
-      return res.apiv3({ editorCurrentSettings });
+      const query = { userId: req.user.id };
+      const update = req.body;
+      // Insert if document does not exist, and return new values
+      // See: https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
+      const options = { upsert: true, new: true };
+      const response = await EditorSettings.findOneAndUpdate(query, update, options);
+      return res.apiv3(response);
     }
     catch (err) {
       logger.error(err);
       return res.apiv3Err('updating-editor-settings-failed');
+    }
+  });
+
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/editor-settings:
+   *      get:
+   *        tags: [EditorSetting]
+   *        operationId: getEditorSettings
+   *        summary: /editor-setting
+   *        description: Get editor preferences
+   *        responses:
+   *          200:
+   *            description: params of editor settings
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    currentUser:
+   *                      type: object
+   *                      description: editor settings
+   */
+  router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+    try {
+      const query = { userId: req.user.id };
+      const response = await EditorSettings.findOne(query);
+      return res.apiv3(response);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('getting-editor-settings-failed');
     }
   });
 
