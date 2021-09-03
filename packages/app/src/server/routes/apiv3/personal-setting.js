@@ -1,10 +1,8 @@
-import { body, checkSchema } from 'express-validator';
+import { body } from 'express-validator';
 
 import loggerFactory from '~/utils/logger';
 
 import { listLocaleIds } from '~/utils/locale-utils';
-
-import EditorSettings from '../../models/editor-settings';
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -70,7 +68,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const { User, ExternalAccount } = crowi.models;
+  const { User, ExternalAccount, EditorSettings } = crowi.models;
 
   const validator = {
     personal: [
@@ -101,14 +99,7 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      checkSchema({
-        textlintSettings: {
-          isTextlintEnabled: { isBoolean: true },
-          textlintRules: [
-            { name: { isString: true }, options: { isString: true }, isEnabled: { isBoolean: true } },
-          ],
-        },
-      }),
+      body('isTextlintEnabled').isBoolean(),
     ],
   };
 
@@ -528,7 +519,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor settings
    */
-  router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     try {
       const query = { userId: req.user.id };
       const response = await EditorSettings.findOne(query);

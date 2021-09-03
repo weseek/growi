@@ -161,6 +161,7 @@ RuleListGroup.propTypes = {
   setTextlintRules: PropTypes.func.isRequired,
 };
 
+
 const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
   const { t } = useTranslation();
   const { appContainer } = props;
