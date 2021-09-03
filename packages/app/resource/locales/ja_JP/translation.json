@@ -265,7 +265,6 @@
       "common_misspellings": "ウィキペディアから一般的なスペルミスを見つけます。",
       "max_comma": "文の読点（、）を最大10個に制限します。初期値: 4。",
       "sentence_length": "文の最大文字数を制限します。初期値: 100。",
-
       "en_capitalization": "英文の大文字化をチェックします",
       "no_unmatched_pair": "（ と ] のような一致しないペアをチェックします",
       "date_weekday_mismatch": "日付と平日の不一致を検出したTextlintルール。",
@@ -290,7 +289,6 @@
       "no_dropping_the_ra": "ら抜き言葉を検出します。",
       "no_hankaku_kana": "半角カナの利用を禁止します。",
       "prefer_tari_tari": "「〜たり〜たりする」をチェックします。",
-
       "ja_unnatural_alphabet": "不自然なアルファベットを検知します。",
       "no_mixed_zenkaku_and_hankaku_alphabet": "全角と半角アルファベットを混在をチェックします。",
       "no_nfd": "UTF8-MAC濁点のようなNFDの使用を禁止します。"
