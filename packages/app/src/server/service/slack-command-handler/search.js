@@ -258,7 +258,7 @@ module.exports = (crowi) => {
           },
           accessory: {
             type: 'button',
-            action_id: 'shareSingleSearchResult',
+            action_id: 'search:shareSinglePageResult',
             text: {
               type: 'plain_text',
               text: 'Share',

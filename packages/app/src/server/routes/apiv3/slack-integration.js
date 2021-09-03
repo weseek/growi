@@ -9,6 +9,7 @@ const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps }
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
 module.exports = (crowi) => {
@@ -26,7 +27,7 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
+    const slackAppIntegrationCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
@@ -45,25 +46,29 @@ module.exports = (crowi) => {
   }
 
   async function checkCommandPermission(req, res, next) {
+    let payload;
+    if (req.body.payload) {
+      payload = JSON.parse(req.body.payload);
+    }
+    if (req.body.text == null && !payload) { // when /relation-test
+      return next();
+    }
+
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
-    const relation = await SlackAppIntegration.findOne({ tokenPtoG });
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
-    const supportedCommands = supportedCommandsForBroadcastUse.concat(supportedCommandsForSingleUse);
-    const supportedGrowiActionsRegExps = getSupportedGrowiActionsRegExps(supportedCommands);
+    // const relation = await SlackAppIntegration.findOne({ tokenPtoG });
+    // MOCK DATA DELETE THIS GW-6972 ---------------
+    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    const permissionsForBroadcastUseCommands = slackAppIntegrationMock.permissionsForBroadcastUseCommands;
+    const permissionsForSingleUseCommands = slackAppIntegrationMock.permissionsForSingleUseCommands;
+    // MOCK DATA DELETE THIS GW-6972 ---------------
+    // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
 
     // get command name from req.body
     let command = '';
     let actionId = '';
     let callbackId = '';
-    let payload;
-    if (req.body.payload) {
-      payload = JSON.parse(req.body.payload);
-    }
-
-    if (req.body.text == null && !payload) { // when /relation-test
-      return next();
-    }
 
     if (!payload) { // when request is to /commands
       command = req.body.text.split(' ')[0];
@@ -75,22 +80,38 @@ module.exports = (crowi) => {
       callbackId = payload.view.callback_id;
     }
 
-    let isActionSupported = false;
-    supportedGrowiActionsRegExps.forEach((regexp) => {
-      if (regexp.test(actionId) || regexp.test(callbackId)) {
-        isActionSupported = true;
+    // code below checks permission at channel level
+    const fromChannel = req.body.channel_name || payload.channel.name;
+    let isPermitted = false;
+    [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
+      // boolean or string[]
+      let permission = permissionsForBroadcastUseCommands.get(commandName);
+      if (permission === undefined) {
+        permission = permissionsForSingleUseCommands.get(commandName);
+      }
+
+      // ex. search OR search:handlerName
+      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+
+      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
+      if (!commandRegExp.test(command) && !commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
+        return;
+      }
+
+      // permission check
+      if (permission === true) {
+        isPermitted = true;
+        return;
+      }
+      if (Array.isArray(permission) && permission.includes(fromChannel)) {
+        isPermitted = true;
       }
     });
 
-    // validate
-    if (command && !supportedCommands.includes(command)) {
-      return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+    if (isPermitted) {
+      return next();
     }
-    if ((actionId || callbackId) && !isActionSupported) {
-      return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
-    }
-
-    next();
+    res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
   }
 
   const addSigningSecretToReq = (req, res, next) => {
@@ -116,7 +137,6 @@ module.exports = (crowi) => {
       text: 'Processing your request ...',
     });
 
-
     const args = body.text.split(' ');
     const command = args[0];
 
@@ -136,7 +156,6 @@ module.exports = (crowi) => {
 
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
     const { body } = req;
-
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {

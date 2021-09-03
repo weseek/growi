@@ -15,7 +15,8 @@ import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
-import { RelationRepository } from '~/repositories/relation';
+// import { RelationRepository } from '~/repositories/relation';
+import { RelationMockRepository } from '~/repositories/relation-mock';
 import { OrderRepository } from '~/repositories/order';
 
 import { InstallerService } from '~/services/InstallerService';
@@ -36,8 +37,11 @@ export class GrowiToSlackCtrl {
   @Inject()
   installationRepository: InstallationRepository;
 
+  // @Inject()
+  // relationRepository: RelationRepository;
+
   @Inject()
-  relationRepository: RelationRepository;
+  relationMockRepository: RelationMockRepository;
 
   @Inject()
   orderRepository: OrderRepository;
@@ -72,7 +76,7 @@ export class GrowiToSlackCtrl {
     const { tokenGtoPs } = req;
 
     // retrieve Relation with Installation
-    const relations = await this.relationRepository.createQueryBuilder('relation')
+    const relations = await this.relationMockRepository.createQueryBuilder('relation')
       .where('relation.tokenGtoP IN (:...tokens)', { tokens: tokenGtoPs })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
@@ -98,14 +102,14 @@ export class GrowiToSlackCtrl {
   async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
 
     if (tokenGtoPs.length !== 1) {
       throw createError(400, 'installation is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
-    const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+    const relation = await this.relationMockRepository.update({ tokenGtoP }, { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
 
     return res.send({ relation });
   }
@@ -122,7 +126,7 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relation = await this.relationRepository.createQueryBuilder('relation')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation')
       .where('tokenGtoP = :token', { token: tokenGtoP })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
@@ -190,26 +194,26 @@ export class GrowiToSlackCtrl {
     const expiredAtCommands = addHours(new Date(), 48);
 
     // Transaction is not considered because it is used infrequently,
-    const response = await this.relationRepository.createQueryBuilder('relation')
+    const response = await this.relationMockRepository.createQueryBuilder('relation')
       .insert()
       .values({
         installation: order.installation,
         tokenGtoP: order.tokenGtoP,
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
-        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
-        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
+        permissionsForBroadcastUseCommands: req.body.permissionsForBroadcastUseCommands,
+        permissionsForSingleUseCommands: req.body.permissionsForSingleUseCommands,
         expiredAtCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
       .orUpdate({
         conflict_target: ['installation', 'growiUri'],
-        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+        overwrite: ['tokenGtoP', 'tokenPtoG', 'permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
       })
       .execute();
 
     // Find the generated relation
-    const generatedRelation = await this.relationRepository.findOne({ id: response.identifiers[0].id });
+    const generatedRelation = await this.relationMockRepository.findOne({ id: response.identifiers[0].id });
 
     return res.send({ relation: generatedRelation, slackBotToken: token });
   }
@@ -258,7 +262,7 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    const relation = await this.relationRepository.createQueryBuilder('relation')
+    const relation = await this.relationMockRepository.createQueryBuilder('relation')
       .where('tokenGtoP = :token', { token: tokenGtoP })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
