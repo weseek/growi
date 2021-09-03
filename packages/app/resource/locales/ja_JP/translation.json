@@ -270,8 +270,8 @@
       "date_weekday_mismatch": "日付と平日の不一致を検出します。",
       "no_kangxi_radicals": "康熙帝の部首の使用を防ぎます。",
       "no_surrogate_pair": "文中のサロゲートペア（D800-DBFFおよびDC00-DFFF）を検出します。",
-      "no_zero_width_spaces": "ゼロ幅スペースを許可しないTextlintルール。",
-      "period_in_list_item": "リストアイテムのピリオドの有無をチェックするTextlintルール。",
+      "no_zero_width_spaces": "ゼロ幅スペースを許可しません。",
+      "period_in_list_item": "リストアイテムのピリオドの有無をチェックします。",
       "use_si_units": "SI単位系以外の使用を禁止します。"
       },
     "japanese_settings": {
