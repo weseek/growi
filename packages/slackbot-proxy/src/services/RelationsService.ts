@@ -118,61 +118,39 @@ export class RelationsService {
   }
 
 
-  allowedRelations:RelationMock[] = [];
-
-  getAllowedRelations():RelationMock[] {
-    return this.allowedRelations;
-  }
-
-  disallowedGrowiUrls: Set<string> = new Set();
-
-  getDisallowedGrowiUrls():Set<string> {
-    return this.disallowedGrowiUrls;
-  }
-
-  commandName:string;
-
-  getCommandName():string {
-    return this.commandName;
-  }
-
-
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       relation:RelationMock, channelName:string, callbackId:string, actionId:string,
-  ):Promise<void>/* Promise<{isPermittedForInteractions:boolean, commandName:string, allowedRelations:RelationMock[], disallowedGrowiUrls:Set<string>}> */ {
+  ):Promise<{isPermittedForInteractions:boolean, commandName:string}> {
 
+    let isPermittedForInteractions!:boolean;
+    let commandName!:string;
 
     const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
     const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
     let permissionForInteractions:boolean|string[];
-    let isPermittedForInteractions!:boolean;
 
     [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
 
       // ex. search OR search:handlerName
       const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
-
       // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
       if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
         return;
       }
 
-      this.commandName = tempCommandName;
+      commandName = tempCommandName;
 
       // case: singleUse
       permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
-
       // case: broadcastUse
       if (permissionForInteractions == null) {
         permissionForInteractions = relation.permissionsForBroadcastUseCommands[tempCommandName];
       }
-
       if (permissionForInteractions === true) {
         isPermittedForInteractions = true;
         return;
       }
-
       // check permission at channel level
       if (Array.isArray(permissionForInteractions)) {
         isPermittedForInteractions = true;
@@ -180,11 +158,8 @@ export class RelationsService {
       }
     });
 
-    if (!isPermittedForInteractions) {
-      this.disallowedGrowiUrls.add(relation.growiUri);
-    }
 
-    this.allowedRelations.push(relation);
+    return { isPermittedForInteractions, commandName };
   }
 
 }
