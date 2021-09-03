@@ -158,10 +158,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       ? { dicPath: '/static/dict/cdn' }
       : { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
 
-    // TODO: Get configs from db
-    this.isTextlintEnabled = true;
-    // this.textlintConfig = [];
-
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
       new PreventMarkdownListInterceptor(),
@@ -205,7 +201,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
   }
 
   initTextlintSettings() {
-    this.textlintValidator = createValidator(this.textlintConfig);
+    this.textlintValidator = createValidator(this.props.textlintRules);
     this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
