@@ -1,4 +1,4 @@
-import { body, checkSchema } from 'express-validator';
+import { body } from 'express-validator';
 
 import loggerFactory from '~/utils/logger';
 
@@ -13,7 +13,6 @@ const express = require('express');
 const passport = require('passport');
 
 const router = express.Router();
-
 
 /**
  * @swagger
