@@ -1,6 +1,8 @@
-# CHANGES
+# Changelog
 
-## v4.4.0-RC
+## [Unreleased](https://github.com/weseek/growi/compare/v4.3.3...HEAD)
+
+*Please do not manually update this file. We've automated the process.*
 
 ### BREAKING CHANGES
 
