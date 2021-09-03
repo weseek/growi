@@ -153,7 +153,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
 
     // retrieve primary SlackAppIntegration
-    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+    const SlackAppIntegration = mongoose.model('SlackAppIntegrationMock');
     const slackAppIntegration = await SlackAppIntegration.findOne({ isPrimary: true });
 
     if (slackAppIntegration == null) {
@@ -219,6 +219,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   async handleCommandRequest(command, client, body, ...opt) {
     let module;
     try {
+      console.log(command, 222);
       module = `./slack-command-handler/${command}`;
     }
     catch (err) {

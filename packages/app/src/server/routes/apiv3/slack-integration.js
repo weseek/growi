@@ -8,7 +8,6 @@ const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps }
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
-const SlackAppIntegration = mongoose.model('SlackAppIntegrationMock');
 const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
@@ -169,7 +168,7 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
-
+    console.log(171);
     return handleCommands(req, res, client);
   });
 

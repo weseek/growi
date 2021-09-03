@@ -12,6 +12,7 @@ const logger = loggerFactory('@growi/slack:middlewares:verify-growi-to-slack-req
  */
 export const verifyGrowiToSlackRequest = (req: RequestFromGrowi, res: Response, next: NextFunction): Record<string, any> | void => {
   const str = req.headers['x-growi-gtop-tokens'];
+  console.log(str);
 
   if (str == null) {
     const message = 'The value of header \'x-growi-gtop-tokens\' must not be empty.';
@@ -27,5 +28,7 @@ export const verifyGrowiToSlackRequest = (req: RequestFromGrowi, res: Response, 
   }
 
   req.tokenGtoPs = tokens;
+  console.log(31);
+
   return next();
 };
