@@ -305,18 +305,26 @@ describe('PageService', () => {
     });
 
     test('rename page with different tree with isRecursively [shallower]', async() => {
-      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {}, true);
-      const expectPage1 = await Page.findOne({ path: '/level1' });
-      const expectPage2 = await Page.findOne({ path: '/level1/child' });
-      const expectPage3 = await Page.findOne({ path: '/level1/level2/level2' });
-      const expectPage4 = await Page.findOne({ path: '/level1-2021H1' });
+      // setup
+      expect(await Page.findOne({ path: '/level1' })).toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/child' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
 
-      expect(expectPage1).not.toBeNull();
-      expect(expectPage2).not.toBeNull();
-      expect(expectPage3).not.toBeNull();
+      // when
+      //   rename /level1/level2 --> /level1
+      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, {}, true);
+
+      // then
+      expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/child' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/child' })).toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/level2' })).toBeNull();
 
       // Check that pages that are not to be renamed have not been renamed
-      expect(expectPage4).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
     });
   });
 
