@@ -245,14 +245,14 @@
       "max_comma": "Textlint 规则是限制句子的最大十（、）个计数。默认：4。",
       "sentence_length": "限制最大句子长度的 Textlint 默认: 100。",
 
-      "en_capitalization": "",
-      "no_unmatched_pair": "",
-      "date_weekday_mismatch": "",
-      "no_kangxi_radicals": "",
-      "no_surrogate_pair": "",
-      "no_zero_width_spaces": "",
-      "period_in_list_item": "",
-      "use_si_units": ""
+      "en_capitalization": "检查英文文本大小写的 Textlint 规则。",
+      "no_unmatched_pair": "检查不匹配对的 Textlint 规则，如 ( 和 ]",
+      "date_weekday_mismatch": "发现日期和工作日之间不匹配的 Textlint 规则。",
+      "no_kangxi_radicals": "防止使用康熙部首的 Textlint 规则。",
+      "no_surrogate_pair": "检测句子中的代理对（D800-DBFF 和 DC00-DFFF）。",
+      "no_zero_width_spaces": "不允许零宽度空格的 Textlint 规则。",
+      "period_in_list_item": "在列表项中检查是否有句点的 Textlint 规则。",
+      "use_si_units": "禁止使用 SI 单位以外的单位。"
       },
     "japanese_settings": {
       "japanese_settings": "日语设置",
@@ -270,9 +270,9 @@
       "no_hankaku_kana": "不允许使用半角假名的 Textlint 规则。",
       "prefer_tari_tari": "检查 tari tari 的 Textlint 规则。",
 
-      "ja_unnatural_alphabet": "",
-      "no_mixed_zenkaku_and_hankaku_alphabet": "",
-      "japanese_settings.no_nfd": ""
+      "ja_unnatural_alphabet": "检测不自然的字母。",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "检查混合的全角和半角字母。",
+      "japanese_settings.no_nfd": "禁止使用 UTF8-MAC 浊音等 NFD。"
     }
   },
 	"copy_to_clipboard": {

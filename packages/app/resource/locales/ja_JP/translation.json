@@ -266,14 +266,14 @@
       "max_comma": "文の読点（、）を最大10個に制限します。初期値: 4。",
       "sentence_length": "文の最大文字数を制限します。初期値: 100。",
 
-      "en_capitalization": "",
-      "no_unmatched_pair": "",
-      "date_weekday_mismatch": "",
-      "no_kangxi_radicals": "",
-      "no_surrogate_pair": "",
-      "no_zero_width_spaces": "",
-      "period_in_list_item": "",
-      "use_si_units": ""
+      "en_capitalization": "英文の大文字化をチェックします",
+      "no_unmatched_pair": "（ と ] のような一致しないペアをチェックします",
+      "date_weekday_mismatch": "日付と平日の不一致を検出したTextlintルール。",
+      "no_kangxi_radicals": "康熙帝の部首の使用を防ぐためのTextlintルール。",
+      "no_surrogate_pair": "文中のサロゲートペア（D800-DBFFおよびDC00-DFFF）を検出します。",
+      "no_zero_width_spaces": "ゼロ幅スペースを許可しないTextlintルール。",
+      "period_in_list_item": "リストアイテムのピリオドの有無をチェックするTextlintルール。",
+      "use_si_units": "SI単位系以外の使用を禁止します。"
       },
     "japanese_settings": {
       "japanese_settings": "日本語設定",
@@ -291,9 +291,9 @@
       "no_hankaku_kana": "半角カナの利用を禁止します。",
       "prefer_tari_tari": "「〜たり〜たりする」をチェックします。",
 
-      "ja_unnatural_alphabet": "",
-      "no_mixed_zenkaku_and_hankaku_alphabet": "",
-      "japanese_settings.no_nfd": ""
+      "ja_unnatural_alphabet": "不自然なアルファベットを検知します。",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "全角と半角アルファベットを混在をチェックします。",
+      "japanese_settings.no_nfd": "UTF8-MAC濁点のようなNFDの使用を禁止します。"
     }
   },
   "copy_to_clipboard": {

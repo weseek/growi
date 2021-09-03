@@ -263,14 +263,14 @@
       "max_comma": "Textlint rule is that limit maximum ten(、) count of sentence. Default: 4",
       "sentence_length": "Textlint rules that limit Maximum Length of Sentence. Default: 100",
 
-      "en_capitalization": "",
-      "no_unmatched_pair": "",
-      "date_weekday_mismatch": "",
-      "no_kangxi_radicals": "",
-      "no_surrogate_pair": "",
-      "no_zero_width_spaces": "",
-      "period_in_list_item": "",
-      "use_si_units": ""
+      "en_capitalization": "Textlint rule that check capitalization in english text.",
+      "no_unmatched_pair": "Textlint rule that check unmatched pairs like （ and ]",
+      "date_weekday_mismatch": "Textlint rule that found mismatch between date and weekday.",
+      "no_kangxi_radicals": "Textlint rule to prevent using kangxi radicals.",
+      "no_surrogate_pair": "Detects surrogate pairs (D800-DBFF and DC00-DFFF)　in sentences.",
+      "no_zero_width_spaces": "Textlint rule that disallow zero width spaces.",
+      "period_in_list_item": "Textlint rule that check with or without period in list item.",
+      "use_si_units": "Use of units other than SI unit units is prohibited."
 
       },
     "japanese_settings": {
@@ -289,9 +289,9 @@
       "no_hankaku_kana": "Textlint rules that disallow to use Half-width kana.",
       "prefer_tari_tari": "Textlint rules that checks tari tari.",
 
-      "ja_unnatural_alphabet": "",
-      "no_mixed_zenkaku_and_hankaku_alphabet": "",
-      "japanese_settings.no_nfd": ""
+      "ja_unnatural_alphabet": "Detects unnatural alphabets.",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "Check for mixed full-width and half-width alphabets.",
+      "japanese_settings.no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
     }
   },
   "copy_to_clipboard": {
