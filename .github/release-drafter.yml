@@ -13,7 +13,6 @@ categories:
       - 'bug'
   - title: '🧰 Maintenance'
     labels:
-      - 'chore'
       - 'support'
       - 'dependencies'
 category-template: '### $TITLE'
@@ -33,6 +32,12 @@ autolabeler:
   - label: 'support'
     branch:
       - '/support\/.+/'
+    title:
+      - '/chore/i'
+      - '/ci/i'
+      - '/docs/i'
+      - '/test/i'
+
 exclude-labels:
   - 'exclude from changelog'
 template: |
