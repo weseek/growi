@@ -9,6 +9,7 @@ const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps }
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
 module.exports = (crowi) => {
@@ -26,7 +27,7 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
+    const slackAppIntegrationCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
@@ -55,14 +56,14 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
-    const relation = await SlackAppIntegration.findOne({ tokenPtoG });
+    // const relation = await SlackAppIntegration.findOne({ tokenPtoG });
     // MOCK DATA DELETE THIS GW-6972 ---------------
     const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
     const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
     const permissionsForBroadcastUseCommands = slackAppIntegrationMock.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegrationMock.permissionsForSingleUseCommands;
     // MOCK DATA DELETE THIS GW-6972 ---------------
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
+    // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
 
     // get command name from req.body
     let command = '';
@@ -136,7 +137,6 @@ module.exports = (crowi) => {
       text: 'Processing your request ...',
     });
 
-
     const args = body.text.split(' ');
     const command = args[0];
 
@@ -156,7 +156,6 @@ module.exports = (crowi) => {
 
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
     const { body } = req;
-
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
     if (body.type === 'url_verification') {
