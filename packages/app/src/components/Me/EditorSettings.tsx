@@ -46,6 +46,38 @@ const commonRulesMenuItems = [
     name: 'sentence-length',
     description: 'editor_settings.common_settings.sentence_length',
   },
+  {
+    name: 'en-capitalization',
+    description: 'editor_settings.common_settings.en_capitalization',
+  },
+  {
+    name: 'no-unmatched-pair',
+    description: 'editor_settings.common_settings.no_unmatched_pair',
+  },
+  {
+    name: 'date-weekday-mismatch',
+    description: 'editor_settings.common_settings.date_weekday_mismatch',
+  },
+  {
+    name: 'no-kangxi-radicals',
+    description: 'editor_settings.common_settings.no_kangxi_radicals',
+  },
+  {
+    name: 'no-surrogate-pair',
+    description: 'editor_settings.common_settings.no_surrogate_pair',
+  },
+  {
+    name: 'no-zero-width-spaces',
+    description: 'editor_settings.common_settings.no_zero_width_spaces',
+  },
+  {
+    name: 'period-in-list-item',
+    description: 'editor_settings.common_settings.period_in_list_item',
+  },
+  {
+    name: 'use-si-units',
+    description: 'editor_settings.common_settings.use_si_units',
+  },
 ];
 
 const japaneseRulesMenuItems = [
@@ -100,6 +132,18 @@ const japaneseRulesMenuItems = [
   {
     name: 'prefer-tari-tari',
     description: 'editor_settings.japanese_settings.prefer_tari_tari',
+  },
+  {
+    name: 'ja-unnatural-alphabet',
+    description: 'editor_settings.japanese_settings.ja_unnatural_alphabet',
+  },
+  {
+    name: 'no-mixed-zenkaku-and-hankaku-alphabet',
+    description: 'editor_settings.japanese_settings.no_mixed_zenkaku_and_hankaku_alphabet',
+  },
+  {
+    name: 'no-nfd',
+    description: 'editor_settings.japanese_settings.no_nfd',
   },
 
 ];
