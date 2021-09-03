@@ -155,9 +155,9 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
   const { t } = useTranslation();
 
   const isCheckedRule = (ruleName: string) => (
-    textlintRules.filter(stateRule => (
+    textlintRules.find(stateRule => (
       stateRule.name === ruleName
-    ))[0]?.isEnabled || false
+    ))?.isEnabled || false
   );
 
   const ruleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
