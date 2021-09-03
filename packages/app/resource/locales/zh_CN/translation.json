@@ -243,7 +243,16 @@
       "common_settings": "常用设置",
       "common_misspellings": "从 Wikipedia 中查找常见拼写错误的 Textlint。",
       "max_comma": "Textlint 规则是限制句子的最大十（、）个计数。默认：4。",
-      "sentence_length": "限制最大句子长度的 Textlint 默认: 100。"
+      "sentence_length": "限制最大句子长度的 Textlint 默认: 100。",
+
+      "en_capitalization": "",
+      "no_unmatched_pair": "",
+      "date_weekday_mismatch": "",
+      "no_kangxi_radicals": "",
+      "no_surrogate_pair": "",
+      "no_zero_width_spaces": "",
+      "period_in_list_item": "",
+      "use_si_units": ""
       },
     "japanese_settings": {
       "japanese_settings": "日语设置",
@@ -259,7 +268,11 @@
       "no_doubled_joshi": "Textlint 规则，用于检查同一个粒子是否连续出现在一个句子中。",
       "no_dropping_the_ra": "检测丢弃 ra 的单词的 Textlint 规则。",
       "no_hankaku_kana": "不允许使用半角假名的 Textlint 规则。",
-      "prefer_tari_tari": "检查 tari tari 的 Textlint 规则。"
+      "prefer_tari_tari": "检查 tari tari 的 Textlint 规则。",
+
+      "ja_unnatural_alphabet": "",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "",
+      "japanese_settings.no_nfd": ""
     }
   },
 	"copy_to_clipboard": {

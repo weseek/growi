@@ -261,7 +261,17 @@
       "common_settings": "Common Settings",
       "common_misspellings": "Textlint rules to find common misspellings from Wikipedia.",
       "max_comma": "Textlint rule is that limit maximum ten(、) count of sentence. Default: 4",
-      "sentence_length": "Textlint rules that limit Maximum Length of Sentence. Default: 100"
+      "sentence_length": "Textlint rules that limit Maximum Length of Sentence. Default: 100",
+
+      "en_capitalization": "",
+      "no_unmatched_pair": "",
+      "date_weekday_mismatch": "",
+      "no_kangxi_radicals": "",
+      "no_surrogate_pair": "",
+      "no_zero_width_spaces": "",
+      "period_in_list_item": "",
+      "use_si_units": ""
+
       },
     "japanese_settings": {
       "japanese_settings": "Japanese Settings",
@@ -277,7 +287,11 @@
       "no_doubled_joshi": "Textlint rules that checks that the same particle appears consecutively in one sentence.",
       "no_dropping_the_ra": "Textlint rules that detects the word dropping the ra.",
       "no_hankaku_kana": "Textlint rules that disallow to use Half-width kana.",
-      "prefer_tari_tari": "Textlint rules that checks tari tari."
+      "prefer_tari_tari": "Textlint rules that checks tari tari.",
+
+      "ja_unnatural_alphabet": "",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "",
+      "japanese_settings.no_nfd": ""
     }
   },
   "copy_to_clipboard": {

@@ -264,7 +264,16 @@
       "common_settings": "共通設定",
       "common_misspellings": "ウィキペディアから一般的なスペルミスを見つけます。",
       "max_comma": "文の読点（、）を最大10個に制限します。初期値: 4。",
-      "sentence_length": "文の最大文字数を制限します。初期値: 100。"
+      "sentence_length": "文の最大文字数を制限します。初期値: 100。",
+
+      "en_capitalization": "",
+      "no_unmatched_pair": "",
+      "date_weekday_mismatch": "",
+      "no_kangxi_radicals": "",
+      "no_surrogate_pair": "",
+      "no_zero_width_spaces": "",
+      "period_in_list_item": "",
+      "use_si_units": ""
       },
     "japanese_settings": {
       "japanese_settings": "日本語設定",
@@ -280,7 +289,11 @@
       "no_doubled_joshi": "1つの文中に同じ助詞が連続して出てくるのをチェックします。",
       "no_dropping_the_ra": "ら抜き言葉を検出します。",
       "no_hankaku_kana": "半角カナの利用を禁止します。",
-      "prefer_tari_tari": "「〜たり〜たりする」をチェックします。"
+      "prefer_tari_tari": "「〜たり〜たりする」をチェックします。",
+
+      "ja_unnatural_alphabet": "",
+      "no_mixed_zenkaku_and_hankaku_alphabet": "",
+      "japanese_settings.no_nfd": ""
     }
   },
   "copy_to_clipboard": {
