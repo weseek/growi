@@ -1,4 +1,4 @@
-name: Auto Labeling
+name: Update PR to master
 
 on:
   pull_request:
@@ -18,4 +18,9 @@ jobs:
         with:
           disable-releaser: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  add-comment-history:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/pr-commit-body-action@v1
