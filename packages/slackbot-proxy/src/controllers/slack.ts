@@ -106,6 +106,7 @@ export class SlackCtrl {
     if (relations.length === 0) {
       throw new Error('relations must be set');
     }
+
     const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
     const promises = relations.map((relation: RelationMock) => {
       // generate API URL

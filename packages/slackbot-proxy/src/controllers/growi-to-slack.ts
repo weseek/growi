@@ -15,7 +15,7 @@ import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
-// import { RelationRepository } from '~/repositories/relation';
+import { RelationRepository } from '~/repositories/relation';
 import { RelationMockRepository } from '~/repositories/relation-mock';
 import { OrderRepository } from '~/repositories/order';
 
@@ -102,14 +102,22 @@ export class GrowiToSlackCtrl {
   async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
+
+    // MOCK DATA SO FAR BUT THIS CAN BE USED AS AN ACTUAL CODE AS WELL GW 6972 -----------
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
+    // MOCK DATA SO FAR BUT THIS CAN BE USED AS AN ACTUAL CODE AS WELL GW 6972 -----------
 
     if (tokenGtoPs.length !== 1) {
       throw createError(400, 'installation is invalid');
     }
 
     const tokenGtoP = tokenGtoPs[0];
-    const relation = await this.relationMockRepository.update({ tokenGtoP }, { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
+
+    // MOCK DATA MODIFY THIS GW 6972 -----------
+    const relation = await this.relationMockRepository.update(
+      { tokenGtoP }, { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands },
+    );
+    // MOCK DATA MODIFY THIS GW 6972 -----------
 
     return res.send({ relation });
   }
@@ -193,7 +201,11 @@ export class GrowiToSlackCtrl {
     // temporary cache for 48 hours
     const expiredAtCommands = addHours(new Date(), 48);
 
-    // Transaction is not considered because it is used infrequently,
+    // MOCK DATA DELETE THIS GW-6972 7004 ---------------
+    /**
+     * this code represents the creation of cache (Relation schema) using request from GROWI
+     */
+    // Transaction is not considered because it is used infrequently
     const response = await this.relationMockRepository.createQueryBuilder('relation')
       .insert()
       .values({
@@ -211,11 +223,13 @@ export class GrowiToSlackCtrl {
         overwrite: ['tokenGtoP', 'tokenPtoG', 'permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
       })
       .execute();
+    // MOCK DATA DELETE THIS GW-6972 7004 ---------------
 
     // Find the generated relation
-    const generatedRelation = await this.relationMockRepository.findOne({ id: response.identifiers[0].id });
+    // const generatedRelation = await this.relationMockRepository.findOne({ id: response.identifiers[0].id });
+    const generatedRelationMock = await this.relationMockRepository.findOne({ id: response.identifiers[0].id });
 
-    return res.send({ relation: generatedRelation, slackBotToken: token });
+    return res.send({ relation: generatedRelationMock, slackBotToken: token });
   }
 
   injectGrowiUri(req: GrowiReq, growiUri: string): void {

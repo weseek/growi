@@ -8,7 +8,7 @@ const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps }
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
-const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+const SlackAppIntegration = mongoose.model('SlackAppIntegrationMock');
 const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
@@ -27,14 +27,16 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    const slackAppIntegrationCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
+    // const slackAppIntegrationCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
+    // MOCK DATA MODIFY THIS WITH SlackAppIntegration GW-7006 --------------
+    const slackAppIntegrationMockCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
-      slackAppIntegrationCount,
+      slackAppIntegrationMockCount,
     });
 
-    if (slackAppIntegrationCount === 0) {
+    if (slackAppIntegrationMockCount === 0) {
       return res.status(403).send({
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`.\n'
         + 'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. '
@@ -69,19 +71,22 @@ module.exports = (crowi) => {
     let command = '';
     let actionId = '';
     let callbackId = '';
+    let fromChannel = '';
 
     if (!payload) { // when request is to /commands
       command = req.body.text.split(' ')[0];
+      fromChannel = req.body.channel_name;
     }
     else if (payload.actions) { // when request is to /interactions && block_actions
       actionId = payload.actions[0].action_id;
+      fromChannel = payload.channel.name;
     }
     else { // when request is to /interactions && view_submission
       callbackId = payload.view.callback_id;
+      fromChannel = JSON.parse(payload.view.private_metadata).channelName;
     }
 
     // code below checks permission at channel level
-    const fromChannel = req.body.channel_name || payload.channel.name;
     let isPermitted = false;
     [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
       // boolean or string[]
@@ -219,9 +224,15 @@ module.exports = (crowi) => {
 
   router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    // MOCK DATA DELETE THIS GW-6972 ---------
+    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegrationMock;
+    return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
+    // MOCK DATA DELETE THIS GW-6972 ---------
 
-    return res.send(slackAppIntegration);
+    // const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    // return res.send(slackAppIntegration);
   });
 
   return router;

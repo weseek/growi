@@ -34,15 +34,26 @@ export class RelationsService {
 
   async syncSupportedGrowiCommands(relation:RelationMock): Promise<RelationMock> {
     const res = await this.getSupportedGrowiCommands(relation);
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data;
-    relation.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
-    relation.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
-    relation.expiredAtCommands = addHours(new Date(), 48);
 
-    return this.relationMockRepository.save(relation);
+    // MOCK DATA MODIFY THIS GW-6972 ---------------
+    /**
+     * this code represents the update of cache (Relation schema) using request from GROWI
+     */
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data.data;
+    if (relation !== null) {
+      relation.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
+      relation.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
+      relation.expiredAtCommands = addHours(new Date(), 48);
+      return this.relationMockRepository.save(relation);
+    }
+    throw Error('No relation exists.');
+    // MOCK DATA MODIFY THIS GW-6972 ---------------
   }
 
+  // MODIFY THIS METHOD USING ORIGINAL RELATION MODEL GW-6972
   async syncRelation(relation:RelationMock, baseDate:Date):Promise<RelationMock|null> {
+    if (relation == null) return null;
+
     const distanceMillisecondsToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
 
     if (distanceMillisecondsToExpiredAt < 0) {
@@ -56,7 +67,7 @@ export class RelationsService {
     }
 
     // 24 hours
-    if (distanceMillisecondsToExpiredAt < 1000 * 60 * 60 * 24) {
+    if (distanceMillisecondsToExpiredAt < 24 * 60 * 60 * 1000) {
       try {
         this.syncSupportedGrowiCommands(relation);
       }
