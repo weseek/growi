@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, checkSchema } from 'express-validator';
 
 import loggerFactory from '~/utils/logger';
 
@@ -101,7 +101,14 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      body('isTextlintEnabled').isBoolean(),
+      checkSchema({
+        textlintSettings: {
+          isTextlintEnabled: { isBoolean: true },
+          textlintRules: [
+            { name: { isString: true }, options: { isString: true }, isEnabled: { isBoolean: true } },
+          ],
+        },
+      }),
     ],
   };
 
