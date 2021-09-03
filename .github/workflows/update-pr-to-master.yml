@@ -24,3 +24,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: technote-space/pr-commit-body-action@v1
+        with:
+          COMMIT_TYPES: feat, imprv, fix, support, chore
