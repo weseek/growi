@@ -4,9 +4,14 @@ import React, {
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import AppContainer from '~/client/services/AppContainer';
+
 import { withUnstatedContainers } from '../UnstatedUtils';
+
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
+type Props = {
+  appContainer: AppContainer,
+}
 
 const commonRulesMenuItems = [
   {
@@ -85,9 +90,6 @@ type LintRules = {
   isEnabled?: boolean;
 }
 
-type Props = {
-  appContainer: AppContainer,
-}
 
 const EditorSettingsBody: FC<Props> = (props) => {
   const { t } = useTranslation();
