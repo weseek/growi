@@ -66,6 +66,7 @@
     "jest-localstorage-mock": "^2.4.14",
     "lerna": "^4.0.0",
     "rewire": "^5.0.0",
+    "shipjs": "^0.23.3",
     "ts-jest": "^27.0.4"
   },
   "engines": {
