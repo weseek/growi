@@ -103,7 +103,7 @@ module.exports = (crowi) => {
     editorSettings: [
       body('editorSettings.isTextlintEnabled').isBoolean(),
       body('editorSettings.textlintRules.name').isString(),
-      body('editorSettings.textlintRules.options').isObject(),
+      body('editorSettings.textlintRules.options').isJSON(),
       body('editorSettings.textlintRules.isEnabled').isBoolean(),
     ],
   };
