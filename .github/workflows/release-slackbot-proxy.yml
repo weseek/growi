@@ -1,9 +1,10 @@
 name: Release Docker Image for @growi/slackbot-proxy
 
 on:
-  push:
+  pull_request:
     branches:
       - release/slackbot-proxy/**
+    types: [closed]
 
 jobs:
 
@@ -12,13 +13,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
 
-    - name: Setup semver
-      id: semver
-      working-directory: ./packages/slackbot-proxy
-      run: |
-        semver=`npm run version --silent`
-        echo "::set-output name=SEMVER::$semver"
+    - name: Retrieve information from package.json
+      uses: myrotvorets/info-from-package-json-action@0.0.2
+      id: package-json
 
     - name: Docker meta
       id: meta
@@ -27,7 +27,7 @@ jobs:
         images: weseek/growi-slackbot-proxy,ghcr.io/weseek/growi-slackbot-proxy,asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy
         tags: |
           type=raw,value=latest
-          type=raw,value=${{ steps.semver.outputs.SEMVER }}
+          type=raw,value=${{ steps.package-json.outputs.packageVersion }}
 
     - name: Login to docker.io registry
       run: |
