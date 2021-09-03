@@ -1,0 +1,21 @@
+name: Auto Labeling
+
+on:
+  pull_request:
+    branches:
+      - master
+    # Only following types are handled by the action, but one can default to all as well
+    types: [opened, reopened, synchronize]
+
+jobs:
+
+  # Refs: https://github.com/release-drafter/release-drafter
+  auto-labeling:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        with:
+          disable-releaser: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
