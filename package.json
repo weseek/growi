@@ -35,7 +35,6 @@
     "app:server": "yarn lerna run server --scope @growi/app",
     "slackbot-proxy:build": "yarn lerna run build --scope @growi/slackbot-proxy --scope @growi/slack",
     "slackbot-proxy:server": "yarn lerna run start:prod --scope @growi/slackbot-proxy",
-    "version": "node -p \"require('./package.json').version\"",
     "//// scripts for backward compatibility": "",
     "build:prod": "echo !!! CAUTION !!! ==> The script 'build:prod' is deprecated. Use 'yarn app:build' instead. && yarn app:build",
     "server:prod": "echo !!! CAUTION !!! ==> The script 'server:prod' is deprecated. Use 'yarn app:build' instead. && yarn app:server"
