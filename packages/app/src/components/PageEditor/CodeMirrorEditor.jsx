@@ -980,12 +980,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
-  isTextlintEnabled: PropTypes.bool.isRequired,
+  isTextlintEnabled: PropTypes.bool,
+  lintRules: PropTypes.array,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
 }, AbstractEditor.propTypes);
+
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
+  isTextlintEnabled: true,
 };
