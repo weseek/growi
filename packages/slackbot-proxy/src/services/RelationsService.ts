@@ -36,7 +36,7 @@ export class RelationsService {
       relation.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
       relation.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
       relation.expiredAtCommands = addHours(new Date(), 48);
-      return this.RelationRepository.save(relation);
+      return this.relationRepository.save(relation);
     }
     throw Error('No relation exists.');
   }
