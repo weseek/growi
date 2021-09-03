@@ -990,5 +990,5 @@ CodeMirrorEditor.propTypes = Object.assign({
 
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
-  isTextlintEnabled: true,
+  isTextlintEnabled: false,
 };

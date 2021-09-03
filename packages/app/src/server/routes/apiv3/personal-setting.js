@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, checkSchema } from 'express-validator';
 
 import loggerFactory from '~/utils/logger';
 
@@ -101,7 +101,10 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      body('isTextlintEnabled').isBoolean(),
+      body('editorSettings.isTextlintEnabled').isBoolean(),
+      body('editorSettings.textlintRules.name').isString(),
+      body('editorSettings.textlintRules.options').isObject(),
+      body('editorSettings.textlintRules.isEnabled').isBoolean(),
     ],
   };
 
@@ -488,6 +491,7 @@ module.exports = (crowi) => {
     try {
       const query = { userId: req.user.id };
       const update = req.body;
+
       // Insert if document does not exist, and return new values
       // See: https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
       const options = { upsert: true, new: true };
