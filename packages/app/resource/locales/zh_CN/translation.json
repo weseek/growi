@@ -272,7 +272,7 @@
 
       "ja_unnatural_alphabet": "检测不自然的字母。",
       "no_mixed_zenkaku_and_hankaku_alphabet": "检查混合的全角和半角字母。",
-      "japanese_settings.no_nfd": "禁止使用 UTF8-MAC 浊音等 NFD。"
+      "no_nfd": "禁止使用 UTF8-MAC 浊音等 NFD。"
     }
   },
 	"copy_to_clipboard": {

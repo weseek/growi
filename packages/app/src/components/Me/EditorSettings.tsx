@@ -14,8 +14,19 @@ type Props = {
   appContainer: AppContainer,
 }
 
-const newRules = [
-  // common
+const commonRulesMenuItems = [
+  {
+    name: 'common-misspellings',
+    description: 'editor_settings.common_settings.common_misspellings',
+  },
+  {
+    name: 'max-comma',
+    description: 'editor_settings.common_settings.max_comma',
+  },
+  {
+    name: 'sentence-length',
+    description: 'editor_settings.common_settings.sentence_length',
+  },
   {
     name: 'en-capitalization',
     description: 'editor_settings.common_settings.en_capitalization',
@@ -47,34 +58,6 @@ const newRules = [
   {
     name: 'use-si-units',
     description: 'editor_settings.common_settings.use_si_units',
-  },
-  // ja
-  {
-    name: 'ja-unnatural-alphabet',
-    description: 'editor_settings.japanese_settings.ja_unnatural_alphabet',
-  },
-  {
-    name: 'no-mixed-zenkaku-and-hankaku-alphabet',
-    description: 'editor_settings.japanese_settings.no_mixed_zenkaku_and_hankaku_alphabet',
-  },
-  {
-    name: 'no-nfd',
-    description: 'editor_settings.japanese_settings.no_nfd',
-  },
-];
-
-const commonRulesMenuItems = [
-  {
-    name: 'common-misspellings',
-    description: 'editor_settings.common_settings.common_misspellings',
-  },
-  {
-    name: 'max-comma',
-    description: 'editor_settings.common_settings.max_comma',
-  },
-  {
-    name: 'sentence-length',
-    description: 'editor_settings.common_settings.sentence_length',
   },
 ];
 
@@ -130,6 +113,18 @@ const japaneseRulesMenuItems = [
   {
     name: 'prefer-tari-tari',
     description: 'editor_settings.japanese_settings.prefer_tari_tari',
+  },
+  {
+    name: 'ja-unnatural-alphabet',
+    description: 'editor_settings.japanese_settings.ja_unnatural_alphabet',
+  },
+  {
+    name: 'no-mixed-zenkaku-and-hankaku-alphabet',
+    description: 'editor_settings.japanese_settings.no_mixed_zenkaku_and_hankaku_alphabet',
+  },
+  {
+    name: 'no-nfd',
+    description: 'editor_settings.japanese_settings.no_nfd',
   },
 
 ];

@@ -293,7 +293,7 @@
 
       "ja_unnatural_alphabet": "不自然なアルファベットを検知します。",
       "no_mixed_zenkaku_and_hankaku_alphabet": "全角と半角アルファベットを混在をチェックします。",
-      "japanese_settings.no_nfd": "UTF8-MAC濁点のようなNFDの使用を禁止します。"
+      "no_nfd": "UTF8-MAC濁点のようなNFDの使用を禁止します。"
     }
   },
   "copy_to_clipboard": {

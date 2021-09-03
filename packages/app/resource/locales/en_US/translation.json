@@ -291,7 +291,7 @@
 
       "ja_unnatural_alphabet": "Detects unnatural alphabets.",
       "no_mixed_zenkaku_and_hankaku_alphabet": "Check for mixed full-width and half-width alphabets.",
-      "japanese_settings.no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
+      "no_nfd": "textlint rule that disallow to use NFD like UTF8-MAC Sonant mark."
     }
   },
   "copy_to_clipboard": {
