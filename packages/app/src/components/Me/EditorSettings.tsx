@@ -11,7 +11,7 @@ import { withUnstatedContainers } from '../UnstatedUtils';
 import { toastSuccess, toastError } from '~/client/util/apiNotification';
 
 type EditorSettingsBodyProps = {
-  appContainer: AppContainer;
+  appContainer: AppContainer
 }
 
 type RuleListGroupProps = {
@@ -22,14 +22,14 @@ type RuleListGroupProps = {
 }
 
 type LintRule = {
-  name: string;
-  options?: unknown;
-  isEnabled?: boolean;
+  name: string
+  options?: unknown
+  isEnabled?: boolean
 }
 
 type RulesMenuItem = {
-  name: string;
-  description: string;
+  name: string
+  description: string
 }
 
 
