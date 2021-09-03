@@ -18,8 +18,7 @@
     "predev": "yarn cp:bootstrap:dev",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "version": "node -p \"require('./package.json').version\""
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "// comments for dependencies": {},
   "dependencies": {
