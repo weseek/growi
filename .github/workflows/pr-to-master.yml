@@ -13,8 +13,6 @@ jobs:
   auto-labeling:
     runs-on: ubuntu-latest
 
-    if: github.event.pull_request.merged == true
-
     steps:
       - uses: release-drafter/release-drafter@v5
         with:
@@ -37,6 +35,5 @@ jobs:
             docs
             test
           requireScope: false
-          validateSingleCommit: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
