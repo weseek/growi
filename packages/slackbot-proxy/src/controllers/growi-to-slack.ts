@@ -99,9 +99,7 @@ export class GrowiToSlackCtrl {
     // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
     const { tokenGtoPs } = req;
 
-    // MOCK DATA SO FAR BUT THIS CAN BE USED AS AN ACTUAL CODE AS WELL GW 6972 -----------
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
-    // MOCK DATA SO FAR BUT THIS CAN BE USED AS AN ACTUAL CODE AS WELL GW 6972 -----------
 
     if (tokenGtoPs.length !== 1) {
       throw createError(400, 'installation is invalid');
@@ -109,11 +107,9 @@ export class GrowiToSlackCtrl {
 
     const tokenGtoP = tokenGtoPs[0];
 
-    // MOCK DATA MODIFY THIS GW 6972 -----------
     const relation = await this.relationRepository.update(
       { tokenGtoP }, { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands },
     );
-    // MOCK DATA MODIFY THIS GW 6972 -----------
 
     return res.send({ relation });
   }
