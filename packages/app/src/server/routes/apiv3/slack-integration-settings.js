@@ -2,7 +2,6 @@ import { SlackbotType } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
 
-
 const mongoose = require('mongoose');
 const express = require('express');
 const { body, query, param } = require('express-validator');
