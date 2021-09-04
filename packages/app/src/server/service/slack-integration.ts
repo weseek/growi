@@ -219,7 +219,6 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   async handleCommandRequest(command, client, body, ...opt) {
     let module;
     try {
-      console.log(command, 222);
       module = `./slack-command-handler/${command}`;
     }
     catch (err) {
