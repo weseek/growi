@@ -13,9 +13,12 @@ describe('config/migrate.js', () => {
   `('returns', ({ MONGO_URI, expectedUrl, expectedDbName }) => {
     test(`when 'MONGO_URI' is '${MONGO_URI}`, () => {
 
+      const initMongooseGlobalSettingsMock = jest.fn();
+
       // mock for mongoose-utils
       jest.doMock('~/server/util/mongoose-utils', () => {
         return {
+          initMongooseGlobalSettings: initMongooseGlobalSettingsMock,
           getMongoUri: () => {
             return MONGO_URI;
           },
@@ -26,6 +29,7 @@ describe('config/migrate.js', () => {
 
       jest.dontMock('~/server/util/mongoose-utils');
 
+      expect(initMongooseGlobalSettingsMock).toHaveBeenCalledTimes(1);
       expect(mongoUri).toBe(MONGO_URI);
       expect(mongodb.url).toBe(expectedUrl);
       expect(mongodb.databaseName).toBe(expectedDbName);
