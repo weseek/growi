@@ -321,7 +321,7 @@ describe('PageService', () => {
       expect(await Page.findOne({ path: '/level1/child' })).not.toBeNull();
       expect(await Page.findOne({ path: '/level1/level2' })).toBeNull();
       expect(await Page.findOne({ path: '/level1/level2/child' })).toBeNull();
-      // The changed path is duplicated with the existing path (/level1/level2), so it will not be changed.
+      // The changed path is duplicated with the existing path (/level1/level2), so it will not be changed
       expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
 
       // Check that pages that are not to be renamed have not been renamed
