@@ -94,8 +94,15 @@ const PageManagement = (props) => {
   async function bulkExportPageHandler(format) {
     const { pageId } = pageContainer.state;
     const url = new URL(urljoin(window.location.origin, '_api/v3/page/bulk_export', pageId));
-    url.searchParams.append('format', format);
-    alert(url);
+    try {
+      const res = await appContainer.apiv3Get(urljoin('page', 'bulk_export', pageId), { format });
+      if (!res.ok) {
+        throw new Error(t('export_bulk.failed_to_bulk_export_page_markdown'));
+      }
+    }
+    catch (err) {
+      pageContainer.showErrorToastr(err);
+    }
   }
 
   // TODO GW-2746 create api to bulk export pages
