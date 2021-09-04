@@ -26,8 +26,6 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    // const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
-    // MOCK DATA MODIFY THIS WITH SlackAppIntegration GW-7006 --------------
     const SlackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
@@ -57,14 +55,9 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
-    // const relation = await SlackAppIntegration.findOne({ tokenPtoG });
-    // MOCK DATA DELETE THIS GW-6972 ---------------
-    // const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
-    // MOCK DATA DELETE THIS GW-6972 ---------------
-    // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
 
     // get command name from req.body
     let command = '';
@@ -168,7 +161,6 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
-    console.log(171);
     return handleCommands(req, res, client);
   });
 
@@ -223,14 +215,10 @@ module.exports = (crowi) => {
 
   router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    // MOCK DATA DELETE THIS GW-6972 ---------
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegration;
-    return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
-    // MOCK DATA DELETE THIS GW-6972 ---------
 
-    // const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-    // return res.send(slackAppIntegration);
+    return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
   });
 
   return router;

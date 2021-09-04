@@ -137,7 +137,6 @@ module.exports = (crowi) => {
       throw new Error('Proxy URL is not registered');
     }
 
-
     try {
       const result = await axios[method](
         urljoin(proxyUri, endpoint),
