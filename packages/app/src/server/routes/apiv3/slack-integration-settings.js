@@ -581,7 +581,7 @@ module.exports = (crowi) => {
       );
 
       console.log(slackAppIntegration, 596);
-
+      console.log(slackAppIntegration.permissionsForBroadcastUseCommands);
       await requestToProxyServer(
         slackAppIntegration.tokenGtoP,
         'put',
