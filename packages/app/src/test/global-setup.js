@@ -9,7 +9,7 @@ import 'tsconfig-paths/register';
 
 import mongoose from 'mongoose';
 
-import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
 // check env
 if (process.env.NODE_ENV !== 'test') {
@@ -21,6 +21,8 @@ if (process.env.NODE_ENV !== 'test') {
 // const { getInstance } = require('./setup-crowi');
 
 module.exports = async() => {
+  initMongooseGlobalSettings();
+
   await mongoose.connect(getMongoUri(), mongoOptions);
 
   // drop database

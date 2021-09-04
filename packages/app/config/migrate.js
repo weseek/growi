@@ -5,9 +5,13 @@
  * @author Yuki Takei <yuki@weseek.co.jp>
  */
 
+import mongoose from 'mongoose';
+
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+
 const { URL } = require('url');
 
-const { getMongoUri } = require('~/server/util/mongoose-utils');
+initMongooseGlobalSettings();
 
 const mongoUri = getMongoUri();
 
@@ -17,11 +21,7 @@ const url = new URL(mongoUri);
 const mongodb = {
   url: mongoUri,
   databaseName: url.pathname.substring(1), // omit heading slash
-  options: {
-    useNewUrlParser: true, // removes a deprecation warning when connecting
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  },
+  options: mongoOptions,
 };
 
 module.exports = {
