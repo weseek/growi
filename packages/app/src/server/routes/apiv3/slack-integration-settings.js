@@ -552,7 +552,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to update supported commands
    */
   // eslint-disable-next-line max-len
-  router.put('/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
+  router.put('/slack-app-integrations/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
     const { id } = req.params;
 
