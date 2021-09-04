@@ -52,8 +52,6 @@ export class GrowiToSlackCtrl {
   sectionBlockPayloadDelegator: SectionBlockPayloadDelegator;
 
   async requestToGrowi(growiUrl:string, tokenPtoG:string):Promise<void> {
-    console.log(55);
-
     const url = new URL('/_api/v3/slack-integration/proxied/commands', growiUrl);
     await axios.post(url.toString(), {
       type: 'url_verification',
@@ -123,8 +121,6 @@ export class GrowiToSlackCtrl {
   @Post('/relation-test')
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
-    console.log(126);
-
     const { tokenGtoPs } = req;
 
     if (tokenGtoPs.length !== 1) {
@@ -134,22 +130,16 @@ export class GrowiToSlackCtrl {
     const tokenGtoP = tokenGtoPs[0];
 
     // retrieve relation with Installation
-    console.log(tokenGtoP, 133);
-
     const relation = await this.relationRepository.createQueryBuilder('relation')
       .where('tokenGtoP = :token', { token: tokenGtoP })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getOne();
-
-    console.log(138, relation);
 
     // Returns the result of the test if it already exists
     if (relation != null) {
       logger.debug('relation found', relation);
 
       const token = relation.installation.data.bot?.token;
-      console.log(token, 145);
-
       if (token == null) {
         throw createError(400, 'installation is invalid');
       }
@@ -158,12 +148,9 @@ export class GrowiToSlackCtrl {
         await this.requestToGrowi(relation.growiUri, relation.tokenPtoG);
       }
       catch (err) {
-        console.log(157);
-
         logger.error(err);
         throw createError(400, `failed to request to GROWI. err: ${err.message}`);
       }
-      console.log(162);
 
       const status = await getConnectionStatus(token);
 
@@ -181,9 +168,6 @@ export class GrowiToSlackCtrl {
       .leftJoinAndSelect('order.installation', 'installation')
       .getOne();
 
-    console.log(order);// 存在する
-
-
     if (order == null || order.isExpired()) {
       throw createError(400, 'order has expired or does not exist.');
     }
@@ -193,8 +177,6 @@ export class GrowiToSlackCtrl {
       await this.requestToGrowi(order.growiUrl, order.tokenPtoG);
     }
     catch (err) {
-      console.log(192, err);
-
       logger.error(err);
       throw createError(400, `failed to request to GROWI. err: ${err.message}`);
     }
