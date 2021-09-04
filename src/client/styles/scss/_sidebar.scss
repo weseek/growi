@@ -22,39 +22,30 @@
   position: sticky;
   top: $grw-navbar-border-width;
 
-  .ak-navigation-resize-button {
+  .grw-navigation-resize-button {
     position: fixed;
 
     // locate to the center of screen
     top: calc(50vh - 20px);
 
-    /*
-     * styles
-     */
-    // unset originalhover color
-    > div:hover {
-      background-color: unset;
-    }
-
-    $box-shadow: 0 1px 1px rgba(96, 96, 96, 0.75);
+    $box-shadow: 0 0 0 0 rgba(96, 96, 96, 0.75);
     @include hexagonize(24px, white, $box-shadow);
 
     // rotate 30deg
     transform: translate(-50%) rotate(30deg);
-    > div,
-    > span svg {
+    > span {
+      top: -2px;
       transform: rotate(-30deg);
+      &::after {
+        // override
+        content: none;
+      }
     }
 
-    // centering icon
-    > span svg {
-      position: relative;
-      z-index: 1;
-      margin-top: -5.5px;
-    }
-    // reverse icon at the time of collapsed
+    // reverse and center icon at the time of collapsed
     &.collapse-state {
-      > span svg {
+      > span {
+        left: 2px;
         transform: rotate(-210deg);
       }
     }
@@ -79,7 +70,7 @@
     bottom: 0px;
     left: 0px;
     z-index: 200;
-    &:hover .ak-navigation-resize-button.resizable.normal-state {
+    &:hover .grw-navigation-resize-button.resizable.normal-state {
       cursor: pointer;
       opacity: 1;
     }
@@ -97,26 +88,6 @@
         }
         will-change: width;
         .grw-contextual-navigation-child {
-          position: absolute;
-          top: 0px;
-          left: 0px;
-          box-sizing: border-box;
-          width: 100%;
-          min-width: 240px;
-          height: 100%;
-          overflow-x: hidden;
-          color: rgb(255, 255, 255);
-          background-color: rgb(7, 71, 166);
-          .grw-contextual-navigation-sub {
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            overflow: hidden auto;
-          }
-        }
-        .grw-contextual-navigation-child2 {
           position: absolute;
           top: 0px;
           left: 0px;
@@ -378,17 +349,4 @@
   transition: background-color 100ms linear 0s, color 100ms linear 0s, opacity 300ms cubic-bezier(0.2, 0, 0, 1) 0s,
     transform 300ms cubic-bezier(0.2, 0, 0, 1) 0s;
   transform: translate(-50%);
-}
-
-.css-z8pkji {
-  position: absolute;
-  inset: -8px -12px -8px -8px;
-}
-
-.jMDUxe {
-  display: inline-block;
-  flex-shrink: 0;
-  line-height: 1;
-  color: currentcolor;
-  fill: rgb(255, 255, 255);
 }
