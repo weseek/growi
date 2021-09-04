@@ -54,8 +54,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
-
-  const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+  const SlackAppIntegration = crowi.model('SlackAppIntegration');
 
   const validator = {
     botType: [
@@ -389,6 +388,13 @@ module.exports = (crowi) => {
       const initialSupportedCommandsForBroadcastUse = new Map();
       const initialSupportedCommandsForSingleUse = new Map();
 
+      defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
+        initialSupportedCommandsForBroadcastUse.set(commandName, true);
+      });
+      defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
+        initialSupportedCommandsForSingleUse.set(commandName, true);
+      });
+
       const slackAppTokens = await SlackAppIntegration.create({
         tokenGtoP,
         tokenPtoG,
@@ -418,7 +424,6 @@ module.exports = (crowi) => {
    *            description: Succeeded to delete access tokens for slack
    */
   router.delete('/slack-app-integrations/:id', validator.deleteIntegration, apiV3FormValidator, async(req, res) => {
-    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { id } = req.params;
 
     try {
@@ -547,21 +552,25 @@ module.exports = (crowi) => {
    *            description: Succeeded to update supported commands
    */
   // eslint-disable-next-line max-len
-  router.put('/slack-app-integrations/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
-    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+  router.put('/:id/supported-commands', loginRequiredStrictly, adminRequired, csrf, validator.updateSupportedCommands, apiV3FormValidator, async(req, res) => {
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
     const { id } = req.params;
+
+    console.log(permissionsForBroadcastUseCommands);
 
     const updatePermissionsForBroadcastUseCommands = new Map();
     const updatePermissionsForSingleUseCommands = new Map();
-    supportedCommandsForBroadcastUse.forEach((commandName) => {
-      updatePermissionsForBroadcastUseCommands.set(commandName, true);
-    });
-    supportedCommandsForSingleUse.forEach((commandName) => {
-      updatePermissionsForSingleUseCommands.set(commandName, true);
-    });
+    // console.log(updatePermissionsForBroadcastUseCommands, 566);
+
+    for (const [key, value] of Object.entries(permissionsForBroadcastUseCommands)) {
+      updatePermissionsForBroadcastUseCommands.set(key, value);
+    }
+
+    for (const [key, value] of Object.entries(permissionsForSingleUseCommands)) {
+      updatePermissionsForSingleUseCommands.set(key, value);
+    }
 
     try {
-
       const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
         id,
         {
@@ -570,6 +579,8 @@ module.exports = (crowi) => {
         },
         { new: true },
       );
+
+      console.log(slackAppIntegration, 596);
 
       await requestToProxyServer(
         slackAppIntegration.tokenGtoP,
@@ -581,7 +592,7 @@ module.exports = (crowi) => {
         },
       );
 
-      return res.apiv3({ slackAppIntegration });
+      return res.apiv3({});
     }
     catch (error) {
       const msg = `Error occured in updating settings. Cause: ${error.message}`;
