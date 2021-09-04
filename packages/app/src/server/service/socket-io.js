@@ -3,7 +3,6 @@ import loggerFactory from '~/utils/logger';
 const socketIo = require('socket.io');
 const expressSession = require('express-session');
 const passport = require('passport');
-const socketioSession = require('@kobalab/socket.io-session');
 
 const logger = loggerFactory('growi:service:socket-io');
 
@@ -24,7 +23,9 @@ class SocketIoService {
     return (this.io != null);
   }
 
-  attachServer(server) {
+  // TODO: remove the comments
+  // Since the Order is important, I made attachServer() to async
+  async attachServer(server) {
     this.io = socketIo(server, {
       transports: ['websocket'],
     });
@@ -34,12 +35,12 @@ class SocketIoService {
 
     // setup middlewares
     // !!CAUTION!! -- ORDER IS IMPORTANT
-    this.setupSessionMiddleware();
-    this.setupLoginRequiredMiddleware();
-    this.setupAdminRequiredMiddleware();
-    this.setupCheckConnectionLimitsMiddleware();
+    await this.setupSessionMiddleware();
+    await this.setupLoginRequiredMiddleware();
+    await this.setupAdminRequiredMiddleware();
+    await this.setupCheckConnectionLimitsMiddleware();
 
-    this.setupStoreGuestIdEventHandler();
+    await this.setupStoreGuestIdEventHandler();
   }
 
   getDefaultSocket() {
@@ -59,13 +60,20 @@ class SocketIoService {
 
   /**
    * use passport session
-   * @see https://qiita.com/kobalab/items/083e507fb01159fe9774
+   * @see https://socket.io/docs/v4/middlewares/#Compatibility-with-Express-middleware
    */
   setupSessionMiddleware() {
-    const sessionMiddleware = socketioSession(expressSession(this.crowi.sessionConfig), passport);
-    this.io.use(sessionMiddleware.express_session);
-    this.io.use(sessionMiddleware.passport_initialize);
-    this.io.use(sessionMiddleware.passport_session);
+    const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+    this.io.use(wrap(expressSession(this.crowi.sessionConfig)));
+    this.io.use(wrap(passport.initialize()));
+    this.io.use(wrap(passport.session()));
+
+    // express and passport session on main socket doesn't shared to child namespace socket
+    // need to define the session for specific namespace
+    this.getAdminSocket().use(wrap(expressSession(this.crowi.sessionConfig)));
+    this.getAdminSocket().use(wrap(passport.initialize()));
+    this.getAdminSocket().use(wrap(passport.session()));
   }
 
   /**
@@ -78,6 +86,14 @@ class SocketIoService {
 
     // convert Connect/Express middleware to Socket.io middleware
     this.io.use((socket, next) => {
+      // TODO: remove debug log
+      // The session of this middleware setup has no problem at all
+      if (socket.request.user != null) {
+        logger.warn('grune setupLoginRequiredMiddleware 1');
+      }
+      else {
+        logger.warn('grune setupLoginRequiredMiddleware 0');
+      }
       loginRequired(socket.request, {}, next);
     });
   }
@@ -92,6 +108,16 @@ class SocketIoService {
 
     // convert Connect/Express middleware to Socket.io middleware
     this.getAdminSocket().use((socket, next) => {
+
+      // TODO: remove debug log
+      // Check whether the the session shared well to namespace middleware
+      // This is the one of main problems, the socket.request always undefined
+      if (socket.request.user != null) {
+        logger.warn('grune setupAdminRequiredMiddleware 1');
+      }
+      else {
+        logger.warn('grune setupAdminRequiredMiddleware 0');
+      }
       adminRequired(socket.request, {}, next);
     });
   }
