@@ -12,6 +12,8 @@ const schema = new mongoose.Schema({
 
 class SlackAppIntegration {
 
+  crowi;
+
   static generateAccessTokens() {
     const now = new Date().getTime();
     const hasher1 = crypto.createHash('sha512');
