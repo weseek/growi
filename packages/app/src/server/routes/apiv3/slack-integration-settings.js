@@ -138,7 +138,7 @@ module.exports = (crowi) => {
       throw new Error('Proxy URL is not registered');
     }
 
-    console.log(method);
+
     try {
       const result = await axios[method](
         urljoin(proxyUri, endpoint),
@@ -562,51 +562,38 @@ module.exports = (crowi) => {
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
     const { id } = req.params;
 
-    // const slackAppIntegration = mongoose.model('SlackAppIntegration');
+    const updateSingle = new Map();
+    const updateBroad = new Map();
+    supportedCommandsForBroadcastUse.forEach((commandName) => {
+      updateBroad.set(commandName, true);
+    });
+    supportedCommandsForSingleUse.forEach((commandName) => {
+      updateSingle.set(commandName, true);
+    });
 
     try {
-      // NOT MOCK DATA BUT REFER THIS GW-7006
+
       const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
         id,
-        { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse },
-        { new: true },
-      );
-
-      // MOCK DATA MODIFY THIS GW-6972 ---------------
-      /**
-       * this code represents the update operation using request from client (slackapp integration settings page)
-       * , then send request to proxy to update cache
-       * permittedChannelsForEachCommandFromClient represents the data sent from client
-       */
-      // MOCK DATA FROM CLIENT assume that these data were sent from client
-      const permissionsForBroadcastUseCommandsFromClient = {
-        search: false,
-      };
-      const permissionsForSingleUseCommandsFromClient = {
-        create: ['random'],
-      };
-      const SlackAppIntegration = await SlackAppIntegration.findOneAndUpdate(
-        // MOCK DATA USE id IN req.params LIKE ABOVE
-        { tokenPtoG: slackAppIntegration.tokenPtoG },
         {
-          permissionsForBroadcastUseCommands: permissionsForBroadcastUseCommandsFromClient,
-          permissionsForSingleUseCommands: permissionsForSingleUseCommandsFromClient,
+          permissionsForBroadcastUseCommands: updateBroad,
+          permissionsForSingleUseCommands: updateSingle,
         },
         { new: true },
       );
 
       await requestToProxyServer(
-        SlackAppIntegration.tokenGtoP,
+        slackAppIntegration.tokenGtoP,
         'put',
         '/g2s/supported-commands',
         {
-          permissionsForBroadcastUseCommands: SlackAppIntegration.permissionsForBroadcastUseCommands,
-          permissionsForSingleUseCommands: SlackAppIntegration.permissionsForSingleUseCommands,
+          permissionsForBroadcastUseCommands: slackAppIntegration.permissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: slackAppIntegration.permissionsForSingleUseCommands,
         },
       );
       // MOCK DATA MODIFY THIS GW-6972 ---------------
 
-      return res.apiv3({ SlackAppIntegration });
+      return res.apiv3({ slackAppIntegration });
     }
     catch (error) {
       const msg = `Error occured in updating settings. Cause: ${error.message}`;
