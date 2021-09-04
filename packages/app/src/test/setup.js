@@ -7,13 +7,14 @@
 
 const mongoose = require('mongoose');
 
-const { getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
+const { initMongooseGlobalSettings, getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
 
 mongoose.Promise = global.Promise;
 
 jest.setTimeout(30000); // default 5000
 
 beforeAll(async() => {
+  initMongooseGlobalSettings();
   await mongoose.connect(getMongoUri(), mongoOptions);
 });
 

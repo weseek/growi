@@ -9,7 +9,7 @@ import CdnResourcesService from '~/services/cdn-resources-service';
 import InterceptorManager from '~/services/interceptor-manager';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
-import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { initMongooseGlobalSettings, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import ConfigManager from '../service/config-manager';
@@ -213,6 +213,8 @@ Crowi.prototype.setupDatabase = function() {
 
   // mongoUri = mongodb://user:password@host/dbname
   const mongoUri = getMongoUri();
+
+  initMongooseGlobalSettings();
 
   return mongoose.connect(mongoUri, mongoOptions);
 };
