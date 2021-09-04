@@ -8,7 +8,7 @@ const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps }
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
-const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
 
 module.exports = (crowi) => {
@@ -26,16 +26,16 @@ module.exports = (crowi) => {
       return res.status(400).send({ message });
     }
 
-    // const slackAppIntegrationCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
+    // const slackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
     // MOCK DATA MODIFY THIS WITH SlackAppIntegration GW-7006 --------------
-    const slackAppIntegrationMockCount = await SlackAppIntegrationMock.countDocuments({ tokenPtoG });
+    const SlackAppIntegrationCount = await SlackAppIntegration.countDocuments({ tokenPtoG });
 
     logger.debug('verifyAccessTokenFromProxy', {
       tokenPtoG,
-      slackAppIntegrationMockCount,
+      SlackAppIntegrationCount,
     });
 
-    if (slackAppIntegrationMockCount === 0) {
+    if (SlackAppIntegrationCount === 0) {
       return res.status(403).send({
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`.\n'
         + 'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. '
@@ -59,10 +59,10 @@ module.exports = (crowi) => {
 
     // const relation = await SlackAppIntegration.findOne({ tokenPtoG });
     // MOCK DATA DELETE THIS GW-6972 ---------------
-    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
-    const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
-    const permissionsForBroadcastUseCommands = slackAppIntegrationMock.permissionsForBroadcastUseCommands;
-    const permissionsForSingleUseCommands = slackAppIntegrationMock.permissionsForSingleUseCommands;
+    // const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
+    const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
     // MOCK DATA DELETE THIS GW-6972 ---------------
     // const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = relation;
 
@@ -224,9 +224,8 @@ module.exports = (crowi) => {
   router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     // MOCK DATA DELETE THIS GW-6972 ---------
-    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
-    const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ tokenPtoG });
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegrationMock;
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegration;
     return res.apiv3({ permissionsForBroadcastUseCommands, permissionsForSingleUseCommands });
     // MOCK DATA DELETE THIS GW-6972 ---------
 

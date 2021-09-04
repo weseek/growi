@@ -128,9 +128,9 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   async generateClientByTokenPtoG(tokenPtoG: string): Promise<WebClient> {
     this.isCheckTypeValid();
 
-    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 
-    const slackAppIntegration = await SlackAppIntegrationMock.findOne({ tokenPtoG });
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
 
     if (slackAppIntegration == null) {
       throw new Error('No SlackAppIntegration exists that corresponds to the tokenPtoG specified.');
@@ -153,7 +153,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     }
 
     // retrieve primary SlackAppIntegration
-    const SlackAppIntegration = mongoose.model('SlackAppIntegrationMock');
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const slackAppIntegration = await SlackAppIntegration.findOne({ isPrimary: true });
 
     if (slackAppIntegration == null) {

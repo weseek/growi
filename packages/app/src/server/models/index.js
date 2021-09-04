@@ -18,6 +18,6 @@ module.exports = {
   ShareLink: require('./share-link'),
   // SlackAppIntegration: require('./slack-app-integration'),
   // MOCK DATA DELETE THIS GW-6972 ---------------
-  SlackAppIntegrationMock: require('./slack-app-integration-mock'),
+  SlackAppIntegration: require('./slack-app-integration'),
   // MOCK DATA DELETE THIS GW-6972 ---------------
 };

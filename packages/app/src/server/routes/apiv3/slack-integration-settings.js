@@ -56,7 +56,7 @@ module.exports = (crowi) => {
   const csrf = require('../../middlewares/csrf')(crowi);
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
-  const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+  const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 
   const validator = {
     botType: [
@@ -101,7 +101,7 @@ module.exports = (crowi) => {
   }
 
   async function resetAllBotSettings(initializedType) {
-    await SlackAppIntegrationMock.deleteMany();
+    await SlackAppIntegration.deleteMany();
 
     const params = {
       'slackbot:currentBotType': initializedType,
@@ -211,11 +211,11 @@ module.exports = (crowi) => {
     }
     else {
       try {
-        const slackAppIntegrations = await SlackAppIntegrationMock.find();
+        const slackAppIntegrations = await SlackAppIntegration.find();
         settings.slackAppIntegrations = slackAppIntegrations;
       }
       catch (e) {
-        errorMsg = 'Error occured in finding SlackAppIntegrationMock entities.';
+        errorMsg = 'Error occured in finding SlackAppIntegration entities.';
         errorCode = 'get-slackappintegration-failed';
         logger.error(errorMsg, e);
       }
@@ -379,18 +379,18 @@ module.exports = (crowi) => {
    *            description: Succeeded to create slack app integration
    */
   router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, csrf, async(req, res) => {
-    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
-    const SlackAppIntegrationMockRecordsNum = await SlackAppIntegrationMock.countDocuments();
-    if (SlackAppIntegrationMockRecordsNum >= 10) {
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+    const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
+    if (SlackAppIntegrationRecordsNum >= 10) {
       const msg = 'Not be able to create more than 10 slack workspace integration settings';
       logger.error('Error', msg);
       return res.apiv3Err(new ErrorV3(msg, 'create-slackAppIntegeration-failed'), 500);
     }
 
-    const { tokenGtoP, tokenPtoG } = await SlackAppIntegrationMock.generateUniqueAccessTokens();
+    const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
     try {
       // MOCK DATA DELETE THIS GW-6972 ---------------
-      /* This code represents the creation of the new SlackAppIntegrationMock model instance. */
+      /* This code represents the creation of the new SlackAppIntegration model instance. */
       const initialSupportedCommandsForBroadcastUse = new Map();
       const initialSupportedCommandsForSingleUse = new Map();
       defaultSupportedCommandsNameForBroadcastUse.forEach((commandName) => {
@@ -399,7 +399,7 @@ module.exports = (crowi) => {
       defaultSupportedCommandsNameForSingleUse.forEach((commandName) => {
         initialSupportedCommandsForSingleUse.set(commandName, true);
       });
-      const slackAppTokensMOCK = await SlackAppIntegrationMock.create({
+      const slackAppTokensMOCK = await SlackAppIntegration.create({
         tokenGtoP,
         tokenPtoG,
         permissionsForBroadcastUseCommands: initialSupportedCommandsForBroadcastUse,
@@ -429,16 +429,16 @@ module.exports = (crowi) => {
    *            description: Succeeded to delete access tokens for slack
    */
   router.delete('/slack-app-integrations/:id', validator.deleteIntegration, apiV3FormValidator, async(req, res) => {
-    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    const SlackAppIntegration = mongoose.model('SlackAppIntegration');
     const { id } = req.params;
 
     try {
-      const response = await SlackAppIntegrationMock.findOneAndDelete({ _id: id });
+      const response = await SlackAppIntegration.findOneAndDelete({ _id: id });
 
       // update primary
-      const countOfPrimary = await SlackAppIntegrationMock.countDocuments({ isPrimary: true });
+      const countOfPrimary = await SlackAppIntegration.countDocuments({ isPrimary: true });
       if (countOfPrimary === 0) {
-        await SlackAppIntegrationMock.updateOne({}, { isPrimary: true });
+        await SlackAppIntegration.updateOne({}, { isPrimary: true });
       }
 
       return res.apiv3({ response });
@@ -463,7 +463,7 @@ module.exports = (crowi) => {
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';
       logger.error('Error', error);
-      return res.apiv3Err(new ErrorV3(msg, 'delete-SlackAppIntegrationMock-failed'), 500);
+      return res.apiv3Err(new ErrorV3(msg, 'delete-SlackAppIntegration-failed'), 500);
     }
 
   });
@@ -487,7 +487,7 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
-      await SlackAppIntegrationMock.bulkWrite([
+      await SlackAppIntegration.bulkWrite([
         // unset isPrimary for others
         {
           updateMany: {
@@ -507,7 +507,7 @@ module.exports = (crowi) => {
       return res.apiv3();
     }
     catch (error) {
-      const msg = 'Error occurred during making SlackAppIntegrationMock primary';
+      const msg = 'Error occurred during making SlackAppIntegration primary';
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(msg, 'making-primary-failed'), 500);
     }
@@ -532,8 +532,8 @@ module.exports = (crowi) => {
     const { id } = req.params;
 
     try {
-      const { tokenGtoP, tokenPtoG } = await SlackAppIntegrationMock.generateUniqueAccessTokens();
-      const slackAppTokens = await SlackAppIntegrationMock.findByIdAndUpdate(id, { tokenGtoP, tokenPtoG });
+      const { tokenGtoP, tokenPtoG } = await SlackAppIntegration.generateUniqueAccessTokens();
+      const slackAppTokens = await SlackAppIntegration.findByIdAndUpdate(id, { tokenGtoP, tokenPtoG });
 
       return res.apiv3(slackAppTokens, 200);
     }
@@ -562,11 +562,11 @@ module.exports = (crowi) => {
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
     const { id } = req.params;
 
-    const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
+    // const slackAppIntegration = mongoose.model('SlackAppIntegration');
 
     try {
       // NOT MOCK DATA BUT REFER THIS GW-7006
-      const slackAppIntegration = await SlackAppIntegrationMock.findByIdAndUpdate(
+      const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
         id,
         { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse },
         { new: true },
@@ -585,7 +585,7 @@ module.exports = (crowi) => {
       const permissionsForSingleUseCommandsFromClient = {
         create: ['random'],
       };
-      const slackAppIntegrationMock = await SlackAppIntegrationMock.findOneAndUpdate(
+      const SlackAppIntegration = await SlackAppIntegration.findOneAndUpdate(
         // MOCK DATA USE id IN req.params LIKE ABOVE
         { tokenPtoG: slackAppIntegration.tokenPtoG },
         {
@@ -596,17 +596,17 @@ module.exports = (crowi) => {
       );
 
       await requestToProxyServer(
-        slackAppIntegrationMock.tokenGtoP,
+        SlackAppIntegration.tokenGtoP,
         'put',
         '/g2s/supported-commands',
         {
-          permissionsForBroadcastUseCommands: slackAppIntegrationMock.permissionsForBroadcastUseCommands,
-          permissionsForSingleUseCommands: slackAppIntegrationMock.permissionsForSingleUseCommands,
+          permissionsForBroadcastUseCommands: SlackAppIntegration.permissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: SlackAppIntegration.permissionsForSingleUseCommands,
         },
       );
       // MOCK DATA MODIFY THIS GW-6972 ---------------
 
-      return res.apiv3({ slackAppIntegrationMock });
+      return res.apiv3({ SlackAppIntegration });
     }
     catch (error) {
       const msg = `Error occured in updating settings. Cause: ${error.message}`;
@@ -645,25 +645,23 @@ module.exports = (crowi) => {
     let slackBotToken;
     try {
       // MOCK DATA DELETE THIS GW-6972 ---------------
-      const SlackAppIntegrationMock = mongoose.model('SlackAppIntegrationMock');
-      const slackAppIntegrationMock = await SlackAppIntegrationMock.findOne({ _id: id });
+      const SlackAppIntegration = mongoose.model('SlackAppIntegration');
+      const slackAppIntegration = await SlackAppIntegration.findOne({ _id: id });
       // MOCK DATA DELETE THIS GW-6972 ---------------
-      if (slackAppIntegrationMock == null) {
-        const msg = 'Could not find SlackAppIntegrationMock by id';
+      if (slackAppIntegration == null) {
+        const msg = 'Could not find SlackAppIntegration by id';
         return res.apiv3Err(new ErrorV3(msg, 'find-slackAppIntegration-failed'), 400);
       }
 
       // USE MOCK DATA HERE FOR cache creation at /relation-test GW-7021
-      console.log(slackAppIntegrationMock.tokenGtoP);
-      console.log(slackAppIntegrationMock.permissionsForBroadcastUseCommands);
-      console.log(slackAppIntegrationMock.permissionsForSingleUseCommands);
+
       const result = await requestToProxyServer(
-        slackAppIntegrationMock.tokenGtoP,
+        slackAppIntegration.tokenGtoP,
         'post',
         '/g2s/relation-test',
         {
-          permissionsForBroadcastUseCommands: slackAppIntegrationMock.permissionsForBroadcastUseCommands,
-          permissionsForSingleUseCommands: slackAppIntegrationMock.permissionsForSingleUseCommands,
+          permissionsForBroadcastUseCommands: slackAppIntegration.permissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: slackAppIntegration.permissionsForSingleUseCommands,
         },
       );
 
