@@ -562,13 +562,13 @@ module.exports = (crowi) => {
     const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
     const { id } = req.params;
 
-    const updateSingle = new Map();
-    const updateBroad = new Map();
+    const updatePermissionsForBroadcastUseCommands = new Map();
+    const updatePermissionsForSingleUseCommands = new Map();
     supportedCommandsForBroadcastUse.forEach((commandName) => {
-      updateBroad.set(commandName, true);
+      updatePermissionsForBroadcastUseCommands.set(commandName, true);
     });
     supportedCommandsForSingleUse.forEach((commandName) => {
-      updateSingle.set(commandName, true);
+      updatePermissionsForSingleUseCommands.set(commandName, true);
     });
 
     try {
@@ -576,8 +576,8 @@ module.exports = (crowi) => {
       const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
         id,
         {
-          permissionsForBroadcastUseCommands: updateBroad,
-          permissionsForSingleUseCommands: updateSingle,
+          permissionsForBroadcastUseCommands: updatePermissionsForBroadcastUseCommands,
+          permissionsForSingleUseCommands: updatePermissionsForSingleUseCommands,
         },
         { new: true },
       );
