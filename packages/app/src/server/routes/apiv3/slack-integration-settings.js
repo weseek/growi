@@ -644,7 +644,6 @@ module.exports = (crowi) => {
       }
     }
     catch (error) {
-      console.log((673));
       logger.error('Error', error);
       return res.apiv3Err(new ErrorV3(`Error occured while testing. Cause: ${error.message}`, 'test-failed', error.stack));
     }
