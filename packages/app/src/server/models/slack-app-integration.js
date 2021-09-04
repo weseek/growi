@@ -1,14 +1,11 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 
-const permittedChannelsForEachCommandSchema = new mongoose.Schema({
-  channelsObject: Map,
-});
-
 
 const schema = new mongoose.Schema({
   tokenGtoP: { type: String, required: true, unique: true },
   tokenPtoG: { type: String, required: true, unique: true },
+  isPrimary: { type: Boolean, unique: true, sparse: true },
   permissionsForBroadcastUseCommands: Map,
   permissionsForSingleUseCommands: Map,
 });
