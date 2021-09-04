@@ -556,11 +556,8 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
     const { id } = req.params;
 
-    console.log(permissionsForBroadcastUseCommands);
-
     const updatePermissionsForBroadcastUseCommands = new Map();
     const updatePermissionsForSingleUseCommands = new Map();
-    // console.log(updatePermissionsForBroadcastUseCommands, 566);
 
     for (const [key, value] of Object.entries(permissionsForBroadcastUseCommands)) {
       updatePermissionsForBroadcastUseCommands.set(key, value);
@@ -580,8 +577,6 @@ module.exports = (crowi) => {
         { new: true },
       );
 
-      console.log(slackAppIntegration, 596);
-      console.log(slackAppIntegration.permissionsForBroadcastUseCommands);
       await requestToProxyServer(
         slackAppIntegration.tokenGtoP,
         'put',
