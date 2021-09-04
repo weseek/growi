@@ -27,6 +27,5 @@ export const verifyGrowiToSlackRequest = (req: RequestFromGrowi, res: Response, 
   }
 
   req.tokenGtoPs = tokens;
-
   return next();
 };
