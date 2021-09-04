@@ -319,9 +319,9 @@ describe('PageService', () => {
       // then
       expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
       expect(await Page.findOne({ path: '/level1/child' })).not.toBeNull();
-      expect(await Page.findOne({ path: '/level1/level2' })).not.toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2' })).toBeNull();
       expect(await Page.findOne({ path: '/level1/level2/child' })).toBeNull();
-      expect(await Page.findOne({ path: '/level1/level2/level2' })).toBeNull();
+      expect(await Page.findOne({ path: '/level1/level2/level2' })).not.toBeNull();
 
       // Check that pages that are not to be renamed have not been renamed
       expect(await Page.findOne({ path: '/level1-2021H1' })).not.toBeNull();
