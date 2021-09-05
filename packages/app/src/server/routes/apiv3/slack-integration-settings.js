@@ -22,7 +22,6 @@ const logger = loggerFactory('growi:routes:apiv3:slack-integration-settings');
 
 const router = express.Router();
 
-const OFFICIAL_SLACKBOT_PROXY_URI = 'https://slackbot-proxy.growi.org';
 
 /**
  * @swagger
@@ -109,11 +108,6 @@ module.exports = (crowi) => {
       'slackbot:withoutProxy:botToken': null,
       'slackbot:proxyUri': null,
     };
-
-    // set url if officialBot is specified
-    if (initializedType === SlackbotType.OFFICIAL) {
-      params['slackbot:proxyUri'] = OFFICIAL_SLACKBOT_PROXY_URI;
-    }
 
     return updateSlackBotSettings(params);
   }
