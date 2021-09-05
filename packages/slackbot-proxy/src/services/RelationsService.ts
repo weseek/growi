@@ -113,12 +113,12 @@ export class RelationsService {
       relation:Relation, channelName:string, callbackId:string, actionId:string,
   ):Promise<{isPermittedForInteractions:boolean, commandName:string}> {
 
-    let isPermittedForInteractions!:boolean;
-    let commandName!:string;
+    let isPermittedForInteractions = false;
+    let permissionForInteractions:boolean|string[];
 
     const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
     const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
-    let permissionForInteractions:boolean|string[];
+    let commandName!:string;
 
     [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
 
