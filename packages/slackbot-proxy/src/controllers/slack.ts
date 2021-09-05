@@ -330,23 +330,14 @@ export class SlackCtrl {
       });
     }
 
-
-    const allowedRelations:Relation[] = [];
-    const disallowedGrowiUrls: Set<string> = new Set();
-    let notAllowedCommandName!:string;
     const actionId:string = payload?.actions?.[0].action_id;
 
     await Promise.all(relations.map(async(relation) => {
-      const permission = await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
-      const { isPermittedForInteractions, commandName } = permission;
-
-      if (!isPermittedForInteractions) {
-        disallowedGrowiUrls.add(relation.growiUri);
-        notAllowedCommandName = commandName;
-      }
-
-      allowedRelations.push(relation);
+      await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
     }));
+
+    const disallowedGrowiUrls = this.relationsService.getDisallowedGrowiUrls();
+    const notAllowedCommandName = this.relationsService.getNotAllowedCommandName();
 
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -377,6 +368,7 @@ export class SlackCtrl {
      * forward to GROWI server
      */
 
+    const allowedRelations = this.relationsService.getAllowedRelations();
     allowedRelations.map(async(relation) => {
       try {
         // generate API URL
