@@ -82,18 +82,18 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
     async use(@Req() req: SlackOauthReq, @Res() res:Res): Promise<void|Res> {
       const { body } = req;
 
+      if (body.payload == null) {
+        // do nothing
+        this.logger.info('body does not have payload');
+        return;
+      }
+
       const payload = JSON.parse(body.payload);
 
       // extract id from body.payload
       const teamId = payload.team?.id;
       const enterpriseId = payload.enterprise?.id;
       const isEnterpriseInstall = payload.is_enterprise_install === 'true';
-
-      if (body.payload == null) {
-      // do nothing
-        this.logger.info('body does not have payload');
-        return;
-      }
 
       const query: InstallationQuery<boolean> = {
         teamId,

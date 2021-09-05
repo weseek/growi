@@ -1,12 +1,13 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 
+
 const schema = new mongoose.Schema({
   tokenGtoP: { type: String, required: true, unique: true },
   tokenPtoG: { type: String, required: true, unique: true },
   isPrimary: { type: Boolean, unique: true, sparse: true },
-  supportedCommandsForBroadcastUse: { type: [String], default: [] },
-  supportedCommandsForSingleUse: { type: [String], default: [] },
+  permissionsForBroadcastUseCommands: Map,
+  permissionsForSingleUseCommands: Map,
 });
 
 class SlackAppIntegration {
@@ -47,9 +48,7 @@ class SlackAppIntegration {
 }
 
 module.exports = function(crowi) {
-
   SlackAppIntegration.crowi = crowi;
-
   schema.loadClass(SlackAppIntegration);
   return mongoose.model('SlackAppIntegration', schema);
 };

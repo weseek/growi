@@ -13,12 +13,10 @@ import {
   InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
 } from '@growi/slack';
 
-// import { Relation } from '~/entities/relation';
-import { RelationMock } from '~/entities/relation-mock';
+import { Relation } from '~/entities/relation';
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallationRepository } from '~/repositories/installation';
-// import { RelationRepository } from '~/repositories/relation';
-import { RelationMockRepository } from '~/repositories/relation-mock';
+import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import {
@@ -74,11 +72,8 @@ export class SlackCtrl {
   @Inject()
   installationRepository: InstallationRepository;
 
-  // @Inject()
-  // relationRepository: RelationRepository;
-
   @Inject()
-  relationMockRepository: RelationMockRepository;
+  relationRepository: RelationRepository;
 
   @Inject()
   orderRepository: OrderRepository;
@@ -102,13 +97,13 @@ export class SlackCtrl {
    * @param body
    * @returns
    */
-  private async sendCommand(growiCommand: GrowiCommand, relations: RelationMock[], body: any) {
+  private async sendCommand(growiCommand: GrowiCommand, relations: Relation[], body: any) {
     if (relations.length === 0) {
       throw new Error('relations must be set');
     }
 
     const botToken = relations[0].installation?.data.bot?.token; // relations[0] should be exist
-    const promises = relations.map((relation: RelationMock) => {
+    const promises = relations.map((relation: Relation) => {
       // generate API URL
       const url = new URL('/_api/v3/slack-integration/proxied/commands', relation.growiUri);
       return axios.post(url.toString(), {
@@ -179,7 +174,7 @@ export class SlackCtrl {
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
-    const relations = await this.relationMockRepository.createQueryBuilder('relation')
+    const relations = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
@@ -212,8 +207,8 @@ export class SlackCtrl {
 
     const baseDate = new Date();
 
-    const allowedRelationsForSingleUse:RelationMock[] = [];
-    const allowedRelationsForBroadcastUse:RelationMock[] = [];
+    const allowedRelationsForSingleUse:Relation[] = [];
+    const allowedRelationsForBroadcastUse:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
 
     // check permission
@@ -321,7 +316,7 @@ export class SlackCtrl {
     }
 
     // check permission
-    const relations = await this.relationMockRepository.createQueryBuilder('relation')
+    const relations = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.installationId = :id', { id: installation?.id })
       .leftJoinAndSelect('relation.installation', 'installation')
       .getMany();
@@ -336,7 +331,7 @@ export class SlackCtrl {
     }
 
 
-    const allowedRelations:RelationMock[] = [];
+    const allowedRelations:Relation[] = [];
     const disallowedGrowiUrls: Set<string> = new Set();
     let notAllowedCommandName!:string;
     const actionId:string = payload?.actions?.[0].action_id;

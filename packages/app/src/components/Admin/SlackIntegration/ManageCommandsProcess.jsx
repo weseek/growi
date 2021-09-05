@@ -131,7 +131,7 @@ const ManageCommandsProcess = ({
 
   const updateCommandsHandler = async(e) => {
     try {
-      await apiv3Put(`/slack-integration-settings/${slackAppIntegrationId}/supported-commands`, {
+      await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/supported-commands`, {
         permissionsForBroadcastUseCommands: permissionsForBroadcastUseCommandsState,
         permissionsForSingleUseCommands: permissionsForSingleUseCommandsState,
       });

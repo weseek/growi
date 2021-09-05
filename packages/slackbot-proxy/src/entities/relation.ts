@@ -4,6 +4,10 @@ import {
 } from 'typeorm';
 import { Installation } from './installation';
 
+interface PermissionSettingsInterface {
+  [commandName: string]: boolean | string[],
+}
+
 @Entity()
 @Index(['installation', 'growiUri'], { unique: true })
 export class Relation {
@@ -31,17 +35,16 @@ export class Relation {
   @Column()
   growiUri: string;
 
-  @Column('simple-array')
-  supportedCommandsForBroadcastUse: string[];
+  @Column({ type: 'json' })
+  permissionsForBroadcastUseCommands: PermissionSettingsInterface;
 
-  @Column('simple-array')
-  supportedCommandsForSingleUse: string[];
+  @Column({ type: 'json' })
+  permissionsForSingleUseCommands: PermissionSettingsInterface;
 
   @Column({ type: 'timestamp' })
   expiredAtCommands: Date;
 
   getDistanceInMillisecondsToExpiredAt(baseDate:Date):number {
-    // differenceInMilliseconds uses Date.prototype.getTime() internally
     return differenceInMilliseconds(this.expiredAtCommands, baseDate);
   }
 

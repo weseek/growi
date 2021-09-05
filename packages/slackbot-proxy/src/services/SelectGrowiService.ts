@@ -5,14 +5,12 @@ import { AuthorizeResult } from '@slack/oauth';
 
 import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { Installation } from '~/entities/installation';
-// import { Relation } from '~/entities/relation';
-import { RelationMock } from '~/entities/relation-mock';
-// import { RelationRepository } from '~/repositories/relation';
-import { RelationMockRepository } from '~/repositories/relation-mock';
+import { Relation } from '~/entities/relation';
+import { RelationRepository } from '~/repositories/relation';
 
 
 export type SelectedGrowiInformation = {
-  relation: RelationMock,
+  relation: Relation,
   growiCommand: GrowiCommand,
   sendCommandBody: any,
 }
@@ -20,11 +18,8 @@ export type SelectedGrowiInformation = {
 @Service()
 export class SelectGrowiService implements GrowiCommandProcessor {
 
-  // @Inject()
-  // relationRepository: RelationRepository;
-
   @Inject()
-  relationMockRepository: RelationMockRepository;
+  relationRepository: RelationRepository;
 
   // eslint-disable-next-line max-len
   async process(growiCommand: GrowiCommand | string, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]}): Promise<void> {
@@ -99,7 +94,7 @@ export class SelectGrowiService implements GrowiCommandProcessor {
     // ovverride trigger_id
     sendCommandBody.trigger_id = triggerId;
 
-    const relation = await this.relationMockRepository.createQueryBuilder('relation')
+    const relation = await this.relationRepository.createQueryBuilder('relation')
       .where('relation.growiUri =:growiUri', { growiUri })
       .andWhere('relation.installationId = :id', { id: installation?.id })
       .leftJoinAndSelect('relation.installation', 'installation')

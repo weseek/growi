@@ -3,11 +3,9 @@ import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 import { addHours } from 'date-fns';
 
-// import { Relation } from '~/entities/relation';
 import { REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
-import { RelationMock } from '~/entities/relation-mock';
-// import { RelationRepository } from '~/repositories/relation';
-import { RelationMockRepository } from '~/repositories/relation-mock';
+import { Relation } from '~/entities/relation';
+import { RelationRepository } from '~/repositories/relation';
 
 import loggerFactory from '~/utils/logger';
 
@@ -17,11 +15,10 @@ const logger = loggerFactory('slackbot-proxy:services:RelationsService');
 export class RelationsService {
 
   @Inject()
-  // relationRepository: RelationRepository;
 
-  relationMockRepository: RelationMockRepository;
+  relationRepository: RelationRepository;
 
-  async getSupportedGrowiCommands(relation:RelationMock):Promise<any> {
+  async getSupportedGrowiCommands(relation:Relation):Promise<any> {
     // generate API URL
     const url = new URL('/_api/v3/slack-integration/supported-commands', relation.growiUri);
     return axios.get(url.toString(), {
@@ -32,26 +29,19 @@ export class RelationsService {
     });
   }
 
-  async syncSupportedGrowiCommands(relation:RelationMock): Promise<RelationMock> {
+  async syncSupportedGrowiCommands(relation:Relation): Promise<Relation> {
     const res = await this.getSupportedGrowiCommands(relation);
-
-    // MOCK DATA MODIFY THIS GW-6972 ---------------
-    /**
-     * this code represents the update of cache (Relation schema) using request from GROWI
-     */
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = res.data.data;
     if (relation !== null) {
       relation.permissionsForBroadcastUseCommands = permissionsForBroadcastUseCommands;
       relation.permissionsForSingleUseCommands = permissionsForSingleUseCommands;
       relation.expiredAtCommands = addHours(new Date(), 48);
-      return this.relationMockRepository.save(relation);
+      return this.relationRepository.save(relation);
     }
     throw Error('No relation exists.');
-    // MOCK DATA MODIFY THIS GW-6972 ---------------
   }
 
-  // MODIFY THIS METHOD USING ORIGINAL RELATION MODEL GW-6972
-  async syncRelation(relation:RelationMock, baseDate:Date):Promise<RelationMock|null> {
+  async syncRelation(relation:Relation, baseDate:Date):Promise<Relation|null> {
     if (relation == null) return null;
 
     const distanceMillisecondsToExpiredAt = relation.getDistanceInMillisecondsToExpiredAt(baseDate);
@@ -79,7 +69,7 @@ export class RelationsService {
     return relation;
   }
 
-  async isPermissionsForSingleUseCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
+  async isPermissionsForSingleUseCommands(relation:Relation, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
       return false;
@@ -98,7 +88,7 @@ export class RelationsService {
     return permission;
   }
 
-  async isPermissionsUseBroadcastCommands(relation:RelationMock, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
+  async isPermissionsUseBroadcastCommands(relation:Relation, growiCommandType:string, channelName:string, baseDate:Date):Promise<boolean> {
     const syncedRelation = await this.syncRelation(relation, baseDate);
     if (syncedRelation == null) {
       return false;
@@ -120,7 +110,7 @@ export class RelationsService {
 
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      relation:RelationMock, channelName:string, callbackId:string, actionId:string,
+      relation:Relation, channelName:string, callbackId:string, actionId:string,
   ):Promise<{isPermittedForInteractions:boolean, commandName:string}> {
 
     let isPermittedForInteractions!:boolean;
