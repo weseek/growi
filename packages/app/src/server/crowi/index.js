@@ -35,7 +35,7 @@ function Crowi() {
   this.publicDir = path.join(projectRoot, 'public') + sep;
   this.resourceDir = path.join(projectRoot, 'resource') + sep;
   this.localeDir = path.join(this.resourceDir, 'locales') + sep;
-  this.viewsDir = path.join(projectRoot, 'src', 'server', 'views') + sep;
+  this.viewsDir = path.resolve(__dirname, '../views') + sep;
   this.tmpDir = path.join(projectRoot, 'tmp') + sep;
   this.cacheDir = path.join(this.tmpDir, 'cache');
 
