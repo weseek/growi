@@ -114,7 +114,7 @@ module.exports = (crowi) => {
 
   async function getConnectionStatusesFromProxy(tokens) {
     const csv = tokens.join(',');
-    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
+    const proxyUri = crowi.slackIntegrationService.proxyServerUri;
 
     const result = await axios.get(urljoin(proxyUri, '/g2s/connection-status'), {
       headers: {
@@ -127,7 +127,7 @@ module.exports = (crowi) => {
   }
 
   async function requestToProxyServer(token, method, endpoint, body) {
-    const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
+    const proxyUri = crowi.slackIntegrationService.proxyServerUri;
     if (proxyUri == null) {
       throw new Error('Proxy URL is not registered');
     }
@@ -551,7 +551,7 @@ module.exports = (crowi) => {
         { new: true },
       );
 
-      const proxyUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
+      const proxyUri = crowi.slackIntegrationService.proxyServerUri;
       if (proxyUri != null) {
         await requestToProxyServer(
           slackAppIntegration.tokenGtoP,
