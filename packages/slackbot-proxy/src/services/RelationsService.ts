@@ -142,7 +142,7 @@ export class RelationsService {
         return;
       }
       // check permission at channel level
-      if (Array.isArray(permissionForInteractions)) {
+      if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(channelName)) {
         isPermittedForInteractions = true;
         return;
       }
