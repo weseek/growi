@@ -556,16 +556,8 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = req.body;
     const { id } = req.params;
 
-    const updatePermissionsForBroadcastUseCommands = new Map();
-    const updatePermissionsForSingleUseCommands = new Map();
-
-    for (const [key, value] of Object.entries(permissionsForBroadcastUseCommands)) {
-      updatePermissionsForBroadcastUseCommands.set(key, value);
-    }
-
-    for (const [key, value] of Object.entries(permissionsForSingleUseCommands)) {
-      updatePermissionsForSingleUseCommands.set(key, value);
-    }
+    const updatePermissionsForBroadcastUseCommands = new Map(Object.entries(permissionsForBroadcastUseCommands));
+    const updatePermissionsForSingleUseCommands = new Map(Object.entries(permissionsForSingleUseCommands));
 
     try {
       const slackAppIntegration = await SlackAppIntegration.findByIdAndUpdate(
