@@ -23,9 +23,11 @@ export class JoinToConversationMiddleware implements IMiddleware {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const client = generateWebClient(authorizeResult.botToken!);
 
-    const joinResult = await client.conversations.join({ channel: body.channel_id });
-    if (!joinResult.ok) {
-      logger.error(joinResult.error, joinResult);
+    try {
+      await client.conversations.join({ channel: body.channel_id });
+    }
+    catch (err) {
+      logger.error(err);
     }
   }
 
