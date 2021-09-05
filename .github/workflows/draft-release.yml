@@ -57,6 +57,6 @@ jobs:
           GIT_PR_RELEASE_BRANCH_PRODUCTION: release/current
           GIT_PR_RELEASE_BRANCH_STAGING: master
           GIT_PR_RELEASE_TEMPLATE: .github/git-pr-release-template.erb
-          GIT_PR_RELEASE_TITLE: Release ${{ steps.release-version.outputs.RELEASE_VERSION }}
+          GIT_PR_RELEASE_TITLE: Release v${{ steps.release-version.outputs.RELEASE_VERSION }}
           GIT_PR_RELEASE_BODY: ${{ needs.update-release-draft.outputs.RELEASE_DRAFT_BODY }}
 
