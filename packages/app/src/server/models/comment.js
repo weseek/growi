@@ -109,6 +109,12 @@ module.exports = function(crowi) {
       })
       .catch(() => {
       });
+
+    Activity.createByPageComment(savedComment)
+      .then((activityLog) => {
+        debug('Activity created', activityLog);
+      })
+      .catch((err) => {});
   });
 
   return mongoose.model('Comment', commentSchema);
