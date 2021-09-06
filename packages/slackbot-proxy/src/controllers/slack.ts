@@ -336,22 +336,24 @@ export class SlackCtrl {
     }
 
     const actionId:string = payload?.actions?.[0].action_id;
+    const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
+    const { allowedRelations, disallowedGrowiUrls, notAllowedCommandName } = permission;
+    // await Promise.all(relations.map(async(relation) => {
+    //   const permission = await this.relationsService.checkPermissionForInteractions(relations, channelName, callbackId, actionId);
+    //   const { allowedRelation, disallowedGrowiUrls, notAllowedCommandName } = permission;
+    // }));
 
-    await Promise.all(relations.map(async(relation) => {
-      const permission = await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
-      const { disallowedGrowiUrls, notAllowedCommandName } = permission;
+    if (relations.length === disallowedGrowiUrls.size) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const client = generateWebClient(authorizeResult.botToken!);
+      return postNotAllowedMessage(client, body, disallowedGrowiUrls, notAllowedCommandName);
+    }
 
-      if (relations.length === disallowedGrowiUrls.size) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const client = generateWebClient(authorizeResult.botToken!);
-        return postNotAllowedMessage(client, body, disallowedGrowiUrls, notAllowedCommandName);
-      }
-
-      /*
-       * forward to GROWI server
-       */
+    /*
+     * forward to GROWI server
+     */
+    allowedRelations.map(async(relation) => {
       try {
-        // generate API URL
         const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
         await axios.post(url.toString(), {
           ...body,
@@ -364,8 +366,7 @@ export class SlackCtrl {
       catch (err) {
         logger.error(err);
       }
-    }));
-
+    });
   }
 
   @Post('/events')
