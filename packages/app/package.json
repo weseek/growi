@@ -55,18 +55,10 @@
   "dependencies": {
     "@browser-bunyan/console-formatted-stream": "^1.6.2",
     "@google-cloud/storage": "^5.8.5",
-<<<<<<< HEAD
-    "@growi/plugin-attachment-refs": "^4.3.3-RC",
-    "@growi/plugin-pukiwiki-like-linker": "^4.3.3-RC",
-    "@growi/plugin-lsx": "^4.3.3-RC",
-    "@growi/slack": "^4.3.3-RC",
-=======
     "@growi/plugin-attachment-refs": "^4.4.0-RC",
     "@growi/plugin-pukiwiki-like-linker": "^4.4.0-RC",
     "@growi/plugin-lsx": "^4.4.0-RC",
     "@growi/slack": "^4.4.0-RC",
-    "@kobalab/socket.io-session": "^1.0.3",
->>>>>>> 9e8737a66d1779e35b6c39a305c17bd0c0150044
     "@promster/express": "^5.0.1",
     "@promster/server": "^6.0.0",
     "@slack/events-api": "^3.0.0",
