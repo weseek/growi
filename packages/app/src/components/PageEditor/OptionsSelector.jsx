@@ -34,7 +34,6 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
-      isTextlintEnabled: false,
     };
 
     this.availableThemes = [
@@ -62,8 +61,7 @@ class OptionsSelector extends React.Component {
 
   async componentDidMount() {
     const { editorContainer } = this.props;
-    const { isTextlintEnabled } = await editorContainer.retrieveEditorSettings();
-    this.setState({ isTextlintEnabled });
+    await editorContainer.retrieveEditorSettings();
   }
 
 
@@ -121,8 +119,6 @@ class OptionsSelector extends React.Component {
 
     // save to localStorage
     editorContainer.saveOptsToLocalStorage();
-
-
   }
 
   async updateIsTextlintEnabledToDB(newVal) {
@@ -133,13 +129,11 @@ class OptionsSelector extends React.Component {
     catch (err) {
       toastError(err);
     }
-
   }
 
   async switchTextlintEnabledHandler() {
     const { editorContainer } = this.props;
-    const newVal = !this.state.isTextlintEnabled;
-    this.setState({ isTextlintEnabled: newVal });
+    const newVal = !editorContainer.state.isTextlintEnabled;
     editorContainer.setState({ isTextlintEnabled: newVal });
     this.updateIsTextlintEnabledToDB(newVal);
   }
@@ -321,7 +315,7 @@ class OptionsSelector extends React.Component {
   }
 
   renderIsTextlintEnabledMenuItem() {
-    const isActive = this.state.isTextlintEnabled;
+    const isActive = this.props.editorContainer.state.isTextlintEnabled;
 
     const iconClasses = ['text-info'];
     if (isActive) {
