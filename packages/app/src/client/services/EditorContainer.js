@@ -15,6 +15,7 @@ export default class EditorContainer extends Container {
 
     this.appContainer = appContainer;
     this.appContainer.registerContainer(this);
+    this.retrieveEditorSettings = this.retrieveEditorSettings.bind(this);
 
     const mainContent = document.querySelector('#content-main');
 
@@ -203,7 +204,7 @@ export default class EditorContainer extends Container {
    * Retrieve Editor Settings
    */
   async retrieveEditorSettings() {
-    const { data } = await this.appContainer.apiv3.get('/personal-setting/editor-settings');
+    const { data } = await this.appContainer.apiv3Get('/personal-setting/editor-settings');
     const isTextlintEnabled = data?.textlintSettings?.isTextlintEnabled;
     const textlintRules = data?.textlintSettings?.textlintRules;
     this.setState({
