@@ -210,7 +210,7 @@ export default class EditorContainer extends Container {
       isTextlintEnabled,
       textlintRules,
     });
-    return isTextlintEnabled;
+    console.log(JSON.stringify({ isTextlintEnabled, textlintRules }));
   }
 
 }

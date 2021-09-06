@@ -487,11 +487,11 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor settings
    */
-  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, async(req, res) => {
     try {
       const query = { userId: req.user.id };
       const update = req.body;
-
       // Insert if document does not exist, and return new values
       // See: https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
       const options = { upsert: true, new: true };

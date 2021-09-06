@@ -128,7 +128,7 @@ class OptionsSelector extends React.Component {
   async updateIsTextlintEnabledToDB(newVal) {
     const { appContainer } = this.props;
     try {
-      await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: newVal });
+      await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: { isTextlintEnabled: newVal } });
     }
     catch (err) {
       toastError(err);
@@ -330,7 +330,6 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      // eslint-disable-next-line no-console
       <DropdownItem toggle={false} onClick={this.switchTextlintEnabledHandler}>
         <div className="d-flex justify-content-between">
           <span className="icon-container"></span>
