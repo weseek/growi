@@ -171,7 +171,6 @@ module.exports = (crowi) => {
 
     const { configManager } = crowi;
     const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
-
     // retrieve settings
     const settings = {};
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
@@ -183,6 +182,11 @@ module.exports = (crowi) => {
     else {
       settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
       settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:proxyUri');
+      settings.permissionCommands = {
+        search: true,
+        create: true,
+        togetter: true,
+      };
     }
 
     // retrieve connection statuses
