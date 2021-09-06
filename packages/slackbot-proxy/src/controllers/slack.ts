@@ -36,7 +36,7 @@ import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
-const postNotAllowedMessage = async(client:WebClient, body:any, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
+const postNotAllowedMessage = async(client:WebClient, channelId:string, userId:string, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
 
   const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
     return '\n'
@@ -45,15 +45,11 @@ const postNotAllowedMessage = async(client:WebClient, body:any, disallowedGrowiU
 
   const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
 
-  let payload:any;
-  if (body.payload != null) {
-    payload = JSON.parse(body.payload);
-  }
 
   await client.chat.postEphemeral({
     text: 'Error occured.',
-    channel: body.channel_id || payload.channel.id,
-    user: body.user_id || payload.user.id,
+    channel: channelId,
+    user: userId,
     blocks: [
       markdownSectionBlock('*None of GROWI permitted the command.*'),
       markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
@@ -244,7 +240,7 @@ export class SlackCtrl {
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(authorizeResult.botToken!);
-      return postNotAllowedMessage(client, body, disallowedGrowiUrls, growiCommand.growiCommandType);
+      return postNotAllowedMessage(client, body.channel_id, body.user_id, disallowedGrowiUrls, growiCommand.growiCommandType);
     }
 
     // select GROWI
@@ -344,7 +340,7 @@ export class SlackCtrl {
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(authorizeResult.botToken!);
-      return postNotAllowedMessage(client, body, disallowedGrowiUrls, commandName);
+      return postNotAllowedMessage(client, payload.channel_id, payload.user_id, disallowedGrowiUrls, commandName);
     }
 
     /*
