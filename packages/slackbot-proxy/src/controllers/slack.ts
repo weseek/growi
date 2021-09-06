@@ -350,6 +350,7 @@ export class SlackCtrl {
      */
     allowedRelations.map(async(relation) => {
       try {
+        // generate API URL
         const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
         await axios.post(url.toString(), {
           ...body,
@@ -362,6 +363,7 @@ export class SlackCtrl {
       catch (err) {
         logger.error(err);
       }
+
     });
   }
 
