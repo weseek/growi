@@ -209,6 +209,10 @@ export default (crowi: Crowi) => {
     }
   });
 
+  /*
+    Define Activity on crowi.event by GW-7345
+  */
+
   // because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
   // move 'save' hook from mongoose's events to activityEvent if I have a time.
   // activityEvent.on('remove', async(activity: ActivityDocument) => {
