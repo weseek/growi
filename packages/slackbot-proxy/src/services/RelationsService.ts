@@ -107,33 +107,15 @@ export class RelationsService {
     return permission;
   }
 
-  allowedRelations:Relation[];
-
-  disallowedGrowiUrls: Set<string>;
-
-  notAllowedCommandName:string
-
-  getAllowedRelations():Relation[] {
-    return this.allowedRelations;
-  }
-
-  getDisallowedGrowiUrls():Set<string> {
-    return this.disallowedGrowiUrls;
-  }
-
-  getNotAllowedCommandName():string {
-    return this.notAllowedCommandName;
-  }
-
   async checkPermissionForInteractions(
       // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
       relation:Relation, channelName:string, callbackId:string, actionId:string,
-  ):Promise<void> {
+  ):Promise<any> {
 
     // initialize params
-    this.allowedRelations = [];
-    this.disallowedGrowiUrls = new Set();
-    this.notAllowedCommandName = '';
+    const allowedRelations:Relation[] = [];
+    const disallowedGrowiUrls:Set<string> = new Set();
+    let notAllowedCommandName = '';
 
     let permissionForInteractions:boolean|string[];
     const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
@@ -156,17 +138,19 @@ export class RelationsService {
       }
 
       if (permissionForInteractions === true) {
-        return this.allowedRelations.push(relation);
+        return allowedRelations.push(relation);
       }
 
       // check permission at channel level
       if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(channelName)) {
-        return this.allowedRelations.push(relation);
+        return allowedRelations.push(relation);
       }
 
-      this.disallowedGrowiUrls.add(relation.growiUri);
-      this.notAllowedCommandName = tempCommandName;
+      disallowedGrowiUrls.add(relation.growiUri);
+      notAllowedCommandName = tempCommandName;
     });
+
+    return { allowedRelations, disallowedGrowiUrls, notAllowedCommandName };
   }
 
 }

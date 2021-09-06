@@ -331,60 +331,38 @@ export class SlackCtrl {
     }
 
     const actionId:string = payload?.actions?.[0].action_id;
-
     await Promise.all(relations.map(async(relation) => {
-      await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
+      const permission = await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
+      const { allowedRelations, disallowedGrowiUrls, notAllowedCommandName } = permission;
+
+      if (relations.length === disallowedGrowiUrls.size) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const client = generateWebClient(authorizeResult.botToken!);
+        return postNotAllowedMessage(client, body, disallowedGrowiUrls, notAllowedCommandName);
+      }
+
+      /*
+       * forward to GROWI server
+       */
+
+      allowedRelations.map(async(relation) => {
+        try {
+          // generate API URL
+          const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
+          await axios.post(url.toString(), {
+            ...body,
+          }, {
+            headers: {
+              'x-growi-ptog-tokens': relation.tokenPtoG,
+            },
+          });
+        }
+        catch (err) {
+          logger.error(err);
+        }
+      });
+
     }));
-
-    const disallowedGrowiUrls = this.relationsService.getDisallowedGrowiUrls();
-    const notAllowedCommandName = this.relationsService.getNotAllowedCommandName();
-
-    if (relations.length === disallowedGrowiUrls.size) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(authorizeResult.botToken!);
-      const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
-        return '\n'
-      + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
-      });
-      const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
-      return client.chat.postEphemeral({
-        text: 'Error occured.',
-        channel: body.channel_id,
-        user: body.user_id,
-        blocks: [
-          markdownSectionBlock('*None of GROWI permitted the command.*'),
-          markdownSectionBlock(`*'${notAllowedCommandName}'* command was not allowed.`),
-          markdownSectionBlock(
-            `To use this command, modify settings from following pages: ${linkUrlList}`,
-          ),
-          markdownSectionBlock(
-            `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
-          ),
-        ],
-      });
-    }
-
-    /*
-     * forward to GROWI server
-     */
-
-    const allowedRelations = this.relationsService.getAllowedRelations();
-    allowedRelations.map(async(relation) => {
-      try {
-        // generate API URL
-        const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
-        await axios.post(url.toString(), {
-          ...body,
-        }, {
-          headers: {
-            'x-growi-ptog-tokens': relation.tokenPtoG,
-          },
-        });
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    });
 
   }
 
