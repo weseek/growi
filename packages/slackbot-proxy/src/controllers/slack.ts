@@ -333,8 +333,6 @@ export class SlackCtrl {
 
     const actionId:string = payload?.actions?.[0].action_id;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
-    console.log(permission);
-
     const { allowedRelations, disallowedGrowiUrls, commandName } = permission;
 
     if (relations.length === disallowedGrowiUrls.size) {
