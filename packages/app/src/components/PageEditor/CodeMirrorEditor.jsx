@@ -200,7 +200,8 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.setKeymapMode(keymapMode);
   }
 
-  initTextlintSettings() {
+  async initTextlintSettings() {
+    await this.props.retrieveEditorSettings();
     this.textlintValidator = createValidator(this.props.textlintRules);
     this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }

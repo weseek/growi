@@ -242,7 +242,6 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
   const updateRulesHandler = async() => {
     try {
       const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: { textlintRules: [...textlintRules] } });
-      console.log(data);
       setTextlintRules(data.textlintSettings.textlintRules);
       toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
     }

@@ -34,6 +34,7 @@ import { loggerFactory } from './utils/logger';
 type RulesConfigObj = {
   name: string,
   options?: unknown,
+  isEnabled?: boolean,
 }
 
 type RuleExtension = {
@@ -94,7 +95,6 @@ const createSetupRules = (rules, ruleOptions): TextlintKernelRule[] => (
 
 
 export const createValidator = (rulesConfigArray: RulesConfigObj[]): AsyncLinter<RulesConfigObj[]> => {
-  console.log(rulesConfigArray);
   if (rulesConfigArray != null) {
     const filteredConfigArray = rulesConfigArray
       .filter((rule) => {
