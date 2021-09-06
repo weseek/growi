@@ -12,45 +12,22 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(config.mongoUri, config.mongodb.options);
 
-    const defaultValuesForBroadcastUse = defaultSupportedCommandsNameForBroadcastUse.map(commandName => [commandName, true]);
-    const defaultValuesForSingleUse = defaultSupportedCommandsNameForSingleUse.map(commandName => [commandName, true]);
+    // Add columns + set all default commands if supportedCommandsForBroadcastUse column does not exist
+    const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
 
-    await db.collection('slackappintegrations').updateMany(
-      {},
-      [
-        {
-          $set: {
-            permissionsForBroadcastUseCommands: new Map(defaultValuesForBroadcastUse),
-            permissionsForSingleUseCommands: new Map(defaultValuesForSingleUse),
-          },
-        },
-        {
-          $unset: ['supportedCommandsForSingleUse', 'supportedCommandsForBroadcastUse'],
-        },
-      ],
-    );
+    // Add togetter command if supportedCommandsForBroadcastUse already exists
+    const slackAppIntegrations = await SlackAppIntegration.find();
+    slackAppIntegrations.forEach(async(doc) => {
+      if (!doc.supportedCommandsForSingleUse.includes('togetter')) {
+        doc.supportedCommandsForSingleUse.push('togetter');
+      }
+      await doc.save();
+    });
 
     logger.info('Migration has successfully applied');
   },
 
-  async down(db, next) {
-    logger.info('Rollback migration');
-    mongoose.connect(config.mongoUri, config.mongodb.options);
-
-    await db.collection('slackappintegrations').updateMany(
-      {},
-      [
-        {
-          $set: {
-            supportedCommandsForBroadcastUse: defaultSupportedCommandsNameForBroadcastUse,
-            supportedCommandsForSingleUse: defaultSupportedCommandsNameForSingleUse,
-          },
-        },
-        {
-          $unset: ['permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
-        },
-      ],
-    );
-    next();
+  async down() {
+    // no rollback
   },
 };
