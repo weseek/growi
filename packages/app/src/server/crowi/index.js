@@ -19,6 +19,8 @@ import AttachmentService from '../service/attachment';
 import { SlackIntegrationService } from '../service/slack-integration';
 import { UserNotificationService } from '../service/user-notification';
 
+import Activity from '../events/activity';
+
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
 
@@ -80,6 +82,7 @@ function Crowi() {
     bookmark: new (require('../events/bookmark'))(this),
     tag: new (require('../events/tag'))(this),
     admin: new (require('../events/admin'))(this),
+    activity: new Activity(this),
   };
 }
 

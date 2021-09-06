@@ -34,7 +34,7 @@ export interface ActivityModel extends Model<ActivityDocument> {
 }
 
 export default (crowi: Crowi) => {
-  const activityEvent = crowi.event('Activity');
+  const activityEvent = crowi.event('activity');
 
   // TODO: add revision id
   const activitySchema = new Schema<ActivityDocument, ActivityModel>({
@@ -199,7 +199,7 @@ export default (crowi: Crowi) => {
   activitySchema.post('save', async(savedActivity: ActivityDocument) => {
     const Notification = crowi.model('Notification');
     try {
-      // TODO: enable to use getNotificationTargetUsers
+      // TODO: enable to use getNotificationTargetUsers by GW-7346
       // const notificationUsers = await savedActivity.getNotificationTargetUsers();
       // await Promise.all(notificationUsers.map(user => Notification.upsertByActivity(user, savedActivity)));
       return;
@@ -209,22 +209,18 @@ export default (crowi: Crowi) => {
     }
   });
 
-  /*
-    Define Activity on crowi.event by GW-7345
-  */
-
   // because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
   // move 'save' hook from mongoose's events to activityEvent if I have a time.
-  // activityEvent.on('remove', async(activity: ActivityDocument) => {
-  //   const Notification = crowi.model('Notification');
+  activityEvent.on('remove', async(activity: ActivityDocument) => {
+    const Notification = crowi.model('Notification');
 
-  //   try {
-  //     await Notification.removeActivity(activity);
-  //   }
-  //   catch (err) {
-  //     logger.error(err);
-  //   }
-  // });
+    try {
+      await Notification.removeActivity(activity);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+  });
 
   const Activity = model<ActivityDocument, ActivityModel>('Activity', activitySchema);
 
