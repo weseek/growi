@@ -1,6 +1,6 @@
 import React, {
   Dispatch,
-  FC, SetStateAction, useEffect, useMemo, useState,
+  FC, SetStateAction, useCallback, useEffect, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -155,9 +155,9 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
   const { t } = useTranslation();
 
   const isCheckedRule = (ruleName: string) => (
-    textlintRules.find(stateRule => (
+    textlintRules.filter(stateRule => (
       stateRule.name === ruleName
-    ))?.isEnabled || false
+    ))[0]?.isEnabled
   );
 
   const ruleCheckboxHandler = (isChecked: boolean, ruleName: string) => {
@@ -211,11 +211,11 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
   const { appContainer } = props;
   const [textlintRules, setTextlintRules] = useState<LintRule[]>([]);
 
-  const retrievedTextlintRules = useMemo(async() => {
+  const initializeEditorSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
 
     if (data?.textlintSettings?.textlintRules != null) {
-      return data.textlintSettings.textlintRules;
+      setTextlintRules(data.textlintSettings.textlintRules);
     }
 
     // If database is empty, add default rules to state
@@ -230,16 +230,13 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
       const defaultCommonRules = commonRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
-      return [...defaultCommonRules, ...defaultJapaneseRules];
+      setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
     }
   }, [appContainer]);
 
   useEffect(() => {
-    (async() => {
-      const rules:LintRule[] = await (retrievedTextlintRules);
-      setTextlintRules(rules);
-    })();
-  }, [retrievedTextlintRules]);
+    initializeEditorSettings();
+  }, []);
 
   const updateRulesHandler = async() => {
     try {
