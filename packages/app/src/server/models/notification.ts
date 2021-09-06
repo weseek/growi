@@ -195,11 +195,10 @@ export default (crowi: Crowi) => {
   };
 
   notificationEvent.on('update', (user) => {
-    // TODO: be able to use getIo method by GW7221
-    // const io = crowi.getIo();
-    // if (io) {
-    //   io.sockets.emit('notification updated', { user });
-    // }
+    const io = crowi.getSocketIoService();
+    if (io) {
+      io.sockets.emit('notification updated', { user });
+    }
   });
 
   notificationSchema.statics.STATUS_UNOPENED = function() {
