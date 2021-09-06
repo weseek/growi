@@ -4,9 +4,12 @@ import React, {
 import PropTypes from 'prop-types';
 
 import {
-  Card, CardBody, TabContent, TabPane,
+  TabContent, TabPane,
 } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
+
+import { SlackbotType } from '@growi/slack';
+
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -48,7 +51,7 @@ const SkeltonListItem = () => (
 const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
   const { t } = useTranslation();
 
-  const isCautionVisible = currentBotType === 'officialBot' || currentBotType === 'customBotWithProxy';
+  const isCautionVisible = currentBotType === SlackbotType.OFFICIAL || currentBotType === SlackbotType.CUSTOM_WITH_PROXY;
 
   return (
     <li className="list-group-item">

@@ -1,6 +1,6 @@
 {
   "name": "@growi/slackbot-proxy",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
@@ -18,13 +18,12 @@
     "predev": "yarn cp:bootstrap:dev",
     "test": "cross-env NODE_ENV=test jest --passWithNoTests",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "version": "node -p \"require('./package.json').version\""
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "// comments for dependencies": {},
   "dependencies": {
     "@godaddy/terminus": "^4.8.0",
-    "@growi/slack": "^4.3.3-RC",
+    "@growi/slack": "^4.4.0-RC",
     "@slack/oauth": "^2.0.1",
     "@slack/web-api": "^6.2.4",
     "@tsed/common": "^6.43.0",

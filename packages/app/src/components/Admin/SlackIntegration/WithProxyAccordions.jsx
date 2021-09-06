@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+import { SlackbotType } from '@growi/slack';
+
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
@@ -67,15 +70,16 @@ const BotInstallProcessForCustomBotWithProxy = () => {
   const { t } = useTranslation();
   return (
     <div className="container w-75 py-5">
-      <p>1. {t('admin:slack_integration.accordion.select_install_your_app')}</p>
-      <img src="/images/slack-integration/slack-bot-install-your-app-introduction.png" className="border border-light img-fluid mb-5" />
-      <p>2. {t('admin:slack_integration.accordion.select_install_to_workspace')}</p>
-      <img src="/images/slack-integration/slack-bot-install-to-workspace.png" className="border border-light img-fluid mb-5" />
-      <p>3. {t('admin:slack_integration.accordion.click_allow')}</p>
+      <p>1. {t('admin:slack_integration.accordion.go-to-manage-distribution')}</p>
+      <p>2. {t('admin:slack_integration.accordion.activate-public-distribution')}</p>
+      <img src="/images/slack-integration/activate-public-dist.png" className="border border-light img-fluid mb-5" />
+      <p>3. {t('admin:slack_integration.accordion.click-add-to-slack-button')}</p>
+      <img src="/images/slack-integration/click-add-to-slack.png" className="border border-light img-fluid mb-5" />
+      <p>4. {t('admin:slack_integration.accordion.click_allow')}</p>
       <img src="/images/slack-integration/slack-bot-install-your-app-transition-destination.png" className="border border-light img-fluid mb-5" />
-      <p>4. {t('admin:slack_integration.accordion.install_complete_if_checked')}</p>
-      <img src="/images/slack-integration/slack-bot-install-your-app-complete.png" className="border border-light img-fluid mb-5" />
-      <p>5. {t('admin:slack_integration.accordion.invite_bot_to_channel')}</p>
+      <p>5. {t('admin:slack_integration.accordion.install_complete_if_checked')}</p>
+      <img src="/images/slack-integration/basicinfo-all-checked.png" className="border border-light img-fluid mb-5" />
+      <p>6. {t('admin:slack_integration.accordion.invite_bot_to_channel')}</p>
       <img src="/images/slack-integration/slack-bot-install-to-workspace-joined-bot.png" className="border border-light img-fluid mb-1" />
       <img src="/images/slack-integration/slack-bot-install-your-app-introduction-to-channel.png" className="border border-light img-fluid" />
     </div>
@@ -383,7 +387,7 @@ const WithProxyAccordions = (props) => {
     },
   };
 
-  const integrationProcedureMapping = props.botType === 'officialBot' ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
+  const integrationProcedureMapping = props.botType === SlackbotType.OFFICIAL ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
   return (
     <div
@@ -416,7 +420,7 @@ const WithProxyAccordions = (props) => {
 const WithProxyAccordionsWrapper = withUnstatedContainers(WithProxyAccordions, [AppContainer]);
 WithProxyAccordions.propTypes = {
   appContainer: PropTypes.instanceOf(AppContainer).isRequired,
-  botType: PropTypes.string.isRequired,
+  botType: PropTypes.oneOf(Object.values(SlackbotType)).isRequired,
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,

@@ -1,5 +1,5 @@
 import {
-  BodyParams, Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
+  Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
 } from '@tsed/common';
 
 import axios from 'axios';
@@ -19,7 +19,10 @@ import { InstallationRepository } from '~/repositories/installation';
 import { RelationRepository } from '~/repositories/relation';
 import { OrderRepository } from '~/repositories/order';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
-import { AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware } from '~/middlewares/slack-to-growi/authorizer';
+import {
+  AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware, AuthorizeEventsMiddleware,
+} from '~/middlewares/slack-to-growi/authorizer';
+import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
@@ -331,14 +334,15 @@ export class SlackCtrl {
   }
 
   @Post('/events')
-  async handleEvent(@BodyParams() body:{[key:string]:string} /* , @Res() res: Res */): Promise<void|string> {
-    // eslint-disable-next-line max-len
-    // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
-    if (body.type === 'url_verification') {
-      return body.challenge;
-    }
+  @UseBefore(UrlVerificationMiddleware, AuthorizeEventsMiddleware)
+  async handleEvent(@Req() req: SlackOauthReq): Promise<void> {
 
-    logger.info('receive event', body);
+    const { authorizeResult } = req;
+    const client = generateWebClient(authorizeResult.botToken);
+
+    if (req.body.event.type === 'app_home_opened') {
+      await postWelcomeMessage(client, req.body.event.channel);
+    }
 
     return;
   }

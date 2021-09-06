@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 
 import { IncomingWebhookSendArguments } from '@slack/webhook';
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
-import { generateWebClient, markdownSectionBlock } from '@growi/slack';
 
+import { generateWebClient, markdownSectionBlock, SlackbotType } from '@growi/slack';
 
 import loggerFactory from '~/utils/logger';
+
 import S2sMessage from '../models/vo/s2s-message';
 
 import ConfigManager from './config-manager';
@@ -15,6 +16,7 @@ import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:SlackBotService');
 
+const OFFICIAL_SLACKBOT_PROXY_URI = 'https://slackbot-proxy.growi.org';
 
 type S2sMessageForSlackIntegration = S2sMessage & { updatedAt: Date };
 
@@ -99,22 +101,41 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   private isCheckTypeValid(): boolean {
     const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
     if (currentBotType == null) {
-      throw new Error('The config \'SLACK_BOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
+      throw new Error('The config \'SLACKBOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
     }
 
     return true;
   }
 
+  get proxyUriForCurrentType(): string {
+    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    // TODO assert currentBotType is not null and CUSTOM_WITHOUT_PROXY
+
+    let proxyUri: string;
+
+    switch (currentBotType) {
+      case SlackbotType.OFFICIAL:
+        proxyUri = OFFICIAL_SLACKBOT_PROXY_URI;
+        break;
+      default:
+        proxyUri = this.configManager.getConfig('crowi', 'slackbot:proxyUri');
+        break;
+    }
+
+    return proxyUri;
+  }
+
   /**
-   * generate WebClient instance for 'customBotWithoutProxy' type
+   * generate WebClient instance for CUSTOM_WITHOUT_PROXY type
    */
   async generateClientForCustomBotWithoutProxy(): Promise<WebClient> {
     this.isCheckTypeValid();
 
-    const token = this.configManager.getConfig('crowi', 'slackbot:token');
+    const token = this.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
 
     if (token == null) {
-      throw new Error('The config \'SLACK_BOT_TOKEN\'(ns: \'crowi\', key: \'slackbot:token\') must be set.');
+      throw new Error('The config \'SLACK_BOT_TOKEN\'(ns: \'crowi\', key: \'slackbot:withoutProxy:botToken\') must be set.');
     }
 
     return generateWebClient(token);
@@ -147,7 +168,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
     const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
-    if (currentBotType === 'customBotWithoutProxy') {
+    if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       return this.generateClientForCustomBotWithoutProxy();
     }
 
@@ -170,8 +191,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     this.isCheckTypeValid();
 
     // connect to proxy
-    const proxyServerUri = this.configManager.getConfig('crowi', 'slackbot:proxyServerUri');
-    const serverUri = new URL('/g2s', proxyServerUri);
+    const serverUri = new URL('/g2s', this.proxyUriForCurrentType);
     const headers = {
       'x-growi-gtop-tokens': slackAppIntegration.tokenGtoP,
     };

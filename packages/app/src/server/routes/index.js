@@ -1,5 +1,19 @@
+import express from 'express';
+
+import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
+
+import * as forgotPassword from './forgot-password';
+
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
+const rateLimit = require('express-rate-limit');
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // limit each IP to 5 requests per windowMs
+  message:
+    'Too many requests sent from this IP, please try again after 15 minutes',
+});
 
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
@@ -174,6 +188,11 @@ module.exports = function(crowi, app) {
   app.post('/_api/hackmd.integrate'      , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.integrate);
   app.post('/_api/hackmd.discard'        , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.discard);
   app.post('/_api/hackmd.saveOnHackmd'   , accessTokenParser , loginRequiredStrictly , csrf, hackmd.validateForApi, hackmd.saveOnHackmd);
+
+  app.use('/forgot-password', express.Router()
+    .get('/', forgotPassword.forgotPassword)
+    .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
+    .use(forgotPassword.handleHttpErrosMiddleware));
 
   app.get('/share/:linkId', page.showSharedPage);
 
