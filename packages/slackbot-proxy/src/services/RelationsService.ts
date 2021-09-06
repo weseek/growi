@@ -116,6 +116,12 @@ export class RelationsService {
   async checkPermissionForInteractions(
       relations:Relation[], actionId:string, callbackId:string, channelName:string,
   ):Promise<checkPermissionForInteractionsResults> {
+    return this.checkEachRelation(relations, actionId, callbackId, channelName);
+  }
+
+  async checkEachRelation(
+      relations:Relation[], actionId:string, callbackId:string, channelName:string,
+  ):Promise<checkPermissionForInteractionsResults> {
 
     const allowedRelations:Relation[] = [];
     const disallowedGrowiUrls:Set<string> = new Set();
@@ -159,7 +165,6 @@ export class RelationsService {
     });
 
     return { allowedRelations, disallowedGrowiUrls, commandName };
-
   }
 
 }
