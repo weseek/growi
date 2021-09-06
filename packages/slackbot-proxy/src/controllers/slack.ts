@@ -337,12 +337,12 @@ export class SlackCtrl {
 
     const actionId:string = payload?.actions?.[0].action_id;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
-    const { allowedRelations, disallowedGrowiUrls, notAllowedCommandName } = permission;
+    const { allowedRelations, disallowedGrowiUrls, commandName } = permission;
 
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(authorizeResult.botToken!);
-      return postNotAllowedMessage(client, body, disallowedGrowiUrls, notAllowedCommandName);
+      return postNotAllowedMessage(client, body, disallowedGrowiUrls, commandName);
     }
 
     /*

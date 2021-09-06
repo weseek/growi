@@ -14,7 +14,7 @@ const logger = loggerFactory('slackbot-proxy:services:RelationsService');
 type checkPermissionForInteractionsResults = {
   allowedRelations:Relation[],
   disallowedGrowiUrls:Set<string>,
-  notAllowedCommandName:string|null,
+  commandName:string,
 }
 
 @Service()
@@ -119,7 +119,7 @@ export class RelationsService {
 
     const allowedRelations:Relation[] = [];
     const disallowedGrowiUrls:Set<string> = new Set();
-    let notAllowedCommandName:string| null = null;
+    let commandName = '';
 
     await Promise.all(relations.map(async(relation) => {
       let permissionForInteractions:boolean|string[];
@@ -134,6 +134,8 @@ export class RelationsService {
         if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
           return;
         }
+
+        commandName = tempCommandName;
 
         // case: singleUse
         permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
@@ -152,12 +154,11 @@ export class RelationsService {
         }
 
         disallowedGrowiUrls.add(relation.growiUri);
-        notAllowedCommandName = tempCommandName;
       });
 
     }));
 
-    return { allowedRelations, disallowedGrowiUrls, notAllowedCommandName };
+    return { allowedRelations, disallowedGrowiUrls, commandName };
 
   }
 
