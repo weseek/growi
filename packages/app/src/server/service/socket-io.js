@@ -23,8 +23,7 @@ class SocketIoService {
     return (this.io != null);
   }
 
-  // TODO: remove the comments
-  // Since the Order is important, I made attachServer() to async
+  // Since the Order is important, attachServer() should be async
   async attachServer(server) {
     this.io = socketIo(server, {
       transports: ['websocket'],
@@ -86,14 +85,6 @@ class SocketIoService {
 
     // convert Connect/Express middleware to Socket.io middleware
     this.io.use((socket, next) => {
-      // TODO: remove debug log
-      // The session of this middleware setup has no problem at all
-      if (socket.request.user != null) {
-        logger.warn('grune setupLoginRequiredMiddleware 1');
-      }
-      else {
-        logger.warn('grune setupLoginRequiredMiddleware 0');
-      }
       loginRequired(socket.request, {}, next);
     });
   }
@@ -108,16 +99,6 @@ class SocketIoService {
 
     // convert Connect/Express middleware to Socket.io middleware
     this.getAdminSocket().use((socket, next) => {
-
-      // TODO: remove debug log
-      // Check whether the the session shared well to namespace middleware
-      // This is the one of main problems, the socket.request always undefined
-      if (socket.request.user != null) {
-        logger.warn('grune setupAdminRequiredMiddleware 1');
-      }
-      else {
-        logger.warn('grune setupAdminRequiredMiddleware 0');
-      }
       adminRequired(socket.request, {}, next);
     });
   }
