@@ -94,6 +94,7 @@ const createSetupRules = (rules, ruleOptions): TextlintKernelRule[] => (
 
 
 export const createValidator = (rulesConfigArray: RulesConfigObj[]): AsyncLinter<RulesConfigObj[]> => {
+  console.log(rulesConfigArray);
   if (rulesConfigArray != null) {
     const filteredConfigArray = rulesConfigArray
       .filter((rule) => {

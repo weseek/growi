@@ -317,6 +317,7 @@ export default class Editor extends AbstractEditor {
                         indentSize={editorContainer.state.indentSize}
                         editorOptions={editorContainer.state.editorOptions}
                         isTextlintEnabled={editorContainer.state.isTextlintEnabled}
+                        textlintRules={editorContainer.state.textlintRules}
                         onPasteFiles={this.pasteFilesHandler}
                         onDragEnter={this.dragEnterHandler}
                         onMarkdownHelpButtonClicked={this.showMarkdownHelp}
