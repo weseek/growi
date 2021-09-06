@@ -13,7 +13,7 @@ jobs:
   auto-labeling:
     runs-on: ubuntu-latest
 
-    if: ${{ !contains( github.event.pull_request.labels.*.name, 'exclude from changelog' ) }}
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'exclude from changelog') }}
 
     steps:
       - uses: release-drafter/release-drafter@v5
@@ -25,7 +25,9 @@ jobs:
   check-title:
     runs-on: ubuntu-latest
 
-    if: ${{ !contains( github.event.pull_request.labels.*.name, 'exclude from changelog' ) && !startsWith( github.ref, 'refs/heads/chore/' ) }}
+    if: |
+      (!contains( github.event.pull_request.labels.*.name, 'exclude from changelog' ) &&
+        !startsWith( github.ref, 'refs/heads/chore/' ))
 
     steps:
       - uses: amannn/action-semantic-pull-request@v3.4.2
