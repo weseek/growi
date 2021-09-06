@@ -164,6 +164,7 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
     setTextlintRules(prevState => (
       prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
     ));
+    console.log(textlintRules);
   };
 
   return (
@@ -213,13 +214,13 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
   const initializeEditorSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
-    const retrievedRules = data?.textlintSettings?.textlintRules;
+    const retrievedRules: LintRule[] = data?.textlintSettings?.textlintRules;
     if (retrievedRules != null) {
-      setTextlintRules(data.textlintSettings.textlintRules);
+      setTextlintRules(retrievedRules);
     }
 
     // If database is empty, add default rules to state
-    if (retrievedRules === 0 || retrievedRules == null) {
+    if (retrievedRules.length === 0 || retrievedRules == null) {
 
       const createRulesFromDefaultList = (rule: { name: string }) => (
         {
@@ -236,12 +237,12 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
   useEffect(() => {
     initializeEditorSettings();
-    console.log(textlintRules);
   }, [initializeEditorSettings]);
 
   const updateRulesHandler = async() => {
     try {
       const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: textlintRules });
+      console.log(data);
       setTextlintRules(data.textlintSettings.textlintRules);
       toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
     }
