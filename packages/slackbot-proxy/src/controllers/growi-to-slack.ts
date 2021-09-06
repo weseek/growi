@@ -1,16 +1,17 @@
 import {
-  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams,
+  Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put,
 } from '@tsed/common';
 import axios from 'axios';
 import createError from 'http-errors';
+import { addHours } from 'date-fns';
 
-import { WebAPICallResult } from '@slack/web-api';
+import { ErrorCode, WebAPICallResult } from '@slack/web-api';
 
 import {
-  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, generateWebClient,
+  verifyGrowiToSlackRequest, getConnectionStatuses, getConnectionStatus, REQUEST_TIMEOUT_FOR_PTOG, generateWebClient,
 } from '@growi/slack';
 
-import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/slack-to-growi/add-webclient-response-to-res';
+import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
 
 import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
 import { InstallationRepository } from '~/repositories/installation';
@@ -25,9 +26,6 @@ import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/Sect
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:growi-to-slack');
-
-// temporarily save for selection to growi
-const temporarySinglePostCommands = ['create'];
 
 @Controller('/g2s')
 export class GrowiToSlackCtrl {
@@ -63,6 +61,7 @@ export class GrowiToSlackCtrl {
       headers: {
         'x-growi-ptog-tokens': tokenPtoG,
       },
+      timeout: REQUEST_TIMEOUT_FOR_PTOG,
     });
   }
 
@@ -94,7 +93,24 @@ export class GrowiToSlackCtrl {
     return res.send({ connectionStatuses });
   }
 
-  @Get('/relation-test')
+  @Put('/supported-commands')
+  @UseBefore(verifyGrowiToSlackRequest)
+  async putSupportedCommands(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
+    // asserted (tokenGtoPs.length > 0) by verifyGrowiToSlackRequest
+    const { tokenGtoPs } = req;
+    const { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse } = req.body;
+
+    if (tokenGtoPs.length !== 1) {
+      throw createError(400, 'installation is invalid');
+    }
+
+    const tokenGtoP = tokenGtoPs[0];
+    const relation = await this.relationRepository.update({ tokenGtoP }, { supportedCommandsForBroadcastUse, supportedCommandsForSingleUse });
+
+    return res.send({ relation });
+  }
+
+  @Post('/relation-test')
   @UseBefore(verifyGrowiToSlackRequest)
   async postRelation(@Req() req: GrowiReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { tokenGtoPs } = req;
@@ -170,6 +186,9 @@ export class GrowiToSlackCtrl {
 
     logger.debug('relation test is success', order);
 
+    // temporary cache for 48 hours
+    const expiredAtCommands = addHours(new Date(), 48);
+
     // Transaction is not considered because it is used infrequently,
     const response = await this.relationRepository.createQueryBuilder('relation')
       .insert()
@@ -178,10 +197,15 @@ export class GrowiToSlackCtrl {
         tokenGtoP: order.tokenGtoP,
         tokenPtoG: order.tokenPtoG,
         growiUri: order.growiUrl,
-        siglePostCommands: temporarySinglePostCommands,
+        supportedCommandsForBroadcastUse: req.body.supportedCommandsForBroadcastUse,
+        supportedCommandsForSingleUse: req.body.supportedCommandsForSingleUse,
+        expiredAtCommands,
       })
       // https://github.com/typeorm/typeorm/issues/1090#issuecomment-634391487
-      .orUpdate({ conflict_target: ['installation', 'growiUri'], overwrite: ['tokenGtoP', 'tokenPtoG', 'siglePostCommands'] })
+      .orUpdate({
+        conflict_target: ['installation', 'growiUri'],
+        overwrite: ['tokenGtoP', 'tokenPtoG', 'supportedCommandsForBroadcastUse', 'supportedCommandsForSingleUse'],
+      })
       .execute();
 
     // Find the generated relation
@@ -222,13 +246,13 @@ export class GrowiToSlackCtrl {
   @UseBefore(AddWebclientResponseToRes, verifyGrowiToSlackRequest)
   async callSlackApi(
     @PathParams('method') method: string, @Req() req: GrowiReq, @Res() res: WebclientRes,
-  ): Promise<void|string|Res|WebAPICallResult> {
+  ): Promise<WebclientRes> {
     const { tokenGtoPs } = req;
 
     logger.debug('Slack API called: ', { method });
 
     if (tokenGtoPs.length !== 1) {
-      return res.webClientErr('tokenGtoPs is invalid', 'invalid_tokenGtoP');
+      return res.simulateWebAPIPlatformError('tokenGtoPs is invalid', 'invalid_tokenGtoP');
     }
 
     const tokenGtoP = tokenGtoPs[0];
@@ -240,15 +264,18 @@ export class GrowiToSlackCtrl {
       .getOne();
 
     if (relation == null) {
-      return res.webClientErr('relation is invalid', 'invalid_relation');
+      return res.simulateWebAPIPlatformError('relation is invalid', 'invalid_relation');
     }
 
     const token = relation.installation.data.bot?.token;
     if (token == null) {
-      return res.webClientErr('installation is invalid', 'invalid_installation');
+      return res.simulateWebAPIPlatformError('installation is invalid', 'invalid_installation');
     }
 
-    const client = generateWebClient(token);
+    // generate WebClient with no retry because GROWI main side will do
+    const client = generateWebClient(token, {
+      retryConfig: { retries: 0 },
+    });
 
     try {
       this.injectGrowiUri(req, relation.growiUri);
@@ -256,11 +283,20 @@ export class GrowiToSlackCtrl {
       const opt = req.body;
       opt.headers = req.headers;
 
-      return client.apiCall(method, opt);
+      logger.debug({ method, opt });
+      // !! DO NOT REMOVE `await ` or it does not enter catch block even when axios error occured !! -- 2021.08.22 Yuki Takei
+      const result = await client.apiCall(method, opt);
+
+      return res.send(result);
     }
     catch (err) {
       logger.error(err);
-      return res.webClientErr(`failed to send to slack. err: ${err.message}`, 'fail_api_call');
+
+      if (err.code === ErrorCode.PlatformError) {
+        return res.simulateWebAPIPlatformError(err.message, err.code);
+      }
+
+      return res.simulateWebAPIRequestError(err.message, err.response?.status);
     }
   }
 

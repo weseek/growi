@@ -6,17 +6,6 @@ on:
       - release/**
       - rc/**
       - tmp/**
-    paths:
-      - .github/workflows/ci.yml
-      - packages/app/**
-      - .eslint*
-      - .prettier*
-      - .stylelint*
-      - config/**
-      - resource/**
-      - src/**
-      - package.json
-      - yarn.lock
 
 jobs:
 
@@ -29,30 +18,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
-    - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -60,9 +33,13 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn lint
+
+    - name: lerna run lint for plugins
       run: |
-        yarn lint
+        yarn lerna run lint --scope @growi/plugin-*
+    - name: lerna run lint for app
+      run: |
+        yarn lerna run lint --scope @growi/app --scope @growi/core --scope @growi/ui
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -94,30 +71,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-${{ matrix.node-version }}-
-    - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -125,16 +86,25 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
+
     - name: yarn test
+      working-directory: ./packages/app
       run: |
         yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
     - name: yarn test with MongoDB 3.6
+      working-directory: ./packages/app
       run: |
         yarn test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi_test
+
+    - name: Upload coverage report as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Coverage Report
+        path: packages/app/coverage
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -147,55 +117,29 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  build-dev:
+  launch-dev:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [14.x]
 
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+        - 27017/tcp
+
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules_dev-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-    - name: Get Date
-      id: date
-      run: |
-        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
-        echo ::set-output name=Ymd::$(date '+%Y%m%d')
-        echo ::set-output name=Ym::$(date '+%Y%m')
-        echo ::set-output name=Y::$(date '+%Y')
-    - name: Cache/Restore node_modules/.cache/hard-source
-      uses: actions/cache@v2
-      with:
-        path: node_modules/.cache
-        key: ${{ runner.OS }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
-        restore-keys: |
-          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
-          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
-          ${{ runner.os }}-hard_source_webpack-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
-    - name: Get yarn cache dir
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-    - name: Install dependencies
-      if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -203,9 +147,14 @@ jobs:
         echo -n "node " && node -v
         echo -n "npm " && npm -v
         yarn list --depth=0
-    - name: yarn build:dev
+
+    - name: yarn dev:ci
+      working-directory: ./packages/app
       run: |
-        yarn build:dev
+        cp config/ci/.env.local.for-ci .env.development.local
+        yarn dev:ci
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -218,7 +167,7 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  build-prod:
+  launch-prod:
     runs-on: ubuntu-latest
 
     strategy:
@@ -237,37 +186,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Get Date
-      id: date
-      run: |
-        echo ::set-output name=YmdH::$(date '+%Y%m%d%H')
-        echo ::set-output name=Ymd::$(date '+%Y%m%d')
-        echo ::set-output name=Ym::$(date '+%Y%m')
-        echo ::set-output name=Y::$(date '+%Y')
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v2
-      with:
-        path: '**/node_modules'
-        key: ${{ runner.OS }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.YmdH }}
-        restore-keys: |
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ymd }}
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Ym }}
-          ${{ runner.os }}-node_modules_prod-${{ matrix.node-version }}-${{ steps.date.outputs.Y }}
-    - name: Get yarn cache dir
-      id: cache-yarn
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - name: Cache/Restore yarn cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.cache-yarn.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-    - name: Install dependencies
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: lerna bootstrap
       run: |
         npx lerna bootstrap
     - name: Print dependencies
@@ -277,8 +203,7 @@ jobs:
         yarn list --depth=0
     - name: Build
       run: |
-        yarn lerna run build --scope @growi/slack
-        yarn lerna run build --scope @growi/app
+        yarn lerna run build --scope @growi/core --scope @growi/slack --scope @growi/plugin-* --scope @growi/app
     - name: lerna bootstrap --production
       run: |
         npx lerna bootstrap -- --production
@@ -291,21 +216,20 @@ jobs:
       id: getdbname
       run: |
         echo ::set-output name=suffix::$(echo '${{ matrix.node-version }}' | sed s/\\.//)
-    - name: yarn server:prod:ci
+    - name: yarn server:ci
+      working-directory: ./packages/app
       run: |
-        yarn server:prod:ci
+        cp config/ci/.env.local.for-ci .env.production.local
+        yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
-    - name: yarn server:prod:ci with MongoDB 3.6
+    - name: yarn server:ci with MongoDB 3.6
+      working-directory: ./packages/app
       run: |
-        yarn server:prod:ci
+        cp config/ci/.env.local.for-ci .env.production.local
+        yarn server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb36.ports['27017'] }}/growi-${{ steps.getdbname.outputs.suffix }}
-    - name: Upload report as artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Report
-        path: report
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master

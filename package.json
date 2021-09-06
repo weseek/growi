@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.3.2-RC",
+  "version": "4.4.0-RC",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -21,74 +21,52 @@
   },
   "private": true,
   "workspaces": {
-    "packages": ["packages/*"],
-    "nohoist": ["**/slackbot-proxy/bootstrap"]
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/slackbot-proxy/bootstrap"
+    ]
   },
   "scripts": {
-    "build:api:jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
-    "build:apiv3:jsdoc": "cross-env API_VERSION=3 npm run build:api:jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
-    "build:apiv1:jsdoc": "cross-env API_VERSION=1 npm run build:api:jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
-    "build:dev:app:watch": "npm run build:dev:app -- --watch",
-    "build:dev:app:watch:poll": "npm run build:dev:app -- --watch --watch-poll",
-    "build:dev:app": "env-cmd -f config/env.dev.js webpack --config config/webpack.dev.js --progress",
-    "build:dev:watch": "npm run build:dev:app:watch",
-    "build:dev:watch:poll": "npm run build:dev:app:watch:poll",
-    "build:dev": "yarn build:dev:app",
-    "build:prod": "yarn lerna run build --scope @growi/app --scope @growi/slack",
-    "build:slack": "lerna run build --scope @growi/slack",
-    "build": "npm run build:dev:watch",
-    "build:poll": "npm run build:dev:watch:poll",
-    "clean:app": "rimraf -- public/js public/styles",
-    "clean:report": "rimraf -- report",
-    "clean": "npm-run-all -p clean:*",
-    "console": "env-cmd -f config/env.dev.js node --experimental-repl-await src/server/console.js",
-    "lint:js:fix": "eslint \"**/*.{js,jsx}\" --fix",
-    "lint:js": "eslint \"**/*.{js,jsx}\"",
-    "lint:styles:fix": "stylelint --fix src/client/styles/scss/**/*.scss",
-    "lint:styles": "stylelint src/client/styles/scss/**/*.scss",
-    "lint:swagger2openapi": "node node_modules/swagger2openapi/oas-validate tmp/swagger.json",
-    "lint": "npm-run-all -p lint:js lint:styles lint:swagger2openapi",
-    "migrate": "npm run migrate:up",
-    "migrate:create": "migrate-mongo create -f config/migrate.js -- ",
-    "migrate:status": "migrate-mongo status -f config/migrate.js",
-    "migrate:up": "migrate-mongo up -f config/migrate.js",
-    "migrate:down": "migrate-mongo down -f config/migrate.js",
-    "plugin:def": "node bin/generate-plugin-definitions-source.js",
-    "prebuild:dev:watch": "npm run prebuild:dev",
-    "prebuild:dev": "npm run clean:app && env-cmd -f config/env.dev.js npm run plugin:def && env-cmd -f config/env.dev.js npm run resource && yarn build:slack",
-    "prelint:swagger2openapi": "npm run build:apiv3:jsdoc",
-    "preserver:prod": "npm run migrate",
-    "prestart": "npm run build:prod",
-    "resource": "node bin/download-cdn-resources.js",
-    "i18n-json-merge:withTran": "rs-i18n -lan -- -t",
-    "i18n-json-merge:noTran": "rs-i18n -lan --",
-    "i18n-json-merge": "npm run i18n-json-merge:withTran --",
-    "server:nolazy": "env-cmd -f config/env.dev.js node-dev --nolazy --inspect src/server/app.js",
-    "server:dev": "env-cmd -f config/env.dev.js node-dev --expose_gc --inspect src/server/app.js",
-    "server:prod:ci": "npm run server:prod -- --ci",
-    "server:prod": "env-cmd -f config/env.prod.js node --expose_gc src/server/app.js",
-    "server": "npm run server:dev",
-    "start": "npm run server:prod",
-    "test": "jest --config=config/jest.config.js --passWithNoTests -- ",
-    "version": "node -p \"require('./package.json').version\"",
-    "webpack": "webpack"
+    "start": "yarn app:server",
+    "prestart": "yarn app:build",
+    "app:build": "yarn lerna run build",
+    "app:server": "yarn lerna run server --scope @growi/app",
+    "slackbot-proxy:build": "yarn lerna run build --scope @growi/slackbot-proxy --scope @growi/slack",
+    "slackbot-proxy:server": "yarn lerna run start:prod --scope @growi/slackbot-proxy",
+    "//// scripts for backward compatibility": "",
+    "build:prod": "echo !!! CAUTION !!! ==> The script 'build:prod' is deprecated. Use 'yarn app:build' instead. && yarn app:build",
+    "server:prod": "echo !!! CAUTION !!! ==> The script 'server:prod' is deprecated. Use 'yarn app:build' instead. && yarn app:server"
   },
   "dependencies": {
+    "cross-env": "^7.0.0",
+    "dotenv-flow": "^3.2.0",
+    "npm-run-all": "^4.1.5",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.2.3"
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
-  },
-  "_moduleAliases": {
-    "@root": ".",
-    "@commons": "src/lib",
-    "@server": "src/server",
-    "@alias/logger": "src/lib/service/logger",
-    "debug": "src/lib/service/logger/alias-for-debug"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "@commons/(.*)": "<rootDir>/src/lib/$1"
-    }
+    "@types/jest": "^26.0.22",
+    "@types/node": "^14.14.35",
+    "@types/rewire": "^2.5.28",
+    "@typescript-eslint/eslint-plugin": "^4.28.5",
+    "@typescript-eslint/parser": "^4.28.5",
+    "eslint": "^7.31.0",
+    "eslint-config-weseek": "^1.1.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.3.2",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "jest": "^27.0.6",
+    "jest-date-mock": "^1.0.8",
+    "jest-localstorage-mock": "^2.4.14",
+    "lerna": "^4.0.0",
+    "rewire": "^5.0.0",
+    "shipjs": "^0.23.3",
+    "ts-jest": "^27.0.4"
   },
   "engines": {
     "node": "^12 || ^14",

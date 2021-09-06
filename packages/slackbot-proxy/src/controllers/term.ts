@@ -12,7 +12,6 @@ export class TermCtrl {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   getTerm(req: Request, res: Response): string|void {
     res.render('term.ejs');
   }
