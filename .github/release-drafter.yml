@@ -20,23 +20,23 @@ change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add
 autolabeler:
   - label: 'feature'
     branch:
-      - '/feat\/.+/'
+      - '/^feat\/.+/'
   - label: 'improvement'
     branch:
-      - '/imprv\/.+/'
+      - '/^imprv\/.+/'
   - label: 'bug'
     branch:
-      - '/fix\/.+/'
+      - '/^fix\/.+/'
     title:
-      - '/fix/i'
+      - '/^fix/i'
   - label: 'support'
     branch:
-      - '/support\/.+/'
+      - '/^support\/.+/'
     title:
-      - '/chore/i'
-      - '/ci/i'
-      - '/docs/i'
-      - '/test/i'
+      - '/^chore/i'
+      - '/^ci/i'
+      - '/^docs/i'
+      - '/^test/i'
 
 exclude-labels:
   - 'exclude from changelog'
