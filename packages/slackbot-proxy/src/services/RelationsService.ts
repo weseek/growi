@@ -116,10 +116,10 @@ export class RelationsService {
   async checkPermissionForInteractions(
       relations:Relation[], actionId:string, callbackId:string, channelName:string,
   ):Promise<checkPermissionForInteractionsResults> {
-    return this.checkEachRelation(relations, actionId, callbackId, channelName);
+    return this.relationsResult(relations, actionId, callbackId, channelName);
   }
 
-  async checkEachRelation(
+  async relationsResult(
       relations:Relation[], actionId:string, callbackId:string, channelName:string,
   ):Promise<checkPermissionForInteractionsResults> {
 
