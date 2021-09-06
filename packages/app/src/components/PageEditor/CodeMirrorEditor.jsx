@@ -202,7 +202,9 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
   async initTextlintSettings() {
     await this.props.retrieveEditorSettings();
-    this.textlintValidator = createValidator(this.props.textlintRules);
+    // If database has empty array, pass null to enable all rules
+    const rulesForValidator = this.props.textlintRules ? this.props.textlintRules : null;
+    this.textlintValidator = createValidator(rulesForValidator);
     this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
