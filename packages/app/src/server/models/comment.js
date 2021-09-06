@@ -102,6 +102,7 @@ module.exports = function(crowi) {
    */
   commentSchema.post('save', (savedComment) => {
     const Page = crowi.model('Page');
+    const Activity = crowi.model('Activity');
 
     Page.updateCommentCount(savedComment.page)
       .then((page) => {

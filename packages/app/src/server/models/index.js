@@ -1,3 +1,5 @@
+import Activity from './activity';
+
 module.exports = {
   Page: require('./page'),
   // TODO GW-2746 bulk export pages
@@ -17,4 +19,5 @@ module.exports = {
   GlobalNotificationSlackSetting: require('./GlobalNotificationSetting/GlobalNotificationSlackSetting'),
   ShareLink: require('./share-link'),
   SlackAppIntegration: require('./slack-app-integration'),
+  Activity,
 };
