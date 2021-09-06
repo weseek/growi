@@ -11,6 +11,12 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:RelationsService');
 
+type checkPermissionForInteractions = {
+  allowedRelations:Relation[],
+  disallowedGrowiUrls:Set<string>,
+  notAllowedCommandName:string,
+}
+
 @Service()
 export class RelationsService {
 
@@ -108,49 +114,51 @@ export class RelationsService {
   }
 
   async checkPermissionForInteractions(
-      // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-      relation:Relation, channelName:string, callbackId:string, actionId:string,
-  ):Promise<any> {
+      relations:Relation[], actionId:string, callbackId:string, channelName:string,
+  ):Promise<checkPermissionForInteractions> {
 
-    // initialize params
     const allowedRelations:Relation[] = [];
     const disallowedGrowiUrls:Set<string> = new Set();
     let notAllowedCommandName = '';
 
-    let permissionForInteractions:boolean|string[];
-    const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
-    const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
+    await Promise.all(relations.map(async(relation) => {
+      let permissionForInteractions:boolean|string[];
+      const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
+      const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
 
-    [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
+      [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
 
-      // ex. search OR search:handlerName
-      const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
-      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
-      if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
-        return;
-      }
+        // ex. search OR search:handlerName
+        const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
+        // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
+        if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
+          return;
+        }
 
-      // case: singleUse
-      permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
-      // case: broadcastUse
-      if (permissionForInteractions == null) {
-        permissionForInteractions = relation.permissionsForBroadcastUseCommands[tempCommandName];
-      }
+        // case: singleUse
+        permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
+        // case: broadcastUse
+        if (permissionForInteractions == null) {
+          permissionForInteractions = relation.permissionsForBroadcastUseCommands[tempCommandName];
+        }
 
-      if (permissionForInteractions === true) {
-        return allowedRelations.push(relation);
-      }
+        if (permissionForInteractions === true) {
+          return allowedRelations.push(relation);
+        }
 
-      // check permission at channel level
-      if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(channelName)) {
-        return allowedRelations.push(relation);
-      }
+        // check permission at channel level
+        if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(channelName)) {
+          return allowedRelations.push(relation);
+        }
 
-      disallowedGrowiUrls.add(relation.growiUri);
-      notAllowedCommandName = tempCommandName;
-    });
+        disallowedGrowiUrls.add(relation.growiUri);
+        notAllowedCommandName = tempCommandName;
+      });
+
+    }));
 
     return { allowedRelations, disallowedGrowiUrls, notAllowedCommandName };
+
   }
 
 }
