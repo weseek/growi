@@ -3,7 +3,6 @@ import loggerFactory from '~/utils/logger';
 const socketIo = require('socket.io');
 const expressSession = require('express-session');
 const passport = require('passport');
-const socketioSession = require('@kobalab/socket.io-session');
 
 const logger = loggerFactory('growi:service:socket-io');
 
@@ -24,7 +23,8 @@ class SocketIoService {
     return (this.io != null);
   }
 
-  attachServer(server) {
+  // Since the Order is important, attachServer() should be async
+  async attachServer(server) {
     this.io = socketIo(server, {
       transports: ['websocket'],
     });
@@ -34,12 +34,12 @@ class SocketIoService {
 
     // setup middlewares
     // !!CAUTION!! -- ORDER IS IMPORTANT
-    this.setupSessionMiddleware();
-    this.setupLoginRequiredMiddleware();
-    this.setupAdminRequiredMiddleware();
-    this.setupCheckConnectionLimitsMiddleware();
+    await this.setupSessionMiddleware();
+    await this.setupLoginRequiredMiddleware();
+    await this.setupAdminRequiredMiddleware();
+    await this.setupCheckConnectionLimitsMiddleware();
 
-    this.setupStoreGuestIdEventHandler();
+    await this.setupStoreGuestIdEventHandler();
   }
 
   getDefaultSocket() {
@@ -59,13 +59,20 @@ class SocketIoService {
 
   /**
    * use passport session
-   * @see https://qiita.com/kobalab/items/083e507fb01159fe9774
+   * @see https://socket.io/docs/v4/middlewares/#Compatibility-with-Express-middleware
    */
   setupSessionMiddleware() {
-    const sessionMiddleware = socketioSession(expressSession(this.crowi.sessionConfig), passport);
-    this.io.use(sessionMiddleware.express_session);
-    this.io.use(sessionMiddleware.passport_initialize);
-    this.io.use(sessionMiddleware.passport_session);
+    const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+    this.io.use(wrap(expressSession(this.crowi.sessionConfig)));
+    this.io.use(wrap(passport.initialize()));
+    this.io.use(wrap(passport.session()));
+
+    // express and passport session on main socket doesn't shared to child namespace socket
+    // need to define the session for specific namespace
+    this.getAdminSocket().use(wrap(expressSession(this.crowi.sessionConfig)));
+    this.getAdminSocket().use(wrap(passport.initialize()));
+    this.getAdminSocket().use(wrap(passport.session()));
   }
 
   /**
