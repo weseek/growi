@@ -35,7 +35,6 @@ export default class EditorContainer extends Container {
 
       editorOptions: {},
       previewOptions: {},
-
       isTextlintEnabled: false,
       textlintRules: {},
 
