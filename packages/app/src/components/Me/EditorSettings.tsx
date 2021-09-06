@@ -1,6 +1,6 @@
 import React, {
   Dispatch,
-  FC, SetStateAction, useEffect, useState,
+  FC, SetStateAction, useEffect, useMemo, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -211,11 +211,11 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
   const { appContainer } = props;
   const [textlintRules, setTextlintRules] = useState<LintRule[]>([]);
 
-  const initializeEditorSettings = async() => {
+  const retrievedTextlintRules = useMemo(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
 
     if (data?.textlintSettings?.textlintRules != null) {
-      setTextlintRules(data.textlintSettings.textlintRules);
+      return data.textlintSettings.textlintRules;
     }
 
     // If database is empty, add default rules to state
@@ -230,13 +230,16 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
       const defaultCommonRules = commonRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
-      setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
+      return [...defaultCommonRules, ...defaultJapaneseRules];
     }
-  };
+  }, [appContainer]);
 
   useEffect(() => {
-    initializeEditorSettings();
-  }, []);
+    (async() => {
+      const rules:LintRule[] = await (retrievedTextlintRules);
+      setTextlintRules(rules);
+    })();
+  }, [retrievedTextlintRules]);
 
   const updateRulesHandler = async() => {
     try {
