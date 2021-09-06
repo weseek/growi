@@ -1,6 +1,6 @@
 import React, {
   Dispatch,
-  FC, SetStateAction, useEffect, useState,
+  FC, SetStateAction, useCallback, useEffect, useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -211,7 +211,7 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
   const { appContainer } = props;
   const [textlintRules, setTextlintRules] = useState<LintRule[]>([]);
 
-  const initializeEditorSettings = async() => {
+  const initializeEditorSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
 
     if (data?.textlintSettings?.textlintRules != null) {
@@ -232,7 +232,7 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
       const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
     }
-  };
+  }, [appContainer]);
 
   useEffect(() => {
     initializeEditorSettings();
