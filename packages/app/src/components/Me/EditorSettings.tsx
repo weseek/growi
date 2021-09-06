@@ -213,13 +213,13 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
   const initializeEditorSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
-
-    if (data?.textlintSettings?.textlintRules != null) {
+    const retrievedRules = data?.textlintSettings?.textlintRules;
+    if (retrievedRules != null) {
       setTextlintRules(data.textlintSettings.textlintRules);
     }
 
     // If database is empty, add default rules to state
-    if (data?.textlintSettings?.textlintRules == null) {
+    if (retrievedRules === 0 || retrievedRules == null) {
 
       const createRulesFromDefaultList = (rule: { name: string }) => (
         {
@@ -236,7 +236,8 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
   useEffect(() => {
     initializeEditorSettings();
-  }, []);
+    console.log(textlintRules);
+  }, [initializeEditorSettings]);
 
   const updateRulesHandler = async() => {
     try {
