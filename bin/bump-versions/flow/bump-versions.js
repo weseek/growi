@@ -25,14 +25,13 @@ async function bumpVersions({
   }
 
   const config = await loadConfig(dir, 'bump-versions.config');
-  
+
   // get current version
   const { monorepo } = config;
-  const currentVersion =
-    monorepo && monorepo.mainVersionFile
-      ? getCurrentVersion(dir, monorepo.mainVersionFile)
-      : getCurrentVersion(dir);
-  
+  const currentVersion = monorepo && monorepo.mainVersionFile
+    ? getCurrentVersion(dir, monorepo.mainVersionFile)
+    : getCurrentVersion(dir);
+
   // determine next version
   let nextVersion = semver.inc(currentVersion, increment, preid); // set preid if type is 'prerelease'
   nextVersion = await confirmNextVersion({
@@ -47,7 +46,9 @@ async function bumpVersions({
   const updateVersionFn = monorepo
     ? updateVersionMonorepo
     : updateVersion;
-  await updateVersionFn({ config, nextVersion, releaseType, dir, dryRun });
+  await updateVersionFn({
+    config, nextVersion, releaseType, dir, dryRun,
+  });
   installDependencies({ config, dir, dryRun });
 }
 
