@@ -128,13 +128,6 @@ export class RelationsService {
 
       [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
 
-        // ex. search OR search:handlerName
-        const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
-        // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
-        if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
-          return;
-        }
-
         // case: singleUse
         permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
         // case: broadcastUse
