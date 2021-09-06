@@ -211,16 +211,16 @@ export default (crowi: Crowi) => {
 
   // because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
   // move 'save' hook from mongoose's events to activityEvent if I have a time.
-  activityEvent.on('remove', async(activity: ActivityDocument) => {
-    const Notification = crowi.model('Notification');
+  // activityEvent.on('remove', async(activity: ActivityDocument) => {
+  //   const Notification = crowi.model('Notification');
 
-    try {
-      await Notification.removeActivity(activity);
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  });
+  //   try {
+  //     await Notification.removeActivity(activity);
+  //   }
+  //   catch (err) {
+  //     logger.error(err);
+  //   }
+  // });
 
   const Activity = model<ActivityDocument, ActivityModel>('Activity', activitySchema);
 
