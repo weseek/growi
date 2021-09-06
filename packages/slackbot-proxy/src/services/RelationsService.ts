@@ -121,7 +121,7 @@ export class RelationsService {
     const disallowedGrowiUrls:Set<string> = new Set();
     let commandName = '';
 
-    await Promise.all(relations.map(async(relation) => {
+    const hoge = await Promise.allSettled(relations.map(async(relation) => {
       let permissionForInteractions:boolean|string[];
       const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
       const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
@@ -157,6 +157,8 @@ export class RelationsService {
       });
 
     }));
+
+    console.log(hoge);
 
     return { allowedRelations, disallowedGrowiUrls, commandName };
 

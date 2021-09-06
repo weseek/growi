@@ -38,17 +38,17 @@ const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
 const postNotAllowedMessage = async(client:WebClient, body:any, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
 
-  let payload:any;
-  if (body.payload != null) {
-    payload = JSON.parse(body.payload);
-  }
-
   const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
     return '\n'
       + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
   });
 
   const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
+
+  let payload:any;
+  if (body.payload != null) {
+    payload = JSON.parse(body.payload);
+  }
 
   await client.chat.postEphemeral({
     text: 'Error occured.',
@@ -337,6 +337,8 @@ export class SlackCtrl {
 
     const actionId:string = payload?.actions?.[0].action_id;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
+    console.log(permission);
+
     const { allowedRelations, disallowedGrowiUrls, commandName } = permission;
 
     if (relations.length === disallowedGrowiUrls.size) {
