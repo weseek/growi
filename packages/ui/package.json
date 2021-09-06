@@ -1,13 +1,15 @@
 {
   "name": "@growi/ui",
-  "version": "4.4.0-RC",
+  "version": "4.4.0",
   "description": "GROWI UI Libraries",
   "license": "MIT",
   "keywords": [
     "growi"
   ],
   "module": "dist/esm/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint src/styles/scss/**/*.scss",
