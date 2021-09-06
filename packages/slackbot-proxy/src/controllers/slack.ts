@@ -38,6 +38,11 @@ const logger = loggerFactory('slackbot-proxy:controllers:slack');
 
 const postNotAllowedMessage = async(client:WebClient, body:any, disallowedGrowiUrls:Set<string>, commandName:string):Promise<void> => {
 
+  let payload:any;
+  if (body.payload != null) {
+    payload = JSON.parse(body.payload);
+  }
+
   const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
     return '\n'
       + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
@@ -47,8 +52,8 @@ const postNotAllowedMessage = async(client:WebClient, body:any, disallowedGrowiU
 
   await client.chat.postEphemeral({
     text: 'Error occured.',
-    channel: body.channel_id,
-    user: body.user_id,
+    channel: body.channel_id || payload.channel.id,
+    user: body.user_id || payload.user.id,
     blocks: [
       markdownSectionBlock('*None of GROWI permitted the command.*'),
       markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
@@ -331,9 +336,10 @@ export class SlackCtrl {
     }
 
     const actionId:string = payload?.actions?.[0].action_id;
+
     await Promise.all(relations.map(async(relation) => {
       const permission = await this.relationsService.checkPermissionForInteractions(relation, channelName, callbackId, actionId);
-      const { allowedRelations, disallowedGrowiUrls, notAllowedCommandName } = permission;
+      const { disallowedGrowiUrls, notAllowedCommandName } = permission;
 
       if (relations.length === disallowedGrowiUrls.size) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -344,24 +350,20 @@ export class SlackCtrl {
       /*
        * forward to GROWI server
        */
-
-      allowedRelations.map(async(relation) => {
-        try {
-          // generate API URL
-          const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
-          await axios.post(url.toString(), {
-            ...body,
-          }, {
-            headers: {
-              'x-growi-ptog-tokens': relation.tokenPtoG,
-            },
-          });
-        }
-        catch (err) {
-          logger.error(err);
-        }
-      });
-
+      try {
+        // generate API URL
+        const url = new URL('/_api/v3/slack-integration/proxied/interactions', relation.growiUri);
+        await axios.post(url.toString(), {
+          ...body,
+        }, {
+          headers: {
+            'x-growi-ptog-tokens': relation.tokenPtoG,
+          },
+        });
+      }
+      catch (err) {
+        logger.error(err);
+      }
     }));
 
   }
