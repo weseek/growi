@@ -199,9 +199,9 @@ export default (crowi: Crowi) => {
   activitySchema.post('save', async(savedActivity: ActivityDocument) => {
     const Notification = crowi.model('Notification');
     try {
-      const notificationUsers = await savedActivity.getNotificationTargetUsers();
-
-      await Promise.all(notificationUsers.map(user => Notification.upsertByActivity(user, savedActivity)));
+      // TODO: enable to use getNotificationTargetUsers
+      // const notificationUsers = await savedActivity.getNotificationTargetUsers();
+      // await Promise.all(notificationUsers.map(user => Notification.upsertByActivity(user, savedActivity)));
       return;
     }
     catch (err) {
