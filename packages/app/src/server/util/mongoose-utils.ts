@@ -2,6 +2,13 @@ import mongoose, {
   Model, Document, ConnectionOptions, Schema,
 } from 'mongoose';
 
+export const initMongooseGlobalSettings = (): void => {
+  // supress deprecation warnings
+  // see: https://mongoosejs.com/docs/deprecations.html
+  mongoose.set('useFindAndModify', false);
+  mongoose.set('useCreateIndex', true);
+};
+
 export const getMongoUri = (): string => {
   const { env } = process;
 
@@ -26,6 +33,9 @@ export const getOrCreateModel = <Interface, Method>(modelName: string, schema: S
   return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName, schema);
 };
 
+// supress deprecation warnings
+// see: https://mongoosejs.com/docs/deprecations.html
 export const mongoOptions: ConnectionOptions = {
-  useFindAndModify: false,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 };
