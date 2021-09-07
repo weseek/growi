@@ -62,6 +62,7 @@ const getPermissionTypeFromValue = (value) => {
   logger.error('The value type must be boolean or string[]');
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
 }) => {
