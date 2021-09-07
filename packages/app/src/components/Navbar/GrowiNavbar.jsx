@@ -7,6 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import AppContainer from '~/client/services/AppContainer';
+import HeaderNotification from '~/components/PageEditor/HeaderNotification';
 
 
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -27,16 +28,15 @@ class GrowiNavbar extends React.Component {
 
     return (
       <>
-        <button className="px-md-2 nav-link btn-create-page border-0 bg-transparent" type="button">
-          <i className="icon-bell mr-2"></i>
-        </button>
         <li className="nav-item d-none d-md-block">
           <button className="px-md-2 nav-link btn-create-page border-0 bg-transparent" type="button" onClick={navigationContainer.openPageCreateModal}>
             <i className="icon-pencil mr-2"></i>
             <span className="d-none d-lg-block">{ t('New') }</span>
           </button>
         </li>
-
+        <li>
+          <HeaderNotification />
+        </li>
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
           <PersonalDropdown />
         </li>
