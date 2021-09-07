@@ -6,9 +6,20 @@ const { OptionParser } = customTagUtils;
 
 const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
+
+const loginRequiredFallback = (req, res) => {
+  return res.status(403).send('login required');
+};
+
+
 module.exports = (crowi) => {
   const express = crowi.require('express');
   const mongoose = crowi.require('mongoose');
+
+  const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
+  const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
+  const { serializeUserSecurely } = crowi.require('../models/serializers/user-serializer');
+
   const router = express.Router();
 
   const ObjectId = mongoose.Types.ObjectId;
@@ -68,7 +79,7 @@ module.exports = (crowi) => {
   /**
    * return an Attachment model
    */
-  router.get('/ref', async(req, res) => {
+  router.get('/ref', accessTokenParser, loginRequired, async(req, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
     // eslint-disable-next-line no-unused-vars
@@ -87,12 +98,6 @@ module.exports = (crowi) => {
       return;
     }
 
-    let creatorPopulateOpt;
-    // set populate option for backward compatibility against to GROWI <= v4.0.x
-    if (User.IMAGE_POPULATION != null) {
-      creatorPopulateOpt = User.IMAGE_POPULATION;
-    }
-
     // convert ObjectId
     const orConditions = [{ originalName: fileNameOrId }];
     if (ObjectId.isValid(fileNameOrId)) {
@@ -104,7 +109,7 @@ module.exports = (crowi) => {
         page: page._id,
         $or: orConditions,
       })
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: creatorPopulateOpt });
+      .populate('creator');
 
     // not found
     if (attachment == null) {
@@ -122,13 +127,16 @@ module.exports = (crowi) => {
       return;
     }
 
+    // serialize User data
+    attachment.creator = serializeUserSecurely(attachment.creator);
+
     res.status(200).send({ attachment });
   });
 
   /**
    * return a list of Attachment
    */
-  router.get('/refs', async(req, res) => {
+  router.get('/refs', accessTokenParser, loginRequired, async(req, res) => {
     const user = req.user;
     const { prefix, pagePath } = req.query;
     const options = JSON.parse(req.query.options);
@@ -198,8 +206,15 @@ module.exports = (crowi) => {
     }
 
     const attachments = await query
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS })
+      .populate('creator')
       .exec();
+
+    // serialize User data
+    attachments.forEach((doc) => {
+      if (doc.creator != null && doc.creator instanceof User) {
+        doc.creator = serializeUserSecurely(doc.creator);
+      }
+    });
 
     res.status(200).send({ attachments });
   });
