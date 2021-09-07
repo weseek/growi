@@ -1,6 +1,6 @@
 {
   "name": "@growi/plugin-lsx",
-  "version": "4.4.1",
+  "version": "4.4.2-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": [
