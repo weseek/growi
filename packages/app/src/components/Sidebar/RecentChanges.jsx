@@ -20,6 +20,24 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 
 const logger = loggerFactory('growi:History');
 
+function PageItemLower({ page }) {
+  return (
+    <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
+      <div className="d-flex">
+        <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
+        <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
+        <div className="icon-bubble mr-1 d-inline-block"></div>
+        <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
+      </div>
+      <div className="grw-formatted-distance-date small mt-auto">
+        <FormattedDistanceDate id={page._id} date={page.updatedAt} />
+      </div>
+    </div>
+  );
+}
+PageItemLower.propTypes = {
+  page: PropTypes.any,
+};
 function LargePageItem({ page }) {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
@@ -57,17 +75,7 @@ function LargePageItem({ page }) {
           <div className="grw-tag-labels mt-1 mb-2">
             { tagElements }
           </div>
-          <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
-            <div className="d-flex">
-              <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
-              <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
-              <div className="icon-bubble mr-1 d-inline-block"></div>
-              <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
-            </div>
-            <div className="grw-formatted-distance-date small mt-auto">
-              <FormattedDistanceDate id={page._id} date={page.updatedAt} />
-            </div>
-          </div>
+          <PageItemLower page={page} />
         </div>
       </div>
     </li>
@@ -102,17 +110,7 @@ function SmallPageItem({ page }) {
             <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
             {locked}
           </h5>
-          <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
-            <div className="d-flex">
-              <div className="footstamp-icon mr-1 d-inline-block"><FootstampIcon /></div>
-              <div className="mr-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
-              <div className="icon-bubble mr-1 d-inline-block"></div>
-              <div className="mr-2 grw-list-counts d-inline-block">{page.commentCount}</div>
-            </div>
-            <div className="grw-formatted-distance-date small mt-auto">
-              <FormattedDistanceDate id={page._id} date={page.updatedAt} />
-            </div>
-          </div>
+          <PageItemLower page={page} />
         </div>
       </div>
     </li>
