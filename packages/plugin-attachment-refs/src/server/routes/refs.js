@@ -18,6 +18,7 @@ module.exports = (crowi) => {
 
   const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
   const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
+  const { serializeUserSecurely } = crowi.require('../models/serializers/user-serializer');
 
   const router = express.Router();
 
@@ -97,12 +98,6 @@ module.exports = (crowi) => {
       return;
     }
 
-    let creatorPopulateOpt;
-    // set populate option for backward compatibility against to GROWI <= v4.0.x
-    if (User.IMAGE_POPULATION != null) {
-      creatorPopulateOpt = User.IMAGE_POPULATION;
-    }
-
     // convert ObjectId
     const orConditions = [{ originalName: fileNameOrId }];
     if (ObjectId.isValid(fileNameOrId)) {
@@ -114,7 +109,7 @@ module.exports = (crowi) => {
         page: page._id,
         $or: orConditions,
       })
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS, populate: creatorPopulateOpt });
+      .populate('creator');
 
     // not found
     if (attachment == null) {
@@ -131,6 +126,9 @@ module.exports = (crowi) => {
       res.status(403).send(`page '${attachment.page}' is forbidden.`);
       return;
     }
+
+    // serialize User data
+    attachment.creator = serializeUserSecurely(attachment.creator);
 
     res.status(200).send({ attachment });
   });
@@ -208,8 +206,15 @@ module.exports = (crowi) => {
     }
 
     const attachments = await query
-      .populate({ path: 'creator', select: User.USER_PUBLIC_FIELDS })
+      .populate('creator')
       .exec();
+
+    // serialize User data
+    attachments.forEach((doc) => {
+      if (doc.creator != null && doc.creator instanceof User) {
+        doc.creator = serializeUserSecurely(doc.creator);
+      }
+    });
 
     res.status(200).send({ attachments });
   });
