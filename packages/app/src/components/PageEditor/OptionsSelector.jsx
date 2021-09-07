@@ -58,13 +58,6 @@ class OptionsSelector extends React.Component {
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
   }
 
-
-  async componentDidMount() {
-    const { editorContainer } = this.props;
-    await editorContainer.retrieveEditorSettings();
-  }
-
-
   onChangeTheme(newValue) {
     const { editorContainer } = this.props;
 

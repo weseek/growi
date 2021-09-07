@@ -95,15 +95,16 @@ const createSetupRules = (rules, ruleOptions): TextlintKernelRule[] => (
 
 
 export const createValidator = (rulesConfigArray: RulesConfigObj[] | null): AsyncLinter<RulesConfigObj[] | null> => {
+  console.log(`rules passed in ${JSON.stringify(rulesConfigArray)}`);
   if (rulesConfigArray != null) {
     const filteredConfigArray = rulesConfigArray
       .filter((rule) => {
         if (ruleModulesList[rule.name] == null) {
           logger.error(`Textlint rule ${rule.name} is not installed`);
         }
-        return ruleModulesList[rule.name] != null;
+        return (ruleModulesList[rule.name] != null && rule?.isEnabled !== false);
       });
-
+    console.log(filteredConfigArray);
     const rules = filteredConfigArray
       .reduce((rules, rule) => {
         rules[rule.name] = ruleModulesList[rule.name];
