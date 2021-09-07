@@ -1,4 +1,4 @@
-import Activity from './activity';
+// import Activity from './activity';
 
 module.exports = {
   Page: require('./page'),
@@ -19,5 +19,5 @@ module.exports = {
   GlobalNotificationSlackSetting: require('./GlobalNotificationSetting/GlobalNotificationSlackSetting'),
   ShareLink: require('./share-link'),
   SlackAppIntegration: require('./slack-app-integration'),
-  Activity,
+  // Activity,
 };
