@@ -16,7 +16,7 @@ module.exports = (crowi) => {
   const express = crowi.require('express');
   const mongoose = crowi.require('mongoose');
 
-  const loginRequired = crowi.require('../middlewares/login-required')(crowi, false, loginRequiredFallback);
+  const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
   const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
 
   const router = express.Router();
