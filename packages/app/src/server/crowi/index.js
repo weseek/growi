@@ -308,6 +308,10 @@ Crowi.prototype.scanRuntimeVersions = async function() {
   });
 };
 
+Crowi.prototype.getSocketIoService = function() {
+  return this.socketIoService;
+};
+
 Crowi.prototype.getSlack = function() {
   return this.slack;
 };
