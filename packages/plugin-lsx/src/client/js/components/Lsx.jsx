@@ -9,10 +9,9 @@ import { pathUtils } from 'growi-commons';
 import styles from '../../css/index.css';
 
 import { LsxContext } from '../util/LsxContext';
-import { LsxCacheHelper } from '../util/LsxCacheHelper';
+import { TagCacheManagerFactory } from '../util/TagCacheManagerFactory';
 import { PageNode } from './PageNode';
 import { LsxListView } from './LsxPageList/LsxListView';
-
 
 export class Lsx extends React.Component {
 
@@ -20,53 +19,76 @@ export class Lsx extends React.Component {
     super(props);
 
     this.state = {
-      isLoading: true,
+      isLoading: false,
       isError: false,
+      isCacheExists: false,
       nodeTree: undefined,
       errorMessage: '',
     };
+
+    this.tagCacheManager = TagCacheManagerFactory.getInstance();
   }
 
-  componentWillMount() {
-    const lsxContext = this.props.lsxContext;
-    lsxContext.parse();
+  async componentWillMount() {
+    const { lsxContext, forceToFetchData } = this.props;
 
-    // check cache exists
-    if (this.props.lsxStateCache) {
+    // get state object cache
+    const stateCache = this.retrieveDataFromCache();
+
+    if (stateCache != null) {
       this.setState({
-        isLoading: false,
-        nodeTree: this.props.lsxStateCache.nodeTree,
-        isError: this.props.lsxStateCache.isError,
-        errorMessage: this.props.lsxStateCache.errorMessage,
+        isCacheExists: true,
+        nodeTree: stateCache.nodeTree,
+        isError: stateCache.isError,
+        errorMessage: stateCache.errorMessage,
       });
-      return; // go to render()
+
+      // switch behavior by forceToFetchData
+      if (!forceToFetchData) {
+        return; // go to render()
+      }
     }
+
+    lsxContext.parse();
+    this.setState({ isLoading: true });
 
     // add slash ensure not to forward match to another page
     // ex: '/Java/' not to match to '/JavaScript'
     const pagePath = pathUtils.addTrailingSlash(lsxContext.pagePath);
 
-    this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options })
-      .then((res) => {
-        if (res.ok) {
-          const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
-          this.setState({ nodeTree });
-        }
-        else {
-          return Promise.reject(res.error);
-        }
-      })
-      .catch((error) => {
-        this.setState({ isError: true, errorMessage: error.message });
-      })
-      // finally
-      .then(() => {
-        this.setState({ isLoading: false });
+    try {
+      const res = await this.props.appContainer.apiGet('/plugins/lsx', { pagePath, options: lsxContext.options });
 
-        // store to sessionStorage
-        const cacheKey = LsxCacheHelper.generateCacheKeyFromContext(lsxContext);
-        LsxCacheHelper.cacheState(cacheKey, this.state);
+      if (res.ok) {
+        const nodeTree = this.generatePageNodeTree(pagePath, res.pages);
+        this.setState({ nodeTree });
+      }
+    }
+    catch (error) {
+      this.setState({ isError: true, errorMessage: error.message });
+    }
+    finally {
+      this.setState({ isLoading: false });
+
+      // store to sessionStorage
+      this.tagCacheManager.cacheState(lsxContext, this.state);
+    }
+  }
+
+  retrieveDataFromCache() {
+    const { lsxContext } = this.props;
+
+    // get state object cache
+    const stateCache = this.tagCacheManager.getStateCache(lsxContext);
+
+    // instanciate PageNode
+    if (stateCache != null && stateCache.nodeTree != null) {
+      stateCache.nodeTree = stateCache.nodeTree.map((obj) => {
+        return PageNode.instanciateFrom(obj);
       });
+    }
+
+    return stateCache;
   }
 
   /**
@@ -170,16 +192,11 @@ export class Lsx extends React.Component {
 
   renderContents() {
     const lsxContext = this.props.lsxContext;
+    const {
+      isLoading, isError, isCacheExists, nodeTree,
+    } = this.state;
 
-    if (this.state.isLoading) {
-      return (
-        <div className="text-muted">
-          <i className="fa fa-spinner fa-pulse mr-1"></i>
-          <span className="lsx-blink">{lsxContext.tagExpression}</span>
-        </div>
-      );
-    }
-    if (this.state.isError) {
+    if (isError) {
       return (
         <div className="text-warning">
           <i className="fa fa-exclamation-triangle fa-fw"></i>
@@ -187,9 +204,22 @@ export class Lsx extends React.Component {
         </div>
       );
     }
-    // render tree
 
-    return <LsxListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />;
+
+    return (
+      <div className={isLoading ? 'lsx-blink' : ''}>
+        { isLoading && (
+          <div className="text-muted">
+            <i className="fa fa-spinner fa-pulse mr-1"></i>
+            {lsxContext.tagExpression}
+            { isCacheExists && <small>&nbsp;(Showing cache..)</small> }
+          </div>
+        ) }
+        { nodeTree && (
+          <LsxListView nodeTree={this.state.nodeTree} lsxContext={this.props.lsxContext} />
+        ) }
+      </div>
+    );
 
   }
 
@@ -201,7 +231,7 @@ export class Lsx extends React.Component {
 
 Lsx.propTypes = {
   appContainer: PropTypes.object.isRequired,
-
   lsxContext: PropTypes.instanceOf(LsxContext).isRequired,
-  lsxStateCache: PropTypes.object,
+
+  forceToFetchData: PropTypes.bool,
 };
