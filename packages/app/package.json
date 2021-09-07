@@ -58,6 +58,7 @@
     "@growi/plugin-attachment-refs": "^4.4.1-RC.0",
     "@growi/plugin-pukiwiki-like-linker": "^4.4.1-RC.0",
     "@growi/plugin-lsx": "^4.4.1-RC.0",
+    "@growi/slack": "^4.4.1-RC.0",
     "@promster/express": "^5.0.1",
     "@promster/server": "^6.0.0",
     "@slack/events-api": "^3.0.0",
