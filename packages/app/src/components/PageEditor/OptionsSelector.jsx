@@ -34,7 +34,6 @@ class OptionsSelector extends React.Component {
     this.state = {
       isCddMenuOpened: false,
       isMathJaxEnabled,
-      isTextlintEnabled: false,
     };
 
     this.availableThemes = [
@@ -58,14 +57,6 @@ class OptionsSelector extends React.Component {
     this.onToggleConfigurationDropdown = this.onToggleConfigurationDropdown.bind(this);
     this.onChangeIndentSize = this.onChangeIndentSize.bind(this);
   }
-
-
-  async componentDidMount() {
-    const { editorContainer } = this.props;
-    const isTextlintEnabled = await editorContainer.retrieveEditorSettings();
-    this.setState({ isTextlintEnabled });
-  }
-
 
   onChangeTheme(newValue) {
     const { editorContainer } = this.props;
@@ -121,25 +112,21 @@ class OptionsSelector extends React.Component {
 
     // save to localStorage
     editorContainer.saveOptsToLocalStorage();
-
-
   }
 
   async updateIsTextlintEnabledToDB(newVal) {
     const { appContainer } = this.props;
     try {
-      await appContainer.apiv3Put('/personal-setting/editor-settings', { isTextlintEnabled: newVal });
+      await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: { isTextlintEnabled: newVal } });
     }
     catch (err) {
       toastError(err);
     }
-
   }
 
   async switchTextlintEnabledHandler() {
     const { editorContainer } = this.props;
-    const newVal = !this.state.isTextlintEnabled;
-    this.setState({ isTextlintEnabled: newVal });
+    const newVal = !editorContainer.state.isTextlintEnabled;
     editorContainer.setState({ isTextlintEnabled: newVal });
     this.updateIsTextlintEnabledToDB(newVal);
   }
@@ -321,7 +308,7 @@ class OptionsSelector extends React.Component {
   }
 
   renderIsTextlintEnabledMenuItem() {
-    const isActive = this.state.isTextlintEnabled;
+    const isActive = this.props.editorContainer.state.isTextlintEnabled;
 
     const iconClasses = ['text-info'];
     if (isActive) {
@@ -330,7 +317,6 @@ class OptionsSelector extends React.Component {
     const iconClassName = iconClasses.join(' ');
 
     return (
-      // eslint-disable-next-line no-console
       <DropdownItem toggle={false} onClick={this.switchTextlintEnabledHandler}>
         <div className="d-flex justify-content-between">
           <span className="icon-container"></span>
