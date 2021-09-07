@@ -1,6 +1,7 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 
+import Activity from '~/server/models/activity';
 module.exports = function(crowi) {
   const debug = require('debug')('growi:models:comment');
   const mongoose = require('mongoose');
@@ -102,7 +103,7 @@ module.exports = function(crowi) {
    */
   commentSchema.post('save', (savedComment) => {
     const Page = crowi.model('Page');
-    const Activity = crowi.model('Activity');
+    // const Activity = crowi.model('Activity');
 
     Page.updateCommentCount(savedComment.page)
       .then((page) => {

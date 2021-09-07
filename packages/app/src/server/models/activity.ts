@@ -7,6 +7,8 @@ import loggerFactory from '~/utils/logger';
 import ActivityDefine from '../util/activityDefine';
 import Crowi from '../crowi';
 
+import { getOrCreateModel } from '../util/mongoose-utils';
+
 const logger = loggerFactory('growi:models:activity');
 
 export interface ActivityDocument extends Document {
@@ -226,7 +228,8 @@ export default (crowi: Crowi) => {
   //   }
   // });
 
-  const Activity = model<ActivityDocument, ActivityModel>('Activity', activitySchema);
+  // const Activity = model<ActivityDocument, ActivityModel>('Activity', activitySchema);
+  const Activity = getOrCreateModel<ActivityDocument, ActivityModel>('Activity', activitySchema);
 
   return Activity;
 };
