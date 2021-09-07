@@ -34,7 +34,7 @@ jobs:
 
     - name: Bump versions
       run: |
-        node ./bin/bump-versions -i patch
+        node ./bin/github-actions/bump-versions -i patch
         sh ./packages/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
@@ -95,7 +95,7 @@ jobs:
 
     - name: Bump versions for next RC
       run: |
-        node ./bin/bump-versions -i prerelease
+        node ./bin/github-actions/bump-versions -i prerelease
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@0.0.2
