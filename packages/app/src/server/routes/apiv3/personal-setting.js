@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, checkSchema } from 'express-validator';
 
 import loggerFactory from '~/utils/logger';
 
@@ -101,7 +101,10 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      body('isTextlintEnabled').isBoolean(),
+      body('editorSettings.isTextlintEnabled').isBoolean(),
+      body('editorSettings.textlintRules.name').isString(),
+      body('editorSettings.textlintRules.options').isJSON(),
+      body('editorSettings.textlintRules.isEnabled').isBoolean(),
     ],
   };
 
@@ -487,11 +490,20 @@ module.exports = (crowi) => {
   router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     try {
       const query = { userId: req.user.id };
-      const update = req.body;
+      const textlintSettings = req.body?.textlintSettings;
+      const update = {};
+
+      if (textlintSettings?.isTextlintEnabled != null) {
+        Object.assign(update, { 'textlintSettings.isTextlintEnabled': textlintSettings.isTextlintEnabled });
+      }
+      if (textlintSettings?.textlintRules != null) {
+        Object.assign(update, { 'textlintSettings.textlintRules': textlintSettings.textlintRules });
+      }
+
       // Insert if document does not exist, and return new values
       // See: https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
       const options = { upsert: true, new: true };
-      const response = await EditorSettings.findOneAndUpdate(query, update, options);
+      const response = await EditorSettings.findOneAndUpdate(query, { $set: update }, options);
       return res.apiv3(response);
     }
     catch (err) {
