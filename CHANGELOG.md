@@ -4,7 +4,7 @@
 
 *Please do not manually update this file. We've automated the process.*
 
-## [v4.4.2](https://github.com/weseek/growi/compare/v4.4.1-RC.0...v4.4.2) - 2021-09-07
+## [v4.4.2](https://github.com/weseek/growi/compare/v4.4.0...v4.4.2) - 2021-09-07
 
 ### Changes
 
@@ -19,19 +19,9 @@
 - support: Make lerna mode fixed (#4274) @yuki-takei
 - support: Make lerna mode fixed (#4263) @yuki-takei
 
-## [v4.4.1-RC.0](https://github.com/weseek/growi/compare/v4.4.0...v4.4.1-RC.0) - 2021-09-07
+## v4.4.1 (Missing number)
 
-### Changes
-
-### 🐛 Bug Fixes
-
-- fix: Plugin backend's permission (#4271) @yuki-takei
-
-### 🧰 Maintenance
-
-- support: Make lerna mode fixed (#4263) @yuki-takei
-
-## [v4.4.0](https://github.com/weseek/growi/compare/v4.3.3...v4.4.0) - 2021-09-06
+## [v4.4.0](https://github.com/weseek/growi/compare/v4.3.3...v4.4.0) (Discontinued) - 2021-09-06
 
 ### Changes
 
@@ -472,7 +462,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/43x.html](http
 - Fix: Author name does not displayed in page history
 - Fix: Hide unnecessary component when pringing
 
-## v4.1.4 (Missing number)
+## v4.1.4 (Discontinued)
 
 ## v4.1.3
 
@@ -596,7 +586,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/41x.html](http
 - Fix: Unable to create page with original path after emptying trash
 - I18n: Support zh-CN
 
-## v4.0.8 (Missing number)
+## v4.0.8 (Discontinued)
 
 ## v4.0.7
 
@@ -727,7 +717,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/38x.html](http
 - 
 - 
 
-## v3.8.0  (Missing number)
+## v3.8.0  (Discontinued)
 
 ## v3.7.7
 
@@ -738,7 +728,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/38x.html](http
 - 
 - 
 
-## v3.7.6  (Missing number)
+## v3.7.6  (Discontinued)
 
 ## v3.7.5
 
@@ -881,7 +871,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/37x.html](http
 - 
 - 
 
-## v3.6.5 (Missing number)
+## v3.6.5 (Discontinued)
 
 ## v3.6.4
 
@@ -952,7 +942,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/36x.html](http
 - 
 - 
 
-## v3.6.0 (Missing number)
+## v3.6.0 (Discontinued)
 
 ## v3.5.25
 
@@ -1009,7 +999,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/36x.html](http
 - 
 - 
 
-## v3.5.19 (Missing number)
+## v3.5.19 (Discontinued)
 
 ## v3.5.18
 
@@ -1061,7 +1051,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/36x.html](http
 - 
 - 
 
-## v3.5.14 (Missing number)
+## v3.5.14 (Discontinued)
 
 ## v3.5.13
 
@@ -1153,7 +1143,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/36x.html](http
 - Improvement: Comment Thread Layout
 - Improvement: Show commented date with date distance format
 
-## v3.5.7 (Missing number)
+## v3.5.7 (Discontinued)
 
 ## v3.5.6
 
@@ -1291,7 +1281,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/35x.html](http
 - 
 - 
 
-## v3.5.0 (Missing number)
+## v3.5.0 (Discontinued)
 
 ## v3.4.7
 
@@ -1532,7 +1522,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - 
 - 
 
-## v3.3.5 (Missing number)
+## v3.3.5 (Discontinued)
 
 ## v3.3.4
 
@@ -1588,7 +1578,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - 
 - 
 
-## v3.3.0 (Missing number)
+## v3.3.0 (Discontinued)
 
 ## v3.2.10
 
@@ -1824,7 +1814,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - 
 - 
 
-## v3.1.8 (Missing number)
+## v3.1.8 (Discontinued)
 
 ## v3.1.7
 
@@ -1879,9 +1869,9 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - 
 - 
 
-## v3.1.4 (Missing number)
+## v3.1.4 (Discontinued)
 
-## v3.1.3 (Missing number)
+## v3.1.3 (Discontinued)
 
 ## v3.1.2
 
@@ -2135,9 +2125,9 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - 
 - 
 
-## v3.0.1 (Missing number)
+## v3.0.1 (Discontinued)
 
-## v3.0.0 (Missing number)
+## v3.0.0 (Discontinued)
 
 ## v2.4.4
 
@@ -2277,7 +2267,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - 
 - 
 
-## v2.3.4 (Missing number)
+## v2.3.4 (Discontinued)
 
 ## v2.3.3
 
@@ -2332,7 +2322,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - Support: Upgrade react-bootstrap-typeahead
 - Improvement: Replace emojify.js with emojione
 
-## v2.2.2 (Missing number)
+## v2.2.2 (Discontinued)
 
 ## v2.2.1
 
@@ -2397,7 +2387,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - 
 - 
 
-## v2.0.2 - 2.0.4 (Missing number)
+## v2.0.2 - 2.0.4 (Discontinued)
 
 ## v2.0.1
 
@@ -2432,7 +2422,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 - Improvement: Enabled to switch whether to push states with History API when tabs changes
 - Fix: Layout of the Not Found page
 
-## v1.2.12 (Missing number)
+## v1.2.12 (Discontinued)
 
 ## v1.2.11
 
@@ -2453,7 +2443,7 @@ Upgrading Guide: [https://docs.growi.org/en/admin-guide/upgrading/34x.html](http
 
 - Fix: The problem that redirect doesn't work when using 'crowi-plus Simplified Behavior'
 
-## v1.2.7 (Missing number)
+## v1.2.7 (Discontinued)
 
 ## v1.2.6
 
