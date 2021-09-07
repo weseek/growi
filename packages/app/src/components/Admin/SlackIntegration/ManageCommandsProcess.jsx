@@ -67,7 +67,6 @@ const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
 }) => {
   const { t } = useTranslation();
-  console.log(permissionsForBroadcastUseCommands);
 
   const [permissionsForBroadcastUseCommandsState, setPermissionsForBroadcastUseCommandsState] = useState({
     search: permissionsForBroadcastUseCommands.search,
