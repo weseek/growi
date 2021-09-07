@@ -1,12 +1,11 @@
+/*
+ * Reference: https://community.algolia.com/shipjs/
+ */
 module.exports = {
   monorepo: {
-    mainVersionFile: 'package.json',
+    mainVersionFile: 'lerna.json',
     packagesToBump: [
-      'packages/app',
-      'packages/core',
-      'packages/slack',
-      'packages/ui',
-      'packages/plugin-*',
+      'packages/*',
     ],
   },
 };
