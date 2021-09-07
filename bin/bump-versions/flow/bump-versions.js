@@ -49,7 +49,6 @@ async function bumpVersions({
   await updateVersionFn({
     config, nextVersion, releaseType, dir, dryRun,
   });
-  installDependencies({ config, dir, dryRun });
 }
 
 const arg = {
