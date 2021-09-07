@@ -79,7 +79,6 @@ export default class HeaderNotification extends React.Component<Props, State> {
   // }
 
   toggle() {
-    console.log('toggle');
     const { open, count } = this.state;
     if (!open && count > 0) {
       this.updateStatus();
