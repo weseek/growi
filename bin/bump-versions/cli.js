@@ -6,10 +6,12 @@ export async function cli(argv) {
   try {
     const opts = parseArgs(argSpec, argv);
     await fn(opts);
-  } catch (error) {
+  }
+  catch (error) {
     if (error.code === 'ARG_UNKNOWN_OPTION') {
       print(error);
-    } else {
+    }
+    else {
       throw error;
     }
   }
