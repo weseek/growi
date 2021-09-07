@@ -95,7 +95,6 @@ const createSetupRules = (rules, ruleOptions): TextlintKernelRule[] => (
 
 
 export const createValidator = (rulesConfigArray: RulesConfigObj[] | null): AsyncLinter<RulesConfigObj[] | null> => {
-  console.log(`rules passed in ${JSON.stringify(rulesConfigArray)}`);
   if (rulesConfigArray != null) {
     const filteredConfigArray = rulesConfigArray
       .filter((rule) => {
@@ -104,7 +103,7 @@ export const createValidator = (rulesConfigArray: RulesConfigObj[] | null): Asyn
         }
         return (ruleModulesList[rule.name] != null && rule?.isEnabled !== false);
       });
-    console.log(filteredConfigArray);
+
     const rules = filteredConfigArray
       .reduce((rules, rule) => {
         rules[rule.name] = ruleModulesList[rule.name];

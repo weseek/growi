@@ -164,7 +164,6 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
     setTextlintRules(prevState => (
       prevState.filter(rule => rule.name !== ruleName).concat({ name: ruleName, isEnabled: isChecked })
     ));
-    console.log(textlintRules);
   };
 
   return (
