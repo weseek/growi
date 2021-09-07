@@ -6,9 +6,19 @@ const { OptionParser } = customTagUtils;
 
 const logger = loggerFactory('growi-plugin:attachment-refs:routes:refs');
 
+
+const loginRequiredFallback = (req, res) => {
+  return res.status(403).send('login required');
+};
+
+
 module.exports = (crowi) => {
   const express = crowi.require('express');
   const mongoose = crowi.require('mongoose');
+
+  const loginRequired = crowi.require('../middlewares/login-required')(crowi, false, loginRequiredFallback);
+  const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
+
   const router = express.Router();
 
   const ObjectId = mongoose.Types.ObjectId;
@@ -68,7 +78,7 @@ module.exports = (crowi) => {
   /**
    * return an Attachment model
    */
-  router.get('/ref', async(req, res) => {
+  router.get('/ref', accessTokenParser, loginRequired, async(req, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
     // eslint-disable-next-line no-unused-vars
@@ -128,7 +138,7 @@ module.exports = (crowi) => {
   /**
    * return a list of Attachment
    */
-  router.get('/refs', async(req, res) => {
+  router.get('/refs', accessTokenParser, loginRequired, async(req, res) => {
     const user = req.user;
     const { prefix, pagePath } = req.query;
     const options = JSON.parse(req.query.options);
