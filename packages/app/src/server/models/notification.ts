@@ -195,10 +195,10 @@ export default (crowi: Crowi) => {
   };
 
   notificationEvent.on('update', (user) => {
-    const io = crowi.getSocketIoService();
+    const socket = crowi.getSocketIoService();
 
-    if (io != null) {
-      io.sockets.emit('notification updated', { user });
+    if (socket != null) {
+      socket.emit('notification updated', { user });
     }
   });
 

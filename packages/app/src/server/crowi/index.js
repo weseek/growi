@@ -309,7 +309,8 @@ Crowi.prototype.scanRuntimeVersions = async function() {
 };
 
 Crowi.prototype.getSocketIoService = function() {
-  return this.socketIoService;
+  const socket = this.socketIoService.getDefaultSocket();
+  return socket;
 };
 
 Crowi.prototype.getSlack = function() {
