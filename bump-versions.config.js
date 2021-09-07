@@ -5,6 +5,7 @@ module.exports = {
   monorepo: {
     mainVersionFile: 'lerna.json',
     packagesToBump: [
+      './',
       'packages/*',
     ],
   },
