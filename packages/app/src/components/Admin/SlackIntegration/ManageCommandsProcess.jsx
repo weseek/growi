@@ -70,11 +70,11 @@ const ManageCommandsProcess = ({
   console.log(permissionsForBroadcastUseCommands);
 
   const [permissionsForBroadcastUseCommandsState, setPermissionsForBroadcastUseCommandsState] = useState({
-    search: permissionsForBroadcastUseCommands?.search,
+    search: permissionsForBroadcastUseCommands.search,
   });
   const [permissionsForSingleUseCommandsState, setPermissionsForSingleUseCommandsState] = useState({
-    create: permissionsForSingleUseCommands?.create,
-    togetter: permissionsForSingleUseCommands?.togetter,
+    create: permissionsForSingleUseCommands.create,
+    togetter: permissionsForSingleUseCommands.togetter,
   });
   const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
     const initialState = {};
