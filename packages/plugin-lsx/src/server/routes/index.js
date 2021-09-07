@@ -1,11 +1,13 @@
+
+const loginRequiredFallback = (req, res) => {
+  return res.status(403).send('login required');
+};
+
 module.exports = (crowi, app) => {
   const lsx = require('./lsx')(crowi, app);
-  // const middleware = crowi.require('../util/middlewares');
-  // const debug = require('debug')('growi-plugin:lsx:routes');
-  // const loginRequired = middleware.loginRequired;
-  // const accessTokenParser = middleware.accessTokenParser(crowi, app);
-  // const csrf = middleware.csrfVerify(crowi, app);
 
-  // app.get('/_api/plugins/lsx', accessTokenParser , loginRequired(crowi, app) , lsx.renderHtml);
-  app.get('/_api/plugins/lsx', lsx.listPages);
+  const loginRequired = crowi.require('../middlewares/login-required')(crowi, false, loginRequiredFallback);
+  const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
+
+  app.get('/_api/plugins/lsx', accessTokenParser, loginRequired, lsx.listPages);
 };
