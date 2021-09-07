@@ -171,6 +171,7 @@ module.exports = (crowi) => {
 
     const { configManager } = crowi;
     const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
+
     // retrieve settings
     const settings = {};
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
