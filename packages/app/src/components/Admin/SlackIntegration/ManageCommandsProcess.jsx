@@ -62,19 +62,17 @@ const getPermissionTypeFromValue = (value) => {
   logger.error('The value type must be boolean or string[]');
 };
 
-// TODO: Add permittedChannelsForEachCommand to use data from server (props must have it) GW-7006
 const ManageCommandsProcess = ({
   apiv3Put, slackAppIntegrationId, permissionsForBroadcastUseCommands, permissionsForSingleUseCommands,
 }) => {
   const { t } = useTranslation();
 
-  // TODO: use data from server GW-7006
   const [permissionsForBroadcastUseCommandsState, setPermissionsForBroadcastUseCommandsState] = useState({
-    search: true,
+    search: permissionsForBroadcastUseCommands?.search,
   });
   const [permissionsForSingleUseCommandsState, setPermissionsForSingleUseCommandsState] = useState({
-    create: false,
-    togetter: [],
+    create: permissionsForSingleUseCommands?.create,
+    togetter: permissionsForSingleUseCommands?.togetter,
   });
   const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
     const initialState = {};

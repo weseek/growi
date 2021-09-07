@@ -182,11 +182,6 @@ module.exports = (crowi) => {
     else {
       settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
       settings.proxyUriEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:proxyUri');
-      settings.permissionCommands = {
-        search: true,
-        create: true,
-        togetter: true,
-      };
     }
 
     // retrieve connection statuses
