@@ -341,15 +341,6 @@ const WithProxyAccordions = (props) => {
         isLatestConnectionSuccess={isLatestConnectionSuccess}
       />,
     },
-    '⑤': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
-      />,
-    },
   };
 
   const CustomBotIntegrationProcedure = {
@@ -394,15 +385,6 @@ const WithProxyAccordions = (props) => {
         isLatestConnectionSuccess={isLatestConnectionSuccess}
       />,
     },
-    '⑦': {
-      title: 'manage_commands',
-      content: <ManageCommandsProcess
-        apiv3Put={props.appContainer.apiv3.put}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        supportedCommandsForBroadcastUse={props.supportedCommandsForBroadcastUse}
-        supportedCommandsForSingleUse={props.supportedCommandsForSingleUse}
-      />,
-    },
   };
 
   const integrationProcedureMapping = props.botType === SlackbotType.OFFICIAL ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
@@ -442,8 +424,8 @@ WithProxyAccordions.propTypes = {
   slackAppIntegrationId: PropTypes.string.isRequired,
   tokenPtoG: PropTypes.string,
   tokenGtoP: PropTypes.string,
-  permissionsForBroadcastUseCommands: PropTypes.arrayOf(PropTypes.string),
-  permissionsForSingleUseCommands: PropTypes.arrayOf(PropTypes.string),
+  permissionsForBroadcastUseCommands: PropTypes.object.isRequired,
+  permissionsForSingleUseCommands: PropTypes.object.isRequired,
 };
 
 export default WithProxyAccordionsWrapper;
