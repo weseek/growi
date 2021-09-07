@@ -333,7 +333,17 @@ export class SlackCtrl {
 
     const actionId:string = payload?.actions?.[0].action_id;
     const permission = await this.relationsService.checkPermissionForInteractions(relations, actionId, callbackId, channelName);
-    const { allowedRelations, disallowedGrowiUrls, commandName } = permission;
+    const {
+      allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
+    } = permission;
+
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      await postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, authorizeResult.botToken!);
+    }
+    catch (err) {
+      logger.error(err);
+    }
 
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

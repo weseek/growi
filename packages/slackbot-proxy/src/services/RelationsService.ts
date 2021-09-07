@@ -15,6 +15,7 @@ type checkPermissionForInteractionsResults = {
   allowedRelations:Relation[],
   disallowedGrowiUrls:Set<string>,
   commandName:string,
+  rejectedResults:PromiseRejectedResult[]
 }
 
 @Service()
@@ -127,7 +128,7 @@ export class RelationsService {
     const disallowedGrowiUrls:Set<string> = new Set();
     let commandName = '';
 
-    await relations.map(async(relation) => {
+    const results = await Promise.allSettled(relations.map(async(relation) => {
       let permissionForInteractions:boolean|string[];
       const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
       const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
@@ -161,10 +162,14 @@ export class RelationsService {
 
         disallowedGrowiUrls.add(relation.growiUri);
       });
+    }));
 
-    });
+    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
-    return { allowedRelations, disallowedGrowiUrls, commandName };
+
+    return {
+      allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
+    };
   }
 
 }
