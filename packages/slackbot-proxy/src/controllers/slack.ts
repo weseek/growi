@@ -339,7 +339,7 @@ export class SlackCtrl {
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await postEphemeralErrors(rejectedResults, body.channel_id, body.user_id, authorizeResult.botToken!);
+      await postEphemeralErrors(rejectedResults, payload.channel.id, payload.user.id, authorizeResult.botToken!);
     }
     catch (err) {
       logger.error(err);
@@ -348,7 +348,7 @@ export class SlackCtrl {
     if (relations.length === disallowedGrowiUrls.size) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const client = generateWebClient(authorizeResult.botToken!);
-      return postNotAllowedMessage(client, payload.channel_id, payload.user_id, disallowedGrowiUrls, commandName);
+      return postNotAllowedMessage(client, payload.channel.id, payload.user.id, disallowedGrowiUrls, commandName);
     }
 
     /*
