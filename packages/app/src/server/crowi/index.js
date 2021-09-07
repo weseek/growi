@@ -308,7 +308,7 @@ Crowi.prototype.scanRuntimeVersions = async function() {
   });
 };
 
-Crowi.prototype.getSocketIoService = function() {
+Crowi.prototype.getSocketIo = function() {
   const socket = this.socketIoService.getDefaultSocket();
   return socket;
 };
