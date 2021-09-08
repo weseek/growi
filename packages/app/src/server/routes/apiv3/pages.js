@@ -27,6 +27,36 @@ const LIMIT_FOR_LIST = 10;
  *
  *  components:
  *    schemas:
+ *      Tags:
+ *        description: Tags
+ *        type: array
+ *        items:
+ *          $ref: '#/components/schemas/Tag/properties/name'
+ *        example: ['daily', 'report', 'tips']
+ *
+ *      Tag:
+ *        description: Tag
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: tag ID
+ *            example: 5e2d6aede35da4004ef7e0b7
+ *          name:
+ *            type: string
+ *            description: tag name
+ *            example: daily
+ *          count:
+ *            type: number
+ *            description: Count of tagged pages
+ *            example: 3
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
  *      Page:
  *        description: Page
  *        type: object
@@ -219,7 +249,7 @@ module.exports = (crowi) => {
    *                        tags:
    *                          type: array
    *                          items:
-   *                            $ref: '#/components/schemas/Tag'
+   *                            $ref: '#/components/schemas/Tags'
    *                        revision:
    *                          $ref: '#/components/schemas/Revision'
    *          409:
