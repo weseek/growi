@@ -362,6 +362,31 @@ module.exports = (crowi) => {
     }
   });
 
+  router.put('/without-proxy/update-permissions', async(req, res) => {
+    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
+      const msg = 'Not CustomBotWithoutProxy';
+      return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
+    }
+
+    const { commandPermission } = req.body;
+    const requestParams = {
+      'slackbot:withouProxy:commandPermission': commandPermission,
+    };
+    try {
+      await updateSlackBotSettings(requestParams);
+      crowi.slackIntegrationService.publishUpdatedMessage();
+
+      const customBotWithoutProxyCommandPermissionarams = crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
+      return res.apiv3({ customBotWithoutProxyCommandPermissionarams });
+    }
+    catch (error) {
+      const msg = 'Error occured in updating command permission settigns';
+      logger.error('Error', error);
+      return res.apiv3Err(new ErrorV3(msg, 'update-CustomBotSetting-failed'), 500);
+    }
+  });
+
 
   /**
    * @swagger
