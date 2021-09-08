@@ -12,7 +12,8 @@ class NortificationService {
     this.notificationEvent = crowi.event('notification');
 
     // init
-    this.notificationEvent.on('update', this.notificationEvent.onUpdate);
+    // comments
+    this.notificationEvent.on('update', this.notificationEvent.onUpdateComment);
   }
 
 }

@@ -43,7 +43,7 @@ export interface NotificationModel extends Model<NotificationDocument> {
 }
 
 export default (crowi: Crowi) => {
-  const notificationEvent = crowi.event('Notification');
+  const notificationEvent = crowi.event('notification');
 
   const notificationSchema = new Schema<NotificationDocument, NotificationModel>({
     user: {
