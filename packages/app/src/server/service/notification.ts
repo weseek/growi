@@ -6,24 +6,24 @@ class NortificationService {
 
   socketIoService!: any;
 
-  notificationEvent!: any;
+  commentEvent!: any;
 
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.socketIoService = crowi.socketIoService;
-    this.notificationEvent = crowi.event('notification');
+    this.commentEvent = crowi.event('comment');
 
     // init
     this.updateNotificationevent();
   }
 
   updateNotificationevent() {
-    this.notificationEvent.on('update', (user) => {
-      this.notificationEvent.onUpdate();
+    this.commentEvent.on('update', (user) => {
+      this.commentEvent.onUpdate();
 
       if (this.socketIoService.isInitialized) {
-        this.socketIoService.getDefaultSocket().emit('notification updated', { user });
+        this.socketIoService.getDefaultSocket().emit('comment updated', { user });
       }
     });
   }
