@@ -487,8 +487,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor settings
    */
-  // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
-  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const textlintSettings = req.body.textlintSettings;
     const document = {};
