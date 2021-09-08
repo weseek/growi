@@ -9,7 +9,6 @@ import {
 
 import Dropzone from 'react-dropzone';
 
-import AppContainer from '~/client/services/AppContainer';
 import EditorContainer from '~/client/services/EditorContainer';
 import { withUnstatedContainers } from '../UnstatedUtils';
 
@@ -385,8 +384,7 @@ Editor.propTypes = Object.assign({
   emojiStrategy: PropTypes.object,
   onChange: PropTypes.func,
   onUpload: PropTypes.func,
-  appContainer: PropTypes.instanceOf(AppContainer).isRequired,
   editorContainer: PropTypes.instanceOf(EditorContainer).isRequired,
 }, AbstractEditor.propTypes);
 
-export default withUnstatedContainers(Editor, [AppContainer, EditorContainer]);
+export default withUnstatedContainers(Editor, [EditorContainer]);
