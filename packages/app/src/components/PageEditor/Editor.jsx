@@ -48,6 +48,10 @@ class Editor extends AbstractEditor {
     this.renderDropzoneOverlay = this.renderDropzoneOverlay.bind(this);
   }
 
+  componentWillMount() {
+    this.props.editorContainer.retrieveEditorSettings();
+  }
+
   componentDidMount() {
     this.setState({ isComponentDidMount: true });
   }
@@ -320,7 +324,6 @@ class Editor extends AbstractEditor {
                         editorOptions={editorContainer.state.editorOptions}
                         isTextlintEnabled={editorContainer.state.isTextlintEnabled}
                         textlintRules={editorContainer.state.textlintRules}
-                        retrieveEditorSettings={editorContainer.retrieveEditorSettings}
                         onPasteFiles={this.pasteFilesHandler}
                         onDragEnter={this.dragEnterHandler}
                         onMarkdownHelpButtonClicked={this.showMarkdownHelp}
