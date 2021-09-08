@@ -1,4 +1,4 @@
-import { body, checkSchema } from 'express-validator';
+import { body } from 'express-validator';
 
 import loggerFactory from '~/utils/logger';
 
@@ -101,10 +101,10 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      body('textlintSettings.isTextlintEnabled').isBoolean(),
-      body('textlintSettings.textlintRules.*.name').isString(),
+      body('textlintSettings.isTextlintEnabled').optional().isBoolean(),
+      body('textlintSettings.textlintRules.*.name').optional().isString(),
       body('textlintSettings.textlintRules.*.options').optional(),
-      body('textlintSettings.textlintRules.*.isEnabled').isBoolean(),
+      body('textlintSettings.textlintRules.*.isEnabled').optional().isBoolean(),
 
     ],
   };
@@ -488,8 +488,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor settings
    */
-  // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
-  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const textlintSettings = req.body.textlintSettings;
     const document = {};
