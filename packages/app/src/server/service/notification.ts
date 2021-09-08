@@ -1,4 +1,4 @@
-
+import Crowi from '../crowi';
 
 class NortificationService {
 
@@ -7,7 +7,7 @@ class NortificationService {
   notificationEvent!: any;
 
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.notificationEvent = crowi.event('notification');
 
