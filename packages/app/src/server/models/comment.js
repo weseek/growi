@@ -102,6 +102,7 @@ module.exports = function(crowi) {
    */
   commentSchema.post('save', (savedComment) => {
     const Page = crowi.model('Page');
+    const commentEvent = crowi.event('comment');
 
     Page.updateCommentCount(savedComment.page)
       .then((page) => {
@@ -109,6 +110,7 @@ module.exports = function(crowi) {
       })
       .catch(() => {
       });
+    commentEvent.emit('update', savedComment.creator);
   });
 
   return mongoose.model('Comment', commentSchema);
