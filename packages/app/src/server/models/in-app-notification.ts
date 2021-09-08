@@ -43,7 +43,7 @@ export interface InAppNotificationModel extends Model<InAppNotificationDocument>
 }
 
 export default (crowi: Crowi) => {
-  const inAppCommentEvent = crowi.event('inAppNotification');
+  const commentEvent = crowi.event('comment');
 
   const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotificationModel>({
     user: {
@@ -140,7 +140,7 @@ export default (crowi: Crowi) => {
     const inAppNotification = await InAppNotification.findOneAndUpdate(query, parameters, options);
 
     if (inAppNotification) {
-      inAppCommentEvent.emit('update', inAppNotification.user);
+      commentEvent.emit('update', inAppNotification.user);
     }
 
     return inAppNotification;
@@ -175,7 +175,7 @@ export default (crowi: Crowi) => {
 
     const inAppNotification = await InAppNotification.findOneAndUpdate(query, parameters, options);
     if (inAppNotification) {
-      inAppCommentEvent.emit('update', inAppNotification.user);
+      commentEvent.emit('update', inAppNotification.user);
     }
     return inAppNotification;
   };
