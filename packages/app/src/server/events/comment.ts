@@ -5,18 +5,18 @@ const logger = loggerFactory('growi:events:notification');
 const util = require('util');
 const events = require('events');
 
-function NotificationEvent(crowi) {
+function CommentEvent(crowi) {
   this.crowi = crowi;
 
   events.EventEmitter.call(this);
 }
 
-util.inherits(NotificationEvent, events.EventEmitter);
+util.inherits(CommentEvent, events.EventEmitter);
 
 
-NotificationEvent.prototype.onUpdate = function() {
+CommentEvent.prototype.onUpdate = function() {
   logger.info('onUpdate event fired');
 };
 
 
-module.exports = NotificationEvent;
+module.exports = CommentEvent;
