@@ -56,7 +56,7 @@ function LargePageItem({ page }) {
   const tags = page.tags;
   const tagElements = tags.map((tag) => {
     return (
-      <a key={tag} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
+      <a key={tag.name} href={`/_search?q=tag:${tag.name}`} className="grw-tag-label badge badge-secondary mr-2 small">
         {tag.name}
       </a>
     );
