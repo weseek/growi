@@ -23,7 +23,6 @@ class NortificationService {
       this.notificationEvent.onUpdate();
 
       if (this.socketIoService.isInitialized) {
-        // need to pass user in second argument
         this.socketIoService.getDefaultSocket().emit('notification updated', { user });
       }
     });
