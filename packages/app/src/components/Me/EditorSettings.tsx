@@ -213,14 +213,10 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
   const initializeEditorSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
-
-    if (data?.textlintSettings?.textlintRules != null) {
-      setTextlintRules(data.textlintSettings.textlintRules);
-    }
+    const retrievedRules: LintRule[] = data?.textlintSettings?.textlintRules;
 
     // If database is empty, add default rules to state
-    if (data?.textlintSettings?.textlintRules == null) {
-
+    if (retrievedRules != null && retrievedRules.length > 0) {
       const createRulesFromDefaultList = (rule: { name: string }) => (
         {
           name: rule.name,
@@ -232,15 +228,19 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
       const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
     }
+    else {
+      setTextlintRules(retrievedRules);
+    }
+
   }, [appContainer]);
 
   useEffect(() => {
     initializeEditorSettings();
-  }, []);
+  }, [initializeEditorSettings]);
 
   const updateRulesHandler = async() => {
     try {
-      const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: textlintRules });
+      const { data } = await appContainer.apiv3Put('/personal-setting/editor-settings', { textlintSettings: { textlintRules: [...textlintRules] } });
       setTextlintRules(data.textlintSettings.textlintRules);
       toastSuccess(t('toaster.update_successed', { target: 'Updated Textlint Settings' }));
     }
