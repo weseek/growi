@@ -6,6 +6,8 @@ import ConfigModel, {
   Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
 } from '../models/config';
 
+const { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } = require('@growi/slack');
+
 const logger = loggerFactory('growi:service:ConfigLoader');
 
 enum ValueType { NUMBER, STRING, BOOLEAN }
@@ -30,6 +32,11 @@ const parserDictionary: EnumDictionary<ValueType, ValueParser<number | string | 
   [ValueType.STRING]:  { parse: (v: string) => { return v } },
   [ValueType.BOOLEAN]: { parse: (v: string) => { return envUtils.toBoolean(v) } },
 };
+
+const commandPermission = {};
+[...defaultSupportedCommandsNameForBroadcastUse, ...defaultSupportedCommandsNameForSingleUse].forEach((commandName) => {
+  commandPermission[commandName] = true;
+});
 
 /**
  * The following env vars are excluded because these are currently used before the configuration setup.
@@ -488,9 +495,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   SLACKBOT_WITHOUT_PROXY_COMMAND_PERMISSION: {
     ns:      'crowi',
-    key:     'slackbot:withoutProxy:commandsPermission',
+    key:     'slackbot:withoutProxy:commandPermission',
     type:    ValueType.STRING,
-    default: JSON.stringify({ commandPermission: { search: true, create: true, togetter: true } }),
+    default: JSON.stringify(commandPermission),
   },
   SLACKBOT_WITH_PROXY_SALT_FOR_GTOP: {
     ns:      'crowi',

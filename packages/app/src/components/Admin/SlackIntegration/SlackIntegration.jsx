@@ -53,7 +53,6 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
-      console.log(commandPermission);
     }
     catch (err) {
       toastError(err);
