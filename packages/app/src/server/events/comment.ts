@@ -1,6 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:events:notification');
+const logger = loggerFactory('growi:events:comment');
 
 const util = require('util');
 const events = require('events');
