@@ -101,7 +101,11 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      body('isTextlintEnabled').isBoolean(),
+      body('textlintSettings.isTextlintEnabled').optional().isBoolean(),
+      body('textlintSettings.textlintRules.*.name').optional().isString(),
+      body('textlintSettings.textlintRules.*.options').optional(),
+      body('textlintSettings.textlintRules.*.isEnabled').optional().isBoolean(),
+
     ],
   };
 
