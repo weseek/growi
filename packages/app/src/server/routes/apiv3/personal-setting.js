@@ -101,7 +101,10 @@ module.exports = (crowi) => {
       body('accountId').isString().not().isEmpty(),
     ],
     editorSettings: [
-      body('isTextlintEnabled').isBoolean(),
+      body('textlintSettings.isTextlintEnabled').isBoolean(),
+      body('textlintSettings.textlintRules.*.name').isString(),
+      body('textlintSettings.textlintRules.*.options').optional(),
+      body('textlintSettings.textlintRules.*.isEnabled').isBoolean(),
     ],
   };
 
@@ -485,7 +488,7 @@ module.exports = (crowi) => {
    *                      description: editor settings
    */
   // router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, csrf, validator.editorSettings, apiV3FormValidator, async(req, res) => {
-  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const textlintSettings = req.body.textlintSettings;
     const document = {};
