@@ -40,7 +40,7 @@ const SlackIntegration = (props) => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri, commandPermission,
       } = data.settings;
 
       setErrorMsg(data.errorMsg);
@@ -53,6 +53,7 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+      console.log(commandPermission);
     }
     catch (err) {
       toastError(err);

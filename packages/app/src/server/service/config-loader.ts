@@ -486,6 +486,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.STRING,
     default: null,
   },
+  SLACKBOT_WITHOUT_PROXY_COMMAND_PERMISSION: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:commandsPermission',
+    type:    ValueType.STRING,
+    default: JSON.stringify({ commandPermission: { search: true, create: true, togetter: true } }),
+  },
   SLACKBOT_WITH_PROXY_SALT_FOR_GTOP: {
     ns:      'crowi',
     key:     'slackbot:withProxy:saltForGtoP',

@@ -179,6 +179,7 @@ module.exports = (crowi) => {
       settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:botToken');
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
+      settings.commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandhPermission');
     }
     else {
       settings.proxyServerUri = crowi.configManager.getConfig('crowi', 'slackbot:proxyUri');
