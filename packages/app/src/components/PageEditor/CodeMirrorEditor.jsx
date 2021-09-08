@@ -158,10 +158,6 @@ export default class CodeMirrorEditor extends AbstractEditor {
       ? { dicPath: '/static/dict/cdn' }
       : { dicPath: 'https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict' };
 
-    // TODO: Get configs from db
-    this.isTextlintEnabled = true;
-    // this.textlintConfig = [];
-
     this.interceptorManager = new InterceptorManager();
     this.interceptorManager.addInterceptors([
       new PreventMarkdownListInterceptor(),
@@ -204,8 +200,10 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.setKeymapMode(keymapMode);
   }
 
-  initTextlintSettings() {
-    this.textlintValidator = createValidator(this.textlintConfig);
+  async initTextlintSettings() {
+    // If database has empty array, pass null instead to enable all default rules
+    const rulesForValidator = this.props.textlintRules?.length !== 0 ? this.props.textlintRules : null;
+    this.textlintValidator = createValidator(rulesForValidator);
     this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
   }
 
@@ -984,12 +982,15 @@ export default class CodeMirrorEditor extends AbstractEditor {
 
 CodeMirrorEditor.propTypes = Object.assign({
   editorOptions: PropTypes.object.isRequired,
-  isTextlintEnabled: PropTypes.bool.isRequired,
+  isTextlintEnabled: PropTypes.bool,
+  lintRules: PropTypes.array,
   emojiStrategy: PropTypes.object,
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
 }, AbstractEditor.propTypes);
+
 CodeMirrorEditor.defaultProps = {
   lineNumbers: true,
+  isTextlintEnabled: false,
 };
