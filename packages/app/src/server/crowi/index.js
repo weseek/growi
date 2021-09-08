@@ -80,7 +80,7 @@ function Crowi() {
     bookmark: new (require('../events/bookmark'))(this),
     tag: new (require('../events/tag'))(this),
     admin: new (require('../events/admin'))(this),
-    notification: new (require('../events/notification'))(this),
+    comment: new (require('../events/comment'))(this),
   };
 }
 
