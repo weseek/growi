@@ -6,6 +6,7 @@ import ConfigModel, {
   Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
 } from '../models/config';
 
+
 const logger = loggerFactory('growi:service:ConfigLoader');
 
 enum ValueType { NUMBER, STRING, BOOLEAN }
@@ -483,6 +484,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   SLACKBOT_WITHOUT_PROXY_BOT_TOKEN: {
     ns:      'crowi',
     key:     'slackbot:withoutProxy:botToken',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  SLACKBOT_WITHOUT_PROXY_COMMAND_PERMISSION: {
+    ns:      'crowi',
+    key:     'slackbot:withoutProxy:commandPermission',
     type:    ValueType.STRING,
     default: null,
   },
