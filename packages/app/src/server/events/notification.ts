@@ -1,4 +1,7 @@
-const debug = require('debug')('growi:events:page');
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:events:notification');
+
 const util = require('util');
 const events = require('events');
 
@@ -7,10 +10,12 @@ function NotificationEvent(crowi) {
 
   events.EventEmitter.call(this);
 }
+
 util.inherits(NotificationEvent, events.EventEmitter);
 
-NotificationEvent.prototype.onUpdate = function(page, user) {
-  debug('onUpdate event fired');
+
+NotificationEvent.prototype.onUpdateComment = function(page, user) {
+  logger.error('onUpdate event fired');
 };
 
 
