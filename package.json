@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.4.0-RC",
+  "version": "4.4.3-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -31,11 +31,10 @@
   "scripts": {
     "start": "yarn app:server",
     "prestart": "yarn app:build",
-    "app:build": "yarn lerna run build --scope @growi/app --scope @growi/slack --scope @growi/plugin-*",
+    "app:build": "yarn lerna run build",
     "app:server": "yarn lerna run server --scope @growi/app",
     "slackbot-proxy:build": "yarn lerna run build --scope @growi/slackbot-proxy --scope @growi/slack",
     "slackbot-proxy:server": "yarn lerna run start:prod --scope @growi/slackbot-proxy",
-    "version": "node -p \"require('./package.json').version\"",
     "//// scripts for backward compatibility": "",
     "build:prod": "echo !!! CAUTION !!! ==> The script 'build:prod' is deprecated. Use 'yarn app:build' instead. && yarn app:build",
     "server:prod": "echo !!! CAUTION !!! ==> The script 'server:prod' is deprecated. Use 'yarn app:build' instead. && yarn app:server"
@@ -66,6 +65,7 @@
     "jest-localstorage-mock": "^2.4.14",
     "lerna": "^4.0.0",
     "rewire": "^5.0.0",
+    "shipjs": "^0.23.3",
     "ts-jest": "^27.0.4"
   },
   "engines": {

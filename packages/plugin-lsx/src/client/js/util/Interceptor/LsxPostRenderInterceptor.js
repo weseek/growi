@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 
 import { BasicInterceptor } from 'growi-commons';
 
+import { LsxContext } from '../LsxContext';
 import { Lsx } from '../../components/Lsx';
-import { LsxCacheHelper } from '../LsxCacheHelper';
 
 /**
  * The interceptor for lsx
@@ -31,35 +31,30 @@ export class LsxPostRenderInterceptor extends BasicInterceptor {
   /**
    * @inheritdoc
    */
-  process(contextName, ...args) {
+  async process(contextName, ...args) {
     const context = Object.assign(args[0]); // clone
 
-    if (context.lsxContextMap == null) {
-      return Promise.resolve();
-    }
+    const isPreview = (contextName === 'postRenderPreviewHtml');
 
     // forEach keys of lsxContextMap
-    Object.keys(context.lsxContextMap).forEach((renderId) => {
-      const elem = document.getElementById(renderId);
+    Object.keys(context.lsxContextMap).forEach((domId) => {
+      const elem = document.getElementById(domId);
 
       if (elem) {
-        // get LsxContext instance from context
-        const lsxContext = context.lsxContextMap[renderId];
+        // instanciate LsxContext from context
+        const lsxContext = new LsxContext(context.lsxContextMap[domId] || {});
+        lsxContext.fromPagePath = context.currentPagePath;
 
-        // check cache exists
-        const cacheKey = LsxCacheHelper.generateCacheKeyFromContext(lsxContext);
-        const lsxStateCache = LsxCacheHelper.getStateCache(cacheKey);
-
-        this.renderReactDOM(lsxContext, lsxStateCache, elem);
+        this.renderReactDOM(lsxContext, elem, isPreview);
       }
     });
 
-    return Promise.resolve();
+    return;
   }
 
-  renderReactDOM(lsxContext, lsxStateCache, elem) {
+  renderReactDOM(lsxContext, elem, isPreview) {
     ReactDOM.render(
-      <Lsx appContainer={this.appContainer} lsxContext={lsxContext} lsxStateCache={lsxStateCache} />,
+      <Lsx appContainer={this.appContainer} lsxContext={lsxContext} forceToFetchData={!isPreview} />,
       elem,
     );
   }
