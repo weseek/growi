@@ -14,8 +14,8 @@ function NotificationEvent(crowi) {
 util.inherits(NotificationEvent, events.EventEmitter);
 
 
-NotificationEvent.prototype.onUpdate = function(page, user) {
-  logger.error('onUpdate event fired');
+NotificationEvent.prototype.onUpdate = function(user) {
+  logger.info('onUpdate event fired');
 };
 
 
