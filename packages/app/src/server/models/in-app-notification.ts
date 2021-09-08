@@ -3,7 +3,7 @@ import {
 } from 'mongoose';
 import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
-import loggerFactory from '~/utils/logger';
+import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { ActivityDocument } from './activity';
 import User = require('./user');
