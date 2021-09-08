@@ -18,7 +18,7 @@ class InAppNotificationService {
     this.updateCommentEvent();
   }
 
-  updateCommentEvent() {
+  updateCommentEvent(): void {
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
 
