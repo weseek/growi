@@ -19,12 +19,14 @@ class NortificationService {
   }
 
   updateNotificationevent() {
-    this.notificationEvent.on('update', this.notificationEvent.onUpdate);
+    this.notificationEvent.on('update', (user) => {
+      this.notificationEvent.onUpdate();
 
-    if (this.socketIoService.isInitialized) {
-      // need to pass user in second argument
-      this.socketIoService.getDefaultSocket().emit('notification updated');
-    }
+      if (this.socketIoService.isInitialized) {
+        // need to pass user in second argument
+        this.socketIoService.getDefaultSocket().emit('notification updated', { user });
+      }
+    });
   }
 
 }
