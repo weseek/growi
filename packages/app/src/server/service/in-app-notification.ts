@@ -22,9 +22,10 @@ class InAppNotificationService {
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
 
-      if (this.socketIoService.isInitialized) {
-        this.socketIoService.getDefaultSocket().emit('comment updated', { user });
-      }
+      // TODO: socket.on on the client side by GW-7402
+      // if (this.socketIoService.isInitialized) {
+      //   this.socketIoService.getDefaultSocket().emit('comment updated', { user });
+      // }
     });
   }
 
