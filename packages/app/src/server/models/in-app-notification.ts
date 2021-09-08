@@ -8,14 +8,14 @@ import Crowi from '../crowi';
 import { ActivityDocument } from './activity';
 import User = require('./user');
 
-const logger = loggerFactory('growi:models:notification');
+const logger = loggerFactory('growi:models:inAppNotification');
 
 const STATUS_UNREAD = 'UNREAD';
 const STATUS_UNOPENED = 'UNOPENED';
 const STATUS_OPENED = 'OPENED';
 const STATUSES = [STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED];
 
-export interface NotificationDocument extends Document {
+export interface InAppNotificationDocument extends Document {
   _id: Types.ObjectId
   user: Types.ObjectId
   targetModel: string
@@ -26,15 +26,15 @@ export interface NotificationDocument extends Document {
   createdAt: Date
 }
 
-export interface NotificationModel extends Model<NotificationDocument> {
-  findLatestNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<NotificationDocument[]>
-  upsertByActivity(user: Types.ObjectId, activity: ActivityDocument, createdAt?: Date | null): Promise<NotificationDocument | null>
+export interface InAppNotificationModel extends Model<InAppNotificationDocument> {
+  findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<InAppNotificationDocument[]>
+  upsertByActivity(user: Types.ObjectId, activity: ActivityDocument, createdAt?: Date | null): Promise<InAppNotificationDocument | null>
   removeActivity(activity: any): any
   // commented out type 'Query' temporary to avoid ts error
   removeEmpty()/* : Query<any> */
   read(user: typeof User) /* : Promise<Query<any>> */
 
-  open(user: typeof User, id: Types.ObjectId): Promise<NotificationDocument | null>
+  open(user: typeof User, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
   getUnreadCountByUser(user: Types.ObjectId): Promise<number | undefined>
 
   STATUS_UNREAD: string
@@ -43,9 +43,9 @@ export interface NotificationModel extends Model<NotificationDocument> {
 }
 
 export default (crowi: Crowi) => {
-  const notificationEvent = crowi.event('notification');
+  const inAppNotificationEvent = crowi.event('inAppNotification');
 
-  const notificationSchema = new Schema<NotificationDocument, NotificationModel>({
+  const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotificationModel>({
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -85,23 +85,23 @@ export default (crowi: Crowi) => {
       default: Date.now,
     },
   });
-  notificationSchema.virtual('actionUsers').get(function(this: NotificationDocument) {
+  inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
     const Activity = crowi.model('Activity');
     return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
   });
   const transform = (doc, ret) => {
     // delete ret.activities
   };
-  notificationSchema.set('toObject', { virtuals: true, transform });
-  notificationSchema.set('toJSON', { virtuals: true, transform });
-  notificationSchema.index({
+  inAppNotificationSchema.set('toObject', { virtuals: true, transform });
+  inAppNotificationSchema.set('toJSON', { virtuals: true, transform });
+  inAppNotificationSchema.index({
     user: 1, target: 1, action: 1, createdAt: 1,
   });
 
-  notificationSchema.statics.findLatestNotificationsByUser = function(user, limitNum, offset) {
+  inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = function(user, limitNum, offset) {
     const limit = limitNum || 10;
 
-    return Notification.find({ user })
+    return InAppNotification.find({ user })
       .sort({ createdAt: -1 })
       .skip(offset)
       .limit(limit)
@@ -110,7 +110,7 @@ export default (crowi: Crowi) => {
       .exec();
   };
 
-  notificationSchema.statics.upsertByActivity = async function(user, activity, createdAt = null) {
+  inAppNotificationSchema.statics.upsertByActivity = async function(user, activity, createdAt = null) {
     const {
       _id: activityId, targetModel, target, action,
     } = activity;
@@ -137,54 +137,54 @@ export default (crowi: Crowi) => {
       runValidators: true,
     };
 
-    const notification = await Notification.findOneAndUpdate(query, parameters, options);
+    const inAppNotification = await InAppNotification.findOneAndUpdate(query, parameters, options);
 
-    if (notification) {
-      notificationEvent.emit('update', notification.user);
+    if (inAppNotification) {
+      inAppNotificationEvent.emit('update', inAppNotification.user);
     }
 
-    return notification;
+    return inAppNotification;
   };
 
-  notificationSchema.statics.removeActivity = async function(activity) {
+  inAppNotificationSchema.statics.removeActivity = async function(activity) {
     const { _id, target, action } = activity;
     const query = { target, action };
     const parameters = { $pull: { activities: _id } };
 
-    const result = await Notification.updateMany(query, parameters);
+    const result = await InAppNotification.updateMany(query, parameters);
 
-    await Notification.removeEmpty();
+    await InAppNotification.removeEmpty();
     return result;
   };
 
-  notificationSchema.statics.removeEmpty = function() {
-    return Notification.deleteMany({ activities: { $size: 0 } });
+  inAppNotificationSchema.statics.removeEmpty = function() {
+    return InAppNotification.deleteMany({ activities: { $size: 0 } });
   };
 
-  notificationSchema.statics.read = async function(user) {
+  inAppNotificationSchema.statics.read = async function(user) {
     const query = { user, status: STATUS_UNREAD };
     const parameters = { status: STATUS_UNOPENED };
 
-    return Notification.updateMany(query, parameters);
+    return InAppNotification.updateMany(query, parameters);
   };
 
-  notificationSchema.statics.open = async function(user, id) {
+  inAppNotificationSchema.statics.open = async function(user, id) {
     const query = { _id: id, user: user._id };
     const parameters = { status: STATUS_OPENED };
     const options = { new: true };
 
-    const notification = await Notification.findOneAndUpdate(query, parameters, options);
-    if (notification) {
-      notificationEvent.emit('update', notification.user);
+    const inAppNotification = await InAppNotification.findOneAndUpdate(query, parameters, options);
+    if (inAppNotification) {
+      inAppNotificationEvent.emit('update', inAppNotification.user);
     }
-    return notification;
+    return inAppNotification;
   };
 
-  notificationSchema.statics.getUnreadCountByUser = async function(user) {
+  inAppNotificationSchema.statics.getUnreadCountByUser = async function(user) {
     const query = { user, status: STATUS_UNREAD };
 
     try {
-      const count = await Notification.countDocuments(query);
+      const count = await InAppNotification.countDocuments(query);
 
       return count;
     }
@@ -194,17 +194,17 @@ export default (crowi: Crowi) => {
     }
   };
 
-  notificationSchema.statics.STATUS_UNOPENED = function() {
+  inAppNotificationSchema.statics.STATUS_UNOPENED = function() {
     return STATUS_UNOPENED;
   };
-  notificationSchema.statics.STATUS_UNREAD = function() {
+  inAppNotificationSchema.statics.STATUS_UNREAD = function() {
     return STATUS_UNREAD;
   };
-  notificationSchema.statics.STATUS_OPENED = function() {
+  inAppNotificationSchema.statics.STATUS_OPENED = function() {
     return STATUS_OPENED;
   };
 
-  const Notification = model<NotificationDocument, NotificationModel>('Notification', notificationSchema);
+  const InAppNotification = model<InAppNotificationDocument, InAppNotificationModel>('InAppNotification', inAppNotificationSchema);
 
-  return Notification;
+  return InAppNotification;
 };
