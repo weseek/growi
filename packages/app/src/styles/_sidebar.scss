@@ -133,6 +133,10 @@
   .grw-drawer-toggler {
     display: none; // invisible in default
   }
+
+  .grw-sidebar-content-header {
+    min-width: 260px;
+  }
 }
 
 // Dock Mode
