@@ -13,7 +13,7 @@ class NortificationService {
 
     // init
     // comments
-    this.notificationEvent.on('update', this.notificationEvent.onUpdateComment);
+    this.notificationEvent.on('update', this.notificationEvent.onUpdate);
   }
 
 }
