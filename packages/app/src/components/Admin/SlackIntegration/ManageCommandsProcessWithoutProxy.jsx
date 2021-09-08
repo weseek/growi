@@ -14,10 +14,6 @@ const PermissionTypes = {
   ALLOW_SPECIFIED: 'allowSpecified',
 };
 
-// const CommandUsageTypes = {
-//   BROADCAST_USE: 'broadcastUse',
-//   SINGLE_USE: 'singleUse',
-// };
 
 // A utility function that returns the new state but identical to the previous state
 const getUpdatedChannelsList = (prevState, commandName, value) => {
@@ -63,7 +59,7 @@ const getPermissionTypeFromValue = (value) => {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const ManageCommandsProcess = ({ apiv3Put, commandPermission }) => {
+const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
 
   // const [permissionsForBroadcastUseCommandsState, setPermissionsForBroadcastUseCommandsState] = useState({
@@ -275,10 +271,10 @@ const ManageCommandsProcess = ({ apiv3Put, commandPermission }) => {
   );
 };
 
-ManageCommandsProcess.propTypes = {
+ManageCommandsProcessWithoutProxy.propTypes = {
   apiv3Put: PropTypes.func,
   commandPermission: PropTypes.string,
 
 };
 
-export default ManageCommandsProcess;
+export default ManageCommandsProcessWithoutProxy;
