@@ -214,13 +214,9 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
   const initializeEditorSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
     const retrievedRules: LintRule[] = data?.textlintSettings?.textlintRules;
-    if (retrievedRules != null) {
-      setTextlintRules(retrievedRules);
-    }
 
     // If database is empty, add default rules to state
-    if (retrievedRules?.length === 0 || retrievedRules == null) {
-
+    if (retrievedRules != null && retrievedRules.length > 0) {
       const createRulesFromDefaultList = (rule: { name: string }) => (
         {
           name: rule.name,
@@ -232,6 +228,10 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
       const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
     }
+    else {
+      setTextlintRules(retrievedRules);
+    }
+
   }, [appContainer]);
 
   useEffect(() => {
