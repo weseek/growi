@@ -101,7 +101,7 @@ export const createValidator = (rulesConfigArray: RulesConfigObj[] | null): Asyn
         if (ruleModulesList[rule.name] == null) {
           logger.error(`Textlint rule ${rule.name} is not installed`);
         }
-        return (ruleModulesList[rule.name] != null && rule?.isEnabled !== false);
+        return (ruleModulesList[rule.name] != null && rule.isEnabled !== false);
       });
 
     const rules = filteredConfigArray
