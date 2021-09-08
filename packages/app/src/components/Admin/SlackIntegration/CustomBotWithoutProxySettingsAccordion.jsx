@@ -21,7 +21,7 @@ export const botInstallationStep = {
 const CustomBotWithoutProxySettingsAccordion = (props) => {
   const {
     appContainer, activeStep, onTestConnectionInvoked,
-    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv,
+    slackSigningSecret, slackBotToken, slackSigningSecretEnv, slackBotTokenEnv, commandPermission,
   } = props;
   const successMessage = 'Successfully sent to Slack workspace.';
 
@@ -127,7 +127,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         // eslint-disable-next-line max-len
         title={<><span className="mr-2">④</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ml-3 text-success fa fa-check"></i>}</>}
       >
-        <ManageCommandsProcessWithoutProxy />
+        <ManageCommandsProcessWithoutProxy commandPermission={props.commandPermission} />
       </Accordion>
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
@@ -193,6 +193,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
+  commandPermission: PropTypes.string,
 
 };
 
