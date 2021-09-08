@@ -1,6 +1,6 @@
 import Crowi from '../crowi';
 
-class NortificationService {
+class InAppNotificationService {
 
   crowi!: any;
 
@@ -15,10 +15,10 @@ class NortificationService {
     this.commentEvent = crowi.event('comment');
 
     // init
-    this.updateNotificationevent();
+    this.updateCommentEvent();
   }
 
-  updateNotificationevent() {
+  updateCommentEvent() {
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
 
@@ -30,4 +30,4 @@ class NortificationService {
 
 }
 
-module.exports = NortificationService;
+module.exports = InAppNotificationService;
