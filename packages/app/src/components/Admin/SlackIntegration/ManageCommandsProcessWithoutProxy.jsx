@@ -63,85 +63,60 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
   console.log(commandPermission);
 
-  // const [permissionsForBroadcastUseCommandsState, setPermissionsForBroadcastUseCommandsState] = useState({
-  //   search: permissionsForBroadcastUseCommands.search,
-  // });
-  // const [permissionsForSingleUseCommandsState, setPermissionsForSingleUseCommandsState] = useState({
-  //   create: permissionsForSingleUseCommands.create,
-  //   togetter: permissionsForSingleUseCommands.togetter,
-  // });
-  // const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
-  //   const initialState = {};
-  //   Object.entries(permissionsForBroadcastUseCommandsState).forEach((entry) => {
-  //     const [commandName, value] = entry;
-  //     initialState[commandName] = getPermissionTypeFromValue(value);
-  //   });
-  //   Object.entries(permissionsForSingleUseCommandsState).forEach((entry) => {
-  //     const [commandName, value] = entry;
-  //     initialState[commandName] = getPermissionTypeFromValue(value);
-  //   });
-  //   return initialState;
-  // });
+  const [permissionsCommandsState, setPermissionsCommandsState] = useState({
+    search: commandPermission.search,
+    create: commandPermission.create,
+    togetter: commandPermission.togetter,
+  });
 
-  // const updatePermissionsForBroadcastUseCommandsState = useCallback((e) => {
-  //   const { target } = e;
-  //   const { name: commandName, value } = target;
+  const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
+    const initialState = {};
+    Object.entries(permissionsCommandsState).forEach((entry) => {
+      const [commandName, value] = entry;
+      initialState[commandName] = getPermissionTypeFromValue(value);
+    });
+    return initialState;
+  });
 
-  //   // update state
-  //   setPermissionsForBroadcastUseCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
-  //   setCurrentPermissionTypes((prevState) => {
-  //     const newState = { ...prevState };
-  //     newState[commandName] = value;
-  //     return newState;
-  //   });
-  // }, []);
+  const updatePermissionsCommandsState = useCallback((e) => {
+    const { target } = e;
+    const { name: commandName, value } = target;
 
-  // const updatePermissionsForSingleUseCommandsState = useCallback((e) => {
-  //   const { target } = e;
-  //   const { name: commandName, value } = target;
+    // update state
+    setPermissionsCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
+    setCurrentPermissionTypes((prevState) => {
+      const newState = { ...prevState };
+      newState[commandName] = value;
+      return newState;
+    });
+  }, []);
 
-  //   // update state
-  //   setPermissionsForSingleUseCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
-  //   setCurrentPermissionTypes((prevState) => {
-  //     const newState = { ...prevState };
-  //     newState[commandName] = value;
-  //     return newState;
-  //   });
-  // }, []);
+  const updateChannelsListState = useCallback((e) => {
+    const { target } = e;
+    const { name: commandName, value } = target;
+    // update state
+    setPermissionsCommandsState(prev => getUpdatedChannelsList(prev, commandName, value));
+  }, []);
 
-  // const updateChannelsListForBroadcastUseCommandsState = useCallback((e) => {
-  //   const { target } = e;
-  //   const { name: commandName, value } = target;
-  //   // update state
-  //   setPermissionsForBroadcastUseCommandsState(prev => getUpdatedChannelsList(prev, commandName, value));
-  // }, []);
 
-  // const updateChannelsListForSingleUseCommandsState = useCallback((e) => {
-  //   const { target } = e;
-  //   const { name: commandName, value } = target;
-  //   // update state
-  //   setPermissionsForSingleUseCommandsState(prev => getUpdatedChannelsList(prev, commandName, value));
-  // }, []);
-
-  // const updateCommandsHandler = async(e) => {
-  //   try {
-  //     await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/supported-commands`, {
-  //       permissionsForBroadcastUseCommands: permissionsForBroadcastUseCommandsState,
-  //       permissionsForSingleUseCommands: permissionsForSingleUseCommandsState,
-  //     });
-  //     toastSuccess(t('toaster.update_successed', { target: 'Token' }));
-  //   }
-  //   catch (err) {
-  //     toastError(err);
-  //     logger.error(err);
-  //   }
-  // };
+  const updateCommandsHandler = async(e) => {
+    try {
+      await apiv3Put('/slack-integration-settings/without-proxy/update-permissions', {
+        commandPermission: permissionsCommandsState,
+      });
+      toastSuccess(t('toaster.update_successed', { target: 'Token' }));
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+    }
+  };
 
   const PermissionSettingForEachCommandComponent = ({ commandName, commandUsageType }) => {
-    // const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
+    const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
     // const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
 
-    const permissionSettings = ['search'];
+    const permissionSettings = permissionsCommandsState;
     const permission = permissionSettings[commandName];
     if (permission === undefined) logger.error('Must be implemented');
 
@@ -160,14 +135,14 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
               aria-haspopup="true"
               aria-expanded="true"
             >
-              {/* <span className="float-left">
+              <span className="float-left">
                 {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_ALL
                 && t('admin:slack_integration.accordion.allow_all')}
                 {currentPermissionTypes[commandName] === PermissionTypes.DENY_ALL
                 && t('admin:slack_integration.accordion.deny_all')}
                 {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED
                 && t('admin:slack_integration.accordion.allow_specified')}
-              </span> */}
+              </span>
             </button>
             <div className="dropdown-menu">
               <button
@@ -175,7 +150,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.ALLOW_ALL}
-                // onClick={updatePermissionsForBroadcastUseCommandsState}
+                onClick={updatePermissionsCommandsState}
               >
                 {t('admin:slack_integration.accordion.allow_all_long')}
               </button>
@@ -184,7 +159,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.DENY_ALL}
-                // onClick={updatePermissionsForBroadcastUseCommandsState}
+                onClick={updatePermissionsCommandsState}
               >
                 {t('admin:slack_integration.accordion.deny_all_long')}
               </button>
@@ -193,27 +168,28 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.ALLOW_SPECIFIED}
-                // onClick={updatePermissionsForBroadcastUseCommandsState}
+                onClick={updatePermissionsCommandsState}
               >
                 {t('admin:slack_integration.accordion.allow_specified_long')}
               </button>
             </div>
           </div>
         </div>
-        {/* <div className={`row-12 row-md-6 ${hiddenClass}`}> */}
-        <textarea
-          className="form-control"
-          type="textarea"
-          name={commandName}
-          defaultValue={textareaDefaultValue}
-          // onChange={updateChannelsListForBroadcastUseCommandsState}
-        />
-        <p className="form-text text-muted small">
-          {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
-          <br />
-        </p>
+        <div className={`row-12 row-md-6 ${hiddenClass}`}>
+          <textarea
+            className="form-control"
+            type="textarea"
+            name={commandName}
+            defaultValue={textareaDefaultValue}
+            onChange={updatePermissionsCommandsState}
+          />
+          <p className="form-text text-muted small">
+            {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
+            <br />
+          </p>
+        </div>
+
       </div>
-      // </div>
     );
   };
 
@@ -224,7 +200,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
   const PermissionSettingsForEachCommandTypeComponent = ({ commandUsageType }) => {
     // const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
-    const defaultCommandsName = ['seach'];
+    const defaultCommandsName = [...defaultSupportedCommandsNameForSingleUse, ...defaultSupportedCommandsNameForBroadcastUse];
     return (
       <>
         {/* <p className="font-weight-bold mb-0">{isCommandBroadcastUse ? 'Multiple GROWI' : 'Single GROWI'}</p> */}
@@ -233,7 +209,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
         </p>
         <div className="custom-control custom-checkbox">
           <div className="row mb-5 d-block">
-            {['search'].map((commandName) => {
+            {defaultCommandsName.map((commandName) => {
               // eslint-disable-next-line max-len
               return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} commandUsageType={commandUsageType} />;
             })}
@@ -263,7 +239,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
         <button
           type="submit"
           className="btn btn-primary mx-auto"
-          // onClick={updateCommandsHandler}
+          onClick={updateCommandsHandler}
         >
           { t('Update') }
         </button>
