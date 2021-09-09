@@ -197,7 +197,9 @@ module.exports = function(crowi, app) {
 
   app.get('/share/:linkId', page.showSharedPage);
 
-  app.get('/:pageId([0-9a-z]{24}).ogp', ogp.ogp);
+  app.use('/ogp', express.Router()
+    .get('/:pageId([0-9a-z]{24})', ogp.ogp)
+    .use(loginRequired));
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
