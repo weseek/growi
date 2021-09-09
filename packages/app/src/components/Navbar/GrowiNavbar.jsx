@@ -28,14 +28,14 @@ class GrowiNavbar extends React.Component {
 
     return (
       <>
+        <li>
+          <InAppNotificationDropdown />
+        </li>
         <li className="nav-item d-none d-md-block">
           <button className="px-md-2 nav-link btn-create-page border-0 bg-transparent" type="button" onClick={navigationContainer.openPageCreateModal}>
             <i className="icon-pencil mr-2"></i>
             <span className="d-none d-lg-block">{ t('New') }</span>
           </button>
-        </li>
-        <li>
-          <InAppNotificationDropdown />
         </li>
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
           <PersonalDropdown />
