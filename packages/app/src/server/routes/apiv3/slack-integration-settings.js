@@ -404,7 +404,7 @@ module.exports = (crowi) => {
 
     const { commandPermission } = req.body;
     const requestParams = {
-      'slackbot:withoutProxy:commandPermission': commandPermission,
+      'slackbot:withoutProxy:commandPermission': JSON.stringify(commandPermission),
     };
     try {
       await updateSlackBotSettings(requestParams);
