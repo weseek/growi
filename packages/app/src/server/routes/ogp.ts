@@ -10,8 +10,7 @@ export const renderOgp = (req: Request, res: Response): Response => {
     return res.status(400).send();
   }
 
-  // TODO: GW-7369 OGP server にリクエスト、レスポンスの画像を pipe して返却できるようにする
-  // TODO: pageId から path を解決、OGP image の表示判断を行う
+  // TODO: GW-7369 Allow the OGP server to pipe images back to the request and response
 
   return res.status(200).send();
 };
