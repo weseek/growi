@@ -196,7 +196,7 @@ CustomBotWithoutProxySettingsAccordion.propTypes = {
   slackSigningSecretEnv: PropTypes.string,
   slackBotToken: PropTypes.string,
   slackBotTokenEnv: PropTypes.string,
-  commandPermission: PropTypes.string,
+  commandPermission: PropTypes.object,
 
 };
 

@@ -70,7 +70,7 @@ CustomBotWithoutProxySettings.propTypes = {
   onUpdatedSecretToken: PropTypes.func.isRequired,
   onTestConnectionInvoked: PropTypes.func.isRequired,
   connectionStatuses: PropTypes.object.isRequired,
-  commandPermission: PropTypes.string,
+  commandPermission: PropTypes.object,
 };
 
 export default CustomBotWithoutProxySettingsWrapper;

@@ -258,7 +258,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
 ManageCommandsProcessWithoutProxy.propTypes = {
   apiv3Put: PropTypes.func,
-  commandPermission: PropTypes.string,
+  commandPermission: PropTypes.object,
 
 };
 
