@@ -142,6 +142,7 @@ export class RelationsService {
       return relationResult;
     }));
 
+    // Pick up only a relation which status is "rejected" in results. Like bellow
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
     return {
