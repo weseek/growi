@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
@@ -13,6 +13,9 @@ const PermissionTypes = {
   DENY_ALL: 'denyAll',
   ALLOW_SPECIFIED: 'allowSpecified',
 };
+
+const defaultCommandsName = [...defaultSupportedCommandsNameForBroadcastUse, ...defaultSupportedCommandsNameForSingleUse];
+
 
 // A utility function that returns the new state but identical to the previous state
 const getUpdatedChannelsList = (prevState, commandName, value) => {
@@ -60,11 +63,11 @@ const getPermissionTypeFromValue = (value) => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
-
+  console.log(commandPermission, 66);
   const [permissionsCommandsState, setPermissionsCommandsState] = useState({
-    search: commandPermission.search,
-    create: commandPermission.create,
-    togetter: commandPermission.togetter,
+    search: commandPermission?.search,
+    create: commandPermission?.create,
+    togetter: commandPermission?.togetter,
   });
 
   const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
@@ -75,6 +78,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     });
     return initialState;
   });
+
 
   const updatePermissionsCommandsState = useCallback((e) => {
     const { target } = e;
@@ -88,6 +92,16 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
       return newState;
     });
   }, []);
+
+  useEffect(() => {
+    console.log(commandPermission, 109);
+    setCurrentPermissionTypes({
+      search: getPermissionTypeFromValue(commandPermission?.search),
+      create:  getPermissionTypeFromValue(commandPermission?.create),
+      togetter:  getPermissionTypeFromValue(commandPermission?.togetter),
+    });
+
+  }, [commandPermission]);
 
   const updateChannelsListState = useCallback((e) => {
     const { target } = e;
@@ -195,8 +209,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     commandUsageType: PropTypes.string,
   };
 
-
-  const defaultCommandsName = [...defaultSupportedCommandsNameForSingleUse, ...defaultSupportedCommandsNameForBroadcastUse];
 
   return (
     <div className="py-4 px-5">

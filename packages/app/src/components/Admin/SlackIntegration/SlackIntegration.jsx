@@ -55,7 +55,6 @@ const SlackIntegration = (props) => {
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
       setCommandPermission(commandPermission);
-      console.log(commandPermission);
     }
     catch (err) {
       toastError(err);
