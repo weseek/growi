@@ -18,6 +18,12 @@ type checkPermissionForInteractionsResults = {
   rejectedResults:PromiseRejectedResult[]
 }
 
+type checkEachRelationResult = {
+  allowedRelation:Relation|null,
+  disallowedGrowiUrl:string|null,
+  eachRelationCommandName:string,
+}
+
 @Service()
 export class RelationsService {
 
@@ -117,59 +123,76 @@ export class RelationsService {
   async checkPermissionForInteractions(
       relations:Relation[], actionId:string, callbackId:string, channelName:string,
   ):Promise<checkPermissionForInteractionsResults> {
-    return this.relationsResult(relations, actionId, callbackId, channelName);
-  }
-
-  async relationsResult(
-      relations:Relation[], actionId:string, callbackId:string, channelName:string,
-  ):Promise<checkPermissionForInteractionsResults> {
 
     const allowedRelations:Relation[] = [];
     const disallowedGrowiUrls:Set<string> = new Set();
     let commandName = '';
 
-    const results = await Promise.allSettled(relations.map(async(relation) => {
-      let permissionForInteractions:boolean|string[];
-      const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
-      const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
+    const results = await Promise.allSettled(relations.map((relation) => {
+      const relationResult = this.checkEachRelation(relation, actionId, callbackId, channelName);
+      const { allowedRelation, disallowedGrowiUrl, eachRelationCommandName } = relationResult;
 
-      [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
-
-        // ex. search OR search:handlerName
-        const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
-        // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
-        if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
-          return;
-        }
-
-        commandName = tempCommandName;
-
-        // case: singleUse
-        permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
-        // case: broadcastUse
-        if (permissionForInteractions == null) {
-          permissionForInteractions = relation.permissionsForBroadcastUseCommands[tempCommandName];
-        }
-
-        if (permissionForInteractions === true) {
-          return allowedRelations.push(relation);
-        }
-
-        // check permission at channel level
-        if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(channelName)) {
-          return allowedRelations.push(relation);
-        }
-
-        disallowedGrowiUrls.add(relation.growiUri);
-      });
+      if (allowedRelation != null) {
+        allowedRelations.push(allowedRelation);
+      }
+      if (disallowedGrowiUrl != null) {
+        disallowedGrowiUrls.add(disallowedGrowiUrl);
+      }
+      commandName = eachRelationCommandName;
+      return relationResult;
     }));
 
+    // Pick up only a relation which status is "rejected" in results. Like bellow
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-
 
     return {
       allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
     };
+  }
+
+  checkEachRelation(relation:Relation, actionId:string, callbackId:string, channelName:string):checkEachRelationResult {
+
+    let allowedRelation:Relation|null = null;
+    let disallowedGrowiUrl:string|null = null;
+    let eachRelationCommandName = '';
+
+    let permissionForInteractions:boolean|string[];
+    const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
+    const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
+
+    [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
+
+      // ex. search OR search:handlerName
+      const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
+      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
+      if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
+        return;
+      }
+
+      eachRelationCommandName = tempCommandName;
+
+      // case: singleUse
+      permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
+      // case: broadcastUse
+      if (permissionForInteractions == null) {
+        permissionForInteractions = relation.permissionsForBroadcastUseCommands[tempCommandName];
+      }
+
+      if (permissionForInteractions === true) {
+        allowedRelation = relation;
+        return;
+      }
+
+      // check permission at channel level
+      if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(channelName)) {
+        allowedRelation = relation;
+        return;
+      }
+
+      disallowedGrowiUrl = relation.growiUri;
+    });
+
+    return { allowedRelation, disallowedGrowiUrl, eachRelationCommandName };
   }
 
 }
