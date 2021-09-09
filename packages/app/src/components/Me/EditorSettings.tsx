@@ -155,7 +155,7 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
   const { t } = useTranslation();
 
   const isCheckedRule = (ruleName: string) => (
-    textlintRules?.find(stateRule => (
+    textlintRules.find(stateRule => (
       stateRule.name === ruleName
     ))?.isEnabled || false
   );
@@ -201,7 +201,7 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
 RuleListGroup.propTypes = {
   title: PropTypes.string.isRequired,
   ruleList: PropTypes.array.isRequired,
-  textlintRules: PropTypes.array,
+  textlintRules: PropTypes.array.isRequired,
   setTextlintRules: PropTypes.func.isRequired,
 };
 
@@ -214,9 +214,13 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
   const initializeEditorSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
     const retrievedRules: LintRule[] = data?.textlintSettings?.textlintRules;
+    console.log('data', data);
 
     // If database is empty, add default rules to state
-    if (retrievedRules != null && retrievedRules.length > 0) {
+    if (retrievedRules == null && retrievedRules.length > 0) {
+      setTextlintRules(retrievedRules);
+    }
+    else {
       const createRulesFromDefaultList = (rule: { name: string }) => (
         {
           name: rule.name,
@@ -227,9 +231,6 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
       const defaultCommonRules = commonRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
-    }
-    else {
-      setTextlintRules(retrievedRules);
     }
 
   }, [appContainer]);
