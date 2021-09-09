@@ -132,8 +132,6 @@ export class RelationsService {
       const relationResult = await this.checkEachRelation(relation, actionId, callbackId, channelName);
       const { allowedRelation, disallowedGrowiUrl, eachRelationCommandName } = relationResult;
 
-      console.log(relationResult);
-
       if (allowedRelation != null) {
         allowedRelations.push(allowedRelation);
       }
@@ -143,8 +141,6 @@ export class RelationsService {
       commandName = eachRelationCommandName;
 
     }));
-    console.log(144, results);
-
 
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
@@ -197,58 +193,6 @@ export class RelationsService {
     });
 
     return { allowedRelation, disallowedGrowiUrl, eachRelationCommandName };
-  }
-
-  async relationsResult(
-      relations:Relation[], actionId:string, callbackId:string, channelName:string,
-  ):Promise<checkPermissionForInteractionsResults> {
-
-    const allowedRelations:Relation[] = [];
-    const disallowedGrowiUrls:Set<string> = new Set();
-    let commandName = '';
-
-    const results = await Promise.allSettled(relations.map(async(relation) => {
-      let permissionForInteractions:boolean|string[];
-      const singleUse = Object.keys(relation.permissionsForSingleUseCommands);
-      const broadCastUse = Object.keys(relation.permissionsForBroadcastUseCommands);
-
-      [...singleUse, ...broadCastUse].forEach(async(tempCommandName) => {
-
-        // ex. search OR search:handlerName
-        const commandRegExp = new RegExp(`(^${tempCommandName}$)|(^${tempCommandName}:\\w+)`);
-        // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands and permissionsForSingleUseCommands
-        if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
-          return;
-        }
-
-        commandName = tempCommandName;
-
-        // case: singleUse
-        permissionForInteractions = relation.permissionsForSingleUseCommands[tempCommandName];
-        // case: broadcastUse
-        if (permissionForInteractions == null) {
-          permissionForInteractions = relation.permissionsForBroadcastUseCommands[tempCommandName];
-        }
-
-        if (permissionForInteractions === true) {
-          return allowedRelations.push(relation);
-        }
-
-        // check permission at channel level
-        if (Array.isArray(permissionForInteractions) && permissionForInteractions.includes(channelName)) {
-          return allowedRelations.push(relation);
-        }
-
-        disallowedGrowiUrls.add(relation.growiUri);
-      });
-    }));
-
-    const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-
-
-    return {
-      allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
-    };
   }
 
 }
