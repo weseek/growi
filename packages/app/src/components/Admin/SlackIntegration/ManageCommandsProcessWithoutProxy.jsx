@@ -61,7 +61,6 @@ const getPermissionTypeFromValue = (value) => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
-  console.log(commandPermission);
 
   const [permissionsCommandsState, setPermissionsCommandsState] = useState({
     search: commandPermission.search,
@@ -112,7 +111,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     }
   };
 
-  const PermissionSettingForEachCommandComponent = ({ commandName, commandUsageType }) => {
+  const PermissionSettingForEachCommandComponent = ({ commandName }) => {
     const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
     // const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
 
@@ -181,7 +180,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
             type="textarea"
             name={commandName}
             defaultValue={textareaDefaultValue}
-            onChange={updatePermissionsCommandsState}
+            onChange={updateChannelsListState}
           />
           <p className="form-text text-muted small">
             {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
@@ -223,6 +222,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     commandUsageType: PropTypes.string,
   };
 
+  const defaultCommandsName = [...defaultSupportedCommandsNameForSingleUse, ...defaultSupportedCommandsNameForBroadcastUse];
 
   return (
     <div className="py-4 px-5">
@@ -230,9 +230,22 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
       <div className="row d-flex flex-column align-items-center">
 
         <div className="col-8">
-          {Object.values(['search']).map((commandUsageType) => {
-            return <PermissionSettingsForEachCommandTypeComponent key={commandUsageType} commandUsageType={commandUsageType} />;
-          })}
+
+          <>
+            {/* <p className="font-weight-bold mb-0">{isCommandBroadcastUse ? 'Multiple GROWI' : 'Single GROWI'}</p> */}
+            <p className="text-muted mb-2">
+              {t('admin:slack_integration.accordion.multiple_growi_command')}
+            </p>
+            <div className="custom-control custom-checkbox">
+              <div className="row mb-5 d-block">
+                {defaultCommandsName.map((commandName) => {
+                  // eslint-disable-next-line max-len
+                  return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} />;
+                })}
+              </div>
+            </div>
+          </>
+
         </div>
       </div>
       <div className="row">
