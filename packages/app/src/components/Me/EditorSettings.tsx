@@ -216,7 +216,7 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
     const retrievedRules: LintRule[] = data?.textlintSettings?.textlintRules;
 
     // If database is empty, add default rules to state
-    if (retrievedRules == null && retrievedRules.length > 0) {
+    if (retrievedRules != null && retrievedRules.length > 0) {
       setTextlintRules(retrievedRules);
     }
     else {
