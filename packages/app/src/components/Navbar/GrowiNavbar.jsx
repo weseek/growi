@@ -7,7 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { withUnstatedContainers } from '../UnstatedUtils';
 import NavigationContainer from '~/client/services/NavigationContainer';
 import AppContainer from '~/client/services/AppContainer';
-import HeaderNotification from '~/components/PageEditor/HeaderNotification';
+import InAppNotificationDropdown from '~/components/PageEditor/InAppNotificationDropdown';
 
 
 import GrowiLogo from '../Icons/GrowiLogo';
@@ -35,7 +35,7 @@ class GrowiNavbar extends React.Component {
           </button>
         </li>
         <li>
-          <HeaderNotification />
+          <InAppNotificationDropdown />
         </li>
         <li className="grw-personal-dropdown nav-item dropdown dropdown-toggle dropdown-toggle-no-caret">
           <PersonalDropdown />
