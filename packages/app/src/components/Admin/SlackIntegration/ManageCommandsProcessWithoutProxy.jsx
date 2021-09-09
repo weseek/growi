@@ -63,16 +63,30 @@ const getPermissionTypeFromValue = (value) => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
-  console.log(commandPermission, 66);
-  const [permissionsCommandsState, setPermissionsCommandsState] = useState({
-    search: commandPermission?.search,
-    create: commandPermission?.create,
-    togetter: commandPermission?.togetter,
+
+  const [permissionsCommandsState, setPermissionsCommandsState] = useState(() => {
+    if (commandPermission == null) {
+      return {};
+    }
+
+    const initialState = {};
+
+    Object.entries(commandPermission).forEach((entry) => {
+      const [commandName, value] = entry;
+      initialState[commandName] = value;
+    });
+    return initialState;
   });
 
   const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
+
+    if (commandPermission == null) {
+      return {};
+    }
+
     const initialState = {};
-    Object.entries(permissionsCommandsState).forEach((entry) => {
+
+    Object.entries(commandPermission).forEach((entry) => {
       const [commandName, value] = entry;
       initialState[commandName] = getPermissionTypeFromValue(value);
     });
@@ -93,12 +107,19 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     });
   }, []);
 
+
   useEffect(() => {
-    console.log(commandPermission, 109);
-    setCurrentPermissionTypes({
-      search: getPermissionTypeFromValue(commandPermission?.search),
-      create:  getPermissionTypeFromValue(commandPermission?.create),
-      togetter:  getPermissionTypeFromValue(commandPermission?.togetter),
+    setCurrentPermissionTypes(() => {
+      const obj = {};
+      if (commandPermission == null) {
+        return {};
+      }
+
+      Object.entries(commandPermission).forEach((entry) => {
+        const [commandName, value] = entry;
+        obj[commandName] = getPermissionTypeFromValue(value);
+      });
+      return obj;
     });
 
   }, [commandPermission]);
@@ -129,7 +150,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
     const permissionSettings = permissionsCommandsState;
     const permission = permissionSettings[commandName];
-    if (permission === undefined) logger.error('Must be implemented');
 
     const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
