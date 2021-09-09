@@ -106,6 +106,7 @@ module.exports = (crowi) => {
       'slackbot:withoutProxy:signingSecret': null,
       'slackbot:withoutProxy:botToken': null,
       'slackbot:proxyUri': null,
+      'slackbot:withoutProxy:commandPermission': null,
     };
 
     // set url if officialBot is specified
