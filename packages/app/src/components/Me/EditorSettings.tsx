@@ -155,7 +155,7 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
   const { t } = useTranslation();
 
   const isCheckedRule = (ruleName: string) => (
-    textlintRules.find(stateRule => (
+    textlintRules?.find(stateRule => (
       stateRule.name === ruleName
     ))?.isEnabled || false
   );
@@ -201,7 +201,7 @@ const RuleListGroup: FC<RuleListGroupProps> = ({
 RuleListGroup.propTypes = {
   title: PropTypes.string.isRequired,
   ruleList: PropTypes.array.isRequired,
-  textlintRules: PropTypes.array.isRequired,
+  textlintRules: PropTypes.array,
   setTextlintRules: PropTypes.func.isRequired,
 };
 
