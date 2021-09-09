@@ -11,6 +11,7 @@ import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('@growi/slackbot-proxy:middlewares:authorizer');
 
 
@@ -85,9 +86,7 @@ export class AuthorizeInteractionMiddleware implements IMiddleware {
       const { body } = req;
 
       if (body.payload == null) {
-        const message = 'The request has no payload.';
-        logger.warn(message, { body: req.body });
-        return next(createError(400, message));
+        return next(createError(400, 'The request has no payload.'));
       }
 
       const payload = JSON.parse(body.payload);
