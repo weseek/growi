@@ -214,7 +214,6 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
   const initializeEditorSettings = useCallback(async() => {
     const { data } = await appContainer.apiv3Get('/personal-setting/editor-settings');
     const retrievedRules: LintRule[] = data?.textlintSettings?.textlintRules;
-    console.log('data', data);
 
     // If database is empty, add default rules to state
     if (retrievedRules == null && retrievedRules.length > 0) {
