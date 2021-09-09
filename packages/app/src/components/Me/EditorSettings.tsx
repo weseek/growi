@@ -25,7 +25,7 @@ type LintRule = {
   name: string
   options?: unknown
   isEnabled?: boolean
-}
+} | undefined
 
 type RulesMenuItem = {
   name: string
