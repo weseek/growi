@@ -42,6 +42,7 @@ module.exports = function(crowi, app) {
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
   const hackmd = require('./hackmd')(crowi, app);
+  const ogp = require('./ogp')(crowi, app);
 
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
 
@@ -195,6 +196,8 @@ module.exports = function(crowi, app) {
     .use(forgotPassword.handleHttpErrosMiddleware));
 
   app.get('/share/:linkId', page.showSharedPage);
+
+  app.get('/*.ogp', ogp.ogp);
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
