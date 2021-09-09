@@ -210,7 +210,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
           <div className="row mb-5 d-block">
             {defaultCommandsName.map((commandName) => {
               // eslint-disable-next-line max-len
-              return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} commandUsageType={commandUsageType} />;
+              return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} />;
             })}
           </div>
         </div>
@@ -230,22 +230,17 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
       <div className="row d-flex flex-column align-items-center">
 
         <div className="col-8">
-
-          <>
-            {/* <p className="font-weight-bold mb-0">{isCommandBroadcastUse ? 'Multiple GROWI' : 'Single GROWI'}</p> */}
-            <p className="text-muted mb-2">
-              {t('admin:slack_integration.accordion.multiple_growi_command')}
-            </p>
-            <div className="custom-control custom-checkbox">
-              <div className="row mb-5 d-block">
-                {defaultCommandsName.map((commandName) => {
-                  // eslint-disable-next-line max-len
-                  return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} />;
-                })}
-              </div>
+          <p className="text-muted mb-2">
+            {t('admin:slack_integration.accordion.multiple_growi_command')}
+          </p>
+          <div className="custom-control custom-checkbox">
+            <div className="row mb-5 d-block">
+              {defaultCommandsName.map((commandName) => {
+                // eslint-disable-next-line max-len
+                return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} />;
+              })}
             </div>
-          </>
-
+          </div>
         </div>
       </div>
       <div className="row">
