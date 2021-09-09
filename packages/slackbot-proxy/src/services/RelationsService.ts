@@ -128,8 +128,8 @@ export class RelationsService {
     const disallowedGrowiUrls:Set<string> = new Set();
     let commandName = '';
 
-    const results = await Promise.allSettled(relations.map(async(relation) => {
-      const relationResult = await this.checkEachRelation(relation, actionId, callbackId, channelName);
+    const results = await Promise.allSettled(relations.map((relation) => {
+      const relationResult = this.checkEachRelation(relation, actionId, callbackId, channelName);
       const { allowedRelation, disallowedGrowiUrl, eachRelationCommandName } = relationResult;
 
       if (allowedRelation != null) {
@@ -139,18 +139,17 @@ export class RelationsService {
         disallowedGrowiUrls.add(disallowedGrowiUrl);
       }
       commandName = eachRelationCommandName;
-
+      return relationResult;
     }));
 
     const rejectedResults: PromiseRejectedResult[] = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
 
-    // return this.relationsResult(relations, actionId, callbackId, channelName);
     return {
       allowedRelations, disallowedGrowiUrls, commandName, rejectedResults,
     };
   }
 
-  async checkEachRelation(relation:Relation, actionId:string, callbackId:string, channelName:string):Promise<checkEachRelationResult> {
+  checkEachRelation(relation:Relation, actionId:string, callbackId:string, channelName:string):checkEachRelationResult {
 
     let allowedRelation:Relation|null = null;
     let disallowedGrowiUrl:string|null = null;
