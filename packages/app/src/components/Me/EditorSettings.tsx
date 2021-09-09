@@ -217,6 +217,9 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
 
     // If database is empty, add default rules to state
     if (retrievedRules != null && retrievedRules.length > 0) {
+      setTextlintRules(retrievedRules);
+    }
+    else {
       const createRulesFromDefaultList = (rule: { name: string }) => (
         {
           name: rule.name,
@@ -227,9 +230,6 @@ const EditorSettingsBody: FC<EditorSettingsBodyProps> = (props) => {
       const defaultCommonRules = commonRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       const defaultJapaneseRules = japaneseRulesMenuItems.map(rule => createRulesFromDefaultList(rule));
       setTextlintRules([...defaultCommonRules, ...defaultJapaneseRules]);
-    }
-    else {
-      setTextlintRules(retrievedRules);
     }
 
   }, [appContainer]);
