@@ -3,6 +3,7 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
+import * as ogp from './ogp';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -195,6 +196,9 @@ module.exports = function(crowi, app) {
     .use(forgotPassword.handleHttpErrosMiddleware));
 
   app.get('/share/:linkId', page.showSharedPage);
+
+  app.use('/ogp', express.Router()
+    .get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.renderOgp));
 
   app.get('/*/$'                   , loginRequired , page.showPageWithEndOfSlash, page.notFound);
   app.get('/*'                     , loginRequired , autoReconnectToSearch, page.showPage, page.notFound);
