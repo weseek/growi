@@ -14,7 +14,6 @@ const PermissionTypes = {
   ALLOW_SPECIFIED: 'allowSpecified',
 };
 
-
 // A utility function that returns the new state but identical to the previous state
 const getUpdatedChannelsList = (prevState, commandName, value) => {
   // string to array
@@ -113,7 +112,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
   const PermissionSettingForEachCommandComponent = ({ commandName }) => {
     const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
-    // const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
 
     const permissionSettings = permissionsCommandsState;
     const permission = permissionSettings[commandName];
@@ -197,30 +195,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     commandUsageType: PropTypes.string,
   };
 
-  const PermissionSettingsForEachCommandTypeComponent = ({ commandUsageType }) => {
-    // const isCommandBroadcastUse = commandUsageType === CommandUsageTypes.BROADCAST_USE;
-    const defaultCommandsName = [...defaultSupportedCommandsNameForSingleUse, ...defaultSupportedCommandsNameForBroadcastUse];
-    return (
-      <>
-        {/* <p className="font-weight-bold mb-0">{isCommandBroadcastUse ? 'Multiple GROWI' : 'Single GROWI'}</p> */}
-        <p className="text-muted mb-2">
-          {t('admin:slack_integration.accordion.multiple_growi_command')}
-        </p>
-        <div className="custom-control custom-checkbox">
-          <div className="row mb-5 d-block">
-            {defaultCommandsName.map((commandName) => {
-              // eslint-disable-next-line max-len
-              return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} />;
-            })}
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  PermissionSettingsForEachCommandTypeComponent.propTypes = {
-    commandUsageType: PropTypes.string,
-  };
 
   const defaultCommandsName = [...defaultSupportedCommandsNameForSingleUse, ...defaultSupportedCommandsNameForBroadcastUse];
 
@@ -230,9 +204,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
       <div className="row d-flex flex-column align-items-center">
 
         <div className="col-8">
-          <p className="text-muted mb-2">
-            {t('admin:slack_integration.accordion.multiple_growi_command')}
-          </p>
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
               {defaultCommandsName.map((commandName) => {
