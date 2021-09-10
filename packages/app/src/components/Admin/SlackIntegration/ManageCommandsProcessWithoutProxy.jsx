@@ -63,18 +63,7 @@ const getPermissionTypeFromValue = (value) => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
-
-  const [permissionsCommandsState, setPermissionsCommandsState] = useState(() => {
-    const initialState = {};
-    if (commandPermission != null) {
-      Object.entries(commandPermission).forEach((entry) => {
-        const [command, value] = entry;
-        initialState[command] = value;
-      });
-    }
-    return initialState;
-  });
-
+  const [permissionsCommandsState, setPermissionsCommandsState] = useState({});
 
   const updatePermissionsCommandsState = useCallback((e) => {
     const { target } = e;
