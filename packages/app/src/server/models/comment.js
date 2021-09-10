@@ -100,7 +100,7 @@ module.exports = function(crowi) {
   /**
    * post save hook
    */
-  commentSchema.post('save', (savedComment) => {
+  commentSchema.post('save', async(savedComment) => {
     const Page = crowi.model('Page');
     const commentEvent = crowi.event('comment');
 
@@ -110,7 +110,8 @@ module.exports = function(crowi) {
       })
       .catch(() => {
       });
-    commentEvent.emit('update', savedComment.creator);
+
+    await commentEvent.emit('update', savedComment.creator);
   });
 
   return mongoose.model('Comment', commentSchema);
