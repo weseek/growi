@@ -132,6 +132,7 @@ module.exports = (crowi) => {
   const apiV3FormValidator = require('../../middlewares/apiv3-form-validator')(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
+  const socketIoService = crowi.socketIoService;
   const { Page, GlobalNotificationSetting } = crowi.models;
   const { exportService } = crowi;
 
@@ -186,6 +187,11 @@ module.exports = (crowi) => {
    */
   router.put('/likes', accessTokenParser, loginRequiredStrictly, csrf, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool: isLiked } = req.body;
+
+    // DELETE THIS THIS IS FOR ONLY TESTING PURPOSE
+    await socketIoService.getDefaultSocket().in(`user:${req.user._id}`).emit('in_app_notification', {
+      testData: 'Test data',
+    });
 
     let page;
     try {

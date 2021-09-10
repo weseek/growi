@@ -40,6 +40,8 @@ class SocketIoService {
     await this.setupCheckConnectionLimitsMiddleware();
 
     await this.setupStoreGuestIdEventHandler();
+
+    await this.setupDefaultSocketRoomsEventHandler();
   }
 
   getDefaultSocket() {
@@ -121,6 +123,21 @@ class SocketIoService {
           this.guestClients.delete(socket.id);
         });
       }
+    });
+  }
+
+  setupDefaultSocketRoomsEventHandler() {
+    this.io.on('connection', (socket) => {
+      // TODO: check if i can get page information here and use or not
+      // TODO: join page rooms here if possible
+      const user = socket.request.user;
+      if (user == null) {
+        logger.debug('Socket io: An anonymous user has connected');
+        return;
+      }
+      // make a room for each user. it leaves automatically
+      // TODO: avoid hard coding by using a utility function
+      socket.join(`user:${user._id}`);
     });
   }
 
