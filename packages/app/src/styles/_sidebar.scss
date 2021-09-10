@@ -135,7 +135,7 @@
   }
 
   .grw-sidebar-content-header {
-    min-width: 260px;
+    min-width: $grw-sidebar-content-min-width + 20px;
   }
 }
 
