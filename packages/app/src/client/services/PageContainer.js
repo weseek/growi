@@ -125,6 +125,10 @@ export default class PageContainer extends Container {
     this.setTocHtml = this.setTocHtml.bind(this);
     this.save = this.save.bind(this);
     this.checkAndUpdateImageUrlCached = this.checkAndUpdateImageUrlCached.bind(this);
+
+    this.emitJoinPageRoomRequest = this.emitJoinPageRoomRequest.bind(this);
+    this.emitJoinPageRoomRequest();
+
     this.addWebSocketEventHandlers = this.addWebSocketEventHandlers.bind(this);
     this.addWebSocketEventHandlers();
 
@@ -565,6 +569,13 @@ export default class PageContainer extends Container {
     });
   }
 
+  // request to server so the client to join a room for each page
+  emitJoinPageRoomRequest() {
+    const socketIoContainer = this.appContainer.getContainer('SocketIoContainer');
+    const socket = socketIoContainer.getSocket();
+    socket.emit('join:page', { socketId: socket.id, pageId: this.state.pageId });
+  }
+
   addWebSocketEventHandlers() {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const pageContainer = this;
@@ -572,11 +583,6 @@ export default class PageContainer extends Container {
     const socket = socketIoContainer.getSocket();
 
     socket.on('page:create', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
-
       logger.debug({ obj: data }, `websocket on 'page:create'`); // eslint-disable-line quotes
 
       // update remote page data
@@ -587,11 +593,6 @@ export default class PageContainer extends Container {
     });
 
     socket.on('page:update', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
-
       logger.debug({ obj: data }, `websocket on 'page:update'`); // eslint-disable-line quotes
 
       // update remote page data
@@ -602,11 +603,6 @@ export default class PageContainer extends Container {
     });
 
     socket.on('page:delete', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
-
       logger.debug({ obj: data }, `websocket on 'page:delete'`); // eslint-disable-line quotes
 
       // update remote page data
@@ -617,11 +613,6 @@ export default class PageContainer extends Container {
     });
 
     socket.on('page:editingWithHackmd', (data) => {
-      // skip if triggered myself
-      if (data.socketClientId != null && data.socketClientId === socketIoContainer.getSocketClientId()) {
-        return;
-      }
-
       logger.debug({ obj: data }, `websocket on 'page:editingWithHackmd'`); // eslint-disable-line quotes
 
       // update isHackmdDraftUpdatingInRealtime

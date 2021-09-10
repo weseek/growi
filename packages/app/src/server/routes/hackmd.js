@@ -341,6 +341,7 @@ module.exports = function(crowi, app) {
    * @param {object} res
    */
   const saveOnHackmd = async function(req, res) {
+    // TODO: check if i can get user from this req. im sure i can though TAICHI
     const page = req.page;
 
     try {

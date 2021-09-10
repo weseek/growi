@@ -1,10 +1,12 @@
 import loggerFactory from '~/utils/logger';
+import { RoomPrefix, getRoomNameWithId } from './utils/socket-io-helpers';
 
 const socketIo = require('socket.io');
 const expressSession = require('express-session');
 const passport = require('passport');
 
 const logger = loggerFactory('growi:service:socket-io');
+
 
 
 /**
@@ -41,7 +43,7 @@ class SocketIoService {
 
     await this.setupStoreGuestIdEventHandler();
 
-    await this.setupDefaultSocketRoomsEventHandler();
+    await this.setupDefaultSocketJoinRoomsEventHandler();
   }
 
   getDefaultSocket() {
@@ -126,18 +128,22 @@ class SocketIoService {
     });
   }
 
-  setupDefaultSocketRoomsEventHandler() {
+  setupDefaultSocketJoinRoomsEventHandler() {
     this.io.on('connection', (socket) => {
-      // TODO: check if i can get page information here and use or not
-      // TODO: join page rooms here if possible
+      // TODO: check if i can get page information here and use or not TAICHI
+      // TODO: join page rooms here if possible TAICHI
       const user = socket.request.user;
       if (user == null) {
         logger.debug('Socket io: An anonymous user has connected');
         return;
       }
       // make a room for each user. it leaves automatically
-      // TODO: avoid hard coding by using a utility function
+      // TODO: avoid hard coding by using a utility function TAICHI
       socket.join(`user:${user._id}`);
+
+      socket.on('join:page', ({ pageId }) => {
+        socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
+      });
     });
   }
 
