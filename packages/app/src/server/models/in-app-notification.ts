@@ -139,7 +139,7 @@ export default (crowi: Crowi) => {
 
     const inAppNotification = await InAppNotification.findOneAndUpdate(query, parameters, options);
 
-    if (inAppNotification) {
+    if (inAppNotification != null) {
       commentEvent.emit('update', inAppNotification.user);
     }
 
@@ -174,7 +174,7 @@ export default (crowi: Crowi) => {
     const options = { new: true };
 
     const inAppNotification = await InAppNotification.findOneAndUpdate(query, parameters, options);
-    if (inAppNotification) {
+    if (inAppNotification != null) {
       commentEvent.emit('update', inAppNotification.user);
     }
     return inAppNotification;
