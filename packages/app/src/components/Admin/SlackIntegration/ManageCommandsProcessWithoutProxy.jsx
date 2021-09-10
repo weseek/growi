@@ -64,10 +64,15 @@ const getPermissionTypeFromValue = (value) => {
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
 
-  const [permissionsCommandsState, setPermissionsCommandsState] = useState({
-    search: commandPermission?.search,
-    create: commandPermission?.create,
-    togetter: commandPermission?.togetter,
+  const [permissionsCommandsState, setPermissionsCommandsState] = useState(() => {
+    const initialState = {};
+    if (commandPermission != null) {
+      Object.entries(commandPermission).forEach((entry) => {
+        const [command, value] = entry;
+        initialState[command] = value;
+      });
+    }
+    return initialState;
   });
 
 
@@ -81,10 +86,15 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
 
   useEffect(() => {
-    setPermissionsCommandsState({
-      search: commandPermission?.search,
-      create: commandPermission?.create,
-      togetter: commandPermission?.togetter,
+    setPermissionsCommandsState(() => {
+      const updatedState = {};
+      if (commandPermission != null) {
+        Object.entries(commandPermission).forEach((entry) => {
+          const [command, value] = entry;
+          updatedState[command] = value;
+        });
+      }
+      return updatedState;
     });
   }, [commandPermission]);
 
