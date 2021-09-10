@@ -64,33 +64,10 @@ const getPermissionTypeFromValue = (value) => {
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
 
-  const [permissionsCommandsState, setPermissionsCommandsState] = useState(() => {
-    if (commandPermission == null) {
-      return {};
-    }
-
-    const initialState = {};
-
-    Object.entries(commandPermission).forEach((entry) => {
-      const [commandName, value] = entry;
-      initialState[commandName] = value;
-    });
-    return initialState;
-  });
-
-  const [currentPermissionTypes, setCurrentPermissionTypes] = useState(() => {
-
-    if (commandPermission == null) {
-      return {};
-    }
-
-    const initialState = {};
-
-    Object.entries(commandPermission).forEach((entry) => {
-      const [commandName, value] = entry;
-      initialState[commandName] = getPermissionTypeFromValue(value);
-    });
-    return initialState;
+  const [permissionsCommandsState, setPermissionsCommandsState] = useState({
+    search: commandPermission?.search,
+    create: commandPermission?.create,
+    togetter: commandPermission?.togetter,
   });
 
 
@@ -100,27 +77,17 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
     // update state
     setPermissionsCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
-    setCurrentPermissionTypes((prevState) => {
-      const newState = { ...prevState };
-      newState[commandName] = value;
-      return newState;
-    });
-  }, []);
+    console.log(permissionsCommandsState);
+  }, [permissionsCommandsState]);
 
 
   useEffect(() => {
-    setCurrentPermissionTypes(() => {
-      const obj = {};
-      if (commandPermission == null) {
-        return {};
-      }
-
-      Object.entries(commandPermission).forEach((entry) => {
-        const [commandName, value] = entry;
-        obj[commandName] = getPermissionTypeFromValue(value);
-      });
-      return obj;
+    setPermissionsCommandsState({
+      search: commandPermission?.search,
+      create: commandPermission?.create,
+      togetter: commandPermission?.togetter,
     });
+    console.log(commandPermission);
 
   }, [commandPermission]);
 
@@ -146,10 +113,17 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   };
 
   const PermissionSettingForEachCommandComponent = ({ commandName }) => {
-    const hiddenClass = currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
-    const permissionSettings = permissionsCommandsState;
-    const permission = permissionSettings[commandName];
+    console.log(117);
+    if (permissionsCommandsState == null) {
+      return null;
+    }
+    console.log(permissionsCommandsState, 121);
+
+    const hiddenClass = permissionsCommandsState[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
+
+    // const permissionSettings = permissionsCommandsState;
+    const permission = permissionsCommandsState[commandName];
 
     const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
@@ -167,11 +141,11 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
               aria-expanded="true"
             >
               <span className="float-left">
-                {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_ALL
+                {permissionsCommandsState[commandName] === true && PermissionTypes.ALLOW_ALL
                 && t('admin:slack_integration.accordion.allow_all')}
-                {currentPermissionTypes[commandName] === PermissionTypes.DENY_ALL
+                {permissionsCommandsState[commandName] === false && PermissionTypes.DENY_ALL
                 && t('admin:slack_integration.accordion.deny_all')}
-                {currentPermissionTypes[commandName] === PermissionTypes.ALLOW_SPECIFIED
+                {permissionsCommandsState[commandName].length > 0 && PermissionTypes.ALLOW_SPECIFIED
                 && t('admin:slack_integration.accordion.allow_specified')}
               </span>
             </button>
@@ -181,7 +155,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.ALLOW_ALL}
-                onClick={updatePermissionsCommandsState}
+                onChange={updatePermissionsCommandsState}
               >
                 {t('admin:slack_integration.accordion.allow_all_long')}
               </button>
@@ -190,7 +164,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.DENY_ALL}
-                onClick={updatePermissionsCommandsState}
+                onChange={updatePermissionsCommandsState}
               >
                 {t('admin:slack_integration.accordion.deny_all_long')}
               </button>
@@ -199,7 +173,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.ALLOW_SPECIFIED}
-                onClick={updatePermissionsCommandsState}
+                onChange={updateChannelsListState}
               >
                 {t('admin:slack_integration.accordion.allow_specified_long')}
               </button>
@@ -212,7 +186,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
             type="textarea"
             name={commandName}
             defaultValue={textareaDefaultValue}
-            onChange={updateChannelsListState}
+            onChange={updatePermissionsCommandsState}
           />
           <p className="form-text text-muted small">
             {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
