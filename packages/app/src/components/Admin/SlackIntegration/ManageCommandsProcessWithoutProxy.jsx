@@ -143,12 +143,9 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
               aria-expanded="true"
             >
               <span className="float-left">
-                {permissionsCommandsState[commandName] === true && PermissionTypes.ALLOW_ALL
-                && t('admin:slack_integration.accordion.allow_all')}
-                {permissionsCommandsState[commandName] === false && PermissionTypes.DENY_ALL
-                && t('admin:slack_integration.accordion.deny_all')}
-                {Array.isArray[permissionsCommandsState[commandName]] === true && PermissionTypes.ALLOW_SPECIFIED
-                && t('admin:slack_integration.accordion.allow_specified')}
+                {permissionsCommandsState[commandName] === true && t('admin:slack_integration.accordion.allow_all')}
+                {permissionsCommandsState[commandName] === false && t('admin:slack_integration.accordion.deny_all')}
+                {Array.isArray(permissionsCommandsState[commandName]) && t('admin:slack_integration.accordion.allow_specified')}
               </span>
             </button>
             <div className="dropdown-menu">
