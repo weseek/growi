@@ -104,12 +104,13 @@ module.exports = function(crowi) {
     const Page = crowi.model('Page');
     const commentEvent = crowi.event('comment');
 
-    Page.updateCommentCount(savedComment.page)
-      .then((page) => {
-        debug('CommentCount Updated', page);
-      })
-      .catch(() => {
-      });
+    try {
+      const page = await Page.updateCommentCount(savedComment.page);
+      debug('CommentCount Updated', page);
+    }
+    catch (err) {
+      throw err;
+    }
 
     await commentEvent.emit('update', savedComment.creator);
   });
