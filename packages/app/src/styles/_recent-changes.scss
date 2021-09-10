@@ -5,9 +5,10 @@
 
   .grw-recent-changes-resize-button {
     font-size: 12px;
-    transform: translateY(4px);
+    line-height: normal;
+    transform: translateY(6px);
 
-    .custom-control-input:not(:checked) + .custom-control-label::before {
+    .custom-control-label::before {
       padding-left: 16px;
       content: 'L';
     }
