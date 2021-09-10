@@ -109,8 +109,20 @@ export class SlackCtrl {
   async handleCommand(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     const { body, authorizeResult } = req;
 
-    let growiCommand;
+    // retrieve bot token
+    const { botToken } = authorizeResult;
+    if (botToken == null) {
+      const serverUri = process.env.SERVER_URI;
+      res.json({
+        blocks: [
+          markdownSectionBlock('*Installation might be failed.*'),
+          markdownSectionBlock(`Access to ${serverUri} and re-install GROWI App`),
+        ],
+      });
+    }
 
+    // parse /growi command
+    let growiCommand: GrowiCommand;
     try {
       growiCommand = parseSlashCommand(body);
     }
@@ -126,6 +138,14 @@ export class SlackCtrl {
       logger.error(err.message);
       return;
     }
+
+    // Send response immediately to avoid opelation_timeout error
+    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
+    res.json({
+      blocks: [
+        markdownSectionBlock(`Processing your request *"${growiCommand.text}"* ...`),
+      ],
+    });
 
     // register
     if (growiCommand.growiCommandType === 'register') {
