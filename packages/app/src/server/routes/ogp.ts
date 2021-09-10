@@ -15,16 +15,23 @@ export const renderOgp = async(req: Request, res: Response): Promise<Response | 
     return res.status(400).send('OGP URI for GROWI has not been setup');
   }
 
-  const result = await axios({
-    url: ogpUri,
-    method: 'GET',
-    responseType: 'arraybuffer',
-    // TODO: Make it possible to display the GROWI APP name and page title
-    params: {
-      title: '20210803_ OpenWikiのOGPを表示できるようにする',
-      brand: 'GROWI Developers Wiki',
-    },
-  });
+  let result;
+  try {
+    result = await axios({
+      url: ogpUri,
+      method: 'GET',
+      responseType: 'arraybuffer',
+      // TODO: Make it possible to display the GROWI APP name and page title
+      params: {
+        title: '20210803_ OpenWikiのOGPを表示できるようにする',
+        brand: 'GROWI Developers Wiki',
+      },
+    });
+  }
+  catch (err) {
+    console.log(err.message);
+    return res.status(500);
+  }
 
   const imageBuffer = Buffer.from(result.data, 'binary');
 
