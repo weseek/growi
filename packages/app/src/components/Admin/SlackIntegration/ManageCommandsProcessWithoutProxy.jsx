@@ -77,7 +77,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
     // update state
     setPermissionsCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
-    console.log(permissionsCommandsState);
+    console.log(permissionsCommandsState, 80);
   }, [permissionsCommandsState]);
 
 
@@ -96,7 +96,8 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     const { name: commandName, value } = target;
     // update state
     setPermissionsCommandsState(prev => getUpdatedChannelsList(prev, commandName, value));
-  }, []);
+    console.log(permissionsCommandsState, 99);
+  }, [permissionsCommandsState]);
 
 
   const updateCommandsHandler = async(e) => {
@@ -120,10 +121,11 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     }
     console.log(permissionsCommandsState, 121);
 
-    const hiddenClass = permissionsCommandsState[commandName] === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
-
+    const hiddenClass = Array.isArray(permissionsCommandsState[commandName]) ? '' : 'd-none';
+    console.log(hiddenClass);
     // const permissionSettings = permissionsCommandsState;
     const permission = permissionsCommandsState[commandName];
+    console.log(permission);
 
     const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
@@ -145,7 +147,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 && t('admin:slack_integration.accordion.allow_all')}
                 {permissionsCommandsState[commandName] === false && PermissionTypes.DENY_ALL
                 && t('admin:slack_integration.accordion.deny_all')}
-                {permissionsCommandsState[commandName].length > 0 && PermissionTypes.ALLOW_SPECIFIED
+                {Array.isArray[permissionsCommandsState[commandName]] === true && PermissionTypes.ALLOW_SPECIFIED
                 && t('admin:slack_integration.accordion.allow_specified')}
               </span>
             </button>
@@ -155,7 +157,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.ALLOW_ALL}
-                onChange={updatePermissionsCommandsState}
+                onClick={updatePermissionsCommandsState}
               >
                 {t('admin:slack_integration.accordion.allow_all_long')}
               </button>
@@ -164,7 +166,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.DENY_ALL}
-                onChange={updatePermissionsCommandsState}
+                onClick={updatePermissionsCommandsState}
               >
                 {t('admin:slack_integration.accordion.deny_all_long')}
               </button>
@@ -173,7 +175,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                 type="button"
                 name={commandName}
                 value={PermissionTypes.ALLOW_SPECIFIED}
-                onChange={updateChannelsListState}
+                onClick={updatePermissionsCommandsState}
               >
                 {t('admin:slack_integration.accordion.allow_specified_long')}
               </button>
@@ -186,7 +188,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
             type="textarea"
             name={commandName}
             defaultValue={textareaDefaultValue}
-            onChange={updatePermissionsCommandsState}
+            onChange={updateChannelsListState}
           />
           <p className="form-text text-muted small">
             {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
