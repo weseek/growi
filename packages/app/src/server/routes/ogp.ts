@@ -30,7 +30,7 @@ export const renderOgp = async(req: Request, res: Response): Promise<Response | 
   }
   catch (err) {
     console.log(err.message);
-    return res.status(500);
+    return res.status(500).send();
   }
 
   const imageBuffer = Buffer.from(result.data, 'binary');
