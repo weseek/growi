@@ -2,7 +2,7 @@ import {
   Request, Response,
 } from 'express';
 
-import axios from 'src/utils/axios';
+import axios from '~/utils/axios';
 
 export const renderOgp = async(req: Request, res: Response): Promise<Response | void> => {
 
