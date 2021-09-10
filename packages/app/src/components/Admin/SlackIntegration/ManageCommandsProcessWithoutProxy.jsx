@@ -77,8 +77,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
     // update state
     setPermissionsCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
-    console.log(permissionsCommandsState, 80);
-  }, [permissionsCommandsState]);
+  }, []);
 
 
   useEffect(() => {
@@ -87,8 +86,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
       create: commandPermission?.create,
       togetter: commandPermission?.togetter,
     });
-    console.log(commandPermission);
-
   }, [commandPermission]);
 
   const updateChannelsListState = useCallback((e) => {
@@ -96,8 +93,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     const { name: commandName, value } = target;
     // update state
     setPermissionsCommandsState(prev => getUpdatedChannelsList(prev, commandName, value));
-    console.log(permissionsCommandsState, 99);
-  }, [permissionsCommandsState]);
+  }, []);
 
 
   const updateCommandsHandler = async(e) => {
@@ -115,18 +111,12 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
   const PermissionSettingForEachCommandComponent = ({ commandName }) => {
 
-    console.log(117);
     if (permissionsCommandsState == null) {
       return null;
     }
-    console.log(permissionsCommandsState, 121);
 
     const hiddenClass = Array.isArray(permissionsCommandsState[commandName]) ? '' : 'd-none';
-    console.log(hiddenClass);
-    // const permissionSettings = permissionsCommandsState;
     const permission = permissionsCommandsState[commandName];
-    console.log(permission);
-
     const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
     return (
