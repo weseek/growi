@@ -32,11 +32,6 @@ export default class SocketIoContainer extends Container {
       logger.error(error);
     });
 
-    // DELETE THIS THIS IS FOR ONLY TESTING PURPOSE SO FAR
-    this.socket.on('in_app_notification', (data) => {
-      console.log('Received data: ', data);
-    });
-
     this.state = {
     };
 
