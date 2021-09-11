@@ -53,19 +53,19 @@ const getUpdatedPermissionSettings = (prevState, commandName, value) => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
-  const [permissionsCommandsState, setPermissionsCommandsState] = useState({});
+  const [editingCommandPermission, setEditingCommandPermission] = useState({});
 
   const updatePermissionsCommandsState = useCallback((e) => {
     const { target } = e;
     const { name: commandName, value } = target;
 
     // update state
-    setPermissionsCommandsState(prev => getUpdatedPermissionSettings(prev, commandName, value));
+    setEditingCommandPermission(prev => getUpdatedPermissionSettings(prev, commandName, value));
   }, []);
 
 
   useEffect(() => {
-    setPermissionsCommandsState(() => {
+    setEditingCommandPermission(() => {
       const updatedState = {};
       if (commandPermission != null) {
         Object.entries(commandPermission).forEach((entry) => {
@@ -81,14 +81,14 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setPermissionsCommandsState(prev => getUpdatedChannelsList(prev, commandName, value));
+    setEditingCommandPermission(prev => getUpdatedChannelsList(prev, commandName, value));
   }, []);
 
 
   const updateCommandsHandler = async(e) => {
     try {
       await apiv3Put('/slack-integration-settings/without-proxy/update-permissions', {
-        commandPermission: permissionsCommandsState,
+        commandPermission: editingCommandPermission,
       });
       toastSuccess(t('toaster.update_successed', { target: 'Token' }));
     }
@@ -100,12 +100,12 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
   const PermissionSettingForEachCommandComponent = ({ commandName }) => {
 
-    if (permissionsCommandsState == null) {
+    if (editingCommandPermission == null) {
       return null;
     }
 
-    const hiddenClass = Array.isArray(permissionsCommandsState[commandName]) ? '' : 'd-none';
-    const permission = permissionsCommandsState[commandName];
+    const hiddenClass = Array.isArray(editingCommandPermission[commandName]) ? '' : 'd-none';
+    const permission = editingCommandPermission[commandName];
     const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
     return (
@@ -122,9 +122,9 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
               aria-expanded="true"
             >
               <span className="float-left">
-                {permissionsCommandsState[commandName] === true && t('admin:slack_integration.accordion.allow_all')}
-                {permissionsCommandsState[commandName] === false && t('admin:slack_integration.accordion.deny_all')}
-                {Array.isArray(permissionsCommandsState[commandName]) && t('admin:slack_integration.accordion.allow_specified')}
+                {editingCommandPermission[commandName] === true && t('admin:slack_integration.accordion.allow_all')}
+                {editingCommandPermission[commandName] === false && t('admin:slack_integration.accordion.deny_all')}
+                {Array.isArray(editingCommandPermission[commandName]) && t('admin:slack_integration.accordion.allow_specified')}
               </span>
             </button>
             <div className="dropdown-menu">
