@@ -50,6 +50,95 @@ const getUpdatedPermissionSettings = (prevState, commandName, value) => {
 };
 
 
+const PermissionSettingForEachCommandComponent = ({
+  commandName, editingCommandPermission, onClick, onChange,
+}) => {
+  const { t } = useTranslation();
+
+  if (editingCommandPermission == null) {
+    return null;
+  }
+
+  const hiddenClass = Array.isArray(editingCommandPermission[commandName]) ? '' : 'd-none';
+  const permission = editingCommandPermission[commandName];
+  const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
+
+  return (
+    <div className="my-1 mb-2">
+      <div className="row align-items-center mb-3">
+        <p className="col my-auto text-capitalize align-middle">{commandName}</p>
+        <div className="col dropdown">
+          <button
+            className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="true"
+          >
+            <span className="float-left">
+              {editingCommandPermission[commandName] === true && t('admin:slack_integration.accordion.allow_all')}
+              {editingCommandPermission[commandName] === false && t('admin:slack_integration.accordion.deny_all')}
+              {Array.isArray(editingCommandPermission[commandName]) && t('admin:slack_integration.accordion.allow_specified')}
+            </span>
+          </button>
+          <div className="dropdown-menu">
+            <button
+              className="dropdown-item"
+              type="button"
+              name={commandName}
+              value={PermissionTypes.ALLOW_ALL}
+              onClick={onClick}
+            >
+              {t('admin:slack_integration.accordion.allow_all_long')}
+            </button>
+            <button
+              className="dropdown-item"
+              type="button"
+              name={commandName}
+              value={PermissionTypes.DENY_ALL}
+              onClick={onClick}
+            >
+              {t('admin:slack_integration.accordion.deny_all_long')}
+            </button>
+            <button
+              className="dropdown-item"
+              type="button"
+              name={commandName}
+              value={PermissionTypes.ALLOW_SPECIFIED}
+              onClick={onClick}
+            >
+              {t('admin:slack_integration.accordion.allow_specified_long')}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className={`row-12 row-md-6 ${hiddenClass}`}>
+        <textarea
+          className="form-control"
+          type="textarea"
+          name={commandName}
+          defaultValue={textareaDefaultValue}
+          onChange={onChange}
+        />
+        <p className="form-text text-muted small">
+          {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
+          <br />
+        </p>
+      </div>
+
+    </div>
+  );
+};
+
+PermissionSettingForEachCommandComponent.propTypes = {
+  commandName: PropTypes.string,
+  editingCommandPermission: PropTypes.object,
+  onClick: PropTypes.func,
+  onChange: PropTypes.func,
+};
+
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
@@ -98,90 +187,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     }
   };
 
-  const PermissionSettingForEachCommandComponent = ({ commandName }) => {
-
-    if (editingCommandPermission == null) {
-      return null;
-    }
-
-    const hiddenClass = Array.isArray(editingCommandPermission[commandName]) ? '' : 'd-none';
-    const permission = editingCommandPermission[commandName];
-    const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
-
-    return (
-      <div className="my-1 mb-2">
-        <div className="row align-items-center mb-3">
-          <p className="col my-auto text-capitalize align-middle">{commandName}</p>
-          <div className="col dropdown">
-            <button
-              className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="true"
-            >
-              <span className="float-left">
-                {editingCommandPermission[commandName] === true && t('admin:slack_integration.accordion.allow_all')}
-                {editingCommandPermission[commandName] === false && t('admin:slack_integration.accordion.deny_all')}
-                {Array.isArray(editingCommandPermission[commandName]) && t('admin:slack_integration.accordion.allow_specified')}
-              </span>
-            </button>
-            <div className="dropdown-menu">
-              <button
-                className="dropdown-item"
-                type="button"
-                name={commandName}
-                value={PermissionTypes.ALLOW_ALL}
-                onClick={updatePermissionsCommandsState}
-              >
-                {t('admin:slack_integration.accordion.allow_all_long')}
-              </button>
-              <button
-                className="dropdown-item"
-                type="button"
-                name={commandName}
-                value={PermissionTypes.DENY_ALL}
-                onClick={updatePermissionsCommandsState}
-              >
-                {t('admin:slack_integration.accordion.deny_all_long')}
-              </button>
-              <button
-                className="dropdown-item"
-                type="button"
-                name={commandName}
-                value={PermissionTypes.ALLOW_SPECIFIED}
-                onClick={updatePermissionsCommandsState}
-              >
-                {t('admin:slack_integration.accordion.allow_specified_long')}
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className={`row-12 row-md-6 ${hiddenClass}`}>
-          <textarea
-            className="form-control"
-            type="textarea"
-            name={commandName}
-            defaultValue={textareaDefaultValue}
-            onChange={updateChannelsListState}
-          />
-          <p className="form-text text-muted small">
-            {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
-            <br />
-          </p>
-        </div>
-
-      </div>
-    );
-  };
-
-  PermissionSettingForEachCommandComponent.propTypes = {
-    commandName: PropTypes.string,
-    commandUsageType: PropTypes.string,
-  };
-
-
   return (
     <div className="py-4 px-5">
       <p className="mb-4 font-weight-bold">{t('admin:slack_integration.accordion.manage_commands')}</p>
@@ -192,7 +197,15 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
             <div className="row mb-5 d-block">
               {defaultCommandsName.map((commandName) => {
                 // eslint-disable-next-line max-len
-                return <PermissionSettingForEachCommandComponent key={`${commandName}-component`} commandName={commandName} />;
+                return (
+                  <PermissionSettingForEachCommandComponent
+                    key={`${commandName}-component`}
+                    commandName={commandName}
+                    editingCommandPermission={editingCommandPermission}
+                    onClick={updatePermissionsCommandsState}
+                    onChange={updateChannelsListState}
+                  />
+                );
               })}
             </div>
           </div>
@@ -214,7 +227,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 ManageCommandsProcessWithoutProxy.propTypes = {
   apiv3Put: PropTypes.func,
   commandPermission: PropTypes.object,
-
 };
 
 export default ManageCommandsProcessWithoutProxy;
