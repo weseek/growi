@@ -18,35 +18,34 @@ const defaultCommandsName = [...defaultSupportedCommandsNameForBroadcastUse, ...
 
 
 // A utility function that returns the new state but identical to the previous state
-const getUpdatedChannelsList = (prevState, commandName, value) => {
+const getUpdatedChannelsList = (commandPermissionObj, commandName, value) => {
   // string to array
   const allowedChannelsArray = value.split(',');
   // trim whitespace from all elements
   const trimedAllowedChannelsArray = allowedChannelsArray.map(channelName => channelName.trim());
 
-  prevState[commandName] = trimedAllowedChannelsArray;
-  return prevState;
+  commandPermissionObj[commandName] = trimedAllowedChannelsArray;
+  return commandPermissionObj;
 };
 
 // A utility function that returns the new state
-const getUpdatedPermissionSettings = (prevState, commandName, value) => {
-  const newState = { ...prevState };
+const getUpdatedPermissionSettings = (commandPermissionObj, commandName, value) => {
+  const editedCommandPermissionObj = { ...commandPermissionObj };
   switch (value) {
     case PermissionTypes.ALLOW_ALL:
-      newState[commandName] = true;
+      editedCommandPermissionObj[commandName] = true;
       break;
     case PermissionTypes.DENY_ALL:
-      newState[commandName] = false;
+      editedCommandPermissionObj[commandName] = false;
       break;
     case PermissionTypes.ALLOW_SPECIFIED:
-      newState[commandName] = [];
+      editedCommandPermissionObj[commandName] = [];
       break;
     default:
       logger.error('Not implemented');
       break;
   }
-
-  return newState;
+  return editedCommandPermissionObj;
 };
 
 
@@ -126,7 +125,6 @@ const PermissionSettingForEachCommandComponent = ({
           <br />
         </p>
       </div>
-
     </div>
   );
 };
@@ -149,7 +147,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     const { name: commandName, value } = target;
 
     // update state
-    setEditingCommandPermission(prev => getUpdatedPermissionSettings(prev, commandName, value));
+    setEditingCommandPermission(commandPermissionObj => getUpdatedPermissionSettings(commandPermissionObj, commandName, value));
   }, []);
 
 
@@ -170,7 +168,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setEditingCommandPermission(prev => getUpdatedChannelsList(prev, commandName, value));
+    setEditingCommandPermission(commandPermissionObj => getUpdatedChannelsList(commandPermissionObj, commandName, value));
   }, []);
 
 
