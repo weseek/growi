@@ -49,16 +49,6 @@ const getUpdatedPermissionSettings = (prevState, commandName, value) => {
   return newState;
 };
 
-// A utility function that returns the permission type from the permission value
-const getPermissionTypeFromValue = (value) => {
-  if (Array.isArray(value)) {
-    return PermissionTypes.ALLOW_SPECIFIED;
-  }
-  if (typeof value === 'boolean') {
-    return value ? PermissionTypes.ALLOW_ALL : PermissionTypes.DENY_ALL;
-  }
-  logger.error('The value type must be boolean or string[]');
-};
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
