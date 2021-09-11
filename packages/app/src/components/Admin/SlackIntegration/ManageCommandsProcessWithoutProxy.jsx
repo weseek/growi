@@ -117,7 +117,7 @@ const PermissionSettingForEachCommandComponent = ({
           className="form-control"
           type="textarea"
           name={commandName}
-          defaultValue={textareaDefaultValue}
+          value={textareaDefaultValue}
           onChange={onPermissionListChanged}
         />
         <p className="form-text text-muted small">
@@ -141,6 +141,7 @@ PermissionSettingForEachCommandComponent.propTypes = {
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
   const [editingCommandPermission, setEditingCommandPermission] = useState({});
+  console.log(editingCommandPermission, 144);
 
   const updatePermissionsCommandsState = useCallback((e) => {
     const { target } = e;
@@ -152,15 +153,19 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
 
 
   useEffect(() => {
+    if (commandPermission == null) {
+      return;
+    }
+
     setEditingCommandPermission(() => {
-      const updatedState = {};
-      if (commandPermission != null) {
-        Object.entries(commandPermission).forEach((entry) => {
-          const [command, value] = entry;
-          updatedState[command] = value;
-        });
-      }
-      return updatedState;
+
+      return Object.entries(commandPermission).reduce((acc, entry, index) => {
+        // console.log(value);
+        const [command, value] = entry;
+        acc[command] = value;
+        console.log(value);
+        return acc;
+      }, {});
     });
   }, [commandPermission]);
 
@@ -168,10 +173,14 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     const { target } = e;
     const { name: commandName, value } = target;
     // update state
-    setEditingCommandPermission(commandPermissionObj => getUpdatedChannelsList(commandPermissionObj, commandName, value));
+    setEditingCommandPermission((commandPermissionObj) => {
+      return {
+        ...getUpdatedChannelsList(commandPermissionObj, commandName, value),
+      };
+    });
   }, []);
 
-
+  console.log(editingCommandPermission);
   const updateCommandsHandler = async(e) => {
     try {
       await apiv3Put('/slack-integration-settings/without-proxy/update-permissions', {
@@ -193,7 +202,7 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
         <div className="col-8">
           <div className="custom-control custom-checkbox">
             <div className="row mb-5 d-block">
-              {defaultCommandsName.map((commandName) => {
+              { defaultCommandsName.map((commandName) => {
                 // eslint-disable-next-line max-len
                 return (
                   <PermissionSettingForEachCommandComponent
