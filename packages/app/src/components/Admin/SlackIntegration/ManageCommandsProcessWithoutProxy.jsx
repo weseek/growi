@@ -51,7 +51,7 @@ const getUpdatedPermissionSettings = (prevState, commandName, value) => {
 
 
 const PermissionSettingForEachCommandComponent = ({
-  commandName, editingCommandPermission, onClick, onChange,
+  commandName, editingCommandPermission, onPermissionTypeClicked, onPermissionListChanged,
 }) => {
   const { t } = useTranslation();
 
@@ -88,7 +88,7 @@ const PermissionSettingForEachCommandComponent = ({
               type="button"
               name={commandName}
               value={PermissionTypes.ALLOW_ALL}
-              onClick={onClick}
+              onClick={onPermissionTypeClicked}
             >
               {t('admin:slack_integration.accordion.allow_all_long')}
             </button>
@@ -97,7 +97,7 @@ const PermissionSettingForEachCommandComponent = ({
               type="button"
               name={commandName}
               value={PermissionTypes.DENY_ALL}
-              onClick={onClick}
+              onClick={onPermissionTypeClicked}
             >
               {t('admin:slack_integration.accordion.deny_all_long')}
             </button>
@@ -106,7 +106,7 @@ const PermissionSettingForEachCommandComponent = ({
               type="button"
               name={commandName}
               value={PermissionTypes.ALLOW_SPECIFIED}
-              onClick={onClick}
+              onClick={onPermissionTypeClicked}
             >
               {t('admin:slack_integration.accordion.allow_specified_long')}
             </button>
@@ -119,7 +119,7 @@ const PermissionSettingForEachCommandComponent = ({
           type="textarea"
           name={commandName}
           defaultValue={textareaDefaultValue}
-          onChange={onChange}
+          onChange={onPermissionListChanged}
         />
         <p className="form-text text-muted small">
           {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
@@ -134,8 +134,8 @@ const PermissionSettingForEachCommandComponent = ({
 PermissionSettingForEachCommandComponent.propTypes = {
   commandName: PropTypes.string,
   editingCommandPermission: PropTypes.object,
-  onClick: PropTypes.func,
-  onChange: PropTypes.func,
+  onPermissionTypeClicked: PropTypes.func,
+  onPermissionListChanged: PropTypes.func,
 };
 
 
@@ -202,8 +202,8 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
                     key={`${commandName}-component`}
                     commandName={commandName}
                     editingCommandPermission={editingCommandPermission}
-                    onClick={updatePermissionsCommandsState}
-                    onChange={updateChannelsListState}
+                    onPermissionTypeClicked={updatePermissionsCommandsState}
+                    onPermissionListChanged={updateChannelsListState}
                   />
                 );
               })}
