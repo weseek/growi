@@ -20,7 +20,7 @@ export const renderOgp = async(req: Request, res: Response): Promise<Response | 
     result = await axios({
       url: ogpUri,
       method: 'GET',
-      responseType: 'arraybuffer',
+      responseType: 'stream',
       // TODO: Make it possible to display the GROWI APP name and page title
       params: {
         title: 'Page Title',
@@ -33,12 +33,9 @@ export const renderOgp = async(req: Request, res: Response): Promise<Response | 
     return res.status(500).send();
   }
 
-  const imageBuffer = Buffer.from(result.data, 'binary');
-
   res.writeHead(200, {
     'Content-Type': 'image/jpeg',
-    'Content-Length': imageBuffer.length,
   });
 
-  res.end(imageBuffer);
+  result.data.pipe(res);
 };
