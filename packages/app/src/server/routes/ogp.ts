@@ -29,13 +29,13 @@ export const renderOgp = async(req: Request, res: Response): Promise<Response | 
     });
   }
   catch (err) {
-    console.log(err.message);
+    const { status, statusText } = err.response;
+    console.log(`Error! HTTP Status: ${status} ${statusText}`);
     return res.status(500).send();
   }
 
   res.writeHead(200, {
     'Content-Type': 'image/jpeg',
   });
-
   result.data.pipe(res);
 };
