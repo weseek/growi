@@ -23,8 +23,8 @@ export const renderOgp = async(req: Request, res: Response): Promise<Response | 
       responseType: 'arraybuffer',
       // TODO: Make it possible to display the GROWI APP name and page title
       params: {
-        title: '20210803_ OpenWikiのOGPを表示できるようにする',
-        brand: 'GROWI Developers Wiki',
+        title: 'Page Title',
+        brand: 'GROWI App Name',
       },
     });
   }
