@@ -44,8 +44,6 @@ export interface InAppNotificationModel extends Model<InAppNotificationDocument>
 }
 
 export default (crowi: Crowi) => {
-  const commentEvent = crowi.event('comment');
-
   const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotificationModel>({
     user: {
       type: Schema.Types.ObjectId,
