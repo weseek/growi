@@ -4,9 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
-const {
-  verifySlackRequest, parseSlashCommand,
-} = require('@growi/slack');
+const { verifySlackRequest, parseSlashCommand, markdownSectionBlock } = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -60,32 +58,37 @@ module.exports = (crowi) => {
     Object.entries(commandPermission).forEach((entry) => {
       const [command, value] = entry;
       const permission = value;
-      console.log(permission, 63);
       const commandRegExp = new RegExp(`(^${command}$)|(^${command}:\\w+)`);
 
       if (!commandRegExp.test(commandName)) {
         isPermitted = false;
-        console.log(68);
         return;
       }
 
       // permission check
       if (permission === true) {
-        console.log(73);
         isPermitted = true;
         return;
       }
       if (Array.isArray(permission) && permission.includes(fromChannel)) {
-        console.log(79);
         isPermitted = true;
       }
     });
 
     if (isPermitted) {
-      console.log(83);
       return next();
     }
-    res.status(403).send(`It is not allowed to run '${commandName}' command to this GROWI.`);
+
+    const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
+    return res.json({
+      blocks: [
+        markdownSectionBlock('*None of GROWI permitted the command.*'),
+        markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
+        markdownSectionBlock(
+          `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
+        ),
+      ],
+    });
   }
 
   async function checkCommandPermissionWithProxy(req, res, next) {
