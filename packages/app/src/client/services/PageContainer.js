@@ -471,7 +471,6 @@ export default class PageContainer extends Container {
 
     // clone
     const params = Object.assign(tmpParams, {
-      socketClientId: socketIoContainer.getSocketClientId(),
       path: pagePath,
       body: markdown,
     });
@@ -487,7 +486,6 @@ export default class PageContainer extends Container {
 
     // clone
     const params = Object.assign(tmpParams, {
-      socketClientId: socketIoContainer.getSocketClientId(),
       page_id: pageId,
       revision_id: revisionId,
       body: markdown,
@@ -512,7 +510,6 @@ export default class PageContainer extends Container {
       completely,
       page_id: this.state.pageId,
       revision_id: this.state.revisionId,
-      socketClientId: socketIoContainer.getSocketClientId(),
     });
 
   }
@@ -526,7 +523,6 @@ export default class PageContainer extends Container {
     return this.appContainer.apiPost('/pages.revertRemove', {
       recursively,
       page_id: this.state.pageId,
-      socketClientId: socketIoContainer.getSocketClientId(),
     });
   }
 
@@ -542,7 +538,6 @@ export default class PageContainer extends Container {
       isRemainMetadata,
       newPagePath,
       path,
-      socketClientId: socketIoContainer.getSocketClientId(),
     });
   }
 
