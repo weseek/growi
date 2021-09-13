@@ -69,15 +69,14 @@ module.exports = function(crowi) {
     const Comment = this;
     const commentEvent = crowi.event('comment');
 
-    await commentEvent.emit('update', comment.creator);
-
     const commentData = await Comment.findOneAndUpdate(
       { _id: commentId },
       { $set: { comment, isMarkdown } },
     );
 
-    return commentData;
+    await commentEvent.emit('update', commentData.creator);
 
+    return commentData;
   };
 
   commentSchema.statics.removeCommentsByPageId = function(pageId) {
