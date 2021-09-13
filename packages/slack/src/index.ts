@@ -35,6 +35,7 @@ export * from './utils/get-supported-growi-actions-regexps';
 export * from './utils/post-ephemeral-errors';
 export * from './utils/publish-initial-home-view';
 export * from './utils/reshape-contents-body';
+export * from './utils/response-url';
 export * from './utils/slash-command-parser';
 export * from './utils/webclient-factory';
 export * from './utils/welcome-message';
