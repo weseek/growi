@@ -3,10 +3,12 @@ import {
 } from 'mongoose';
 import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
+import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { ActivityDocument } from './activity';
 import User = require('./user');
+
 
 const logger = loggerFactory('growi:models:inAppNotification');
 
@@ -204,7 +206,7 @@ export default (crowi: Crowi) => {
     return STATUS_OPENED;
   };
 
-  const InAppNotification = model<InAppNotificationDocument, InAppNotificationModel>('InAppNotification', inAppNotificationSchema);
+  const InAppNotification = getOrCreateModel<InAppNotificationDocument, InAppNotificationModel>('InAppNotification', inAppNotificationSchema);
 
   return InAppNotification;
 };
