@@ -11,6 +11,7 @@ import { Installation } from '@slack/oauth';
 import {
   markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
   InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
+  respond,
 } from '@growi/slack';
 
 import { Relation } from '~/entities/relation';
@@ -141,11 +142,7 @@ export class SlackCtrl {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.json({
-      blocks: [
-        markdownSectionBlock(`Processing your request *"${growiCommand.text}"* ...`),
-      ],
-    });
+    res.json();
 
     // register
     if (growiCommand.growiCommandType === 'register') {
@@ -173,7 +170,7 @@ export class SlackCtrl {
       .getMany();
 
     if (relations.length === 0) {
-      return res.json({
+      return respond(growiCommand.responseUrl, {
         blocks: [
           markdownSectionBlock('*No relation found.*'),
           markdownSectionBlock('Run `/growi register` first.'),
@@ -183,7 +180,7 @@ export class SlackCtrl {
 
     // status
     if (growiCommand.growiCommandType === 'status') {
-      return res.json({
+      return respond(growiCommand.responseUrl, {
         blocks: [
           markdownSectionBlock('*Found Relations to GROWI.*'),
           ...relations.map(relation => markdownSectionBlock(`GROWI url: ${relation.growiUri}`)),
@@ -191,11 +188,10 @@ export class SlackCtrl {
       });
     }
 
-    // Send response immediately to avoid opelation_timeout error
-    // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    res.json({
-      response_type: 'ephemeral',
-      text: 'Processing your request ...',
+    respond(growiCommand.responseUrl, {
+      blocks: [
+        markdownSectionBlock(`Processing your request *"/growi ${growiCommand.text}"* ...`),
+      ],
     });
 
     const baseDate = new Date();
@@ -230,9 +226,6 @@ export class SlackCtrl {
 
     // when all of GROWI disallowed
     if (relations.length === disallowedGrowiUrls.size) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const client = generateWebClient(authorizeResult.botToken!);
-
       const linkUrlList = Array.from(disallowedGrowiUrls).map((growiUrl) => {
         return '\n'
           + `• ${new URL('/admin/slack-integration', growiUrl).toString()}`;
@@ -240,10 +233,8 @@ export class SlackCtrl {
 
       const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
 
-      return client.chat.postEphemeral({
+      return respond(growiCommand.responseUrl, {
         text: 'Error occured.',
-        channel: body.channel_id,
-        user: body.user_id,
         blocks: [
           markdownSectionBlock('*None of GROWI permitted the command.*'),
           markdownSectionBlock(`*'${growiCommand.growiCommandType}'* command was not allowed.`),
