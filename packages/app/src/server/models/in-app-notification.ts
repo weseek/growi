@@ -112,42 +112,6 @@ export default (crowi: Crowi) => {
       .exec();
   };
 
-  inAppNotificationSchema.statics.upsertByActivity = async function(user, activity, createdAt = null) {
-    const {
-      _id: activityId, targetModel, target, action,
-    } = activity;
-
-    const now = createdAt || Date.now();
-    const lastWeek = subDays(now, 7);
-    const query = {
-      user, target, action, createdAt: { $gt: lastWeek },
-    };
-    const parameters = {
-      user,
-      targetModel,
-      target,
-      action,
-      status: STATUS_UNREAD,
-      createdAt: now,
-      $addToSet: { activities: activityId },
-    };
-
-    const options = {
-      upsert: true,
-      new: true,
-      setDefaultsOnInsert: true,
-      runValidators: true,
-    };
-
-    const inAppNotification = await InAppNotification.findOneAndUpdate(query, parameters, options);
-
-    if (inAppNotification != null) {
-      commentEvent.emit('update', inAppNotification.user);
-    }
-
-    return inAppNotification;
-  };
-
   inAppNotificationSchema.statics.removeActivity = async function(activity) {
     const { _id, target, action } = activity;
     const query = { target, action };
@@ -168,18 +132,6 @@ export default (crowi: Crowi) => {
     const parameters = { status: STATUS_UNOPENED };
 
     return InAppNotification.updateMany(query, parameters);
-  };
-
-  inAppNotificationSchema.statics.open = async function(user, id) {
-    const query = { _id: id, user: user._id };
-    const parameters = { status: STATUS_OPENED };
-    const options = { new: true };
-
-    const inAppNotification = await InAppNotification.findOneAndUpdate(query, parameters, options);
-    if (inAppNotification != null) {
-      commentEvent.emit('update', inAppNotification.user);
-    }
-    return inAppNotification;
   };
 
   inAppNotificationSchema.statics.getUnreadCountByUser = async function(user) {
