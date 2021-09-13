@@ -65,16 +65,18 @@ module.exports = function(crowi) {
     }));
   };
 
-  commentSchema.statics.updateCommentsByPageId = async(comment, isMarkdown, commentId) => {
+  commentSchema.statics.updateCommentsByPageId = async function(comment, isMarkdown, commentId) {
     const Comment = this;
     const commentEvent = crowi.event('comment');
 
     await commentEvent.emit('update', comment.creator);
 
-    return Comment.findOneAndUpdate(
+    const commentData = await Comment.findOneAndUpdate(
       { _id: commentId },
       { $set: { comment, isMarkdown } },
     );
+
+    return commentData;
 
   };
 
