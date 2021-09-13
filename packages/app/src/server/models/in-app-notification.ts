@@ -31,7 +31,6 @@ export interface InAppNotificationDocument extends Document {
 export interface InAppNotificationModel extends Model<InAppNotificationDocument> {
   findLatestInAppNotificationsByUser(user: Types.ObjectId, skip: number, offset: number): Promise<InAppNotificationDocument[]>
   upsertByActivity(user: Types.ObjectId, activity: ActivityDocument, createdAt?: Date | null): Promise<InAppNotificationDocument | null>
-  removeActivity(activity: any): any
   // commented out type 'Query' temporary to avoid ts error
   removeEmpty()/* : Query<any> */
   read(user: typeof User) /* : Promise<Query<any>> */
