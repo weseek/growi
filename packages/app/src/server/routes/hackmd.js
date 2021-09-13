@@ -341,12 +341,11 @@ module.exports = function(crowi, app) {
    * @param {object} res
    */
   const saveOnHackmd = async function(req, res) {
-    // TODO: check if i can get user from this req. im sure i can though TAICHI
-    const page = req.page;
+    const { page, user } = req;
 
     try {
       await Page.updateHasDraftOnHackmd(page, true);
-      pageEvent.emit('saveOnHackmd', page);
+      pageEvent.emit('saveOnHackmd', page, user);
       return res.json(ApiResponse.success());
     }
     catch (err) {

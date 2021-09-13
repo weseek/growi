@@ -125,13 +125,13 @@ class SyncPageStatusService implements S2sMessageHandlable {
 
       this.publishToOtherServers('page:delete', { s2cMessagePageUpdated });
     });
-    // TODO: get user TAICHI
-    this.emitter.on('saveOnHackmd', (page) => {
+    this.emitter.on('saveOnHackmd', (page, user) => {
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page);
 
       // emit to the room for each page
       socketIoService.getDefaultSocket()
         .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
+        .except(getRoomNameWithId(RoomPrefix.USER, user._id))
         .emit('page:editingWithHackmd', { s2cMessagePageUpdated });
 
       this.publishToOtherServers('page:editingWithHackmd', { s2cMessagePageUpdated });
