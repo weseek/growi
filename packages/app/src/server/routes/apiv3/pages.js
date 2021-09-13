@@ -28,6 +28,36 @@ const LIMIT_FOR_LIST = 10;
  *
  *  components:
  *    schemas:
+ *      Tags:
+ *        description: Tags
+ *        type: array
+ *        items:
+ *          $ref: '#/components/schemas/Tag/properties/name'
+ *        example: ['daily', 'report', 'tips']
+ *
+ *      Tag:
+ *        description: Tag
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: tag ID
+ *            example: 5e2d6aede35da4004ef7e0b7
+ *          name:
+ *            type: string
+ *            description: tag name
+ *            example: daily
+ *          count:
+ *            type: number
+ *            description: Count of tagged pages
+ *            example: 3
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
  *      Page:
  *        description: Page
  *        type: object
@@ -77,7 +107,7 @@ const LIMIT_FOR_LIST = 10;
  *          path:
  *            type: string
  *            description: page path
- *            example: /
+ *            example: /Sandbox/Math
  *          redirectTo:
  *            type: string
  *            description: redirect path
@@ -177,7 +207,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /pages/create:
+   *    /pages:
    *      post:
    *        tags: [Pages]
    *        operationId: createPage
@@ -194,6 +224,14 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Page/properties/path'
    *                  grant:
    *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                  grantUserGroupId:
+   *                    type: string
+   *                    description: UserGroup ID
+   *                    example: 5ae5fccfc5577b0004dbd8ab
+   *                  pageTags:
+   *                    type: array
+   *                    items:
+   *                      $ref: '#/components/schemas/Tag'
    *                required:
    *                  - body
    *                  - path
@@ -204,8 +242,17 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
+   *                    data:
+   *                      type: object
+   *                      properties:
+   *                        page:
+   *                          $ref: '#/components/schemas/Page'
+   *                        tags:
+   *                          type: array
+   *                          items:
+   *                            $ref: '#/components/schemas/Tags'
+   *                        revision:
+   *                          $ref: '#/components/schemas/Revision'
    *          409:
    *            description: page path is already existed
    */
