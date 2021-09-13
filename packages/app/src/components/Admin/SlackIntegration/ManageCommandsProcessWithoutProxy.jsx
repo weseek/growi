@@ -141,7 +141,6 @@ PermissionSettingForEachCommandComponent.propTypes = {
 const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
   const { t } = useTranslation();
   const [editingCommandPermission, setEditingCommandPermission] = useState({});
-  console.log(editingCommandPermission, 144);
 
   const updatePermissionsCommandsState = useCallback((e) => {
     const { target } = e;
@@ -158,12 +157,9 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     }
 
     setEditingCommandPermission(() => {
-
-      return Object.entries(commandPermission).reduce((acc, entry, index) => {
-        // console.log(value);
+      return Object.entries(commandPermission).reduce((acc, entry) => {
         const [command, value] = entry;
         acc[command] = value;
-        console.log(value);
         return acc;
       }, {});
     });
@@ -180,7 +176,6 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     });
   }, []);
 
-  console.log(editingCommandPermission);
   const updateCommandsHandler = async(e) => {
     try {
       await apiv3Put('/slack-integration-settings/without-proxy/update-permissions', {
