@@ -95,7 +95,7 @@ module.exports = {
               },
             },
             {
-              $unset: ['permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands']
+              $unset: ['permissionsForBroadcastUseCommands', 'permissionsForSingleUseCommands'],
             },
           ],
         },
