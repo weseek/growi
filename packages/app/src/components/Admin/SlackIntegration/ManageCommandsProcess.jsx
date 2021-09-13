@@ -155,7 +155,7 @@ const ManageCommandsProcess = ({
     return (
       <div className="my-1 mb-2">
         <div className="row align-items-center mb-3">
-          <p className="col my-auto text-capitalize align-middle">{commandName}</p>
+          <p className="col-md-5 text-md-right text-capitalize mb-2"><strong>{commandName}</strong></p>
           <div className="col dropdown">
             <button
               className="btn btn-outline-secondary dropdown-toggle text-right col-12 col-md-auto"
@@ -205,18 +205,20 @@ const ManageCommandsProcess = ({
             </div>
           </div>
         </div>
-        <div className={`row-12 row-md-6 ${hiddenClass}`}>
-          <textarea
-            className="form-control"
-            type="textarea"
-            name={commandName}
-            defaultValue={textareaDefaultValue}
-            onChange={isCommandBroadcastUse ? updateChannelsListForBroadcastUseCommandsState : updateChannelsListForSingleUseCommandsState}
-          />
-          <p className="form-text text-muted small">
-            {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
-            <br />
-          </p>
+        <div className={`row ${hiddenClass}`}>
+          <div className="col-md-7 offset-md-5">
+            <textarea
+              className="form-control"
+              type="textarea"
+              name={commandName}
+              defaultValue={textareaDefaultValue}
+              onChange={isCommandBroadcastUse ? updateChannelsListForBroadcastUseCommandsState : updateChannelsListForSingleUseCommandsState}
+            />
+            <p className="form-text text-muted small">
+              {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
+              <br />
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -232,10 +234,16 @@ const ManageCommandsProcess = ({
     const defaultCommandsName = isCommandBroadcastUse ? defaultSupportedCommandsNameForBroadcastUse : defaultSupportedCommandsNameForSingleUse;
     return (
       <>
-        <p className="font-weight-bold mb-0">{isCommandBroadcastUse ? 'Multiple GROWI' : 'Single GROWI'}</p>
-        <p className="text-muted mb-2">
-          {isCommandBroadcastUse ? t('admin:slack_integration.accordion.multiple_growi_command') : t('admin:slack_integration.accordion.single_growi_command')}
-        </p>
+        <div className="row">
+          <div className="col-md-7 offset-md-2">
+            <p className="font-weight-bold mb-1">{isCommandBroadcastUse ? 'Multiple GROWI' : 'Single GROWI'}</p>
+            <p className="text-muted">
+              {isCommandBroadcastUse
+                ? t('admin:slack_integration.accordion.multiple_growi_command')
+                : t('admin:slack_integration.accordion.single_growi_command')}
+            </p>
+          </div>
+        </div>
         <div className="custom-control custom-checkbox">
           <div className="row mb-5 d-block">
             {defaultCommandsName.map((commandName) => {
