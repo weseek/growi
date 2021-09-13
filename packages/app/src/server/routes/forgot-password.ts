@@ -4,6 +4,7 @@ import {
 import { ReqWithPasswordResetOrder } from '../middlewares/inject-reset-order-by-token-middleware';
 
 export const forgotPassword = (req: Request, res: Response): void => {
+  // TODO: grune - make different view to bypass update password
   return res.render('forgot-password');
 };
 

@@ -1,4 +1,5 @@
 import loggerFactory from '~/utils/logger';
+import PasswordResetOrder from '~/server/models/password-reset-order';
 
 // disable all of linting
 // because this file is a deprecated legacy of Crowi
@@ -10,6 +11,7 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');
+  const UserRegistrationOrder = crowi.model('UserRegistrationOrder');
   const { configManager, appService, aclService, mailService } = crowi;
 
   const actions = {};
@@ -120,14 +122,9 @@ module.exports = function(crowi, app) {
           return res.redirect('/register');
         }
 
-        User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+        UserRegistrationOrder.createUserRegistrationOrder(name, username, email, password, undefined, async(err, userData) => {
           if (err) {
-            if (err.name === 'UserUpperLimitException') {
-              req.flash('registerWarningMessage', req.t('message.can_not_register_maximum_number_of_users'));
-            }
-            else {
-              req.flash('registerWarningMessage', req.t('message.failed_to_register'));
-            }
+            req.flash('registerWarningMessage', req.t('message.failed_to_register'));
             return res.redirect('/register');
           }
 
@@ -136,12 +133,24 @@ module.exports = function(crowi, app) {
             sendEmailToAllAdmins(userData);
           }
 
+          // Send email authentication
+          const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+          const i18n = req.language || grobalLang;
+          const appUrl = appService.getSiteUrl();
+
+          const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(userData.email);
+          // TODO: grune - make new route view to bypass update password
+          // `/forgot-password/activate/${passwordResetOrderData.token}`
+          const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
+          const oneTimeUrl = url.href;
+          await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
+
           // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
           // cz. loginSuccess method doesn't work on it's own when using passport
           //      because `req.login()` prepared by passport is not called.
           req.flash('successMessage', req.t('message.successfully_created',{ username: userData.username }));
 
-          return loginSuccess(req, res, userData);
+          return res.redirect('/login');
         });
       });
     }
@@ -151,6 +160,19 @@ module.exports = function(crowi, app) {
       return res.render('login', { isRegistering });
     }
   };
+
+  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
+    return mailService.send({
+      to: email,
+      subject: txtFileName,
+      template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
+      vars: {
+        appTitle: appService.getAppTitle(),
+        email,
+        url,
+      },
+    });
+  }
 
   async function sendEmailToAllAdmins(userData) {
     // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
@@ -162,7 +184,7 @@ module.exports = function(crowi, app) {
       return mailService.send({
         to: admin.email,
         subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
+        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'), // TODO: grune - make new template for activation message
         vars: {
           createdUser: userData,
           admin,

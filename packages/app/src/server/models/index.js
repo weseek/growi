@@ -4,6 +4,7 @@ module.exports = {
   // PageArchive: require('./page-archive'),
   PageTagRelation: require('./page-tag-relation'),
   User: require('./user'),
+  UserRegistrationOrder: require('./user-registration-order'),
   ExternalAccount: require('./external-account'),
   UserGroup: require('./user-group'),
   UserGroupRelation: require('./user-group-relation'),
