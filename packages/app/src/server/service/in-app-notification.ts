@@ -31,6 +31,7 @@ class InAppNotificationService {
   }
 
   removeActivity = async function(activity) {
+    const InAppNotification = require('../models/in-app-notification')(this.crowi);
     const { _id, target, action } = activity;
     const query = { target, action };
     const parameters = { $pull: { activities: _id } };
