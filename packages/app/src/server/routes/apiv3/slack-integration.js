@@ -45,12 +45,9 @@ module.exports = (crowi) => {
   }
 
   async function checkCommandPermissionWithoutProxy(req, res, next) {
-    // if (req.body.text == null && !payload) { // when /relation-test
-    //   return next();
-    // }
     const fromChannel = req.body.channel_name;
     const commandType = parseSlashCommand(req.body);
-    const commandName = commandType.growiCommandType;
+    const commandNameFromSlack = commandType.growiCommandType;
     const commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
 
     // code below checks permission at channel level
@@ -60,8 +57,7 @@ module.exports = (crowi) => {
       const permission = value;
       const commandRegExp = new RegExp(`(^${command}$)|(^${command}:\\w+)`);
 
-      if (!commandRegExp.test(commandName)) {
-        isPermitted = false;
+      if (!commandRegExp.test(commandNameFromSlack)) {
         return;
       }
 
@@ -82,13 +78,12 @@ module.exports = (crowi) => {
     const growiDocsLink = 'https://docs.growi.org/en/admin-guide/upgrading/43x.html';
     return res.json({
       blocks: [
-        markdownSectionBlock('*None of GROWI permitted the command.*'),
-        markdownSectionBlock(`*'${commandName}'* command was not allowed.`),
+        markdownSectionBlock(`*'${commandNameFromSlack}'* command was not allowed.`),
         markdownSectionBlock(
           `Or, if your GROWI version is 4.3.0 or below, upgrade GROWI to use commands and permission settings: ${growiDocsLink}`,
         ),
       ],
-    });
+    }).status(403);
   }
 
   async function checkCommandPermissionWithProxy(req, res, next) {
