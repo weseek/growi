@@ -58,9 +58,24 @@ const PermissionSettingForEachCommandComponent = ({
     return null;
   }
 
-  const hiddenClass = Array.isArray(editingCommandPermission[commandName]) ? '' : 'd-none';
+  function permissionTypeClickHandler(e) {
+    if (onPermissionTypeClicked == null) {
+      return;
+    }
+    onPermissionTypeClicked(e);
+  }
+
+  function onPermissionListChangeHandler(e) {
+    if (onPermissionListChanged == null) {
+      return;
+    }
+    onPermissionListChanged(e);
+  }
+
   const permission = editingCommandPermission[commandName];
+  const hiddenClass = Array.isArray(permission) ? '' : 'd-none';
   const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
+
 
   return (
     <div className="my-1 mb-2">
@@ -76,9 +91,9 @@ const PermissionSettingForEachCommandComponent = ({
             aria-expanded="true"
           >
             <span className="float-left">
-              {editingCommandPermission[commandName] === true && t('admin:slack_integration.accordion.allow_all')}
-              {editingCommandPermission[commandName] === false && t('admin:slack_integration.accordion.deny_all')}
-              {Array.isArray(editingCommandPermission[commandName]) && t('admin:slack_integration.accordion.allow_specified')}
+              {permission === true && t('admin:slack_integration.accordion.allow_all')}
+              {permission === false && t('admin:slack_integration.accordion.deny_all')}
+              {Array.isArray(permission) && t('admin:slack_integration.accordion.allow_specified')}
             </span>
           </button>
           <div className="dropdown-menu">
@@ -87,7 +102,7 @@ const PermissionSettingForEachCommandComponent = ({
               type="button"
               name={commandName}
               value={PermissionTypes.ALLOW_ALL}
-              onClick={onPermissionTypeClicked}
+              onClick={e => permissionTypeClickHandler(e)}
             >
               {t('admin:slack_integration.accordion.allow_all_long')}
             </button>
@@ -96,7 +111,7 @@ const PermissionSettingForEachCommandComponent = ({
               type="button"
               name={commandName}
               value={PermissionTypes.DENY_ALL}
-              onClick={onPermissionTypeClicked}
+              onClick={e => permissionTypeClickHandler(e)}
             >
               {t('admin:slack_integration.accordion.deny_all_long')}
             </button>
@@ -105,7 +120,7 @@ const PermissionSettingForEachCommandComponent = ({
               type="button"
               name={commandName}
               value={PermissionTypes.ALLOW_SPECIFIED}
-              onClick={onPermissionTypeClicked}
+              onClick={e => permissionTypeClickHandler(e)}
             >
               {t('admin:slack_integration.accordion.allow_specified_long')}
             </button>
@@ -118,7 +133,7 @@ const PermissionSettingForEachCommandComponent = ({
           type="textarea"
           name={commandName}
           value={textareaDefaultValue}
-          onChange={onPermissionListChanged}
+          onChange={e => onPermissionListChangeHandler(e)}
         />
         <p className="form-text text-muted small">
           {t('admin:slack_integration.accordion.allowed_channels_description', { commandName })}
@@ -155,14 +170,8 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     if (commandPermission == null) {
       return;
     }
-
-    setEditingCommandPermission(() => {
-      return Object.entries(commandPermission).reduce((acc, entry) => {
-        const [command, value] = entry;
-        acc[command] = value;
-        return acc;
-      }, {});
-    });
+    const updatedState = { ...commandPermission };
+    setEditingCommandPermission(updatedState);
   }, [commandPermission]);
 
   const updateChannelsListState = useCallback((e) => {
