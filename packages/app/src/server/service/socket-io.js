@@ -8,7 +8,6 @@ const passport = require('passport');
 const logger = loggerFactory('growi:service:socket-io');
 
 
-
 /**
  * Serve socket.io for server-to-client messaging
  */
