@@ -27,6 +27,7 @@ const SlackIntegration = (props) => {
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
   const [slackBotTokenEnv, setSlackBotTokenEnv] = useState('');
+  const [commandPermission, setCommandPermission] = useState(null);
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState(false);
   const [slackAppIntegrations, setSlackAppIntegrations] = useState();
   const [proxyServerUri, setProxyServerUri] = useState();
@@ -40,7 +41,7 @@ const SlackIntegration = (props) => {
     try {
       const { data } = await appContainer.apiv3.get('/slack-integration-settings');
       const {
-        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri,
+        slackSigningSecret, slackBotToken, slackSigningSecretEnvVars, slackBotTokenEnvVars, slackAppIntegrations, proxyServerUri, commandPermission,
       } = data.settings;
 
       setErrorMsg(data.errorMsg);
@@ -53,6 +54,7 @@ const SlackIntegration = (props) => {
       setSlackBotTokenEnv(slackBotTokenEnvVars);
       setSlackAppIntegrations(slackAppIntegrations);
       setProxyServerUri(proxyServerUri);
+      setCommandPermission(commandPermission);
     }
     catch (err) {
       toastError(err);
@@ -151,6 +153,7 @@ const SlackIntegration = (props) => {
           onTestConnectionInvoked={fetchSlackIntegrationData}
           onUpdatedSecretToken={changeSecretAndToken}
           connectionStatuses={connectionStatuses}
+          commandPermission={commandPermission}
         />
       );
       break;
