@@ -155,14 +155,8 @@ const ManageCommandsProcessWithoutProxy = ({ apiv3Put, commandPermission }) => {
     if (commandPermission == null) {
       return;
     }
-
-    setEditingCommandPermission(() => {
-      return Object.entries(commandPermission).reduce((acc, entry) => {
-        const [command, value] = entry;
-        acc[command] = value;
-        return acc;
-      }, {});
-    });
+    const updatedState = { ...commandPermission };
+    setEditingCommandPermission(updatedState);
   }, [commandPermission]);
 
   const updateChannelsListState = useCallback((e) => {
