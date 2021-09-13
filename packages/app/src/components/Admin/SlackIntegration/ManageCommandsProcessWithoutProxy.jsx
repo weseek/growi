@@ -57,10 +57,10 @@ const PermissionSettingForEachCommandComponent = ({
   if (editingCommandPermission == null) {
     return null;
   }
-
-  const hiddenClass = Array.isArray(editingCommandPermission[commandName]) ? '' : 'd-none';
   const permission = editingCommandPermission[commandName];
+  const hiddenClass = Array.isArray(permission) ? '' : 'd-none';
   const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
+
 
   return (
     <div className="my-1 mb-2">
@@ -76,9 +76,9 @@ const PermissionSettingForEachCommandComponent = ({
             aria-expanded="true"
           >
             <span className="float-left">
-              {editingCommandPermission[commandName] === true && t('admin:slack_integration.accordion.allow_all')}
-              {editingCommandPermission[commandName] === false && t('admin:slack_integration.accordion.deny_all')}
-              {Array.isArray(editingCommandPermission[commandName]) && t('admin:slack_integration.accordion.allow_specified')}
+              {permission === true && t('admin:slack_integration.accordion.allow_all')}
+              {permission === false && t('admin:slack_integration.accordion.deny_all')}
+              {Array.isArray(permission) && t('admin:slack_integration.accordion.allow_specified')}
             </span>
           </button>
           <div className="dropdown-menu">
