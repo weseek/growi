@@ -373,7 +373,7 @@ module.exports = (crowi) => {
         slackSigningSecret: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret'),
         slackBotToken: crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken'),
       };
-      return res.apiv3({ customBotWithoutProxySettingParams });
+      return res.apiv3();
     }
     catch (error) {
       const msg = 'Error occured in updating Custom bot setting';
@@ -410,9 +410,7 @@ module.exports = (crowi) => {
     try {
       await updateSlackBotSettings(requestParams);
       crowi.slackIntegrationService.publishUpdatedMessage();
-
-      const customBotWithoutProxyCommandPermissionarams = crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
-      return res.apiv3({ customBotWithoutProxyCommandPermissionarams });
+      return res.apiv3();
     }
     catch (error) {
       const msg = 'Error occured in updating command permission settigns';
