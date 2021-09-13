@@ -112,17 +112,6 @@ export default (crowi: Crowi) => {
       .exec();
   };
 
-  inAppNotificationSchema.statics.removeActivity = async function(activity) {
-    const { _id, target, action } = activity;
-    const query = { target, action };
-    const parameters = { $pull: { activities: _id } };
-
-    const result = await InAppNotification.updateMany(query, parameters);
-
-    await InAppNotification.removeEmpty();
-    return result;
-  };
-
   inAppNotificationSchema.statics.removeEmpty = function() {
     return InAppNotification.deleteMany({ activities: { $size: 0 } });
   };
