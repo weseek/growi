@@ -4,7 +4,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
-const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps } = require('@growi/slack');
+const {
+  verifySlackRequest, parseSlashCommand,
+} = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -42,6 +44,48 @@ module.exports = (crowi) => {
     }
 
     next();
+  }
+
+  async function checkCommandPermissionWithoutProxy(req, res, next) {
+    // if (req.body.text == null && !payload) { // when /relation-test
+    //   return next();
+    // }
+    const fromChannel = req.body.channel_name;
+    const commandType = parseSlashCommand(req.body);
+    const commandName = commandType.growiCommandType;
+    const commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+
+    // code below checks permission at channel level
+    let isPermitted = false;
+    Object.entries(commandPermission).forEach((entry) => {
+      const [command, value] = entry;
+      const permission = value;
+      console.log(permission, 63);
+      const commandRegExp = new RegExp(`(^${command}$)|(^${command}:\\w+)`);
+
+      if (!commandRegExp.test(commandName)) {
+        isPermitted = false;
+        console.log(68);
+        return;
+      }
+
+      // permission check
+      if (permission === true) {
+        console.log(73);
+        isPermitted = true;
+        return;
+      }
+      if (Array.isArray(permission) && permission.includes(fromChannel)) {
+        console.log(79);
+        isPermitted = true;
+      }
+    });
+
+    if (isPermitted) {
+      console.log(83);
+      return next();
+    }
+    res.status(403).send(`It is not allowed to run '${commandName}' command to this GROWI.`);
   }
 
   async function checkCommandPermissionWithProxy(req, res, next) {
@@ -146,7 +190,7 @@ module.exports = (crowi) => {
 
   }
 
-  router.post('/commands', addSigningSecretToReq, verifySlackRequest, async(req, res) => {
+  router.post('/commands', addSigningSecretToReq, verifySlackRequest, checkCommandPermissionWithoutProxy, async(req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleCommands(req, res, client);
   });
