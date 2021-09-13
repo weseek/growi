@@ -44,7 +44,7 @@ module.exports = (crowi) => {
     next();
   }
 
-  async function checkCommandPermission(req, res, next) {
+  async function checkCommandPermissionWithProxy(req, res, next) {
     let payload;
     if (req.body.payload) {
       payload = JSON.parse(req.body.payload);
@@ -151,7 +151,7 @@ module.exports = (crowi) => {
     return handleCommands(req, res, client);
   });
 
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermissionWithProxy, async(req, res) => {
     const { body } = req;
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
@@ -206,7 +206,7 @@ module.exports = (crowi) => {
     return handleInteractions(req, res, client);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermissionWithProxy, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
 
