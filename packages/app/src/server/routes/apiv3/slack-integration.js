@@ -49,7 +49,6 @@ module.exports = (crowi) => {
     let isPermitted = false;
     Object.entries(obj).forEach((entry) => {
       const [command, value] = entry;
-      console.log(entry);
       const permission = value;
       const commandRegExp = new RegExp(`(^${command}$)|(^${command}:\\w+)`);
 
@@ -75,8 +74,6 @@ module.exports = (crowi) => {
       return next();
     }
 
-    console.log(52);
-
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
@@ -100,7 +97,6 @@ module.exports = (crowi) => {
   }
 
   async function checkInteractionspermission(req, res, next) {
-    console.log(req.body);
     const payload = JSON.parse(req.body.payload);
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
@@ -124,40 +120,18 @@ module.exports = (crowi) => {
 
     const callbackOrActionId = callbackId || actionId;
 
+
     // code below checks permission at channel level
-    const isPermitted = false;
+    let isPermitted = false;
+    const array = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
 
-    // const hgoe = unifyCheckArray(obj, callbackOrActionId, fromChannel);
-    // console.log(hgoe);
-    // [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
-    //   // boolean or string[]
-    //   let permission = permissionsForBroadcastUseCommands.get(commandName);
-    //   if (permission === undefined) {
-    //     permission = permissionsForSingleUseCommands.get(commandName);
-    //   }
+    const commandPermission = {};
+    array.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
 
-    //   // ex. search OR search:handlerName
-    //   const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
-
-    //   // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
-    //   if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
-    //     return;
-    //   }
-
-    //   // permission check
-    //   if (permission === true) {
-    //     isPermitted = true;
-    //     return;
-    //   }
-    //   if (Array.isArray(permission) && permission.includes(fromChannel)) {
-    //     isPermitted = true;
-    //   }
-    // });
-
+    isPermitted = unifyCheckArray(commandPermission, callbackOrActionId, fromChannel);
     if (isPermitted) {
       return next();
     }
-    console.log(144);
     res.status(403).send('It is not allowed to run  command to this GROWI.');
   }
 
