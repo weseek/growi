@@ -1,5 +1,5 @@
 import loggerFactory from '~/utils/logger';
-import { RoomPrefix, getRoomNameWithId } from './utils/socket-io-helpers';
+import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const socketIo = require('socket.io');
 const expressSession = require('express-session');
@@ -42,6 +42,7 @@ class SocketIoService {
 
     await this.setupStoreGuestIdEventHandler();
 
+    await this.setupLoginedUserRoomsJoinOnConnection();
     await this.setupDefaultSocketJoinRoomsEventHandler();
   }
 
@@ -127,16 +128,20 @@ class SocketIoService {
     });
   }
 
-  setupDefaultSocketJoinRoomsEventHandler() {
+  setupLoginedUserRoomsJoinOnConnection() {
     this.io.on('connection', (socket) => {
       const user = socket.request.user;
       if (user == null) {
         logger.debug('Socket io: An anonymous user has connected');
         return;
       }
-      // make a room for each user. the user will leave automatically
       socket.join(getRoomNameWithId(RoomPrefix.USER, user._id));
+    });
+  }
 
+  setupDefaultSocketJoinRoomsEventHandler() {
+    this.io.on('connection', (socket) => {
+      // set event handlers for joining rooms
       socket.on('join:page', ({ pageId }) => {
         socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
       });
