@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "4.4.0-RC",
+  "version": "4.4.3-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -31,7 +31,7 @@
   "scripts": {
     "start": "yarn app:server",
     "prestart": "yarn app:build",
-    "app:build": "yarn lerna run build --scope @growi/app --scope @growi/slack --scope @growi/plugin-*",
+    "app:build": "yarn lerna run build",
     "app:server": "yarn lerna run server --scope @growi/app",
     "slackbot-proxy:build": "yarn lerna run build --scope @growi/slackbot-proxy --scope @growi/slack",
     "slackbot-proxy:server": "yarn lerna run start:prod --scope @growi/slackbot-proxy",

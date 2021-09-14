@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
 const express = require('express');
 const pathUtils = require('growi-commons').pathUtils;
+const mongoose = require('mongoose');
 
 const { body } = require('express-validator');
 const { query } = require('express-validator');
@@ -20,6 +21,36 @@ const LIMIT_FOR_LIST = 10;
  * @swagger
  *  tags:
  *    name: Pages
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Tags:
+ *        description: Tags
+ *        type: array
+ *        items:
+ *          $ref: '#/components/schemas/Tag/properties/name'
+ *        example: ['daily', 'report', 'tips']
+ *
+ *      Tag:
+ *        description: Tag
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: tag ID
+ *            example: 5e2d6aede35da4004ef7e0b7
+ *          name:
+ *            type: string
+ *            description: tag name
+ *            example: daily
+ *          count:
+ *            type: number
+ *            description: Count of tagged pages
+ *            example: 3
  */
 
 /**
@@ -76,7 +107,7 @@ const LIMIT_FOR_LIST = 10;
  *          path:
  *            type: string
  *            description: page path
- *            example: /
+ *            example: /Sandbox/Math
  *          redirectTo:
  *            type: string
  *            description: redirect path
@@ -176,7 +207,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /pages/create:
+   *    /pages:
    *      post:
    *        tags: [Pages]
    *        operationId: createPage
@@ -193,6 +224,14 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Page/properties/path'
    *                  grant:
    *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                  grantUserGroupId:
+   *                    type: string
+   *                    description: UserGroup ID
+   *                    example: 5ae5fccfc5577b0004dbd8ab
+   *                  pageTags:
+   *                    type: array
+   *                    items:
+   *                      $ref: '#/components/schemas/Tag'
    *                required:
    *                  - body
    *                  - path
@@ -203,8 +242,17 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
+   *                    data:
+   *                      type: object
+   *                      properties:
+   *                        page:
+   *                          $ref: '#/components/schemas/Page'
+   *                        tags:
+   *                          type: array
+   *                          items:
+   *                            $ref: '#/components/schemas/Tags'
+   *                        revision:
+   *                          $ref: '#/components/schemas/Revision'
    *          409:
    *            description: page path is already existed
    */
@@ -309,6 +357,26 @@ module.exports = (crowi) => {
         if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
           page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
         }
+      });
+
+      const PageTagRelation = mongoose.model('PageTagRelation');
+      const ids = result.pages.map((page) => { return page._id });
+      const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
+
+      // { pageId: [{ tag }, ...] }
+      const relationsMap = new Map();
+      // increment relationsMap
+      relations.forEach((relation) => {
+        const pageId = relation.relatedPage.toString();
+        if (!relationsMap.has(pageId)) {
+          relationsMap.set(pageId, []);
+        }
+        relationsMap.get(pageId).push(relation.relatedTag);
+      });
+      // add tags to each page
+      result.pages.forEach((page) => {
+        const pageId = page._id.toString();
+        page.tags = relationsMap.has(pageId) ? relationsMap.get(pageId) : [];
       });
 
       return res.apiv3(result);
