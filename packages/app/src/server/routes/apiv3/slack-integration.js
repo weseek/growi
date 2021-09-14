@@ -78,7 +78,7 @@ module.exports = (crowi) => {
     return { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands };
   }
 
-  async function checkCommandPermission(req, res, next) {
+  async function checkCommandsPermission(req, res, next) {
     if (req.body.text == null) { // when /relation-test
       return next();
     }
@@ -177,7 +177,7 @@ module.exports = (crowi) => {
     return handleCommands(req, res, client);
   });
 
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async(req, res) => {
     const { body } = req;
     // eslint-disable-next-line max-len
     // see: https://api.slack.com/apis/connections/events-api#the-events-api__subscribing-to-event-types__events-api-request-urls__request-url-configuration--verification
