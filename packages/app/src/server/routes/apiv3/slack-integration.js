@@ -44,32 +44,16 @@ module.exports = (crowi) => {
     next();
   }
 
-  async function checkCommandPermission(req, res, next) {
-    if (req.body.text == null) { // when /relation-test
-      return next();
-    }
-
-    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-    const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
-    const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
-    const command = req.body.text.split(' ')[0];
-    const fromChannel = req.body.channel_name;
-
+  const unifyCheckArray = (obj, commandOrActionOrCallback, fromChannel) => {
     // code below checks permission at channel level
     let isPermitted = false;
-    [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
-      // boolean or string[]
-      let permission = permissionsForBroadcastUseCommands.get(commandName);
-      if (permission === undefined) {
-        permission = permissionsForSingleUseCommands.get(commandName);
-      }
+    Object.entries(obj).forEach((entry) => {
+      const [command, value] = entry;
+      console.log(entry);
+      const permission = value;
+      const commandRegExp = new RegExp(`(^${command}$)|(^${command}:\\w+)`);
 
-      // ex. search OR search:handlerName
-      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
-
-      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
-      if (!commandRegExp.test(command)) {
+      if (!commandRegExp.test(commandOrActionOrCallback)) {
         return;
       }
 
@@ -82,14 +66,41 @@ module.exports = (crowi) => {
         isPermitted = true;
       }
     });
+    return isPermitted;
 
+  };
+
+  async function checkCommandPermission(req, res, next) {
+    if (req.body.text == null) { // when /relation-test
+      return next();
+    }
+
+    console.log(52);
+
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
+    const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
+    const command = req.body.text.split(' ')[0];
+    const fromChannel = req.body.channel_name;
+
+    // code below checks permission at channel level
+    let isPermitted = false;
+    const array = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
+
+    const commandPermission = {};
+    array.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
+
+    isPermitted = unifyCheckArray(commandPermission, command, fromChannel);
     if (isPermitted) {
       return next();
     }
-    res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+
+    return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
   }
 
   async function checkInteractionspermission(req, res, next) {
+    console.log(req.body);
     const payload = JSON.parse(req.body.payload);
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
@@ -111,36 +122,42 @@ module.exports = (crowi) => {
       fromChannel = JSON.parse(payload.view.private_metadata).channelName;
     }
 
+    const callbackOrActionId = callbackId || actionId;
+
     // code below checks permission at channel level
-    let isPermitted = false;
-    [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
-      // boolean or string[]
-      let permission = permissionsForBroadcastUseCommands.get(commandName);
-      if (permission === undefined) {
-        permission = permissionsForSingleUseCommands.get(commandName);
-      }
+    const isPermitted = false;
 
-      // ex. search OR search:handlerName
-      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+    // const hgoe = unifyCheckArray(obj, callbackOrActionId, fromChannel);
+    // console.log(hgoe);
+    // [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
+    //   // boolean or string[]
+    //   let permission = permissionsForBroadcastUseCommands.get(commandName);
+    //   if (permission === undefined) {
+    //     permission = permissionsForSingleUseCommands.get(commandName);
+    //   }
 
-      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
-      if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
-        return;
-      }
+    //   // ex. search OR search:handlerName
+    //   const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
 
-      // permission check
-      if (permission === true) {
-        isPermitted = true;
-        return;
-      }
-      if (Array.isArray(permission) && permission.includes(fromChannel)) {
-        isPermitted = true;
-      }
-    });
+    //   // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
+    //   if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
+    //     return;
+    //   }
+
+    //   // permission check
+    //   if (permission === true) {
+    //     isPermitted = true;
+    //     return;
+    //   }
+    //   if (Array.isArray(permission) && permission.includes(fromChannel)) {
+    //     isPermitted = true;
+    //   }
+    // });
 
     if (isPermitted) {
       return next();
     }
+    console.log(144);
     res.status(403).send('It is not allowed to run  command to this GROWI.');
   }
 
