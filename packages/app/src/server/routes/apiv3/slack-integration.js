@@ -44,10 +44,10 @@ module.exports = (crowi) => {
     next();
   }
 
-  const checkPermission = (obj, commandOrActionOrCallback, fromChannel) => {
-    // code below checks permission at channel level
+  const checkPermission = (commandPermission, commandOrActionOrCallback, fromChannel) => {
     let isPermitted = false;
-    Object.entries(obj).forEach((entry) => {
+
+    Object.entries(commandPermission).forEach((entry) => {
       const [command, value] = entry;
       const permission = value;
       const commandRegExp = new RegExp(`(^${command}$)|(^${command}:\\w+)`);
