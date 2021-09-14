@@ -8,6 +8,11 @@ import { Relation } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';
 
 
+type SelectValue = {
+  growiCommand: GrowiCommand,
+  growiUri: any,
+}
+
 export type SelectedGrowiInformation = {
   relation: Relation,
   growiCommand: GrowiCommand,
@@ -20,59 +25,61 @@ export class SelectGrowiService implements GrowiCommandProcessor {
   @Inject()
   relationRepository: RelationRepository;
 
+  private generateGrowiSelectValue(growiCommand: GrowiCommand, growiUri: string): SelectValue {
+    return {
+      growiCommand,
+      growiUri,
+    };
+  }
+
   async process(growiCommand: GrowiCommand, authorizeResult: AuthorizeResult, body: {[key:string]:string } & {growiUrisForSingleUse:string[]}): Promise<void> {
-    const { botToken } = authorizeResult;
+    const growiUrls = body.growiUrisForSingleUse;
 
-    if (botToken == null) {
-      throw new Error('botToken is required.');
-    }
-
-    const client = generateWebClient(botToken);
-
-    await client.views.open({
-      trigger_id: body.trigger_id,
-      view: {
-        type: 'modal',
-        callback_id: 'select_growi',
-        title: {
-          type: 'plain_text',
-          text: 'Select GROWI Url',
+    const chooseSection = growiUrls.map((growiUri) => {
+      const value = this.generateGrowiSelectValue(growiCommand, growiUri);
+      return ({
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: growiUri,
         },
-        submit: {
-          type: 'plain_text',
-          text: 'Submit',
-        },
-        close: {
-          type: 'plain_text',
-          text: 'Close',
-        },
-        private_metadata: JSON.stringify({ body, growiCommand }),
-
-        blocks: [
-          {
-            type: 'input',
-            block_id: 'select_growi',
-            label: {
-              type: 'plain_text',
-              text: 'GROWI App',
-            },
-            element: {
-              type: 'static_select',
-              action_id: 'growi_app',
-              options: body.growiUrisForSingleUse.map((growiUri) => {
-                return ({
-                  text: {
-                    type: 'plain_text',
-                    text: growiUri,
-                  },
-                  value: growiUri,
-                });
-              }),
-            },
+        accessory: {
+          type: 'button',
+          action_id: 'select_growi',
+          text: {
+            type: 'plain_text',
+            text: 'Choose',
           },
-        ],
-      },
+          value: JSON.stringify(value),
+        },
+      });
     });
+
+    return respond(growiCommand.responseUrl, {
+      blocks: [
+        {
+          type: 'header',
+          text: {
+            type: 'plain_text',
+            text: 'Select target GROWI',
+          },
+        },
+        {
+          type: 'context',
+          elements: [
+            {
+              type: 'mrkdwn',
+              text: `Request: \`/growi ${growiCommand.text}\` to:`,
+            },
+          ],
+        },
+        {
+          type: 'divider',
+        },
+        ...chooseSection,
+      ],
+    });
+
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

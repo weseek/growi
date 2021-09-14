@@ -280,6 +280,9 @@ export class SlackCtrl {
     const payload = JSON.parse(body.payload);
     const callBackId = payload?.view?.callback_id;
 
+    const actions: any[] = payload?.actions;
+    const actionId = actions[0].action_id;
+
     // register
     if (callBackId === 'register') {
       try {
@@ -304,7 +307,7 @@ export class SlackCtrl {
     }
 
     // forward to GROWI server
-    if (callBackId === 'select_growi') {
+    if (actionId === 'select_growi') {
       // Send response immediately to avoid opelation_timeout error
       // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
       res.send();
