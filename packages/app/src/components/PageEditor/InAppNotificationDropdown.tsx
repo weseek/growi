@@ -30,20 +30,21 @@ export default class InAppNotificationDropdown extends React.Component<Props, St
     };
   }
 
-  // componentDidMount() {
-  //   this.initializeSocket();
-  //   this.fetchList();
-  //   this.fetchStatus();
-  // }
+  componentDidMount() {
+    this.initializeSocket();
+    // this.fetchList();
+    // this.fetchStatus();
+  }
 
-  // initializeSocket() {
-  //   this.props.crowi.getWebSocket().on('notification updated', (data: { user: string }) => {
-  //     if (this.props.me === data.user) {
-  //       this.fetchList();
-  //       this.fetchStatus();
-  //     }
-  //   });
-  // }
+  // TODO: socket.on by GW-7402
+  initializeSocket() {
+    // this.props.crowi.getWebSocket().on('comment updated', (data: { user: string }) => {
+    //   if (this.props.me === data.user) {
+    // this.fetchList();
+    // this.fetchStatus();
+    //   }
+    // });
+  }
 
   // async fetchStatus() {
   //   try {
