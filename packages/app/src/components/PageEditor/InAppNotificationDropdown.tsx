@@ -61,16 +61,18 @@ const InAppNotificationDropdown = (props: Props) => {
     }
   };
 
-  // async fetchList() {
-  //   const limit = 6;
-  //   try {
-  //     const { notifications } = await this.props.crowi.apiGet('/notification.list', { limit });
-  //     this.setState({ loaded: true, notifications });
-  //   }
-  //   catch (err) {
-  //     // TODO: error handling
-  //   }
-  // }
+  const fetchList = async() => {
+    const limit = 6;
+    try {
+      // const { notifications } = await this.props.crowi.apiGet('/notification.list', { limit });
+      setIsLoaded(true);
+      // setNotifications(notifications);
+      // this.setState({ loaded: true, notifications });
+    }
+    catch (err) {
+      // TODO: error handling
+    }
+  };
 
   const onToggleDropdown = () => {
     if (isOpen === false && count > 0) {
@@ -79,16 +81,16 @@ const InAppNotificationDropdown = (props: Props) => {
     setIsOpen(!isOpen);
   };
 
-  // async handleNotificationOnClick(notification: Notification) {
-  //   try {
-  //     await this.props.crowi.apiPost('/notification.open', { id: notification._id });
-  //     // jump to target page
-  //     window.location.href = notification.target.path;
-  //   }
-  //   catch (err) {
-  //     // TODO: error handling
-  //   }
-  // }
+  const handleNotificationOnClick = async(notification: Notification) => {
+    try {
+      // await this.props.crowi.apiPost('/notification.open', { id: notification._id });
+      // jump to target page
+      // window.location.href = notification.target.path;
+    }
+    catch (err) {
+      // TODO: error handling
+    }
+  };
 
   const badge = count > 0 ? <span className="badge badge-pill badge-danger notification-badge">{count}</span> : '';
 
