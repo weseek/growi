@@ -5,7 +5,7 @@ import { S2cMessagePageUpdated } from '../../models/vo/s2c-message';
 import { S2sMessageHandlable } from '../s2s-messaging/handlable';
 import { S2sMessagingService } from '../s2s-messaging/base';
 
-import { RoomPrefix, getRoomNameWithId } from '../utils/socket-io-helpers';
+import { RoomPrefix, getRoomNameWithId } from '../../util/socket-io-helpers';
 
 const logger = loggerFactory('growi:service:system-events:SyncPageStatusService');
 
