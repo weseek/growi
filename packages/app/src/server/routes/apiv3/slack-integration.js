@@ -63,6 +63,7 @@ module.exports = (crowi) => {
       }
       if (Array.isArray(permission) && permission.includes(fromChannel)) {
         isPermitted = true;
+        return;
       }
     });
 
@@ -100,7 +101,7 @@ module.exports = (crowi) => {
     return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
   }
 
-  async function checkInteractionspermission(req, res, next) {
+  async function checkInteractionsPermission(req, res, next) {
     const payload = JSON.parse(req.body.payload);
     if (payload == null) { // when /relation-test
       return next();
@@ -231,7 +232,7 @@ module.exports = (crowi) => {
     return handleInteractions(req, res, client);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkInteractionspermission, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkInteractionsPermission, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
 
