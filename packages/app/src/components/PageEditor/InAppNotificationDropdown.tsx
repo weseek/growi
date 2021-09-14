@@ -73,7 +73,7 @@ const InAppNotificationDropdown = (props: Props) => {
   // }
 
   const onToggleDropdown = () => {
-    if (isOpen != null && count > 0) {
+    if (isOpen === false && count > 0) {
       updateStatus();
     }
     setIsOpen(!isOpen);
