@@ -1,8 +1,4 @@
-
-type commandPermission = {
-[key:string]:string[]|boolean
-}
-
+type commandPermission = { [key:string]: string[] | boolean }
 
 export const checkPermission = (
     commandPermission:commandPermission, commandOrActionIdOrCallbackId:string, fromChannel:string,
