@@ -1,9 +1,8 @@
 import { Inject, Service } from '@tsed/di';
 
-import { GrowiCommand, generateWebClient } from '@growi/slack';
+import { GrowiCommand, GrowiCommandProcessor, respond } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
 
-import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { Installation } from '~/entities/installation';
 import { Relation } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';

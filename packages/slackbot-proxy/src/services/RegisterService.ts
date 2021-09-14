@@ -1,10 +1,9 @@
 import { Inject, Service } from '@tsed/di';
 import { WebClient, LogLevel, Block } from '@slack/web-api';
 import {
-  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand,
+  markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, GrowiCommand, GrowiCommandProcessor,
 } from '@growi/slack';
 import { AuthorizeResult } from '@slack/oauth';
-import { GrowiCommandProcessor } from '~/interfaces/slack-to-growi/growi-command-processor';
 import { OrderRepository } from '~/repositories/order';
 import { Installation } from '~/entities/installation';
 import { InvalidUrlError } from '../models/errors';
