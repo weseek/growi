@@ -962,7 +962,6 @@ module.exports = function(crowi) {
     const format = options.format || 'markdown';
     const redirectTo = options.redirectTo || null;
     const grantUserGroupId = options.grantUserGroupId || null;
-    const socketClientId = options.socketClientId || null;
 
     // sanitize path
     path = crowi.xss.process(path); // eslint-disable-line no-param-reassign
@@ -995,7 +994,7 @@ module.exports = function(crowi) {
     savedPage = await this.findByPath(revision.path);
     await savedPage.populateDataToShowRevision();
 
-    pageEvent.emit('create', savedPage, user, socketClientId);
+    pageEvent.emit('create', savedPage, user);
 
     return savedPage;
   };
@@ -1007,7 +1006,6 @@ module.exports = function(crowi) {
     const grant = options.grant || pageData.grant; //                                  use the previous data if absence
     const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
-    const socketClientId = options.socketClientId || null;
 
     await validateAppliedScope(user, grant, grantUserGroupId);
     pageData.applyScope(user, grant, grantUserGroupId);
@@ -1023,7 +1021,7 @@ module.exports = function(crowi) {
       savedPage = await this.syncRevisionToHackmd(savedPage);
     }
 
-    pageEvent.emit('update', savedPage, user, socketClientId);
+    pageEvent.emit('update', savedPage, user);
 
     return savedPage;
   };
