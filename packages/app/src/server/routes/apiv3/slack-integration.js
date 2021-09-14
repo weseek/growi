@@ -141,7 +141,7 @@ module.exports = (crowi) => {
     if (isPermitted) {
       return next();
     }
-    res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+    res.status(403).send('It is not allowed to run  command to this GROWI.');
   }
 
   const addSigningSecretToReq = (req, res, next) => {
