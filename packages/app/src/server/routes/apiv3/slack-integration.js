@@ -78,6 +78,13 @@ module.exports = (crowi) => {
     return { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands };
   }
 
+  const mapObjectToObject = (permissionsForBroadcastUseCommands, permissionsForSingleUseCommands) => {
+    const commandPermissionArray = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
+    const commandPermission = {};
+    commandPermissionArray.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
+    return commandPermission;
+  };
+
   async function checkCommandsPermission(req, res, next) {
     if (req.body.text == null) { // when /relation-test
       return next();
@@ -87,10 +94,7 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
 
     // code below checks permission at channel level
-    const commandPermissionArray = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
-    const commandPermission = {};
-    commandPermissionArray.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
-
+    const commandPermission = mapObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
     const command = req.body.text.split(' ')[0];
     const fromChannel = req.body.channel_name;
     const isPermitted = checkPermission(commandPermission, command, fromChannel);
@@ -124,10 +128,7 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
 
     // code below checks permission at channel level
-    const commandPermissionArray = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
-    const commandPermission = {};
-    commandPermissionArray.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
-
+    const commandPermission = mapObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
     const callbacIdkOrActionId = callbackId || actionId;
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) {
