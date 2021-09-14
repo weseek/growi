@@ -16,6 +16,7 @@ import { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:SlackBotService');
 
+const OFFICIAL_SLACKBOT_PROXY_URI = 'https://slackbot-proxy.growi.org';
 
 type S2sMessageForSlackIntegration = S2sMessage & { updatedAt: Date };
 
@@ -106,6 +107,25 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return true;
   }
 
+  get proxyUriForCurrentType(): string {
+    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+
+    // TODO assert currentBotType is not null and CUSTOM_WITHOUT_PROXY
+
+    let proxyUri: string;
+
+    switch (currentBotType) {
+      case SlackbotType.OFFICIAL:
+        proxyUri = OFFICIAL_SLACKBOT_PROXY_URI;
+        break;
+      default:
+        proxyUri = this.configManager.getConfig('crowi', 'slackbot:proxyUri');
+        break;
+    }
+
+    return proxyUri;
+  }
+
   /**
    * generate WebClient instance for CUSTOM_WITHOUT_PROXY type
    */
@@ -171,8 +191,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     this.isCheckTypeValid();
 
     // connect to proxy
-    const proxyServerUri = this.configManager.getConfig('crowi', 'slackbot:proxyUri');
-    const serverUri = new URL('/g2s', proxyServerUri);
+    const serverUri = new URL('/g2s', this.proxyUriForCurrentType);
     const headers = {
       'x-growi-gtop-tokens': slackAppIntegration.tokenGtoP,
     };

@@ -11,14 +11,14 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:RelationsService');
 
-type checkPermissionForInteractionsResults = {
+type CheckPermissionForInteractionsResults = {
   allowedRelations:Relation[],
   disallowedGrowiUrls:Set<string>,
   commandName:string,
   rejectedResults:PromiseRejectedResult[]
 }
 
-type checkEachRelationResult = {
+type CheckEachRelationResult = {
   allowedRelation:Relation|null,
   disallowedGrowiUrl:string|null,
   eachRelationCommandName:string,
@@ -122,7 +122,7 @@ export class RelationsService {
 
   async checkPermissionForInteractions(
       relations:Relation[], actionId:string, callbackId:string, channelName:string,
-  ):Promise<checkPermissionForInteractionsResults> {
+  ):Promise<CheckPermissionForInteractionsResults> {
 
     const allowedRelations:Relation[] = [];
     const disallowedGrowiUrls:Set<string> = new Set();
@@ -150,7 +150,7 @@ export class RelationsService {
     };
   }
 
-  checkEachRelation(relation:Relation, actionId:string, callbackId:string, channelName:string):checkEachRelationResult {
+  checkEachRelation(relation:Relation, actionId:string, callbackId:string, channelName:string):CheckEachRelationResult {
 
     let allowedRelation:Relation|null = null;
     let disallowedGrowiUrl:string|null = null;

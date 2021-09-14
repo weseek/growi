@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
+const { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } = require('@growi/slack');
 
 
 const schema = new mongoose.Schema({
