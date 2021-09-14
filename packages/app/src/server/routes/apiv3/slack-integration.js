@@ -78,7 +78,7 @@ module.exports = (crowi) => {
     return { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands };
   }
 
-  const mapObjectToObject = (permissionsForBroadcastUseCommands, permissionsForSingleUseCommands) => {
+  const convertObjectToObject = (permissionsForBroadcastUseCommands, permissionsForSingleUseCommands) => {
     const commandPermissionArray = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
     const commandPermission = {};
     commandPermissionArray.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
@@ -92,7 +92,7 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
 
     // Return type is object. This is for use in checkPermision arg
-    const commandPermission = mapObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
+    const commandPermission = convertObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
     const command = req.body.text.split(' ')[0];
     const fromChannel = req.body.channel_name;
     const isPermitted = checkPermission(commandPermission, command, fromChannel);
@@ -122,7 +122,7 @@ module.exports = (crowi) => {
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
 
     // Return type is object. This is for use in checkPermision arg
-    const commandPermission = mapObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
+    const commandPermission = convertObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
     const callbacIdkOrActionId = callbackId || actionId;
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) return next();
