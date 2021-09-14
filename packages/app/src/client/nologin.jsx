@@ -11,6 +11,7 @@ import InstallerForm from '../components/InstallerForm';
 import LoginForm from '../components/LoginForm';
 import PasswordResetRequestForm from '../components/PasswordResetRequestForm';
 import PasswordResetExecutionForm from '../components/PasswordResetExecutionForm';
+import UserActivationExecution from '../components/UserActivationExecution';
 
 const i18n = i18nFactory();
 
@@ -109,5 +110,18 @@ if (passwordResetExecutionFormElem) {
       </Provider>
     </I18nextProvider>,
     passwordResetExecutionFormElem,
+  );
+}
+
+// render UserActivationExecution
+const userActivationExecutionElem = document.getElementById('user-activation-execution');
+if (userActivationExecutionElem) {
+  ReactDOM.render(
+    <I18nextProvider i18n={i18n}>
+      <Provider inject={[appContainer]}>
+        <UserActivationExecution />
+      </Provider>
+    </I18nextProvider>,
+    userActivationExecutionElem,
   );
 }

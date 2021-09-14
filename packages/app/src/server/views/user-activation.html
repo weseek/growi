@@ -1,0 +1,50 @@
+{% extends './layout/layout.html' %}
+
+{% block html_title %}{{ customizeService.generateCustomTitleForFixedPageName('User activation') }}{% endblock %}
+
+
+{#
+  # Remove default contents
+  #}
+ {% block html_head_loading_legacy %}
+ {% endblock %}
+ {% block html_head_loading_app %}
+ {% endblock %}
+ {% block layout_head_nav %}
+ {% endblock %}
+ {% block sidebar %}
+ {% endblock %}
+ {% block head_warn_alert_siteurl_undefined %}
+ {% endblock %}
+ {% block fixed-controls %}
+ {% endblock %}
+
+ {% block html_additional_headers %}
+   <script src="{{ webpack_asset('js/nologin.js') }}" defer></script>
+ {% endblock %}
+
+{% block layout_main %}
+
+  <div id="main" class="main">
+    <div id="content-main" class="content-main container-lg">
+      <div class="container">
+        <div class="row justify-content-md-center">
+          <div class="col-md-6 mt-5">
+            <div class="text-center">
+              <h1><i class="icon-lock-open large"></i></h1>
+              <h2 class="text-center">User activation of {{ passwordResetOrder.email }}</h2>
+                <div>
+                  <div id="user-activation-execution"></div>
+                  <a href="/login" class="link-switch">
+                    <i class="icon-key"></i> Go to login page
+                  </a>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

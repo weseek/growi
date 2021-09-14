@@ -141,9 +141,9 @@ module.exports = function(crowi, app) {
           const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(userData.email);
           // TODO: grune - make new route view to bypass update password
           // `/forgot-password/activate/${passwordResetOrderData.token}`
-          const url = new URL(`/forgot-password/${passwordResetOrderData.token}`, appUrl);
+          const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);
           const oneTimeUrl = url.href;
-          await sendPasswordResetEmail('passwordReset', i18n, email, oneTimeUrl);
+          await sendActivationTokenEmail('passwordReset', i18n, email, oneTimeUrl);
 
           // add a flash message to inform the user that processing was successful -- 2017.09.23 Yuki Takei
           // cz. loginSuccess method doesn't work on it's own when using passport
@@ -161,7 +161,7 @@ module.exports = function(crowi, app) {
     }
   };
 
-  async function sendPasswordResetEmail(txtFileName, i18n, email, url) {
+  async function sendActivationTokenEmail(txtFileName, i18n, email, url) {
     return mailService.send({
       to: email,
       subject: txtFileName,

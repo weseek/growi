@@ -52,6 +52,7 @@ module.exports = (crowi) => {
   router.use('/staffs', require('./staffs')(crowi));
 
   router.use('/forgot-password', require('./forgot-password')(crowi));
+  router.use('/user-activation', require('./user-activation')(crowi));
 
   return router;
 };

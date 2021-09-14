@@ -3,6 +3,7 @@ import express from 'express';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 
 import * as forgotPassword from './forgot-password';
+import * as userActivation from './user-activation';
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -193,6 +194,10 @@ module.exports = function(crowi, app) {
     .get('/', forgotPassword.forgotPassword)
     .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, forgotPassword.resetPassword)
     .use(forgotPassword.handleHttpErrosMiddleware));
+
+  app.use('/user-activation', express.Router()
+    .get('/:token', apiLimiter, injectResetOrderByTokenMiddleware, userActivation.userActivation)
+    .use(userActivation.handleHttpErrosMiddleware));
 
   app.get('/share/:linkId', page.showSharedPage);
 
