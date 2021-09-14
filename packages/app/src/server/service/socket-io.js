@@ -42,6 +42,7 @@ class SocketIoService {
 
     await this.setupStoreGuestIdEventHandler();
 
+    await this.setupLoginedUserRoomsJoinOnConnection();
     await this.setupDefaultSocketJoinRoomsEventHandler();
   }
 
@@ -127,20 +128,23 @@ class SocketIoService {
     });
   }
 
-  setupDefaultSocketJoinRoomsEventHandler() {
+  setupLoginedUserRoomsJoinOnConnection() {
     this.io.on('connection', (socket) => {
-      // set event handlers for joining rooms
-      socket.on('join:page', ({ pageId }) => {
-        socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
-      });
-
-      // for user rooms
       const user = socket.request.user;
       if (user == null) {
         logger.debug('Socket io: An anonymous user has connected');
         return;
       }
       socket.join(getRoomNameWithId(RoomPrefix.USER, user._id));
+    });
+  }
+
+  setupDefaultSocketJoinRoomsEventHandler() {
+    this.io.on('connection', (socket) => {
+      // set event handlers for joining rooms
+      socket.on('join:page', ({ pageId }) => {
+        socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
+      });
     });
   }
 
