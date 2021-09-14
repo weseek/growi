@@ -239,7 +239,7 @@ module.exports = (crowi) => {
     return handleInteractions(req, res, client);
   });
 
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkCommandPermission, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, checkInteractionspermission, async(req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
 
