@@ -9,8 +9,9 @@ import { Installation } from '@slack/oauth';
 
 
 import {
-  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, verifySlackRequest, generateWebClient,
+  markdownSectionBlock, GrowiCommand, parseSlashCommand, postEphemeralErrors, generateWebClient,
   InvalidGrowiCommandError, requiredScopes, postWelcomeMessage, REQUEST_TIMEOUT_FOR_PTOG,
+  parseSlackInteractionRequest, verifySlackRequest,
   respond,
 } from '@growi/slack';
 
@@ -25,6 +26,7 @@ import {
 } from '~/middlewares/slack-to-growi/authorizer';
 import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
+import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-to-conversation';
 import { InstallerService } from '~/services/InstallerService';
 import { SelectGrowiService } from '~/services/SelectGrowiService';
 import { RegisterService } from '~/services/RegisterService';
@@ -32,7 +34,6 @@ import { RelationsService } from '~/services/RelationsService';
 import { UnregisterService } from '~/services/UnregisterService';
 import { InvalidUrlError } from '../models/errors';
 import loggerFactory from '~/utils/logger';
-import { JoinToConversationMiddleware } from '~/middlewares/slack-to-growi/join-to-conversation';
 
 
 const logger = loggerFactory('slackbot-proxy:controllers:slack');
@@ -188,7 +189,7 @@ export class SlackCtrl {
       });
     }
 
-    respond(growiCommand.responseUrl, {
+    await respond(growiCommand.responseUrl, {
       blocks: [
         markdownSectionBlock(`Processing your request *"/growi ${growiCommand.text}"* ...`),
       ],
@@ -261,15 +262,18 @@ export class SlackCtrl {
   }
 
   @Post('/interactions')
-  @UseBefore(AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
+  @UseBefore(/* AddSigningSecretToReq, verifySlackRequest, */ parseSlackInteractionRequest, AuthorizeInteractionMiddleware, ExtractGrowiUriFromReq)
   async handleInteraction(@Req() req: SlackOauthReq, @Res() res: Res): Promise<void|string|Res|WebAPICallResult> {
     logger.info('receive interaction', req.authorizeResult);
     logger.debug('receive interaction', req.body);
 
-    const { body, authorizeResult } = req;
+    const { body, authorizeResult, interactionPayload } = req;
 
     // pass
     if (body.ssl_check != null) {
+      return;
+    }
+    if (interactionPayload == null) {
       return;
     }
 
@@ -277,11 +281,10 @@ export class SlackCtrl {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
-    const payload = JSON.parse(body.payload);
-    const callBackId = payload?.view?.callback_id;
+    const payload = req.interactionPayload;
+    const callBackId = payload.view?.callback_id;
 
-    const actions: any[] = payload?.actions;
-    const actionId = actions[0].action_id;
+    const actionId = req.interactionPayloadAccessor.firstAction?.action_id;
 
     // register
     if (callBackId === 'register') {
