@@ -10,6 +10,7 @@ const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 const { respondIfSlackbotError } = require('../../service/slack-command-handler/respond-if-slackbot-error');
+const { checkPermission } = require('../../util/slack-integration');
 
 module.exports = (crowi) => {
   this.app = crowi.express;
@@ -44,32 +45,6 @@ module.exports = (crowi) => {
     next();
   }
 
-  const checkPermission = (commandPermission, commandOrActionOrCallback, fromChannel) => {
-    let isPermitted = false;
-
-    Object.entries(commandPermission).forEach((entry) => {
-      const [command, value] = entry;
-      const permission = value;
-      const commandRegExp = new RegExp(`(^${command}$)|(^${command}:\\w+)`);
-
-      if (!commandRegExp.test(commandOrActionOrCallback)) {
-        return;
-      }
-
-      // permission check
-      if (permission === true) {
-        isPermitted = true;
-        return;
-      }
-      if (Array.isArray(permission) && permission.includes(fromChannel)) {
-        isPermitted = true;
-        return;
-      }
-    });
-
-    return isPermitted;
-  };
-
   async function extractPermissionsCommands(tokenPtoG) {
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
@@ -78,21 +53,13 @@ module.exports = (crowi) => {
     return { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands };
   }
 
-  const convertObjectToObject = (permissionsForBroadcastUseCommands, permissionsForSingleUseCommands) => {
-    const commandPermissionArray = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
-    const commandPermission = {};
-    commandPermissionArray.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
-    return commandPermission;
-  };
 
   async function checkCommandsPermission(req, res, next) {
     if (req.body.text == null) return next(); // when /relation-test
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
-
-    // Return type is object. This is for use in checkPermision arg
-    const commandPermission = convertObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
+    const commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
 
     const command = parseSlashCommand(req.body).growiCommandType;
     const fromChannel = req.body.channel_name;
@@ -121,10 +88,9 @@ module.exports = (crowi) => {
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
-
-    // Return type is object. This is for use in checkPermision arg
-    const commandPermission = convertObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
+    const commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
     const callbacIdkOrActionId = callbackId || actionId;
+
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) return next();
 
