@@ -44,7 +44,7 @@ module.exports = (crowi) => {
     next();
   }
 
-  const unifyCheckArray = (obj, commandOrActionOrCallback, fromChannel) => {
+  const checkPermission = (obj, commandOrActionOrCallback, fromChannel) => {
     // code below checks permission at channel level
     let isPermitted = false;
     Object.entries(obj).forEach((entry) => {
@@ -66,8 +66,15 @@ module.exports = (crowi) => {
       }
     });
     return isPermitted;
-
   };
+
+  async function extractPermissionsCommands(tokenPtoG) {
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
+    const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
+
+    return { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands };
+  }
 
   async function checkCommandPermission(req, res, next) {
     if (req.body.text == null) { // when /relation-test
@@ -75,20 +82,16 @@ module.exports = (crowi) => {
     }
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-    const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
-    const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
-    const command = req.body.text.split(' ')[0];
-    const fromChannel = req.body.channel_name;
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
 
     // code below checks permission at channel level
-    let isPermitted = false;
-    const array = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
-
+    const commandPermissionArray = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
     const commandPermission = {};
-    array.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
+    commandPermissionArray.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
 
-    isPermitted = unifyCheckArray(commandPermission, command, fromChannel);
+    const command = req.body.text.split(' ')[0];
+    const fromChannel = req.body.channel_name;
+    const isPermitted = checkPermission(commandPermission, command, fromChannel);
     if (isPermitted) {
       return next();
     }
@@ -98,12 +101,9 @@ module.exports = (crowi) => {
 
   async function checkInteractionspermission(req, res, next) {
     const payload = JSON.parse(req.body.payload);
-
-    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-
-    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-    const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
-    const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
+    if (payload == null) { // when /relation-test
+      return next();
+    }
 
     let actionId = '';
     let callbackId = '';
@@ -118,17 +118,16 @@ module.exports = (crowi) => {
       fromChannel = JSON.parse(payload.view.private_metadata).channelName;
     }
 
-    const callbackOrActionId = callbackId || actionId;
-
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
 
     // code below checks permission at channel level
-    let isPermitted = false;
-    const array = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
-
+    const commandPermissionArray = [...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands];
     const commandPermission = {};
-    array.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
+    commandPermissionArray.forEach((elem) => { commandPermission[elem[0]] = elem[1] });
 
-    isPermitted = unifyCheckArray(commandPermission, callbackOrActionId, fromChannel);
+    const callbacIdkOrActionId = callbackId || actionId;
+    const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) {
       return next();
     }
