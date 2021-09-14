@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
-const { verifySlackRequest, generateWebClient, getSupportedGrowiActionsRegExps } = require('@growi/slack');
+const { verifySlackRequest, parseSlashCommand } = require('@growi/slack');
 
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
@@ -93,7 +93,8 @@ module.exports = (crowi) => {
 
     // Return type is object. This is for use in checkPermision arg
     const commandPermission = convertObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
-    const command = req.body.text.split(' ')[0];
+
+    const command = parseSlashCommand(req.body).growiCommandType;
     const fromChannel = req.body.channel_name;
     const isPermitted = checkPermission(commandPermission, command, fromChannel);
     if (isPermitted) return next();
