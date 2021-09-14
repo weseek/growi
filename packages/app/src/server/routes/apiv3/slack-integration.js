@@ -45,13 +45,52 @@ module.exports = (crowi) => {
   }
 
   async function checkCommandPermission(req, res, next) {
-    let payload;
-    if (req.body.payload) {
-      payload = JSON.parse(req.body.payload);
-    }
-    if (req.body.text == null && !payload) { // when /relation-test
+    if (req.body.text == null) { // when /relation-test
       return next();
     }
+
+    const tokenPtoG = req.headers['x-growi-ptog-tokens'];
+    const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
+    const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
+    const command = req.body.text.split(' ')[0];
+    const fromChannel = req.body.channel_name;
+
+    // code below checks permission at channel level
+    let isPermitted = false;
+    [...permissionsForBroadcastUseCommands.keys(), ...permissionsForSingleUseCommands.keys()].forEach((commandName) => {
+      // boolean or string[]
+      let permission = permissionsForBroadcastUseCommands.get(commandName);
+      if (permission === undefined) {
+        permission = permissionsForSingleUseCommands.get(commandName);
+      }
+
+      // ex. search OR search:handlerName
+      const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
+
+      // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
+      if (!commandRegExp.test(command)) {
+        return;
+      }
+
+      // permission check
+      if (permission === true) {
+        isPermitted = true;
+        return;
+      }
+      if (Array.isArray(permission) && permission.includes(fromChannel)) {
+        isPermitted = true;
+      }
+    });
+
+    if (isPermitted) {
+      return next();
+    }
+    res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+  }
+
+  async function checkInteractionspermission(req, res, next) {
+    const payload = JSON.parse(req.body.payload);
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
@@ -59,17 +98,11 @@ module.exports = (crowi) => {
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
 
-    // get command name from req.body
-    let command = '';
     let actionId = '';
     let callbackId = '';
     let fromChannel = '';
 
-    if (!payload) { // when request is to /commands
-      command = req.body.text.split(' ')[0];
-      fromChannel = req.body.channel_name;
-    }
-    else if (payload.actions) { // when request is to /interactions && block_actions
+    if (payload.actions) { // when request is to /interactions && block_actions
       actionId = payload.actions[0].action_id;
       fromChannel = payload.channel.name;
     }
@@ -91,7 +124,7 @@ module.exports = (crowi) => {
       const commandRegExp = new RegExp(`(^${commandName}$)|(^${commandName}:\\w+)`);
 
       // skip this forEach loop if the requested command is not in permissionsForBroadcastUseCommands key
-      if (!commandRegExp.test(command) && !commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
+      if (!commandRegExp.test(actionId) && !commandRegExp.test(callbackId)) {
         return;
       }
 
