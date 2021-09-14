@@ -86,9 +86,7 @@ module.exports = (crowi) => {
   };
 
   async function checkCommandsPermission(req, res, next) {
-    if (req.body.text == null) { // when /relation-test
-      return next();
-    }
+    if (req.body.text == null) return next(); // when /relation-test
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
@@ -98,18 +96,14 @@ module.exports = (crowi) => {
     const command = req.body.text.split(' ')[0];
     const fromChannel = req.body.channel_name;
     const isPermitted = checkPermission(commandPermission, command, fromChannel);
-    if (isPermitted) {
-      return next();
-    }
+    if (isPermitted) return next();
 
     return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
   }
 
   async function checkInteractionsPermission(req, res, next) {
     const payload = JSON.parse(req.body.payload);
-    if (payload == null) { // when /relation-test
-      return next();
-    }
+    if (payload == null) return next(); // when /relation-test
 
     let actionId = '';
     let callbackId = '';
@@ -131,9 +125,7 @@ module.exports = (crowi) => {
     const commandPermission = mapObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
     const callbacIdkOrActionId = callbackId || actionId;
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
-    if (isPermitted) {
-      return next();
-    }
+    if (isPermitted) return next();
 
     res.status(403).send('It is not allowed to run  command to this GROWI.');
   }
