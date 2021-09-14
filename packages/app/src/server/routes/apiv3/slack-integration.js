@@ -47,6 +47,7 @@ module.exports = (crowi) => {
 
   async function extractPermissionsCommands(tokenPtoG) {
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
+    if (slackAppIntegration == null) return null;
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
 
@@ -56,10 +57,17 @@ module.exports = (crowi) => {
 
   async function checkCommandsPermission(req, res, next) {
     if (req.body.text == null) return next(); // when /relation-test
-
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
-    const commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
+    const extractPermissions = await extractPermissionsCommands(tokenPtoG);
+
+    let commandPermission;
+    if (extractPermissions != null) { // with proxy
+      const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
+      commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
+    }
+    else { // without proxy
+      commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+    }
 
     const command = parseSlashCommand(req.body).growiCommandType;
     const fromChannel = req.body.channel_name;
