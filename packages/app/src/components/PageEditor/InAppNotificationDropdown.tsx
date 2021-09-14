@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
 // import Icon from './Common/Icon'
@@ -14,21 +14,15 @@ interface State {
   count: number
   loaded: boolean
   notifications: Notification[]
-  open: boolean
+  isOpen: boolean
 }
 
-export default class InAppNotificationDropdown extends React.Component<Props, State> {
+const InAppNotificationDropdown = (props: Props) => {
 
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      count: 0,
-      loaded: false,
-      notifications: [],
-      open: false,
-    };
-  }
+  const [count, setCount] = useState(0);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   // componentDidMount() {
   //   this.initializeSocket();
@@ -57,15 +51,15 @@ export default class InAppNotificationDropdown extends React.Component<Props, St
   //   }
   // }
 
-  async updateStatus() {
+  const updateStatus = () => {
     try {
       // await this.props.crowi.apiPost('/notification.read');
-      this.setState({ count: 0 });
+      setCount(0);
     }
     catch (err) {
       // TODO: error handling
     }
-  }
+  };
 
   // async fetchList() {
   //   const limit = 6;
@@ -78,13 +72,12 @@ export default class InAppNotificationDropdown extends React.Component<Props, St
   //   }
   // }
 
-  toggle() {
-    const { open, count } = this.state;
-    if (!open && count > 0) {
-      this.updateStatus();
+  const onToggleDropdown = () => {
+    if (isOpen != null && count > 0) {
+      updateStatus();
     }
-    this.setState({ open: !open });
-  }
+    setIsOpen(!isOpen);
+  };
 
   // async handleNotificationOnClick(notification: Notification) {
   //   try {
@@ -97,22 +90,18 @@ export default class InAppNotificationDropdown extends React.Component<Props, St
   //   }
   // }
 
-  render() {
-    const {
-      count, open, loaded, notifications,
-    } = this.state;
+  const badge = count > 0 ? <span className="badge badge-pill badge-danger notification-badge">{count}</span> : '';
 
-    const badge = count > 0 ? <span className="badge badge-pill badge-danger notification-badge">{count}</span> : '';
+  return (
+    <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={onToggleDropdown}>
+      <DropdownToggle tag="a" className="nav-link">
+        <i className="icon-bell mr-2"></i>
+        {badge}
+      </DropdownToggle>
+      <DropdownMenu>hoge</DropdownMenu>
+    </Dropdown>
+  );
 
-    return (
-      <Dropdown className="notification-wrapper" isOpen={open} toggle={this.toggle}>
-        <DropdownToggle tag="a" className="nav-link">
-          <i className="icon-bell mr-2"></i>
-          {/* {badge} */}
-        </DropdownToggle>
-        <DropdownMenu>hoge</DropdownMenu>
-      </Dropdown>
-    );
-  }
+};
 
-}
+export default InAppNotificationDropdown;
