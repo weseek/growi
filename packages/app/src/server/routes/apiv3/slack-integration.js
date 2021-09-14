@@ -93,7 +93,7 @@ module.exports = (crowi) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
 
-    // code below checks permission at channel level
+    // Return type is object. This is for use in checkPermision arg
     const commandPermission = mapObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
     const command = req.body.text.split(' ')[0];
     const fromChannel = req.body.channel_name;
@@ -127,7 +127,7 @@ module.exports = (crowi) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
 
-    // code below checks permission at channel level
+    // Return type is object. This is for use in checkPermision arg
     const commandPermission = mapObjectToObject(permissionsForBroadcastUseCommands, permissionsForSingleUseCommands);
     const callbacIdkOrActionId = callbackId || actionId;
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
