@@ -65,6 +65,7 @@ module.exports = (crowi) => {
         isPermitted = true;
       }
     });
+
     return isPermitted;
   };
 
