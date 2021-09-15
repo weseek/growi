@@ -98,6 +98,7 @@ inAppNotificationSchema.index({
 inAppNotificationSchema.statics.findLatestInAppNotificationsByUser = function(user, limitNum, offset) {
   const limit = limitNum || 10;
 
+  // TODO: improve populate refer to GROWI way by GW-7482
   return InAppNotification.find({ user })
     .sort({ createdAt: -1 })
     .skip(offset)
