@@ -100,7 +100,7 @@ module.exports = (crowi) => {
       return mailService.send({
         to: admin.email,
         subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'),
+        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'), // TODO: GW7335 - make new template for activation message
         vars: {
           createdUser: userData,
           admin,

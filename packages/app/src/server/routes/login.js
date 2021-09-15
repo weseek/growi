@@ -139,8 +139,6 @@ module.exports = function(crowi, app) {
           const appUrl = appService.getSiteUrl();
 
           const passwordResetOrderData = await PasswordResetOrder.createPasswordResetOrder(userData.email);
-          // TODO: grune - make new route view to bypass update password
-          // `/forgot-password/activate/${passwordResetOrderData.token}`
           const url = new URL(`/user-activation/${passwordResetOrderData.token}`, appUrl);
           const oneTimeUrl = url.href;
           await sendActivationTokenEmail('passwordReset', i18n, email, oneTimeUrl);
@@ -165,7 +163,7 @@ module.exports = function(crowi, app) {
     return mailService.send({
       to: email,
       subject: txtFileName,
-      template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`),
+      template: path.join(crowi.localeDir, `${i18n}/notifications/${txtFileName}.txt`), // TODO: GW7335 - make new template for activation message
       vars: {
         appTitle: appService.getAppTitle(),
         email,
@@ -184,7 +182,7 @@ module.exports = function(crowi, app) {
       return mailService.send({
         to: admin.email,
         subject: `[${appTitle}:admin] A New User Created and Waiting for Activation`,
-        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'), // TODO: grune - make new template for activation message
+        template: path.join(crowi.localeDir, 'en_US/admin/userWaitingActivation.txt'), // TODO: GW7335 - make new template for activation message
         vars: {
           createdUser: userData,
           admin,

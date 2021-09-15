@@ -615,11 +615,9 @@ module.exports = function(crowi) {
       // detect hashed password, no need to hash again
       // used for move data from UserRegistrationOrder to User on activation use by email process
       if (sha256Regex.test(password)) {
-        console.log('grunelog password hashed');
         newUser.password = password;
       }
       else {
-        console.log('grunelog password not hashed');
         newUser.setPassword(password);
       }
     }

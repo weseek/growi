@@ -81,20 +81,13 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO: grune - make new route get for `/forgot-password/activate/${passwordResetOrderData.token}`
-  // Adjust based on this route router.put('/', ...);
-
   router.put('/', injectResetOrderByTokenMiddleware, async(req, res) => {
-
-    console.log('grunelog URL token action');
-
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = req.language || grobalLang;
     const { newPassword } = req.body;
 
-    // TODO: grune - add condition for UserRegistrationOrder
     const user = await User.findOne({ email });
 
     // when the user is not found or active
