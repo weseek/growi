@@ -74,7 +74,7 @@ module.exports = (crowi) => {
     const isPermitted = checkPermission(commandPermission, command, fromChannel);
     if (isPermitted) return next();
 
-    return res.status(403).send(`It is not allowed to run '${command}' command to this GROWI.`);
+    return res.send(`It is not allowed to run '${command}' command to this GROWI.`).status(403);
   }
 
   async function checkInteractionsPermission(req, res, next) {
@@ -95,14 +95,21 @@ module.exports = (crowi) => {
     }
 
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
-    const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = await extractPermissionsCommands(tokenPtoG);
-    const commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
-    const callbacIdkOrActionId = callbackId || actionId;
+    const extractPermissions = await extractPermissionsCommands(tokenPtoG);
+    let commandPermission;
+    if (extractPermissions != null) { // with proxy
+      const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
+      commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
+    }
+    else { // without proxy
+      commandPermission = JSON.parse(configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission'));
+    }
 
+    const callbacIdkOrActionId = callbackId || actionId;
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) return next();
 
-    res.status(403).send('It is not allowed to run  command to this GROWI.');
+    return res.status(403).send('It is not allowed to run the command to this GROWI.');
   }
 
   const addSigningSecretToReq = (req, res, next) => {
