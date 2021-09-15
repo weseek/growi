@@ -174,7 +174,7 @@ export default class CodeMirrorEditor extends AbstractEditor {
       this.setState({ isEnabledEmojiAutoComplete: true });
     }
 
-    this.initTextlintSettings();
+    this.initializeTextlint();
   }
 
   componentDidMount() {
@@ -200,11 +200,14 @@ export default class CodeMirrorEditor extends AbstractEditor {
     this.setKeymapMode(keymapMode);
   }
 
-  async initTextlintSettings() {
-    // If database has empty array, pass null instead to enable all default rules
-    const rulesForValidator = this.props.textlintRules?.length !== 0 ? this.props.textlintRules : null;
-    this.textlintValidator = createValidator(rulesForValidator);
-    this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
+  async initializeTextlint() {
+    if (this.props.onInitializeTextlint != null) {
+      await this.props.onInitializeTextlint();
+      // If database has empty array, pass null instead to enable all default rules
+      const rulesForValidator = this.props.textlintRules?.length !== 0 ? this.props.textlintRules : null;
+      this.textlintValidator = createValidator(rulesForValidator);
+      this.codemirrorLintConfig = { getAnnotations: this.textlintValidator, async: true };
+    }
   }
 
   getCodeMirror() {
@@ -988,6 +991,7 @@ CodeMirrorEditor.propTypes = Object.assign({
   lineNumbers: PropTypes.bool,
   onMarkdownHelpButtonClicked: PropTypes.func,
   onAddAttachmentButtonClicked: PropTypes.func,
+  onInitializeTextlint: PropTypes.func,
 }, AbstractEditor.propTypes);
 
 CodeMirrorEditor.defaultProps = {
