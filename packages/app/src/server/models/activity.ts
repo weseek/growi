@@ -215,10 +215,14 @@ activitySchema.post('save', async(savedActivity: ActivityDocument) => {
   }
 });
 
+
+/**
+ * TODO: implement removeActivity by GW-7481
+ */
+
 // because mongoose's 'remove' hook fired only when remove by a method of Document (not by a Model method)
 // move 'save' hook from mongoose's events to activityEvent if I have a time.
 // activityEvent.on('remove', async(activity: ActivityDocument) => {
-//   const Notification = crowi.model('Notification');
 
 //   try {
 //     await InAppNotification.removeActivity(activity);
