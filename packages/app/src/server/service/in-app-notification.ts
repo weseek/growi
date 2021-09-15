@@ -20,6 +20,10 @@ class InAppNotificationService {
   }
 
   initCommentEvent(): void {
+    this.commentEvent.on('create', (user) => {
+      this.commentEvent.onCreate();
+    });
+
     this.commentEvent.on('update', (user) => {
       this.commentEvent.onUpdate();
     });

@@ -14,8 +14,12 @@ function CommentEvent(crowi) {
 util.inherits(CommentEvent, events.EventEmitter);
 
 
+CommentEvent.prototype.onCreate = function() {
+  logger.info('onCreate comment event fired');
+};
+
 CommentEvent.prototype.onUpdate = function() {
-  logger.info('onUpdate event fired');
+  logger.info('onUpdate comment event fired');
 };
 
 
