@@ -85,7 +85,7 @@ export const InAppNotificationDropdown: FC<Props> = (props: Props) => {
   };
 
   /**
-    * TODO: Jump to the page by Click the notification by GW-7472
+    * TODO: Jump to the page by clicking on the notification by GW-7472
     */
 
   const handleNotificationOnClick = async(notification: Notification) => {
