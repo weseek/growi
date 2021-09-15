@@ -74,7 +74,7 @@ const InAppNotificationDropdown = (props: Props) => {
     }
   };
 
-  const onToggleDropdown = () => {
+  const toggleDropdownHandler = () => {
     if (isOpen === false && count > 0) {
       updateStatus();
     }
@@ -95,7 +95,7 @@ const InAppNotificationDropdown = (props: Props) => {
   const badge = count > 0 ? <span className="badge badge-pill badge-danger notification-badge">{count}</span> : '';
 
   return (
-    <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={onToggleDropdown}>
+    <Dropdown className="notification-wrapper" isOpen={isOpen} toggle={toggleDropdownHandler}>
       <DropdownToggle tag="a" className="nav-link">
         <i className="icon-bell mr-2"></i>
         {badge}
