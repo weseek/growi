@@ -74,7 +74,8 @@ module.exports = (crowi) => {
     const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
     if (isPermitted) return next();
 
-    return res.status(403).send(`It is not allowed to run '${growiCommand.growiCommandType}' command to this GROWI.`);
+    // IT IS NOT WORKING. FIX THIS GW-7441
+    return res.status(403).send('It is not allowed to run the command to this GROWI.');
   }
 
   // REFACTORIMG THIS MIDDLEWARE GW-7441
@@ -110,6 +111,7 @@ module.exports = (crowi) => {
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) return next();
 
+    // IT IS NOT WORKING FIX. THIS GW-7441
     return res.status(403).send('It is not allowed to run the command to this GROWI.');
   }
 
