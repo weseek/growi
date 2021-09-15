@@ -54,7 +54,7 @@ module.exports = (crowi) => {
     return { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands };
   }
 
-
+  // REFACTORIMG THIS MIDDLEWARE GW-7441
   async function checkCommandsPermission(req, res, next) {
     if (req.body.text == null) return next(); // when /relation-test
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
@@ -74,9 +74,10 @@ module.exports = (crowi) => {
     const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
     if (isPermitted) return next();
 
-    return res.send(`It is not allowed to run '${growiCommand.growiCommandType}' command to this GROWI.`).status(403);
+    return res.status(403).send(`It is not allowed to run '${growiCommand.growiCommandType}' command to this GROWI.`);
   }
 
+  // REFACTORIMG THIS MIDDLEWARE GW-7441
   async function checkInteractionsPermission(req, res, next) {
     const payload = JSON.parse(req.body.payload);
     if (payload == null) return next(); // when /relation-test
