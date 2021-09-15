@@ -6,7 +6,9 @@ import ActivityDefine from '../util/activityDefine';
 import { getOrCreateModel } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
-import { ActivityDocument } from './activity';
+import { Activity, ActivityDocument } from '~/server/models/activity';
+
+
 import User = require('./user');
 
 
@@ -85,7 +87,6 @@ export default (crowi: Crowi) => {
     },
   });
   inAppNotificationSchema.virtual('actionUsers').get(function(this: InAppNotificationDocument) {
-    const Activity = crowi.model('Activity');
     return Activity.getActionUsersFromActivities((this.activities as any) as ActivityDocument[]);
   });
   const transform = (doc, ret) => {
