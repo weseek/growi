@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 // import DropdownMenu from './InAppNotificationDropdown/DropdownMenu';
-// import Icon from './Common/Icon'
 // import Crowi from 'client/util/Crowi'
 // import { Notification } from 'client/types/crowi'
 
@@ -30,6 +29,9 @@ const InAppNotificationDropdown = (props: Props) => {
   //   this.fetchStatus();
   // }
 
+  /**
+    * TODO: Listen to socket on the client side by GW-7402
+    */
   // initializeSocket() {
   //   this.props.crowi.getWebSocket().on('notification updated', (data: { user: string }) => {
   //     if (this.props.me === data.user) {
@@ -39,6 +41,9 @@ const InAppNotificationDropdown = (props: Props) => {
   //   });
   // }
 
+  /**
+    * TODO: Fetch notification status by GW-7473
+    */
   // async fetchStatus() {
   //   try {
   //     const { count = null } = await this.props.crowi.apiGet('/notification.status');
@@ -61,6 +66,11 @@ const InAppNotificationDropdown = (props: Props) => {
     }
   };
 
+
+  /**
+    * TODO: Fetch notification list by GW-7473
+    */
+
   const fetchList = async() => {
     const limit = 6;
     try {
@@ -80,6 +90,10 @@ const InAppNotificationDropdown = (props: Props) => {
     }
     setIsOpen(!isOpen);
   };
+
+  /**
+    * TODO: Jump to the page by Click the notification by GW-7472
+    */
 
   const handleNotificationOnClick = async(notification: Notification) => {
     try {
