@@ -25,8 +25,8 @@ const InAppNotificationDropdown = (props: Props) => {
 
   // componentDidMount() {
   //   this.initializeSocket();
-  //   this.fetchList();
-  //   this.fetchStatus();
+  //   this.fetchNotificationList();
+  //   this.fetchNotificationStatus();
   // }
 
   /**
@@ -35,8 +35,8 @@ const InAppNotificationDropdown = (props: Props) => {
   // initializeSocket() {
   //   this.props.crowi.getWebSocket().on('notification updated', (data: { user: string }) => {
   //     if (this.props.me === data.user) {
-  //       this.fetchList();
-  //       this.fetchStatus();
+  //       this.fetchNotificationList();
+  //       this.fetchNotificationStatus();
   //     }
   //   });
   // }
@@ -44,7 +44,7 @@ const InAppNotificationDropdown = (props: Props) => {
   /**
     * TODO: Fetch notification status by GW-7473
     */
-  // async fetchStatus() {
+  // async fetchNotificationStatus() {
   //   try {
   //     const { count = null } = await this.props.crowi.apiGet('/notification.status');
   //     if (count !== null && count !== this.state.count) {
@@ -56,7 +56,7 @@ const InAppNotificationDropdown = (props: Props) => {
   //   }
   // }
 
-  const updateStatus = () => {
+  const updateNotificationStatus = () => {
     try {
       // await this.props.crowi.apiPost('/notification.read');
       setCount(0);
@@ -71,7 +71,7 @@ const InAppNotificationDropdown = (props: Props) => {
     * TODO: Fetch notification list by GW-7473
     */
 
-  const fetchList = async() => {
+  const fetchNotificationList = async() => {
     const limit = 6;
     try {
       // const { notifications } = await this.props.crowi.apiGet('/notification.list', { limit });
@@ -86,7 +86,7 @@ const InAppNotificationDropdown = (props: Props) => {
 
   const toggleDropdownHandler = () => {
     if (isOpen === false && count > 0) {
-      updateStatus();
+      updateNotificationStatus();
     }
     setIsOpen(!isOpen);
   };
