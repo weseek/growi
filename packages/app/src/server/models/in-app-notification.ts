@@ -3,14 +3,12 @@ import {
 } from 'mongoose';
 import { subDays } from 'date-fns';
 import ActivityDefine from '../util/activityDefine';
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
 import loggerFactory from '../../utils/logger';
 import { Activity, ActivityDocument } from '~/server/models/activity';
 
-import User = require('./user');
-
-
 const logger = loggerFactory('growi:models:inAppNotification');
+const User = getModelSafely('User') || require('~/server/models/user')();
 
 const STATUS_UNREAD = 'UNREAD';
 const STATUS_UNOPENED = 'UNOPENED';
